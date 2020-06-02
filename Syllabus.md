@@ -1,112 +1,140 @@
 # Stuff
 
-[https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/USACO%20Topics.md](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/USACO%20Topics.md)
-
-[https://www.vplanetcoding.com/courses](https://www.vplanetcoding.com/courses)
-
-[https://people.ksp.sk/~misof/ioi-syllabus/ioi-syllabus.pdf](https://people.ksp.sk/~misof/ioi-syllabus/ioi-syllabus.pdf)
-
-[https://www.overleaf.com/project/5e73f65cde1d010001224d8a](https://www.overleaf.com/project/5e73f65cde1d010001224d8a)
-
-[https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/Division-Specific/Silver.md](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/Division-Specific/Silver.md)
+ - [USACO -> CPH Topics](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/USACO%20Topics.md)
+ - [Riya's website](https://www.vplanetcoding.com/courses)
+ - [IOI Syllabus](https://people.ksp.sk/~misof/ioi-syllabus/ioi-syllabus.pdf)
+ - [Darren's book](https://www.overleaf.com/project/5e73f65cde1d010001224d8a)
+ - [Division-Specific Categorization](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/Division-Specific/Silver.md)
+ - [Silver Categorization](https://docs.google.com/document/d/1ba2jr2PFrtxHuGfvdjYVKX-8VzkQAdhpiMLlpXxiAOM/edit)
 
 Italics = mostly appears in higher divisions but still good to learn
 
 # Bronze
 
-- Assumed Prerequisites 
-	- for loops, ifs, etc…
-	- first half of AP Computer Science A
-- What is competitive programming?
-	- how to practice, debug
-	- good practices for contests
-	- contest format
-- Introduction to contests
-	- format
-	- plenty of examples involving files I/O
-	- submitting, verdicts
-- VERY easy problems
-	- ex. [Fence Painting]([http://usaco.org/index.php?page=viewproblem2&cpid=567](http://usaco.org/index.php?page=viewproblem2&cpid=567))
-	- At this level... be explicit about how to implement things (say "arrays" or "for-loops" probably)
+ - Assumed Prerequisites 
+   - for loops, ifs, arrays, arraylists, etc…
+   - first half of AP Computer Science A
+ - What is competitive programming?
+   - how to practice, debug
+   - good practices for contests
+   - contest format
+ - Introduction to contests
+   - format
+   - plenty of examples involving file I/O
+   - submitting, verdicts
+ - VERY easy problems
+   - ex. [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
+   - At this level... be explicit about how to implement things (say "arrays" or "for-loops" probably)
  - Brute force 
-	 - ex. [Tracing](http://usaco.org/index.php?page=viewproblem2&cpid=1037)
- - Greedy 
-	 - ex. [Mad Scientist](http://usaco.org/index.php?page=viewproblem2&cpid=1012)
+   - ex. [Tracing](http://usaco.org/index.php?page=viewproblem2&cpid=1037)
+ - Greedy?
+   - CPH 6?
+   - ex. [Mad Scientist](http://usaco.org/index.php?page=viewproblem2&cpid=1012)
+   - usually considered to be silver?
  - Bitwise operations?
- - Iterating through subsets and permutations
-	 - next_permutation/Generating permutations recursively (for Java/python)
+ - Brute Force
+   - iterating through permutations
+     - `next_permutation`
+     - generating recursively
+   - subsets with bitwise operations??
+   - CPH 5.1, 5.2, 5.3
  - STL / java.util. (know that they exist)
-	 - Vector / ArrayList
-	 - std::sort / Collections.sort
-	 - std::map / TreeMap/HashMap
+   - (review?) Vector / ArrayList
+   - (review?) std::sort / Collections.sort
+   - std::map / TreeMap/HashMap
 
 # Silver
 
-- Sorting
-	- ex. Coord Compress
-- Binary Search (BinSearch)
-- Two Pointers (2P)
-- Prefix Sums (Psum)
-	- aka Cumulative, Partial
-	- 2D
-- Containers from C++ standard template library (STL)
-	- (also know pairs in C++)
-    - PQ = priority queue
-    - Data Structures and their Methods(STL)
-    - BST/TreeSet / TreeMap (Python doesn’t have ordered map)
-    - Linked List
-    - Priority Queues
-    - Stacks
-    - Deques
-    - Sets/Maps
-    - HashSets/HashMaps
-    - Multiset (F FOR JAVA) (just teach a workaround or smthn ig) TreeMap<value,numoccrances> (erase by value pitfall**)
-    - Custom comparator (prerequisite for basically all silver topics in Java)
-- Graphs
-	- Terminology
-	    - ex. Bipartite graphs
-    - FF: Flood Fill (finding the number of connected components in a graph)
-	    - frequently on grid
-	    - Depth First Search (DFS)
-    - *Breadth First Search (BFS)*
-    - *Disjoint Set Union (DSU)*
+ - Containers from C++ standard template library (STL)
+   - CPH 4
+   - C++ Pairs
+   - Linear
+     - Linked List
+     - Stacks
+     - Deques
+   - Log
+     - Priority Queues
+     - BST / TreeSet / TreeMap (Python doesn’t have log n map)
+     - Sets/Maps
+     - Multiset (F FOR JAVA) (just teach a workaround or smthn ig) TreeMap<value,numoccrances> (erase by value pitfall)
+     - Custom comparator (prerequisite for basically all silver topics in Java)
+   - HashSets / HashMaps
+ - Sorting, Binary Search (BinSearch)
+   - CPH 3
+   - coord compress
+   - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
+ - Two Pointers (2P)
+   - CPH 8.1
+   - ex. [diamond](http://usaco.org/index.php?page=viewproblem2&cpid=643)
+ - Prefix Sums (Psum)
+   - CPH 9.1
+   - aka Cumulative, Partial
+   - ex. [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
+   - 2D
+ - Graphs
+   - [CSAcademy Lessons](https://csacademy.com/lessons/)
+   - CPH 11, 12
+   - Terminology
+     - ex. bipartite graphs??
+   - Flood Fill (FF)
+     - finding the number of connected components in a graph
+     - frequently on grid
+       - ex. [lightson](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
+     - Depth First Search (DFS)
+   - *Breadth First Search (BFS)*
+   - *Disjoint Set Union (DSU)*
  - Permutations / Cycle Detection??
+   - ex. [swap](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
 
 # Gold
 
+ - Amortized Analysis?
+   - CPH 8.2, 8.3
  - Dynamic Programming (DP)
-	 - Tree
-	 - Bitmasks
-	 - Knapsack
-	 - Range DP??
+   - CPH 7
+   - Knapsack
+   - LIS
+   - on tree?
+   - Bitmasks??
+   - Range DP???
  - Graphs
-	 - Shortest Path (SP)
-		 - Dijkstra
-		 - Bellman-Ford (SPFA?)
-		 - Floyd-Warshall (Separate or together?)
-	 -  Minimum Spanning Tree (MST) 
-		 - Prim
-		 - Kruskal
-     -  Topological Sort (TopoSort)
-     -  *Lowest Common Ancestor (LCA)*
-	     - hasn’t been *required* aside from [cowland](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
-	     - well, [milk visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970) mentions it (but no binary jumping required…)
+   - Shortest Path (SP)
+     - Dijkstra
+       - ex. [pump](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
+     - Bellman-Ford
+     - Floyd-Warshall
+     - SPFA??
+     - CPH 13
+   - *Lowest Common Ancestor (LCA)*
+     - CPH 14, 18?
+     - hasn’t been *required* aside from [cowland](http://www.usaco.org/index.php?page=viewproblem2&cpid=921) but we probably won't see a repeat of this
+     - [Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970) also mentions it (but no binary jumping required…)
+   - Minimum Spanning Tree (MST) 
+     - CPH 15
+     - ex. [fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
+     - Prim
+     - Kruskal
+   - Topological Sort (TopoSort)
+     - CPH 16
+     - ex. [timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
  - 1D Range Queries (1DRQ)
-	 - Mostly sum queries
-	 - Fenwick / Binary Indexed Tree (BIT)
-	 - *Segment Tree*
- - Math 
-    - Combinatorics
-	    - Principle of Inclusion and Exclusion (PIE)
-    - Number Theory
-        - Modular Arithmetic
-	    - Fast Exponentiation (Cow Poetry)
- - Geometry
+   - CPH 9
+   - mostly sum queries
+   - Fenwick / Binary Indexed Tree (BIT)
+   - *Segment Tree*
+ - Number Theory
+   - Modular Arithmetic
+   - Fast Exponentiation 
+   - ex. [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
+ - Other
+   - Bitset??
+   - Combinatorics
+     - Principle of Inclusion and Exclusion (PIE) once?
+   - Geometry
      - Cross product, dot product, geometry primitives (shoelace, etc.)
      - Sweepline
- - Bitset??
-
-> Written with [StackEdit](https://stackedit.io/).
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMzNDQ0MzI5Miw3MzA5OTgxMTZdfQ==
--->
+     - CPH 29, 30.1?
+   - Strings
+     - CPH 26.1, 26.2, 26.3
+     - Hashing (once)?
+     - Trie?
