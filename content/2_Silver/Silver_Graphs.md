@@ -62,7 +62,7 @@ The most common example of a two-colored graph is a *bipartite graph*, in which 
 
 The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
 
-```
+```cpp
 bool is_bipartite = true;
 void dfs(int node)
 {
@@ -98,7 +98,7 @@ A *cycle* is a non-empty path of distinct edges that start and end at the same n
 
 The following sample code counts the number of cycles in a graph where each node points to one other node. The "stack" contains nodes that can reach the current node. If the current node points to a node v on the stack (on_stack[v] is true), then we know that a cycle has been created. However, if the current node points to a node v that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
 
-```
+```cpp
 //Each node points to next_node[node]
 
 bool visited[MAXN], on_stack[MAXN];
