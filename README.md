@@ -9,12 +9,12 @@
 
 # Intro
 
- - [Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
-   - Choosing a Language
- - What is Competitive Programming?
+ - [Introduction to Competitive Programming](https://thecodingwizard.github.io/usaco-training-2.0/Intro)
    - Contest Format
+   - Choosing a Language
    - Practicing and Debugging
    - Contest Strategies
+ - [Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
  - Introductory Problems
    - Author Note: be explicit about how to implement things (say "arrays" or "for-loops")
    - Author Note: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
