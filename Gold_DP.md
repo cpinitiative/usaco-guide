@@ -6,8 +6,8 @@ Assumes familiarity with recursion, Bit Operations (for Bitmask DP), and Trees (
 
 ## Introduction to DP
 * CPH Chapter 7
-* [Topcoder DP]([https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/))
-* [HackerRank DP]([https://www.hackerrank.com/topics/dynamic-programming](https://www.hackerrank.com/topics/dynamic-programming))
+* [Topcoder DP](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/)
+* [HackerRank DP](https://www.hackerrank.com/topics/dynamic-programming)
 
 ## Classical DP Problems
 Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
