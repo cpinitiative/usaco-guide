@@ -137,10 +137,8 @@ Italics = mostly appears in higher divisions but still good to learn
      - CPH 16
      - ex. [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
  - 1D Range Queries (1DRQ)
-   - CPH 9
-   - mostly sum queries
-   - **Fenwick / Binary Indexed Tree (BIT)**
-   - *Segment Tree*
+   - mostly point update and sum query
+   - ex. [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)
  - **Number Theory**
    - Prime factorization, GCD, LCM
    - Modular Arithmetic
