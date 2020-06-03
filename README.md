@@ -1,4 +1,4 @@
-# Stuff
+# Other Resources
 
  - [USACO -> CPH Topics](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/USACO%20Topics.md)
  - [Riya's website](https://www.vplanetcoding.com/courses)
@@ -11,30 +11,25 @@ Italics = mostly appears in higher divisions but still good to learn
 
 # Intro
 
- - [Assumed Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
-   - first half of AP Computer Science A
-   - for loops, ifs
- - Containers
-   - Arrays (C++11)
-   - Vector / ArrayList
-   - C++ pairs
-   - Structs?
+ - [Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
+   - Choosing a Language
  - What is Competitive Programming?
-   - how to practice, debug
-   - good practices for contests
-   - contest format
- - Introduction to Contests
-   - format
-   - plenty of examples involving file I/O
-   - submitting, verdicts
+   - Contest Format
+   - Practicing and Debugging
+   - Contest Strategies
  - Introductory Problems
-   - Be explicit about how to implement things (say "arrays" or "for-loops" probably??)
-   - ex. [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
-   - ex. [Word Processing](http://usaco.org/index.php?page=viewproblem2&cpid=987)
+   - Author Note: be explicit about how to implement things (say "arrays" or "for-loops")
+   - Author Note: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
+   - Author Note: [Word Processing](http://usaco.org/index.php?page=viewproblem2&cpid=987)
+ - Useful Containers
+   - Arrays (C++11)
+   - Vectors and ArrayList
+   - C++ Pairs
+   - Structs
 
 # Bronze
 
- - Rectangle Geometry :o
+ - Rectangle Geometry
    - see book ch 7
    - ex. [Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759)
    - usually just loop over 2D array
