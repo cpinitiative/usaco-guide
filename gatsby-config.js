@@ -1,3 +1,8 @@
+const resolveConfig = require('tailwindcss/resolveConfig');
+const tailwindConfig = require('./tailwind.config.js');
+
+const fullConfig = resolveConfig(tailwindConfig);
+
 module.exports = {
   siteMetadata: {
     title: `USACO Guide`,
@@ -5,6 +10,26 @@ module.exports = {
     author: `@usacoteam`,
   },
   plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/content`,
+        name: `content`,
+      },
+    },
+    `gatsby-transformer-remark`,
+    {
+      resolve: `gatsby-plugin-postcss`,
+      options: {
+        postCssPlugins: [
+          require(`tailwindcss`)(tailwindConfig),
+          require(`autoprefixer`),
+          ...(process.env.NODE_ENV === `production`
+            ? [require(`cssnano`)]
+            : []),
+        ],
+      },
+    },
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,

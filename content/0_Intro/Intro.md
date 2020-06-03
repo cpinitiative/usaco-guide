@@ -1,3 +1,7 @@
+---
+slug: /intro/getting-started
+---
+
 # Introduction to Competitive Programming
 
 Author: Nathan Wang

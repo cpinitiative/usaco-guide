@@ -1,3 +1,7 @@
+---
+slug: /gold/bit
+---
+
 # Gold - Range Sum Queries with Point Updates
 
 Author: Benjamin Qi
