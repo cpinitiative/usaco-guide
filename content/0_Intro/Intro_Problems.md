@@ -1,3 +1,7 @@
+---
+slug: /intro/problems
+---
+
 # Introductory Problems
 
 Author: Nathan Wang
