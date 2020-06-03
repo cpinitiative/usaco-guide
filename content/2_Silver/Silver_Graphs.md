@@ -63,6 +63,8 @@ The most common example of a two-colored graph is a *bipartite graph*, in which 
 The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
 
 ```cpp
+//UNTESTED
+
 bool is_bipartite = true;
 void dfs(int node)
 {
@@ -92,17 +94,20 @@ void dfs(int node)
 ## Cycle Detection
 
 A *cycle* is a non-empty path of distinct edges that start and end at the same node.
-*Cycle detection* determines properties of cycles in a graph, such as counting the number of cycles in a graph or determining whether a node is in a cycle. For most silver-level cycle problems, each node has only one out-degree, meaning that it's adjacency list is of size 1. If this is not the case, the problem generalizes to *Strongly Connected Components*, a platinum level concept.
+*Cycle detection* determines properties of cycles in a graph, such as counting the number of cycles in a graph or determining whether a node is in a cycle. For most silver-level cycle problems, each node has only one out-degree, meaning that it's adjacency list is of size 1.
+A generalization of cycle detection (determining all sets of cycles in an arbitrary graph) is *Strongly Connected Components*, a platinum level concept.
 
 ### Tutorial
 
 The following sample code counts the number of cycles in a graph where each node points to one other node. The "stack" contains nodes that can reach the current node. If the current node points to a node v on the stack (on_stack[v] is true), then we know that a cycle has been created. However, if the current node points to a node v that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
 
 ```cpp
+//UNTESTED
+
 //Each node points to next_node[node]
 
 bool visited[MAXN], on_stack[MAXN];
-int number_of_cycles = 0;
+int number_of_cycles = 0, next_node[MAXN];
 void dfs(int n)
 {
 	visited[n] = on_stack[n] = true;
@@ -119,6 +124,52 @@ int main()
 	for(int i = 1;i <= N;i++)
 		if(!visited[i])
 			dfs(i);
+}
+```
+
+The same general idea is implemented below to find any cycle in a directed graph.
+
+```cpp
+//UNTESTED
+
+bool visited[MAXN], on_stack[MAXN];
+vector<int> adj[MAXN];
+vector<int> cycle;
+bool dfs(int n)
+{
+	visited[n] = on_stack[n] = true;
+	for(int u:adj[n])
+	{
+		if(on_stack[u])
+			return cycle.push_back(v), cycle.push_back(u), on_stack[n] = on_stack[u] = false, true;
+		else if(!visited[u])
+		{
+			if(dfs(u))
+				if(on_stack[n])
+					return cycle.push_back(n), on_stack[n] = false, true;
+				else
+					return false;
+			if(!cycle.empty())
+				return false;
+		}
+	}
+	on_stack[n] = false;
+	return false;
+}
+int main()
+{
+	//take input, etc
+	for(int i = 1;cycle.empty() && i <= N;i++)
+		dfs(i);
+	if(cycle.empty())
+		printf("No cycle found!\n");
+	else
+	{
+		reverse(cycle.begin(), cycle.end());
+		printf("Cycle of length %u found!\n", cycle.size());
+		for(int n : cycle) printf("%d ", n);
+		printf("\n");
+	}
 }
 ```
 
