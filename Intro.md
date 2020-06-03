@@ -11,7 +11,10 @@ In general, we recommend the following:
 - For Bronze contestants, any of C++/Java/Python will do.
   - If you know multiple languages, we recommend you pick C++ over Java, and Java over Python.
 - For Silver, Gold, and Platinum, we recommend C++/Java.
-  - If you know multiple languages, we recommend you pick C++ over Java.
+  - If you know multiple languages, we recommend you pick C++ over Java since C++ is faster.
+  - It's not guaranteed that you can receive full points for every problem using Python (even for Silver).
+    - Rewriting the C++ solution for [Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python gets TLE on 2/10 cases. 
+    - A similar solution in Java requires almost 3s (for a time limit of 4s)
 
 Note: A majority of high level contestants use C++ and Java. Between those, C++ is more popular.
 

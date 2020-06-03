@@ -94,5 +94,8 @@ Just a sampling of the many possible topics.
    - Static Array Queries
    - 2D
  - Bitset
+   - ex. [Lots of Triangles](http://www.usaco.org/index.php?page=viewproblem2&cpid=672)
  - Slope Trick
+   - ex. [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
  - Fracturing Search
+   - ex. [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674)
