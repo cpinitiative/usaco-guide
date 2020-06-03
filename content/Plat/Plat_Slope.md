@@ -114,7 +114,9 @@ int main() {
 
 ## Landscaping
 
-It's not hard to solve this if you know that slope trick is applicable. Again, let's first come up with a slow DP. Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.
+This is quite similar to the previous task, so it's easy to guess that slope trick is applicable. 
+
+Again, let's first come up with a slow DP. Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.
 
 This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must be able to support the following operations.
 
@@ -123,12 +125,12 @@ This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must b
  * Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
  * Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$. 
 
-As before, let $dif[j]=DP[j+1]-dif[j]$. Then the last operation is equivalent to the following:
+As before, it helps to look at the differences $dif[j]=DP[j+1]-dif[j]$ instead. Then the last operation is equivalent to the following:
 
  * For all $j\ge 0$, we set $dif[j] = \min(dif[j]+Z,X)$
  * For all $j<0$, we set $dif[j] = \max(dif[j]-Z,-Y)$. 
 
-If we maintain separate deques for $j\ge 0$ and $j<0$ then we can do this in $O(\sum A_i+\sum B_i)$ time.
+If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ and update all of the differences in the deques "lazily" then we can do this in $O(\sum A_i+\sum B_i)$ time.
 
 <details>
 
@@ -163,9 +165,9 @@ int main() {
 	freopen("landscape.out","w",stdout);
 	cin >> N >> X >> Y >> Z; 
 	for (int i = 0; i < N; ++i) {
-		int A,B; cin >> A >> B; A -= B;
-		for (int j = 0; j < A; ++j) rig();
-		for (int j = 0; j < -A; ++j) lef();
+		int A,B; cin >> A >> B; 
+		for (int j = 0; j < A; ++j) rig(); // or we can just do |A-B| shifts in one direction
+		for (int j = 0; j < B; ++j) lef(); 
 		difl -= Z, difr += Z; // adjust slopes differently for left and right of j=0
 	}
 	cout << ans << "\n";
@@ -173,21 +175,17 @@ int main() {
 ```
 </details>
 
-# Problems
+## Problems
 
+  * [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
+    * same as potatoes
+  * [Stock Trading](https://probgate.org/viewproblem.php?pid=531&cid=81)
+    * extension of buy low sell high
+    * USACO Camp (private)
   * [Bookface](https://codeforces.com/group/ZFgXbZSjvp/contest/274852/problem/C)
   * [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
   * [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)
   * [Moving Walkways](https://codeforces.com/contest/1209/problem/H)
-  * [Stock Trading](https://probgate.org/viewproblem.php?pid=531&cid=81)
-    * USACO Camp (private)
-  * [Potatoes](https://oj.uz/problem/view/LMIO19_bulves)
-    * add differences b_i-a_i in order from i=1...N
-    * maintain some convex structure after each addition
-  * [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
-    * same as above
-  * [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
-    * extension of "Potatoes"
   * [April Fools' Problem](https://codeforces.com/contest/802/problem/O)
   * [Conquer the World](https://icpc.kattis.com/problems/conquertheworld)
     * note: ICPC world finals, 0 solves in contest
