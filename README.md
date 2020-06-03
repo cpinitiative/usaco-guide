@@ -15,10 +15,7 @@
    - Practicing and Debugging
    - Contest Strategies
  - [Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
- - Introductory Problems
-   - Author Note: be explicit about how to implement things (say "arrays" or "for-loops")
-   - Author Note: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
-   - Author Note: [Word Processing](http://usaco.org/index.php?page=viewproblem2&cpid=987)
+ - [Introductory Problems](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Problems)
  - Standard Containers Intro
 
 # Bronze
