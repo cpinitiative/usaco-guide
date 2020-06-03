@@ -13,8 +13,7 @@ Given an array of size $N$, the task is to update the element at a single positi
 Sample Problems:
 
   * [CSES Range Sum Queries II](https://cses.fi/problemset/task/1648)
-  * [CSES Range XOR Queries](https://cses.fi/problemset/task/1650)
-    * essentially the same as above
+    * can also do range XOR queries w/ update
   * [SPOJ Inversion Counting](https://www.spoj.com/problems/INVCNT/)
 
 ## Binary Indexed Tree

@@ -1,5 +1,7 @@
 # Platinum - Fracturing Search
 
+Author: Benjamin Qi
+
 ## General Outline
 
 ### Problem

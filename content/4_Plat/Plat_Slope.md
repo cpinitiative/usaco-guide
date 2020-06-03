@@ -1,5 +1,7 @@
 # Platinum - Slope Trick
 
+Author: Benjamin Qi
+
 ## Tutorials
 
 Links:
