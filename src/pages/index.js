@@ -37,7 +37,7 @@ const IndexPage = () => (
           <div className="text-center">
             <h2
               className="text-4xl tracking-tight leading-10 font-extrabold text-white sm:text-5xl sm:leading-none md:text-6xl">
-              USACO Resources
+              USACO Guide
             </h2>
             <p className="mt-3 max-w-md mx-auto text-base text-blue-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
               A collection of curated, high-quality resources to take you from Bronze to Platinum.
