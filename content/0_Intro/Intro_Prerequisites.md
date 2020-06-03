@@ -1,3 +1,7 @@
+---
+slug: /intro/prerequisites
+---
+
 # Intro - Prerequisites
 
 Author: Nathan Wang

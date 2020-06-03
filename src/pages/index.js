@@ -2,10 +2,13 @@ import React from "react"
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import SyllabusModule from "../components/SyllabusModule";
 
 const IndexPage = () => (
   <Layout>
     <SEO title="Home" />
+
+    {/* Begin Hero Section */}
     <div className="relative bg-blue-600 overflow-hidden">
       <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
         <div className="relative h-full max-w-screen-xl mx-auto">
@@ -54,137 +57,102 @@ const IndexPage = () => (
         </div>
       </div>
     </div>
+    {/* End Hero Section */}
+
     <div className="bg-gray-50 pb-8" id="content">
       <div className="py-12 text-center">
         <h2 className="font-bold text-4xl">Intro</h2>
       </div>
       <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-        <div className="bg-white overflow-hidden shadow rounded-lg mb-8">
-          <div className="border-b border-gray-200 px-4 py-4 sm:px-6  flex items-center">
-            <h2 className="font-bold text-xl mr-2">
-              Prerequisites
-            </h2>
-            <svg className="h-8 w-8 text-green-500" fill="none" strokeLinecap="round" strokeLinejoin="round"
-                 strokeWidth={2} viewBox="0 0 24 24" stroke="currentColor">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div className="px-4 py-4 sm:p-6">
-            <ul className="list-disc pl-6">
-              <li>
-                What you should know before starting
-              </li>
-              <li>
-                Choosing a Language
-              </li>
-            </ul>
-          </div>
-          <a href="https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites"
-             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
-            Read Lesson
-          </a>
-        </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg mb-8">
-          <div className="border-b border-gray-200 px-4 py-4 sm:px-6 flex items-center">
-            <h2 className="font-bold text-xl mr-2">What is Competitive Programming?</h2>
-            <svg className="h-8 w-8 text-green-500" fill="none" strokeLinecap="round" strokeLinejoin="round"
-                 strokeWidth={2} viewBox="0 0 24 24" stroke="currentColor">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div className="px-4 py-3 sm:p-6">
-            <ul className="list-disc pl-6">
-              <li>
-                Contest Format
-              </li>
-              <li>
-                Practicing and Debugging
-              </li>
-              <li>
-                Contest Strategies
-              </li>
-            </ul>
-          </div>
-          <a href="#"
-             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
-            Read Lesson
-          </a>
-        </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg mb-8">
-          <div className="border-b border-gray-200 px-4 py-4 sm:px-6">
-            <h2 className="font-bold text-xl mr-3">Introductory Problems</h2>
-          </div>
-          <div className="px-4 py-3 sm:p-6">
-            <p className="mb-3">If you're new to competitive programming, we recommend you try to solve a few of these
-              problems. Once you're comfortable, move on!</p>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Fence
-                  Painting</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Word
-                  Processing</a>
-              </li>
-            </ul>
-          </div>
-          <a href="https://thecodingwizard.github.io/usaco-training-2.0/Intro_Problems"
-             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
-            Read Lesson
-          </a>
-        </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg mb-8">
-          <div className="border-b border-gray-200 px-4 py-4 sm:px-6 ">
-            <h2 className="font-bold text-xl">Useful Containers</h2>
-          </div>
-          <div className="px-4 py-3 sm:p-6">
-            <ul className="list-disc pl-6 mb-4">
-              <li>Arrays (C++11)</li>
-              <li>Vectors and ArrayList</li>
-              <li>C++ Pairs</li>
-              <li>Structs</li>
-            </ul>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Lorem
-                  Ipsum</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Lorem
-                  Ipsum</a>
-              </li>
-            </ul>
-          </div>
-          <a href="#"
-             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
-            Read Lesson
-          </a>
-        </div>
+        <SyllabusModule
+          title="Prerequisites"
+          url="/intro/prerequisites"
+        >
+          <ul className="list-disc pl-6">
+            <li>
+              What you should know before starting
+            </li>
+            <li>
+              Choosing a Language
+            </li>
+          </ul>
+        </SyllabusModule>
+        <SyllabusModule
+          title="What is Competitive Programming?"
+        >
+          <ul className="list-disc pl-6">
+            <li>
+              Contest Format
+            </li>
+            <li>
+              Practicing and Debugging
+            </li>
+            <li>
+              Contest Strategies
+            </li>
+          </ul>
+        </SyllabusModule>
+        <SyllabusModule
+          title="Introductory Problems"
+          url="/intro/problems"
+        >
+          <p className="mb-3">If you're new to competitive programming, we recommend you try to solve a few of these
+            problems. Once you're comfortable, move on!</p>
+          Problem List:
+          <ul className="ml-3 space-y-1 py-2">
+            <li className="flex items-center">
+              <svg className="h-6 w-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd" />
+              </svg>
+              <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Fence
+                Painting</a>
+            </li>
+            <li className="flex items-center">
+              <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd" />
+              </svg>
+              <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Word
+                Processing</a>
+            </li>
+          </ul>
+        </SyllabusModule>
+        <SyllabusModule
+          title="Useful Containers"
+        >
+          <ul className="list-disc pl-6 mb-4">
+            <li>Arrays (C++11)</li>
+            <li>Vectors and ArrayList</li>
+            <li>C++ Pairs</li>
+            <li>Structs</li>
+          </ul>
+          Problem List:
+          <ul className="ml-3 space-y-1 py-2">
+            <li className="flex items-center">
+              <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd" />
+              </svg>
+              <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Lorem
+                Ipsum</a>
+            </li>
+            <li className="flex items-center">
+              <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd" />
+              </svg>
+              <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Lorem
+                Ipsum</a>
+            </li>
+          </ul>
+        </SyllabusModule>
       </div>
     </div>
-
   </Layout>
 );
 

@@ -1,3 +1,7 @@
+---
+slug: /plat/fracture
+---
+
 # Platinum - Fracturing Search
 
 Author: Benjamin Qi
