@@ -3,6 +3,8 @@ import { graphql, Link } from "gatsby"
 import rehypeReact from "rehype-react"
 import Layout from "../components/layout";
 
+import "katex/dist/katex.min.css";
+
 const renderAst = new rehypeReact({
   createElement: React.createElement,
   components: {
