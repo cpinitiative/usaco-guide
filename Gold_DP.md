@@ -23,7 +23,7 @@ Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
 * Coin Change
 	* [Unordered](https://cses.fi/problemset/task/1635)
 	* [Ordered](https://cses.fi/problemset/task/1636)
-	* [Minimum Coins]((https://cses.fi/problemset/task/1634)
+	* [Minimum Coins](https://cses.fi/problemset/task/1634)
 * Paths on a Grid
 	* [Count Paths](https://atcoder.jp/contests/dp/tasks/dp_h)
 	* [Palindromic Paths](http://www.usaco.org/index.php?page=viewproblem2&cpid=553)
