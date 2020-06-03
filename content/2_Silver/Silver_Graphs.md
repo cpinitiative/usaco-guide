@@ -1,4 +1,4 @@
-# Silver - Graphs
+# Silver - DFS
 
 Author: Siyong Huang
 
@@ -12,21 +12,24 @@ Author: Siyong Huang
 
 ## Prerequisites
 
- - [Graph Theory](https://csacademy.com/lesson/introduction_to_graphs)
- - [Graph Representations](https://csacademy.com/lesson/graph_representation)
+ - [CSAcademy Graph Theory](https://csacademy.com/lesson/introduction_to_graphs)
+ - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
    - Note: DFS is most commonly implemented with adjacency lists
 
 ## Depth First Search (DFS)
 
-*Depth First Search*, more commonly DFS, is a fundamental graph algorithm that traverses an entire connected component. The rest of this document describe various applications of DFS.
+*Depth First Search*, more commonly DFS, is a fundamental graph algorithm that traverses an entire connected component. The rest of this document describes various applications of DFS. Of course, it is one possible way to implement flood fill.
+
+ - [CSES Building Roads](https://cses.fi/problemset/task/1666)
 
 ### Tutorial
 
  - Recommended:
-   - [CSAcademy BFS](https://csacademy.com/lesson/depth_first_search/)
+   - [CSAcademy DFS](https://csacademy.com/lesson/depth_first_search/)
  - Additional:
    - CPH Chapter 12
    - [cp-algo DFS](https://cp-algorithms.com/graph/depth-first-search.html)
+     - hard to parse if this is your first time learning about DFS
 
 ### Problems
 
@@ -38,7 +41,10 @@ Author: Siyong Huang
 
 ## Flood Fill
 
-*Flood Fill* refers to finding the number of connected components in a graph, frequently on a grid.
+*Flood Fill* refers to finding the number of connected components in a graph, usually when the graph is a grid.
+
+ - [CSES Counting Rooms](https://cses.fi/problemset/task/1192)
+ - [CSES Labyrinth](https://cses.fi/problemset/task/1193)
 
 ### Tutorial
 
@@ -57,6 +63,8 @@ Author: Siyong Huang
 
 *Graph two-colorings* is assigning a boolean value to each node of the graph, dictated by the edge configuration
 The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors
+
+ - [CSES Building Teams](https://cses.fi/problemset/task/1668)
 
 ### Tutorial
 
@@ -83,7 +91,7 @@ void dfs(int node)
 
  - Additional:
    - [Bipartite Graphs: cp-alg bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
-     - Note: CP Algorithm uses bfs, but dfs accomplishes the same task
+     - Note: CP Algorithm uses BFS, but DFS accomplishes the same task
 
 ### Problems
 
@@ -91,12 +99,20 @@ void dfs(int node)
 
 ## Cycle Detection
 
-A *cycle* is a non-empty path of distinct edges that start and end at the same node.
-*Cycle detection* determines properties of cycles in a graph, such as counting the number of cycles in a graph or determining whether a node is in a cycle. For most silver-level cycle problems, each node has only one out-degree, meaning that it's adjacency list is of size 1. If this is not the case, the problem generalizes to *Strongly Connected Components*, a platinum level concept.
+A *cycle* is a non-empty path of distinct edges that start and end at the same node. *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle. 
 
-### Tutorial
+### Functional Graphs
 
-The following sample code counts the number of cycles in a graph where each node points to one other node. The "stack" contains nodes that can reach the current node. If the current node points to a node v on the stack (on_stack[v] is true), then we know that a cycle has been created. However, if the current node points to a node v that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
+Links:
+
+ * CPH 16.3: successor paths
+ * CPH 16.4: cycle detection in successor graph
+
+In silver-level directed cycle problems, it is generally the case that each node has exactly one edge going out of it. This is known as a **successor graph** or a **functional graph.**
+
+The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
+
+(test code?)
 
 ```cpp
 //Each node points to next_node[node]
@@ -122,10 +138,16 @@ int main()
 }
 ```
 
+For non-functional directed graphs, this code will still detect a cycle if it exists (though `number_of_cycles` will be meaningless).
+
 ### Problems
 
  - [Codeforces 1020B. Badge (Very Easy)](https://codeforces.com/contest/1020/problem/B)
    - Try to solve the problem in O(N)!
  - [The Bovine Shuffle (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=764)
  - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
+ - [CSES Round Trip (undirected)](https://cses.fi/problemset/task/1669)
+ - [CSES Round Trip II (directed)](https://cses.fi/problemset/task/1678)
 
+
+Cycle finding is also related to **strongly connected components**, a platinum level concept.

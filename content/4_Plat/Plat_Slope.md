@@ -16,7 +16,7 @@ From the latter link (modified):
 >  * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
 >  * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
-It's generally applicable as a DP optimization.
+It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick.
 
 This document assumes some familiarity with at least one of the links above.
 
@@ -24,7 +24,7 @@ This document assumes some familiarity with at least one of the links above.
 
 [CF Buy Low Sell High](https://codeforces.com/contest/866/problem/D)
 
-Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This easily leads to an $O(N^2)$ DP. 
+**Slow Solution**: Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This easily leads to an $O(N^2)$ DP. 
 
 Of course, we never used the fact that the DP is concave down! Specifically, let $dif[i][j]=dp[i][j]-dp[i][j+1]\ge 0$. Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$ (ignoring the case when we get $dp$ values of $-\infty$).
 
@@ -69,9 +69,9 @@ int main() {
 
 Let $dif_i=a_i-b_i$. Defining $d_j=\sum_{i=1}^jdif_i$, our goal is to move around the potatoes such that $d_0,d_1,\ldots,d_N$ is a non-decreasing sequence. Moving a potato is equivalent to changing exactly one of the $d_i$ (aside from $d_0,d_N$) by one.
 
-As before, we can come up with a $O(N\cdot d_N)$ solution, where $dp[i][j]$ is the minimum cost to determine $d_0,d_1,\ldots,d_i$ such that $d_i\le j$. As before, this DP is concave up for a fixed $i$!!
+**Slow Solution:** Let $dp[i][j]$ be the minimum cost to determine $d_0,d_1,\ldots,d_i$ such that $d_i\le j$ for each $0\le j\le d_N$. This gives a $O(N\cdot d_N)$ solution.
 
-So given a piecewise linear function $DP_x$, we need to support the following operations.
+As before, this DP is concave up for a fixed $i$! Given a piecewise linear function $DP_x$, we need to support the following operations.
 
  * Add $|x-k|$ to the function for some $k$
  * Set $DP_x=\min(DP_x,DP_{x-1})$ for all $x$
@@ -181,11 +181,11 @@ int main() {
 
 ## Problems
 
+  * [Moving Haybales (USACO Camp)](https://probgate.org/viewproblem.php?pid=247)
   * [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
-    * same as potatoes
-  * [Stock Trading](https://probgate.org/viewproblem.php?pid=531&cid=81)
-    * extension of buy low sell high
-    * USACO Camp (private)
+    * same as "Potatoes"
+  * [Stock Trading (USACO Camp)](https://probgate.org/viewproblem.php?pid=531&cid=81)
+    * extension of "Buy Low Sell High"
   * [Bookface](https://codeforces.com/group/ZFgXbZSjvp/contest/274852/problem/C)
   * [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
   * [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)

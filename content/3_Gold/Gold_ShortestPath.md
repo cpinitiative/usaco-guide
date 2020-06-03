@@ -70,5 +70,6 @@ Hasn't appeared in recent USACO Gold as far as I know.
 
  * [CSES High Score](https://cses.fi/problemset/task/1673)
  * [Kattis SSSP Negative](https://open.kattis.com/problems/shortestpath3)
+ * [CSES Cycle Finding](https://cses.fi/problemset/task/1197)
 
 Can also modify Dijkstra's so it works with negative edge weights (but not negative cycles). The same running time bound no longer applies.
