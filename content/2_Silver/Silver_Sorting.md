@@ -1,13 +1,10 @@
 # Silver - Sorting
 
-See 8 & 12 & 14.1 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
+ - Comparators
+ - CPH 3
+ - std::sort / Collections.sort
+ - coord compress
 
-## Binary Search
+See 8 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
 
-   - CPH 3
-   - std::sort / Collections.sort
-   - coord compress
-
-## Two Pointers
-
-   - CPH 8.1
+See 12 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a

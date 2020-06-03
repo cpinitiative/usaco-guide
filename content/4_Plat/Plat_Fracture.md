@@ -22,7 +22,7 @@ The above approach can be generalized. Suppose that you want to find the $K$ obj
 
 ### Problem
 
-You're given a graph with $N\le 50$ vertices and at most $\binom{N}{2}$ edges, and you want to find the $K$-th ($K\le 10^4$) smallest spanning tree.
+Given a graph with $N\le 50$ vertices and at most $\binom{N}{2}$ edges, find the $K$-th ($K\le 10^4$) smallest spanning tree.
 
 ### Solution
 
@@ -114,6 +114,10 @@ Note that none of these options result in a robot of lower cost since we assumed
 
 Since there exists exactly one way to get from the cheapest robot to every possible robot, we can just use a priority queue.
 
+<details>
+
+<summary>My Solution</summary>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -159,6 +163,8 @@ int main() {
 	cout << ans << "\n";
 }
 ```
+
+</details>
 
 ## Other Problems
 
