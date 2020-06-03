@@ -33,14 +33,14 @@
 # Silver
 
  - Greedy
-   - ex?
+   - ex. [Lemonade Stand](http://usaco.org/index.php?page=viewproblem2&cpid=835)
  - Standard Containers
-   - ex?
+   - ex. [Convention II](http://usaco.org/index.php?page=viewproblem2&cpid=859)
  - Sorting
    - Binary Search (BinSearch)
      - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
-   - Two Pointers (2P)
-     - ex. [Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
+ - Two Pointers (2P)
+   - ex. [Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
  - Prefix Sums (Psum)
    - ex. [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
  - Flood Fill (FF)
@@ -54,8 +54,6 @@
 
  - Dynamic Programming (DP)
    - ex. [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
- - Sliding Window?
-   - ex. [Haybale Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=767)
  - Graphs
    - Breadth First Search (BFS)
      - ex. [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
@@ -70,15 +68,15 @@
    - ex. [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)
  - Number Theory
    - ex. [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
- - Geometry
-   - ex. ?
- - Strings
-   - Trie?
-   - Hashing
-   - ex. [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
- - Combinatorics
-   - Principle of Inclusion and Exclusion (PIE)
-   - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
+ - Less Common
+   - Strings
+     - Hashing
+     - ex. [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
+   - Combinatorics
+     - Principle of Inclusion and Exclusion (PIE)
+     - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
+   - Sliding Window
+     - ex. [Haybale Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=767)
 
 # Platinum
 
@@ -88,6 +86,8 @@ Just a sampling of the many possible topics.
    - Lowest Common Ancestor (LCA)
      - mostly platinum but may appear in gold as well
      - ex. [cowland](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
+   - Heavy-Light Decomposition (HLD)
+   - Tree Diameter
  - Range Queries
    - Segment Tree
      - possibly useful for gold
@@ -99,3 +99,6 @@ Just a sampling of the many possible topics.
    - ex. [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
  - Fracturing Search
    - ex. [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674)
+ - Geometry
+   - Convex Hull
+   - ignoring Cow Steeplechase II (Silver) ...

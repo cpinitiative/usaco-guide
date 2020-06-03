@@ -8,8 +8,11 @@
 
  - CPH 15
  - Prim's Algorithm
+   - [cp-algo](https://cp-algorithms.com/graph/mst_prim.html)
    - Similar to Dijkstra
  - Kruskal's Algorithm
+   - [cp-algo 1](https://cp-algorithms.com/graph/mst_kruskal.html)
+   - [cp-algo 2](https://cp-algorithms.com/graph/mst_kruskal_with_dsu.html)
    - Requires "Disjoint Set Union" (DSU) data structure
      - [CSAcademy Disjoint-Set](https://csacademy.com/lessons)
      - DSU Complexity Proofs (optional of course)
