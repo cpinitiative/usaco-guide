@@ -4,13 +4,13 @@
 
 ### Problem
 
-Suppose that you have a (potentially very large) rooted tree where each vertex $i$ has a value $v_i$ and parent $p_i$ (if $i$ is not the root). Given that $v_{p_i} \le v_i$ and each vertex has at most $D$ children, find the $K$ smallest values in the tree.
+Suppose that you have a rooted tree where each vertex $i$ has a value $v_i$ and parent $p_i$ (if $i$ is not the root). Given that $v_{p_i} \le v_i$ and each vertex has at most $D$ children, find the $K$ smallest values in the tree.
 
 ### Solution
 
 Use a priority queue. At each step, extract the vertex with smallest value from the priority queue and insert all of its children into the queue. Since we insert $O(KD)$ vertices in the priority queue, this solution takes $O(KD\log (KD))$ time.
 
-The above approach can be generalized to the $K$ objects with the smallest values in some search space. The "root" denotes the object with the smallest value. Every other object in the space should have a "parent" whose value is not greater. Furthermore, the number of children of each object should be reasonably bounded (i.e. $D$ is small).
+The above approach can be generalized. Suppose that you want to find the $K$ objects with the smallest values in some (potentially very large) search space. Start with the "root," namely the object with the smallest value. Every other object in the space should have a single "parent" whose value is not greater. Furthermore, the number of children of each object should be reasonably bounded (i.e. $D$ is small).
 
 ## Finding K-th Smallest Spanning Tree (USACO Camp 2018)
 
