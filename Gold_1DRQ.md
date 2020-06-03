@@ -33,7 +33,8 @@ My implementation can be found [here](https://github.com/bqi343/USACO/blob/maste
 
 ### Indexed Set
 
-In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template).
+In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template). `Tree<int>` behaves mostly the same way as `set<int>` with the additional function `order_of_key(x)`, which
+counts the number of elements in the indexed set that are strictly less than `x`. See the link for more examples of usage.
 
 ```cpp
 #include <ext/pb_ds/tree_policy.hpp>
@@ -51,14 +52,16 @@ int main() {
     int n; re(n);
     Tree<int> T; ll numInv = 0;
     F0R(j,n) { 
-      int x; re(x); // T.ook(x+1) gives number of previous elements < (x+1)
-      numInv += j-T.ook(x+1); // so this gives # previous elements > x
+      int x; re(x); 
+      numInv += j-T.ook(x); // gives # elements before it > x
       T.insert(x);
     }
     ps(numInv);
   }
 }
 ```
+
+Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the array position.
 
 ### Practice Problems
 
@@ -83,7 +86,7 @@ The following topics have not been required for gold (so far).
 
 ### Static Range Queries
 
-* Range Minimum Query
+* Range Minimum Query??
   * Tutorial
     * [Wikipedia](https://en.wikipedia.org/wiki/Range_minimum_query)
     * (add)
@@ -105,4 +108,4 @@ This data structure allows you to do point update and range query in $O(\log N)$
     * can use segment tree with min query in place of the map mentioned in analysis
   * [POI Cards](https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement) [](81)
   * [Counting Haybales (USACO Plat)](http://www.usaco.org/index.php?page=viewproblem2&cpid=578)
-    * lazy updates
+    * Lazy Updates
