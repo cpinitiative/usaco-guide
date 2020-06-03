@@ -1,6 +1,8 @@
 # Gold - Minimum Spanning Tree
 
- * [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
+ - [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
+ - [CSES Road Reparation](https://cses.fi/problemset/task/1675)
+   - equivalent to above
 
 ## Tutorial
 
@@ -23,6 +25,7 @@
      - also special ...
  - DSU Problems
    - [Mootube](http://www.usaco.org/index.php?page=viewproblem2&cpid=789)
+   - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
    - [Closing the Farm](http://www.usaco.org/index.php?page=viewproblem2&cpid=646)
    - [Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
      - fairly tricky
