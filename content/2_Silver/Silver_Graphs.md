@@ -14,7 +14,7 @@ Author: Siyong Huang
 
  - [Graph Theory](https://csacademy.com/lesson/introduction_to_graphs)
  - [Graph Representations](https://csacademy.com/lesson/graph_representation)
-  - Note: DFS is most commonly implemented with adjacency lists
+   - Note: DFS is most commonly implemented with adjacency lists
 
 ## Depth First Search (DFS)
 
@@ -23,10 +23,10 @@ Author: Siyong Huang
 ### Tutorial
 
  - Recommended:
-  - [CSAcademy BFS](https://csacademy.com/lesson/depth_first_search/)
+   - [CSAcademy BFS](https://csacademy.com/lesson/depth_first_search/)
  - Additional:
-  - CPH Chapter 12
-  - [cp-algo DFS](https://cp-algorithms.com/graph/depth-first-search.html)
+   - CPH Chapter 12
+   - [cp-algo DFS](https://cp-algorithms.com/graph/depth-first-search.html)
 
 ### Problems
 
@@ -43,7 +43,7 @@ Author: Siyong Huang
 ### Tutorial
 
  - Recommended:
-  - Ch 10 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
+   - Ch 10 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
 
 ### Problems
 
@@ -82,8 +82,8 @@ void dfs(int node)
 ```
 
  - Additional:
-  - [Bipartite Graphs: cp-alg bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
-   - Note: CP Algorithm uses bfs, but dfs accomplishes the same task
+   - [Bipartite Graphs: cp-alg bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
+     - Note: CP Algorithm uses bfs, but dfs accomplishes the same task
 
 ### Problems
 
@@ -125,7 +125,7 @@ int main()
 ### Problems
 
  - [Codeforces 1020B. Badge (Very Easy)](https://codeforces.com/contest/1020/problem/B)
-  - Try to solve the problem in O(N)!
+   - Try to solve the problem in O(N)!
  - [The Bovine Shuffle (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=764)
  - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
 
