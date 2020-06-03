@@ -4,21 +4,21 @@ Author: Siyong Huang
 
 ## Overview
 
-- Prerequisites
-- Depth First Search (DFS)
-- Flood Fill
-- Graph Two-Coloring
-- Cycle Detection
+ - Prerequisites
+ - Depth First Search (DFS)
+ - Flood Fill
+ - Graph Two-Coloring
+ - Cycle Detection
 
 ## Prerequisites
 
  - [CSAcademy Graph Theory](https://csacademy.com/lesson/introduction_to_graphs)
  - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
-   - Note: DFS is most commonly implemented with adjacency lists
+   - Note: DFS is most commonly implemented with adjacency lists.
 
 ## Depth First Search (DFS)
 
-*Depth First Search*, more commonly DFS, is a fundamental graph algorithm that traverses an entire connected component. The rest of this document describes various applications of DFS. Of course, it is one possible way to implement flood fill.
+*Depth First Search*, more commonly DFS, is a fundamental graph algorithm that traverses an entire connected component. The rest of this document describes various applications of DFS. Of course, it is one possible way to implement flood fill. *Breadth first search* (BFS) is **not** required for silver.
 
  - [CSES Building Roads](https://cses.fi/problemset/task/1666)
 
@@ -62,7 +62,7 @@ Author: Siyong Huang
 ## Graph Two-Coloring
 
 *Graph two-colorings* is assigning a boolean value to each node of the graph, dictated by the edge configuration
-The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors
+The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors.
 
  - [CSES Building Teams](https://cses.fi/problemset/task/1668)
 
@@ -93,7 +93,7 @@ void dfs(int node)
 
  - Additional:
    - [Bipartite Graphs: cp-alg bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
-     - Note: CP Algorithm uses BFS, but DFS accomplishes the same task
+     - Note: CP-Algorithms uses BFS, but DFS accomplishes the same task
 
 ### Problems
 
@@ -101,7 +101,7 @@ void dfs(int node)
 
 ## Cycle Detection
 
-A *cycle* is a non-empty path of distinct edges that start and end at the same node. *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle. 
+A *cycle* is a non-empty path of distinct edges that start and end at the same node. *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle or just checking whether a cycle exists. 
 
 A related topic is **strongly connected components**, a platinum level concept.
 
@@ -142,7 +142,7 @@ int main()
 }
 ```
 
-The same general idea is implemented below to find any cycle in a directed graph.
+The same general idea is implemented below to find any cycle in a directed graph (if one exists).
 
 ```cpp
 //UNTESTED
