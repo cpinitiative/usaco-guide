@@ -2,7 +2,7 @@
 Author: Michael Cao
 
 ## Prerequisites
-Assumes familiarity with recursion, Bit Operations (for Bitmask DP), and Trees (for Tree DP).
+Assumes familiarity with prefix sums, recursion, Bit Operations (for Bitmask DP), and Trees (for Tree DP).
 
 ## Introduction to DP
 * CPH Chapter 7
