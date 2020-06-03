@@ -9,14 +9,16 @@ Links:
  * [zscoder](https://codeforces.com/blog/entry/47821)
  * [Kuroni](https://codeforces.com/blog/entry/77298)
 
-From the latter link:
+From the latter link (modified):
 
-Slope trick is a way to represent a function that satisfies the following conditions:
-
- * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
- * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+> Slope trick is a way to represent a function that satisfies the following conditions:
+> 
+>  * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
+>  * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
 It's generally applicable as a DP optimization.
+
+This document assumes some familiarity with at least one of the links above.
 
 ## A Simple Example
 

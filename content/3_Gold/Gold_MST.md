@@ -1,5 +1,7 @@
 # Gold - Minimum Spanning Tree
 
+Standard Problems:
+
  - [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
  - [CSES Road Reparation](https://cses.fi/problemset/task/1675)
    - equivalent to above
@@ -14,7 +16,7 @@
    - [cp-algo 1](https://cp-algorithms.com/graph/mst_kruskal.html)
    - [cp-algo 2](https://cp-algorithms.com/graph/mst_kruskal_with_dsu.html)
    - Requires "Disjoint Set Union" (DSU) data structure
-     - [CSAcademy Disjoint-Set](https://csacademy.com/lessons)
+     - [CSAcademy Disjoint-Set](https://csacademy.com/lesson/disjoint_data_sets)
      - DSU Complexity Proofs (optional of course)
        - [log\*n](https://en.wikipedia.org/wiki/Proof_of_O(log*n)\_time_complexity\_of_union%E2%80%93find)
        - [a(m,n)](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
@@ -28,7 +30,7 @@
      - also special ...
  - DSU Problems
    - [Mootube](http://www.usaco.org/index.php?page=viewproblem2&cpid=789)
-   - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
+     - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
    - [Closing the Farm](http://www.usaco.org/index.php?page=viewproblem2&cpid=646)
    - [Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
      - fairly tricky
