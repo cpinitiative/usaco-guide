@@ -1,4 +1,4 @@
-# Gold - 1D Range Queries
+# Gold - Range Sum Queries with Point Updates
 
 Author: Benjamin Qi
 
@@ -6,9 +6,7 @@ Author: Benjamin Qi
 
 Assumes that you are familiar with prefix sum queries (CPH 9.1). 
 
-## Binary Indexed Tree
-
-### Introduction
+## Task
 
 Given an array of size $N$, the task is to update the element at a single position (point) in addition to querying the sum of a prefix in $O(\log N)$ time each.
 
@@ -19,7 +17,9 @@ Sample Problems:
     * essentially the same as above
   * [SPOJ Inversion Counting](https://www.spoj.com/problems/INVCNT/)
 
-The easiest way to do all of these tasks is with a **Binary Indexed Tree** (or Fenwick Tree). 
+## Binary Indexed Tree
+
+Probably the easiest way to do all of these tasks (aka Fenwick Tree).
 
 Tutorials:
 
@@ -31,39 +31,43 @@ Tutorials:
 
 My implementation can be found [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h), and can compute range sum queries for any number of dimensions.
 
-### Indexed Set
+## Indexed Set
 
-In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template). `Tree<int>` behaves mostly the same way as `set<int>` with the additional function `order_of_key(x)`, which
-counts the number of elements in the indexed set that are strictly less than `x`. See the link for more examples of usage.
+In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template). `Tree<int>` behaves mostly the same way as `set<int>` with the additional functions 
+
+   * `order_of_key(x)`: counts the number of elements in the indexed set that are strictly less than `x`. 
+   * `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
+
+See the link for more examples of usage.
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 template <class T> using Tree = tree<T, null_type, less<T>, 
   rb_tree_tag, tree_order_statistics_node_update>; 
-#define ook order_of_key
-#define fbo find_by_order
 
 int main() {
-  setIO();
-  int T; re(T);
-  F0R(i,T) {
-    int n; re(n);
-    Tree<int> T; ll numInv = 0;
-    F0R(j,n) { 
-      int x; re(x); 
-      numInv += j-T.ook(x); // gives # elements before it > x
-      T.insert(x);
+  int T; cin >> T;
+  for (int i = 0; i < T; ++i) {
+    int n; cin >> n;
+    Tree<int> TS; long long numInv = 0;
+    for (int j = 0; j < n; ++j) { 
+      int x; cin >> x;
+      numInv += j-TS.order_of_key(x); // gives # elements before it > x
+      TS.insert(x);
     }
-    ps(numInv);
+    cout << numInv << "\n";
   }
 }
 ```
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the array position.
 
-### Practice Problems
+## Practice Problems
 
 * USACO Gold
   * The first three problems are just variations on inversion counting.
@@ -79,33 +83,3 @@ Note that if it were not the case that all elements of the input array were dist
   * [Out of Sorts (USACO Silver)](http://usaco.org/index.php?page=viewproblem2&cpid=834)
     * aka [Sorting Steps](https://csacademy.com/contest/round-42/task/sorting-steps/) [](42)
     * Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier.
-
-## Beyond Summation
-
-The following topics have not been required for gold (so far).
-
-### Static Range Queries
-
-* Range Minimum Query??
-  * Tutorial
-    * [Wikipedia](https://en.wikipedia.org/wiki/Range_minimum_query)
-    * (add)
-* Static range queries in $O(1)$ time and $O(N\log N)$ preprocessing for any associative operation?
-  * (add)
-
-### Segment Tree
-
-This data structure allows you to do point update and range query in $O(\log N)$ time each for any associative operation.
-
-* Tutorial
-  * CPH 9.3
-  * [CSAcademy Tutorial](https://csacademy.com/lesson/segment_trees/)
-  * [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
-  * [Codeforces Tutorial](http://codeforces.com/blog/entry/18051)
-  * [Slides from CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
-* Problems
-  * [USACO Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
-    * can use segment tree with min query in place of the map mentioned in analysis
-  * [POI Cards](https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement) [](81)
-  * [Counting Haybales (USACO Plat)](http://www.usaco.org/index.php?page=viewproblem2&cpid=578)
-    * Lazy Updates

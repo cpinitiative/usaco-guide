@@ -7,8 +7,6 @@
  - [Division-Specific Categorization](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/Division-Specific/Silver.md)
  - [Silver Categorization](https://docs.google.com/document/d/1ba2jr2PFrtxHuGfvdjYVKX-8VzkQAdhpiMLlpXxiAOM/edit)
 
-Italics = mostly appears in higher divisions but still good to learn
-
 # Intro
 
  - [Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
@@ -21,135 +19,83 @@ Italics = mostly appears in higher divisions but still good to learn
    - Author Note: be explicit about how to implement things (say "arrays" or "for-loops")
    - Author Note: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
    - Author Note: [Word Processing](http://usaco.org/index.php?page=viewproblem2&cpid=987)
- - Useful Containers
-   - Arrays (C++11)
-   - Vectors and ArrayList
-   - C++ Pairs
-   - Structs
+ - Standard Containers Intro
 
 # Bronze
 
- - Rectangle Geometry
-   - see book ch 7
-   - ex. [Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759)
-   - usually just loop over 2D array
- - Simulation
-   - do what statement tells you to do
+ - Simulation (just do what statement tells you to do)
    - ex. [The Lost Cow](http://usaco.org/index.php?page=viewproblem2&cpid=735)
- - Brute Force (Complete Search)
-   - CPH 5.1, 5.2, 5.3
-   - try all possibilities
+ - Complete Search
    - ex. [Tracing](http://usaco.org/index.php?page=viewproblem2&cpid=1037)
-   - iterating through permutations
-     - `next_permutation`
-     - generating recursively
-   - subsets with bitwise operations??
-     - not sure when this is applicable
+ - Rectangle Geometry
+   - ex. [Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759)
  - "Observation"
-   - actually have to think a bit :D
+   - basically everything else (requires more thought)
    - ex. [Mad Scientist](http://usaco.org/index.php?page=viewproblem2&cpid=1012)
-   - usually considered to be silver?
 
 # Silver
 
  - Greedy
-   - CPH 6
- - Containers from C++ standard template library (STL)
-   - CPH 4
-   - Linear
-     - Queues / Deques
-     - C++ Lists?
-     - Linked List
-     - Stacks
-   - Log
-     - Priority Queues
-     - BST / TreeSet / TreeMap (Python doesn’t have log n map)
-     - Sets / Maps
-     - Multiset (F FOR JAVA) (just teach a workaround or smthn ig) TreeMap<value,numoccrances> (erase by value pitfall)
-     - Custom comparator (prerequisite for basically all silver topics in Java)
-   - HashSets / HashMaps
- - Sorting, Binary Search (BinSearch)
-   - CPH 3
-   - std::sort / Collections.sort
-   - coord compress
-   - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
- - Two Pointers (2P)
-   - CPH 8.1
-   - ex. [Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
+   - ex?
+ - Standard Containers
+   - ex?
+ - Sorting
+   - Binary Search (BinSearch)
+     - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
+   - Two Pointers (2P)
+     - ex. [Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
  - Prefix Sums (Psum)
-   - CPH 9.1
-   - aka Cumulative Sum, Partial Sums
    - ex. [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
-   - 2D
- - Graphs
-   - [CSAcademy Lessons](https://csacademy.com/lessons/)
-   - CPH 11, 12
-   - Terminology
-     - ex. bipartite graphs??
-   - Flood Fill (FF)
-     - finding the number of connected components in a graph
-     - frequently on grid
-       - ex. [Switching on the Lights](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
-     - Depth First Search (DFS)
-   - *Breadth First Search (BFS)*
-   - *Disjoint Set Union (DSU)*
-     - no silver question should require either of the last two, but good to know
+ - Flood Fill (FF)
+   - ex. [Switching on the Lights](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
+   - Occasionally, graph problems appear in bronze ...
  - Permutations 
    - Cycle Decomposition?
    - ex. [Swapity Swapity Swap](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
 
 # Gold
 
- - **Dynamic Programming (DP)**
-   - CPH 7
-   - Knapsack
-   - LIS
-   - on tree?
-   - Bitmasks??
-   - Range DP???
- - Amortized Analysis?
-   - CPH 8.2, 8.3
+ - Dynamic Programming (DP)
+   - ex. [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
+ - Sliding Window?
+   - ex. [Haybale Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=767)
  - Graphs
+   - Breadth First Search (BFS)
+     - ex. [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
    - Shortest Path (SP)
-     - **Dijkstra**
-       - ex. [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
-     - Bellman-Ford
-     - Floyd-Warshall
-     - SPFA??
-     - CPH 13
-   - *Lowest Common Ancestor (LCA)*
-     - CPH 14, 18?
-     - hasn’t been *required* aside from [cowland](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
-       - *probably* won't see a repeat of this
-     - [Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970) also mentions it
-       - but no binary jumping required ...
-   - **Minimum Spanning Tree (MST)**
-     - CPH 15
+     - ex. [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
+   - Minimum Spanning Tree (MST)
+     - Disjoint Set Union (DSU)
      - ex. [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
-     - Prim
-     - Kruskal
-   - **Topological Sort (TopoSort)**
-     - CPH 16
+   - Topological Sort (TopoSort)
      - ex. [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
- - [1D Range Queries (1DRQ)](https://thecodingwizard.github.io/usaco-training-2.0/Gold_1DRQ)
-   - mostly point update and sum query
+ - [Range Sum Queries with Point Updates](https://thecodingwizard.github.io/usaco-training-2.0/Gold_1DRQ)
    - ex. [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)
- - **Number Theory**
-   - Prime factorization, GCD, LCM
-   - Modular Arithmetic
-   - Fast Exponentiation 
+ - Number Theory
    - ex. [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
- - Other
-   - Bitset??
-   - Combinatorics
-     - Principle of Inclusion and Exclusion (PIE) once?
-     - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
-   - Geometry
-     - Cross product, dot product, geometry primitives (shoelace, etc.)
-     - Sweepline
-     - CPH 29, 30.1?
-   - Strings
-     - CPH 26.1, 26.2, 26.3
-     - Hashing (once)?
-       - [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
-     - Trie?
+ - Geometry
+   - ex. ?
+ - Strings
+   - Trie?
+   - Hashing
+   - ex. [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
+ - Combinatorics
+   - Principle of Inclusion and Exclusion (PIE)
+   - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
+
+# Platinum
+
+Just a sampling of the many possible topics.
+
+ - Trees
+   - Lowest Common Ancestor (LCA)
+     - mostly platinum but may appear in gold as well
+     - ex. [cowland](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
+ - Range Queries
+   - Segment Tree
+     - possibly useful for gold
+   - Static Array Queries
+   - 2D
+ - Bitset
+ - Slope Trick
+ - Fracturing Search
