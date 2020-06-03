@@ -11,7 +11,7 @@ Italics = mostly appears in higher divisions but still good to learn
 
 # Intro
 
- - Assumed Prerequisites 
+ - [Assumed Prerequisites](https://thecodingwizard.github.io/usaco-training-2.0/Intro_Prerequisites)
    - first half of AP Computer Science A
    - for loops, ifs
  - Containers
