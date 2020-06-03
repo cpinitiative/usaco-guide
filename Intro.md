@@ -1,5 +1,7 @@
 # Introduction to Competitive Programming
 
+Author: Nathan Wang
+
 ## Choosing a Language
 
 If you're in Bronze, **Don't worry about the language!** If you already know a language, just use it. You can always switch languages down the road.

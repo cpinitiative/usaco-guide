@@ -1,5 +1,7 @@
 # Intro - Prerequisites
 
+Author: Nathan Wang
+
 These resources do not teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
 
 ## Resources for Learning to Code
