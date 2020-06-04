@@ -1,3 +1,9 @@
+---
+slug: /gold/dp
+title: "Gold - Dynamic Programming (DP)"
+author: Michael Cao
+---
+
 # Gold - Dynamic Programming (DP)
 Author: Michael Cao
 

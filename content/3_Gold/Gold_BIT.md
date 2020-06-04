@@ -1,5 +1,7 @@
 ---
 slug: /gold/bit
+title: "Gold - Binary Indexed Trees"
+author: Benjamin Qi
 ---
 
 # Gold - Range Sum Queries with Point Updates

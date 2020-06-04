@@ -1,3 +1,9 @@
+---
+slug: /gold/topological-sort
+title: "Gold - Topological Sort"
+author: Unknown
+---
+
 ## Gold - Topological Sort
 
  - [CSES Course Schedule](https://cses.fi/problemset/task/1679)

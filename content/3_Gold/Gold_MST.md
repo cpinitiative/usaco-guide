@@ -1,3 +1,9 @@
+---
+slug: /gold/mst
+title: "Gold - Minimum Spanning Tree"
+author: Unknown (I think Benjamin Qi)
+---
+
 # Gold - Minimum Spanning Tree
 
 Standard Problems:

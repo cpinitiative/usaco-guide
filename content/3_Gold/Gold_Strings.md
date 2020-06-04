@@ -1,3 +1,9 @@
+---
+slug: /gold/strings
+title: "Gold - Strings"
+author: Benjamin Qi
+---
+
 # Gold - Strings
 
 Author: Benjamin Qi

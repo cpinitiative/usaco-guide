@@ -1,3 +1,9 @@
+---
+slug: /silver/sorting
+title: "Silver - Sorting"
+author: Unknown
+---
+
 # Silver - Sorting
 
  - Comparators

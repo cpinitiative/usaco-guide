@@ -1,8 +1,7 @@
 ---
-title: Introductory Problems
 slug: /intro/problems
+title: Introductory Problems
 author: Nathan Wang
-order: 3
 ---
 
 # Introductory Problems

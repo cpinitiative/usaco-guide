@@ -1,3 +1,9 @@
+---
+slug: /gold/shortest-path
+title: "Gold - Shortest Path"
+author: Benjamin Qi
+---
+
 # Gold - Shortest Path
 
 Author: Benjamin Qi

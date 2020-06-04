@@ -21,8 +21,7 @@ const renderModule = ({ node }) => {
 };
 
 const IndexPage = ({ data }) => {
-  const introModules = data.introModules.edges;
-  console.log(introModules);
+  const modules = data.modules.edges;
 
   return (
     <Layout>
@@ -175,10 +174,10 @@ const IndexPage = ({ data }) => {
 
 
         <div className="py-12 text-center">
-          <h2 className="font-bold text-4xl">Intro</h2>
+          <h2 className="font-bold text-4xl">Actual Modules</h2>
         </div>
         <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-          {introModules.map(renderModule)}
+          {modules.map(renderModule)}
         </div>
       </div>
     </Layout>
@@ -189,7 +188,7 @@ export default IndexPage;
 
 export const query = graphql`
   query {
-    introModules: allMarkdownRemark(filter: {fileAbsolutePath: {regex: "/0_Intro/"}}, sort: {fields: frontmatter___order}) {
+    modules: allMarkdownRemark(sort: {fields: frontmatter___title}) {
       edges {
         node {
           id

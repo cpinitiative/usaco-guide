@@ -1,3 +1,9 @@
+---
+slug: /silver/dfs
+title: "Silver - DFS"
+author: Siyong Huang
+---
+
 # Silver - DFS
 
 Author: Siyong Huang

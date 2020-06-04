@@ -1,3 +1,8 @@
+---
+slug: /silver/containers
+title: "Silver - Containers"
+author: Unknown
+---
 
  Containers from C++ standard template library (STL)
    - CPH 4
