@@ -1,3 +1,9 @@
+---
+slug: /plat/trees
+title: "Platinum - Trees"
+author: ?
+---
+
 # Platinum - Trees
 
  - CPH 14, 18?

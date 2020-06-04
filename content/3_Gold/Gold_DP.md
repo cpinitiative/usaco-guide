@@ -1,14 +1,16 @@
 ---
 slug: /gold/dp
-title: "Gold - Dynamic Programming (DP)"
+title: "Gold - Dynamic Programming"
 author: Michael Cao
 ---
 
-# Gold - Dynamic Programming (DP)
+# Gold - Dynamic Programming
+
 Author: Michael Cao
 
 ## Prerequisites
-Assumes familiarity with prefix sums, recursion, Bit Operations (for Bitmask DP), and Trees (for Tree DP).
+
+Assumes familiarity with prefix sums, recursion, bit operations (for Bitmask DP), and trees (for Tree DP).
 
 ## Introduction to DP
 
@@ -28,7 +30,7 @@ Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
    * [Fruit Feast (USACO Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
  * Longest Increasing Subsequence
    * [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
-      * Try to improve to $O(NlogN)$. 
+   * Try to improve to $O(N\log N)$. 
    * [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
  * Coin Change
    * [Unordered](https://cses.fi/problemset/task/1635)
@@ -81,7 +83,7 @@ Note: Has not appeared on recent USACO.
      * with 2D Prefix Sums
    * [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
    * [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
-     * with fast Exponentiation
+     * with fast exponentiation
    * [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
    * [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
    * [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)

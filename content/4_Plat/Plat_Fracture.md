@@ -1,5 +1,7 @@
 ---
 slug: /plat/fracture
+title: "Platinum - Fracturing Search"
+author: Benjamin Qi
 ---
 
 # Platinum - Fracturing Search
