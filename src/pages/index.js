@@ -36,6 +36,11 @@ const IndexPage = ({ data }) => {
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
+  bg-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:shadow-outline-blue
+  bg-orange-500 hover:bg-orange-50 hover:text-orange-600 focus:shadow-outline-orange
+  bg-teal-500 hover:bg-teal-50 hover:text-teal-600 focus:shadow-outline-teal
+  bg-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 focus:shadow-outline-yellow
+  bg-purple-500 hover:bg-purple-50 hover:text-purple-600 focus:shadow-outline-purple
   border-blue-500 text-blue-600 focus:text-blue-800 focus:border-blue-700 border-blue-300 focus:border-blue-300 text-blue-500 text-blue-300 bg-blue-600
   border-orange-500 text-orange-600 focus:text-orange-800 focus:border-orange-700 border-orange-300 focus:border-orange-300 text-orange-500 text-orange-300 bg-orange-600
   border-teal-500 text-teal-600 focus:text-teal-800 focus:border-teal-700 border-teal-300 focus:border-teal-300 text-teal-500 text-teal-300 bg-teal-600
