@@ -5,13 +5,11 @@ author: Benjamin Qi
 order: 4
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering. 
 
-# Gold - [Topological Sort](https://en.wikipedia.org/wiki/Topological_sorting)
+<!-- END DESCRIPTION -->
 
-Author: Benjamin Qi
+## Example Problems
 
  - [CSES Course Schedule](https://cses.fi/problemset/task/1679)
  - [CSES Longest Flight Route](https://cses.fi/problemset/task/1680)
@@ -21,6 +19,7 @@ Author: Benjamin Qi
 
  - CPH 16.1, 16.2
  - [cp-algorithms](https://cp-algorithms.com/graph/topological-sort.html)
+ - 
 
 ## Problems
 

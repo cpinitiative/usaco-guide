@@ -5,25 +5,17 @@ author: Siyong Huang
 order: 7
 ---
 
-<ul class="syllabus-only">
-  <li>Prerequisites</li>
-  <li>Depth First Search (DFS)</li>
-  <li>Flood Fill</li>
-  <li>Graph Two-Coloring</li>
-  <li>Cycle Detection</li>
-</ul>
-
-<!-- END DESCRIPTION -->
-
 ## Overview
 
- - Prerequisites
+ - Introduction to Graphs
  - Depth First Search (DFS)
  - Flood Fill
  - Graph Two-Coloring
  - Cycle Detection
 
-## Prerequisites
+<!-- END DESCRIPTION -->
+
+## Introduction to Graphs
 
  - [CSAcademy Graph Intro](https://csacademy.com/lesson/introduction_to_graphs)
  - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)

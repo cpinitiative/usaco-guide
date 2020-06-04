@@ -5,31 +5,27 @@ author: Benjamin Qi
 order: 5
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
-
-<!-- END DESCRIPTION -->
-
-## Prerequisites
-
 Assumes that you are familiar with prefix sum queries (CPH 9.1). 
 
-## Task
+Given an array of size $N$, perform the following tasks in $O(\log N)$ time each:
 
-Given an array of size $N$, the task is to update the element at a single position (point) in addition to querying the sum of a prefix in $O(\log N)$ time each.
+ - Update the element at a single position (point).
+ - Querying the sum of a prefix of the array.
 
-Sample Problems:
+The easiest way to do this is with a **Binary Indexed Tree.**
+<!-- END DESCRIPTION -->
+
+## Binary Indexed Tree
+
+Probably the easiest way to do all of these tasks (aka **Fenwick Tree**).
+
+### Sample Problems
 
   * [CSES Range Sum Queries II](https://cses.fi/problemset/task/1648)
     * can also do range XOR queries w/ update
   * [SPOJ Inversion Counting](https://www.spoj.com/problems/INVCNT/)
 
-## Binary Indexed Tree
-
-Probably the easiest way to do all of these tasks (aka Fenwick Tree).
-
-Tutorials:
+### Tutorials
 
   * CPH 9.2 (very good)
   * [CSAcademy BIT](https://csacademy.com/lesson/fenwick_trees) (also very good)

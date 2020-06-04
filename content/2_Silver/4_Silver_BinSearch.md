@@ -1,6 +1,6 @@
 ---
 slug: /silver/binary-search
-title: "Silver - Binary Search"
+title: "Binary Search"
 author: Unknown
 order: 4
 ---
