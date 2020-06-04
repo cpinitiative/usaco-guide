@@ -28,7 +28,7 @@ Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
    * [Fruit Feast (USACO Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
  * Longest Increasing Subsequence
    * [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
-   * Try to improve to $O(NlogN)$. 
+      * Try to improve to $O(NlogN)$. 
    * [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
  * Coin Change
    * [Unordered](https://cses.fi/problemset/task/1635)
