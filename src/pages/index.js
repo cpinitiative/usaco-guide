@@ -16,6 +16,7 @@ const renderModule = ({ node }) => {
       url={data.slug}
       key={data.slug}
       problems={data.problems}
+      prerequisites={data.prerequisites}
       author={data.author}
     >
       <Markdown htmlAst={node.excerptAst} className="markdown--syllabus" />
@@ -182,6 +183,7 @@ export const query = graphql`
             author
             problems
             order
+            prerequisites
           }
           excerptAst
         }
@@ -197,6 +199,7 @@ export const query = graphql`
             author
             problems
             order
+            prerequisites
           }
           excerptAst
         }
@@ -212,6 +215,7 @@ export const query = graphql`
             author
             problems
             order
+            prerequisites
           }
           excerptAst
         }
@@ -227,6 +231,7 @@ export const query = graphql`
             author
             problems
             order
+            prerequisites
           }
           excerptAst
         }
@@ -242,6 +247,7 @@ export const query = graphql`
             author
             problems
             order
+            prerequisites
           }
           excerptAst
         }
