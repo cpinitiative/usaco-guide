@@ -42,7 +42,7 @@ For this problem, the objects are spanning trees and the "root" is the minimum s
 This is equivalent to the solution given in the video. The runtime is $O(NMK\alpha(N))$ for storing the information about each spanning tree and $O(NK\log (NK))$ for the priority queue.
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 typedef bitset<1225> B;
 typedef vector<int> vi;
