@@ -37,46 +37,41 @@
  - Standard Containers
    - ex. [Convention II](http://usaco.org/index.php?page=viewproblem2&cpid=859)
  - Sorting
-   - Binary Search (BinSearch)
-     - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
+   - ex. [Counting Haybales](http://usaco.org/index.php?page=viewproblem2&cpid=666)
+ - Binary Search (BinSearch)
+   - ex. [Convention](http://usaco.org/index.php?page=viewproblem2&cpid=858)
  - Two Pointers (2P)
    - ex. [Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
  - Prefix Sums (Psum)
    - ex. [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
- - Flood Fill (FF)
+ - DFS
    - ex. [Switching on the Lights](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
    - Occasionally, graph problems appear in bronze ...
- - Permutations 
-   - Cycle Decomposition?
-   - ex. [Swapity Swapity Swap](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
 
 # Gold
 
  - Dynamic Programming (DP)
    - ex. [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
- - Graphs
+ - Shortest Path
    - Breadth First Search (BFS)
      - ex. [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
    - Shortest Path (SP)
      - ex. [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
-   - Minimum Spanning Tree (MST)
-     - Disjoint Set Union (DSU)
-     - ex. [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
-   - Topological Sort (TopoSort)
-     - ex. [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
+ - Minimum Spanning Tree (MST) & Disjoint Set Union (DSU)
+   - ex. [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
+ - Topological Sort (TopoSort)
+   - ex. [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
  - [Range Sum Queries with Point Updates](https://thecodingwizard.github.io/usaco-training-2.0/Gold_1DRQ)
    - ex. [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)
  - Number Theory
    - ex. [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
- - Less Common
-   - Strings
-     - Hashing
-     - ex. [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
-   - Combinatorics
-     - Principle of Inclusion and Exclusion (PIE)
-     - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
-   - Sliding Window
-     - ex. [Haybale Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=767)
+ - Hashing (NOT COMMON)
+   - ex. [Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741)
+ - Combinatorics (NOT COMMON)
+   - Principle of Inclusion and Exclusion (PIE)
+   - ex. [Cowpatibility](http://usaco.org/index.php?page=viewproblem2&cpid=862)
+ - Sliding Window (NOT COMMON)
+   - ex. [Haybale Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=767)
 
 # Platinum
 
