@@ -62,7 +62,7 @@ Note: Has not appeared on recent USACO.
    * [Dynamic Programming Over Subsets (Codeforces)](https://codeforces.com/blog/entry/337)
    * [Dynamic Programming and Bit Masking (HackerEarth)](https://www.hackerearth.com/practice/algorithms/dynamic-programming/bit-masking/tutorial/)
  * Problems:
-   * [Moovie Moving (Old UASCO Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=515)
+   * [Moovie Moving (Old USACO Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=515)
    * [Matching](https://atcoder.jp/contests/dp/tasks/dp_o)
    * [Square Subsets](https://codeforces.com/contest/895/problem/C)
    * [Guards in the Storehouse](https://codeforces.com/problemset/problem/845/F)
