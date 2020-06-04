@@ -4,15 +4,14 @@ title: "Dynamic Programming"
 author: Michael Cao
 order: 1
 prerequisites: 
+ - 
+     - Prefix Sums
+ - 
+     - Recursion
+ - 
+     - Bit Operations (for Bitmask DP)
  -
-   - Prefix Sums
- -
-   - Recursion
- -
-   - Bit Operations (for Bitmask DP)
- -
-   - DFS and Trees (for Tree DP)
----
+     - DFS and Trees (for Tree DP)
 
 <div class="syllabus-only">
   An introduction into Dynamic Programming concepts needed (and not-so-needed but still useful) for USACO gold. 
