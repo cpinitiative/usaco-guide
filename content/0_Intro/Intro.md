@@ -15,6 +15,10 @@ order: 1
 
 <!-- END DESCRIPTION -->
 
+Todo:
+- Video clip from Brian Dean
+  - Explains what USACO is all about & how it works
+
 ## Choosing a Language
 
 If you're in Bronze, **Don't worry about the language!** If you already know a language, just use it. You can always switch languages down the road.
