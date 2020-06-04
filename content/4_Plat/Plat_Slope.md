@@ -1,3 +1,9 @@
+---
+slug: /plat/slope
+title: "Plat - Slope Trick"
+author: Benjamin Qi
+---
+
 # Platinum - Slope Trick
 
 Author: Benjamin Qi

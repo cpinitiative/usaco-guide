@@ -1,7 +1,7 @@
 ---
 slug: /gold/mst
 title: "Gold - Minimum Spanning Tree"
-author: Unknown (I think Benjamin Qi)
+author: Benjamin Qi
 ---
 
 # Gold - Minimum Spanning Tree
@@ -29,12 +29,12 @@ Standard Problems:
 
 ## USACO Gold Problems
 
- - MST Problems
+ - MST
    - [Walk](http://usaco.org/index.php?page=viewproblem2&cpid=946)
      - Prim's is applicable, but the edge weights are special so you don't actually need to use an MST algo ...
    - [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
      - also special ...
- - DSU Problems
+ - DSU
    - [Mootube](http://www.usaco.org/index.php?page=viewproblem2&cpid=789)
      - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
    - [Closing the Farm](http://www.usaco.org/index.php?page=viewproblem2&cpid=646)

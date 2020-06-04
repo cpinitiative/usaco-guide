@@ -1,10 +1,10 @@
 ---
-slug: /gold/strings
-title: "Gold - Strings"
+slug: /gold/hashing
+title: "Gold - Hashing"
 author: Benjamin Qi
 ---
 
-# Gold - Strings
+# Gold - Hashing
 
 Author: Benjamin Qi
 

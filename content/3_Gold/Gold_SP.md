@@ -1,5 +1,5 @@
 ---
-slug: /gold/shortest-path
+slug: /gold/sp
 title: "Gold - Shortest Path"
 author: Benjamin Qi
 ---
