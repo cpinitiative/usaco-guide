@@ -2,10 +2,10 @@
 slug: /plat/fracture
 title: "Fracturing Search"
 author: Benjamin Qi
-order: 9
+order: 8
 ---
 
-A simpler solution to robotic cow herd that generalizes.
+A simple solution to [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) that generalizes.
 
 <!-- END DESCRIPTION -->
 

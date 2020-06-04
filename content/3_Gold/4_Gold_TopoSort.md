@@ -5,6 +5,8 @@ author: Benjamin Qi
 order: 4
 ---
 
+Assumes familiarity with "Silver - Depth First Search." 
+
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering. 
 
 <!-- END DESCRIPTION -->

@@ -2,12 +2,12 @@
 slug: /plat/slope
 title: "Slope Trick"
 author: Benjamin Qi
-order: 10
+order: 9
 ---
 
-**Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to "Landscaping."
+**Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
 
-<!-- END EXCERPT -->
+<!-- END DESCRIPTION -->
 
 ## Tutorials
 
@@ -123,7 +123,7 @@ int main() {
 ```
 </details>
 
-## Landscaping
+## [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
 
 This is quite similar to the previous task, so it's easy to guess that slope trick is applicable. 
 
@@ -190,16 +190,16 @@ int main() {
 
 ## Problems
 
-  * [Moving Haybales (USACO Camp)](https://probgate.org/viewproblem.php?pid=247)
-  * [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
-    * same as "Potatoes"
-  * [Stock Trading (USACO Camp)](https://probgate.org/viewproblem.php?pid=531&cid=81)
-    * extension of "Buy Low Sell High"
-  * [Bookface](https://codeforces.com/group/ZFgXbZSjvp/contest/274852/problem/C)
-  * [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
-  * [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)
-  * [Moving Walkways](https://codeforces.com/contest/1209/problem/H)
-  * [April Fools' Problem](https://codeforces.com/contest/802/problem/O)
-  * [Conquer the World](https://icpc.kattis.com/problems/conquertheworld)
-    * note: ICPC world finals, 0 solves in contest
-    * "Potatoes" on tree!!
+  - [Moving Haybales (USACO Camp)](https://probgate.org/viewproblem.php?pid=247)
+  - [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
+    - same as "Potatoes"
+  - [Stock Trading (USACO Camp)](https://probgate.org/viewproblem.php?pid=531&cid=81)
+    - extension of "Buy Low Sell High"
+  - [Bookface](https://codeforces.com/group/ZFgXbZSjvp/contest/274852/problem/C)
+  - [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
+  - [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)
+  - [Moving Walkways](https://codeforces.com/contest/1209/problem/H)
+  - [April Fools' Problem](https://codeforces.com/contest/802/problem/O)
+  - [Conquer the World](https://icpc.kattis.com/problems/conquertheworld)
+    - note: ICPC world finals, 0 solves in contest
+    - "Potatoes" on tree!!

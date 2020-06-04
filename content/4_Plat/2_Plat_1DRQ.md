@@ -5,6 +5,8 @@ author: Benjamin Qi
 order: 2
 ---
 
+Assumes familiarity with "Gold - Binary Indexed Trees." 
+
 General range queries for associative operations, including segment tree.
 
 <!-- END DESCRIPTION -->
@@ -33,13 +35,13 @@ Author: Benjamin Qi
 
 This data structure allows you to do point update and range query in $O(\log N)$ time each for any associative operation. In particular, note that **lazy** updates allow you to range updates as well.
 
- - Tutorial
-   - CPH 9.3, 28.1 (Segment Trees Revisited)
-   - [Codeforces Tutorial](http://codeforces.com/blog/entry/18051)
-   - [CSAcademy Tutorial](https://csacademy.com/lesson/segment_trees/)
-   - [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
-   - [Slides from CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
- - Special: Minimum Query w/ Number of Minimums
+### Tutorials
+
+ - CPH 9.3, 28.1 (Segment Trees Revisited)
+ - [Codeforces Tutorial](http://codeforces.com/blog/entry/18051)
+ - [CSAcademy Tutorial](https://csacademy.com/lesson/segment_trees/)
+ - [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
+ - [Slides from CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
 
 ### Problems
 
@@ -52,6 +54,8 @@ This data structure allows you to do point update and range query in $O(\log N)$
    - [USACO Gold Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
      - can use segment tree with min query in place of the map mentioned in analysis
    - [POI Cards](https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement) [](81)
+   - [CSES Area of Rectangles](https://cses.fi/problemset/task/1741)
+     - use segment tree that keeps track of minimum and # of minimums
  - Lazy Updates
    - [USACO Old Gold The Lazy Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=418) (check ...)
    - [USACO Plat Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=578)

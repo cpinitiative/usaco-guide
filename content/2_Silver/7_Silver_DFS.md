@@ -1,11 +1,9 @@
 ---
 slug: /silver/dfs
-title: "DFS"
+title: "Depth First Search"
 author: Siyong Huang
 order: 7
 ---
-
-## Overview
 
  - Introduction to Graphs
  - Depth First Search (DFS)
@@ -17,10 +15,14 @@ order: 7
 
 ## Introduction to Graphs
 
- - [CSAcademy Graph Intro](https://csacademy.com/lesson/introduction_to_graphs)
- - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
-   - Note: DFS is most commonly implemented with adjacency lists.
- - CPH 11
+ - Recommended
+   - CPH 11
+   - [CSAcademy Graph Intro](https://csacademy.com/lesson/introduction_to_graphs)
+   - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
+     - Usually, adjacency lists are used.
+ - Additional
+   - [Topcoder Graphs Pt 1](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-1/)
+   - [Topcoder Graphs Pt 2](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-2/)
 
 ## Depth First Search (DFS)
 
@@ -40,11 +42,23 @@ order: 7
 
 ### Problems
 
- - [Mootube, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=788)
- - [Closing the Barn, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=644)
- - [Moocast, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=668)
- - [Pails (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=620)
- - [Milk Visits (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=968)
+ - CF
+   - [PolandBall & Forest](http://codeforces.com/problemset/problem/755/C) [](56)
+   - [Bear & Friendship](http://codeforces.com/problemset/problem/771/A)
+   - [Journey](http://codeforces.com/contest/839/problem/C) [](54)
+     - DFS on Tree
+  - [Wizard's Tour](http://codeforces.com/contest/860/problem/D) [](59)
+ - USACO
+   - [Mootube, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=788)
+   - [Closing the Barn, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=644)
+   - [Moocast, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=668)
+   - [Pails (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=620)
+   - [Milk Visits (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=968)
+ - Other
+   - [POI Hotels](https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement) [](61)
+   - [Kattis Birthday Party (Easy)](https://open.kattis.com/problems/birthday)
+     - DFS with each edge removed
+    
 
 ## Flood Fill
 
@@ -104,6 +118,7 @@ void dfs(int node)
 
 ### Problems
 
+ - [CF Bipartiteness](http://codeforces.com/contest/862/problem/B) [](49)
  - [The Great Revegetation (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=920)
 
 ## Cycle Detection
@@ -203,4 +218,8 @@ int main()
  - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
  - [CSES Round Trip (undirected)](https://cses.fi/problemset/task/1669)
  - [CSES Round Trip II (directed)](https://cses.fi/problemset/task/1678)
+ - POI
+   - [Mafia](https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement)
+   - [Spies](https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement)
+   - [Frog](https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement)
 
