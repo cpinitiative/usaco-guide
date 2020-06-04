@@ -5,7 +5,9 @@ author: Benjamin Qi
 order: 3
 ---
 
-Extend 1D Range Queries to 2D (and beyond).
+Assumes familiarity with "Platinum - 1D Range Queries." 
+
+Extending 1D Range Queries to 2D (and beyond).
 
 <!-- END DESCRIPTION -->
 

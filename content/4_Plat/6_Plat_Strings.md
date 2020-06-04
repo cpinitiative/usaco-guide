@@ -5,7 +5,13 @@ author: Benjamin Qi
 order: 6
 ---
 
-Hashing, Tries, Z, KMP, Aho-Corasick, Suffix Array, Manacher
+ - Tries
+ - Hashing
+ - Z
+ - KMP
+ - Manacher
+ - Aho-Corasick
+ - Suffix Array
 
 <!-- END DESCRIPTION -->
 
@@ -16,6 +22,10 @@ Note: String algorithms do not appear very frequently. Hashing has appeared on g
  - [CPC.11](https://github.com/SuprDewd/T-414-AFLV/tree/master/11_strings)
  - [CP-Algorithms String Processing: Fundamentals](https://cp-algorithms.com/)
  - CPH (26, String Algorithms)
+
+## Tries
+
+  - [Algorithm Gym](http://codeforces.com/blog/entry/15729)
 
 ## Hashing
 
@@ -44,10 +54,6 @@ My implementation can be found [here](https://github.com/bqi343/USACO/blob/maste
     - [Palindromic Characteristics](http://codeforces.com/problemset/problem/835/D) [](100)
     - [Berland SU Computer Network](http://codeforces.com/contest/847/problem/L) [](142)
 
-## Tries
-
-  - [Algorithm Gym](http://codeforces.com/blog/entry/15729)
-
 ## Z, KMP
 
   - Tutorial
@@ -55,6 +61,13 @@ My implementation can be found [here](https://github.com/bqi343/USACO/blob/maste
     - [GeeksForGeeks](http://www.geeksforgeeks.org/searching-for-patterns-set-2-kmp-algorithm/)
     - [TopCoder](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-string-searching-algorithms/)
 
+## Manacher
+
+  - Has appeared at camp but not in platinum.
+    - [HackerRank](https://www.hackerrank.com/topics/manachers-algorithm)
+    - [adamant](http://codeforces.com/blog/entry/12143)
+    - [cp-algorithms](https://cp-algorithms.com/string/manacher.html)
+    
 ## Aho-Corasick
 
   - Has appeared in old gold.
@@ -65,10 +78,3 @@ My implementation can be found [here](https://github.com/bqi343/USACO/blob/maste
 ## Suffix Array
 
   - [USACO Plat - Standing Out from the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=768)
-
-## Manacher
-
-  - Has appeared at camp but not in platinum.
-    - [HackerRank](https://www.hackerrank.com/topics/manachers-algorithm)
-    - [adamant](http://codeforces.com/blog/entry/12143)
-    - [cp-algorithms](https://cp-algorithms.com/string/manacher.html)

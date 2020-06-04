@@ -5,7 +5,7 @@ author: Benjamin Qi
 order: 7
 ---
 
-Bitset leads to some unintended solutions.
+Three examples of how bitset leads to some unintended solutions on recent USACO problems.
 
 <!-- END DESCRIPTION -->
 

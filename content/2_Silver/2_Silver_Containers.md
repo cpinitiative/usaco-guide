@@ -23,7 +23,7 @@ order: 2
 
 <!-- END DESCRIPTION -->
 
-(from github)
+(from my github)
 
   * Types
     * Set, Multiset, Unordered Set
@@ -33,7 +33,6 @@ order: 2
     * Priority Queue (Heap)
     * Vector
     * Stack
-    * Bitset
   * Tutorial
     * CPH (4, Data Structures)
     * [C++ Reference](http://www.cplusplus.com/reference/stl/)
@@ -45,3 +44,6 @@ order: 2
     * [Mahmoud & Ehab & Function](http://codeforces.com/contest/862/problem/E) [](74)
     * [Karen & Cards](http://codeforces.com/contest/815/problem/D) [](86)
     * [Tournament](http://codeforces.com/contest/878/problem/C) [](106)
+
+
+[Blowing up Unordered Map](https://codeforces.com/blog/entry/62393)

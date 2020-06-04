@@ -5,19 +5,18 @@ author: Benjamin Qi
 order: 5
 ---
 
-Assumes that you are familiar with prefix sum queries (CPH 9.1). 
+Assumes familiarity with "Silver - Prefix Sums." 
 
-Given an array of size $N$, perform the following tasks in $O(\log N)$ time each:
+A **Binary Indexed Tree** allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
  - Querying the sum of a prefix of the array.
 
-The easiest way to do this is with a **Binary Indexed Tree.**
 <!-- END DESCRIPTION -->
 
 ## Binary Indexed Tree
 
-Probably the easiest way to do all of these tasks (aka **Fenwick Tree**).
+Aka **Fenwick Tree**.
 
 ### Sample Problems
 

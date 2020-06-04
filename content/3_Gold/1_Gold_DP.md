@@ -17,9 +17,10 @@ Assumes familiarity with prefix sums, recursion, bit operations (for Bitmask DP)
 
 ## Introduction to DP
 
- * CPH 7
- * [HackerRank DP](https://www.hackerrank.com/topics/dynamic-programming)
- * [Topcoder DP](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/)
+ - CPH 7
+ - [HackerRank DP](https://www.hackerrank.com/topics/dynamic-programming)
+ - [Topcoder DP](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/)
+ - [CPC.6](https://github.com/SuprDewd/T-414-AFLV/tree/master/06_dynamic_programming)
 
 ## Classical DP Problems
 
@@ -74,7 +75,7 @@ Note: Has not appeared on recent USACO.
 
 ## Practice Problems
 
- * [Atcoder DP Contest (Extremely Good)](https://atcoder.jp/contests/dp/tasks)
+ * **[Atcoder DP Contest (Extremely Good)](https://atcoder.jp/contests/dp/tasks)**
  * [CSES DP Section](https://cses.fi/problemset/list/)
  * [Codeforces DP Problem List](http://codeforces.com/blog/entry/325)
  * USACO (Not Ordered By Difficulty)
