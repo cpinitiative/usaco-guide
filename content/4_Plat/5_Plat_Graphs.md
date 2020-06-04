@@ -1,0 +1,66 @@
+---
+slug: /plat/graphs
+title: "Graphs"
+author: Benjamin Qi
+order: 5
+---
+
+Eulerian Tours, SCCs, and BCCs.
+<!-- END DESCRIPTION -->
+
+Note: all except the third have not appeared on a recent USACO contest.
+
+*Some problems sourced from [here](http://codeforces.com/blog/entry/54526?#comment-385354).*
+
+[CPC.10](https://github.com/SuprDewd/T-414-AFLV/tree/master/10_graphs_3_network_flow)
+
+## Eulerian Tours
+
+Has not appeared on a recent USACO contest.
+
+### Tutorial
+
+  - CPH (19, Path & Circuits)
+
+### Problems
+
+  - [Matching Substrings](https://csacademy.com/contest/archive/task/matching-substrings/) [](87)
+
+## Strongly Connected Components
+
+  - Tarjan
+  - [Kosaraju](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+  - [2-SAT](http://codeforces.com/blog/entry/16205)
+
+### Tutorial
+ 
+  - CPH (17, Strong Connectivity)
+
+### Problems
+
+ - [USACO Old Gold: Grass](http://www.usaco.org/index.php?page=viewproblem2&cpid=516)
+ - [Proving Equivalences](https://open.kattis.com/problems/equivalences) [](78)
+ - [Festival](https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement) [](173)
+ - [Linear Programming Trick](https://www.cs.rit.edu/~spr/COURSES/ALG/MIT/lec18.pdf)
+
+## Biconnected Components
+
+Related topics include
+
+ - Articulation Points
+ - Bridges
+ - Block-Cut Tree
+
+### Tutorial
+
+ - [GeeksforGeeks](http://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/)
+ - [Wikipedia](https://en.wikipedia.org/wiki/Biconnected_component)
+ - [CF DFS Tree + Bridges](https://codeforces.com/blog/entry/68138)
+
+### Problems
+
+ - [USACO Plat: Push a Box](http://www.usaco.org/index.php?page=viewproblem2&cpid=769)
+ - [Blockade](https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement)
+ - [POLICIJA](http://wcipeg.com/problem/coi06p2)
+ - [One-Way Streets](https://csacademy.com/contest/archive/task/one-way-streets/)
+ - [Investment](https://dmoj.ca/problem/tle17c1p6)

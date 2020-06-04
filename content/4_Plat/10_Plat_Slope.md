@@ -2,13 +2,10 @@
 slug: /plat/slope
 title: "Slope Trick"
 author: Benjamin Qi
-order: 7
+order: 10
 ---
 
-**Slope trick** is a way to represent a function that satisfies the following conditions:
-
- * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
- * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+**Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to "Landscaping."
 
 <!-- END EXCERPT -->
 

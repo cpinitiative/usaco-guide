@@ -5,9 +5,7 @@ author: Benjamin Qi
 order: 1
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+Lowest Common Ancestor and other common tree topics.
 
 <!-- END DESCRIPTION -->
 

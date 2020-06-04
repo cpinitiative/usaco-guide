@@ -2,12 +2,10 @@
 slug: /plat/bitset
 title: "Bitset"
 author: Benjamin Qi
-order: 2
+order: 7
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+Bitset leads to some unintended solutions.
 
 <!-- END DESCRIPTION -->
 

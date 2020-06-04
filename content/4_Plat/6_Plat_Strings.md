@@ -2,11 +2,12 @@
 slug: /plat/hashing
 title: "Platinum - Strings"
 author: Benjamin Qi
+order: 6
 ---
 
-# Platinum - Strings
+Hashing, Tries, Z, KMP, Aho-Corasick, Suffix Array, Manacher
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 Note: String algorithms do not appear very frequently. Hashing has appeared on gold (rarely).
 

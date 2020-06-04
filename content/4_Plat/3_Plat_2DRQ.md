@@ -2,12 +2,10 @@
 slug: /plat/2DRQ
 title: "2D Range Queries"
 author: Benjamin Qi
-order: 4
+order: 3
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+Extend 1D Range Queries to 2D (and beyond).
 
 <!-- END DESCRIPTION -->
 

@@ -2,12 +2,10 @@
 slug: /plat/fracture
 title: "Fracturing Search"
 author: Benjamin Qi
-order: 5
+order: 9
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+A simpler solution to robotic cow herd that generalizes.
 
 <!-- END DESCRIPTION -->
 

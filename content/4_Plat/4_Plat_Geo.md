@@ -2,12 +2,10 @@
 slug: /plat/geo
 title: "Geometry"
 author: Benjamin Qi
-order: 6
+order: 4
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+Geometry primitives and convex hull.
 
 <!-- END DESCRIPTION -->
 
@@ -60,6 +58,7 @@ You should know basic operations like cross product and dot product. For platinu
 [CPC.12](https://github.com/SuprDewd/T-414-AFLV/tree/master/12_geometry)
 
 ## 4
+
   * Misc Stuff to Know
     * Topics
       * std::complex, pair operators

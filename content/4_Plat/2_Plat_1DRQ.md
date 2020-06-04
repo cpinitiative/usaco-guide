@@ -2,12 +2,10 @@
 slug: /plat/1DRQ
 title: "1D Range Queries"
 author: Benjamin Qi
-order: 3
+order: 2
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
+General range queries for associative operations, including segment tree.
 
 <!-- END DESCRIPTION -->
 
@@ -42,7 +40,6 @@ This data structure allows you to do point update and range query in $O(\log N)$
    - [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
    - [Slides from CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
  - Special: Minimum Query w/ Number of Minimums
-
 
 ### Problems
 
