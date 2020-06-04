@@ -26,7 +26,7 @@ Assumes familiarity with prefix sums, recursion, bit operations (for Bitmask DP)
 
 ## Classical DP Problems
 
-Practice makes perfect. Start by doing some classical problems (try at least one of each): these are must know DP problems. Each topic starts with direct applications of the classical problems, and then some interesting variations and USACO problems which utilize the ideas. Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
+Practice makes perfect. Start by doing some classical problems (try at least one of each), as these are **must know** DP problems. Each topic starts with direct applications of the classical problems, and then some interesting variations and USACO problems which utilize the ideas. Tutorials for most problems (excluding USACO) can be found on Chapter 7 of CPH.
 
  * Knapsack
    * [Unbounded](https://www.hackerrank.com/challenges/unbounded-knapsack/problem)
