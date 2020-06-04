@@ -6,7 +6,7 @@ order: 1
 ---
 
 <div class="syllabus-only">
-  Description: An introduction into concepts of Dynamic Programming needed (and not-so-needed) in USACO gold. 
+  Description: An introduction into Dynamic Programming concepts needed (and not-so-needed but still useful) for USACO gold. 
 </div>
 
 <!-- END DESCRIPTION -->
