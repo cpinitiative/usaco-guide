@@ -4,6 +4,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
 import { graphql } from "gatsby";
+import Markdown from "../components/Markdown";
 
 const renderModule = ({ node }) => {
   const data = node.frontmatter;
@@ -14,14 +15,18 @@ const renderModule = ({ node }) => {
       title={data.title}
       url={data.slug}
       key={data.slug}
+      problems={data.problems}
+      author={data.author}
     >
-      Author: {data.author}
+      <Markdown htmlAst={node.excerptAst} />
     </SyllabusModule>
   );
 };
 
 const IndexPage = ({ data }) => {
   const modules = data.modules.edges;
+
+  console.log(modules);
 
   return (
     <Layout>
@@ -196,7 +201,9 @@ export const query = graphql`
             title
             slug
             author
+            problems
           }
+          excerptAst
         }
       }
     }

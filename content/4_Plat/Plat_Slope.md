@@ -4,9 +4,12 @@ title: "Plat - Slope Trick"
 author: Benjamin Qi
 ---
 
-# Platinum - Slope Trick
+Slope trick is a way to represent a function that satisfies the following conditions:
 
-Author: Benjamin Qi
+ * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
+ * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+
+<!-- END EXCERPT -->
 
 ## Tutorials
 
