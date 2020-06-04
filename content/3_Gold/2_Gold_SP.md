@@ -113,4 +113,3 @@ You can also use shortest path algorithms to solve the following problem (a very
    - [Art](https://codeforces.com/gym/102394/problem/A) (basically same as above)
    - [Timeline (Camp)](https://probgate.org/viewproblem.php?pid=524&cid=80)
      - equivalent to [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) except negative values of $x$ are possible.
-   - [Truth Telling (Camp)](https://probgate.org/viewproblem.php?pid=378)
