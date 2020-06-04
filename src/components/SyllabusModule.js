@@ -55,7 +55,7 @@ const SyllabusModule = ({ title, children, author, problems, prerequisites, url 
 
         {problems&&(<>Problems:<ul className="ml-3 space-y-1 py-2">{problems.map(renderProblem)}</ul></>)}
 
-        {author&&<p className="mt-2 text-gray-500">Author: {author}</p>}
+        {author&&<p className="mt-2">Author: {author}</p>}
       </div>
       <Link to={url || "/"}
             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
