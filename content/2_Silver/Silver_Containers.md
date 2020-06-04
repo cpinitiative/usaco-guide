@@ -1,7 +1,8 @@
 ---
 slug: /silver/containers
-title: "Silver - Containers"
+title: "Containers"
 author: Unknown
+order: 2
 ---
 
  Containers from C++ standard template library (STL)
@@ -20,13 +21,9 @@ author: Unknown
    - HashSets / HashMaps
    - ex?
 
-
+<!-- END DESCRIPTION -->
 
 (from github)
-
-# STL
-
-## 2
 
   * Types
     * Set, Multiset, Unordered Set
@@ -48,11 +45,3 @@ author: Unknown
     * [Mahmoud & Ehab & Function](http://codeforces.com/contest/862/problem/E) [](74)
     * [Karen & Cards](http://codeforces.com/contest/815/problem/D) [](86)
     * [Tournament](http://codeforces.com/contest/878/problem/C) [](106)
-
-# 4
-
-  * Order Statistics Tree
-    * [Codeforces Tutorial](http://codeforces.com/blog/entry/11080)
-    * Good to know for gold, sometimes can be used in place of BIT
-  * Rope
-    * [Codeforces Tutorial](https://codeforces.com/blog/entry/10355)

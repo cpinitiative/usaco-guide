@@ -1,12 +1,16 @@
 ---
 slug: /plat/slope
-title: "Platinum - Slope Trick"
+title: "Slope Trick"
 author: Benjamin Qi
+order: 7
 ---
 
-# Platinum - Slope Trick
+**Slope trick** is a way to represent a function that satisfies the following conditions:
 
-Author: Benjamin Qi
+ * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
+ * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+
+<!-- END EXCERPT -->
 
 ## Tutorials
 
@@ -140,7 +144,9 @@ As before, it helps to look at the differences $dif[j]=DP[j+1]-dif[j]$ instead. 
  * For all $j\ge 0$, we set $dif[j] = \min(dif[j]+Z,X)$
  * For all $j<0$, we set $dif[j] = \max(dif[j]-Z,-Y)$. 
 
-If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ and update all of the differences in the deques "lazily" then we can do this in $O(\sum A_i+\sum B_i)$ time.
+If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ and update all of the differences in the deques "lazily" then we can do this in $O(\sum A_i+\sum B_i)$ time. 
+
+Bonus: Solve this problem when $\sum A_i+\sum B_i$ is not so small.
 
 <details>
 

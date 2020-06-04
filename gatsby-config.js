@@ -20,6 +20,11 @@ module.exports = {
     {
       resolve: `gatsby-transformer-remark`,
       options: {
+        commonmark: true,
+        footnotes: true,
+        pedantic: false,
+        gfm: true,
+        "excerpt_separator": `<!-- END DESCRIPTION -->`,
         plugins: [
           {
             resolve: `gatsby-remark-katex`,

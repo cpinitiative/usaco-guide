@@ -13,7 +13,8 @@ export default function Template({
     <Layout>
       <div className="max-w-4xl mx-auto my-8">
         <Link className="underline text-blue-600" to="/">&larr; Back to Home</Link>
-        <Markdown htmlAst={htmlAst} />
+        <h1 className="text-3xl font-bold mb-4">{markdownRemark.frontmatter.title}</h1>
+        <Markdown htmlAst={htmlAst} className="markdown--module" />
       </div>
     </Layout>
   )
@@ -23,6 +24,7 @@ export const pageQuery = graphql`
     markdownRemark(frontmatter: { slug: { eq: $slug } }) {
       htmlAst
       frontmatter {
+        title
         slug
       }
     }

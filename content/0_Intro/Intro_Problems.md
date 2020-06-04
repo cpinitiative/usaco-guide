@@ -2,13 +2,19 @@
 slug: /intro/problems
 title: Introductory Problems
 author: Nathan Wang
+problems:
+ - bronze_promote
+ - bronze_word
+ - bronze_paint
+ - bronze_square
+order: 4
 ---
-
-# Introductory Problems
 
 Let's begin by solving a few fun problems! The following problems require relatively little programming experience and no algorithmic knowledge.
 
 Do as many as you want, then move on! You do not have to do all of them.
+
+<!-- END DESCRIPTION -->
 
 ## Problems
 

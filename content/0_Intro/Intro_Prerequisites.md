@@ -1,13 +1,14 @@
 ---
 slug: /intro/prerequisites
-title: "Intro - Prerequisites"
+title: Prerequisites
 author: Nathan Wang
+order: 2
 ---
 
-# Intro - Prerequisites
+Here's what you should learn before reading these resources.
 
-Author: Nathan Wang
-
+<!-- END DESCRIPTION -->
+ 
 These resources do not teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
 
 ## Resources for Learning to Code

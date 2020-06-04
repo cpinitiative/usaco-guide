@@ -1,10 +1,15 @@
 ---
 slug: /plat/trees
-title: "Platinum - Trees"
+title: "Trees"
 author: Benjamin Qi
+order: 1
 ---
 
-# Platinum - Trees
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
 ## Tree Diameter
 

@@ -1,8 +1,13 @@
 ---
 slug: /gold/topological-sort
-title: "Gold - Topological Sort"
+title: "Topological Sort"
 author: Benjamin Qi
+order: 4
 ---
+
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
 # Gold - [Topological Sort](https://en.wikipedia.org/wiki/Topological_sorting)
 

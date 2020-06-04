@@ -1,10 +1,15 @@
 ---
 slug: /gold/mst
-title: "Gold - Minimum Spanning Tree"
+title: "Minimum Spanning Tree"
 author: Benjamin Qi
+order: 3
 ---
 
-# Gold - Minimum Spanning Tree
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
 Standard Problems:
 

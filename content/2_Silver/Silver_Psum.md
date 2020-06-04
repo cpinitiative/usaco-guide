@@ -1,12 +1,15 @@
 ---
 slug: /silver/prefix-sums
-title: "Silver - Prefix Sums"
+title: "Prefix Sums"
 author: Eric Wei (incomplete)
+order: 6
 ---
 
-# Silver - Prefix Sums
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Eric Wei
+<!-- END DESCRIPTION -->
 
 ## The Task
 

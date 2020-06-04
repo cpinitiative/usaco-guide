@@ -4,6 +4,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
 import { graphql } from "gatsby";
+import Markdown from "../components/Markdown";
 
 const renderModule = ({ node }) => {
   const data = node.frontmatter;
@@ -11,17 +12,23 @@ const renderModule = ({ node }) => {
 
   return (
     <SyllabusModule
-      title={data.title}
+      title={`${data.order}. ${data.title}`}
       url={data.slug}
       key={data.slug}
+      problems={data.problems}
+      author={data.author}
     >
-      Author: {data.author}
+      <Markdown htmlAst={node.excerptAst} className="markdown--syllabus" />
     </SyllabusModule>
   );
 };
 
 const IndexPage = ({ data }) => {
-  const modules = data.modules.edges;
+  const introModules = data.introModules.edges;
+  const bronzeModules = data.bronzeModules.edges;
+  const silverModules = data.silverModules.edges;
+  const goldModules = data.goldModules.edges;
+  const platModules = data.platModules.edges;
 
   return (
     <Layout>
@@ -80,104 +87,34 @@ const IndexPage = ({ data }) => {
 
       <div className="bg-gray-50 pb-8" id="content">
         <div className="py-12 text-center">
-          <h2 className="font-bold text-4xl">Demo Dashboard</h2>
+          <h2 className="font-bold text-4xl">Introduction</h2>
         </div>
         <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-          <SyllabusModule
-            title="Prerequisites"
-            url="/intro/prerequisites"
-          >
-            <ul className="list-disc pl-6">
-              <li>
-                What you should know before starting
-              </li>
-              <li>
-                Choosing a Language
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="What is Competitive Programming?"
-          >
-            <ul className="list-disc pl-6">
-              <li>
-                Contest Format
-              </li>
-              <li>
-                Practicing and Debugging
-              </li>
-              <li>
-                Contest Strategies
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="Introductory Problems"
-            url="/intro/problems"
-          >
-            <p className="mb-3">If you're new to competitive programming, we recommend you try to solve a few of these
-              problems. Once you're comfortable, move on!</p>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Fence
-                  Painting</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Word
-                  Processing</a>
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="Useful Containers"
-          >
-            <ul className="list-disc pl-6 mb-4">
-              <li>Arrays (C++11)</li>
-              <li>Vectors and ArrayList</li>
-              <li>C++ Pairs</li>
-              <li>Structs</li>
-            </ul>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Lorem
-                  Ipsum</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Lorem
-                  Ipsum</a>
-              </li>
-            </ul>
-          </SyllabusModule>
+          {introModules.map(renderModule)}
         </div>
-
-
         <div className="py-12 text-center">
-          <h2 className="font-bold text-4xl">Actual Modules</h2>
+          <h2 className="font-bold text-4xl">Bronze</h2>
         </div>
         <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-          {modules.map(renderModule)}
+          {bronzeModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Silver</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {silverModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Gold</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {goldModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Platinum</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {platModules.map(renderModule)}
         </div>
       </div>
     </Layout>
@@ -188,7 +125,7 @@ export default IndexPage;
 
 export const query = graphql`
   query {
-    modules: allMarkdownRemark(sort: {fields: frontmatter___title}) {
+    introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/0_Intro/"}}) {
       edges {
         node {
           id
@@ -196,7 +133,70 @@ export const query = graphql`
             title
             slug
             author
+            problems
+            order
           }
+          excerptAst
+        }
+      }
+    }
+    bronzeModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/1_Bronze/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+            order
+          }
+          excerptAst
+        }
+      }
+    }
+    silverModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/2_Silver/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+            order
+          }
+          excerptAst
+        }
+      }
+    }
+    goldModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/3_Gold/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+            order
+          }
+          excerptAst
+        }
+      }
+    }
+    platModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/4_Plat/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+            order
+          }
+          excerptAst
         }
       }
     }

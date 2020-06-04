@@ -1,10 +1,15 @@
 ---
 slug: /silver/sorting
-title: "Silver - Sorting"
+title: "Sorting"
 author: Unknown
+order: 3
 ---
 
-# Silver - Sorting
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
  - Comparators
  - CPH 3
