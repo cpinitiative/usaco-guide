@@ -83,8 +83,11 @@ Note that if it were not the case that all elements of the input array were dist
     * as far as I know, all gold problems have had only one possible output ...
   * [Out of Sorts (harder?)](http://www.usaco.org/index.php?page=viewproblem2&cpid=837)
 * Other Problems:
+  * [USACO Plat Mincross](http://www.usaco.org/index.php?page=viewproblem2&cpid=720)
   * [Mega Inversions](https://open.kattis.com/problems/megainversions)
     * also just inversion counting
   * [Out of Sorts (USACO Silver)](http://usaco.org/index.php?page=viewproblem2&cpid=834)
     * aka [Sorting Steps](https://csacademy.com/contest/round-42/task/sorting-steps/) [](42)
     * Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier.
+  * [Twin Permutations](https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/)
+    * Offline 2D -> 1D

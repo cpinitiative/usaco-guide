@@ -1,7 +1,7 @@
 ---
 slug: /gold/topological-sort
 title: "Gold - Topological Sort"
-author: Unknown
+author: Benjamin Qi
 ---
 
 ## Gold - Topological Sort

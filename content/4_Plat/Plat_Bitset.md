@@ -1,3 +1,9 @@
+---
+slug: /plat/bitset
+title: "Platinum - Bitset"
+author: Benjamin Qi
+---
+
 # Platinum - Bitset
 
 Author: Benjamin Qi

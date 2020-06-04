@@ -1,1 +1,0 @@
-# Platinum - 2D Range Queries
