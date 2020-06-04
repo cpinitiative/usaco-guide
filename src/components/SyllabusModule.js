@@ -23,7 +23,17 @@ const renderProblem = (problem, idx) => {
   );
 };
 
-const SyllabusModule = ({ title, children, author, problems, url }) => {
+const renderPrerequisite = (prerequisite) => {
+  const link = prerequisite.length > 1 ? prerequisite[1] : null;
+  return (
+    <li key={prerequisite[0]}>
+      {link && <a href={link} className="text-blue-600">{prerequisite[0]}</a>}
+      {!link && prerequisite[0]}
+    </li>
+  )
+};
+
+const SyllabusModule = ({ title, children, author, problems, prerequisites, url }) => {
   // in the future, fetch this data either from localStorage or from server.
   const isComplete = title === "Prerequisites" || title === "Getting Started";
 
@@ -41,6 +51,8 @@ const SyllabusModule = ({ title, children, author, problems, url }) => {
       </div>
       <div className="px-4 py-4 sm:p-6">
         {children}
+
+        {prerequisites&&(<>Prerequisites:<ul className="ml-8 list-disc">{prerequisites.map(renderPrerequisite)}</ul></>)}
 
         {problems&&(<>Problems:<ul className="ml-3 space-y-1 py-2">{problems.map(renderProblem)}</ul></>)}
 

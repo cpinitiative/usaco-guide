@@ -3,6 +3,12 @@ slug: /intro/getting-started
 title: Getting Started
 author: Nathan Wang
 order: 1
+prerequisites:
+ -
+     - Dummy prerequisite
+     - https://dummy.prerequisite.link.com/
+ -
+     - Another Prerequisite
 ---
 
 
