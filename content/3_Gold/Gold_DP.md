@@ -1,12 +1,15 @@
 ---
 slug: /gold/dp
-title: "Gold - Dynamic Programming"
+title: "Dynamic Programming"
 author: Michael Cao
+order: 1
 ---
 
-# Gold - Dynamic Programming
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Michael Cao
+<!-- END DESCRIPTION -->
 
 ## Prerequisites
 

@@ -1,12 +1,19 @@
 ---
 slug: /silver/dfs
-title: "Silver - DFS"
+title: "DFS"
 author: Siyong Huang
+order: 7
 ---
 
-# Silver - DFS
+<ul class="syllabus-only">
+  <li>Prerequisites</li>
+  <li>Depth First Search (DFS)</li>
+  <li>Flood Fill</li>
+  <li>Graph Two-Coloring</li>
+  <li>Cycle Detection</li>
+</ul>
 
-Author: Siyong Huang
+<!-- END DESCRIPTION -->
 
 ## Overview
 

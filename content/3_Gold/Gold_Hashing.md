@@ -1,12 +1,15 @@
 ---
 slug: /gold/hashing
-title: "Gold - Hashing"
+title: "Hashing"
 author: Benjamin Qi
+order: 7
 ---
 
-# Gold - Hashing
+<div class="syllabus-only">
+  Hashing is used to quickly test whether two substrings are equal.
+</div>
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 ## Hashing
 

@@ -1,7 +1,8 @@
 ---
 slug: /plat/slope
-title: "Plat - Slope Trick"
+title: "Slope Trick"
 author: Benjamin Qi
+order: 7
 ---
 
 Slope trick is a way to represent a function that satisfies the following conditions:

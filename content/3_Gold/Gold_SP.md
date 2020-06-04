@@ -1,12 +1,15 @@
 ---
 slug: /gold/sp
-title: "Gold - Shortest Path"
+title: "Shortest Path"
 author: Benjamin Qi
+order: 2
 ---
 
-# Gold - Shortest Path
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 [CPC.7](https://github.com/SuprDewd/T-414-AFLV/tree/master/07_graphs_1)
 

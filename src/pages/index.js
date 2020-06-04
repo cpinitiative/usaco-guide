@@ -12,13 +12,13 @@ const renderModule = ({ node }) => {
 
   return (
     <SyllabusModule
-      title={data.title}
+      title={`${data.order}. ${data.title}`}
       url={data.slug}
       key={data.slug}
       problems={data.problems}
       author={data.author}
     >
-      <Markdown htmlAst={node.excerptAst} />
+      <Markdown htmlAst={node.excerptAst} className="markdown--syllabus" />
     </SyllabusModule>
   );
 };
@@ -87,100 +87,6 @@ const IndexPage = ({ data }) => {
 
       <div className="bg-gray-50 pb-8" id="content">
         <div className="py-12 text-center">
-          <h2 className="font-bold text-4xl">Demo Dashboard</h2>
-        </div>
-        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-          <SyllabusModule
-            title="Prerequisites"
-            url="/intro/prerequisites"
-          >
-            <ul className="list-disc pl-6">
-              <li>
-                What you should know before starting
-              </li>
-              <li>
-                Choosing a Language
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="What is Competitive Programming?"
-          >
-            <ul className="list-disc pl-6">
-              <li>
-                Contest Format
-              </li>
-              <li>
-                Practicing and Debugging
-              </li>
-              <li>
-                Contest Strategies
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="Introductory Problems"
-            url="/intro/problems"
-          >
-            <p className="mb-3">If you're new to competitive programming, we recommend you try to solve a few of these
-              problems. Once you're comfortable, move on!</p>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Fence
-                  Painting</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Word
-                  Processing</a>
-              </li>
-            </ul>
-          </SyllabusModule>
-          <SyllabusModule
-            title="Useful Containers"
-          >
-            <ul className="list-disc pl-6 mb-4">
-              <li>Arrays (C++11)</li>
-              <li>Vectors and ArrayList</li>
-              <li>C++ Pairs</li>
-              <li>Structs</li>
-            </ul>
-            Problem List:
-            <ul className="ml-3 space-y-1 py-2">
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=567">Lorem
-                  Ipsum</a>
-              </li>
-              <li className="flex items-center">
-                <svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd" />
-                </svg>
-                <a className="text-blue-600" href="http://usaco.org/index.php?page=viewproblem2&cpid=987">Lorem
-                  Ipsum</a>
-              </li>
-            </ul>
-          </SyllabusModule>
-        </div>
-
-
-        <div className="py-12 text-center">
           <h2 className="font-bold text-4xl">Introduction</h2>
         </div>
         <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
@@ -228,6 +134,7 @@ export const query = graphql`
             slug
             author
             problems
+            order
           }
           excerptAst
         }
@@ -242,6 +149,7 @@ export const query = graphql`
             slug
             author
             problems
+            order
           }
           excerptAst
         }
@@ -256,6 +164,7 @@ export const query = graphql`
             slug
             author
             problems
+            order
           }
           excerptAst
         }
@@ -270,6 +179,7 @@ export const query = graphql`
             slug
             author
             problems
+            order
           }
           excerptAst
         }
@@ -284,6 +194,7 @@ export const query = graphql`
             slug
             author
             problems
+            order
           }
           excerptAst
         }

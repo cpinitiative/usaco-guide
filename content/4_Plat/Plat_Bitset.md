@@ -1,12 +1,15 @@
 ---
 slug: /plat/bitset
-title: "Platinum - Bitset"
+title: "Bitset"
 author: Benjamin Qi
+order: 2
 ---
 
-# Platinum - Bitset
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 ## Tutorial
 

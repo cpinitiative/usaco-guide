@@ -1,10 +1,15 @@
 ---
 slug: /gold/topological-sort
-title: "Gold - Topological Sort"
+title: "Topological Sort"
 author: Benjamin Qi
+order: 4
 ---
 
-## Gold - Topological Sort
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
  - [CSES Course Schedule](https://cses.fi/problemset/task/1679)
  - [CSES Longest Flight Route](https://cses.fi/problemset/task/1680)

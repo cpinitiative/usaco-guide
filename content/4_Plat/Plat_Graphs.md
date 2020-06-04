@@ -1,7 +1,8 @@
 ---
 slug: /plat/trees
-title: "Platinum - Graphs"
+title: "Graphs"
 author: ?
+order: 8
 ---
 
 SCC
@@ -11,3 +12,5 @@ SCC
 BCC
 
 [USACO Plat Push a Box](http://www.usaco.org/index.php?page=viewproblem2&cpid=769)
+
+<!-- END DESCRIPTION -->

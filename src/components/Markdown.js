@@ -10,9 +10,9 @@ const renderAst = new rehypeReact({
   },
 }).Compiler;
 
-const Markdown = ({ htmlAst }) => {
+const Markdown = ({ htmlAst, className }) => {
   return (
-    <div className="markdown">
+    <div className={`markdown ${className}`}>
       {renderAst(htmlAst)}
     </div>
   );

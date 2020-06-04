@@ -1,10 +1,15 @@
 ---
 slug: /plat/2DRQ
-title: "Platinum - 2D Range Queries"
+title: "2D Range Queries"
 author: Benjamin Qi
+order: 4
 ---
 
-# Platinum - 2D Range Queries
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
 See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)).
 

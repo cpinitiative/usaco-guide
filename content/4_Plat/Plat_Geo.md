@@ -1,10 +1,15 @@
 ---
 slug: /plat/geo
-title: "Platinum - Geometry"
+title: "Geometry"
 author: Benjamin Qi
+order: 6
 ---
 
-# Platinum - Geometry
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+<!-- END DESCRIPTION -->
 
 ## Primitives
 

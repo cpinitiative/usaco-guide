@@ -1,7 +1,8 @@
 ---
 slug: /silver/containers
-title: "Silver - Containers"
+title: "Containers"
 author: Unknown
+order: 2
 ---
 
  Containers from C++ standard template library (STL)
@@ -19,3 +20,5 @@ author: Unknown
      - Custom comparator (prerequisite for basically all silver topics in Java)
    - HashSets / HashMaps
    - ex?
+
+<!-- END DESCRIPTION -->

@@ -1,6 +1,6 @@
 ---
 slug: /intro/files
-title: "Intro - File IO"
+title: File IO
 author: Unknown
 order: 3
 ---

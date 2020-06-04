@@ -1,12 +1,15 @@
 ---
 slug: /plat/fracture
-title: "Platinum - Fracturing Search"
+title: "Fracturing Search"
 author: Benjamin Qi
+order: 5
 ---
 
-# Platinum - Fracturing Search
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 ## General Outline
 

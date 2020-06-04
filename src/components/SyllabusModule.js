@@ -25,7 +25,7 @@ const renderProblem = (problem, idx) => {
 
 const SyllabusModule = ({ title, children, author, problems, url }) => {
   // in the future, fetch this data either from localStorage or from server.
-  const isComplete = title === "Prerequisites" || title === "What is Competitive Programming?";
+  const isComplete = title === "Prerequisites" || title === "Getting Started";
 
   return (
     <div className="bg-white overflow-hidden shadow rounded-lg mb-8">

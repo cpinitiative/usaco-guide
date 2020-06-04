@@ -1,12 +1,15 @@
 ---
 slug: /plat/1DRQ
-title: "Platinum - 1D Range Queries"
+title: "1D Range Queries"
 author: Benjamin Qi
+order: 3
 ---
 
-# Platinum - 1D Range Queries
+<div class="syllabus-only">
+  Description: Todo
+</div>
 
-Author: Benjamin Qi
+<!-- END DESCRIPTION -->
 
 ## Static Range Queries
 

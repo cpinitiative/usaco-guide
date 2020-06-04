@@ -1,13 +1,19 @@
 ---
 slug: /intro/getting-started
-title: "Intro - Getting Started"
+title: Getting Started
 author: Nathan Wang
 order: 1
 ---
 
-# Introduction to Competitive Programming
 
-Author: Nathan Wang
+<ul class="syllabus-only">
+  <li>Contest Format</li>
+  <li>Choosing a Language</li>
+  <li>Practicing and Debugging</li>
+  <li>Contest Strategies</li>
+</ul>
+
+<!-- END DESCRIPTION -->
 
 ## Choosing a Language
 
