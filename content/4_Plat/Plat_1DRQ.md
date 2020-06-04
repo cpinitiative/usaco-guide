@@ -33,11 +33,12 @@ Author: Benjamin Qi
 This data structure allows you to do point update and range query in $O(\log N)$ time each for any associative operation. In particular, note that **lazy** updates allow you to range updates as well.
 
  - Tutorial
-   - CPH 9.3
+   - CPH 9.3, 28.1 (Segment Trees Revisited)
    - [Codeforces Tutorial](http://codeforces.com/blog/entry/18051)
    - [CSAcademy Tutorial](https://csacademy.com/lesson/segment_trees/)
    - [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
    - [Slides from CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
+ - Special: Minimum Query w/ Number of Minimums
 
 
 ### Problems

@@ -18,9 +18,10 @@ Author: Siyong Huang
 
 ## Prerequisites
 
- - [CSAcademy Graph Theory](https://csacademy.com/lesson/introduction_to_graphs)
+ - [CSAcademy Graph Intro](https://csacademy.com/lesson/introduction_to_graphs)
  - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
    - Note: DFS is most commonly implemented with adjacency lists.
+ - CPH 11
 
 ## Depth First Search (DFS)
 
@@ -31,11 +32,12 @@ Author: Siyong Huang
 ### Tutorial
 
  - Recommended:
+   - CPH 12.1
    - [CSAcademy DFS](https://csacademy.com/lesson/depth_first_search/)
  - Additional:
-   - CPH Chapter 12
    - [cp-algo DFS](https://cp-algorithms.com/graph/depth-first-search.html)
      - hard to parse if this is your first time learning about DFS
+   - [CPC.7](https://github.com/SuprDewd/T-414-AFLV/tree/master/07_graphs_1)
 
 ### Problems
 
@@ -47,7 +49,7 @@ Author: Siyong Huang
 
 ## Flood Fill
 
-*Flood Fill* refers to finding the number of connected components in a graph, usually when the graph is a grid.
+[Flood Fill](https://en.wikipedia.org/wiki/Flood_fill) refers to finding the number of connected components in a graph, usually when the graph is a grid.
 
  - [CSES Counting Rooms](https://cses.fi/problemset/task/1192)
  - [CSES Labyrinth](https://cses.fi/problemset/task/1193)
@@ -115,8 +117,8 @@ A related topic is **strongly connected components**, a platinum level concept.
 
 Links:
 
- * CPH 16.3: successor paths
- * CPH 16.4: cycle detection in successor graph
+ - CPH 16.3: successor paths
+ - CPH 16.4: cycle detection in successor graph
 
 In silver-level directed cycle problems, it is generally the case that each node has exactly one edge going out of it. This is known as a **successor graph** or a **functional graph.**
 

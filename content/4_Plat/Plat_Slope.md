@@ -1,6 +1,6 @@
 ---
 slug: /plat/slope
-title: "Plat - Slope Trick"
+title: "Platinum - Slope Trick"
 author: Benjamin Qi
 ---
 
@@ -24,7 +24,7 @@ From the latter link (modified):
 
 It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick.
 
-This document assumes some familiarity with at least one of the links above.
+This document assumes some familiarity with at least one of the links above (and provides a few more examples).
 
 ## A Simple Example
 

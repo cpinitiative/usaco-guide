@@ -33,6 +33,8 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
 
  - Short Description
    - CSES 28.2, 28.4
+   - Segment Tree (or BIT) nested inside segment tree
+   - use 2D offline BIT whenever possible rather than an online 2D segment tree (faster, lower memory)
  - Problems
    - [USACO Plat Friendcross](http://www.usaco.org/index.php?page=viewproblem2&cpid=722)
    - [USACO Plat Mowing](http://www.usaco.org/index.php?page=viewproblem2&cpid=601)
