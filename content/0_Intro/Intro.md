@@ -2,6 +2,7 @@
 slug: /intro/getting-started
 title: "Intro - Getting Started"
 author: Nathan Wang
+order: 1
 ---
 
 # Introduction to Competitive Programming

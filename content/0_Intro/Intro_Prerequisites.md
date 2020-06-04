@@ -2,6 +2,7 @@
 slug: /intro/prerequisites
 title: "Intro - Prerequisites"
 author: Nathan Wang
+order: 2
 ---
 
 # Intro - Prerequisites

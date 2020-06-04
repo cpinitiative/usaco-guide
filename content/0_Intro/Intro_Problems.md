@@ -7,6 +7,7 @@ problems:
  - bronze_word
  - bronze_paint
  - bronze_square
+order: 4
 ---
 
 Let's begin by solving a few fun problems! The following problems require relatively little programming experience and no algorithmic knowledge.

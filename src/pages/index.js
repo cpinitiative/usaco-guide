@@ -24,9 +24,11 @@ const renderModule = ({ node }) => {
 };
 
 const IndexPage = ({ data }) => {
-  const modules = data.modules.edges;
-
-  console.log(modules);
+  const introModules = data.introModules.edges;
+  const bronzeModules = data.bronzeModules.edges;
+  const silverModules = data.silverModules.edges;
+  const goldModules = data.goldModules.edges;
+  const platModules = data.platModules.edges;
 
   return (
     <Layout>
@@ -179,10 +181,34 @@ const IndexPage = ({ data }) => {
 
 
         <div className="py-12 text-center">
-          <h2 className="font-bold text-4xl">Actual Modules</h2>
+          <h2 className="font-bold text-4xl">Introduction</h2>
         </div>
         <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
-          {modules.map(renderModule)}
+          {introModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Bronze</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {bronzeModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Silver</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {silverModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Gold</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {goldModules.map(renderModule)}
+        </div>
+        <div className="py-12 text-center">
+          <h2 className="font-bold text-4xl">Platinum</h2>
+        </div>
+        <div className="max-w-3xl mx-auto sm:px-6 lg:px-8">
+          {platModules.map(renderModule)}
         </div>
       </div>
     </Layout>
@@ -193,7 +219,63 @@ export default IndexPage;
 
 export const query = graphql`
   query {
-    modules: allMarkdownRemark(sort: {fields: frontmatter___title}) {
+    introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/0_Intro/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+          }
+          excerptAst
+        }
+      }
+    }
+    bronzeModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/1_Bronze/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+          }
+          excerptAst
+        }
+      }
+    }
+    silverModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/2_Silver/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+          }
+          excerptAst
+        }
+      }
+    }
+    goldModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/3_Gold/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+          }
+          excerptAst
+        }
+      }
+    }
+    platModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/4_Plat/"}}) {
       edges {
         node {
           id
