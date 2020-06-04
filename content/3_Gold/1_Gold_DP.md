@@ -3,6 +3,11 @@ slug: /gold/dp
 title: "Dynamic Programming"
 author: Michael Cao
 order: 1
+prerequisites: 
+   - Prefix Sums
+   - Recursion
+   - Bit Operations (for Bitmask DP)
+   - DFS and Trees (for Tree DP)
 ---
 
 <div class="syllabus-only">
@@ -10,10 +15,6 @@ order: 1
 </div>
 
 <!-- END DESCRIPTION -->
-
-## Prerequisites
-
-Assumes familiarity with prefix sums, recursion, bit operations (for Bitmask DP), and trees (for Tree DP).
 
 ## Introduction to DP
 
