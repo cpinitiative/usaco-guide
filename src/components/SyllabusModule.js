@@ -1,6 +1,27 @@
 import React from "react";
 import { Link } from "gatsby";
 
+// const CompletedCheck = () => (<svg className="h-6 w-6 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+//   <path fillRule="evenodd"
+//         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+//         clipRule="evenodd" />
+// </svg>);
+//
+// const IncompleteCheck = () => (<svg className="h-6 w-6 mr-2 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+//   <path fillRule="evenodd"
+//         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+//         clipRule="evenodd" />
+// </svg>);
+//
+// const renderProblem = (problem, idx) => {
+//   return (
+//     <li className="flex items-center" key={problem[1]}>
+//       {idx>0?<IncompleteCheck/>:<CompletedCheck/>}
+//       <a className="text-blue-600" href={problem[1]}>{problem[0]}</a>
+//     </li>
+//   );
+// };
+
 const SyllabusModule = ({ title, children, url }) => {
   // in the future, fetch this data either from localStorage or from server.
   const isComplete = title === "Prerequisites" || title === "What is Competitive Programming?";
@@ -22,7 +43,7 @@ const SyllabusModule = ({ title, children, url }) => {
       </div>
       <Link to={url || "/"}
             className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150">
-        {url ? "View Module" : "Incomplete Module, Please Help!"}
+        View Module
       </Link>
     </div>
   );

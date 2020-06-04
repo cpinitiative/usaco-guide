@@ -1,16 +1,8 @@
 import React from "react"
 import { graphql, Link } from "gatsby"
-import rehypeReact from "rehype-react"
 import Layout from "../components/layout";
 
-import "katex/dist/katex.min.css";
-import "./prism-theme.css";
-
-const renderAst = new rehypeReact({
-  createElement: React.createElement,
-  components: {
-  },
-}).Compiler;
+import Markdown from "../components/Markdown";
 
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
@@ -21,9 +13,7 @@ export default function Template({
     <Layout>
       <div className="max-w-4xl mx-auto my-8">
         <Link className="underline text-blue-600" to="/">&larr; Back to Home</Link>
-        <div className="markdown">
-          {renderAst(htmlAst)}
-        </div>
+        <Markdown htmlAst={htmlAst} />
       </div>
     </Layout>
   )

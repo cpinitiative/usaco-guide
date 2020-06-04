@@ -1,10 +1,11 @@
 ---
+title: Introductory Problems
 slug: /intro/problems
+author: Nathan Wang
+order: 3
 ---
 
 # Introductory Problems
-
-Author: Nathan Wang
 
 Let's begin by solving a few fun problems! The following problems require relatively little programming experience and no algorithmic knowledge.
 
