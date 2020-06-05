@@ -29,7 +29,7 @@ Find an element in a sorted array in O(log N) time.
  - [USACO Silver Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
  
  ## Binary Searching on the Answer
- Oftentimes used when you need to find the "minimum" or "maximum" of some quantity such that it satisfies some property.
+ Oftentimes used when you need to find the minimum or maximum of some quantity such that it satisfies some property.
   ### Tutorial
   - [CPH Section 12.1](https://www.overleaf.com/project/5e73f65cde1d010001224d8a)
 ### Problems
