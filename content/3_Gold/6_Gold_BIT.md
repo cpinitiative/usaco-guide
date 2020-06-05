@@ -2,10 +2,11 @@
 slug: /gold/bit
 title: "Binary Indexed Trees"
 author: Benjamin Qi
-order: 5
+order: 6
+prerequisites: 
+ - 
+     - Silver - Prefix Sums
 ---
-
-Assumes familiarity with "Silver - Prefix Sums." 
 
 A **Binary Indexed Tree** allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 

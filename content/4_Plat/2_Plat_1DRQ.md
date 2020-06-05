@@ -3,6 +3,9 @@ slug: /plat/1DRQ
 title: "1D Range Queries"
 author: Benjamin Qi
 order: 2
+prerequisites: 
+ - 
+     - Gold - Binary Indexed Trees
 ---
 
 Assumes familiarity with "Gold - Binary Indexed Trees." 
@@ -71,7 +74,3 @@ Binary Indexed Trees can support range increments in addition to range sum queri
 Example problem:
 
  - [DMOJ Range Update Range Query](https://dmoj.ca/problem/acc3p4)
-
-You can extend this to higher dimensions as well (USACO Camp - "Cows Play Global Thermonuclear War").
-
- - [Paper](https://arxiv.org/pdf/1311.6093.pdf)

@@ -3,6 +3,9 @@ slug: /plat/graphs
 title: "Graphs"
 author: Benjamin Qi
 order: 5
+prerequisites: 
+ - 
+     - Gold - Topological Sort
 ---
 
  - Eulerian Tours

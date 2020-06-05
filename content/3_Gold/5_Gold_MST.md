@@ -1,13 +1,14 @@
 ---
 slug: /gold/mst
-title: "Minimum Spanning Tree"
+title: "Minimum Spanning Trees"
 author: Benjamin Qi
-order: 3
+order: 5
+prerequisites: 
+ - 
+     - Gold - Shortest Paths
 ---
 
-Assumes familiarity with "Gold - Shortest Paths." 
-
-Disjoint Set Union and Minimum Spanning Tree
+Disjoint Set Union and Minimum Spanning Trees
 
 <!-- END DESCRIPTION -->
 

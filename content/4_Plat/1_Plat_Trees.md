@@ -3,6 +3,9 @@ slug: /plat/trees
 title: "Trees"
 author: Benjamin Qi
 order: 1
+prerequisites: 
+ - 
+     - Silver - DFS
 ---
 
 Lowest Common Ancestor and other tree topics.

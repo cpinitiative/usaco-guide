@@ -2,7 +2,7 @@
 slug: /gold/introductory-number-theory
 title: "Introductory Number Theory"
 author: Unknown
-order: 6
+order: 7
 ---
 
 <div class="syllabus-only">

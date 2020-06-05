@@ -3,11 +3,12 @@ slug: /plat/2DRQ
 title: "2D Range Queries"
 author: Benjamin Qi
 order: 3
+prerequisites: 
+ - 
+     - Platinum - 1D Range Queries
 ---
 
-Assumes familiarity with "Platinum - 1D Range Queries." 
-
-Extending 1D Range Queries to 2D (and beyond).
+Extending Range Queries to 2D (and beyond).
 
 <!-- END DESCRIPTION -->
 
@@ -25,6 +26,10 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
  - [GFG 2D BIT](https://www.geeksforgeeks.org/two-dimensional-binary-indexed-tree-or-fenwick-tree/)
  - [TopCoder BIT](https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/)
 
+You can extend the 1D BIT solution for range update + range query to higher dimensions as well (USACO Camp - "Cows Play Global Thermonuclear War").
+
+ - [Paper](https://arxiv.org/pdf/1311.6093.pdf)
+
 ### Problems
 
  - [CSES Forest Queries II](https://cses.fi/problemset/task/1739)
@@ -35,6 +40,8 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
  - [DMOJ Crowded Cities](https://dmoj.ca/problem/bfs17p6)
 
 ## 2D Segment Tree
+
+Note: no lazy propagation in 2D.
 
  - Short Description
    - CSES 28.2, 28.4

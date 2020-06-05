@@ -3,6 +3,9 @@ slug: /plat/slope
 title: "Slope Trick"
 author: Benjamin Qi
 order: 9
+prerequisites: 
+ - 
+     - some familiarity with at least one of the two mentioned tutorials
 ---
 
 **Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
@@ -11,21 +14,17 @@ order: 9
 
 ## Tutorials
 
-Links:
-
- * [zscoder](https://codeforces.com/blog/entry/47821)
- * [Kuroni](https://codeforces.com/blog/entry/77298)
+ - [zscoder](https://codeforces.com/blog/entry/47821)
+ - [Kuroni](https://codeforces.com/blog/entry/77298)
 
 From the latter link (modified):
 
 > Slope trick is a way to represent a function that satisfies the following conditions:
 > 
->  * It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
->  * It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+>  - It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
+>  - It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
 It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick.
-
-This document assumes some familiarity with at least one of the links above (and provides a few more examples).
 
 ## A Simple Example
 
