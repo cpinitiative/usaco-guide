@@ -3,7 +3,7 @@ import React from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
-import { graphql, navigate } from "gatsby";
+import { graphql, Link, navigate } from "gatsby";
 import Markdown from "../components/Markdown";
 
 const renderModule = ({ node }) => {
@@ -30,6 +30,7 @@ const IndexPage = ({ data, ...props }) => {
   const silverModules = data.silverModules.edges;
   const goldModules = data.goldModules.edges;
   const platModules = data.platModules.edges;
+  const modules = [introModules, bronzeModules, silverModules, goldModules, platModules];
 
   let defaultDivision = 0;
   if (props.location?.search) {
@@ -38,6 +39,7 @@ const IndexPage = ({ data, ...props }) => {
   const [selectedDivision, setSelectedDivision] = React.useState(defaultDivision);
   const colors = ["blue", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
+  const module = modules[selectedDivision];
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
@@ -55,7 +57,7 @@ const IndexPage = ({ data, ...props }) => {
   // alternatively we can just not dynamically generate classes, but that seems more tedious.
 
   const selectedTabClasses = `flex-1 py-4 px-1 text-center border-b-2 border-${color}-500 font-bold text-lg leading-5 text-${color}-600 focus:outline-none focus:text-${color}-800 focus:border-${color}-700`,
-    unselectedTabClasses = `flex-1 py-4 px-1 text-center border-b-2 border-transparent font-bold text-lg leading-5 text-gray-500 hover:text-gray-700 hover:border-${color}-300 focus:outline-none focus:text-gray-700 focus:border-${color}-300`;
+    unselectedTabClasses = `flex-1 py-4 px-1 text-center border-b-2 border-transparent font-bold text-lg leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300`;
 
   const handleDivisionChange = d => {
     setSelectedDivision(d);
@@ -67,7 +69,7 @@ const IndexPage = ({ data, ...props }) => {
       <SEO title="Home" />
 
       {/* Begin Hero Section */}
-      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300`}>
+      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-28`}>
         <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
           <div className="relative h-full max-w-screen-xl mx-auto">
             <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
@@ -119,13 +121,12 @@ const IndexPage = ({ data, ...props }) => {
       {/* End Hero Section */}
 
       <div className="bg-gray-50 pb-8" id="content">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
-
-          <div className="mb-8 bg-white shadow-md rounded-lg">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+          <div className="mb-8 bg-white shadow-md rounded-lg relative" style={{ marginTop: "-8rem" }}>
             <div className="sm:hidden">
               <select aria-label="Selected tab"
                       className="form-select block w-full"
-                      onChange={e => setSelectedDivision(e.target.value - '0')}
+                      onChange={e => handleDivisionChange(e.target.value - '0')}
                       value={selectedDivision}
               >
                 <option value={0}>Intro</option>
@@ -135,8 +136,8 @@ const IndexPage = ({ data, ...props }) => {
                 <option value={4}>Platinum</option>
               </select>
             </div>
-            <div className="hidden sm:block">
-              <nav className="flex">
+            <div className="hidden sm:block border-b border-gray-200">
+              <nav className="flex -mb-px">
                 <a href="?division=0"
                    onClick={e => {e.preventDefault(); handleDivisionChange(0)}}
                    className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
@@ -165,13 +166,17 @@ const IndexPage = ({ data, ...props }) => {
                 </a>
               </nav>
             </div>
+
+            <ol className="list-decimal list-inside py-8 px-8 text-lg space-y-1">
+              {module.map(m => (
+                <li>
+                  <Link className="ml-2 text-blue-600 underline" to={m.node.frontmatter.slug}>{m.node.frontmatter.title}</Link>
+                </li>
+              ))}
+            </ol>
           </div>
 
-          {selectedDivision === 0 && introModules.map(renderModule)}
-          {selectedDivision === 1 && bronzeModules.map(renderModule)}
-          {selectedDivision === 2 && silverModules.map(renderModule)}
-          {selectedDivision === 3 && goldModules.map(renderModule)}
-          {selectedDivision === 4 && platModules.map(renderModule)}
+          {module.map(renderModule)}
         </div>
       </div>
     </Layout>

@@ -29,7 +29,7 @@ export default function Template({
   return (
     <Layout>
       <div className="max-w-4xl mx-auto my-8">
-        <Link className="underline text-blue-600" to={"/?division="+division+"#"+markdownRemark.frontmatter.slug}>&larr; Back to Home</Link>
+        <Link className="underline text-blue-600" to={"/?division="+division}>&larr; Back to Home</Link>
         <h1 className="mt-8 text-3xl font-bold">{markdownRemark.frontmatter.title}</h1>
         <p className={`${prereqs ? "mb-4" : "mb-8"} text-gray-500`}>Author: {markdownRemark.frontmatter.author}</p>
 
