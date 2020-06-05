@@ -3,6 +3,7 @@ slug: /silver/two-pointers
 title: "Two Pointers"
 author: Unknown
 order: 5
+prerequisites:
  - 
      - Silver - Sorting
 ---

@@ -3,7 +3,7 @@ import React from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
-import { graphql } from "gatsby";
+import { graphql, navigate } from "gatsby";
 import Markdown from "../components/Markdown";
 
 const renderModule = ({ node }) => {
@@ -24,14 +24,18 @@ const renderModule = ({ node }) => {
   );
 };
 
-const IndexPage = ({ data }) => {
+const IndexPage = ({ data, ...props }) => {
   const introModules = data.introModules.edges;
   const bronzeModules = data.bronzeModules.edges;
   const silverModules = data.silverModules.edges;
   const goldModules = data.goldModules.edges;
   const platModules = data.platModules.edges;
 
-  const [selectedDivision, setSelectedDivision] = React.useState(0);
+  let defaultDivision = 0;
+  if (props.location?.search) {
+    defaultDivision = props.location.search[props.location.search.length-1]-'0';
+  }
+  const [selectedDivision, setSelectedDivision] = React.useState(defaultDivision);
   const colors = ["blue", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
 
@@ -53,12 +57,17 @@ const IndexPage = ({ data }) => {
   const selectedTabClasses = `flex-1 py-4 px-1 text-center border-b-2 border-${color}-500 font-bold text-lg leading-5 text-${color}-600 focus:outline-none focus:text-${color}-800 focus:border-${color}-700`,
     unselectedTabClasses = `flex-1 py-4 px-1 text-center border-b-2 border-transparent font-bold text-lg leading-5 text-gray-500 hover:text-gray-700 hover:border-${color}-300 focus:outline-none focus:text-gray-700 focus:border-${color}-300`;
 
+  const handleDivisionChange = d => {
+    setSelectedDivision(d);
+    navigate("?division="+d, { replace: true });
+  };
+
   return (
     <Layout>
       <SEO title="Home" />
 
       {/* Begin Hero Section */}
-      <div className={`relative bg-${color}-600 overflow-hidden transition duration-150`}>
+      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300`}>
         <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
           <div className="relative h-full max-w-screen-xl mx-auto">
             <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
@@ -128,29 +137,29 @@ const IndexPage = ({ data }) => {
             </div>
             <div className="hidden sm:block">
               <nav className="flex">
-                <a href="#"
-                   onClick={e => {e.preventDefault(); setSelectedDivision(0)}}
+                <a href="?division=0"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(0)}}
                    className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
                   Intro
                 </a>
-                <a href="#"
-                   onClick={e => {e.preventDefault(); setSelectedDivision(1)}}
+                <a href="?division=1"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
                    className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
                   Bronze
                 </a>
-                <a href="#"
-                   onClick={e => {e.preventDefault(); setSelectedDivision(2)}}
+                <a href="?division=2"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
                    className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}
                    aria-current="page">
                   Silver
                 </a>
-                <a href="#"
-                   onClick={e => {e.preventDefault(); setSelectedDivision(3)}}
+                <a href="?division=3"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
                    className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
                   Gold
                 </a>
-                <a href="#"
-                   onClick={e => {e.preventDefault(); setSelectedDivision(4)}}
+                <a href="?division=4"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
                    className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
                   Platinum
                 </a>
