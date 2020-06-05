@@ -33,9 +33,19 @@ You can extend the 1D BIT solution for range update + range query to higher dime
 ### Problems
 
  - [CSES Forest Queries II](https://cses.fi/problemset/task/1739)
+   - [thecodingwizard's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/cses/Forest%20Queries%20II.cpp)
  - [DMOJ Soriya's Programming Project](https://dmoj.ca/problem/dmopc19c7p5)
    - compressed 2D BIT
+     - it is rather difficult to pass within time and memory limits
+       - lazy BIT is not enough, must use compressed BIT
+       - Use `\n` instead of `endl`
+     - See [Benq's 2D offline BIT](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h)
+     - See [Benq's 1D offline BIT](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h)
+       - BIT wrapped around 1D offline BIT is also too slow; use 2D offline BIT.
+     - [thecodingwizard's implementation with benq's 2d offline bit](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
    - or do divide & conquer with a 1D BIT
+     - same as first problem here: https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html
+     - [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp) based off of article above
  - [IOI 2007 Pairs](https://wcipeg.com/problem/ioi0722)
  - [DMOJ Crowded Cities](https://dmoj.ca/problem/bfs17p6)
 
