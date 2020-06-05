@@ -18,9 +18,14 @@ Helpful Links!!
 
   * [Competitive Programmer's Handbook (CPH)](https://cses.fi/book/book.pdf)
     * The [problemset](https://cses.fi/problemset/) (now at 200 problems) is quite good!
-  * [Competitive Programming Book (Steven, Felix)](http://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf)
+    * [Guide to Competitive Programming](https://www.amazon.com/Guide-Competitive-Programming-Algorithms-Undergraduate/dp/3319725467) is a paid book based off CPH
+  * Competitive Programming Book (Steven, Felix)
+    * [Competitive Programming Book 1](http://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf) is freely available but old
+    * [Competitive Programming 4](https://cpbook.net/) is the latest edition of the book (with significant additions) but costs money.
+      * Release date is July 19th, 2020.
   * [Samuel Hsiang - CS Guide](https://github.com/alwayswimmin/cs_guide)
   * [Principles of Algorithmic Problem Solving](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+  * [Cracking the Coding Interview](http://www.crackingthecodinginterview.com/) is a good book specifically for programming interviews (it is not needed for USACO).
 
 ### Courses
 
