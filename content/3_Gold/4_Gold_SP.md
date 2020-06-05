@@ -12,6 +12,8 @@ prerequisites:
  - Shortest Path With Negative Edge Weights
  - All Pairs Shortest Path
 
+<!-- END DESCRIPTION -->
+
 ## Non-Negative Edge Weights
 
 Use *Dijkstra's Algorithm*.

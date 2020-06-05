@@ -8,8 +8,6 @@ prerequisites:
      - Gold - Binary Indexed Trees
 ---
 
-Assumes familiarity with "Gold - Binary Indexed Trees." 
-
 General range queries for associative operations, including segment tree.
 
 <!-- END DESCRIPTION -->
