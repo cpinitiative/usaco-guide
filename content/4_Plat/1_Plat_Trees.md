@@ -5,7 +5,7 @@ author: Benjamin Qi
 order: 1
 prerequisites: 
  - 
-     - Silver - DFS
+     - Silver - Depth First Search
 ---
 
 Lowest Common Ancestor and other tree topics.

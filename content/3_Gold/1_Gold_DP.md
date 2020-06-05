@@ -11,7 +11,7 @@ prerequisites:
  - 
      - Silver - Prefix Sums
  -
-     - Silver - DFS (for Tree DP)
+     - Silver - Depth First Search (for Tree DP)
 ---
 
 An introduction to Dynamic Programming concepts needed (and not-so-needed but still useful) for USACO Gold. 
