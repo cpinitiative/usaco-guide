@@ -1,8 +1,11 @@
 ---
 slug: /plat/hashing
-title: "Platinum - Strings"
+title: "Strings"
 author: Benjamin Qi
 order: 6
+prerequisites: 
+ - 
+     - Silver - Depth First Search
 ---
 
  - Tries

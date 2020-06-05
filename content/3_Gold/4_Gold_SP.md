@@ -2,38 +2,17 @@
 slug: /gold/sp
 title: "Shortest Paths"
 author: Benjamin Qi
-order: 2
+order: 4
+prerequisites: 
+ - 
+     - Gold - Breadth First Search
 ---
 
-Assumes familiarity with "Silver - Depth First Search." 
-
- - Breadth First Search
- - Shortest Path With and Without Negative Edge Weights
+ - Shortest Path Without Negative Edge Weights
+ - Shortest Path With Negative Edge Weights
  - All Pairs Shortest Path
 
 <!-- END DESCRIPTION -->
-
-## Breadth First Search
-
-Find the shortest path where all edge weights are 1.
-
- - [CSES Message Route](https://cses.fi/problemset/task/1667)
-
-### Tutorial
-
- - CSES 12.2
- - [CSAcademy BFS](https://csacademy.com/lesson/breadth_first_search)
- - [cp-algo BFS](https://cp-algorithms.com/graph/breadth-first-search.html)
- - [cp-algo 0/1 BFS](https://cp-algorithms.com/graph/01_bfs.html)
- - [KhanAcademy BFS](https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses)
-
-### Problems
-
- - [CSAcademy BFS-DFS](https://csacademy.com/contest/round-41/task/bfs-dfs/) [](50)
- - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
- - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)
- - [Lasers](http://www.usaco.org/index.php?page=viewproblem2&cpid=671)
- - [Monsters](https://cses.fi/problemset/task/1194)
 
 ## Non-Negative Edge Weights
 

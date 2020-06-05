@@ -1,15 +1,14 @@
 ---
-slug: /gold/topological-sort
+slug: /gold/toposort
 title: "Topological Sort"
 author: Benjamin Qi
-order: 4
+order: 3
+prerequisites: 
+ - 
+     - Gold - Breadth First Search
 ---
 
-Assumes familiarity with "Silver - Depth First Search." 
-
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering. 
-
-<!-- END DESCRIPTION -->
 
 ## Example Problems
 
@@ -19,9 +18,11 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 
 ## Tutorial
 
+(BFS Implementation?)
+
  - CPH 16.1, 16.2
  - [cp-algorithms](https://cp-algorithms.com/graph/topological-sort.html)
- - 
+ - [CSAcademy](https://csacademy.com/lesson/topological_sorting)
 
 ## Problems
 

@@ -1,8 +1,8 @@
 ---
-slug: /intro/containers
+slug: /bronze/containers
 title: Containers
 author: Unknown
-order: 5
+order: 2
 ---
 
 

@@ -3,6 +3,9 @@ slug: /silver/containers
 title: "Containers"
 author: Unknown
 order: 2
+prerequisites: 
+ - 
+     - Bronze - Containers
 ---
 
  Containers from C++ standard template library (STL)

@@ -3,6 +3,9 @@ slug: /silver/sorting
 title: "Sorting"
 author: Unknown
 order: 3
+prerequisites: 
+ - 
+     - Silver - Containers
 ---
 
 <div class="syllabus-only">

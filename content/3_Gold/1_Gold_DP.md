@@ -5,23 +5,21 @@ author: Michael Cao
 order: 1
 prerequisites: 
  - 
-     - Prefix Sums
- - 
      - Recursion
  - 
      - Bit Operations (for Bitmask DP)
+ - 
+     - Silver - Prefix Sums
  -
-     - DFS and Trees (for Tree DP)
+     - Silver - Depth First Search (for Tree DP)
 
-<div class="syllabus-only">
-  An introduction into Dynamic Programming concepts needed (and not-so-needed but still useful) for USACO gold. 
-</div>
+An introduction to Dynamic Programming concepts needed (and not-so-needed but still useful) for USACO Gold. 
 
 <!-- END DESCRIPTION -->
 
 ## Introduction to DP
 
-   Dynamic Programming is a very important concept which emerges in the USACO gold division and extends to the IOI. Typically, one or two problems from every contest in the gold division uses some sort of Dynamic programming. The following tutorials serve as an introduction into the mindset of Dynamic programming.
+Dynamic Programming is a very important concept which emerges in the USACO gold division and extends to the IOI. Typically, one or two problems from every contest in the gold division uses some sort of Dynamic programming. The following tutorials serve as an introduction into the mindset of Dynamic programming.
 
  - CPH 7 (Great introduction that covers most classical problems)
  - [Topcoder DP (Great for all skill levels)](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/)
