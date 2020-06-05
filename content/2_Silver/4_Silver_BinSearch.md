@@ -1,7 +1,7 @@
 ---
 slug: /silver/binary-search
 title: "Binary Search"
-author: Unknown
+author: Nathan Chen
 order: 4
 prerequisites: 
  - 
