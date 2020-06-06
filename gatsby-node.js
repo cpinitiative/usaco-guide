@@ -30,6 +30,50 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       },
     });
   });
+
+  const syllabusTemplate = require.resolve(`./src/templates/syllabusTemplate.js`);
+  createPage({
+    path: "/",
+    component: syllabusTemplate,
+    context: {
+      division: 0
+    },
+  });
+  createPage({
+    path: "/intro",
+    component: syllabusTemplate,
+    context: {
+      division: 0
+    },
+  });
+  createPage({
+    path: "/bronze",
+    component: syllabusTemplate,
+    context: {
+      division: 1
+    },
+  });
+  createPage({
+    path: "/silver",
+    component: syllabusTemplate,
+    context: {
+      division: 2
+    },
+  });
+  createPage({
+    path: "/gold",
+    component: syllabusTemplate,
+    context: {
+      division: 3
+    },
+  });
+  createPage({
+    path: "/plat",
+    component: syllabusTemplate,
+    context: {
+      division: 4
+    },
+  });
 };
 
 exports.createSchemaCustomization = ({ actions }) => {

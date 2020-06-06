@@ -3,7 +3,7 @@ import React from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
-import { graphql, Link, navigate } from "gatsby";
+import { graphql, Link } from "gatsby";
 import Markdown from "../components/Markdown";
 
 const renderModule = ({ node }) => {
@@ -24,7 +24,9 @@ const renderModule = ({ node }) => {
   );
 };
 
-const IndexPage = ({ data, ...props }) => {
+export default function Template(props) {
+  const data = props.data;
+
   const introModules = data.introModules.edges;
   const bronzeModules = data.bronzeModules.edges;
   const silverModules = data.silverModules.edges;
@@ -32,11 +34,7 @@ const IndexPage = ({ data, ...props }) => {
   const platModules = data.platModules.edges;
   const modules = [introModules, bronzeModules, silverModules, goldModules, platModules];
 
-  let defaultDivision = 0;
-  if (props.location?.search) {
-    defaultDivision = props.location.search[props.location.search.length-1]-'0';
-  }
-  const [selectedDivision, setSelectedDivision] = React.useState(defaultDivision);
+  const [selectedDivision, setSelectedDivision] = React.useState(props.pathContext.division);
   const colors = ["blue", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
   const module = modules[selectedDivision];
@@ -61,7 +59,8 @@ const IndexPage = ({ data, ...props }) => {
 
   const handleDivisionChange = d => {
     setSelectedDivision(d);
-    navigate("?division="+d, { replace: true });
+    const divisions = ["intro", "bronze", "silver", "gold", "plat"];
+    window.history.pushState(null, "", `/${divisions[d]}/`);
   };
 
   return (
@@ -138,30 +137,29 @@ const IndexPage = ({ data, ...props }) => {
             </div>
             <div className="hidden sm:block border-b border-gray-200">
               <nav className="flex -mb-px">
-                <a href="?division=0"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(0)}}
-                   className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
+                <a href="/intro"
+                      onClick={e => {e.preventDefault(); handleDivisionChange(0)}}
+                      className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
                   Intro
                 </a>
-                <a href="?division=1"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
-                   className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
+                <a href="/bronze"
+                      onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
+                      className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
                   Bronze
                 </a>
-                <a href="?division=2"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
-                   className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}
-                   aria-current="page">
+                <a href="/silver"
+                      onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
+                      className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}>
                   Silver
                 </a>
-                <a href="?division=3"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
-                   className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
+                <a href="/gold"
+                      onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
+                      className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
                   Gold
                 </a>
-                <a href="?division=4"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
-                   className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
+                <a href="/plat"
+                      onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
+                      className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
                   Platinum
                 </a>
               </nav>
@@ -181,11 +179,8 @@ const IndexPage = ({ data, ...props }) => {
       </div>
     </Layout>
   );
-};
-
-export default IndexPage;
-
-export const query = graphql`
+}
+export const pageQuery = graphql`
   query {
     introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/0_Intro/"}}) {
       edges {
