@@ -50,3 +50,4 @@ prerequisites:
 
 
 [Blowing up Unordered Map](https://codeforces.com/blog/entry/62393)
+https://docs.google.com/document/d/1HaqUhVB2Ou3ZK4WRjHd738nof4yvLGfrjZFkCxIQP1A/edit?usp=sharing
