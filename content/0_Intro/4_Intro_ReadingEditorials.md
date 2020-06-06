@@ -15,6 +15,10 @@ and read an editorial!
 
 ## Benjamin Qi
 
+> I usually read editorials after 1 second, so I can find what wrong solution the authors have because if I can't solve a problem in 1 second it's broken
+
+/s
+
 @benqorz
 
 ## William Lin
