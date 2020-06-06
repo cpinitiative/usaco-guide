@@ -1,7 +1,7 @@
 ---
 slug: /intro/reading-editorials
 title: When to Read Editorials (Analyses)
-author: Nathan Wang ++
+author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
 order: 4
 ---
 
