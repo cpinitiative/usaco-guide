@@ -16,3 +16,22 @@ These resources do not teach you how to code. We recommend you learn roughly the
 [Sololearn](https://www.sololearn.com/) has courses on C++, Java, and Python. You don't have to complete the full course.
 
 - For C++, we recommend you finish Sololearn up to (but not including) "More on Classes."
+
+## Using C++
+
+Here's a basic C++ template you may find useful:
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    freopen("file.in", "r", stdin);
+    freopen("file.out", "w", stdout);
+
+    // Code goes here!!
+
+    return 0;
+}
+```
