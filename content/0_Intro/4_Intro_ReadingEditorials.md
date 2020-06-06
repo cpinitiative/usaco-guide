@@ -57,3 +57,8 @@ My justification for why I think it's okay to give up so early is as follows:
 
 Overall, I would just say to "give up" when you feel like giving up, whether that's
 in five hours or in 15 minutes :)
+
+## Nathan Chen
+
+Read the editorial when you feel like you've stopped making progress; that could be from 1 to 5 hours. However, the most important part about reading the editorial is that you understand the topic and try to think about what similar problems look like. Being generally curious is a good way to practice algorithmic thinking.
+
