@@ -23,7 +23,12 @@ and read an editorial!
 
 ## William Lin
 
-@tmworz
+> I follow three guidelines (from most important to least important)
+> 1. Having fun, just doing whatever you feel like doing
+> 2. Spend about the same amount of time that you would be able to during a real contest
+> 3. Whether you are making progress or not
+
+Feel free to not listen to William Lin's suggestions as he is not very good himself.
 
 ## Eric Wei
 
