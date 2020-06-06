@@ -2,7 +2,7 @@
 slug: /intro/resources
 title: Additional Resources
 author: Benjamin Qi
-order: 4
+order: 5
 ---
 
 Helpful Links!!
