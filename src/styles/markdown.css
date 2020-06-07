@@ -1,10 +1,4 @@
 /*! purgecss start ignore */
-@tailwind base;
-@tailwind components;
-/*! purgecss end ignore */
-@tailwind utilities;
-
-/*! purgecss start ignore */
 /* Additional vertical padding used by kbd tag. */
 .py-05 {
     padding-top: 0.125rem;
@@ -67,15 +61,18 @@
     @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
 }
 
-.markdown code {
+.markdown code:not([class*="language-"]) {
     @apply font-mono text-sm inline bg-gray-200 rounded px-1 py-05;
 }
 
 .markdown pre {
-    @apply bg-gray-100 rounded p-4;
+    @apply rounded;
+}
+.markdown pre:not([class*="language-"]) {
+    @apply bg-gray-100 p-4;
 }
 
-.markdown pre code {
+.markdown pre:not([class*="language-"]) code {
     @apply block bg-transparent p-0 overflow-visible rounded-none;
 }
 
@@ -138,5 +135,28 @@
 
 .markdown--module .syllabus-only {
     display: none;
+}
+
+.spoiler--hide > *:not(.spoiler-label) {
+    display: none;
+}
+.spoiler--hide .spoiler-label__open {
+    display: none;
+}
+.spoiler--show .spoiler-label__closed {
+    display: none;
+}
+.spoiler-label {
+    margin-bottom: 0 !important;
+}
+
+.info-block .custom-block-heading {
+    @apply text-sm leading-5 font-medium text-blue-800;
+}
+.info-block .custom-block-body {
+    @apply text-sm leading-5 text-blue-700 mt-2;
+}
+.info-block .custom-block-body p:last-child {
+    @apply mb-0;
 }
 /*! purgecss end ignore */

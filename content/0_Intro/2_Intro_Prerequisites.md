@@ -33,7 +33,10 @@ Expected Knowledge:
 
 ## Using C++
 
-You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
+[[info | Pro Tip]]
+| You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
+
+<div class="h-2"></div>
 
 Here's a basic C++ template you may find useful:
 

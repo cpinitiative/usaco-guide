@@ -26,6 +26,18 @@ module.exports = {
         gfm: true,
         "excerpt_separator": `<!-- END DESCRIPTION -->`,
         plugins: [
+          `gatsby-remark-autolink-headers`,
+          {
+            resolve: "gatsby-remark-custom-blocks",
+            options: {
+              blocks: {
+                info: {
+                  containerElement: "info-block",
+                  title: "optional",
+                },
+              },
+            },
+          },
           {
             resolve: `gatsby-remark-katex`,
             options: {

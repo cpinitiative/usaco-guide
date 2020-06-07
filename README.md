@@ -104,6 +104,19 @@ For example:
   </details>
 ```
 
+### Custom Blocks
+
+Currently, we only have one custom block (info), but others can easily be added (ex: warning, danger, error, success?).
+Just let Nathan Wang know.
+
+#### Info Block
+
+```
+[[info | Insert Title Here]]
+| Insert Content Here
+| **Markdown is Supported!!**
+```
+
 ### Example Module
 
 ```
