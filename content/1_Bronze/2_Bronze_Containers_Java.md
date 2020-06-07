@@ -1,3 +1,5 @@
+# Data Structures
+
 A data structure determines how data is stored. (is it sorted? indexed? what operations does it support?) Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. This chapter introduces the data structures in the Java standard library that are frequently used in competitive programming.
 
 Java default Collections data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `|<>|` brackets when declaring the data structure, as follows:
@@ -12,7 +14,7 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 
 Collections data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
 
-\section{Dynamic Arrays}
+# Dynamic Arrays
 You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays (`ArrayList` in Java) that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
 
 For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
@@ -63,8 +65,8 @@ In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collectio
  
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
-\section{Stacks and the Various Types of Queues}
-Stacks}
+# Stacks
+
 A stack is a Last In First Out (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in $O(1)$ time. Think of it like a real-world stack of papers.
 
 ```
@@ -77,7 +79,7 @@ s.pop(); // [1, 13]
 System.out.println(s.size()); // 2
 ```
 
-Queues}
+# Queues
 A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in $O(1)$ time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows: `Queue q = new LinkedList(); ` .
 
 ```
@@ -89,7 +91,7 @@ q.poll(); // [4, 3]
 System.out.println(q.peek()); // 3
 ```
 
-Deques}
+# Deques
 A deque (usually pronounced “deck”) stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
 
 ```
@@ -102,7 +104,7 @@ deque.addFirst(1); // [1, 3, 7]
 deque.removeLast(); // [1, 3]
 ```
 
-Priority Queues}
+# Priority Queues
 A priority queue supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log n)$ time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. By default, the Priority Queue puts the lowest element at the front of the queue.
 
 ```
@@ -117,12 +119,11 @@ pq.poll(); // [7, 5]
 pq.add(6); // [7, 6, 5]
 ```
 
+# Sets
 
-\section{Sets and Maps}
 A set is a collection of objects that contains no duplicates. There are two types of sets: unordered sets (`HashSet` in Java), and ordered set (`TreeSet` in Java).
 
-
-Unordered Sets}
+# Unordered Sets
 The unordered set works by hashing, which is assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order. The operations on an unordered set are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
 
 ```
@@ -143,9 +144,8 @@ for(int element : set){
 }
 // You can iterate through an unordered set, but it will do so in arbitrary order
 ```
+# Ordered Set
 
-
-Ordered Sets}
 The second type of set data structure is the ordered or sorted set. Insertions, deletions, and searches on the ordered set require $O(\log n)$ time, based on the number of elements in the set. As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
 
 ```
@@ -165,12 +165,11 @@ System.out.println(set.higher(23); // ERROR, no such element exists
 
 The primary limitation of the ordered set is that we can't efficiently access the $k$th largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an order statistic tree, but that is beyond the scope of this book.
 
-
-\subsubsection{Maps}
+# Maps
 A map is a set of ordered pairs, each containing a key and a value. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: one to add a specified key-value pairing, one to retrieve the value for a given key, and one to remove a key-value pairing from the map. Like sets, maps can be unordered (`HashSet` in Java) or ordered (`TreeSet` in Java). In an unordered map, hashing is used to support $O(1)$ operations. In an ordered map, the entries are sorted in order of key. Operations are $O(\log n)$, but accessing or removing the next key higher or lower than some input `k` is also supported.
 
 
-Unordered Maps}
+# Unordered Maps
 In the unordered map, the `put(key, value) method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `{containsKey(key)} method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
 
 ```
@@ -185,7 +184,7 @@ System.out.println(map.containsKey(1)); // true
 ```
 
 
-Ordered Maps}
+# Ordered Maps
 The ordered map supports all of the operations that an unordered map supports, and additionally supports `firstKey` / `firstEntry` and `lastKey` /` lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` /` higherEntry` and `lowerKey` / `lowerEntry `, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
 ```
 TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -204,7 +203,7 @@ System.out.println(map.lowerKey(3)); // ERROR
 A note on unordered sets and maps: In USACO contests, they're generally fine, but in CodeForces contests, you should always use sorted sets and maps. This is because the built-in hashing algorithm is vulnerable to pathological data sets causing abnormally slow runtimes, in turn causing failures on some test cases.
 
 
-Multisets}
+# Multisets
 Lastly, there is the multiset, which is essentially a sorted set that allows multiple copies of the same element. While there is no `Multiset` in Java, we can implement one using the `TreeMap` from values to their respective frequencies. We declare the `TreeMap` implementation globally so that we can write functions for adding and removing elements from it.
 
 ```
