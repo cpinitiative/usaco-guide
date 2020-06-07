@@ -14,7 +14,7 @@ Binary search can be used on monotonic functions for a logarithmic runtime.
 
 ## The Basic Application
 
-Find an element in a sorted array in O(log N) time.
+"Find an element in a sorted array in O(log N) time." This is a very basic form of binary search. Other variations are similar, like "Given K, find the largest element less than K in a sorted array."
 ### Tutorial
 - [GeeksForGeeks](https://www.geeksforgeeks.org/binary-search/)
 - [Wikipedia](https://en.wikipedia.org/wiki/Binary_search_algorithm)
@@ -30,6 +30,7 @@ Find an element in a sorted array in O(log N) time.
  
  ## Binary Searching on the Answer
  Oftentimes used when you need to find the minimum or maximum of some quantity such that it satisfies some property.
+ 
   ### Tutorial
   - [CPH Section 12.1](https://www.overleaf.com/project/5e73f65cde1d010001224d8a)
 ### Problems
