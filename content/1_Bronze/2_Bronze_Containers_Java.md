@@ -2,7 +2,7 @@
 
 A data structure determines how data is stored. (is it sorted? indexed? what operations does it support?) Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. This chapter introduces the data structures in the Java standard library that are frequently used in competitive programming.
 
-Java default Collections data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `|<>|` brackets when declaring the data structure, as follows:
+Java default Collections data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
 ```
 ArrayList<String> list = new ArrayList<String>();
