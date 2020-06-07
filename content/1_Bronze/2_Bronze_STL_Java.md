@@ -1,3 +1,6 @@
+### Author: Darren Yao
+-> Mostly copy and pasted from chapter 4 of my book.
+
 # Data Structures
 
 A data structure determines how data is stored. (is it sorted? indexed? what operations does it support?) Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. This chapter introduces the data structures in the Java standard library that are frequently used in competitive programming.
