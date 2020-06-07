@@ -32,7 +32,7 @@ Binary search can be used on monotonic functions for a logarithmic runtime.
  Oftentimes used when you need to find the minimum or maximum of some quantity such that it satisfies some property.
  
   ### Tutorial
-  - [Introduction to USACO Section 12.1](https://www.overleaf.com/project/5e73f65cde1d010001224d8a)
+  - [Introduction to USACO Section 12.1](https://darrenyao.com/usacobook/java.pdf)
 ### Problems
 - [USACO Silver Cownvention](http://www.usaco.org/index.php?page=viewproblem2&cpid=858)
 - [USACO Silver Cow Dance](http://www.usaco.org/index.php?page=viewproblem2&cpid=690)
