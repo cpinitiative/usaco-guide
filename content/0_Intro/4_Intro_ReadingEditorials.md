@@ -1,7 +1,7 @@
 ---
 slug: /intro/reading-editorials
-title: When to Read Editorials
-author: Nathan Wang
+title: When to Read Editorials (Analyses)
+author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
 order: 4
 ---
 
@@ -10,20 +10,27 @@ is challenging. Below are the opinions of various individuals.
 
 <!-- END DESCRIPTION -->
 
-Note that "give up" is in quotes, because one still learns when they "give up"
-and read an editorial!
+Note that "give up" is in quotes, because one still learns when they "give up" and read an editorial!
 
 ## Benjamin Qi
 
-> I usually read editorials after 1 second, so I can find what wrong solution the authors have because if I can't solve a problem in 1 second it's broken
+If you're still coming up with new ideas, keep thinking. Otherwise, you have several options:
+- Look at [part of] the solution. (If CodeForces, look at the tags.)
+- Leave it for a while and do something else if you actually want to solve it on your own.
+- Get a hint from someone else.
 
-/s
+I'm impatient, so usually I go with the first option. Sometimes I end up reading an editorial before reading the statement, but idk if this is a good strategy. :/ 
 
-@benqorz
+In any case, if you thought about a problem a lot during a contest but didn't end up solving it, then I don't see any reason not to read the editorial when it comes out (vs. continuing to think about it on your own). Also, you should always implement the solution afterwards!
 
 ## William Lin
 
-@tmworz
+> I follow three guidelines (from most important to least important)
+> 1. Having fun, just doing whatever you feel like doing
+> 2. Spend about the same amount of time that you would be able to during a real contest
+> 3. Whether you are making progress or not
+
+Feel free to not listen to William Lin's suggestions as he is not very good himself.
 
 ## Eric Wei
 
@@ -57,3 +64,8 @@ My justification for why I think it's okay to give up so early is as follows:
 
 Overall, I would just say to "give up" when you feel like giving up, whether that's
 in five hours or in 15 minutes :)
+
+## Nathan Chen
+
+Read the editorial when you feel like you've stopped making progress; that could be from 1 to 5 hours. However, the most important part about reading the editorial is that you understand the topic and try to think about what similar problems look like. Being generally curious is a good way to practice algorithmic thinking.
+
