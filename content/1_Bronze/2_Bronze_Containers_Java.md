@@ -15,9 +15,9 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 Collections data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
 
 # Dynamic Arrays
-You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays (`ArrayList` in Java) that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
+You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays (`ArrayList` in Java) that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in O(1) time.
 
-For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+For example, the following code creates a dynamic array and adds the numbers 1 through 10 to it:
 ```
 ArrayList<Integer> list = new ArrayList<Integer>();
 for(int i = 1; i <= 10; i++){
@@ -25,12 +25,12 @@ for(int i = 1; i <= 10; i++){
 }
 ```
 
-When declaring a dynamic array we can give it an initial size, so it doesn't resize itself as we add elements to it. The following code initializes an `ArrayList` with initial size $30$:
+When declaring a dynamic array we can give it an initial size, so it doesn't resize itself as we add elements to it. The following code initializes an `ArrayList` with initial size 30:
 ```
 ArrayList<Integer> list = new ArrayList<Integer>(30);
 ```
 
-However, we need to be careful that we only add elements to the end of the `ArrayList`; insertion and deletion in the middle of the `ArrayList` is $O(n)$.
+However, we need to be careful that we only add elements to the end of the `ArrayList`; insertion and deletion in the middle of the `ArrayList` is O(n).
 
 ```
 ArrayList<Integer> list = new ArrayList<Integer>();
@@ -67,7 +67,7 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 
 # Stacks
 
-A stack is a Last In First Out (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in $O(1)$ time. Think of it like a real-world stack of papers.
+A stack is a Last In First Out (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in O(1) time. Think of it like a real-world stack of papers.
 
 ```
 Stack<Integer> s = new Stack<Integer>();
@@ -80,7 +80,7 @@ System.out.println(s.size()); // 2
 ```
 
 # Queues
-A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in $O(1)$ time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows: `Queue q = new LinkedList(); ` .
+A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in O(1) time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows: `Queue q = new LinkedList(); ` .
 
 ```
 Queue<Integer> q = new LinkedList<Integer>();
@@ -92,7 +92,7 @@ System.out.println(q.peek()); // 3
 ```
 
 # Deques
-A deque (usually pronounced “deck”) stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+A deque (usually pronounced “deck”) stands for double ended queue and is a combination of a stack and a queue, in that it supports O(1) insertions and deletions from both the front and the back of the deque. In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
 
 ```
 ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
@@ -105,7 +105,7 @@ deque.removeLast(); // [1, 3]
 ```
 
 # Priority Queues
-A priority queue supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log n)$ time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. By default, the Priority Queue puts the lowest element at the front of the queue.
+A priority queue supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in O(\log n) time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. By default, the Priority Queue puts the lowest element at the front of the queue.
 
 ```
 PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
@@ -124,7 +124,7 @@ pq.add(6); // [7, 6, 5]
 A set is a collection of objects that contains no duplicates. There are two types of sets: unordered sets (`HashSet` in Java), and ordered set (`TreeSet` in Java).
 
 # Unordered Sets
-The unordered set works by hashing, which is assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order. The operations on an unordered set are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
+The unordered set works by hashing, which is assigning a unique code to every variable/object which allows insertions, deletions, and searches in O(1) time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order. The operations on an unordered set are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
 
 ```
 HashSet<Integer> set = new HashSet<Integer>();
@@ -146,7 +146,7 @@ for(int element : set){
 ```
 # Ordered Set
 
-The second type of set data structure is the ordered or sorted set. Insertions, deletions, and searches on the ordered set require $O(\log n)$ time, based on the number of elements in the set. As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
+The second type of set data structure is the ordered or sorted set. Insertions, deletions, and searches on the ordered set require O(\log n) time, based on the number of elements in the set. As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
 
 ```
 TreeSet<Integer> set = new TreeSet<Integer>();
@@ -163,14 +163,14 @@ set.remove(set.higher(6)); // [1, 2, 14]
 System.out.println(set.higher(23); // ERROR, no such element exists
 ```
 
-The primary limitation of the ordered set is that we can't efficiently access the $k$th largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an order statistic tree, but that is beyond the scope of this book.
+The primary limitation of the ordered set is that we can't efficiently access the kth largest element in the set, or find the number of elements in the set greater than some arbitrary x. These operations can be handled using a data structure called an order statistic tree, but that is beyond the scope of this book.
 
 # Maps
-A map is a set of ordered pairs, each containing a key and a value. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: one to add a specified key-value pairing, one to retrieve the value for a given key, and one to remove a key-value pairing from the map. Like sets, maps can be unordered (`HashSet` in Java) or ordered (`TreeSet` in Java). In an unordered map, hashing is used to support $O(1)$ operations. In an ordered map, the entries are sorted in order of key. Operations are $O(\log n)$, but accessing or removing the next key higher or lower than some input `k` is also supported.
+A map is a set of ordered pairs, each containing a key and a value. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: one to add a specified key-value pairing, one to retrieve the value for a given key, and one to remove a key-value pairing from the map. Like sets, maps can be unordered (`HashSet` in Java) or ordered (`TreeSet` in Java). In an unordered map, hashing is used to support O(1) operations. In an ordered map, the entries are sorted in order of key. Operations are O(\log n), but accessing or removing the next key higher or lower than some input `k` is also supported.
 
 
 # Unordered Maps
-In the unordered map, the `put(key, value) method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `{containsKey(key)} method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+In the unordered map, the `put(key, value) method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `{containsKey(key)} method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are O(1), but again, due to the hashing, this has a high constant factor.
 
 ```
 HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
@@ -230,5 +230,7 @@ static void remove(int x){
 ```
 
 The first, last, higher, and lower operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
+
+
 
 
