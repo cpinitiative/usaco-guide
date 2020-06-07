@@ -290,8 +290,7 @@ Important Functions:
 - `set.erase(val)`: Erases **all instances** of `val` from the (multi)set.
 - `set.erase(set.find(val))`: Erases **one instance** of `val` from the multiset.
 
-**Multiset Warning:** If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather
-than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
+**Multiset Warning:** If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
 
 Example:
 
