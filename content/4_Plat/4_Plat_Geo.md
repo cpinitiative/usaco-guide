@@ -15,21 +15,50 @@ You should know basic operations like cross product and dot product. For platinu
 
 ### Tutorial
 
- - CPH 29, 30.1
- - [TopCoder](https://www.topcoder.com/community/competitive-programming/tutorials/geometry-concepts-basic-concepts/)
+ - [CPC.12](https://github.com/SuprDewd/T-414-AFLV/tree/master/12_geometry)
+   - basic geometry
+   - convex hulls
+   - polygon area
+   - point in polygon
+   - closest pair of points
+ - CPH 29
+ - [TopCoder - Basic Geometry Concepts](https://www.topcoder.com/community/competitive-programming/tutorials/geometry-concepts-basic-concepts/)
  - [CF - Point Class](https://codeforces.com/blog/entry/48122)
  - [C++ - std::complex](https://codeforces.com/blog/entry/22175)
- - [cp-algo - "Elementary Operations"](https://cp-algorithms.com/)
- - [vlecomte - geo book](https://codeforces.com/blog/entry/59129)
+ - [cp-algo - Geometry: "Elementary Operations"](https://cp-algorithms.com/)
+ - [vlecomte - Geometry Handbook](https://codeforces.com/blog/entry/59129)
  - [My Templates](https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives)
+
+### Problems
+
+ - Template Testing
+   - [Kattis Segment Distance](https://open.kattis.com/problems/segmentdistance)
+   - [Kattis Segment Intersection](https://open.kattis.com/problems/segmentintersection)
+   - [Kattis Point in Polygon](https://open.kattis.com/problems/pointinpolygon)
+   - [Kattis Polygon Area](https://open.kattis.com/problems/polygonarea)
+   - [Kattis Max Collinear](https://open.kattis.com/problems/maxcolinear)
+ - Misc
+   - [Arpa & Geo](http://codeforces.com/problemset/problem/851/B)
+   - [Tell Your World](http://codeforces.com/problemset/problem/849/B)
+   - [Gleb & Pizza](http://codeforces.com/problemset/problem/842/B)
+   - [Birthday Cake](https://open.kattis.com/problems/birthdaycake)
+   - [Racing Off Track](https://open.kattis.com/contests/acpc17open/problems/racingofftrack)
+   - [TopCoder Watchtower](https://community.topcoder.com/stat?c=problem_statement&pm=2014&rd=4685)
 
 ## Sweep Line
 
+### Tutorial
+
+ - CPH 30
  - [TopCoder Line Sweep](https://www.topcoder.com/community/competitive-programming/tutorials/line-sweep-algorithms/)
+
+### Problems
+
  - [Cow Steepchase II (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=943)
    - :|
+ - [Kattis Closest Pair](https://open.kattis.com/problems/closestpair2)
 
-## Convex Hull
+## [Convex Hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms)
 
  - [Kattis Convex Hull](https://open.kattis.com/problems/convexhull)
 
@@ -49,55 +78,19 @@ You should know basic operations like cross product and dot product. For platinu
  - [USACO Plat Falling](http://www.usaco.org/index.php?page=viewproblem2&cpid=998)
  - [USACO Old Gold - Fencing](http://www.usaco.org/index.php?page=viewproblem2&cpid=534)
  - [USACO Old Gold - Cow Curling](http://www.usaco.org/index.php?page=viewproblem2&cpid=382)
+ - [Kattis Fence Orthogonality](https://open.kattis.com/problems/fenceortho)
  - [AGC 44 Random Pawn](https://atcoder.jp/contests/agc044/tasks/agc044_e)
    - Generalization of "Balance"
 
-(old)
+## Half-Plane Intersection / Convex Stuff
 
+ - [Blogewoosh (Half-Plane Intersection w/ Ternary Search)](https://codeforces.com/blog/entry/61710)
+ - [retrograd Half-Plane Intersection](https://codeforces.com/blog/entry/61710?#comment-457662)
+ - [Petr (Linear Half-Plane Intersection)](https://petr-mitrichev.blogspot.com/2016/07/a-half-plane-week.html)
+ - [KACTL LineContainer](https://github.com/kth-competitive-programming/kactl/blob/master/content/data-structures/LineContainer.h)
+ - [Lichao Segment Tree](http://codeforces.com/blog/entry/51275?#comment-351510)
 
-[CPC.12](https://github.com/SuprDewd/T-414-AFLV/tree/master/12_geometry)
+### Problems
 
-## 4
-
-  * Misc Stuff to Know
-    * Topics
-      * std::complex, pair operators
-      * Closest Pair
-      * MaxCollinear
-      * Point in Polygon
-      * Polygon Area
-      * Line Segment Intersection
-    * Tutorial  
-      * [TopCoder](https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-basic-concepts/)
-      * [Point Class](http://codeforces.com/blog/entry/48122)
-      * [Easy Geo w/ std::complex](http://codeforces.com/blog/entry/22175)
-      * [Geo Book](http://codeforces.com/blog/entry/59129)
-      * CPH (29, Geometry)
-    * Problems
-      * [Arpa & Geo](http://codeforces.com/problemset/problem/851/B)
-      * [Tell Your World](http://codeforces.com/problemset/problem/849/B)
-      * [Gleb & Pizza](http://codeforces.com/problemset/problem/842/B)
-      * [Birthday Cake](https://open.kattis.com/problems/birthdaycake)
-      * [Racing Off Track](https://open.kattis.com/contests/acpc17open/problems/racingofftrack)
-      * [TopCoder Watchtower](https://community.topcoder.com/stat?c=problem_statement&pm=2014&rd=4685)
-  * Convex Hull
-    * Tutorial
-      * CPH (30, Sweep Line Algorithms)
-      * [TopCoder Line Sweep](https://www.topcoder.com/community/data-science/data-science-tutorials/line-sweep-algorithms/)
-    * Topics
-      * Convex Hull
-        * [Wikipedia](https://en.wikipedia.org/wiki/Convex_hull_algorithms)
-        * Andrew's Monotone Chain (I prefer)
-        * Graham Scan
-      * Additional
-        * [Lichao Segment Tree](http://codeforces.com/blog/entry/51275?#comment-351510)
-      * Half-Plane Intersection
-        * [Blogewoosh (Ternary Search)](https://codeforces.com/blog/entry/61710)
-        * [retrograd](https://codeforces.com/blog/entry/61710?#comment-457662)
-        * [Petr (Linear](https://petr-mitrichev.blogspot.com/2016/07/a-half-plane-week.html)
-        * LineContainer
-          * maintaining separate ones for bottom and top hulls should suffice?
-    * Problem(s)
-      * [Bridges](https://csacademy.com/contest/archive/task/building-bridges/)
-      * [Fence Orthogonality](https://open.kattis.com/problems/fenceortho)
-      * [A2OJ](https://a2oj.com/category?ID=22)
+ - [Bridges](https://csacademy.com/contest/archive/task/building-bridges/)
+   - direct application of LineContainer

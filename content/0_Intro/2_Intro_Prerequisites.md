@@ -11,6 +11,8 @@ Here's what you should learn before reading these resources.
  
 These resources do not teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
 
+Familiarity with contest math (ex. AIME qualification) is helpful but not required.
+
 Expected Knowledge:
 
 - Variables
@@ -25,34 +27,22 @@ Expected Knowledge:
 - Arrays
   - Multidimensional Arrays
 
-## Resources for Learning to Code
+## Introductory Resources
+
+### Learning to Code
 
 [Sololearn](https://www.sololearn.com/) has courses on C++, Java, and Python. You don't have to complete the full course.
 
-- For C++, we recommend you finish Sololearn up to (but not including) "More on Classes."
-
-## Using C++
+ - For C++, we recommend you finish Sololearn up to (but not including) "More on Classes."
 
 [[info | Pro Tip]]
 | You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
 
-<div class="h-2"></div>
+### Getting Started
 
-Here's a basic C++ template you may find useful:
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-int main() {
-    // these two lines open the file into the standard input/output,
-    // so you can just use cin/cout.
-    freopen("file.in", "r", stdin);
-    freopen("file.out", "w", stdout);
-
-    // Code goes here!!
-
-    return 0;
-}
-```
+  - [CodeSignal](https://codesignal.com/)
+    - good place to practice basics
+  - [IOI: Getting Started](https://ioinformatics.org/page/getting-started/14)
+  - [Philippines OI: Prepare](https://noi.ph/prepare/)
+  - [Schedule for Beginners](https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners)
+  - [E869120 Tutorial](http://codeforces.com/blog/entry/53341)

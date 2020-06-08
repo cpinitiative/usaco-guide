@@ -190,15 +190,18 @@ int main() {
 ## Problems
 
   - [Moving Haybales (USACO Camp)](https://probgate.org/viewproblem.php?pid=247)
+  	- similar to "Potatoes"
   - [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
     - same as "Potatoes"
   - [Stock Trading (USACO Camp)](https://probgate.org/viewproblem.php?pid=531&cid=81)
     - extension of "Buy Low Sell High"
-  - [Bookface](https://codeforces.com/group/ZFgXbZSjvp/contest/274852/problem/C)
+  - [Bookface](https://codeforces.com/gym/102576/problem/C)
   - [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
+    - basically same as Bookface
   - [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)
   - [Moving Walkways](https://codeforces.com/contest/1209/problem/H)
   - [April Fools' Problem](https://codeforces.com/contest/802/problem/O)
+    - binary search on top of slope trick
   - [Conquer the World](https://icpc.kattis.com/problems/conquertheworld)
-    - note: ICPC world finals, 0 solves in contest
+    - ICPC world finals, 0 solves in contest
     - "Potatoes" on tree!!

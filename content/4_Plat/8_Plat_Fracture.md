@@ -295,6 +295,7 @@ int main() {
 
 ## Other Problems
 
- - [Baltic OI 2019 - Olympiads](https://cses.fi/248/submit/D)
+ - [Baltic OI 2019 - Olympiads](https://cses.fi/248/list/)
+   - Each state has $\le K$ children.
  - [CCO 20 Shopping Plans](https://dmoj.ca/problem/cco20p6)
    - Generalization of Robotic Cow Herd

@@ -18,11 +18,12 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 
 ## Tutorial
 
-(BFS Implementation?)
-
  - CPH 16.1, 16.2
+   - DFS
  - [cp-algorithms](https://cp-algorithms.com/graph/topological-sort.html)
+   - DFS
  - [CSAcademy](https://csacademy.com/lesson/topological_sorting)
+   - both BFS, DFS
 
 ## Problems
 

@@ -5,18 +5,16 @@ author: Benjamin Qi
 order: 5
 ---
 
-Helpful Links! Some (especially CPH) will be mentioned again in later modules.
+Helpful Links! Some (such as CPH and Intro to USACO) will be mentioned again in later modules.
 
 <!-- END DESCRIPTION -->
 
-Use [clist.by](https://clist.by/coder/bqi343/) to track your progress!
-
-### Lists
+## Lists
 
   * [USACO Resources Page](http://www.usaco.org/index.php?page=resources)
   * [Awesome List (Inishan)](http://codeforces.com/blog/entry/23054)
 
-### Books
+## Books
 
   * [Competitive Programmer's Handbook (CPH)](https://cses.fi/book/book.pdf)
     * The [CSES problemset](https://cses.fi/problemset/) (now at 200 problems) is quite good!
@@ -31,17 +29,19 @@ Use [clist.by](https://clist.by/coder/bqi343/) to track your progress!
     * [Competitive Programming 4](https://cpbook.net/) is the latest edition of the book (with significant additions) but costs money.
       * Release date is July 19th, 2020.
   * [Samuel Hsiang - CS Guide](https://github.com/alwayswimmin/cs_guide)
+    * [TJSCT](https://activities.tjhsst.edu/sct/)
+    * [TJIOI](https://github.com/tjsct/tjioi-study-guide)
   * [Principles of Algorithmic Problem Solving](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
   * [Cracking the Coding Interview](http://www.crackingthecodinginterview.com/) is a good book specifically for programming interviews (it is not needed for USACO).
 
-### Courses
+## Courses
 
   * [Competitive Programming Course (SuprDewd)](https://github.com/SuprDewd/T-414-AFLV)
   * [Cousera Algorithms Pt 1 (and Pt 2)](https://www.coursera.org/learn/algorithms-part1)
   * [Carnegie-Mellon ICPC](https://contest.cs.cmu.edu/295/f17/)
   * [VPlanet](https://vplanetcoding.com/)
 
-### Algorithm Collections
+## Algorithm Collections
 
   * [CSAcademy](https://csacademy.com/lessons/)
   * [cp-algorithms](https://cp-algorithms.com/)
@@ -49,3 +49,4 @@ Use [clist.by](https://clist.by/coder/bqi343/) to track your progress!
   * [bqi343 Github](https://github.com/bqi343/USACO)
   * [Topcoder Tutorials](http://www.topcoder.com/community/data-science/data-science-tutorials/)
   * [List of CF Tutorials](http://codeforces.com/blog/entry/57282)
+  * [ekzlib](http://ekzlib.herokuapp.com)

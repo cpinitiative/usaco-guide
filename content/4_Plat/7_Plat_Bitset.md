@@ -180,5 +180,5 @@ Again, the intended solution runs in $O(N^3)$. Of course, it is still possible t
 
 Using operations such as `_Find_first()` and `_Find_next()` mentioned in Errichto's blog above, you can speed up the following:
 
- * BFSing through a dense graph with $N$ vertices in $O(N^2)$
- * bipartite matching in $O(N^3)$
+ - BFSing through a dense graph with $N$ vertices in $O(N^2)$
+ - bipartite matching in $O(N^3)$

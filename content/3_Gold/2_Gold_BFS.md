@@ -12,8 +12,6 @@ Compute shortest paths where all edge weights are 1.
 
 <!-- END DESCRIPTION -->
 
-## Breadth First Search
-
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
 
 ### Tutorial
@@ -29,5 +27,6 @@ Compute shortest paths where all edge weights are 1.
  - [CSAcademy BFS-DFS](https://csacademy.com/contest/round-41/task/bfs-dfs/) [](50)
  - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
  - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)
+   - bad problem ...
  - [Lasers](http://www.usaco.org/index.php?page=viewproblem2&cpid=671)
  - [Monsters](https://cses.fi/problemset/task/1194)

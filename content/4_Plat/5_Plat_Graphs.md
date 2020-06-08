@@ -18,7 +18,6 @@ Note: all except the third have not appeared on a recent USACO contest.
 
 *Some problems sourced from [here](http://codeforces.com/blog/entry/54526?#comment-385354).*
 
-
 ## Eulerian Tours
 
 Has not appeared on a recent USACO contest.
