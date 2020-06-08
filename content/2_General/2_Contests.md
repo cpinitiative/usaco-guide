@@ -5,6 +5,10 @@ author: Benjamin Qi
 order: 2
 ---
 
+Contests that I participate in, as well as a few tools.
+
+<!-- END DESCRIPTION -->
+
 See [clist.by](https://clist.by/coder/bqi343/) for an extensive list. Most of the contests which I do are a subset of those shown in "Programming Contests.png". A link to my google calendar for contests is available [here.](https://calendar.google.com/calendar?cid=Y2s5ZjdmZDBkNjdmOGFxZ2oxbDVrMHJ1OGtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) See the other page for olympiads such as USACO.
 
 Make sure to [upsolve](https://en.wiktionary.org/wiki/upsolve) after the contest ends! I particularly enjoy problems from AtCoder and CSAcademy. :)
