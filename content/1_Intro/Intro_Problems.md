@@ -18,8 +18,6 @@ Let's begin by solving a few fun problems! The following problems require relati
 
 Do as many as you want, then move on! You do not have to do all of them.
 
-<!-- END DESCRIPTION -->
-
 ## Problems
 
 - [Promotion Counting](http://usaco.org/index.php?page=viewproblem2&cpid=591)

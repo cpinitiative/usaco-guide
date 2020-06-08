@@ -47,31 +47,38 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     },
   });
   createPage({
-    path: "/bronze",
+    path: "/general",
     component: syllabusTemplate,
     context: {
       division: 1
     },
   });
   createPage({
-    path: "/silver",
+    path: "/bronze",
     component: syllabusTemplate,
     context: {
       division: 2
     },
   });
   createPage({
-    path: "/gold",
+    path: "/silver",
     component: syllabusTemplate,
     context: {
       division: 3
     },
   });
   createPage({
-    path: "/plat",
+    path: "/gold",
     component: syllabusTemplate,
     context: {
       division: 4
+    },
+  });
+  createPage({
+    path: "/plat",
+    component: syllabusTemplate,
+    context: {
+      division: 5
     },
   });
 };

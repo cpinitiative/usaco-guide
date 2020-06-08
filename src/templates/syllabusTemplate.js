@@ -28,25 +28,28 @@ export default function Template(props) {
   const data = props.data;
 
   const introModules = data.introModules.edges;
+  const generalModules = data.generalModules.edges;
   const bronzeModules = data.bronzeModules.edges;
   const silverModules = data.silverModules.edges;
   const goldModules = data.goldModules.edges;
   const platModules = data.platModules.edges;
-  const modules = [introModules, bronzeModules, silverModules, goldModules, platModules];
+  const modules = [introModules, generalModules, bronzeModules, silverModules, goldModules, platModules];
 
   const [selectedDivision, setSelectedDivision] = React.useState(props.pathContext.division);
-  const colors = ["blue", "orange", "teal", "yellow", "purple"];
+  const colors = ["blue", "pink", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
   const module = modules[selectedDivision];
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
   bg-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:shadow-outline-blue
+  bg-pink-500 hover:bg-pink-50 hover:text-pink-600 focus:shadow-outline-pink
   bg-orange-500 hover:bg-orange-50 hover:text-orange-600 focus:shadow-outline-orange
   bg-teal-500 hover:bg-teal-50 hover:text-teal-600 focus:shadow-outline-teal
   bg-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 focus:shadow-outline-yellow
   bg-purple-500 hover:bg-purple-50 hover:text-purple-600 focus:shadow-outline-purple
   border-blue-500 text-blue-600 focus:text-blue-800 focus:border-blue-700 border-blue-300 focus:border-blue-300 text-blue-500 text-blue-300 bg-blue-600
+  border-pink-500 text-pink-600 focus:text-pink-800 focus:border-pink-700 border-pink-300 focus:border-pink-300 text-pink-500 text-pink-300 bg-pink-600
   border-orange-500 text-orange-600 focus:text-orange-800 focus:border-orange-700 border-orange-300 focus:border-orange-300 text-orange-500 text-orange-300 bg-orange-600
   border-teal-500 text-teal-600 focus:text-teal-800 focus:border-teal-700 border-teal-300 focus:border-teal-300 text-teal-500 text-teal-300 bg-teal-600
   border-yellow-500 text-yellow-600 focus:text-yellow-800 focus:border-yellow-700 border-yellow-300 focus:border-yellow-300 text-yellow-500 text-yellow-300 bg-yellow-600
@@ -59,7 +62,7 @@ export default function Template(props) {
 
   const handleDivisionChange = d => {
     setSelectedDivision(d);
-    const divisions = ["intro", "bronze", "silver", "gold", "plat"];
+    const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
     window.history.pushState(null, "", `/${divisions[d]}/`);
   };
 
@@ -77,7 +80,7 @@ export default function Template(props) {
               <defs>
                 <pattern id="f210dbf6-a58d-4871-961e-36d5016a0f49" x={0} y={0} width={20} height={20}
                          patternUnits="userSpaceOnUse">
-                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500`} fill="currentColor" />
+                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
                 </pattern>
               </defs>
               <rect width={404} height={784} fill="url(#f210dbf6-a58d-4871-961e-36d5016a0f49)" />
@@ -88,7 +91,7 @@ export default function Template(props) {
               <defs>
                 <pattern id="5d0dd344-b041-4d26-bec4-8d33ea57ec9b" x={0} y={0} width={20} height={20}
                          patternUnits="userSpaceOnUse">
-                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500`} fill="currentColor" />
+                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
                 </pattern>
               </defs>
               <rect width={404} height={784} fill="url(#5d0dd344-b041-4d26-bec4-8d33ea57ec9b)" />
@@ -108,7 +111,7 @@ export default function Template(props) {
               <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                 <div className="rounded-md shadow">
                   <a href="#content"
-                     className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10`}>
+                     className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-300 ease-in-out md:py-4 md:text-lg md:px-10`}>
                     Get Started
                   </a>
                 </div>
@@ -129,10 +132,11 @@ export default function Template(props) {
                       value={selectedDivision}
               >
                 <option value={0}>Intro</option>
-                <option value={1}>Bronze</option>
-                <option value={2}>Silver</option>
-                <option value={3}>Gold</option>
-                <option value={4}>Platinum</option>
+                <option value={1}>General</option>
+                <option value={2}>Bronze</option>
+                <option value={3}>Silver</option>
+                <option value={4}>Gold</option>
+                <option value={5}>Platinum</option>
               </select>
             </div>
             <div className="hidden sm:block border-b border-gray-200">
@@ -142,24 +146,29 @@ export default function Template(props) {
                       className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
                   Intro
                 </a>
+                <a href="/general"
+                   onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
+                   className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
+                  General
+                </a>
                 <a href="/bronze"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
-                      className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
+                      onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
+                      className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}>
                   Bronze
                 </a>
                 <a href="/silver"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
-                      className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}>
+                      onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
+                      className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
                   Silver
                 </a>
                 <a href="/gold"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
-                      className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
+                      onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
+                      className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
                   Gold
                 </a>
                 <a href="/plat"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
-                      className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
+                      onClick={e => {e.preventDefault(); handleDivisionChange(5)}}
+                      className={selectedDivision === 5 ? selectedTabClasses : unselectedTabClasses}>
                   Platinum
                 </a>
               </nav>
@@ -182,7 +191,7 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query {
-    introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/0_Intro/"}}) {
+    introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/1_Intro/"}}) {
       edges {
         node {
           id
@@ -198,7 +207,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    bronzeModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/1_Bronze/"}}) {
+    generalModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/2_General/"}}) {
       edges {
         node {
           id
@@ -214,7 +223,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    silverModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/2_Silver/"}}) {
+    bronzeModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/3_Bronze/"}}) {
       edges {
         node {
           id
@@ -230,7 +239,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    goldModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/3_Gold/"}}) {
+    silverModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/4_Silver/"}}) {
       edges {
         node {
           id
@@ -246,7 +255,23 @@ export const pageQuery = graphql`
         }
       }
     }
-    platModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/4_Plat/"}}) {
+    goldModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/5_Gold/"}}) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            slug
+            author
+            problems
+            order
+            prerequisites
+          }
+          excerptAst
+        }
+      }
+    }
+    platModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/6_Plat/"}}) {
       edges {
         node {
           id

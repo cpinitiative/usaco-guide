@@ -22,11 +22,12 @@ export default function Template({
   const prereqs = markdownRemark.frontmatter.prerequisites;
 
   let division = 0;
-  if (markdownRemark.frontmatter.slug.includes("/bronze/")) division = 1;
-  if (markdownRemark.frontmatter.slug.includes("/silver/")) division = 2;
-  if (markdownRemark.frontmatter.slug.includes("/gold/")) division = 3;
-  if (markdownRemark.frontmatter.slug.includes("/plat/")) division = 4;
-  const divisions = ["intro", "bronze", "silver", "gold", "plat"];
+  if (markdownRemark.frontmatter.slug.includes("/general/")) division = 1;
+  if (markdownRemark.frontmatter.slug.includes("/bronze/")) division = 2;
+  if (markdownRemark.frontmatter.slug.includes("/silver/")) division = 3;
+  if (markdownRemark.frontmatter.slug.includes("/gold/")) division = 4;
+  if (markdownRemark.frontmatter.slug.includes("/plat/")) division = 5;
+  const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
   return (
     <Layout>
       <div className="max-w-4xl mx-auto my-8">
