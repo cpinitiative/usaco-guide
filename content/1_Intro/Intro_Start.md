@@ -1,15 +1,13 @@
 ---
 slug: /intro/getting-started
 title: Getting Started
-author: Nathan Wang
-order: 1
+author: Nathan Wang, Benjamin Qi
+order: 2
 ---
 
-
-<ul class="syllabus-only">
-  <li>Contest Format</li>
-  <li>Choosing a Language</li>
-</ul>
+ - Introduction
+ - Contest Format
+ - Choosing a Language
 
 <!-- END DESCRIPTION -->
 
@@ -22,6 +20,9 @@ Todo:
 In competitive programming contests, one must solve well-defined problems by writing computer programs under specified constraints ([Wikipedia](https://en.wikipedia.org/wiki/Competitive_programming)). Typically, the most popular language is C++, followed by Java and Python.
 
 [William Lin video!!](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
+
+## Contest Format
+
 
 ## Choosing a Language
 
@@ -38,7 +39,7 @@ Note: A majority of high level contestants use C++ and Java. Between those, C++ 
 
 Keep in mind that it's easy to switch languages down the road! Don't get caught up on which language to choose. Just pick the one you feel most comfortable with!
 
-## Language References (provided at IOI)
+### Language References (provided at IOI)
 
  - [C++](https://en.cppreference.com/w/)
    - [Additional C++ reference (not provided at IOI)](http://www.cplusplus.com/)

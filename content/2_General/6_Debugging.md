@@ -1,3 +1,10 @@
+---
+slug: /general/debugging
+title: Debugging
+author: ?
+order: 6
+---
+
 (compilation flags)
 
 (printing)

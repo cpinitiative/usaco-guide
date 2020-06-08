@@ -1,3 +1,50 @@
+---
+slug: /intro/running-cpp
+title: Running C++
+author: Nathan Wang, Benjamin Qi
+order: 4
+---
+
+Running C++ both online and locally.
+
+<!-- END DESCRIPTION -->
+
+### Online
+
+ * [CSAcademy](https://csacademy.com/workspace/)
+	 * I used this a lot until the queue time limits got rlly annoying
+ * [Ideone](http://ideone.com/)
+	 * seems okay if you use an ad blocker
+	 * sometimes randomly erases your code when you first create it (so get in the habit of copying your code before creating it :P)
+
+## Running C++ Locally
+
+(todo)
+
+## Using C++
+
+<div class="h-2"></div>
+
+Here's a basic C++ template you may find useful:
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    // these two lines open the file into the standard input/output,
+    // so you can just use cin/cout.
+    freopen("file.in", "r", stdin); // read from file.in
+    freopen("file.out", "w", stdout); // write to file.out
+
+    // Code goes here!!
+
+}
+```
+
+(old)
+
 # C++
 
 ## Command Line (Mac)
@@ -87,14 +134,6 @@ Maybe the following links are helpful?
 
 ## Tools
 
-### Online
-
- * [CSAcademy](https://csacademy.com/workspace/)
-	 * I used this a lot until the queue time limits got rlly annoying
- * [Ideone](http://ideone.com/)
-	 * seems okay if you use an ad blocker
-	 * sometimes randomly erases your code when you first create it (so get in the habit of copying your code before creating it :P)
-
 ### Local IDEs
 
  * [Geany](https://www.geany.org/)
@@ -114,11 +153,6 @@ Maybe the following links are helpful?
  * [Atom](https://atom.io/)
 
 ## Useful Links
-
-### Reference
-
- * [cplusplus](http://www.cplusplus.com/reference/)
- * [cppreference](http://en.cppreference.com/w/)
 
 ### Other
 

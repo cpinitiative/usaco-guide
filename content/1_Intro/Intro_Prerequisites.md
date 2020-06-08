@@ -2,7 +2,7 @@
 slug: /intro/prerequisites
 title: Prerequisites
 author: Nathan Wang
-order: 2
+order: 3
 ---
 
 Here's what you should learn before reading these resources.
@@ -38,7 +38,7 @@ Expected Knowledge:
 [[info | Pro Tip]]
 | You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
 
-### Getting Started
+### Resources for Getting Started
 
   - [CodeSignal](https://codesignal.com/)
     - good place to practice basics

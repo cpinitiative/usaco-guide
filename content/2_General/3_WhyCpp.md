@@ -1,11 +1,13 @@
 ---
-slug: /intro/why-cpp
+slug: /general/why-cpp
 title: Why C++?
 author: Benjamin Qi
-order: 1
+order: 3
 ---
 
-A few reasons why choice of language matters significantly outside of bronze.
+A few reasons why choice of language matters significantly (outside of Bronze).
+
+<!-- END DESCRIPTION -->
 
 ## Time Limit
 

@@ -1,8 +1,8 @@
 ---
-slug: /intro/reading-editorials
+slug: /general/reading-editorials
 title: When to Read Editorials (Analyses)
 author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
-order: 4
+order: 5
 ---
 
 Knowing when to "give up" on a problem and start reading the problem's editorial

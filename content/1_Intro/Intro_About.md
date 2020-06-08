@@ -5,6 +5,11 @@ author: Nathan Wang, Benjamin Qi
 order: 1
 ---
 
+ - Goals
+ - Module Organization
+
+<!-- END DESCRIPTION -->
+
 ## Goals
 
  - Intended audience: anybody in Bronze - Gold.

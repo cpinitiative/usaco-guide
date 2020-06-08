@@ -1,8 +1,8 @@
 ---
-slug: /intro/contests
+slug: /general/contests
 title: Contests
 author: Benjamin Qi
-order: 5
+order: 2
 ---
 
 See [clist.by](https://clist.by/coder/bqi343/) for an extensive list. Most of the contests which I do are a subset of those shown in "Programming Contests.png". A link to my google calendar for contests is available [here.](https://calendar.google.com/calendar?cid=Y2s5ZjdmZDBkNjdmOGFxZ2oxbDVrMHJ1OGtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) See the other page for olympiads such as USACO.

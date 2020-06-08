@@ -7,7 +7,7 @@ problems:
  - bronze_word
  - bronze_paint
  - bronze_square
-order: 3
+order: 5
 ---
 
 Demonstrates how to read in input and print output for a USACO problem in multiple languages. Also lists some introductory USACO Bronze problems.
