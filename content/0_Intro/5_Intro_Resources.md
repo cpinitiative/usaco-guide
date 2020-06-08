@@ -5,7 +5,7 @@ author: Benjamin Qi
 order: 5
 ---
 
-Helpful Links!!
+Helpful Links! Some (especially CPH) will be mentioned again in later modules.
 
 <!-- END DESCRIPTION -->
 
@@ -19,9 +19,13 @@ Use [clist.by](https://clist.by/coder/bqi343/) to track your progress!
 ### Books
 
   * [Competitive Programmer's Handbook (CPH)](https://cses.fi/book/book.pdf)
-    * The [problemset](https://cses.fi/problemset/) (now at 200 problems) is quite good!
+    * The [CSES problemset](https://cses.fi/problemset/) (now at 200 problems) is quite good!
     * [Guide to Competitive Programming](https://www.amazon.com/Guide-Competitive-Programming-Algorithms-Undergraduate/dp/3319725467) is a paid book based off CPH
       * Can currently download PDF [for free](https://link.springer.com/book/10.1007/978-3-319-72547-5)!
+  * Intro to USACO (Darren Yao) 
+    * Bronze, Silver
+    * [Java](http://darrenyao.com/usacobook/java.pdf)
+    * [C++](http://darrenyao.com/usacobook/cpp.pdf)
   * Competitive Programming Book (Steven, Felix)
     * [Competitive Programming Book 1](http://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf) is freely available but old
     * [Competitive Programming 4](https://cpbook.net/) is the latest edition of the book (with significant additions) but costs money.
