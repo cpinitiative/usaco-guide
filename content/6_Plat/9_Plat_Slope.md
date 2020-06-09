@@ -26,9 +26,7 @@ From the latter link (modified):
 
 It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick.
 
-## A Simple Example
-
-[CF Buy Low Sell High](https://codeforces.com/contest/866/problem/D)
+## [Buy Low Sell High](https://codeforces.com/contest/866/problem/D)
 
 **Slow Solution**: Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This easily leads to an $O(N^2)$ DP. 
 
@@ -44,7 +42,7 @@ We'll process the shares in order. Suppose that on the current day shares are wo
 
 (insert example)
 
-The implementation is quite simple; simply maintain a priority queue that allows you to pop the minimum element.
+The implementation is quite simple; maintain a priority queue that allows you to pop the minimum element.
 
 <details>
 
