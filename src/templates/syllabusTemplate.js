@@ -175,10 +175,10 @@ export default function Template(props) {
               </nav>
             </div>
 
-            <ol className="list-decimal list-inside py-8 px-8 text-lg space-y-1">
+            <ol className="list-inside py-8 px-8 text-lg space-y-1">
               {module.map(m => (
                 <li key={m.node.frontmatter.slug}>
-                  <Link className="ml-2 text-blue-600 underline" to={m.node.frontmatter.slug}>{m.node.frontmatter.title}</Link>
+                  {m.node.frontmatter.order}. <Link className="ml-2 text-blue-600 underline" to={m.node.frontmatter.slug}>{m.node.frontmatter.title}</Link>
                 </li>
               ))}
             </ol>
