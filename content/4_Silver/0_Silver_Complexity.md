@@ -1,7 +1,7 @@
 ---
 slug: /silver/complexity
-title: "Time & Space Complexity"
-author: Darren Yao
+title: "Time Complexity"
+author: Darren Yao, Benjamin Qi
 order: 0
 ---
 
@@ -113,12 +113,13 @@ Complexity factors that come from some common algorithms and data structures are
 - Mathematical formulas that just calculate an answer: $O(1)$
 - Unordered set/map: $O(1)$ per operation
 - Binary search: $O(\log n)$
-- Ordered set/map or priority queue: $O(log n)$ per operation
+- Ordered set/map or priority queue: $O(\log n)$ per operation
 - Prime factorization of an integer, or checking primality or compositeness of an integer naively: $O(\sqrt{n})$
 - Reading in $n$ items of input: $O(n)$
 - Iterating through an array or a list of $n$ elements: $O(n)$
-- Sorting: usually $O(n \log n)$ for default sorting algorithms (mergesort, for example Collections.sort or Arrays.sort on objects)
-- Java Quicksort Arrays.sort function on primitives on pathological worst-case data sets, don't use this in CodeForces rounds
+- Sorting: usually $O(n \log n)$ for default sorting algorithms (mergesort, for example `Collections.sort` or `Arrays.sort` on objects)
+- Java Quicksort `Arrays.sort` function on primitives: $O(n^2)$ 
+  - on pathological worst-case data sets, don't use this in CodeForces rounds
 - Iterating through all subsets of size $k$ of the input elements: $O(n^k)$. For example, iterating through all triplets is $O(n^3)$.
 - Iterating through all subsets: $O(2^n)$
 - Iterating through all permutations: $O(n!)$
@@ -126,16 +127,17 @@ Complexity factors that come from some common algorithms and data structures are
 
 Here are conservative upper bounds on the value of $n$ for each time complexity. You can probably get away with more than this, but this should allow you to quickly check whether an algorithm is viable.
 
-- $n$ | Possible complexities 
-- $n \le 10$ | $O(n!)$, $O(n^7)$, $O(n^6)$ 
-- $n \le 20$ | $O(2^n \cdot n)$, $O(n^5)$ 
-- $n \le 80$ | $O(n^4)$
-- $n \le 400$ | $O(n^3)$
-- $n \le 7500$ | $O(n^2)$
-- $n \le 7 \cdot 10^4$ | $O(n \sqrt n)$
-- $n \le 5 \cdot 10^5$ | $O(n \log n)$
-- $n \le 5 \cdot 10^6$ | $O(n)$
-- $n \le 10^{18}$ | $O(\log^2 n)$, $O(\log n)$, $O(1)$ 
+|    $n$                | Possible complexities               |
+| --------------------- | ----------------------------------- |
+| $n \le 10$            | $O(n!)$, $O(n^7)$, $O(n^6)$         |
+| $n \le 20$            | $O(2^n \cdot n)$, $O(n^5)$          |
+| $n \le 80$            | $O(n^4)$                            |
+| $n \le 400$           | $O(n^3)$                            |
+| $n \le 7500$          | $O(n^2)$                            |
+| $n \le 7 \cdot 10^4$  | $O(n \sqrt n)$                      |
+| $n \le 5 \cdot 10^5$  | $O(n \log n)$                       |
+| $n \le 5 \cdot 10^6$  | $O(n)$                              |
+| $n \le 10^{18}$       | $O(\log^2 n)$, $O(\log n)$, $O(1)$  |
 
 ## Other Resources
 

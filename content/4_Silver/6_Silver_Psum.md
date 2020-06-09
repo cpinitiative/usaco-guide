@@ -5,7 +5,7 @@ author: Eric Wei (incomplete)
 order: 6
 ---
 
-Given an array of size $N$, answer $Q$ queries of the following form: Find the sum of all elements between indices $i$ and $j$.
+> Given an array of size $N$, answer $Q$ queries of the following form: Find the sum of all elements between indices $i$ and $j$.
 
 <!-- END DESCRIPTION -->
 

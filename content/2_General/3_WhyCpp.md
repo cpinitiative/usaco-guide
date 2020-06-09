@@ -168,6 +168,65 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
 
     </details>
 
+    <details>
+    <summary>Comparable C++ Solution (< 700ms)</summary>
+
+    ```cpp
+    #include <bits/stdc++.h>
+    using namespace std;
+
+    typedef vector<int> vi;
+
+    const int MX = 1e5+5;
+
+    int loc[MX], comp[MX], lhs[MX], rhs[MX], wei[MX];
+    vi adj[MX];
+    int n,m; 
+
+    void dfs(int cur, int label) {
+      if (comp[cur] == label) return;
+      comp[cur] = label;
+      for (int c: adj[cur]) dfs(c,label);
+    }
+
+    bool valid(int minW) {
+      for (int i = 0; i < n; ++i) {
+        comp[i] = -1;
+        adj[i].clear();
+      }
+      for (int i = 0; i < m; ++i) if (wei[i] >= minW)
+        adj[lhs[i]].push_back(rhs[i]), adj[rhs[i]].push_back(lhs[i]);
+      int numComps = 0;
+      for (int i = 0; i < n; ++i) if (comp[i] < 0)
+        dfs(i,numComps++);
+      for (int i = 0; i < n; ++i) 
+        if (comp[i] != comp[loc[i]]) return 0;
+      return 1;
+    }
+
+    int main() {
+      ios_base::sync_with_stdio(0); cin.tie(0);
+      freopen("wormsort.in","r",stdin);
+      freopen("wormsort.out","w",stdout);
+      cin >> n >> m;
+      for (int i = 0; i < n; ++i) cin >> loc[i], loc[i] --;
+      for (int i = 0; i < m; ++i) {
+        cin >> lhs[i], lhs[i] --;
+        cin >> rhs[i], rhs[i] --;
+        cin >> wei[i];
+      }
+      int minW = 0, maxW = (int)1e9+1;
+      while (minW != maxW) {
+        int mid = (minW+maxW+1)/2;
+        if (valid(mid)) minW = mid;
+        else maxW = mid-1;
+      }
+      if (minW > 1e9) minW = -1;
+      cout << minW;
+    }
+    ```
+    </details>
+
 ## Other
 
  - Python lacks a data structure that keeps its keys in sorted order (the equivalent of `set` in C++), which is required for some silver problems.

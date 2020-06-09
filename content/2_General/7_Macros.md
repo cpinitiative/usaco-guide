@@ -5,6 +5,10 @@ author: Benjamin Qi
 order: 7
 ---
 
+Shortening code and making it more (un?)readable.
+
+<!-- END DESCRIPTION -->
+
 ## Introduction
 
  - [GeeksForGeeks](https://www.geeksforgeeks.org/cc-preprocessors/#:~:text=Macros%3A%20Macros%20are%20a%20piece,used%20to%20define%20a%20macro.)
