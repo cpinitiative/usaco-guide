@@ -12,7 +12,6 @@ order: 6
 ## Standard
 
  -  [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646)
- -  [USACO Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
  -  [LeetCode Find Pivot Index](https://leetcode.com/problems/find-pivot-index/)
 
 ## Tutorials
@@ -22,21 +21,35 @@ This technique is also known as *cumulative sum* or *partial sums*.
  - Intro to USACO 11
  - CPH 9.1
 
-## Extensions
+## USACO Silver Problems
 
-### Max Subarray Sum
+These problems are relatively straightforward.
 
-[Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
+ - [USACO Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
+ - [USACO Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
+
+Now we'll look at some extensions.
+
+## Max Subarray Sum
+
+ - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
+
 (Note: This problem has a solution known as Kadane's Algorithm. Please *don't* use that solution; try to solve it with prefix sums.)
 
+Extension:
 
-### 2D Prefix Sums
+ - [CSES Maximum Subarray Sum II](https://cses.fi/problemset/task/1644)
+
+## 2D Prefix Sums
 
 Given a 2-dimensional array of size $NxM$, answer $Q$ queries of the following form: Find the sum of all elements within the rectangle of indices $(x1,y1)$ to $(x2,y2)$.
 
  - [CSES Forest Queries](https://cses.fi/problemset/task/1652)
+ - [USACO Painting the Barn (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
+ - [USACO Painting the Barn (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=923)
+   - combine with max subarray sum!
 
-### Difference Array
+## Difference Array
 
 **Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array.
 
@@ -44,7 +57,7 @@ Given a 2-dimensional array of size $NxM$, answer $Q$ queries of the following f
 
  - [USACO Haybale Stacking](http://www.usaco.org/index.php?page=viewproblem2&cpid=104)
 
-### Prefix Minimum, XOR, etc.
+## Prefix Minimum, XOR, etc.
 
 Similar to prefix sums, you can also take prefix minimum or maximum; but *you cannot* answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.)
 On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
@@ -52,7 +65,7 @@ On the other hand, XOR is its own inverse operation, meaning that the XOR of any
  - [USACO My Cow Ate My Homework](http://usaco.org/index.php?page=viewproblem2&cpid=762)
  - [CSES Range XOR Queries](https://cses.fi/problemset/task/1650)
 
-### More Complex Applications
+## More Complex Applications
 
 Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance. Some math is usually helpful for these problems; don't be afraid to get dirty with algebra!
 
@@ -70,9 +83,3 @@ Which is what we were looking for!
 
  - [AtCoder Multiple of 2019](https://atcoder.jp/contests/abc164/tasks/abc164_d) (You may want to solve the below problem "Subsequences Summing to Seven" before doing this one.)
  - [Google Kick Start Candies](https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d) (**only** Test Set 1.)
-
-## Additional Problems
-
- - [USACO Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
- - [USACO Painting the Barn](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
- - [CSES Maximum Subarray Sum II](https://cses.fi/problemset/task/1644)
