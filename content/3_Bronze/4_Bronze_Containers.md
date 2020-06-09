@@ -126,11 +126,6 @@ s.pop(); // [1, 13]
 cout << s.size() << endl; // 2
 ```
 
-**Basic Problems**:
- - UVa 00514 - Rails
- - UVa 00732 - Anagram by Stack
- - UVa 01062 - Containers
-
 ### [Queues](http://www.cplusplus.com/reference/queue/queue/ )
 
 A queue is a First In First Out (FIFO) data structure that supports three operations, all in $O(1)$ time. 
@@ -161,12 +156,6 @@ d.pop_front(); // [3, 7]
 d.push_front(1); // [1, 3, 7]
 d.pop_back(); // [1, 3]
 ```
-
-**Queue/Deque Basic Problems**:
-
- - UVa 10172 - The Lonesome Cargo
- - UVa 10901 - Ferry Loading III
- - UVa 11034 - Ferry Loading IV
 
 ### [Priority Queues](http://www.cplusplus.com/reference/queue/priority_queue/)
 
@@ -273,14 +262,6 @@ if (m.upper_bound(10) == m.end())
 
 A note on unordered sets and maps: In USACO contests, they're generally fine, but in CodeForces contests, you should always use sorted sets and maps. This is because the built-in hashing algorithm is vulnerable to pathological data sets causing abnormally slow runtimes, in turn causing failures on some test cases (see [neal's blog](https://codeforces.com/blog/entry/62393)). Alternatively, use a different hashing algorithm.
 
-
-**Basic Problems**:
-
-- UVa 10226 - Hardwood Species
-- UVa 11286 - Conformity
-- UVa 11572 - Unique Snowflakes
-
-
 ### [Multisets](http://www.cplusplus.com/reference/set/multiset/)
 
 Lastly, there is the multiset, which is essentially a sorted set that allows multiple copies of the same element. In addition to all of the regular set operations, the multiset `count()` method returns the number of times an element is present in the multiset. (Actually, you shouldn't use `count()` because this takes time **linear** in the number of matches.)
@@ -306,12 +287,6 @@ cout << ms.count(9) << '\n'; // 2
 ms.erase(9);
 cout << ms.count(9) << '\n'; // 0
 ```
-
-**Set/Multiset Problems**:
-
-- UVa 00978 - Lemmings Battle
-- UVa 11136 - Hoax or what
-- UVa 11849 - CD
 
 ## [Pair](http://www.cplusplus.com/reference/utility/pair/pair/)
 
@@ -339,17 +314,3 @@ int main() {
  * Testing 123
  */
 ```
-
-## Other Resources
-
- - CPH 4
- - [CPC.2](https://github.com/SuprDewd/T-414-AFLV/tree/master/02_data_structures)
-
-## Additional Problems
-
-* [Beautiful Triplets](https://www.hackerearth.com/practice/algorithms/greedy/basics-of-greedy-algorithms/practice-problems/algorithm/mancunian-and-beautiful-triplets-30968257/) [](54)
-* [Polycarp's Phone Book](http://codeforces.com/contest/860/problem/B) [](56)
-* [Jury Marks](http://codeforces.com/contest/831/problem/C) [](67)
-* [Mahmoud & Ehab & Function](http://codeforces.com/contest/862/problem/E) [](74)
-* [Karen & Cards](http://codeforces.com/contest/815/problem/D) [](86)
-* [Tournament](http://codeforces.com/contest/878/problem/C) [](106)

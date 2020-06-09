@@ -5,12 +5,13 @@ author: Benjamin Qi
 order: 0
 ---
 
+Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
+
+<!-- END DESCRIPTION -->
 
 > Hello, Which online judge should I practice more to do well in **IOI** ?
 > the closest OJ for IOI style?
 > Do you have any magic problems sets to suggest?
-
-Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
 
 ## National
 
