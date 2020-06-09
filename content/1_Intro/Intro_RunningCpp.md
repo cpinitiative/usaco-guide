@@ -1,19 +1,15 @@
 ---
 slug: /intro/running-cpp
-title: Running C++
+title: Using C++
 author: Nathan Wang, Benjamin Qi
 order: 4
 ---
 
-Running C++ both online and locally (currently for Mac only).
+Using C++ both online and locally (currently for Mac only).
 
 <!-- END DESCRIPTION -->
 
-## Using C++
-
-<div class="h-2"></div>
-
-Here's a basic C++ template you may find useful:
+## A Basic C++ template
 
 ```cpp
 #include <bits/stdc++.h>
@@ -43,15 +39,15 @@ int main() {
 
 Of course, you can't use File I/O on these websites (or do a lot of other stuff ...).
 
-## Running C++ Locally (on Mac)
+## Using C++ Locally (on Mac)
 
 [Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [G++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
 
 ### Installation
 
-I had a lot of issues when first trying to install G++ on Mac. Please let me know if these instructions do not work!
+I had a lot of issues when first trying to install g++ on Mac. Please let me know if these instructions do not work!
 
-Open terminal and run
+Open **Terminal** and run
 
 ```
 brew install gcc
@@ -68,10 +64,13 @@ probably suffices.
 ### Confirmation
 
 You should be able to compile with g++ or maybe g++-#, where # is the version number (currently 9). Running the following command:
+
 ```
 g++-9 --version
 ```
+
 should display something like this:
+
 ```
 g++-9 (Homebrew GCC 9.2.0_2) 9.2.0
 Copyright (C) 2019 Free Software Foundation, Inc.
@@ -79,34 +78,59 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
+### Running C++
+
+
+It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First we compile `name.cpp` into an executable named `name`.
+
+```
+g++ name.cpp -o name
+```
+
+Then we can execute the program:
+
+```
+./name
+```
+
+We can write both of these commands in a single line:
+
+```
+g++ name.cpp -o name && ./name
+```
+
+(redirecting input & output?)
+
 ### Adding Shortcuts
 
+Retyping this command gets tedious once we start adding many [command line options](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/). See "General - Debugging" for more information about compilation options.
+
 Open your bash profile with a text editor such as gedit (or sublime text).
+
 ```
 brew install gedit
 gedit ~/.zshenv
 ```
-You can add aliases and functions here, such as the following:
+
+You can add aliases and functions here, such as the following to compile and run C++. 
+
 ```
-alias clr="clear"
-alias ZES='source ~/.zshenv'
-alias ZEO='subl ~/.zshenv'
-alias IMPL='cd ~/Documents/GitHub/USACO/Implementations/'
-co() {
-	g++-9 -std=c++11 -O2 -Wl,-stack_size -Wl,0x10000000 -Wall -Wextra -o $1 $1.cpp
-}
-run() {
-	co $1 && ./$1
-}
+co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+run() { co $1 && ./$1 & fg; }
 ```
-Now you can easily compile and run C++ from the command line by calling `run`.
+
+Now you can easily compile and run `name.cpp` from the command line with the following:
+
 ```
-run [prog name]
+run name
 ```
+
+Note that all occurrences of `$1` are replaced with `name`.
 
 ### Troubleshooting
 
 Make sure you have installed XCode command line tools.
+
 ```
 xcode-select --install # make sure x-code command line tools are installed
 softwareupdate --list
@@ -118,6 +142,7 @@ softwareupdate -i -a # installs everything
 ### IDEs
 
  * [Geany](https://www.geany.org/)
+   * used at IOI
  * [Visual Studio Code](https://code.visualstudio.com/)
  * [XCode](https://developer.apple.com/xcode/)
    * Mac only

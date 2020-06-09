@@ -12,12 +12,16 @@ order: 6
  
 <!-- END DESCRIPTION -->
 
+(what is debugging?)
+
+As mentioned in "Running C++," I use the following to compile and run.
+
+```
+co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+run() { co $1 && ./$1 & fg; }
+```
+
 ## Compilation
-
-I use the following command:
-
-`g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000;`
-
 
 ### Warnings
 
@@ -27,7 +31,7 @@ See [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
 
 ### Stack Size
 
-According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449312), `-Wl,-stack_size -Wl,0xF0000000` increases the stack size on Mac (otherwise, you might get RTE). 
+According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449312), `-Wl,-stack_size -Wl,0xF0000000` increases the stack size on Mac (otherwise, you might get a runtime error). 
 
 (Documentation?)
 
@@ -38,6 +42,15 @@ According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449
 `-D_GLIBCXX_DEBUG -g`
 
 (someone want to explain these? I don't use)
+
+## Running
+
+According to [StackOverflow](https://stackoverflow.com/a/60516966/5834770) the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault).
+
+### Measuring Time & Memory Usage
+
+ - [CF Comment](https://codeforces.com/blog/entry/49371?#comment-333749)
+ - [time -v on Mac](https://stackoverflow.com/questions/32515381/mac-os-x-usr-bin-time-verbose-flag)
 
 ## CppIO Template
 
