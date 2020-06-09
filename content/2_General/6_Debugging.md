@@ -5,6 +5,13 @@ author: Benjamin Qi
 order: 6
 ---
 
+ - Compilation Options
+ - CppIO Template
+ - Stress Testing
+ - Using a Debugger
+ 
+<!-- END DESCRIPTION -->
+
 ## Compilation
 
 I use the following command:
@@ -32,7 +39,7 @@ According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449
 
 (someone want to explain these? I don't use)
 
-## Printing
+## CppIO Template
 
 Although not feasible if you have to write all code from scratch, I find [this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h) very helpful. `dbg()` only produces output when `-DLOCAL` is included as part of the compilation command.
 
@@ -42,6 +49,6 @@ Although not feasible if you have to write all code from scratch, I find [this](
 
 You can use a [simple script](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh) to test two solutions against each other. See Errichto's [video](https://www.youtube.com/watch?v=JXTVOyQpSGM) on testing solutions for more information.
 
-## Debugger
+## Using a Debugger
 
 Ok I don't actually know how to use ... (someone else want to add?)

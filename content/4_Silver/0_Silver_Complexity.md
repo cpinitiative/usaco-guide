@@ -1,5 +1,5 @@
 ---
-slug: /silver/greedy
+slug: /silver/complexity
 title: "Time & Space Complexity"
 author: Darren Yao
 order: 0

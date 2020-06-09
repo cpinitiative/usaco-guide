@@ -2,7 +2,7 @@
 slug: /general/practicing
 title: How to Practice 
 author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
-order: 5
+order: 4
 ---
 
 How to practice, when to read editorials (analyses), etc.

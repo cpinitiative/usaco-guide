@@ -7,6 +7,7 @@ order: 1
 
  - Goals
  - Module Organization
+ - Contact Information
 
 <!-- END DESCRIPTION -->
 
@@ -49,6 +50,6 @@ Written with [markdown](https://www.markdownguide.org/cheat-sheet/).
    - Add comments regarding difficulty and / or solution sketches.
  - Possibly include additional problems.
 
-## Questions
+## Contact Information
 
 If you would like to contribute or if you have any questions please reach out to Nathan Wang at <nathan.r.wang@gmail.com> or through social media (some variant of “thecodingwizard”).
