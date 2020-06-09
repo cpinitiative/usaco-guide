@@ -44,6 +44,14 @@ Extension:
 
  - [CSES Maximum Subarray Sum II](https://cses.fi/problemset/task/1644)
 
+## Difference Array
+
+**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array.
+
+**Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)
+
+ - [USACO Haybale Stacking](http://www.usaco.org/index.php?page=viewproblem2&cpid=104)
+
 ## 2D Prefix Sums
 
 Given a 2-dimensional array of size $N\cdot M$, answer $Q$ queries of the following form: Find the sum of all elements within the rectangle of indices $(x1,y1)$ to $(x2,y2)$.
@@ -52,14 +60,6 @@ Given a 2-dimensional array of size $N\cdot M$, answer $Q$ queries of the follow
  - [USACO Painting the Barn (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
  - [USACO Painting the Barn (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=923)
    - combine with max subarray sum!
-
-## Difference Array
-
-**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array.
-
-**Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)
-
- - [USACO Haybale Stacking](http://www.usaco.org/index.php?page=viewproblem2&cpid=104)
 
 ## Prefix Minimum, XOR, etc.
 
@@ -84,5 +84,5 @@ And so,
 $1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = ips[r]-ips[l-1]-(l-1)(ps[r]-ps[l-1])\linebreak$
 Which is what we were looking for!
 
- - [AtCoder Multiple of 2019](https://atcoder.jp/contests/abc164/tasks/abc164_d) (You may want to solve the below problem "Subsequences Summing to Seven" before doing this one.)
+ - [AtCoder Multiple of 2019](https://atcoder.jp/contests/abc164/tasks/abc164_d)
  - [Google Kick Start Candies](https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d) (**only** Test Set 1.)
