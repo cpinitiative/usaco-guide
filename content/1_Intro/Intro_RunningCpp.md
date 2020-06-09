@@ -9,24 +9,6 @@ Using C++ both online and locally (currently for Mac only).
 
 <!-- END DESCRIPTION -->
 
-## A Basic C++ template
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-int main() {
-    // these two lines open the file into the standard input/output,
-    // so you can just use cin/cout.
-    freopen("file.in", "r", stdin); // read from file.in
-    freopen("file.out", "w", stdout); // write to file.out
-
-    // Code goes here!!
-
-}
-```
-
 ## Running Online
 
  * [CSAcademy](https://csacademy.com/workspace/)
@@ -45,17 +27,15 @@ Of course, you can't use File I/O on these websites (or do a lot of other stuff 
 
 ### Installation
 
-I had a lot of issues when first trying to install g++ on Mac. Please let me know if these instructions do not work!
-
 Open **Terminal** and run
 
-```
+```sh
 brew install gcc
 ```
 
 According to [this](https://stackoverflow.com/questions/30998890/installing-opencv-with-brew-never-finishes) if brew doesn't seem to finish for a long time then 
 
-```
+```sh
 brew install gcc --force-bottle
 ```
 
@@ -65,7 +45,7 @@ probably suffices.
 
 You should be able to compile with g++ or maybe g++-#, where # is the version number (currently 9). Running the following command:
 
-```
+```sh
 g++-9 --version
 ```
 
@@ -78,28 +58,49 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
-### Running C++
+### Running C++ via Terminal
 
+Consider a simple program such as the following, which we'll save in `name.cpp`.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  int x; cin >> x;
+  cout << "FOUND " << x << "\n";
+}
+```
 
 It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First we compile `name.cpp` into an executable named `name`.
 
-```
+```sh
 g++ name.cpp -o name
 ```
 
 Then we can execute the program:
 
-```
+```sh
 ./name
 ```
 
-We can write both of these commands in a single line:
+If you type an integer `x` and then enter, then the program should produce output. We can write both of these commands in a single line:
 
-```
+```sh
 g++ name.cpp -o name && ./name
 ```
 
-(redirecting input & output?)
+### Redirecting Input & Output
+
+If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
+
+```sh
+./name < inp.txt > oup.txt
+```
+
+(simple tutorial?)
+
+See "Introductory Problems" for how to do file input and output within the program.
 
 ### Adding Shortcuts
 
@@ -107,21 +108,21 @@ Retyping this command gets tedious once we start adding many [command line optio
 
 Open your bash profile with a text editor such as gedit (or sublime text).
 
-```
+```sh
 brew install gedit
 gedit ~/.zshenv
 ```
 
 You can add aliases and functions here, such as the following to compile and run C++. 
 
-```
+```sh
 co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
 run() { co $1 && ./$1 & fg; }
 ```
 
 Now you can easily compile and run `name.cpp` from the command line with the following:
 
-```
+```sh
 run name
 ```
 
@@ -131,7 +132,7 @@ Note that all occurrences of `$1` are replaced with `name`.
 
 Make sure you have installed XCode command line tools.
 
-```
+```sh
 xcode-select --install # make sure x-code command line tools are installed
 softwareupdate --list
 softwareupdate -i -a # installs everything
