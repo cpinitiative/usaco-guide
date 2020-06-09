@@ -39,6 +39,7 @@ export default function Template(props) {
   const colors = ["blue", "pink", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
   const module = modules[selectedDivision];
+  console.log(module);
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
@@ -176,7 +177,7 @@ export default function Template(props) {
 
             <ol className="list-decimal list-inside py-8 px-8 text-lg space-y-1">
               {module.map(m => (
-                <li>
+                <li key={m.node.frontmatter.slug}>
                   <Link className="ml-2 text-blue-600 underline" to={m.node.frontmatter.slug}>{m.node.frontmatter.title}</Link>
                 </li>
               ))}

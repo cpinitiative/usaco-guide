@@ -1,5 +1,5 @@
 ---
-slug: /plat/dp-bitmasks
+slug: /plat/dp-ranges
 title: "Dynamic Programming on Ranges"
 author: Michael Cao
 order: 11
