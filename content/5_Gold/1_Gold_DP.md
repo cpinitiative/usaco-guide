@@ -54,8 +54,8 @@ Practice makes perfect. Start by doing some classical problems (try at least one
  * USACO Gold
    * [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
    * [Fruit Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
-   * <details> [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
-       <summary> Spoiler</summary>
+   * <details> 
+       <summary> [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)</summary>
          needs fast exponentiation for full points
      </details>
 
