@@ -1,7 +1,7 @@
 ---
 slug: /general/debugging
 title: Debugging
-author: Benjamin Qi
+author: Benjamin Qi, Aaron Chew
 order: 6
 ---
 
