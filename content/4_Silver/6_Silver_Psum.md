@@ -1,7 +1,7 @@
 ---
 slug: /silver/prefix-sums
 title: "Prefix Sums"
-author: Eric Wei (incomplete)
+author: Eric Wei
 order: 6
 ---
 
@@ -56,7 +56,6 @@ On the other hand, XOR is its own inverse operation...
 
 Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance. Some math is usually helpful for these problems; don't be afraid to get dirty with algebra!
 
-
 For instance, let's see how to quickly answer the following type of query: Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
 First, define the following:
 $ps[i] = a_1+a_2+a_3+a_4+\cdots+a_i$
@@ -75,3 +74,4 @@ Which is what we were looking for!
 
  - [USACO Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
  - [USACO Painting the Barn](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
+ - [CSES Maximum Subarray Sum II](https://cses.fi/problemset/task/1644)
