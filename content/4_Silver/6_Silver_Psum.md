@@ -75,11 +75,9 @@ Instead of storing just the values themselves, you can also take a prefix sum ov
 
 For instance, let's see how to quickly answer the following type of query: Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}\linebreak$.
 First, define the following:
-$ps[i] = a_1+a_2+a_3+a_4+\cdots+a_i \linebreak$
-$ips[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i\linebreak$
+$ps[i] = a_1+a_2+a_3+a_4+\cdots+a_i \linebreak ips[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i\linebreak$
 Then, we have:
-$l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = ips[r]-ips[l-1]\linebreak$
-$(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(ps[r]-ps[l-1])\linebreak$
+$l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = ips[r]-ips[l-1]\linebreak (l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(ps[r]-ps[l-1])\linebreak$
 And so,
 $1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = ips[r]-ips[l-1]-(l-1)(ps[r]-ps[l-1])\linebreak$
 Which is what we were looking for!
