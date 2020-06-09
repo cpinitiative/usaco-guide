@@ -52,11 +52,10 @@
 
  - Dynamic Programming (DP)
    - ex. [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
- - Shortest Path
-   - Breadth First Search (BFS)
-     - ex. [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
-   - Shortest Path (SP)
-     - ex. [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
+ - Breadth First Search (BFS)
+   - ex. [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
+ - Shortest Path (SP)
+   - ex. [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
  - Minimum Spanning Tree (MST) & Disjoint Set Union (DSU)
    - ex. [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
  - Topological Sort (TopoSort)

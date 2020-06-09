@@ -9,11 +9,11 @@ Here's what you should learn before reading these resources.
 
 <!-- END DESCRIPTION -->
  
-These resources do not teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
+These resources do **not** teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
 
-Familiarity with contest math (ex. AIME qualification) is helpful but not required.
+Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/Resources/Competition%20Math.md) (ex. AIME qualification) is helpful but not required.
 
-Expected Knowledge:
+## Expected Knowledge
 
 - Variables
   - Data types
@@ -27,9 +27,7 @@ Expected Knowledge:
 - Arrays
   - Multidimensional Arrays
 
-## Introductory Resources
-
-### Learning to Code
+## Resources for Learning How to Code
 
 [Sololearn](https://www.sololearn.com/) has courses on C++, Java, and Python. You don't have to complete the full course.
 

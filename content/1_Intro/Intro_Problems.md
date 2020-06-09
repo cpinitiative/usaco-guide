@@ -14,13 +14,15 @@ Demonstrates how to read in input and print output for a USACO problem in multip
 
 <!-- END DESCRIPTION -->
 
-## [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
+[Technical Specifications for Contests](http://www.usaco.org/index.php?page=instructions)
 
-(link to USACO website stuff?)
+## Example: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
 
-(auto newlines)
+USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces!
 
 ### C++
+
+You can use `ios_base::sync_with_stdio(0); cin.tie(0);` to speed up input and output. See [here](https://codeforces.com/blog/entry/5217) and [StackOverflow](https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull) for more information. Apparently if this is included then it is supposedly prohibited to use `freopen` to redirect `cin` and `cout`, but it works properly on USACO (and I believe that it does in fact result in a significant speedup on large input files). 
 
 #### Method 1
 
@@ -39,7 +41,10 @@ int main() {
 	for (int i = c; i < d; ++i) cover[i] = 1;
 	int ans = 0; 
 	for (int i = 0; i < 100; ++i) ans += cover[i];
-	cout << ans;
+	cout << ans; 
+	// cout << ans << "\n"; is OK
+	// cout << ans << " "; is NOT
+	// cout << ans << "\n\n"; is NOT
 }
 ```
 
@@ -72,12 +77,12 @@ int main() {
 
 (FastScanner?)
 
-Class name can be whatever you want.
+Class name can be whatever you want. (?)
 
 ```java
 import java.io.*;
 import java.util.*;
-public class paintSol { must be declared in paintSol.java
+public class paintSol { // must be declared in paintSol.java
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("paint.in"));
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("paint.out")));
@@ -93,7 +98,7 @@ public class paintSol { must be declared in paintSol.java
 		int ans = 0; 
 		for (int i = 0; i < 100; ++i) ans += cover[i];
 		pw.println(ans); 
-		pw.close();
+		pw.close(); // make sure to include this line ...
 	}
 }
 ```

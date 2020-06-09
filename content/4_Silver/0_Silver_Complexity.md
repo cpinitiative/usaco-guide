@@ -1,12 +1,14 @@
+---
+slug: /silver/greedy
+title: "Time & Space Complexity"
+author: Darren Yao
+order: 0
+---
 
-
-# Time/Space Complexity and Algorithm Analysis 
-### Author: Darren Yao
-
-In programming contests, there is a strict limit on program runtime. This means that in order to pass, your program needs to finish running within a certain timeframe. For USACO, this limit is 4 seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is {10}^8 (but is really closer to 5 \cdot 10^8 given good constant factors).
-
+In programming contests, there is a strict limit on program runtime. This means that in order to pass, your program needs to finish running within a certain timeframe. For USACO, this limit is 4 seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is $10^8$ (but could be closer to $5 \cdot 10^8$ given good constant factors).
 
 # Big O Notation and Complexity Calculations
+
 We want a method of how many operations it takes to run each algorithm, in terms of the input size n. Fortunately, this can be done relatively easily using Big O notation, which expresses worst-case complexity as a function of n, as n gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires, as a function of the input size. In Big O notation, we denote the complexity of a function as O(f(n)), where f(n) is a function without constant factors or lower-order terms. We'll see some examples of how this works, as follows.
 
 The following code is O(1), because it executes a constant number of operations.

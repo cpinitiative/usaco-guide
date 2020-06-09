@@ -27,14 +27,19 @@ Make sure to [upsolve](https://en.wiktionary.org/wiki/upsolve) after the contest
   * [Topcoder](https://www.topcoder.com/my-dashboard/)
     * Div 2, Div 1
     * 75 min coding, 15 min challenge
+    * Solutions only tested after contest!
   * [Don Mills OJ](http://dmoj.ca/)
-  * [HackerEarth](http://hackerearth.com/)
-    * Monthly "Easy"
+    * at least one contest every month during school year
+  * [Google Kickstart](https://codingcompetitions.withgoogle.com/kickstart)
+    * Feb - Nov
   * [Kattis](https://open.kattis.com/)
     * random ICPC stuff
+  * [HackerEarth](http://hackerearth.com/)
+    * Monthly "Easy"
+    * quality is not always good
   * [Codechef](http://codechef.com/)
     * Lunchtime, Cookoff
-  * [Google Kickstart](https://codingcompetitions.withgoogle.com/kickstart): Feb - Nov
+    * quality is not always good
 
 The following websites do not hold regular contests anymore, but they're still worth looking at.
 
@@ -47,16 +52,14 @@ The following websites do not hold regular contests anymore, but they're still w
       * short statements, editorials
       * solve statistics
       * ability to view best solutions
-    * I've done nearly all of the problems.
+    * I've done nearly all of the problems. :D
   * [HackerRank](https://www.hackerrank.com/dashboard)
-    * HourRank: 3-4 problems, 1 hr
-    * 101 Hack: 5 problems, 2 hrs
 
 ## Annual Contests
 
   * [Google Code Jam](https://code.google.com/codejam/): Apr
     * 25 from R3
-  * [Facebook Hacker Cup](https://www.facebook.com/hackercup/): Jun-Jul -> Oct
+  * [Facebook Hacker Cup](https://www.facebook.com/hackercup/): Jun-Jul -> Oct??
     * 25 from R3
   * [Topcoder Open](https://tco19.topcoder.com/): Apr-Aug -> Nov
     * 4 from SRMs
@@ -65,29 +68,23 @@ The following websites do not hold regular contests anymore, but they're still w
   * [AtCoder World Tour Finals](https://codeforces.com/blog/entry/56623)
     * 8 from AGC
   * [Bubble Cup](http://bubblecup.org/): Apr
-  * [BattleCode](https://www.battlecode.org): Jan
-
-No Longer Active?
-
-  * [IPSC](https://ipsc.ksp.sk/rules): July
-  * [Russian Code Cup](http://www.russiancodecup.ru/en/): March
-  * [Yandex Algorithm](https://contest.yandex.ru/contest-list/): April
-  * [SnackDown](https://www.codechef.com/snackdown): Sep-Dec -> Feb
-    * Global: 15 with travel expenses paid, 10 additional
 
 ## US High School
 
  * [VT HSPC](https://icpc.cs.vt.edu/#/hscontest2017)
-    * Online
-    * 5 hours
-    * [Kattis](https://open.kattis.com/problem-sources/2016%20Virginia%20Tech%20High%20School%20Programming%20Contest)
-    * December
-  * [UCF HSPT](https://hspt.ucfprogrammingteam.org/index.php/hspt-online-edition)
-    * Online
-    * 4 hours
-    * December
-  * [Cornell HSPC](https://www.cs.cornell.edu/events/cornell-high-school-programming-contest)
-    * [2019](https://cornell-hspc19.kattis.com/problems)
+   * Online
+   * 5 hours
+   * [Kattis](https://open.kattis.com/problem-sources/2016%20Virginia%20Tech%20High%20School%20Programming%20Contest)
+   * December
+ * [UCF HSPT](https://hspt.ucfprogrammingteam.org/index.php/hspt-online-edition)
+   * Online
+   * 4 hours
+   * December
+ * [Cornell HSPC](https://www.cs.cornell.edu/events/cornell-high-school-programming-contest)
+   * [2019](https://cornell-hspc19.kattis.com/problems)
+ * [PClassic (Philadelphia)](https://pclassic.org/)
+   * Java only :((
+ * [mBIT (Montgomery Blair HS)](https://mbit.mbhs.edu/)
 
 ## Codeforces Tools
 
@@ -103,7 +100,7 @@ No Longer Active?
 ## Contest Tools
 
   * [2D Geo Visualizer](https://codeforces.com/blog/entry/70330)
-  * [CSA Graph Editor (+ Geo Visualizer + Diff Tool)](https://csacademy.com/app/graph_editor/)
+  * [CSAcademy Graph Editor (+ Geo Visualizer + Diff Tool)](https://csacademy.com/app/graph_editor/)
   * [Desmos Grapher](https://www.desmos.com/calculator)
   * [Wolfram Alpha](https://www.wolframalpha.com/)
   * [OEIS](https://oeis.org/)

@@ -2,5 +2,5 @@
 slug: /general/strategy
 title: Contest Strategy
 author: ?
-order: 7
+order: 5
 ---

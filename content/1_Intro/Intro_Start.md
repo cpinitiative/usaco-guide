@@ -11,22 +11,27 @@ order: 2
 
 <!-- END DESCRIPTION -->
 
+
 Todo:
-- Video clip from Brian Dean
+
+  - Video clip from Brian Dean?
   - Explains what USACO is all about & how it works
 
 ## Introduction
 
 In competitive programming contests, one must solve well-defined problems by writing computer programs under specified constraints ([Wikipedia](https://en.wikipedia.org/wiki/Competitive_programming)). Typically, the most popular language is C++, followed by Java and Python.
 
-[William Lin video!!](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
+[William Lin - What is Competitive Programming?](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
 
 ## Contest Format
 
+(todo)
+
+See [USACO contests](http://www.usaco.org/index.php?page=contests).
 
 ## Choosing a Language
 
-If you're in Bronze, **Don't worry about the language!** If you already know a language, just use it. You can always switch languages down the road.
+If you're in Bronze, **don't worry about the language!** If you already know a language, just use it. You can always switch languages down the road.
 
 In general, we recommend the following:
 
@@ -39,9 +44,11 @@ Note: A majority of high level contestants use C++ and Java. Between those, C++ 
 
 Keep in mind that it's easy to switch languages down the road! Don't get caught up on which language to choose. Just pick the one you feel most comfortable with!
 
-### Language References (provided at IOI)
+### Language References
+
+All of these are provided at the IOI asside from the additional C++ reference.
 
  - [C++](https://en.cppreference.com/w/)
-   - [Additional C++ reference (not provided at IOI)](http://www.cplusplus.com/)
+   - [Additional C++ Reference](http://www.cplusplus.com/)
  - [Java](https://docs.oracle.com/javase/8/docs/api/overview-summary.html)
  - [Python3](https://docs.python.org/3/reference/)
