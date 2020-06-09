@@ -35,6 +35,10 @@ Now we'll look at some extensions.
  - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
 
 (Note: This problem has a solution known as Kadane's Algorithm. Please *don't* use that solution; try to solve it with prefix sums.)
+<details>
+ <summary>Why are the two methods equivalent?</summary>
+ Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
+</details>
 
 Extension:
 
@@ -42,7 +46,7 @@ Extension:
 
 ## 2D Prefix Sums
 
-Given a 2-dimensional array of size $NxM$, answer $Q$ queries of the following form: Find the sum of all elements within the rectangle of indices $(x1,y1)$ to $(x2,y2)$.
+Given a 2-dimensional array of size $N\cdot M$, answer $Q$ queries of the following form: Find the sum of all elements within the rectangle of indices $(x1,y1)$ to $(x2,y2)$.
 
  - [CSES Forest Queries](https://cses.fi/problemset/task/1652)
  - [USACO Painting the Barn (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
@@ -69,16 +73,15 @@ On the other hand, XOR is its own inverse operation, meaning that the XOR of any
 
 Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance. Some math is usually helpful for these problems; don't be afraid to get dirty with algebra!
 
-For instance, let's see how to quickly answer the following type of query: Find 
-$$1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}.$$
+For instance, let's see how to quickly answer the following type of query: Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}\linebreak$.
 First, define the following:
-$$ps[i] = a_1+a_2+a_3+a_4+\cdots+a_i$$
-$$ips[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i$$
+$ps[i] = a_1+a_2+a_3+a_4+\cdots+a_i \linebreak$
+$ips[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i\linebreak$
 Then, we have:
-$$l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = ips[r]-ips[l-1]$$
-$$(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(ps[r]-ps[l-1])$$
+$l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = ips[r]-ips[l-1]\linebreak$
+$(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(ps[r]-ps[l-1])\linebreak$
 And so,
-$$1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = ips[r]-ips[l-1]-(l-1)(ps[r]-ps[l-1])$$
+$1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = ips[r]-ips[l-1]-(l-1)(ps[r]-ps[l-1])\linebreak$
 Which is what we were looking for!
 
  - [AtCoder Multiple of 2019](https://atcoder.jp/contests/abc164/tasks/abc164_d) (You may want to solve the below problem "Subsequences Summing to Seven" before doing this one.)
