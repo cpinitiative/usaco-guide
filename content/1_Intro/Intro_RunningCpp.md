@@ -21,11 +21,11 @@ Using C++ both online and locally (currently for Mac only).
 
 Of course, you can't use File I/O on these websites (or do a lot of other stuff ...).
 
-## Using C++ Locally (on Mac)
+# Using C++ Locally (on Mac)
 
 [Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [G++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
 
-### Installation
+## Installation
 
 Open **Terminal** and run
 
@@ -58,7 +58,19 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
-### Running C++ via Terminal
+### Troubleshooting
+
+Make sure you have installed XCode command line tools.
+
+```sh
+xcode-select --install # make sure x-code command line tools are installed
+softwareupdate --list
+softwareupdate -i -a # installs everything
+```
+
+## Compiling & Running C++ via Terminal
+
+(simple tutorial or video?)
 
 Consider a simple program such as the following, which we'll save in `name.cpp`.
 
@@ -84,7 +96,7 @@ Then we can execute the program:
 ./name
 ```
 
-If you type an integer `x` and then enter, then the program should produce output. We can write both of these commands in a single line:
+If you type some integer and then press enter, then the program should produce output. We can write both of these commands in a single line:
 
 ```sh
 g++ name.cpp -o name && ./name
@@ -95,10 +107,8 @@ g++ name.cpp -o name && ./name
 If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
 
 ```sh
-./name < inp.txt > oup.txt
+./name < inp.txt > out.txt
 ```
-
-(simple tutorial?)
 
 See "Introductory Problems" for how to do file input and output within the program.
 
@@ -128,16 +138,6 @@ run name
 
 Note that all occurrences of `$1` are replaced with `name`.
 
-### Troubleshooting
-
-Make sure you have installed XCode command line tools.
-
-```sh
-xcode-select --install # make sure x-code command line tools are installed
-softwareupdate --list
-softwareupdate -i -a # installs everything
-```
-
 ## Tools
 
 ### IDEs
@@ -151,6 +151,8 @@ softwareupdate -i -a # installs everything
    * bad on Mac :(
 
 ### Text Editors
+
+I mostly just use sublime text.
 
  * [Sublime Text 3](https://www.sublimetext.com/)
    * [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
