@@ -1,8 +1,16 @@
-# Olympiads
+---
+slug: /plat/oly
+title: "Olympiads"
+author: Benjamin Qi
+order: 0
+---
+
 
 > Hello, Which online judge should I practice more to do well in **IOI** ?
 > the closest OJ for IOI style?
 > Do you have any magic problems sets to suggest?
+
+Once you've reached the platinum level, it may be helpful to practice with problems from other (inter)national olympiads.
 
 ## National
 
