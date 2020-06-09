@@ -1,17 +1,17 @@
 ---
 slug: /bronze/pairs
 title: Pairs & Tuples
-author: ?
+author: Aaron Chew, Benjamin Qi
 order: 6
 ---
 
 A **pair** is a structure that holds two values, not necessarily of the same type.
 
-(tuple?)
+Of course, we can  hold more than 2  values with something like ```pair<int,pair<int,int>>```.
 
 <!-- END DESCRIPTION -->
 
-(is this present in Java?)
+
 
 ## [C++](http://www.cplusplus.com/reference/utility/pair/pair/)
 
@@ -37,3 +37,28 @@ int main() {
  * Testing 123
  */
 ```
+
+## Java
+Unfortunately there is no default class for pairs in java, so you have to create your own.
+Here is some code:
+```
+class pair implements Comparable <pair>{
+    int first;
+    int second;
+
+    public int compareTo(pair other){
+
+        return first==other.first?second-other.second:first-other.first;
+    }
+
+    pair(int a, int b)
+    {
+        first=a;
+        second=b;
+    }
+}
+
+```
+If you have an array ``` pair[]arr=new pair[100]```, make sure each element of this array is not null. You can call ```Arrays.sort(arr);``` on this array and it will sort it by all the ```first``` of the array and if there is a tie in ```first``` it will sort by ```second```.
+
+If you want to sort by 3 or more elements, it's a simple change. Just add a new variable in ```pair``` and make sure the comparable compares in the right order you want. 
