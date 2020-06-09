@@ -11,9 +11,11 @@ change the front-end interface without having to rewrite the content.
 
 ## Content Formatting Documentation
 
-All modules are written in Markdown. There are special additions to the markdown that we have added to this site.
+All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site.
 These special additions are still under development, so they may change frequently.
 If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
+
+You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
 
 ### Frontmatter
 
@@ -23,7 +25,7 @@ by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores 
 YAML formatting is _extremely strict_. Be careful about spaces.
 
 - **Slug**: _Required_. The URL of the module. Ex: `/intro/getting-started`, or `/bronze/containers/`
-- **Title**: _Requried_. The title of the module. Ex: `Getting Started`
+- **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Order**: _Required_. The order in which this module appears in the syllabus, **relative to its division**.
 - **Prerequisites**: _Optional_. Any prerequisites for this module.

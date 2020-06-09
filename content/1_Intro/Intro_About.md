@@ -31,8 +31,6 @@ order: 1
 
 ## Module Organization
 
-Written with [Markdown](https://www.markdownguide.org/cheat-sheet/). Can use [StackEdit](https://stackedit.io/) to check latex.
-
 ### Lesson
 
  - Consists of text, videos, and simple problems.
