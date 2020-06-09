@@ -10,7 +10,7 @@ order: 0
 > the closest OJ for IOI style?
 > Do you have any magic problems sets to suggest?
 
-Once you've reached the platinum level, it may be helpful to practice with problems from other (inter)national olympiads.
+Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
 
 ## National
 

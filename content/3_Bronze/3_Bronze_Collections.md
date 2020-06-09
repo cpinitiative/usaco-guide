@@ -2,14 +2,14 @@
 slug: /bronze/collections
 title: Built-In Java Collections
 author: Darren Yao
-order: 2
+order: 3
 ---
 
--> Mostly copy and pasted from chapter 4 of my book.
+Introduces the data structures in the Java standard library that are frequently used in competitive programming.
 
 <!-- END DESCRIPTION -->
 
-A data structure determines how data is stored. (is it sorted? indexed? what operations does it support?) Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. This chapter introduces the data structures in the Java standard library that are frequently used in competitive programming.
+A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
 
 Java default `Collections` data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
@@ -81,7 +81,7 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 
 ### Stacks
 
-A stack is a Last In First Out (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in $O(1)$ time. Think of it like a real-world stack of papers.
+A stack is a **Last In First Out** (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in $O(1)$ time. Think of it like a real-world stack of papers (or cards).
 
 ```java
 Stack<Integer> s = new Stack<Integer>();
@@ -95,7 +95,7 @@ System.out.println(s.size()); // 2
 
 ### Queues
 
-A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in $O(1)$ time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows: `Queue q = new LinkedList(); ` .
+A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in $O(1)$ time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
 
 ```java
 Queue<Integer> q = new LinkedList<Integer>();
@@ -122,7 +122,7 @@ deque.removeLast(); // [1, 3]
 
 ### Priority Queues
 
-A priority queue supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log n)$ time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. By default, the Priority Queue puts the lowest element at the front of the queue.
+A priority queue supports the following operations: insertion of elements, deletion of the element considered lowest priority, and retrieval of the lowest priority element, all in $O(\log n)$ time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. 
 
 ```java
 PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
@@ -191,7 +191,7 @@ A map is a set of ordered pairs, each containing a key and a value. In a map, al
 
 ### Unordered Maps
 
-In the unordered map, the `put(key, value) method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `{containsKey(key)} method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+In the unordered map, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
 
 ```java
 HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();

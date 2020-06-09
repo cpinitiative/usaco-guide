@@ -65,7 +65,7 @@ const ll INF = 1e18;
 const ld PI = acos((ld)-1);
 ```
 
-$10^9+7$ is a prime that appears quite frequently in programming contests. Interestingly, ```(MOD-1)/2``` is also prime. On the other hand, $998244353-1$ is divisible by $2^{23}$, which is useful for [NTT](https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-theoretic_transform).
+$10^9+7$ is a prime that appears quite frequently in programming contests. Interestingly, $(10^9+7-1)/2=5\cdot 10^8+3$ is also prime. On the other hand, $998244353-1$ is divisible by $2^{23}$, which is useful for [NTT](https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-theoretic_transform).
 
 Most USACO problems satisfy $N\le 2\cdot 10^5$.
 
@@ -75,7 +75,7 @@ Most USACO problems satisfy $N\le 2\cdot 10^5$.
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 ```
 
-See [neal's blog](https://codeforces.com/blog/entry/61587) about why `rand()` is bad (use `rng()` instead).
+See [neal's blog](https://codeforces.com/blog/entry/61587) about why `rand()` is bad. Uuse `rng()` instead.
 
 ### ckmin
 

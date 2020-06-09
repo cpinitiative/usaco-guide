@@ -14,7 +14,7 @@ prerequisites:
 
 <!-- END DESCRIPTION -->
 
- - Comparators
+ - Custom Comparators (prerequisite for basically all silver topics in Java)
  - CPH 3
  - std::sort / Collections.sort
  - coord compress

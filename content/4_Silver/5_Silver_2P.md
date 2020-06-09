@@ -21,7 +21,14 @@ prerequisites:
 
  - CSES
    - [Sum of Two Values](https://cses.fi/problemset/task/1640)
-   - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
+   - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) (<- let's not lump this in w/ two pointers?)
+ - USACO
+   - [Silver - Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
+     - sort and then use 2P
+   - [Silver - Paired Up](http://usaco.org/index.php?page=viewproblem2&cpid=738)
+     - sort and then use 2P
+   - [Gold - Haybale Feast](http://usaco.org/index.php?page=viewproblem2&cpid=767)
+     - just 2P with additional set
  - CF
    - [Books](https://codeforces.com/problemset/problem/279/B)
    - [Cellular Network](http://codeforces.com/problemset/problem/702/C) [](48)
@@ -29,8 +36,6 @@ prerequisites:
    - [K-Good Segment](http://codeforces.com/problemset/problem/616/D) [](53)
    - [(Long Title)](http://codeforces.com/problemset/problem/814/C) [](54)
    - [Jury Meeting](http://codeforces.com/problemset/problem/853/B) [](90)
- - USACO
-   - [Gold Haybale Feast](http://usaco.org/index.php?page=viewproblem2&cpid=767)
 
 ## Extensions
 

@@ -75,9 +75,9 @@ order: 7
 ### Problems
 
  - [Ice Perimeter (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=895)
- - [Switching on the Lights (Moderate)](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
- - [Build Gates (Moderate)](http://www.usaco.org/index.php?page=viewproblem2&cpid=596)
- - [Why Did the Cow Cross the Road III, Silver (Moderate)](http://usaco.org/index.php?page=viewproblem2&cpid=716)
+ - [Switching on the Lights (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
+ - [Build Gates (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=596)
+ - [Why Did the Cow Cross the Road III, Silver (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=716)
  - [Multiplayer Moo (Hard)](http://usaco.org/index.php?page=viewproblem2&cpid=836)
 
 ## Graph Two-Coloring
@@ -216,8 +216,8 @@ int main()
    - Try to solve the problem in O(N)!
  - [The Bovine Shuffle (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=764)
  - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
- - [CSES Round Trip (undirected)](https://cses.fi/problemset/task/1669)
- - [CSES Round Trip II (directed)](https://cses.fi/problemset/task/1678)
+ - [CSES Round Trip (undirected cycle)](https://cses.fi/problemset/task/1669)
+ - [CSES Round Trip II (directed cycle)](https://cses.fi/problemset/task/1678)
  - POI
    - [Mafia](https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement)
    - [Spies](https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement)
