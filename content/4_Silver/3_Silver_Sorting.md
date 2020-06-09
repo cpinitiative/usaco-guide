@@ -8,9 +8,7 @@ prerequisites:
      - Silver - Containers
 ---
 
-<div class="syllabus-only">
-  Description: Todo
-</div>
++ more practice with ordered map / set?
 
 <!-- END DESCRIPTION -->
 

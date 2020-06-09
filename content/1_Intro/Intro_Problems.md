@@ -1,7 +1,7 @@
 ---
 slug: /intro/problems
 title: Introductory Problems
-author: Nathan Wang
+author: Nathan Wang, Benjamin Qi
 problems:
  - bronze_promote
  - bronze_word

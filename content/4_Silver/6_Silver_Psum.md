@@ -5,7 +5,7 @@ author: Eric Wei (incomplete)
 order: 6
 ---
 
-> Given an array of size $N$, answer $Q$ queries of the following form: Find the sum of all elements between indices $i$ and $j$.
+> Given an array $A_1,A_2,\ldots,A_N$, answer $Q$ queries of the following form: compute $A_L+A_{L+1}+\cdots+A_R$.
 
 <!-- END DESCRIPTION -->
 
@@ -22,6 +22,10 @@ This technique is also known as *cumulative sum* or *partial sums*.
  - CPH 9.1
 
 ## Extensions
+
+### Max Subarray Sum
+
+[Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
 
 ### 2D Prefix Sums
 
@@ -46,6 +50,7 @@ On the other hand, XOR is its own inverse operation...
  - [CSES Range XOR Queries](https://cses.fi/problemset/task/1650)
 
 ### More Complex Applications
+
 Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance.
 
  - (find iota ps problem)
