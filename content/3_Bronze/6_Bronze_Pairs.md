@@ -5,9 +5,15 @@ author: ?
 order: 6
 ---
 
-## [Pair](http://www.cplusplus.com/reference/utility/pair/pair/)
+A **pair** is a structure that holds two values, not necessarily of the same type.
 
-A structure that holds two values, not necessarily of the same type (not built into java!). 
+(tuple?)
+
+<!-- END DESCRIPTION -->
+
+(is this present in Java?)
+
+## [C++](http://www.cplusplus.com/reference/utility/pair/pair/)
 
  - `make_pair(a, b)`: Returns a pair with values a, b.
  - `pair.first`: The first value of the pair.

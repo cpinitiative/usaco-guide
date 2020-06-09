@@ -18,6 +18,7 @@ Using C++ both online and locally (currently for Mac only).
    * make sure your code is not public
    * sometimes randomly erases your code when you first create it (so get in the habit of copying your code before creating it!)
  * [OnlineGDB](https://www.onlinegdb.com/)
+   * compiler and debugger tool
 
 Of course, you can't use File I/O on these websites (or do a lot of other stuff ...).
 
@@ -27,7 +28,9 @@ Of course, you can't use File I/O on these websites (or do a lot of other stuff 
 
 ## Installation
 
-Open **Terminal** and run
+Open **Terminal**. First, familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line).
+
+Run
 
 ```sh
 brew install gcc
@@ -110,11 +113,13 @@ If you want to read input from `inp.txt` and write to `out.txt`, then use the fo
 ./name < inp.txt > out.txt
 ```
 
-See "Introductory Problems" for how to do file input and output within the program.
+See "Intro - Introductory Problems" for how to do file input and output within the program.
 
 ### Adding Shortcuts
 
-Retyping this command gets tedious once we start adding many [command line options](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/). See "General - Debugging" for more information about compilation options.
+[Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
+
+Retyping the commands for compiling and running gets tedious once we start adding many [command line options](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/). See "General - Debugging" for more information about compilation options.
 
 Open your bash profile with a text editor such as gedit (or sublime text).
 
@@ -145,6 +150,7 @@ Note that all occurrences of `$1` are replaced with `name`.
  * [Geany](https://www.geany.org/)
    * used at IOI
  * [Visual Studio Code](https://code.visualstudio.com/)
+   * haven't used personally
  * [XCode](https://developer.apple.com/xcode/)
    * Mac only
  * [Codeblocks](http://www.codeblocks.org/)
@@ -161,10 +167,3 @@ I mostly just use sublime text.
    * [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
      * Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
  * [Atom](https://atom.io/)
-
-## Other Useful Links
-
- * [Intro to Command Line](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line)
- * [Command Line Shortcuts](https://jonsuh.com/blog/bash-command-line-shortcuts/)
- * [Run Python Script](https://stackoverflow.com/questions/7855996/cant-run-python-py-files-from-terminal-on-mac)
- * [Competitive C++ Style Guide](https://codeforces.com/blog/entry/64218)

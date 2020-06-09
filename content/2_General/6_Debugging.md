@@ -5,14 +5,15 @@ author: Benjamin Qi, Aaron Chew
 order: 6
 ---
 
- - Compilation Options
- - CppIO Template
- - Stress Testing
- - Using a Debugger
- 
+Detecting issues within your program and figuring out how to avoid them in the first place.
+
 <!-- END DESCRIPTION -->
 
-(what is debugging?)
+## Style Guide
+
+[Swift](https://codeforces.com/blog/entry/64218)
+
+## Compilation
 
 As mentioned in "Running C++," I use the following to compile and run.
 
@@ -20,8 +21,6 @@ As mentioned in "Running C++," I use the following to compile and run.
 co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
 run() { co $1 && ./$1 & fg; }
 ```
-
-## Compilation
 
 ### Warnings
 
