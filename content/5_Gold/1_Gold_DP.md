@@ -58,7 +58,7 @@ Practice makes perfect. Start by doing some classical problems (try at least one
      * <details>
          <summary> Spoiler</summary>
            needs fast exponentiation for full points
-       <\details>
+       </details>
 
 ## Paths on Grid (& Related)
 
