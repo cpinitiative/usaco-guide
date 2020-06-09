@@ -21,7 +21,6 @@ prerequisites:
 
  - CSES
    - [Sum of Two Values](https://cses.fi/problemset/task/1640)
-   - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) (<- let's not lump this in w/ two pointers?)
  - USACO
    - [Silver - Diamond Collector](http://usaco.org/index.php?page=viewproblem2&cpid=643)
      - sort and then use 2P

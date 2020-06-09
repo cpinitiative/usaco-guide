@@ -8,6 +8,8 @@ prerequisites:
      - Gold - Introduction to Dynamic Programming
 ---
 
+<!-- END DESCRIPTION -->
+
 ## Problems
 
  * [Gold - 248](http://www.usaco.org/index.php?page=viewproblem2&cpid=647)
