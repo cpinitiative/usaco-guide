@@ -179,6 +179,8 @@ Note that all occurrences of `$1` are replaced with `name`.
    * Mac only
  * [Codeblocks](http://www.codeblocks.org/)
    * bad on Mac
+ * [CLion](https://www.jetbrains.com/clion/)
+   * requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
    
 
 ## Text Editors
