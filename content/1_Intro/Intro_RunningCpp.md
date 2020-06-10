@@ -83,16 +83,20 @@ Like Windows in general, you have a lot of options for running C++.
 
 The easiest option is to use an IDE such as [Codeblocks](http://www.codeblocks.org/) or [Visual Studio](https://visualstudio.microsoft.com/vs/) because they often have C++ support already built-in. See the IDEs section below for more information.
 
-However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line.
+However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use.
 
 ### Installing MinGW
 
 First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
 
-Add MinGW to PATH: https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm
+(Add MinGW to PATH: https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
+
+### Installing WSL
+
+https://code.visualstudio.com/docs/cpp/config-wsl (difficult for beginners)
 
 
-## Compiling and Running C++ via Terminal
+## Compiling and Running C++ using the command line
 
 (simple tutorial or video?)
 
@@ -108,7 +112,7 @@ int main() {
 }
 ```
 
-It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First we compile `name.cpp` into an executable named `name`.
+It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First, open up Powershell on Windows or Terminal on Mac. We can compile `name.cpp` into an executable named `name` with the following command:
 
 ```sh
 g++ name.cpp -o name
@@ -136,7 +140,7 @@ If you want to read input from `inp.txt` and write to `out.txt`, then use the fo
 
 See "Intro - Introductory Problems" for how to do file input and output within the program.
 
-### Adding Shortcuts
+### Adding Shortcuts (Mac only)
 
 [Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
 
@@ -194,3 +198,4 @@ Again, many options.
    * [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
      * Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
  * [Atom](https://atom.io/)
+ * Others?
