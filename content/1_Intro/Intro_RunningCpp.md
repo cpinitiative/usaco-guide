@@ -1,34 +1,39 @@
 ---
 slug: /intro/running-cpp
-title: Using C++
-author: Nathan Wang, Benjamin Qi
+title: Running C++
+author: Nathan Wang, Benjamin Qi, Anthony Wang
 order: 4
 ---
 
-Using C++ both online and locally (currently for Mac only).
+Running C++ both online and locally.
 
 <!-- END DESCRIPTION -->
 
-## Running Online
+# Running C++ Online
 
+ * [OnlineGDB](https://www.onlinegdb.com/)
+   * online compiler with an embedded GDB debugger
+   * can be buggy sometimes
+   * supports files and file I/O
  * [CSAcademy](https://csacademy.com/workspace/)
    * pretty nice (unless you get "Estimated Queue Time: ...")
  * [Ideone](http://ideone.com/) (used this for a while ...)
    * okay with an ad blocker
    * make sure your code is not public
    * sometimes randomly erases your code when you first create it (so get in the habit of copying your code before creating it!)
- * [OnlineGDB](https://www.onlinegdb.com/)
-   * compiler and debugger tool
 
-Of course, you can't use File I/O on these websites (or do a lot of other stuff ...).
+Of course, you can't use file I/O on these websites (except for  OnlineGDB) and they are often quite limited.
 
-# Using C++ Locally (on Mac)
+
+# Running C++ Locally
+
+## On Mac
 
 [Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [G++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
 
-## Installation
+### Installation
 
-Open **Terminal**. First, familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line).
+Open **Terminal**. First, familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). You will also need to install [Homebrew](https://brew.sh/).
 
 Run
 
@@ -36,7 +41,7 @@ Run
 brew install gcc
 ```
 
-According to [this](https://stackoverflow.com/questions/30998890/installing-opencv-with-brew-never-finishes) if brew doesn't seem to finish for a long time then 
+According to [this](https://stackoverflow.com/questions/30998890/installing-opencv-with-brew-never-finishes) if `brew` doesn't seem to finish for a long time then 
 
 ```sh
 brew install gcc --force-bottle
@@ -44,9 +49,9 @@ brew install gcc --force-bottle
 
 probably suffices.
 
-### Confirmation
+#### Confirmation
 
-You should be able to compile with g++ or maybe g++-#, where # is the version number (currently 9). Running the following command:
+You should be able to compile with `g++` or maybe `g++-#`, where # is the version number (currently 9). Running the following command:
 
 ```sh
 g++-9 --version
@@ -61,7 +66,7 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
-### Troubleshooting
+#### Troubleshooting
 
 Make sure you have installed XCode command line tools.
 
@@ -71,7 +76,27 @@ softwareupdate --list
 softwareupdate -i -a # installs everything
 ```
 
-## Compiling & Running C++ via Terminal
+
+## On Windows
+
+Like Windows in general, you have a lot of options for running C++.
+
+The easiest option is to use an IDE such as [Codeblocks](http://www.codeblocks.org/) or [Visual Studio](https://visualstudio.microsoft.com/vs/) because they often have C++ support already built-in. See the IDEs section below for more information.
+
+However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use.
+
+### Installing MinGW
+
+First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+
+(Add MinGW to PATH: https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
+
+### Installing WSL
+
+https://code.visualstudio.com/docs/cpp/config-wsl (difficult for beginners)
+
+
+## Compiling and Running C++ using the command line
 
 (simple tutorial or video?)
 
@@ -87,7 +112,7 @@ int main() {
 }
 ```
 
-It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First we compile `name.cpp` into an executable named `name`.
+It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First, open up Powershell on Windows or Terminal on Mac. We can compile `name.cpp` into an executable named `name` with the following command:
 
 ```sh
 g++ name.cpp -o name
@@ -115,7 +140,7 @@ If you want to read input from `inp.txt` and write to `out.txt`, then use the fo
 
 See "Intro - Introductory Problems" for how to do file input and output within the program.
 
-### Adding Shortcuts
+### Adding Shortcuts (Mac only)
 
 [Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
 
@@ -143,22 +168,28 @@ run name
 
 Note that all occurrences of `$1` are replaced with `name`.
 
-## Tools
 
-### IDEs
+# Tools
+
+## IDEs
 
  * [Geany](https://www.geany.org/)
    * used at IOI
  * [Visual Studio Code](https://code.visualstudio.com/)
-   * haven't used personally
+   * lightweight, fast IDE, but requires some configuration
+ * [Visual Studio](https://visualstudio.microsoft.com/vs/)
+   * heavier cousin of Visual Studio Code
  * [XCode](https://developer.apple.com/xcode/)
    * Mac only
  * [Codeblocks](http://www.codeblocks.org/)
-   * bad on Mac :(
+   * bad on Mac
+ * [CLion](https://www.jetbrains.com/clion/)
+   * requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
+   
 
-### Text Editors
+## Text Editors
 
-I mostly just use sublime text.
+Again, many options.
 
  * [Sublime Text 3](https://www.sublimetext.com/)
    * [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
@@ -167,3 +198,4 @@ I mostly just use sublime text.
    * [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
      * Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
  * [Atom](https://atom.io/)
+ * Others?
