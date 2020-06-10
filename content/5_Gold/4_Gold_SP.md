@@ -92,5 +92,5 @@ You can also use shortest path algorithms to solve the following problem (a very
  - Simple Linear Programming
    - [Restore Array](https://oj.uz/problem/view/RMI19_restore)
    - [Art](https://codeforces.com/gym/102394/problem/A) (basically same as above)
-   - [Timeline (Camp)](https://probgate.org/viewproblem.php?pid=524&cid=80)
-     - equivalent to [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) except negative values of $x$ are possible.
+   - Timeline (Camp)
+     - equivalent to [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) except $N,C\le 5000$ and negative values of $x$ are possible.

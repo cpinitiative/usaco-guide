@@ -187,12 +187,11 @@ int main() {
 
 ## Problems
 
-  - [Moving Haybales (USACO Camp)](https://probgate.org/viewproblem.php?pid=247)
-  	- similar to "Potatoes"
   - [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
     - same as "Potatoes"
-  - [Stock Trading (USACO Camp)](https://probgate.org/viewproblem.php?pid=531&cid=81)
+  - Stock Trading (Camp)
     - extension of "Buy Low Sell High"
+    - Amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$.
   - [Bookface](https://codeforces.com/gym/102576/problem/C)
   - [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
     - basically same as Bookface
