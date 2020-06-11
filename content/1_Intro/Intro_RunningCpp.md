@@ -29,7 +29,7 @@ Of course, you can't use file I/O on the latter two websites and they are often 
 
 ## On Mac
 
-[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [G++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
+[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use GCC's [g++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
 
 ### Installation
 
@@ -82,7 +82,7 @@ Like Windows in general, you have a lot of options for running C++.
 
 The easiest option is to use an IDE such as [Codeblocks](http://www.codeblocks.org/) or [Visual Studio](https://visualstudio.microsoft.com/vs/) because they often have C++ support already built-in. See the IDEs section below for more information.
 
-However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use.
+However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use, although it may be more difficult to properly set up.
 
 ### Installing MinGW
 
@@ -94,7 +94,17 @@ First, download and run the [MinGW installer](https://osdn.net/projects/mingw/do
 
 https://code.visualstudio.com/docs/cpp/config-wsl (difficult for beginners)
 
-## Compiling and Running C++ using the command line
+## On Linux
+
+GCC is usually preinstalled on most Linux distros. You can check if it is installed with
+
+```sh
+whereis g++
+```
+
+If it is not preinstalled, you can probably install it using your distro's package manager.
+
+## Using the command line
 
 (add tutorial or video?)
 
@@ -186,11 +196,12 @@ Note that all occurrences of `$1` are replaced with `name`.
 
 Again, many options.
 
- * [Sublime Text 3](https://www.sublimetext.com/)
+ * [Sublime Text 3](https://www.sublimetext.com/) - a fast, lightweight text editor for Windows, Mac, and Linux
    * [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
    * [FastOlympicCoding Addon](https://github.com/Jatana/FastOlympicCoding)
    * [Sublime Snippets](https://www.granneman.com/webdev/editors/sublime-text/top-features-of-sublime-text/quickly-insert-text-and-code-with-sublime-text-snippets)
    * [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
      * Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
- * [Atom](https://atom.io/)
+ * [Atom](https://atom.io/) - another text editor for Windows, Mac, and Linux, from the makers of Github
+ * [Vim](https://www.vim.org/) - the classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
  * Others?
