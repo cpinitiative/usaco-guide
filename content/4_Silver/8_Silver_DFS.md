@@ -2,7 +2,7 @@
 slug: /silver/dfs
 title: "Depth First Search"
 author: Siyong Huang
-order: 7
+order: 8
 ---
 
  - Introduction to Graphs

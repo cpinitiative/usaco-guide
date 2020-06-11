@@ -10,15 +10,16 @@ prerequisites:
      - Silver - Prefix Sums
 ---
 
-An introduction to dynamic programming concepts needed for USACO Gold. 
+**Dynamic Programming (DP)** is a very important concept which emerges in the Gold division and extends to the IOI.
 
 <!-- END DESCRIPTION -->
 
-**Dynamic programming** is a very important concept which emerges in the USACO gold division and extends to the IOI. Typically, one or two problems from every contest in the gold division uses some sort of Dynamic programming. 
+[[info | Contest Tip]]
+| Usually at least one problem from every gold division contest involves some sort of DP.
 
 ## Tutorial
 
-The following tutorials serve as an introduction into the mindset of Dynamic programming.
+The following tutorials serve as an introduction into the mindset of DP.
 
  - CPH 7 
    - great introduction that covers most classical problems
@@ -39,12 +40,35 @@ Practice makes perfect. Start by doing some classical problems (try at least one
    * also very good!
  * [Codeforces DP Problem List](http://codeforces.com/blog/entry/325)
 
-## Coin Change / Knapsack
+The following USACO problems don't fall into any of the categories below. Arranged roughly in order of difficulty. 
 
-(description)
+[[info | Pro Tip]]
+| Sometimes it's a good idea to write a slower polynomial-time solution and then optimize it to the desired complexity (say, write $O(N^2)$ first and then speed it up to $O(N)$).
+
+ * [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
+   * `dp[first i games][# changes][last gesture] -> max games won`
+ * [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
+   * `dp[time][city] -> money`
+ * [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
+   * $O(NK^2)\to O(NK)$
+ * [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
+   * `dp[first m groups][k changes] -> total sum of net sizes`
+   * $O(N^4)\to O(N^3)$
+ * [Circular Barn Revisited](http://www.usaco.org/index.php?page=viewproblem2&cpid=622)
+   * can brute force make your DP easier? (yes)
+ * [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
+   * `dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes`
+ * [Mortal Cowmbat](http://usaco.org/index.php?page=viewproblem2&cpid=971)
+   * Use Floyd-Warshall, Prefix Sums
+   * `dp[first i letters form valid combo][last letter] -> time`
+ * [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)
+   * must be $K$ consecutive with same color
+   * $O(NK)\to O(N)$
+
+## Bounded and Unbounded Knapsack
 
  * Classic
-   * [Unbounded](https://www.hackerrank.com/challenges/unbounded-knapsack/problem)
+   * [Unbounded Knapsack](https://www.hackerrank.com/challenges/unbounded-knapsack/problem)
      * [Unordered Coin Change](https://cses.fi/problemset/task/1635)
      * [Ordered Coin Change](https://cses.fi/problemset/task/1636)
      * [Minimum Coins](https://cses.fi/problemset/task/1634)
@@ -52,9 +76,18 @@ Practice makes perfect. Start by doing some classical problems (try at least one
    * [Large Capacity + Small Values](https://atcoder.jp/contests/dp/tasks/dp_e)
       * Reconsider the state.
  * USACO Gold
-   * [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
    * [Fruit Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
+     * straightforward
+   * [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
+     * binary search + knapsack on weight
    * [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
+     * First consider the case where there are only two lines with the same class.
+     * Requires fast modular exponentiation for full credit.
+   * [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=1043)
+     * With a bit of number theory
+ * CF
+   * [Round Subset](http://codeforces.com/contest/837/problem/D) [](59)
+   * [Fire](http://codeforces.com/contest/864/problem/E) [](59)
 
 ## Paths on Grid (& Related)
 
@@ -75,34 +108,17 @@ Practice makes perfect. Start by doing some classical problems (try at least one
    * [Old Silver - Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=126)
      * Although the problem looks different, this is actually a direct application of edit distance.
    * [Old Gold - Palindromic Paths](http://www.usaco.org/index.php?page=viewproblem2&cpid=553)
-     * Consider the answer. What are some properties of it?
+     * What are some properties of the answer?
+ * Other
+   * [TC Interleaving Parentheses](https://community.topcoder.com/stat?c=problem_statement&pm=14635&rd=16933)
+   * [K-Ordered LCS](https://www.hackerearth.com/problem/algorithm/mancunian-and-k-ordered-lcs-e6a4b8c6/)
+   * [CSA Wrong Brackets](https://csacademy.com/contest/round-51/task/wrong-brackets/) [](69)
 
 ## Longest Increasing Subsequence
+
+(add?)
 
  * [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
     * Try to improve to $O(N\log N)$. 
  * [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
     * Challenging!
-
-## Additional USACO Problems
-
- * Fairly Straightforward
-   * [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
-     * `dp[first i games][# changes][last gesture ] -> max games won`
-   * [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
-     * `dp[time][city] -> money`
-   * [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
-     * $O(NK^2)\to O(NK)$
- * Trickier
-   * [Mortal Cowmbat](http://usaco.org/index.php?page=viewproblem2&cpid=971)
-     * Use Floyd-Warshall, Prefix Sums
-     * `dp[first i letters form valid combo][last letter] -> time`
-   * [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
-     * `dp[first m groups][k changes] -> total sum of net sizes`
-   * [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
-     * `dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes`
-   * [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)
-     * must be $K$ consecutive with same color
-     * $O(NK)\to O(N)$
-   * [Circular Barn Revisited](http://www.usaco.org/index.php?page=viewproblem2&cpid=622)
-     * can brute force make your DP easier? (yes)
