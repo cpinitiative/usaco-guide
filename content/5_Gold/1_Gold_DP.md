@@ -14,7 +14,8 @@ prerequisites:
 
 <!-- END DESCRIPTION -->
 
-Typically, at least one problem from every gold contest division involves some sort of DP.
+[[info | Contest Tip]]
+| Usually at least one problem from every gold contest division involves some sort of DP.
 
 ## Tutorial
 
@@ -40,7 +41,6 @@ Practice makes perfect. Start by doing some classical problems (try at least one
  * [Codeforces DP Problem List](http://codeforces.com/blog/entry/325)
 
 The following USACO problems don't fall into any of the categories below. Arranged roughly in order of difficulty. 
-
 
 [[info | Pro Tip]]
 | Sometimes it's a good idea to write a slower polynomial-time solution and then optimize it to the desired complexity (say, write $O(N^2)$ first and then speed it up to $O(N)$).
