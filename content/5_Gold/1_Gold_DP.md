@@ -15,7 +15,7 @@ prerequisites:
 <!-- END DESCRIPTION -->
 
 [[info | Contest Tip]]
-| Usually at least one problem from every gold contest division involves some sort of DP.
+| Usually at least one problem from every gold division contest involves some sort of DP.
 
 ## Tutorial
 
