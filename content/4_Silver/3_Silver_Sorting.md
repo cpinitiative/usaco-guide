@@ -5,10 +5,8 @@ author: Unknown
 order: 3
 prerequisites: 
  - 
-     - Silver - Containers
+     - Bronze - Data Structures
 ---
-
-+ more practice with ordered map / set?
 
 <!-- END DESCRIPTION -->
 

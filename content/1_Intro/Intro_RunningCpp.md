@@ -17,13 +17,13 @@ Running C++ both online and locally.
    * supports files and file I/O
  * [CSAcademy](https://csacademy.com/workspace/)
    * pretty nice (unless you get "Estimated Queue Time: ...")
- * [Ideone](http://ideone.com/) (used this for a while ...)
-   * okay with an ad blocker
+   * "saved locally" will not save your code if you close the tab, press Command-S to save.
+ * [Ideone](http://ideone.com/)
+   * okay ... with an ad blocker
    * make sure your code is not public
-   * sometimes randomly erases your code when you first create it (so get in the habit of copying your code before creating it!)
+   * sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
-Of course, you can't use file I/O on these websites (except for  OnlineGDB) and they are often quite limited.
-
+Of course, you can't use file I/O on the latter two websites and they are often quite limited.
 
 # Running C++ Locally
 
@@ -76,7 +76,6 @@ softwareupdate --list
 softwareupdate -i -a # installs everything
 ```
 
-
 ## On Windows
 
 Like Windows in general, you have a lot of options for running C++.
@@ -95,10 +94,9 @@ First, download and run the [MinGW installer](https://osdn.net/projects/mingw/do
 
 https://code.visualstudio.com/docs/cpp/config-wsl (difficult for beginners)
 
-
 ## Compiling and Running C++ using the command line
 
-(simple tutorial or video?)
+(add tutorial or video?)
 
 Consider a simple program such as the following, which we'll save in `name.cpp`.
 
@@ -168,13 +166,11 @@ run name
 
 Note that all occurrences of `$1` are replaced with `name`.
 
-
 # Tools
 
 ## IDEs
 
  * [Geany](https://www.geany.org/)
-   * used at IOI
  * [Visual Studio Code](https://code.visualstudio.com/)
    * lightweight, fast IDE, but requires some configuration
  * [Visual Studio](https://visualstudio.microsoft.com/vs/)
@@ -186,7 +182,6 @@ Note that all occurrences of `$1` are replaced with `name`.
  * [CLion](https://www.jetbrains.com/clion/)
    * requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
    
-
 ## Text Editors
 
 Again, many options.

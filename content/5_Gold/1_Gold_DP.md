@@ -39,6 +39,28 @@ Practice makes perfect. Start by doing some classical problems (try at least one
    * also very good!
  * [Codeforces DP Problem List](http://codeforces.com/blog/entry/325)
 
+The following USACO problems don't fall into (arranged roughly in order of difficulty).
+
+ * [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
+   * `dp[first i games][# changes][last gesture] -> max games won`
+ * [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
+   * `dp[time][city] -> money`
+ * [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
+   * $O(NK^2)\to O(NK)$
+ * [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
+   * `dp[first m groups][k changes] -> total sum of net sizes`
+   * $O(N^4)\to O(N^3)$
+ * [Circular Barn Revisited](http://www.usaco.org/index.php?page=viewproblem2&cpid=622)
+   * can brute force make your DP easier? (yes)
+ * [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
+   * `dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes`
+ * [Mortal Cowmbat](http://usaco.org/index.php?page=viewproblem2&cpid=971)
+   * Use Floyd-Warshall, Prefix Sums
+   * `dp[first i letters form valid combo][last letter] -> time`
+ * [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)
+   * must be $K$ consecutive with same color
+   * $O(NK)\to O(N)$
+
 ## Bounded and Unbounded Knapsack
 
  * Classic
@@ -57,6 +79,8 @@ Practice makes perfect. Start by doing some classical problems (try at least one
    * [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
      * First consider the case where there are only two lines with the same class.
      * Requires fast modular exponentiation for full credit.
+   * [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=1043)
+     * With a bit of number theory
  * CF
    * [Round Subset](http://codeforces.com/contest/837/problem/D) [](59)
    * [Fire](http://codeforces.com/contest/864/problem/E) [](59)
@@ -94,25 +118,3 @@ Practice makes perfect. Start by doing some classical problems (try at least one
     * Try to improve to $O(N\log N)$. 
  * [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
     * Challenging!
-
-## Additional USACO Problems
-
- * [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
-   * `dp[first i games][# changes][last gesture ] -> max games won`
- * [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
-   * `dp[time][city] -> money`
- * [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
-   * $O(NK^2)\to O(NK)$
- * [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
-   * `dp[first m groups][k changes] -> total sum of net sizes`
-   * $O(N^4)\to O(N^3)$
- * [Circular Barn Revisited](http://www.usaco.org/index.php?page=viewproblem2&cpid=622)
-   * can brute force make your DP easier? (yes)
- * [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)
-   * must be $K$ consecutive with same color
-   * $O(NK)\to O(N)$
- * [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
-   * `dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes`
- * [Mortal Cowmbat](http://usaco.org/index.php?page=viewproblem2&cpid=971)
-   * Use Floyd-Warshall, Prefix Sums
-   * `dp[first i letters form valid combo][last letter] -> time`
