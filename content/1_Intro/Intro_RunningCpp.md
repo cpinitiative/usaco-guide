@@ -148,7 +148,9 @@ If you want to read input from `inp.txt` and write to `out.txt`, then use the fo
 
 See "Intro - Introductory Problems" for how to do file input and output within the program.
 
-### Adding Shortcuts (Mac only)
+### Adding Shortcuts (Mac and Linux only)
+
+(alternatives for Windows?)
 
 [Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
 
