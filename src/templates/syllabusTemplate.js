@@ -72,7 +72,7 @@ export default function Template(props) {
       <SEO title="Home" />
 
       {/* Begin Hero Section */}
-      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-28`}>
+      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-36`}>
         <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
           <div className="relative h-full max-w-screen-xl mx-auto">
             <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
@@ -125,7 +125,7 @@ export default function Template(props) {
 
       <div className="bg-gray-50 pb-8" id="content">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-          <div className="mb-8 bg-white shadow-md rounded-lg relative" style={{ marginTop: "-8rem" }}>
+          <div className="mb-8 bg-white shadow-md rounded-lg relative" style={{ marginTop: "-12rem" }}>
             <div className="sm:hidden">
               <select aria-label="Selected tab"
                       className="form-select block w-full"
