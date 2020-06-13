@@ -72,7 +72,7 @@ export default function Template(props) {
       <SEO title="Home" />
 
       {/* Begin Hero Section */}
-      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-36`}>
+      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-48`}>
         <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
           <div className="relative h-full max-w-screen-xl mx-auto">
             <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
