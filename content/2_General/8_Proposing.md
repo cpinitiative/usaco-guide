@@ -5,16 +5,23 @@ author: Benjamin Qi
 order: 8
 ---
 
-Anyone (?) can propose problems for monthly contests. In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
+Anyone (?) can propose problems for monthly contests (email your proposal to Dr. Dean). 
 
-All statements will eventually be converted to the following format (so preferably save us some time by following it).
+<!-- END DESCRIPTION -->
+
+In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
+
+All statements must eventually be converted to the following format; please save us time by following it as best you can.
 
 <details>
 
 <summary>2020 Open Gold - Favorite Colors</summary>
 
 ```
-(http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
+http://www.usaco.org/index.php?page=viewproblem2&cpid=1042
+bolded text should be surrounded by [b][/b], italics by [i][/i]
+use [ol][/ol] for numbered list
+---
 
 Each of Farmer John's $N$ cows ($1\le N\le 2\cdot 10^5$) has a favorite color.
 The cows are conveniently labeled $1\ldots N$ (as always), and each color can be
@@ -52,9 +59,11 @@ favorite color 1.
 [section|SCORING:]
 
 [ul]
+
 [li]Test cases 2-3 satisfy $N,M\le 10^3$. [/li] 
 
 [li]Test cases 4-10 satisfy no additional constraints. [/li]
+
 [/ul]
 
 [/section]
