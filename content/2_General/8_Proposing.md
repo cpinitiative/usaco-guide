@@ -11,9 +11,11 @@ All statements will eventually be converted to the following format (so preferab
 
 <details>
 
-<summary>[USACO 2020 Open - Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)</summary>
+<summary>2020 Open Gold - Favorite Colors</summary>
 
 ```
+(http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
+
 Each of Farmer John's $N$ cows ($1\le N\le 2\cdot 10^5$) has a favorite color.
 The cows are conveniently labeled $1\ldots N$ (as always), and each color can be
 represented by an integer in the range $1\ldots N$.
