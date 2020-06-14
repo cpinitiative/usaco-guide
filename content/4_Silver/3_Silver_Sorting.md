@@ -17,15 +17,37 @@ prerequisites:
 
 <!-- END DESCRIPTION -->
 
+<!--
+TODO List:
+
+ - Check sorting algorithms websites (I just googled and copied top link)
+ - Improve Library Sorting: (maybe link actual website instead of documentation)
+ - CPP Custom Comparators
+   - Example for Primitives
+   - Test sample code
+ - Java Custom Comparators
+   - All
+ - Python Custom Comparators
+   - All
+ - Coordinate Compression
+-->
+
 # Sorting
 
-Sorting is exactly what it sounds like -- arranging items in some particular order. 
+Sorting is exactly what it sounds like: arranging items in some particular order. 
 
 ## Sorting Algorithms
 
 There are many sorting algorithms, here are some sources to learn about the popular ones:
+ - [Bubble Sort](https://www.freecodecamp.org/news/bubble-sort/)
+ - [Quicksort](https://medium.com/karuna-sehgal/a-quick-explanation-of-quick-sort-7d8e2563629b)
+ - [Mergesort](https://www.geeksforgeeks.org/merge-sort/)
 
-## Sorting
+## Library Sorting
+
+ - Cpp: [std::sort documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
+ - Java: [Arrays.sort documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
+ - Python: [sorted documentation](https://docs.python.org/3/howto/sorting.html)
 
 Problems:
  - [Counting Haybales (Easy)](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
@@ -121,6 +143,7 @@ map<foo, bar, decltype(cmp)> Map(cmp);
 
  WIP!
 
+## Coordinate Compression
 
 -------- Other stuff --------
 
@@ -132,6 +155,5 @@ map<foo, bar, decltype(cmp)> Map(cmp);
 
 
  - [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
-
  - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
    - no longer works, see [this one](https://codeforces.com/contest/1324/submission/73058869) instead
