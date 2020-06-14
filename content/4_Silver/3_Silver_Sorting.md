@@ -26,7 +26,7 @@ TODO List:
  - CPP Custom Comparators
    - Test sample code
  - Java Custom Comparators
-   - All
+   - All (currently just pointing to darren's book)
  - Python Custom Comparators
    - Potentially explain use in stl data structures
  - Coordinate Compression
@@ -76,19 +76,28 @@ Type 1) Overloading operator
    - Only works for objects (not primitives)
    - Only supports two types of comparisons (less than (<) and greater than (>))
 
+<!-- Tested -->
 ```cpp
-// UNTESTED
-struct foo
+struct Foo
 {
-	int x;
-
-	bool operator < (const foo& o) const {return x < o.x;}
+	int Bar;
+	Foo(int _Bar=-1):Bar(_Bar){}
+	bool operator < (const Foo& foo2) const {return Bar < foo2.Bar;}
 };
+const int N = 8;
 int main()
 {
-	foo a[N];
+	Foo a[N];
+	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
 	sort(a, a+N);
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
 }
+```
+Output:
+```
+(Foo:  3) (Foo: 18) (Foo: 13) (Foo:  5) (Foo: 18) (Foo:  3) (Foo: 15) (Foo:  0) 
+(Foo:  0) (Foo:  3) (Foo:  3) (Foo:  5) (Foo: 13) (Foo: 15) (Foo: 18) (Foo: 18) 
 ```
 
 Type 2) Function
@@ -99,26 +108,49 @@ Type 2) Function
    - More difficult to implement
    - Extra care needs to be taken to support STL
 
+<!-- Tested -->
 ```cpp
-// UNTESTED
-struct foo
+struct Foo
 {
-	int x;
+	int Bar;
+	Foo(int _Bar=-1):Bar(_Bar){}
 };
-bool cmp(const foo& a, const foo& b)
-{
-	return a.x < b.x;
-}
-//Alternatively (require c++11):
-auto cmp2 = [](const foo& a, const foo& b){return a.x<b.x;};
+const int N = 8;
+Foo a[N];
+bool cmp1(Foo foo1, Foo foo2) {return foo1.Bar < foo2.Bar;}
+auto cmp2 = [](Foo foo1, Foo foo2) {return foo1.Bar < foo2.Bar;};//requires c++11 or above
 int main()
 {
-	foo a[N];
-	//The following 3 all work
-	sort(a, a+N, cmp);
+	printf("--- Method 1 ---\n");
+	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
+	sort(a, a+N, [](Foo foo1, Foo foo2){return foo1.Bar<foo2.Bar;});//requires c++11 or above
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
+
+	printf("--- Method 2 ---\n");
+	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
+	sort(a, a+N, cmp1);
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
+
+	printf("--- Method 3 ---\n");
+	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
 	sort(a, a+N, cmp2);
-	sort(a, a+N, [](const foo& a, const foo& b){return a.x<b.x;});
+	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
 }
+```
+Output:
+```
+--- Method 1 ---
+(Foo:  3) (Foo: 18) (Foo: 13) (Foo:  5) (Foo: 18) (Foo:  3) (Foo: 15) (Foo:  0) 
+(Foo:  0) (Foo:  3) (Foo:  3) (Foo:  5) (Foo: 13) (Foo: 15) (Foo: 18) (Foo: 18) 
+--- Method 2 ---
+(Foo:  5) (Foo: 13) (Foo: 18) (Foo:  0) (Foo:  9) (Foo:  4) (Foo:  2) (Foo: 15) 
+(Foo:  0) (Foo:  2) (Foo:  4) (Foo:  5) (Foo:  9) (Foo: 13) (Foo: 15) (Foo: 18) 
+--- Method 3 ---
+(Foo:  1) (Foo:  1) (Foo: 18) (Foo:  0) (Foo: 11) (Foo: 12) (Foo:  1) (Foo:  5) 
+(Foo:  0) (Foo:  1) (Foo:  1) (Foo:  1) (Foo:  5) (Foo: 11) (Foo: 12) (Foo: 18) 
 ```
 
 #### Comparators for STL
@@ -200,10 +232,10 @@ Type 1) Operator Overloading
 <!-- Tested -->
 ```py
 class Foo:
-	def __init__(self, x): self.x = x
-	def __str__(self): return "Foo({})".format(self.x)
+	def __init__(self, _Bar): self.Bar = _Bar
+	def __str__(self): return "Foo({})".format(self.Bar)
 	def __lt__(self, o): # lt means less than
-		return self.x < o.x
+		return self.Bar < o.Bar
 
 a = []
 for i in range(8):
@@ -213,8 +245,8 @@ print(*sorted(a))
 ```
 Output:
 ```
-Foo(4) Foo(1) Foo(1) Foo(4) Foo(9) Foo(7) Foo(1) Foo(1)
-Foo(1) Foo(1) Foo(1) Foo(1) Foo(4) Foo(4) Foo(7) Foo(9)
+Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
 ```
 
 Type 2) Function/Lambda
@@ -227,50 +259,50 @@ Type 2) Function/Lambda
 ```py
 from functools import cmp_to_key
 class Foo:
-	def __init__(self, x): self.x = x
-	def __str__(self): return "Foo({})".format(self.x)
+	def __init__(self, _Bar): self.Bar = _Bar
+	def __str__(self): return "Foo({})".format(self.Bar)
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 10)))
+	a.append(Foo(random.randint(0, 9)))
 print(*a)
 
-print(*sorted(a, key=cmp_to_key(lambda x,y: x.x - y.x)))
-def cmp(x, y):
-	return x.x - y.x
+print(*sorted(a, key=cmp_to_key(lambda foo1, foo2: foo1.Bar - foo2.Bar)))
+def cmp(foo1, foo2):
+	return foo1.Bar - foo2.Bar
 print(*sorted(a, key=cmp_to_key(cmp)))
 ```
 Output:
 ```
-Foo(8) Foo(9) Foo(2) Foo(3) Foo(5) Foo(5) Foo(9) Foo(9)
-Foo(2) Foo(3) Foo(5) Foo(5) Foo(8) Foo(9) Foo(9) Foo(9)
-Foo(2) Foo(3) Foo(5) Foo(5) Foo(8) Foo(9) Foo(9) Foo(9)
+Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
 ```
 
-Type 3) Mapping
+Type 3) Remapping Key
 
- - This method maps an object to another comparable object. In this case, `Foo` is defined to be compared by the sum of its members `x` and `y`.
+ - This method maps an object to another comparable datatype with which to be sorted. In this case, `Foo` is sorted by the sum of its members `x` and `y`.
 <!-- Tested -->
 ```py
 class Foo:
-	def __init__(self, x, y): self.x,self.y = x,y
-	def __str__(self): return "Foo({},{})".format(self.x, self.y)
+	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
 
 a = []
 for i in range(8):
 	a.append(Foo(random.randint(1, 9)*10, random.randint(1, 9)))
 print(*a)
 
-print(*sorted(a, key=lambda x: x.x+x.y))
-def remap(x):
-	return x.x + x.y
-print(*sorted(a, key=remap))
+print(*sorted(a, key=lambda foo: foo.Bar+foo.Baz))
+def key(foo):
+	return foo.Bar + foo.Baz
+print(*sorted(a, key=key))
 ```
 Output:
 ```
-Foo(50,8) Foo(80,2) Foo(70,5) Foo(80,1) Foo(90,6) Foo(60,1) Foo(90,3) Foo(20,5)
-Foo(20,5) Foo(50,8) Foo(60,1) Foo(70,5) Foo(80,1) Foo(80,2) Foo(90,3) Foo(90,6)
-Foo(20,5) Foo(50,8) Foo(60,1) Foo(70,5) Foo(80,1) Foo(80,2) Foo(90,3) Foo(90,6)
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(90,7) Foo(80,7) Foo(80,9) Foo(60,9) Foo(90,8)
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
 ```
 
 ## Coordinate Compression
@@ -279,7 +311,6 @@ Foo(20,5) Foo(50,8) Foo(60,1) Foo(70,5) Foo(80,1) Foo(80,2) Foo(90,3) Foo(90,6)
 
  - Comparators
  - CPH 3
- - std::sort / Collections.sort
  - coord compress
 
 
