@@ -22,8 +22,8 @@ TODO List:
 
  - Check sorting algorithms websites (I just googled and copied top link)
  - Improve Library Sorting: (maybe link actual website instead of documentation)
+ - Quickly go over stable sort?
  - CPP Custom Comparators
-   - Example for Primitives
    - Test sample code
  - Java Custom Comparators
    - All
@@ -131,8 +131,33 @@ struct foo
 auto cmp = [](const foo& a, const foo& b){return /*comparator function*/;};
 
 set<foo, decltype(cmp)> Set(cmp);//pass the comparator as a parameter
-priority_queue<foo, vector<foo>, decltype(cmp)> pq(cmp);//IMPORTANT: priority queue is sorted in REVERSE order (largest elements are first)
+priority_queue<foo, vector<foo>, decltype(cmp)> pq(cmp);
+//Side Note: priority queue is sorted in REVERSE order (largest elements are first)
 map<foo, bar, decltype(cmp)> Map(cmp);
+```
+
+#### Example of Comparators for Primitives
+
+Since you cannot overload operators for primitives, you must use custom comparators
+
+<!-- The following code snip is tested -->
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 10;
+int a[N], b[N] = {4,8,2,3,4,1,2,4,3,5};
+int main()
+{
+	iota(a, a+N, 0);
+	std::sort(a, a+N, greater<int>());
+	//sort a in decreasing order
+	for(int i=0;i<N;++i) printf("a[%d] = %d\n", i, a[i]);
+
+	iota(a, a+N, 0);
+	std::sort(a, a+N, [](int x, int y){return b[x]<b[y]||(b[x]==b[y]&&x>y);});
+	//sort a by increasing values of b, with ties broken by decreasing index
+	for(int i=0;i<N;++i) printf("a[%d] = %d: b[%d] = %d\n", i, a[i], a[i], b[i]);
+}
 ```
 
 ### Java
