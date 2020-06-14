@@ -3,6 +3,9 @@ slug: /silver/dfs
 title: "Depth First Search"
 author: Siyong Huang
 order: 8
+
+
+
 ---
 
  - Introduction to Graphs
@@ -10,6 +13,7 @@ order: 8
  - Flood Fill
  - Graph Two-Coloring
  - Cycle Detection
+
 
 <!-- END DESCRIPTION -->
 

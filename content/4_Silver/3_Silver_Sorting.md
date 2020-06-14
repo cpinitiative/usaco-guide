@@ -1,26 +1,137 @@
 ---
 slug: /silver/sorting
 title: "Sorting"
-author: Unknown
+author: Siyong (WIP)
 order: 3
 prerequisites: 
  - 
-     - Bronze - Data Structures
+     - Silver - Containers
 ---
+<div class="syllabus-only">
+  Description: Todo
+</div>
+
+ - Sorting
+ - Comparators (C++)
+ - Coordinate Compression
 
 <!-- END DESCRIPTION -->
 
- - Custom Comparators (prerequisite for basically all silver topics in Java)
+# Sorting
+
+Sorting is exactly what it sounds like -- arranging items in some particular order. 
+
+## Sorting Algorithms
+
+There are many sorting algorithms, here are some sources to learn about the popular ones:
+
+## Sorting
+
+Problems:
+ - [Counting Haybales (Easy)](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
+
+## Custom Comparators
+
+This section will be separated for cpp, java, and python
+
+### Cpp
+
+There are a few ways to implement custom comparators in C++. Chapter 8 of [Darren Yao's book](http://darrenyao.com/usacobook/cpp.pdf) has a good explanation, but comparators will be explained here as well.
+
+Side note: A comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
+
+#### Comparators for Sorting
+
+1) Overloading operator
+ - Pro:
+   - This is the easiest to implement
+   - Easy to work with STL
+ - Con:
+   - Only works for objects (not primitives)
+   - Only supports two types of comparisons (less than (<) and greater than (>))
+
+```cpp
+// UNTESTED
+struct foo
+{
+	int x;
+
+	bool operator < (const foo& o) const {return x < o.x;}
+};
+int main()
+{
+	foo a[N];
+	sort(a, a+N);
+}
+```
+
+2) Function
+ - Pro:
+   - Works for both objects and primitives
+   - Supports many different comparators for the same object
+ - Con:
+   - More difficult to implement
+   - Extra care needs to be taken to support STL
+
+```cpp
+// UNTESTED
+struct foo
+{
+	int x;
+};
+bool cmp(const foo& a, const foo& b)
+{
+	return a.x < b.x;
+}
+//Alternatively (require c++11):
+auto cmp2 = [](const foo& a, const foo& b){return a.x<b.x;};
+int main()
+{
+	foo a[N];
+	//The following 3 all work
+	sort(a, a+N, cmp);
+	sort(a, a+N, cmp2);
+	sort(a, a+N, [](const foo& a, const foo& b){return a.x<b.x;});
+}
+```
+
+#### Comparators for STL
+
+Operator overloading works as expected for using in STL. If you are sorting elements in reverse order, you can use the STL `greater` comparator ([click for documentation](https://en.cppreference.com/w/cpp/utility/functional/greater)) instead.
+
+For function comparators, some extra care needs to be taken:
+
+```cpp
+struct foo
+{
+	//members
+};
+auto cmp = [](const foo& a, const foo& b){return /*comparator function*/;};
+
+set<foo, decltype(cmp)> Set(cmp);//pass the comparator as a parameter
+priority_queue<foo, vector<foo>, decltype(cmp)> pq(cmp);//IMPORTANT: priority queue is sorted in REVERSE order (largest elements are first)
+map<foo, bar, decltype(cmp)> Map(cmp);
+```
+
+### Java
+
+ - See chapter 8 of [Darren Yao's book](http://darrenyao.com/usacobook/java.pdf)
+
+### Python
+
+ WIP!
+
+
+-------- Other stuff --------
+
+ - Comparators
  - CPH 3
  - std::sort / Collections.sort
  - coord compress
 
-See 8 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
 
-See 12 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
 
+ - [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
 
  - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
    - no longer works, see [this one](https://codeforces.com/contest/1324/submission/73058869) instead
-
-custom comparators
