@@ -1,8 +1,7 @@
 ---
-slug: /gold/toposort
+id: toposort
 title: "Topological Sort"
 author: Benjamin Qi
-order: 3
 prerequisites: 
  - 
      - Gold - Breadth First Search

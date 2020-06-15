@@ -1,5 +1,5 @@
 ---
-slug: /intro/getting-started
+id: getting-started
 title: Getting Started
 author: Nathan Wang, Benjamin Qi
 order: 2

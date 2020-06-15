@@ -1,8 +1,7 @@
 ---
-slug: /silver/sorting
+id: sorting
 title: "Sorting"
 author: Unknown
-order: 3
 prerequisites: 
  - 
      - Bronze - Data Structures

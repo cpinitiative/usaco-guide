@@ -1,6 +1,5 @@
 ---
-slug: /general/strategy
+id: strategy
 title: Contest Strategy
 author: ?
-order: 5
 ---

@@ -1,8 +1,7 @@
 ---
-slug: /bronze/overview
+id: overview
 title: "Bronze Overview"
 author: Brian Dean
-order: 1
 ---
 
 <!-- END DESCRIPTION -->

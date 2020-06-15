@@ -1,8 +1,7 @@
 ---
-slug: /bronze/ds
+id: ds
 title: Data Structures
 author: Nathan Wang, ?
-order: 5
 ---
 
 Problems and additional resources regarding built-in data structures.

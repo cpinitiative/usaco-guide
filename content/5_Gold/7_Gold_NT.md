@@ -1,8 +1,7 @@
 ---
-slug: /gold/introductory-number-theory
+id: introductory-number-theory
 title: "Introductory Number Theory"
 author: Unknown
-order: 7
 ---
 
 <div class="syllabus-only">

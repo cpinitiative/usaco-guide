@@ -1,8 +1,7 @@
 ---
-slug: /bronze/collections
+id: collections
 title: Built-In Java Collections
 author: Darren Yao
-order: 3
 ---
 
 Introduces the data structures in the Java standard library that are frequently used in competitive programming.

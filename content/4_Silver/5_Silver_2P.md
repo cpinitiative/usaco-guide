@@ -1,8 +1,7 @@
 ---
-slug: /silver/two-pointers
+id: two-pointers
 title: "Two Pointers"
 author: Darren Yao
-order: 5
 prerequisites:
  - 
      - Silver - Sorting

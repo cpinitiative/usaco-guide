@@ -1,5 +1,5 @@
 ---
-slug: /intro/prerequisites
+id: prerequisites
 title: Prerequisites
 author: Nathan Wang
 order: 3

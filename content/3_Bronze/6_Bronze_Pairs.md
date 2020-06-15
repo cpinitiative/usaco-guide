@@ -1,8 +1,7 @@
 ---
-slug: /bronze/pairs
+id: pairs
 title: Pairs & Tuples
 author: Aaron Chew, Benjamin Qi, Nathan Wang
-order: 6
 ---
 
 A **pair** is a structure that holds two values, not necessarily of the same type.

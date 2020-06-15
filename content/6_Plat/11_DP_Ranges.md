@@ -1,8 +1,7 @@
 ---
-slug: /plat/dp-ranges
+id: dp-ranges
 title: "Dynamic Programming on Ranges"
 author: Michael Cao
-order: 11
 prerequisites: 
  - 
      - Gold - Introduction to Dynamic Programming

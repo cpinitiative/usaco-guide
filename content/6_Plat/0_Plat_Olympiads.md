@@ -1,8 +1,7 @@
 ---
-slug: /plat/oly
+id: oly
 title: "Olympiads"
 author: Benjamin Qi
-order: 0
 ---
 
 Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.

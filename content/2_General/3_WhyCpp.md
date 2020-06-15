@@ -1,8 +1,7 @@
 ---
-slug: /general/why-cpp
+id: why-cpp
 title: Why C++?
 author: Benjamin Qi
-order: 3
 ---
 
 A few reasons why choice of language matters significantly (outside of Bronze).

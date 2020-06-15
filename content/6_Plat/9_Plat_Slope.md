@@ -1,8 +1,7 @@
 ---
-slug: /plat/slope
+id: slope
 title: "Slope Trick"
 author: Benjamin Qi
-order: 9
 prerequisites: 
  - 
      - some familiarity with at least one of the two tutorials mentioned in this module

@@ -1,5 +1,5 @@
 ---
-slug: /intro/running-cpp
+id: running-cpp
 title: Running C++
 author: Nathan Wang, Benjamin Qi, Anthony Wang
 order: 4

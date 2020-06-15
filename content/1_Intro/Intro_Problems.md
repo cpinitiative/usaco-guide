@@ -1,5 +1,5 @@
 ---
-slug: /intro/problems
+id: problems
 title: Introductory Problems
 author: Nathan Wang, Benjamin Qi
 problems:

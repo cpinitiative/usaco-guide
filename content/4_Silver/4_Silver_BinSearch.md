@@ -1,8 +1,7 @@
 ---
-slug: /silver/binary-search
+id: binary-search
 title: "Binary Search"
 author: Nathan Chen
-order: 4
 prerequisites: 
  - 
      - Silver - Sorting

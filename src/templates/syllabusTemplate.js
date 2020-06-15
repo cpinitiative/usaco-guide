@@ -5,16 +5,22 @@ import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
 import { graphql, Link } from "gatsby";
 import Markdown from "../components/Markdown";
+import ModuleOrdering from "../../content/ordering";
+import { getModule } from "../utils";
 
-const renderModule = ({ node }) => {
+const renderModule = (node, idx, parentIdx = -1) => {
+  if (node.hasOwnProperty("items")) {
+    return node.items.map((x, i) => renderModule(x, i, idx));
+  }
+
   const data = node.frontmatter;
   if (!data.title) return;
 
   return (
     <SyllabusModule
-      title={`${data.order}. ${data.title}`}
-      url={data.slug}
-      key={data.slug}
+      title={`${parentIdx !== -1 ? (parentIdx+1)+"." : ""}${idx+1}. ${data.title}`}
+      url={node.slug}
+      key={node.slug}
       problems={data.problems}
       prerequisites={data.prerequisites}
       author={data.author}
@@ -27,19 +33,18 @@ const renderModule = ({ node }) => {
 export default function Template(props) {
   const data = props.data;
 
-  const introModules = data.introModules.edges;
-  const generalModules = data.generalModules.edges;
-  const bronzeModules = data.bronzeModules.edges;
-  const silverModules = data.silverModules.edges;
-  const goldModules = data.goldModules.edges;
-  const platModules = data.platModules.edges;
-  const modules = [introModules, generalModules, bronzeModules, silverModules, goldModules, platModules];
+  const allModules = data.modules.edges.reduce((acc, cur) => {
+    acc[cur.node.frontmatter.id] = cur.node;
+    return acc;
+  }, {});
 
   const [selectedDivision, setSelectedDivision] = React.useState(props.pathContext.division);
+  const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
   const colors = ["blue", "pink", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
-  const module = modules[selectedDivision];
-  console.log(module);
+  // const module = modules[selectedDivision];
+  // console.log(module);
+  const module = getModule(allModules, divisions[selectedDivision]);
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
@@ -63,7 +68,6 @@ export default function Template(props) {
 
   const handleDivisionChange = d => {
     setSelectedDivision(d);
-    const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
     window.history.pushState(null, "", `/${divisions[d]}/`);
   };
 
@@ -176,15 +180,31 @@ export default function Template(props) {
             </div>
 
             <ol className="list-inside py-8 px-8 text-lg space-y-1">
-              {module.map(m => (
-                <li key={m.node.frontmatter.slug}>
-                  {m.node.frontmatter.order}. <Link className="ml-2 text-blue-600 underline" to={m.node.frontmatter.slug}>{m.node.frontmatter.title}</Link>
-                </li>
-              ))}
+              {module.map((m, idx) => {
+                if (m.hasOwnProperty("items")) {
+                  return (
+                    <li key={m.name}>
+                      {idx+1}. {m.name}
+                      <ol className="list-inside px-8 text-lg space-y-1">
+                        {m.items.map((m, idx2) => (
+                          <li key={m.name}>
+                            {idx+1}.{idx2+1}. <Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
+                          </li>
+                        ))}
+                      </ol>
+                    </li>
+                  )
+                }
+                return (
+                  <li key={m.frontmatter.id}>
+                    {idx+1}. <Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
+                  </li>
+                );
+              })}
             </ol>
           </div>
 
-          {module.map(renderModule)}
+          {module.map((x, idx) => renderModule(x, idx))}
         </div>
       </div>
     </Layout>
@@ -192,96 +212,15 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query {
-    introModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/1_Intro/"}}) {
+    modules: allMarkdownRemark {
       edges {
         node {
           id
           frontmatter {
             title
-            slug
+            id
             author
             problems
-            order
-            prerequisites
-          }
-          excerptAst
-        }
-      }
-    }
-    generalModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/2_General/"}}) {
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            slug
-            author
-            problems
-            order
-            prerequisites
-          }
-          excerptAst
-        }
-      }
-    }
-    bronzeModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/3_Bronze/"}}) {
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            slug
-            author
-            problems
-            order
-            prerequisites
-          }
-          excerptAst
-        }
-      }
-    }
-    silverModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/4_Silver/"}}) {
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            slug
-            author
-            problems
-            order
-            prerequisites
-          }
-          excerptAst
-        }
-      }
-    }
-    goldModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/5_Gold/"}}) {
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            slug
-            author
-            problems
-            order
-            prerequisites
-          }
-          excerptAst
-        }
-      }
-    }
-    platModules: allMarkdownRemark(sort: {fields: frontmatter___order}, filter: {fileAbsolutePath: {regex: "/6_Plat/"}}) {
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            slug
-            author
-            problems
-            order
             prerequisites
           }
           excerptAst

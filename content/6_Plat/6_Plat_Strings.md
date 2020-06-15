@@ -1,8 +1,7 @@
 ---
-slug: /plat/hashing
+id: hashing
 title: "Strings"
 author: Benjamin Qi
-order: 6
 prerequisites: 
  - 
      - Silver - Depth First Search
