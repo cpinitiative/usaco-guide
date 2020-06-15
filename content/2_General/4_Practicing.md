@@ -1,7 +1,7 @@
 ---
 slug: /general/practicing
 title: How to Practice 
-author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
+author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen, Darren Yao
 order: 4
 ---
 
@@ -35,7 +35,15 @@ In any case, if you thought about a problem a lot during a contest but didn't en
 > 2. Spend about the same amount of time that you would be able to during a real contest
 > 3. Whether you are making progress or not
 
-Feel free to not listen to William Lin's suggestions as he is not very good himself.
+### Darren Yao
+In general, I think it’s fine to read the solution relatively early on, as long as you’re made several different attempts at it and you can learn effectively from the solution.
+- On a bronze problem, read the solution after 15-20 minutes of no meaningful progress, after you’ve exhausted every idea you can think of.
+- On a silver problem, read the solution after 30-40 minutes of no meaningful progress.
+- IMPORTANT: When you get stuck and consult the solution, you should not read the entire solution at once, and you certainly shouldn’t look at the solution code. Instead, it’s better to read the solution step by step until you get unstuck, at which point you should go back and finish the problem, and implement it yourself. Reading the full solution or its code should be seen as a last resort.
+
+Problems that you practice with should be of the appropriate difficulty. You don't necessarily need to complete all the exercises at the end of each chapter, just do what you think is right for you. A problem at the right level of difficulty should be one of two types: either you struggle with the problem for a while before coming up with a working solution, or you miss it slightly and need to consult the solution for some small part. If you instantly come up with the solution, a problem is likely too easy, and if you're missing multiple steps, it might be too hard.
+
+[This](https://web.evanchen.cc/FAQs/raqs.html) and [this](https://usamo.wordpress.com/2019/01/31/math-contest-platitudes-v3/) are two blog posts by Evan Chen that I find quite insightful. They discuss such things as time management, the problem-solving process, and other tips that you may find useful. 
 
 ### Eric Wei
 
