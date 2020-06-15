@@ -4,7 +4,8 @@ const ModuleOrdering = {
     "getting-started",
     "prerequisites",
     "running-cpp",
-    "problems"
+    "problems",
+    "syllabus",
   ],
   "general": [
     "resources",

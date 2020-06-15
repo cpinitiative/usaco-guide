@@ -1,3 +1,15 @@
+---
+id: syllabus
+title: Syllabus
+author: Benjamin Qi, I FORGOT WHO ELSE EVERYONE PUT YOUR NAME HERE :D
+---
+
+Below, we've compiled some of the main topics for each division.
+
+<!-- END DESCRIPTION -->
+
+This USACO guide will try to cover all of these topics. Note that USACO contest problems are not limited to just these topics, though _most_ of them should fall into one of the catgories listed below.
+
 # Other Resources
 
  - [USACO -> CPH Topics](https://github.com/bqi343/USACO/blob/master/Contests/USACO%20Links/USACO%20Topics.md)
