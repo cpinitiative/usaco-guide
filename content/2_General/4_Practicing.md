@@ -1,7 +1,7 @@
 ---
 id: practicing
 title: How to Practice 
-author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen
+author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen, Darren Yao
 ---
 
 How to practice, when to read editorials (analyses), etc.
@@ -34,11 +34,23 @@ In any case, if you thought about a problem a lot during a contest but didn't en
 > 2. Spend about the same amount of time that you would be able to during a real contest
 > 3. Whether you are making progress or not
 
-Feel free to not listen to William Lin's suggestions as he is not very good himself.
+### Darren Yao
+In general, I think it’s fine to read the solution relatively early on, as long as you’re made several different attempts at it and you can learn effectively from the solution.
+- On a bronze problem, read the solution after 15-20 minutes of no meaningful progress, after you’ve exhausted every idea you can think of.
+- On a silver problem, read the solution after 30-40 minutes of no meaningful progress.
+- IMPORTANT: When you get stuck and consult the solution, you should not read the entire solution at once, and you certainly shouldn’t look at the solution code. Instead, it’s better to read the solution step by step until you get unstuck, at which point you should go back and finish the problem, and implement it yourself. Reading the full solution or its code should be seen as a last resort.
+
+Problems that you practice with should be of the appropriate difficulty. You don't necessarily need to complete all the exercises at the end of each chapter, just do what you think is right for you. A problem at the right level of difficulty should be one of two types: either you struggle with the problem for a while before coming up with a working solution, or you miss it slightly and need to consult the solution for some small part. If you instantly come up with the solution, a problem is likely too easy, and if you're missing multiple steps, it might be too hard.
+
+[This](https://web.evanchen.cc/FAQs/raqs.html) and [this](https://usamo.wordpress.com/2019/01/31/math-contest-platitudes-v3/) are two blog posts by Evan Chen that I find quite insightful. They discuss such things as time management, the problem-solving process, and other tips that you may find useful. 
 
 ### Eric Wei
 
 > read problem editorials some time after thinking "i have no clue what i'm doing please send help" and before "if i stare at this problem for one minute longer i'm going to punch a hole in my computer", figure out the exact time yourself
+
+### Nathan Chen
+
+Read the editorial when you feel like you've stopped making progress; that could be from 1 to 5 hours. However, the most important part about reading the editorial is that you understand the topic and try to think about what similar problems look like. Being generally curious is a good way to practice algorithmic thinking.
 
 ### Nathan Wang
 
@@ -67,7 +79,20 @@ My justification for why I think it's okay to give up so early is as follows:
 Overall, I would just say to "give up" when you feel like giving up, whether that's
 in five hours or in 15 minutes :)
 
-### Nathan Chen
+### Siyong Huang
 
-Read the editorial when you feel like you've stopped making progress; that could be from 1 to 5 hours. However, the most important part about reading the editorial is that you understand the topic and try to think about what similar problems look like. Being generally curious is a good way to practice algorithmic thinking.
+There's two ways to grow from solving a problem
 
+1) You learn a new idea/algorithm from it
+
+
+You learn ideas from problems you cannot solve. This means that you *need* to read an editorial or someone else's accepted solution. Please try to understand the editorial; it's an important skill to have. You should be re-reading it multiple times and walking through various examples. If this fails, read someone's accepted solution (try to find one that is easy to read, if possible) and figure out what it is doing. If even this doesn't work, ask the author of the solution to explain their logic or specific parts of their code. Trust me, they are extremely happy to help someone who has made an effort to understand the editorial and has used their code as reference.
+
+Furthermore, there have been countless cases where people have asked for help before reading the editorial. We will just link the editorial or repeat it for them, which is pointless.
+
+Finally, hints are extremely overrated in my opinion. Just read the whole solution. You don't gain anything from reading part of a solution then finishing it out yourself. As long as you implement it in the end, you are still learning the same thing.
+
+2) Your implementation speed and consistency improves
+
+
+In terms of implementation speed and consistency, the best way is just to solve a bunch of easy or moderate problems. Try to solve them as fast as possible, as if you were in contest. Perhaps take virtuals or time yourself when solving problems. Whichever you choose, the more problems you solve, the better you will become.

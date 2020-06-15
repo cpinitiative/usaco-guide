@@ -1,7 +1,7 @@
 ---
 id: problems
 title: Introductory Problems
-author: Nathan Wang, Benjamin Qi
+author: Nathan Wang, Benjamin Qi, Darren Yao
 problems:
  - bronze_promote
  - bronze_word
@@ -93,13 +93,70 @@ public class paintSol { // must be declared in paintSol.java
 		st = new StringTokenizer(br.readLine());
 		int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
 
-		for (int i = a; i < b; ++i) cover[i] = 1;
-		for (int i = c; i < d; ++i) cover[i] = 1;
+		for (int i = a; i < b; i++) cover[i] = 1;
+		for (int i = c; i < d; i++) cover[i] = 1;
 		int ans = 0; 
-		for (int i = 0; i < 100; ++i) ans += cover[i];
+		for (int i = 0; i < 100; i++) ans += cover[i];
 		pw.println(ans); 
-		pw.close(); // make sure to include this line ...
+		pw.close(); // make sure to include this line -- flushes the output.
 	}
+}
+```
+
+Alternatively, an InputReader class that functions very similarly to Scanner but has the faster runtime of BufferedReader.
+```java
+import java.util.*;
+import java.io.*;
+
+public class template {
+
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+
+        public InputReader() throws FileNotFoundException {
+            reader = new BufferedReader(new FileReader("template.in"));
+            tokenizer = null;
+        }
+
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        public double nextDouble() {
+            return Double.parseDouble(next());
+        }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+
+		InputReader r = new InputReader();
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("template.out")));
+
+		int[] cover = new int[100];
+		for (int i = a; i < b; i++) cover[i] = 1;
+		for (int i = c; i < d; i++) cover[i] = 1;
+		int ans = 0; 
+		for (int i = 0; i < 100; i++) ans += cover[i];
+		
+		pw.println(ans); 
+		pw.close(); // flush output
+    }
 }
 ```
 

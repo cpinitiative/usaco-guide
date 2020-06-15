@@ -10,6 +10,7 @@ author: Siyong Huang
  - Graph Two-Coloring
  - Cycle Detection
 
+
 <!-- END DESCRIPTION -->
 
 ## Introduction to Graphs
