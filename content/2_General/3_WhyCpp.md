@@ -233,4 +233,4 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
 
  - Python lacks a data structure that keeps its keys in sorted order (the equivalent of `set` in C++), which is required for some silver problems.
  - Java lacks features such as `#define`, `typedef`, and `auto` that are present in C++ (which some contestants rely on extensively, see "macros"). 
- - USACO problemsetters don't always test Java solutions (and rarely Python) when setting constraints.
+ - USACO problemsetters don't always test Java solutions (and rarely Python) when setting constraints. Furthermore it is not guaranteed that there exists a fully working solution in Python.
