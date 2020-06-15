@@ -13,7 +13,8 @@ const ModuleOrdering = {
     "practicing",
     "strategy",
     "debugging",
-    "macros"
+    "macros",
+    "proposing",
   ],
   "bronze": [
     "overview",
@@ -23,7 +24,7 @@ const ModuleOrdering = {
     "ds",
     "pairs",
     "simulation",
-    "complete-search"
+    "complete-search",
   ],
   "silver": [
     "complexity",

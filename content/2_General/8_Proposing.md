@@ -1,8 +1,7 @@
 ---
-slug: /general/proposing
+id: proposing
 title: Proposing Problems for USACO Monthlies
 author: Benjamin Qi
-order: 8
 ---
 
 Anyone (?) can propose problems for monthly contests (email your proposal to Dr. Dean). 
