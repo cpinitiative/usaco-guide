@@ -104,7 +104,7 @@ public class paintSol { // must be declared in paintSol.java
 ```
 
 Alternatively, an InputReader class that functions very similarly to Scanner but has the faster runtime of BufferedReader.
-```
+```java
 import java.util.*;
 import java.io.*;
 
