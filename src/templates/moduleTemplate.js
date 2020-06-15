@@ -15,7 +15,6 @@ const renderPrerequisite = (prerequisite) => {
 };
 
 export default function Template(props) {
-  console.log(props);
   const { markdownRemark } = props.data; // data.markdownRemark holds your post data
   const { htmlAst } = markdownRemark;
   const prereqs = markdownRemark.frontmatter.prerequisites;
