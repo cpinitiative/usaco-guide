@@ -1,7 +1,7 @@
 ---
 slug: /bronze/ds
 title: Data Structures
-author: Nathan Wang, ?
+author: Nathan Wang, Darren Yao, ?
 order: 5
 ---
 
@@ -10,6 +10,9 @@ Problems and additional resources regarding built-in data structures.
 <!-- END DESCRIPTION -->
 
 ## Problems
+
+**CSES:**
+Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/)
 
 (actually go through these ...)
 
@@ -23,18 +26,6 @@ Problems and additional resources regarding built-in data structures.
  - UVa 10172 - The Lonesome Cargo
  - UVa 10901 - Ferry Loading III
  - UVa 11034 - Ferry Loading IV
-
-**Ordered Maps:**:
-
-- UVa 10226 - Hardwood Species
-- UVa 11286 - Conformity
-- UVa 11572 - Unique Snowflakes
-
-**Set/Multiset:**
-
-- UVa 00978 - Lemmings Battle
-- UVa 11136 - Hoax or what
-- UVa 11849 - CD
 
 **General:**
 
