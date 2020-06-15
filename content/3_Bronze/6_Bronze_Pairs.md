@@ -1,7 +1,7 @@
 ---
 slug: /bronze/pairs
 title: Pairs & Tuples
-author: Aaron Chew, Benjamin Qi, Nathan Wang
+author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao
 order: 6
 ---
 
