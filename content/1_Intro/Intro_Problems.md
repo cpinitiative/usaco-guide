@@ -155,7 +155,7 @@ public class template {
 		for (int i = 0; i < 100; i++) ans += cover[i];
 		
 		pw.println(ans); 
-		pw.close(); // flush the output
+		pw.close(); // flush output
     }
 }
 ```
