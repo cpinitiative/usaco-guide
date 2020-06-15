@@ -80,3 +80,18 @@ in five hours or in 15 minutes :)
 
 Read the editorial when you feel like you've stopped making progress; that could be from 1 to 5 hours. However, the most important part about reading the editorial is that you understand the topic and try to think about what similar problems look like. Being generally curious is a good way to practice algorithmic thinking.
 
+### Siyong Huang
+
+There's two ways to grow from solving a problem
+
+1) You learn a new idea/algorithm from it
+
+You learn ideas from problems you cannot solve. This means that you *need* to read an editorial or someone else's accepted solution. Please try to understand the editorial; it's an important skill to have. You should be re-reading it multiple times and walking through various examples. If this fails, read someone's accepted solution (try to find one that is easy to read, if possible) and figure out what it is doing. If even this doesn't work, ask the author of the solution to explain their logic or specific parts of their code. Trust me, they are extremely happy to help someone who has made an effort to understand the editorial and has used their code as reference.
+
+Furthermore, there have been countless cases where people have asked for help before reading the editorial. We will just link the editorial or repeat it for them, which is pointless.
+
+Finally, hints are extremely overrated. Just read the whole solution. You don't gain anything from reading part of a solution then finishing it out yourself. As long as you implement it in the end, you are still learning the same thing.
+
+2) Your implementation speed and consistency improves
+
+In terms of implementation speed and consistency, the best way is just to solve a bunch of easy or moderate problems. Try to solve them as fast as possible, as if you were in contest. Perhaps take virtuals or time yourself when solving problems. Whichever you choose, the more problems you solve, the better you will become.
