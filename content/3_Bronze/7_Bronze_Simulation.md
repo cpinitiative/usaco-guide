@@ -1,11 +1,12 @@
 ---
 slug: /bronze/simulation
 title: "Simulation"
-author: Darren Yao
+content author: Darren Yao
+article/formatting by: 
 order: 7
 ---
 
-See 5 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
+Copied and pasted from chapter 5 of Darren's [Intro to USACO]
 
 <!-- END DESCRIPTION -->
 
