@@ -6,7 +6,7 @@ author: Nathan Chen
 
 The best contest strategy is to go in knowing everything. However, only few people can do this (see [BenQ](https://codeforces.com/profile/benq) or [TMW](https://codeforces.com/profile/tmwilliamlin168)) (I kid). Once the timer starts, there's no more studying you can do, and managing your time wisely is the best thing you can do to maximize your score.
 
-## Scenarios
+## Strategy
 
 Below are some general ideas on how to strategize during a contest.
 Strategy is flexible and all advice should be taken with a grain of salt. Strategy should be personal to *you* specifically.
