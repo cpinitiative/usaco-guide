@@ -73,18 +73,22 @@ This technique is also known as *cumulative sum* or *partial sums*.
 
 ## USACO Silver Problems
 
-These problems are relatively straightforward.
+Relatively straightforward.
 
- - [USACO Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
- - [USACO Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
+ - [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
+ - [Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
+ - [Hoof Paper Scissors](http://usaco.org/index.php?page=viewproblem2&cpid=691)
+ - [Max Cross](http://usaco.org/index.php?page=viewproblem2&cpid=715)
+ - [Homework](http://usaco.org/index.php?page=viewproblem2&cpid=762)
 
 Now we'll look at some extensions.
 
 ## Max Subarray Sum
 
- - [Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
+ - [CSES](https://cses.fi/problemset/task/1643)
 
 (Note: This problem has a solution known as Kadane's Algorithm. Please *don't* use that solution; try to solve it with prefix sums.)
+
 <details>
  <summary>Why are the two methods equivalent?</summary>
  Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.

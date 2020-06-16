@@ -31,22 +31,30 @@ const ModuleOrdering = {
     },
     "simulation",
     "complete-search",
+    "intro-graphs",
   ],
   "silver": [
     "time-comp",
-    "greedy",
     {
       name: "Sorting",
       items: [
         "intro-sorting",
         "sorting-custom",
+        "sorting-cpp",
       ]
     },
     "binary-search",
     "2P",
     "data-structures",
+    "greedy",
     "prefix-sums",
-    "dfs"
+    {
+      name: "Graphs",
+      items: [
+        "dfs",
+        "cyc",
+      ]
+    }
   ],
   "gold": [
     {

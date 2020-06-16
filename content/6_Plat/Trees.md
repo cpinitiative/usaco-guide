@@ -34,19 +34,21 @@ Lowest Common Ancestor and other tree topics.
 
 USACO:
 
- - [USACO Plat Max Flow](http://www.usaco.org/index.php?page=viewproblem2&cpid=576)
- - [USACO Gold Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970)
- - [USACO Gold Cow Land](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
-   - LCA + BIT
- - [USACO Plat Promote](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
-   - Subtree + BIT
- - [USACO Plat Disrupt](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
-   - HLD is possible, but just do binary jumps
- - [USACO Plat Tree Boxes](http://www.usaco.org/index.php?page=viewproblem2&cpid=948)
-   - interactive!!
- - [USACO Plat Gathering](http://www.usaco.org/index.php?page=viewproblem2&cpid=866)
- - [USACO Plat Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=901)
-   - tricky
+ - Gold
+   - [USACO Gold Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970)
+   - [USACO Gold Cow Land](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
+     - LCA + BIT
+ - Plat
+   - [Max Flow](http://www.usaco.org/index.php?page=viewproblem2&cpid=576)
+   - [Promote](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
+     - Subtree + BIT
+   - [Disrupt](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
+     - HLD is possible, but just do binary jumps
+   - [Tree Boxes](http://www.usaco.org/index.php?page=viewproblem2&cpid=948)
+     - interactive!!
+   - [Gathering](http://www.usaco.org/index.php?page=viewproblem2&cpid=866)
+   - [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=901)
+     - tricky
 
 Other:
 

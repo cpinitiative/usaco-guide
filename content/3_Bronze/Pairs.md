@@ -31,8 +31,6 @@ using namespace std;
 int main() {
   pair<string, int> myPair = make_pair("Testing", 123);
   cout << myPair.first << " " << myPair.second << endl; // Testing 123
-  vector<pair<int,int>> v = {{2,4},{1,3},{3,4},{3,1}}; 
-  sort(begin(v),end(v)); // {(1, 3), (2, 4), (3, 1), (3, 4)}
 }
 
 /* Output

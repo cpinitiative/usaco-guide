@@ -40,6 +40,7 @@ See my implementation [here](https://github.com/bqi343/USACO/blob/master/Impleme
 
  - [DMOJ Continued Fractions](https://dmoj.ca/problem/dmopc19c7p4)
  - [USACO Plat - NonDec](http://www.usaco.org/index.php?page=viewproblem2&cpid=997)
+ - [JOI Secret](https://oj.uz/problem/view/JOI14_secret)
 
 ## Segment Tree
 

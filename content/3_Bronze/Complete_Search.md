@@ -123,6 +123,9 @@ do {
      - Hint: For this problem, you can't do a full complete search; you have to do a reduced search)
    - [Back and Forth](http://www.usaco.org/index.php?page=viewproblem2&cpid=857)
      - Somewhat harder
+ - USACO Silver
+   - [Bovine Genomics](http://usaco.org/index.php?page=viewproblem2&cpid=739)
+   - [Field Reduction](http://usaco.org/index.php?page=viewproblem2&cpid=642)
  - CSES
    - (Permutations) [Chessboard and Queens](https://cses.fi/problemset/task/1624)
     

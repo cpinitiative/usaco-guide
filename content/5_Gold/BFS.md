@@ -23,9 +23,12 @@ Compute shortest paths where all edge weights are 1.
 
 ### Problems
 
- - [CSAcademy BFS-DFS](https://csacademy.com/contest/round-41/task/bfs-dfs/) [](50)
- - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
- - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)
-   - bad problem ...
- - [Lasers](http://www.usaco.org/index.php?page=viewproblem2&cpid=671)
- - [Monsters](https://cses.fi/problemset/task/1194)
+ - USACO
+   - [Monsters](https://cses.fi/problemset/task/1194)
+   - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
+   - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)
+     - bad problem ...
+   - [Lasers](http://www.usaco.org/index.php?page=viewproblem2&cpid=671)
+   - [Visit FJ](http://www.usaco.org/index.php?page=viewproblem2&cpid=717)
+ - Other
+   - [CSAcademy BFS-DFS](https://csacademy.com/contest/round-41/task/bfs-dfs/) [](50)

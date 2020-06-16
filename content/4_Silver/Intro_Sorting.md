@@ -10,6 +10,10 @@ Introduces sorting, binary search, coordinate compression.
 
 **Sorting** is exactly what it sounds like: arranging items in some particular order. 
 
+## Additional Resources
+
+ - CPH 3 (once again, very good)
+
 ## Sorting Algorithms
 
 (why are these important?)
@@ -18,6 +22,7 @@ There are many sorting algorithms, here are some sources to learn about the popu
 
  - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
    - [Out of Sorts (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=834)
+     - hard!
  - [Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
  - [Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
 
@@ -80,12 +85,3 @@ However, each of the points are in the range $0 \ldots 1,000,000,000$, meaning y
 Now, we can map distinct points to smaller integers without gaps. For example, if the haybales existed at positions $[1, 4, 5, 9]$ and queries were $(1, 2)$ and $(4, 6)$, we can place the integers together and map them from $[1, 2, 4, 5, 6, 9] \rightarrow [1, 2, 3, 4, 5, 6]$. This effectively transforms the haybale positions into $[1, 3, 4, 6]$ and the queries into $1, 2$ and $3, 5$.
 
 By compressing queries and haybale positions, we've transformed the range of points to $0 \ldots N + 2Q$, allowing us to store prefix sums to effectively query for the number of haybales in a range.
-
-## Problems and Other Tutorials 
-    
- - CPH 3 (once again, very good)
- - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
-    - Not a sorting problem, but you can use sorting to simulate gravity nicely.
-        - Write a custom comparator (read below) which puts zeroes at the front and use stable_sort to keep the relative order of other elements the same.
- - [Meetings (Hard!)](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
-

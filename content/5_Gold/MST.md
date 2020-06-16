@@ -7,7 +7,7 @@ prerequisites:
      - Gold - Shortest Paths
 ---
 
-Disjoint Set Union and Minimum Spanning Trees
+**Disjoint Set Union** and **Minimum Spanning Trees**
 
 <!-- END DESCRIPTION -->
 
