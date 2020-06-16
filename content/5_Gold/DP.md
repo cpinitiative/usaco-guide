@@ -76,7 +76,7 @@ The following USACO problems don't fall into any of the categories below. Arrang
       * Reconsider the state.
  * USACO Gold
    * [Fruit Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
-     * straightforward
+     * `dp[fullness] = whether you can achieve this fullness` 
    * [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
      * binary search + knapsack on weight
  * CF
@@ -113,6 +113,8 @@ The following USACO problems don't fall into any of the categories below. Arrang
 (add?)
 
  * [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
-    * Try to improve to $O(N\log N)$. 
+    * Try to improve to $O(N\log N)$: [Solution](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html). 
+ * [Cowjog](http://www.usaco.org/index.php?page=viewproblem2&cpid=489)
+    * Not so easy to see, but direct application of LIS.
  * [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
     * Challenging!
