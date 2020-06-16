@@ -12,10 +12,12 @@ Below are some general ideas on how to strategize during a contest.
 Strategy is flexible and all advice should be taken with a grain of salt. Strategy should be personal to *you* specifically.
 
 ### The beginning of a contest
-You should read *all* the problems first (don't give up on any problems prematurely). Generally, a lot of thinking should happen before any coding. Depending on the difficulty of a contest, you can spend anywhere from 5 minutes to 2 hours with a pencil and paper before touching the keyboard. Sometimes, problem difficulties can be out of order, so keep that in mind before focusing down 3 hours on problem 1 and not getting anywhere.
+You should read *all* the problems first (don't give up on any problems prematurely). Generally, a lot of thinking should happen before any coding. Depending on the difficulty of a contest, you can spend anywhere from 5 minutes to 2 hours with a pencil and paper before touching the keyboard. 
+
+Sometimes, problem difficulties can be out of order, so keep that in mind before focusing down 3 hours on problem 1 and not getting anywhere. Do a good amount of thinking on each problem before deciding which ones to focus on and which to put aside.
 
 ### Time allocation
-It's the worst feeling in the world to sink 4 hours into a problem, then not get it, only for another problem to have an easier solution. It's hard to know what is easy and what is hard when you don't even know the solutions, so you have to use your own judgement in deciding what is likely solvable and what should be quit. Generally, don't spend "too long" on one problem, and stay away from problems that look like they test something you don't know well. 
+It's the worst feeling in the world to sink 4 hours into a problem and not get it, only for another problem to have an easier solution. You have to use your own judgement in deciding what is likely solvable and what should be quit. Generally, don't spend "too long" on one problem, and stay away from problems that look like they test something you don't know well.
 
 ### When you see a solution
 If you immediately get the solution to a problem while reading it, it might be a good idea to code it up quickly and get it out of the way. 
