@@ -10,7 +10,7 @@ prerequisites:
 A **Binary Indexed Tree** allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
- - Querying the sum of a prefix of the array.
+ - Query the sum of a prefix of the array.
 
 <!-- END DESCRIPTION -->
 

@@ -1,7 +1,7 @@
 const ModuleOrdering = {
   "intro": [
-    "about-this",
     "getting-started",
+    "about-this",
     "prereqs",
     "running-cpp",
     "data-types",
@@ -38,8 +38,8 @@ const ModuleOrdering = {
     "sorting",
     "binary-search",
     "2P",
-    "prefix-sums",
     "data-structures",
+    "prefix-sums",
     "dfs"
   ],
   "gold": [

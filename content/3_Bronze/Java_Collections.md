@@ -4,7 +4,7 @@ title: Built-In Java Collections
 author: Darren Yao
 ---
 
-Introduces the data structures in the Java standard library that are frequently used in competitive programming.
+Introduces data structures from Java [Collections](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) that are frequently used in competitive programming.
 
 <!-- END DESCRIPTION -->
 

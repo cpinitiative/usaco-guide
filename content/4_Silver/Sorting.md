@@ -4,7 +4,7 @@ title: "Sorting"
 author: Siyong (WIP)
 prerequisites: 
  - 
-     - Silver - Containers
+     - Bronze - Data Structures
 ---
 <div class="syllabus-only">
   Description: Todo

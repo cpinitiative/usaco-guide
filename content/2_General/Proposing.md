@@ -4,11 +4,13 @@ title: Proposing Problems for USACO Monthlies
 author: Benjamin Qi
 ---
 
-Anyone can propose problems for monthly contests (email your proposal to Professor Dean). 
+Anyone can propose problems for monthly contests.
 
 <!-- END DESCRIPTION -->
 
-In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
+Email your proposal to Professor Dean. In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
+
+All problems should have 10 test cases at minimum (I believe that the maximum was 21 for [valleys](http://www.usaco.org/index.php?page=viewproblem2&cpid=950)).
 
 All statements must eventually be converted to the following format; please save us time by following it as best you can.
 

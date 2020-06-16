@@ -10,14 +10,9 @@ author: Nathan Wang, Benjamin Qi, Darren Yao
 
 <!-- END DESCRIPTION -->
 
-
-Todo:
-
-  - Video clip from Brian Dean?
-
 ## Introduction
 
-The goal of competitive programming is to write code to solve given problems quickly. These problems are not open problems; they are problems that are designed to be solved in the short timeframe of a contest, and have already been solved by the problem writer(s) and tester(s). In general, each problem in competitive programming is solved by a two-step process: coming up with the algorithm, which involves problem solving skills and intuition, and implementing the algorithm, which requires programming skills to translate the algorithm into working code.
+The goal of **competitive programming** is to write code to solve given problems quickly. These problems are not open problems; they are problems that are designed to be solved in the short timeframe of a contest, and have already been solved by the problem writer(s) and tester(s). In general, each problem in competitive programming is solved by a two-step process: coming up with the algorithm, which involves problem solving skills and intuition, and implementing the algorithm, which requires programming skills to translate the algorithm into working code.
 
 A contest generally lasts for several hours and consists of a set of problems. For each problem, when you complete your code, you submit it to a grader, which checks the answers calculated by the your program against a set of predetermined test cases. For each problem, you are given a time limit and a memory limit that your program must satisfy.
 

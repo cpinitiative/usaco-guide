@@ -7,6 +7,11 @@ problems:
  - bronze_word
  - bronze_paint
  - bronze_square
+prerequisites: 
+ - 
+     - Intro - Data Types
+ - 
+     - Intro - Input & Output
 ---
 
 Solutions for an example USACO problem in multiple languages. 
@@ -70,11 +75,6 @@ int main() {
 
 ### Java
 
-(link?)
-
-(Scanner?)
-
-(FastScanner?)
 
 Class name can be whatever you want. (?)
 
@@ -103,6 +103,7 @@ public class paintSol { // must be declared in paintSol.java
 ```
 
 Alternatively, an InputReader class that functions very similarly to Scanner but has the faster runtime of BufferedReader.
+
 ```java
 import java.util.*;
 import java.io.*;
