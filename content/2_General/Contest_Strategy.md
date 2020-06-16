@@ -12,7 +12,7 @@ Below are some general ideas on how to strategize during a contest.
 Strategy is flexible and all advice should be taken with a grain of salt. Strategy should be personal to *you* specifically.
 
 ### The beginning of a contest
-You should read *all* the problems first (don't give up on any problems prematurely). Generally, a lot of thinking should happen before any coding. Depending on the difficulty of a contest, you can spend anywhere from 5 minutes to 2 hours with a pen and pencil. Sometimes, problem difficulties can be out of order, so keep that in mind before focusing down three out of four hours on problem 1 when it's not a good choice.
+You should read *all* the problems first (don't give up on any problems prematurely). Generally, a lot of thinking should happen before any coding. Depending on the difficulty of a contest, you can spend anywhere from 5 minutes to 2 hours with a pencil and paper before touching the keyboard. Sometimes, problem difficulties can be out of order, so keep that in mind before focusing down three out of four hours on problem 1 when it's not a good choice.
 
 ### Time allocation
 It's the worst feeling in the world to sink 4 hours into a problem, then not get it, only for another problem to have an easier solution. It's hard to know what is an easy and what is hard when you don't know the solution yet, so you have to use your own judgement in deciding what is likely solvable and what should be quit. Generally, don't spend "too long" on one problem, and stay away from problems that look like they test something you don't know well. 
