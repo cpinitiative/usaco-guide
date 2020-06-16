@@ -2,6 +2,7 @@
 id: binary-search
 title: "Binary Search on the Answer"
 author: Darren Yao
+prerequisites: 
  - 
      - Silver - Introduction to Sorting  
 ---
@@ -51,6 +52,7 @@ If this value is less than or equal to $k$, then $x$ can be the median, so our c
 The solution codes use the second implementation of binary search.
 
 Java:
+
 ```java
 static int n;
 static long k;
