@@ -40,10 +40,12 @@ At this point, the for loop terminates, because $i$ is already 3 which is greate
 
 The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two numbers, we use the Euclidean Algorithm, which is as follows:
 
-$$\gcd(a, b) = \begin{cases}
-      a & b = 0 \\
-      \gcd(b, a \bmod b) & b \neq 0 \\
-  \end{cases}$$
+$$
+\gcd(a, b) = \begin{cases}
+     a & b = 0 \\
+     \gcd(b, a \bmod b) & b \neq 0 \\
+\end{cases}
+$$
 
 This algorithm is very easy to implement using a recursive function in Java, as follows:
 
@@ -70,12 +72,17 @@ $$\gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4)))$$
 
 In **modular arithmetic**, instead of working with integers themselves, we work with their remainders when divided by $m$. We call this taking modulo $m$. For example, if we take $m = 23$, then instead of working with $x = 247$, we use $x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the two most common values are $10^9 + 7$, and $998\,244\,353$. Modular arithmetic is used to avoid dealing with numbers that overflow built-in data types, because we can take remainders, according to the following formulas:
 
-$$\begin{gather*}
+```
+todo no support for gather
+$$
+\begin{gather*}
     (a+b) \bmod m = (a \bmod m + b \bmod m) \bmod m \\
     (a-b) \bmod m = (a \bmod m - b \bmod m) \bmod m \\
     (a \cdot b) \pmod{m} = ((a \bmod m) \cdot (b \bmod m)) \bmod m \\
     a^b \bmod {m} = (a \bmod m)^b \bmod m
-\end{gather*}$$
+\end{gather*}
+$$
+```
 
 ### Modular Exponentiation
 

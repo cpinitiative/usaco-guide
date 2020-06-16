@@ -38,7 +38,7 @@ export default function Template(props) {
     return acc;
   }, {});
 
-  const [selectedDivision, setSelectedDivision] = React.useState(props.pathContext.division);
+  const [selectedDivision, setSelectedDivision] = React.useState(props.pageContext.division);
   const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
   const colors = ["blue", "pink", "orange", "teal", "yellow", "purple"];
   const color = colors[selectedDivision];
@@ -184,11 +184,11 @@ export default function Template(props) {
                 if (m.hasOwnProperty("items")) {
                   return (
                     <li key={m.name}>
-                      {idx+1}. {m.name}
-                      <ol className="list-inside px-8 text-lg space-y-1">
+                      <span className="inline-block w-4 text-right">{idx+1}. </span><span className="ml-2">{m.name}</span>
+                      <ol className="list-inside px-6 text-lg space-y-1 mb-2">
                         {m.items.map((m, idx2) => (
-                          <li key={m.name}>
-                            {idx+1}.{idx2+1}. <Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
+                          <li key={m.slug}>
+                            <span className="inline-block w-8 text-right">{idx+1}.{idx2+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
                           </li>
                         ))}
                       </ol>
@@ -197,7 +197,7 @@ export default function Template(props) {
                 }
                 return (
                   <li key={m.frontmatter.id}>
-                    {idx+1}. <Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
+                    <span className="inline-block w-4 text-right">{idx+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
                   </li>
                 );
               })}
