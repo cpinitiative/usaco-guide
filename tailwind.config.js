@@ -3,6 +3,6 @@ module.exports = {
     require('@tailwindcss/ui'),
   ],
   purge: {
-    content: ['./src/**/*.js'],
+    content: ['./src/**/*.js', "./src/**/*.ts", "./src/**/*.tsx"],
   },
 };
