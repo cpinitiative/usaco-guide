@@ -164,7 +164,7 @@ for(int element : set){
 
 ### Ordered Sets
 
-The second type of set data structure is the ordered or sorted set. Insertions, deletions, and searches on the ordered set require O(\log n) time, based on the number of elements in the set. As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
+The second type of set data structure is the ordered or sorted set. Insertions, deletions, and searches on the ordered set require $O(\log n)$ time, based on the number of elements in the set. As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();

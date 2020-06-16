@@ -1,11 +1,13 @@
 ---
 id: ds
 title: Data Structures
-author: Nathan Wang, Darren Yao, ?
+author: Nathan Wang, Darren Yao, Benjamin Qi
 order: 5
 ---
 
 Problems and additional resources regarding built-in data structures.
+
+(clean this up)
 
 <!-- END DESCRIPTION -->
 
@@ -17,12 +19,12 @@ Do roughly the first half of the Sorting and Searching section in the [CSES Prob
 
 (actually go through these and check ...)
 
-**Stack:**:
+**Stack:**
  - UVa 00514 - Rails
  - UVa 00732 - Anagram by Stack
  - UVa 01062 - Containers
 
-**Queue/Deque:**:
+**Queue/Deque:**
 
  - UVa 10172 - The Lonesome Cargo
  - UVa 10901 - Ferry Loading III

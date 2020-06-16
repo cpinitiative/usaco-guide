@@ -8,12 +8,12 @@ author: Darren Yao, Benjamin Qi
 
 <!-- END DESCRIPTION -->
 
-Graphs can be used to represent many things, from images to wireless signals, but one of the simplest analogies is to a map. Consider a map with several cities and highways connecting the cities. Some of the problems relating to graphs (which will be covered in Silver) are:
+Graphs can be used to represent many things, from images to wireless signals, but one of the simplest analogies is to a map. Consider a map with several cities and highways connecting the cities. Some problems relating to graphsare:
 
  - If we have a map with some cities and roads, what's the shortest distance I have to travel to get from point A to point B?
  - Consider a map of cities and roads. Is city A connected to city B? Consider a region to be a group of cities such that each city in the group can reach any other city in said group, but no other cities. How many regions are in this map, and which cities are in which region?
 
-For now, it suffices to learn how graphs are represented.
+Both of these will be covered in Silver. For now, it suffices to learn how graphs are represented.
 
 ## Tutorial
 
@@ -26,7 +26,7 @@ For now, it suffices to learn how graphs are represented.
  - Other
    - [Topcoder Graphs Pt 1](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-1/)
 
-## Representing Trees?
+## Trees?
 
 
 ## USACO Bronze Problems
@@ -37,5 +37,7 @@ For now, it suffices to learn how graphs are represented.
    - [Factory](http://usaco.org/index.php?page=viewproblem2&cpid=940)
    - [Family Tree](http://usaco.org/index.php?page=viewproblem2&cpid=833)
    - [Grass Planting (Silver)](http://usaco.org/index.php?page=viewproblem2&cpid=894)
+ - Permutation
+   - [Swapity Swap](http://usaco.org/index.php?page=viewproblem2&cpid=1013)
  - General Graph
    - [The Great Revegetation](http://usaco.org/index.php?page=viewproblem2&cpid=916)
