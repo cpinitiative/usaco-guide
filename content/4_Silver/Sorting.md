@@ -57,9 +57,10 @@ Problems:
 ## Custom Comparators
 
 *Custom comparators* define how the elements are ordered.
-    - [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
 
-This section is very language-specific and will be separated by language.
+Let's consider a graph with weighted edges (pairs of values), such as in the problem [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) and we wanted to sort the edges in nondecreasing order of weight, as we do in this problem (read editorial for more info). If we directly stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. However, if we create a class representing the edges and define a custom comparator to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
+
+Below are instructions to write such a custom comparator. This section is very language-specific and will be separated by language.
 
 ### C++
 
