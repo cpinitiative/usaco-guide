@@ -1,8 +1,7 @@
 ---
-slug: /gold/dp
+id: dp
 title: "Introduction to Dynamic Programming"
 author: Michael Cao
-order: 1
 prerequisites: 
  - 
      - Recursion

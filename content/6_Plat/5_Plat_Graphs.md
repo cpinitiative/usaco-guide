@@ -1,8 +1,7 @@
 ---
-slug: /plat/graphs
+id: graphs
 title: "Graphs"
 author: Benjamin Qi
-order: 5
 prerequisites: 
  - 
      - Gold - Topological Sort

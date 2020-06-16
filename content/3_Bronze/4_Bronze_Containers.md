@@ -1,8 +1,7 @@
 ---
-slug: /bronze/containers
+id: containers
 title: Built-In C++ Containers
 author: Darren Yao
-order: 4
 ---
 
 Introduces the data structures in the C++ standard library that are frequently used in competitive programming.

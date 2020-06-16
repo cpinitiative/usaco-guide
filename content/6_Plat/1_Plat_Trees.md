@@ -1,8 +1,7 @@
 ---
-slug: /plat/trees
+id: trees
 title: "Trees"
 author: Benjamin Qi
-order: 1
 prerequisites: 
  - 
      - Silver - Depth First Search

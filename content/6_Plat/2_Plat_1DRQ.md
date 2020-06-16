@@ -1,8 +1,7 @@
 ---
-slug: /plat/1DRQ
+id: 1DRQ
 title: "1D Range Queries"
 author: Benjamin Qi
-order: 2
 prerequisites: 
  - 
      - Gold - Binary Indexed Trees

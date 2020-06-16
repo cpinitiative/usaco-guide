@@ -1,8 +1,7 @@
 ---
-slug: /gold/sp
+id: sp
 title: "Shortest Paths"
 author: Benjamin Qi
-order: 4
 prerequisites: 
  - 
      - Gold - Breadth First Search

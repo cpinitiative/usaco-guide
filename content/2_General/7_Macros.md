@@ -1,8 +1,7 @@
 ---
-slug: /general/macros
+id: macros
 title: C++ Macros
 author: Benjamin Qi
-order: 7
 ---
 
 Shortening code and making it more (un?)readable.

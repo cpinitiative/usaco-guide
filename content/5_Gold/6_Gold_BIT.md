@@ -1,8 +1,7 @@
 ---
-slug: /gold/bit
+id: bit
 title: "Binary Indexed Trees"
 author: Benjamin Qi
-order: 6
 prerequisites: 
  - 
      - Silver - Prefix Sums

@@ -1,5 +1,5 @@
 ---
-slug: /bronze/ds
+id: ds
 title: Data Structures
 author: Nathan Wang, Darren Yao, ?
 order: 5

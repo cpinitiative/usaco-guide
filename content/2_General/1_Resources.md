@@ -1,8 +1,7 @@
 ---
-slug: /general/resources
+id: resources
 title: Additional Resources
 author: Benjamin Qi
-order: 1
 ---
 
 Helpful Links! Some (such as CPH and Intro to USACO) will be mentioned again in later modules.

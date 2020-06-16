@@ -1,8 +1,7 @@
 ---
-slug: /silver/prefix-sums
+id: prefix-sums
 title: "Prefix Sums"
 author: Eric Wei
-order: 6
 ---
 
 > Given an array $A_1,A_2,\ldots,A_N$, answer $Q$ queries of the following form: compute $A_L+A_{L+1}+\cdots+A_R$.

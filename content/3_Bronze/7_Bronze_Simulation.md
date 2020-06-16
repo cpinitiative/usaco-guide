@@ -1,9 +1,7 @@
 ---
-slug: /bronze/simulation
+id: simulation
 title: "Simulation"
-content author: Darren Yao
-article/formatting by: 
-order: 7
+author: Darren Yao
 ---
 
 Copied and pasted from chapter 5 of Darren's [Intro to USACO]

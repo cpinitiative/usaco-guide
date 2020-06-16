@@ -1,8 +1,7 @@
 ---
-slug: /silver/greedy
+id: greedy
 title: "Greedy Algorithms"
 author: Darren Yao
-order: 2
 ---
 
 **Greedy algorithms** are algorithms that select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.

@@ -1,8 +1,7 @@
 ---
-slug: /silver/complexity
+id: complexity
 title: "Time Complexity"
 author: Darren Yao, Benjamin Qi
-order: 1
 ---
 
 In programming contests, there is a strict limit on program runtime. This means that in order to pass, your program needs to finish running within a certain timeframe. 

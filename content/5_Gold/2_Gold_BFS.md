@@ -1,8 +1,7 @@
 ---
-slug: /gold/bfs
+id: bfs
 title: "Breadth First Search"
 author: Benjamin Qi
-order: 2
 prerequisites: 
  - 
      - Silver - Depth First Search

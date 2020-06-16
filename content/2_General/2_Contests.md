@@ -1,8 +1,7 @@
 ---
-slug: /general/contests
+id: contests
 title: Contests
 author: Benjamin Qi
-order: 2
 ---
 
 Contests that I participate in, as well as a few tools.

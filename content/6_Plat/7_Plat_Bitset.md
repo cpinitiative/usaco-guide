@@ -1,8 +1,7 @@
 ---
-slug: /plat/bitset
+id: bitset
 title: "Bitset"
 author: Benjamin Qi
-order: 7
 ---
 
 Three examples of how bitset leads to some unintended solutions on recent USACO problems.

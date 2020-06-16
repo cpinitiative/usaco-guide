@@ -1,5 +1,5 @@
 ---
-slug: /silver/sorting
+id: sorting
 title: "Sorting"
 author: Siyong (WIP)
 order: 3

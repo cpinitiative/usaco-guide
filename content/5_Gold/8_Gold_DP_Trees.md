@@ -1,8 +1,7 @@
 ---
-slug: /gold/dp-trees
+id: dp-trees
 title: "Dynamic Programming on Trees"
 author: Michael Cao
-order: 8
 prerequisites: 
  -
      - Silver - Depth First Search

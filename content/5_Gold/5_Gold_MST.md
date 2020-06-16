@@ -1,8 +1,7 @@
 ---
-slug: /gold/mst
+id: mst
 title: "Minimum Spanning Trees"
 author: Benjamin Qi
-order: 5
 prerequisites: 
  - 
      - Gold - Shortest Paths

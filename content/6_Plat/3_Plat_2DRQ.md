@@ -1,8 +1,7 @@
 ---
-slug: /plat/2DRQ
+id: 2DRQ
 title: "2D Range Queries"
 author: Benjamin Qi
-order: 3
 prerequisites: 
  - 
      - Platinum - 1D Range Queries

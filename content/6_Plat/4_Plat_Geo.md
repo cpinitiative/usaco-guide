@@ -1,8 +1,7 @@
 ---
-slug: /plat/geo
+id: geo
 title: "Geometry"
 author: Benjamin Qi
-order: 4
 ---
 
 Geometry primitives and convex hull.

@@ -1,8 +1,7 @@
 ---
-slug: /plat/fracture
+id: fracture
 title: "Fracturing Search"
 author: Benjamin Qi
-order: 8
 prerequisites: 
  - 
      - Gold - Minimum Spanning Tree

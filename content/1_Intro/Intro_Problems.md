@@ -1,5 +1,5 @@
 ---
-slug: /intro/problems
+id: problems
 title: Introductory Problems
 author: Nathan Wang, Benjamin Qi, Darren Yao
 problems:
@@ -7,7 +7,6 @@ problems:
  - bronze_word
  - bronze_paint
  - bronze_square
-order: 5
 ---
 
 Solutions for an introductory USACO problem in multiple languages. 

@@ -1,8 +1,7 @@
 ---
-slug: /plat/dp-bitmasks
+id: dp-bitmasks
 title: "Dynamic Programming on Bitmasks"
 author: Michael Cao
-order: 10
 prerequisites: 
  - 
      - Bit Operations

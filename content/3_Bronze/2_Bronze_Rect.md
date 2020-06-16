@@ -1,8 +1,7 @@
 ---
-slug: /bronze/rectangle-geometry
+id: rectangle-geometry
 title: "Rectangle Geometry"
 author: Unknown
-order: 2
 ---
 
 See 7.1 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a

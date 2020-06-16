@@ -1,8 +1,7 @@
 ---
-slug: /silver/data-structures
+id: data-structures
 title: "Data Structures"
 author: Unknown
-order: 7
 prerequisites: 
  - 
      - Bronze - Data Structures

@@ -1,8 +1,7 @@
 ---
-slug: /bronze/complete-search
+id: complete-search
 title: "Complete Search"
 author: Darren Yao
-order: 8
 ---
 
 Copied and pasted from CH 6 of Darren's Intro to USACO
