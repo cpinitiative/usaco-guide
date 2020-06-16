@@ -18,19 +18,21 @@ Todo:
 
 ## Introduction
 
-The goal of competitive programming is to write code to solve given problems quickly. These problems are not open problems; they are problems that are designed to be solved in the short timeframe of a contest, and have already been solved by the problem writer and testers. In general, each problem in competitive programming is solved by a two-step process: coming up with the algorithm, which involves problem solving skills and intuition, and implementing the algorithm, which requires programming skills to translate the algorithm into working code.
+The goal of competitive programming is to write code to solve given problems quickly. These problems are not open problems; they are problems that are designed to be solved in the short timeframe of a contest, and have already been solved by the problem writer(s) and tester(s). In general, each problem in competitive programming is solved by a two-step process: coming up with the algorithm, which involves problem solving skills and intuition, and implementing the algorithm, which requires programming skills to translate the algorithm into working code.
 
-A contest generally lasts for several hours, and consists of a set of problems. For each problem, when you complete your  code, you submit it to a grader, which checks the answers calculated by the your program against a set of predetermined test cases. For each problem, you are given a time limit and a memory limit that your program must satisfy.
+A contest generally lasts for several hours and consists of a set of problems. For each problem, when you complete your code, you submit it to a grader, which checks the answers calculated by the your program against a set of predetermined test cases. For each problem, you are given a time limit and a memory limit that your program must satisfy.
 
 For those of you with experience in software development, note that competitive programming is quite different, as the goal is to write programs that compute the correct answer, run quickly, and can be implemented quickly. Note that nowhere was maintainability of code mentioned. This means that you should throw away everything you know about traditional code writing; you don't need to bother documenting your code, because it only needs to be readable to you, during the contest.
 
-[William Lin - What is Competitive Programming?](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
+### Videos
+
+ - [William Lin - What is Competitive Programming?](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
+ - [Kamil Debowski - Interview with a Competitive Programmer](https://www.youtube.com/watch?v=F4rykKLcduI)
+   - [Example Problem](https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone)
 
 ## Contest Format
 
-The USA Computing Olympiad is a national programming competition that occurs four times a year, with December, January, February, and US Open (March) contests. The regular contests are four hours long, and the US Open is five hours long. Each contest contains three problems. Solutions are evaluated and scored against a set of predetermined test cases that are not visible to the student. Scoring is out of 1000 points, with each problem being weighted equally. There are four divisions of contests: Bronze, Silver, Gold, and Platinum. After each contest, students who meet the contest-dependent cutoff for promotion will compete in the next division for future contests.
-
-See [USACO contests](http://www.usaco.org/index.php?page=contests).
+The [USA Computing Olympiad](http://www.usaco.org/index.php?page=contests) is a national programming competition that occurs four times a year, with December, January, February, and US Open (March) contests. The regular contests are four hours long, and the US Open is five hours long. Each contest contains three problems. Solutions are evaluated and scored against a set of predetermined test cases that are not visible to the student. Scoring is out of 1000 points, with each problem being weighted equally. There are four divisions of contests: Bronze, Silver, Gold, and Platinum. After each contest, students who meet the contest-dependent cutoff for promotion will compete in the next division for future contests.
 
 ## Choosing a Language
 
