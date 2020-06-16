@@ -1,19 +1,19 @@
 ---
-id: bitset
-title: "Bitset"
+id: bitsets
+title: "Bitsets"
 author: Benjamin Qi
 ---
 
-Three examples of how bitset leads to some unintended solutions on recent USACO problems.
+Three examples of how **bitsets** lead to some unintended solutions on recent USACO problems.
 
 <!-- END DESCRIPTION -->
 
 ## Tutorial
 
-tl;dr some operations are 32x-64x faster compared to a boolean array
+tl;dr some operations are 32x-64x faster compared to a boolean array.
 
- - [Cpp Reference](http://www.cplusplus.com/reference/bitset/bitset/)
- - [Errichto Pt 2](https://codeforces.com/blog/entry/73558)
+ - [C++ Reference](http://www.cplusplus.com/reference/bitset/bitset/)
+ - [Errichto Bitwise Operations Pt 2](https://codeforces.com/blog/entry/73558)
 
 ## Applications
 

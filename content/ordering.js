@@ -20,6 +20,7 @@ const ModuleOrdering = {
   ],
   "bronze": [
     "rect-geo",
+    "time-comp",
     {
       name: "Data Structures",
       items: [
@@ -34,7 +35,6 @@ const ModuleOrdering = {
     "intro-graphs",
   ],
   "silver": [
-    "time-comp",
     {
       name: "Sorting",
       items: [
@@ -102,7 +102,7 @@ const ModuleOrdering = {
     },
     "geo",
     "strings",
-    "bitset",
+    "bitsets",
     "fracture",
   ]
 };

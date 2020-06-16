@@ -12,7 +12,7 @@ A few reasons why choice of language matters significantly (outside of Bronze).
 
 Although both Python and Java receive two times the C++ time limit in USACO, this is not the case for most other websites (ex. CodeForces). Even with the extended time limits, Python and Java sometimes have trouble passing.
 
-  - Rewriting the C++ solution for [USACO Silver Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python receives TLE (Time Limit Exceeded) on 2/10 cases. 
+  - Rewriting the C++ solution for [USACO Silver Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python receives TLE (Time Limit Exceeded) on 2/10 cases. I'm not sure whether it is possible to pass this problem with Python.
 
     <details>
 
@@ -228,8 +228,8 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
     ```
     </details>
 
-## Other
+## Other Notes
 
+ - USACO problemsetters don't always test Java (and rarely Python) solutions when setting constraints.
  - Python lacks a data structure that keeps its keys in sorted order (the equivalent of `set` in C++), which is required for some silver problems.
  - Java lacks features such as `#define`, `typedef`, and `auto` that are present in C++ (which some contestants rely on extensively, see "macros"). 
- - USACO problemsetters don't always test Java solutions (and rarely Python) when setting constraints. Furthermore it is not guaranteed that there exists a fully working solution in Python.

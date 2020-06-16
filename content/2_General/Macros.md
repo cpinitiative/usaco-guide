@@ -4,7 +4,7 @@ title: C++ Macros
 author: Benjamin Qi
 ---
 
-Shortening code and making it more (un?)readable.
+Shortening code and making it (un?)readable.
 
 <!-- END DESCRIPTION -->
 
