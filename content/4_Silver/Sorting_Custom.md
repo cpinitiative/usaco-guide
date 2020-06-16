@@ -237,7 +237,7 @@ static class Comp implements Comparator<Person>{
 
 #### Comparator in Sorting
 
-There are two main ways to implement a custom comparator in python
+There are three main ways to implement a custom comparator in python
 
 Type 1) Operator Overloading
  - Overloads operators
