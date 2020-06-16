@@ -12,9 +12,10 @@ Problems and additional resources regarding built-in data structures.
 ## Problems
 
 **CSES:**
+
 Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/)
 
-(actually go through these ...)
+(actually go through these and check ...)
 
 **Stack:**:
  - UVa 00514 - Rails

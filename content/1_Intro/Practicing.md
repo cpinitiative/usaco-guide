@@ -1,7 +1,7 @@
 ---
 id: practicing
 title: How to Practice 
-author: Benjamin Qi, William Lin, Eric Wei, Nathan Wang, Nathan Chen, Darren Yao
+author: Many
 ---
 
 How to practice, when to read editorials (analyses), etc.

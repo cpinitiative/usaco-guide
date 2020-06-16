@@ -4,14 +4,18 @@ title: "Greedy Algorithms"
 author: Darren Yao
 ---
 
-**Greedy algorithms** are algorithms that select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.
+**Greedy** algorithms select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.
 
 <!-- END DESCRIPTION -->
 
+Greedy does not refer to a single algorithm, but rather a way of thinking that is applied to problems. There's no one way to do greedy algorithms. Hence, we use a selection of well-known examples to help you understand the greedy paradigm.
+
+Usually, when using a greedy algorithm, there is a heuristic or value function that determines which choice is considered most optimal.
+
+(convert Intro to USACO Chapter 9, Interval Cover)
+
 # Tutorials
 
- - Intro to USACO, Chapter 9
-   - Interval Cover
  - CPH 6
  - [CPC.5](https://github.com/SuprDewd/T-414-AFLV/tree/master/05_greedy_algorithms)
 

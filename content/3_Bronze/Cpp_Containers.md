@@ -4,7 +4,7 @@ title: Built-In C++ Containers
 author: Darren Yao
 ---
 
-Introduces the data structures in the C++ standard library that are frequently used in competitive programming.
+Introduces C++ [containers](http://www.cplusplus.com/reference/stl/) that are frequently used in competitive programming.
 
 <!-- END DESCRIPTION -->
 

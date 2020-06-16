@@ -4,7 +4,7 @@ title: "Sorting"
 author: Siyong, Michael Cao
 prerequisites: 
  - 
-     - Silver - Containers
+     - Bronze - Data Structures
 ---
 <div class="syllabus-only">
   Description: Todo

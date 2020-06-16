@@ -10,15 +10,13 @@ Demonstrates how to read input and print output for USACO.
 
 ## C++
 
-In CodeForces and CSES, input and output are standard, meaning that using the library [<iostream>](http://www.cplusplus.com/reference/iostream/) suffices. 
+In CodeForces and CSES, input and output are **standard**, meaning that using the library [\<iostream\>](http://www.cplusplus.com/reference/iostream/) suffices. 
 
-However, in USACO, input is read from a file called `problemname.in`, and printing output to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files. You will need the [<cstdio>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word *template* in the word below with the input/output file name, which should be given in the problem.
+However, in USACO, input is read from a file called `problemname.in`, and printing output to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files. You will need the [\<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [\<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word *template* in the word below with the input/output file name, which should be given in the problem.
 
 In order to test a program, create a file called `problemname.in`, and then run the program. The output will be printed to `problemname.out`.
 
 Below, we have included C++ templates for input and output. We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them.
-
-For USACO:
 
 If `<cstdio>` is used: 
 

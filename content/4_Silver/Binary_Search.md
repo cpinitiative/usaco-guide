@@ -42,6 +42,7 @@ Other variations are similar, such as the following:
  - [upper_bound](http://www.cplusplus.com/reference/algorithm/upper_bound/)
 
 ### Problems
+
  - [USACO Silver Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
  
 ## Binary Searching on the Answer
