@@ -1,5 +1,5 @@
 ---
-id: introductory-number-theory
+id: intro-nt
 title: "Introductory Number Theory"
 author: Unknown
 ---

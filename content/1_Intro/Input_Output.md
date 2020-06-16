@@ -1,11 +1,10 @@
 ---
 id: io
-title: Input and Output
+title: Input & Output
 author: Darren Yao
-order: 5
 ---
 
-Demonstrates how to read in input and print output for USACO.
+Demonstrates how to read input and print output for USACO.
 
 <!-- END DESCRIPTION -->
 

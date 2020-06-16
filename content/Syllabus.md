@@ -1,8 +1,10 @@
 ---
 id: syllabus
 title: Syllabus
-author: Benjamin Qi, I FORGOT WHO ELSE EVERYONE PUT YOUR NAME HERE :D
+author: Benjamin Qi
 ---
+
+(outdated)
 
 Below, we've compiled some of the main topics for each division.
 

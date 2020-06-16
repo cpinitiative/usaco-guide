@@ -1,5 +1,5 @@
 ---
-id: data
+id: data-types
 title: Data Types
 author: Darren Yao
 ---
