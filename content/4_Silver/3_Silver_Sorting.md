@@ -19,12 +19,7 @@ prerequisites:
 
 <!--
 TODO List:
-
- - Check sorting algorithms websites (I just googled and copied top link)
  - Improve Library Sorting: (maybe link actual website instead of documentation)
- - Quickly go over stable sort?
- - CPP Custom Comparators
-   - Test sample code
  - Java Custom Comparators
    - All (currently just pointing to darren's book)
  - Python Custom Comparators
@@ -39,30 +34,38 @@ Sorting is exactly what it sounds like: arranging items in some particular order
 ## Sorting Algorithms
 
 There are many sorting algorithms, here are some sources to learn about the popular ones:
- - [Bubble Sort](https://www.freecodecamp.org/news/bubble-sort/)
- - [Quicksort](https://medium.com/karuna-sehgal/a-quick-explanation-of-quick-sort-7d8e2563629b)
- - [Mergesort](https://www.geeksforgeeks.org/merge-sort/)
+ - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
+ - [Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
+ - [Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
 
 ## Library Sorting
 
- - Cpp: [std::sort documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
- - Java: [Arrays.sort documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
- - Python: [sorted documentation](https://docs.python.org/3/howto/sorting.html)
+ - C++: 
+    - [std::sort Documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
+    - [C++ Tricks (First Two Related To Sorting)](https://codeforces.com/blog/entry/74684)
+    - [std::stable\_sort documentation](http://www.cplusplus.com/reference/algorithm/stable_sort/)
+ - Java:
+    - [Arrays.sort Documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
+ - Python:
+    - [Sorted Documentation](https://docs.python.org/3/howto/sorting.html)
 
 Problems:
  - [Counting Haybales (Easy)](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
+ - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
+    - Not a sorting problem, but you can use sorting to simulate gravity nicely.
+        - Write a custom comparator (read below) which puts zeroes at the front and use stable_sort to keep the relative order of other elements the same.
 
 ## Custom Comparators
 
-*Custom comparators* define how the elements are ordered.
+*Custom comparators* allow the user to define how the elements are ordered.
 
 This section is very language-specific and will be separated for cpp, java, and python.
 
-### Cpp
+### C++
 
 This section explains how to implement custom comparators in c++
 
-Side note: In c++, a comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
+Side note: In C++, a comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
 
 #### Comparators for Sorting
 
@@ -218,9 +221,52 @@ a[7] = 1: b[1] = 8
 Comments: Comparator 1 sorts array $a$ in decreasing order. Comparator 2 sorts array $a$ in increasing $b[a[i]]$ value, breaking ties with decreasing index
 
 ### Java
+Java has built-in functions for sorting: `Arrays.sort(arr)` for arrays, and `Collections.sort(list)` for `ArrayLists`. However, if we use custom objects, or if we want to sort elements in a different order, then we'll need to use a `Comparator`.`
 
- - See chapter 8 of [Darren Yao's book](http://darrenyao.com/usacobook/java.pdf)
+Normally, sorting functions rely on moving objects with a lower value ahead of objects with a higher value if sorting in ascending order, and vice versa if in descending order. This is done through comparing two objects at a time. What a `Comparator` does is compare two objects as follows, based on our comparison criteria:
+- If object $x$ is less than object $y$, return a negative number
+- If object $x$ is greater than object $y$, return a positive number
+- If object $x$ is equal to object $y$, return 0.
 
+In addition to returning the correct number, comparators should also satisfy the following conditions:
+- The function must be consistent with respect to reversing the order of the arguments: if $compare(x, y)$ is positive, then $compare(y, x)$ should be negative and vice versa.
+- The function must be transitive. If $compare(x, y) > 0$ and $compare(y, z) > 0$, then $compare(x, z) > 0$. Same applies if the compare functions return negative numbers.
+- Equality must be consistent. If $compare(x, y) = 0$, then $compare(x, z)$ and $compare(y, z)$ must both be positive, both negative, or both zero. Note that they don't have to be equal, they just need to have the same sign.
+
+Java has default functions for comparing `int`, `long`, `double` types. The `Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two arguments $x$ and $y$ and compare them as described above.
+
+Now, there are two ways of implementing this in Java: `Comparable`, and `Comparator`. They essentially serve the same purpose, but `Comparable` is generally easier and shorter to code. `Comparable` is a function implemented within the class containing the custom object, while \mintinline{java}{Comparator} is its own class. For our example, we'll use a `Person` class that contains a person's height and weight, and sort in ascending order by height.
+
+If we use `Comparable`, we'll need to put `implements Comparable<Person>` into the heading of the class. Furthermore, we'll need to implement the `compareTo` method. Essentially, `compareTo(x)` is the `compare` function that we described above, with the object itself as the first argument, or `compare(self, x)`.
+
+```java
+static class Person implements Comparable<Person>{
+    int height, weight;
+    public Person(int h, int w){
+        height = h; weight = w;
+    }
+    public int compareTo(Person p){
+        return Integer.compare(height, p.height);
+    }
+}
+```
+When using Comparable, we can just call `Arrays.sort(arr)` or `Collections.sort(list)` on the array or list as usual.
+
+If instead we choose to use `Comparator`, we'll need to declare a second `Comparator` class, and then implement that:
+
+```java
+static class Person{
+    int height, weight;
+    public Person(int h, int w){
+        height = h; weight = w;
+    }
+}
+static class Comp implements Comparator<Person>{
+    public int compare(Person a, Person b){
+        return Integer.compare(a.height, b.height);
+    }
+}
+```
 ### Python
 
 #### Comparator in Sorting
@@ -307,14 +353,22 @@ Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
 
 ## Coordinate Compression
 
--------- Other stuff --------
+Another useful application of sorting is coordinate compression, which takes some points and reassigns them to remove wasted space. Let's consider the USACO Silver problem Counting Haybales:
 
- - Comparators
- - CPH 3
- - coord compress
+Farmer John has just arranged his $N$ haybales $(1\le N \le 100,000)$ at various points along the one-dimensional road running across his farm. To make sure they are spaced out appropriately, please help him answer Q queries $(1 \le Q \le 100,000)$, each asking for the number of haybales within a specific interval along the road.
+
+However, each of the points are in the range $0 \ldots 1,000,000,000$, meaning you can't store locations of haybales in, for instance, a boolean array. However, let's place all of the locations of the haybales and the locations of queries into a list and sort it.
+
+Now, we can map distinct points to smaller integers without gaps. For example, if the haybales existed at positions $[1, 4, 5, 9]$ and queries were $1, 2$ and $4, 6$, we can place the integers together and map them from $[1, 2, 4, 5, 6, 9] \rightarrow [1, 2, 3, 4, 5, 6]$. This effectively transforms the haybale positions into $[1, 3, 4, 6]$ and the queries into $1, 2$ and $3, 5$.
+
+By compressing queries and haybale positions, we've transformed the range of points to $0 \ldots N + 2Q$, allowing us to store prefix sums to effectively query for the number of haybales in a range.
 
 
-
+### Problems and Other Tutorials 
+    
+ - CPH 3 (once again, very good)
  - [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
+ - [Meetings (Hard!)](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
  - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
-   - no longer works, see [this one](https://codeforces.com/contest/1324/submission/73058869) instead
+   - no longer works, see [this one](https://codeforces.com/contest/1324/hacks/625031/test) instead.
+   - to avoid getting hacked, [shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
