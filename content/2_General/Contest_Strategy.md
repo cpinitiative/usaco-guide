@@ -31,7 +31,7 @@ If you can get points from partially solving a problem (e.g. in USACO), then it'
 
 ## Personal Commentaries
 ### Nathan Chen
-At the Platinum level, I often skip P3 if I think it's too hard. Then I spend at least an hour thinking about the first two problems. I continue thinking for the rest of the full block and I code them if I think I have the solution.
+At the Platinum level, I often skip P3 if I think it's too hard. Then I spend at least an hour thinking about the first two problems. I continue thinking for the rest of the contest window and I code them if I think I have the solution. I'm also the type to save partials for last, when time is running out and I still have nothing.
 
 ### Anther Person
 Somethign something
