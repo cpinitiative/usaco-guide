@@ -45,7 +45,7 @@ Constraints: $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is odd.
 
 The solution is as follows: we first sort the array in ascending order. Then, we binary search for the maximum possible median. We know that the number of operations required to raise the median to $x$ increases monotonically as $x$ increases, so we can use binary search. For a given median value $x$, the number of operations required to raise the median to $x$ is
 
-$$\sum_{i=(n+1)/2}^{n} \max(0, x - \text{arr[i]}})$$
+$$\sum_{i=(n+1)/2}^{n} \max(0, x - \text{arr[i]})$$
 
 If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns true. Otherwise, $x$ cannot be the median, so our check function returns false.
 
