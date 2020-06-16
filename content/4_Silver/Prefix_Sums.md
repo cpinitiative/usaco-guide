@@ -1,4 +1,3 @@
-
 ---
 id: prefix-sums
 title: "Prefix Sums"

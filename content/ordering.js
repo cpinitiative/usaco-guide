@@ -72,7 +72,7 @@ const ModuleOrdering = {
         "dp",
         "dp-trees"
       ]
-    }
+    },
     "intro-nt",
     "bit",
   ],
