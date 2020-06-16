@@ -114,24 +114,38 @@ Operator overloading works as expected for using in STL. If you are sorting elem
 
 For function comparators, some extra care needs to be taken:
 
+<!-- Reasonably Tested -->
 ```cpp
 struct foo
 {
 	//members
 };
-auto cmp = [](const foo& a, const foo& b){return /*comparator function*/;};
-
-set<foo, decltype(cmp)> Set(cmp);//pass the comparator as a parameter
-priority_queue<foo, vector<foo>, decltype(cmp)> pq(cmp);
+auto cmp1 = [](const foo& a, const foo& b){return /*comparator function*/;};
+//This way is shorter to write, but don't forget to pass the comparator as a parameter in the constructor!
+//If you need to create an array of the objects, I would either use pointers of the method shown below
+set<foo, decltype(cmp1)> Set1(cmp1);
+priority_queue<foo, vector<foo>, decltype(cmp1)> pq1(cmp1);
 //Side Note: priority queue is sorted in REVERSE order (largest elements are first)
-map<foo, bar, decltype(cmp)> Map(cmp);
+map<foo, bar, decltype(cmp1)> Map1(cmp1);
+
+
+struct cmp2
+{
+	bool operator () (const foo& a, const foo& b){return /*comparator function*/;}
+};
+//Here you do not need to pass the comparator as a parameter
+//This makes it easier to create arrays of stl objects
+set<foo, cmp2> Set2;
+priority_queue<foo, vector<foo>, cmp2> pq2;
+map<foo, bar, cmp2> Map2;
+set<foo, cmp2> Set2b[100];//array of sets with the comparator
 ```
 
 #### Example of Comparators for Primitives
 
 Since you cannot overload operators for primitives, you must use custom comparators
 
-<!-- The following code snip is tested -->
+<!-- Tested -->
 ```cpp
 const int N = 8;
 int a[N], b[N] = {4,8,2,3,4,1,2,4};
