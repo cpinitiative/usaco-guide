@@ -27,19 +27,19 @@ TODO List:
  - Coordinate Compression
 -->
 
-# Sorting
+**Sorting** is exactly what it sounds like: arranging items in some particular order. 
 
-Sorting is exactly what it sounds like: arranging items in some particular order. 
+<!-- END DESCRIPTION -->
 
 ## Sorting Algorithms
 
 There are many sorting algorithms, here are some sources to learn about the popular ones:
  - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
+    - [Out of Sorts (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=834)
  - [Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
  - [Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
 
 ## Library Sorting
-
  - C++: 
     - [std::sort Documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
     - [C++ Tricks (First Two Related To Sorting)](https://codeforces.com/blog/entry/74684)
@@ -57,13 +57,12 @@ Problems:
 
 ## Custom Comparators
 
-*Custom comparators* allow the user to define how the elements are ordered.
+*Custom comparators* define how the elements are ordered.
+    - [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
 
-This section is very language-specific and will be separated for cpp, java, and python.
+This section is very language-specific and will be separated by language.
 
 ### C++
-
-This section explains how to implement custom comparators in c++
 
 Side note: In C++, a comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
 
@@ -372,3 +371,4 @@ By compressing queries and haybale positions, we've transformed the range of poi
  - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
    - no longer works, see [this one](https://codeforces.com/contest/1324/hacks/625031/test) instead.
    - to avoid getting hacked, [shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+

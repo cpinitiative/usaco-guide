@@ -2,7 +2,6 @@
 id: prerequisites
 title: Prerequisites
 author: Nathan Wang
-order: 3
 ---
 
 Here's what you should learn before reading these resources.

@@ -7,14 +7,13 @@ problems:
  - bronze_word
  - bronze_paint
  - bronze_square
-order: 5
 ---
 
-Demonstrates how to read in input and print output for a USACO problem in multiple languages. Also lists some introductory USACO Bronze problems.
+Solutions for an introductory USACO problem in multiple languages. 
 
 <!-- END DESCRIPTION -->
 
-[Technical Specifications for Contests](http://www.usaco.org/index.php?page=instructions)
+[Technical Specifications for USACO Contests](http://www.usaco.org/index.php?page=instructions)
 
 ## Example: [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
 
