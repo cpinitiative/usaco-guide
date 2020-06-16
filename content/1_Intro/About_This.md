@@ -1,5 +1,5 @@
 ---
-id: about
+id: about-this
 title: About This Guide
 author: Nathan Wang, Benjamin Qi
 ---

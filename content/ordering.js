@@ -2,69 +2,94 @@ const ModuleOrdering = {
   "intro": [
     "about-this",
     "getting-started",
-    "prerequisites",
+    "prereqs",
     "running-cpp",
-    "problems",
-    "syllabus",
+    "data-types",
+    "io",
+    "ex-prob",
+    "practicing",
   ],
   "general": [
     "resources",
     "contests",
-    "why-cpp",
-    "practicing",
-    "strategy",
-    "debugging",
-    "macros",
+    "contest-strategy",
     "proposing",
+    "why-cpp",
+    "macros",
+    "debugging",
   ],
   "bronze": [
-    "overview",
-    "rectangle-geometry",
-    "collections",
-    "containers",
-    "ds",
-    "pairs",
+    "rect-geo",
+    {
+      name: "Data Structures",
+      items: [
+        "collections",
+        "containers",
+        "pairs",
+        "ds",
+      ]
+    },
     "simulation",
     "complete-search",
   ],
   "silver": [
-    "complexity",
+    "time-comp",
     "greedy",
     "sorting",
     "binary-search",
-    "two-pointers",
+    "2P",
     "prefix-sums",
     "data-structures",
     "dfs"
   ],
   "gold": [
-    "dp",
-    "bfs",
-    "toposort",
-    "sp",
-    "mst",
+    "intro-nt",
     "bit",
-    "introductory-number-theory",
-    "dp-trees"
+    {
+      name: "Graphs",
+      items: [
+        "bfs",
+        "toposort",
+        "sp",
+        "mst"
+      ]
+    },
+    {
+      name: "Dynamic Programming",
+      items: [
+        "dp",
+        "dp-trees"
+      ]
+    }
   ],
   "plat": [
     "oly",
-    "trees",
-    "1DRQ",
-    "2DRQ",
-    "geo",
-    "graphs",
-    "hashing",
-    "bitset",
-    "fracture",
-    "slope",
+    {
+      name: "Range Queries",
+      items: [
+        "1DRQ",
+        "2DRQ",
+      ]
+    },
+    {
+      name: "Graphs",
+      items: [
+        "trees",
+        "graphs",
+      ]
+    },
     {
       name: "Dynamic Programming",
       items: [
         "dp-bitmasks",
-        "dp-ranges"
+        "dp-ranges",
+        "slope",
       ]
-    }
+    },
+    "geo",
+    "strings",
+    "bitset",
+    "fracture",
   ]
 };
 

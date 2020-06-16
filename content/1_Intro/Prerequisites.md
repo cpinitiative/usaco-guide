@@ -1,5 +1,5 @@
 ---
-id: prerequisites
+id: prereqs
 title: Prerequisites
 author: Nathan Wang
 ---

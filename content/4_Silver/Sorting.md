@@ -2,7 +2,6 @@
 id: sorting
 title: "Sorting"
 author: Siyong (WIP)
-order: 3
 prerequisites: 
  - 
      - Silver - Containers

@@ -1,5 +1,5 @@
 ---
-id: hashing
+id: strings
 title: "Strings"
 author: Benjamin Qi
 prerequisites: 

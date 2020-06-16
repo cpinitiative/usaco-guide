@@ -1,5 +1,5 @@
 ---
-id: complexity
+id: time-comp
 title: "Time Complexity"
 author: Darren Yao, Benjamin Qi
 ---

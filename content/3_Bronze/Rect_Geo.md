@@ -1,5 +1,5 @@
 ---
-id: rectangle-geometry
+id: rect-geo
 title: "Rectangle Geometry"
 author: Darren Yao
 ---

@@ -1,6 +1,6 @@
 ---
-id: problems
-title: Introductory Problems
+id: ex-prob
+title: An Example Problem
 author: Nathan Wang, Benjamin Qi, Darren Yao
 problems:
  - bronze_promote
@@ -9,7 +9,7 @@ problems:
  - bronze_square
 ---
 
-Solutions for an introductory USACO problem in multiple languages. 
+Solutions for an example USACO problem in multiple languages. 
 
 <!-- END DESCRIPTION -->
 
@@ -179,11 +179,9 @@ for i in range(100):
 fout.write(str(ans))
 ```
 
-## Problems
+## Introductory Problems
 
-Let's begin by solving a few problems! The following require relatively little programming experience and no algorithmic knowledge.
-
-Do as many as you want, then move on! You do not have to do all of them.
+The following require relatively little programming experience and no algorithmic knowledge. Do as many as you want, then move on! You do not have to do all of them.
 
 - [Promotion Counting](http://usaco.org/index.php?page=viewproblem2&cpid=591)
 - [Word Processor](http://usaco.org/index.php?page=viewproblem2&cpid=987)
