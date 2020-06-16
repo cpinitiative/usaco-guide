@@ -1,50 +1,9 @@
 ---
 id: binary-search
-title: "Binary Search"
-author: Nathan Chen
-prerequisites: 
- - 
-     - Silver - Sorting
+title: "Binary Search on the Answer"
+author: Darren Yao
 ---
 
-[Binary search](https://en.wikipedia.org/wiki/Binary_search_algorithm) can be used on monotonic functions for a logarithmic runtime.
-
-<!-- END DESCRIPTION -->
-
-## Basic Application
-
-Here is a very basic form of binary search:
-
-> Find an element in a sorted array of size $N$ in $O(\log N)$ time.
-
-Other variations are similar, such as the following:
-
-> Given $K$, find the largest element less than $K$ in a sorted array.
-
-## Tutorial
-
- - CSES 3.3
- - [Topcoder Binary Search](https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/)
- - [CSAcademy Binary Search](https://csacademy.com/lesson/binary_search)
- - [KA Binary Search](https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search)
- - [GeeksForGeeks](https://www.geeksforgeeks.org/binary-search/)
-
-### Library Functions to do Binary Search
-
-#### Java
-
- - [Arrays.binarySearch](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html)
- - [Collections.binarySearch](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html)
-
-#### C++
-
- - [lower_bound](http://www.cplusplus.com/reference/algorithm/lower_bound/)
- - [upper_bound](http://www.cplusplus.com/reference/algorithm/upper_bound/)
-
-### Problems
-
- - [USACO Silver Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
- 
 ## Binary Searching on the Answer
 
 Oftentimes used when you need to find the minimum or maximum of some quantity such that it satisfies some property.

@@ -1,52 +1,15 @@
 ---
-id: sorting
-title: "Sorting"
-author: Siyong, Michael Cao
+id: sorting-custom
+title: "Sorting with Custom Comparators"
+author: Siyong Huang, Michael Cao
 prerequisites: 
  - 
-     - Bronze - Data Structures
+     - Silver - Introduction to Sorting  
 ---
-<div class="syllabus-only">
-  Description: Todo
-</div>
-
- - Sorting
- - Comparators (C++)
- - Coordinate Compression
-
-<!-- END DESCRIPTION -->
-
-**Sorting** is exactly what it sounds like: arranging items in some particular order. 
-
-<!-- END DESCRIPTION -->
-
-## Sorting Algorithms
-
-There are many sorting algorithms, here are some sources to learn about the popular ones:
- - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
-    - [Out of Sorts (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=834)
- - [Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
- - [Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
-
-## Library Sorting
- - C++: 
-    - [std::sort Documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
-    - [C++ Tricks (First Two Related To Sorting)](https://codeforces.com/blog/entry/74684)
-    - [std::stable\_sort documentation](http://www.cplusplus.com/reference/algorithm/stable_sort/)
- - Java:
-    - [Arrays.sort Documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
- - Python:
-    - [Sorted Documentation](https://docs.python.org/3/howto/sorting.html)
-
-Problems:
- - [Counting Haybales (Easy)](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
- - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
-    - Not a sorting problem, but you can use sorting to simulate gravity nicely.
-        - Write a custom comparator (read below) which puts zeroes at the front and use stable_sort to keep the relative order of other elements the same.
-
-## Custom Comparators
 
 *Custom comparators* define how the elements are ordered.
+
+<!-- END DESCRIPTION -->
 
 Let's consider a graph with weighted edges (pairs of values), such as in the problem [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) and we wanted to sort the edges in nondecreasing order of weight, as we do in this problem (read editorial for more info). If we directly stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. However, if we create a class representing the edges and define a custom comparator to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
 
@@ -339,26 +302,3 @@ Foo(10,2) Foo(30,2) Foo(60,6) Foo(90,7) Foo(80,7) Foo(80,9) Foo(60,9) Foo(90,8)
 Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
 Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
 ```
-
-## Coordinate Compression
-
-Another useful application of sorting is coordinate compression, which takes some points and reassigns them to remove wasted space. Let's consider the USACO Silver problem Counting Haybales:
-
-Farmer John has just arranged his $N$ haybales $(1\le N \le 100,000)$ at various points along the one-dimensional road running across his farm. To make sure they are spaced out appropriately, please help him answer Q queries $(1 \le Q \le 100,000)$, each asking for the number of haybales within a specific interval along the road.
-
-However, each of the points are in the range $0 \ldots 1,000,000,000$, meaning you can't store locations of haybales in, for instance, a boolean array. However, let's place all of the locations of the haybales and the locations of queries into a list and sort it.
-
-Now, we can map distinct points to smaller integers without gaps. For example, if the haybales existed at positions $[1, 4, 5, 9]$ and queries were $1, 2$ and $4, 6$, we can place the integers together and map them from $[1, 2, 4, 5, 6, 9] \rightarrow [1, 2, 3, 4, 5, 6]$. This effectively transforms the haybale positions into $[1, 3, 4, 6]$ and the queries into $1, 2$ and $3, 5$.
-
-By compressing queries and haybale positions, we've transformed the range of points to $0 \ldots N + 2Q$, allowing us to store prefix sums to effectively query for the number of haybales in a range.
-
-
-### Problems and Other Tutorials 
-    
- - CPH 3 (once again, very good)
- - [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
- - [Meetings (Hard!)](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
- - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
-   - no longer works, see [this one](https://codeforces.com/contest/1324/hacks/625031/test) instead.
-   - to avoid getting hacked, [shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
-

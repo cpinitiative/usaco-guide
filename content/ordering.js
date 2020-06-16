@@ -35,7 +35,13 @@ const ModuleOrdering = {
   "silver": [
     "time-comp",
     "greedy",
-    "sorting",
+    {
+      name: "Sorting",
+      items: [
+        "intro-sorting",
+        "sorting-custom",
+      ]
+    },
     "binary-search",
     "2P",
     "data-structures",
