@@ -1,7 +1,7 @@
 ---
 id: sorting
 title: "Sorting"
-author: Siyong (WIP)
+author: Siyong, Michael Cao
 prerequisites: 
  - 
      - Silver - Containers
@@ -15,16 +15,6 @@ prerequisites:
  - Coordinate Compression
 
 <!-- END DESCRIPTION -->
-
-<!--
-TODO List:
- - Improve Library Sorting: (maybe link actual website instead of documentation)
- - Java Custom Comparators
-   - All (currently just pointing to darren's book)
- - Python Custom Comparators
-   - Potentially explain use in stl data structures
- - Coordinate Compression
--->
 
 **Sorting** is exactly what it sounds like: arranging items in some particular order. 
 
