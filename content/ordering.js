@@ -49,8 +49,6 @@ const ModuleOrdering = {
     "dfs"
   ],
   "gold": [
-    "intro-nt",
-    "bit",
     {
       name: "Graphs",
       items: [
@@ -67,6 +65,8 @@ const ModuleOrdering = {
         "dp-trees"
       ]
     }
+    "intro-nt",
+    "bit",
   ],
   "plat": [
     "oly",

@@ -89,3 +89,7 @@ Which is what we were looking for!
 
  - [AtCoder Multiple of 2019](https://atcoder.jp/contests/abc164/tasks/abc164_d)
  - [Google Kick Start Candies](https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d) (**only** Test Set 1.)
+
+## Additional Problems
+
+ - [CF Edu Round 60 C: Magic Ship](https://codeforces.com/problemset/problem/1117/C)

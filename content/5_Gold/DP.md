@@ -79,11 +79,6 @@ The following USACO problems don't fall into any of the categories below. Arrang
      * straightforward
    * [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
      * binary search + knapsack on weight
-   * [Cow Poetry](http://usaco.org/index.php?page=viewproblem2&cpid=897)
-     * First consider the case where there are only two lines with the same class.
-     * Requires fast modular exponentiation for full credit.
-   * [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=1043)
-     * With a bit of number theory
  * CF
    * [Round Subset](http://codeforces.com/contest/837/problem/D) [](59)
    * [Fire](http://codeforces.com/contest/864/problem/E) [](59)
