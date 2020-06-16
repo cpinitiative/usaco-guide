@@ -94,4 +94,4 @@ Read the editorial when you feel like you've stopped making progress; that could
 
 ## Eric Wei
 
-> read problem editorials some time after thinking "i have no clue what i'm doing please send help" and before "if i stare at this problem for one minute longer i'm going to punch a hole in my computer", figure out the exact time yourself
+> Read problem editorials if you have no idea what you're doing or just don't feel like solving the problem anymore. 
