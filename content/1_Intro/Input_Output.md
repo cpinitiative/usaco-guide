@@ -1,5 +1,5 @@
 ---
-slug: /intro/io
+id: io
 title: Input and Output
 author: Darren Yao
 order: 5

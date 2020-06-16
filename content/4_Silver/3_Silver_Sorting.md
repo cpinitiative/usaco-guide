@@ -32,20 +32,23 @@ TODO List:
  - Coordinate Compression
 -->
 
-# Sorting
+**Sorting** is exactly what it sounds like: arranging items in some particular order. 
 
-Sorting is exactly what it sounds like: arranging items in some particular order. 
+<!-- END DESCRIPTION -->
 
 ## Sorting Algorithms
 
 There are many sorting algorithms, here are some sources to learn about the popular ones:
+
  - [Bubble Sort](https://www.freecodecamp.org/news/bubble-sort/)
  - [Quicksort](https://medium.com/karuna-sehgal/a-quick-explanation-of-quick-sort-7d8e2563629b)
  - [Mergesort](https://www.geeksforgeeks.org/merge-sort/)
 
+(why are these important?)
+
 ## Library Sorting
 
- - Cpp: [std::sort documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
+ - [C++ - std::sort](https://en.cppreference.com/w/cpp/algorithm/sort)
  - Java: [Arrays.sort documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
  - Python: [sorted documentation](https://docs.python.org/3/howto/sorting.html)
 
@@ -54,15 +57,15 @@ Problems:
 
 ## Custom Comparators
 
+(mention in context of http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
+
 *Custom comparators* define how the elements are ordered.
 
-This section is very language-specific and will be separated for cpp, java, and python.
+This section is very language-specific and will be separated by language.
 
-### Cpp
+### C++
 
-This section explains how to implement custom comparators in c++
-
-Side note: In c++, a comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
+Side note: In C++, a comparator must return false for two identical objects (not doing so results in undefined behavior and potentially RTE)
 
 #### Comparators for Sorting
 
@@ -220,6 +223,8 @@ Comments: Comparator 1 sorts array $a$ in decreasing order. Comparator 2 sorts a
 ### Java
 
  - See chapter 8 of [Darren Yao's book](http://darrenyao.com/usacobook/java.pdf)
+ - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
+   - no longer works, see [this one](https://codeforces.com/contest/1324/submission/73058869) instead
 
 ### Python
 
@@ -307,14 +312,6 @@ Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
 
 ## Coordinate Compression
 
--------- Other stuff --------
-
- - Comparators
  - CPH 3
  - coord compress
 
-
-
- - [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666)
- - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
-   - no longer works, see [this one](https://codeforces.com/contest/1324/submission/73058869) instead
