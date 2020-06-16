@@ -26,7 +26,7 @@ It also might be a good idea to make some progress on other problems before codi
 
 ### When there are partials
 If you can get points from partially solving a problem (e.g. in USACO), then it's a good idea to keep those subtasks in mind. There are two main approaches to partially solving problems.
-- Use most of your time to think about the full problem, then code the partials if you haven't found the solution and your time is about to run out. 
+- Use most of your time to think about the full problem, then code the partials if you haven't found the solution and your time will soon run out.
   - If you find the full solution, be certain your solution is correct, lest you waste an hour coding something completely wrong.
   - Judge the difficulty of the partials carefully! It could take anywhere from 30 seconds 30 minutes to code a partial, or maybe a partial wasn't as trivial as you thought!
 - Work up from the partials, coding the easiest and then going to the hardest. The partial subtasks may help you think of the full solution, and will also help you stay on track.
