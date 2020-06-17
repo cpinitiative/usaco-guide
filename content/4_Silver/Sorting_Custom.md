@@ -1,7 +1,7 @@
 ---
 id: sorting-custom
 title: "Sorting with Custom Comparators"
-author: Darren Yao
+author: Darren Yao, Siyong Huang
 prerequisites: 
  - 
      - Silver - Introduction to Sorting  
@@ -110,6 +110,103 @@ When using `Comparator`, the syntax for using the built-in sorting function requ
 
 If we instead wanted to sort in descending order, this is also very simple. Instead of the comparing function returning `Integer.compare(x, y)` of the arguments, it should instead return `-Integer.compare(x, y)`.
 
+### Python
+
+There are 3 main ways to create a custom comparator in python
+
+#### 1) Operator Overloading
+
+<!-- Tested -->
+```py
+import random
+class Foo:
+	def __init__(self, _Bar): self.Bar = _Bar
+	def __str__(self): return "Foo({})".format(self.Bar)
+	def __lt__(self, o): # lt means less than
+		return self.Bar < o.Bar
+
+a = []
+for i in range(8):
+	a.append(Foo(random.randint(1, 10)))
+print(*a)
+print(*sorted(a))
+```
+
+Output:
+
+```
+Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
+```
+
+#### 2) Remapping Key
+
+ - This method maps an object to another comparable datatype with which to be sorted. In this case, `Foo` is sorted by the sum of its members `x` and `y`.
+
+
+<!-- Tested -->
+```py
+import random
+class Foo:
+	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
+
+a = []
+for i in range(8):
+	a.append(Foo(random.randint(1, 9)*10, random.randint(1, 9)))
+print(*a)
+
+print(*sorted(a, key=lambda foo: foo.Bar+foo.Baz))
+def key(foo):
+	return foo.Bar + foo.Baz
+print(*sorted(a, key=key))
+```
+
+Output:
+
+```
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(90,7) Foo(80,7) Foo(80,9) Foo(60,9) Foo(90,8)
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
+Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
+```
+
+#### 3) Function / Lambda
+
+ - This method defines how to compare two elements represented by an integer
+   - Positive: First term is greater than the second term
+   - Zero: First term and second term are equal
+   - Negative: First term is less than the second term
+
+Note how the comparator must be converted to a `key`.
+
+<!-- Tested -->
+
+```py
+import random
+from functools import cmp_to_key
+class Foo:
+	def __init__(self, _Bar): self.Bar = _Bar
+	def __str__(self): return "Foo({})".format(self.Bar)
+
+a = []
+for i in range(8):
+	a.append(Foo(random.randint(0, 9)))
+print(*a)
+
+print(*sorted(a, key=cmp_to_key(lambda foo1, foo2: foo1.Bar - foo2.Bar)))
+def cmp(foo1, foo2):
+	return foo1.Bar - foo2.Bar
+print(*sorted(a, key=cmp_to_key(cmp)))
+```
+
+Output:
+
+```
+Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
+Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
+```
+
 
 ## Sorting by Multiple Criteria
 
@@ -169,41 +266,9 @@ static class Comp implements Comparator<int[]>{
 
 I don't recommend using arrays to represent objects mostly because it's confusing, but it's worth noting that some competitors do this.
 
-## Python
+### Python
 
-(merge w/ sections above?)
-
-### Operator Overloading
-
- - Overloads operators
-
-<!-- Tested -->
-```py
-import random
-class Foo:
-	def __init__(self, _Bar): self.Bar = _Bar
-	def __str__(self): return "Foo({})".format(self.Bar)
-	def __lt__(self, o): # lt means less than
-		return self.Bar < o.Bar
-
-a = []
-for i in range(8):
-	a.append(Foo(random.randint(1, 10)))
-print(*a)
-print(*sorted(a))
-```
-
-Output:
-
-```
-Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
-Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
-```
-
-### Remapping Key
-
- - This method maps an object to another comparable datatype with which to be sorted. In this case, `Foo` is sorted by the sum of its members `x` and `y`.
-
+Operator Overloading can be used
 
 <!-- Tested -->
 ```py
@@ -211,61 +276,51 @@ import random
 class Foo:
 	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
 	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
+	def __lt__(self, o): # sort by increasing Bar, breaking ties by decreasing Baz
+		if self.Bar != o.Bar: return self.Bar < o.Bar
+		if self.Baz != o.Baz: return self.Baz > o.Baz
+		return False
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 9)*10, random.randint(1, 9)))
+	a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
 print(*a)
-
-print(*sorted(a, key=lambda foo: foo.Bar+foo.Baz))
-def key(foo):
-	return foo.Bar + foo.Baz
-print(*sorted(a, key=key))
+print(*sorted(a))
 ```
 
 Output:
 
 ```
-Foo(10,2) Foo(30,2) Foo(60,6) Foo(90,7) Foo(80,7) Foo(80,9) Foo(60,9) Foo(90,8)
-Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
-Foo(10,2) Foo(30,2) Foo(60,6) Foo(60,9) Foo(80,7) Foo(80,9) Foo(90,7) Foo(90,8)
+Foo(1,2) Foo(3,2) Foo(6,6) Foo(9,7) Foo(8,7) Foo(8,9) Foo(6,9) Foo(9,8)
+Foo(1,2) Foo(3,2) Foo(6,9) Foo(6,6) Foo(8,9) Foo(8,7) Foo(9,8) Foo(9,7)
 ```
 
-### Function / Lambda
-
- - This method defines how to compare two elements represented by an integer
-   - Positive: First term is greater than the second term
-   - Zero: First term and second term are equal
-   - Negative: First term is less than the second term
-
-Note how the comparator must be converted to a `key`.
-
-<!-- Tested -->
+A custom comparator works as well
+ - Lambdas aren't shown here because they are typically used as one-liners
 
 ```py
 import random
 from functools import cmp_to_key
+
 class Foo:
-	def __init__(self, _Bar): self.Bar = _Bar
-	def __str__(self): return "Foo({})".format(self.Bar)
+	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(0, 9)))
+	a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
 print(*a)
 
-print(*sorted(a, key=cmp_to_key(lambda foo1, foo2: foo1.Bar - foo2.Bar)))
 def cmp(foo1, foo2):
-	return foo1.Bar - foo2.Bar
+	if foo1.Bar != foo2.Bar: return -1 if foo1.Bar < foo2.Bar else 1
+	if foo1.Baz != foo2.Baz: return -1 if foo1.Baz > foo2.Baz else 1
+	return 0
 print(*sorted(a, key=cmp_to_key(cmp)))
 ```
-
 Output:
-
 ```
-Foo(0) Foo(1) Foo(2) Foo(1) Foo(9) Foo(5) Foo(5) Foo(8)
-Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
-Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
+Foo(1,2) Foo(3,2) Foo(6,6) Foo(9,7) Foo(8,7) Foo(8,9) Foo(6,9) Foo(9,8)
+Foo(1,2) Foo(3,2) Foo(6,9) Foo(6,6) Foo(8,9) Foo(8,7) Foo(9,8) Foo(9,7)
 ```
 
 ## Problems
