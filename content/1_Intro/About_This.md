@@ -4,6 +4,8 @@ title: About This Guide
 author: Nathan Wang, Benjamin Qi
 ---
 
+// todo transfer all of this to the homepage
+
  - Goals
  - Module Organization
  - Contact Information

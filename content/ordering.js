@@ -1,7 +1,6 @@
 const ModuleOrdering = {
   "intro": [
     "getting-started",
-    "about-this",
     "prereqs",
     "running-cpp",
     "data-types",
