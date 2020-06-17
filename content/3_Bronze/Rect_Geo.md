@@ -20,9 +20,13 @@ Rectangle newRect = new Rectangle(x, y, width, height);
 ```
 
 The `Rectangle` class supports numerous useful methods. 
+
     - `firstRect.intersects(secondRect)` checks if two rectangles intersect.
+
     - `firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
+
     - `firstRect.contains(x, y)` checks whether the integer point (x,y) exists in firstRect.
+
     - `firstRect.intersect(secondRect)` returns a rectangle representing the intersection of two rectangles.
 
 This class can often lessen the implementation needed in a lot of bronze problems and codeforces problems.
