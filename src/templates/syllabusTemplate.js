@@ -113,6 +113,14 @@ export default function Template(props) {
               <p className={`mt-3 max-w-md mx-auto text-base text-${color}-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl`}>
                 A collection of curated, high-quality resources to take you from Bronze to Platinum.
               </p>
+              <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                <div className="rounded-md shadow">
+                  <Link to="/"
+                     className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-300 ease-in-out md:py-4 md:text-lg md:px-10`}>
+                    Learn More
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
