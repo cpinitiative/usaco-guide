@@ -72,9 +72,10 @@ This will render as a list in the homepage, but won't appear in the article.
 Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
 when writing solutions to problems. The styling of the spoilers is still a work in progress (especially for spoilers in lists).
 
+// TODO update spoiler docs to reflect new tag
+
 ```
-<details>
-  <summary>Show Solution</summary>
+<spoiler title="Show Solution">
 
   - Insert OP benq solution here
 </details>

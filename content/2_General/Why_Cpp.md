@@ -16,9 +16,7 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
 
   - Rewriting the C++ solution for [USACO Silver Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python receives TLE (Time Limit Exceeded) on 2/10 cases. I'm not sure whether it is possible to pass this problem with Python.
 
-    <details>
-
-    <summary>Python3 8/10 Solution</summary>
+    <spoiler title="Python3 8/10 Solution">
 
     ```py
     # 8/10 test cases ...
@@ -91,13 +89,11 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
     fout.write('\n')
     ```
 
-    </details>
+    </spoiler>
 
   - A similar solution in Java requires almost 3s, which is fairly close to the time limit of 4s.
 
-    <details>
-
-    <summary>Java Solution</summary>
+    <spoiler title="Java Solution">
 
     ```java
     import java.io.*; // from Nick Wu
@@ -167,12 +163,11 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
     }
     ```
 
-    </details>
+    </spoiler>
 
   - A comparable C++ solution runs in less than 700ms.
 
-    <details>
-    <summary>C++ Solution</summary>
+    <spoiler title="C++ Solution">
 
     ```cpp
     #include <bits/stdc++.h>
@@ -228,7 +223,7 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
       cout << minW;
     }
     ```
-    </details>
+    </spoiler>
 
 ## Other Notes
 

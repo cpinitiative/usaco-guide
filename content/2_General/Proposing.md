@@ -15,17 +15,13 @@ Email your proposal to Professor Dean. In the [past](http://www.usaco.org/index.
  - All problems should have 10 test cases at minimum (I believe that the maximum was 21 for [valleys](http://www.usaco.org/index.php?page=viewproblem2&cpid=950)). You do not need to include these in your proposal.
  - All statements must eventually be converted to the following format. It's not required, but please save us time by following it as best you can.
 
-<details>
-
-<summary>2020 Open Gold - Favorite Colors</summary>
+<spoiler title="2020 Open Gold - Favorite Colors">
 
 ```
 http://www.usaco.org/index.php?page=viewproblem2&cpid=1042
 bolded text should be surrounded by [b][/b], italics by [i][/i]
 use [ol][/ol] for numbered list
 ---
-
-<module-excerpt>
 
 Each of Farmer John's $N$ cows ($1\le N\le 2\cdot 10^5$) has a favorite color.
 The cows are conveniently labeled $1\ldots N$ (as always), and each color can be
@@ -73,4 +69,4 @@ favorite color 1.
 [/section]
 ```
 
-</details>
+</spoiler>

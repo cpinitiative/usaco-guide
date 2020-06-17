@@ -36,9 +36,7 @@ This class can often lessen the implementation needed in a lot of bronze problem
 
 For example, here is a nice implementation of the problem [Blocked Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759) ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
 
-<details>
-
-<summary>Java Solution</summary>
+<spoiler title="Java Solution">
 
 ```java
 import java.awt.Rectangle; //needed to use Rectangle class
@@ -78,15 +76,13 @@ public class blockedBillboard{
 }
 
 ```
-</details>
+</spoiler>
 
 ## Rectangle Class (C++)
 
 Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
 
-<details>
-
-<summary>C++ Solution</summary>
+<spoiler title="C++ Solution">
 
 ```cpp
 #include <iostream>
@@ -121,7 +117,7 @@ int main(){
 }
 
 ```
-</details>
+</spoiler>
 
 ## Problems
 
