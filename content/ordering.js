@@ -108,3 +108,12 @@ const ModuleOrdering = {
 };
 
 export default ModuleOrdering;
+export const divisions = Object.keys(ModuleOrdering);
+export const divisionLabels = {
+  "intro": "Intro",
+  "general": "General",
+  "bronze": "Bronze",
+  "silver": "Silver",
+  "gold": "Gold",
+  "plat": "Platinum",
+};
