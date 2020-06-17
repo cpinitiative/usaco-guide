@@ -98,3 +98,7 @@ I follow three guidelines (from most important to least important)
 ## Eric Wei
 
 I think the most important thing regarding practicing is to try to get something out of every problem, whether it's a new algorithm or idea, an implementation trick that can help in the future, or just a bug you hopefully won't mess up in the future. That being said, editorials are more useful once you've been stuck for a while; I think the exploration that happens from being a little stuck is often instructive (and good practice for contests, when it's your only option). But at some point the problem's more frustrating than helpful, and sometime before this is probably the right time to take a hint or read the editorial.
+
+## Additional
+
+ - [E869120 - A Way to Practice CP](http://codeforces.com/blog/entry/53341)

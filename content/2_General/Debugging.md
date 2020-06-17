@@ -12,7 +12,7 @@ Detecting issues within your program and figuring out how to avoid them in the f
 
 ## Style Guide
 
-[Swift](https://codeforces.com/blog/entry/64218)
+[Competitive C++ Manifesto: A Style Guide](https://codeforces.com/blog/entry/64218)
 
 ## Compilation
 
@@ -28,6 +28,8 @@ run() { co $1 && ./$1 & fg; }
 See [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
 
 `-Wall -Wextra -Wshadow` 
+
+[Variable shadowing](https://en.wikipedia.org/wiki/Variable_shadowing) should be avoided whenever possible.
 
 ### Stack Size
 
@@ -77,11 +79,9 @@ In essense, a debugger is a tool to "trace code" for you. It is not much differe
 Pros of using a debugger: 
  
  - No need to write print statements so you save time
- 
  - You can step through the code in real time
  
 Cons of using a debugger:
  
- - You cannot see the overall "output" of your program at each stage. For example, if I wanted to see the every single value of `i` in the program, I could not using a debugger.
- 
+ - You cannot see the overall "output" of your program at each stage. For example, if I wanted to see every single value of `i` in the program, I could not using a debugger.
  - Most advanced competitive programmers do not use debuggers; it is quite time inefficient. 

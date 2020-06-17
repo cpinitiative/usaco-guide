@@ -12,29 +12,29 @@ Running C++ both online and locally.
 
 # Running C++ Online
 
- * [OnlineGDB](https://www.onlinegdb.com/)
-   * online compiler with an embedded GDB debugger
-   * can be buggy sometimes
-   * supports files and file I/O
- * [CSAcademy](https://csacademy.com/workspace/)
-   * pretty nice (unless you get "Estimated Queue Time: ...")
-   * "saved locally" will not save your code if you close the tab, press Command-S to save.
- * [Ideone](http://ideone.com/)
-   * okay ... with an ad blocker
-   * make sure your code is not public
-   * sometimes erases your code when you first create it (so get in the habit of copying your code first)
+ - [OnlineGDB](https://www.onlinegdb.com/)
+   - online compiler with an embedded GDB debugger
+   - can be buggy sometimes
+   - supports files and file I/O
+ - [CSAcademy](https://csacademy.com/workspace/)
+   - pretty nice (unless you get "Estimated Queue Time: ...")
+   - "saved locally" will not save your code if you close the tab, press Command-S to save.
+ - [Ideone](http://ideone.com/)
+   - okay ... with an ad blocker
+   - make sure your code is not public
+   - sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
-Of course, you can't use file I/O on the latter two websites and they are often quite limited.
+Of course, you can't use file I/O on the latter two websites.
 
 # Running C++ Locally
 
 ## On Mac
 
-[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use GCC's [g++](https://en.wikipedia.org/wiki/GNU_Compiler_Collection).
+[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s g++.
 
 ### Installation
 
-Open **Terminal**. First, familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). You will also need to install [Homebrew](https://brew.sh/).
+First, Open **Terminal**. Familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). You will also need to install [Homebrew](https://brew.sh/).
 
 Run
 
@@ -183,28 +183,32 @@ Note that all occurrences of `$1` are replaced with `name`.
 
 ## IDEs
 
- * [Geany](https://www.geany.org/)
- * [Visual Studio Code](https://code.visualstudio.com/)
-   * lightweight, fast IDE, but requires some configuration
- * [Visual Studio](https://visualstudio.microsoft.com/vs/)
-   * heavier cousin of Visual Studio Code
- * [XCode](https://developer.apple.com/xcode/)
-   * Mac only
- * [Codeblocks](http://www.codeblocks.org/)
-   * bad on Mac
- * [CLion](https://www.jetbrains.com/clion/)
-   * requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
+ - [Geany](https://www.geany.org/)
+ - [Visual Studio Code](https://code.visualstudio.com/)
+   - lightweight, fast IDE, but requires some configuration
+ - [Visual Studio](https://visualstudio.microsoft.com/vs/)
+   - heavier cousin of Visual Studio Code
+ - [XCode](https://developer.apple.com/xcode/)
+   - Mac only
+ - [Codeblocks](http://www.codeblocks.org/)
+   - bad on Mac
+ - [CLion](https://www.jetbrains.com/clion/)
+   - requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
    
 ## Text Editors
 
-Again, many options.
 
- * [Sublime Text 3](https://www.sublimetext.com/) - a fast, lightweight text editor for Windows, Mac, and Linux
-   * [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
-   * [FastOlympicCoding Addon](https://github.com/Jatana/FastOlympicCoding)
-   * [Sublime Snippets](https://www.granneman.com/webdev/editors/sublime-text/top-features-of-sublime-text/quickly-insert-text-and-code-with-sublime-text-snippets)
-   * [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
-     * Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
- * [Atom](https://atom.io/) - another text editor for Windows, Mac, and Linux, from the makers of Github
- * [Vim](https://www.vim.org/) - the classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
- * Others?
+
+ - [Sublime Text 3](https://www.sublimetext.com/)
+   - a fast, lightweight text editor for Windows, Mac, and Linux
+   - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
+   - [FastOlympicCoding Addon](https://github.com/Jatana/FastOlympicCoding)
+   - [Sublime Snippets](https://www.granneman.com/webdev/editors/sublime-text/top-features-of-sublime-text/quickly-insert-text-and-code-with-sublime-text-snippets)
+   - [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
+     - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
+ - [Atom](https://atom.io/)
+   - another text editor for Windows, Mac, and Linux, from the makers of Github
+ - [Vim](https://www.vim.org/) 
+   - the classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
+   - probably easiest way to print syntax-highlighted code on Mac, see [here](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting)
+ - Others?

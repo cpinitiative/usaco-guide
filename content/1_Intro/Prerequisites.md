@@ -1,7 +1,7 @@
 ---
 id: prereqs
 title: Prerequisites
-author: Nathan Wang
+author: Nathan Wang, Benjamin Qi
 ---
 
 <module-excerpt>
@@ -39,9 +39,12 @@ Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/
 
 ### Resources for Getting Started
 
+Note: We don't agree with all views expressed in the links below. Feel free to let us know what works (or doesn't) for you.
+
   - [CodeSignal](https://codesignal.com/)
-    - good place to practice basics
-  - [IOI: Getting Started](https://ioinformatics.org/page/getting-started/14)
+    - can practice basics with "Arcade," "Interview Practice"
   - [Philippines OI: Prepare](https://noi.ph/prepare/)
-  - [Schedule for Beginners](https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners)
-  - [E869120 Tutorial](http://codeforces.com/blog/entry/53341)
+    - lots of links!
+  - [IOI - Getting Started](https://ioinformatics.org/page/getting-started/14)
+    - not so up to date
+  - [Quora - Schedule for Beginners (Joshua Pan)](https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners)
