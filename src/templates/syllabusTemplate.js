@@ -5,7 +5,7 @@ import SEO from "../components/seo"
 import SyllabusModule from "../components/SyllabusModule";
 import { graphql, Link } from "gatsby";
 import Markdown from "../components/Markdown";
-import ModuleOrdering from "../../content/ordering";
+import ModuleOrdering, { divisionLabels, divisions } from "../../content/ordering";
 import { getModule } from "../utils";
 
 const renderModule = (node, idx, parentIdx = -1) => {
@@ -39,12 +39,16 @@ export default function Template(props) {
   }, {});
 
   const [selectedDivision, setSelectedDivision] = React.useState(props.pageContext.division);
-  const divisions = ["intro", "general", "bronze", "silver", "gold", "plat"];
-  const colors = ["blue", "pink", "orange", "teal", "yellow", "purple"];
+  const colors = {
+    "intro": "blue",
+    "general": "pink",
+    "bronze": "orange",
+    "silver": "teal",
+    "gold": "yellow",
+    "plat": "purple"
+  };
   const color = colors[selectedDivision];
-  // const module = modules[selectedDivision];
-  // console.log(module);
-  const module = getModule(allModules, divisions[selectedDivision]);
+  const module = getModule(allModules, selectedDivision);
 
   // for purgecss, we have to list all the classes that are dynamically generated...
   /*
@@ -68,7 +72,7 @@ export default function Template(props) {
 
   const handleDivisionChange = d => {
     setSelectedDivision(d);
-    window.history.pushState(null, "", `/${divisions[d]}/`);
+    window.history.pushState(null, "", `/${d}/`);
   };
 
   return (
@@ -117,7 +121,7 @@ export default function Template(props) {
                 <div className="rounded-md shadow">
                   <Link to="/"
                      className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-300 ease-in-out md:py-4 md:text-lg md:px-10`}>
-                    Learn More
+                    About This Guide
                   </Link>
                 </div>
               </div>
@@ -133,49 +137,24 @@ export default function Template(props) {
             <div className="sm:hidden">
               <select aria-label="Selected tab"
                       className="form-select block w-full"
-                      onChange={e => handleDivisionChange(e.target.value - '0')}
+                      onChange={e => handleDivisionChange(e.target.value)}
                       value={selectedDivision}
               >
-                <option value={0}>Intro</option>
-                <option value={1}>General</option>
-                <option value={2}>Bronze</option>
-                <option value={3}>Silver</option>
-                <option value={4}>Gold</option>
-                <option value={5}>Platinum</option>
+                {divisions.map(division => (
+                  <option key={division} value={division}>{divisionLabels[division]}</option>
+                ))}
               </select>
             </div>
             <div className="hidden sm:block border-b border-gray-200">
               <nav className="flex -mb-px">
-                <a href="/intro"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(0)}}
-                      className={selectedDivision === 0 ? selectedTabClasses : unselectedTabClasses}>
-                  Intro
-                </a>
-                <a href="/general"
-                   onClick={e => {e.preventDefault(); handleDivisionChange(1)}}
-                   className={selectedDivision === 1 ? selectedTabClasses : unselectedTabClasses}>
-                  General
-                </a>
-                <a href="/bronze"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(2)}}
-                      className={selectedDivision === 2 ? selectedTabClasses : unselectedTabClasses}>
-                  Bronze
-                </a>
-                <a href="/silver"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(3)}}
-                      className={selectedDivision === 3 ? selectedTabClasses : unselectedTabClasses}>
-                  Silver
-                </a>
-                <a href="/gold"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(4)}}
-                      className={selectedDivision === 4 ? selectedTabClasses : unselectedTabClasses}>
-                  Gold
-                </a>
-                <a href="/plat"
-                      onClick={e => {e.preventDefault(); handleDivisionChange(5)}}
-                      className={selectedDivision === 5 ? selectedTabClasses : unselectedTabClasses}>
-                  Platinum
-                </a>
+                {divisions.map(division => (
+                  <a key={division}
+                     href={`/${division}`}
+                     onClick={e => {e.preventDefault(); handleDivisionChange(division)}}
+                     className={selectedDivision === division ? selectedTabClasses : unselectedTabClasses}>
+                    {divisionLabels[division]}
+                  </a>
+                ))}
               </nav>
             </div>
 

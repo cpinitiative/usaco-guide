@@ -1,10 +1,13 @@
 import * as React from "react";
 import {Link, PageProps} from "gatsby";
 import Layout from "../components/layout";
+import SEO from "../components/seo";
 
 export default function IndexPage(props: PageProps) {
   return (
     <Layout>
+      <SEO title="" />
+
       {/* Begin Hero */}
       <div className="relative bg-white overflow-hidden">
         <div className="hidden lg:block lg:absolute lg:inset-0">
