@@ -179,6 +179,7 @@ I don't recommend using arrays to represent objects mostly because it's confusin
 
 <!-- Tested -->
 ```py
+import random
 class Foo:
 	def __init__(self, _Bar): self.Bar = _Bar
 	def __str__(self): return "Foo({})".format(self.Bar)
@@ -202,8 +203,11 @@ Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
 ### Remapping Key
 
  - This method maps an object to another comparable datatype with which to be sorted. In this case, `Foo` is sorted by the sum of its members `x` and `y`.
+
+
 <!-- Tested -->
 ```py
+import random
 class Foo:
 	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
 	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
@@ -239,6 +243,7 @@ Note how the comparator must be converted to a `key`.
 <!-- Tested -->
 
 ```py
+import random
 from functools import cmp_to_key
 class Foo:
 	def __init__(self, _Bar): self.Bar = _Bar
