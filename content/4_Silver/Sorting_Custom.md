@@ -311,16 +311,22 @@ for i in range(8):
 	a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
 print(*a)
 
-def cmp(foo1, foo2):
+def cmp(foo1, foo2): # Increasing Bar, breaking ties with decreasing Baz
 	if foo1.Bar != foo2.Bar: return -1 if foo1.Bar < foo2.Bar else 1
 	if foo1.Baz != foo2.Baz: return -1 if foo1.Baz > foo2.Baz else 1
 	return 0
 print(*sorted(a, key=cmp_to_key(cmp)))
+
+# Python automatically sorts tuples in increasing order with priority to the leftmost element
+# You can sort objects by its mapping to a tuple of its elements
+# The following sorts Foo by increasing Bar values, breaking ties with increasing Baz value
+print(*sorted(a, key=lambda foo: (foo.Bar, foo.Baz)))
 ```
 Output:
 ```
 Foo(1,2) Foo(3,2) Foo(6,6) Foo(9,7) Foo(8,7) Foo(8,9) Foo(6,9) Foo(9,8)
 Foo(1,2) Foo(3,2) Foo(6,9) Foo(6,6) Foo(8,9) Foo(8,7) Foo(9,8) Foo(9,7)
+Foo(1,2) Foo(3,2) Foo(6,6) Foo(6,9) Foo(8,7) Foo(8,9) Foo(9,7) Foo(9,8)
 ```
 
 ## Problems
