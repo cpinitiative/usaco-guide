@@ -57,13 +57,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   const syllabusTemplate = require.resolve(`./src/templates/syllabusTemplate.js`);
   createPage({
-    path: "/",
-    component: syllabusTemplate,
-    context: {
-      division: 0
-    },
-  });
-  createPage({
     path: "/intro",
     component: syllabusTemplate,
     context: {
