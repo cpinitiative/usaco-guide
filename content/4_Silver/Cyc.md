@@ -7,9 +7,11 @@ prerequisites:
      - Silver - Depth First Search
 ---
 
+<module-excerpt>
+
 A *cycle* is a non-empty path of distinct edges that start and end at the same node.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle or just checking whether a cycle exists. 
 

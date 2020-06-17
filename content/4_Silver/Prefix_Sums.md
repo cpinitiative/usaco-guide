@@ -4,9 +4,11 @@ title: "Prefix Sums"
 author: Darren Yao, Eric Wei
 ---
 
+<module-excerpt>
+
 Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to answer $Q$ queries of the following form: compute $\texttt{arr[L]+arr[L+1]+}\cdots\texttt{+arr[R]}$.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Standard
 

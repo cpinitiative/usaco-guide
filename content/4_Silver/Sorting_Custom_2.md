@@ -9,9 +9,11 @@ prerequisites:
      - Silver - Sorting with Custom Comparators
 ---
 
+<module-excerpt>
+
 More information about sorting with custom comparators in C++. Some overlap with the previous article.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Additional Resources
 

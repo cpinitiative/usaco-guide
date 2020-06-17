@@ -8,9 +8,11 @@ prerequisites:
      - (?) Silver - Data Structures
 ---
 
+<module-excerpt>
+
 More advanced applications of data structures introduced in earlier divisions.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 # Monotonic Stack
 

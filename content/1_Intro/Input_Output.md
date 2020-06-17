@@ -4,9 +4,11 @@ title: Input & Output
 author: Darren Yao
 ---
 
+<module-excerpt>
+
 Demonstrates how to read input and print output for USACO.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## C++
 

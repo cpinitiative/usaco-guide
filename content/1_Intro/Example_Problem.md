@@ -14,9 +14,11 @@ prerequisites:
      - Intro - Input & Output
 ---
 
+<module-excerpt>
+
 Solutions for an example USACO problem in multiple languages. 
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 [Technical Specifications for USACO Contests](http://www.usaco.org/index.php?page=instructions)
 

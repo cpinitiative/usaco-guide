@@ -7,9 +7,11 @@ prerequisites:
      - Platinum - 1D Range Queries
 ---
 
+<module-excerpt>
+
 Extending Range Queries to 2D (and beyond).
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)).
 

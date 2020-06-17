@@ -4,9 +4,11 @@ title: Debugging
 author: Benjamin Qi, Aaron Chew
 ---
 
+<module-excerpt>
+
 Detecting issues within your program and figuring out how to avoid them in the first place.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Style Guide
 

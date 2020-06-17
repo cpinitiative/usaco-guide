@@ -4,9 +4,11 @@ title: Proposing Problems for USACO Monthlies
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Anyone can propose problems for monthly contests.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Email your proposal to Professor Dean. In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
 
@@ -23,6 +25,8 @@ http://www.usaco.org/index.php?page=viewproblem2&cpid=1042
 bolded text should be surrounded by [b][/b], italics by [i][/i]
 use [ol][/ol] for numbered list
 ---
+
+<module-excerpt>
 
 Each of Farmer John's $N$ cows ($1\le N\le 2\cdot 10^5$) has a favorite color.
 The cows are conveniently labeled $1\ldots N$ (as always), and each color can be

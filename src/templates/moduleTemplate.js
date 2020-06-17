@@ -15,9 +15,9 @@ const renderPrerequisite = (prerequisite) => {
 };
 
 export default function Template(props) {
-  const { markdownRemark } = props.data; // data.markdownRemark holds your post data
-  const { htmlAst } = markdownRemark;
-  const prereqs = markdownRemark.frontmatter.prerequisites;
+  const { mdx } = props.data; // data.markdownRemark holds your post data
+  const { body } = mdx;
+  const prereqs = mdx.frontmatter.prerequisites;
 
   const division = props.pageContext.division;
   return (
@@ -25,8 +25,8 @@ export default function Template(props) {
       <div className="max-w-4xl mx-auto my-8">
         <div className="px-4">
           <Link className="underline text-blue-600" to={"/" + division + "/"}>&larr; Back to Home</Link>
-          <h1 className="mt-8 text-3xl font-bold">{markdownRemark.frontmatter.title}</h1>
-          <p className={`${prereqs ? "mb-4" : "mb-8"} text-gray-500`}>Author: {markdownRemark.frontmatter.author}</p>
+          <h1 className="mt-8 text-3xl font-bold">{mdx.frontmatter.title}</h1>
+          <p className={`${prereqs ? "mb-4" : "mb-8"} text-gray-500`}>Author: {mdx.frontmatter.author}</p>
 
 
           {prereqs &&
@@ -53,7 +53,7 @@ export default function Template(props) {
           </div>}
 
 
-          <Markdown htmlAst={htmlAst} className="markdown--module" />
+          <Markdown body={body} className="markdown--module" />
         </div>
       </div>
     </Layout>
@@ -61,8 +61,8 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query($id: String!) {
-    markdownRemark(frontmatter: { id: { eq: $id } }) {
-      htmlAst
+    mdx(frontmatter: { id: { eq: $id } }) {
+      body
       frontmatter {
         title
         author

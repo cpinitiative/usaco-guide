@@ -4,9 +4,11 @@ title: Additional Resources
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Helpful Links! Some (such as **CPH** and **Intro to USACO**) will be mentioned again in later modules.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Lists
 

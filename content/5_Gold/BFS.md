@@ -7,9 +7,11 @@ prerequisites:
      - Silver - Depth First Search
 ---
 
+<module-excerpt>
+
 Compute shortest paths where all edge weights are 1.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
 

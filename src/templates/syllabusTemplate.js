@@ -25,7 +25,7 @@ const renderModule = (node, idx, parentIdx = -1) => {
       prerequisites={data.prerequisites}
       author={data.author}
     >
-      <Markdown htmlAst={node.excerptAst} className="markdown--syllabus" />
+      <Markdown body={node.body} className="markdown--syllabus" excerptOnly={true} />
     </SyllabusModule>
   );
 };
@@ -191,7 +191,7 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query {
-    modules: allMarkdownRemark {
+    modules: allMdx {
       edges {
         node {
           id
@@ -202,7 +202,7 @@ export const pageQuery = graphql`
             problems
             prerequisites
           }
-          excerptAst
+          body
         }
       }
     }

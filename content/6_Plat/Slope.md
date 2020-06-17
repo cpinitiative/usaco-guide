@@ -7,9 +7,11 @@ prerequisites:
      - some familiarity with at least one of the two tutorials mentioned in this module
 ---
 
+<module-excerpt>
+
 **Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Tutorials
 

@@ -4,9 +4,11 @@ title: "Rectangle Geometry"
 author: Darren Yao, Michael Cao
 ---
 
+<module-excerpt>
+
 "Geometry" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles. 
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
  - Some only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
  - Also, the coordinates typically only go up to $1000$, so a program that performs $\approx 1000^2$ operations (ex. with a nested loop) should pass.

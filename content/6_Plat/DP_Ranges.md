@@ -7,7 +7,9 @@ prerequisites:
      - Gold - Introduction to Dynamic Programming
 ---
 
-<!-- END DESCRIPTION -->
+<module-excerpt>
+
+</module-excerpt>
 
 ## Problems
 

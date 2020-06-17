@@ -7,11 +7,13 @@ prerequisites:
      - Gold - Topological Sort
 ---
 
- - Eulerian Tours
+<module-excerpt>
+
+- Eulerian Tours
  - SCCs
  - BCCs
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Note: all except the third have not appeared on a recent USACO contest.
 

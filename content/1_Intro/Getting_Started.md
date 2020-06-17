@@ -4,11 +4,13 @@ title: Getting Started
 author: Nathan Wang, Benjamin Qi, Darren Yao
 ---
 
+<module-excerpt>
+
  - Introduction
  - Contest Format
  - Choosing a Language
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Introduction
 

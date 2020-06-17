@@ -7,12 +7,14 @@ prerequisites:
      - Silver - Prefix Sums
 ---
 
+<module-excerpt>
+
 A **Binary Indexed Tree** allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
  - Query the sum of a prefix of the array.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Binary Indexed Tree
 

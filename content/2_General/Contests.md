@@ -4,9 +4,11 @@ title: Contests
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Contests that I participate in, as well as a few tools.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 See [clist.by](https://clist.by/coder/bqi343/) for an extensive list. Most of the contests which I do are a subset of those shown in "Programming Contests.png". A link to my google calendar for contests is available [here.](https://calendar.google.com/calendar?cid=Y2s5ZjdmZDBkNjdmOGFxZ2oxbDVrMHJ1OGtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) See the other page for olympiads such as USACO.
 

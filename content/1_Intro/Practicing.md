@@ -4,9 +4,11 @@ title: How to Practice
 author: Many
 ---
 
+<module-excerpt>
+
 How to practice, when to read editorials (analyses), etc.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Knowing when to "give up" on a problem and start reading the problem's editorial is challenging. Below are the opinions of various individuals. Note that "give up" is in quotes, because one still learns when they "give up" and read an editorial!
 

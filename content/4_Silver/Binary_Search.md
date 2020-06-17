@@ -7,9 +7,11 @@ prerequisites:
      - Silver - Introduction to Sorting  
 ---
 
+<module-excerpt>
+
 You should already be familiar with the concept of **binary searching** for a number in a sorted array. However, binary search can be extended to binary searching on the answer itself. 
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 When we binary search on the answer, we start with a search space of size $N$ which we know the answer lies in. Then, each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
 

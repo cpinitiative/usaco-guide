@@ -4,9 +4,11 @@ title: Data Types
 author: Darren Yao
 ---
 
+<module-excerpt>
+
 There are several main **data types** that are used in contests: 32-bit and 64-bit integers, floating point numbers, booleans, characters, and strings.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Reading
 

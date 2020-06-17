@@ -42,13 +42,7 @@ prerequisites:
 
 ### Module Description
 
-Everything after the frontmatter, and before this line:
-
-```
-<!-- END DESCRIPTION -->
-```
-
-is part of the "module description." It gets rendered on the homepage. Be careful not to use headers
+Everything contained in `module-excerpt` tags is part of the "module description." It gets rendered on the homepage. Be careful not to use headers
 as they will look really weird on the homepage. The module description is also included in the article itself.
 
 If you don't want a description for the module, just put the `END DESCRIPTION` line as the first line
@@ -59,6 +53,8 @@ an HTML element with the class `syllabus-only`. Note that you can't use markdown
 
 Example:
 ```
+<module-excerpt>
+
 <ul class="syllabus-only">
   <li>Contest Format</li>
   <li>Choosing a Language</li>
@@ -66,7 +62,7 @@ Example:
   <li>Contest Strategies</li>
 </ul>
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 ```
 
 This will render as a list in the homepage, but won't appear in the article.
@@ -134,6 +130,8 @@ problems:
  - bronze_square
 ---
 
+<module-excerpt>
+
 <ul class="syllabus-only">
   <li>Contest Format</li>
   <li>Choosing a Language</li>
@@ -141,7 +139,7 @@ problems:
   <li>Contest Strategies</li>
 </ul>
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 <details>
   <summary>Show Solution</summary>

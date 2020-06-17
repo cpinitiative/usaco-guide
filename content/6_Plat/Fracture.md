@@ -9,9 +9,11 @@ prerequisites:
      - some familiarity with "Robotic Cow Herd" analysis
 ---
 
+<module-excerpt>
+
 A simple solution to [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) that generalizes.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## General Outline
 

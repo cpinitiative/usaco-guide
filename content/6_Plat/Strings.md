@@ -7,7 +7,9 @@ prerequisites:
      - Silver - Depth First Search
 ---
 
- - Tries
+<module-excerpt>
+
+- Tries
  - Hashing
  - Z
  - KMP
@@ -15,7 +17,7 @@ prerequisites:
  - Aho-Corasick
  - Suffix Array
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Note: String algorithms do not appear very frequently. Hashing has appeared on gold (rarely).
 

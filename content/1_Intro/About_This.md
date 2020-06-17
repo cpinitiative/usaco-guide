@@ -4,13 +4,15 @@ title: About This Guide
 author: Nathan Wang, Benjamin Qi
 ---
 
+<module-excerpt>
+
 // todo transfer all of this to the homepage
 
  - Goals
  - Module Organization
  - Contact Information
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Goals
 
