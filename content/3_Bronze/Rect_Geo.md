@@ -21,15 +21,13 @@ Rectangle newRect = new Rectangle(x, y, width, height);
 
 The `Rectangle` class supports numerous useful methods. 
 
-```
-firstRect.intersects(secondRect) checks if two rectangles intersect.
+`firstRect.intersects(secondRect)` checks if two rectangles intersect.
 
-firstRect.union(secondRect) returns a rectangle representing the union of two rectangles.
+`firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
 
-firstRect.contains(x, y) checks whether the integer point (x,y) exists in firstRect.
+`firstRect.contains(x, y)` checks whether the integer point (x,y) exists in firstRect.
 
-firstRect.intersect(secondRect) returns a rectangle representing the intersection of two rectangles.
-```
+`firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
 
 This class can often lessen the implementation needed in a lot of bronze problems and codeforces problems.
 
@@ -37,37 +35,60 @@ For example, here is a nice implementation of the problem Blocked Billboard (see
 
 ```java
 import java.awt.Rectangle; //needed to use Rectangle class
+import java.io.*;
+import java.util.*;
 
-public class BlockedBillboard{
+public class blockedBillboard{
     public static void main(String[] args) throws IOException{
         Scanner sc = new Scanner(new File("billboard.in"));
         PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-        Rectangle firstRect = new Rectangle(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt());
-        Rectangle secondRect = new Rectangle(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt());
-        Rectangle truck = new Rectangle(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt());
+        int x1, y1, x2, y2;
+
+        //the top left point is (0,0), so you need to do -y2
+
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
+
+        long firstIntersect = getArea(firstRect.intersection(truck));
+        long secondIntersect = getArea(secondRect.intersection(truck));
+
         pw.println(getArea(firstRect) + getArea(secondRect) 
-                - getArea(firstRect.intersect(truck)) - getArea(secondRect.intersect(truck)));
+                - firstIntersect - secondIntersect);
         pw.close();
     }
 
     public static long getArea(Rectangle r){
-        return r.getHeight() * r.getWidth()
+	if(r.getWidth() <= 0 || r.getHeight() <= 0){
+            return 0;
+        }
+        return (long)r.getHeight() * (long)r.getWidth();
     }
 }
+
 ```
-(someone test code pls)
 
 ## Rectangle Class (C++)
 
 Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
 
 ```cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 struct Rect{
     int x1, y1, x2, y2;
-    int area(Rect r){
-        return (y2 - y1) * (x2 - x1);
-    }
 };
+
+int area(Rect r){
+  return (r.y2 - r.y1) * (r.x2 - r.x1);
+}
 
 int intersect(Rect p, Rect q){
   int xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1));
@@ -87,6 +108,7 @@ int main(){
 
   cout << area(a) + area(b) - intersect(a, t) - intersect(b, t);
 }
+
 ```
 
 ## Problems
