@@ -38,6 +38,10 @@ There are 2 main ways to have a custom comparator in c++.
 
 <!-- Tested -->
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int randint(int low, int high) {return low+rand()%(high-low);}
+
 struct Foo
 {
 	int Bar;
@@ -47,6 +51,7 @@ struct Foo
 const int N = 8;
 int main()
 {
+	srand(69);
 	Foo a[N];
 	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
 	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
@@ -114,6 +119,10 @@ We can also use [lambda expressions](https://www.geeksforgeeks.org/lambda-expres
 <!-- Tested -->
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int randint(int low, int high) {return low+rand()%(high-low);}
+
 struct Foo
 {
 	int Bar;
@@ -122,12 +131,14 @@ struct Foo
 const int N = 8;
 Foo a[N];
 bool cmp1(Foo foo1, Foo foo2) {return foo1.Bar < foo2.Bar;}
-function<void(Foo,Foo)> cmp2 = [](Foo foo1, Foo foo2) {return foo1.Bar < foo2.Bar;}; // lambda expression
-// void(Foo,Foo) means that the function takes in two parameters of type Foo and returns void
-// "function<void(Foo,Foo)>"" can be replaced with "auto"
+function<bool(Foo,Foo)> cmp2 = [](Foo foo1, Foo foo2) {return foo1.Bar < foo2.Bar;}; // lambda expression
+// bool(Foo,Foo) means that the function takes in two parameters of type Foo and returns bool
+// "function<bool(Foo,Foo)>"" can be replaced with "auto"
 
 int main()
 {
+	srand(69);
+
 	printf("--- Method 1 ---\n");
 	for(int i=0;i<N;++i) a[i] = Foo(randint(0, 20));
 	for(int i=0;i<N;++i) printf("(Foo: %2d) ", a[i].Bar); printf("\n");
@@ -221,11 +232,15 @@ Since you cannot overload operators for primitives, you must use custom comparat
 
 <!-- Tested -->
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
 const int N = 8;
 int a[N], b[N] = {4,8,2,3,4,1,2,4};
-int main() {
+int main()
+{
 	printf("--- Comparator 1 ---\n");
-	iota(a, a+N, 0); // a={0,1,2,3,4,5,6,7}
+	iota(a, a+N, 0);
 	sort(a, a+N, greater<int>());
 	//sort a in decreasing order
 	for(int i=0;i<N;++i) printf("a[%d] = %d\n", i, a[i]);
