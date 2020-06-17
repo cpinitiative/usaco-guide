@@ -79,7 +79,7 @@ When merging two sets, you move from the smaller set to the larger set. If the s
 
 Additionally, a set doesn't have to be an `std::set`. Many data structures can be merged, such as `std::map` or even adjacency lists. 
 
-[[info | Challenge]] 
+[[info | Challenge]]
 | Prove that if you instead merge sets that have size equal to the depths of the subtrees, then small to large merging does $O(N)$ insert calls.
 
 ## Further Reading
