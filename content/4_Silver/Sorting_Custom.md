@@ -203,6 +203,8 @@ Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
 ### Remapping Key
 
  - This method maps an object to another comparable datatype with which to be sorted. In this case, `Foo` is sorted by the sum of its members `x` and `y`.
+
+
 <!-- Tested -->
 ```py
 import random
