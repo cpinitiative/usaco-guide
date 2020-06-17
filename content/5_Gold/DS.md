@@ -74,7 +74,7 @@ In other words, by merging the smaller set into the larger one, the runtime comp
 <details>
 <summary> Proof </summary>
 
-When merging two sets, you move from the smaller set to the larger set. If the size of the smaller set is $X$, then the size of the resulting set is at least $2X$. Thus, an element that has been moved $Y$ times will be in a set of size $2Y$, and since the maximum size of a set is $N$ (the root), each element will be moved at most $O(\log N$) times leading to a total complexity of $O(N\log N)$.
+When merging two sets, you move from the smaller set to the larger set. If the size of the smaller set is $X$, then the size of the resulting set is at least $2X$. Thus, an element that has been moved $Y$ times will be in a set of size $2^Y$, and since the maximum size of a set is $N$ (the root), each element will be moved at most $O(\log N$) times leading to a total complexity of $O(N\log N)$.
 </details>
 
 Additionally, a set doesn't have to be an `std::set`. Many data structures can be merged, such as `std::map` or even adjacency lists. 
