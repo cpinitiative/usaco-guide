@@ -1,4 +1,3 @@
-
 ---
 id: data-structures-gold
 title: "Data Structures (Gold)"
