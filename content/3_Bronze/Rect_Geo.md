@@ -12,7 +12,8 @@ author: Darren Yao, Michael Cao
  - Also, the coordinates typically only go up to $1000$, so a program that performs $\approx 1000^2$ operations (ex. with a nested loop) should pass.
 
 ## Rectangle Class (Java)
-A useful class in `Java` for dealing with rectangle geometry problems is the built-in `Rectangle` class. To create a new rectangle, use the following constructor:
+
+A useful class in `Java` for dealing with rectangle geometry problems is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class. To create a new rectangle, use the following constructor:
 
 ```java
 //creates a rectangle with upper-left corner at (x,y) with a specified width and height
@@ -29,9 +30,13 @@ The `Rectangle` class supports numerous useful methods.
 
 `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
 
-This class can often lessen the implementation needed in a lot of bronze problems and codeforces problems.
+This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
 
-For example, here is a nice implementation of the problem Blocked Billboard (see below). See the editorial [here](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html) for more information on the solution.
+For example, here is a nice implementation of the problem [Blocked Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759) ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
+
+<details>
+
+<summary>Java Solution</summary>
 
 ```java
 import java.awt.Rectangle; //needed to use Rectangle class
@@ -62,7 +67,6 @@ public class blockedBillboard{
                 - firstIntersect - secondIntersect);
         pw.close();
     }
-
     public static long getArea(Rectangle r){
 	if(r.getWidth() <= 0 || r.getHeight() <= 0){
             return 0;
@@ -72,10 +76,15 @@ public class blockedBillboard{
 }
 
 ```
+</details>
 
 ## Rectangle Class (C++)
 
 Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
+
+<details>
+
+<summary>C++ Solution</summary>
 
 ```cpp
 #include <iostream>
@@ -110,8 +119,10 @@ int main(){
 }
 
 ```
+</details>
 
 ## Problems
+
  - USACO Bronze
    - [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
      - 1D geometry!!
@@ -122,5 +133,5 @@ int main(){
      - Also rectangles
  - Other
    - [CF 587 (Div. 3) C: White Sheet](https://codeforces.com/contest/1216/problem/C)
-        - See this code (TODO; codeforces is down) for a nice implementation using the Java Rectangle class.
+     - See this code (TODO; codeforces is down) for a nice implementation using the Java Rectangle class.
 

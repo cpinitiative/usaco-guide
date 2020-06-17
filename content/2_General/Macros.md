@@ -74,7 +74,7 @@ Most USACO problems satisfy $N\le 2\cdot 10^5$.
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 ```
 
-See [neal's blog](https://codeforces.com/blog/entry/61587) about why `rand()` is bad. Uuse `rng()` instead.
+See [neal's blog](https://codeforces.com/blog/entry/61587) about why `rand()` is bad. Use `rng()` instead.
 
 ### ckmin
 
