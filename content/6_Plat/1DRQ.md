@@ -13,7 +13,7 @@ General range queries for associative operations, including segment tree.
 
 ## Static Range Queries
 
-Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ in $O(1)$ time each with $O(N\log N)$ time preprocessing, where $\ominus$ denotes any associative operation. In the case when $\ominus$ denotes `min`, preprocessing can be done in $O(1)$ time.
+Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ in $O(1)$ time each with $O(N\log N)$ time preprocessing, where $\ominus$ denotes any associative operation. In the case when $\ominus$ denotes `min`, preprocessing can be done in $O(N)$ time.
 
 ### Tutorial
 
