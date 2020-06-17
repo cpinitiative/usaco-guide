@@ -73,6 +73,7 @@ const ModuleOrdering = {
         "dp-trees"
       ]
     },
+    "data-structures-gold",
     "intro-nt",
     "bit",
   ],
