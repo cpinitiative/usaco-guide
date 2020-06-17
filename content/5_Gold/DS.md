@@ -36,7 +36,7 @@ The stack we used is called a "monotonic stack" because we keep popping off the 
 
 (add more once codeforces comes up)
 
-# Sliding Window (Deque)
+# Sliding Window 
 
 Let's envision a sliding window (or constant size subarray) of size $K$ moving left to right along an array, $a$. For each position of the window, we want to compute some information. 
 
