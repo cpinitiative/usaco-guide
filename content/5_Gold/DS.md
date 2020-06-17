@@ -8,7 +8,7 @@ prerequisites:
      - (?) Silver - Data Structures
 ---
 
-More advanced applications of data structures introduced in earlier divisions using USACO Gold Problems.
+More advanced applications of data structures introduced in earlier divisions.
 
 <!-- END DESCRIPTION -->
 
