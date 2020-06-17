@@ -64,6 +64,7 @@ Other:
 
 ### Problems
 
+ - [Ciel the Commander](https://codeforces.com/problemset/problem/321/C)
  - [USACO Plat - At Large](http://www.usaco.org/index.php?page=viewproblem2&cpid=793)
    - very tricky
  - [DMOJ Bob Equilibrium](https://dmoj.ca/problem/dmopc19c7p6)
@@ -83,5 +84,6 @@ Other:
 ??
 
 ## Small to Large (Offline)
-
-??
+Sample codes: [DSU on Tree code](https://codeforces.com/blog/entry/44351), [explanation of code](https://codeforces.com/blog/entry/67696)
+ - USACO Disrupt again!
+ - [Lomsat gelral](https://codeforces.com/contest/600/problem/E)
