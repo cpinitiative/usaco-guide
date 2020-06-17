@@ -45,7 +45,7 @@ const ModuleOrdering = {
     "binary-search",
     "2P",
     "data-structures",
-    "containers-silver"
+    "containers-silver",
     "greedy",
     "prefix-sums",
     {
