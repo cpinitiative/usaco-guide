@@ -18,8 +18,8 @@ prerequisites:
 
 ## Problems
 
-  [[info | Pro Tip]]
-  | Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! 
+[[info | Pro Tip]]
+| Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! 
 
   * [Subtree](https://atcoder.jp/contests/dp/tasks/dp_v)
   * [Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)

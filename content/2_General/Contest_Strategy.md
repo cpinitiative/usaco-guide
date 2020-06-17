@@ -6,7 +6,7 @@ author: Nathan Chen
 
 The best contest strategy is to go in knowing everything. However, only few people can do this (see [BenQ](https://codeforces.com/profile/benq) or [TMW](https://codeforces.com/profile/tmwilliamlin168)) (I kid). Once the timer starts, there's no more studying you can do, and managing your time wisely is the best thing you can do to maximize your score.
 
-## Scenarios
+## Strategy
 
 Below are some general ideas on how to strategize during a contest.
 Strategy is flexible and all advice should be taken with a grain of salt. Strategy should be personal to *you* specifically.
@@ -26,14 +26,14 @@ It also might be a good idea to make some progress on other problems before codi
 
 ### When there are partials
 If you can get points from partially solving a problem (e.g. in USACO), then it's a good idea to keep those subtasks in mind. There are two main approaches to partially solving problems.
-- Use most of your time to think about the full problem, then code the partials if you haven't found the solution and your time is about to run out. 
+- Use most of your time to think about the full problem, then code the partials if you haven't found the solution and your time will soon run out.
   - If you find the full solution, be certain your solution is correct, lest you waste an hour coding something completely wrong.
   - Judge the difficulty of the partials carefully! It could take anywhere from 30 seconds 30 minutes to code a partial, or maybe a partial wasn't as trivial as you thought!
 - Work up from the partials, coding the easiest and then going to the hardest. The partial subtasks may help you think of the full solution, and will also help you stay on track.
 
 ## Personal Commentaries
 ### Nathan Chen
-At the Platinum level, I often skip P3 if I think it's too hard. Then I spend at least an hour thinking about the first two problems. I continue thinking for the rest of the contest window and I code them if I think I have the solution. I'm also the type to save partials for last, when time is running out and I still have nothing.
+At the Platinum level, I first read everything and then I usually spend the first hour thinking about the easiest two problems (the hardest problem is usually VERY hard). I continue thinking for the rest of the contest window and I code them if I think I have the solution. I'm also the type to save partials for last, when time is running out and I still have nothing.
 
 ### Anther Person
 Somethign something
