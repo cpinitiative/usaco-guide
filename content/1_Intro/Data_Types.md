@@ -2,6 +2,7 @@
 id: data-types
 title: Data Types
 author: Darren Yao
+description: Learn about the basic data types needed for competitive programming.
 ---
 
 <module-excerpt>

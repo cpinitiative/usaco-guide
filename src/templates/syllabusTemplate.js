@@ -5,6 +5,29 @@ import SEO from "../components/seo"
 import { graphql, Link } from "gatsby";
 import { divisionLabels, divisions } from "../../content/ordering";
 import { getModule } from "../utils";
+import SyllabusModule from "../components/SyllabusModule";
+
+const renderModule = (node, idx, parentIdx = -1) => {
+  if (node.hasOwnProperty("items")) {
+    return node.items.map((x, i) => renderModule(x, i, idx));
+  }
+
+  const data = node.frontmatter;
+  if (!data.title) return;
+
+  return (
+    <SyllabusModule
+      title={`${parentIdx !== -1 ? (parentIdx+1)+"." : ""}${idx+1}. ${data.title}`}
+      url={node.slug}
+      key={node.slug}
+      problems={data.problems}
+      prerequisites={data.prerequisites}
+      author={data.author}
+    >
+      {data.description}
+    </SyllabusModule>
+  );
+};
 
 export default function Template(props) {
   const data = props.data;
@@ -160,6 +183,8 @@ export default function Template(props) {
                 })}
               </ol>
             </div>
+
+            {module.map((x, idx) => renderModule(x, idx))}
           </div>
         </div>
       </div>
@@ -178,6 +203,7 @@ export const pageQuery = graphql`
             author
             problems
             prerequisites
+            description
           }
         }
       }

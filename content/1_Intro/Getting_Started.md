@@ -2,6 +2,7 @@
 id: getting-started
 title: Getting Started
 author: Nathan Wang, Benjamin Qi, Darren Yao
+description: Welcome to the guide! Here we'll explain what a programming competition is, how it works, and how to choose a language.
 ---
 
 <module-excerpt>
