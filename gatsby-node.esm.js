@@ -1,4 +1,3 @@
-import { getModule } from "./src/utils";
 import ModuleOrdering, { divisions } from "./content/ordering";
 
 exports.createPages = async ({ actions, graphql, reporter }) => {
