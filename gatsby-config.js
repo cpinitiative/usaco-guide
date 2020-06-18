@@ -18,14 +18,10 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-plugin-mdx`,
       options: {
-        commonmark: true,
-        footnotes: true,
-        pedantic: false,
-        gfm: true,
-        "excerpt_separator": `<!-- END DESCRIPTION -->`,
-        plugins: [
+        extensions: [`.mdx`, `.md`],
+        gatsbyRemarkPlugins: [
           `gatsby-remark-autolink-headers`,
           {
             resolve: "gatsby-remark-custom-blocks",
@@ -52,6 +48,9 @@ module.exports = {
             },
           },
         ],
+        plugins: [
+          `gatsby-remark-autolink-headers`,
+        ]
       },
     },
     {
