@@ -2,13 +2,8 @@
 id: running-cpp
 title: Running C++
 author: Nathan Wang, Benjamin Qi, Anthony Wang
+description: Running C++ both online and locally.
 ---
-
-<module-excerpt>
-
-Running C++ both online and locally.
-
-</module-excerpt>
 
 # Running C++ Online
 
@@ -24,7 +19,7 @@ Running C++ both online and locally.
    - make sure your code is not public
    - sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
-Of course, you can't use file I/O on the latter two websites.
+You can't use file I/O on the latter two websites. You can also share code with [pastebin](https://pastebin.com/) or [hastebin](https://hastebin.com/).
 
 # Running C++ Locally
 
@@ -43,13 +38,13 @@ You will also need to install [Homebrew](https://brew.sh/).
 
 Run
 
-```sh
+```
 brew install gcc
 ```
 
 According to [this](https://stackoverflow.com/questions/30998890/installing-opencv-with-brew-never-finishes) if `brew` doesn't seem to finish for a long time then 
 
-```sh
+```
 brew install gcc --force-bottle
 ```
 
@@ -59,7 +54,7 @@ probably suffices.
 
 You should be able to compile with `g++` or maybe `g++-#`, where # is the version number (currently 9). Running the following command:
 
-```sh
+```
 g++-9 --version
 ```
 
@@ -76,7 +71,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 Make sure you have installed XCode command line tools.
 
-```sh
+```
 xcode-select --install # make sure x-code command line tools are installed
 softwareupdate --list
 softwareupdate -i -a # installs everything
@@ -104,7 +99,7 @@ First, download and run the [MinGW installer](https://osdn.net/projects/mingw/do
 
 GCC is usually preinstalled on most Linux distros. You can check if it is installed with
 
-```sh
+```
 whereis g++
 ```
 
@@ -126,19 +121,19 @@ int main() {
 
 It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First, open up Powershell on Windows or Terminal on Mac. We can compile `name.cpp` into an executable named `name` with the following command:
 
-```sh
+```
 g++ name.cpp -o name
 ```
 
 Then we can execute the program:
 
-```sh
+```
 ./name
 ```
 
 If you type some integer and then press enter, then the program should produce output. We can write both of these commands in a single line:
 
-```sh
+```
 g++ name.cpp -o name && ./name
 ```
 
@@ -146,48 +141,50 @@ g++ name.cpp -o name && ./name
 
 If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
 
-```sh
+```
 ./name < inp.txt > out.txt
 ```
 
 See "Intro - Introductory Problems" for how to do file input and output within the program.
 
+### Compiler Options (aka Flags)
+
+Use [compiler flags](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/) to change the way GCC compiles your code. Usually, we use the following in place of `g++ name.cpp -o name`:
+ 
+`g++ -std=c++17 -O2 name.cpp -o name -Wall -Wextra -Wshadow`
+
+Explanation:
+
+ - `-O2` tells `g++` to compile your code to run more quickly (see [here](https://www.rapidtables.com/code/linux/gcc/gcc-o.html))
+ - `-std=c++17` allows you to use features that were added to C++ in 2017. USACO uses `-std=c++11`.
+ - `-Wall -Wextra -Wshadow` checks your program for common errors. See "General - Debugging" for more information about these.
+ - [Summary of Options](https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html)
+
+You should always compile with these flags. 
+
 ### Adding Shortcuts (Mac and Linux only)
 
 (alternatives for Windows?)
 
-[Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
+Of course, retyping the flags above can get tedious. You should define shortcuts so you don't need to type them every time!
 
-Retyping the commands for compiling and running gets tedious once we start adding many [command line options](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/). See "General - Debugging" for more information about compilation options.
+[Aliases in Terminal](https://jonsuh.com/blog/bash-command-line-shortcuts/)
 
 Open your bash profile with a text editor such as gedit (or sublime text).
 
-```sh
+```
 brew install gedit
 gedit ~/.zshenv
 ```
 
-You can add aliases and functions here, such as the following to compile and run C++. 
+You can add **aliases** and **functions** here, such as the following to compile and run C++. 
 
-```sh
-co() { g++ -std=c++17 -O3 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+```
+co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow; }
 run() { co $1 && ./$1 & fg; }
 ```
 
-Now you can easily compile and run `name.cpp` from the command line with the following:
-
-```sh
-run name
-```
-
-Note that all occurrences of `$1` are replaced with `name`.
-
-# Flags
--O3 tells g++ to compile your code to run as fast as possible.
--std=c++17 allows you to use features that were added to C++ in 2014.
--Wall -Wextra -Wshadow checks your program for common errors.
-
-You should always compile with these flags; define an alias (as explained above) so you don't need to type them every time!
+Now you can easily compile and run `name.cpp` from the command line with `co name && ./name` or `run name`. Note that all occurrences of `$1` in the function are replaced with `name`.
 
 # Tools
 

@@ -16,10 +16,10 @@ Detecting issues within your program and figuring out how to avoid them in the f
 
 ## Compilation
 
-As mentioned in "Running C++," I use the following to compile and run.
+I use the following to compile and run.
 
 ```
-co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
 run() { co $1 && ./$1 & fg; }
 ```
 
