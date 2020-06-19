@@ -42,10 +42,11 @@ int main() {
 	for (int i = c; i < d; ++i) cover[i] = 1;
 	int ans = 0; 
 	for (int i = 0; i < 100; ++i) ans += cover[i];
-	cout << ans << endl;
+	cout << ans;
+	// cout << ans << endl; is OK
 	// cout << ans << "\n"; is OK
-	// cout << ans << " "; is NOT
-	// cout << ans << "\n\n"; is NOT
+	// cout << ans << " "; is NOT OK
+	// cout << ans << "\n\n"; is NOT OK
 }
 ```
 
@@ -70,7 +71,7 @@ int main() {
 	for (int i = c; i < d; ++i) cover[i] = 1;
 	int ans = 0; 
 	for (int i = 0; i < 100; ++i) ans += cover[i];
-	fout << ans << endl;
+	fout << ans;
 }
 ```
 
