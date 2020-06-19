@@ -4,9 +4,11 @@ title: "Bitsets"
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Three examples of how **bitsets** lead to some unintended solutions on recent USACO problems.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Tutorial
 

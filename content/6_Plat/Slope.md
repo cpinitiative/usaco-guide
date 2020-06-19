@@ -7,9 +7,11 @@ prerequisites:
      - some familiarity with at least one of the two tutorials mentioned in this module
 ---
 
+<module-excerpt>
+
 **Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Tutorials
 
@@ -43,9 +45,7 @@ We'll process the shares in order. Suppose that on the current day shares are wo
 
 The implementation is quite simple; maintain a priority queue that allows you to pop the minimum element.
 
-<details>
-
-<summary>My Solution</summary>
+<spoiler title="My Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -66,7 +66,7 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-</details>
+</spoiler>
 
 ## [Potatoes](https://oj.uz/problem/view/LMIO19_bulves)
 
@@ -81,9 +81,7 @@ As before, this DP is concave up for a fixed $i$! Given a piecewise linear funct
 
 Again, these can be done with a priority queue in $O(N\log N)$ time!
 
-<details>
-
-<summary>My Solution</summary>
+<spoiler title="My Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -117,7 +115,7 @@ int main() {
 }
 
 ```
-</details>
+</spoiler>
 
 ## [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
 
@@ -141,9 +139,7 @@ If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ 
 
 Bonus: Solve this problem when $\sum A_i+\sum B_i$ is not so small.
 
-<details>
-
-<summary>My Solution</summary>
+<spoiler title="My Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -182,7 +178,7 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-</details>
+</spoiler>
 
 ## Problems
 

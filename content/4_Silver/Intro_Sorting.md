@@ -4,9 +4,11 @@ title: "Introduction to Sorting"
 author: Siyong Huang, Michael Cao, Nathan Chen
 ---
 
+<module-excerpt>
+
 Introduces sorting, binary search, coordinate compression.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 **Sorting** is exactly what it sounds like: arranging items in some particular order. 
 

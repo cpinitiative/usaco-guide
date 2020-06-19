@@ -5,11 +5,13 @@ author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao
 order: 6
 ---
 
+<module-excerpt>
+
 A **pair** is a structure that holds two values, not necessarily of the same type.
 
 (tuples?)
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Of course, we can  hold more than two values with something like ```pair<int,pair<int,int>>```.
 

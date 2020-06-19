@@ -4,9 +4,11 @@ title: "Olympiads"
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 > Hello, Which online judge should I practice more to do well in **IOI** ?
 > the closest OJ for IOI style?

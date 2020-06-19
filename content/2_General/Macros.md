@@ -4,9 +4,11 @@ title: C++ Macros
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Shortening code and making it (un?)readable.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Introduction
 

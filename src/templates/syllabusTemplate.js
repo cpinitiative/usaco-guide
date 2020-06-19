@@ -2,11 +2,10 @@ import React from "react"
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import SyllabusModule from "../components/SyllabusModule";
 import { graphql, Link } from "gatsby";
-import Markdown from "../components/Markdown";
-import ModuleOrdering, { divisionLabels, divisions } from "../../content/ordering";
+import { divisionLabels, divisions } from "../../content/ordering";
 import { getModule } from "../utils";
+import SyllabusModule from "../components/SyllabusModule";
 
 const renderModule = (node, idx, parentIdx = -1) => {
   if (node.hasOwnProperty("items")) {
@@ -25,7 +24,7 @@ const renderModule = (node, idx, parentIdx = -1) => {
       prerequisites={data.prerequisites}
       author={data.author}
     >
-      <Markdown htmlAst={node.excerptAst} className="markdown--syllabus" />
+      {data.description}
     </SyllabusModule>
   );
 };
@@ -79,111 +78,114 @@ export default function Template(props) {
     <Layout>
       <SEO title="Home" />
 
-      {/* Begin Hero Section */}
-      <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-48`}>
-        <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
-          <div className="relative h-full max-w-screen-xl mx-auto">
-            <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
-                 width={404}
-                 height={784} fill="none" viewBox="0 0 404 784">
-              <defs>
-                <pattern id="f210dbf6-a58d-4871-961e-36d5016a0f49" x={0} y={0} width={20} height={20}
-                         patternUnits="userSpaceOnUse">
-                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
-                </pattern>
-              </defs>
-              <rect width={404} height={784} fill="url(#f210dbf6-a58d-4871-961e-36d5016a0f49)" />
-            </svg>
-            <svg
-              className="absolute left-full transform -translate-y-3/4 -translate-x-1/4 md:-translate-y-1/2 lg:-translate-x-1/2"
-              width={404} height={784} fill="none" viewBox="0 0 404 784">
-              <defs>
-                <pattern id="5d0dd344-b041-4d26-bec4-8d33ea57ec9b" x={0} y={0} width={20} height={20}
-                         patternUnits="userSpaceOnUse">
-                  <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
-                </pattern>
-              </defs>
-              <rect width={404} height={784} fill="url(#5d0dd344-b041-4d26-bec4-8d33ea57ec9b)" />
-            </svg>
+      <div className="min-h-screen bg-gray-50">
+
+        {/* Begin Hero Section */}
+        <div className={`relative bg-${color}-600 overflow-hidden transition duration-300 pb-48`}>
+          <div className="hidden sm:block sm:absolute sm:inset-y-0 sm:h-full sm:w-full">
+            <div className="relative h-full max-w-screen-xl mx-auto">
+              <svg className="absolute right-full transform translate-y-1/4 translate-x-1/4 lg:translate-x-1/2"
+                   width={404}
+                   height={784} fill="none" viewBox="0 0 404 784">
+                <defs>
+                  <pattern id="f210dbf6-a58d-4871-961e-36d5016a0f49" x={0} y={0} width={20} height={20}
+                           patternUnits="userSpaceOnUse">
+                    <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
+                  </pattern>
+                </defs>
+                <rect width={404} height={784} fill="url(#f210dbf6-a58d-4871-961e-36d5016a0f49)" />
+              </svg>
+              <svg
+                className="absolute left-full transform -translate-y-3/4 -translate-x-1/4 md:-translate-y-1/2 lg:-translate-x-1/2"
+                width={404} height={784} fill="none" viewBox="0 0 404 784">
+                <defs>
+                  <pattern id="5d0dd344-b041-4d26-bec4-8d33ea57ec9b" x={0} y={0} width={20} height={20}
+                           patternUnits="userSpaceOnUse">
+                    <rect x={0} y={0} width={4} height={4} className={`text-${color}-500 transition duration-300`} fill="currentColor" />
+                  </pattern>
+                </defs>
+                <rect width={404} height={784} fill="url(#5d0dd344-b041-4d26-bec4-8d33ea57ec9b)" />
+              </svg>
+            </div>
           </div>
-        </div>
-        <div className="relative pt-6 pb-12 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
-          <div className="mt-10 mx-auto max-w-screen-xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-28">
-            <div className="text-center">
-              <h2
-                className="text-4xl tracking-tight leading-10 font-extrabold text-white sm:text-5xl sm:leading-none md:text-6xl">
-                USACO Guide
-              </h2>
-              <p className={`mt-3 max-w-md mx-auto text-base text-${color}-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl`}>
-                A collection of curated, high-quality resources to take you from Bronze to Platinum.
-              </p>
-              <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-                <div className="rounded-md shadow">
-                  <Link to="/"
-                     className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-300 ease-in-out md:py-4 md:text-lg md:px-10`}>
-                    About This Guide
-                  </Link>
+          <div className="relative pt-6 pb-12 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
+            <div className="mt-10 mx-auto max-w-screen-xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-28">
+              <div className="text-center">
+                <h2
+                  className="text-4xl tracking-tight leading-10 font-extrabold text-white sm:text-5xl sm:leading-none md:text-6xl">
+                  USACO Guide
+                </h2>
+                <p className={`mt-3 max-w-md mx-auto text-base text-${color}-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl`}>
+                  A collection of curated, high-quality resources to take you from Bronze to Platinum.
+                </p>
+                <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                  <div className="rounded-md shadow">
+                    <Link to="/"
+                          className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-500 hover:bg-${color}-50 hover:text-${color}-600 focus:outline-none focus:shadow-outline-${color} transition duration-300 ease-in-out md:py-4 md:text-lg md:px-10`}>
+                      About This Guide
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* End Hero Section */}
+        {/* End Hero Section */}
 
-      <div className="bg-gray-50 pb-8" id="content">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-          <div className="mb-8 bg-white shadow-md rounded-lg relative" style={{ marginTop: "-12rem" }}>
-            <div className="sm:hidden">
-              <select aria-label="Selected tab"
-                      className="form-select block w-full"
-                      onChange={e => handleDivisionChange(e.target.value)}
-                      value={selectedDivision}
-              >
-                {divisions.map(division => (
-                  <option key={division} value={division}>{divisionLabels[division]}</option>
-                ))}
-              </select>
-            </div>
-            <div className="hidden sm:block border-b border-gray-200">
-              <nav className="flex -mb-px">
-                {divisions.map(division => (
-                  <a key={division}
-                     href={`/${division}`}
-                     onClick={e => {e.preventDefault(); handleDivisionChange(division)}}
-                     className={selectedDivision === division ? selectedTabClasses : unselectedTabClasses}>
-                    {divisionLabels[division]}
-                  </a>
-                ))}
-              </nav>
-            </div>
+        <div className="pb-8" id="content">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+            <div className="mb-8 bg-white shadow-md rounded-lg relative" style={{ marginTop: "-12rem" }}>
+              <div className="sm:hidden">
+                <select aria-label="Selected tab"
+                        className="form-select block w-full"
+                        onChange={e => handleDivisionChange(e.target.value)}
+                        value={selectedDivision}
+                >
+                  {divisions.map(division => (
+                    <option key={division} value={division}>{divisionLabels[division]}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="hidden sm:block border-b border-gray-200">
+                <nav className="flex -mb-px">
+                  {divisions.map(division => (
+                    <a key={division}
+                       href={`/${division}`}
+                       onClick={e => {e.preventDefault(); handleDivisionChange(division)}}
+                       className={selectedDivision === division ? selectedTabClasses : unselectedTabClasses}>
+                      {divisionLabels[division]}
+                    </a>
+                  ))}
+                </nav>
+              </div>
 
-            <ol className="list-inside py-8 px-8 text-lg space-y-1">
-              {module.map((m, idx) => {
-                if (m.hasOwnProperty("items")) {
+              <ol className="list-inside py-8 px-8 text-lg space-y-1">
+                {module.map((m, idx) => {
+                  if (m.hasOwnProperty("items")) {
+                    return (
+                      <li key={m.name}>
+                        <span className="inline-block w-4 text-right">{idx+1}. </span><span className="ml-2">{m.name}</span>
+                        <ol className="list-inside px-6 text-lg space-y-1 mb-2">
+                          {m.items.map((m, idx2) => (
+                            <li key={m.slug}>
+                              <span className="inline-block w-8 text-right">{idx+1}.{idx2+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
+                            </li>
+                          ))}
+                        </ol>
+                      </li>
+                    )
+                  }
                   return (
-                    <li key={m.name}>
-                      <span className="inline-block w-4 text-right">{idx+1}. </span><span className="ml-2">{m.name}</span>
-                      <ol className="list-inside px-6 text-lg space-y-1 mb-2">
-                        {m.items.map((m, idx2) => (
-                          <li key={m.slug}>
-                            <span className="inline-block w-8 text-right">{idx+1}.{idx2+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
-                          </li>
-                        ))}
-                      </ol>
+                    <li key={m.frontmatter.id}>
+                      <span className="inline-block w-4 text-right">{idx+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
                     </li>
-                  )
-                }
-                return (
-                  <li key={m.frontmatter.id}>
-                    <span className="inline-block w-4 text-right">{idx+1}. </span><Link className="ml-2 text-blue-600 underline" to={m.slug}>{m.frontmatter.title}</Link>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
+                  );
+                })}
+              </ol>
+            </div>
 
-          {module.map((x, idx) => renderModule(x, idx))}
+            {module.map((x, idx) => renderModule(x, idx))}
+          </div>
         </div>
       </div>
     </Layout>
@@ -191,7 +193,7 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query {
-    modules: allMarkdownRemark {
+    modules: allMdx {
       edges {
         node {
           id
@@ -201,8 +203,8 @@ export const pageQuery = graphql`
             author
             problems
             prerequisites
+            description
           }
-          excerptAst
         }
       }
     }

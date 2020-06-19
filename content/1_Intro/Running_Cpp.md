@@ -4,9 +4,11 @@ title: Running C++
 author: Nathan Wang, Benjamin Qi, Anthony Wang
 ---
 
+<module-excerpt>
+
 Running C++ both online and locally.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 # Running C++ Online
 

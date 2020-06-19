@@ -4,15 +4,17 @@ title: Input & Output
 author: Darren Yao
 ---
 
+<module-excerpt>
+
 Demonstrates how to read input and print output for USACO.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## C++
 
 In CodeForces and CSES, input and output are **standard**, meaning that using the library [<iostream\>](http://www.cplusplus.com/reference/iostream/) suffices. 
 
-However, in USACO, input is read from a file called `problemname.in`, and printing output to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files. You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word *template* in the word below with the input/output file name, which should be given in the problem.
+However, in USACO, input is read from a file called `problemname.in`, and printing output to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files. You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem. For example, for [this problem](http://www.usaco.org/index.php?page=viewproblem2&cpid=1035), you would replace `problemname` with `socdist1` to get `socdist1.in` and `socdist1.out`.
 
 In order to test a program, create a file called `problemname.in`, and then run the program. The output will be printed to `problemname.out`.
 
@@ -26,12 +28,14 @@ If `<cstdio>` is used:
 using namespace std;
 
 int main() {
-    freopen("template.in", "r", stdin);
-    freopen("template.out", "w", stdout);
+    freopen("problemname.in", "r", stdin);
+    freopen("problemname.out", "w", stdout);
+    
+    // rest of your code ...
 }
 ```
 
-If `<fstream>` is used (note that if you use `<fstream>`, you must replace `cin` and `cout` with `fin` and `fout`): 
+If `<fstream>` is used (Note that you cannot use C-style I/O (scanf, prinf) with this method): 
 
 ```cpp
 #include <fstream>
@@ -39,8 +43,10 @@ If `<fstream>` is used (note that if you use `<fstream>`, you must replace `cin`
 using namespace std;
 
 int main() {
-    ifstream fin("template.in");
-    ofstream fout("template.out");
+    ifstream cin("problemname.in");
+    ofstream cout("problemname.out");
+    
+    // rest of your code ...
 }
 ```
 

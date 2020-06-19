@@ -4,9 +4,11 @@ title: "Geometry"
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 Geometry primitives and convex hull.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Primitives
 

@@ -7,9 +7,11 @@ prerequisites:
      - Silver - Depth First Search
 ---
 
+<module-excerpt>
+
 Lowest Common Ancestor and other tree topics.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Tree Diameter
 

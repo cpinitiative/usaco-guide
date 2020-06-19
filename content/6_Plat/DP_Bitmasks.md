@@ -9,7 +9,9 @@ prerequisites:
      - Gold - Introduction to Dynamic Programming
 ---
 
-<!-- END DESCRIPTION -->
+<module-excerpt>
+
+</module-excerpt>
 
 Note: Has not appeared on recent USACO.
 

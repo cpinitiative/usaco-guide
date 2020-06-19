@@ -7,9 +7,11 @@ prerequisites:
      - Gold - Binary Indexed Trees
 ---
 
+<module-excerpt>
+
 General range queries for associative operations, including segment tree.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Static Range Queries
 

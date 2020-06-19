@@ -7,11 +7,13 @@ prerequisites:
      - Gold - Breadth First Search
 ---
 
- - Shortest Path Without Negative Edge Weights
+<module-excerpt>
+
+- Shortest Path Without Negative Edge Weights
  - Shortest Path With Negative Edge Weights
  - All Pairs Shortest Path
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Non-Negative Edge Weights
 

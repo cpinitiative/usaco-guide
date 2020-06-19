@@ -4,7 +4,9 @@ title: "Bronze Overview"
 author: Brian Dean
 ---
 
-<!-- END DESCRIPTION -->
+<module-excerpt>
+
+</module-excerpt>
 
 Todo:
 - Brian's advice for new bronze competitors

@@ -4,9 +4,11 @@ title: Contests
 author: Benjamin Qi
 ---
 
-Contests that I participate in as well as a few tools.
+<module-excerpt>
 
-<!-- END DESCRIPTION -->
+Contests that I participate in, as well as a few tools.
+
+</module-excerpt>
 
 See [clist.by](https://clist.by/coder/bqi343/) for an extensive list of contests.
 

@@ -4,11 +4,13 @@ title: "Introductory Number Theory"
 author: Darren Yao
 ---
 
- - Prime Factorization
+<module-excerpt>
+
+- Prime Factorization
  - GCD & LCM
  - Modular Arithmetic
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Additional Resources
 

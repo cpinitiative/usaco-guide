@@ -7,12 +7,14 @@ prerequisites:
      - Bronze - Introduction to Graphs
 ---
 
- - Depth First Search (DFS)
+<module-excerpt>
+
+- Depth First Search (DFS)
  - Flood Fill
  - Graph Two-Coloring
 
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Depth First Search (DFS)
 

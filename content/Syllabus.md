@@ -4,11 +4,13 @@ title: Syllabus
 author: Benjamin Qi
 ---
 
+<module-excerpt>
+
 (outdated)
 
 Below, we've compiled some of the main topics for each division.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 This USACO guide will try to cover all of these topics. Note that USACO contest problems are not limited to just these topics, though _most_ of them should fall into one of the catgories listed below.
 

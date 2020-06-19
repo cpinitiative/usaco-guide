@@ -5,11 +5,13 @@ author: Nathan Wang, Darren Yao, Benjamin Qi
 order: 5
 ---
 
+<module-excerpt>
+
 Problems and additional resources regarding built-in data structures.
 
 (clean this up)
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## Problems
 

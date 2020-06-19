@@ -7,9 +7,11 @@ prerequisites:
      - Bronze - Data Structures
 ---
 
+<module-excerpt>
+
 More practice with data structures introduced in bronze.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 (set iterators?)
 

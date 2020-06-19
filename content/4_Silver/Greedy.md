@@ -7,9 +7,11 @@ prerequisites:
      - Silver - Sorting with Custom Comparators
 ---
 
+<module-excerpt>
+
 **Greedy** algorithms select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 Greedy does not refer to a single algorithm, but rather a way of thinking that is applied to problems. There's no one way to do greedy algorithms. Hence, we use a selection of well-known examples to help you understand the greedy paradigm. 
 

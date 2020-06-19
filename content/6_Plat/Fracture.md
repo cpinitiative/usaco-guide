@@ -9,9 +9,11 @@ prerequisites:
      - some familiarity with "Robotic Cow Herd" analysis
 ---
 
+<module-excerpt>
+
 A simple solution to [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) that generalizes.
 
-<!-- END DESCRIPTION -->
+</module-excerpt>
 
 ## General Outline
 
@@ -67,9 +69,7 @@ for each $i\in [1,N-1]$. Every spanning tree other than the root is contained wi
 
 Overall, the runtime is $O(NMK\alpha(N))$ for storing the information about each spanning tree and $O(NK\log (NK))$ for maintaing the priority queue of objects so that we can extract the minimum. Note that with the second approach mentioned in the first section the running time would instead be $O(NMK\alpha(N)\log ans)$, which may be too slow.
 
-<details>
-
-<summary>My Solution</summary>
+<spoiler title="My Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -126,7 +126,7 @@ int main() {
 }
 ```
 
-</details>
+</spoiler>
 
 
 ## [USACO Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674)
@@ -143,9 +143,7 @@ Importantly, we should then sort the locations by their respective second-minimu
 
 Binary search on the cost $c$ of the $K$-th robot. If we can compute the costs of all robots with cost at most $c$ or say that there are more than $K$ in $O(K)$ time, then we can solve this problem in $O(N\log N+K\log \max(c))$ time (similar to "Approach 2" above). This is the approach that the first analysis solution takes, although it includes an extra $\log N$ factor due to `upper_bound`. I have removed this in my solution below.
 
-<details>
-
-<summary>My Solution 1</summary>
+<spoiler title="My Solution 1">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -204,7 +202,7 @@ int main() {
 }
 ```
 
-</details>
+</spoiler>
 
 ## Approach 2
 
@@ -240,9 +238,7 @@ None of these options can result in a robot of lower cost. In general, suppose t
 
 Since there exists exactly one way to get from the cheapest robot to every possible robot, we can just use a priority queue.
 
-<details>
-
-<summary>My Solution 2</summary>
+<spoiler title="My Solution 2">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -290,7 +286,7 @@ int main() {
 }
 ```
 
-</details>
+</spoiler>
 
 ## Other Problems
 
