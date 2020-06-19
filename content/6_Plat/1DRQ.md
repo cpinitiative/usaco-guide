@@ -21,6 +21,7 @@ Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the 
    - Use for $O(1)$ LCA
    - CPH 9.1
    - [cp-algorithms RMQ](https://cp-algorithms.com/sequences/rmq.html)
+   - [$O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
 
 ### Divide & Conquer
 

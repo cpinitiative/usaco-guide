@@ -195,8 +195,6 @@ Note that all occurrences of `$1` are replaced with `name`.
    
 ## Text Editors
 
-
-
  - [Sublime Text 3](https://www.sublimetext.com/)
    - a fast, lightweight text editor for Windows, Mac, and Linux
    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
@@ -205,8 +203,8 @@ Note that all occurrences of `$1` are replaced with `name`.
    - [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
      - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
  - [Atom](https://atom.io/)
-   - another text editor for Windows, Mac, and Linux, from the makers of Github
+   - another text editor for Windows, Mac, and Linux from the makers of Github
  - [Vim](https://www.vim.org/) 
-   - the classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
-   - probably easiest way to print syntax-highlighted code on Mac, see [here](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting)
+   - classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
+   - probably easiest way to print syntax-highlighted code on Mac, see the response to [this](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting) post
  - Others?
