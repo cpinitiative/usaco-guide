@@ -12,13 +12,8 @@ prerequisites:
      - Intro - Data Types
  - 
      - Intro - Input & Output
+description: Solutions for an "USACO Bronze - Fence Painting" in multiple languages. 
 ---
-
-<module-excerpt>
-
-Solutions for an example USACO problem in multiple languages. 
-
-</module-excerpt>
 
 [Technical Specifications for USACO Contests](http://www.usaco.org/index.php?page=instructions)
 
@@ -28,7 +23,7 @@ USACO will automatically add a newline to the end of your file if it does not en
 
 ### C++
 
-You can use `ios_base::sync_with_stdio(0); cin.tie(0);` to speed up input and output. See [here](https://codeforces.com/blog/entry/5217) and [StackOverflow](https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull) for more information. Apparently if this is included then it is supposedly prohibited to use `freopen` to redirect `cin` and `cout`, but it works properly on USACO (and I believe that it does in fact result in a significant speedup on large input files). 
+[Here](https://www.geeksforgeeks.org/bitsstdc-h-c/) is some info about `<bits/stdc++.h\>` if you are not familiar with it.
 
 #### Method 1
 
@@ -54,6 +49,10 @@ int main() {
 }
 ```
 
+Also, including `ios_base::sync_with_stdio(0); cin.tie(0);` in the main function can speed up input & output significantly on some tasks. See [here](https://codeforces.com/blog/entry/5217) and [StackOverflow](https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull) for more information. 
+
+ - Actually, the former link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
+
 #### Method 2
 
 Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
@@ -76,9 +75,6 @@ int main() {
 ```
 
 ### Java
-
-
-Class name can be whatever you want. (?)
 
 ```java
 import java.io.*;
@@ -104,7 +100,9 @@ public class paintSol { // must be declared in paintSol.java
 }
 ```
 
-Alternatively, an InputReader class that functions very similarly to Scanner but has the faster runtime of BufferedReader.
+Alternatively, we can use the InputReader given in the previous module.
+
+<spoiler title="InputReader">
 
 ```java
 import java.util.*;
@@ -117,7 +115,7 @@ public class template {
         StringTokenizer tokenizer;
 
         public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("template.in"));
+            reader = new BufferedReader(new FileReader("paint.in"));
             tokenizer = null;
         }
 
@@ -148,7 +146,7 @@ public class template {
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
 		InputReader r = new InputReader();
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("template.out")));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("paint.out")));
 
 		int[] cover = new int[100];
 		for (int i = a; i < b; i++) cover[i] = 1;
@@ -162,9 +160,11 @@ public class template {
 }
 ```
 
+</spoiler>
+
 ### Python 3
 
-See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files).
+See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
 
 ```py
 fin = open("paint.in","r")

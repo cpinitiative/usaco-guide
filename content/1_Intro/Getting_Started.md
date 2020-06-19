@@ -5,14 +5,6 @@ author: Nathan Wang, Benjamin Qi, Darren Yao
 description: Welcome to the guide! Here we'll explain what a programming competition is, how it works, and how to choose a language.
 ---
 
-<module-excerpt>
-
- - Introduction
- - Contest Format
- - Choosing a Language
-
-</module-excerpt>
-
 ## Introduction
 
 A **programming competition** generally lasts for several hours and consists of a set of problems. These problems are not open problems; they have already been solved by the problem writer(s) and tester(s) and (hopefully) are designed to be solved in the short timeframe of a contest. In general, each problem in competitive programming is solved by a two-step process: 
@@ -28,7 +20,7 @@ For those of you with experience in software development, note that competitive 
 
  - [William Lin - What is Competitive Programming?](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
  - [Kamil Debowski - Interview with a Competitive Programmer](https://www.youtube.com/watch?v=F4rykKLcduI)
-   - [Example Problem](https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone)
+   - [Task](https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone) that was mentioned in video.
 
 ## Contest Format
 
@@ -36,16 +28,14 @@ The [USA Computing Olympiad](http://www.usaco.org/index.php?page=contests) is a 
 
 ## Choosing a Language
 
-If you're in Bronze, **don't worry about the language!** If you already know a language, just use it.
+The most popular languages that USACO supports are C++11, Java, and Python 3. In general, we recommend the following:
 
-In general, we recommend the following:
+ - If you already know one of these languages, just use it. 
+   - If you know multiple languages, we recommend you pick C++ over Java, and Java over Python.
+ - For Bronze, any language will do.
+ - For Silver, Gold, and Platinum, Python is not recommended.
 
-- For Bronze contestants, any of C++/Java/Python will do.
-  - If you know multiple languages, we recommend you pick C++ over Java, and Java over Python.
-- For Silver, Gold, and Platinum, we recommend C++/Java.
-  - If you know multiple languages, we recommend you pick C++ over Java.
-
-A majority of high level contestants use C++ and Java. Between those, C++ is more popular. Keep in mind that it's easy to switch languages down the road! Don't get caught up on which language to choose. Just pick the one you feel most comfortable with!
+Keep in mind that it's easy to switch languages down the road. Don't get caught up on which language to choose. Just pick the one you feel most comfortable with!
 
 ### Language References
 

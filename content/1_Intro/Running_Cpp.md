@@ -30,11 +30,16 @@ Of course, you can't use file I/O on the latter two websites.
 
 ## On Mac
 
-[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s g++.
+[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s g++ since that's what [USACO](http://www.usaco.org/index.php?page=instructions) uses to compile your code.
 
 ### Installation
 
-First, Open **Terminal**. Familiarize yourself with some basic commands given [here](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). You will also need to install [Homebrew](https://brew.sh/).
+First, open **Terminal** and familiarize yourself with some basic commands. 
+
+ - [Intro to OS X Command Line](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). 
+ - [Mac Terminal Cheat Sheet](https://www.makeuseof.com/tag/mac-terminal-commands-cheat-sheet/)
+
+You will also need to install [Homebrew](https://brew.sh/).
 
 Run
 
@@ -89,11 +94,11 @@ However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and
 
 First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
 
-(Add MinGW to PATH: https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
+[Adding MinGW to PATH](https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
 
 ### Installing WSL
 
-https://code.visualstudio.com/docs/cpp/config-wsl (difficult for beginners)
+[VSCode Docs](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
 
 ## On Linux
 
@@ -105,9 +110,7 @@ whereis g++
 
 If it is not preinstalled, you can probably install it using your distro's package manager.
 
-## Using the command line
-
-(add tutorial or video?)
+## Running With the Command Line
 
 Consider a simple program such as the following, which we'll save in `name.cpp`.
 
@@ -196,6 +199,8 @@ Note that all occurrences of `$1` are replaced with `name`.
    - requires a license, but [free for students](https://www.jetbrains.com/community/education/#students)
    
 ## Text Editors
+
+Run with the command line.
 
  - [Sublime Text 3](https://www.sublimetext.com/)
    - a fast, lightweight text editor for Windows, Mac, and Linux
