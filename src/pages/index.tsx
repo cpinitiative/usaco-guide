@@ -111,8 +111,8 @@ export default function IndexPage(props: PageProps) {
                   </svg>
                 </div>
                 <div className="ml-3 flex-1 md:flex md:justify-between">
-                  <p className="text-sm leading-5 text-yellow-700">
-                    This guide is not a syllabus. Contest topics do not necessarily follow this guide.
+                  <p className="text-sm leading-5 text-yellow-700 text-left">
+                    This guide is not a syllabus. Topics on this guide reflect <i>past</i> problems, not future problems.
                   </p>
                   <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
                     <a href="#"
@@ -239,7 +239,7 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      <b>No. This guide is NOT a syllabus.</b> USACO does not have an official syllabus. This guide does not list all topics that may appear in each division and does not guarantee that certain topics belong to certain divisions.
+                      <b>No. This guide is NOT a syllabus.</b> USACO does not have an official syllabus. This guide merely lists topics that have <i>historically</i> appeared in USACO contests; it makes no guarantees about the topics in future USACO contests.
                     </p>
                   </dd>
                 </div>
