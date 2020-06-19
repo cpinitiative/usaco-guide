@@ -2,31 +2,28 @@
 id: prereqs
 title: Prerequisites
 author: Nathan Wang, Benjamin Qi
+description: Here's what you should know before continuing onwards.
 ---
-
-<module-excerpt>
-
-Here's what you should learn before reading these resources.
-
-</module-excerpt>
  
-These resources do **not** teach you how to code. We recommend you learn roughly the first half of AP Computer Science A before continuing. If you do not meet these prerequisites, you can go to the resources below to get started.
-
-Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/Resources/Competition%20Math.md) (ex. AIME qualification) is helpful but not required.
-
 ## Expected Knowledge
+
+This guide assumes that you know the basics of how to code, including the following topics:
 
 - Variables
   - Data types
 - Reading Input
 - Writing Output
 - Loops
-- If/else
+- If / Else
 - Logical operators
 - Functions
   - Basic Recursion (a function calling itself)
 - Arrays
   - Multidimensional Arrays
+
+In particular, contestants using Java should be familiar with roughly the first half of AP Computer Science A. If you do not meet these prerequisites, see the links below to get started.
+
+Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/Resources/Competition%20Math.md) (ex. AIME qualification) is helpful but not required.
 
 ## Resources for Learning How to Code
 
@@ -37,7 +34,7 @@ Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/
 [[info | Pro Tip]]
 | You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
 
-### Resources for Getting Started
+## Resources for Getting Started
 
 Note: We don't agree with all views expressed in the links below. Feel free to let us know what works (or doesn't) for you.
 
