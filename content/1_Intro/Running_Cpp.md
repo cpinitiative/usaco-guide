@@ -167,7 +167,7 @@ gedit ~/.zshenv
 You can add aliases and functions here, such as the following to compile and run C++. 
 
 ```sh
-co() { g++ -std=c++11 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+co() { g++ -std=c++14 -O3 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
 run() { co $1 && ./$1 & fg; }
 ```
 
@@ -178,6 +178,11 @@ run name
 ```
 
 Note that all occurrences of `$1` are replaced with `name`.
+
+# Flags
+-O3 tells g++ to compile your code to run as fast as possible.
+-std=c++14 allows you to use features that were added to C++ in 2014.
+-Wall -Wextra -Wshadow checks your program for common errors.
 
 # Tools
 
