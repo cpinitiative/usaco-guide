@@ -15,13 +15,31 @@ description: Running C++ both online and locally.
    - pretty nice (unless you get "Estimated Queue Time: ...")
    - "saved locally" will not save your code if you close the tab, press Command-S to save.
  - [Ideone](http://ideone.com/)
-   - okay ... with an ad blocker
+   - okay .. . has the bare minimum you need for running C++
    - make sure your code is not public
    - sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
 You can't use file I/O on the latter two websites. You can also share code with [pastebin](https://pastebin.com/) or [hastebin](https://hastebin.com/).
 
 # Running C++ Locally
+
+## On Windows
+
+Like Windows in general, you have a lot of options for running C++.
+
+The easiest option is to use an IDE such as [Codeblocks](http://www.codeblocks.org/) or [Visual Studio](https://visualstudio.microsoft.com/vs/) because they often have C++ support already built-in. See the IDEs section below for more information.
+
+However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use, although it may be more difficult to properly set up.
+
+### Installing MinGW
+
+First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+
+[Adding MinGW to PATH](https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
+
+### Installing WSL
+
+[VSCode Docs](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
 
 ## On Mac
 
@@ -77,24 +95,6 @@ softwareupdate --list
 softwareupdate -i -a # installs everything
 ```
 
-## On Windows
-
-Like Windows in general, you have a lot of options for running C++.
-
-The easiest option is to use an IDE such as [Codeblocks](http://www.codeblocks.org/) or [Visual Studio](https://visualstudio.microsoft.com/vs/) because they often have C++ support already built-in. See the IDEs section below for more information.
-
-However, you can also use [MinGW](http://mingw.org/) if you prefer compiling and running C++ using the command line. Another good option is Windows Subsystem for Linux (WSL) which is what I personally use, although it may be more difficult to properly set up.
-
-### Installing MinGW
-
-First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
-
-[Adding MinGW to PATH](https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
-
-### Installing WSL
-
-[VSCode Docs](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
-
 ## On Linux
 
 GCC is usually preinstalled on most Linux distros. You can check if it is installed with
@@ -119,7 +119,7 @@ int main() {
 }
 ```
 
-It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First, open up Powershell on Windows or Terminal on Mac. We can compile `name.cpp` into an executable named `name` with the following command:
+It's not hard to [compile & run a C++ program](https://www.tutorialspoint.com/How-to-compile-and-run-the-Cplusplus-program). First, open up Powershell on Windows, Terminal on Mac, or your distro's terminal in Linux. We can compile `name.cpp` into an executable named `name` with the following command:
 
 ```
 g++ name.cpp -o name
@@ -194,7 +194,7 @@ Now you can easily compile and run `name.cpp` from the command line with `co nam
  - [Visual Studio Code](https://code.visualstudio.com/)
    - lightweight, fast IDE, but requires some configuration
  - [Visual Studio](https://visualstudio.microsoft.com/vs/)
-   - heavier cousin of Visual Studio Code
+   - heavier cousin of Visual Studio Code, VS Code is better for competitive programming
  - [XCode](https://developer.apple.com/xcode/)
    - Mac only
  - [Codeblocks](http://www.codeblocks.org/)
