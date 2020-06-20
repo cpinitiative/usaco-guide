@@ -13,13 +13,13 @@ Located at `content/ordering.js`, this file stores the ordering of the modules. 
 
 ### Frontmatter
 
-[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded 
+[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded
 by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
 
 YAML formatting is _extremely strict_. Be careful about spaces.
 
 - **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify
-the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
+  the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Prerequisites**: _Optional_. Any prerequisites for this module.
@@ -28,6 +28,7 @@ The prerequisite formatting is rather unintuitive. It expects an array of arrays
 the name of the prerequisite, and the optional second item is a link. **Note the number of spaces!**
 
 Example:
+
 ```
 prerequisites:
  -
@@ -37,8 +38,8 @@ prerequisites:
      - Another Prerequisite Without a Link
 ```
 
-- **Problems**: _Optional_. A list of problems in the article. As we haven't figured out what we're going to do with 
-  **it's best to not include this yet.** For USACO problems, enter each problem as `division_filename`. Ex: `bronze_promote`. 
+- **Problems**: _Optional_. A list of problems in the article. As we haven't figured out what we're going to do with
+  **it's best to not include this yet.** For USACO problems, enter each problem as `division_filename`. Ex: `bronze_promote`.
 
 ### Module Description
 
@@ -52,6 +53,7 @@ If you want a description that appears only on the homepage but not the article,
 an HTML element with the class `syllabus-only`. Note that you can't use markdown in HTML elements.
 
 Example:
+
 ```
 <module-excerpt>
 

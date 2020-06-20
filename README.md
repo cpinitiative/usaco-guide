@@ -4,7 +4,7 @@
 
 A collection of curated, high-quality resources to take you from Bronze to Platinum.
 
-All markdown files belong in `content/`. Other files are for the front-end dashboard interface. 
+All markdown files belong in `content/`. Other files are for the front-end dashboard interface.
 The content should not care about how the front-end interface is implemented. That way, we can easily
 change the front-end interface without having to rewrite the content.
 
