@@ -4,7 +4,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
 
   // Generate Module Pages //
-  const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.js`);
+  const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
   Object.keys(ModuleOrdering).forEach(division => {
     const processItem = item => {
       if (typeof item === "object") {

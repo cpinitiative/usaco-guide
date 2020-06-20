@@ -27,3 +27,10 @@ export const getModule = (allModules, division) => {
     }
   });
 };
+
+export const graphqlToModulesObject = (allMdx) => {
+  return allMdx.edges.reduce((acc, cur) => {
+    acc[cur.node.frontmatter.id] = cur.node;
+    return acc;
+  }, {});
+};

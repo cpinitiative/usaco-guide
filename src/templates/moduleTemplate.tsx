@@ -1,10 +1,12 @@
-import React, { useState } from "react"
+import * as React from "react";
+import {useState} from "react";
 import { graphql, Link } from "gatsby"
 import Layout from "../components/layout";
 
 import Markdown from "../components/Markdown";
 import ModuleOrdering, { divisionLabels } from "../../content/ordering";
 import Transition from "../components/Transition";
+import {graphqlToModulesObject} from "../utils";
 
 const renderPrerequisite = (prerequisite) => {
   const link = prerequisite.length > 1 ? prerequisite[1] : null;
@@ -61,23 +63,73 @@ const SidebarBottomButtons = () => (
   </>
 );
 
-const SidebarNavLinks = ({ division }) => (
-  <>
-    {ModuleOrdering[division].map((val, idx) => (
-      <Link to={`/${division}/${val}`} className={`flex items-center px-6 py-3 text-sm leading-5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150`}>
-        {val.hasOwnProperty("name") ? val.name + " (todo dropdown)": val}
-      </Link>
-    ))}
-  </>
-);
+interface NavLink {
+  kind: "link"
+  label: string
+  href: string
+}
+
+interface NavLinkGroup {
+  kind: "group"
+  label: string
+  children: NavLink[]
+}
+
+type NavLinkItem = NavLink | NavLinkGroup;
+
+const SidebarNavLinks = ({ links }) => {
+  const renderLink = link => {
+    if (link.kind === "link") {
+      return (
+        <Link to={link.href} className={`flex items-center px-6 py-3 text-sm leading-5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150`}>
+          {link.label}
+        </Link>
+      );
+    }
+    return (
+      <div className="bg-gray-100 mb-4">
+        <div className={`flex items-center px-6 py-3 text-sm leading-5 font-medium text-gray-600 border-b border-gray-200`}>
+          {link.label}
+        </div>
+        {link.children.map(renderLink)}
+      </div>
+    )
+  };
+  return (
+    <>
+      {links.map(renderLink)}
+    </>
+  );
+};
 
 export default function Template(props) {
-  const { mdx } = props.data; // data.markdownRemark holds your post data
+  const { mdx, allMdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const prereqs = mdx.frontmatter.prerequisites;
   const division = props.pageContext.division;
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const navLinks: (NavLinkItem)[]  = React.useMemo(() => {
+    const modules = graphqlToModulesObject(allMdx);
+    const getLinks = module => {
+      if (module.hasOwnProperty("name")) {
+        return {
+          kind: "group",
+          label: module.name,
+          children: module.items.map(getLinks)
+        };
+      }
+      if (!modules.hasOwnProperty(module)) {
+        throw `${module} not found!`;
+      }
+      return {
+        kind: "link",
+        label: modules[module].frontmatter.title,
+        href: `/${division}/${module}`
+      };
+    };
+    return ModuleOrdering[division].map(getLinks);
+  }, []);
 
   return (
     <Layout>
@@ -123,7 +175,7 @@ export default function Template(props) {
                       <Breadcrumbs division={division} />
                     </div>
                     <nav className="mt-2">
-                      <SidebarNavLinks division={division} />
+                      <SidebarNavLinks links={navLinks} />
                     </nav>
                   </div>
                   <SidebarBottomButtons />
@@ -144,7 +196,7 @@ export default function Template(props) {
               </div>
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <nav className="mt-5 flex-1 bg-white">
-                <SidebarNavLinks division={division} />
+                <SidebarNavLinks links={navLinks} />
               </nav>
             </div>
             <SidebarBottomButtons />
@@ -218,6 +270,16 @@ export const pageQuery = graphql`
         author
         id
         prerequisites
+      }
+    }
+    allMdx {
+      edges {
+        node {
+          frontmatter {
+            title
+            id
+          }
+        }
       }
     }
   }
