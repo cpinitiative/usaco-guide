@@ -31,6 +31,8 @@ Lowest Common Ancestor and other tree topics.
 
  - CPH 18
  - [cp-algorithms: Lowest Common Ancestor](https://cp-algorithms.com/)
+ - [Binary Jumping w/ O(N) Memory](https://codeforces.com/blog/entry/74847)
+   - you shouldn't actually need this, but maybe interesting
 
 ### Problems
 

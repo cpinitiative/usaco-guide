@@ -48,13 +48,7 @@ const ModuleOrdering = {
     "containers-silver",
     "greedy",
     "prefix-sums",
-    {
-      name: "Graphs",
-      items: [
-        "dfs",
-        "cyc",
-      ]
-    }
+    "dfs"
   ],
   "gold": [
     {
@@ -62,6 +56,7 @@ const ModuleOrdering = {
       items: [
         "bfs",
         "toposort",
+        "cyc",
         "sp",
         "mst"
       ]

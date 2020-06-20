@@ -4,18 +4,19 @@ title: Cycle Detection & Functional Graphs
 author: Siyong Huang
 prerequisites: 
  - 
-     - Silver - Depth First Search
+     - Gold - Breadth First Search
+description: A *cycle* is a non-empty path of distinct edges that start and end at the same node. (what about distinct vertices?)
 ---
-
-<module-excerpt>
-
-A *cycle* is a non-empty path of distinct edges that start and end at the same node.
-
-</module-excerpt>
 
 *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle or just checking whether a cycle exists. 
 
 A related topic is **strongly connected components**, a platinum level concept.
+
+## Undirected Graphs
+
+ - [CSES Round Trip](https://cses.fi/problemset/task/1669)
+
+BFS-Cycle
 
 ### Functional Graphs
 
@@ -53,6 +54,10 @@ int main()
 			dfs(i);
 }
 ```
+
+## Directed Graphs
+
+ - [CSES Round Trip II](https://cses.fi/problemset/task/1678)
 
 The same general idea is implemented below to find any cycle in a directed graph (if one exists).
 
@@ -103,11 +108,13 @@ int main()
 ### Problems
 
  - [Codeforces 1020B. Badge (Very Easy)](https://codeforces.com/contest/1020/problem/B)
-   - Try to solve the problem in O(N)!
- - [The Bovine Shuffle (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=764)
- - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
- - [CSES Round Trip (undirected cycle)](https://cses.fi/problemset/task/1669)
- - [CSES Round Trip II (directed cycle)](https://cses.fi/problemset/task/1678)
+   - Try to solve the problem in $O(N)$!
+ - USACO Silver
+   - Note that these graphs are special.
+   - [The Bovine Shuffle (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=764)
+     - functional graph
+   - [Swapity Swapity Swap (Very Hard)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1014)
+     - permutation
  - POI
    - [Mafia](https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement)
    - [Spies](https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement)
