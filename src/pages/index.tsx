@@ -404,15 +404,18 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      If you would like to contribute towards this guide or
-                      report an issue, please contact Nathan Wang at{' '}
+                      If you would like to contribute towards this guide, please
+                      contact Nathan Wang at{' '}
                       <a
                         className="text-blue-600 underline"
                         href="mailto:nathan.r.wang@gmail.com"
                       >
                         nathan.r.wang@gmail.com
                       </a>
-                      .
+                      . If you encounter an issue while using the guide (website
+                      bug, typo, broken link, unclear explanation, etc), use the
+                      "Report an Issue" button on the bottom left of the screen,
+                      or contact Nathan Wang directly.
                     </p>
                   </dd>
                 </div>
@@ -424,9 +427,9 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      While we offer some resources that platinum contestants
-                      may find useful, the platinum division has too many topics
-                      for us to effectively cover. For platinum contestants, we
+                      While we offer many resources targeted towards platinum
+                      contestants, the platinum division has too many topics for
+                      us to cover everything. For platinum contestants, we
                       recommend you treat this as more of a <i>resource</i> than
                       a <i>guide</i>.
                     </p>
@@ -437,7 +440,19 @@ export default function IndexPage(props: PageProps) {
                     How can I get help?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">uh.....</p>
+                    <p className="text-base leading-6 text-gray-500">
+                      If you get stuck, feel free to ask for help by clicking
+                      the "Get Help" button on the bottom left of the screen. It
+                      may take some time for your question to be addressed. You
+                      may also contact Nathan Wang at{' '}
+                      <a
+                        className="text-blue-600 underline"
+                        href="mailto:nathan.r.wang@gmail.com"
+                      >
+                        nathan.r.wang@gmail.com
+                      </a>
+                      , but there may be a delay in the response.
+                    </p>
                   </dd>
                 </div>
               </div>
