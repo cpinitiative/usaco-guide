@@ -389,13 +389,13 @@ export default function Template(props) {
             </button>
           </div>
           <main
-            className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none lg:py-6"
+            className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
             tabIndex={0}
           >
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div>
                 <TopNav division={division} />
-                <div className="lg:mt-12 mb-4 md:flex md:items-center md:justify-between">
+                <div className="lg:mt-8 mb-4 md:flex md:items-center md:justify-between">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {mdx.frontmatter.title}
