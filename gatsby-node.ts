@@ -1,6 +1,6 @@
 import ModuleOrdering, { divisions } from './content/ordering';
 
-exports.createPages = async ({ actions, graphql, reporter }) => {
+exports.createPages = async ({ actions }) => {
   const { createPage } = actions;
 
   // Generate Module Pages //
@@ -28,7 +28,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   // Generate Syllabus Pages //
   const syllabusTemplate = require.resolve(
-    `./src/templates/syllabusTemplate.js`
+    `./src/templates/syllabusTemplate.tsx`
   );
   divisions.forEach(division => {
     createPage({
