@@ -6,7 +6,7 @@ import SEO from '../components/seo';
 export default function IndexPage(props: PageProps) {
   return (
     <Layout>
-      <SEO title="" />
+      <SEO title={null} />
 
       {/* Begin Hero */}
       <div className="relative bg-white overflow-hidden">

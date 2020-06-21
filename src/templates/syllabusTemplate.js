@@ -77,7 +77,7 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title="Home" />
+      <SEO title={divisionLabels[selectedDivision]} />
 
       <div className="min-h-screen bg-gray-50">
         {/* Begin Hero Section */}

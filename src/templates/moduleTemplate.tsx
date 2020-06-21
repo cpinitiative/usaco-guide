@@ -7,6 +7,7 @@ import Markdown from '../components/Markdown';
 import ModuleOrdering, { divisionLabels } from '../../content/ordering';
 import Transition from '../components/Transition';
 import { graphqlToModulesObject } from '../utils';
+import SEO from '../components/seo';
 
 const renderPrerequisite = prerequisite => {
   const link = prerequisite.length > 1 ? prerequisite[1] : null;
@@ -272,6 +273,8 @@ export default function Template(props) {
 
   return (
     <Layout>
+      <SEO title={`${mdx.frontmatter.title} (${divisionLabels[division]})`} />
+
       <div className="h-screen flex overflow-hidden bg-white">
         {/* Off-canvas menu for mobile */}
         <Transition show={isMobileNavOpen}>
