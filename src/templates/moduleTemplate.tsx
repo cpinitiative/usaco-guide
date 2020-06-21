@@ -185,12 +185,12 @@ const TopNav = ({ division }) => (
   </div>
 );
 
-const BottomNav = ({ division }) => (
-  <div className="flex justify-around sm:justify-between">
+const CompactNav = ({ division }) => (
+  <div className="flex">
     <div className="hidden sm:flex items-center">
       <Breadcrumbs division={division} />
     </div>
-    <div className="flex items-center">
+    <div className="flex-1 flex items-center justify-between sm:justify-end">
       <span className="rounded-md">
         <button
           type="button"
@@ -394,8 +394,13 @@ export default function Template(props) {
           >
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div>
-                <TopNav division={division} />
-                <div className="lg:mt-8 mb-4 md:flex md:items-center md:justify-between">
+                <div className="hidden lg:block">
+                  <TopNav division={division} />
+                </div>
+                <div className="lg:hidden mb-6">
+                  <CompactNav division={division} />
+                </div>
+                <div className="lg:mt-8 lg:mb-4 sm:flex sm:items-center sm:justify-between">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {mdx.frontmatter.title}
@@ -404,7 +409,7 @@ export default function Template(props) {
                       Author: {mdx.frontmatter.author}
                     </p>
                   </div>
-                  <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+                  <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
                     <span className="shadow-sm rounded-md">
                       <button
                         type="button"
@@ -451,7 +456,7 @@ export default function Template(props) {
               </div>
 
               <div className="border-t border-gray-200 pt-4">
-                <BottomNav division={division} />
+                <CompactNav division={division} />
               </div>
             </div>
           </main>
