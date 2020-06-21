@@ -139,6 +139,108 @@ const SidebarNavLinks = ({ links }) => {
   return <>{links.map(renderLink)}</>;
 };
 
+const TopNav = ({ division }) => (
+  <div className="flex justify-between">
+    <span className="-ml-4 rounded-md">
+      <Link
+        to="#"
+        className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md text-gray-500 hover:text-gray-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"
+      >
+        <svg
+          className="-ml-0.5 mr-1 h-4 w-4"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path d="M15 19l-7-7 7-7" />
+        </svg>
+        Prev
+      </Link>
+    </span>
+    <div className="hidden sm:flex items-center">
+      <Breadcrumbs division={division} />
+    </div>
+    <span className="rounded-md -mr-4">
+      <Link
+        to="#"
+        className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out"
+      >
+        Next
+        <svg
+          className="-mr-0.5 ml-1 h-4 w-4"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
+    </span>
+  </div>
+);
+
+const BottomNav = ({ division }) => (
+  <div className="flex justify-around sm:justify-between">
+    <div className="hidden sm:flex items-center">
+      <Breadcrumbs division={division} />
+    </div>
+    <div className="flex items-center">
+      <span className="rounded-md">
+        <button
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+        >
+          <svg
+            className="-ml-0.5 mr-1 h-4 w-4"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M15 19l-7-7 7-7" />
+          </svg>
+          Prev
+        </button>
+      </span>
+      <span className="ml-3 rounded-md">
+        <button
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+        >
+          Mark Complete
+        </button>
+      </span>
+      <span className="ml-3 rounded-md">
+        <button
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+        >
+          Next
+          <svg
+            className="-mr-0.5 ml-1 h-4 w-4"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </span>
+    </div>
+  </div>
+);
+
 export default function Template(props) {
   const { mdx, allMdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
@@ -292,10 +394,8 @@ export default function Template(props) {
           >
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div>
-                <div className="hidden lg:block">
-                  <Breadcrumbs division={division} />
-                </div>
-                <div className="lg:mt-12 mb-4">
+                <TopNav division={division} />
+                <div className="lg:mt-12 mb-4 md:flex md:items-center md:justify-between">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {mdx.frontmatter.title}
@@ -303,6 +403,16 @@ export default function Template(props) {
                     <p className={`text-gray-500`}>
                       Author: {mdx.frontmatter.author}
                     </p>
+                  </div>
+                  <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+                    <span className="shadow-sm rounded-md">
+                      <button
+                        type="button"
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"
+                      >
+                        Mark Complete
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -338,6 +448,10 @@ export default function Template(props) {
                 )}
 
                 <Markdown body={body} className="markdown--module" />
+              </div>
+
+              <div className="border-t border-gray-200 pt-4">
+                <BottomNav division={division} />
               </div>
             </div>
           </main>
