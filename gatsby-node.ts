@@ -45,7 +45,7 @@ exports.createPages = async ({ actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
-    type MarkdownRemarkFrontmatter implements Node {
+    type MdxFrontmatter implements Node {
       prerequisites: [[String]]
     }
   `;
