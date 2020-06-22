@@ -2,13 +2,8 @@
 id: bitsets
 title: "Bitsets"
 author: Benjamin Qi
+description: Three examples of how bitsets give some unintended solutions on recent USACO problems.
 ---
-
-<module-excerpt>
-
-Three examples of how **bitsets** lead to some unintended solutions on recent USACO problems.
-
-</module-excerpt>
 
 ## Tutorial
 

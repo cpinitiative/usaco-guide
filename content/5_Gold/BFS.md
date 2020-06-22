@@ -5,8 +5,10 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
-description: Allows you to the smallest number of edges on the path from one vertex to another.
+description: Traversing a graph in a way such that vertices closer to the starting vertex are processed first.
 ---
+
+Note that this is **not** required for silver.
 
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
 

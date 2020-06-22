@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Breadth First Search
-description: Also introduces All-Pairs Shortest Path
+description: Introduces Dijkstra's Algorithm for a single source as well as Floyd-Warshall for All-Pairs Shortest Path.
 ---
 
 ## Non-Negative Edge Weights

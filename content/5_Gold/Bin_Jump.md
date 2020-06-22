@@ -1,8 +1,8 @@
 ---
-id: binjump
+id: bin-jump
 title: "Binary Jumping"
 author: Benjamin Qi
-description: Todo
+description: Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.
 ---
 
 ## Binary Jumping

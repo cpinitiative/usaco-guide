@@ -2,8 +2,7 @@
 id: pairs-tuples
 title: Pairs & Tuples
 author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao
-order: 6
-description: A **pair** is a structure that holds two values, not necessarily of the same type. (tuples?)
+description: Introduces pairs, which allow you to store two objects (possibly of different types) as a single unit, as well as tuples, which are a generalization of pairs.
 ---
 
 ## Pairs

@@ -1,8 +1,8 @@
 ---
-id: prereqs
-title: Prerequisites
+id: lang
+title: Languages
 author: Nathan Wang, Benjamin Qi
-description: What languages you can use and what you should know before continuing.
+description: What languages you can use for programming contests and what you're expected to know before continuing.
 ---
  
 ## Choosing a Language

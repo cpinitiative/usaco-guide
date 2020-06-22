@@ -2,12 +2,8 @@
 id: hashing
 title: "Hashing"
 author: Benjamin Qi
-description: ?
+description: Quickly test equality of substrings with a small probability of failure.
 ---
-
-## Hashing
-
-Use to quickly test whether two substrings are equal.
 
  - Tutorial 
    - CPH 26.3

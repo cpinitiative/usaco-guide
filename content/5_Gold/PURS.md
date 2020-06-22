@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Prefix Sums
-description: ?
+description: Binary Indexed Trees & Indexed Sets
 ---
 
 ## Binary Indexed Tree

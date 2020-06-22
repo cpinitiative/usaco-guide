@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Point Update Range Sum
-description: General range queries for associative operations with segment tree.
+description: Range queries for any associative operation over an array with updates, using segment tree.
 ---
 
 A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for any associative operation. Historically, no gold problem has required the use of a segment tree in place of a binary indexed tree, but it's still good to know (and you might find it simpler).

@@ -6,8 +6,8 @@ prerequisites:
  - 
      - Gold - Minimum Spanning Tree
  -
-     - some familiarity with "Robotic Cow Herd" analysis
-description: A simple solution to [Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674) that generalizes.
+     - some familiarity with "Robotic Cow Herd" solution
+description: A simple solution to "Robotic Cow Herd" that generalizes.
 ---
 
 ## General Outline

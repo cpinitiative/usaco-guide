@@ -5,11 +5,10 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Shortest Paths with Non-Negative Edge Weights
-description: ?
+description: Applications of Bellman-Ford.
 ---
 
  - Hasn't appeared in recent USACO Gold as far as I know. 
- - Usually Bellman-Ford is used. 
  - If no negative cycles, can use [Shortest Path Faster Algorithm](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) or modify Dijkstra slightly (though the same running time bound no longer applies).
 
 ### Tutorial

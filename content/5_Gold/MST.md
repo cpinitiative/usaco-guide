@@ -7,7 +7,7 @@ prerequisites:
      - Gold - Shortest Paths
  - 
      - Gold - Disjoint Set Union
-description: ?
+description: A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed.
 ---
 
 ## Standard

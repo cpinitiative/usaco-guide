@@ -4,7 +4,7 @@ title: "Heavy-Light Decomposition"
 author: Benjamin Qi
 prerequisites: 
  - 
-     - Silver - Depth First Search
+     - Gold - Euler Tour on Tree
 description: Path and subtree updates and queries.
 ---
 

@@ -1,7 +1,7 @@
 const ModuleOrdering = {
   "intro": [
     "intro",
-    "prereqs",
+    "lang",
     "running-cpp",
     "data-types",
     "io",
@@ -39,6 +39,7 @@ const ModuleOrdering = {
     "intro-graphs",
   ],
   "silver": [
+    "prefix-sums",
     {
       name: "Sorting",
       items: [
@@ -52,7 +53,6 @@ const ModuleOrdering = {
     "containers-silver",
     "data-structures",
     "greedy",
-    "prefix-sums",
     {
       name: "Graphs",
       items: [
@@ -66,7 +66,6 @@ const ModuleOrdering = {
     "data-structures-gold",
     "dp",
     "intro-nt",
-    "hashing",
     {
       name: "Graphs",
       items: [
@@ -92,10 +91,11 @@ const ModuleOrdering = {
         "tree-dia",
         "dp-trees",
         "merging",
+        "bin-jump",
         "tree-euler",
-        "binjump",
       ]
     },
+    "hashing",
   ],
   "plat": [
     "oly",

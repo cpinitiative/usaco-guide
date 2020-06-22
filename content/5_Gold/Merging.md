@@ -4,7 +4,7 @@ title: "Small-To-Large Merging"
 author: Michael Cao
 prerequisites: 
  - 
-     - todo
+     - Silver - Depth First Search
 description: ?
 ---
 

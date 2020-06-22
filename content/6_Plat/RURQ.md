@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Point Update Range Query
-description: Can be accomplished with **lazy** update on a segment tree or two binary indexed trees.
+description: Lazy updates on segment trees and two binary indexed trees in conjunction.
 ---
 
 ## Lazy Segment Tree

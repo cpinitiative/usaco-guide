@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
-description: Stuff related to Knuth-Morris-Pratt and Z Algorithms.
+description: Knuth-Morris-Pratt and Z Algorithms (and a few more related topics).
 ---
 
 ## General Resources

@@ -2,7 +2,7 @@
 id: why-cpp
 title: Why C++?
 author: Benjamin Qi
-description: A few reasons why choice of language matters significantly (outside of Bronze).
+description: Some reasons why choice of language matters significantly outside of USACO Bronze.
 ---
 
 ## Time Limit

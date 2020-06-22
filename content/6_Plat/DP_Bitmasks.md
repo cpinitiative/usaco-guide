@@ -7,6 +7,7 @@ prerequisites:
      - Bit Operations
  - 
      - Gold - Introduction to Dynamic Programming
+description: DP problems that require iterating over subsets.
 ---
 
 Has not been the solution to any platinum problem, but appeared in old gold and can be used for subtasks.
