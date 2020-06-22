@@ -3,10 +3,8 @@ id: tree-euler
 title: "Euler Tour on Tree"
 author: ?
 prerequisites: 
- - 
-     - Silver - Depth First Search
- - 
-     - Gold - Static Range Queries
+ - Silver - Depth First Search
+ - Gold - Static Range Queries
 description: Subtree updates and queries and another way to compute lowest common ancestors.
 ---
 

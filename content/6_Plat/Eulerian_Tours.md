@@ -3,8 +3,7 @@ id: eulerian-tours
 title: "Eulerian Tours"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: Visiting all edges of a graph exactly once.
 ---
 

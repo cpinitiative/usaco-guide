@@ -47,16 +47,6 @@ const SpoilerComponent = ({ children, title }) => {
 };
 
 const components = {
-  wrapper: ({ excerptOnly = false, children }) => {
-    if (excerptOnly) {
-      for (let child of children) {
-        if (child.props.originalType === 'module-excerpt') return child;
-      }
-      return null;
-    }
-
-    return children;
-  },
   'module-excerpt': props => <div {...props} />,
   spoiler: SpoilerComponent,
   'info-block': ({

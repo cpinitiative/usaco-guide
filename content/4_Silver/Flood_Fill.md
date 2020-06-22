@@ -3,8 +3,7 @@ id: ff
 title: Flood Fill
 author: Siyong Huang
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: Finding connected components in a graph that is respresented by a grid.
 ---
 

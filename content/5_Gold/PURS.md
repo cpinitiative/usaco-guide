@@ -3,8 +3,7 @@ id: PURS
 title: "Point Update Range Sum"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Prefix Sums
+ - Silver - Prefix Sums
 description: Binary Indexed Trees & Indexed Sets
 ---
 

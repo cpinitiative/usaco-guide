@@ -4,8 +4,7 @@ title: Data Structures
 author: Nathan Wang, Darren Yao, Benjamin Qi
 description: Problems and additional resources regarding built-in data structures.
 prerequisites: 
- - 
-     - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
+ - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
 ---
 
 (clean this up)

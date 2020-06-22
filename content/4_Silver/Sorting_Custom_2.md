@@ -3,10 +3,8 @@ id: sorting-cpp
 title: "More on Sorting in C++"
 author: Siyong Huang, Michael Cao, Darren Yao, Benjamin Qi
 prerequisites: 
- - 
-     - Bronze - Introduction to Graphs
- - 
-     - Silver - Sorting with Custom Comparators
+ - Bronze - Introduction to Graphs
+ - Silver - Sorting with Custom Comparators
 description: More information about sorting with custom comparators in C++. Some overlap with the previous module.
 ---
 

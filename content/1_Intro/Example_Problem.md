@@ -8,10 +8,8 @@ problems:
  - bronze_paint
  - bronze_square
 prerequisites: 
- - 
-     - Intro - Data Types
- - 
-     - Intro - Input & Output
+ - Intro - Data Types
+ - Intro - Input & Output
 description: Solutions for "USACO Bronze - Fence Painting" in multiple languages. 
 ---
 

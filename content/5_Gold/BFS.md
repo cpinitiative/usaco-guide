@@ -3,8 +3,7 @@ id: bfs
 title: "Breadth First Search"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: Traversing a graph in a way such that vertices closer to the starting vertex are processed first.
 ---
 

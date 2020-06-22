@@ -3,8 +3,7 @@ id: tree-dia
 title: "Tree Diameter"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: Finding a pair of vertices of a tree that are farthest apart.
 ---
 

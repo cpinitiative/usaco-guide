@@ -3,10 +3,8 @@ id: dp-bitmasks
 title: "Dynamic Programming on Bitmasks"
 author: Michael Cao
 prerequisites: 
- - 
-     - Bit Operations
- - 
-     - Gold - Introduction to Dynamic Programming
+ - Bit Operations
+ - Gold - Introduction to Dynamic Programming
 description: DP problems that require iterating over subsets.
 ---
 

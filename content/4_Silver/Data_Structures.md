@@ -3,8 +3,7 @@ id: data-structures
 title: "Data Structures"
 author: Unknown
 prerequisites: 
- - 
-     - Bronze - Data Structures
+ - Bronze - Data Structures
 description: More practice with data structures introduced in bronze, and some new ones.
 ---
 

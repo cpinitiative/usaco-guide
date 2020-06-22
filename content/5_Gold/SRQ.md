@@ -2,7 +2,6 @@
 id: SRQ
 title: "Static Range Queries"
 author: Benjamin Qi
-prerequisites: 
 description: Range queries for any associative operation over a static array.
 ---
 

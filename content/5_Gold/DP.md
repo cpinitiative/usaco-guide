@@ -3,10 +3,8 @@ id: dp
 title: "Introduction to Dynamic Programming"
 author: Michael Cao
 prerequisites: 
- - 
-     - Recursion
- - 
-     - Silver - Prefix Sums
+ - Recursion
+ - Silver - Prefix Sums
 description: A very important concept which emerges in the Gold division and extends to the IOI. (improve?)
 ---
 

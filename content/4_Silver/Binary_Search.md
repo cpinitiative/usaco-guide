@@ -3,8 +3,7 @@ id: binary-search
 title: "Binary Search on the Answer"
 author: Darren Yao
 prerequisites: 
- - 
-     - Silver - Introduction to Sorting  
+ - Silver - Introduction to Sorting  
 description: You should already be familiar with the concept of binary searching for a number in a sorted array. However, binary search can be extended to binary searching on the answer itself. 
 ---
 

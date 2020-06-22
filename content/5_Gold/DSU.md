@@ -3,8 +3,7 @@ id: dsu
 title: "Disjoint Set Union"
 author: Benjamin Qi, Michael Cao 
 prerequisites:
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.
 ---
 

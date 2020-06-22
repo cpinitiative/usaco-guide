@@ -3,8 +3,7 @@ id: sp-neg
 title: "Shortest Paths with Negative Edge Weights"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Shortest Paths with Non-Negative Edge Weights
+ - Gold - Shortest Paths with Non-Negative Edge Weights
 description: Applications of Bellman-Ford.
 ---
 

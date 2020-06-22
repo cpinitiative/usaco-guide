@@ -3,10 +3,8 @@ id: cyc
 title: Cycle Detection
 author: Siyong Huang
 prerequisites: 
- - 
-     - Silver - Functional Graphs
- - 
-     - Gold - Breadth First Search
+ - Silver - Functional Graphs
+ - Gold - Breadth First Search
 description: A simple cycle is a non-empty path of distinct edges that start and end at the same vertex such that no vertex appears more than once. Describes how to detect cycles in both directed and undirected graphs.
 ---
 

@@ -3,8 +3,7 @@ id: greedy
 title: "Greedy Algorithms"
 author: Darren Yao
 prerequisites: 
- - 
-     - Silver - Sorting with Custom Comparators
+ - Silver - Sorting with Custom Comparators
 description: Greedy algorithms select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.
 ---
 

@@ -3,8 +3,7 @@ id: more-dfs
 title: "More on DFS"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Topological Sort
+ - Gold - Topological Sort
 description: Includes 2-edge-connected components, strongly connected components, and biconnected components.
 ---
 

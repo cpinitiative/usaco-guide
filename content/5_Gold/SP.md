@@ -3,8 +3,7 @@ id: sp
 title: "Shortest Paths with Non-Negative Edge Weights"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Breadth First Search
+ - Gold - Breadth First Search
 description: Introduces Dijkstra's Algorithm for a single source as well as Floyd-Warshall for All-Pairs Shortest Path.
 ---
 
