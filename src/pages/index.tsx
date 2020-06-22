@@ -461,6 +461,19 @@ export default function IndexPage(props: PageProps) {
         </div>
       </div>
       {/*End FAQ*/}
+
+      <div className="bg-white">
+        <div className="max-w-screen-xl mx-auto pb-12 px-4">
+          <p className="text-center text-base leading-6 text-gray-400">
+            No part of this website may be reproduced or commercialized in any
+            manner without prior written permission. Contact{' '}
+            <a href="mailto:nathan.r.wang@gmail.com" className="underline">
+              Nathan Wang
+            </a>{' '}
+            for more information.
+          </p>
+        </div>
+      </div>
     </Layout>
   );
 }
