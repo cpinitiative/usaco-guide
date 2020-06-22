@@ -400,22 +400,26 @@ export default function IndexPage(props: PageProps) {
                 </div>
                 <div className="mt-12">
                   <dt className="text-lg leading-6 font-medium text-gray-900">
-                    How can I contribute/report a problem?
+                    How can I report a problem?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500">
+                      If you encounter an issue while using the guide (website
+                      bug, typo, broken link, unclear explanation, etc), use the
+                      "Report an Issue" button on the bottom left of the screen,
+                      or contact the guide coordinator directly.
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                    How can I contribute?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
                       If you would like to contribute towards this guide, please
-                      contact Nathan Wang at{' '}
-                      <a
-                        className="text-blue-600 underline"
-                        href="mailto:nathan.r.wang@gmail.com"
-                      >
-                        nathan.r.wang@gmail.com
-                      </a>
-                      . If you encounter an issue while using the guide (website
-                      bug, typo, broken link, unclear explanation, etc), use the
-                      "Report an Issue" button on the bottom left of the screen,
-                      or contact Nathan Wang directly.
+                      contact the guide coordinator. We appreciate any and all
+                      contributions!
                     </p>
                   </dd>
                 </div>
@@ -443,15 +447,25 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       If you get stuck, feel free to ask for help by clicking
                       the "Get Help" button on the bottom left of the screen. It
-                      may take some time for your question to be addressed. You
-                      may also contact Nathan Wang at{' '}
+                      may take some time for your question to be addressed.
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                    Who should I contact?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500">
+                      If you have any questions related to this guide, please
+                      contact the guide coordinator, Nathan Wang, at{' '}
                       <a
                         className="text-blue-600 underline"
                         href="mailto:nathan.r.wang@gmail.com"
                       >
                         nathan.r.wang@gmail.com
                       </a>
-                      , but there may be a delay in the response.
+                      .
                     </p>
                   </dd>
                 </div>
