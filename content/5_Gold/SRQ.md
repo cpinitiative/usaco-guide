@@ -20,7 +20,7 @@ First we'll consider the special case when $\ominus$ denotes `min`.
  - CPH 9.1
  - [cp-algorithms RMQ](https://cp-algorithms.com/sequences/rmq.html)
 
-<optional-content title="Preprocessing in $O(N)$ Time">
+<optional-content title="Preprocessing in O(N) Time">
 
  - [CF: $O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
  
