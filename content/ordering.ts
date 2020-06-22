@@ -1,5 +1,6 @@
 const ModuleOrdering = {
   "intro": [
+    "intro",
     "getting-started",
     "prereqs",
     "running-cpp",
@@ -13,9 +14,14 @@ const ModuleOrdering = {
     "contests",
     "contest-strategy",
     "proposing",
-    "why-cpp",
-    "macros",
-    "debugging",
+    {
+      name: "Language-Specific",
+      items: [
+        "why-cpp",
+        "macros",
+        "debugging",
+      ]
+    },
   ],
   "bronze": [
     "rect-geo",
@@ -48,7 +54,13 @@ const ModuleOrdering = {
     "containers-silver",
     "greedy",
     "prefix-sums",
-    "dfs"
+    {
+      name: "Graphs",
+      items: [
+        "dfs",
+        "ff",
+      ]
+    }
   ],
   "gold": [
     "intro-nt",
