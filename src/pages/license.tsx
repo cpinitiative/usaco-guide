@@ -80,8 +80,9 @@ export default function LicensePage(props: PageProps) {
             </li>
           </ul>
           <p className="mb-4">
-            We reserve the right to revoke permission to use this site at any
-            time.
+            We reserve the right to revoke permission to use any version of this
+            site at any time, including any or all of the permitted use cases
+            described above.
           </p>
           <p className="mb-6">
             If you have questions regarding the usage of this site, or would
