@@ -2,7 +2,7 @@
 id: contests
 title: Contests
 author: Benjamin Qi
-description: Contests that I participate in, as well as a few tools.
+description: Contests that I participate in as well as a few tools.
 ---
 
 See [clist.by](https://clist.by/coder/bqi343/) for an extensive list of contests.

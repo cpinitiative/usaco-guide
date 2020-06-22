@@ -1,8 +1,11 @@
 ---
 id: dsu
 title: "Disjoint Set Union"
-author: ?
-prerequisites: 
+author: Benjamin Qi
+prerequisites:
+ - 
+     - Silver - Depth First Search
+description: ?
 ---
 
 ## Tutorial
@@ -15,11 +18,13 @@ prerequisites:
    - [log\*n](https://en.wikipedia.org/wiki/Proof_of_O(log*n)\_time_complexity\_of_union%E2%80%93find)
    - [a(m,n)](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
 
+with rollback: https://codeforces.com/contest/1140/problem/F
+
 ## Problems
 
 - [Mootube](http://www.usaco.org/index.php?page=viewproblem2&cpid=789)
- - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
+  - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
 - [Closing the Farm](http://www.usaco.org/index.php?page=viewproblem2&cpid=646)
 - [CSES Network Breakdown](https://cses.fi/problemset/task/1677)
 - [Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
- - fairly tricky
+  - fairly tricky

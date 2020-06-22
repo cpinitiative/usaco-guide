@@ -2,13 +2,8 @@
 id: oly
 title: "Olympiads"
 author: Benjamin Qi
+description: Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
 ---
-
-<module-excerpt>
-
-Once you've reached Platinum, it may be helpful to practice with problems from other (inter)national olympiads.
-
-</module-excerpt>
 
 > Hello, Which online judge should I practice more to do well in **IOI** ?
 > the closest OJ for IOI style?

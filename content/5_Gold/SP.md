@@ -5,15 +5,8 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Breadth First Search
+description: Also introduces All-Pairs Shortest Path
 ---
-
-<module-excerpt>
-
-- Shortest Path Without Negative Edge Weights
- - Shortest Path With Negative Edge Weights
- - All Pairs Shortest Path
-
-</module-excerpt>
 
 ## Non-Negative Edge Weights
 

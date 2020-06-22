@@ -2,13 +2,8 @@
 id: macros
 title: C++ Macros
 author: Benjamin Qi
+description: Shortening code and making it (un?)readable.
 ---
-
-<module-excerpt>
-
-Shortening code and making it (un?)readable.
-
-</module-excerpt>
 
 ## Introduction
 

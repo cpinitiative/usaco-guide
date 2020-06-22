@@ -2,15 +2,10 @@
 id: rect-geo
 title: "Rectangle Geometry"
 author: Darren Yao, Michael Cao
+description: "Geometry" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles. 
 ---
 
-<module-excerpt>
-
-"Geometry" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles. 
-
-</module-excerpt>
-
- - Some only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
+ - Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
  - Also, the coordinates typically only go up to $1000$, so a program that performs $\approx 1000^2$ operations (ex. with a nested loop) should pass.
 
 ## Rectangle Class (Java)
@@ -24,13 +19,13 @@ Rectangle newRect = new Rectangle(x, y, width, height);
 
 The `Rectangle` class supports numerous useful methods. 
 
-`firstRect.intersects(secondRect)` checks if two rectangles intersect.
+  - `firstRect.intersects(secondRect)` checks if two rectangles intersect.
 
-`firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
+  - `firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
 
-`firstRect.contains(x, y)` checks whether the integer point (x,y) exists in firstRect.
+  - `firstRect.contains(x, y)` checks whether the integer point (x,y) exists in firstRect.
 
-`firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
+  - `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
 
 This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
 

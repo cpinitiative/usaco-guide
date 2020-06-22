@@ -5,13 +5,8 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
+description: Allows you to the smallest number of edges on the path from one vertex to another.
 ---
-
-<module-excerpt>
-
-Compute shortest paths where all edge weights are 1.
-
-</module-excerpt>
 
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
 

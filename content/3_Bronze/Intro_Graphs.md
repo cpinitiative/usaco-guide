@@ -2,13 +2,8 @@
 id: intro-graphs
 title: Introduction to Graphs
 author: Darren Yao, Benjamin Qi
+description: **Graph theory** is one of the most important topics at the Silver level and above, although some basic problems occasionally appear in Bronze. 
 ---
-
-<module-excerpt>
-
-**Graph theory** is one of the most important topics at the Silver level and above, although some basic problems occasionally appear in Bronze. 
-
-</module-excerpt>
 
 Graphs can be used to represent many things, from images to wireless signals, but one of the simplest analogies is to a map. Consider a map with several cities and highways connecting the cities. Some problems relating to graphsare:
 
@@ -32,6 +27,8 @@ Both of these will be covered in Silver. For now, it suffices to learn how graph
 
 
 ## USACO Bronze Problems
+
+(what are you expected to now?)
 
 (add some more)
 

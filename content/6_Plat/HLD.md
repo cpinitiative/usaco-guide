@@ -5,6 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
+description: Path and subtree updates and queries.
 ---
 
  - probably not intended solution, but can help (ex. for "Disrupt")

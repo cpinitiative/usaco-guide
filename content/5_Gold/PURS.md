@@ -1,24 +1,21 @@
 ---
-id: bit
-title: "Binary Indexed Trees"
+id: PURS
+title: "Point Update Range Sum"
 author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Prefix Sums
+description: ?
 ---
 
-<module-excerpt>
+## Binary Indexed Tree
 
-A **Binary Indexed Tree** allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
+A *Binary Indexed Tree* allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
  - Query the sum of a prefix of the array.
 
-</module-excerpt>
-
-## Binary Indexed Tree
-
-Aka **Fenwick Tree**.
+Aka *Fenwick Tree*.
 
 ### Sample Problems
 

@@ -49,8 +49,8 @@ const ModuleOrdering = {
     },
     "binary-search",
     "2P",
-    "data-structures",
     "containers-silver",
+    "data-structures",
     "greedy",
     "prefix-sums",
     {
@@ -58,11 +58,15 @@ const ModuleOrdering = {
       items: [
         "dfs",
         "ff",
+        "func-graphs",
       ]
-    }
+    },
   ],
   "gold": [
+    "data-structures-gold",
+    "dp",
     "intro-nt",
+    "hashing",
     {
       name: "Graphs",
       items: [
@@ -72,37 +76,39 @@ const ModuleOrdering = {
         "dsu",
         "sp",
         "mst",
-        "sp-neg",
       ]
     },
-    {
-      name: "Dynamic Programming",
-      items: [
-        "dp",
-        "dp-trees"
-      ]
-    },
-    "data-structures-gold",
-    "bit",
-  ],
-  "plat": [
-    "oly",
     {
       name: "Range Queries",
       items: [
-        "1DSRQ",
-        "1DPURQ",
-        "1DRURQ",
-        "2DRQ",
+        "SRQ",
+        "PURS",
+        "PURQ",  
       ]
     },
     {
       name: "Trees",
       items: [
         "tree-dia",
-        "binjump",
+        "dp-trees",
+        "merging",
         "tree-euler",
-        "small-to-large",
+        "binjump",
+      ]
+    },
+  ],
+  "plat": [
+    "oly",
+    {
+      name: "Range Queries",
+      items: [
+        "RURQ",
+        "2DRQ",
+      ]
+    },
+    {
+      name: "Trees",
+      items: [
         "hld",
         "centroid",
       ]
@@ -115,9 +121,24 @@ const ModuleOrdering = {
         "slope",
       ]
     },
-    "graphs",
+    {
+      name: "Graphs",
+      items: [
+        "sp-neg",
+        "more-dfs",
+        "eulerian-tours",
+        "flows",
+      ]
+    },
+    {
+      name: "Strings",
+      items: [
+        "tries",
+        "suffix-array",
+        "string-search",
+      ]
+    },
     "geo",
-    "strings",
     "bitsets",
     "fracture",
   ]

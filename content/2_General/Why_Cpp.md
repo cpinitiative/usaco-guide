@@ -2,13 +2,8 @@
 id: why-cpp
 title: Why C++?
 author: Benjamin Qi
+description: A few reasons why choice of language matters significantly (outside of Bronze).
 ---
-
-<module-excerpt>
-
-A few reasons why choice of language matters significantly (outside of Bronze).
-
-</module-excerpt>
 
 ## Time Limit
 

@@ -5,7 +5,7 @@ author: Benjamin Qi
 description: A bunch of helpful links.
 ---
 
-Some (such as **CPH** and **Intro to USACO**) will be mentioned again in later modules.
+Some resources (such as **CPH** and **Intro to USACO**) will be mentioned extensively in later modules.
 
 ## Lists
 

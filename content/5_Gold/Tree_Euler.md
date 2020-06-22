@@ -5,6 +5,8 @@ author: ?
 prerequisites: 
  - 
      - Silver - Depth First Search
+ - 
+     - Gold - Static Range Queries
 ---
 
 RMQ LCA?

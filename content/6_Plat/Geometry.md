@@ -2,17 +2,12 @@
 id: geo
 title: "Geometry"
 author: Benjamin Qi
+description: Geometry primitives and convex hull.
 ---
-
-<module-excerpt>
-
-Geometry primitives and convex hull.
-
-</module-excerpt>
 
 ## Primitives
 
-You should know basic operations like cross product and dot product. For platinum specifically, you should be fine as long as you know how to code convex hull.
+You should know basic operations like cross product and dot product. For platinum specifically, you should be fine as long as you know how to code **convex hull**.
 
 ### Tutorial
 

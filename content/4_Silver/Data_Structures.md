@@ -5,13 +5,8 @@ author: Unknown
 prerequisites: 
  - 
      - Bronze - Data Structures
+description: More practice with data structures introduced in bronze, and some new ones.
 ---
-
-<module-excerpt>
-
-More practice with data structures introduced in bronze.
-
-</module-excerpt>
 
 (set iterators?)
 
