@@ -1,7 +1,7 @@
 ---
 id: intro-nt
 title: "Introductory Number Theory"
-author: Darren Yao
+author: Darren Yao, Michael Cao
 prerequisites:
  - 
      - Gold - Introduction to Dynamic Programming
@@ -84,7 +84,23 @@ $$
 
 ### Modular Exponentiation
 
-?
+**Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ 10$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {\lfloor{\log_2n} \rfloor}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results$\mod m$.
+
+Here is C++ code to compute $x ^ n \mod m$:
+(not tested)
+```cpp
+long long binpow(long long x, long long n, long long m) {
+    x %= m;
+    long long res = 1;
+    while (n > 0) {
+        if (n % 2 == 1) //if n is odd
+            res = res * x % m;
+        x = x * x % m;
+        n >>= 1; //divide by two
+    }
+    return res;
+}
+```
 
 ### Modular Inverse
 

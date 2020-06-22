@@ -1,7 +1,7 @@
 ---
 id: dsu
 title: "Disjoint Set Union"
-author: Benjamin Qi
+author: Benjamin Qi, Michael Cao 
 prerequisites:
  - 
      - Silver - Depth First Search
@@ -10,7 +10,8 @@ description: ?
 
 ## Tutorial
 
-- Requires "Disjoint Set Union" (DSU) data structure
+ - Requires "Disjoint Set Union" (DSU) data structure
+ - Chapter 10.6 of "An Introduction to the US Computing Olympiad"
  - [CSAcademy Disjoint-Set](https://csacademy.com/lesson/disjoint_data_sets)
  - [Topcoder Union Find](https://www.topcoder.com/community/data-science/data-science-tutorials/disjoint-set-data-structures/)
  - [CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
