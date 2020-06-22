@@ -20,8 +20,11 @@ prerequisites:
 
 ## Problems
 
-[[info | Pro Tip]]
-| Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! 
+<info-block title="Pro Tip">
+
+Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! 
+
+</info-block>
 
   * [CSES - Tree Matching](https://cses.fi/problemset/task/1130)
   * [Subtree](https://atcoder.jp/contests/dp/tasks/dp_v)

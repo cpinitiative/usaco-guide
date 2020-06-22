@@ -18,17 +18,6 @@ export const plugins = [
       gatsbyRemarkPlugins: [
         `gatsby-remark-autolink-headers`,
         {
-          resolve: 'gatsby-remark-custom-blocks',
-          options: {
-            blocks: {
-              info: {
-                containerElement: 'info-block',
-                title: 'optional',
-              },
-            },
-          },
-        },
-        {
           resolve: `gatsby-remark-katex`,
           options: {
             // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here

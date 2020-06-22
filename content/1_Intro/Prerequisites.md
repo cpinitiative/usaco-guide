@@ -55,8 +55,11 @@ In particular, contestants using Java should be familiar with roughly the first 
  - We recommend you finish Sololearn up to (but not including) "More on Classes."
  - Also see [Ch 2 of PAPS](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
 
-[[info | Pro Tip]]
-| You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
+<info-block title="Pro Tip">
+
+You do not need to learn pointers (for now). Knowledge of structs and classes is useful but not required.
+
+</info-block>
 
 ## Resources for Getting Started
 

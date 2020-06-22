@@ -59,14 +59,20 @@ const components = {
   },
   'module-excerpt': props => <div {...props} />,
   spoiler: SpoilerComponent,
-  'info-block': ({ children }) => (
-    <div className="rounded-md bg-blue-50 p-4 info-block mb-4">
+  'info-block': ({
+    children,
+    title,
+  }: {
+    children: React.ReactNode;
+    title: string;
+  }) => (
+    <div className="rounded-md bg-blue-50 p-4 mb-12 info-block">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg
             className="h-5 w-5 text-blue-400"
-            viewBox="0 0 20 20"
             fill="currentColor"
+            viewBox="0 0 20 20"
           >
             <path
               fillRule="evenodd"
@@ -75,7 +81,10 @@ const components = {
             />
           </svg>
         </div>
-        <div className="ml-3">{children}</div>
+        <div className="ml-3">
+          <h3 className="info-block__heading">{title}</h3>
+          <div className="info-block__body">{children}</div>
+        </div>
       </div>
     </div>
   ),

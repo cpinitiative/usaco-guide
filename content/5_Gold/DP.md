@@ -15,8 +15,11 @@ prerequisites:
 
 </module-excerpt>
 
-[[info | Contest Tip]]
-| Usually at least one problem from every gold division contest involves some sort of DP.
+<info-block title="Contest Tip">
+
+Usually at least one problem from every gold division contest involves some sort of DP.
+
+</info-block>
 
 ## Tutorial
 
@@ -43,8 +46,11 @@ Practice makes perfect. Start by doing some classical problems (try at least one
 
 The following USACO problems don't fall into any of the categories below. Arranged roughly in order of difficulty. 
 
-[[info | Pro Tip]]
-| Sometimes it's a good idea to write a slower polynomial-time solution and then optimize it to the desired complexity (say, write $O(N^2)$ first and then speed it up to $O(N)$).
+<info-block title="Pro Tip">
+
+Sometimes it's a good idea to write a slower polynomial-time solution and then optimize it to the desired complexity (say, write $O(N^2)$ first and then speed it up to $O(N)$).
+
+</info-block>
 
  - [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
    - `dp[first i games][# changes][last gesture] -> max games won`
