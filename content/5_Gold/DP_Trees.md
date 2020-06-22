@@ -7,16 +7,14 @@ prerequisites:
      - Silver - Depth First Search
  - 
      - Gold - Introduction to Dynamic Programming
+description: What it sounds like.
 ---
 
-<module-excerpt>
-
-</module-excerpt>
 
 ## Tutorial
 
   * [DP on Trees (Codeforces)](https://codeforces.com/blog/entry/20935)
-  * [NOI PDF](https://noi.ph/training/weekly/week5.pdf) 
+  * [NOI PDF (Philippines)](https://noi.ph/training/weekly/week5.pdf) 
 
 ## Problems
 

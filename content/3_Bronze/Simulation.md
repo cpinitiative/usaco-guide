@@ -2,7 +2,7 @@
 id: simulation
 title: "Simulation"
 author: Darren Yao
-description: In many problems, we can just **simulate** what we're told to do by the problem statement. 
+description: In many problems, we can just simulate what we're told to do by the problem statement. 
 ---
 
 Since there's no formal algorithm involved, the intent of the problem is to assess competence with one's programming language of choice and knowledge of built-in data structures. At least in USACO Bronze, when a problem statement says to find the end result of some process, or to find when something occurs, it's usually sufficient to simulate the process naively.

@@ -1,11 +1,9 @@
 ---
 id: SRQ
-title: "1D Static Range Queries"
+title: "Static Range Queries"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - todo
-description: todo
+description: Range queries for any associative operation over a static array.
 ---
 
 Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ where $\ominus$ denotes any associative operation.
@@ -45,12 +43,12 @@ for each $M< r\le R$. Then the answer for all queries satisfying $l\le M< r$ is 
 
 Actually, this can be adjusted to answer queries online in $O(1)$ time each. See my implementation [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RangeQuery.h).
 
-<optional-content title="Preprocessing in $O(N\log \log N)$ time">
+<optional-content title="Faster Preprocessing">
 
-This data structure is known as **sqrt-tree**.
+A data structure known as **sqrt-tree** can speed up preprocessing time to $O(N\log \log N)$.
 
- * [Pt 1](http://codeforces.com/blog/entry/57046)
- * [Pt 2](http://codeforces.com/blog/entry/59092)
+ * [CF Blog Pt 1](http://codeforces.com/blog/entry/57046)
+ * [CF Blog Pt 2](http://codeforces.com/blog/entry/59092)
 
 </optional-content>
 

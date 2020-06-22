@@ -2,7 +2,7 @@
 id: running-cpp
 title: Running C++
 author: Nathan Wang, Benjamin Qi, Anthony Wang
-description: Running C++ both online and locally.
+description: Options for running C++ both online and locally.
 ---
 
 # Running C++ Online

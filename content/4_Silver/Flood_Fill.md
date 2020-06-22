@@ -5,7 +5,7 @@ author: Siyong Huang
 prerequisites: 
  - 
      - Silver - Depth First Search
-description: Refers to finding the number of connected components in a graph, particularly when the graph is a grid.
+description: Finding connected components in a graph that is respresented by a grid.
 ---
 
 ## Flood Fill](https://en.wikipedia.org/wiki/Flood_fill)

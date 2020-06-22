@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
-description: ?
+description: Visiting all edges of a graph exactly once.
 ---
 
 Has not appeared on a recent USACO contest.

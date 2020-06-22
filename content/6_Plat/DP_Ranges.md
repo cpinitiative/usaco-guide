@@ -5,7 +5,7 @@ author: Michael Cao
 prerequisites: 
  - 
      - Gold - Introduction to Dynamic Programming
-description: ?
+description: Solving the problem on every contiguous subarray of the original array.
 ---
 
 ## Problems

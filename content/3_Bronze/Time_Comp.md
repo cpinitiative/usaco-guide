@@ -2,10 +2,10 @@
 id: time-comp
 title: "Time Complexity"
 author: Darren Yao, Benjamin Qi
-description: In programming contests, your program needs to finish running within a certain timeframe in order to receive credit.
+description: Measuring how long your algorithm takes to run in terms of the input size.
 ---
 
-For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is $10^8$ (but could be closer to $5 \cdot 10^8$ given good constant factors).
+In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is $10^8$ (but could be closer to $5 \cdot 10^8$ given good constant factors).
 
 (define time complexity?)
 

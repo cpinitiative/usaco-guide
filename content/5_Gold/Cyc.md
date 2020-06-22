@@ -1,18 +1,16 @@
 ---
 id: cyc
-title: Cycle Detection & Functional Graphs
+title: Cycle Detection
 author: Siyong Huang
 prerequisites: 
  - 
      - Silver - Functional Graphs
  - 
      - Gold - Breadth First Search
-description: A *cycle* is a non-empty path of distinct edges that start and end at the same node. (what about distinct vertices?)
+description: A simple cycle is a non-empty path of distinct edges that start and end at the same vertex such that no vertex appears more than once. Describes how to detect cycles in both directed and undirected graphs.
 ---
 
 *Cycle detection* determines properties of cycles in a directed or undirected graph, such as whether each node of the graph is part of a cycle or just checking whether a cycle exists. 
-
-A related topic is **strongly connected components**, a platinum level concept.
 
 ## Undirected Graphs
 

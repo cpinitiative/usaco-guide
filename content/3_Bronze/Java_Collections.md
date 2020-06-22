@@ -2,12 +2,12 @@
 id: collections
 title: Built-In Java Collections
 author: Darren Yao
-description: Introduces data structures from Java [Collections](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) that are frequently used in competitive programming.
+description: Introduces data structures from Java Collections that are frequently used in competitive programming.
 ---
 
 A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
 
-Java default `Collections` data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
+Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
 ```java
 ArrayList<String> list = new ArrayList<String>();

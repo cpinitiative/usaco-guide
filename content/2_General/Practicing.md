@@ -2,7 +2,7 @@
 id: practicing
 title: How to Practice 
 author: Many
-description: How to practice, when to read editorials (analyses), etc.
+description: How to practice and when to read editorials (analyses) according to various USACO competitors.
 ---
 
 Knowing when to "give up" on a problem and start reading its editorial is challenging. Below are the opinions of various individuals. Note that "give up" is in quotes, because one still learns when they "give up" and read an editorial!

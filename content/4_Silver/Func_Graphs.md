@@ -5,7 +5,7 @@ author: Siyong Huang
 prerequisites: 
  - 
      - Silver - Depth First Search
-description: Introduces functional graphs.
+description: A functional graph is a digraph in which every vertex has exactly one outgoing edge.
 ---
 
 ### Tutorial
@@ -13,7 +13,7 @@ description: Introduces functional graphs.
  - CPH 16.3: successor paths
  - CPH 16.4: cycle detection in successor graph
 
-In silver-level directed cycle problems, it is generally the case that each node has exactly one edge going out of it. This is known as a **successor graph** or a **functional graph.**
+Aka **successor graph**.
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
 

@@ -2,7 +2,7 @@
 id: intro-sorting
 title: "Introduction to Sorting"
 author: Siyong Huang, Michael Cao, Nathan Chen
-description: Introduces sorting, binary search on a sorted array, coordinate compression.
+description: Introduces sorting and binary searching on a sorted array.
 ---
 
 **Sorting** is exactly what it sounds like: arranging items in some particular order. 

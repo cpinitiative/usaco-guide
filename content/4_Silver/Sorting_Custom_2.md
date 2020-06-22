@@ -7,7 +7,7 @@ prerequisites:
      - Bronze - Introduction to Graphs
  - 
      - Silver - Sorting with Custom Comparators
-description: More information about sorting with custom comparators in C++. Some overlap with the previous article.
+description: More information about sorting with custom comparators in C++. Some overlap with the previous module.
 ---
 
 ## Additional Resources

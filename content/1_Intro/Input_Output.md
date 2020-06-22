@@ -2,7 +2,7 @@
 id: io
 title: Input & Output
 author: Darren Yao
-description: Demonstrates how to read input and print output for USACO.
+description: Demonstrates how to read input and print output for USACO contests.
 ---
 
 ## Standard I/O

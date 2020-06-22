@@ -2,14 +2,12 @@
 id: containers
 title: Built-In C++ Containers
 author: Darren Yao
-description: Introduces C++ [containers](http://www.cplusplus.com/reference/stl/) that are frequently used in competitive programming.
+description: Introduces C++ containers that are frequently used in competitive programming.
 ---
 
 A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. 
 
-# Containers
-
-The C++ standard library data structures are designed to store any type of data. We put the desired data type within the `<>` brackets when declaring the data structure, as follows:
+The C++ [standard library data structures](http://www.cplusplus.com/reference/stl/) are designed to store any type of data. We put the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
 ```cpp
 vector<string> v;

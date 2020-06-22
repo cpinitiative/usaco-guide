@@ -5,6 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Silver - Depth First Search
+description: Finding a pair of vertices of a tree that are farthest apart.
 ---
 
 ### Tutorial

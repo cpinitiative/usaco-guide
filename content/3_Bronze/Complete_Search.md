@@ -2,10 +2,10 @@
 id: complete-search
 title: "Complete Search"
 author: Darren Yao
-description: Checking all possible cases in the solution space.
+description: In many problems (especially in Bronze) it suffices to check all possible cases in the solution space.
 ---
 
-In many problems (especially in Bronze), it's sufficient to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
+In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
 
 ## Example 1
 

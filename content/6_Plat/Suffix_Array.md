@@ -2,7 +2,7 @@
 id: suffix-array
 title: "Suffix Array"
 author: Benjamin Qi
-description: ?
+description: Sorting Suffixes of a String
 prerequisites:
  - 
      - Gold - Hashing

@@ -5,12 +5,11 @@ author: Benjamin Qi, Michael Cao
 prerequisites:
  - 
      - Silver - Depth First Search
-description: ?
+description: The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.
 ---
 
 ## Tutorial
 
- - Requires "Disjoint Set Union" (DSU) data structure
  - Chapter 10.6 of "An Introduction to the US Computing Olympiad"
  - [CSAcademy Disjoint-Set](https://csacademy.com/lesson/disjoint_data_sets)
  - [Topcoder Union Find](https://www.topcoder.com/community/data-science/data-science-tutorials/disjoint-set-data-structures/)

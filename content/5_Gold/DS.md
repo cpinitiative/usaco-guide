@@ -5,13 +5,8 @@ author: Michael Cao
 prerequisites: 
  - 
      - Silver - Data Structures
+description: Monotonic stack and sliding window.
 ---
-
-<module-excerpt>
-
-More advanced applications of data structures introduced in earlier divisions.
-
-</module-excerpt>
 
 # Monotonic Stack
 

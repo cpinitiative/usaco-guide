@@ -5,12 +5,10 @@ author: Siyong Huang
 prerequisites: 
  - 
      - Bronze - Introduction to Graphs
-description: Introduces Depth First Search (DFS).
+description: A way to traverse a graph using recursion.
 ---
 
 ## Depth First Search
-
-*Depth First Search* (more commonly DFS) is a fundamental graph algorithm that traverses an entire connected component. The rest of this document describes various applications of DFS. Of course, it is one possible way to implement flood fill. *Breadth first search* (BFS) is **not** required for silver.
 
  - [CSES Building Roads](https://cses.fi/problemset/task/1666)
 
