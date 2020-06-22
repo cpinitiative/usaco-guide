@@ -425,6 +425,14 @@ export default function Template(props) {
                 </div>
               </div>
               <div className="py-4">
+                {mdx.frontmatter.description && (
+                  <div className="rounded-md bg-green-50 p-4 border border-green-500 mb-6">
+                    <p className="text-sm leading-5 font-medium text-green-800">
+                      {mdx.frontmatter.description}
+                    </p>
+                  </div>
+                )}
+
                 {prereqs && (
                   <div className="rounded-md bg-blue-50 p-4 mb-12">
                     <div className="flex">
@@ -477,6 +485,7 @@ export const pageQuery = graphql`
         author
         id
         prerequisites
+        description
       }
     }
     allMdx {
