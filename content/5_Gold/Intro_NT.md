@@ -2,15 +2,11 @@
 id: intro-nt
 title: "Introductory Number Theory"
 author: Darren Yao
+prerequisites:
+ - 
+     - Gold - Introduction to Dynamic Programming
+description: Prime Factorization, GCD & LCM, Modular Arithmetic
 ---
-
-<module-excerpt>
-
-- Prime Factorization
- - GCD & LCM
- - Modular Arithmetic
-
-</module-excerpt>
 
 ## Additional Resources
 

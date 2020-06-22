@@ -4,12 +4,11 @@ title: Flood Fill
 author: Siyong Huang
 prerequisites: 
  - 
-     - Silver - DFS
+     - Silver - Depth First Search
+description: Refers to finding the number of connected components in a graph, particularly when the graph is a grid.
 ---
 
-## Flood Fill
-
-[Flood Fill](https://en.wikipedia.org/wiki/Flood_fill) refers to finding the number of connected components in a graph, usually when the graph is a grid.
+## Flood Fill](https://en.wikipedia.org/wiki/Flood_fill)
 
  - [CSES Counting Rooms](https://cses.fi/problemset/task/1192)
  - [CSES Labyrinth](https://cses.fi/problemset/task/1193)

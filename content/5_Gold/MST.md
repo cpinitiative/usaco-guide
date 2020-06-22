@@ -7,14 +7,13 @@ prerequisites:
      - Gold - Shortest Paths
  - 
      - Gold - Disjoint Set Union
+description: ?
 ---
 
 ## Standard
 
  - [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
    - same as [CSES Road Reparation](https://cses.fi/problemset/task/1675)
-
-with rollback: https://codeforces.com/contest/1140/problem/F
 
 ## Tutorial
 
@@ -28,12 +27,11 @@ with rollback: https://codeforces.com/contest/1140/problem/F
 
 ## USACO Gold Problems
 
- - MST
-   - [Old Silver - SuperBull](http://www.usaco.org/index.php?page=viewproblem2&cpid=531)
-   - [Walk](http://usaco.org/index.php?page=viewproblem2&cpid=946)
-     - Prim's is applicable, but the edge weights are special so you don't actually need to use an MST algo ...
-   - [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
-     - also special ...
+ - [Old Silver - SuperBull](http://www.usaco.org/index.php?page=viewproblem2&cpid=531)
+ - [Walk](http://usaco.org/index.php?page=viewproblem2&cpid=946)
+   - Prim's is applicable, but the edge weights are special so you don't actually need to use an MST algo ...
+ - [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
+   - also special ...
 
 ## Other Problems
 

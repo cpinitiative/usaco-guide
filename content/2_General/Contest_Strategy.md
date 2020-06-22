@@ -2,13 +2,10 @@
 id: contest-strategy
 title: Contest Strategy
 author: Nathan Chen
+description: The best contest strategy is to go in knowing everything. However, only few people can do this, see [BenQ](https://codeforces.com/profile/benq) or [TMW](https://codeforces.com/profile/tmwilliamlin168). (I kid). 
 ---
 
 (pdf?)
-
-The best contest strategy is to go in knowing everything. However, only few people can do this, see [BenQ](https://codeforces.com/profile/benq) or [TMW](https://codeforces.com/profile/tmwilliamlin168). (I kid). 
-
-<!-- END DESCRIPTION -->
 
 Once the timer starts, there's no more studying you can do, and managing your time wisely is the best thing you can do to maximize your score.
 

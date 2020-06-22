@@ -5,11 +5,8 @@ author: Michael Cao
 prerequisites: 
  - 
      - Gold - Introduction to Dynamic Programming
+description: ?
 ---
-
-<module-excerpt>
-
-</module-excerpt>
 
 ## Problems
 

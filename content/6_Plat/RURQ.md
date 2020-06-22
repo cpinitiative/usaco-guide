@@ -1,14 +1,12 @@
 ---
-id: 1DRURQ
-title: "1D Range Update Range Query"
+id: RURQ
+title: "Range Update Range Query"
 author: Benjamin Qi
 prerequisites: 
  - 
-     - Platinum - 1D Point Update Range Query
-description: General range queries for associative operations with segment tree.
+     - Gold - Point Update Range Query
+description: Can be accomplished with **lazy** update on a segment tree or two binary indexed trees.
 ---
-
-In particular, note that **lazy** updates allow you to range updates as well.
 
 ## Lazy Segment Tree
 

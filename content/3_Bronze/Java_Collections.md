@@ -2,13 +2,8 @@
 id: collections
 title: Built-In Java Collections
 author: Darren Yao
+description: Introduces data structures from Java [Collections](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) that are frequently used in competitive programming.
 ---
-
-<module-excerpt>
-
-Introduces data structures from Java [Collections](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) that are frequently used in competitive programming.
-
-</module-excerpt>
 
 A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
 

@@ -19,9 +19,11 @@ description: Running C++ both online and locally.
    - make sure your code is not public
    - sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
-You can't use file I/O on the latter two websites. You can also share code with [pastebin](https://pastebin.com/) or [hastebin](https://hastebin.com/).
+You can share code with [pastebin](https://pastebin.com/) or [hastebin](https://hastebin.com/).
 
 # Running C++ Locally
+
+[PAPC Ch 2.1](http://www.csc.kth.se/~jsannemo/slask/main.pdf) is one option.
 
 ## On Windows
 
@@ -207,15 +209,18 @@ Now you can easily compile and run `name.cpp` from the command line with `co nam
 Run with the command line.
 
  - [Sublime Text 3](https://www.sublimetext.com/)
-   - a fast, lightweight text editor for Windows, Mac, and Linux
+   - fast, lightweight text editor for Windows, Mac, and Linux
    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
+     - no need to do this if you just use command line to compile & run
    - [FastOlympicCoding Addon](https://github.com/Jatana/FastOlympicCoding)
+     - see "Debugging" for another way to stress test
    - [Sublime Snippets](https://www.granneman.com/webdev/editors/sublime-text/top-features-of-sublime-text/quickly-insert-text-and-code-with-sublime-text-snippets)
+     - Ben - I use to insert templates
    - [Symlink](https://www.sublimetext.com/docs/3/osx_command_line.html) 
-     - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
+     - Ben - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
  - [Atom](https://atom.io/)
    - another text editor for Windows, Mac, and Linux from the makers of Github
  - [Vim](https://www.vim.org/) 
    - classic text editor, usually preinstalled on Mac and Linux, and also available for Windows
-   - probably easiest way to print syntax-highlighted code on Mac, see the response to [this](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting) post
+   - probably easiest way to print syntax-highlighted code on Mac, see the response to [this post](https://stackoverflow.com/questions/1656914/printing-code-with-syntax-highlighting)
  - Others?

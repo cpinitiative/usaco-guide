@@ -3,11 +3,14 @@ id: binjump
 title: "Binary Jumping"
 author: Benjamin Qi
 prerequisites: 
+description:
 ---
 
-https://cses.fi/problemset/task/1750
+## Binary Jumping
 
-   - [CSES Company Queries I](https://cses.fi/problemset/task/1687)
+  - CSES
+    - [Planet Queries I](https://cses.fi/problemset/task/1750)
+    - [Company Queries I](https://cses.fi/problemset/task/1687)
 
 ## Lowest Common Ancestor
 

@@ -2,13 +2,8 @@
 id: containers
 title: Built-In C++ Containers
 author: Darren Yao
+description: Introduces C++ [containers](http://www.cplusplus.com/reference/stl/) that are frequently used in competitive programming.
 ---
-
-<module-excerpt>
-
-Introduces C++ [containers](http://www.cplusplus.com/reference/stl/) that are frequently used in competitive programming.
-
-</module-excerpt>
 
 A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. 
 

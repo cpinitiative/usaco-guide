@@ -1,42 +1,24 @@
 ---
-id: graphs
-title: "Graphs"
+id: more-dfs
+title: "More on DFS"
 author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Topological Sort
+description: Includes 2-edge-connected components, strongly connected components, and biconnected components.
 ---
-
-<module-excerpt>
-
- - Eulerian Tours
- - SCCs
- - BCCs
-
-</module-excerpt>
-
-Note: all except the third have not appeared on a recent USACO contest.
 
 *Some problems sourced from [here](http://codeforces.com/blog/entry/54526?#comment-385354).*
 
-## Eulerian Tours
+ - [CF DFS Tree + Bridges](https://codeforces.com/blog/entry/68138)
 
-Has not appeared on a recent USACO contest.
+## 2-Edge Connected Components
 
-### Standard
+[yosupo](https://judge.yosupo.jp/problem/two_edge_connected_components)
 
- - [Mail Delivery](https://cses.fi/problemset/task/1691)
-  - Undirected Euler Tour
- - [Teleporters](https://cses.fi/problemset/task/1693)
-  - Directed Euler Tour
+### Problems 
 
-### Tutorial
-
- - CPH (19, Path & Circuits)
-
-### Problems
-
- - [Matching Substrings](https://csacademy.com/contest/archive/task/matching-substrings/) [](87)
+ - SRM 787 1000
 
 ## Strongly Connected Components
 
@@ -65,7 +47,7 @@ Has not appeared on a recent USACO contest.
  - [Proving Equivalences](https://open.kattis.com/problems/equivalences) [](78)
  - [Festival](https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement) [](173)
 
-## Biconnected Components
+## [Biconnected Components](https://en.wikipedia.org/wiki/Biconnected_component)
 
 Related topics include
 
@@ -73,11 +55,11 @@ Related topics include
  - Bridges
  - Block-Cut Tree
 
+(implementation)
+
 ### Tutorial
 
  - [GeeksforGeeks](http://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/)
- - [Wikipedia](https://en.wikipedia.org/wiki/Biconnected_component)
- - [CF DFS Tree + Bridges](https://codeforces.com/blog/entry/68138)
 
 ### Problems
 
@@ -88,3 +70,4 @@ Related topics include
  - [POLICIJA](http://wcipeg.com/problem/coi06p2)
  - [One-Way Streets](https://csacademy.com/contest/archive/task/one-way-streets/)
  - [Investment](https://dmoj.ca/problem/tle17c1p6)
+ - CEOI problem?

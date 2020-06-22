@@ -2,13 +2,8 @@
 id: proposing
 title: Proposing Problems for USACO Monthlies
 author: Benjamin Qi
+description: Anyone can propose problems for monthly contests.
 ---
-
-<module-excerpt>
-
-Anyone can propose problems for monthly contests.
-
-</module-excerpt>
 
 Email your proposal to Professor Dean. In the [past](http://www.usaco.org/index.php?page=viewproblem2&cpid=817), contestants have even written problems for their own divisions!
 

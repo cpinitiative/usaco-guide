@@ -2,16 +2,13 @@
 id: ds
 title: Data Structures
 author: Nathan Wang, Darren Yao, Benjamin Qi
-order: 5
+description: Problems and additional resources regarding built-in data structures.
+prerequisites: 
+ - 
+     - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
 ---
 
-<module-excerpt>
-
-Problems and additional resources regarding built-in data structures.
-
 (clean this up)
-
-</module-excerpt>
 
 ## Problems
 
