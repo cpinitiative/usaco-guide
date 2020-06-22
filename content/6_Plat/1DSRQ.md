@@ -20,9 +20,13 @@ Consider the case when $\ominus$ denotes `min`.
  - CPH 9.1
  - [cp-algorithms RMQ](https://cp-algorithms.com/sequences/rmq.html)
 
+<optional-content title="Preprocessing in O(N)">
+
 In fact, preprocessing can be done in $O(N)$ time.
 
  - [$O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
+ 
+</optional-content>
 
 ### Divide & Conquer
 
