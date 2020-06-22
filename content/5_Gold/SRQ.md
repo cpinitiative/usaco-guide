@@ -4,9 +4,11 @@ title: "1D Static Range Queries"
 author: Benjamin Qi
 prerequisites: 
  - 
-     - ?
-description: Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ where $\ominus$ denotes any associative operation. 
+     - todo
+description: todo
 ---
+
+Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ where $\ominus$ denotes any associative operation.
 
 This can be done in $O(1)$ time each with $O(N\log N)$ time preprocessing.
 

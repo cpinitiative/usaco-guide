@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Platinum - Range Update Range Query
-description: Extending Range Queries to 2D (and beyond).
+description: "Extending Range Queries to 2D (and beyond)."
 ---
 
 See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)).
@@ -29,10 +29,12 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
      - [my 2D offline BIT](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h)
 
 <optional-content title="Range Update and Range Query in Higher Dimensions">
+
 You can extend the 1D BIT solution for range update range query to higher dimensions as well 
 
  - [Paper](https://arxiv.org/pdf/1311.6093.pdf)
  - USACO Camp - "Cows Play Global Thermonuclear War" (2D case)
+ 
 </optional-content>
 
 ### Problems

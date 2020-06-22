@@ -7,7 +7,7 @@ prerequisites:
      - Recursion
  - 
      - Silver - Prefix Sums
-description: **Dynamic Programming (DP)** is a very important concept which emerges in the Gold division and extends to the IOI.
+description: Dynamic Programming (DP) is a very important concept which emerges in the Gold division and extends to the IOI.
 ---
 
 <info-block title="Contest Tip">

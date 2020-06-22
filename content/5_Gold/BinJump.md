@@ -2,8 +2,7 @@
 id: binjump
 title: "Binary Jumping"
 author: Benjamin Qi
-prerequisites: 
-description:
+description: Todo
 ---
 
 ## Binary Jumping

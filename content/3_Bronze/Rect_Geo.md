@@ -2,7 +2,7 @@
 id: rect-geo
 title: "Rectangle Geometry"
 author: Darren Yao, Michael Cao
-description: "Geometry" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles. 
+description: "\"Geometry\" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles." 
 ---
 
  - Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 

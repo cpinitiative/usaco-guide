@@ -5,8 +5,10 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - some familiarity with at least one of the two tutorials mentioned in this module
-description: **Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
+description: If you have piecewise linear convex functions, you may be able to use the Slope Trick.
 ---
+
+**Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
 
 ## Tutorials
 

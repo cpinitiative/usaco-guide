@@ -30,7 +30,7 @@ const ModuleOrdering = {
       items: [
         "collections",
         "containers",
-        "pairs",
+        "pairs-tuples",
         "ds",
       ]
     },

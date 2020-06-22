@@ -4,7 +4,6 @@ title: Pairs & Tuples
 author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao
 order: 6
 description: A **pair** is a structure that holds two values, not necessarily of the same type. (tuples?)
-
 ---
 
 ## Pairs
