@@ -12,7 +12,7 @@ prerequisites:
      - Intro - Data Types
  - 
      - Intro - Input & Output
-description: Solutions for an "USACO Bronze - Fence Painting" in multiple languages. 
+description: Solutions for "USACO Bronze - Fence Painting" in multiple languages. 
 ---
 
 [Technical Specifications for USACO Contests](http://www.usaco.org/index.php?page=instructions)

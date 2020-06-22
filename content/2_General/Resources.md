@@ -2,13 +2,10 @@
 id: resources
 title: Additional Resources
 author: Benjamin Qi
+description: A bunch of helpful links.
 ---
 
-<module-excerpt>
-
-Helpful Links! Some (such as **CPH** and **Intro to USACO**) will be mentioned again in later modules.
-
-</module-excerpt>
+Some (such as **CPH** and **Intro to USACO**) will be mentioned again in later modules.
 
 ## Lists
 
@@ -20,7 +17,7 @@ Helpful Links! Some (such as **CPH** and **Intro to USACO**) will be mentioned a
   * [Competitive Programmer's Handbook (CPH)](https://cses.fi/book/book.pdf)
     * The [CSES problemset](https://cses.fi/problemset/) (now at 200 problems) is quite good!
     * [Guide to Competitive Programming](https://www.amazon.com/Guide-Competitive-Programming-Algorithms-Undergraduate/dp/3319725467) is a paid book based off CPH
-      * Can currently download PDF [for free](https://link.springer.com/book/10.1007/978-3-319-72547-5)!
+      * Can currently download PDF for [free](https://link.springer.com/book/10.1007/978-3-319-72547-5)!
   * Intro to USACO (Darren Yao) 
     * Bronze, Silver
     * [Java](http://darrenyao.com/usacobook/java.pdf)
@@ -29,25 +26,38 @@ Helpful Links! Some (such as **CPH** and **Intro to USACO**) will be mentioned a
     * [Competitive Programming Book 1](http://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf) is freely available but old
     * [Competitive Programming 4](https://cpbook.net/) is the latest edition of the book (with significant additions) but costs money.
       * Release date is July 19th, 2020.
+  * [Principles of Algorithmic Problem Solving (PAPS)](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
   * [Samuel Hsiang - CS Guide](https://github.com/alwayswimmin/cs_guide)
     * [TJSCT](https://activities.tjhsst.edu/sct/)
     * [TJIOI](https://github.com/tjsct/tjioi-study-guide)
-  * [Principles of Algorithmic Problem Solving](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
-  * [Cracking the Coding Interview](http://www.crackingthecodinginterview.com/) is a good book specifically for programming interviews (it is not needed for USACO).
+  * [Cracking the Coding Interview](http://www.crackingthecodinginterview.com/)
+    * good book specifically for programming interviews
 
 ## Courses
 
   * [Competitive Programming Course (SuprDewd)](https://github.com/SuprDewd/T-414-AFLV)
   * [Cousera Algorithms Pt 1 (and Pt 2)](https://www.coursera.org/learn/algorithms-part1)
-  * [Carnegie-Mellon ICPC](https://contest.cs.cmu.edu/295/f17/)
-  * [VPlanet](https://vplanetcoding.com/)
+  * [Carnegie-Mellon ICPC Course](https://contest.cs.cmu.edu/295/f17/)
+    * topic-specific contests in CF group
 
 ## Algorithm Collections
 
   * [CSAcademy](https://csacademy.com/lessons/)
   * [cp-algorithms](https://cp-algorithms.com/)
   * [KTH ICPC Team Reference (KACTL)](https://github.com/kth-competitive-programming/kactl)
-  * [bqi343 Github](https://github.com/bqi343/USACO)
-  * [Topcoder Tutorials](http://www.topcoder.com/community/data-science/data-science-tutorials/)
+  * [Topcoder Data Science Tutorials](http://www.topcoder.com/community/data-science/data-science-tutorials/)
   * [List of CF Tutorials](http://codeforces.com/blog/entry/57282)
-  * [ekzlib](http://ekzlib.herokuapp.com)
+
+## By USACO Finalists
+
+  - [VPlanet](https://www.vplanetcoding.com/courses)
+    - Riya Arora
+    - courses for various levels
+  - [ekzlib](http://ekzlib.herokuapp.com)
+    - Eric Zhang
+    - (advanced) implementations
+  - [bqi343 USACO Github](https://github.com/bqi343/USACO)
+    - Benjamin Qi
+    - implementations
+    - ICPC book
+    - past USACO solutions
