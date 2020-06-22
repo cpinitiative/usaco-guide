@@ -57,7 +57,7 @@ To compute the sum in the range, instead of using a set, we can store a variable
 	- Direct application of sliding window.
 - [Train Tracking 2 (Plat)]([http://www.usaco.org/current/data/sol_train_platinum_open18.html](http://www.usaco.org/current/data/sol_train_platinum_open18.html))
 	- Not really sliding window but mentions it.
-	- Extremely difficult.
+	- **Extremely difficult.**
 
 (add more once codeforces comes up)
 
@@ -85,6 +85,7 @@ Additionally, a set doesn't have to be an `std::set`. Many data structures can b
 | Prove that if you instead merge sets that have size equal to the depths of the subtrees, then small to large merging does $O(N)$ insert calls.
 
 ## Further Reading
+
 - "Merging Data Structures" from CPH 18
 
 ## Problems

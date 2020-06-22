@@ -107,6 +107,9 @@ int main()
 
 ### Problems
 
+ - CSES
+   - [Graph Girth](https://cses.fi/problemset/task/1707)
+   - [Planets Cycles](https://cses.fi/problemset/task/1751)
  - [Codeforces 1020B. Badge (Very Easy)](https://codeforces.com/contest/1020/problem/B)
    - Try to solve the problem in $O(N)$!
  - USACO Silver

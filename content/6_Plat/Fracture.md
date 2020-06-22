@@ -29,6 +29,8 @@ Suppose that you have a rooted tree where each vertex $i$ has a value $v_i$. Als
 
 We'll focus on the first approach.
 
+*Note:* There are ways to do this in $O(K)$ time for a binary tree if you don't need to return the values in sorted order (see [here](https://www.sciencedirect.com/science/article/pii/S0890540183710308)), but we won't consider this.
+
 ### Generalizing
 
 Suppose that you want to find the $K$ objects with the smallest values in some (potentially very large) search space. 
@@ -293,4 +295,8 @@ int main() {
  - [Baltic OI 2019 - Olympiads](https://cses.fi/248/list/)
    - Each state has $\le K$ children.
  - [CCO 20 Shopping Plans](https://dmoj.ca/problem/cco20p6)
-   - Generalization of Robotic Cow Herd
+   - Generalization of RoboHerd
+ - [K-th Shortest Walk](https://judge.yosupo.jp/problem/k_shortest_walk)
+   - (english description?)
+   - [Relevant Paper](https://www.ics.uci.edu/~eppstein/pubs/Epp-SJC-98.pdf)
+   - Can use to solve RoboHerd!

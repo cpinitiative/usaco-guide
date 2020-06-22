@@ -35,6 +35,10 @@ prerequisites:
 
 ### Problems
 
+ - CSES Trees
+   - [Subordinates](https://cses.fi/problemset/task/1674)
+   - [Tree Distances I](https://cses.fi/problemset/task/1132)
+   - [Tree Distances II](https://cses.fi/problemset/task/1133)
  - CF
    - [PolandBall & Forest](http://codeforces.com/problemset/problem/755/C) [](56)
    - [Bear & Friendship](http://codeforces.com/problemset/problem/771/A)
@@ -56,31 +60,6 @@ prerequisites:
    - [POI Hotels](https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement) [](61)
    - [Kattis Birthday Party (Easy)](https://open.kattis.com/problems/birthday)
      - DFS with each edge removed
- 
-
-## Flood Fill
-
-[Flood Fill](https://en.wikipedia.org/wiki/Flood_fill) refers to finding the number of connected components in a graph, usually when the graph is a grid.
-
- - [CSES Counting Rooms](https://cses.fi/problemset/task/1192)
- - [CSES Labyrinth](https://cses.fi/problemset/task/1193)
-
-### Tutorial
-
- - Recommended:
-   - Ch 10 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
-
-### Problems
-
- - [Ice Perimeter (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=895)
- - [Switching on the Lights (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=570)
- - [Build Gates (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=596)
- - [Milk Pails (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=620)
- - [Where's Bessie?](http://usaco.org/index.php?page=viewproblem2&cpid=740)
- - [Why Did the Cow Cross the Road III, Silver (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=716)
- - [Multiplayer Moo (Hard)](http://usaco.org/index.php?page=viewproblem2&cpid=836)
- - [Snow Boots (Hard)](http://usaco.org/index.php?page=viewproblem2&cpid=811)
- - [Mooyo Mooyo](http://usaco.org/index.php?page=viewproblem2&cpid=860)
 
 ## Graph Two-Coloring
 
@@ -99,18 +78,18 @@ The idea is that we can arbitrarily label a node and then run DFS. Every time we
 bool is_bipartite = true;
 void dfs(int node)
 {
-	visited[node] = true;
-	for(int u:adj_list[node])
-		if(visited[u])
-		{
-			if(color[u] == color[node])
-				is_bipartite = false;
-		}
-		else
-		{
-			color[u] = !color[node];
-			dfs(u);
-		}
+  visited[node] = true;
+  for(int u:adj_list[node])
+    if(visited[u])
+    {
+      if(color[u] == color[node])
+        is_bipartite = false;
+    }
+    else
+    {
+      color[u] = !color[node];
+      dfs(u);
+    }
 }
 ```
 

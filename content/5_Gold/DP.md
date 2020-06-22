@@ -115,9 +115,13 @@ The following USACO problems don't fall into any of the categories below. Arrang
 (add?)
 
  - [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
-    - Try to improve to $O(N\log N)$: [Solution](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html). 
- - [Cowjog](http://www.usaco.org/index.php?page=viewproblem2&cpid=489)
+    - Try to improve to $O(N\log N)$
+    - [Solution](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html). 
+ - [USACO Old Bronze Cowjog](http://www.usaco.org/index.php?page=viewproblem2&cpid=489)
     - Not so easy to see, but direct application of LIS.
  - [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
     - Challenging!
 
+## Other
+
+ - [CSES String Removals](https://cses.fi/problemset/task/1149)

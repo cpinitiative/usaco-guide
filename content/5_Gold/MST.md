@@ -5,18 +5,16 @@ author: Benjamin Qi
 prerequisites: 
  - 
      - Gold - Shortest Paths
+ - 
+     - Gold - Disjoint Set Union
 ---
-
-<module-excerpt>
-
-**Disjoint Set Union** and **Minimum Spanning Trees**
-
-</module-excerpt>
 
 ## Standard
 
  - [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
    - same as [CSES Road Reparation](https://cses.fi/problemset/task/1675)
+
+with rollback: https://codeforces.com/contest/1140/problem/F
 
 ## Tutorial
 
@@ -27,27 +25,15 @@ prerequisites:
  - Kruskal's Algorithm
    - [cp-algo 1](https://cp-algorithms.com/graph/mst_kruskal.html)
    - [cp-algo 2](https://cp-algorithms.com/graph/mst_kruskal_with_dsu.html)
-   - Requires "Disjoint Set Union" (DSU) data structure
-     - [CSAcademy Disjoint-Set](https://csacademy.com/lesson/disjoint_data_sets)
-     - [Topcoder Union Find](https://www.topcoder.com/community/data-science/data-science-tutorials/disjoint-set-data-structures/)
-     - [CPC.3](https://github.com/SuprDewd/T-414-AFLV/tree/master/03_data_structures)
-     - DSU Complexity Proofs (optional of course)
-       - [log\*n](https://en.wikipedia.org/wiki/Proof_of_O(log*n)\_time_complexity\_of_union%E2%80%93find)
-       - [a(m,n)](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
 
 ## USACO Gold Problems
 
  - MST
+   - [Old Silver - SuperBull](http://www.usaco.org/index.php?page=viewproblem2&cpid=531)
    - [Walk](http://usaco.org/index.php?page=viewproblem2&cpid=946)
      - Prim's is applicable, but the edge weights are special so you don't actually need to use an MST algo ...
    - [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
      - also special ...
- - DSU
-   - [Mootube](http://www.usaco.org/index.php?page=viewproblem2&cpid=789)
-     - same as [CSES Road Construction](https://cses.fi/problemset/task/1676)
-   - [Closing the Farm](http://www.usaco.org/index.php?page=viewproblem2&cpid=646)
-   - [Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
-     - fairly tricky
 
 ## Other Problems
 

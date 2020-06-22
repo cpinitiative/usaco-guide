@@ -9,10 +9,6 @@ prerequisites:
      - Gold - Introduction to Dynamic Programming
 ---
 
-<module-excerpt>
-
-</module-excerpt>
-
 Note: Has not appeared on recent USACO.
 
 ## Tutorial
@@ -29,3 +25,5 @@ Note: Has not appeared on recent USACO.
  * [CF Guards in the Storehouse](https://codeforces.com/problemset/problem/845/F)
  * [Kattis Cat & Mice](https://open.kattis.com/problems/catandmice) [](66)
    * plus a bit of geometry
+ * [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690)
+ * [CSES Elevator Rides](https://cses.fi/problemset/task/1653)

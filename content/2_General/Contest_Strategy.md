@@ -4,6 +4,8 @@ title: Contest Strategy
 author: Nathan Chen
 ---
 
+(pdf?)
+
 The best contest strategy is to go in knowing everything. However, only few people can do this, see [BenQ](https://codeforces.com/profile/benq) or [TMW](https://codeforces.com/profile/tmwilliamlin168). (I kid). 
 
 <!-- END DESCRIPTION -->

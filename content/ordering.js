@@ -6,10 +6,10 @@ const ModuleOrdering = {
     "data-types",
     "io",
     "ex-prob",
-    "practicing",
   ],
   "general": [
     "resources",
+    "practicing",
     "contests",
     "contest-strategy",
     "proposing",
@@ -51,14 +51,17 @@ const ModuleOrdering = {
     "dfs"
   ],
   "gold": [
+    "intro-nt",
     {
       name: "Graphs",
       items: [
         "bfs",
         "toposort",
         "cyc",
+        "dsu",
         "sp",
-        "mst"
+        "mst",
+        "sp-neg",
       ]
     },
     {
@@ -69,7 +72,6 @@ const ModuleOrdering = {
       ]
     },
     "data-structures-gold",
-    "intro-nt",
     "bit",
   ],
   "plat": [
@@ -77,15 +79,21 @@ const ModuleOrdering = {
     {
       name: "Range Queries",
       items: [
-        "1DRQ",
+        "1DSRQ",
+        "1DPURQ",
+        "1DRURQ",
         "2DRQ",
       ]
     },
     {
-      name: "Graphs",
+      name: "Trees",
       items: [
-        "trees",
-        "graphs",
+        "tree-dia",
+        "binjump",
+        "tree-euler",
+        "small-to-large",
+        "hld",
+        "centroid",
       ]
     },
     {
@@ -96,6 +104,7 @@ const ModuleOrdering = {
         "slope",
       ]
     },
+    "graphs",
     "geo",
     "strings",
     "bitsets",

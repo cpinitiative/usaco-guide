@@ -2,69 +2,14 @@
 id: debugging
 title: Debugging
 author: Benjamin Qi, Aaron Chew
+description: Detecting issues within your program and figuring out how to avoid them in the first place.
 ---
 
-<module-excerpt>
+## General
 
-Detecting issues within your program and figuring out how to avoid them in the first place.
+(asserts?)
 
-</module-excerpt>
-
-## Style Guide
-
-[Competitive C++ Manifesto: A Style Guide](https://codeforces.com/blog/entry/64218)
-
-## Compilation
-
-I use the following to compile and run.
-
-```
-co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
-run() { co $1 && ./$1 & fg; }
-```
-
-### Warnings
-
-See [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
-
-`-Wall -Wextra -Wshadow` 
-
-[Variable shadowing](https://en.wikipedia.org/wiki/Variable_shadowing) should be avoided whenever possible.
-
-### Stack Size
-
-According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449312), `-Wl,-stack_size -Wl,0xF0000000` increases the stack size on Mac (otherwise, you might get a runtime error). 
-
-(Documentation?)
-
-### Other
-
-`-fsanitize=undefined -fsanitize=address` 
-
-`-D_GLIBCXX_DEBUG -g`
-
-(someone want to explain these? I don't use)
-
-## Running
-
-According to [StackOverflow](https://stackoverflow.com/a/60516966/5834770) the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault).
-
-### Measuring Time & Memory Usage
-
- - [CF Comment](https://codeforces.com/blog/entry/49371?#comment-333749)
- - [time -v on Mac](https://stackoverflow.com/questions/32515381/mac-os-x-usr-bin-time-verbose-flag)
-
-## CppIO Template
-
-Although not feasible if you have to write all code from scratch, I find [this template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h) very helpful for simplifying input / output / debug output. Note that `dbg()` only produces debug output when `-DLOCAL` is included as part of the compilation command, so you don't need to comment out those lines before submitting.
-
-[Examples - Debug Output](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO_test.cpp)
-
-## Stress Testing
-
-You can use a [simple script](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh) to test two solutions against each other. See Errichto's [video](https://www.youtube.com/watch?v=JXTVOyQpSGM) on testing solutions for more information.
-
-## Using a Debugger
+### Using a Debugger
 
 Using a debugger varies from language to language and even IDE to different IDE. For now I will describe the basic operations of a debugger. 
 
@@ -85,3 +30,61 @@ Cons of using a debugger:
  
  - You cannot see the overall "output" of your program at each stage. For example, if I wanted to see every single value of `i` in the program, I could not using a debugger.
  - Most advanced competitive programmers do not use debuggers; it is quite time inefficient. 
+
+(actual details?)
+
+## C++
+
+### Style Guide
+
+[Competitive C++ Manifesto: A Style Guide](https://codeforces.com/blog/entry/64218)
+
+### Compilation
+
+I use the following to compile and run.
+
+```
+co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
+run() { co $1 && ./$1 & fg; }
+```
+
+#### Warnings
+
+See [here](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html).
+
+`-Wall -Wextra -Wshadow` 
+
+[Variable shadowing](https://en.wikipedia.org/wiki/Variable_shadowing) should be avoided whenever possible.
+
+#### Stack Size
+
+According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449312), `-Wl,-stack_size -Wl,0xF0000000` increases the stack size on Mac (otherwise, you might get a runtime error). 
+
+(Documentation?)
+
+#### Other
+
+`-fsanitize=undefined -fsanitize=address` 
+
+`-D_GLIBCXX_DEBUG -g`
+
+(someone want to explain these? I don't use)
+
+### Running
+
+According to [StackOverflow](https://stackoverflow.com/a/60516966/5834770) the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault).
+
+#### Measuring Time & Memory Usage
+
+ - [CF Comment](https://codeforces.com/blog/entry/49371?#comment-333749)
+ - [time -v on Mac](https://stackoverflow.com/questions/32515381/mac-os-x-usr-bin-time-verbose-flag)
+
+### CppIO Template
+
+Although not feasible if you have to write all code from scratch, I find [this template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h) very helpful for simplifying input / output / debug output. Note that `dbg()` only produces debug output when `-DLOCAL` is included as part of the compilation command, so you don't need to comment out those lines before submitting.
+
+[Examples - Debug Output](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO_test.cpp)
+
+### Stress Testing
+
+You can use a [simple script](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh) to test two solutions against each other. See Errichto's [video](https://www.youtube.com/watch?v=JXTVOyQpSGM) on testing solutions for more information.

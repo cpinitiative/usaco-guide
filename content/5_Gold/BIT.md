@@ -36,6 +36,8 @@ Aka **Fenwick Tree**.
 
 My implementation can be found [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h), and can compute range sum queries for any number of dimensions.
 
+## Finding K-th Element?
+
 ## Indexed Set
 
 In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template). `Tree<int>` behaves mostly the same way as `set<int>` with the additional functions 
@@ -74,6 +76,19 @@ Note that if it were not the case that all elements of the input array were dist
 
 ## Practice Problems
 
+* CSES
+  * [List Removals](https://cses.fi/problemset/task/1749)
+    * easy with indexed set
+  * [Salary Queries](https://cses.fi/problemset/task/1144)
+    * also easy with indexed set
+  * [Range Update Queries](https://cses.fi/problemset/task/1651)
+    * range update point query is not harder than point update range query
+  * [Increasing Subsequence II](https://cses.fi/problemset/task/1748)
+  * [Intersection Points](https://cses.fi/problemset/task/1740)
+  * [Distinct Values Queries](https://cses.fi/problemset/task/1734)
+    * answer queries in increasing order of $a$
+  * [Robot Path](https://cses.fi/problemset/task/1742)
+    * quite annoying
 * USACO Gold
   * The first three problems are just variations on inversion counting.
   * [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)

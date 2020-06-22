@@ -25,3 +25,4 @@ More practice with data structures introduced in bronze.
    - [Snow Boots](http://www.usaco.org/index.php?page=viewproblem2&cpid=813)
    - [Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
     - hard?
+ - [CSES Bit Inversions](https://cses.fi/problemset/task/1188/)

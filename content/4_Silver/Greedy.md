@@ -177,3 +177,5 @@ If we use greedy based on highest value first, we choose item A and then we are 
    - [Permutation](http://codeforces.com/problemset/problem/864/D)
    - [Bus](http://codeforces.com/problemset/problem/864/C)
    - [Kayaking](http://codeforces.com/problemset/problem/863/B)
+   - [CSES Stick Division](https://cses.fi/problemset/task/1161/)
+     - Huffman Coding?

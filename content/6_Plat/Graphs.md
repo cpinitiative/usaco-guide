@@ -9,7 +9,7 @@ prerequisites:
 
 <module-excerpt>
 
-- Eulerian Tours
+ - Eulerian Tours
  - SCCs
  - BCCs
 
