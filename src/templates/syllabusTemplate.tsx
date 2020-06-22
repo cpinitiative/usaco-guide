@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -50,7 +50,7 @@ export default function Template(props) {
   const color = colors[selectedDivision];
   const module = getModule(allModules, selectedDivision);
 
-  // for purgecss, we have to list all the classes that are dynamically generated...
+  // for PurgeCSS, we have to list all the classes that are dynamically generated...
   /*
   bg-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:shadow-outline-blue
   bg-pink-500 hover:bg-pink-50 hover:text-pink-600 focus:shadow-outline-pink
