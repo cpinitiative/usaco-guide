@@ -138,7 +138,13 @@ const ModuleOrdering = {
         "string-search",
       ]
     },
-    "geo",
+    {
+      name: "Geometry",
+      items: [
+        "geo-pri",
+        "hull",
+      ]
+    },
     "bitsets",
     "fracture",
   ]

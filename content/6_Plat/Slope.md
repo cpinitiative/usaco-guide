@@ -4,7 +4,7 @@ title: "Slope Trick"
 author: Benjamin Qi
 prerequisites: 
  - 
-     - some familiarity with at least one of the two tutorials mentioned in this module
+     - Platinum - Convex Hull
 description: Ways to manipulate piecewise linear convex functions.
 ---
 
@@ -22,7 +22,7 @@ From the latter link (modified):
 >  - It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
 >  - It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
-It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick.
+It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick. The rest of this module assumes that you are somewhat familiar with at least one of the tutorials mentioned above.
 
 ## [Buy Low Sell High](https://codeforces.com/contest/866/problem/D)
 
