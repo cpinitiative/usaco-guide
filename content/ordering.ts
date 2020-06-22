@@ -1,7 +1,6 @@
 const ModuleOrdering = {
   "intro": [
     "intro",
-    "getting-started",
     "prereqs",
     "running-cpp",
     "data-types",
@@ -24,8 +23,8 @@ const ModuleOrdering = {
     },
   ],
   "bronze": [
-    "rect-geo",
     "time-comp",
+    "rect-geo",
     {
       name: "Data Structures",
       items: [
