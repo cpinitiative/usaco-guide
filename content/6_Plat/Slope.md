@@ -3,8 +3,7 @@ id: slope
 title: "Slope Trick"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - some familiarity with at least one of the two tutorials mentioned in this module
+ - some familiarity with at least one of the two tutorials mentioned in this module
 description: Ways to manipulate piecewise linear convex functions.
 ---
 

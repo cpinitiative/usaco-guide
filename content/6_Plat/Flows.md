@@ -3,8 +3,7 @@ id: flows
 title: "Maximum Flow"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Breadth First Search
+ - Gold - Breadth First Search
 description: Introduces maximum flow as well as flow with lower bounds.
 ---
 

@@ -3,8 +3,7 @@ id: data-structures-gold
 title: "Data Structures (Gold)"
 author: Michael Cao 
 prerequisites: 
- - 
-     - Silver - Data Structures
+ - Silver - Data Structures
 description: Monotonic stack and sliding window.
 ---
 

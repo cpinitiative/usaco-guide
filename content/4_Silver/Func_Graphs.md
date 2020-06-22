@@ -3,8 +3,7 @@ id: func-graphs
 title: Functional Graphs
 author: Siyong Huang
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: A functional graph is a digraph in which every vertex has exactly one outgoing edge.
 ---
 

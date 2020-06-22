@@ -3,10 +3,8 @@ id: fracture
 title: "Fracturing Search"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Minimum Spanning Tree
- -
-     - some familiarity with "Robotic Cow Herd" solution
+ - Gold - Minimum Spanning Tree
+ - some familiarity with "Robotic Cow Herd" solution
 description: A simple solution to "Robotic Cow Herd" that generalizes.
 ---
 

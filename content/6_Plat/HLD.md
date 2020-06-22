@@ -3,8 +3,7 @@ id: hld
 title: "Heavy-Light Decomposition"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Euler Tour on Tree
+ - Gold - Euler Tour on Tree
 description: Path and subtree updates and queries.
 ---
 

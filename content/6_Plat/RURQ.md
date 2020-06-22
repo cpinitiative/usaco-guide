@@ -3,8 +3,7 @@ id: RURQ
 title: "Range Update Range Query"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Point Update Range Query
+ - Gold - Point Update Range Query
 description: Lazy updates on segment trees and two binary indexed trees in conjunction.
 ---
 

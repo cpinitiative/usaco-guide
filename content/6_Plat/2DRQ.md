@@ -3,8 +3,7 @@ id: 2DRQ
 title: "2D Range Queries"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Platinum - Range Update Range Query
+ - Platinum - Range Update Range Query
 description: "Extending Range Queries to 2D (and beyond)."
 ---
 

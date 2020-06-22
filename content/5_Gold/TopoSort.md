@@ -3,10 +3,8 @@ id: toposort
 title: "Topological Sort"
 author: Benjamin Qi, Michael Cao
 prerequisites: 
- - 
-     - Gold - Breadth First Search
- - 
-     - Gold - Introduction to Dynamic Programming
+ - Gold - Breadth First Search
+ - Gold - Introduction to Dynamic Programming
 ---
 
 To review, a **directed** graph consists of edges that can only be traversed in one direction. Additionally, a **acyclic** graph defines a graph which does not contain cycles, meaning you are unable to traverse across one or more edges and return to the node you started on. Putting these definitions together, a **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has edges which can only be traversed in one direction and does not contain cycles. 

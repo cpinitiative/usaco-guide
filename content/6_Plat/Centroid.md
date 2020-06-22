@@ -3,8 +3,7 @@ id: centroid
 title: "Centroid Decomposition"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: ?
 ---
 

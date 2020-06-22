@@ -3,10 +3,8 @@ id: mst
 title: "Minimum Spanning Trees"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Shortest Paths
- - 
-     - Gold - Disjoint Set Union
+ - Gold - Shortest Paths
+ - Gold - Disjoint Set Union
 description: A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed.
 ---
 

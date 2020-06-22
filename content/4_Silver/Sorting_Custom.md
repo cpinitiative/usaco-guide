@@ -3,8 +3,7 @@ id: sorting-custom
 title: "Sorting with Custom Comparators"
 author: Darren Yao, Siyong Huang
 prerequisites: 
- - 
-     - Silver - Introduction to Sorting  
+ - Silver - Introduction to Sorting  
 description: Both Java and C++ have built-in functions for sorting. However, if we use custom objects, or if we want to sort elements in a different order, then we'll need to use a custom comparator. 
 ---
 

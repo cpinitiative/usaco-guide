@@ -3,8 +3,7 @@ id: string-search
 title: "String Searching"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: Knuth-Morris-Pratt and Z Algorithms (and a few more related topics).
 ---
 

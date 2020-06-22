@@ -3,10 +3,8 @@ id: dp-trees
 title: "Dynamic Programming on Trees"
 author: Michael Cao
 prerequisites: 
- -
-     - Silver - Depth First Search
- - 
-     - Gold - Introduction to Dynamic Programming
+ - Silver - Depth First Search
+ - Gold - Introduction to Dynamic Programming
 description: What it sounds like.
 ---
 

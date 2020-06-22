@@ -10,17 +10,7 @@ import { graphqlToModulesObject } from '../utils';
 import SEO from '../components/seo';
 
 const renderPrerequisite = prerequisite => {
-  const link = prerequisite.length > 1 ? prerequisite[1] : null;
-  return (
-    <li key={prerequisite[0]}>
-      {link && (
-        <a href={link} className="text-blue-600 underline">
-          {prerequisite[0]}
-        </a>
-      )}
-      {!link && prerequisite[0]}
-    </li>
-  );
+  return <li key={prerequisite}>{prerequisite}</li>;
 };
 
 const Breadcrumbs = ({ division }) => (

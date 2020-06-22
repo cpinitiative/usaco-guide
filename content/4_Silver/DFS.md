@@ -3,8 +3,7 @@ id: dfs
 title: Depth First Search
 author: Siyong Huang
 prerequisites: 
- - 
-     - Bronze - Introduction to Graphs
+ - Bronze - Introduction to Graphs
 description: A way to traverse a graph using recursion.
 ---
 

@@ -3,8 +3,7 @@ id: dp-ranges
 title: "Dynamic Programming on Ranges"
 author: Michael Cao
 prerequisites: 
- - 
-     - Gold - Introduction to Dynamic Programming
+ - Gold - Introduction to Dynamic Programming
 description: Solving the problem on every contiguous subarray of the original array.
 ---
 

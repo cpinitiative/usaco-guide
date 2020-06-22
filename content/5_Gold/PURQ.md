@@ -3,8 +3,7 @@ id: PURQ
 title: "1D Point Update Range Query"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Gold - Point Update Range Sum
+ - Gold - Point Update Range Sum
 description: Range queries for any associative operation over an array with updates, using segment tree.
 ---
 

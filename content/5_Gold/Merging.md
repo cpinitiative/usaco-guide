@@ -3,8 +3,7 @@ id: merging
 title: "Small-To-Large Merging"
 author: Michael Cao
 prerequisites: 
- - 
-     - Silver - Depth First Search
+ - Silver - Depth First Search
 description: ?
 ---
 
