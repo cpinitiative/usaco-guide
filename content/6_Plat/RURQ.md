@@ -7,6 +7,8 @@ prerequisites:
 description: Lazy updates on segment trees and two binary indexed trees in conjunction.
 ---
 
+CPH 28.1 (Segment Trees Revisited)
+
 ## Lazy Segment Tree
 
  - [USACO Old Gold The Lazy Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=418) (check ...)

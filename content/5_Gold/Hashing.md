@@ -5,15 +5,17 @@ author: Benjamin Qi
 description: Quickly test equality of substrings with a small probability of failure.
 ---
 
- - Tutorial 
-   - CPH 26.3
-   - [cp-algorithms String Hashing](https://cp-algorithms.com/string/string-hashing.html)
- - [Anti-Hash Tests](https://codeforces.com/blog/entry/60442)
+## Tutorial
+
+  - [PAPS 14.3](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+  - CPH 26.3
+  - [cp-algorithms String Hashing](https://cp-algorithms.com/string/string-hashing.html)
+  - [Anti-Hash Tests](https://codeforces.com/blog/entry/60442)
    - On CodeForces educational rounds in particular, make sure to use random bases.
 
 My implementation can be found [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Light/HashRange%20(14.2).h). It uses two bases rather than just one to decrease the probability that two random strings hash to the same value. As mentioned in the articles above, there is no need to calculate modular inverses.
 
-### Problems
+## Problems
 
   - USACO
     - [Gold Cownomics](http://www.usaco.org/index.php?page=viewproblem2&cpid=741) 

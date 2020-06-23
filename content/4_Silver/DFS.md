@@ -14,7 +14,8 @@ description: A way to traverse a graph using recursion.
 ### Tutorial
 
  - Recommended:
-   - CPH 12.1
+   - CPH 12.1 (DFS), 14 (Tree algorithms)
+   - [PAPS 12.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
    - [CSAcademy DFS](https://csacademy.com/lesson/depth_first_search/)
  - Additional:
    - [CPC.7](https://github.com/SuprDewd/T-414-AFLV/tree/master/07_graphs_1)
@@ -26,6 +27,8 @@ description: A way to traverse a graph using recursion.
 
  - CSES Trees
    - [Subordinates](https://cses.fi/problemset/task/1674)
+     - Tree Traversal
+   - [Tree Diameter](https://cses.fi/problemset/task/1131)
    - [Tree Distances I](https://cses.fi/problemset/task/1132)
    - [Tree Distances II](https://cses.fi/problemset/task/1133)
  - CF
@@ -49,7 +52,8 @@ description: A way to traverse a graph using recursion.
    - [POI Hotels](https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement) [](61)
    - [Kattis Birthday Party (Easy)](https://open.kattis.com/problems/birthday)
      - DFS with each edge removed
-
+   - [CSA Tree Construction](https://csacademy.com/contest/archive/task/tree-construct)
+     - several cases
 
 ## Graph Two-Coloring
 
@@ -60,6 +64,8 @@ The most common example of a two-colored graph is a *bipartite graph*, in which 
 
 ### Tutorial
 
+ - CPH 12.3
+ 
 The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
 
 ```cpp

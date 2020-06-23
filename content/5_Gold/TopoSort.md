@@ -24,6 +24,8 @@ Consider [Khan's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Ka
 
 ## Dynamic Programming
 
+ - [PAPS 9.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
 One useful property of directed acyclic graphs is, as the name suggests, that there exists no cycles. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge, $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
 
 Let's consider a classical problem (see Longest Flight Route) where we must find the longest path in a Directed Acyclic Graph. Let `dp[curr] = longest path ending at the node curr`. Then, if we process states in topological order, the transition is relatively straightforward: `dp[curr] = max of all dp[prev] where prev represents a node with an edge going into the current node` (word better?). To reiterate, since the states a processed in topological order, we can guarantee that all possible `dp[prev]` are computed before we compute `dp[curr]`.

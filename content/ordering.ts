@@ -48,10 +48,15 @@ const ModuleOrdering = {
         "sorting-cpp",
       ]
     },
+    {
+      name: "Data Structures",
+      items: {
+        "stacks-queues",
+        "maps-sets",
+      }
+    },
     "binary-search",
     "2P",
-    "containers-silver",
-    "data-structures",
     "greedy",
     {
       name: "Graphs",
@@ -59,6 +64,7 @@ const ModuleOrdering = {
         "dfs",
         "ff",
         "func-graphs",
+        "bfs",
       ]
     },
   ],
@@ -69,7 +75,6 @@ const ModuleOrdering = {
     {
       name: "Graphs",
       items: [
-        "bfs",
         "toposort",
         "cyc",
         "dsu",
@@ -88,7 +93,6 @@ const ModuleOrdering = {
     {
       name: "Trees",
       items: [
-        "tree-dia",
         "dp-trees",
         "merging",
         "bin-jump",

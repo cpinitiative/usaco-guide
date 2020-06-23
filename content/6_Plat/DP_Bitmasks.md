@@ -12,7 +12,8 @@ Has not been the solution to any platinum problem, but appeared in old gold and 
 
 ## Tutorial
 
- - CPH Chapter 10
+ - [PAPS 9.4](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+ - CPH 10 (Bit manipulation), 19.2 (Hamiltonian Paths)
  - [Dynamic Programming Over Subsets (Codeforces)](https://codeforces.com/blog/entry/337)
  - [Dynamic Programming and Bit Masking (HackerEarth)](https://www.hackerearth.com/practice/algorithms/dynamic-programming/bit-masking/tutorial/)
 

@@ -9,7 +9,8 @@ description: Introduces sorting and binary searching on a sorted array.
 
 ## Additional Resources
 
- - CPH 3 (once again, very good)
+ - CPH 3 (Sorting)
+   - once again, very good
 
 ## Sorting Algorithms
 

@@ -15,8 +15,9 @@ Both of these will be covered in Silver. For now, it suffices to learn how graph
 ## Tutorial
 
  - Recommended
-   - CPH 11
+   - CPH 11 (Basics of graphs)
    - Intro to USACO 10.1 - 10.3
+   - [PAPS 6.4](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
    - [CSAcademy Graph Intro](https://csacademy.com/lesson/introduction_to_graphs)
    - [CSAcademy Graph Representations](https://csacademy.com/lesson/graph_representation)
      - Usually, adjacency lists are used.

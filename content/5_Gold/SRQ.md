@@ -18,6 +18,7 @@ First we'll consider the special case when $\ominus$ denotes `min`.
 ### Tutorial
 
  - CPH 9.1
+ - [PAPS 11.2.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - [cp-algorithms RMQ](https://cp-algorithms.com/sequences/rmq.html)
 
 <optional-content title="Preprocessing in O(N) Time">

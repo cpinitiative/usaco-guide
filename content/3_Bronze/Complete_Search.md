@@ -5,6 +5,12 @@ author: Darren Yao
 description: In many problems (especially in Bronze) it suffices to check all possible cases in the solution space.
 ---
 
+## Additional Reading
+
+  - CPH 5.1 - 5.3 (Complete Search)
+
+# Complete Search
+
 In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
 
 ## Example 1

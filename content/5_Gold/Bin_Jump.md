@@ -17,7 +17,7 @@ description: Introduces the problems of finding level ancestors in a tree and co
 
 ### Tutorial
 
- - CPH 18
+ - CPH 18.1, 18.3
  - [cp-algorithms: Lowest Common Ancestor](https://cp-algorithms.com/)
  - [Binary Jumping w/ O(N) Memory](https://codeforces.com/blog/entry/74847)
    - you shouldn't actually need this, but maybe interesting
@@ -33,6 +33,9 @@ description: Introduces the problems of finding level ancestors in a tree and co
      - [USACO Gold Cow Land](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
        - LCA + BIT
    - Plat
+     - [USACO Plat Newbarns](http://www.usaco.org/index.php?page=viewproblem2&cpid=817)
+       - online tree diameter
+       - Copy of [CF Brain Network "Hard"](https://codeforces.com/contest/690/problem/C3)
      - [Max Flow](http://www.usaco.org/index.php?page=viewproblem2&cpid=576)
      - [Promote](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
        - Subtree + BIT

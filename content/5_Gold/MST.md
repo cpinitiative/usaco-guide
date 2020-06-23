@@ -16,6 +16,7 @@ description: A subset of the edges of a connected, undirected, edge-weighted gra
 ## Tutorial
 
  - CPH 15 (Spanning Trees)
+ - [PAPS 12.4](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - Prim's Algorithm
    - [cp-algo](https://cp-algorithms.com/graph/mst_prim.html)
    - Similar to Dijkstra

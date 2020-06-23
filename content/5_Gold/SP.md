@@ -19,6 +19,7 @@ Use *Dijkstra's Algorithm*.
 ### Tutorial
 
  - CSES 13.2
+ - [PAPS 12.3.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - [cp-algo Dijkstra (Dense Graphs)](https://cp-algorithms.com/graph/dijkstra_sparse.html)
  - [cp-algo Dijkstra (Sparse Graphs)](https://cp-algorithms.com/graph/dijkstra_sparse.html)
    - Usually, it's this one that's applicable.
@@ -51,6 +52,7 @@ Use the *Floyd-Warshall* algorithm.
 ### Tutorial
 
  - CPH 13.3
+ - [PAPS 12.3.3](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - [cp-algo Floyd-Warshall](https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html)
 
 ### Problems

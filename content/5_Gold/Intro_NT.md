@@ -4,12 +4,13 @@ title: "Introductory Number Theory"
 author: Darren Yao, Michael Cao
 prerequisites:
  - Gold - Introduction to Dynamic Programming
-description: Prime Factorization, GCD & LCM, Modular Arithmetic
+description: Divisibility and Modular Arithmetic
 ---
 
 ## Additional Resources
 
- - CSES 21.1, 21.2
+ - [PAPS 16](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+ - CPH 21.1 (Primes and factors), 21.2 (Modular arithmetic)
  - [CF CodeNCode](https://codeforces.com/blog/entry/77137)
 
 ## Prime Factorization

@@ -7,13 +7,14 @@ prerequisites:
 description: Traversing a graph in a way such that vertices closer to the starting vertex are processed first.
 ---
 
-Note that this is **not** required for silver.
+Note that this is **not** required for silver, but it's good to learn along with DFS.
 
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
 
 ### Tutorial
 
- - CSES 12.2
+ - CPH 12.2
+ - [PAPS 12.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - [CSAcademy BFS](https://csacademy.com/lesson/breadth_first_search)
  - [cp-algo BFS](https://cp-algorithms.com/graph/breadth-first-search.html)
  - [cp-algo 0/1 BFS](https://cp-algorithms.com/graph/01_bfs.html)
@@ -21,7 +22,7 @@ Note that this is **not** required for silver.
 
 ### Problems
 
- - USACO
+ - USACO Gold
    - [Monsters](https://cses.fi/problemset/task/1194)
    - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
    - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)

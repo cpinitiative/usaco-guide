@@ -3,6 +3,8 @@ id: hull
 title: "Convex Hull"
 author: Benjamin Qi
 description: Smallest convex polygon containing a set of points on a grid.
+prerequisites: 
+ - Platinum - Geometry Primitives
 ---
 
 ## [Convex Hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms)

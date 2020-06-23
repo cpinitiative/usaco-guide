@@ -8,6 +8,8 @@ prerequisites:
 description: Subtree updates and queries and another way to compute lowest common ancestors.
 ---
 
+ - CPH 18.2
+ 
 RMQ LCA?
 
 https://cses.fi/problemset/task/1138: path queries

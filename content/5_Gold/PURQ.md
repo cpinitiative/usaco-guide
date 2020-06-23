@@ -11,7 +11,8 @@ A **segment tree** allows you to do point update and range query in $O(\log N)$ 
 
 ### Tutorials
 
- - CPH 9.3, 28.1 (Segment Trees Revisited)
+ - CPH 9.3 (Segment Trees)
+ - [PAPS 11.2.3](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - [Codeforces Tutorial](http://codeforces.com/blog/entry/18051)
  - [CSAcademy Tutorial](https://csacademy.com/lesson/segment_trees/)
  - [cp-algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)

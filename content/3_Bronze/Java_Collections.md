@@ -73,65 +73,6 @@ In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collectio
  
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
-## Stacks and the Various Types of Queues
-
-### Stacks
-
-A stack is a **Last In First Out** (LIFO) data structure that supports three operations: `push`, which adds an element to the top of the stack, `pop`, which removes an element from the top of the stack, and `peek`, which retrieves the element at the top without removing it, all in $O(1)$ time. Think of it like a real-world stack of papers (or cards).
-
-```java
-Stack<Integer> s = new Stack<Integer>();
-s.push(1); // [1]
-s.push(13); // [1, 13]
-s.push(7); // [1, 13, 7]
-System.out.println(s.peek()); // 7
-s.pop(); // [1, 13]
-System.out.println(s.size()); // 2
-```
-
-### Queues
-
-A queue is a First In First Out (FIFO) data structure that supports three operations of `add`, insertion at the back of the queue, `poll`, deletion from the front of the queue, and `peek`, which retrieves the element at the front without removing it, all in $O(1)$ time. Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
-
-```java
-Queue<Integer> q = new LinkedList<Integer>();
-q.add(1); // [1]
-q.add(3); // [3, 1]
-q.add(4); // [4, 3, 1]
-q.poll(); // [4, 3]
-System.out.println(q.peek()); // 3
-```
-
-### Deques
-
-A deque (usually pronounced “deck”) stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
-
-```java
-ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
-deque.addFirst(3); // [3]
-deque.addFirst(4); // [4, 3]
-deque.addLast(7); // [4, 3, 7]
-deque.removeFirst(); // [3, 7]
-deque.addFirst(1); // [1, 3, 7]
-deque.removeLast(); // [1, 3]
-```
-
-### Priority Queues
-
-A priority queue supports the following operations: insertion of elements, deletion of the element considered lowest priority, and retrieval of the lowest priority element, all in $O(\log n)$ time according to the number of elements in the priority queue. Priority is based on a comparator function, but by default the lowest element is at the front of the priority queue. The priority queue is one of the most important data structures in competitive programming, so make sure you understand how and when to use it. 
-
-```java
-PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
-pq.add(7); // [7]
-pq.add(2); // [7, 2]
-pq.add(1); // [7, 2, 1]
-pq.add(5); // [7, 5, 2, 1]
-System.out.println(pq.peek()); // 1
-pq.poll(); // [7, 5, 2]
-pq.poll(); // [7, 5]
-pq.add(6); // [7, 6, 5]
-```
-
 ## Sets & Maps
 
 A set is a collection of objects that contains no duplicates. There are two types of sets: unordered sets (`HashSet` in Java), and ordered set (`TreeSet` in Java).

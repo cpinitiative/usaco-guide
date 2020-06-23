@@ -24,8 +24,10 @@ Aka *Fenwick Tree*.
 
 ### Tutorials
 
-  * CPH 9.2 (very good)
-  * [CSAcademy BIT](https://csacademy.com/lesson/fenwick_trees) (also very good)
+  * CPH 9.2, 9.4
+    * very good
+  * [CSAcademy BIT](https://csacademy.com/lesson/fenwick_trees) 
+    * also very good
   * [cp-algorithms Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
     * extends to range increment and range query, although this is not necessary for gold
   * [Topcoder BIT](https://www.topcoder.com/community/data-science/data-science-tutorials/binary-indexed-trees/)

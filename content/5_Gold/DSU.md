@@ -9,6 +9,8 @@ description: The Disjoint Set Union (DSU) data structure allows you to add edges
 
 ## Tutorial
 
+ - CPH 15.2
+ - [PAPS 11.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - Chapter 10.6 of "An Introduction to the US Computing Olympiad"
  - [CSAcademy Disjoint-Set](https://csacademy.com/lesson/disjoint_data_sets)
  - [Topcoder Union Find](https://www.topcoder.com/community/data-science/data-science-tutorials/disjoint-set-data-structures/)

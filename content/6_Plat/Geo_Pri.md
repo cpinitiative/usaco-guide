@@ -16,7 +16,7 @@ You should know basic operations like cross product and dot product. For platinu
    - convex hulls
    - polygon area
    - point in polygon
- - CPH 29
+ - CPH 29 (Geometry), 30.1, 30.2 (Sweep line algorithms)
  - [TopCoder - Basic Geometry Concepts](https://www.topcoder.com/community/competitive-programming/tutorials/geometry-concepts-basic-concepts/)
  - [CF - Point Class](https://codeforces.com/blog/entry/48122)
  - [C++ - std::complex](https://codeforces.com/blog/entry/22175)

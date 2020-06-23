@@ -12,6 +12,7 @@ description: Applications of Bellman-Ford.
 
 ### Tutorial
  
+ - CPH 13.1
  - [cp-algo Bellman Ford](https://cp-algorithms.com/graph/bellman_ford.html)
  - [Topcoder Graphs Pt 3](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-3/)
 

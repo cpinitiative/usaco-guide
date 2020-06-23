@@ -7,6 +7,10 @@ prerequisites:
 description: Monotonic stack and sliding window.
 ---
 
+## Additional Reading
+
+ - CPH 8 (Amortized Analysis)
+
 # Monotonic Stack
 
 Consider the following problem: 
@@ -22,7 +26,6 @@ The stack we used is called a "monotonic stack" because we keep popping off the 
 
 ## Further Reading
 
-- "Nearest Smallest Element" from CPH 8
 - [CP Algorithms (Min Stack)](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
 - [Medium](https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e)
 
@@ -43,16 +46,21 @@ To compute the sum in the range, instead of using a set, we can store a variable
 
 ## Further Reading
 
-- "Sliding Window" from CPH 8
-	- Read [this article]([https://cp-algorithms.com/data_structures/stack_queue_modification.html](https://cp-algorithms.com/data_structures/stack_queue_modification.html)) to learn about the "min queue" that CPH describes. 
-- [Medium]([https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7](https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7))
+- [cp-algorithms: Min Stack + Queue](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
+  - learn about the "min queue" that CPH describes. 
+- [Medium](https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7)
 - [G4G](https://www.geeksforgeeks.org/window-sliding-technique/)
 
 ## Problems
 
-- [Haybale Feast (Gold)](http://usaco.org/index.php?page=viewproblem2&cpid=767)
+- [Gold - Haybale Feast](http://usaco.org/index.php?page=viewproblem2&cpid=767)
   - Direct application of sliding window.
-- [Train Tracking 2 (Plat)]([http://www.usaco.org/current/data/sol_train_platinum_open18.html](http://www.usaco.org/current/data/sol_train_platinum_open18.html))
-  - **Extremely difficult.**
+
+<optional-content title="Better Memory with Two Passes">
+
+- [Plat - Train Tracking](http://www.usaco.org/current/data/sol_train_platinum_open18.html)
+  - Quite difficult.
+
+</optional-content>
 
 (add more once codeforces comes up)

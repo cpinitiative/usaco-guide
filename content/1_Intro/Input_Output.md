@@ -5,6 +5,11 @@ author: Darren Yao
 description: Demonstrates how to read input and print output for USACO contests.
 ---
 
+## Additional Reading
+
+ - CSES 1.2
+ - [PAPC 2.4](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
 ## Standard I/O
 
 In most websites (such as CodeForces and CSES), input and output are **standard**.

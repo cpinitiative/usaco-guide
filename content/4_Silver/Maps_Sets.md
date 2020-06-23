@@ -1,16 +1,17 @@
 ---
-id: data-structures
-title: "Data Structures"
+id: maps-sets
+title: "More With Maps & Sets"
 author: Unknown
 prerequisites: 
  - Bronze - Data Structures
-description: More practice with data structures introduced in bronze, and some new ones.
+description: "More with iterators?"
 ---
 
 (set iterators?)
 
 ## USACO Problems
 
+ - [CSES Bit Inversions](https://cses.fi/problemset/task/1188/)
  - Silver
    - [Cities & States](http://usaco.org/index.php?page=viewproblem2&cpid=667)
    - [Milk Measurement](http://usaco.org/index.php?page=viewproblem2&cpid=763)
@@ -19,4 +20,3 @@ description: More practice with data structures introduced in bronze, and some n
    - [Snow Boots](http://www.usaco.org/index.php?page=viewproblem2&cpid=813)
    - [Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
     - hard?
- - [CSES Bit Inversions](https://cses.fi/problemset/task/1188/)

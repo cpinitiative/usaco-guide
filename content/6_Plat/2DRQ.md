@@ -60,7 +60,7 @@ Note: no lazy propagation in 2D.
 
 ### Short Description
 
-  - CSES 28.2, 28.4
+  - CSES 28.2 (Sparse Segment Tree), 28.4
   - Segment Tree (or BIT) nested inside segment tree
   - use 2D offline BIT instead whenever possible (faster, lower memory)
 

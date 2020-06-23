@@ -15,6 +15,7 @@ Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we 
 ## Additional Resources
 
  - CPH 9.1
+ - [PAPS 11.2.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
 
 ## Tutorial
 

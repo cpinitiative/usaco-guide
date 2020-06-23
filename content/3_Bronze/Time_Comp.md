@@ -5,6 +5,13 @@ author: Darren Yao, Benjamin Qi
 description: Measuring how long your algorithm takes to run in terms of the input size.
 ---
 
+## Additional Resources
+
+ - CPH 2 (Time Complexity)
+ - [PAPS 5](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
+# Time Complexity
+
 In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is $10^8$ (but could be closer to $5 \cdot 10^8$ given good constant factors).
 
 (define time complexity?)
@@ -136,10 +143,5 @@ Here are conservative upper bounds on the value of $n$ for each time complexity.
 | $n \le 5 \cdot 10^5$  | $O(n \log n)$                       |
 | $n \le 5 \cdot 10^6$  | $O(n)$                              |
 | $n \le 10^{18}$       | $O(\log^2 n)$, $O(\log n)$, $O(1)$  |
-
-## Other Resources
-
- - CPH 2
-
 
 

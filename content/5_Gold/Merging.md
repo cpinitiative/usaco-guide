@@ -7,6 +7,10 @@ prerequisites:
 description: ?
 ---
 
+## Additional Reading
+
+- CPH 18.4 - Merging Data Structures
+
 # Merging Sets
 
 Let's consider a tree, rooted at node $1$, where each node has a color (see [CSES Distinct Colors](https://cses.fi/problemset/task/1139)). 
@@ -20,6 +24,7 @@ if(a.size() < b.size()){ //for two sets a and b
 }
 ```  
 In other words, by merging the smaller set into the larger one, the runtime complexity becomes $O(N\log N).$
+
 <details>
 <summary> Proof </summary>
 
@@ -35,10 +40,6 @@ Prove that if you instead merge sets that have size equal to the depths of the s
 (be specific about what this means?)
 
 </info-block>
-
-## Further Reading
-
-- "Merging Data Structures" from CPH 18
 
 ## Problems
 

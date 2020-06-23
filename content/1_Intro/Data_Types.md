@@ -5,6 +5,13 @@ author: Darren Yao
 description: Learn about the basic data types needed for competitive programming.
 ---
 
+## Additional Reading
+
+ - CPH 1.1 - 1.3
+ - [PAPC 2.3](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
+## Data Types
+
 There are several main **data types** that are used in contests: 64-bit integers, floating point numbers, booleans, characters, and strings. Assuming that you are familiar with the language you are using, this should be mostly review.
 
 It's a good idea to use 64-bit integers (`long long` in C++) instead of 32-bit integers (`int`). 64-bit integers are less likely to have overflow issues, since they can store any number between $-9\,223\,372\,036\,854\,775\,808$ and $9\,223\,372\,036\,854\,775\,807$ which is roughly equal to $\pm 9 \times 10^{18}$. Contest problems are usually set such that the 64-bit integer is sufficient. Of course, you shouldn't do this when time and/or memory limits are tight, which may be the case in higher divisions of USACO.
@@ -16,8 +23,3 @@ It's a good idea to use 64-bit integers (`long long` in C++) instead of 32-bit i
 **Character** variables represent a single Unicode character. They are returned when you access the character at a certain index within a string. Characters are represented using the ASCII standard, which assigns each character to a corresponding integer. This allows us to do arithmetic with them; for example, both `cout << ('f' - 'a');` in C++ and `System.out.print('f' - 'a');` in Java will print `5`.
 
 **Strings** are stored as an array of characters. You can easily access the character at a certain index and take substrings of the string. String problems on USACO Bronze or Silver generally don't involve any special data structures.
-
-## Additional Reading
-
- - CPH 1.1 - 1.3
- - [PAPC Ch 2](http://www.csc.kth.se/~jsannemo/slask/main.pdf)

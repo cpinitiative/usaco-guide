@@ -3,8 +3,7 @@ id: slope
 title: "Slope Trick"
 author: Benjamin Qi
 prerequisites: 
- - 
-     - Platinum - Convex Hull
+ - Platinum - Convex Hull
 description: Ways to manipulate piecewise linear convex functions.
 ---
 

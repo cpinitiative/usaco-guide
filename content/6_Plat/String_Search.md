@@ -11,11 +11,12 @@ description: Knuth-Morris-Pratt and Z Algorithms (and a few more related topics)
 
  - [CPC.11](https://github.com/SuprDewd/T-414-AFLV/tree/master/11_strings)
  - [CP-Algorithms String Processing: Fundamentals](https://cp-algorithms.com/)
- - CPH (26, String Algorithms)
 
 ## Z, KMP
 
   - Tutorial
+    - CPH 26.4 (Z-algorithm)
+    - [PAPS 14.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
     - [paladin8](http://codeforces.com/blog/entry/3107)
     - [GeeksForGeeks](http://www.geeksforgeeks.org/searching-for-patterns-set-2-kmp-algorithm/)
     - [TopCoder](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-string-searching-algorithms/)
