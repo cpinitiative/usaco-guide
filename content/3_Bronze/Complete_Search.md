@@ -69,7 +69,7 @@ cout << high << endl;
 
 A couple notes: first, since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount. Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in a variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. Using a floating point variable isn't likely to work either, due to precision errors (use of floating point decimals should generally be avoided when possible). 
 
-(uh, have you verified this claim?)
+(Ben - have you verified this claim?)
 
 ## Generating Permutations
 
@@ -112,6 +112,11 @@ do {
 
 ## Problems
 
+ - CSES
+   - [Creating Strings I](https://cses.fi/problemset/task/1622)
+   - [Apple Division](https://cses.fi/problemset/task/1623)
+   - [Chessboard and Queens](https://cses.fi/problemset/task/1624)
+     - go through all permutations
  - USACO Bronze
    - [Triangles](http://usaco.org/index.php?page=viewproblem2&cpid=1011)   
    - [Photoshoot](http://www.usaco.org/index.php?page=viewproblem2&cpid=988)
@@ -131,8 +136,6 @@ do {
  - USACO Silver
    - [Bovine Genomics](http://usaco.org/index.php?page=viewproblem2&cpid=739)
    - [Field Reduction](http://usaco.org/index.php?page=viewproblem2&cpid=642)
- - CSES
-   - (Permutations) [Chessboard and Queens](https://cses.fi/problemset/task/1624)
     
 
 

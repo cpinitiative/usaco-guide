@@ -1,6 +1,6 @@
 ---
 id: PURQ
-title: "1D Point Update Range Query"
+title: "Point Update Range Query"
 author: Benjamin Qi
 prerequisites: 
  - Gold - Point Update Range Sum

@@ -1,16 +1,52 @@
 ---
 id: rect-geo
 title: "Rectangle Geometry"
-author: Darren Yao, Michael Cao
+author: Darren Yao, Michael Cao, Benjamin Qi
 description: "\"Geometry\" problems on USACO Bronze are usually quite simple and limited to intersections and unions of squares or rectangles." 
 ---
 
- - Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
- - Also, the coordinates typically only go up to $1000$, so a program that performs $\approx 1000^2$ operations (ex. with a nested loop) should pass.
+Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
 
-## Rectangle Class (Java)
+## Example: [Blocked Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759)
 
-A useful class in `Java` for dealing with rectangle geometry problems is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class. To create a new rectangle, use the following constructor:
+### Naive Solution
+
+Since all coordinates are in the range $[-1000,1000]$, we can simply go through each of the $2000^2$ possible visible squares and check which ones are visible using nested for loops.
+
+<spoiler title="Nested Loops">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool ok[2000][2000];
+
+int main() {
+	freopen("billboard.in","r",stdin);
+	freopen("billboard.out","w",stdout);
+	for (int i = 0; i < 3; ++i) {
+		int x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
+		x1 += 1000, y1 += 1000, x2 += 1000, y2 += 1000;
+		for (int x = x1; x < x2; ++x) 
+			for (int y = y1; y < y2; ++y) {
+				if (i < 2) ok[x][y] = 1;
+				else ok[x][y] = 0;
+			}
+	}
+	int ans = 0;
+	for (int x = 0; x < 2000; ++x) 
+		for (int y = 0; y < 2000; ++y) 
+			ans += ok[x][y];
+	cout << ans << "\n";
+}
+```
+</spoiler>
+
+Of course, this wouldn't suffice if the coordinates were up to $10^9$.
+
+### Rectangle Class (Java)
+
+A useful class in `Java` for dealing with rectangle geometry problems (though probably overkill) is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class. To create a new rectangle, use the following constructor:
 
 ```java
 //creates a rectangle with upper-left corner at (x,y) with a specified width and height
@@ -26,10 +62,11 @@ The `Rectangle` class supports numerous useful methods.
   - `firstRect.contains(x, y)` checks whether the integer point (x,y) exists in firstRect.
 
   - `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
+    - what happens when intersection is empty?
 
 This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
 
-For example, here is a nice implementation of the problem [Blocked Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759) ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
+For example, here is a nice implementation of the problem  ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
 
 <spoiler title="Java Solution">
 
@@ -39,41 +76,40 @@ import java.io.*;
 import java.util.*;
 
 public class blockedBillboard{
-    public static void main(String[] args) throws IOException{
-        Scanner sc = new Scanner(new File("billboard.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-        int x1, y1, x2, y2;
+	public static void main(String[] args) throws IOException{
+		Scanner sc = new Scanner(new File("billboard.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
+		int x1, y1, x2, y2;
 
-        //the top left point is (0,0), so you need to do -y2
+		//the top left point is (0,0), so you need to do -y2
 
-        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-        Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
 
-        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-        Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
 
-        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-        Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
 
-        long firstIntersect = getArea(firstRect.intersection(truck));
-        long secondIntersect = getArea(secondRect.intersection(truck));
+		long firstIntersect = getArea(firstRect.intersection(truck));
+		long secondIntersect = getArea(secondRect.intersection(truck));
 
-        pw.println(getArea(firstRect) + getArea(secondRect) 
-                - firstIntersect - secondIntersect);
-        pw.close();
-    }
-    public static long getArea(Rectangle r){
-	if(r.getWidth() <= 0 || r.getHeight() <= 0){
-            return 0;
-        }
-        return (long)r.getHeight() * (long)r.getWidth();
-    }
+		pw.println(getArea(firstRect) + getArea(secondRect) 
+				- firstIntersect - secondIntersect);
+		pw.close();
+	}
+	public static long getArea(Rectangle r){
+		if(r.getWidth() <= 0 || r.getHeight() <= 0){
+			return 0;
+		}
+		return (long)r.getHeight() * (long)r.getWidth();
+	}
 }
-
 ```
 </spoiler>
 
-## Rectangle Class (C++)
+### Rectangle Class (C++)
 
 Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
 
@@ -85,7 +121,7 @@ Unfortunately, C++ doesn't have a built in rectangle class, so you need to write
 using namespace std;
 
 struct Rect{
-    int x1, y1, x2, y2;
+	int x1, y1, x2, y2;
 };
 
 int area(Rect r){
@@ -118,13 +154,11 @@ int main(){
 
  - USACO Bronze
    - [Fence Painting](http://usaco.org/index.php?page=viewproblem2&cpid=567)
-     - 1D geometry!!
+	 - 1D geometry!!
    - [Square Pasture](http://usaco.org/index.php?page=viewproblem2&cpid=663)
-   - [Blocked Billboard](http://usaco.org/index.php?page=viewproblem2&cpid=759)
-     - Rectangles
    - [Blocked Billboard II](http://usaco.org/index.php?page=viewproblem2&cpid=783)
-     - Also rectangles
+	 - Also rectangles
  - Other
    - [CF 587 (Div. 3) C: White Sheet](https://codeforces.com/contest/1216/problem/C)
-     - See this code (TODO; codeforces is down) for a nice implementation using the Java Rectangle class.
+	 - See this code (TODO; codeforces is down) for a nice implementation using the Java Rectangle class.
 

@@ -185,6 +185,8 @@ fout.write(str(ans))
 
 The following require relatively little programming experience and no algorithmic knowledge. Do as many as you want, then move on! You do not have to do all of them.
 
-- [Promotion Counting](http://usaco.org/index.php?page=viewproblem2&cpid=591)
-- [Word Processor](http://usaco.org/index.php?page=viewproblem2&cpid=987)
-- [Square Pasture](http://usaco.org/index.php?page=viewproblem2&cpid=663)
+  - [Promotion Counting](http://usaco.org/index.php?page=viewproblem2&cpid=591)
+  - [Word Processor](http://usaco.org/index.php?page=viewproblem2&cpid=987)
+  - [Square Pasture](http://usaco.org/index.php?page=viewproblem2&cpid=663)
+  - [CSES Introductory Problems](https://cses.fi/problemset/list/)
+    - up to and including "Palindrome Reorder"

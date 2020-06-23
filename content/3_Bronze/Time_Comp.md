@@ -18,7 +18,9 @@ In programming contests, your program needs to finish running within a certain t
 
 ## Complexity Calculations
 
-We want a method of how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where $f(n)$ is a function without constant factors or lower-order terms. We'll see some examples of how this works, as follows.
+We want a method of how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where $f(n)$ is a function without constant factors or lower-order terms. We'll see some examples of how this works, as follows.
+
+(ben - formal definition of big O? constant factors don't **have** to be omitted)
 
 The following code is $O(1)$, because it executes a constant number of operations.
 
@@ -73,7 +75,7 @@ for(int i = 1; i <= n; i++){
 }
 ```
 
-In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between 1 and n iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we must take the factor of $n$ from the inner loop. Thus, this code is $O(n^2)$.
+In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we must (?) take the factor of $n$ from the inner loop. Thus, this code is $O(n^2)$.
 
 ```cpp
 for(int i = 1; i <= n; i++){
