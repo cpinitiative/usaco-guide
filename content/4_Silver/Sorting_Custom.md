@@ -22,8 +22,8 @@ Essentially, the comparator determines whether object $x$ belongs to the left of
  
 In addition to returning the correct answer, comparators should also satisfy the following conditions:
 
- - The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)}`is positive, then `compare(y, x)` should be negative and vice versa
- - The function must be transitive. If `compare(x, y)` is true and `compare(y, z)` is true, then `compare(x, z)}` should also be true. If the first two compare functions both return `false`, the third must also return `false`.
+ - The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)`is positive, then `compare(y, x)` should be negative and vice versa
+ - The function must be transitive. If `compare(x, y)` is true and `compare(y, z)` is true, then `compare(x, z)` should also be true. If the first two compare functions both return `false`, the third must also return `false`.
 
 A generic way of implementing a custom comparator is to define a function. For our example, we'll use a `struct` of a Person that contains a person's height and weight, and sort in ascending order by height. A `struct` is essentially a user-defined data structure: 
 
@@ -327,11 +327,12 @@ Foo(1,2) Foo(3,2) Foo(6,6) Foo(6,9) Foo(8,7) Foo(8,9) Foo(9,7) Foo(9,8)
 
 ## Problems
 
- - [Lifeguards](http://usaco.org/index.php?page=viewproblem2&cpid=786)
- - [Rental Service](http://usaco.org/index.php?page=viewproblem2&cpid=787)
- - [Mountains](http://usaco.org/index.php?page=viewproblem2&cpid=896)
- - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
-   - Not a sorting problem, but you can use sorting to simulate gravity nicely.
-     - Write a custom comparator (read below) which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same.
- - [Meetings](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
-   - hard!
+  - [Lifeguards](http://usaco.org/index.php?page=viewproblem2&cpid=786)
+    - sort endpoints of intervals
+  - [Rental Service](http://usaco.org/index.php?page=viewproblem2&cpid=787)
+  - [Mountains](http://usaco.org/index.php?page=viewproblem2&cpid=896)
+  - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
+    - Not a sorting problem, but you can use sorting to simulate gravity.
+    - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same.
+  - [Meetings](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
+    - hard!

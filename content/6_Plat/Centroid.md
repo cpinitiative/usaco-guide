@@ -15,6 +15,7 @@ description: ?
 ### Problems
 
  - [Ciel the Commander](https://codeforces.com/problemset/problem/321/C)
- - [USACO Plat - At Large](http://www.usaco.org/index.php?page=viewproblem2&cpid=793)
-   - very tricky
  - [DMOJ Bob Equilibrium](https://dmoj.ca/problem/dmopc19c7p6)
+   - tight time limit
+ - [USACO Plat - At Large](http://www.usaco.org/index.php?page=viewproblem2&cpid=793)
+   - *very* tricky, requires several observations

@@ -19,7 +19,8 @@ First we'll consider the special case when $\ominus$ denotes `min`.
 
  - CPH 9.1
  - [PAPS 11.2.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
- - [cp-algorithms RMQ](https://cp-algorithms.com/sequences/rmq.html)
+ - [cp-algo RMQ](https://cp-algorithms.com/sequences/rmq.html)
+   - [cp-algo Sparse Table](https://cp-algorithms.com/data_structures/sparse-table.html)
 
 <optional-content title="Preprocessing in O(N) Time">
 
@@ -47,8 +48,8 @@ Actually, this can be adjusted to answer queries online in $O(1)$ time each. See
 
 A data structure known as **sqrt-tree** can speed up preprocessing time to $O(N\log \log N)$.
 
- * [CF Blog Pt 1](http://codeforces.com/blog/entry/57046)
- * [CF Blog Pt 2](http://codeforces.com/blog/entry/59092)
+ - [CF Blog Pt 1](http://codeforces.com/blog/entry/57046)
+ - [CF Blog Pt 2](http://codeforces.com/blog/entry/59092)
 
 </optional-content>
 

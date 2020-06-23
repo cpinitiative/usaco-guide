@@ -7,7 +7,7 @@ prerequisites:
 description: Finding connected components in a graph that is respresented by a grid.
 ---
 
-## Flood Fill](https://en.wikipedia.org/wiki/Flood_fill)
+## [Flood Fill](https://en.wikipedia.org/wiki/Flood_fill)
 
  - [CSES Counting Rooms](https://cses.fi/problemset/task/1192)
  - [CSES Labyrinth](https://cses.fi/problemset/task/1193)
@@ -15,7 +15,7 @@ description: Finding connected components in a graph that is respresented by a g
 ### Tutorial
 
  - Recommended:
-   - Ch 10 of https://www.overleaf.com/project/5e73f65cde1d010001224d8a
+   - Intro to USACO Ch 10
 
 ### Problems
 

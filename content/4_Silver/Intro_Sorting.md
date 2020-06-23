@@ -18,24 +18,28 @@ description: Introduces sorting and binary searching on a sorted array.
 
 There are many sorting algorithms, here are some sources to learn about the popular ones:
 
- - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
-   - [Out of Sorts (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=834)
-     - hard!
- - [Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
- - [Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
+  - [Bubble Sort](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
+    - O(N^2)
+    - [Out of Sorts (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=834)
+      - hard!
+  - [HackerEarth Quicksort](https://www.hackerearth.com/practice/algorithms/sorting/quick-sort/tutorial/)
+    - expected $O(N\log N)$
+  - [HackerEarth Mergesort](https://www.hackerearth.com/practice/algorithms/sorting/merge-sort/tutorial/)
+    - $O(N\log N)$
 
 ## Library Sorting
 
- - C++: 
+ - C++
     - [std::sort Documentation](https://en.cppreference.com/w/cpp/algorithm/sort)
-    - [C++ Tricks (First Two Related To Sorting)](https://codeforces.com/blog/entry/74684)
     - [std::stable\_sort documentation](http://www.cplusplus.com/reference/algorithm/stable_sort/)
- - Java:
+    - [Golovanov399 - C++ Tricks](https://codeforces.com/blog/entry/74684)
+      - first two related to sorting
+ - Java
     - [Arrays.sort Documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
     - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
       - no longer works, but see [this one](https://codeforces.com/contest/1324/hacks/625031/test) instead.
       - to avoid getting hacked, [shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
- - Python:
+ - Python
     - [Sorted Documentation](https://docs.python.org/3/howto/sorting.html)
 
 ## Binary Search

@@ -152,4 +152,17 @@ pq.add(6); // [7, 6, 5]
 
 ## Problems
 
-??
+(actually go through these and check ...)
+
+### Stack
+
+  - UVa 00514 - Rails
+  - UVa 00732 - Anagram by Stack
+  - UVa 01062 - Containers
+
+### Queue / Deque 
+
+  - UVa 10172 - The Lonesome Cargo
+  - UVa 10901 - Ferry Loading III
+  - UVa 11034 - Ferry Loading IV
+

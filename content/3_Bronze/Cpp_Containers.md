@@ -7,8 +7,9 @@ description: Introduces C++ containers that are frequently used in competitive p
 
 ## Additional Resources
 
- - CPH 4 (Data Structures)
- - [PAPS 3.1, 3.5, 6.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+  - CPH 4 (Data Structures)
+  - [PAPS 3.1, 3.5, 6.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+  - [CPC.2](https://github.com/SuprDewd/T-414-AFLV/tree/master/02_data_structures)
 
 # Data Structures
 

@@ -9,7 +9,10 @@ description: ?
 
 ## Additional Reading
 
-- CPH 18.4 - Merging Data Structures
+  - CPH 18.4 - Merging Data Structures
+  - CF Blogs
+    - [Arpa](https://codeforces.com/blog/entry/44351)
+    - [tuwuna](https://codeforces.com/blog/entry/67696)
 
 # Merging Sets
 
@@ -20,7 +23,7 @@ For each node, let's store a set containing only that node, and we want to merge
 However, with just a few lines of code, we can significantly speed this up.
 ```cpp
 if(a.size() < b.size()){ //for two sets a and b
-	swap(a,b);
+  swap(a,b);
 }
 ```  
 In other words, by merging the smaller set into the larger one, the runtime complexity becomes $O(N\log N).$
@@ -43,15 +46,13 @@ Prove that if you instead merge sets that have size equal to the depths of the s
 
 ## Problems
 
-  - [Favorite Colors (USACO Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
-	- Merge Adjacency Lists
-  - Promotion Counting
-    - Merge Indexed Sets
-
-## Small to Large (Offline)
-
-Sample codes: [DSU on Tree code](https://codeforces.com/blog/entry/44351), [explanation of code](https://codeforces.com/blog/entry/67696)
-
- - USACO Disrupt again!
- - [CSES Distinct Colors](https://cses.fi/problemset/task/1139)
- - [CF Lomsat gelral](https://codeforces.com/contest/600/problem/E)
+  - USACO
+    - [Gold - Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
+      - merge adjacency lists
+      - not required to get AC
+    - [Plat - Disruption](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
+    - [Plat - Promotion Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
+      - merge indexed sets
+  - Other
+    - [CSES Distinct Colors](https://cses.fi/problemset/task/1139)
+   - [CF Lomsat gelral](https://codeforces.com/contest/600/problem/E)

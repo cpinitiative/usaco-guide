@@ -19,8 +19,14 @@ description: Introduces the problems of finding level ancestors in a tree and co
 
  - CPH 18.1, 18.3
  - [cp-algorithms: Lowest Common Ancestor](https://cp-algorithms.com/)
- - [Binary Jumping w/ O(N) Memory](https://codeforces.com/blog/entry/74847)
-   - you shouldn't actually need this, but maybe interesting
+
+<optional-content title="Improvements">
+
+  - [CF: $O(\log N)$ queries and $O(N)$ memory](https://codeforces.com/blog/entry/74847)
+  - [Wikipedia: $O(1)$ queries and $O(N)$ preprocessing time](https://en.wikipedia.org/wiki/Level_ancestor_problem#Ladder_algorithm)
+    - though explanation is not the greatest
+
+</optional-content>
 
 ### Problems
 
@@ -29,21 +35,18 @@ description: Introduces the problems of finding level ancestors in a tree and co
    - [Planets Queries II](https://cses.fi/problemset/task/1160)
  - USACO
    - Gold
-     - [USACO Gold Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970)
-     - [USACO Gold Cow Land](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
+     - [Cow Land](http://www.usaco.org/index.php?page=viewproblem2&cpid=921)
        - LCA + BIT
    - Plat
-     - [USACO Plat Newbarns](http://www.usaco.org/index.php?page=viewproblem2&cpid=817)
+     - [Max Flow](http://www.usaco.org/index.php?page=viewproblem2&cpid=576)
+     - [Disruption](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
+     - [Newbarns](http://www.usaco.org/index.php?page=viewproblem2&cpid=817)
        - online tree diameter
        - Copy of [CF Brain Network "Hard"](https://codeforces.com/contest/690/problem/C3)
-     - [Max Flow](http://www.usaco.org/index.php?page=viewproblem2&cpid=576)
-     - [Promote](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
-       - Subtree + BIT
-     - [Disrupt](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
-       - HLD is possible, but just do binary jumps
      - [Tree Boxes](http://www.usaco.org/index.php?page=viewproblem2&cpid=948)
        - interactive!!
      - [Gathering](http://www.usaco.org/index.php?page=viewproblem2&cpid=866)
+       - test cases added after contest ...
      - [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=901)
        - tricky
  - Other

@@ -23,13 +23,14 @@ prerequisites:
 
 ### Problems
 
- - [USACO Plat Balance](http://www.usaco.org/index.php?page=viewproblem2&cpid=864)
- - [USACO Plat Falling](http://www.usaco.org/index.php?page=viewproblem2&cpid=998)
+ - [USACO Plat - Balance Beam](http://www.usaco.org/index.php?page=viewproblem2&cpid=864)
+   - quite easy (but make sure to avoid precision issues)
+ - [USACO Plat - Falling Portals](http://www.usaco.org/index.php?page=viewproblem2&cpid=998)
  - [USACO Old Gold - Fencing](http://www.usaco.org/index.php?page=viewproblem2&cpid=534)
  - [USACO Old Gold - Cow Curling](http://www.usaco.org/index.php?page=viewproblem2&cpid=382)
  - [Kattis Fence Orthogonality](https://open.kattis.com/problems/fenceortho)
  - [AGC 44 Random Pawn](https://atcoder.jp/contests/agc044/tasks/agc044_e)
-   - Generalization of "Balance"
+   - Generalization of "Balance Beam"
 
 Minkowski addition?
 

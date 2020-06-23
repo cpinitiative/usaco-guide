@@ -50,10 +50,10 @@ const ModuleOrdering = {
     },
     {
       name: "Data Structures",
-      items: {
+      items: [
         "stacks-queues",
         "maps-sets",
-      }
+      ]
     },
     "binary-search",
     "2P",
@@ -69,7 +69,7 @@ const ModuleOrdering = {
     },
   ],
   "gold": [
-    "data-structures-gold",
+    "ds-gold",
     "dp",
     "intro-nt",
     {

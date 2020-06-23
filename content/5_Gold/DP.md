@@ -5,8 +5,10 @@ author: Michael Cao
 prerequisites: 
  - Recursion
  - Silver - Prefix Sums
-description: A very important concept which emerges in the Gold division and extends to the IOI. (improve?)
+description: Speeding up naive solutions with memoization.
 ---
+
+This is a very important concept which emerges in the Gold division and extends to the IOI. (improve?)
 
 <info-block title="Contest Tip">
 

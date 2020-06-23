@@ -8,13 +8,13 @@ prerequisites:
 description: More information about sorting with custom comparators in C++. Some overlap with the previous module.
 ---
 
-## Additional Resources
+## Additional Reading
 
  - [fushar (C++)](http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/)
 
-## An Example with Graphs
+## Example: [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
 
-Consider a graph with weighted edges (pairs of values), such as in the problem [Wormhole Sort (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992). There are multiple ways to solve this problem, but all of them start by sorting the edges in nondecreasing order of weight. If we only stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. However, if we create a class representing the edges and define a custom comparator to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
+There are multiple ways to solve this problem, but all of them start by sorting the edges in nondecreasing order of weight. If we only stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. However, if we create a class representing the edges and define a custom comparator to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
 
 ## Comparators for Sorting
 
@@ -22,7 +22,7 @@ There are 2 main ways to have a custom comparator in c++.
 
 ### Overloading Operator
 
-[Why const T&?](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)
+[StackOverflow: Why const T&?](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)
 
  - Pro:
    - This is the easiest to implement
@@ -283,7 +283,7 @@ int main() {
 } 
 ```
 
-There is no need to create a custom comparator.
+For wormhole sort, there is no need to create a custom comparator:
 
 ```cpp
 #include <bits/stdc++.h>

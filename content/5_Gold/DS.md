@@ -1,10 +1,10 @@
 ---
-id: data-structures-gold
-title: "Data Structures (Gold)"
+id: ds-gold
+title: "Data Structures"
 author: Michael Cao 
 prerequisites: 
  - Silver - Data Structures
-description: Monotonic stack and sliding window.
+description: "Monotonic stack and sliding window."
 ---
 
 ## Additional Reading
@@ -15,7 +15,7 @@ description: Monotonic stack and sliding window.
 
 Consider the following problem: 
 
-> Given an array, $a$, of $N (1 \le N \le 10^5)$ integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$. 
+> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$. 
 
 To solve this problem, let's store a stack of pairs of `<value, index>` and iterate over the array from left to right.  For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
 
@@ -58,7 +58,7 @@ To compute the sum in the range, instead of using a set, we can store a variable
 
 <optional-content title="Better Memory with Two Passes">
 
-- [Plat - Train Tracking](http://www.usaco.org/current/data/sol_train_platinum_open18.html)
+- [Plat - Train Tracking](http://www.usaco.org/index.php?page=viewproblem2&cpid=841)
   - Quite difficult.
 
 </optional-content>

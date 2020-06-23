@@ -9,16 +9,18 @@ description: Divisibility and Modular Arithmetic
 
 ## Additional Resources
 
- - [PAPS 16](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
  - CPH 21.1 (Primes and factors), 21.2 (Modular arithmetic)
- - [CF CodeNCode](https://codeforces.com/blog/entry/77137)
+ - [PAPS 16](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+ - [CF CodeNCode: Number Theory Course](https://codeforces.com/blog/entry/77137)
 
 ## Prime Factorization
 
 A number $a$ is called a **divisor** or a **factor** of a number $b$ if $b$ is divisible by $a$, which means that there exists some integer $k$ such that $b = ka$. Conventionally, $1$ and $n$ are considered divisors of $n$. A number $n > 1$ is **prime** if its only divisors are $1$ and $n$. Numbers greater than \(1\) that are not prime are **composite**.
 
 Every number has a unique **prime factorization**: a way of decomposing it into a product of primes, as follows:
-\[ n = {p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k} \]
+$$
+n = {p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k}
+$$
 where the $p_i$ are distinct primes and the $a_i$ are positive integers.
 
 Now, we will discuss how to find the prime factorization of an integer.
@@ -60,11 +62,15 @@ The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest 
 
 The LCM can easily be calculated from the following property with the GCD:
 
-$$\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}$$
+$$
+\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}.
+$$
 
 If we want to take the GCD or LCM of more than two elements, we can do so two at a time, in any order. For example,
 
-$$\gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4)))$$
+$$
+\gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
+$$
 
 ## Modular Arithmetic
 
@@ -84,10 +90,11 @@ $$
 
 ### Modular Exponentiation
 
-**Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ 10$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {\lfloor{\log_2n} \rfloor}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results$\mod m$.
+**Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {\lfloor{\log_2n} \rfloor}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
-Here is C++ code to compute $x ^ n \mod m$:
+Here is C++ code to compute $x ^ n \pmod m$:
 (not tested)
+
 ```cpp
 long long binpow(long long x, long long n, long long m) {
     x %= m;
@@ -114,6 +121,6 @@ Under a prime moduli, division exists.
      - First consider the case where there are only two lines with the same class.
      - Requires fast modular exponentiation for full credit.
    - [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=1043)
-     - Prime factorization
+     - Prime factorize $K$.
  - Other
    - [CF VK Cup 2012 Wildcard Round 1 C](https://codeforces.com/problemset/problem/162/C)

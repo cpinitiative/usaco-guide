@@ -17,4 +17,4 @@ description: Path and subtree updates and queries.
 
 ### Problems
 
-??
+  - [Disrupt](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)

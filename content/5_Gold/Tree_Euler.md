@@ -8,9 +8,17 @@ prerequisites:
 description: Subtree updates and queries and another way to compute lowest common ancestors.
 ---
 
- - CPH 18.2
- 
-RMQ LCA?
+  - [CSES: Subtree Queries](https://cses.fi/problemset/task/1137)
 
-https://cses.fi/problemset/task/1138: path queries
-https://cses.fi/problemset/task/1137: subtree queries
+## Tutorial
+
+  - CPH 18.2
+  - [cp-algorithms - LCA with Sparse Table](https://cp-algorithms.com/graph/lca.html)
+
+## Problems
+
+ - [CSES: Path Queries](https://cses.fi/problemset/task/1138)
+ - USACO
+   - [Gold - Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970)
+   - [Plat - Promotion Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
+   - [Plat - Snow-Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=973)
