@@ -1,7 +1,7 @@
 ---
 id: intro-sorting
 title: "Introduction to Sorting"
-author: Siyong Huang, Michael Cao, Nathan Chen
+author: Siyong Huang, Michael Cao, Nathan Chen, Nathan Wang
 description: Introduces sorting and binary searching on a sorted array.
 ---
 
@@ -87,3 +87,17 @@ However, each of the points are in the range $0 \ldots 1,000,000,000$, meaning y
 Now, we can map distinct points to smaller integers without gaps. For example, if the haybales existed at positions $[1, 4, 5, 9]$ and queries were $(1, 2)$ and $(4, 6)$, we can place the integers together and map them from $[1, 2, 4, 5, 6, 9] \rightarrow [1, 2, 3, 4, 5, 6]$. This effectively transforms the haybale positions into $[1, 3, 4, 6]$ and the queries into $1, 2$ and $3, 5$.
 
 By compressing queries and haybale positions, we've transformed the range of points to $0 \ldots N + 2Q$, allowing us to store prefix sums to effectively query for the number of haybales in a range.
+
+## Problems
+
+### Standard Problems
+
+### Practice Problems
+
+- https://cses.fi/problemset/task/1084
+  - Sort applicants and apartments, then greedily assign applicants
+- https://cses.fi/problemset/task/1090
+  - Sort children, keep a left pointer and a right pointer. Each gondola either is one child from the right pointer or two children, one left and one right.
+- https://cses.fi/problemset/task/1619
+- https://cses.fi/problemset/task/1074
+  - Spoiler: Optimal length is median

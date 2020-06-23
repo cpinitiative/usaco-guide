@@ -161,6 +161,17 @@ If we use greedy based on highest value first, we choose item A and then we are 
 
 # Problems
 
+## Standard Problems
+
+- https://cses.fi/problemset/task/1643
+  - Max Subarray Sum
+- https://cses.fi/problemset/task/1629
+  - Job Scheduling
+
+## Practice Problems?
+
+- https://cses.fi/problemset/task/1073
+
  - USACO Silver
    - [Lemonade Line](http://usaco.org/index.php?page=viewproblem2&cpid=835)
    - [Why Did the Cow Cross the Road](http://www.usaco.org/index.php?page=viewproblem2&cpid=714)

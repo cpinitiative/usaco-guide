@@ -20,3 +20,10 @@ description: "More with iterators?"
    - [Snow Boots](http://www.usaco.org/index.php?page=viewproblem2&cpid=813)
    - [Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
     - hard?
+
+## Extra Problems
+
+  - [Karen & Cards](http://codeforces.com/contest/815/problem/D) [](86)
+    - Extremely hard, do not attempt (2800 on CF)
+  - [Tournament](http://codeforces.com/contest/878/problem/C) [](106)
+    - Extremely hard, do not attempt (2700 on CF)
