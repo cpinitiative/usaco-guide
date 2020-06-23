@@ -5,7 +5,7 @@ author: Nathan Wang, Benjamin Qi, Anthony Wang
 description: Options for running C++ both online and locally.
 ---
 
-Of course, please let us know if these installation instructions do not work for you.
+Please let us know if these installation instructions do not work for you.
 
 # Using C++ Online
 
@@ -87,7 +87,12 @@ First, download and run the [MinGW installer](https://osdn.net/projects/mingw/do
 
 Another good option is Windows Subsystem for Linux (WSL) which is what I (Anthony) personally use, although it may be more difficult to properly set up.
 
-[VSCode Docs](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
+[VSCode Docs for WSL](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
+
+Nathan Wang: If you want to code in (neo)vim, you can install WSL and code through WSL bash.
+
+- Note that WSL has a max stack size of 64MB; I am unsure if this limitation is resolved yet.
+- Note that WSL/vim clipboard integration is imperfect.
 
 ## On Mac
 

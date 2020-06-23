@@ -14,7 +14,7 @@ For each problem, you submit the completed code to a grader, which checks the an
 
 For those of you with experience in software development, note that competitive programming is quite different, as the goal is to write programs that compute the correct answer, run quickly, and can be implemented quickly. Note that nowhere was maintainability of code mentioned. You don't need to bother documenting your code because it only needs to be readable to you during the contest.
 
-### More Information
+<optional-content title="More Information">
 
  - Videos
    - [William Lin - What is Competitive Programming?](https://www.youtube.com/watch?time_continue=1&v=ueNT-w7Oluw)
@@ -22,8 +22,10 @@ For those of you with experience in software development, note that competitive 
      - [Task](https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone) that was mentioned in video.
  - Reading
    - [PAPC Ch 1](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+   
+</optional-content>
 
-## Contest Format
+## USACO Contest Format
 
 The [USA Computing Olympiad](http://www.usaco.org/index.php?page=contests) is a national programming competition that occurs four times a year, with December, January, February, and US Open (March) contests. The regular contests are four hours long, and the US Open is five hours long. Each contest contains three problems. Solutions are evaluated and scored against a set of predetermined test cases that are not visible to the student. Scoring is out of 1000 points, with each problem being weighted equally (\~333 points). There are four divisions of contests: Bronze, Silver, Gold, and Platinum. After each contest, students who meet the contest-dependent cutoff for promotion will compete in the next division for future contests.
 

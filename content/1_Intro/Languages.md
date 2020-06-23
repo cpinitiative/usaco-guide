@@ -52,8 +52,8 @@ In particular, contestants using Java should be familiar with roughly the first 
 
 ### C++
 
- - We recommend you finish Sololearn up to (but not including) "More on Classes."
- - Also see [Ch 2 of PAPS](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+ - If you use Sololearn, we recommend you finish everything up to (but not including) "More on Classes."
+ - [Ch 2 of PAPS](http://www.csc.kth.se/~jsannemo/slask/main.pdf) also contains a C++ tutorial. Use one of these two resources (or find your own) to learn C++.
 
 <info-block title="Pro Tip">
 
@@ -61,7 +61,10 @@ You do not need to learn pointers (for now). Knowledge of structs and classes is
 
 </info-block>
 
+
 ## Resources for Getting Started
+
+<optional-content>
 
 Note: We don't agree with all views expressed in the links below. Let us know what works (or doesn't) for you.
 
@@ -72,3 +75,5 @@ Note: We don't agree with all views expressed in the links below. Let us know wh
   - [IOI - Getting Started](https://ioinformatics.org/page/getting-started/14)
     - not so up to date
   - [Quora - Schedule for Beginners (Joshua Pan)](https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners)
+
+</optional-content>
