@@ -60,6 +60,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   if (props.cses) {
     url = 'https://cses.fi/problemset/task/' + props.cses;
   }
+  const [showTags, setShowTags] = React.useState(false);
   return (
     <tr>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
@@ -92,9 +93,19 @@ export function ProblemComponent(props: ProblemComponentProps) {
         {props.notes}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-          Show Tags
-        </a>
+        {!showTags && (
+          <a
+            href="#"
+            className="text-indigo-600 hover:text-indigo-900"
+            onClick={e => {
+              e.preventDefault();
+              setShowTags(true);
+            }}
+          >
+            Show Tags
+          </a>
+        )}
+        {showTags && props.tags.join(', ')}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {props.children}
