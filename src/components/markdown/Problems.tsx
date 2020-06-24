@@ -16,15 +16,15 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
           <table className="min-w-full no-markdown">
             <thead>
               <tr>
+                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Source
+                </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Problem Name
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Difficulty
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Source
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
@@ -59,6 +59,9 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
   return (
     <tr>
+      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+        {problem.source}
+      </td>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         {problem.starred && (
           <svg
@@ -84,9 +87,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
             {problem.difficulty}
           </span>
         )}
-      </td>
-      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {problem.source}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {!showTags && (

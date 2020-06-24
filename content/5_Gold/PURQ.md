@@ -36,5 +36,3 @@ Can try solving some of the BIT questions w/ segtree.
    - [USACO Plat Balancing](http://www.usaco.org/index.php?page=viewproblem2&cpid=624) (check ...)
    - [USACO Plat Nocross](http://www.usaco.org/index.php?page=viewproblem2&cpid=721)
    - [POI Cards](https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement) [](81)
-   - [CSES Area of Rectangles](https://cses.fi/problemset/task/1741)
-     - use segment tree that keeps track of minimum and # of minimums

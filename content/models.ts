@@ -1,40 +1,34 @@
-import * as React from "react";
+const sources = {
+  "CC": "https://www.codechef.com/problems/",
+  "CSA": "https://csacademy.com/contest/archive/task/",
+  "DMOJ": "https://dmoj.ca/problem/",
+  "SPOJ": "https://www.spoj.com/problems/",
+  "YS": "https://judge.yosupo.jp/problem/",
+  "CF": "https://codeforces.com/",
+  "USACO": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
+  "Kattis": "https://open.kattis.com/problems/",
+  "CSES": "https://cses.fi/problemset/task/",
+};
 
 export class Problem {
+  public url: string;
+
   constructor(
+    public source: string,
     public name: string,
-    public url: string,
+    public id: string,
     public starred?: boolean,
     public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
-    public source?: string,
     public tags?: string[],
-    public sketch?: string
-  ) {}
-}
-
-export namespace Problem {
-  export class CSES extends Problem {
-    constructor(
-      public name: string,
-      public id: string,
-      public starred?: boolean,
-      public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
-      public tags?: string[],
-      public sketch?: string
-    ) {
-      super(name, `https://cses.fi/problemset/task/${id}`, starred, difficulty, "CSES", tags, sketch);
-    }
-  }
-  export class USACO extends Problem {
-    constructor(
-      public name: string,
-      public id: string,
-      public starred?: boolean,
-      public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
-      public tags?: string[],
-      public sketch?: string
-    ) {
-      super(name, `http://www.usaco.org/index.php?page=viewproblem2&cpid=${id}`, starred, difficulty, "USACO", tags, sketch);
+    public sketch?: string,
+  ) {
+    if (source in sources) {
+      this.url = sources[source] + id;
+    } else {
+      if (!id.startsWith("http")) {
+        throw "URL of problem not valid. Did you make a typo in the problem source, or in the URL?"
+      }
+      this.url = id;
     }
   }
 }

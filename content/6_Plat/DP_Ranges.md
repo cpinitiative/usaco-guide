@@ -9,10 +9,17 @@ description: Solving the problem on every contiguous subarray of the original ar
 
 ## Problems
 
- * [Gold - 248](http://www.usaco.org/index.php?page=viewproblem2&cpid=647)
-   * more straightforward
+<problems-list>
+    <problem name="Gold - 248" usaco="647" difficulty="Easy" tags={["Range DP"]}>
+    </problem>
+    <problem name="Empty String" cses="1080" difficulty="Normal" tags={["Range DP"]}>
+    </problem>
+    <problem name="Zuma" cf="problemset/problem/607/B" difficulty="Normal" tags={["Range DP"]}>
+    </problem>
+    <problem name="Greedy Pie Eaters" usaco="972" difficulty="Normal" tags={["Range DP"]}>
+    </problem>
+    <problem name="Subsequence Reversal" usaco="698" difficulty="Normal" tags={["Range DP"]}>
+    </problem>
+</problems-list>
+
  * TC SRM 787 500
- * [CSES Empty String](https://cses.fi/problemset/task/1080)
- * [CF Zuma](https://codeforces.com/problemset/problem/607/B)
- * [Plat - Greedy Pie Eaters](http://www.usaco.org/index.php?page=viewproblem2&cpid=972)
- * [Plat - Subsequence Reversal](http://www.usaco.org/index.php?page=viewproblem2&cpid=698)

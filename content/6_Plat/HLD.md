@@ -4,6 +4,7 @@ title: "Heavy-Light Decomposition"
 author: Benjamin Qi
 prerequisites: 
  - Gold - Euler Tour on Tree
+ - Platinum - Range Update Range Query
 description: Path and subtree updates and queries.
 ---
 
@@ -17,4 +18,8 @@ description: Path and subtree updates and queries.
 
 ### Problems
 
-  - [Disrupt](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
+
+<problems-list>
+    <problem name="Disrupt" usaco="842" difficulty="Easy" tags={["HLD"]}>
+    </problem>
+</problems-list>

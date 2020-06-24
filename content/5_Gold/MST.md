@@ -8,10 +8,14 @@ prerequisites:
 description: A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed.
 ---
 
-## Standard
+## Sample
 
- - [Kattis Minimum Spanning Tree](https://open.kattis.com/problems/minspantree)
-   - same as [CSES Road Reparation](https://cses.fi/problemset/task/1675)
+<problems-list>
+    <problem name="MST" kattis="minspantree" difficulty="Easy" tags={["MST"]}>
+    </problem>
+    <problem name="Road Reparation" cses="1675" difficulty="Easy" tags={["MST"]}>
+    </problem>
+</problems-list>
 
 ## Tutorial
 
@@ -26,11 +30,16 @@ description: A subset of the edges of a connected, undirected, edge-weighted gra
 
 ## USACO Gold Problems
 
- - [Old Silver - SuperBull](http://www.usaco.org/index.php?page=viewproblem2&cpid=531)
- - [Walk](http://usaco.org/index.php?page=viewproblem2&cpid=946)
-   - Prim's is applicable, but the edge weights are special so you don't actually need to use an MST algo ...
- - [Fencedin](http://www.usaco.org/index.php?page=viewproblem2&cpid=623)
-   - also special ...
+<problems-list>
+    <problem name="Old Silver - SuperBull" usaco="531" difficulty="Easy" tags={["MST"]}>
+    </problem>
+    <problem name="Walk" usaco="946" difficulty="Easy" tags={["Math", "Prim"]}>
+    </problem>
+    <problem name="Fencedin" usaco="623" difficulty="Easy" tags={["MST"]}>
+    </problem>
+    <problem name="Plat - Fencedin" usaco="625" difficulty="Normal" tags={["Kruskal"]}>
+    </problem>
+</problems-list>
 
 ## Other Problems
 

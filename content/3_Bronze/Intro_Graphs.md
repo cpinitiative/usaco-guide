@@ -26,18 +26,22 @@ Both of these will be covered in Silver. For now, it suffices to learn how graph
 
 ## Trees?
 
-
 ## USACO Bronze Problems
 
-(what are you expected to now?)
+(what are you expected to know?)
 
 (add some more)
 
- - Tree
-   - [Factory](http://usaco.org/index.php?page=viewproblem2&cpid=940)
-   - [Family Tree](http://usaco.org/index.php?page=viewproblem2&cpid=833)
-   - [Grass Planting (Silver)](http://usaco.org/index.php?page=viewproblem2&cpid=894)
- - Permutation
-   - [Swapity Swap](http://usaco.org/index.php?page=viewproblem2&cpid=1013)
- - General Graph
-   - [The Great Revegetation](http://usaco.org/index.php?page=viewproblem2&cpid=916)
+<problems-list>
+    <problem name="Silver - Grass Planting" usaco="894" difficulty="Easy" tags={["tree"]}>
+    </problem>
+    <problem name="The Great Revegetation" usaco="916" difficulty="Hard" tags={[]}>
+    </problem>
+    <problem name="Factory" usaco="940" difficulty="Hard" tags={["tree"]}>
+    </problem>
+    <problem name="Swapity Swap" usaco="1013" difficulty="Hard" tags={["permutation"]}>
+      Hint: One option is to keep swapping until the permutation returns to its original state (but can you do better?).
+    </problem>
+    <problem name="Family Tree" usaco="833" difficulty="Hard" tags={["tree"]}>
+    </problem>
+</problems-list>

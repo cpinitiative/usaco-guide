@@ -32,9 +32,14 @@ description: "?"
 
 ## Counting
 
- - USACO Plat
-   - [Tree Depth](http://www.usaco.org/index.php?page=viewproblem2&cpid=974)
-   - [Exercise](http://www.usaco.org/index.php?page=viewproblem2&cpid=1045)
+<problems-list>
+    <problem name="Tree Depth" usaco="974" difficulty="Hard" tags={["genfunc"]}>
+    </problem>
+    <problem name="Exercise" usaco="1045" difficulty="Hard" tags={["permutation"]}>
+     - genfuncs not required but possibly helpful
+    </problem>
+ </problems-list>
+
  - [zscoder GenFunc Pt 1](https://codeforces.com/blog/entry/77468)
  - [zscoder GenFunc Pt 2](https://codeforces.com/blog/entry/77551)
 

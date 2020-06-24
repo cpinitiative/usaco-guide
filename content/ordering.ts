@@ -69,7 +69,6 @@ const ModuleOrdering = {
     },
   ],
   "gold": [
-    "ds-gold",
     "dp",
     "intro-nt",
     {
