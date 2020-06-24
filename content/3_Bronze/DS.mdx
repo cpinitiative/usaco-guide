@@ -9,6 +9,7 @@ prerequisites:
 
 ## Standard
 
+  - [yosupo - Associative Array](https://judge.yosupo.jp/problem/associative_array)
   - CSES
     - Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/)
     - [Distinct Numbers](https://cses.fi/problemset/task/1621)

@@ -7,6 +7,8 @@ prerequisites:
 description: The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.
 ---
 
+ - [yosupo - Union Find](https://judge.yosupo.jp/problem/unionfind)
+
 ## Tutorial
 
  - CPH 15.2
