@@ -5,7 +5,7 @@ author: Benjamin Qi
 prerequisites: 
  - Silver - More with Maps & Sets
  - Silver - Amortized Analysis
-description: "Solving USACO Gold - Springboards"
+description: "Solving USACO Gold - Springboards."
 ---
 
 To solve USACO Gold [Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995), we need a data structure that supports operations similar to the following:
@@ -43,6 +43,11 @@ ll query(int x) { auto it = m.lb(x);
 
 (easier examples?)
 
-  - [CF: Karen & Cards](https://codeforces.com/contest/815/problem/D)
-    - For each $a$ from $p\to 1$, calculate the number of possible cards with that value of $a$.
-  - [GP of Korea 19 - Interesting Drug](https://codeforces.com/gym/102059/problem/K)
+<problems-list>
+    <problem name="Karen & Cards" cf="contest/815/problem/D" difficulty="Very Hard" tags={[]}>
+      - For each $a$ from $p\to 1$, calculate the number of possible cards with that value of $a$.
+    </problem>
+    <problem name="GP of Korea 19 - Interesting Drug" cf="gym/102059/problem/K" difficulty="Very Hard" tags={[]}>
+      - Genfuncs not required but possibly helpful
+    </problem>
+ </problems-list>

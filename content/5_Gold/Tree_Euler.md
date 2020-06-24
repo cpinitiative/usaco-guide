@@ -5,10 +5,18 @@ author: ?
 prerequisites: 
  - Silver - Depth First Search
  - Gold - Static Range Queries
+ - Gold - Point Update Range Sum
 description: Subtree updates and queries and another way to compute lowest common ancestors.
 ---
 
-  - [CSES: Subtree Queries](https://cses.fi/problemset/task/1137)
+## Sample Problems
+
+<problems-list>
+    <problem name="Subtree Queries" cses="1137" difficulty="Easy" tags={["Euler-Tree"]}>
+    </problem>
+    <problem name="Company Queries II" cses="1688" difficulty="Easy" tags={["LCA"]}>
+    </problem>
+</problems-list>
 
 ## Tutorial
 
@@ -17,8 +25,15 @@ description: Subtree updates and queries and another way to compute lowest commo
 
 ## Problems
 
- - [CSES: Path Queries](https://cses.fi/problemset/task/1138)
- - USACO
-   - [Gold - Milk Visits](http://www.usaco.org/index.php?page=viewproblem2&cpid=970)
-   - [Plat - Promotion Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
-   - [Plat - Snow-Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=973)
+<problems-list>
+    <problem name="Path Queries" cses="1138" difficulty="Easy" tags={["Euler-Tree", "PURS"]}>
+    </problem>
+    <problem name="Cow Land" usaco="921" difficulty="Normal" tags={["Euler-Tree", "PURS"]}>
+    </problem>
+    <problem name="Milk Visits" usaco="970" difficulty="Normal" tags={["Euler-Tree"]}>
+    </problem>
+    <problem name="Plat - Promotion Counting" usaco="696" difficulty="Normal" tags={["Euler-Tree", "PURS"]}>
+    </problem>
+    <problem name="Plat - Snow-Cow" usaco="973" difficulty="Hard" tags={["Euler-Tree", "PURS"]}>
+    </problem>
+</problems-list>

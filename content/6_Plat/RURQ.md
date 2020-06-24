@@ -11,9 +11,19 @@ CPH 28.1 (Segment Trees Revisited)
 
 ## Lazy Segment Tree
 
- - [USACO Old Gold The Lazy Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=418) (check ...)
- - [USACO Plat Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=578)
- - [CSES Area of Rectangles](https://cses.fi/problemset/task/1741)
+(problem that's only increment with no sets?)
+
+<problems-list>
+    <problem name="Range Updates & Sums" cses="1735" difficulty="Easy" tags={["Lazy SegTree"]}>
+    </problem>
+    <problem name="Counting Haybales" usaco="578" difficulty="Easy" tags={["Lazy SegTree"]}>
+    </problem>
+    <problem name="Old Gold - The Lazy Cow" cses="418" difficulty="Easy" tags={["Lazy SegTree"]}>
+    </problem>
+    <problem name="Area of Rectangles" cses="1741" difficulty="Hard" tags={["Lazy SegTree"]}>
+     - use segment tree that keeps track of minimum and # of minimums
+    </problem>
+</problems-list>
 
 ## BIT Revisited
 
@@ -23,7 +33,9 @@ Binary Indexed Trees can support range increments in addition to range sum queri
  - [GFG Range Update Range Query](https://www.geeksforgeeks.org/binary-indexed-tree-range-update-range-queries/)
  - [My Implementation](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BITrange.h)
 
-Example problem:
-
- - [DMOJ Range Update Range Query](https://dmoj.ca/problem/acc3p4)
- - [CSES Polynomial Queries](https://cses.fi/problemset/task/1736)
+<problems-list>
+    <problem name="Range Update Range Query" dmoj="acc3p4" difficulty="Normal" tags={["BIT-Range"]}>
+    </problem>
+    <problem name="Polynomial Queries" cses="1736" difficulty="Normal" tags={["BIT-Range"]}>
+    </problem>
+</problems-list>

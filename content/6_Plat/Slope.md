@@ -64,7 +64,13 @@ int main() {
 ```
 </spoiler>
 
+### Extension
+
+*Stock Trading (USACO Camp)*: What if your amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$?
+
 ## [Potatoes](https://oj.uz/problem/view/LMIO19_bulves)
+
+[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
 
 Let $dif_i=a_i-b_i$. Defining $d_j=\sum_{i=1}^jdif_i$, our goal is to move around the potatoes such that $d_0,d_1,\ldots,d_N$ is a non-decreasing sequence. Moving a potato is equivalent to changing exactly one of the $d_i$ (aside from $d_0,d_N$) by one.
 
@@ -178,18 +184,20 @@ int main() {
 
 ## Problems
 
-  - [Wall](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
-    - same as "Potatoes"
-  - Stock Trading (Camp)
-    - extension of "Buy Low Sell High"
-    - Amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$.
-  - [Bookface](https://codeforces.com/gym/102576/problem/C)
-  - [CCDSAP Exam](https://www.codechef.com/problems/CCDSAP)
-    - basically same as Bookface
-  - [Farm of Monsters](https://codeforces.com/gym/102538/problem/F)
-  - [Moving Walkways](https://codeforces.com/contest/1209/problem/H)
-  - [April Fools' Problem](https://codeforces.com/contest/802/problem/O)
+<problems-list>
+    <problem name="Bookface" cf="gym/102576/problem/C" difficulty="Easy" tags={["Slope Trick"]}>
+    </problem>
+    <problem name="CCDSAP Exam" cc="CCDSAP" difficulty="Easy" tags={["Slope Trick"]}>
+    </problem>
+    <problem name="Farm of Monsters" cf="gym/102538/problem/F" difficulty="Hard" tags={["Slope Trick"]}>
+    </problem>
+    <problem name="Moving Walkways" cf="contest/1209/problem/H" difficulty="Hard" tags={["Slope Trick"]}>
+    </problem>
+    <problem name="April Fools' Problem" cf="contest/802/problem/O" difficulty="Very Hard" tags={["Slope Trick"]}>
     - binary search on top of slope trick
-  - [Conquer the World](https://icpc.kattis.com/problems/conquertheworld)
+    </problem>
+    <problem name="Conquer the World" link="https://icpc.kattis.com/problems/conquertheworld" difficulty="Very Hard" tags={["Slope Trick"]}>
     - ICPC world finals, 0 solves in contest
     - "Potatoes" on tree!!
+    </problem>
+</problems-list>

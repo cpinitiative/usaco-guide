@@ -13,15 +13,15 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
           <table className="min-w-full no-markdown">
             <thead>
               <tr>
+                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Source
+                </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Problem Name
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Difficulty
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Source
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
@@ -43,6 +43,12 @@ type ProblemComponentProps = {
   cses?: string;
   kattis?: string;
   usaco?: string;
+  cf?: string;
+  cc?: string;
+  yosupo?: string;
+  spoj?: string;
+  dmoj?: string;
+  csa?: string;
   starred?: boolean;
   difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
   children?: React.ReactNode;
@@ -75,8 +81,35 @@ export function ProblemComponent(props: ProblemComponentProps) {
       'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + props.usaco;
     source = 'USACO';
   }
+  if (props.cf) {
+    url = 'https://codeforces.com/' + props.cf;
+    source = 'CF';
+  }
+  if (props.yosupo) {
+    url = 'https://judge.yosupo.jp/problem/' + props.yosupo;
+    source = 'YS';
+  }
+  if (props.spoj) {
+    url = 'https://www.spoj.com/problems/' + props.spoj;
+    source = 'SPOJ';
+  }
+  if (props.dmoj) {
+    url = 'https://dmoj.ca/problem/' + props.dmoj;
+    source = 'DMOJ';
+  }
+  if (props.csa) {
+    url = 'https://csacademy.com/contest/archive/task/' + props.csa;
+    source = 'CSA';
+  }
+  if (props.cc) {
+    url = 'https://www.codechef.com/problems/' + props.cc;
+    source = 'CC';
+  }
   return (
     <tr>
+      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+        {source}
+      </td>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         {props.starred && (
           <svg
@@ -102,9 +135,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
             {props.difficulty}
           </span>
         )}
-      </td>
-      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {source}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {!showTags && (

@@ -46,13 +46,16 @@ Prove that if you instead merge sets that have size equal to the depths of the s
 
 ## Problems
 
-  - USACO
-    - [Gold - Favorite Colors](http://www.usaco.org/index.php?page=viewproblem2&cpid=1042)
-      - merge adjacency lists
-      - not required to get AC
-    - [Plat - Disruption](http://www.usaco.org/index.php?page=viewproblem2&cpid=842)
-    - [Plat - Promotion Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=696)
+(note about indexed set swap)
+
+<problems-list>
+    <problem name="Distinct Colors" cses="1139" difficulty="Easy" tags={["Merging"]}>
+    </problem>
+    <problem name="Lomsat gelral" cf="contest/600/problem/E" difficulty="Normal" tags={["Merging"]}>
+    </problem>
+    <problem name="Plat - Disruption" usaco="842" difficulty="Hard" tags={["Merging"]}>
+    </problem>
+    <problem name="Plat - Promotion Counting" usaco="696" difficulty="Hard" tags={["Merging"]}>
       - merge indexed sets
-  - Other
-    - [CSES Distinct Colors](https://cses.fi/problemset/task/1139)
-   - [CF Lomsat gelral](https://codeforces.com/contest/600/problem/E)
+    </problem>
+</problems-list>

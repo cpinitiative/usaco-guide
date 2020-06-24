@@ -68,3 +68,4 @@ Note: no lazy propagation in 2D.
 
   - [POI Tetris 3D](https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement)
   - [IOI 2013 Game](http://wcipeg.com/problem/ioi1323)
+    - good implementation?

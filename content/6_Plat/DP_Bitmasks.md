@@ -19,8 +19,13 @@ Has not been the solution to any platinum problem, but appeared in old gold and 
 
 ## Problems
 
- - [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690)
- - [CSES Elevator Rides](https://cses.fi/problemset/task/1653)
+<problems-list>
+    <problem name="Hamiltonian Flights" cses="1690" difficulty="Easy" tags={["Bitmasks"]}>
+    </problem>
+    <problem name="Elevator Rides" cses="1653" difficulty="Normal" tags={["LCA"]}>
+    </problem>
+</problems-list>
+
  - [Old Gold - Moovie Moving](http://www.usaco.org/index.php?page=viewproblem2&cpid=515)
  - [AC Matching](https://atcoder.jp/contests/dp/tasks/dp_o)
  - [CF Square Subsets](https://codeforces.com/contest/895/problem/C)

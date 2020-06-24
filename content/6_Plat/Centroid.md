@@ -14,8 +14,13 @@ description: ?
 
 ### Problems
 
- - [Ciel the Commander](https://codeforces.com/problemset/problem/321/C)
- - [DMOJ Bob Equilibrium](https://dmoj.ca/problem/dmopc19c7p6)
-   - tight time limit
- - [USACO Plat - At Large](http://www.usaco.org/index.php?page=viewproblem2&cpid=793)
-   - *very* tricky, requires several observations
+<problems-list>
+    <problem name="Ciel the Commander" cf="problemset/problem/321/C" difficulty="Easy" tags={["Centroid"]}>
+    </problem>
+    <problem name="Bob Equilibrium" dmoj="dmopc19c7p6" difficulty="Hard" tags={["Centroid"]}>
+     - tight time limit
+    </problem>
+    <problem name="At Large" usaco="793" difficulty="Very Hard" tags={["Centroid"]}>
+     - tight time limit
+    </problem>
+</problems-list>
