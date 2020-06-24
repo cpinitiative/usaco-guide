@@ -11,6 +11,8 @@ This can be done in $O(1)$ time each with $O(N\log N)$ time preprocessing.
 
 ## [Range Minimum Query](https://en.wikipedia.org/wiki/Range_minimum_query)
 
+ - [yosupo - Static RMQ](https://judge.yosupo.jp/problem/staticrmq)
+
 First we'll consider the special case when $\ominus$ denotes `min`. 
 
 - [CSES Range Minimum Queries I](https://cses.fi/problemset/task/1647)

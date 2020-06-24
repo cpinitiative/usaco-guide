@@ -14,6 +14,7 @@ description: Knuth-Morris-Pratt and Z Algorithms (and a few more related topics)
 
 ## Z, KMP
 
+  - [yosupo - Z](https://judge.yosupo.jp/problem/zalgorithm)
   - Tutorial
     - CPH 26.4 (Z-algorithm)
     - [PAPS 14.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)

@@ -152,6 +152,7 @@ const ModuleOrdering = {
     },
     "bitsets",
     "fracture",
+    "fft",
   ]
 };
 

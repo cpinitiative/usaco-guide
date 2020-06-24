@@ -5,6 +5,8 @@ author: Darren Yao, Eric Wei
 description: Computing range sum queries in constant time over a fixed array.
 ---
 
+ - [yosupo - Static Range Sum](https://judge.yosupo.jp/problem/static_range_sum)
+ 
 Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to answer $Q$ queries of the following form: compute $\texttt{arr[L]+arr[L+1]+}\cdots\texttt{+arr[R]}$.
 
 ## Standard
