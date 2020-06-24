@@ -22,7 +22,7 @@ Aka *Fenwick Tree*.
 ### Sample Problems
 
 <problems-list>
-    <problem name="CSES Range Sum Queries II" link="https://cses.fi/problemset/task/1648" difficulty="Easy">
+    <problem name="Range Sum Queries II" cses="1648" difficulty="Easy">
       Can also do range XOR queries w/ update.
     </problem>
     <problem name="SPOJ Inversion Counting" link="https://www.spoj.com/problems/INVCNT/" difficulty="Easy">
@@ -85,22 +85,22 @@ Note that if it were not the case that all elements of the input array were dist
  - CSES
 
 <problems-list>
-    <problem name="List Removals" link="https://cses.fi/problemset/task/1749" difficulty="Easy">
+    <problem name="List Removals" cses="1749" difficulty="Easy">
     	easy with indexed set
     </problem>
-    <problem name="Salary Queries" link="https://cses.fi/problemset/task/1144" difficulty="Easy">
+    <problem name="Salary Queries" cses="1144" difficulty="Easy">
     	easy with indexed set
     </problem>
-    <problem name="Range Update Queries" link="https://cses.fi/problemset/task/1651" difficulty="Easy">
+    <problem name="Range Update Queries" cses="1651" difficulty="Easy">
     	not harder than point update range query
     </problem>
-    <problem name="Increasing Subsequence II" link="https://cses.fi/problemset/task/1748" difficulty="Easy">
+    <problem name="Increasing Subsequence II" cses="1748" difficulty="Easy">
     </problem>
-    <problem name="Intersection Points" link="https://cses.fi/problemset/task/1740" difficulty="Easy">
+    <problem name="Intersection Points" cses="1740" difficulty="Easy">
     </problem>
-    <problem name="Distinct Values Queries" link="https://cses.fi/problemset/task/1734" difficulty="Normal">
+    <problem name="Distinct Values Queries" cses="1734" difficulty="Normal">
     </problem>
-    <problem name="Robot Path" link="https://cses.fi/problemset/task/1742" difficulty="Hard">
+    <problem name="Robot Path" cses="1742" difficulty="Hard">
     </problem>
 </problems-list>
 
@@ -126,17 +126,16 @@ Note that if it were not the case that all elements of the input array were dist
 
 
 <problems-list>
-    <problem name="USACO Plat - Mincross" link="http://www.usaco.org/index.php?page=viewproblem2&cpid=720" difficulty="Easy">
+    <problem name="Plat - Mincross" usaco="720" difficulty="Easy">
     </problem>
-    <problem name="Mega Inversions" link="https://open.kattis.com/problems/megainversions" difficulty="Easy">
+    <problem name="Mega Inversions" kattis="megainversions" difficulty="Easy">
     	also just inversion counting
     </problem>
-
-  * [Out of Sorts (USACO Silver)](http://usaco.org/index.php?page=viewproblem2&cpid=834)
-    * aka [Sorting Steps](https://csacademy.com/contest/round-42/task/sorting-steps/) [](42)
-    * Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier.
-
+    <problem name="Silver - Out of Sorts" usaco="834" difficulty="Normal">
+     -  aka [Sorting Steps](https://csacademy.com/contest/round-42/task/sorting-steps/) [](42)
+     -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier.
+    </problem>
+    <problem name="Twin Permutations" link="https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/" difficulty="Easy">
+        Offline 2D queries can be done with a 1D data structure
+    </problem>
 </problems-list>
-
-  * [Twin Permutations](https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/)
-    * Offline 2D queries can be done with a 1D data structure

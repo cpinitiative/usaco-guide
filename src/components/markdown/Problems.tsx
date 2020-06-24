@@ -41,6 +41,8 @@ type ProblemComponentProps = {
   name?: string;
   url?: string;
   cses?: string;
+  kattis?: string;
+  usaco?: string;
   starred?: boolean;
   difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
   children?: React.ReactNode;
@@ -56,13 +58,23 @@ export function ProblemComponent(props: ProblemComponentProps) {
     Hard: 'bg-purple-100 text-purple-800',
     'Very Hard': 'bg-red-100 text-red-800',
   };
+  const [showTags, setShowTags] = React.useState(false);
+
   let url = props.url,
     source = props.source;
   if (props.cses) {
     url = 'https://cses.fi/problemset/task/' + props.cses;
     source = 'CSES';
   }
-  const [showTags, setShowTags] = React.useState(false);
+  if (props.kattis) {
+    url = 'https://open.kattis.com/problems/' + props.kattis;
+    source = 'Kattis';
+  }
+  if (props.usaco) {
+    url =
+      'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + props.usaco;
+    source = 'USACO';
+  }
   return (
     <tr>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
