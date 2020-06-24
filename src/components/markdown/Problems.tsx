@@ -39,7 +39,8 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
 
 type ProblemComponentProps = {
   name?: string;
-  url: string;
+  url?: string;
+  cses?: string;
   starred?: boolean;
   difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
   notes?: React.ReactNode;
@@ -55,6 +56,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
     Hard: 'bg-purple-100 text-purple-800',
     'Very Hard': 'bg-red-100 text-red-800',
   };
+  let url = props.url;
+  if (props.cses) {
+    url = 'https://cses.fi/problemset/task/' + props.cses;
+  }
   return (
     <tr>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
@@ -69,7 +74,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         )}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-        <a href={props.url}>{props.name || props.url}</a>
+        <a href={url}>{props.name || url}</a>
       </td>
       <td className="px-6 py-4 whitespace-no-wrap leading-5">
         {props.difficulty && (
