@@ -32,7 +32,7 @@ export class Problem {
       this.url = sources[source] + id;
     } else {
       if (!id.startsWith("http")) {
-        throw "URL of problem not valid. Did you make a typo in the problem source, or in the URL?"
+        throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`
       }
       this.url = id;
     }
