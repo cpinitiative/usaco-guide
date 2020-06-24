@@ -41,6 +41,8 @@ type ProblemComponentProps = {
   name?: string;
   url?: string;
   cses?: string;
+  kattis?: string;
+  usaco?: string;
   starred?: boolean;
   difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
   notes?: React.ReactNode;
@@ -59,6 +61,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
   let url = props.url;
   if (props.cses) {
     url = 'https://cses.fi/problemset/task/' + props.cses;
+  }
+  if (props.kattis) {
+    url = 'https://open.kattis.com/problems/' + props.kattis;
+  }
+  if (props.usaco) {
+    url =
+      'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + props.usaco;
   }
   return (
     <tr>
