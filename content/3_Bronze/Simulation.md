@@ -116,6 +116,16 @@ cout << endl;
 
 ## USACO Bronze Problems
 
+speeding: http://usaco.org/index.php?page=viewproblem2&cpid=568
+
+angry: http://usaco.org/index.php?page=viewproblem2&cpid=592
+
+block: http://usaco.org/index.php?page=viewproblem2&cpid=664
+
+shell: http://usaco.org/index.php?page=viewproblem2&cpid=891
+
+Team Tic Tac Toe: 831
+
 - [Mixing Milk](http://www.usaco.org/index.php?page=viewproblem2&cpid=855)
 - [Milk Measurement](http://www.usaco.org/index.php?page=viewproblem2&cpid=761)
 - [The Lost Cow](http://www.usaco.org/index.php?page=viewproblem2&cpid=735)

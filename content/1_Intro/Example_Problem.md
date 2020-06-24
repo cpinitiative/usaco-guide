@@ -43,9 +43,16 @@ int main() {
 }
 ```
 
-Also, including `ios_base::sync_with_stdio(0); cin.tie(0);` in the main function can speed up input & output significantly on some tasks. See [here](https://codeforces.com/blog/entry/5217) and [StackOverflow](https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull) for more information. 
+<optional-content title="Faster Input & Output">
+(using scanf, printf instead?)
+
+(not using endl?)
+
+Including `ios_base::sync_with_stdio(0); cin.tie(0);` in the main function can speed up input & output significantly on some tasks. See [here](https://codeforces.com/blog/entry/5217) and [StackOverflow](https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull) for more information. 
 
  - Actually, the former link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
+
+</optional-content>
 
 #### Method 2
 
@@ -183,12 +190,13 @@ The following require relatively little programming experience and no algorithmi
 
 <problems-list>
     <problem name="Promotion Counting" usaco="591" difficulty="Intro">
-      Can also do range XOR queries w/ update.
     </problem>
     <problem name="Word Processor" usaco="987" difficulty="Intro">
     </problem>
     <problem name="Square Pasture" usaco="663" difficulty="Intro">
     </problem>
 </problems-list>
+
+http://usaco.org/index.php?page=viewproblem2&cpid=939
 
 Also check the [CSES Introductory Problems](https://cses.fi/problemset/list/) up to and including "Palindrome Reorder."

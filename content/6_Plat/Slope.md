@@ -121,6 +121,8 @@ int main() {
 
 ## [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
 
+Equivalent Problem: GP of Wroclaw 20 J
+
 This is quite similar to the previous task, so it's easy to guess that slope trick is applicable. 
 
 Again, let's first come up with a slow DP. Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.

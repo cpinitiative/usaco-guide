@@ -35,12 +35,6 @@ The [USA Computing Olympiad](http://www.usaco.org/index.php?page=contests) is a 
 - For Gold, we will provide code snippets in C++ and Java and (sometimes) Python.
 - For Platinum, code snippets may only be provided in one language (typically either C++ or Java).
 
-<div className="h-4" />
-
-<optional-content>
-
-<h2 style={{ marginTop: 0 }}>Module Organization</h2>
-
 All material in this guide will be grouped into **modules** such as the one you're reading right now.
 
 ### Guidelines
@@ -70,5 +64,3 @@ The first part of a module is the lesson.
  - Problems should be sorted in order of how they are recommended be completed. 
    - Add comments regarding difficulty and / or solution sketches.
  - Possibly include additional problems.
- 
-</optional-content>
