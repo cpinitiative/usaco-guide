@@ -1,7 +1,7 @@
 ---
 id: maps-sets
-title: "More With Maps & Sets"
-author: Unknown
+title: "More with Maps & Sets"
+author: Benjamin Qi
 prerequisites: 
  - Bronze - Data Structures
 description: "More with iterators?"
@@ -21,9 +21,12 @@ description: "More with iterators?"
    - [Springboards](http://www.usaco.org/index.php?page=viewproblem2&cpid=995)
     - hard?
 
-## Extra Problems
+## CF Problems
 
-  - [Karen & Cards](http://codeforces.com/contest/815/problem/D) [](86)
-    - Extremely hard, do not attempt (2800 on CF)
+  - [Jury Marks](http://codeforces.com/contest/831/problem/C) [](67)
+    - Hard, would recommend skipping (1700 on CF)
+  - [Mahmoud & Ehab & Function](http://codeforces.com/contest/862/problem/E) [](74)
+    - Hard, do not attempt until Gold/Plat (2100 on CF)
   - [Tournament](http://codeforces.com/contest/878/problem/C) [](106)
+    - First solve problem for $n$-th tournament only
     - Extremely hard, do not attempt (2700 on CF)

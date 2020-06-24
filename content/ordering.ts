@@ -32,6 +32,7 @@ const ModuleOrdering = {
         "containers",
         "pairs-tuples",
         "ds",
+        "intro-sorting",
       ]
     },
     "simulation",
@@ -43,7 +44,6 @@ const ModuleOrdering = {
     {
       name: "Sorting",
       items: [
-        "intro-sorting",
         "sorting-custom",
         "sorting-cpp",
       ]
@@ -56,7 +56,7 @@ const ModuleOrdering = {
       ]
     },
     "binary-search",
-    "2P",
+    "amortized",
     "greedy",
     {
       name: "Graphs",
@@ -86,6 +86,7 @@ const ModuleOrdering = {
       name: "Range Queries",
       items: [
         "SRQ",
+        "springboards",
         "PURS",
         "PURQ",  
       ]

@@ -7,9 +7,11 @@ prerequisites:
 description: Traversing a graph in a way such that vertices closer to the starting vertex are processed first.
 ---
 
-Note that this is **not** required for silver, but it's good to learn along with DFS.
-
  - [CSES Message Route](https://cses.fi/problemset/task/1667)
+
+<info-block title="Pro Tip">
+No silver problem should require BFS rather than DFS, but it's still good to know at this level.
+</info-block>
 
 ### Tutorial
 
@@ -26,7 +28,7 @@ Note that this is **not** required for silver, but it's good to learn along with
    - [Monsters](https://cses.fi/problemset/task/1194)
    - [Cow Navigation](http://www.usaco.org/index.php?page=viewproblem2&cpid=695)
    - [Dream](http://www.usaco.org/index.php?page=viewproblem2&cpid=575)
-     - bad problem ...
+     - lots of casework
    - [Lasers](http://www.usaco.org/index.php?page=viewproblem2&cpid=671)
    - [Visit FJ](http://www.usaco.org/index.php?page=viewproblem2&cpid=717)
  - Other

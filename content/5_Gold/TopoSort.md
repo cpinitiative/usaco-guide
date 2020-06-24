@@ -33,6 +33,7 @@ Consider [Khan's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Ka
     - Binary search and check if a valid topological sort exists. 
   - [CSES Course Schedule II](https://cses.fi/problemset/task/1757)
     - Tricky!
+    - equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)
 
 ## Dynamic Programming
 
@@ -58,8 +59,3 @@ However, not all problems clearly give you directed acyclic graphs (ex. [Plat - 
     - enumerating paths on DAG
   - [USACO Gold - Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
     - not explicitly given, but graph is a DAG
-
-## Problems
-
- - Other
-   - [Minimal Labels](http://codeforces.com/contest/825/problem/E) [](53)

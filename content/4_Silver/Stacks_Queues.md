@@ -150,6 +150,8 @@ pq.poll(); // [7, 5]
 pq.add(6); // [7, 6, 5]
 ```
 
+## General Problems
+
 ## Problems
 
 (actually go through these and check ...)
@@ -166,3 +168,29 @@ pq.add(6); // [7, 6, 5]
   - UVa 10901 - Ferry Loading III
   - UVa 11034 - Ferry Loading IV
 
+
+## Monotonic Stack
+
+Consider the following problem: 
+
+> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$. 
+
+To solve this problem, let's store a stack of pairs of `<value, index>` and iterate over the array from left to right.  For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
+
+- Keep popping the top element off the stack as long as $value \ge a_i$. This is because we know that the pair containing $value$ will never be the solution to any index $j > i$, since $a_i$ is less than or equal to than $value$ and has an index further to the right.
+- If $value < a_i$, set $ans[i]$ to $index$, because a stack stores the most recently added values first (or in this case, the rightmost ones), $index$ will contain the rightmost value which is less than $a_i$. Then, pop the top element off the stack, because $index$ can't be the solution for two elements.
+
+The stack we used is called a "monotonic stack" because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing. 
+
+### Further Reading
+
+ - CPH 8.2 (Nearest Smaller Element)
+ - [cp-algo - Min Stack)](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
+ - [Medium - Monotonic Stack](https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e)
+
+### Problems
+
+- [Concurrently Balanced Strings (Old Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=194)
+- [Max Histogram Area (Leetcode)](https://leetcode.com/problems/largest-rectangle-in-histogram/)
+
+(add more once codeforces comes up)
