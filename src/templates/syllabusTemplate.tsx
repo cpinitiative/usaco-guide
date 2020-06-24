@@ -283,7 +283,6 @@ export const pageQuery = graphql`
             title
             id
             author
-            problems
             prerequisites
             description
           }

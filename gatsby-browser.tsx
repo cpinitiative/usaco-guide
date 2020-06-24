@@ -1,6 +1,10 @@
 import './src/styles/main.css';
 import * as React from 'react';
 import { MDXProvider } from '@mdx-js/react';
+import {
+  ProblemComponent,
+  ProblemsListComponent,
+} from './src/components/markdown/Problems';
 
 const SpoilerComponent = ({ children, title }) => {
   const [show, setShow] = React.useState(false);
@@ -100,6 +104,12 @@ const components = {
       <div className="px-4 pt-5 pb-2 sm:p-6 sm:pb-2">{children}</div>
     </div>
   ),
+  'problems-list': ProblemsListComponent,
+  problem: ProblemComponent,
+
+  table: props => <table {...props} className="text-base border-gray-600" />,
+  th: props => <th {...props} className="border py-1 px-3" />,
+  td: props => <td {...props} className="border py-1 px-3" />,
 };
 
 export const wrapRootElement = ({ element }) => (

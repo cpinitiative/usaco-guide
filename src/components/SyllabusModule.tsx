@@ -85,15 +85,6 @@ const SyllabusModule = ({
       <div className="px-4 py-4 sm:p-6">
         {children}
 
-        {problems && (
-          <>
-            Problems:
-            <ul className="ml-3 space-y-1 py-2">
-              {problems.map(renderProblem)}
-            </ul>
-          </>
-        )}
-
         {author && <p className="mt-2">Author: {author}</p>}
       </div>
       <Link

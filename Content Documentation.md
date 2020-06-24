@@ -24,8 +24,6 @@ YAML formatting is _extremely strict_. Be careful about spaces. Additionally, es
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
 - **Prerequisites**: _Optional_. Any prerequisites for this module. (Coming soon: If you want to reference a module as a prerequisite, you can list the module ID.)
-- **Problems**: _Optional_. A list of problems in the article. As we haven't figured out what we're going to do with
-  **it's best to not include this yet.** For USACO problems, enter each problem as `division_filename`. Ex: `bronze_promote`.
 
 ### Spoilers
 

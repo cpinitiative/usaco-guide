@@ -2,11 +2,6 @@
 id: ex-prob
 title: An Example Problem
 author: Nathan Wang, Benjamin Qi, Darren Yao
-problems:
- - bronze_promote
- - bronze_word
- - bronze_paint
- - bronze_square
 prerequisites: 
  - Intro - Data Types
  - Intro - Input & Output
