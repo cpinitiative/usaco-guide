@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { Problem } from '../../../content/models';
 
 type ProblemsListComponentProps = {
   title?: string;
-  children: React.ReactChildren;
+  children?: React.ReactChildren;
+  problems: Problem[];
 };
 
 export function ProblemsListComponent(props: ProblemsListComponentProps) {
+  console.log(props.problems);
   return (
     <div className="flex flex-col">
       <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -28,7 +31,9 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
               </tr>
             </thead>
             <tbody className="table-alternating-stripes">
-              {props.children}
+              {props.problems.map(problem => (
+                <ProblemComponent problem={problem} />
+              ))}
             </tbody>
           </table>
         </div>
@@ -38,22 +43,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
 }
 
 type ProblemComponentProps = {
-  name?: string;
-  url?: string;
-  cses?: string;
-  kattis?: string;
-  usaco?: string;
-  cf?: string;
-  cc?: string;
-  yosupo?: string;
-  spoj?: string;
-  dmoj?: string;
-  csa?: string;
-  starred?: boolean;
-  difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
-  children?: React.ReactNode;
-  source?: string;
-  tags?: string[];
+  problem: Problem;
 };
 
 export function ProblemComponent(props: ProblemComponentProps) {
@@ -65,53 +55,15 @@ export function ProblemComponent(props: ProblemComponentProps) {
     'Very Hard': 'bg-red-100 text-red-800',
   };
   const [showTags, setShowTags] = React.useState(false);
+  const { problem } = props;
 
-  let url = props.url,
-    source = props.source;
-  if (props.cses) {
-    url = 'https://cses.fi/problemset/task/' + props.cses;
-    source = 'CSES';
-  }
-  if (props.kattis) {
-    url = 'https://open.kattis.com/problems/' + props.kattis;
-    source = 'Kattis';
-  }
-  if (props.usaco) {
-    url =
-      'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + props.usaco;
-    source = 'USACO';
-  }
-  if (props.cf) {
-    url = 'https://codeforces.com/' + props.cf;
-    source = 'CF';
-  }
-  if (props.yosupo) {
-    url = 'https://judge.yosupo.jp/problem/' + props.yosupo;
-    source = 'YS';
-  }
-  if (props.spoj) {
-    url = 'https://www.spoj.com/problems/' + props.spoj;
-    source = 'SPOJ';
-  }
-  if (props.dmoj) {
-    url = 'https://dmoj.ca/problem/' + props.dmoj;
-    source = 'DMOJ';
-  }
-  if (props.csa) {
-    url = 'https://csacademy.com/contest/archive/task/' + props.csa;
-    source = 'CSA';
-  }
-  if (props.cc) {
-    url = 'https://www.codechef.com/problems/' + props.cc;
-    source = 'CC';
-  }
   return (
     <tr>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {source}
+        {problem.source}
       </td>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-        {props.starred && (
+        {problem.starred && (
           <svg
             className="h-6 w-6 text-blue-700"
             fill="currentColor"
@@ -122,17 +74,17 @@ export function ProblemComponent(props: ProblemComponentProps) {
         )}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-        <a href={url}>{props.name || url}</a>
+        <a href={problem.url}>{problem.name}</a>
       </td>
       <td className="px-6 py-4 whitespace-no-wrap leading-5">
-        {props.difficulty && (
+        {problem.difficulty && (
           <span
             className={
               'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
-              difficultyClasses[props.difficulty]
+              difficultyClasses[problem.difficulty]
             }
           >
-            {props.difficulty}
+            {problem.difficulty}
           </span>
         )}
       </td>
@@ -149,10 +101,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
             Show Tags
           </a>
         )}
-        {showTags && props.tags.join(', ')}
+        {showTags && problem.tags.join(', ')}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        {props.children}
+        {/*{props.children}*/}
         <a href="#" className="text-indigo-600 hover:text-indigo-900">
           Show Solution
         </a>
