@@ -17,7 +17,7 @@ Please let us know if these installation instructions do not work for you.
    - pretty nice (unless you get "Estimated Queue Time: ...")
    - "saved locally" will not save your code if you close the tab, press Command-S to save.
  - [Ideone](http://ideone.com/)
-   - okay .. . has the bare minimum you need for running C++
+   - okay ... has the bare minimum you need for running C++
    - make sure your code is not public
    - sometimes erases your code when you first create it (so get in the habit of copying your code first)
 
