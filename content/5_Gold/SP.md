@@ -32,6 +32,7 @@ Use *Dijkstra's Algorithm*.
    - [CSES Flight Routes](https://cses.fi/problemset/task/1196)
    - [CSES Investigation](https://cses.fi/problemset/task/1202)
  - USACO
+   - [Visit FJ](http://www.usaco.org/index.php?page=viewproblem2&cpid=717)
    - [Milk Pumping](http://www.usaco.org/index.php?page=viewproblem2&cpid=969)
      - fairly standard application
    - [Shortcut](http://usaco.org/index.php?page=viewproblem2&cpid=899)
