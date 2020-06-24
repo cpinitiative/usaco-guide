@@ -21,7 +21,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                   Difficulty
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Problem Notes
+                  Source
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 <th className="px-6 py-3 border-b border-gray-200 bg-gray-50" />
@@ -43,8 +43,8 @@ type ProblemComponentProps = {
   cses?: string;
   starred?: boolean;
   difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard';
-  notes?: React.ReactNode;
   children?: React.ReactNode;
+  source?: string;
   tags?: string[];
 };
 
@@ -56,9 +56,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
     Hard: 'bg-purple-100 text-purple-800',
     'Very Hard': 'bg-red-100 text-red-800',
   };
-  let url = props.url;
+  let url = props.url,
+    source = props.source;
   if (props.cses) {
     url = 'https://cses.fi/problemset/task/' + props.cses;
+    source = 'CSES';
   }
   const [showTags, setShowTags] = React.useState(false);
   return (
@@ -90,7 +92,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         )}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {props.notes}
+        {source}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {!showTags && (
