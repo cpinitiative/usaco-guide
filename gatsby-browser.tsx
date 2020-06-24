@@ -104,7 +104,8 @@ const components = {
       <div className="px-4 pt-5 pb-2 sm:p-6 sm:pb-2">{children}</div>
     </div>
   ),
-  'problems-list': ({ children }) => {
+  'problems-list': ({ children, problems }) => {
+    if (problems) return <ProblemsListComponent problems={problems} />;
     console.log('New problem list');
     return <div>{children}</div>;
   },
@@ -112,11 +113,20 @@ const components = {
     console.log(
       `new Problem("${Object.keys(other)[0]}", "${name}", "${
         Object.values(other)[0]
-      }", "${difficulty}", false, ${JSON.stringify(tags)}),`
+      }", "${difficulty}", false, ${JSON.stringify(tags)}, "${
+        children || ''
+      }"),`
     );
     return null;
   },
-
+  // problem: ({ name, difficulty, tags, children, ...other }) => {
+  //   console.log(
+  //     `new Problem("${Object.keys(other)[0]}", "${name}", "${
+  //       Object.values(other)[0]
+  //     }", "${difficulty}", false, ${JSON.stringify(tags)}),`
+  //   );
+  //   return null;
+  // },
   table: props => <table {...props} className="text-base border-gray-600" />,
   th: props => <th {...props} className="border py-1 px-3" />,
   td: props => <td {...props} className="border py-1 px-3" />,
