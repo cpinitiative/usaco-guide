@@ -8,6 +8,9 @@ const sources = {
   "Bronze": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Silver": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Gold": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
+  "Old Bronze": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
+  "Old Silver": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
+  "Old Gold": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Plat": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Kattis": "https://open.kattis.com/problems/",
   "CSES": "https://cses.fi/problemset/task/",
@@ -29,7 +32,7 @@ export class Problem {
       this.url = sources[source] + id;
     } else {
       if (!id.startsWith("http")) {
-        throw "URL of problem not valid. Did you make a typo in the problem source, or in the URL?"
+        throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`
       }
       this.url = id;
     }

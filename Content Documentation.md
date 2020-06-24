@@ -25,6 +25,59 @@ YAML formatting is _extremely strict_. Be careful about spaces. Additionally, es
 - **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
 - **Prerequisites**: _Optional_. Any prerequisites for this module. (Coming soon: If you want to reference a module as a prerequisite, you can list the module ID.)
 
+### Problem Lists
+
+todo document this... Relevant files are `content/models.ts` and `src/components/markdown/Problems.tsx`. Hopefully, the existing mdx files can help you out...
+
+Problem constructor:
+
+```typescript
+constructor(
+  public source: string,
+  public name: string,
+  public id: string,
+  public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
+  public starred?: boolean,
+  public tags?: string[],
+  public sketch?: string,
+)
+```
+
+Example usage:
+
+```markdown
+---
+id: ds
+title: Data Structures
+author: Nathan Wang, Darren Yao, Benjamin Qi
+description: Introductory problems using sets and maps.
+prerequisites:
+  - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
+---
+
+import { Problem } from "../models"
+
+export const metadata = {
+problems: {
+standard: [
+new Problem("YS", "Associative Array", "associative_array", "Intro"),
+new Problem("CSES", "Distinct Numbers", "1621", "Intro"),
+new Problem("CSES", "Sum of Two Values", "1640", "Intro", false, [], "Can be solved without sets."),
+new Problem("CSES", "Concert Tickets", "1091", "Easy", false, ["iterators"]),
+new Problem("CSES", "Towers", "1073", "Easy", false, ["multiset", "greedy"]),
+new Problem("CSES", "Traffic Lights", "1163", "Normal", false, ["set"]),
+new Problem("CSES", "Room Allocation", "1164", "Normal", false, ["multiset", "greedy"]),
+]
+}
+};
+
+## Standard
+
+Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
+
+<problems-list problems={metadata.problems.standard} />
+```
+
 ### Spoilers
 
 Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
