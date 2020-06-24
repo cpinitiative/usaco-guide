@@ -146,7 +146,14 @@ const components = {
     );
     return null;
   },
-
+  // problem: ({ name, difficulty, tags, children, ...other }) => {
+  //   console.log(
+  //     `new Problem("${Object.keys(other)[0]}", "${name}", "${
+  //       Object.values(other)[0]
+  //     }", "${difficulty}", false, ${JSON.stringify(tags)}),`
+  //   );
+  //   return null;
+  // },
   table: props => <table {...props} className="text-base border-gray-600" />,
   th: props => <th {...props} className="border py-1 px-3" />,
   td: props => <td {...props} className="border py-1 px-3" />,
