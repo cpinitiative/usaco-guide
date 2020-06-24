@@ -104,8 +104,18 @@ const components = {
       <div className="px-4 pt-5 pb-2 sm:p-6 sm:pb-2">{children}</div>
     </div>
   ),
-  'problems-list': ProblemsListComponent,
-  problem: ProblemComponent,
+  'problems-list': ({ children }) => {
+    console.log('New problem list');
+    return <div>{children}</div>;
+  },
+  problem: ({ name, difficulty, tags, children, ...other }) => {
+    console.log(
+      `new Problem("${Object.keys(other)[0]}", "${name}", "${
+        Object.values(other)[0]
+      }", "${difficulty}", false, ${JSON.stringify(tags)}),`
+    );
+    return null;
+  },
 
   table: props => <table {...props} className="text-base border-gray-600" />,
   th: props => <th {...props} className="border py-1 px-3" />,
