@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import '../styles/markdown.css';
+import '../../styles/markdown.css';
 import 'katex/dist/katex.min.css';
-import '../styles/prism-theme.css';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 const Markdown = ({ body, className }) => {

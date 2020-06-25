@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { graphql, Link } from 'gatsby';
 import Layout from '../components/layout';
 
-import Markdown from '../components/Markdown';
+import Markdown from '../components/markdown/Markdown';
 import ModuleOrdering, { divisionLabels } from '../../content/ordering';
 import Transition from '../components/Transition';
 import { graphqlToModulesObject } from '../utils';

@@ -1,54 +1,9 @@
 import './src/styles/main.css';
 import * as React from 'react';
 import { MDXProvider } from '@mdx-js/react';
-import {
-  ProblemComponent,
-  ProblemsListComponent,
-} from './src/components/markdown/Problems';
-
-const SpoilerComponent = ({ children, title }) => {
-  const [show, setShow] = React.useState(false);
-
-  return (
-    <div className={`border border-gray-200 rounded-md`}>
-      <p
-        className="p-4 flex items-start"
-        onClick={e => setShow(!show)}
-        style={{ marginBottom: 0 }}
-      >
-        {show && (
-          <svg
-            className="h-6 w-6 text-gray-500 mr-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        )}
-        {!show && (
-          <svg
-            className="h-6 w-6 text-gray-500 mr-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
-        )}
-        {title}
-      </p>
-
-      {show && <div className="p-4 pt-0 spoiler-body">{children}</div>}
-    </div>
-  );
-};
+import { ProblemsListComponent } from './src/components/markdown/Problems';
+import CodeBlock from './src/components/markdown/CodeBlock';
+import SpoilerComponent from './src/components/markdown/SpoilerComponent';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -132,6 +87,13 @@ const components = {
     </div>
   ),
   'problems-list': ProblemsListComponent,
+  code: CodeBlock,
+  inlineCode: props => (
+    <code
+      {...props}
+      className="font-mono text-sm inline bg-gray-200 rounded px-1 py-05"
+    />
+  ),
   table: props => <table {...props} className="text-base border-gray-600" />,
   th: props => <th {...props} className="border py-1 px-3" />,
   td: props => <td {...props} className="border py-1 px-3" />,

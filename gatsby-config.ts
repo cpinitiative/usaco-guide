@@ -30,12 +30,6 @@ export const plugins = [
             strict: `ignore`,
           },
         },
-        {
-          resolve: `gatsby-remark-prismjs`,
-          options: {
-            noInlineHighlight: true,
-          },
-        },
       ],
       plugins: [`gatsby-remark-autolink-headers`],
     },
