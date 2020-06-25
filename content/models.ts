@@ -14,6 +14,8 @@ const sources = {
   "Plat": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Kattis": "https://open.kattis.com/problems/",
   "CSES": "https://cses.fi/problemset/task/",
+  "LC": "https://leetcode.com/problems/",
+  "ojuz": "https://oj.uz/problem/view/",
 };
 
 export class Problem {
@@ -28,13 +30,10 @@ export class Problem {
     public tags?: string[],
     public sketch?: string,
   ) {
-    if (source in sources) {
-      this.url = sources[source] + id;
-    } else {
-      if (!id.startsWith("http")) {
-        throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`
-      }
-      this.url = id;
-    }
+    if (!id.startsWith("http")) {
+      if (source in sources) {
+        this.url = sources[source] + id;
+      } else throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`
+    } else this.url = id;
   }
 }
