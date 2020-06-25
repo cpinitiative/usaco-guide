@@ -7,11 +7,50 @@ prerequisites:
 description: A way to traverse a graph using recursion.
 ---
 
-## Depth First Search
+import { Problem } from "../models";
 
- - [CSES Building Roads](https://cses.fi/problemset/task/1666)
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Building Roads", "1666", "Intro", false, ["DFS"]),
+    ],
+    tree: [
+      new Problem("CSES", "Subordinates", "1674", "Intro", false, ["Tree", "DFS"]),
+      new Problem("Silver", "Mootube", "788", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CF", "PolandBall & Forest", "problemset/problem/755/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
+      new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSA", "Tree Construction", "contest/860/problem/D", "Hard", false, ["Tree", "DFS"], "several cases"),
+    ],
+    general: [
+      new Problem("CF", "Bear & Friendship", "problemset/problem/771/A", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Closing the Farm", "644", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Moocast", "668", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Fence Planning", "944", "Easy", false, ["DFS"]),
+      new Problem("Kattis", "Birthday Party", "birthday", "Easy", false, ["DFS"], "DFS with each edge removed"),
+      new Problem("Silver", "Milk Visits", "968", "Normal", false, ["DFS"]),
+      new Problem("Silver", "Milk Pails", "620", "Normal", false, ["DFS"]),
+      new Problem("Silver", "Wormhole Sort", "992", "Normal", false, ["DFS", "Binary Search"]),
+      new Problem("Silver", "Moo Particle", "1040", "Normal", false, ["Sorting"]),
+    ],
+    bipsample: [
+      new Problem("CSES", "Building Teams", "1668", "Easy", false, ["Bipartite"]),
+    ],    
+    bip: [
+      new Problem("CF", "Bipartiteness", "contest/862/problem/B", "Easy", false, ["Bipartite"]),
+      new Problem("Silver", "The Great Revegetation", "920", "Easy", false, ["Bipartite"]),
+    ],
+  }
+};
 
-### Tutorial
+
+<problems-list problems={metadata.problems.sample} />
+
+## Tutorial
 
  - Recommended:
    - CPH 12.1 (DFS), 14 (Tree algorithms)
@@ -25,46 +64,26 @@ description: A way to traverse a graph using recursion.
 
 ### Problems
 
- - CSES Trees
-   - [Subordinates](https://cses.fi/problemset/task/1674)
-     - Tree Traversal
-   - [Tree Diameter](https://cses.fi/problemset/task/1131)
-   - [Tree Distances I](https://cses.fi/problemset/task/1132)
-   - [Tree Distances II](https://cses.fi/problemset/task/1133)
- - CF
-   - [PolandBall & Forest](http://codeforces.com/problemset/problem/755/C) [](56)
-   - [Bear & Friendship](http://codeforces.com/problemset/problem/771/A)
-   - [Journey](http://codeforces.com/contest/839/problem/C) [](54)
-     - DFS on Tree
-  - [Wizard's Tour](http://codeforces.com/contest/860/problem/D) [](59)
- - USACO
-   - [Mootube, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=788)
-   - [Closing the Barn, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=644)
-   - [Moocast, Silver (Easy)](http://usaco.org/index.php?page=viewproblem2&cpid=668)
-   - [Pails (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=620)
-   - [Milk Visits (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=968)
-   - [Count Cross](http://usaco.org/index.php?page=viewproblem2&cpid=716)
-   - [Wormhole Sort (Normal)](http://www.usaco.org/index.php?page=viewproblem2&cpid=992)
-     - also binary search on the answer
-   - [Fence Planning](http://usaco.org/index.php?page=viewproblem2&cpid=944)
-   - [Moo Particle](http://www.usaco.org/index.php?page=viewproblem2&cpid=1040)
- - Other
-   - [POI Hotels](https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement) [](61)
-   - [Kattis Birthday Party (Easy)](https://open.kattis.com/problems/birthday)
-     - DFS with each edge removed
-   - [CSA Tree Construction](https://csacademy.com/contest/archive/task/tree-construct)
-     - several cases
+ - Trees
+
+<problems-list problems={metadata.problems.tree} />
+
+ - General
+
+<problems-list problems={metadata.problems.general} />
 
 ## Graph Two-Coloring
 
 *Graph two-coloring* refers to assigning a boolean value to each node of the graph, dictated by the edge configuration
 The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors.
 
- - [CSES Building Teams](https://cses.fi/problemset/task/1668)
+<problems-list problems={metadata.problems.bipsample} />
 
 ### Tutorial
 
- - CPH 12.3
+  - CPH 12.3
+  - [cp-algo - bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
+    - Uses BFS, but DFS accomplishes the same task
  
 The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
 
@@ -89,11 +108,6 @@ void dfs(int node)
 }
 ```
 
- - Additional:
-   - [Bipartite Graphs: cp-alg bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
-     - Note: CP-Algorithms uses BFS, but DFS accomplishes the same task
-
 ### Problems
 
- - [CF Bipartiteness](http://codeforces.com/contest/862/problem/B) [](49)
- - [The Great Revegetation (Normal)](http://usaco.org/index.php?page=viewproblem2&cpid=920)
+<problems-list problems={metadata.problems.bip} />

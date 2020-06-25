@@ -14,6 +14,8 @@ const sources = {
   "Plat": "http://www.usaco.org/index.php?page=viewproblem2&cpid=",
   "Kattis": "https://open.kattis.com/problems/",
   "CSES": "https://cses.fi/problemset/task/",
+  "LC": "https://leetcode.com/problems/",
+  "ojuz": "https://oj.uz/problem/view/",
 };
 
 export class Problem {

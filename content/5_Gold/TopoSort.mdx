@@ -7,12 +7,29 @@ prerequisites:
  - Gold - Introduction to Dynamic Programming
 description: "?"
 ---
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Course Schedule", "1679", "Easy", false, []),
+    ],
+    general: [
+      new Problem("CSES", "Game Routes", "1681", "Easy", false, [], "counting paths on DAG"),
+      new Problem("Kat", "Quantum", "https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition", "Easy", false, [], "enumerating paths on DAG"),
+      new Problem("Gold", "Timeline", "1017", "Easy", false, [], "not explicitly given, but graph is a DAG"),
+      new Problem("Gold", "Milking Order", "838", "Easy", false, ["TopoSort", "Binary Search"]),
+      new Problem("CSES", "Course Schedule II", "1681", "Hard", false, [], "equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)"),
+    ],
+  }
+};
 
 To review, a **directed** graph consists of edges that can only be traversed in one direction. Additionally, a **acyclic** graph defines a graph which does not contain cycles, meaning you are unable to traverse across one or more edges and return to the node you started on. Putting these definitions together, a **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has edges which can only be traversed in one direction and does not contain cycles. 
 
 ## Topological Sort
 
- - [CSES Course Schedule](https://cses.fi/problemset/task/1679)
+
+<problems-list problems={metadata.problems.sample} />
 
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering. 
 
@@ -26,14 +43,6 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
    - both BFS, DFS
    
 Consider [Khan's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) for topological sorting.
-
-### Problems
-
-  - [Milking Order](http://www.usaco.org/index.php?page=viewproblem2&cpid=838)
-    - Binary search and check if a valid topological sort exists. 
-  - [CSES Course Schedule II](https://cses.fi/problemset/task/1757)
-    - Tricky!
-    - equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)
 
 ## Dynamic Programming
 
@@ -53,9 +62,4 @@ However, not all problems clearly give you directed acyclic graphs (ex. [Plat - 
 
 ## Problems
 
-  - [CSES Game Routes](https://cses.fi/problemset/task/1681)
-    - counting paths on DAG
-  - [Quantum](https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition)
-    - enumerating paths on DAG
-  - [USACO Gold - Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
-    - not explicitly given, but graph is a DAG
+<problems-list problems={metadata.problems.general} />

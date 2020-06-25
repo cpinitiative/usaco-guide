@@ -4,14 +4,31 @@ title: "Static Range Queries"
 author: Benjamin Qi
 description: Range queries for any associative operation over a static array.
 ---
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    rmqSample: [
+      new Problem("YS", "Static RMQ", "staticrmq", "Easy", false, []),
+    ],
+    diviSample: [      
+      new Problem("ojuz", "JOI Secret", "JOI14_secret", "Easy", false, [], ""),
+    ],
+    general: [
+      new Problem("CC", "Product on Segment", "SEGPROD", "Normal", false, [], ""),
+      new Problem("DMOJ", "Continued Fractions", "dmopc19c7p4", "Hard", false, [], ""),
+      new Problem("Plat", "Non-Decreasing Subsequences", "997", "Very Hard", false, [], ""),
+    ],
+  }
+};
 
 Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ where $\ominus$ denotes any associative operation.
 
-This can be done in $O(1)$ time each with $O(N\log N)$ time preprocessing.
+With $O(N\log N)$ time preprocessing, we can get $O(1)$ queries.
 
 ## [Range Minimum Query](https://en.wikipedia.org/wiki/Range_minimum_query)
 
- - [yosupo - Static RMQ](https://judge.yosupo.jp/problem/staticrmq)
+<problems-list problems={metadata.problems.rmqSample} />
 
 First we'll consider the special case when $\ominus$ denotes `min`. 
 
@@ -31,6 +48,8 @@ First we'll consider the special case when $\ominus$ denotes `min`.
 </optional-content>
 
 ## Divide & Conquer
+
+<problems-list problems={metadata.problems.diviSample} />
 
 **Divide & conquer** can refer to many different techniques. In this case, we use it to answer $Q$ queries offline in $O((N+Q)\log N)$ time. 
 
@@ -57,7 +76,5 @@ A data structure known as **sqrt-tree** can speed up preprocessing time to $O(N\
 
 ## Problems
 
- - [Codechef - Product on Segment](https://www.codechef.com/problems/SEGPROD)
- - [DMOJ - Continued Fractions](https://dmoj.ca/problem/dmopc19c7p4)
- - [USACO Plat - Non-Decreasing Subsequences](http://www.usaco.org/index.php?page=viewproblem2&cpid=997)
- - [JOI - Secret](https://oj.uz/problem/view/JOI14_secret)
+
+<problems-list problems={metadata.problems.general} />
