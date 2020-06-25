@@ -122,7 +122,6 @@ const ModuleOrdering = {
       items: [
         "dp-bitmasks",
         "dp-ranges",
-        "slope",
       ]
     },
     {
@@ -131,7 +130,8 @@ const ModuleOrdering = {
         "sp-neg",
         "more-dfs",
         "eulerian-tours",
-        "flows",
+        "euler",
+        "max-flow",
       ]
     },
     {
@@ -148,11 +148,12 @@ const ModuleOrdering = {
         "geo-pri",
         "hull",
         "LC",
+        "aliens",
+        "slope",
       ]
     },
     "bitsets",
     "fracture",
-    "fft",
   ]
 };
 
