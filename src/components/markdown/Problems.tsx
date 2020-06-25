@@ -101,7 +101,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
             Show Tags
           </a>
         )}
-        {showTags && problem.tags.join(', ')}
+        {showTags &&
+          (problem.tags && problem.tags.length
+            ? problem.tags.join(', ')
+            : 'None')}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {/*{props.children}*/}
