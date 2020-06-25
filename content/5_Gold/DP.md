@@ -8,11 +8,51 @@ prerequisites:
 description: Speeding up naive solutions with memoization.
 ---
 
-This is a very important concept which emerges in the Gold division and extends to the IOI. (improve?)
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    usaco-past: [
+        new Problem("Gold", "Hoof Paper Scissors", "694", "Easy", false, ["DP"], "dp[first i games][# changes][last gesture] -> max games won"),
+        new Problem("Gold", "Time is Mooney", "993", "Easy", true, ["DP", "Graphs"], "dp[time][city] -> money"),
+        new Problem("Gold", "Teamwork", "863", "Easy", false, ["DP"], "let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums"),
+        new Problem("Gold", "Snakes", "945", "Easy", false, ["DP"], "dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums"),
+        new Problem("Gold", "Circular Barn Revisited", "622", "Medium", true, ["DP", "Brute Force"], "brute force starting location, then do dp[first i positions][number of doors used][position of last door] ->  minimum distance cows need to travel"),
+        new Problem("Gold", "Taming the Herd", "815", "Medium", false, ["DP"], "dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes"),
+        new Problem("Gold", "Mortal Cowmbat", "815", "Medium", true, ["DP", "Prefix Sums", "All Pairs Shortest Path"], "dp[first i letters form valid combo][last letter] -> time, Floyd Warshall on alphabet, then use prefix sums to speed up transitions."),
+        new Problem("Gold", "Stamp Painting", "Hard", false, ["DP"], "must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime"),
+    ],
+    knapsack: [
+        new Problem("CSES", "Unordered Coin Change", "1635", "Intro", true, ["DP", "Knapsack"], "dp[first i coins][sum] = number of ways, order of loops is capacity then coins, remember to take MOD after every computation"),
+        new Problem("CSES", "Ordered Coin Change", "1636", "Intro", true, ["DP", "Knapsack"], "dp[first i coins][sum] = number of ways, order of loops is coins then capacity, remember to take MOD after every computation"),
+        new Problem("CSES", "Minimum Coins", "1634", "Intro", true, ["DP", "Knapsack"], "dp[first i coins][sum] = minimum number of coins needed"),
+        new Problem("Atcoder", "Knapsack 2", "https://atcoder.jp/contests/dp/tasks/dp_e", true, "Easy", ["DP", "Knapsack"], "maximum capacity is large, and sum of values is small, so switch the states. dp[first i items][sum of values] = minimum capacity needed to achieve this sum"),
+        new Problem("Gold", "Fruit Feast", "574", "Easy", false, ["DP, "Knapsack"], "dp[fullness] = whether you can achieve this fullness"),
+        new Problem("Gold", "Talent Show", "839", "Hard", false, ["DP, Knapsack, Binary Search, Math"], "binary search on optimal ratio, then do knapsack on weight"),
+        new Problem("CF", "Round Subset", "http://codeforces.com/contest/837/problem/D", "Medium", ["DP", "Knapsack"], "dp[i][j][l] -> maximum amount of twos we can collect by checking first i numbers, taking j of them with total power of five equal to l"),
+    ],
+    paths-grid: [
+        new Problem("LC", "Longest Common Subsequence", "https://leetcode.com/problems/longest-common-subsequence/", "Intro", true, ["DP"], "dp[first i characters in first string][first j characters in second string] -> longest common subsequence, transition if s[i] = t[j] for strings s and t"),
+        new Problem("HackerRank", "Edit Distance", "https://www.hackerrank.com/contests/cse-830-homework-3/challenges/edit-distance", "Intro", true, ["DP"], "dp[first i characters in first string][first j characters in second string] -> edit distance"),
+        new Problem("Atcoder", "Count Paths", "https://atcoder.jp/contests/dp/tasks/dp_h", "Intro", true, ["DP"], "dp[x][y] = number of paths up to the point (x,y) in grid"),
+        new Problem("Gold", "Cow Checklist", "670", "Easy", false, ["DP"], "dp[visited i Hs][visited j Gs][last cow visited on left/right] -> min energy"),
+        new Problem("Gold", "Radio Contact", "598", "Easy", false, ["DP"], "dp[up to ith step of Farmer John][up to jth step of bessie] = minimum distance"),
+        new Problem("Gold", "Why Did The Cow Cross the Road II", "598", "Medium", false, ["DP"], "dp[up to ith field on left side][up to jth field on right side] = maximum number of disjoint crosswalks"),
+        new Problem("Old Gold", "Palindromic Paths", "553", "Hard", false, ["DP"], "start from the middle, dp[row i][row j][length] = number of strings of length 2 * length + 1 with ends at row i and j"),
+    ],
+    lis: [
+        new Problem("LC", "Longest Increasing Subsequence, "https://leetcode.com/problems/longest-increasing-subsequence/", "Intro", true, ["DP"], "dp[i] = LIS up to i, use binary search to decrease runtime from quadratic"),
+        new Problem("Old USACO Gold", "Cowjog", "496", "Easy", false, ["DP"], "direct applicationf of longest increasing subsequence"),
+        new Problem("Plat", "Sort It Out", "865", "Hard", false, ["DP"], "component of kth largest LIS, read editorial for more details"),
+    ],
+  }
+}
+
+Dynamic Programming is an important algorithmic technique in competitive programming which extends to even the International Olympiad of Informatics. By storing results to overlapping subproblems, Dynamic Programming optimizes the redundant computation of naive recursive solutions, massively improving computational complexity. Although it is not too difficult to grasp the general ideas behind Dynamic Programming, or DP, the technique can be used in a diverse range of problems and is a must-know idea for competitors in the USACO gold division.
 
 <info-block title="Contest Tip">
 
-Usually, at least one problem from every gold division contest involves some sort of DP.
+Usually, at least one problem from every gold division contest involves some sort of DP!
 
 </info-block>
 
@@ -47,82 +87,18 @@ Sometimes it's a good idea to write a slower polynomial-time solution and then o
 
 </info-block>
 
- - [Hoof Paper Scissors](http://www.usaco.org/index.php?page=viewproblem2&cpid=694)
-   - `dp[first i games][# changes][last gesture] -> max games won`
- - [Time is Mooney](http://www.usaco.org/index.php?page=viewproblem2&cpid=993)
-   - `dp[time][city] -> money`
- - [Teamwork](http://usaco.org/index.php?page=viewproblem2&cpid=863)
-   - $O(NK^2)\to O(NK)$
- - [Snakes](http://www.usaco.org/index.php?page=viewproblem2&cpid=945)
-   - `dp[first m groups][k changes] -> total sum of net sizes`
-   - $O(N^4)\to O(N^3)$
- - [Circular Barn Revisited](http://www.usaco.org/index.php?page=viewproblem2&cpid=622)
-   - can brute force make your DP easier? (yes)
- - [Taming the Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=815)
-   - `dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes`
- - [Mortal Cowmbat](http://usaco.org/index.php?page=viewproblem2&cpid=971)
-   - Use Floyd-Warshall, Prefix Sums
-   - `dp[first i letters form valid combo][last letter] -> time`
- - [Stamp Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=791)
-   - must be $K$ consecutive with same color
-   - $O(NK)\to O(N)$
+## Knapsack
+   
+<problems-list problems={metadata.problems.knapsack} />
 
-## Bounded and Unbounded Knapsack
+## Paths in a Grid (and related)
 
- - Classic
-   - [Unbounded Knapsack](https://www.hackerrank.com/challenges/unbounded-knapsack/problem)
-     - [Unordered Coin Change](https://cses.fi/problemset/task/1635)
-     - [Ordered Coin Change](https://cses.fi/problemset/task/1636)
-     - [Minimum Coins](https://cses.fi/problemset/task/1634)
-   - [0/1](https://www.hackerrank.com/contests/srin-aadc03/challenges/classic-01-knapsack/problem)
-   - [Large Capacity + Small Values](https://atcoder.jp/contests/dp/tasks/dp_e)
-      - Reconsider the state.
- - USACO Gold
-   - [Fruit Feast](http://www.usaco.org/index.php?page=viewproblem2&cpid=574)
-     - `dp[fullness] = whether you can achieve this fullness` 
-   - [Talent Show](http://www.usaco.org/index.php?page=viewproblem2&cpid=839)
-     - binary search + knapsack on weight
- - CF
-   - [Round Subset](http://codeforces.com/contest/837/problem/D) [](59)
-   - [Fire](http://codeforces.com/contest/864/problem/E) [](59)
-
-## Paths on Grid (& Related)
-
- - Classic
-   - Longest Common Subsequence
-     - [Standard](https://leetcode.com/problems/longest-common-subsequence/)
-   - Edit Distance
-     - [Standard](https://www.hackerrank.com/contests/cse-830-homework-3/challenges/edit-distance)
-   - Paths on a Grid
-     - [Count Paths](https://atcoder.jp/contests/dp/tasks/dp_h)
- - USACO
-   - [Gold - Cow Checklist](http://www.usaco.org/index.php?page=viewproblem2&cpid=670)
-     - `dp[visited i Hs][visited j Gs][last cow visited] -> min energy`
-   - [Gold - Radio Contact](http://www.usaco.org/index.php?page=viewproblem2&cpid=598)
-     - similar to above
-   - [Gold - Why Did The Cow Cross the Road II](http://www.usaco.org/index.php?page=viewproblem2&cpid=718)
-     - variation on LCS
-   - [Old Silver - Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=126)
-     - Although the problem looks different, this is actually a direct application of edit distance.
-   - [Old Gold - Palindromic Paths](http://www.usaco.org/index.php?page=viewproblem2&cpid=553)
-     - What are some properties of the answer?
- - Other
-   - [TC Interleaving Parentheses](https://community.topcoder.com/stat?c=problem_statement&pm=14635&rd=16933)
-   - [K-Ordered LCS](https://www.hackerearth.com/problem/algorithm/mancunian-and-k-ordered-lcs-e6a4b8c6/)
-   - [CSA Wrong Brackets](https://csacademy.com/contest/round-51/task/wrong-brackets/) [](69)
+<problems-list problems={metadata.problems.paths-grid} />
 
 ## Longest Increasing Subsequence
 
-(add?)
+<problems-list problems={metadata.problems.lis} />
 
- - [LIS in Quadratic Time](https://leetcode.com/problems/longest-increasing-subsequence/)
-    - Try to improve to $O(N\log N)$
-    - [Solution](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html). 
- - [USACO Old Bronze Cowjog](http://www.usaco.org/index.php?page=viewproblem2&cpid=489)
-    - Not so easy to see, but direct application of LIS.
- - [Sort It Out (USACO Platinum)](http://www.usaco.org/index.php?page=viewproblem2&cpid=865)
-    - Challenging!
+## Other USACO Problems
 
-## Other
-
- - [CSES String Removals](https://cses.fi/problemset/task/1149)
+<problems-list problems={metadata.problems.usaco-past} />
