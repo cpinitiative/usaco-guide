@@ -4,8 +4,8 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { graphql, Link } from 'gatsby';
 import { divisionLabels, divisions } from '../../content/ordering';
-import { getModule, graphqlToModulesObject } from '../utils';
 import SyllabusModule from '../components/SyllabusModule';
+import { getModule } from '../utils';
 
 const renderModule = (node, idx, parentIdx = -1) => {
   if (node.hasOwnProperty('items')) {
@@ -34,7 +34,10 @@ const renderModule = (node, idx, parentIdx = -1) => {
 export default function Template(props) {
   const data = props.data;
 
-  const allModules = graphqlToModulesObject(data.modules);
+  const allModules = data.modules.edges.reduce((acc, cur) => {
+    acc[cur.node.frontmatter.id] = cur.node;
+    return acc;
+  }, {});
 
   const [selectedDivision, setSelectedDivision] = React.useState(
     props.pageContext.division

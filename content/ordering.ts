@@ -1,4 +1,12 @@
-const ModuleOrdering = {
+export type ModuleOrderingID = string;
+export type ModuleOrderingGroup = {
+  name: string;
+  items: ModuleOrderingItem[];
+};
+export type ModuleOrderingItem = ModuleOrderingID | ModuleOrderingGroup;
+export const isModuleOrderingGroup = (x: ModuleOrderingItem): x is ModuleOrderingGroup => x.hasOwnProperty("name");
+
+const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "intro": [
     "intro",
     "lang",
@@ -180,3 +188,17 @@ export const divisionLabels = {
   "plat": "Platinum",
   "adv": "Advanced",
 };
+
+const moduleIDToDivisionMap = {};
+
+Object.keys(ModuleOrdering).forEach(division => {
+  const process = module => {
+    if (module.hasOwnProperty('name')) {
+      return module.items.forEach(process);
+    }
+    moduleIDToDivisionMap[module] = division;
+  };
+  ModuleOrdering[division].forEach(process);
+});
+
+export { moduleIDToDivisionMap };

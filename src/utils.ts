@@ -1,4 +1,5 @@
-import ModuleOrdering from '../content/ordering';
+import ModuleOrdering, { moduleIDToDivisionMap } from '../content/ordering';
+import { ModuleInfo, ModuleLinkInfo } from './module';
 
 export const getModule = (allModules, division) => {
   return ModuleOrdering[division].map(k => {
@@ -11,8 +12,8 @@ export const getModule = (allModules, division) => {
             throw 'Module not found: ' + k2;
           }
           return {
-            ...allModules[k2],
-            slug: `/${division}/${allModules[k2].frontmatter.id}`,
+            ...allModules[k2 as string],
+            slug: `/${division}/${allModules[k2 as string].frontmatter.id}`,
           };
         }),
       };
@@ -28,9 +29,27 @@ export const getModule = (allModules, division) => {
   });
 };
 
-export const graphqlToModulesObject = allMdx => {
+export function graphqlToModuleLinks(
+  allMdx: any
+): { [moduleID: string]: ModuleLinkInfo } {
   return allMdx.edges.reduce((acc, cur) => {
-    acc[cur.node.frontmatter.id] = cur.node;
+    acc[cur.node.frontmatter.id] = new ModuleLinkInfo(
+      cur.node.frontmatter.id,
+      moduleIDToDivisionMap[cur.node.frontmatter.id],
+      cur.node.frontmatter.title
+    );
     return acc;
   }, {});
-};
+}
+
+export function graphqlToModuleInfo(mdx: any): ModuleInfo {
+  return new ModuleInfo(
+    mdx.frontmatter.id,
+    moduleIDToDivisionMap[mdx.frontmatter.id],
+    mdx.frontmatter.title,
+    mdx.body,
+    mdx.frontmatter.author,
+    mdx.frontmatter.prerequisites,
+    mdx.frontmatter.description
+  );
+}

@@ -4,19 +4,31 @@ import { graphql, Link } from 'gatsby';
 import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
-import ModuleOrdering, { divisionLabels } from '../../content/ordering';
+import ModuleOrdering, {
+  divisionLabels,
+  isModuleOrderingGroup,
+  ModuleOrderingGroup,
+  ModuleOrderingItem,
+} from '../../content/ordering';
 import Transition from '../components/Transition';
-import { graphqlToModulesObject } from '../utils';
+import { graphqlToModuleInfo, graphqlToModuleLinks } from '../utils';
 import SEO from '../components/seo';
 
 // @ts-ignore
 import logo from '../assets/logo.svg';
+import { ModuleInfo, ModuleLinkInfo } from '../module';
 
 const renderPrerequisite = prerequisite => {
   return <li key={prerequisite}>{prerequisite}</li>;
 };
 
-const Breadcrumbs = ({ division }) => (
+const Breadcrumbs = ({
+  division,
+  module,
+}: {
+  division: string;
+  module: ModuleLinkInfo;
+}) => (
   <nav className="flex items-center text-sm leading-5 font-medium">
     <Link
       to="/"
@@ -52,7 +64,7 @@ const Breadcrumbs = ({ division }) => (
         clipRule="evenodd"
       />
     </svg>
-    <span className="text-gray-500">Getting Started</span>
+    <span className="text-gray-500">{module.title}</span>
   </nav>
 );
 
@@ -93,29 +105,25 @@ const SidebarBottomButtons = () => (
   </>
 );
 
-interface NavLink {
-  kind: 'link';
-  label: string;
-  href: string;
-}
-
 interface NavLinkGroup {
-  kind: 'group';
   label: string;
-  children: NavLink[];
+  children: NavLinkItem[];
 }
 
-type NavLinkItem = NavLink | NavLinkGroup;
+type NavLinkItem = ModuleLinkInfo | NavLinkGroup;
 
-const SidebarNavLinks = ({ links }) => {
-  const renderLink = link => {
-    if (link.kind === 'link') {
+const isNavLinkGroup = (x: NavLinkItem): x is NavLinkGroup =>
+  x.hasOwnProperty('label');
+
+const SidebarNavLinks = ({ links }: { links: NavLinkItem[] }) => {
+  const renderLink = (link: NavLinkItem) => {
+    if (link instanceof ModuleLinkInfo) {
       return (
         <Link
-          to={link.href}
+          to={link.url}
           className={`flex items-center px-6 py-3 text-sm leading-5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150`}
         >
-          {link.label}
+          {link.title}
         </Link>
       );
     }
@@ -133,62 +141,29 @@ const SidebarNavLinks = ({ links }) => {
   return <>{links.map(renderLink)}</>;
 };
 
-const TopNav = ({ division }) => (
-  <div className="flex justify-between">
-    <span className="-ml-4 rounded-md">
-      <Link
-        to="#"
-        className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md text-gray-500 hover:text-gray-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"
-      >
-        <svg
-          className="-ml-0.5 mr-1 h-4 w-4"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M15 19l-7-7 7-7" />
-        </svg>
-        Prev
-      </Link>
-    </span>
-    <div className="hidden sm:flex items-center">
-      <Breadcrumbs division={division} />
-    </div>
-    <span className="rounded-md -mr-4">
-      <Link
-        to="#"
-        className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out"
-      >
-        Next
-        <svg
-          className="-mr-0.5 ml-1 h-4 w-4"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
-    </span>
-  </div>
-);
-
-const CompactNav = ({ division }) => (
-  <div className="flex">
-    <div className="hidden sm:flex items-center">
-      <Breadcrumbs division={division} />
-    </div>
-    <div className="flex-1 flex items-center justify-between sm:justify-end">
-      <span className="rounded-md">
-        <button
-          type="button"
-          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+const TopNav = ({
+  division,
+  module,
+  prevModule,
+  nextModule,
+}: {
+  division: any;
+  module: ModuleLinkInfo;
+  prevModule: ModuleLinkInfo | null;
+  nextModule: ModuleLinkInfo | null;
+}) => {
+  const disabledClasses = 'text-gray-200 pointer-events-none';
+  const activeClasses =
+    'text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out';
+  return (
+    <div className="flex justify-between">
+      <span className="-ml-4 rounded-md">
+        <Link
+          to={prevModule === null ? module.url : prevModule.url}
+          className={
+            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
+            (prevModule === null ? disabledClasses : activeClasses)
+          }
         >
           <svg
             className="-ml-0.5 mr-1 h-4 w-4"
@@ -202,20 +177,18 @@ const CompactNav = ({ division }) => (
             <path d="M15 19l-7-7 7-7" />
           </svg>
           Prev
-        </button>
+        </Link>
       </span>
-      <span className="ml-3 rounded-md">
-        <button
-          type="button"
-          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-        >
-          Mark Complete
-        </button>
-      </span>
-      <span className="ml-3 rounded-md">
-        <button
-          type="button"
-          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+      <div className="hidden sm:flex items-center">
+        <Breadcrumbs division={division} module={module} />
+      </div>
+      <span className="rounded-md -mr-4">
+        <Link
+          to={nextModule === null ? module.url : nextModule.url}
+          className={
+            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
+            (nextModule === null ? disabledClasses : activeClasses)
+          }
         >
           Next
           <svg
@@ -229,11 +202,94 @@ const CompactNav = ({ division }) => (
           >
             <path d="M9 5l7 7-7 7" />
           </svg>
+        </Link>
+      </span>
+    </div>
+  );
+};
+
+const CompactNav = ({
+  division,
+  module,
+  prevModule,
+  nextModule,
+}: {
+  division: string;
+  module: ModuleLinkInfo;
+  prevModule: ModuleLinkInfo | null;
+  nextModule: ModuleLinkInfo | null;
+}) => (
+  <div className="flex">
+    <div className="hidden sm:flex items-center">
+      <Breadcrumbs division={division} module={module} />
+    </div>
+    <div className="flex-1 flex items-center justify-between sm:justify-end">
+      <span className="rounded-md">
+        {prevModule && (
+          <Link
+            to={prevModule.url}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+          >
+            <svg
+              className="-ml-0.5 mr-1 h-4 w-4"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
+            Prev
+          </Link>
+        )}
+      </span>
+      <span className="ml-3 rounded-md">
+        <button
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+        >
+          Mark Complete
         </button>
+      </span>
+      <span className="ml-3 rounded-md">
+        {nextModule && (
+          <Link
+            to={nextModule.url}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+          >
+            Next
+            <svg
+              className="-mr-0.5 ml-1 h-4 w-4"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        )}
       </span>
     </div>
   </div>
 );
+
+const flattenNavLinks = (navLinks: NavLinkItem[]) => {
+  let links: ModuleLinkInfo[] = [];
+  const flatten = (link: NavLinkItem) => {
+    if (isNavLinkGroup(link)) {
+      link.children.forEach(flatten);
+    } else {
+      links.push(link);
+    }
+  };
+  navLinks.forEach(flatten);
+  return links;
+};
 
 export default function Template(props) {
   const { mdx, allMdx } = props.data; // data.markdownRemark holds your post data
@@ -243,30 +299,41 @@ export default function Template(props) {
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const navLinks: NavLinkItem[] = React.useMemo(() => {
-    const modules = graphqlToModulesObject(allMdx);
-    const getLinks = module => {
-      if (module.hasOwnProperty('name')) {
+    const modules = graphqlToModuleLinks(allMdx);
+    const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
+      if (isModuleOrderingGroup(item)) {
         return {
-          kind: 'group',
-          label: module.name,
-          children: module.items.map(getLinks),
+          label: item.name,
+          children: item.items.map(getLinks),
         };
       }
-      if (!modules.hasOwnProperty(module)) {
-        throw `${module} not found!`;
+      if (!modules.hasOwnProperty(item)) {
+        throw `${item} not found!`;
       }
-      return {
-        kind: 'link',
-        label: modules[module].frontmatter.title,
-        href: `/${division}/${module}`,
-      };
+      return modules[item];
     };
     return ModuleOrdering[division].map(getLinks);
   }, []);
 
+  const module = graphqlToModuleInfo(mdx);
+  const prevModule: ModuleLinkInfo | null = React.useMemo(() => {
+    const links = flattenNavLinks(navLinks);
+    for (let i = 0; i < links.length - 1; i++) {
+      if (links[i + 1].id === module.id) return links[i];
+    }
+    return null;
+  }, [navLinks]);
+  const nextModule: ModuleLinkInfo | null = React.useMemo(() => {
+    const links = flattenNavLinks(navLinks);
+    for (let i = 1; i < links.length; i++) {
+      if (links[i - 1].id === module.id) return links[i];
+    }
+    return null;
+  }, [navLinks]);
+
   return (
     <Layout>
-      <SEO title={`${mdx.frontmatter.title} (${divisionLabels[division]})`} />
+      <SEO title={`${module.title} (${divisionLabels[division]})`} />
 
       <div className="h-screen flex overflow-hidden bg-white">
         {/* Off-canvas menu for mobile */}
@@ -324,7 +391,7 @@ export default function Template(props) {
                       <img className="h-12 w-auto" src={logo} alt="Workflow" />
                     </div>
                     <div className="mt-4 px-6">
-                      <Breadcrumbs division={division} />
+                      <Breadcrumbs division={division} module={module} />
                     </div>
                     <nav className="mt-2">
                       <SidebarNavLinks links={navLinks} />
@@ -383,19 +450,27 @@ export default function Template(props) {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div>
                 <div className="hidden lg:block">
-                  <TopNav division={division} />
+                  <TopNav
+                    division={division}
+                    module={module}
+                    prevModule={prevModule}
+                    nextModule={nextModule}
+                  />
                 </div>
                 <div className="lg:hidden mb-6">
-                  <CompactNav division={division} />
+                  <CompactNav
+                    division={division}
+                    module={module}
+                    prevModule={prevModule}
+                    nextModule={nextModule}
+                  />
                 </div>
                 <div className="lg:mt-8 lg:mb-4 sm:flex sm:items-center sm:justify-between">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                      {mdx.frontmatter.title}
+                      {module.title}
                     </h1>
-                    <p className={`text-gray-500`}>
-                      Author: {mdx.frontmatter.author}
-                    </p>
+                    <p className={`text-gray-500`}>Author: {module.author}</p>
                   </div>
                   <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
                     <span className="shadow-sm rounded-md">
@@ -410,10 +485,10 @@ export default function Template(props) {
                 </div>
               </div>
               <div className="py-4">
-                {mdx.frontmatter.description && (
+                {module.description && (
                   <div className="rounded-md bg-green-50 p-4 border border-green-500 mb-6">
                     <p className="text-sm leading-5 font-medium text-green-800">
-                      {mdx.frontmatter.description}
+                      {module.description}
                     </p>
                   </div>
                 )}
@@ -452,7 +527,12 @@ export default function Template(props) {
               </div>
 
               <div className="border-t border-gray-200 pt-4">
-                <CompactNav division={division} />
+                <CompactNav
+                  division={division}
+                  module={module}
+                  prevModule={prevModule}
+                  nextModule={nextModule}
+                />
               </div>
             </div>
           </main>
