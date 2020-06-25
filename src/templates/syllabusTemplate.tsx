@@ -46,6 +46,7 @@ export default function Template(props) {
     silver: 'teal',
     gold: 'yellow',
     plat: 'purple',
+    adv: 'green',
   };
   const color = colors[selectedDivision];
   const module = getModule(allModules, selectedDivision);
@@ -58,12 +59,14 @@ export default function Template(props) {
   bg-teal-500 hover:bg-teal-50 hover:text-teal-600 focus:shadow-outline-teal
   bg-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 focus:shadow-outline-yellow
   bg-purple-500 hover:bg-purple-50 hover:text-purple-600 focus:shadow-outline-purple
+  bg-green-500 hover:bg-green-50 hover:text-green-600 focus:shadow-outline-green
   border-blue-500 text-blue-600 focus:text-blue-800 focus:border-blue-700 border-blue-300 focus:border-blue-300 text-blue-500 text-blue-300 bg-blue-600
   border-pink-500 text-pink-600 focus:text-pink-800 focus:border-pink-700 border-pink-300 focus:border-pink-300 text-pink-500 text-pink-300 bg-pink-600
   border-orange-500 text-orange-600 focus:text-orange-800 focus:border-orange-700 border-orange-300 focus:border-orange-300 text-orange-500 text-orange-300 bg-orange-600
   border-teal-500 text-teal-600 focus:text-teal-800 focus:border-teal-700 border-teal-300 focus:border-teal-300 text-teal-500 text-teal-300 bg-teal-600
   border-yellow-500 text-yellow-600 focus:text-yellow-800 focus:border-yellow-700 border-yellow-300 focus:border-yellow-300 text-yellow-500 text-yellow-300 bg-yellow-600
   border-purple-500 text-purple-600 focus:text-purple-800 focus:border-purple-700 border-purple-300 focus:border-purple-300 text-purple-500 text-purple-300 bg-purple-600
+  border-green-500 text-green-600 focus:text-green-800 focus:border-green-700 border-green-300 focus:border-green-300 text-green-500 text-green-300 bg-green-600
   */
   // alternatively we can just not dynamically generate classes, but that seems more tedious.
 
