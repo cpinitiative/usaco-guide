@@ -9,6 +9,7 @@ import Transition from '../components/Transition';
 import { graphqlToModulesObject } from '../utils';
 import SEO from '../components/seo';
 
+// @ts-ignore
 import logo from '../assets/logo.svg';
 
 const renderPrerequisite = prerequisite => {
