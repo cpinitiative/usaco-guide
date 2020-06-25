@@ -7,6 +7,20 @@ prerequisites:
 description: Both Java and C++ have built-in functions for sorting. However, if we use custom objects, or if we want to sort elements in a different order, then we'll need to use a custom comparator. 
 ---
 
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    general: [
+      new Problem("Silver", "Lifeguards", "786", "Easy", false, [], "sort endpoints of intervals"),
+      new Problem("Silver", "Rental Service", "787", "Easy", false, [], ""),
+      new Problem("Silver", "Mountains", "896", "Easy", false, [], ""),
+      new Problem("Silver", "Mooyo Mooyo", "860", "Easy", false, [], "Not a sorting problem, but you can use sorting to simulate gravity. - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same."),
+      new Problem("Silver", "Meetings", "967", "Very Hard", false, [], ""),
+    ],
+  }
+};
+
 ## Comparators
 
 Normally, sorting functions rely on moving objects with a lower value in front of objects with a higher value if sorting in ascending order, and vice versa if in descending order. This is done through comparing two objects at a time.
@@ -116,14 +130,14 @@ There are 3 main ways to create a custom comparator in python
 ```py
 import random
 class Foo:
-	def __init__(self, _Bar): self.Bar = _Bar
-	def __str__(self): return "Foo({})".format(self.Bar)
-	def __lt__(self, o): # lt means less than
-		return self.Bar < o.Bar
+    def __init__(self, _Bar): self.Bar = _Bar
+    def __str__(self): return "Foo({})".format(self.Bar)
+    def __lt__(self, o): # lt means less than
+        return self.Bar < o.Bar
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 10)))
+    a.append(Foo(random.randint(1, 10)))
 print(*a)
 print(*sorted(a))
 ```
@@ -144,17 +158,17 @@ Foo(0) Foo(1) Foo(1) Foo(2) Foo(5) Foo(5) Foo(8) Foo(9)
 ```py
 import random
 class Foo:
-	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
-	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
+    def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+    def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 9)*10, random.randint(1, 9)))
+    a.append(Foo(random.randint(1, 9)*10, random.randint(1, 9)))
 print(*a)
 
 print(*sorted(a, key=lambda foo: foo.Bar+foo.Baz))
 def key(foo):
-	return foo.Bar + foo.Baz
+    return foo.Bar + foo.Baz
 print(*sorted(a, key=key))
 ```
 
@@ -181,17 +195,17 @@ Note how the comparator must be converted to a `key`.
 import random
 from functools import cmp_to_key
 class Foo:
-	def __init__(self, _Bar): self.Bar = _Bar
-	def __str__(self): return "Foo({})".format(self.Bar)
+    def __init__(self, _Bar): self.Bar = _Bar
+    def __str__(self): return "Foo({})".format(self.Bar)
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(0, 9)))
+    a.append(Foo(random.randint(0, 9)))
 print(*a)
 
 print(*sorted(a, key=cmp_to_key(lambda foo1, foo2: foo1.Bar - foo2.Bar)))
 def cmp(foo1, foo2):
-	return foo1.Bar - foo2.Bar
+    return foo1.Bar - foo2.Bar
 print(*sorted(a, key=cmp_to_key(cmp)))
 ```
 
@@ -270,16 +284,16 @@ Operator Overloading can be used
 ```py
 import random
 class Foo:
-	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
-	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
-	def __lt__(self, o): # sort by increasing Bar, breaking ties by decreasing Baz
-		if self.Bar != o.Bar: return self.Bar < o.Bar
-		if self.Baz != o.Baz: return self.Baz > o.Baz
-		return False
+    def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+    def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
+    def __lt__(self, o): # sort by increasing Bar, breaking ties by decreasing Baz
+        if self.Bar != o.Bar: return self.Bar < o.Bar
+        if self.Baz != o.Baz: return self.Baz > o.Baz
+        return False
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
+    a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
 print(*a)
 print(*sorted(a))
 ```
@@ -299,18 +313,18 @@ import random
 from functools import cmp_to_key
 
 class Foo:
-	def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
-	def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
+    def __init__(self, _Bar, _Baz): self.Bar,self.Baz = _Bar,_Baz
+    def __str__(self): return "Foo({},{})".format(self.Bar, self.Baz)
 
 a = []
 for i in range(8):
-	a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
+    a.append(Foo(random.randint(1, 9), random.randint(1, 9)))
 print(*a)
 
 def cmp(foo1, foo2): # Increasing Bar, breaking ties with decreasing Baz
-	if foo1.Bar != foo2.Bar: return -1 if foo1.Bar < foo2.Bar else 1
-	if foo1.Baz != foo2.Baz: return -1 if foo1.Baz > foo2.Baz else 1
-	return 0
+    if foo1.Bar != foo2.Bar: return -1 if foo1.Bar < foo2.Bar else 1
+    if foo1.Baz != foo2.Baz: return -1 if foo1.Baz > foo2.Baz else 1
+    return 0
 print(*sorted(a, key=cmp_to_key(cmp)))
 
 # Python automatically sorts tuples in increasing order with priority to the leftmost element
@@ -327,12 +341,4 @@ Foo(1,2) Foo(3,2) Foo(6,6) Foo(6,9) Foo(8,7) Foo(8,9) Foo(9,7) Foo(9,8)
 
 ## Problems
 
-  - [Lifeguards](http://usaco.org/index.php?page=viewproblem2&cpid=786)
-    - sort endpoints of intervals
-  - [Rental Service](http://usaco.org/index.php?page=viewproblem2&cpid=787)
-  - [Mountains](http://usaco.org/index.php?page=viewproblem2&cpid=896)
-  - [Mooyo Mooyo](http://www.usaco.org/index.php?page=viewproblem2&cpid=860)
-    - Not a sorting problem, but you can use sorting to simulate gravity.
-    - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same.
-  - [Meetings](http://www.usaco.org/index.php?page=viewproblem2&cpid=967)
-    - hard!
+<problems-list problems={metadata.problems.general} />

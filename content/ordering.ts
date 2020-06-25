@@ -52,11 +52,11 @@ const ModuleOrdering = {
       name: "Data Structures",
       items: [
         "stacks-queues",
+        "amortized",
         "maps-sets",
       ]
     },
     "binary-search",
-    "amortized",
     "greedy",
     {
       name: "Graphs",
@@ -147,6 +147,7 @@ const ModuleOrdering = {
       items: [
         "geo-pri",
         "hull",
+        "LC",
       ]
     },
     "bitsets",
