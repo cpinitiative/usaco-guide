@@ -154,6 +154,18 @@ const ModuleOrdering = {
     },
     "bitsets",
     "fracture",
+  ],
+  "adv": [
+    "treaps",
+    "persistent",
+    "min-cost-flow",
+    "critical",
+    "LCT",
+    "string-suffix",
+    "fft",
+    "game-theory",
+    "multiplicative",
+    "matroid-isect",
   ]
 };
 
@@ -166,4 +178,5 @@ export const divisionLabels = {
   "silver": "Silver",
   "gold": "Gold",
   "plat": "Platinum",
+  "adv": "Advanced",
 };
