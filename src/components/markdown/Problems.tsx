@@ -53,6 +53,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
     Normal: 'bg-green-100 text-green-800',
     Hard: 'bg-purple-100 text-purple-800',
     'Very Hard': 'bg-red-100 text-red-800',
+    Insane: 'bg-blue-100 text-blue-800',
   };
   const [showTags, setShowTags] = React.useState(false);
   const { problem } = props;

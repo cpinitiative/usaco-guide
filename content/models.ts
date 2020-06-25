@@ -25,7 +25,7 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
+    public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
     public starred?: boolean,
     public tags?: string[],
     public sketch?: string,

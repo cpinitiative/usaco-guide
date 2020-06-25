@@ -2,25 +2,113 @@
 id: bitsets
 title: "Bitsets"
 author: Benjamin Qi
-description: Three examples of how bitsets give some unintended solutions on recent USACO problems.
+description: Several examples of how bitsets give some unintended solutions on recent USACO problems.
+prerequisites:
+ - Errichto - Bitwise Operations Pt 1
 ---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    school: [
+      new Problem("CSES", "School Excursion", "1706", "Easy", false, ["Knapsack", "Bitset"], ""),
+    ],
+    cow: [
+      new Problem("Gold", "Cowpatibility", "862", "Normal", false, ["PIE", "Bitset"], ""),
+    ],
+    lots: [
+      new Problem("Plat", "Lots of Triangles", "672", "Normal", false, ["Geometry", "Bitset"], ""),
+    ],
+    bfs: [
+      new Problem("CSA", "Substring Restrictions", "substring-restrictions", "Hard", false, ["DSU"], "")
+    ],
+    ad: [
+      new Problem("Plat", "Equilateral Triangles", "1021", "Normal", false, ["Bitset, Sliding Window"], "Again, the intended solution runs in $O(N^3)$. Of course, it is still possible to pass $O(N^4)$ solutions with bitset! See the analysis [here](http://www.usaco.org/current/data/sol_triangles_platinum_feb20.html)."),
+      new Problem("CSES", "BOI Nautilus", "https://cses.fi/247/submit/B", "Normal", false, ["Bitset"], ""),
+    ],
+  }
+};
 
 ## Tutorial
 
 tl;dr some operations are 32x-64x faster compared to a boolean array.
 
  - [C++ Reference](http://www.cplusplus.com/reference/bitset/bitset/)
- - [Errichto Bitwise Operations Pt 2](https://codeforces.com/blog/entry/73558)
+ - [Errichto - Bitwise Operations Pt 2](https://codeforces.com/blog/entry/73558)
 
-## Applications
+## Knapsack
 
-### [Cowpatibility (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=862)
+<problems-list problems={metadata.problems.school} />
 
-Label the cows from $0\ldots N-1$. For two cows `x` and `y` set `adj[x][y]=1` if they share a common flavor. Then the number of pairs of cows that are compatible (counting each pair where `x` and `y` are distinct twice) is equal to the sum of `adj[x].count()` over all `x`. It remains to compute `adj[x]` for all `x`.
+Of course, the first step is to generate the sizes of each connected component. 
 
-Unfortunately, storing $N$ bitsets each with $N$ bits takes up $50000^2/32\cdot 4=312.5\cdot 10^6$ bytes of memory, which is too much. We can reduce the memory usage by half in exchange for a slight increase in time by first computing the adjacency bitsets for all `x` satisfying `0<=x<N/2`, and then for all `x` satisfying `N/2<=x<N` afterwards. 
+<spoiler title="Input">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct DSU {
+	vector<int> e; void init(int N) { e = vector<int>(N,-1); }
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); } 
+	bool sameSet(int a, int b) { return get(a) == get(b); }
+	int size(int x) { return -e[get(x)]; }
+	bool unite(int x, int y) { // union by size
+		x = get(x), y = get(y); if (x == y) return 0;
+		if (e[x] > e[y]) swap(x,y);
+		e[x] += e[y]; e[y] = x; return 1;
+	}
+};
+
+DSU D;
+int n,m;
+vector<int> comps;
+
+void init() {
+	cin >> n >> m; D.init(n);
+	for (int i = 0; i < m; ++i) {
+		int a,b; cin >> a >> b;
+		D.unite(a-1,b-1);
+	}
+	for (int i = 0; i < n; ++i) if (D.get(i) == i) 
+		comps.push_back(D.size(i));
+}
+```
+
+</spoiler>
+
+A naive knapsack solution would be as follows. For each $0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first $i$ components whose sizes sum to $j$. Then the answer will be stored in $\texttt{dp}[i]$. This runs in $O(N^2)$ and is too slow if implemented naively, but we can use bitset to speed it up! 
+
+Note: you can't store all $N$ bitsets in memory at the same time.
+
+<spoiler title="Full Solution">
+
+```cpp
+int main() {
+	init();
+	bitset<100001> posi; posi[0] = 1;
+	for (int t: comps) posi |= posi<<t;
+	for (int i = 1; i <= n; ++i) cout << posi[i];
+	cout << "\n";
+}
+```
+
+</spoiler>
+
+**Challenge**: This solution runs in $\approx 0.3\text{s}$ when $N=10^5$ and there are no edges. Find a faster solution which can also be sped up with bitset (my solution runs in 0.03s).
+
+## Cowpatibility (Gold)
+
+<problems-list problems={metadata.problems.cow} />
+
+Label the cows from $0\ldots N-1$. For two cows $x$ and $y$ set `adj[x][y]=1` if they share a common flavor. Then the number of pairs of cows that are compatible (counting each pair where $x$ and $y$ are distinct twice) is equal to the sum of `adj[x].count()` over all $x$. It remains to compute `adj[x]` for all $x$.
+
+Unfortunately, storing $N$ bitsets each with $N$ bits takes up $50000^2/32\cdot 4=312.5\cdot 10^6$ bytes of memory, which is too much. We can reduce the memory usage by half in exchange for a slight increase in time by first computing the adjacency bitsets for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards. 
 
 First, we read in all of the flavors.
+
+<spoiler title="Input">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -48,7 +136,9 @@ void input() {
 }
 ```
 
-Then for each flavor, we can look at all pairs of cows that share that flavor and update the adjacency lists (for those `x` satisfying `x<HALF`).
+</spoiler>
+
+Then for each flavor, we can look at all pairs of cows that share that flavor and update the adjacency lists for those $x\in [0,HALF)$.
 
 ```cpp
 int main() {
@@ -70,6 +160,8 @@ for (int i = 1; i <= 1000000; ++i) if (flav[i].size() > 0) {
 
 The full main function is as follows:
 
+<spoiler title="Full Solution">
+
 ```cpp
 int main() {
 	input();
@@ -88,9 +180,15 @@ int main() {
 }
 ```
 
-### [Lots of Triangles](http://www.usaco.org/index.php?page=viewproblem2&cpid=672)
+</spoiler>
+
+## Lots of Triangles
+
+<problems-list problems={metadata.problems.lots} />
 
 First, we read in the input data. `cross(a,b,c)` is positive iff `c` lies to the left of the line from `a` to `b`.
+
+<spoiler title="Input">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -120,7 +218,11 @@ void input() {
 }
 ```
 
+</spoiler>
+
 There are $O(N^3)$ possible lots. Trying all possible lots and counting the number of trees that lie within each in $O(N)$ for a total time complexity of $O(N^4)$ should solve somewhere between 2 and 5 test cases. Given a triangle `t[0], t[1], t[2]` with positive area, tree `x` lies within it iff `x` is to the left of each of sides `(t[0],t[1])`,` (t[1],t[2])`, and `(t[2],t[0])`.
+
+<spoiler title="Slow Solution">
 
 ```cpp
 int main() {
@@ -144,7 +246,11 @@ int main() {
 }
 ```
 
+</spoiler>
+
 The analysis describes how to count the number of trees within a lot in $O(1)$, which is sufficient to solve the problem. However, $O(N)$ is actually sufficient as long as we divide by the bitset constant. Let `b[i][j][k]=1` if `k` lies to the left of side `(i,j)`. Then `x` lies within triangle `(t[0],t[1],t[2])` as long as `b[t[0]][t[1]][x]=b[t[1]][t[2]][x]=b[t[2]][t[0]][x]=1`. We can count the number of `x` such that this holds true by taking the bitwise AND of the bitsets for all three sides and then counting the number of bits in the result.
+
+<spoiler title="Fast Solution">
 
 ```cpp
 bitset<300> b[300][300];
@@ -167,23 +273,82 @@ int main() {
 	for (int i = 0; i < N-2; ++i) cout << res[i] << "\n";
 }
 ```
+</spoiler>
 
-### [Equilateral Triangles](http://www.usaco.org/index.php?page=viewproblem2&cpid=1021)
+## Knapsack Again (GP of Bytedance 2020 F)
 
-Again, the intended solution runs in $O(N^3)$. Of course, it is still possible to pass $O(N^4)$ solutions with bitset! See the analysis [here](http://www.usaco.org/current/data/sol_triangles_platinum_feb20.html).
+> Given $n$ ($n\le 2\cdot 10^4$) positive integers $a_1,\ldots,a_n$ ($a_i\le 2\cdot 10^4$), find the max possible sum of a subset of $a_1,\ldots,a_n$ whose sum does not exceed $c$.
 
-### Bipartite matching in $O(N^3)$
+Consider the case when $\sum a_i\ge c$. The intended solution runs in $O(n\cdot \max(a_i))$; see [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/Knapsack.h) for more information. However, we'll solve it with bitset instead.
 
-Using operations such as `_Find_first()` and `_Find_next()` mentioned in Errichto's blog above (are these documented?), you can speed up the following:
+As with the first problem in this module, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first numbers components that sums to $j$. This solution runs in $O(n\cdot \sum a_i)$ time, which is too slow even if we use bitset.
 
- - BFSing through a dense graph with $N$ vertices in $O(N^2)$
+Taking inspiration from [this](https://codeforces.com/blog/entry/67664) CF blog post, we'll first shuffle the integers randomly and perform the DP with the following modification:
 
-### Knapsack
+ - If $\left|\frac{ci}{n}-j\right| \ge X$ for some $X$ that we choose, then set $\texttt{dp}[i][j]=0$.
 
-#### Doubling
+Since we only need to keep track of $2X+1$ values for each $i$, this solution runs in $O(nX)$ time, which runs in time with $X=5\cdot 10^5$ using bitset. 
 
-https://cses.fi/problemset/task/1706
+Intuitively, the random shuffle reduces the optimal subset to some random walk which should have variance at most $\max a_i\cdot \sqrt N$, so it suffices to take $X\approx \max a_i\cdot \sqrt N$. (Though I'm not completely convinced that this works, does anyone know how to bound the failure probability of this algorithm precisely?)
 
-#### Shuffling
+<spoiler title="Solution">
 
-GP of Bytedance 2020 F
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int n,c;
+const int Z = 1000000;
+mt19937 rng;
+
+int solve() {
+	cin >> n >> c;
+	vector<int> a(n); int sum = 0; 
+	for (int& x: a) {
+		cin >> x;
+		sum += x;
+	}
+	if (sum <= c) return sum;
+	shuffle(begin(a),end(a),rng);
+	bitset<Z> B; B[Z/2] = 1;
+	ll lst = 0;
+	for (int i = 0; i < n; ++i) {
+		ll cur = (ll)(i+1)*c/n;
+		int dif = cur-lst; lst = cur;
+		auto tmp = B>>dif;
+		ll wut = a[i]-dif;
+		if (wut >= 0) B = tmp|(B<<wut);
+		else B = tmp|(B>>(-wut));
+	}
+	for (int i = Z/2; i >= 0; --i) if (B[i] == 1) return c-(Z/2-i);
+	return 0;
+}
+
+int main() {
+	int T; cin >> T;
+	for (int i = 0; i < T; ++i) cout << solve() << "\n";
+}
+```
+</spoiler>
+
+## Other Applications
+
+Use to speed up the following:
+
+ - Gaussian Elimination in $O(N^3)$
+ - Bipartite matching in $O(N^3)$
+ - BFS in $O(N^2)$
+
+Operations such as `_Find_first()` and `_Find_next()` mentioned in Errichto's blog are helpful. (are these documented?) 
+
+Regarding the last application:
+
+<problems-list problems={metadata.problems.bfs} />
+
+In USACO Camp, this problem appeared with $N\le 10^5$ and a large time limit ...
+
+## Additional Problems
+
+<problems-list problems={metadata.problems.ad} />
