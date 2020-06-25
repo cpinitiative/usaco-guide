@@ -5,14 +5,35 @@ author: Darren Yao, Eric Wei
 description: Computing range sum queries in constant time over a fixed array.
 ---
 
- - [yosupo - Static Range Sum](https://judge.yosupo.jp/problem/static_range_sum)
- 
-Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to answer $Q$ queries of the following form: compute $\texttt{arr[L]+arr[L+1]+}\cdots\texttt{+arr[R]}$.
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("YS", "Static Range Sum", "static_range_sum", "Easy", false, [], "equivalent to [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646)"),
+    ],
+    cum: [
+      new Problem("LC", "Find Pivot Index", "find-pivot-index", "Easy", false, [], ""),
+      new Problem("Silver", "Breed Counting", "572", "Easy", false, [], ""),
+      new Problem("Silver", "Subsequences Summing to Seven", "595", "Easy", false, [], ""),
+      new Problem("Silver", "Hoof Paper Scissors", "691", "Easy", false, [], ""),
+      new Problem("Silver", "Max Cross", "715", "Easy", false, [], ""),
+    ],
+    sample2: [
+      new Problem("CSES", "Forest Queries", "1652", "Easy", false, ["Prefix Sums"], ""),
+    ],
+    cum2: [
+      new Problem("Silver", "Painting the Barn", "919", "Easy", false, ["Prefix Sums"], ""),
+      new Problem("Gold", "Painting the Barn", "923", "Hard", false, ["Prefix Sums", "Max Subarray Sum"], ""),
+    ],
+  }
+};
+
+<problems-list problems={metadata.problems.sample} />
+
+
 
 ## Standard
-
- -  [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646)
- -  [LeetCode Find Pivot Index](https://leetcode.com/problems/find-pivot-index/)
 
 ## Additional Resources
 
@@ -21,7 +42,7 @@ Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we 
 
 ## Tutorial
 
-Let's use the following example with $N = 6$:
+Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to answer $Q$ queries of the following form: compute $\texttt{arr[L]+arr[L+1]+}\cdots\texttt{+arr[R]}$. We'll use the following example with $N = 6$:
 
 todo convert the below to array because tabular isn't supported
 
@@ -75,15 +96,9 @@ Using prefix sums: Using prefix sums: $\text{\texttt{prefix[5]}} - \text{\texttt
 
 This technique is also known as *cumulative sum* or *partial sums*.
 
-## USACO Silver Problems
+## Problems
 
-Relatively straightforward.
-
- - [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572)
- - [Subsequences Summing to Seven](http://www.usaco.org/index.php?page=viewproblem2&cpid=595)
- - [Hoof Paper Scissors](http://usaco.org/index.php?page=viewproblem2&cpid=691)
- - [Max Cross](http://usaco.org/index.php?page=viewproblem2&cpid=715)
- - [Homework](http://usaco.org/index.php?page=viewproblem2&cpid=762)
+<problems-list problems={metadata.problems.cum} />
 
 Now we'll look at some extensions.
 
@@ -111,6 +126,8 @@ Extension:
  - [USACO Haybale Stacking](http://www.usaco.org/index.php?page=viewproblem2&cpid=104)
 
 ## 2D Prefix Sums
+
+<problems-list problems={metadata.problems.sample2} />
 
 Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a $N$ rows by $M$ columns matrix in two dimensions? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
 
@@ -162,10 +179,7 @@ Summing the blue region from above using the 2d prefix sums method, we add the v
 
 Since no matter the size of the submatrix we are summing, we only need to access 4 values of the 2d prefix sum array, this runs in $O(1)$ per query after an $O(NM)$ preprocessing. This is fast enough.
 
- - [CSES Forest Queries](https://cses.fi/problemset/task/1652)
- - [USACO Painting the Barn (Silver)](http://www.usaco.org/index.php?page=viewproblem2&cpid=919)
- - [USACO Painting the Barn (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=923)
-   - combine with max subarray sum!
+<problems-list problems={metadata.problems.cum2} />
 
 ## Prefix Minimum, XOR, etc.
 
