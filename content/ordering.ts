@@ -130,7 +130,7 @@ const ModuleOrdering = {
         "sp-neg",
         "more-dfs",
         "eulerian-tours",
-        "euler",
+        "eulers-formula",
         "max-flow",
       ]
     },
