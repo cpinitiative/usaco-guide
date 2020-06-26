@@ -294,18 +294,18 @@ const flattenNavLinks = (navLinks: NavLinkItem[]) => {
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
-    'text-green-600',
     'text-red-600',
     'text-orange-600',
     'text-yellow-600',
     'text-teal-600',
+    'text-green-600',
   ];
   const circleColors = [
-    'text-green-500',
     'text-red-500',
     'text-orange-500',
     'text-yellow-500',
     'text-teal-500',
+    'text-green-500',
   ];
   const labels = [
     'Has Not Appeared',
@@ -500,7 +500,7 @@ export default function Template(props) {
                   />
                 </div>
                 <div className="px-1.5 lg:mt-8">
-                  {module.frequency && (
+                  {module.frequency !== null && (
                     <Frequency frequency={module.frequency} />
                   )}
                 </div>
