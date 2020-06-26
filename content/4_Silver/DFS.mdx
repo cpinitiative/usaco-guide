@@ -1,0 +1,120 @@
+---
+id: dfs
+title: Depth First Search
+author: Siyong Huang
+prerequisites: 
+ - Bronze - Introduction to Graphs
+description: A way to traverse a graph using recursion.
+frequency: 4
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Building Roads", "1666", "Intro", false, ["DFS"]),
+    ],
+    tree: [
+      new Problem("CSES", "Subordinates", "1674", "Intro", false, ["Tree", "DFS"]),
+      new Problem("Silver", "Mootube", "788", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CF", "PolandBall & Forest", "problemset/problem/755/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
+      new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSA", "Tree Construction", "contest/860/problem/D", "Hard", false, ["Tree", "DFS"], "several cases"),
+    ],
+    general: [
+      new Problem("CF", "Bear & Friendship", "problemset/problem/771/A", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Closing the Farm", "644", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Moocast", "668", "Easy", false, ["DFS"]),
+      new Problem("Silver", "Fence Planning", "944", "Easy", false, ["DFS"]),
+      new Problem("Kattis", "Birthday Party", "birthday", "Easy", false, ["DFS"], "DFS with each edge removed"),
+      new Problem("Silver", "Milk Visits", "968", "Normal", false, ["DFS"]),
+      new Problem("Silver", "Milk Pails", "620", "Normal", false, ["DFS"]),
+      new Problem("Silver", "Wormhole Sort", "992", "Normal", false, ["DFS", "Binary Search"]),
+      new Problem("Silver", "Moo Particle", "1040", "Normal", false, ["Sorting"]),
+    ],
+    bipsample: [
+      new Problem("CSES", "Building Teams", "1668", "Easy", false, ["Bipartite"]),
+    ],    
+    bip: [
+      new Problem("CF", "Bipartiteness", "contest/862/problem/B", "Easy", false, ["Bipartite"]),
+      new Problem("Silver", "The Great Revegetation", "920", "Easy", false, ["Bipartite"]),
+    ],
+  }
+};
+
+
+<problems-list problems={metadata.problems.sample} />
+
+<info-block title="Pro Tip">
+
+Quite frequent at the Silver level.
+
+</info-block>
+
+## Tutorial
+
+ - Recommended:
+   - CPH 12.1 (DFS), 14 (Tree algorithms)
+   - [PAPS 12.2](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+   - [CSAcademy DFS](https://csacademy.com/lesson/depth_first_search/)
+ - Additional:
+   - [CPC.7](https://github.com/SuprDewd/T-414-AFLV/tree/master/07_graphs_1)
+   - [cp-algo DFS](https://cp-algorithms.com/graph/depth-first-search.html)
+     - hard to parse if this is your first time learning about DFS
+   - [Topcoder Graphs Pt 2](https://www.topcoder.com/community/data-science/data-science-tutorials/introduction-to-graphs-and-their-data-structures-section-2/)
+
+### Problems
+
+ - Trees
+
+<problems-list problems={metadata.problems.tree} />
+
+ - General
+
+<problems-list problems={metadata.problems.general} />
+
+## Graph Two-Coloring
+
+*Graph two-coloring* refers to assigning a boolean value to each node of the graph, dictated by the edge configuration
+The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors.
+
+<problems-list problems={metadata.problems.bipsample} />
+
+### Tutorial
+
+  - CPH 12.3
+  - [cp-algo - bipartite check](https://cp-algorithms.com/graph/bipartite-check.html)
+    - Uses BFS, but DFS accomplishes the same task
+ 
+The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
+
+```cpp
+//UNTESTED
+
+bool is_bipartite = true;
+void dfs(int node)
+{
+  visited[node] = true;
+  for(int u:adj_list[node])
+    if(visited[u])
+    {
+      if(color[u] == color[node])
+        is_bipartite = false;
+    }
+    else
+    {
+      color[u] = !color[node];
+      dfs(u);
+    }
+}
+```
+
+### Problems
+
+<problems-list problems={metadata.problems.bip} />

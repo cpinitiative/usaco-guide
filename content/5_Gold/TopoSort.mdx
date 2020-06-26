@@ -1,0 +1,74 @@
+---
+id: toposort
+title: "Topological Sort"
+author: Benjamin Qi, Michael Cao
+prerequisites: 
+ - Gold - Breadth First Search
+ - Gold - Introduction to Dynamic Programming
+description: "?"
+frequency: 1
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Course Schedule", "1679", "Easy", false, []),
+    ],
+    general: [
+      new Problem("CSES", "Game Routes", "1681", "Easy", false, [], "counting paths on DAG"),
+      new Problem("Kattis", "Quantum", "https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition", "Easy", false, [], "enumerating paths on DAG"),
+      new Problem("Gold", "Timeline", "1017", "Easy", false, [], "not explicitly given, but graph is a DAG"),
+      new Problem("Gold", "Milking Order", "838", "Normal", false, ["TopoSort", "Binary Search"]),
+      new Problem("CSES", "Course Schedule II", "1681", "Hard", false, [], "equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)"),
+    ],
+  }
+};
+
+To review, a **directed** graph consists of edges that can only be traversed in one direction. Additionally, a **acyclic** graph defines a graph which does not contain cycles, meaning you are unable to traverse across one or more edges and return to the node you started on. Putting these definitions together, a **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has edges which can only be traversed in one direction and does not contain cycles. 
+
+## Topological Sort
+
+<problems-list problems={metadata.problems.sample} />
+
+A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering. 
+
+### Tutorial
+
+ - CPH 16.1, 16.2
+   - DFS
+ - [cp-algorithms](https://cp-algorithms.com/graph/topological-sort.html)
+   - DFS
+ - [CSAcademy](https://csacademy.com/lesson/topological_sorting)
+   - both BFS, DFS
+
+The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
+
+## Dynamic Programming
+
+ - [PAPS 9.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
+One useful property of directed acyclic graphs is, as the name suggests, that there exists no cycles. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge, $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
+
+Let's consider the classical problem [CSES Longest Flight Route](https://cses.fi/problemset/task/1680), where we must find the longest path in a DAG.
+
+<spoiler title="Solution">
+
+Let $dp[v]$ denote the length of the longest path ending at the node $v$. Clearly 
+
+$$
+dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
+$$
+
+or zero if $v$ has in-degree $0$. If we process the states in topological order, it is guarangeed that $dp[u]$ will already have been computed before computing $dp[v]$.
+
+</spoiler>
+
+<!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
+
+(Ben - this last paragraph doesn't seem very helpful.) -->
+
+## Problems
+
+<problems-list problems={metadata.problems.general} />

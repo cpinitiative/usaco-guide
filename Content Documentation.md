@@ -6,147 +6,129 @@ If you are confused about something, or if there's a certain feature that you wa
 
 You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
 
-### `ordering.js`
+### `ordering.ts`
 
-Located at `content/ordering.js`, this file stores the ordering of the modules. Hopefully the format is self-explanatory
+Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory
 (it matches based on "slug"). Let Nathan Wang know if you have questions.
 
 ### Frontmatter
 
-[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded 
+[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded
 by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
 
-YAML formatting is _extremely strict_. Be careful about spaces.
+YAML formatting is _extremely strict_. Be careful about spaces. Additionally, escape special characters by wrapping the string with double quotes.
 
 - **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify
-the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
+  the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
-- **Prerequisites**: _Optional_. Any prerequisites for this module.
+- **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
+- **Prerequisites**: _Optional_. Any prerequisites for this module. (Coming soon: If you want to reference a module as a prerequisite, you can list the module ID.)
 
-The prerequisite formatting is rather unintuitive. It expects an array of arrays, where the first item is
-the name of the prerequisite, and the optional second item is a link. **Note the number of spaces!**
+### Problem Lists
 
-Example:
+todo document this... Relevant files are `content/models.ts` and `src/components/markdown/Problems.tsx`. Hopefully, the existing mdx files can help you out...
+
+Problem constructor:
+
+```typescript
+constructor(
+  public source: string,
+  public name: string,
+  public id: string,
+  public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
+  public starred?: boolean,
+  public tags?: string[],
+  public sketch?: string,
+)
 ```
+
+Example usage:
+
+```markdown
+---
+id: ds
+title: Data Structures
+author: Nathan Wang, Darren Yao, Benjamin Qi
+description: Introductory problems using sets and maps.
 prerequisites:
- -
-     - Prerequisite Name
-     - https://dummy.prerequisite.link.com/
- -
-     - Another Prerequisite Without a Link
+  - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
+---
+
+import { Problem } from "../models"
+
+export const metadata = {
+problems: {
+standard: [
+new Problem("YS", "Associative Array", "associative_array", "Intro"),
+new Problem("CSES", "Distinct Numbers", "1621", "Intro"),
+new Problem("CSES", "Sum of Two Values", "1640", "Intro", false, [], "Can be solved without sets."),
+new Problem("CSES", "Concert Tickets", "1091", "Easy", false, ["iterators"]),
+new Problem("CSES", "Towers", "1073", "Easy", false, ["multiset", "greedy"]),
+new Problem("CSES", "Traffic Lights", "1163", "Normal", false, ["set"]),
+new Problem("CSES", "Room Allocation", "1164", "Normal", false, ["multiset", "greedy"]),
+]
+}
+};
+
+## Standard
+
+Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
+
+<problems-list problems={metadata.problems.standard} />
 ```
-
-- **Problems**: _Optional_. A list of problems in the article. As we haven't figured out what we're going to do with 
-  **it's best to not include this yet.** For USACO problems, enter each problem as `division_filename`. Ex: `bronze_promote`. 
-
-### Module Description
-
-Everything contained in `module-excerpt` tags is part of the "module description." It gets rendered on the homepage. Be careful not to use headers
-as they will look really weird on the homepage. The module description is also included in the article itself.
-
-If you don't want a description for the module, just put the `END DESCRIPTION` line as the first line
-after the frontmatter.
-
-If you want a description that appears only on the homepage but not the article, wrap it in
-an HTML element with the class `syllabus-only`. Note that you can't use markdown in HTML elements.
-
-Example:
-```
-<module-excerpt>
-
-<ul class="syllabus-only">
-  <li>Contest Format</li>
-  <li>Choosing a Language</li>
-  <li>Practicing and Debugging</li>
-  <li>Contest Strategies</li>
-</ul>
-
-</module-excerpt>
-```
-
-This will render as a list in the homepage, but won't appear in the article.
 
 ### Spoilers
 
 Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
-when writing solutions to problems. The styling of the spoilers is still a work in progress (especially for spoilers in lists).
-
-// TODO update spoiler docs to reflect new tag
+when writing solutions to problems.
 
 ```
 <spoiler title="Show Solution">
 
-  - Insert OP benq solution here
-</details>
+- Insert OP benq solution here
+
+</spoiler>
 ```
 
-The `summary` tag is shown. Everything below it is only shown after the user chooses to "reveal" spoilers.
-
-The formatting of the details is **very delicate**. In particular, note the empty line after the summary tag
-and before the content of the details tag. **This empty line must be indented to the beginning of the details tag.**
-For example:
+### Info Block
 
 ```
-- Here's a list
-- And below is a details tag in a list (which looks kind of ugly right now; hopefully it'll be fixed soon)
-- <details>                                      // Indented with two characters (a dash and a space)
-    <summary>Show Solution</summary>             // Indented with FOUR spaces
-                                                 // Indented with TWO spaces
-    - Insert OP benq solution here               // Indented with FOUR spaces
-  </details>
+<info-block title="Insert Title Here">
+
+**Markdown is Supported!!**
+
+</info-block>
 ```
 
-### Custom Blocks
-
-Currently, we only have one custom block (info), but others can easily be added (ex: warning, danger, error, success?).
-Just let Nathan Wang know.
-
-#### Info Block
+### Optional Block
 
 ```
-[[info | Insert Title Here]]
-| Insert Content Here
-| **Markdown is Supported!!**
+<optional-content title="Insert Title Here">
+
+Fun fact: the title attribute is optional.
+
+</optional-content>
 ```
 
 ### Example Module
 
 ```
 ---
-id: /intro/getting-started
+id: getting-started
 title: Getting Started
+description: Welcome to the guide! We'll introduce what programming competitions are and how this guide is organized.
 author: Nathan Wang
 order: 1
 prerequisites:
- -
-     - Dummy prerequisite
-     - https://dummy.prerequisite.link.com/
- -
-     - Another Prerequisite
+ - Dummy prerequisite
+ - running-cpp
 problems:
  - bronze_promote
  - bronze_word
  - bronze_paint
  - bronze_square
 ---
-
-<module-excerpt>
-
-<ul class="syllabus-only">
-  <li>Contest Format</li>
-  <li>Choosing a Language</li>
-  <li>Practicing and Debugging</li>
-  <li>Contest Strategies</li>
-</ul>
-
-</module-excerpt>
-
-<details>
-  <summary>Show Solution</summary>
-
-  - Insert OP benq solution here
-</details>
 
 # Hello World!
 ```
