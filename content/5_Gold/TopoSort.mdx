@@ -6,6 +6,7 @@ prerequisites:
  - Gold - Breadth First Search
  - Gold - Introduction to Dynamic Programming
 description: "?"
+frequency: 1
 ---
 
 import { Problem } from "../models";
@@ -19,7 +20,7 @@ export const metadata = {
       new Problem("CSES", "Game Routes", "1681", "Easy", false, [], "counting paths on DAG"),
       new Problem("Kattis", "Quantum", "https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition", "Easy", false, [], "enumerating paths on DAG"),
       new Problem("Gold", "Timeline", "1017", "Easy", false, [], "not explicitly given, but graph is a DAG"),
-      new Problem("Gold", "Milking Order", "838", "Easy", false, ["TopoSort", "Binary Search"]),
+      new Problem("Gold", "Milking Order", "838", "Normal", false, ["TopoSort", "Binary Search"]),
       new Problem("CSES", "Course Schedule II", "1681", "Hard", false, [], "equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)"),
     ],
   }
@@ -41,10 +42,8 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
    - DFS
  - [CSAcademy](https://csacademy.com/lesson/topological_sorting)
    - both BFS, DFS
-   
-Consider [Khan's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) for topological sorting.
 
-(note: lex min toposort?)
+The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 
 ## Dynamic Programming
 
@@ -55,12 +54,20 @@ One useful property of directed acyclic graphs is, as the name suggests, that th
 Let's consider the classical problem [CSES Longest Flight Route](https://cses.fi/problemset/task/1680), where we must find the longest path in a DAG.
 
 <spoiler title="Solution">
-Let `dp[curr] = longest path ending at the node curr`. Then, if we process states in topological order, the transition is relatively straightforward: `dp[curr] = max of all dp[prev] where prev represents a node with an edge going into the current node` (word better?). To reiterate, since the states a processed in topological order, we can guarantee that all possible `dp[prev]` are computed before we compute `dp[curr]`.
+
+Let $dp[v]$ denote the length of the longest path ending at the node $v$. Clearly 
+
+$$
+dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
+$$
+
+or zero if $v$ has in-degree $0$. If we process the states in topological order, it is guarangeed that $dp[u]$ will already have been computed before computing $dp[v]$.
+
 </spoiler>
 
-However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
+<!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
 
-(Ben - this last paragraph doesn't seem very helpful.)
+(Ben - this last paragraph doesn't seem very helpful.) -->
 
 ## Problems
 

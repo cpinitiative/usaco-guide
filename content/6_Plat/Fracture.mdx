@@ -6,7 +6,24 @@ prerequisites:
  - Gold - Minimum Spanning Tree
  - some familiarity with "Robotic Cow Herd" solution
 description: A simple solution to "Robotic Cow Herd" that generalizes.
+frequency: 1
 ---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("Plat", "Robotic Cow Herd", "674", "Normal", false, [], ""),
+    ],
+    general: [
+      new Problem("CSES", "Baltic OI - Olympiads", "https://cses.fi/248/list/", "Hard", false, [], "Each state has $\le K$ children."),
+      new Problem("DMOJ", "CCO - Shopping Plans", "cco20p6", "Very Hard", false, [], "Generalization of RoboHerd."),
+      new Problem("YS", "K-th Shortest Walk", "k_shortest_walk", "Very Hard", false, [], "(english description?), [Relevant Paper](https://www.ics.uci.edu/~eppstein/pubs/Epp-SJC-98.pdf), Can use to solve RoboHerd!"),
+    ],
+  }
+};
+
 
 ## General Outline
 
@@ -22,7 +39,11 @@ Suppose that you have a rooted tree where each vertex $i$ has a value $v_i$. Als
 
 We'll focus on the first approach.
 
-*Note:* There are ways to do this in $O(K)$ time for a binary tree if you don't need to return the values in sorted order (see [here](https://www.sciencedirect.com/science/article/pii/S0890540183710308)), but we won't consider this.
+<optional-content title="A Faster Solution">
+
+There are ways to do this in $O(K)$ time for a binary tree if you don't need to return the values in sorted order (see [here](https://www.sciencedirect.com/science/article/pii/S0890540183710308)).
+
+</optional-content>
 
 ### Generalizing
 
@@ -35,13 +56,13 @@ Suppose that you want to find the $K$ objects with the smallest values in some (
 
 Essentially, we start with the entire search space and then we *fracture* it into *subspaces* based on the children of the root. Then we can finish with either of the two approaches.
 
-## Finding K-th Smallest Spanning Tree (USACO Camp 2018)
+## $K$-th Smallest Spanning Tree (USACO Camp 2018)
 
 Let's look at an example.
 
 ### Problem
 
-Given a graph with $N\le 50$ vertices and at most $\binom{N}{2}$ edges, find the $K$-th ($K\le 10^4$) smallest spanning tree.
+> Given a graph with $N\le 50$ vertices and at most $\binom{N}{2}$ edges, find the $K$-th ($K\le 10^4$) smallest spanning tree.
 
 (Note: not solved in contest.)
 
@@ -124,7 +145,9 @@ int main() {
 </spoiler>
 
 
-## [USACO Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674)
+## Robotic Cow Herd
+
+<problems-list problems={metadata.problems.sample} />
 
 As with the analysis, for each location you should
 
@@ -134,7 +157,7 @@ As with the analysis, for each location you should
 
 Importantly, we should then sort the locations by their respective second-minimum controller costs.
 
-## Approach 1
+### Approach 1
 
 Binary search on the cost $c$ of the $K$-th robot. If we can compute the costs of all robots with cost at most $c$ or say that there are more than $K$ in $O(K)$ time, then we can solve this problem in $O(N\log N+K\log \max(c))$ time (similar to "Approach 2" above). This is the approach that the first analysis solution takes, although it includes an extra $\log N$ factor due to `upper_bound`. I have removed this in my solution below.
 
@@ -199,7 +222,7 @@ int main() {
 
 </spoiler>
 
-## Approach 2
+### Approach 2
 
 There's also an $O(N\log N+K\log K)$ time solution with a priority queue that constructs the robots in increasing order of cost. As before, we want each robot to have a bounded number of "child" robots. However, if you look at my DFS function above, it seems that every robot can have up to $N$ children! Nevertheless, the DFS takes $O(K)$ rather than $O(KN)$ time due to the break statement, which works since we sorted by second-cheapest robot. 
 
@@ -285,11 +308,4 @@ int main() {
 
 ## Other Problems
 
- - [Baltic OI 2019 - Olympiads](https://cses.fi/248/list/)
-   - Each state has $\le K$ children.
- - [CCO 20 Shopping Plans](https://dmoj.ca/problem/cco20p6)
-   - Generalization of RoboHerd
- - [K-th Shortest Walk](https://judge.yosupo.jp/problem/k_shortest_walk)
-   - (english description?)
-   - [Relevant Paper](https://www.ics.uci.edu/~eppstein/pubs/Epp-SJC-98.pdf)
-   - Can use to solve RoboHerd!
+<problems-list problems={metadata.problems.general} />

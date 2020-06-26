@@ -293,20 +293,23 @@ const flattenNavLinks = (navLinks: NavLinkItem[]) => {
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
+    'text-green-600',
     'text-red-600',
     'text-orange-600',
     'text-yellow-600',
     'text-teal-600',
   ];
   const circleColors = [
+    'text-green-500',
     'text-red-500',
     'text-orange-500',
     'text-yellow-500',
     'text-teal-500',
   ];
   const labels = [
-    'Rare (0-1 times)',
-    'Not Frequent (2-3 times)',
+    'Has Not Appeared',
+    'Rare (1-2 times)',
+    'Not Frequent (3-4 times)',
     'Somewhat Frequent',
     'Very Frequent (historically ~ once per contest)',
   ];
@@ -314,14 +317,12 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
 
   return (
     <span
-      className={`inline-flex items-center font-medium ${
-        textColors[frequency - 1]
-      }`}
+      className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
       {new Array(4).fill(null).map((_, idx) => (
         <svg
           className={`-ml-1 mr-1.5 h-2.5 w-2.5 ${
-            idx >= frequency ? emptyCircle : circleColors[frequency - 1]
+            idx >= frequency ? emptyCircle : circleColors[frequency]
           }`}
           fill="currentColor"
           viewBox="0 0 8 8"
@@ -329,7 +330,7 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
           <circle cx="4" cy="4" r="3" />
         </svg>
       ))}
-      {labels[frequency - 1]}
+      {labels[frequency]}
     </span>
   );
 };
