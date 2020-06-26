@@ -319,12 +319,8 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
     <span
       className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
-      <Dots
-        count={frequency}
-        totalCount={4}
-        color={circleColors[frequency - 1]}
-      />
-      {labels[frequency - 1]}
+      <Dots count={frequency} totalCount={4} color={circleColors[frequency]} />
+      {labels[frequency]}
     </span>
   );
 };
