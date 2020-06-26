@@ -43,6 +43,7 @@ export function graphqlToModuleLinks(
 }
 
 export function graphqlToModuleInfo(mdx: any): ModuleInfo {
+  console.log(mdx.frontmatter);
   return new ModuleInfo(
     mdx.frontmatter.id,
     moduleIDToDivisionMap[mdx.frontmatter.id],
@@ -50,6 +51,7 @@ export function graphqlToModuleInfo(mdx: any): ModuleInfo {
     mdx.body,
     mdx.frontmatter.author,
     mdx.frontmatter.prerequisites,
-    mdx.frontmatter.description
+    mdx.frontmatter.description,
+    mdx.frontmatter.frequency
   );
 }

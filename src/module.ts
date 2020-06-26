@@ -10,15 +10,7 @@ export class ModuleLinkInfo {
   }
 }
 
-export type ModuleInfoData = {
-  body: any;
-  title: string;
-  author: string;
-  id: string;
-  prerequisites: string[];
-  description: string;
-  division: string;
-};
+export type ModuleFrequency = null | 1 | 2 | 3 | 4 | 5;
 
 // there's probably a way to do this without the duplicated types...
 export class ModuleInfo extends ModuleLinkInfo {
@@ -29,7 +21,8 @@ export class ModuleInfo extends ModuleLinkInfo {
     public body: any,
     public author: string,
     public prerequisites: string[],
-    public description: string
+    public description: string,
+    public frequency: ModuleFrequency
   ) {
     super(id, division, title);
   }

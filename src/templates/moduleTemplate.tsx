@@ -16,7 +16,7 @@ import SEO from '../components/seo';
 
 // @ts-ignore
 import logo from '../assets/logo.svg';
-import { ModuleInfo, ModuleLinkInfo } from '../module';
+import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../module';
 
 const renderPrerequisite = prerequisite => {
   return <li key={prerequisite}>{prerequisite}</li>;
@@ -291,6 +291,52 @@ const flattenNavLinks = (navLinks: NavLinkItem[]) => {
   return links;
 };
 
+const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
+  const textColors = [
+    'text-red-600',
+    'text-orange-600',
+    'text-yellow-600',
+    'text-teal-600',
+    'text-green-600',
+  ];
+  const circleColors = [
+    'text-red-500',
+    'text-orange-500',
+    'text-yellow-500',
+    'text-teal-500',
+    'text-green-500',
+  ];
+  const labels = [
+    'Very Rare',
+    'Rare',
+    'Somewhat Common',
+    'Common',
+    'Very Common',
+  ];
+  const emptyCircle = 'text-gray-300';
+
+  return (
+    <span
+      className={`inline-flex items-center font-medium ${
+        textColors[frequency - 1]
+      }`}
+    >
+      {new Array(5).fill(null).map((_, idx) => (
+        <svg
+          className={`-ml-1 mr-1.5 h-2.5 w-2.5 ${
+            idx >= frequency ? emptyCircle : circleColors[frequency - 1]
+          }`}
+          fill="currentColor"
+          viewBox="0 0 8 8"
+        >
+          <circle cx="4" cy="4" r="3" />
+        </svg>
+      ))}
+      {labels[frequency - 1]}
+    </span>
+  );
+};
+
 export default function Template(props) {
   const { mdx, allMdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
@@ -465,7 +511,12 @@ export default function Template(props) {
                     nextModule={nextModule}
                   />
                 </div>
-                <div className="lg:mt-8 lg:mb-4 sm:flex sm:items-center sm:justify-between">
+                <div className="px-1.5 lg:mt-8">
+                  {module.frequency && (
+                    <Frequency frequency={module.frequency} />
+                  )}
+                </div>
+                <div className="sm:flex sm:items-center sm:justify-between">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {module.title}
@@ -485,16 +536,8 @@ export default function Template(props) {
                 </div>
               </div>
               <div className="py-4">
-                {module.description && (
-                  <div className="rounded-md bg-green-50 p-4 border border-green-500 mb-6">
-                    <p className="text-sm leading-5 font-medium text-green-800">
-                      {module.description}
-                    </p>
-                  </div>
-                )}
-
                 {prereqs && (
-                  <div className="rounded-md bg-blue-50 p-4 mb-12">
+                  <div className="rounded-md bg-blue-50 p-4 mb-6">
                     <div className="flex">
                       <div className="flex-shrink-0">
                         <svg
@@ -520,6 +563,14 @@ export default function Template(props) {
                         </div>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {module.description && (
+                  <div className="rounded-md bg-green-50 p-4 border border-green-500 mb-12">
+                    <p className="text-sm leading-5 font-medium text-green-800">
+                      {module.description}
+                    </p>
                   </div>
                 )}
 
@@ -551,6 +602,7 @@ export const pageQuery = graphql`
         id
         prerequisites
         description
+        frequency
       }
     }
     allMdx {
