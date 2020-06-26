@@ -297,21 +297,18 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
     'text-orange-600',
     'text-yellow-600',
     'text-teal-600',
-    'text-green-600',
   ];
   const circleColors = [
     'text-red-500',
     'text-orange-500',
     'text-yellow-500',
     'text-teal-500',
-    'text-green-500',
   ];
   const labels = [
-    'Very Rare',
-    'Rare',
-    'Somewhat Common',
-    'Common',
-    'Very Common',
+    'Rare (0-1 times)',
+    'Not Frequent (2-3 times)',
+    'Somewhat Frequent',
+    'Very Frequent (historically ~ once per contest)',
   ];
   const emptyCircle = 'text-gray-300';
 
@@ -321,7 +318,7 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
         textColors[frequency - 1]
       }`}
     >
-      {new Array(5).fill(null).map((_, idx) => (
+      {new Array(4).fill(null).map((_, idx) => (
         <svg
           className={`-ml-1 mr-1.5 h-2.5 w-2.5 ${
             idx >= frequency ? emptyCircle : circleColors[frequency - 1]
