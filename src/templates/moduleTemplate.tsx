@@ -17,6 +17,7 @@ import SEO from '../components/seo';
 // @ts-ignore
 import logo from '../assets/logo.svg';
 import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../module';
+import Dots from '../components/Dots';
 
 const renderPrerequisite = prerequisite => {
   return <li key={prerequisite}>{prerequisite}</li>;
@@ -310,7 +311,6 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
     'Somewhat Frequent',
     'Very Frequent (historically ~ once per contest)',
   ];
-  const emptyCircle = 'text-gray-300';
 
   return (
     <span
@@ -318,17 +318,11 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
         textColors[frequency - 1]
       }`}
     >
-      {new Array(4).fill(null).map((_, idx) => (
-        <svg
-          className={`-ml-1 mr-1.5 h-2.5 w-2.5 ${
-            idx >= frequency ? emptyCircle : circleColors[frequency - 1]
-          }`}
-          fill="currentColor"
-          viewBox="0 0 8 8"
-        >
-          <circle cx="4" cy="4" r="3" />
-        </svg>
-      ))}
+      <Dots
+        count={frequency}
+        totalCount={4}
+        color={circleColors[frequency - 1]}
+      />
       {labels[frequency - 1]}
     </span>
   );

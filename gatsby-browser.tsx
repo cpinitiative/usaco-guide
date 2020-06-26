@@ -4,6 +4,10 @@ import { MDXProvider } from '@mdx-js/react';
 import { ProblemsListComponent } from './src/components/markdown/Problems';
 import CodeBlock from './src/components/markdown/CodeBlock';
 import SpoilerComponent from './src/components/markdown/SpoilerComponent';
+import {
+  ResourceComponent,
+  ResourcesListComponent,
+} from './src/components/markdown/Resources';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -87,6 +91,8 @@ const components = {
     </div>
   ),
   'problems-list': ProblemsListComponent,
+  resources: ResourcesListComponent,
+  resource: ResourceComponent,
   code: CodeBlock,
   inlineCode: props => (
     <code
