@@ -29,13 +29,13 @@ For those of you with experience in software development, note that competitive 
 
 The [USA Computing Olympiad](http://www.usaco.org/index.php?page=contests) is a national programming competition that occurs four times a year, with December, January, February, and US Open (March) contests. The regular contests are four hours long, and the US Open is five hours long. Each contest contains three problems. Solutions are evaluated and scored against a set of predetermined test cases that are not visible to the student. Scoring is out of 1000 points, with each problem being weighted equally (\~333 points). There are four divisions of contests: Bronze, Silver, Gold, and Platinum. After each contest, students who meet the contest-dependent cutoff for promotion will compete in the next division for future contests.
 
-## Guide Languages
+## About This Guide
+
+### Languages
 
 - For Bronze and Silver, we will provide code snippets in C++, Java, and Python.
 - For Gold, we will provide code snippets in C++ and Java and (sometimes) Python.
 - For Platinum, code snippets may only be provided in one language (typically either C++ or Java).
-
-All material in this guide will be grouped into **modules** such as the one you're reading right now.
 
 ### Guidelines
 
@@ -46,21 +46,37 @@ All material in this guide will be grouped into **modules** such as the one you'
    - There are plenty of resources out there, but we do not expect you to click through all of them to find the information you want. 
    - This means in addition to the link itself, we will try our best to provide information about what the link is about as well as the quality of the link.
    - We won't write something like "learn DP, here are 50 links that can teach you that." Instead, we will write "learn DP by first reading this one article, then reading this other article. For reference, here are some other links you can explore as you wish."
- - For Platinum contestants, there are too many topics for us to effectively cover all of them. We'll try our best to cover the main topics, but if you want to do well in Platinum, you will have to find additional resources on your own in addition to this site.
+ - For Platinum contestants, there are too many topics for us to effectively cover all of them. 
+   - We'll try our best to cover the main topics, but if you want to do well in Platinum, you will have to find additional resources on your own in addition to this site.
    - Platinum modules may have more vague explanations compared to earlier divisions. If you're confused, you'll have to research the topic more on your own.
 
-### Lesson
+### Modules
 
-The first part of a module is the lesson.
+All material in this guide will be grouped into **modules** such as the one you're reading right now.
+
+<info-block title="Pro Tip">
+
+Hopefully these are helpful.
+
+</info-block>
+
+#### Lesson
 
  - Consists of text, videos, and simple problems.
  - Goal is to introduce you to the concept.
  - Everything should be completed in order.
  - Any problems here will generally be pure implementation.
 
-### Practice
+<optional-content title="Optional Content">
+
+It's okay to skip over these. Some material might not be useful for competitive programming.
+
+</optional-content>
+
+#### Practice
 
  - Link the relevant past USACO problems (and other recommended problems). 
  - Problems should be sorted in order of how they are recommended be completed. 
-   - Add comments regarding difficulty and / or solution sketches.
+   - Add comments regarding solution sketches.
  - Possibly include additional problems.
+ - Difficulty is relative to division. (?)

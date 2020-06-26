@@ -294,29 +294,30 @@ const flattenNavLinks = (navLinks: NavLinkItem[]) => {
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
+    'text-green-600',
     'text-red-600',
     'text-orange-600',
     'text-yellow-600',
     'text-teal-600',
   ];
   const circleColors = [
+    'text-green-500',
     'text-red-500',
     'text-orange-500',
     'text-yellow-500',
     'text-teal-500',
   ];
   const labels = [
-    'Rare (0-1 times)',
-    'Not Frequent (2-3 times)',
+    'Has Not Appeared',
+    'Rare (1-2 times)',
+    'Not Frequent (3-4 times)',
     'Somewhat Frequent',
     'Very Frequent (historically ~ once per contest)',
   ];
 
   return (
     <span
-      className={`inline-flex items-center font-medium ${
-        textColors[frequency - 1]
-      }`}
+      className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
       <Dots
         count={frequency}

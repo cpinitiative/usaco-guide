@@ -5,6 +5,7 @@ author: Michael Cao
 prerequisites: 
  - Silver - Depth First Search
 description: "?"
+frequency: 1
 ---
 
 import { Problem } from "../models";
@@ -34,6 +35,7 @@ Let's consider a tree, rooted at node $1$, where each node has a color (see [CSE
 For each node, let's store a set containing only that node, and we want to merge the sets in the nodes subtree together such that each node has a set consisting of all colors in the nodes subtree. Doing this allows us to solve a variety of problems, such as query the number of distinct colors in each subtree. Doing this naively, however, yields a runtime complexity of $O(N^2)$. 
 
 However, with just a few lines of code, we can significantly speed this up.
+
 ```cpp
 if(a.size() < b.size()){ //for two sets a and b
   swap(a,b);
@@ -48,6 +50,54 @@ When merging two sets, you move from the smaller set to the larger set. If the s
 </details>
 
 Additionally, a set doesn't have to be an `std::set`. Many data structures can be merged, such as `std::map` or even adjacency lists. 
+
+<details>
+<summary> Full Code </summary>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MX = 200005;
+
+vector<int> adj[MX]; set<int> col[MX]; long long ans[MX];
+void dfs(int v, int p){
+    for(int e : adj[v]){
+        if(e != p){
+           dfs(e, v);
+           if(col[v].size() < col[e].size()){
+               swap(col[v], col[e]);
+           }
+           for(int a : col[e]){
+               col[v].insert(a);
+           }
+           col[e].clear();
+        }
+    }
+    ans[v] = col[v].size();
+}
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    int n; cin >> n;
+    for(int i = 0; i < n; i++){
+        int x; cin >> x;
+        col[i].insert(x);
+    }
+    for(int i = 0; i < n - 1; i++){
+        int u,v; cin >> u >> v;
+        u--; v--;
+        adj[u].push_back(v); adj[v].push_back(u);
+    }
+    dfs(0,-1);
+    for(int i = 0; i < n; i++){
+        cout << ans[i] << " ";
+    }
+}
+```
+
+</details>
 
 <info-block title="Challenge">
 

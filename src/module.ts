@@ -10,7 +10,7 @@ export class ModuleLinkInfo {
   }
 }
 
-export type ModuleFrequency = null | 1 | 2 | 3 | 4;
+export type ModuleFrequency = null | 0 | 1 | 2 | 3 | 4;
 
 // there's probably a way to do this without the duplicated types...
 export class ModuleInfo extends ModuleLinkInfo {
