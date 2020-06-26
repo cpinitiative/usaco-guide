@@ -102,8 +102,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Trees",
       items: [
         "dp-trees",
-        "merging",
-        "bin-jump",
         "tree-euler",
       ]
     },
@@ -114,6 +112,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Range Queries",
       items: [
+        "seg-ext",
         "RURQ",
         "2DRQ",
       ]
@@ -121,6 +120,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Trees",
       items: [
+        "merging",
+        "bin-jump",
         "hld",
         "centroid",
       ]
@@ -156,7 +157,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "geo-pri",
         "hull",
         "LC",
-        "aliens",
+        "lagrange",
         "slope",
       ]
     },
@@ -171,6 +172,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     "LCT",
     "string-suffix",
     "fft",
+    "fft-ext",
     "game-theory",
     "multiplicative",
     "matroid-isect",
