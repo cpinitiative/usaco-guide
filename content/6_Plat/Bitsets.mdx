@@ -80,7 +80,7 @@ void init() {
 
 A naive knapsack solution would be as follows. For each $0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first $i$ components whose sizes sum to $j$. Then the answer will be stored in $\texttt{dp}[i]$. This runs in $O(N^2)$ and is too slow if implemented naively, but we can use bitset to speed it up! 
 
-Note: you can't store all $N$ bitsets in memory at the same time.
+Note: you can't store all $N$ bitsets in memory at the same time (more on that below).
 
 <spoiler title="Full Solution">
 
@@ -104,7 +104,7 @@ int main() {
 
 Label the cows from $0\ldots N-1$. For two cows $x$ and $y$ set `adj[x][y]=1` if they share a common flavor. Then the number of pairs of cows that are compatible (counting each pair where $x$ and $y$ are distinct twice) is equal to the sum of `adj[x].count()` over all $x$. It remains to compute `adj[x]` for all $x$.
 
-Unfortunately, storing $N$ bitsets each with $N$ bits takes up $50000^2/32\cdot 4=312.5\cdot 10^6$ bytes of memory, which is too much. We can reduce the memory usage by half in exchange for a slight increase in time by first computing the adjacency bitsets for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards. 
+Unfortunately, storing $N$ bitsets each with $N$ bits takes up $\frac{50000^2}{32}\cdot 4=312.5\cdot 10^6$ bytes of memory, which is greater than USACO's $256$ megabyte limit. We can reduce the memory usage by half in exchange for a slight increase in time by first computing the adjacency bitsets for all $x\in [0,N/2)$, and then for all $x\in [N/2,N)$ afterwards. 
 
 First, we read in all of the flavors.
 
