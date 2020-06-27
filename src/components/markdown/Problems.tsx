@@ -8,7 +8,6 @@ type ProblemsListComponentProps = {
 };
 
 export function ProblemsListComponent(props: ProblemsListComponentProps) {
-  console.log(props.problems);
   return (
     <div className="flex flex-col">
       <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">

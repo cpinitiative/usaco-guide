@@ -1,4 +1,3 @@
-import './src/styles/main.css';
 import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';
 

@@ -1,0 +1,6 @@
+// This file shouldn't be necessary, but for some reason Gatsby is not loading
+// gatsby-ssr.tsx (note the "x") properly...
+module.exports = require('./gatsby-ssr.tsx');
+// this line shouldn't be necessary, but for some reason Gatsby does not load
+// gatsby-ssr.js without it...
+exports.onRenderBody = () => {};
