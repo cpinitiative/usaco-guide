@@ -5,19 +5,28 @@ export function ResourcesListComponent(props) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div className="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+        <div className="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border border-purple-400">
           <table className="min-w-full">
             <thead>
               <tr>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Source
-                </th>
-                <th className="py-3 border-b border-gray-200 bg-gray-50 w-6" />
-                <th className="pl-3 pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Resource Name
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Notes
+                <th
+                  colSpan={4}
+                  className="px-6 py-4 border-b border-purple-200 bg-purple-50 text-left font-medium text-purple-500 uppercase"
+                >
+                  <div className="flex items-center">
+                    <svg
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="h-6 w-6 mr-3"
+                    >
+                      <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                    Resources: Intro to DP
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -32,10 +41,7 @@ export function ResourcesListComponent(props) {
 }
 
 export function ResourceComponent(props) {
-  const url =
-    props.source === 'CPH' && !props.url
-      ? 'https://cses.fi/book/book.pdf'
-      : props.url;
+  const url = props.source === 'CPH' && !props.url ? '/CPH.pdf' : props.url;
   return (
     <tr>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
