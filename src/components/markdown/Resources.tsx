@@ -62,8 +62,7 @@ export function ResourceComponent(props) {
       url = books[source];
     } else
       throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
-  }
-  if (!url.startsWith('http')) {
+  } else if (!url.startsWith('http')) {
     if (source in sources) {
       url = sources[source] + url;
     } else
