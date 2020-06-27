@@ -3,8 +3,7 @@ id: cyc
 title: Cycle Detection
 author: Siyong Huang
 prerequisites: 
- - Silver - Functional Graphs
- - Gold - Breadth First Search
+ - Gold - Topological Sort
 description: A simple cycle is a non-empty path of distinct edges that start and end at the same vertex such that no vertex appears more than once. Describes how to detect cycles in both directed and undirected graphs.
 frequency: 0
 ---
@@ -32,13 +31,17 @@ export const metadata = {
 
 <problems-list problems={metadata.problems.und} />
 
-BFS-Cycle?
+<optional-content title="+1 Approximation for Shortest Cycle">
+
+An algorithm known as **BFS-Cycle** returns an integer that is at most one more than the length of the shortest cycle in $O(N^2)$ time; see page 4 [here](https://people.csail.mit.edu/virgi/6.890/lecture9.pdf) for details.
+
+</optional-content>
 
 ## Directed Graphs
 
 <problems-list problems={metadata.problems.dir} />
 
-The same general idea is implemented below to find any cycle in a directed graph (if one exists).
+The same general idea is implemented below to find any cycle in a directed graph (if one exists). Note that this is almost identical to the DFS algorithm for topological sorting.
 
 ```cpp
 //UNTESTED
