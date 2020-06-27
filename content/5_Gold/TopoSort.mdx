@@ -16,6 +16,9 @@ export const metadata = {
     sample: [
       new Problem("CSES", "Course Schedule", "1679", "Easy", false, []),
     ],
+    dp: [
+      new Problem("CSES", "Longest Flight Route", "1680", "Easy", false, []),
+    ],
     general: [
       new Problem("CSES", "Game Routes", "1681", "Easy", false, [], "counting paths on DAG"),
       new Problem("Kattis", "Quantum", "https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition", "Easy", false, [], "enumerating paths on DAG"),
@@ -36,22 +39,25 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 
 ### Tutorial
 
- - CPH 16.1, 16.2
-   - DFS
- - [cp-algorithms](https://cp-algorithms.com/graph/topological-sort.html)
-   - DFS
- - [CSAcademy](https://csacademy.com/lesson/topological_sorting)
-   - both BFS, DFS
+<resources>
+  <resource source="CPH" title="16.1, 16.2 - Topological Sorting">DFS</resource>
+  <resource source="cp-algo" title="Topological Sort" url="graph/topological-sort.html">DFS</resource>
+  <resource source="CSA" title="Topological Sorting" url="topological_sorting" starred>both BFS, DFS</resource>
+</resources>
 
 The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 
 ## Dynamic Programming
 
- - [PAPS 9.1](https://www.csc.kth.se/~jsannemo/slask/main.pdf)
+<resources>
+  <resource source="PAPS" title="9.1">Best Path in a DAG</resource>
+</resources>
 
-One useful property of directed acyclic graphs is, as the name suggests, that there exists no cycles. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge, $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
+One useful property of directed acyclic graphs is, as the name suggests, that no cycles exist. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
 
-Let's consider the classical problem [CSES Longest Flight Route](https://cses.fi/problemset/task/1680), where we must find the longest path in a DAG.
+<problems-list problems={metadata.problems.dp} />
+
+In this task, we must find the longest path in a DAG.
 
 <spoiler title="Solution">
 
@@ -63,6 +69,7 @@ $$
 
 or zero if $v$ has in-degree $0$. If we process the states in topological order, it is guarangeed that $dp[u]$ will already have been computed before computing $dp[v]$.
 
+(implementation?)
 </spoiler>
 
 <!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.

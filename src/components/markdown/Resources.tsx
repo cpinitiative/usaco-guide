@@ -30,12 +30,40 @@ export function ResourcesListComponent(props) {
     </div>
   );
 }
+const books = {
+  CPH: 'https://cses.fi/book/book.pdf',
+  PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
+  IUSACO: 'http://darrenyao.com/usacobook/cpp.pdf',
+};
+
+const sources = {
+  TC: 'https://www.topcoder.com/community/competitive-programming/tutorials/',
+  CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
+  CF: 'http://codeforces.com/',
+  'cp-algo': 'https://cp-algorithms.com/',
+  CSA: 'https://csacademy.com/lesson/',
+  GFG: 'https://www.geeksforgeeks.org/',
+};
 
 export function ResourceComponent(props) {
-  const url =
-    props.source === 'CPH' && !props.url
-      ? 'https://cses.fi/book/book.pdf'
-      : props.url;
+  const source = props.source;
+  let url = props.url;
+  if (!url) {
+    if (source in books) {
+      url = books[source];
+    } else
+      throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
+  }
+  if (!url.startsWith('http')) {
+    if (source in sources) {
+      url = sources[source] + url;
+    } else
+      throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
+  }
+  // const url =
+  //   props.source === 'CPH' && !props.url
+  //     ? 'https://cses.fi/book/book.pdf'
+  //     : props.url;
   return (
     <tr>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
