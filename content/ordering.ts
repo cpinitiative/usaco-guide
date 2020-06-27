@@ -155,6 +155,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Geometry",
       items: [
         "geo-pri",
+        "sweep-line",
         "hull",
         "LC",
         "lagrange",
