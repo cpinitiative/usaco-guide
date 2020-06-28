@@ -68,49 +68,41 @@ There are $N$ events, each described by their starting and ending times. Jason w
 ### Bad Greedy: Earliest Starting Next Event
 One possible ordering for a greedy algorithm would always select the next possible event that begins as soon as possible. Let's look at the following example, where the selected events are highlighted in red:
 
-<!-- \begin{center}
-    \begin{tikzpicture}[ultra thick]
-        \draw[red](1, 2.5) -- (4, 2.5);
-        \draw(2, 2) -- (5, 2);
-        \draw[red](5, 1.5) -- (7, 1.5);
-        \draw(6, 1) -- (7, 1);
-    \end{tikzpicture}
-\end{center} -->
+<svg viewBox="0 0 200 40">
+  <line x1="10" y1="5" x2="80" y2="5" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="40" y1="15" x2="120" y2="15" style="stroke:rgb(0,0,0);stroke-width:1" />
+  <line x1="110" y1="25" x2="180" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(0,0,0);stroke-width:1" />
+</svg>
 
 In this example, the greedy algorithm selects two events, which is optimal. However, this doesn't always work, as shown by the following counterexample:
 
-<!-- \begin{center}
-    \begin{tikzpicture}[ultra thick]
-        \draw[red](1, 2.5) -- (10, 2.5);
-        \draw(2, 2) -- (5, 2);
-        \draw(6, 1.5) -- (7, 1.5);
-        \draw(8, 1) -- (11, 1);
-    \end{tikzpicture}
-\end{center} -->
+<svg viewBox="0 0 200 40">
+  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(0,0,0);stroke-width:1" />
+  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(0,0,0);stroke-width:1" />
+  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(0,0,0);stroke-width:1" />
+</svg>
 
 In this case, the greedy algorithm selects to attend only one event. However, the optimal solution would be the following:
 
-<!-- \begin{center}
-    \begin{tikzpicture}[ultra thick]
-        \draw(1, 2.5) -- (10, 2.5);
-        \draw[red](2, 2) -- (5, 2);
-        \draw[red](6, 1.5) -- (7, 1.5);
-        \draw[red](8, 1) -- (11, 1);
-    \end{tikzpicture}
-\end{center} -->
+<svg viewBox="0 0 200 40">
+  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(0,0,0);stroke-width:1" />
+  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(255,0,0);stroke-width:1" />
+</svg>
 
 ### Correct Greedy: Earliest Ending Next Event
 
 Instead, we can select the event that ends as early as possible. This correctly selects the three events.
 
-<!-- \begin{center}
-    \begin{tikzpicture}[ultra thick]
-        \draw(1, 2.5) -- (10, 2.5);
-        \draw[red](2, 2) -- (5, 2);
-        \draw[red](6, 1.5) -- (7, 1.5);
-        \draw[red](8, 1) -- (11, 1);
-    \end{tikzpicture}
-\end{center} -->
+<svg viewBox="0 0 200 40">
+  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(0,0,0);stroke-width:1" />
+  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
+  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(255,0,0);stroke-width:1" />
+</svg>
 
 In fact, this algorithm always works. A brief explanation of correctness is as follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than $E_1$, then it is always optimal to select $E_1$. This is because selecting $E_1$ gives us more choices for future events. If we can select an event to go after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first. Thus, the set of events that can go after $E_2$ is a subset of the events that can go after $E_1$, making $E_1$ the optimal choice.
 
