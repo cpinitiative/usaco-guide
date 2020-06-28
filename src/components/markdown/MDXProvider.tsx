@@ -4,6 +4,8 @@ import SpoilerComponent from './SpoilerComponent';
 import { ProblemsListComponent } from './Problems';
 import { ResourceComponent, ResourcesListComponent } from './Resources';
 import CodeBlock from './CodeBlock';
+import { InlineMath } from 'react-katex';
+import classNames from 'classnames';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -96,9 +98,17 @@ const components = {
       className="font-mono text-sm inline bg-gray-200 rounded px-1 py-05"
     />
   ),
-  table: props => <table {...props} className="text-base border-gray-600" />,
+  IM: ({ children }) => <InlineMath>{children}</InlineMath>,
+  table: ({ className, ...props }) => (
+    <table
+      {...props}
+      className={classNames('text-base border-gray-600', className)}
+    />
+  ),
   th: props => <th {...props} className="border py-1 px-3" />,
-  td: props => <td {...props} className="border py-1 px-3" />,
+  td: ({ className, ...props }) => (
+    <td {...props} className={classNames('border py-1 px-3', className)} />
+  ),
   h3: props => (
     <h3 {...props} className="leading-snug text-lg font-semibold mb-4 mt-6" />
   ),
