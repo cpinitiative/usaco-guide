@@ -163,6 +163,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "slope",
       ]
     },
+    "sqrt",
     "bitsets",
     "fracture",
   ],
