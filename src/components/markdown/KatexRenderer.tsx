@@ -2,7 +2,7 @@ import * as React from 'react';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render';
 
 type KatexRendererProps = {
-  children?: React.ReactChildren;
+  children?: React.ReactNode;
 };
 
 export function KatexRenderer(props: KatexRendererProps) {
