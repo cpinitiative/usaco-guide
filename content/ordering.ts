@@ -115,6 +115,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "seg-ext",
         "RURQ",
         "2DRQ",
+        "sqrt",
       ]
     },
     {
@@ -137,7 +138,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Graphs",
       items: [
         "sp-neg",
-        "more-dfs",
+        "BCC-2CC",
+        "SCC",
         "eulerian-tours",
         "eulers-formula",
         "max-flow",
@@ -167,6 +169,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "adv": [
     "treaps",
     "persistent",
+    "more-flows",
     "min-cost-flow",
     "critical",
     "LCT",
