@@ -15,18 +15,21 @@ export const metadata = {
   problems: {
     sam: [
       new Problem("CSES", "Distinct Colors", "1139", "Intro", false, ["Merging"]),
-    ],
+    ],   
     general: [
       new Problem("CF", "Lomsat gelral", "contest/600/problem/E", "Normal", false, ["Merging"]),
       new Problem("Plat", "Promotion Counting", "696", "Normal", false, ["Merging", "Indexed Set"], ""),
-      new Problem("Gold", "Favorite Colors", "1042", "Hard", false, ["DSU"], "Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively."),
-      new Problem("Plat", "Disruption", "842", "Hard", false, ["Merging"]),
+      new Problem("Plat", "Disruption", "842", "Normal", false, ["Merging"]),
+      new Problem("POI", "Tree Rotations", "https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement", "Normal", false, ["Merging", "Indexed Set"], ""),
+      new Problem("Gold", "Favorite Colors", "1042", "Hard", false, ["DSU"], "Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time."),
+    ],
+    treeRot: [
+      new Problem("POI", "Tree Rotations 2", "https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement", "Very Hard", false, [], ""),
     ]
   }
 };
 
 ## Additional Reading
-
 
 <resources>
   <resource source="CPH" title="18.4 - Merging Data Structures"></resource>
@@ -50,7 +53,7 @@ if(a.size() < b.size()){ //for two sets a and b
 }
 ``` 
 
-By merging the smaller set into the larger one, the runtime complexity becomes $O(N\log N).$ ?? (Ben - this is false)
+By merging the smaller set into the larger one, the runtime complexity becomes $O(N\log^2N)$.
 
 ### Proof
 
@@ -118,3 +121,67 @@ Prove that if you instead merge sets that have size equal to the depths of the s
 ## Problems
 
 <problems-list problems={metadata.problems.general} />
+
+<spoiler title="Solution to Promotion Counting">
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+template<class T> using Tree = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+const int MX = 1e5+5;
+#define sz(x) (int)(x).size()
+
+int N, a[MX], ind[MX], ans[MX], ret;
+vector<int> child[MX];
+Tree<int> d[MX];
+
+void comb(int a, int b) {
+  if (sz(d[a]) < sz(d[b])) d[a].swap(d[b]);
+  for (int i: d[b]) d[a].insert(i);
+}
+
+void dfs(int x) {
+  ind[x] = x; 
+  for (int i: child[x]) {
+    dfs(i);
+    comb(x,i);
+  }
+  ans[x] = sz(d[x])-d[x].order_of_key(a[x]);
+  d[x].insert(a[x]);
+}
+
+int main() {
+  freopen("promote.in","r",stdin);
+  freopen("promote.out","w",stdout);
+  cin >> N; for (int i = 1; i <= N; ++i) cin >> a[i];
+  for (int i = 2; i <= N; ++i) {
+    int p; cin >> p;
+    child[p].push_back(i);
+  }
+  dfs(1); 
+  for (int i = 1; i <= N; ++i) cout << ans[i] << "\n";
+}
+```
+
+</spoiler>
+
+(also: same solution w/o indexed set)
+
+## Faster Merging (Optional)
+
+It's easy to merge two sets of sizes $n\ge m$ in $O(n+m)$ or $(m\log n)$ time, but sometimes $O\left(m\log \frac{n}{m}\right)$ can be significantly better than both of these.
+
+<resources>
+  <resource source="CF" title="Splitting & Merging Segment Trees" url="https://codeforces.com/blog/entry/49446"></resource>
+  <resource source="CF" title="Splitting & Merging BSTs" url="https://codeforces.com/blog/entry/67980"></resource>
+</resources>
+
+Requires knowledge of BSTs such as treaps or splay trees.
+
+<problems-list problems={metadata.problems.treeRot} />

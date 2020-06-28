@@ -4,7 +4,7 @@ title: "Slope Trick"
 author: Benjamin Qi
 prerequisites: 
  - Platinum - Convex Hull
-description: Ways to manipulate piecewise linear convex functions.
+description: "Slope trick refers to a way to manipulate piecewise linear convex functions. Includes a simple solution to USACO Landscaping."
 frequency: 1
 ---
 
@@ -12,9 +12,18 @@ import { Problem } from "../models";
 
 export const metadata = {
   problems: {
+    buy: [
+      new Problem("CF", "Buy Low Sell High", "contest/866/problem/D", "Easy", false, ["Slope Trick"], ""),
+    ],
+    potatoes: [
+      new Problem("ojuz", "LMIO - Potatoes", "LMIO19_bulves", "Normal", false, ["Slope Trick"], "[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)"),
+    ],
+    landscaping: [
+      new Problem("Plat", "Landscaping", "650", "Hard", false, ["Slope Trick"], "Equivalent Problem: GP of Wroclaw 20 J"),
+    ],
     general: [
-      new Problem("CF", "Bookface", "gym/102576/problem/C", "Easy", false, ["Slope Trick"], ""),
-      new Problem("CC", "CCDSAP Exam", "CCDSAP", "Easy", false, ["Slope Trick"], ""),
+      new Problem("CF", "Bookface", "gym/102576/problem/C", "Normal", false, ["Slope Trick"], ""),
+      new Problem("CC", "CCDSAP Exam", "CCDSAP", "Normal", false, ["Slope Trick"], ""),
       new Problem("CF", "Farm of Monsters", "gym/102538/problem/F", "Hard", false, ["Slope Trick"], ""),
       new Problem("CF", "Moving Walkways", "contest/1209/problem/H", "Hard", false, ["Slope Trick"], ""),
       new Problem("CF", "April Fools' Problem", "contest/802/problem/O", "Very Hard", false, ["Slope Trick"], "binary search on top of slope trick"),
@@ -22,8 +31,6 @@ export const metadata = {
     ],
   }
 };
-
-**Slope trick** refers to manipulating piecewise linear convex functions. Includes a simple solution to [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650).
 
 ## Tutorials
 
@@ -39,27 +46,140 @@ From the latter link (modified):
 >  - It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
 >  - It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
-It's generally applicable as a DP optimization. Usually you can come up with a slower DP (ex. $O(N^2)$) first and then optimize it to $O(N\log N)$ with slope trick. The rest of this module assumes that you are somewhat familiar with at least one of the tutorials mentioned above.
+It's generally applicable as a DP optimization. The rest of this module assumes that you are somewhat familiar with at least one of the tutorials mentioned above.
 
-## [Buy Low Sell High](https://codeforces.com/contest/866/problem/D)
+<info-block title="Pro Tip">
 
-**Slow Solution**: Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This easily leads to an $O(N^2)$ DP. 
+Usually you can come up with a slower (usually $O(N^2)$) DP first and then optimize it to $O(N\log N)$ with slope trick. 
 
-Of course, we never used the fact that the DP is concave down! Specifically, let $dif[i][j]=dp[i][j]-dp[i][j+1]\ge 0$. Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$ (ignoring the case when we get $dp$ values of $-\infty$).
+</info-block>
 
-We'll process the shares in order. Suppose that on the current day shares are worth $p$. We can replace (buy or sell a share) in the statement with (buy, then sell between 0 and 2 shares).
+## Buy Low Sell High
 
- * If we currently have $j$ shares and overall balance $b$, then after buying, $j$ increases by one and $b$ decreases by $p$. The differences between every two consecutive elements do not change.
- * If we choose to buy a share, this is equivalent to setting $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p)$ for all $j$. By the concavity condition, $dp[i][j]=dp[i][j+1]+p$ will hold for all $j$ less than a certain threshold while $dp[i][j+1]$ will hold for all others. So this is equivalent to inserting $p$ into the list of differences while maintaining the condition that the differences are in sorted order.
- * So we add $p$ to the list of differences two times. After that, we should pop the smallest difference in the list because we can't end up with a negative amount of shares.
+<problems-list problems={metadata.problems.buy} />
 
-(insert diagram)
+### Slow Solution
 
-(insert example)
+Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This solution runs in $O(N^2)$ time. 
 
-The implementation is quite simple; maintain a priority queue that allows you to pop the minimum element.
+<spoiler title="Slow Code">
 
-<spoiler title="My Solution">
+```cpp
+
+vector<vl> dp = {{0}};
+int N;
+
+int main() {
+	re(N);
+	F0R(i,N) {
+		int x; re(x);
+		dp.pb(vl(i+2,-INF));
+		F0R(j,i+1) {
+			ckmax(dp.bk[j+1],dp[sz(dp)-2][j]-x);
+			ckmax(dp.bk[j],dp[sz(dp)-2][j]);
+			if (j) ckmax(dp.bk[j-1],dp[sz(dp)-2][j]+x);
+		}
+	}
+	int cnt = 0;
+	trav(t,dp) {
+		pr("dp[",cnt++,"] = ");
+		pr('{');
+		F0R(i,sz(t)) {
+			if (i) cout << ", ";
+			cout << setw(3) << t[i];
+		}
+		ps('}');
+	}
+}
+```
+
+</spoiler>
+
+If we run this on the first sample case, then we get the following table:
+
+```
+Input:
+
+9
+10 5 4 7 9 12 6 2 10
+
+Output:
+
+dp[0] = {  0}
+dp[1] = {  0, -10}
+dp[2] = {  0,  -5, -15}
+dp[3] = {  0,  -4,  -9, -19}
+dp[4] = {  3,  -2,  -9, -16, -26}
+dp[5] = {  7,   0,  -7, -16, -25, -35}
+dp[6] = { 12,   5,  -4, -13, -23, -35, -47}
+dp[7] = { 12,   6,  -1, -10, -19, -29, -41, -53}
+dp[8] = { 12,  10,   4,  -3, -12, -21, -31, -43, -55}
+dp[9] = { 20,  14,   7,  -2, -11, -21, -31, -41, -53, -65}
+```
+
+However, the DP values look quite special! Specifically, let 
+$$
+dif[i][j]=dp[i][j]-dp[i][j+1]\ge 0.
+$$ 
+Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$. In other words, $dp[i][j]$ as a function of $j$ is **concave down**.
+
+### Full Solution
+
+<spoiler title="Explanation">
+
+We'll process the shares in order. Suppose that we are currently considering the $i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share) in the statement with (buy, then sell somewhere between 0 and 2 shares).
+
+ - If we currently have $j$ shares and overall balance $b$, then after buying, $j$ increases by one and $b$ decreases by $p.$ So we set $dp[i][j]=dp[i-1][j-1]-p$ for all $j$. Note that the differences between every two consecutive elements of $dp[i]$ have not changed.
+
+ - If we choose to sell a share, this is equivalent to setting $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p)$ for all $j$ at the same time. By the concavity condition, $dp[i][j]=dp[i][j+1]+p$ will hold for all $j$ less than a certain threshold while $dp[i][j]$ will remain unchanged for all others. So this is equivalent to inserting $p$ into the list of differences while maintaining the condition that the differences are in sorted order.
+
+ - So choosing to sell between 0 and 2 shares is represented by adding $p$ to the list of differences two times. After that, we should pop the smallest difference in the list because we can't end up with a negative amount of shares.
+
+**Example:** consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
+
+Start with:
+
+```
+dp[4]  = {  3,  -2,  -9, -16, -26}
+dif[4] = {  5,   7,   7,  10}
+```
+
+<br/>
+
+After buying one share, $9$ is subtracted from each value and they are shifted one index to the right.
+
+```
+dp[5]  = {  x,  -6, -11, -18, -25, -35}
+dif[5] = {  x,   5,   7,   7,  10}
+```
+
+<br/>
+
+Then we can choose to sell one share at price $9$. The last two DP values remain the same while the others change.
+
+```
+dp[5]  = {  3,  -2,  -9, -16, -25, -35}
+dif[5] = {  5,   7,   7,   9,  10}
+```
+
+<br/>
+
+Again, we can choose to sell one share at price $9$. The last three DP values remain the same while the others change.
+
+```
+dp[5]  = {  7,   0,  -7, -16, -25, -35}
+dif[5] = {  7,   7,   9,   9,  10}
+```
+
+<br/>
+
+(insert diagrams)
+
+</spoiler>
+
+<spoiler title="My Code">
+
+The implementation is quite simple; maintain a priority queue representing $dif[i]$ that allows you to pop the minimum element. After adding $i$ elements, $ans$ stores the current value of $dp[i][i]$. At the end, you add all the differences in $dif[N]$ to go from $dp[N][N]$ to $dp[N][0]$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -80,28 +200,39 @@ int main() {
 	cout << ans << "\n";
 }
 ```
+
 </spoiler>
 
 ### Extension
 
 *Stock Trading (USACO Camp)*: What if your amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$?
 
-## [Potatoes](https://oj.uz/problem/view/LMIO19_bulves)
+## Potatoes
 
-[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)
+<problems-list problems={metadata.problems.potatoes} />
 
-Let $dif_i=a_i-b_i$. Defining $d_j=\sum_{i=1}^jdif_i$, our goal is to move around the potatoes such that $d_0,d_1,\ldots,d_N$ is a non-decreasing sequence. Moving a potato is equivalent to changing exactly one of the $d_i$ (aside from $d_0,d_N$) by one.
+### Simplifying the Problem
 
-**Slow Solution:** Let $dp[i][j]$ be the minimum cost to determine $d_0,d_1,\ldots,d_i$ such that $d_i\le j$ for each $0\le j\le d_N$. This gives a $O(N\cdot d_N)$ solution.
+Let $dif_i=a_i-b_i$. Defining $d_j=\sum_{i=1}^jdif_i$, our goal is to move around the potatoes such that $d_0,d_1,\ldots,d_N$ is a non-decreasing sequence. Moving a potato one position is equivalent to changing exactly one of the $d_i$ by one (although $d_0,d_N$ cannot be modified).
 
-As before, this DP is concave up for a fixed $i$! Given a piecewise linear function $DP_x$, we need to support the following operations.
+### Slow Solution
+
+Let $dp[i][j]$ be the minimum cost to determine $d_0,d_1,\ldots,d_i$ such that $d_i\le j$ for each $0\le j\le d_N$. This runs in $O(N\cdot d_N)$ time. By definition, $dp[i][j]\ge dp[i][j+1]$.
+
+### Full Solution
+
+<spoiler title="Explanation">
+
+Similar to before, this DP is concave up for a fixed $i$! Given a piecewise linear function $DP_x$, we need to support the following operations.
 
  * Add $|x-k|$ to the function for some $k$
  * Set $DP_x=\min(DP_x,DP_{x-1})$ for all $x$
 
-Again, these can be done with a priority queue in $O(N\log N)$ time!
+Again, these can be done with a priority queue. Instead of storing the consecutive differences, we store the points where the slope of the piecewise linear function changes in $O(N\log N)$ time.
 
-<spoiler title="My Solution">
+</spoiler>
+
+<spoiler title="My Code">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -134,22 +265,29 @@ int main() {
 	cout << fst << "\n";
 }
 ```
+
 </spoiler>
 
-## [Landscaping](http://www.usaco.org/index.php?page=viewproblem2&cpid=650)
+## USACO Landscaping
 
-Equivalent Problem: GP of Wroclaw 20 J
+<problems-list problems={metadata.problems.landscaping} />
 
-This is quite similar to the previous task, so it's easy to guess that slope trick is applicable. 
+This looks quite similar to the previous task, so it's not hard to guess that slope trick is applicable. 
 
-Again, let's first come up with a slow DP. Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.
+### Slow Solution
+
+Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.
+
+### Full Solution
+
+<spoiler title="Explanation">
 
 This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must be able to support the following operations.
 
- * Shift the DP curve $A_i$ units to the right.
- * Shift the DP curve $B_i$ units to the left.
- * Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
- * Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$. 
+ - Shift the DP curve $A_i$ units to the right.
+ - Shift the DP curve $B_i$ units to the left.
+ - Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
+ - Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$. 
 
 As before, it helps to look at the differences $dif[j]=DP[j+1]-dif[j]$ instead. Then the last operation is equivalent to the following:
 
@@ -158,7 +296,7 @@ As before, it helps to look at the differences $dif[j]=DP[j+1]-dif[j]$ instead. 
 
 If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ and update all of the differences in the deques "lazily" then we can do this in $O(\sum A_i+\sum B_i)$ time. 
 
-Bonus: Solve this problem when $\sum A_i+\sum B_i$ is not so small.
+</spoiler>
 
 <spoiler title="My Solution">
 
@@ -200,6 +338,10 @@ int main() {
 }
 ```
 </spoiler>
+
+### Extension
+
+We can solve this problem when $\sum A_i+\sum B_i$ is not so small with lazy balanced binary search trees.
 
 ## Problems
 
