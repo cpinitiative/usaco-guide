@@ -25,7 +25,7 @@ export function ResourcesListComponent(props) {
                     >
                       <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                     </svg>
-                    Resources: Intro to DP
+                    Resources{props.title ? `: ${props.title}` : ''}
                   </div>
                 </th>
               </tr>

@@ -56,13 +56,13 @@ export default function Template(props) {
 
   // for PurgeCSS, we have to list all the classes that are dynamically generated...
   /*
-  bg-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:shadow-outline-blue
-  bg-pink-500 hover:bg-pink-50 hover:text-pink-600 focus:shadow-outline-pink
-  bg-orange-500 hover:bg-orange-50 hover:text-orange-600 focus:shadow-outline-orange
-  bg-teal-500 hover:bg-teal-50 hover:text-teal-600 focus:shadow-outline-teal
-  bg-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 focus:shadow-outline-yellow
-  bg-purple-500 hover:bg-purple-50 hover:text-purple-600 focus:shadow-outline-purple
-  bg-green-500 hover:bg-green-50 hover:text-green-600 focus:shadow-outline-green
+  text-blue-400 bg-blue-500 hover:bg-blue-50 hover:text-blue-600 focus:shadow-outline-blue
+  text-pink-400 bg-pink-500 hover:bg-pink-50 hover:text-pink-600 focus:shadow-outline-pink
+  text-orange-400 bg-orange-500 hover:bg-orange-50 hover:text-orange-600 focus:shadow-outline-orange
+  text-teal-400 bg-teal-500 hover:bg-teal-50 hover:text-teal-600 focus:shadow-outline-teal
+  text-yellow-400 bg-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 focus:shadow-outline-yellow
+  text-purple-400 bg-purple-500 hover:bg-purple-50 hover:text-purple-600 focus:shadow-outline-purple
+  text-green-400 bg-green-500 hover:bg-green-50 hover:text-green-600 focus:shadow-outline-green
   border-blue-500 text-blue-600 focus:text-blue-800 focus:border-blue-700 border-blue-300 focus:border-blue-300 text-blue-500 text-blue-300 bg-blue-600
   border-pink-500 text-pink-600 focus:text-pink-800 focus:border-pink-700 border-pink-300 focus:border-pink-300 text-pink-500 text-pink-300 bg-pink-600
   border-orange-500 text-orange-600 focus:text-orange-800 focus:border-orange-700 border-orange-300 focus:border-orange-300 text-orange-500 text-orange-300 bg-orange-600
@@ -158,6 +158,15 @@ export default function Template(props) {
               </svg>
             </div>
           </div>
+          <p
+            className={`relative text-center text-xs leading-6 text-${color}-400 pt-2 transition duration-300`}
+          >
+            No part of this website may be reproduced or commercialized in any
+            manner without prior written permission.{' '}
+            <Link to="/license" className="underline">
+              Learn More.
+            </Link>
+          </p>
           <div className="relative pt-6 pb-12 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
             <div className="mt-10 mx-auto max-w-screen-xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-28">
               <div className="text-center">
@@ -165,7 +174,7 @@ export default function Template(props) {
                   USACO Guide
                 </h2>
                 <p
-                  className={`mt-3 max-w-md mx-auto text-base text-${color}-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl`}
+                  className={`mt-3 max-w-md mx-auto text-base text-${color}-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl transition duration-300`}
                 >
                   A collection of curated, high-quality resources to take you
                   from Bronze to Platinum.
