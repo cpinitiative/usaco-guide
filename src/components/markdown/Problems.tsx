@@ -76,7 +76,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              className="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6"
+              className="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-xl sm:w-full sm:p-6"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
@@ -104,17 +104,15 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                 </button>
               </div>
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <div className="text-left">
                   <h3
                     className="text-lg leading-6 font-medium text-gray-900"
                     id="modal-headline"
                   >
-                    Solution Sketch
+                    Solution Sketch: {problem?.name}
                   </h3>
-                  <div className="mt-2">
-                    <p className="text-sm leading-5 text-gray-500">
-                      {problem && problem.sketch}
-                    </p>
+                  <div className="mt-4">
+                    <p className="text-gray-700 font-mono">{problem?.sketch}</p>
                   </div>
                 </div>
               </div>
@@ -193,13 +191,14 @@ export function ProblemComponent(props: ProblemComponentProps) {
             : 'None')}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        {/*{props.children}*/}
-        <span
-          className="text-blue-600 hover:text-blue-900 cursor-pointer"
-          onClick={() => props.onShowSolution(problem)}
-        >
-          Show Solution
-        </span>
+        {problem.sketch && (
+          <span
+            className="text-blue-600 hover:text-blue-900 cursor-pointer"
+            onClick={() => props.onShowSolution(problem)}
+          >
+            Show Solution
+          </span>
+        )}
       </td>
     </tr>
   );
