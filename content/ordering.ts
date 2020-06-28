@@ -121,8 +121,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Trees",
       items: [
-        "merging",
         "bin-jump",
+        "merging",
         "hld",
         "centroid",
       ]
@@ -132,6 +132,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       items: [
         "dp-bitmasks",
         "dp-ranges",
+        "dp-more",
       ]
     },
     {
@@ -140,9 +141,9 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "sp-neg",
         "BCC-2CC",
         "SCC",
-        "eulerian-tours",
         "eulers-formula",
         "max-flow",
+        "eulerian-tours",
       ]
     },
     {
@@ -163,20 +164,35 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "slope",
       ]
     },
-    "sqrt",
     "bitsets",
     "fracture",
   ],
   "adv": [
-    "treaps",
-    "persistent",
-    "more-flows",
-    "min-cost-flow",
+    {
+      name: "Data Structures",
+      items: [
+        "treaps",
+        "persistent",
+        "segtree-beats",
+        "LCT",
+      ]
+    },
+    {
+      name: "Flows",
+      items: [
+        "more-flows",
+        "min-cost-flow",
+      ]
+    },
+    {
+      name: "Polynomials",
+      items: [
+        "fft",
+        "fft-ext",
+      ]
+    },
     "critical",
-    "LCT",
     "string-suffix",
-    "fft",
-    "fft-ext",
     "game-theory",
     "multiplicative",
     "matroid-isect",
