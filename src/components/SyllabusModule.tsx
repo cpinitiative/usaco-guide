@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
+import { KatexRenderer } from './markdown/KatexRenderer';
 
 const CompletedCheck = () => (
   <svg
@@ -83,7 +84,7 @@ const SyllabusModule = ({
         </div>
       )}
       <div className="px-4 py-4 sm:p-6">
-        {children}
+        <KatexRenderer>{children}</KatexRenderer>
 
         {author && <p className="mt-2">Author: {author}</p>}
       </div>

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Problem } from '../../../content/models';
 import Transition from '../Transition';
+import renderMathInElement from 'katex/contrib/auto-render/auto-render';
+import { KatexRenderer } from './KatexRenderer';
 
 type ProblemsListComponentProps = {
   title?: string;
@@ -112,7 +114,9 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                     Solution Sketch: {problem?.name}
                   </h3>
                   <div className="mt-4">
-                    <p className="text-gray-700 font-mono">{problem?.sketch}</p>
+                    <p className="text-gray-700">
+                      <KatexRenderer>{problem?.sketch}</KatexRenderer>
+                    </p>
                   </div>
                 </div>
               </div>

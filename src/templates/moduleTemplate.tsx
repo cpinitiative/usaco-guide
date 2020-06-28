@@ -18,6 +18,7 @@ import SEO from '../components/seo';
 import logo from '../assets/logo.svg';
 import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../module';
 import Dots from '../components/Dots';
+import { KatexRenderer } from '../components/markdown/KatexRenderer';
 
 const renderPrerequisite = prerequisite => {
   return <li key={prerequisite}>{prerequisite}</li>;
@@ -557,7 +558,7 @@ export default function Template(props) {
                 {module.description && (
                   <div className="rounded-md bg-green-50 p-4 border border-green-500 mb-12">
                     <p className="text-sm leading-5 font-medium text-green-800">
-                      {module.description}
+                      <KatexRenderer>{module.description}</KatexRenderer>
                     </p>
                   </div>
                 )}
