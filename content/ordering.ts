@@ -146,9 +146,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Strings",
       items: [
-        "tries",
-        "suffix-array",
         "string-search",
+        "suffix-array",
       ]
     },
     {
