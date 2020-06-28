@@ -128,7 +128,15 @@ long long binpow(long long x, long long n, long long m) {
 
 ### Modular Inverse
 
-Under a prime moduli, division exists.
+Under a prime modulus, division can be performed using modular inverses.
+
+To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. (The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with Euler's theorem, but we will not explain the theorem here).
+
+The modular inverse is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
+
+Because it takes $\mathcal{O}(\log \mathrm{MOD})$ time to compute a modular inverse, frequent use of division inside a loop can significantly increase the running time of a program. If the modular inverse of the same number(s) is/are being used many times, it is a good idea to precalculate it.
+
+Also, one must always ensure that they do not attempt to divide by 0. Be aware that after applying modulo, a nonzero number can become zero, so be very careful when dividing by non-constant values.
 
 ## Problems
 
