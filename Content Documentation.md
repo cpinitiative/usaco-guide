@@ -24,6 +24,7 @@ YAML formatting is _extremely strict_. Be careful about spaces. Additionally, es
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
 - **Prerequisites**: _Optional_. Any prerequisites for this module. (Coming soon: If you want to reference a module as a prerequisite, you can list the module ID.)
+- **Frequency**: _Optional_. Takes a number 0-4 inclusive, where 0 = never shown up before and 4 = shows up ~once a contest. Leave this field out if you don't want to show the frequency.
 
 ### Problem Lists
 
@@ -45,7 +46,7 @@ constructor(
 
 Example usage:
 
-```markdown
+```mdx
 ---
 id: ds
 title: Data Structures
@@ -55,20 +56,36 @@ prerequisites:
   - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
 ---
 
-import { Problem } from "../models"
+import { Problem } from '../models';
 
 export const metadata = {
-problems: {
-standard: [
-new Problem("YS", "Associative Array", "associative_array", "Intro"),
-new Problem("CSES", "Distinct Numbers", "1621", "Intro"),
-new Problem("CSES", "Sum of Two Values", "1640", "Intro", false, [], "Can be solved without sets."),
-new Problem("CSES", "Concert Tickets", "1091", "Easy", false, ["iterators"]),
-new Problem("CSES", "Towers", "1073", "Easy", false, ["multiset", "greedy"]),
-new Problem("CSES", "Traffic Lights", "1163", "Normal", false, ["set"]),
-new Problem("CSES", "Room Allocation", "1164", "Normal", false, ["multiset", "greedy"]),
-]
-}
+  problems: {
+    standard: [
+      new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
+      new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
+      new Problem(
+        'CSES',
+        'Sum of Two Values',
+        '1640',
+        'Intro',
+        false,
+        [],
+        'Can be solved without sets.'
+      ),
+      new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
+        'iterators',
+      ]),
+      new Problem('CSES', 'Towers', '1073', 'Easy', false, [
+        'multiset',
+        'greedy',
+      ]),
+      new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
+      new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
+        'multiset',
+        'greedy',
+      ]),
+    ],
+  },
 };
 
 ## Standard
@@ -101,6 +118,16 @@ when writing solutions to problems.
 </info-block>
 ```
 
+### Warning Block
+
+```
+<warning-block title="Insert Title Here">
+
+**Markdown is Supported!!**
+
+</warning-block>
+```
+
 ### Optional Block
 
 ```
@@ -123,11 +150,6 @@ order: 1
 prerequisites:
  - Dummy prerequisite
  - running-cpp
-problems:
- - bronze_promote
- - bronze_word
- - bronze_paint
- - bronze_square
 ---
 
 # Hello World!
