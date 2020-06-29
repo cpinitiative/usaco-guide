@@ -20,13 +20,12 @@ export const metadata = {
       new Problem("Silver", "Hoof Paper Scissors", "691", "Easy", false, [], ""),
       new Problem("Silver", "Max Cross", "715", "Easy", false, [], ""),
       new Problem("Old Bronze", "Haybale Stacking", "104", "Easy", false, [], "**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array. **Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)"),
-      new Problem("CF", "Edu C: Magic Ship", "problemset/problem/1117/", "Normal", false, [], ""),
     ],
     maxsum: [
       new Problem("CSES", "Max Subarray Sum", "1643", "Easy", false, ["Prefix Sums"], ""),
     ],
     maxsumext: [
-      new Problem("CSES", "Max Subarray Sum II", "1644", "Easy", false, ["Prefix Sums"], ""),
+      new Problem("CSES", "Max Subarray Sum II", "1644", "Normal", false, ["Prefix Sums"], ""),
     ],
     sample2: [
       new Problem("CSES", "Forest Queries", "1652", "Easy", false, ["Prefix Sums"], ""),
@@ -47,16 +46,14 @@ export const metadata = {
 };
 
 
-<problems-list problems={metadata.problems.sample} />
-
-## Additional Resources
-
-<resources>
-  <resource source="CPH" title="9.1"></resource>
-  <resource source="PAPS" title="11.2.1"></resource>
+<resources title="Additional">
+  <resource source="CPH" title="9.1 - Sum Queries">rather brief</resource>
+  <resource source="PAPS" title="11.2.1 - Prefix Precomputation">also rather brief</resource>
 </resources>
 
-## Tutorial
+## Introduction
+
+<problems-list problems={metadata.problems.sample} />
 
 Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to compute the value of 
 $$
@@ -72,9 +69,9 @@ for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the fol
 
 </center>
 
-Naively, for every query, we can iterate through all entries from index $a$ to index $b$ to add them up. Since we have $Q$ queries and each query requires a maximum of $O(N)$ operations to calculate the sum, our total time complexity is $O(NQ)$. For most problems of this nature, the constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This is not acceptable; it will almost certainly exceed the time limit.
+Naively, for every query, we can iterate through all entries from index $a$ to index $b$ to add them up. Since we have $Q$ queries and each query requires a maximum of $O(N)$ operations to calculate the sum, our total time complexity is $O(NQ)$. For most problems of this nature, the constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This is **not** acceptable; it will almost certainly exceed the time limit.
 
-Instead, we can use prefix sums to process these array sum queries. We designate a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array, set $\texttt{prefix}[0]=0$, then for indices $k$ such that $0 \leq k \leq n$, define the prefix sum array as follows:
+Instead, we can use prefix sums to process these array sum queries. We designate a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array, set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$, define the prefix sum array as follows:
 
 $$
 \texttt{prefix}[k]=\sum_{i=1}^{k} \texttt{arr}[i]
@@ -92,7 +89,7 @@ For the example case, our prefix sum array looks like this:
 
 | Index $i$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| $\texttt{arr}[i]$ | 0 | 1 | 7 | 11 | 13 | 18 | 21 |
+| $\texttt{prefix}[i]$ | 0 | 1 | 7 | 11 | 13 | 18 | 21 |
 
 </center>
 
@@ -167,7 +164,7 @@ $$
   </thead>
   <tbody>
     <tr>
-      <td><IM>{`\\texttt{arr}[i]`}</IM></td>
+      <td><IM>{`\\texttt{prefix}[i]`}</IM></td>
       <td className="bg-red-100">0</td>
       <td className="bg-red-100">1</td>
       <td className="bg-green-100">7</td>
@@ -183,15 +180,18 @@ $$
 
 These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.html).
 
+### Problems
+
 <problems-list problems={metadata.problems.cum} />
 
-Now we'll look at some extensions.
 
 ## Max Subarray Sum
 
+Now we'll look at some extensions.
+
 <problems-list problems={metadata.problems.maxsum} />
 
-This problem has a solution known as Kadane's Algorithm. Please *don't* use that solution; try to solve it with prefix sums.
+This problem has a solution known as **Kadane's Algorithm**. Please don't use that solution; try to solve it with prefix sums.
 
 <spoiler title="Why are the two methods equivalent?">
  Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
@@ -201,6 +201,11 @@ Extension:
 
 <problems-list problems={metadata.problems.maxsumext} />
 
+## Prefix Minimum, XOR, etc.
+
+Similar to prefix sums, you can also take prefix minimum or maximum; but *you cannot* answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
+
+<problems-list problems={metadata.problems.related} />
 
 ## 2D Prefix Sums
 
@@ -313,7 +318,7 @@ Let's take the following example region, which we want to sum:
 
 Manually summing all the cells, we have a submatrix sum of $7+11+9+6+1+3 = 37$.
 
-The first logical optimization would be to do one-dimensional prefix sums of each row. Then, we'd have the following row-prefix sum matrix. The desired subarray sum of each row in our desired region is simply the green cell minus the red cell in that respective row. We do this for each row, to get $(28-1) + (14-4) = 37$.
+The first logical optimization would be to do one-dimensional prefix sums of each row. Then, we'd have the following row-prefix sum matrix. The desired subarray sum of each row in our desired region is simply the green cell minus the red cell in that respective row. We do this for each row to get $(28-1) + (14-4) = 37$.
 
 <center>
 
@@ -364,11 +369,12 @@ The first logical optimization would be to do one-dimensional prefix sums of eac
 
 </center>
 
-Now, if we wanted to find a submatrix sum, we could break up the submatrix into a subarray for each row, and then add their sums, which would be calculated using the prefix sums method described earlier. Since the matrix has $N$ rows, the time complexity of this is $O(QN)$. This is better, but still usually not fast enough.
+Now, if we wanted to find a submatrix sum, we could break up the submatrix into a subarray for each row, and then add their sums, which would be calculated using the prefix sums method described earlier. Since the matrix has $N$ rows, the time complexity of this is $O(QN)$. This might be fast enough for $Q=10^5$ and $N=10^3$, but we can do better.
 
-To do better, we can do two-dimensional prefix sums. In our two dimensional prefix sum array, we have
+In fact, we can do two-dimensional prefix sums. In our two dimensional prefix sum array, we have
+
 $$
-\texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j]
+\texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j].
 $$
         
 This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
@@ -440,23 +446,17 @@ Summing the blue region from above using the 2d prefix sums method, we add the v
 
 </center>
 
-Since no matter the size of the submatrix we are summing, we only need to access 4 values of the 2d prefix sum array, this runs in $O(1)$ per query after an $O(NM)$ preprocessing. This is fast enough.
+Since no matter the size of the submatrix we are summing, we only need to access four values of the 2d prefix sum array, this runs in $O(1)$ per query after an $O(NM)$ preprocessing. This is fast enough.
 
 <problems-list problems={metadata.problems.cum2} />
 
-## Prefix Minimum, XOR, etc.
-
-Similar to prefix sums, you can also take prefix minimum or maximum; but *you cannot* answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
-
-<problems-list problems={metadata.problems.related} />
-
-## A More Complex Application
+## More Complex Applications
 
 Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance. Some math is usually helpful for these problems; don't be afraid to get dirty with algebra!
 
 For instance, let's see how to quickly answer the following type of query:
 
-Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
+> Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
 
 First, define the following:
 $$
