@@ -24,6 +24,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Language-Specific",
       items: [
+        "io-speed",
         "why-cpp",
         "macros",
         "debugging",
