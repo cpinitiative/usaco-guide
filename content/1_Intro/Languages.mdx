@@ -4,15 +4,15 @@ title: Languages
 author: Nathan Wang, Benjamin Qi
 description: What languages you can use for programming contests and what you're expected to know before continuing.
 ---
- 
+
 ## Choosing a Language
 
-The most popular languages that USACO supports are [C++11](https://en.wikipedia.org/wiki/C%2B%2B), [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), and [Python 3](https://en.wikipedia.org/wiki/Python_(programming_language)). In general, we recommend the following:
+The most popular languages that USACO supports are [C++11](https://en.wikipedia.org/wiki/C%2B%2B), [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), and [Python 3](https://en.wikipedia.org/wiki/Python_(programming_language)). Pascal used to be popular in the past, but its use is rare now, and many programming contests have removed or are planning to remove support for it in the near future (in short: don't use it now). In general, we recommend the following:
 
- - If you already know one of these languages, just use it. 
+ - If you already know one of these languages, just use it.
    - If you know multiple languages, we recommend you pick C++ over Java, and Java over Python.
  - For Bronze, any language will do.
- - For Silver, Gold, and Platinum, Python is not recommended.
+ - For Silver, Gold, and Platinum, Python is not recommended, because it is a slow language. Some upper-division problems are nearly impossible to solve in Python because the large amount of computation needed cannot be performed in Python without exceeding the time limit.
 
 Keep in mind that it's easy to switch languages down the road. Don't get caught up on which language to choose. Just pick the one you feel most comfortable with!
 
@@ -41,7 +41,7 @@ The remainder of this guide assumes that you know the basics of how to code in o
 - Arrays
   - Multidimensional Arrays
 
-In particular, contestants using Java should be familiar with roughly the first half of AP Computer Science A. 
+In particular, contestants using Java should be familiar with roughly the first half of AP Computer Science A.
 
  - If you do not meet these prerequisites, see the links below to get started.
  - Familiarity with [competition math](https://github.com/bqi343/USACO/blob/master/Resources/Competition%20Math.md) (ex. AIME qualification) is helpful but not required.
