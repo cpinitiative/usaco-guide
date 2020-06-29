@@ -48,12 +48,17 @@ In particular, contestants using Java should be familiar with roughly the first 
 
 ## Resources for Learning How to Code
 
-[Sololearn](https://www.sololearn.com/) has courses on C++, Java, and Python. You don't have to complete the full course.
 
 ### C++
 
- - If you use Sololearn, we recommend you finish everything up to (but not including) "More on Classes."
- - [Ch 2 of PAPS](http://www.csc.kth.se/~jsannemo/slask/main.pdf) also contains a C++ tutorial. Use one of these two resources (or find your own) to learn C++.
+Use one of these resources (or find your own) to learn C++.
+
+<resources>
+  <resource source="Sololearn" title="C++" url="https://www.sololearn.com/Play/CPlusPlus" starred>also courses for Java, Python</resource>
+  <resource source="PAPS" title="2 - Programming in C++" starred></resource>
+</resources>
+
+If you use Sololearn, we recommend you finish everything up to (but not including) "More on Classes." You don't have to complete the full course.
 
 <info-block title="Pro Tip">
 
@@ -66,14 +71,14 @@ You do not need to learn pointers (for now). Knowledge of structs and classes is
 
 <optional-content>
 
-Note: We don't agree with all views expressed in the links below. Let us know what works (or doesn't) for you.
+Let us know what works (or doesn't) for you.
 
-  - [CodeSignal](https://codesignal.com/)
-    - can practice basics with "Arcade," "Interview Practice"
-  - [Philippines OI: Prepare](https://noi.ph/prepare/)
-    - lots of links!
-  - [IOI - Getting Started](https://ioinformatics.org/page/getting-started/14)
-    - not so up to date
-  - [Quora - Schedule for Beginners (Joshua Pan)](https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners)
+<resources>
+  <resource source="CodeSignal" title="CodeSignal" url="https://codesignal.com/">can practice basics with "Arcade," "Interview Practice"</resource>
+  <resource source="Philippines OI" title="Prepare" url="https://noi.ph/prepare/">lots of links!</resource>
+  <resource source="IOI" title="Getting Started" url="https://ioinformatics.org/page/getting-started/14">not so up to date</resource>
+  <resource source="Quora" title="Joshua Pan - Schedule for Beginners" url="https://www.quora.com/What-is-a-good-schedule-to-follow-for-becoming-better-at-competitive-programming-for-beginners">generally good, although CSES (see resources) is definitely a better place to start than USACO Training or Codechef</resource>
+</resources>
+
 
 </optional-content>

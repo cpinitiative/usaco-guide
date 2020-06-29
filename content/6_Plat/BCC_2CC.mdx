@@ -15,9 +15,11 @@ export const metadata = {
     sam2: [
       new Problem("YS", "Two-Edge-Connected Components", "two_edge_connected_components", "Easy", false, [], ""),
     ],
+    disrupt: [
+      new Problem("Plat", "Disruption", "842", "Normal", false, ["Merging"]),
+    ],
     probs2: [
       new Problem("CSA", "One-Way Streets", "one-way-streets", "Easy", false, [], ""),
-      new Problem("Plat", "Disruption", "842", "Normal", false, ["Merging"]),
     ],
     bccSam: [
       new Problem("CSES", "Forbidden Cities", "1705", "Normal", false, [], ""),
@@ -44,7 +46,9 @@ export const metadata = {
 
 ### With DSU
 
-The analysis for USACO Platinum Disruption mentions a $O(m\alpha(n))$ solution. Although this is not a two-connected component problem, we can in fact use DSU to generate two-connected components.
+<problems-list problems={metadata.problems.disrupt} />
+
+The analysis for the above problem mentions an $O(m\alpha(n))$ solution. Although this is not a two-connected component problem, we can in fact use DSU to generate two-connected components.
 
 (explanation?)
 
@@ -73,10 +77,10 @@ struct TwoEdgeCC {
       par[t] = x, depth[t] = depth[x]+1, dfs(t);
   }
   void ae(int a, int b) {
-    if (DSU.unite(a,b)) adj[a].pb(b), adj[b].pb(a); // tree edge
-    else extra.pb({a,b});
+    if (DSU.unite(a,b)) adj[a].pb(b), adj[b].pb(a); // edge of forest
+    else extra.pb({a,b}); // extra edge
   }
-  void ad(int a, int b) { // OK
+  void ad(int a, int b) {
     while (1) {
       a = DSU.get(a), b = DSU.get(b);
       if (a == b) return;
@@ -85,9 +89,8 @@ struct TwoEdgeCC {
     }
   }
   void gen() {
-    F0R(i,N) if (par[i] == -1) dfs(i);
-    DSU.init(N); // again!
-    trav(t,extra) ad(t.f,t.s);
+    F0R(i,N) if (par[i] == -1) dfs(i); // independently for each connected component
+    DSU.init(N); trav(t,extra) ad(t.f,t.s); // add non-spanning edges
   }
 };
 ```

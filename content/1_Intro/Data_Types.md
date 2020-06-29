@@ -7,8 +7,10 @@ description: Learn about the basic data types needed for competitive programming
 
 ## Additional Reading
 
- - CPH 1.1 - 1.3
- - [PAPC 2.3](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+<resources>
+  <resource source="CPH" title="1.1 to 1.3 - Introduction" starred></resource>
+  <resource source="PAPS" title="2.3 - Variables & Types"></resource>
+</resources>
 
 ## Data Types
 

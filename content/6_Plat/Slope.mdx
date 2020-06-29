@@ -16,7 +16,7 @@ export const metadata = {
       new Problem("CF", "Buy Low Sell High", "contest/866/problem/D", "Easy", false, ["Slope Trick"], ""),
     ],
     potatoes: [
-      new Problem("ojuz", "LMIO - Potatoes", "LMIO19_bulves", "Normal", false, ["Slope Trick"], "[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)"),
+      new Problem("ojuz", "LMIO - Potatoes & Fertilizers", "LMIO19_bulves", "Normal", false, ["Slope Trick"], "[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)"),
     ],
     landscaping: [
       new Problem("Plat", "Landscaping", "650", "Hard", false, ["Slope Trick"], "Equivalent Problem: GP of Wroclaw 20 J"),
@@ -129,11 +129,11 @@ Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$. In other words, $dp[i][j]$ as 
 
 We'll process the shares in order. Suppose that we are currently considering the $i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share) in the statement with (buy, then sell somewhere between 0 and 2 shares).
 
- - If we currently have $j$ shares and overall balance $b$, then after buying, $j$ increases by one and $b$ decreases by $p.$ So we set $dp[i][j]=dp[i-1][j-1]-p$ for all $j$. Note that the differences between every two consecutive elements of $dp[i]$ have not changed.
+ - If we currently have $j$ shares and overall balance $b$, then after buying, $j$ increases by one and $b$ decreases by $p_i$. So we set $dp[i][j]=dp[i-1][j-1]-p_i$ for all $j$. Note that the differences between every two consecutive elements of $dp[i]$ have not changed.
 
- - If we choose to sell a share, this is equivalent to setting $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p)$ for all $j$ at the same time. By the concavity condition, $dp[i][j]=dp[i][j+1]+p$ will hold for all $j$ less than a certain threshold while $dp[i][j]$ will remain unchanged for all others. So this is equivalent to inserting $p$ into the list of differences while maintaining the condition that the differences are in sorted order.
+ - If we choose to sell a share, this is equivalent to setting $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p_i)$ for all $j$ at the same time. By the concavity condition, $dp[i][j]=dp[i][j+1]+p_i$ will hold for all $j$ less than a certain threshold while $dp[i][j]$ will remain unchanged for all others. So this is equivalent to inserting $p_i$ into the list of differences while maintaining the condition that the differences are in sorted order.
 
- - So choosing to sell between 0 and 2 shares is represented by adding $p$ to the list of differences two times. After that, we should pop the smallest difference in the list because we can't end up with a negative amount of shares.
+ - So choosing to sell between 0 and 2 shares is represented by adding $p_i$ to the list of differences two times. After that, we should pop the smallest difference in the list because we can't end up with a negative amount of shares.
 
 **Example:** consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
 
@@ -199,28 +199,45 @@ int main() {
 
 *Stock Trading (USACO Camp)*: What if your amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$?
 
-## Potatoes
+## Potatoes & Fertilizers
 
 <problems-list problems={metadata.problems.potatoes} />
 
 ### Simplifying the Problem
 
-Let $dif_i=a_i-b_i$. Defining $d_j=\sum_{i=1}^jdif_i$, our goal is to move around the potatoes such that $d_0,d_1,\ldots,d_N$ is a non-decreasing sequence. Moving a potato one position is equivalent to changing exactly one of the $d_i$ by one (although $d_0,d_N$ cannot be modified).
+Instead of saying that moving fertilizer from segment $i$ to segment $j$ costs $|i-j|$, we'll say that it costs $1$ to move fertilizer from a segment to an adjacent segment.
+
+Let the values of $a_1,a_2,\ldots,a_N$ after all the transfers be $a_1',a_2',\ldots,a_N'$. If we know this final sequence, how much did the transfers cost (in the best case scenario)? It turns out that this is just
+
+$$
+C=\sum_{i=1}^{N-1}\left|\sum_{j=1}^i(a_j-a_j')\right|.
+$$
+
+We can show that this is a lower bound and that it's attainable. The term $D=\sum_{j=1}^i(a_j-a_j')$ denotes the number of units of fertilizer that move from segment $i$ to segment $i+1$. Namely, if $D$ is positive then $D$ units of fertilizer moved from segment $i$ to segment $i+1$; otherwise, $-D$ units of fertilizer moved in the opposite direction. Note that it is never optimal to have fertilizer moving in both directions.
+
+Let $dif_i=a_i-b_i$ and define $d_j=\sum_{i=1}^jdif_i$ for each $0\le j\le N$. Similarly, define $dif_i'=a_i'-b_i$ and $d_j'=\sum_{i=1}^jdif_i'$. Since we want $dif_i'\ge 0$ for all $i$, we should have $d_0=d_0'\le d_1'\le \cdots\le d_N'=d_N.$ Conversely, every sequence $(d_0',d_1',\ldots,d_N')$ that satisfies this property corresponds to a valid way to assign values of $(a_1',a_2',\ldots,a_N')$.
+
+Now you can verify that $C=\sum_{i=1}^{N-1}|d_i-d_i'|$. This makes sense since moving one unit of fertilizer one position is equivalent to changing one of the $d_i$ by one (although $d_0,d_N$ always remain the same).
 
 ### Slow Solution
 
-Let $dp[i][j]$ be the minimum cost to determine $d_0,d_1,\ldots,d_i$ such that $d_i\le j$ for each $0\le j\le d_N$. This runs in $O(N\cdot d_N)$ time. By definition, $dp[i][j]\ge dp[i][j+1]$.
+For each $0\le i\le N$ and $0\le j\le d_N$, let $dp[i][j]$ be the minimum cost to determine $d_0',d_1',\ldots,d_i'$ such that $d_i'\le j$. Note that by definition, $dp[i][j]\ge dp[i][j+1]$. We can easily calculate these values in $O(N\cdot d_N)$ time. 
 
 ### Full Solution
 
 <spoiler title="Explanation">
 
-Similar to before, this DP is concave up for a fixed $i$! Given a piecewise linear function $DP_x$, we need to support the following operations.
+Similar to before, this DP is concave up for a fixed $i$! Given a piecewise linear function $f_i(x)$ that takes as input $x$ and outputs $dp[i][x]$, we need to support the following two operations to transform this function into $f_{i+1}$.
 
- * Add $|x-k|$ to the function for some $k$
- * Set $DP_x=\min(DP_x,DP_{x-1})$ for all $x$
+  - Add $|x-k|$ to the function for some $k$
+  - Set $f(x)=\min(f(x),f(x-1))$ for all $x$
 
-Again, these can be done with a priority queue. Instead of storing the consecutive differences, we store the points where the slope of the piecewise linear function changes in $O(N\log N)$ time.
+Again, these can be done with a priority queue. Instead of storing the consecutive differences, we store the points where the slope of the piecewise linear function changes by one. 
+
+  - The first operation corresponds to inserting $k$ into the priority queue two times because the slope increases by two at $x=k$.
+  - The latter operation just corresponds to removing the greatest element of the priority queue. 
+
+This solution runs in $O(N\log N)$ time.
 
 </spoiler>
 
@@ -243,7 +260,7 @@ int main() {
 		int a,b; cin >> a >> b;
 		dif[i] = a-b+dif[i-1];
 	}
-	assert(dif[N] >= 0);
+	assert(dif[N] >= 0); // assume solution exists
 	for (int i = 1; i < N; ++i) {
 		if (dif[i] < 0) fst -= dif[i], dif[i] = 0;
 		fst += dif[i];
@@ -264,7 +281,7 @@ int main() {
 
 <problems-list problems={metadata.problems.landscaping} />
 
-This looks quite similar to the previous task, so it's not hard to guess that slope trick is applicable. 
+This looks similar to the previous task (we're moving dirt instead of fertilizer), so it's not too hard to guess that slope trick is applicable. 
 
 ### Slow Solution
 
@@ -276,17 +293,19 @@ Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flower
 
 This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must be able to support the following operations.
 
- - Shift the DP curve $A_i$ units to the right.
- - Shift the DP curve $B_i$ units to the left.
- - Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
- - Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$. 
+  - Shift the DP curve $A_i$ units to the right.
+  - Shift the DP curve $B_i$ units to the left.
+  - Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
+  - Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$. 
 
-As before, it helps to look at the differences $dif[j]=DP[j+1]-dif[j]$ instead. Then the last operation is equivalent to the following:
+As before, it helps to look at the differences $dif[j]=DP[j+1]-DP[j]$ instead. We'll maintain separate deques for $dif$ depending on whether $j < 0$ or $j\ge 0$. We'll call these the left and right deques, respectively.
 
- * For all $j\ge 0$, we set $dif[j] = \min(dif[j]+Z,X)$
- * For all $j<0$, we set $dif[j] = \max(dif[j]-Z,-Y)$. 
+  - The first two operations correspond to repeatedly popping the last element off of the left deque and adding it to the front of the right deque (or vice versa, depending on the direction of the shift).
+  - The third operation corresponds to subtracting $Z$ from all elements of the left deque and adding $Z$ to all elements of the right deque.
+  - The last operation corresponds to setting $dif[j]=\max(dif[j],-Y)$ for all $j < 0$
+ and $dif[j] = \min(dif[j],X)$ for all $j\ge 0$.
 
-If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ and update all of the differences in the deques "lazily" then we can do this in $O(\sum A_i+\sum B_i)$ time. 
+We can implement the last operation by updating all of the differences in the deques "lazily." This solution runs in $O(\sum A_i+\sum B_i)$ time. 
 
 </spoiler>
 
@@ -298,18 +317,18 @@ If we maintain separate deques for $dif$ depending on whether $j\ge 0$ or $j<0$ 
 using namespace std;
 
 int N,X,Y,Z;
-int difl, difr;
+int difl, difr; // "lazy" update
 deque<int> L, R;
 long long ans;
 
-void rig() { // shift right A
+void rig() { // shift right A, so origin moves left
 	if (L.size() == 0) L.push_back(-Y-difl);
 	int t = L.back()+difl; L.pop_back();
 	t = max(t,-Y); ans -= t;
 	R.push_front(t-difr);
 }
 
-void lef() { // shift left B
+void lef() { // shift left B, so origin moves right
 	if (R.size() == 0) R.push_front(X-difr);
 	int t = R.front()+difr; R.pop_front();
 	t = min(t,X); ans += t;

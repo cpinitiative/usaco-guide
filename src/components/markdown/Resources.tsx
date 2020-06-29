@@ -3,7 +3,6 @@ import Dots from '../Dots';
 
 export function ResourcesListComponent(props) {
   const embedded = props.embedded;
-  const noSource = 'noSource' in props ? props.noSource : false;
   return (
     <div className="flex flex-col">
       <div
@@ -22,7 +21,7 @@ export function ResourcesListComponent(props) {
             <thead>
               <tr>
                 <th
-                  colSpan={noSource ? 3 : 4}
+                  colSpan={4}
                   className={`px-6 border-b text-left font-medium uppercase ${
                     embedded
                       ? 'text-sm py-2 border-gray-200 bg-gray-50 text-gray-500'
@@ -45,7 +44,7 @@ export function ResourcesListComponent(props) {
 const books = {
   CPH: '/CPH.pdf',
   PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
-  IUSACO: 'http://darrenyao.com/usacobook/cpp.pdf',
+  IUSACO: 'https://darrenyao.com/usacobook/java.pdf',
 };
 
 const sources = {
