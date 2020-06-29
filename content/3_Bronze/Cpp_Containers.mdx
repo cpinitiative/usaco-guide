@@ -220,26 +220,3 @@ cout << ms.count(9) << '\n'; // 2
 ms.erase(9);
 cout << ms.count(9) << '\n'; // 0
 ```
-
-### Priority Queues
-
-The (so-called) priority queue supports the following operations:
-
-- Insert a number (or some other kind of object that can be compared using less-than and greater-than)
-- Find the largest number currently in the priority queue
-- Remove the largest number currently in the priority queue
-
-What if we want a priority queue that gives us the smallest element, not the largest? It is simple; just change the comparison operator to make it give opposite results. If you are dealing with numbers, a simple way to get this effect is to negate every single number you insert into the priority queue, then remember to negate it again when taking elements out.
-
-The `push(elem)` operation is used to insert an element,  `top()` is used to obtain the largest value currently in the priority queue, and `pop()` is used to remove the largest value. Trying to access or remove the largest element of a priority queue when the priority queue is empty will lead to a runtime error or indeterminate results, so don't do that.
-
-```cpp
-priority_queue<int> pq;
-pq.push(20); // [20]
-pq.push(30); // [20, 30]
-pq.push(10); // [20, 30, 10]
-int x = pq.top(); // 30
-pq.pop(); // [20, 10]
-pq.pop(); // [10]
-int y = pq.top(); // 10
-```
