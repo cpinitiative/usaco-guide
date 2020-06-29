@@ -11,7 +11,7 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     bubble: [
-      new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Normal", false, [], "O(N^2)"),
+      new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Easy", false, [], "O(N^2)"),
       new Problem("Silver", "Out of Sorts", "834", "Very Hard", false, []),
     ],
     cses: [
@@ -31,8 +31,9 @@ No bronze problem should require sorting, but it can be an alternate solution th
 
 ## Additional Resources
 
- - CPH 3 (Sorting)
-   - once again, very good
+<resources>
+  <resource source="CPH" title="3 - Sorting" starred>types of sorting, binary search, C++ code</resource>
+</resources>
 
 ## Sorting Algorithms
 
@@ -58,11 +59,21 @@ There are many sorting algorithms, here are some sources to learn about the popu
       - first two related to sorting
  - Java
     - [Arrays.sort Documentation](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
-    - [Breaking Java Arrays.sort()](https://codeforces.com/blog/entry/4827)
-      - no longer works, but see [this one](https://codeforces.com/contest/1324/hacks/625031/test) instead.
-      - to avoid getting hacked, [shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
  - Python
     - [Sorted Documentation](https://docs.python.org/3/howto/sorting.html)
+
+<info-block title="For Users of Java">
+
+The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CF. 
+
+Two ways to avoid this:
+
+  - Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
+  - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+
+</info-block>
+
+
 
 ## Binary Search
 

@@ -12,6 +12,9 @@ import { Problem } from "../models";
 
 export const metadata = {
   problems: {
+    ex: [
+      new Problem("CF", "Div 2 C - Maximum Median", "contest/1201/problem/C", "Easy", false, [], ""),
+    ],
     general: [
       new Problem("CSES", "Factory Machines", "1620", "Easy", false, []),
       new Problem("Silver", "Moo Buzz", "966", "Intro", false, [], "binary search not required"),
@@ -20,6 +23,7 @@ export const metadata = {
       new Problem("Silver", "Angry Cows", "594", "Normal", false, [], "check in $O(N)$ how many haybales you can destroy with fixed radius $R$"),
       new Problem("Silver", "Social Distancing", "1038", "Normal", false, [], "check in $O(N+M)$ how many cows you can place with distance $D$"),
       new Problem("Silver", "Loan Repayment", "991", "Hard", false, [], "requires some rather tricky analysis to speed up naive $O(N\log N)$ solution"),
+      new Problem("CF", "Edu C: Magic Ship", "problemset/problem/1117/", "Normal", false, ["Binary Search", "Prefix Sums"], ""),
       new Problem("CF", "The Meeting Place Cannot Be Changed", "contest/782/problem/B", "Normal", false, [], ""),
       new Problem("CF", "Preparing for Merge Sort", "contest/847/problem/B", "Normal", false, [], ""),
       new Problem("CF", "Level Generation", "problemset/problem/818/F", "Normal", false, [], ""),
@@ -28,6 +32,8 @@ export const metadata = {
     ],
   }
 };
+
+## Introduction
 
 When we binary search on the answer, we start with a search space of size $N$ which we know the answer lies in. Then, each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
 
@@ -55,19 +61,21 @@ If instead we're looking for the minimum `x` that satisfies some condition, then
 
 The binary search function for this is very similar. Find the maximum value of $x$ such that `check(x)` is false with the algorithm above, and return $x+1$.
 
-## Example: [CF 577 Div. 2 C](https://codeforces.com/contest/1201/problem/C)
+## Example: Maximum Median
 
-Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd, we can perform the following operation on it $k$ times: take any element of the array and increase it by $1$. We want to make the median of the array as large as possible after $k$ operations.
+<problems-list problems={metadata.problems.ex} />
+
+**Statement:** Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd, we can perform the following operation on it $k$ times: take any element of the array and increase it by $1$. We want to make the median of the array as large as possible after $k$ operations.
 
 **Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is odd.
 
-The solution is as follows: we first sort the array in ascending order. Then, we binary search for the maximum possible median. We know that the number of operations required to raise the median to $x$ increases monotonically as $x$ increases, so we can use binary search. For a given median value $x$, the number of operations required to raise the median to $x$ is
+**Solution:** We first sort the array in ascending order. Then, we binary search for the maximum possible median. We know that the number of operations required to raise the median to $x$ increases monotonically as $x$ increases, so we can use binary search. For a given median value $x$, the number of operations required to raise the median to $x$ is
 
 $$
-\sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i])
+\sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i]).
 $$
 
-If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns true. Otherwise, $x$ cannot be the median, so our check function returns false.
+If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns `true`. Otherwise, $x$ cannot be the median, so our check function returns `false`.
 
 The solution codes use the second implementation of binary search.
 
@@ -110,6 +118,8 @@ static boolean check(long x){
     else{ return false; }
 }
 ```
+
+Note that I used the `Arrays.sort()` function, which uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests, such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(n^2)$ behavior in quicksort. In such contests, you should declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always O(n log n).
 
 C++:
 
