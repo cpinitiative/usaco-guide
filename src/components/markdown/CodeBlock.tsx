@@ -19,7 +19,7 @@ export default ({ children, className }) => {
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre
-          className={'rounded ' + className}
+          className={'rounded whitespace-pre-wrap ' + className}
           style={{ ...style, padding: '20px' }}
         >
           {tokens.map((line, i) => (

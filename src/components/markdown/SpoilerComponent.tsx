@@ -39,7 +39,7 @@ const SpoilerComponent = ({ children, title }) => {
         {title}
       </p>
 
-      {show && <div className="p-4 pt-0 spoiler-body">{children}</div>}
+      {show && <div className="px-4 spoiler-body">{children}</div>}
     </div>
   );
 };
