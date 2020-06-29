@@ -21,7 +21,7 @@ In most websites (such as CodeForces and CSES), input and output are **standard*
 
 ### C++
 
-The [<iostream\>](http://www.cplusplus.com/reference/iostream/) library suffices. 
+The [<iostream\>](http://www.cplusplus.com/reference/iostream/) library suffices.
 
 ```cpp
 #include <iostream>
@@ -33,9 +33,35 @@ int main() {
 }
 ```
 
+Alternatively, you can use the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library's `scanf` anf `printf` functions, which are slightly more complicated to use, but are significantly faster (generally only an issue with large input sizes):
+
+```cpp
+#include <cstdio>
+using namespace std;
+
+int main() {
+    int x, y;
+    // %d specifies that a value of type int is being input.
+    // Use %lld (a few judging platforms might need %I64d)
+    // to input a long long (64-bit) integer.
+    // Many other specifiers are also available; see link for more details.
+    // Be sure to add a & character (address-of operator) when using
+    // scanf, UNLESS you are inputing a string with %s.
+    // It is possible to input multiple values at a time as shown below.
+    scanf("%d%d", &x, &y);
+
+    // Specifiers for printf are mostly the same as those used
+    // by scanf, with the notable exception of floating-point numbers.
+    // Use a backslash character followed by the lowercase
+    // letter n to denote a newline.
+    // The address-of operator, &, is not used here.
+    printf("Found %d and %d\n", x, y);
+}
+```
+
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use `BufferedReader` and `PrintWriter` instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. 
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use `BufferedReader` and `PrintWriter` instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
 
 Here is a Java template for input and output, which is effectively a faster Scanner. We import the entire `util` and `io` libraries for ease of use.
 
@@ -114,11 +140,11 @@ In order to test a program, create a file called `problemname.in`, and then run 
 
 ## C++
 
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem. 
+You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem.
 
 Below, we have included C++ templates for input and output. We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them.
 
-If `<cstdio>` is used: 
+If `<cstdio>` is used:
 
 ```cpp
 #include <cstdio>
@@ -131,7 +157,7 @@ int main() {
 }
 ```
 
-If `<fstream>` is used: (Note that you cannot use C-style I/O (`scanf`, `printf`) with this method): 
+If `<fstream>` is used: (Note that you cannot use C-style I/O (`scanf`, `printf`) with this method):
 
 ```cpp
 #include <fstream>
@@ -194,7 +220,7 @@ public class template {
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("template.out")));
 
         // YOUR CODE HERE
-        
+
         pw.close(); // flushes the output once printing is done
     }
 }

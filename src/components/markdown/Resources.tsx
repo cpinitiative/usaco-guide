@@ -2,31 +2,33 @@ import * as React from 'react';
 import Dots from '../Dots';
 
 export function ResourcesListComponent(props) {
+  const embedded = props.embedded;
   return (
     <div className="flex flex-col">
-      <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div className="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border border-purple-400">
+      <div
+        className={`overflow-x-auto ${
+          embedded
+            ? '-mx-4 sm:-mx-6'
+            : 'sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2'
+        }`}
+      >
+        <div
+          className={`align-middle inline-block min-w-full overflow-hidden shadow ${
+            !embedded && 'rounded-lg border border-purple-400'
+          }`}
+        >
           <table className="min-w-full">
             <thead>
               <tr>
                 <th
                   colSpan={4}
-                  className="px-6 py-4 border-b border-purple-200 bg-purple-50 text-left font-medium text-purple-500 uppercase"
+                  className={`px-6 border-b text-left font-medium uppercase ${
+                    embedded
+                      ? 'text-sm py-2 border-gray-200 bg-gray-50 text-gray-500'
+                      : 'py-3 border-purple-200 bg-purple-50 text-purple-500'
+                  }`}
                 >
-                  <div className="flex items-center">
-                    <svg
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="h-6 w-6 mr-3"
-                    >
-                      <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                    Resources{props.title ? `: ${props.title}` : ''}
-                  </div>
+                  Resources{props.title ? `: ${props.title}` : ''}
                 </th>
               </tr>
             </thead>
@@ -70,10 +72,12 @@ export function ResourceComponent(props) {
   }
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-        {props.source}
-      </td>
-      <td className="py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 w-6">
+      {props.source && (
+        <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+          {props.source}
+        </td>
+      )}
+      <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 w-6">
         {props.starred && (
           <svg
             className="h-6 w-6 text-blue-700"
@@ -87,7 +91,7 @@ export function ResourceComponent(props) {
       <td className="pl-3 pr-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         <a href={url}>{props.title}</a>
       </td>
-      <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+      <td className="w-100 px-6 py-4 text-sm leading-5 text-gray-500">
         {props.children}
       </td>
     </tr>
