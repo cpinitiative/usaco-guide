@@ -17,6 +17,7 @@ export const plugins = [
       name: `content`,
     },
   },
+  `gatsby-plugin-sharp`,
   {
     resolve: `gatsby-plugin-mdx`,
     options: {
@@ -28,6 +29,13 @@ export const plugins = [
           options: {
             // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
             strict: `ignore`,
+          },
+        },
+        {
+          resolve: `gatsby-remark-images`,
+          options: {
+            maxWidth: 832,
+            quality: 90,
           },
         },
       ],
@@ -46,7 +54,6 @@ export const plugins = [
   },
   `gatsby-plugin-react-helmet`,
   `gatsby-transformer-sharp`,
-  `gatsby-plugin-sharp`,
   {
     resolve: `gatsby-plugin-manifest`,
     options: {
