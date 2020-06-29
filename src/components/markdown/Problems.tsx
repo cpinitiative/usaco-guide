@@ -163,6 +163,15 @@ export function ProblemComponent(props: ProblemComponentProps) {
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         <a href={problem.url}>{problem.name}</a>
+        {problem.isIntro && (
+          <span
+            className={
+              'ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 text-teal-800'
+            }
+          >
+            Intro
+          </span>
+        )}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap leading-5">
         {problem.difficulty && (

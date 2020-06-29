@@ -20,16 +20,21 @@ const sources = {
 
 export class Problem {
   public url: string;
+  public difficulty: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane';
+  public isIntro: boolean;
 
   constructor(
     public source: string,
     public name: string,
     public id: string,
-    public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
+    labels?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane' | 'Intro|Intro' | 'Intro|Easy' | 'Intro|Normal' | 'Intro|Hard' | 'Intro|Very Hard' | 'Intro|Insane',
     public starred?: boolean,
     public tags?: string[],
     public sketch?: string,
   ) {
+    this.isIntro = labels.includes("Intro|");
+    labels = labels.replace("Intro|", "") as any;
+    this.difficulty = labels as any;
     if (!id.startsWith("http")) {
       if (source in sources) {
         this.url = sources[source] + id;
