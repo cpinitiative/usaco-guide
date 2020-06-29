@@ -166,6 +166,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     },
     "bitsets",
     "fracture",
+    "dyna",
   ],
   "adv": [
     {

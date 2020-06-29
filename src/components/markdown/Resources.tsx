@@ -42,7 +42,7 @@ export function ResourcesListComponent(props) {
 const books = {
   CPH: '/CPH.pdf',
   PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
-  IUSACO: 'http://darrenyao.com/usacobook/cpp.pdf',
+  IUSACO: 'https://darrenyao.com/usacobook/java.pdf',
 };
 
 const sources = {
