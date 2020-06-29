@@ -73,7 +73,7 @@ You do not need to learn pointers (for now). Knowledge of structs and classes is
 
 Let us know what works (or doesn't) for you.
 
-<resources>
+<resources embedded title="Getting Started">
   <resource source="CodeSignal" title="CodeSignal" url="https://codesignal.com/">can practice basics with "Arcade," "Interview Practice"</resource>
   <resource source="Philippines OI" title="Prepare" url="https://noi.ph/prepare/">lots of links!</resource>
   <resource source="IOI" title="Getting Started" url="https://ioinformatics.org/page/getting-started/14">not so up to date</resource>

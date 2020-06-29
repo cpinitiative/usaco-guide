@@ -8,7 +8,12 @@ description: Demonstrates how to read input and print output for USACO contests.
 ## Additional Reading
 
  - CSES 1.2
+
+cin, getline, files
+
  - [PAPC 2.4](http://www.csc.kth.se/~jsannemo/slask/main.pdf)
+
+cin, getline
 
 ## Standard I/O
 
