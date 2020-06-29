@@ -33,7 +33,7 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
     'Rare (1-2 times)',
     'Not Frequent (3-4 times)',
     'Somewhat Frequent',
-    'Very Frequent (historically ~ once per contest)',
+    'Very Frequent (historically at least once per contest)',
   ];
 
   return (

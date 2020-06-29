@@ -10,19 +10,21 @@ import { Problem } from "../models"
 
 export const metadata = {
   problems: {
-    bronze: [
-      new Problem("Bronze", "Mixing Milk", "855", "Intro"),
-      new Problem("Bronze", "Speeding", "568", "Intro"),
-      new Problem("Bronze", "Angry Cows", "592", "Intro"),
-      new Problem("Bronze", "Milk Measurement", "761", "Intro"),
-      new Problem("Bronze", "Block Game", "664", "Intro"),
-      new Problem("Bronze", "Shell Game", "891", "Intro"),
-      new Problem("Bronze", "Team Tic Tac Toe", "831", "Intro"),
-      new Problem("Bronze", "The Lost Cow", "735", "Intro", false, [], ""),
-      new Problem("Bronze", "Why Did the Cow Cross the Road III", "713", "Intro", false, []),
-      new Problem("Bronze", "Mowing the Field", "593", "Intro", false, []),
-      new Problem("Bronze", "The Bovine Shuffle", "760", "Normal", false, []),
-      new Problem("Bronze", "Circular Barn", "616", "Normal", false, []),
+    easier: [
+      new Problem("Bronze", "Shell Game", "891", "Easy"), // 99.93
+      new Problem("Bronze", "Mixing Milk", "855", "Easy", false, [], "just pour 100 times"), // 99.87
+      new Problem("Bronze", "Speeding", "568", "Easy", false, [], "store speed for each mile"), // 99.05
+      new Problem("Bronze", "The Lost Cow", "735", "Easy", false, [], ""), // 99.46
+      new Problem("Bronze", "The Bovine Shuffle", "760", "Easy", false, []), // 100
+    ],
+    harder: [
+      new Problem("Bronze", "Circular Barn", "616", "Normal", false, []), // 99.25
+      new Problem("Bronze", "Block Game", "664", "Normal"), // 97.41
+      new Problem("Bronze", "Team Tic Tac Toe", "831", "Normal"), // 97.41
+      new Problem("Bronze", "Cow Queue", "713", "Normal", false, []), // 97.59
+      new Problem("Bronze", "Mowing the Field", "593", "Normal", false, []), // 97.16
+      new Problem("Bronze", "Milk Measurement", "761", "Hard"), // 95.97
+      new Problem("Bronze", "Angry Cows", "592", "Hard", false, [], ""), // 94.15
     ]
   }
 };
@@ -47,11 +49,11 @@ Please output a single integer containing the number of seconds after the start 
 
 ### Solution
 
-We can simulate the process. After inputting the values of $R$, $S$, $M$, $N$, $P$, and $Q$, we can keep track of Alice's and Bob's $x$- and $y$-coordinates. To start, we initialize variables for their respective positions. Alice's coordinates are initially \((0, 0)\), and Bob's coordinates are $(R, S)$ respectively. Every second, we increase Alice's $x$-coordinate by $M$ and her $y$-coordinate by $N$, and decrease Bob's $x$-coordinate by $P$ and his $y$-coordinate by $Q$.
+We can simulate the process. After inputting the values of $R$, $S$, $M$, $N$, $P$, and $Q$, we can keep track of Alice's and Bob's $x$- and $y$-coordinates. To start, we initialize variables for their respective positions. Alice's coordinates are initially $(0, 0)$, and Bob's coordinates are $(R, S)$ respectively. Every second, we increase Alice's $x$-coordinate by $M$ and her $y$-coordinate by $N$, and decrease Bob's $x$-coordinate by $P$ and his $y$-coordinate by $Q$.
 
 Now, when do we stop? First, if Alice and Bob ever have the same coordinates, then we are done. Also, since Alice strictly moves up and to the right and Bob strictly moves down and to the left, if Alice's $x$- or $y$-coordinates are ever greater than Bob's, then it is impossible for them to meet. 
 
-Example Java code is displayed below. Here, as in other examples, input processing will be omitted).
+Example Java code is displayed below. Here, as in other examples, input processing will be omitted.
 
 ```java
 int ax = 0; int ay = 0; // alice's x and y coordinates
@@ -71,14 +73,14 @@ if(ax == bx && ay == by){ // if they are in the same location
 out.close(); // flush the output
 ```
 
-For C++, replaces lines such as `out.println(t)` with `cout << t << endl`.
+For C++, replace lines such as `out.println(t)` with `cout << t << endl`.
 
 
 ## Example 2
 
 ### Statement
 
-There are $N$ buckets ($5 \leq N \leq 10^5$), each with a certain capacity $C_i$ ($1 \leq C_i \leq 100$). One day, after a rainstorm, each bucket is filled with $A_i$ units of water ($1\leq A_i \leq C_i$). Charlie then performs the following process: he pours bucket 1 into bucket 2, then bucket 2 into bucket 3, and so on, up until pouring bucket $N-1$ into bucket $N$. When Charlie pours bucket $B$ into bucket $B+1$, he pours as much as possible until bucket $B$ is empty or bucket $B+1$ is full. Find out how much water is in each bucket once Charlie is done pouring.
+There are $N$ buckets ($5 \leq N \leq 10^5$), each with a certain capacity $C_i$ ($1 \leq C_i \leq 100$). One day, after a rainstorm, each bucket is filled with $A_i$ units of water ($1\leq A_i \leq C_i$). Charlie then performs the following process: he pours bucket $1$ into bucket $2$, then bucket $2$ into bucket $3$, and so on, up until pouring bucket $N-1$ into bucket $N$. When Charlie pours bucket $B$ into bucket $B+1$, he pours as much as possible until bucket $B$ is empty or bucket $B+1$ is full. Find out how much water is in each bucket once Charlie is done pouring.
 
 #### Input Format
 
@@ -94,7 +96,7 @@ Please print one line of output, containing $N$ space-separated integers: the fi
 
 ### Solution
 
-Once again, we can simulate the process of pouring one bucket into the next. The amount of milk poured from bucket $B$ to bucket $B+1$ is the smaller of the amount of water in bucket $B$ (after all previous operations have been completed) and the remaining space in bucket $B+1$, which is $C_{B+1} - A_{B+1}$. We can just handle all of these operations in order, using an array C to store the maximum capacities of each bucket, and an array A to store the current water level in each bucket, which we update during the process. Example code is below (note that arrays are zero-indexed, so the indices of our buckets go from $0$ to $N-1$ rather than from $1$ to $N$).
+Once again, we can simulate the process of pouring one bucket into the next. The amount of milk poured from bucket $B$ to bucket $B+1$ is the smaller of the amount of water in bucket $B$ (after all previous operations have been completed) and the remaining space in bucket $B+1$, which is $C_{B+1} - A_{B+1}$. We can just handle all of these operations in order, using an array $C$ to store the maximum capacities of each bucket, and an array $A$ to store the current water level in each bucket, which we update during the process. Example code is below (note that arrays are zero-indexed, so the indices of our buckets go from $0$ to $N-1$ rather than from $1$ to $N$).
 
 Java:
 
@@ -135,4 +137,10 @@ for(int i = 0; i < n; i++){
 cout << endl;
 ```
 
-<problems-list problems={metadata.problems.bronze} />
+## Easier Problems
+
+<problems-list problems={metadata.problems.easier} />
+
+## Harder Problems
+
+<problems-list problems={metadata.problems.harder} />

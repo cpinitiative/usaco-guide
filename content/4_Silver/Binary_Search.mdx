@@ -57,13 +57,15 @@ The binary search function for this is very similar. Find the maximum value of $
 
 ## Example: [CF 577 Div. 2 C](https://codeforces.com/contest/1201/problem/C)
 
-Given an array `arr` of $n$ integers, where $n$ is odd, we can perform the following operation on it $k$ times: take any element of the array and increase it by $1$. We want to make the median of the array as large as possible, after $k$ operations.
+Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd, we can perform the following operation on it $k$ times: take any element of the array and increase it by $1$. We want to make the median of the array as large as possible after $k$ operations.
 
-Constraints: $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is odd.
+**Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is odd.
 
 The solution is as follows: we first sort the array in ascending order. Then, we binary search for the maximum possible median. We know that the number of operations required to raise the median to $x$ increases monotonically as $x$ increases, so we can use binary search. For a given median value $x$, the number of operations required to raise the median to $x$ is
 
-$$\sum_{i=(n+1)/2}^{n} \max(0, x - \text{arr[i]})$$
+$$
+\sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i])
+$$
 
 If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns true. Otherwise, $x$ cannot be the median, so our check function returns false.
 

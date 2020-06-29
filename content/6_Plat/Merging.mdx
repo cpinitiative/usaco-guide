@@ -23,9 +23,6 @@ export const metadata = {
       new Problem("POI", "Tree Rotations", "https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement", "Normal", false, ["Merging", "Indexed Set"], ""),
       new Problem("Gold", "Favorite Colors", "1042", "Hard", false, ["DSU"], "Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time."),
     ],
-    treeRot: [
-      new Problem("POI", "Tree Rotations 2", "https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement", "Very Hard", false, [], ""),
-    ]
   }
 };
 
@@ -43,21 +40,32 @@ export const metadata = {
 
 Let's consider a tree rooted at node $1$, where each node has a color.
 
-For each node, let's store a set containing only that node, and we want to merge the sets in the nodes subtree together such that each node has a set consisting of all colors in the nodes subtree. Doing this allows us to solve a variety of problems, such as query the number of distinct colors in each subtree. Doing this naively, however, yields a runtime complexity of $O(N^2)$. 
+For each node, let's store a set containing only that node, and we want to merge the sets in the nodes subtree together such that each node has a set consisting of all colors in the nodes subtree. Doing this allows us to solve a variety of problems, such as query the number of distinct colors in each subtree. 
 
-However, with just a few lines of code, we can significantly speed this up. Note that [swap](http://www.cplusplus.com/reference/utility/swap/) exchanges two sets in $O(1)$ time.
+### Naive Solution
+
+Suppose that we want merge two sets $a$ and $b$ of sizes $n$ and $m$, respectively. One possiblility is the following:
 
 ```cpp
-if(a.size() < b.size()){ //for two sets a and b
-  swap(a,b);
-}
+for (int x: b) a.insert(x);
+```
+
+which runs in $O(m\log (n+m))$ time, yielding a runtime of $O(N^2\log N)$ in the worst case. If we instead maintain $a$ and $b$ as sorted vectors, we can merge them in $O(n+m)$ time, but $O(N^2)$ is also too slow.
+
+### Better Solution
+
+With just one additional line of code, we can significantly speed this up. 
+
+```cpp
+if (a.size() < b.size()) swap(a,b);
+for (int x: b) a.insert(x);
 ``` 
 
-By merging the smaller set into the larger one, the runtime complexity becomes $O(N\log^2N)$.
+Note that [swap](http://www.cplusplus.com/reference/utility/swap/) exchanges two sets in $O(1)$ time. Thus, merging a smaller set of size $m$ into the larger one of size $n$ takes $O(m\log n)$ time.
 
-### Proof
+**Claim:** The solution runs in $O(N\log^2N)$ time.
 
-When merging two sets, you move from the smaller set to the larger set. If the size of the smaller set is $X$, then the size of the resulting set is at least $2X$. Thus, an element that has been moved $Y$ times will be in a set of size $2^Y$, and since the maximum size of a set is $N$ (the root), each element will be moved at most $O(\log N$) times leading to a total complexity of $O(N\log N)$.
+**Proof:** When merging two sets, you move from the smaller set to the larger set. If the size of the smaller set is $X$, then the size of the resulting set is at least $2X$. Thus, an element that has been moved $Y$ times will be in a set of size at least $2^Y$, and since the maximum size of a set is $N$ (the root), each element will be moved at most $O(\log N$) times.
 
 <spoiler title="Full Code">
 
@@ -165,15 +173,8 @@ int main() {
 
 (also: same solution w/o indexed set)
 
-## Faster Merging (Optional)
+<optional-content title="Faster Merging">
 
-It's easy to merge two sets of sizes $n\ge m$ in $O(n+m)$ or $(m\log n)$ time, but sometimes $O\left(m\log 1+\frac{n}{m}\right)$ can be significantly better than both of these.
+It's easy to merge two sets of sizes $n\ge m$ in $O(n+m)$ or $(m\log n)$ time, but sometimes $O\left(m\log \left(1+\frac{n}{m}\right)\right)$ can be significantly better than both of these. Check "Advanced - Treaps" for more details. Also see [this link](https://codeforces.com/blog/entry/49446) regarding merging segment trees.
 
-<resources>
-  <resource source="CF" title="Splitting & Merging Segment Trees" url="https://codeforces.com/blog/entry/49446"></resource>
-  <resource source="CF" title="Splitting & Merging BSTs" url="https://codeforces.com/blog/entry/67980"></resource>
-</resources>
-
-Requires knowledge of BSTs such as treaps or splay trees.
-
-<problems-list problems={metadata.problems.treeRot} />
+</optional-content>
