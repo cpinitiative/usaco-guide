@@ -12,20 +12,24 @@ import { Problem } from "../models";
 
 export const metadata = {
   problems: {
+    ex: [
+      new Problem("CF", "Problem Without a Legend", "contest/713/problem/C", "Easy", false, ["Slope Trick"], ""),
+    ],
     buy: [
-      new Problem("CF", "Buy Low Sell High", "contest/866/problem/D", "Normal", false, ["Slope Trick"], ""),
+      new Problem("CF", "Buy Low Sell High", "contest/866/problem/D", "Easy", false, ["Slope Trick"], ""),
     ],
     potatoes: [
-      new Problem("ojuz", "LMIO - Potatoes & Fertilizers", "LMIO19_bulves", "Hard", false, ["Slope Trick"], "[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)"),
+      new Problem("ojuz", "LMIO - Potatoes & Fertilizers", "LMIO19_bulves", "Normal", false, ["Slope Trick"], "[Equivalent Problem](https://atcoder.jp/contests/kupc2016/tasks/kupc2016_h)"),
     ],
     landscaping: [
-      new Problem("Plat", "Landscaping", "650", "Very Hard", false, ["Slope Trick"], "Equivalent Problem: GP of Wroclaw 20 J"),
+      new Problem("Plat", "Landscaping", "650", "Hard", false, ["Slope Trick"], "Equivalent Problem: GP of Wroclaw 20 J"),
     ],
     general: [
       new Problem("CF", "Bookface", "gym/102576/problem/C", "Normal", false, ["Slope Trick"], ""),
       new Problem("CC", "CCDSAP Exam", "CCDSAP", "Normal", false, ["Slope Trick"], ""),
       new Problem("CF", "Farm of Monsters", "gym/102538/problem/F", "Hard", false, ["Slope Trick"], ""),
       new Problem("CF", "Moving Walkways", "contest/1209/problem/H", "Hard", false, ["Slope Trick"], ""),
+      new Problem("ojuz", "APIO - Fireworks", "APIO16_fireworks", "Hard", false, [], ""),
       new Problem("CF", "April Fools' Problem", "contest/802/problem/O", "Very Hard", false, ["Slope Trick"], "binary search on top of slope trick"),
       new Problem("ICPC World Finals", "Conquer the World", "https://icpc.kattis.com/problems/conquertheworld", "Very Hard", false, ["Slope Trick"], "ICPC world finals, 0 solves in contest - \"Potatoes\" on tree!!"),
     ],
@@ -35,8 +39,8 @@ export const metadata = {
 ## Tutorials
 
 <resources>
-  <resource source="CF" title="zscoder - Slope Trick" url="blog/entry/47821"></resource>
-  <resource source="CF" title="Kuroni - Slope Trick Explained" url="blog/entry/77298"></resource>
+  <resource source="CF" title="zscoder - Slope Trick" url="blog/entry/47821">3 problems using this trick</resource>
+  <resource source="CF" title="Kuroni - Slope Trick Explained" url="blog/entry/77298">clarifying the above and another example problem</resource>
 </resources>
 
 From the latter link (modified):
@@ -46,13 +50,19 @@ From the latter link (modified):
 >  - It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
 >  - It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
 
-It's generally applicable as a DP optimization. The rest of this module assumes that you are somewhat familiar with at least one of the tutorials mentioned above.
+It's generally applicable as a DP optimization. 
 
 <info-block title="Pro Tip">
 
 Usually you can come up with a slower (usually $O(N^2)$) DP first and then optimize it to $O(N\log N)$ with slope trick. 
 
 </info-block>
+
+The rest of this module assumes that you know the basic idea of this trick. In particular, you should be at least somewhat familiar with the $O(N\log N)$ time solution to the first problem in zscoder's tutorial:
+
+<problems-list problems={metadata.problems.ex} />
+
+It's ok if you found the explanations confusing; the example below should help clarify.
 
 ## Buy Low Sell High
 
@@ -158,7 +168,7 @@ dp[5]  = {  3,  -2,  -9, -16, -25, -35}
 dif[5] = {  5,   7,   7,   9,  10}
 ```
 
-Again, we can choose to sell one share at price $9$. The last three DP values remain the same while the others change.
+Again, we can choose to sell one share at price $9$. The last three DP values remain the same while the others change. $dif$ is still in increasing order!
 
 ```
 dp[5]  = {  7,   0,  -7, -16, -25, -35}
