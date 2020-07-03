@@ -32,8 +32,8 @@ export class Problem {
     public tags?: string[],
     public sketch?: string,
   ) {
-    this.isIntro = labels.includes("Intro|");
-    labels = labels.replace("Intro|", "") as any;
+    this.isIntro = labels && labels.includes("Intro|");
+    if (labels) labels = labels.replace("Intro|", "") as any;
     this.difficulty = labels as any;
     if (!id.startsWith("http")) {
       if (source in sources) {
