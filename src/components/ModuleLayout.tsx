@@ -275,14 +275,14 @@ const CompactNav = ({
           </Link>
         )}
       </span>
-      <span className="ml-3 rounded-md">
-        <button
-          type="button"
-          className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-        >
-          Mark Complete
-        </button>
-      </span>
+      {/*<span className="ml-3 rounded-md">*/}
+      {/*  <button*/}
+      {/*    type="button"*/}
+      {/*    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"*/}
+      {/*  >*/}
+      {/*    Mark Complete*/}
+      {/*  </button>*/}
+      {/*</span>*/}
       <span className="ml-3 rounded-md">
         {nextModule && (
           <Link
@@ -510,16 +510,16 @@ export default function ModuleLayout({
                   </h1>
                   <p className={`text-gray-500`}>Author: {module.author}</p>
                 </div>
-                <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
-                  <span className="shadow-sm rounded-md">
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"
-                    >
-                      Mark Complete
-                    </button>
-                  </span>
-                </div>
+                {/*<div className="hidden lg:flex-shrink-0 lg:flex ml-4">*/}
+                {/*  <span className="shadow-sm rounded-md">*/}
+                {/*    <button*/}
+                {/*      type="button"*/}
+                {/*      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"*/}
+                {/*    >*/}
+                {/*      Mark Complete*/}
+                {/*    </button>*/}
+                {/*  </span>*/}
+                {/*</div>*/}
               </div>
             </div>
             {children}
