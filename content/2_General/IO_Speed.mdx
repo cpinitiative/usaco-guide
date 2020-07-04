@@ -9,7 +9,7 @@ Generally, input and output speed isn't an issue. However, some platinum tasks h
 
 ## Fast Input
 
-The largest USACO input file I know of is test case 11 of [robotic cow herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674), which is 10.3 megabytes! The answer to this test case is $10^{18}$ (with $N=K=10^5$ and all microcontrollers costing $10^8$).
+The largest USACO input file I know of is test case 11 of [USACO Platinum - Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674), which is 10.3 megabytes! The answer to this test case is $10^{18}$ (with $N=K=10^5$ and all microcontrollers costing $10^8$).
 
 ### C++
 
@@ -123,6 +123,27 @@ int main() {
 (custom I/O?)
 
 (streamtokenizer instead of stringtokenizer? see http://www.usaco.org/current/data/sol_threesum_gold_jan20.html)
+
+### Python
+
+Faster than the first C++ method! Significantly less if $P$ does not need to be stored.
+
+<spoiler title="853ms">
+
+```py
+fin = open("roboherd.in","r")
+fout = open("roboherd.out","w")
+N,K = map(int,fin.readline().split())
+P = [[] for i in range(N)]
+for i in range(N):
+	P[i] = map(int,fin.readline().split())
+if N == 3:
+	fout.write(str(61))
+else:
+	fout.write(str(1000000000000000000))
+```
+
+</spoiler>
 
 
 ## Fast Output
