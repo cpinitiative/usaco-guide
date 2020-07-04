@@ -119,6 +119,7 @@ int main() {
 The Java `Scanner` is probably the easiest way to read input in Java, though it is also extremely slow.
 
 *Reading input with `Scanner`*
+
 <spoiler title="3188ms">
 
 ```java
@@ -220,7 +221,7 @@ public class roboherd_buffered_reader_string_tokenizer {
 ```
 </spoiler>
 
-Even faster than `BufferedReader` is a custom-written Fast I/O class that uses `InputStream`. Note that this custom class is similar to the custom-written FastIO.h in the C++ section, as both read input by through a byte buffer.
+Faster methods of reading input exist too - Even faster than `BufferedReader` is a custom-written Fast I/O class that uses `InputStream`. Note that this custom class is similar to the custom-written `FastIO.h` in the C++ section, as both read input through a byte buffer.
 
 <spoiler title="320ms>
 
@@ -331,7 +332,7 @@ public class roboherd_is {
 ```
 </spoiler>
 
-The most realistic input method to implement in contest is `BufferedReader` and `StringTokenizer`, as it is relatively fast for the amount of code necessary. Also worth noting in this demo is how much faster the C++ programs ran than Java programs, which may be a significant factor in advanced USACO divisions.
+The most realistic input method to implement in contest is `BufferedReader` and `StringTokenizer`, as it is relatively fast for the amount of code necessary.
 
 ### Python
 
@@ -357,6 +358,6 @@ else:
 
 ## Fast Output
 
-(not using endl?)
+When printing many lines in C++, it may be faster to use the newline character `\n` in place of `endl`. Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that they don't immediately print their output, but store some of it. At some point, the buffer's contents are written (i.e. "flushed") to the output device, whether it be the standard output stream or a file. Buffering the output helps with efficiency if accessing the output device (like a file) is slow. Because `endl` flushes the output, it may be faster to use `\n` instead and avoid unnecessary flushes.
 
-(printing out one thing at end?)
+In general, it may laso be faster to store the output all in a single `string` (C++) or `StringBuffer` (Java) and outputting it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
