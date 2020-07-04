@@ -1,7 +1,7 @@
 ---
 id: io-speed
 title: Input / Output Speed
-author: Benjamin Qi
+author: Benjamin Qi / Nathan Chen
 description: ""
 ---
 
@@ -116,13 +116,41 @@ int main() {
 
 ### Java
 
-(scanner?)
+The Java `Scanner` is probably the easiest way to read input in Java, though it is also extremely slow.
 
-(buffered reader?)
+<spoiler title="3188ms">
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class roboherd_scanner {
+	
+	static int P[][] = new int[100000][];
+	
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(new File("roboherd.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("roboherd.out")));
+		
+		int N = sc.nextInt();
+		int K = sc.nextInt();
+		for(int i = 0; i < N; ++i) {
+			int M = sc.nextInt(); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
+		}
+		
+		if(N == 3) pw.println(61);
+		else pw.println(1000000000000000000L);
+		pw.close();
+	}
+}
+```
+
+</spoiler>
+
+A combination of 
 
 (custom I/O?)
-
-(streamtokenizer instead of stringtokenizer? see http://www.usaco.org/current/data/sol_threesum_gold_jan20.html)
 
 ### Python
 
