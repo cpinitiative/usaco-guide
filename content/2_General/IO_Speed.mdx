@@ -118,12 +118,14 @@ int main() {
 
 The Java `Scanner` is probably the easiest way to read input in Java, though it is also extremely slow.
 
+*Reading input with `Scanner`*
 <spoiler title="3188ms">
 
 ```java
 import java.util.*;
 import java.io.*;
 
+//3188ms
 public class roboherd_scanner {
 	
 	static int P[][] = new int[100000][];
@@ -148,7 +150,71 @@ public class roboherd_scanner {
 
 </spoiler>
 
-A combination of 
+A common alternative to reading input in Java for programming contests is `BufferedReader`, which reads faster from a file than `Scanner`. `BufferedReader` is used to read input line by line using the `.readLine()` method, which returns a string. Methods like `Integer.parseInt()` are used to convert strings into primitives usable in calculations, and can directly convert a line into a number, like in `Integer.parseInt(br.readLine())`.
+
+Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String` or the `.nextToken()` in `StringTokenizer`. Notice that using `StringTokenizer` to split strings is slightly faster than `.split()`.
+
+*Reading input with `BufferedReader` and `.split()`:*
+<spoiler title="1209ms">
+import java.util.*;
+import java.io.*;
+//1209ms
+
+public class roboherd_buffered_reader_string_split {
+	
+	static int P[][] = new int[100000][];
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("roboherd.out")));
+		
+		String[] tokens = br.readLine().split(" ");
+		int N = Integer.parseInt(tokens[0]);
+		int K = Integer.parseInt(tokens[1]);
+		for(int i = 0; i < N; ++i) {
+			tokens = br.readLine().split(" ");
+			int M = Integer.parseInt(tokens[0]); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(tokens[j+1]);
+		}
+		
+		if(N == 3) pw.println(61);
+		else pw.println(1000000000000000000L);
+		pw.close();
+	}
+}
+</spoiler>
+
+*Reading input with `BufferedReader` and `StringTokenizer`*
+<spoiler title="986ms">
+import java.util.*;
+import java.io.*;
+import java.awt.Point;
+import java.math.BigInteger;
+//986ms
+
+public class roboherd_buffered_reader_string_tokenizer {
+	
+	static int P[][] = new int[100000][];
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("roboherd.out")));
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		for(int i = 0; i < N; ++i) {
+			st = new StringTokenizer(br.readLine());
+			int M = Integer.parseInt(st.nextToken()); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(st.nextToken());
+		}
+		
+		if(N == 3) pw.println(61);
+		else pw.println(1000000000000000000L);
+		pw.close();
+	}
+}
+</spoiler>
 
 (custom I/O?)
 
