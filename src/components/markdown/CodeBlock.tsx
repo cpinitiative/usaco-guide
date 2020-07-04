@@ -7,7 +7,11 @@ import vsDark from 'prism-react-renderer/themes/vsDark';
 export default ({ children, className }) => {
   if (className === undefined) {
     // no styling, just a regular pre tag
-    return <pre className="rounded bg-gray-100 p-4">{children}</pre>;
+    return (
+      <pre className="rounded bg-gray-100 p-4 whitespace-pre-wrap">
+        {children}
+      </pre>
+    );
   }
   const language = className.replace(/language-/, '');
   return (
