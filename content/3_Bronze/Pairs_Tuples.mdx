@@ -1,11 +1,11 @@
 ---
 id: pairs-tuples
 title: Pairs & Tuples
-author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao
+author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao, Abutalib Namazov
 description: Introduces pairs, which allow you to store two objects (possibly of different types) as a single unit, as well as tuples, which are a generalization of pairs.
 ---
 
-(never needed but uh it's pretty useful lol)
+Storing multiple elements as a signle unit allows you to change the order of the elements (e.g. sorting) without mixing one component with another. For example, if you had some points on a plane with given coordinates `x[i]` and `y[i]` for i'th point, and the task is sorting these points with the increasing order of `x` coordinate and increasing   order of `y` coordinate in case it is a tie. Now, if you sort one of `x[i]` and `y[i]` without considering the other, the points will be mixed incorrectly. However, sorting the points with considering `x[i]` and `y[i]` as a signle unit, we will have the expected result.
 
 ## Pairs
 
@@ -13,11 +13,14 @@ description: Introduces pairs, which allow you to store two objects (possibly of
 
 ### [Pair](http://www.cplusplus.com/reference/utility/pair/pair/)
 
+ - `pair<type1, type2> p`: Creates a pair p with two elements with the first one being of type1 and the second one being of type2.
  - `make_pair(a, b)`: Returns a pair with values a, b.
+ - `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
  - `pair.first`: The first value of the pair.
  - `pair.second`: The second value of the pair.
 
-Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`.
+While sorting an array of pairs without any comparator, the priority is given to the first element of pairs, then the second element of them in case it is tie. So, to solve the problem mentioned early, it would be correct to create an array of pairs with elements `{x[i], y[i]}` and [sort](https://usaco-guide.netlify.app/bronze/intro-sorting) them.
+Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using tuples or [custom classes/structs](https://usaco-guide.netlify.app/silver/sorting-custom) might be more convenient.
 
 Example:
 
@@ -27,22 +30,62 @@ Example:
 using namespace std;
 
 int main() {
-  pair<string, int> myPair = make_pair("Testing", 123);
-  cout << myPair.first << " " << myPair.second << endl; // Testing 123
+  pair<string, int> myPair1 = make_pair("Testing", 123);
+  cout << myPair1.first << " " << myPair1.second << endl; // Testing 123
+  myPair1.first = "It is possible to edit pairs after declaring them";
+  cout << myPair1.first << " " << myPair1.second << endl;
+  
+  pair<string, string> myPair2 = {"Testing", "curly braces"};
+  cout << myPair2.first << " " << myPair2.second << endl; // Testing curly braces
 }
 
 /* Output
  * Testing 123
+ * Testing curly braces
+ * It is possible to edit pairs after declaring them 123
  */
 ```
 
-### Tuple
+### [Tuples](http://www.cplusplus.com/reference/tuple/)
 
-(anyone use?)
+ - `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
+ - `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
+ - `get<i>(t)`: Returns the i'th element of the tuple `t`. Only works for constant i (must be some number, not variable). Apperantly, can be used to change the element of a tuple.
+ - `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple t accordingly.
+
+This is not frequently used by competitive programmers, but it is good to know and can help you to simplify things sometimes. Also, it is possible to sort an array of tuples. Without using any comparator, sorting tuples will first sort by the first element, then the second, and so on.
+
+Example:
+
+```cpp
+#include <iostream>
+#include <tuple> /// needs additional library
+#include <string>
+
+using namespace std;
+
+int main() {
+    int a = 3, b = 4, c = 5;
+    tuple<int, int, int> t = tie(a, b, c);
+    cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+    get<0>(t) = 7;
+    cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+
+    tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
+    string s1, s2; int x;
+    tie(s1, s2, x) = tp2;
+    cout << s1 << " " << s2 << " " << x << endl;
+}
+/* Output
+ * 3 4 5
+ * 7 4 5
+ * Hello world 100
+ */
+```
 
 ## Java
 
-Unfortunately there is no default class for pairs in java, so you have to create your own.
+Unfortunately, there is no default class for pairs in java, so you have to create your own.
 
 ```java
 class pair implements Comparable <pair>{
