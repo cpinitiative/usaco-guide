@@ -26,7 +26,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       items: [
         "io-speed",
         "why-cpp",
-        "macros",
+        "shorten-cpp",
         "debugging",
       ]
     },
@@ -49,9 +49,16 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "silver": [
     "prefix-sums",
     {
+      name: "Binary Search",
+      items: [
+        "binary-search-sorted",
+        "binary-search-ans",
+      ]
+    },
+    {
       name: "Sorting",
       items: [
-        "more-sorting",
+        "sorting-methods",
         "sorting-custom",
         "sorting-cpp",
       ]
@@ -59,7 +66,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Ordered Maps & Sets",
       items: [
-        "maps-sets",
+        "intro-ordered",
         "harder-ordered",
       ]
     },
@@ -70,7 +77,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "sliding",
       ]
     },
-    "binary-search",
     "greedy",
     {
       name: "Graphs",
@@ -90,9 +96,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       items: [
         "toposort",
         "cyc",
-        "dsu",
         "sp",
-        "mst",
       ]
     },
     {
@@ -107,6 +111,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Trees",
       items: [
+        "dsu",
+        "mst",
         "dp-trees",
         "tree-euler",
       ]
