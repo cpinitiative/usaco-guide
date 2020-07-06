@@ -20,14 +20,14 @@ const sources = {
 
 export class Problem {
   public url: string;
-  public difficulty: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane';
+  public difficulty: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane';
   public isIntro: boolean;
 
   constructor(
     public source: string,
     public name: string,
     public id: string,
-    labels?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane' | 'Intro|Intro' | 'Intro|Easy' | 'Intro|Normal' | 'Intro|Hard' | 'Intro|Very Hard' | 'Intro|Insane',
+    labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane' | 'Intro|Very Easy' | 'Intro|Easy' | 'Intro|Normal' | 'Intro|Hard' | 'Intro|Very Hard' | 'Intro|Insane',
     public starred?: boolean,
     public tags?: string[],
     public sketch?: string,

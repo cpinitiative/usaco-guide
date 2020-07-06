@@ -1,7 +1,7 @@
 ---
 id: pairs-tuples
-title: Pairs & Tuples
-author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao, Abutalib Namazov
+title: Pairs & Tuples in C++
+author: Benjamin Qi, Nathan Wang, Darren Yao, Abutalib Namazov
 description: Introduces pairs, which allow you to store two objects (possibly of different types) as a single unit, as well as tuples, which are a generalization of pairs.
 prerequisites:
  - Bronze - Introduction to Data Structures
@@ -22,8 +22,6 @@ If you sort one of $x_i$ and $y_i$ without considering the other, the points wil
  - `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
  - `pair.first`: The first value of the pair.
  - `pair.second`: The second value of the pair.
-
-By default, pairs are sorted by first element and then second element in case of a tie, which is precisely what we need for the example above.
 
 Example:
 
@@ -49,42 +47,24 @@ int main() {
  */
 ```
 
-(example code with sorting?)
-
-### Java
-
-Unfortunately, there is no default class for pairs in java, so you have to create your own.
-
-```java
-class pair implements Comparable <pair>{
-    int first;
-    int second;
-    public int compareTo(pair other) {
-        return first==other.first?second-other.second:first-other.first;
-    }
-    pair(int a, int b) {
-        first=a;
-        second=b;
-    }
-}
-
-```
-If you have an array ```pair[]arr=new pair[100]```, make sure each element of this array is not null. You can call ```Arrays.sort(arr);``` on this array and it will sort it by all the ```first``` of the array and if there is a tie in ```first``` it will sort by ```second```.
-
-You can also use an `int[]` as a pair, or if you're using a pair of two different types, you can use `Object[]`.
-
-If you want to sort by 3 or more elements, it's a simple change. Just add a new variable in ```pair``` and make sure the comparable compares in the right order you want. 
-
 ## [Tuples](http://www.cplusplus.com/reference/tuple/)
 
-Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using tuples or [custom classes/structs](https://usaco-guide.netlify.app/silver/sorting-custom) might be more convenient.
+Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using **tuples** might be more convenient.
 
  - `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
  - `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
- - `get<i>(t)`: Returns the i'th element of the tuple `t`. Only works for constant i (must be some number, not variable). Apperantly, can be used to change the element of a tuple.
- - `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple t accordingly.
+ - `get<i>(t)`: Returns the $i$'th element of the tuple `t`. Only works for constant $i$. Can be used to change the element of a tuple.
 
-This is not frequently used by competitive programmers, but it is good to know and can help you to simplify things sometimes. Also, it is possible to sort an array of tuples. Without using any comparator, sorting tuples will first sort by the first element, then the second, and so on.
+Note that it is illegal to do something like the following since $z$ is not constant:
+
+```cpp
+tuple<int,int,int> t{3,4,5};
+int z = 1; cout << get<z>(t);
+```
+
+ - `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple $t$ accordingly.
+
+This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes. 
 
 Example:
 
@@ -114,9 +94,22 @@ int main() {
  */
 ```
 
-Note that it is illegal to do something like the following since $z$ is not constant:
+
+## Sorting Pairs & Tuples
+
+<resources>
+  <resource source="CPH" title="3.2 - Sorting Pairs, Tuples" starred></resource>
+</resources>
+
+By default, C++ pairs are sorted by first element and then second element in case of a tie, which is precisely what we need for the example above.
+
 
 ```cpp
-tuple<int,int,int> t{3,4,5};
-int z = 1; cout << get<z>(t);
+pair<int, int> arr[N];
+
+int main() {
+    sort(arr, arr+N); // example values?
+} 
 ```
+
+Tuples are sorted similarly.

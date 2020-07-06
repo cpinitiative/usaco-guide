@@ -3,6 +3,8 @@ id: prefix-sums
 title: "Prefix Sums"
 author: Darren Yao, Eric Wei
 description: Computing range sum queries in constant time over a fixed array.
+prerequisites:
+ - Bronze - Introduction to Data Structures
 frequency: 3
 ---
 
@@ -20,6 +22,8 @@ export const metadata = {
       new Problem("Silver", "Hoof Paper Scissors", "691", "Easy", false, [], ""),
       new Problem("Silver", "Max Cross", "715", "Easy", false, [], ""),
       new Problem("Old Bronze", "Haybale Stacking", "104", "Easy", false, [], "**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array. **Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)"),
+      new Problem("CSES", "Subarray Sums II", "1661", "Easy", false, [], ""),
+      new Problem("CSES", "Subarray Divisibility", "1662", "Easy", false, [], ""),
     ],
     maxsum: [
       new Problem("CSES", "Max Subarray Sum", "1643", "Easy", false, ["Prefix Sums"], ""),
@@ -184,7 +188,6 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 <problems-list problems={metadata.problems.cum} />
 
-
 ## Max Subarray Sum
 
 Now we'll look at some extensions.
@@ -196,10 +199,6 @@ This problem has a solution known as **Kadane's Algorithm**. Please don't use th
 <spoiler title="Why are the two methods equivalent?">
  Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
 </spoiler>
-
-Extension:
-
-<problems-list problems={metadata.problems.maxsumext} />
 
 ## Prefix Minimum, XOR, etc.
 

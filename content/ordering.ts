@@ -59,8 +59,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Sorting",
       items: [
         "sorting-methods",
-        "sorting-custom",
-        "sorting-cpp",
+        "sorting-custom-1",
+        "sorting-custom-2",
       ]
     },
     {
