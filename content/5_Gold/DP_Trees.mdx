@@ -1,6 +1,6 @@
 ---
 id: dp-trees
-title: "Dynamic Programming on Trees"
+title: "Dynamic Programming on Subtrees"
 author: Michael Cao
 prerequisites: 
  - Silver - Depth First Search
@@ -8,7 +8,27 @@ prerequisites:
 description: What it sounds like.
 frequency: 1
 ---
+import { Problem } from "../models";
 
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Tree Matching", "1130", "Easy", false, ["DP"], ""),
+    ],
+    usaco: [
+      new Problem("AC", "Independent Set", "https://atcoder.jp/contests/dp/tasks/dp_p", "Easy", false, [], ""),
+      new Problem("Gold", "Barn Painting", "766", "Easy", false, ["DP"], "similar to independent set on tree"),
+      new Problem("AC", "Subtree", "https://atcoder.jp/contests/dp/tasks/dp_v", "Normal", false, [], ""),
+      new Problem("ojuz", "COCI - Dzumbus", "COCI19_dzumbus", "Hard", false, [], ""),
+      new Problem("Gold", "Delegation", "1019", "Hard", false, ["Greedy"], ""),
+      new Problem("Plat", "Delegation", "1020", "Hard", false, ["DP", "Binary Search"], ""),
+      new Problem("CF", "Ostap & Tree", "problemset/problem/735/E", "Hard", false, ["DP"], "$O(NK)$ I think"),
+      new Problem("CSES", "Creating Offices", "1752", "Hard", false, ["Greedy"], "equivalent to BOI - Cat in a Tree"),
+    ],
+  }
+}
+
+<problems-list problems={metadata.problems.sample} />
 
 ## Tutorial
 
@@ -17,29 +37,68 @@ frequency: 1
   <resource source="Philippines" title="DP on Trees and DAGs" url="https://noi.ph/training/weekly/week5.pdf">lol this code format is terrible </resource>
 </resources>
 
+## Solving for Every Subtree
+
+(dfs twice)
+
+## Combining Subtrees in $O(N^2)$
+
 ## Problems
 
 <info-block title="Pro Tip">
 
-Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! 
+Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices.
 
 </info-block>
 
-  - USACO
-    - [Gold - Barn Painting](http://www.usaco.org/index.php?page=viewproblem2&cpid=766)
-      - Similar to Independent Set
-    - [Gold - Delegation](http://usaco.org/index.php?page=viewproblem2&cpid=1019)
-      - Pretty much a greedy problem.
-    - [Plat - Delegation](http://www.usaco.org/index.php?page=viewproblem2&cpid=1020)
-      - Binary search on answer!
-  - Other
-    - [CSES - Tree Matching](https://cses.fi/problemset/task/1130)
-    - [Subtree](https://atcoder.jp/contests/dp/tasks/dp_v)
-    - [Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p)
-    - [BOI - Cat In A Tree](https://cses.fi/file/a904421da451fbe1b60f96a27256832a011825dfd097ee40184d15878e837018/)
-      - Observations first.
-    - [COCI - Dzumbus](https://oj.uz/problem/view/COCI19_dzumbus)
-      - Solve child subtree by subtree. Runtime may be faster than you think.
-    - [Ostap and Tree](https://codeforces.com/problemset/problem/735/E)
+<problems-list problems={metadata.problems.usaco} />
 
-O(N^2) subtree combining stuff
+<spoiler title="Ostap & Tree">
+
+```cpp
+vmi yes[101], no[101];
+int n,k;
+vi adj[MX];
+ 
+void dfs(int x, int y) {
+  yes[x] = no[x] = {1}; // black, not black
+  // dist of closest good vertex
+  // or dist of farthest bad vertex
+  auto ad = [](vmi& a, int b, mi c) {
+    while (sz(a) <= b) a.pb(0);
+    a[b] += c;
+  };
+  trav(t,adj[x]) if (t != y) {
+    dfs(t,x);
+    yes[t].insert(begin(yes[t]),0);
+    no[t].insert(begin(no[t]),0);
+    if (sz(no[t]) > k+1) no[t].pop_back();
+    vmi YES, NO;
+    F0R(i,sz(yes[x])) F0R(j,sz(yes[t])) ad(YES,min(i,j),yes[x][i]*yes[t][j]);
+    F0R(i,sz(no[x])) F0R(j,sz(no[t])) ad(NO,max(i,j),no[x][i]*no[t][j]);
+    auto yesNo = [&](vmi good, vmi bad) {
+      F0R(i,sz(good)) F0R(j,sz(bad)) {
+        if (i+j <= k) ad(YES,i,good[i]*bad[j]);
+        else ad(NO,j,good[i]*bad[j]);
+      }
+    };
+    yesNo(yes[x],no[t]); yesNo(yes[t],no[x]);
+    swap(yes[x],YES); swap(no[x],NO);
+  }
+}
+ 
+int main() {
+  setIO(); re(n,k);
+  F0R(i,n-1) {
+    int a,b; re(a,b);
+    adj[a].pb(b), adj[b].pb(a);
+  }
+  dfs(1,0);
+  mi ans = 0;
+  trav(t,yes[1]) ans += t;
+  ps(ans);
+  // you should actually read the stuff at the bottom
+}
+```
+
+</spoiler>

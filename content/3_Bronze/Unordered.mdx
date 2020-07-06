@@ -6,6 +6,21 @@ description: "?"
 frequency: 2
 ---
 
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    ex: [
+      new Problem("YS", "Associative Array", "associative_array", "Easy"),
+    ],
+    standard: [
+      new Problem("CSES", "Distinct Numbers", "1621", "Easy"),
+      new Problem("CSES", "Sum of Two Values", "1640", "Easy", false, [], "Can be solved without sets."),
+      new Problem("Silver", "Cities & States", "667", "Hard", false, [], ""),
+    ],
+  }
+};
+
 ## Sets and Maps
 
 A **set** is a collection of objects that contains no duplicates. A **map** is a set of ordered pairs, each containing a key and a value. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: one to add a specified key-value pairing, one to retrieve the value for a given key, and one to remove a key-value pairing from the map. Like sets, maps can be unordered or ordered.
@@ -69,6 +84,8 @@ for(int element : set){
 
 ## HashMaps
 
+<problems-list problems={metadata.problems.ex} />
+
 ### C++
 
 In an unordered map `m`, the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0. The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map. Lastly, `erase(key)` and `erase(it)` removes the map entry associated with the specified key or iterator. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
@@ -101,8 +118,13 @@ System.out.println(map.containsKey(1)); // true
 
 ## Hacking
 
-In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm is vulnerable to pathological data sets causing abnormally slow runtimes, in turn causing failures on some test cases (see [neal's blog](https://codeforces.com/blog/entry/62393)). 
+In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however. 
 
-To fix this, use a different hashing algorithm. (how?)
+<resources>
+	<resource source="Mark Nelson" title="Hash Functions for C++ Unordered Containers" url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html" starred>How to create user-defined hash function for `unordered_map`.</resource>
+	<resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</resource>
+</resources>
 
-(Java isn't vulnerable though)
+## Problems
+
+<problems-list problems={metadata.problems.standard} />

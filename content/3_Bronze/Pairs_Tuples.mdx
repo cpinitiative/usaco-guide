@@ -3,24 +3,27 @@ id: pairs-tuples
 title: Pairs & Tuples
 author: Aaron Chew, Benjamin Qi, Nathan Wang, Darren Yao, Abutalib Namazov
 description: Introduces pairs, which allow you to store two objects (possibly of different types) as a single unit, as well as tuples, which are a generalization of pairs.
+prerequisites:
+ - Bronze - Introduction to Data Structures
 ---
 
-Storing multiple elements as a signle unit allows you to change the order of the elements (e.g. sorting) without mixing one component with another. For example, if you had some points on a plane with given coordinates `x[i]` and `y[i]` for i'th point, and the task is sorting these points with the increasing order of `x` coordinate and increasing   order of `y` coordinate in case it is a tie. Now, if you sort one of `x[i]` and `y[i]` without considering the other, the points will be mixed incorrectly. However, sorting the points with considering `x[i]` and `y[i]` as a signle unit, we will have the expected result.
+Storing multiple elements as a single unit allows you to change the order of the elements (e.g. sorting) without mixing one component with another.
+
+**Example:** Given some points on a plane where the $i$-th point has coordinates $(x_i,y_i)$, sort these points in increasing order of $x$ coordinate and increasing order of $y$ in case there is a tie.
+
+If you sort one of $x_i$ and $y_i$ without considering the other, the points will not be in the correct order. We need to consider the pair $(x_i,y_i)$ as a single unit.
 
 ## Pairs
 
-## C++ 
+### [C++](http://www.cplusplus.com/reference/utility/pair/pair/)
 
-### [Pair](http://www.cplusplus.com/reference/utility/pair/pair/)
-
- - `pair<type1, type2> p`: Creates a pair p with two elements with the first one being of type1 and the second one being of type2.
- - `make_pair(a, b)`: Returns a pair with values a, b.
+ - `pair<type1, type2> p`: Creates a pair `p` with two elements with the first one being of `type1` and the second one being of `type2`.
+ - `make_pair(a, b)`: Returns a pair with values `a`, `b`.
  - `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
  - `pair.first`: The first value of the pair.
  - `pair.second`: The second value of the pair.
 
-While sorting an array of pairs without any comparator, the priority is given to the first element of pairs, then the second element of them in case it is tie. So, to solve the problem mentioned early, it would be correct to create an array of pairs with elements `{x[i], y[i]}` and [sort](https://usaco-guide.netlify.app/bronze/intro-sorting) them.
-Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using tuples or [custom classes/structs](https://usaco-guide.netlify.app/silver/sorting-custom) might be more convenient.
+By default, pairs are sorted by first element and then second element in case of a tie, which is precisely what we need for the example above.
 
 Example:
 
@@ -46,7 +49,35 @@ int main() {
  */
 ```
 
-### [Tuples](http://www.cplusplus.com/reference/tuple/)
+(example code with sorting?)
+
+### Java
+
+Unfortunately, there is no default class for pairs in java, so you have to create your own.
+
+```java
+class pair implements Comparable <pair>{
+    int first;
+    int second;
+    public int compareTo(pair other) {
+        return first==other.first?second-other.second:first-other.first;
+    }
+    pair(int a, int b) {
+        first=a;
+        second=b;
+    }
+}
+
+```
+If you have an array ```pair[]arr=new pair[100]```, make sure each element of this array is not null. You can call ```Arrays.sort(arr);``` on this array and it will sort it by all the ```first``` of the array and if there is a tie in ```first``` it will sort by ```second```.
+
+You can also use an `int[]` as a pair, or if you're using a pair of two different types, you can use `Object[]`.
+
+If you want to sort by 3 or more elements, it's a simple change. Just add a new variable in ```pair``` and make sure the comparable compares in the right order you want. 
+
+## [Tuples](http://www.cplusplus.com/reference/tuple/)
+
+Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using tuples or [custom classes/structs](https://usaco-guide.netlify.app/silver/sorting-custom) might be more convenient.
 
  - `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
  - `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
@@ -83,26 +114,9 @@ int main() {
  */
 ```
 
-## Java
+Note that it is illegal to do something like the following since $z$ is not constant:
 
-Unfortunately, there is no default class for pairs in java, so you have to create your own.
-
-```java
-class pair implements Comparable <pair>{
-    int first;
-    int second;
-    public int compareTo(pair other) {
-        return first==other.first?second-other.second:first-other.first;
-    }
-    pair(int a, int b) {
-        first=a;
-        second=b;
-    }
-}
-
+```cpp
+tuple<int,int,int> t{3,4,5};
+int z = 1; cout << get<z>(t);
 ```
-If you have an array ```pair[]arr=new pair[100]```, make sure each element of this array is not null. You can call ```Arrays.sort(arr);``` on this array and it will sort it by all the ```first``` of the array and if there is a tie in ```first``` it will sort by ```second```.
-
-You can also use an `int[]` as a pair, or if you're using a pair of two different types, you can use `Object[]`.
-
-If you want to sort by 3 or more elements, it's a simple change. Just add a new variable in ```pair``` and make sure the comparable compares in the right order you want. 
