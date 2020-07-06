@@ -152,13 +152,14 @@ const SidebarNavLinks = ({ links }: { links: NavLinkItem[] }) => {
         <Link
           to={link.url}
           className={`flex items-center px-6 py-3 text-sm leading-5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150`}
+          key={link.url}
         >
           {link.title}
         </Link>
       );
     }
     return (
-      <div className="bg-gray-100 mb-4">
+      <div className="bg-gray-100 mb-4" key={link.label}>
         <div
           className={`flex items-center px-6 py-3 text-sm leading-5 font-medium text-gray-600 border-b border-gray-200`}
         >

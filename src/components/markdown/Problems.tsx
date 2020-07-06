@@ -43,6 +43,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                       setProblem(problem);
                       setShowModal(true);
                     }}
+                    key={problem.id}
                   />
                 ))}
               </tbody>

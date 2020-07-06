@@ -38,6 +38,9 @@ export const plugins = [
             quality: 90,
           },
         },
+        {
+          resolve: require.resolve('./src/mdx-plugins/code-tabs.ts'),
+        },
       ],
       plugins: [`gatsby-remark-autolink-headers`],
     },

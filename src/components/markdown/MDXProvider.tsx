@@ -6,6 +6,7 @@ import { ResourceComponent, ResourcesListComponent } from './Resources';
 import CodeBlock from './CodeBlock';
 import { InlineMath } from 'react-katex';
 import classNames from 'classnames';
+import CodeSection from './CodeSection';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -99,6 +100,7 @@ const components = {
     />
   ),
   IM: ({ children }) => <InlineMath>{children}</InlineMath>,
+  'code-section': CodeSection,
   table: ({ className, ...props }) => (
     <table
       {...props}

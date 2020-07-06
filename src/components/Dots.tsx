@@ -11,6 +11,7 @@ export default function Dots({ count, color, totalCount }) {
           }`}
           fill="currentColor"
           viewBox="0 0 8 8"
+          key={idx}
         >
           <circle cx="4" cy="4" r="3" />
         </svg>

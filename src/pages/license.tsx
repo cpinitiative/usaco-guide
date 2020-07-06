@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import CodeBlock from '../components/markdown/CodeBlock';
 
 export default function LicensePage(props: PageProps) {
   return (
