@@ -70,6 +70,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "harder-ordered",
       ]
     },
+    "greedy",
     {
       name: "Stacks & Queues",
       items: [
@@ -77,7 +78,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "sliding",
       ]
     },
-    "greedy",
     {
       name: "Graphs",
       items: [

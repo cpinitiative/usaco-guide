@@ -12,6 +12,9 @@ export const metadata = {
   problems: {
     bubble: [
       new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Easy", false, [], "O(N^2)"),
+      ],
+    easy: [
+      new Problem("CSES", "Distinct Numbers", "1621", "Easy"),
     ],
   }
 };
@@ -50,9 +53,7 @@ Collections data types always contain an `add` method for adding an element to t
 
 ## Dynamic Arrays
 
-You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
-
-C++ (`vector`), Java (`ArrayList`)
+You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++, [`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
 
 For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
 
@@ -146,7 +147,11 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 
 ## Iterators
 
-An **iterator** allows you to traverse a container by pointing to an object within the container (although they are **not** the same thing as pointers). For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+An **iterator** allows you to traverse a container by pointing to an object within the container (although they are **not** the same thing as pointers). 
+
+### C++
+
+For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
 
 ```cpp
 for (vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it) {
@@ -162,7 +167,9 @@ for(auto element : v) {
 }
 ```
 
-(what about java?)
+### Java
+
+??
 
 ## Sorting
 
@@ -186,7 +193,7 @@ In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collectio
   - [Arrays.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
   - [Collections.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List))
 
-The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CF. 
+The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CodeForces. 
 
 Two ways to avoid this:
 
@@ -199,10 +206,13 @@ Two ways to avoid this:
 
 ## Additional Resources (C++)
 
-Some of this material will be covered in silver.
-
 <resources>
-  <resource source="CPH" title="4 - Data Structures" starred>structures mentioned in 4.5 are covered later</resource>
-  <resource source="PAPS" title="3.1, 3.5, 6.1">vectors, sets, maps</resource>
+  <resource source="CPH" title="4.1 - Dynamic Arrays" starred></resource>
+  <resource source="PAPS" title="3.1, 6.1">vectors, more details about dynamic arrays</resource>
   <resource source="CPC" title="2 - Data Structures" url="02_data_structures">assumes prior experience</resource>
 </resources>
+
+## Problems
+
+
+<problems-list problems={metadata.problems.easy} />

@@ -4,6 +4,7 @@ title: "Greedy Algorithms"
 author: Darren Yao
 prerequisites: 
  - Silver - Sorting with Custom Comparators
+ - Silver - Introduction to Ordered Maps & Sets
 description: Greedy algorithms select the optimal choice at each step instead of looking at the solution space as a whole. This reduces the problem to a smaller problem at each step.
 frequency: 3
 ---
@@ -12,7 +13,12 @@ import {Problem} from "../models"
 
 export const metadata = {
   problems: {
+    movie: [
+      new Problem("CSES", "Movie Festival", "1629", "Easy", false, [], ""),
+    ],
     practice: [
+      new Problem("CSES", "Apartments", "1084", "Easy", false, [], "Sort applicants and apartments, then greedily assign applicants"),
+      new Problem("CSES", "Ferris Wheel", "1090", "Easy", false, [], "Sort children, keep a left pointer and a right pointer. Each gondola either is one child from the right pointer or two children, one left and one right."),
       new Problem("Silver", "Lemonade Line", "835")
     ]
   }
@@ -63,9 +69,12 @@ pw.close();
 
 ## The Scheduling Problem
 
+<problems-list problems={metadata.problems.movie} />
+
 There are $N$ events, each described by their starting and ending times. Jason would like to attend as many events as possible, but he can only attend one event at a time, and if he chooses to attend an event, he must attend the entire event. Traveling between events is instantaneous.
 
 ### Bad Greedy: Earliest Starting Next Event
+
 One possible ordering for a greedy algorithm would always select the next possible event that begins as soon as possible. Let's look at the following example, where the selected events are highlighted in red:
 
 <svg viewBox="0 0 200 40">
@@ -119,6 +128,8 @@ static class Event implements Comparable<Event>{
     }
 }
 ```
+
+<br />
 
 ```java
 // read in the input, store the events in Event[] events.
