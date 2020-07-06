@@ -13,7 +13,7 @@ export const metadata = {
         new Problem("Bronze", "Blocked Billboard", "759", "Easy", false, ["rect"]),
     ],
     general: [
-		new Problem("Bronze", "Square Pasture", "663", "Easy", false, ["rect"]),
+		new Problem("Bronze", "Square Pasture", "663", "Intro", false, ["rect"]),
 		new Problem("Bronze", "Blocked Billboard II", "783", "Easy", false, ["rect"]),
 		new Problem("CF", "Div. 3 C - White Sheet", "contest/1216/problem/C", "Normal", false, ["rect"],"See this code (TODO; codeforces is down) for a nice implementation using the Java Rectangle class."),
     ]
@@ -22,7 +22,7 @@ export const metadata = {
 
 Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
 
-## Example: Blocked Billboard
+## Example: Bronze - Blocked Billboard
 
 <problems-list problems={metadata.problems.blocked} />
 
@@ -80,9 +80,9 @@ The `Rectangle` class supports numerous useful methods.
 
 This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
 
-For example, here is a nice implementation of the problem  ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
+For example, here is a nice implementation of the problem ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)). Below, you can find 
 
-<spoiler title="Java Solution">
+<spoiler title="Java Solution With Built-in Rectangle Class">
 
 ```java
 import java.awt.Rectangle; //needed to use Rectangle class
@@ -123,6 +123,46 @@ public class blockedBillboard{
 ```
 </spoiler>
 
+<spoiler title="Java Solution Without Built-in Rectangle Class">
+
+```java
+import java.io.*;
+import java.util.*;
+
+class blockedBillboard{
+    public static void main(String[] args) throws IOException{
+    	Scanner sc = new Scanner(new File("billboard.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
+        Rect a = new Rect();
+        Rect b = new Rect();
+        Rect t = new Rect();
+        int x1, y1, x2, y2;
+        a.x1 = sc.nextInt(); a.y1 = sc.nextInt(); a.x2 = sc.nextInt(); a.y2 = sc.nextInt();
+        b.x1 = sc.nextInt(); b.y1 = sc.nextInt(); b.x2 = sc.nextInt(); b.y2 = sc.nextInt();
+        t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
+        pw.println(area(a) + area(b) - intersect(a, t) - intersect(b, t));
+        pw.close();
+        sc.close();
+    }
+    static int area(Rect r){
+        return (r.y2 - r.y1) * (r.x2 - r.x1);
+    }
+    static int intersect(Rect p, Rect q) {
+        int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
+        int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
+        return xOverlap * yOverlap;
+    }
+}
+
+class Rect{
+    int x1, y1, x2, y2;
+    Rect(){
+
+    }
+}
+```
+</spoiler>
+
 ### Rectangle Class (C++)
 
 Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
@@ -139,26 +179,25 @@ struct Rect{
 };
 
 int area(Rect r){
-  return (r.y2 - r.y1) * (r.x2 - r.x1);
+  	return (r.y2 - r.y1) * (r.x2 - r.x1);
 }
 
 int intersect(Rect p, Rect q){
-  int xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1));
-  int yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1));
-  return xOverlap * yOverlap;
+  	int xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1));
+  	int yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1));
+  	return xOverlap * yOverlap;
 }
 
 int main(){
-  ifstream cin ("billboard.in");
-  ofstream cout ("billboard.out");
+	ifstream cin ("billboard.in");
+	ofstream cout ("billboard.out");
+ 	Rect a, b, t;  // billboards a, b, and the truck
+  	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
+ 	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
+  	cin >> t.x1 >> t.y1 >> t.x2 >> t.y2;
 
-  Rect a, b, t;  // billboards a, b, and the truck
- 
-  cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
-  cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
-  cin >> t.x1 >> t.y1 >> t.x2 >> t.y2;
-
-  cout << area(a) + area(b) - intersect(a, t) - intersect(b, t);
+	cout << area(a) + area(b) - intersect(a, t) - intersect(b, t) << endl;
+	return 0;
 }
 
 ```
