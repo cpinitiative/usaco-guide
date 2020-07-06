@@ -9,21 +9,17 @@ description: Measuring how long your algorithm takes to run in terms of the inpu
 
 
 <resources>
-  <resource source="CPH" title="2 - Time Complexity" starred>good intro and examples</resource>
-  <resource source="PAPS" title="5 - Time Complexity">more in-depth</resource>
+  <resource source="CPH" title="2 - Time Complexity" starred>Intro and examples</resource>
+  <resource source="PAPS" title="5 - Time Complexity" starred>More in-depth. In particular, 5.2 gives a formal definition of Big O.</resource>
 </resources>
 
 # Time Complexity
 
-In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second is $10^8$ (but could be closer to $5 \cdot 10^8$ given good constant factors).
-
-(define time complexity?)
+In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of operations the grading server can handle per second $10^8$ but could be closer to $5 \cdot 10^8$ given good constant factors).
 
 ## Complexity Calculations
 
-We want a method of how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where $f(n)$ is a function without constant factors or lower-order terms. We'll see some examples of how this works, as follows.
-
-(ben - formal definition of big O? constant factors don't **have** to be omitted)
+We want a method of how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where constant factors and lower-order terms are generally omitted from $f(n)$. We'll see some examples of how this works, as follows.
 
 The following code is $O(1)$, because it executes a constant number of operations.
 
@@ -34,9 +30,7 @@ int c = 4;
 int d = a + b + c + 153;
 ```
 
-Input and output operations are also assumed to be $O(1)$.
-
-In the following examples, we assume that the code inside the loops is $O(1)$.
+Input and output operations are also assumed to be $O(1)$. In the following examples, we assume that the code inside the loops is $O(1)$.
 
 The time complexity of loops is the number of iterations that the loop runs. For example, the following code examples are both $O(n)$.
 
@@ -45,6 +39,8 @@ for(int i = 1; i <= n; i++){
     // constant time code here
 }
 ```
+
+<br />
 
 ```cpp
 int i = 0;
@@ -61,6 +57,8 @@ for(int i = 1; i <= 5*n + 17; i++){
     // constant time code here
 }
 ```
+
+<br />
 
 ```cpp
 for(int i = 1; i <= n + 457737; i++){
