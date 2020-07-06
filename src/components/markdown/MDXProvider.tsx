@@ -101,6 +101,7 @@ const components = {
   ),
   IM: ({ children }) => <InlineMath>{children}</InlineMath>,
   'code-section': CodeSection,
+  'code-comment': props => <div {...props} />,
   table: ({ className, ...props }) => (
     <table
       {...props}

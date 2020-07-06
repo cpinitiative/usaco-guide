@@ -9,14 +9,19 @@ export default ({ markdownAST }, pluginOptions) => {
   let newChildren = [];
   for (let i = 0; i < markdownAST.children.length; i++) {
     let codeElements = [];
-    // prettier-ignore
+    let activeCodeComment = false;
     for (; i < markdownAST.children.length; i++) {
-      if (markdownAST.children[i].type === 'code' && markdownAST.children[i].lang) {
+      let child = markdownAST.children[i];
+      if (child.type === 'jsx' && child.value.startsWith('<code-comment'))
+        activeCodeComment = true;
+      if (activeCodeComment || (child.type === 'code' && child.lang)) {
         codeElements.push(markdownAST.children[i]);
       } else {
         if (codeElements.length > 0) i--;
         break;
       }
+      if (child.type === 'jsx' && child.value === '</code-comment>')
+        activeCodeComment = false;
     }
     if (codeElements.length > 0) {
       newChildren.push({

@@ -23,7 +23,10 @@ export default ({ children }) => {
     children = [children];
   }
 
+  console.log(children);
+
   const languageKeys = children
+    .filter(child => child.props.originalType === 'pre')
     .map(child => child.props.children.props.className.replace(/language-/, ''))
     .sort();
 
@@ -31,6 +34,8 @@ export default ({ children }) => {
 
   return (
     <div>
+      {/* Below is for code comments */}
+      {children.filter(child => child.props.lang === activeLang)}
       <div
         className="border-gray-800"
         style={{ backgroundColor: 'rgb(30, 30, 30)' }}
