@@ -14,7 +14,7 @@ const LanguageSwitcherButton = ({ children, active, onSelect }) => (
 const languages = {
   cpp: 'C++',
   java: 'Java',
-  python: 'Python',
+  py: 'Python',
   text: 'Text',
 };
 
