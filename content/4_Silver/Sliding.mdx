@@ -1,0 +1,80 @@
+---
+id: sliding
+title: "Sliding Window"
+author: Darren Yao?, Benjamin Qi
+prerequisites:
+ - Silver - Stacks & Queues
+description: "?"
+frequency: 2
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Sum of Two Values", "1141", "Easy", false, []),
+    ],
+    slide: [
+      new Problem("CSES", "Playlist", "1141", "Easy", false, [],"classic example of 2P"),
+      ],
+    general: [
+      new Problem("Silver", "Diamond Collector", "643", "Easy", false, ["2P", "Sorting"], ""),
+      new Problem("Silver", "Paired Up", "738", "Normal", false, ["2P", "Sorting"]),
+      new Problem("Gold", "Haybale Feast", "767", "Normal", false, ["Set", "Sliding Window"]),
+      new Problem("CF", "Books", "problemset/problem/279/B", "Normal", false, []),
+      new Problem("CF", "Cellular Network", "problemset/problem/702/C", "Normal", false, []),
+      new Problem("CF", "USB vs. PS/2", "problemset/problem/762/B", "Normal", false, []),
+      new Problem("CF", "K-Good Segment", "problemset/problem/616/D", "Normal", false, []),
+      new Problem("CF", "Garland", "problemset/problem/814/C", "Normal", false, []),
+      new Problem("CF", "Jury Meeting", "problemset/problem/853/B", "Normal", false, []),
+      new Problem("Plat", "Fort Moo", "600", "Very Hard", false, ["Sliding Window"]),
+    ],
+    qs: [
+      new Problem("YS","Queue Composite","queue_operate_all_composite","Hard",true,[],""),
+    ],
+  }
+};
+
+
+## Two Pointers
+
+<problems-list problems={metadata.problems.sample} />
+
+Two pointers refers to iterating two monotonic pointers across an array to search for a pair of indices satisfying some condition in linear time.
+
+<resources>
+  <resource source="CPH" title="8.1 - Two Pointers"></resource>
+  <resource source="IUSACO" title="14.1 - Two Pointers"></resource>
+</resources>
+
+## Sliding Window
+
+<problems-list problems={metadata.problems.slide} />
+
+(considered the same or a generalization of two pointers?)
+
+Let's envision a sliding window (or constant size subarray) of size $K$ moving left to right along an array, $a$. For each position of the window, we want to compute some information. 
+
+Let's store a `std::set` of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $O(\log N)$. 
+
+To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
+
+<resources>
+  <resource source="Medium" title="Introduction to Sliding Window Algorithms" url="https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7"> </resource>
+  <resource source="GFG" title="Window Sliding Technique" url="window-sliding-technique"> </resource>
+</resources>
+
+### Problems
+
+<problems-list problems={metadata.problems.general} />
+
+## Sliding Window Minimum in $O(N)$
+
+<resources>
+  <resource source="cp-algo" title="Minimum stack / Minimum queue" url="data_structures/stack_queue_modification.html" starred>Mentions two ways to solve this (both are important)!</resource>
+</resources>
+
+In particular, the second method allows us to solve the following generalization in linear time as well:
+
+<problems-list problems={metadata.problems.qs} />

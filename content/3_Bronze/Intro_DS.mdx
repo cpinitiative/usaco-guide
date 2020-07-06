@@ -1,0 +1,200 @@
+---
+id: intro-ds
+title: Introduction to Data Structures
+author: Darren Yao
+description: Introduces data structures, dynamic arrays, sorting.
+frequency: 4
+---
+
+A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
+
+## Introduction
+
+### C++
+
+The C++ [standard library data structures](http://www.cplusplus.com/reference/stl/) are designed to store any type of data. We put the desired data type within the `<>` brackets when declaring the data structure, as follows:
+
+```cpp
+vector<string> v;
+```
+
+This creates a `vector` structure that only stores objects of type `string`.
+
+For our examples below, we will primarily use the `int` data type, but note that you can use any data type including `string` and user-defined structures.
+
+Essentially every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
+
+### Java
+
+Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
+
+```java
+ArrayList<String> list = new ArrayList<String>();
+```
+
+This creates an `ArrayList` structure that only stores objects of type `String`.
+
+For our examples below, we will primarily use the `Integer` data type, but note that you can have Collections of any object type, including `Strings` , other Collections, or user-defined objects.
+
+Collections data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
+
+## Dynamic Arrays
+
+You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays that support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
+
+C++ (`vector`), Java (`ArrayList`)
+
+For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+
+```cpp
+vector<int> v;
+for(int i = 1; i <= 10; i++){
+    v.push_back(i);
+}
+```
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+for(int i = 1; i <= 10; i++){
+    list.add(i);
+}
+```
+
+When declaring a dynamic array we can give it an initial size, so it doesn't resize itself as we add elements to it. The following code initializes a dynamic array with initial size $30$:
+
+```cpp
+vector<int> v(30);
+```
+```java
+ArrayList<Integer> list = new ArrayList<Integer>(30);
+```
+
+
+However, we need to be careful that we only add elements to the end of the `vector`; insertion and deletion in the middle of the `vector` is $O(n)$.
+
+```cpp
+vector<int> v;
+v.push_back(2); // [2]
+v.push_back(3); // [2, 3]
+v.push_back(7); // [2, 3, 7]
+v.push_back(5); // [2, 3, 7, 5]
+v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
+v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+v.push_back(8); // [2, 7, 5, 8]
+v.erase(v.end()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is O(1).
+v.push_back(4); // [2, 7, 5, 4]
+v.push_back(4); // [2, 7, 5, 4, 4]
+v.push_back(9); // [2, 7, 5, 4, 4, 9]
+cout << v[2]; // 5
+v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
+// this erases the first three elements; O(n)
+```
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(2); // [2]
+list.add(3); // [2, 3]
+list.add(7); // [2, 3, 7]
+list.add(5); // [2, 3, 7, 5]
+list.set(1, 4); // sets element at index 1 to 4 -> [2, 4, 7, 5]
+list.remove(1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+list.add(8); // [2, 7, 5, 8]
+list.remove(list.size()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is $O(1)$.
+System.out.println(list.get(2)); // 5
+```
+
+To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
+
+```cpp
+vector<int> v;
+v.push_back(1); v.push_back(7); v.push_back(4); v.push_back(5); v.push_back(2);
+int arr[] = {1, 7, 4, 5, 2};
+for(int i = 0; i < v.size(); i++){
+    cout << v[i] << " ";
+}
+cout << endl;
+for(int element : arr){
+    cout << element << " ";
+}
+cout << endl;
+```
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(1); list.add(7); list.add(4); list.add(5); list.add(2);
+int[] arr = {1, 7, 4, 5, 2};
+for(int i = 0; i < list.size(); i++){ // regular
+    System.out.println(list.get(i));
+}
+for(int element : arr){ // for-each
+    System.out.println(element);
+}
+```
+ 
+In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
+
+## Iterators
+
+An **iterator** allows you to traverse a container by pointing to an object within the container (although they are **not** the same thing as pointers). For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+
+```cpp
+for (vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it) {
+    cout << *it; //prints the values in the vector using the pointer
+}
+```
+
+C++11 and later versions can automatically infer the type of an object if you use the keyword `auto`. This means that you can replace `vector<int>::iterator` with `auto` or `int` with `auto` in the for-each loop.
+
+```cpp
+for(auto element : v) {
+    cout << element; //prints the values in the vector
+}
+```
+
+(what about java?)
+
+## Sorting
+
+**Sorting** refers to arranging items in some particular order. No bronze problem should require sorting, but it can be an alternate solution that is sometimes much easier to implement. At the very least, you should be familiar with how to sort a (possibly dynamic) array.
+
+### C++
+
+In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
+
+  - [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort)
+  - [std::stable\_sort](http://www.cplusplus.com/reference/algorithm/stable_sort/)
+  - [Golovanov399 - C++ Tricks](https://codeforces.com/blog/entry/74684)
+    - first two related to sorting
+
+### Java
+
+In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
+ 
+  - [Arrays.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
+  - [Collections.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List))
+
+The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CF. 
+
+Two ways to avoid this:
+
+  - Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
+  - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+
+### Python
+
+  - [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
+
+## Problems
+
+???
+
+## Additional Resources (C++)
+
+Some of this material will be covered in silver.
+
+<resources>
+  <resource source="CPH" title="4 - Data Structures" starred>structures mentioned in 4.5 are covered later</resource>
+  <resource source="PAPS" title="3.1, 3.5, 6.1">vectors, sets, maps</resource>
+  <resource source="CPC" title="2 - Data Structures" url="02_data_structures">assumes prior experience</resource>
+</resources>

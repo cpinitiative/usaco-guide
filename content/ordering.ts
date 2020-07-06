@@ -37,11 +37,9 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Data Structures",
       items: [
-        "collections",
-        "containers",
+        "intro-ds",
+        "unordered",
         "pairs-tuples",
-        "ds",
-        "intro-sorting",
       ]
     },
     "simulation",
@@ -53,16 +51,23 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Sorting",
       items: [
+        "more-sorting",
         "sorting-custom",
         "sorting-cpp",
       ]
     },
     {
-      name: "Data Structures",
+      name: "Ordered Maps & Sets",
+      items: [
+        "maps-sets",
+        "harder-ordered",
+      ]
+    },
+    {
+      name: "Stacks & Queues",
       items: [
         "stacks-queues",
-        "amortized",
-        "maps-sets",
+        "sliding",
       ]
     },
     "binary-search",
