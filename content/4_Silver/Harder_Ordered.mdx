@@ -4,6 +4,7 @@ title: "Harder Problems with Ordered Sets"
 author: Benjamin Qi
 prerequisites: 
  - Silver - Introduction to Ordered Sets
+ - Silver - Introduction to Stacks & Queues
 description: ""
 frequency: 2
 ---
@@ -31,7 +32,98 @@ export const metadata = {
 
 <problems-list problems={metadata.problems.sample} />
 
-(solution)
+<spoiler title="Solution">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (x).size()
+
+string s;
+int m;
+multiset<int> ans, ret;
+ 
+void modify(int x) {
+  if (x == 0 || x == sz(s)) return;
+  auto it = ans.find(x);
+  if (it != end(ans)) {
+    int a = *prev(it), b = *next(it);
+    ret.erase(ret.find(x-a)), ret.erase(ret.find(b-x));
+    ret.insert(b-a);
+    ans.erase(it);
+  } else {
+    it = ans.insert(x);
+    int a = *prev(it), b = *next(it);
+    ret.erase(ret.find(b-a));
+    ret.insert(x-a), ret.insert(b-x);
+  }
+}
+ 
+int main() {
+  ios_base::sync_with_stdio(0); cin.tie(0);
+  cin >> s >> m;
+  ans.insert(0); ans.insert(sz(s));
+  for (int i = 0; i < sz(s)-1; ++i) 
+    if (s[i] != s[i+1]) ans.insert(i+1);
+  for (auto it = ans.begin(); next(it) != ans.end(); it ++)
+    ret.insert(*next(it)-*it);
+  for (int i = 0; i < m; ++i) {
+    int x; cin >> x;
+    modify(x-1); modify(x);
+    cout << *ret.rbegin() << " ";
+  }
+}
+```
+
+<br />
+
+Note that `multiset` has a high constant factor, so replacing `ret` with an array and a `priority_queue` reduces the runtime by a factor of 2.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (x).size()
+
+string s;
+int m;
+set<int> ans;
+priority_queue<int> ret;
+int cnt[200005];
+ 
+void ad(int x) { cnt[x] ++; ret.push(x);  }
+void modify(int x) {
+  if (x == 0 || x == sz(s)) return;
+  auto it = ans.find(x);
+  if (it != end(ans)) {
+    int a = *prev(it), b = *next(it); ans.erase(it);
+    cnt[x-a] --, cnt[b-x] --; ad(b-a);
+  } else {
+    it = ans.insert(x).first;
+    int a = *prev(it), b = *next(it);
+    cnt[b-a] --, ad(x-a), ad(b-x);
+  }
+}
+ 
+int main() {
+  ios_base::sync_with_stdio(0); cin.tie(0);
+  cin >> s >> m;
+  ans.insert(0); ans.insert(sz(s));
+  for (int i = 0; i < sz(s)-1; ++i) 
+    if (s[i] != s[i+1]) ans.insert(i+1);
+  for (auto it = ans.begin(); next(it) != ans.end(); it ++) 
+    ad(*next(it)-*it);
+  for (int i = 0; i < m; ++i) {
+    int x; cin >> x;
+    modify(x-1); modify(x);
+    while (!cnt[ret.top()]) ret.pop();
+    cout << ret.top() << " ";
+  }
+}
+```
+
+</spoiler>
 
 ## Problems
 

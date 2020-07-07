@@ -33,6 +33,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   ],
   "bronze": [
     "time-comp",
+    "simulation",
     "rect-geo",
     {
       name: "Data Structures",
@@ -42,7 +43,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "pairs-tuples",
       ]
     },
-    "simulation",
     "complete-search",
     "intro-graphs",
   ],
