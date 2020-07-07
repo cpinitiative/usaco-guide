@@ -11,12 +11,11 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     easier: [
-      new Problem("CSES", "Creating Strings I", "1622", "Intro", false, [], "all perms of string"),
-      new Problem("CSES", "Apple Division", "1623", "Intro", false, [], "all $2^n$ subsets"),
-      new Problem("Bronze", "Diamond Collector", "639", "Easy", false, [], "fix the min"), // 99.9
-      new Problem("Bronze", "Milk Pails", "615", "Easy", false, [], "Hint: Fix the number of first-type operations you perform."), // 99.71
-      new Problem("Bronze", "Bovine Genomics", "736", "Easy", false, [], ""), // 99.73
-      new Problem("Bronze", "Cow Gymnastics", "963", "Easy", false, [], "Hint: Brute force over all possible pairs."), // 99.93
+      new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion"], "all $2^n$ subsets"),
+      new Problem("Bronze", "Diamond Collector", "639", "Easy", false, ["Nested Loop"], "fix the min"), // 99.9
+      new Problem("Bronze", "Milk Pails", "615", "Easy", false, ["Nested Loop"], "Hint: Fix the number of first-type operations you perform."), // 99.71
+      new Problem("Bronze", "Bovine Genomics", "736", "Easy", false, ["Nested Loop"], ""), // 99.73
+      new Problem("Bronze", "Cow Gymnastics", "963", "Easy", false, ["Nested Loop"], "Hint: Brute force over all possible pairs."), // 99.93
       new Problem("Bronze", "Where Am I?", "964", "Easy", false, [], "Hint: Brute force over all possible substrings."), // 99.48
       new Problem("Bronze", "Triangles", "1011", "Easy", false, [], "loop over the possible right angles"), // 98.02
     ],
@@ -25,7 +24,6 @@ export const metadata = {
       new Problem("Bronze", "Lifeguards", "784", "Normal", false, [], "Hint: Try removing each lifeguard one at a time."), // 98.76
       new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], "Hint: Figure out what exactly you're complete searching."), // 98.45
       new Problem("Bronze", "Back & Forth", "857", "Hard", false, [], "exponential time going through all possibilities"), // 99.63
-      new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
       new Problem("Bronze", "Field Reduction", "641", "Hard", false, [], "Hint: For this problem, you can't do a full complete search; you have to do a reduced search."), // 91.75
       new Problem("Bronze", "Circle Cross", "712", "Hard", false, [], ""), // 89.6
       new Problem("Silver", "Bovine Genomics", "739", "Hard", false, [], ""),
@@ -33,20 +31,24 @@ export const metadata = {
       new Problem("Bronze", "Bull in a China Shop", "640", "Very Hard", false, [], "lots of WA on this one"), // 47.38
       new Problem("Silver", "Field Reduction", "642", "Very Hard", false, [], ""),
     ],
+    permSam: [
+      new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
+    ],
+    perm: [
+      new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
+    ]
   }
 };
-
-## Additional Reading
 
 <resources>
   <resource source="CPH" title="5.1 to 5.3 - Complete Search"> </resource>
 </resources>
 
-# Complete Search
+<br />
 
 In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
 
-## Example 1
+## Example
 
 ### Statement
 
@@ -102,11 +104,23 @@ A couple notes:
 
 </spoiler>
 
+## Problems
+
+### Easier
+
+<problems-list problems={metadata.problems.easier} />
+
+### Harder
+
+<problems-list problems={metadata.problems.harder} />
+
 ## Generating Permutations
+
+<problems-list problems={metadata.problems.permSam} />
 
 A **permutation** is a reordering of a list of elements. Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
 
-## Java
+### Java
 
 We'll have to implement this ourselves, which is called [Heap's Algorithm](https://en.wikipedia.org/wiki/Heap%27s_algorithm) (no relation to the heap data structure). What's going to be in the check function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
 
@@ -139,7 +153,7 @@ static void generate(int[] arr, int k){
 }
 ```
 
-## C++
+### C++
 
 We can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
 ```cpp
@@ -150,10 +164,6 @@ do {
 
 Note that this generates the permutations in **lexicographical order** (explanation)
 
-## Easier Problems
+### Problems
 
-<problems-list problems={metadata.problems.easier} />
-
-## Harder Problems
-
-<problems-list problems={metadata.problems.harder} />
+<problems-list problems={metadata.problems.perm} />

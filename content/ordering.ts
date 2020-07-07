@@ -33,6 +33,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   ],
   "bronze": [
     "time-comp",
+    "simulation",
     "rect-geo",
     {
       name: "Data Structures",
@@ -42,9 +43,9 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "pairs-tuples",
       ]
     },
-    "simulation",
     "complete-search",
     "intro-graphs",
+    "ad-hoc"
   ],
   "silver": [
     "prefix-sums",
@@ -59,12 +60,12 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Sorting",
       items: [
         "sorting-methods",
-        "sorting-custom-1",
-        "sorting-custom-2",
+        "sorting-custom",
+        "custom-cpp-stl",
       ]
     },
     {
-      name: "Ordered Maps & Sets",
+      name: "Ordered Sets & Maps",
       items: [
         "intro-ordered",
         "harder-ordered",
