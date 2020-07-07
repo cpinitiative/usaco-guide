@@ -21,7 +21,7 @@ export default function ReportIssueSlideover({
     else setIssueLocation('');
   }, [activeModule]);
   return (
-    <Transition show={isOpen}>
+    <Transition show={isOpen} timeout={700}>
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <Transition

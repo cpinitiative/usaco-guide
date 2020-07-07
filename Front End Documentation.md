@@ -17,3 +17,7 @@ The following is written for individuals without front-end development experienc
    - `yarn install`
 4. Run development server
    - `yarn develop`
+
+## Credits
+
+- Confetti taken from Josh Comeau: https://github.com/joshwcomeau/react-europe-talk-2018

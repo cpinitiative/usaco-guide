@@ -7,7 +7,7 @@ import { divisionLabels } from '../../content/ordering';
 import { graphqlToModuleInfo, graphqlToModuleLinks } from '../utils';
 import SEO from '../components/seo';
 import { KatexRenderer } from '../components/markdown/KatexRenderer';
-import ModuleLayout from '../components/ModuleLayout';
+import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
 
 const renderPrerequisite = prerequisite => {
   return <li key={prerequisite}>{prerequisite}</li>;

@@ -24,6 +24,8 @@ function CSSTransition({
   leaveTo = '',
   appear,
   children,
+  isParent,
+  timeout,
 }) {
   const enterClasses = enter.split(' ').filter(s => s.length);
   const enterFromClasses = enterFrom.split(' ').filter(s => s.length);
@@ -45,9 +47,20 @@ function CSSTransition({
       appear={appear}
       unmountOnExit
       in={show}
-      addEndListener={(node, done) => {
-        node.addEventListener('transitionend', done, false);
-      }}
+      addEndListener={
+        isParent && timeout
+          ? undefined
+          : (node, done) => {
+              node.addEventListener(
+                'transitionend',
+                e => {
+                  if (node === e.target) done();
+                },
+                false
+              );
+            }
+      }
+      timeout={isParent ? timeout : undefined}
       onEnter={node => {
         addClasses(node, [...enterClasses, ...enterFromClasses]);
       }}
@@ -85,6 +98,7 @@ function Transition({ show, appear, ...rest }: any) {
       <CSSTransition
         appear={parent.appear || !parent.isInitialRender}
         show={parent.show}
+        isParent={false}
         {...rest}
       />
     );
@@ -102,7 +116,7 @@ function Transition({ show, appear, ...rest }: any) {
     >
       {/*
       // @ts-ignore*/}
-      <CSSTransition appear={appear} show={show} {...rest} />
+      <CSSTransition appear={appear} show={show} isParent={true} {...rest} />
     </TransitionContext.Provider>
   );
 }

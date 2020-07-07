@@ -52,7 +52,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
         </div>
       </div>
 
-      <Transition show={showModal}>
+      <Transition show={showModal} timeout={300}>
         <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
           <Transition
             enter="ease-out duration-300"

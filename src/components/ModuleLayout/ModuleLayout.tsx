@@ -1,17 +1,19 @@
 import * as React from 'react';
-import Transition from './Transition';
-import { useState } from 'react';
+import Transition from '../Transition';
+import { useRef, useState } from 'react';
 // @ts-ignore
-import logo from '../assets/logo.svg';
-import { ModuleFrequency, ModuleLinkInfo } from '../module';
+import logo from '../../assets/logo.svg';
+import { ModuleFrequency, ModuleLinkInfo } from '../../module';
 import { Link } from 'gatsby';
 import ModuleOrdering, {
   divisionLabels,
   isModuleOrderingGroup,
   ModuleOrderingItem,
-} from '../../content/ordering';
-import Dots from './Dots';
-import ReportIssueSlideover from './ReportIssueSlideover';
+} from '../../../content/ordering';
+import Dots from '../Dots';
+import ReportIssueSlideover from '../ReportIssueSlideover';
+import MarkCompleteButton from './MarkCompleteButton';
+import ModuleConfetti from './ModuleConfetti';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -331,6 +333,8 @@ export default function ModuleLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isReportIssueActive, setIsReportIssueActive] = useState(false);
   const [isGetHelpActive, setIsGetHelpActive] = useState(false);
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [moduleProgress, setModuleProgress] = useState('Not Complete'); // todo initialize from localstorage?
 
   const navLinks: NavLinkItem[] = React.useMemo(() => {
     const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
@@ -363,9 +367,23 @@ export default function ModuleLayout({
     return null;
   }, [navLinks]);
 
+  const handleCompletionChange = progress => {
+    if (moduleProgress === progress) return;
+    setModuleProgress(progress);
+    if (
+      moduleProgress !== 'Complete' &&
+      (progress === 'Practicing' || progress === 'Complete')
+    )
+      setIsConfettiActive(true);
+  };
+
   return (
     <>
-      <Transition show={isMobileNavOpen}>
+      <ModuleConfetti
+        show={isConfettiActive}
+        onDone={() => setIsConfettiActive(false)}
+      />
+      <Transition show={isMobileNavOpen} timeout={300}>
         <div className="lg:hidden">
           <div className="fixed inset-0 flex z-40">
             <Transition
@@ -511,19 +529,26 @@ export default function ModuleLayout({
                   </h1>
                   <p className={`text-gray-500`}>Author: {module.author}</p>
                 </div>
-                {/*<div className="hidden lg:flex-shrink-0 lg:flex ml-4">*/}
-                {/*  <span className="shadow-sm rounded-md">*/}
-                {/*    <button*/}
-                {/*      type="button"*/}
-                {/*      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out"*/}
-                {/*    >*/}
-                {/*      Mark Complete*/}
-                {/*    </button>*/}
-                {/*  </span>*/}
-                {/*</div>*/}
+                <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
+                  <MarkCompleteButton
+                    state={moduleProgress}
+                    onChange={handleCompletionChange}
+                  />
+                </div>
               </div>
             </div>
             {children}
+
+            <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
+              Module Progress:
+              <span className="ml-4">
+                <MarkCompleteButton
+                  onChange={handleCompletionChange}
+                  state={moduleProgress}
+                  dropdownAbove
+                />
+              </span>
+            </h3>
 
             <div className="border-t border-gray-200 pt-4">
               <CompactNav
