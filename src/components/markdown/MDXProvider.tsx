@@ -7,6 +7,7 @@ import CodeBlock from './CodeBlock';
 import { InlineMath } from 'react-katex';
 import classNames from 'classnames';
 import CodeSection from './CodeSection';
+import Asterisk from '../tooltip/Asterisk';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -102,6 +103,7 @@ const components = {
   IM: ({ children }) => <InlineMath>{children}</InlineMath>,
   'code-section': CodeSection,
   'code-comment': props => <div {...props} />,
+  Asterisk: Asterisk,
   table: ({ className, ...props }) => (
     <table
       {...props}

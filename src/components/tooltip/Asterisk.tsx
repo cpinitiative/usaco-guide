@@ -47,8 +47,8 @@ const Asterisk = ({ children, position = 'top' }) => {
           }}
         >
           <span
-            className="relative text-xl font-bold text-pink-600"
-            style={{ bottom: '2px' }}
+            className="relative text-lg font-bold text-blue-600"
+            style={{ bottom: '1px' }}
           >
             *
           </span>
