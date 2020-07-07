@@ -59,12 +59,12 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Sorting",
       items: [
         "sorting-methods",
-        "sorting-custom-1",
-        "sorting-custom-2",
+        "sorting-custom",
+        "custom-cpp-stl",
       ]
     },
     {
-      name: "Ordered Maps & Sets",
+      name: "Ordered Sets & Maps",
       items: [
         "intro-ordered",
         "harder-ordered",
