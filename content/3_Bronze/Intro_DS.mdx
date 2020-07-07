@@ -79,7 +79,15 @@ vector<int> v(30);
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>(30);
 ```
+Note that declaring a dynamic array with an initial size does NOT initialize its elements. For example, if you declare a dynamic array with initial size 30 and try to edit the element at index 5, this will throw an error. This is because declaring with an initial size only serves to prevent unnecessary resizing later. 
 
+We can also update the size of a dynamic array to ensure it can hold at least $x$ elements for some $x$. If the size of the dynamic array is less than $x$, it is updated to $x$. If it is greater than or equal to $x$, the size update does nothing.
+```cpp
+v.reserve(50);
+```
+```java
+list.ensureCapacity(50);
+```
 
 However, we need to be careful that we only add elements to the end of the `vector`; insertion and deletion in the middle of the `vector` is $O(n)$.
 
