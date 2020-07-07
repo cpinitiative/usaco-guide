@@ -23,8 +23,6 @@ export default ({ children }) => {
     children = [children];
   }
 
-  console.log(children);
-
   const languageKeys = children
     .filter(child => child.props.originalType === 'pre')
     .map(child => child.props.children.props.className.replace(/language-/, ''))

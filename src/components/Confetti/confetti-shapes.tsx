@@ -8,6 +8,8 @@ import {
 // Creates an actual <img> element. This is needed to paint a shape into an
 // HTML canvas.
 const createImageElement = svgString => {
+  if (typeof window === 'undefined') return null;
+
   // window.btoa creates a base64 encoded string. Combined with the data
   // prefix, it can be used as an image `src`.
   const base64ShapeString =
