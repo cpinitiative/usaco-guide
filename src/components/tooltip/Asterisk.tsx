@@ -1,3 +1,5 @@
+// Heavily inspired by https://joshwcomeau.com/
+
 import * as React from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/animations/scale-subtle.css';
