@@ -112,8 +112,20 @@ const components = {
   td: ({ className, ...props }) => (
     <td {...props} className={classNames('border py-1 px-3', className)} />
   ),
+  h1: props => (
+    <h1
+      {...props}
+      className="leading-tight text-4xl font-bold mb-4 mt-8 text-gray-700"
+    />
+  ),
+  h2: props => (
+    <h2
+      {...props}
+      className="leading-tight text-3xl font-bold mb-4 mt-8 text-gray-700"
+    />
+  ),
   h3: props => (
-    <h3 {...props} className="leading-snug text-lg font-semibold mb-4 mt-6" />
+    <h3 {...props} className="leading-snug text-xl font-semibold mb-2 mt-4" />
   ),
   p: props => <p {...props} className="mb-4" />,
 };
