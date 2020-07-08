@@ -15,7 +15,7 @@ const Asterisk = ({ children, position = 'top' }) => {
           className="absolute block cursor-pointer focus:outline-none"
           style={{
             transform: 'translateY(5px)',
-            top: '-20px',
+            top: '-19px',
             left: '-10px',
             right: '-10px',
             bottom: '-10px',

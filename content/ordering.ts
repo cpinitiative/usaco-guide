@@ -8,6 +8,7 @@ export const isModuleOrderingGroup = (x: ModuleOrderingItem): x is ModuleOrderin
 
 const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "intro": [
+    "using-this-guide",
     "intro",
     "lang",
     "running-cpp",

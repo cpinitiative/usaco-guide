@@ -66,12 +66,10 @@ export default function Template(props) {
             )}
 
             {module.description && (
-              <p className="text-lg text-gray-600 italic font-medium mb-6">
+              <p className="font-bold mt-6 mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
                 <KatexRenderer>{module.description}</KatexRenderer>
               </p>
             )}
-
-            <hr className="mb-6" />
 
             <Markdown body={body} />
           </div>
