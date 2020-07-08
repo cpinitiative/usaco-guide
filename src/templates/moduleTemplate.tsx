@@ -73,7 +73,7 @@ export default function Template(props) {
               </div>
             )}
 
-            <Markdown body={body} className="markdown--module" />
+            <Markdown body={body} />
           </div>
         </ModuleLayout>
       </div>

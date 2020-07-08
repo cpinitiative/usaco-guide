@@ -6,10 +6,8 @@ export function ResourcesListComponent(props) {
   return (
     <div className="flex flex-col">
       <div
-        className={`overflow-x-auto ${
-          embedded
-            ? '-mx-4 sm:-mx-6'
-            : 'sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2'
+        className={`overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2 ${
+          embedded ? 'mb-2' : ''
         }`}
       >
         <div

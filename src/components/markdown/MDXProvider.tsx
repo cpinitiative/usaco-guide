@@ -34,7 +34,7 @@ const components = {
             />
           </svg>
         </div>
-        <div className="ml-3">
+        <div className="ml-3 flex-1">
           <h3 className="info-block__heading">{title}</h3>
           <div className="info-block__body">{children}</div>
         </div>
@@ -87,7 +87,7 @@ const components = {
         </svg>
         Optional{title ? `: ${title}` : ''}
       </div>
-      <div className="px-4 pt-5 pb-2 sm:p-6 sm:pb-2">{children}</div>
+      <div className="p-4 pb-0">{children}</div>
     </div>
   ),
   'problems-list': ProblemsListComponent,
@@ -127,9 +127,33 @@ const components = {
     />
   ),
   h3: props => (
-    <h3 {...props} className="leading-snug text-xl font-semibold mb-2 mt-4" />
+    <h3 {...props} className="leading-snug text-2xl font-semibold mb-4 mt-8" />
   ),
+  h4: props => (
+    <h4 {...props} className="leading-none text-xl font-semibold mb-2 mt-6" />
+  ),
+
   p: props => <p {...props} className="mb-4" />,
+  'ul.li': ({ children, ...props }) => (
+    <li {...props} className="flex">
+      <span className="mr-4">
+        <svg
+          fill="currentColor"
+          height="16"
+          width="16"
+          viewBox="0 0 512 512"
+          className="inline-block align-middle text-blue-600"
+        >
+          <path
+            d="M322.7,128.4L423,233.4c6,5.8,9,13.7,9,22.4c0,8.7-3,16.5-9,22.4L322.7,383.6c-11.9,12.5-31.3,12.5-43.2,0
+	c-11.9-12.5-11.9-32.7,0-45.2l48.2-50.4h-217C93.7,288,80,273.7,80,256c0-17.7,13.7-32,30.6-32h217l-48.2-50.4
+	c-11.9-12.5-11.9-32.7,0-45.2C291.4,115.9,310.7,115.9,322.7,128.4z"
+          />
+        </svg>
+      </span>
+      <div>{children}</div>
+    </li>
+  ),
 };
 
 export default function ({ children }) {

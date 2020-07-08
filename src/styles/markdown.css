@@ -17,10 +17,6 @@
   @apply mt-0 mb-4;
 }
 
-.markdown li + li {
-  @apply mt-1;
-}
-
 .markdown li > p + p {
   @apply mt-6;
 }
@@ -37,10 +33,6 @@
   @apply font-bold;
 }
 
-.markdown h4 {
-  @apply leading-none text-base font-semibold mb-4 mt-6;
-}
-
 .markdown h5 {
   @apply leading-tight text-sm font-semibold mb-4 mt-6;
 }
@@ -53,24 +45,37 @@
   @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
 }
 
-.markdown ul {
-  @apply text-base list-disc mb-4;
+.markdown ul,
+.markdown ol {
+  @apply pl-4 mb-6;
 }
 
 .markdown ul ul {
-  list-style-type: circle;
+  @apply mt-1 pl-2 mb-0;
 }
 
-.markdown ul ul ul {
-  list-style-type: square;
+.markdown ul > li {
+  @apply mb-3;
 }
 
-.markdown--module ul {
-  @apply pl-8;
-}
-
-.markdown ul ul {
+.markdown ul > li:last-of-type {
   @apply mb-0;
+}
+
+.markdown ul ul > li {
+  @apply mb-1;
+}
+
+.markdown ol > li {
+  @apply mb-3;
+}
+
+.markdown ol > li:last-of-type {
+  @apply mb-0;
+}
+
+.markdown ol ol > li {
+  @apply mb-1;
 }
 
 .markdown ul p {
@@ -78,7 +83,17 @@
 }
 
 .markdown ol {
-  @apply text-base pl-8 list-decimal mb-4;
+  counter-reset: number;
+}
+
+.markdown ol li {
+  display: flex;
+  counter-increment: number;
+}
+
+.markdown ol li:before {
+  content: counters(number, '.') '.';
+  @apply text-blue-600 font-bold mr-2;
 }
 
 .markdown kbd {
@@ -88,10 +103,6 @@
 /* Override pygments style background color. */
 .markdown .highlight pre {
   @apply bg-gray-100 !important;
-}
-
-.markdown--module .syllabus-only {
-  display: none;
 }
 
 .spoiler-body > pre {
