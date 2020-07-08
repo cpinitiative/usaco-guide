@@ -1,40 +1,16 @@
 // Heavily inspired by https://joshwcomeau.com/
 
 import * as React from 'react';
-import Tippy from '@tippyjs/react';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
 
-import styled from 'styled-components';
-
-const StyledTippy = styled(Tippy)`
-  transform: ${p =>
-    p.placement === 'top' ? 'translateY(10px)' : 'translateY(-7px)'};
-  background-color: #252f3f !important;
-  padding: 0.5rem;
-  line-height: 1.5;
-  font-size: 0.875rem !important;
-  text-align: center;
-
-  & > .tippy-arrow::before {
-    ${p =>
-      p.placement === 'top'
-        ? 'border-top-color'
-        : 'border-bottom-color'}: #252f3f !important;
-  }
-`;
+import Tooltip from './Tooltip';
 
 const Asterisk = ({ children, position = 'top' }) => {
   return (
     <span className="inline-block h-4 relative" style={{ width: 9 }}>
-      <StyledTippy
-        content={children}
-        animation="scale-subtle"
-        theme="material"
-        duration={200}
-        placement={position}
-      >
+      <Tooltip content={children} position={position} type="asterisk">
         <button
           className="absolute block cursor-pointer focus:outline-none"
           style={{
@@ -53,7 +29,7 @@ const Asterisk = ({ children, position = 'top' }) => {
             *
           </span>
         </button>
-      </StyledTippy>
+      </Tooltip>
     </span>
   );
 };

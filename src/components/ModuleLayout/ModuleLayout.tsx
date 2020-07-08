@@ -15,6 +15,8 @@ import ReportIssueSlideover from '../ReportIssueSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import Asterisk from '../tooltip/Asterisk';
+import Tooltip from '../tooltip/Tooltip';
+import TextTooltip from '../tooltip/TextTooltip';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -51,8 +53,9 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
       className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
       <Dots count={frequency} totalCount={4} color={circleColors[frequency]} />
-      {labels[frequency]}
-      <Asterisk position="bottom">{hints[frequency]}</Asterisk>
+      <TextTooltip position="bottom" content={hints[frequency]}>
+        {labels[frequency]}
+      </TextTooltip>
     </span>
   );
 };
@@ -549,11 +552,9 @@ export default function ModuleLayout({
             {children}
 
             <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
-              Module Progress
-              <Asterisk>
-                You can use this as a way to track your progress throughout this
-                guide.
-              </Asterisk>
+              <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
+                Module Progress
+              </TextTooltip>
               :
               <span className="ml-4">
                 <MarkCompleteButton
