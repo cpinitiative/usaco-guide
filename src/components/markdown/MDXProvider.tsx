@@ -8,6 +8,7 @@ import { InlineMath } from 'react-katex';
 import classNames from 'classnames';
 import CodeSection from './CodeSection';
 import Asterisk from '../tooltip/Asterisk';
+import TextTooltip from '../tooltip/TextTooltip';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -19,7 +20,7 @@ const components = {
     children: React.ReactNode;
     title: string;
   }) => (
-    <div className="rounded-md bg-blue-50 p-4 mb-12 info-block">
+    <div className="rounded-md bg-blue-50 p-4 mb-8 info-block">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg
@@ -78,8 +79,7 @@ const components = {
     className?: string;
   }) => (
     <div
-      className={`bg-white overflow-hidden shadow rounded-lg border border-purple-400`}
-      style={{ margin: '1rem 0' }}
+      className={`bg-white overflow-hidden shadow rounded-lg border border-purple-400 mb-8`}
     >
       <div className="p-4 flex items-center font-medium text-purple-800 bg-purple-50">
         <svg className="h-6 w-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -94,6 +94,7 @@ const components = {
   resources: ResourcesListComponent,
   resource: ResourceComponent,
   code: CodeBlock,
+  TextTooltip: TextTooltip,
   inlineCode: props => (
     <code
       {...props}

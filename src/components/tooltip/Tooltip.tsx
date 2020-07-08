@@ -11,7 +11,8 @@ const StyledTippy = styled(Tippy)`
   background-color: #252f3f !important;
   padding: 0.5rem;
   line-height: 1.5;
-  font-size: 0.875rem !important;
+  font-size: 1rem !important;
+  font-weight: normal !important;
   text-align: center;
 
   & > .tippy-arrow::before {
