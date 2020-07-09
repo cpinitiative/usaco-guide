@@ -84,7 +84,9 @@ const SyllabusModule = ({
         </div>
       )}
       <div className="px-4 py-4 sm:p-6">
-        <KatexRenderer>{children}</KatexRenderer>
+        <p>
+          <KatexRenderer>{children}</KatexRenderer>
+        </p>
 
         {author && <p className="mt-2">Author: {author}</p>}
       </div>
