@@ -1,8 +1,143 @@
 /*! purgecss start ignore */
 @tailwind base;
 @tailwind components;
-/*! purgecss end ignore */
 
-@import './markdown.css';
+/* Additional vertical padding used by kbd tag. */
+.py-05 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.markdown {
+  @apply text-gray-900 leading-normal break-words;
+}
+
+.markdown pre {
+  font-size: 0.875rem;
+}
+
+.markdown > * + * {
+  @apply mt-0 mb-4;
+}
+
+.markdown li > p + p {
+  @apply mt-6;
+}
+
+.markdown strong {
+  @apply font-semibold;
+}
+
+.markdown a {
+  @apply text-blue-600 font-semibold;
+}
+
+.markdown strong a {
+  @apply font-bold;
+}
+
+.markdown h5 {
+  @apply leading-tight text-sm font-semibold mb-4 mt-6;
+}
+
+.markdown h6 {
+  @apply leading-tight text-sm font-semibold text-gray-600 mb-4 mt-6;
+}
+
+.markdown blockquote {
+  @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
+}
+
+.markdown ul,
+.markdown ol {
+  @apply pl-4 mb-6;
+}
+
+.markdown ul ul {
+  @apply mt-1 pl-2 mb-0;
+}
+
+.markdown ul > li {
+  @apply mb-3;
+}
+
+.markdown ul > li:last-of-type {
+  @apply mb-0;
+}
+
+.markdown ul ul > li {
+  @apply mb-1;
+}
+
+.markdown ol > li {
+  @apply mb-3;
+}
+
+.markdown ol > li:last-of-type {
+  @apply mb-0;
+}
+
+.markdown ol ol > li {
+  @apply mb-1;
+}
+
+.markdown ul p {
+  @apply mb-0;
+}
+
+.markdown ol {
+  counter-reset: number;
+}
+
+.markdown ol li {
+  display: flex;
+  counter-increment: number;
+}
+
+.markdown ol li:before {
+  content: counters(number, '.') '.';
+  @apply text-blue-600 font-semibold mr-2;
+}
+
+.markdown kbd {
+  @apply text-xs inline-block rounded border px-1 py-05 align-middle font-normal font-mono shadow;
+}
+
+/* Override pygments style background color. */
+.markdown .highlight pre {
+  @apply bg-gray-100 !important;
+}
+
+.spoiler-body > pre {
+  margin-left: -1rem !important;
+  margin-right: -1rem !important;
+}
+.spoiler-body > pre + p {
+  @apply mt-4;
+}
+
+.info-block .info-block__heading {
+  @apply text-sm leading-5 font-medium text-blue-800 my-0;
+}
+.info-block .info-block__body {
+  @apply text-sm leading-5 text-blue-700 mt-2;
+}
+.info-block .info-block__body p + ul {
+  @apply -mt-2;
+}
+.info-block .info-block__body ul {
+  @apply text-sm;
+}
+.info-block .info-block__body p:last-child {
+  @apply mb-0;
+}
+.info-block a {
+  @apply text-black underline font-normal;
+}
+
+.table-alternating-stripes tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+/*! purgecss end ignore */
 
 @tailwind utilities;
