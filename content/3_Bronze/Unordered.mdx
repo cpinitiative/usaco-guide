@@ -126,6 +126,24 @@ In USACO contests, unordered sets and maps generally fine, but the built-in hash
 	<resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</resource>
 </resources>
 
+### Implementation
+
+<resources>
+  <resource source="Benq (from KACTL)" title="HashMap" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h" starred> </resource>
+</resources>
+
+```cpp
+struct chash { /// use most bits rather than just the lowest ones
+  const uint64_t C = ll(2e18*PI)+71; // large odd number
+  const int RANDOM = rng(); // random 32-bit int
+  ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+    return __builtin_bswap64((x^RANDOM)*C); }
+};
+unordered_map<int,int,chash> U;
+```
+
+(explain assumptions that are required for this to work)
+
 ## Problems
 
 <problems-list problems={metadata.problems.standard} />
