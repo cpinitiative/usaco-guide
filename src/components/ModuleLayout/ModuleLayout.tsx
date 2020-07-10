@@ -124,7 +124,7 @@ const SidebarBottomButtons = ({ onReportIssue, onGetHelp }) => (
         >
           <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        Report an Issue
+        Complain
       </button>
     </div>
     <div className="flex-shrink-0 border-t border-gray-200 flex">
@@ -470,8 +470,14 @@ export default function ModuleLayout({
                   </nav>
                 </div>
                 <SidebarBottomButtons
-                  onReportIssue={() => setIsReportIssueActive(true)}
-                  onGetHelp={() => setIsGetHelpActive(true)}
+                  onReportIssue={() => {
+                    setIsMobileNavOpen(false);
+                    setIsReportIssueActive(true);
+                  }}
+                  onGetHelp={() => {
+                    setIsMobileNavOpen(false);
+                    setIsGetHelpActive(true);
+                  }}
                 />
               </div>
             </Transition>
