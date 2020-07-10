@@ -45,6 +45,8 @@ const books = {
   CPH: '/CPH.pdf',
   PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
   IUSACO: 'https://darrenyao.com/usacobook/java.pdf',
+  CP1:
+    'https://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf',
 };
 
 const sources = {
