@@ -14,6 +14,9 @@ import Dots from '../Dots';
 import ReportIssueSlideover from '../ReportIssueSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
+import Asterisk from '../tooltip/Asterisk';
+import Tooltip from '../tooltip/Tooltip';
+import TextTooltip from '../tooltip/TextTooltip';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -32,10 +35,17 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   ];
   const labels = [
     'Has Not Appeared',
-    'Rare (1-2 times)',
-    'Not Frequent (3-4 times)',
+    'Rare',
+    'Not Frequent',
     'Somewhat Frequent',
-    'Very Frequent (historically at least once per contest)',
+    'Very Frequent',
+  ];
+  const hints = [
+    'Historically, this module has not appeared in this division before. However, it can still show up in future contests.',
+    'Historically, this module has only appeared in this division once or twice.',
+    'Historically, this module infrequently appears in this division.',
+    'Historically, this module has appeared somewhat frequently for this division.',
+    'Historically, this module has been known to appear at least once per contest. However, this does not guarantee that it will show up again in future contests.',
   ];
 
   return (
@@ -43,7 +53,9 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
       className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
       <Dots count={frequency} totalCount={4} color={circleColors[frequency]} />
-      {labels[frequency]}
+      <TextTooltip position="bottom" content={hints[frequency]}>
+        {labels[frequency]}
+      </TextTooltip>
     </span>
   );
 };
@@ -334,7 +346,7 @@ export default function ModuleLayout({
   const [isReportIssueActive, setIsReportIssueActive] = useState(false);
   const [isGetHelpActive, setIsGetHelpActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
-  const [moduleProgress, setModuleProgress] = useState('Not Complete'); // todo initialize from localstorage?
+  const [moduleProgress, setModuleProgress] = useState('Not Started'); // todo initialize from localstorage?
 
   const navLinks: NavLinkItem[] = React.useMemo(() => {
     const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
@@ -540,7 +552,10 @@ export default function ModuleLayout({
             {children}
 
             <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
-              Module Progress:
+              <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
+                Module Progress
+              </TextTooltip>
+              :
               <span className="ml-4">
                 <MarkCompleteButton
                   onChange={handleCompletionChange}

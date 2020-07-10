@@ -17,5 +17,5 @@ export function KatexRenderer(props: KatexRendererProps) {
     });
   }, [props.children]);
 
-  return <div ref={ref}>{props.children}</div>;
+  return <span ref={ref}>{props.children}</span>;
 }

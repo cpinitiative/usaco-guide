@@ -1,15 +1,15 @@
 import * as React from 'react';
 import Dots from '../Dots';
+import Tooltip from '../tooltip/Tooltip';
+import TextTooltip from '../tooltip/TextTooltip';
 
 export function ResourcesListComponent(props) {
   const embedded = props.embedded;
   return (
     <div className="flex flex-col">
       <div
-        className={`overflow-x-auto ${
-          embedded
-            ? '-mx-4 sm:-mx-6'
-            : 'sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2'
+        className={`overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2 ${
+          embedded ? 'mb-2' : ''
         }`}
       >
         <div
@@ -58,6 +58,19 @@ const sources = {
   GFG: 'https://www.geeksforgeeks.org/',
 };
 
+const sourceTooltip = {
+  TC: 'TopCoder',
+  CPC:
+    'Competitive Programming Course (taught at Reykjavík University, Iceland)',
+  CF: 'CodeForces',
+  'cp-algo': 'CP Algorithms',
+  CSA: 'CS Academy',
+  GFG: 'Geeks For Geeks',
+  CPH: 'Competitive Programming Handbook',
+  PAPS: 'Principles of Algorithmic Problem Solving',
+  IUSACO: 'An Introduction to the USA Computing Olympiad',
+};
+
 export function ResourceComponent(props) {
   const source = props.source;
   let url = props.url;
@@ -76,21 +89,29 @@ export function ResourceComponent(props) {
     <tr>
       {props.source && (
         <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-          {props.source}
+          {sourceTooltip.hasOwnProperty(props.source) ? (
+            <TextTooltip content={sourceTooltip[props.source]}>
+              {props.source}
+            </TextTooltip>
+          ) : (
+            props.source
+          )}
         </td>
       )}
-      <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 w-6">
+      <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 w-4">
         {props.starred && (
-          <svg
-            className="h-6 w-6 text-blue-700"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
+          <Tooltip content="Starred resources are ones we think are worth the read. Use starred resources first, and if you're still stuck, try reading some of the unstarred ones!">
+            <svg
+              className="h-4 w-4 text-blue-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </Tooltip>
         )}
       </td>
-      <td className="pl-3 pr-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+      <td className="pl-2 pr-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         <a href={url}>{props.title}</a>
       </td>
       <td className="w-100 px-6 py-4 text-sm leading-5 text-gray-500">
