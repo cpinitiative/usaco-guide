@@ -118,13 +118,13 @@ const components = {
   h1: props => (
     <h1
       {...props}
-      className="leading-tight text-4xl font-bold mb-4 mt-8 text-gray-700"
+      className="leading-tight text-4xl font-bold mb-4 mt-12 text-gray-700"
     />
   ),
   h2: props => (
     <h2
       {...props}
-      className="leading-tight text-3xl font-bold mb-4 mt-8 text-gray-700"
+      className="leading-tight text-3xl font-bold mb-4 mt-12 text-gray-700"
     />
   ),
   h3: props => (
