@@ -3,7 +3,7 @@ import Transition from '../Transition';
 import { useRef, useState } from 'react';
 // @ts-ignore
 import logo from '../../assets/logo.svg';
-import { ModuleFrequency, ModuleLinkInfo } from '../../module';
+import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../../module';
 import { Link } from 'gatsby';
 import ModuleOrdering, {
   divisionLabels,
@@ -341,12 +341,25 @@ export default function ModuleLayout({
   division,
   module,
   children,
+}: {
+  moduleLinks: { [moduleID: string]: ModuleLinkInfo };
+  division: string;
+  module: ModuleInfo;
+  children: React.ReactNode;
 }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isReportIssueActive, setIsReportIssueActive] = useState(false);
   const [isGetHelpActive, setIsGetHelpActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
-  const [moduleProgress, setModuleProgress] = useState('Not Started'); // todo initialize from localstorage?
+  const [moduleProgress, setModuleProgress] = useState('Not Started');
+
+  React.useEffect(() => {
+    let progress = window.localStorage.getItem(`progress--${module.id}`);
+    if (progress !== null) {
+      console.log(progress);
+      setModuleProgress(progress);
+    }
+  }, []);
 
   const navLinks: NavLinkItem[] = React.useMemo(() => {
     const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
@@ -382,6 +395,7 @@ export default function ModuleLayout({
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(progress);
+    window.localStorage.setItem(`progress--${module.id}`, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
