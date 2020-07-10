@@ -89,6 +89,35 @@ export default function ReportIssueSlideover({
                         <div className="space-y-6 pt-6 pb-5">
                           <div className="space-y-1">
                             <label
+                              htmlFor="issue_name"
+                              className="block text-sm font-medium leading-5 text-gray-900"
+                            >
+                              Name (Optional)
+                            </label>
+                            <div className="relative rounded-md shadow-sm">
+                              <input
+                                id="issue_name"
+                                className="form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label
+                              htmlFor="issue_email"
+                              className="block text-sm font-medium leading-5 text-gray-900"
+                            >
+                              Email (Optional)
+                            </label>
+                            <div className="relative rounded-md shadow-sm">
+                              <input
+                                id="issue_email"
+                                className="form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+                                type="email"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label
                               htmlFor="issue_location"
                               className="block text-sm font-medium leading-5 text-gray-900"
                             >
