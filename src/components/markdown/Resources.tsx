@@ -86,9 +86,9 @@ export function ResourceComponent(props) {
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
   }
   return (
-    <tr>
+    <tr className="block sm:table-row">
       {props.source && (
-        <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+        <td className="pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
           {sourceTooltip.hasOwnProperty(props.source) ? (
             <TextTooltip content={sourceTooltip[props.source]}>
               {props.source}
@@ -98,23 +98,23 @@ export function ResourceComponent(props) {
           )}
         </td>
       )}
-      <td className="pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 w-4">
-        {props.starred && (
-          <Tooltip content="Starred resources are ones we think are worth the read. Use starred resources first, and if you're still stuck, try reading some of the unstarred ones!">
-            <svg
-              className="h-4 w-4 text-blue-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          </Tooltip>
-        )}
+      <td className="px-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+        <div className="flex items-center">
+          {props.starred && (
+            <Tooltip content="Starred resources are ones we think are worth the read. Use starred resources first, and if you're still stuck, try reading some of the unstarred ones!">
+              <svg
+                className="h-4 w-6 text-blue-400 pr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </Tooltip>
+          )}
+          <a href={url}>{props.title}</a>
+        </div>
       </td>
-      <td className="pl-2 pr-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-        <a href={url}>{props.title}</a>
-      </td>
-      <td className="w-100 px-6 py-4 text-sm leading-5 text-gray-500">
+      <td className="block sm:table-cell px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
         {props.children}
       </td>
     </tr>

@@ -396,8 +396,8 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Report an Issue" button on the bottom left of the screen,
-                      or contact the guide coordinator directly.
+                      "Complain" button on the bottom left of the screen, or
+                      contact the guide coordinator directly.
                     </p>
                   </dd>
                 </div>
