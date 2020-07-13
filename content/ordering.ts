@@ -44,7 +44,13 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "pairs-tuples",
       ]
     },
-    "complete-search",
+    {
+      name: "Complete Search",
+      items: [
+        "complete-search",
+        "gen-perm",
+      ]
+    },
     "intro-graphs",
     "ad-hoc"
   ],
@@ -62,7 +68,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       items: [
         "sorting-methods",
         "sorting-custom",
-        "custom-cpp-stl",
+        "greedy",
       ]
     },
     {
@@ -70,9 +76,9 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       items: [
         "intro-ordered",
         "harder-ordered",
+        "custom-cpp-stl",
       ]
     },
-    "greedy",
     {
       name: "Stacks & Queues",
       items: [

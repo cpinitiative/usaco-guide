@@ -1,4 +1,5 @@
 const sources = {
+  "AC": "https://atcoder.jp/",
   "CC": "https://www.codechef.com/problems/",
   "CSA": "https://csacademy.com/contest/archive/task/",
   "DMOJ": "https://dmoj.ca/problem/",
@@ -16,6 +17,7 @@ const sources = {
   "CSES": "https://cses.fi/problemset/task/",
   "LC": "https://leetcode.com/problems/",
   "ojuz": "https://oj.uz/problem/view/",
+  "HR": "https://www.hackerrank.com/",
 };
 
 export class Problem {

@@ -3,6 +3,9 @@ import { Problem } from '../../../content/models';
 import Transition from '../Transition';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render';
 import { KatexRenderer } from './KatexRenderer';
+import Tooltip from '../tooltip/Tooltip';
+import TextTooltip from '../tooltip/TextTooltip';
+import { sourceTooltip } from './Resources';
 
 type ProblemsListComponentProps = {
   title?: string;
@@ -136,12 +139,12 @@ type ProblemComponentProps = {
 
 export function ProblemComponent(props: ProblemComponentProps) {
   const difficultyClasses = {
-    Intro: 'bg-teal-100 text-teal-800',
-    Easy: 'bg-yellow-100 text-yellow-800',
-    Normal: 'bg-green-100 text-green-800',
+    'Very Easy': 'bg-gray-100 text-gray-800',
+    Easy: 'bg-green-100 text-green-800',
+    Normal: 'bg-blue-100 text-blue-800',
     Hard: 'bg-purple-100 text-purple-800',
-    'Very Hard': 'bg-red-100 text-red-800',
-    Insane: 'bg-blue-100 text-blue-800',
+    'Very Hard': 'bg-orange-100 text-orange-800',
+    Insane: 'bg-red-100 text-red-800',
   };
   const [showTags, setShowTags] = React.useState(false);
   const { problem } = props;
@@ -149,7 +152,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {problem.source}
+        {sourceTooltip.hasOwnProperty(problem.source) ? (
+          <TextTooltip content={sourceTooltip[problem.source]}>
+            {problem.source}
+          </TextTooltip>
+        ) : (
+          problem.source
+        )}
       </td>
       <td className="pl-6 w-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         {problem.starred && (

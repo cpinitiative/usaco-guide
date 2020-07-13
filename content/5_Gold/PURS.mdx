@@ -42,20 +42,16 @@ export const metadata = {
   }
 };
 
-## Sample Problems
+## Binary Indexed Tree
 
 <problems-list problems={metadata.problems.sample} />
 
-## Binary Indexed Tree
-
-A *Binary Indexed Tree* allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
+A *Binary Indexed Tree* (aka *Fenwick Tree*) allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
  - Query the sum of a prefix of the array.
 
-Aka *Fenwick Tree*.
-
-### Tutorials
+### Resources
 
 <resources>
   <resource source="CSA" title="Fenwick Trees" url="fenwick_trees" starred>interactive</resource>
@@ -64,18 +60,31 @@ Aka *Fenwick Tree*.
   <resource source="TC" title="Binary Indexed Trees" url="binary-indexed-trees"></resource>
 </resources>
 
-My implementation can be found [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h), and can compute range sum queries for any number of dimensions.
+### Implementations
 
-## Finding K-th Element in BIT?
+<resources>
+  <resource source="CF" title="mouse_wireless - Multi-dimensional BITs with Templates" url="https://codeforces.com/blog/entry/64914" starred></resource>
+  <resource source="Benq" title="BIT" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h">based off above</resource>
+</resources>
 
-## Indexed Set
+## Finding $k$-th Element
 
-In the special case where all elements of the array are either zero or one (which is the case for several gold problems), users of C++ will find [indexed set](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h) useful. Using this, we can solve "Inversion Counting" in just a few lines (with template). `Tree<int>` behaves mostly the same way as `set<int>` with the additional functions 
+Suppose that we want a data structure that supports all the operations as a `set` in C++ in addition to the following:
 
-  * `order_of_key(x)`: counts the number of elements in the indexed set that are strictly less than `x`. 
+  * `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`. 
   * `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
 
-See the link for more examples of usage.
+
+### Indexed Set
+
+Luckily, such a built-in data structure already exists in C++.
+
+<resources>
+  <resource source="CF" url="blog/entry/11080" title="adamant - Policy Based Data Structures" starred> </resource>
+  <resource source="Benq" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h" title="Indexed Set"></resource>
+</resources>
+
+Using this, we can solve "Inversion Counting" in just a few lines (with template).
 
 <spoiler title="INVCNT with Indexed Set">
 
@@ -106,7 +115,16 @@ int main() {
 
 </spoiler>
 
-Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the array position.
+Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
+
+### Using a BIT
+
+Assumes all updates are in the range $[1,N]$.
+
+<resources>
+  <resource source="CF" url="blog/entry/11275" title="adamant - About Ordered Set" starred> log N </resource>
+  <resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </resource>
+</resources>
 
 ## Practice Problems
 

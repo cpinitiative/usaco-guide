@@ -43,19 +43,18 @@ export const metadata = {
   }
 };
 
-## Additional Reading
-
 <resources>
+  <resource source="IUSACO" title="9 - Greedy Algorithms" starred>Text below is based off this.</resource>
   <resource source="CPH" title="6 - Greedy Algorithms" starred></resource>
   <resource source="PAPS" title="8 - Greedy Algorithms"></resource>
   <resource source="CPC" title="5 - Greedy Algorithms" url="05_greedy_algorithms"></resource>
 </resources>
 
-# Greedy
+**Greedy** does not refer to a single algorithm, but rather a way of thinking that is applied to problems. There's no one way to do greedy algorithms. Hence, we use a selection of well-known examples to help you understand the greedy paradigm. 
 
-Greedy does not refer to a single algorithm, but rather a way of thinking that is applied to problems. There's no one way to do greedy algorithms. Hence, we use a selection of well-known examples to help you understand the greedy paradigm. 
+Usually, when using a greedy algorithm, there is a **heuristic** or **value function** that determines which choice is considered most optimal. Usually (but not always) some sorting step is involved.
 
-Usually, when using a greedy algorithm, there is a heuristic or value function that determines which choice is considered most optimal. Usually (but not always) some sorting step is involved.
+(what's a heuristic or value function?)
 
 ## Example: Studying Algorithms
 
@@ -134,7 +133,7 @@ Instead, we can select the event that ends as early as possible. This correctly 
 
 In fact, this algorithm always works. A brief explanation of correctness is as follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than $E_1$, then it is always optimal to select $E_1$. This is because selecting $E_1$ gives us more choices for future events. If we can select an event to go after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first. Thus, the set of events that can go after $E_2$ is a subset of the events that can go after $E_1$, making $E_1$ the optimal choice.
 
-For the following code, let's say we have the array `events` of events, which each contain a start and an end point. We'll be using the following static class to store each event (a review of the previous chapter!)
+For the following code, let's say we have the array `events` of events, which each contain a start and an end point. We'll be using the following static class to store each event:
 
 ```java
 static class Event implements Comparable<Event>{
@@ -181,18 +180,15 @@ The knapsack problem gives a number of items, each having a weight and a value, 
 
 Let's take the following example, where we have a maximum capacity of 4:
 
-(table)
-<!-- \begin{center}
-    \begin{tabular}{c c c c}
-    \toprule
-        Item & Weight & Value & Value Per Weight \\
-    \midrule
-        A & 3 & 18 & 6 \\
-        B & 2 & 10 & 5 \\
-        C & 2 & 10 & 5 \\
-    \bottomrule
-    \end{tabular}
-\end{center} -->
+<center>
+
+| Item | Weight | Value | Value Per Weight |
+|------|--------|-------|------------------|
+| A    | 3      | 18    | 6                |
+| B    | 2      | 10    | 5                |
+| C    | 2      | 10    | 5                |
+
+</center>
 
 If we use greedy based on highest value first, we choose item A and then we are done, as we don't have remaining weight to fit either of the other two. Using greedy based on value per weight again selects item A and then quits. However, the optimal solution is to select items B and C, as they combined have a higher value than item A alone. In fact, there is no working greedy solution. The solution to this problem uses **dynamic programming**, which is covered in gold.
 
@@ -205,6 +201,6 @@ If we use greedy based on highest value first, we choose item A and then we are 
 
 <problems-list problems={metadata.problems.usaco} />
 
-## Other PRoblems
+## Other Problems
 
 <problems-list problems={metadata.problems.other} />

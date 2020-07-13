@@ -56,9 +56,15 @@ const sources = {
   'cp-algo': 'https://cp-algorithms.com/',
   CSA: 'https://csacademy.com/lesson/',
   GFG: 'https://www.geeksforgeeks.org/',
+  Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
+  HR: 'https://www.hackerrank.com/',
 };
 
-const sourceTooltip = {
+export const sourceTooltip = {
+  CPH: "Book - Competitive Programmer's Handbook",
+  PAPS: 'Book - Principles of Algorithmic Problem Solving',
+  IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
+  CP1: 'Book - Competitive Programming 1',
   TC: 'TopCoder',
   CPC:
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
@@ -66,9 +72,17 @@ const sourceTooltip = {
   'cp-algo': 'CP Algorithms',
   CSA: 'CS Academy',
   GFG: 'Geeks For Geeks',
-  CPH: 'Competitive Programming Handbook',
-  PAPS: 'Principles of Algorithmic Problem Solving',
-  IUSACO: 'An Introduction to the USA Computing Olympiad',
+  Benq: 'github.com/bqi343/USACO',
+  HR: 'HackerRank',
+  CSES: 'Code Submission Evaluation System',
+  HE: 'HackerEarth',
+  AC: 'AtCoder',
+  CC: 'CodeChef',
+  DMOJ: 'Don Mills Online Judge',
+  SPOJ: 'Sphere Online Judge',
+  YS: 'Library Checker',
+  LC: 'LeetCode',
+  POI: 'Polish Olympiad in Informatics',
 };
 
 export function ResourceComponent(props) {
