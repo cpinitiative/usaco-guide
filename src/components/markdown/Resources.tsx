@@ -75,7 +75,7 @@ export const sourceTooltip = {
   GFG: 'Geeks For Geeks',
   Benq: 'github.com/bqi343/USACO',
   HR: 'HackerRank',
-  CSES: 'Code Submission Evaluation System',
+  CSES: 'Code Submission Evaluation System (includes CPH problemset)',
   HE: 'HackerEarth',
   AC: 'AtCoder',
   CC: 'CodeChef',
@@ -85,6 +85,9 @@ export const sourceTooltip = {
   LC: 'LeetCode',
   POI: 'Polish Olympiad in Informatics',
   SO: 'StackOverflow',
+  'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
+  'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
+  'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
 };
 
 export function ResourceComponent(props) {
