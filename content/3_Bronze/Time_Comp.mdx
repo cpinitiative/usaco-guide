@@ -15,11 +15,11 @@ description: Measuring how long your algorithm takes to run in terms of the inpu
 
 # Time Complexity
 
-In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $4$ seconds for Java submissions. A conservative estimate for the number of <TextTooltip content={`You can think of an "operation" as one instruction for the computer. For example, multiplying two numbers together, reading in a number from the input, or outputting "Hello World" would all be considered "operations." `}>operations</TextTooltip> the grading server can handle per second $10^8$ but could be closer to $5 \cdot 10^8$ given good constant factors).
+In programming contests, your program needs to finish running within a certain timeframe in order to receive credit. For USACO, this limit is $2$ seconds for C++ submissions, and $4$ seconds for Java/Python submissions. A conservative estimate for the number of <TextTooltip content={`You can think of an "operation" as one instruction for the computer. For example, multiplying two numbers together, reading in a number from the input, or outputting "Hello World" would all be considered "operations." `}>operations</TextTooltip> the grading server can handle per second is $10^8$, but it could be closer to $5 \cdot 10^8$ given good constant factors<Asterisk>If you don't know what constant factors are, don't worry -- we'll explain them below.</Asterisk>.
 
 ## Complexity Calculations
 
-We want a method of how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where constant factors and lower-order terms are generally omitted from $f(n)$. We'll see some examples of how this works, as follows.
+We want a method to calculate how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where constant factors and lower-order terms are generally omitted from $f(n)$. We'll see some examples of how this works, as follows.
 
 The following code is $O(1)$, because it executes a constant number of operations.
 
@@ -40,7 +40,7 @@ for(int i = 1; i <= n; i++){
 }
 ```
 
-<br />
+<div />
 
 ```cpp
 int i = 0;
@@ -58,7 +58,7 @@ for(int i = 1; i <= 5*n + 17; i++){
 }
 ```
 
-<br />
+<div />
 
 ```cpp
 for(int i = 1; i <= n + 457737; i++){
@@ -76,7 +76,7 @@ for(int i = 1; i <= n; i++){
 }
 ```
 
-In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we must (?) take the factor of $n$ from the inner loop. Thus, this code is $O(n^2)$.
+In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk>We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n*(n-1)/2 = (n^2 - n)/2 = O(n^2)</Asterisk> Thus, this code is $O(n^2)$.
 
 ```cpp
 for(int i = 1; i <= n; i++){
@@ -99,7 +99,7 @@ for(int i = 1; i <= n + 58834; i++){
 }
 ```
 
-The following code is $O(n^2 + nm)$, because it consists of two blocks of complexity $O(n^2)$ and $O(nm)$, and neither of them is a lower order function with respect to the other.
+The following code is $O(n^2 + m)$, because it consists of two blocks of complexity $O(n^2)$ and $O(m)$, and neither of them is a lower order function with respect to the other.
 
 ```cpp
 for(int i = 1; i <= n; i++){
@@ -107,12 +107,18 @@ for(int i = 1; i <= n; i++){
         // constant time code here
     }
 }
-for(int i = 1; i <= n; i++){
-    for(int j = 1; j <= m; j++){
-        // more constant time code here
-    }
+for(int j = 1; j <= m; j++){
+    // more constant time code here
 }
 ```
+
+## Constant Factor
+
+The "Constant Factor" of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $O(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$.
+
+Normally when using the big-O notation, we ignore the constant factor: $O(3n) = O(n)$. This is fine most of the time, but sometimes we have an algorithm that just barely gets TLE, perhaps by just a few hundred milliseconds. When this happens, it is worth optimizing the constant factor of our algorithm. For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.)
+
+For now, don't worry about how to optimize constant factors -- just be aware of them.
 
 ## Common Complexities and Constraints
 
@@ -125,7 +131,7 @@ Complexity factors that come from some common algorithms and data structures are
 - Prime factorization of an integer, or checking primality or compositeness of an integer naively: $O(\sqrt{n})$
 - Reading in $n$ items of input: $O(n)$
 - Iterating through an array or a list of $n$ elements: $O(n)$
-- Sorting: usually $O(n \log n)$ for default sorting algorithms (mergesort, for example `Collections.sort` or `Arrays.sort` on objects)
+- Sorting: usually $O(n \log n)$ for default sorting algorithms (mergesort, `Collections.sort`, `Arrays.sort`)
 - Java Quicksort `Arrays.sort` function on primitives: $O(n^2)$ 
   - See "Introduction to Data Structures" for details.
 - Iterating through all subsets of size $k$ of the input elements: $O(n^k)$. For example, iterating through all triplets is $O(n^3)$.
