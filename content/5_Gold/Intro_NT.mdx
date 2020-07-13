@@ -45,13 +45,13 @@ where the $p_i$ are distinct primes and the $a_i$ are positive integers.
 
 Now, we will discuss how to find the prime factorization of an integer.
 
-(pseudocode)
+![Pseudocode](factoralgorithm1.png)
 
 This algorithm runs in $O(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
 
 Let's look at an example of how this algorithm works, for $n = 252$.
 
-(table)
+![Example](factoralgorithm2.png)
 
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
@@ -96,17 +96,13 @@ $$
 
 In **modular arithmetic**, instead of working with integers themselves, we work with their remainders when divided by $m$. We call this taking modulo $m$. For example, if we take $m = 23$, then instead of working with $x = 247$, we use $x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the two most common values are $10^9 + 7$, and $998\,244\,353$. Modular arithmetic is used to avoid dealing with numbers that overflow built-in data types, because we can take remainders, according to the following formulas:
 
-```
-todo no support for gather
-$$
-\begin{gather*}
-    (a+b) \bmod m = (a \bmod m + b \bmod m) \bmod m \\
-    (a-b) \bmod m = (a \bmod m - b \bmod m) \bmod m \\
-    (a \cdot b) \pmod{m} = ((a \bmod m) \cdot (b \bmod m)) \bmod m \\
-    a^b \bmod {m} = (a \bmod m)^b \bmod m
-\end{gather*}
-$$
-```
+$$ (a+b) \bmod m = (a \bmod m + b \bmod m) \bmod m $$
+
+$$ (a-b) \bmod m = (a \bmod m - b \bmod m) \bmod m $$
+
+$$ (a \cdot b) \pmod{m} = ((a \bmod m) \cdot (b \bmod m)) \bmod m $$
+
+$$ a^b \bmod {m} = (a \bmod m)^b \bmod m $$
 
 ### Modular Exponentiation
 
