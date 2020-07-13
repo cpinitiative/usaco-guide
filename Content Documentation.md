@@ -6,6 +6,8 @@ If you are confused about something, or if there's a certain feature that you wa
 
 You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
 
+[Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
+
 ### `ordering.ts`
 
 Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory
