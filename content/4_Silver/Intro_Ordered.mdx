@@ -25,13 +25,16 @@ export const metadata = {
 
 <br />
 
-In **ordered** sets and maps, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set or map, but accessing or removing the next key higher or lower than some input $k$ is also supported.
+In **ordered** sets and maps, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set or map. Accessing or removing the next key higher or lower than some input $k$ is also supported.
 
 ## Ordered Sets
 
-### C++
+
+<code-comment lang="cpp">
 
 As well as those supported by `unordered_set`, the ordered set also allows four additional operations: `begin()`, which returns an iterator to the lowest element in the set, `end()`, which returns an iterator to the highest element in the set, `lower_bound`, which returns an iterator to the least element greater than or equal to some element `k`, and `upper_bound`, which returns an iterator to the least element strictly greater than some element `k`.
+
+</code-comment>
 
 ```cpp
 set<int> s;
@@ -49,11 +52,11 @@ cout << *(--it) << '\n'; // 14
 s.erase(s.upper_bound(6)); // [1, 2, 14]
 ```
 
-The primary limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an order statistic tree (see Gold - Binary Indexed Trees).
-
-### Java
+<code-comment lang="java">
 
 As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
+
+</code-comment>
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();
@@ -70,6 +73,7 @@ set.remove(set.higher(6)); // [1, 2, 14]
 System.out.println(set.higher(23); // ERROR, no such element exists
 ```
 
+One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an **order statistic tree** (see Gold - Point Update Range Sum).
 
 ## Ordered Maps
 
@@ -165,10 +169,12 @@ static void remove(int x){
 }
 ```
 
-The first, last, higher, and lower operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
+The `first`, `last`, `higher`, and `lower` operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
+
+## Using Iterators
+
+(prev(), next())
 
 ## Standard
-
-Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
 
 <problems-list problems={metadata.problems.standard} />

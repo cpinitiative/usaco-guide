@@ -75,8 +75,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Ordered Sets & Maps",
       items: [
         "intro-ordered",
-        "harder-ordered",
         "custom-cpp-stl",
+        "harder-ordered",
       ]
     },
     {
@@ -92,7 +92,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "dfs",
         "ff",
         "func-graphs",
-        "bfs",
       ]
     },
   ],
@@ -102,6 +101,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     {
       name: "Graphs",
       items: [
+        "bfs",
         "toposort",
         "cyc",
         "sp",

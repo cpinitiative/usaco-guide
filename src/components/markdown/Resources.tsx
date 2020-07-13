@@ -58,6 +58,7 @@ const sources = {
   GFG: 'https://www.geeksforgeeks.org/',
   Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
   HR: 'https://www.hackerrank.com/',
+  SO: 'https://stackoverflow.com/',
 };
 
 export const sourceTooltip = {
@@ -83,6 +84,7 @@ export const sourceTooltip = {
   YS: 'Library Checker',
   LC: 'LeetCode',
   POI: 'Polish Olympiad in Informatics',
+  SO: 'StackOverflow',
 };
 
 export function ResourceComponent(props) {
