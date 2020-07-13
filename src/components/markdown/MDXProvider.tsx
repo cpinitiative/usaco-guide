@@ -6,9 +6,14 @@ import { ResourceComponent, ResourcesListComponent } from './Resources';
 import CodeBlock from './CodeBlock';
 import { InlineMath } from 'react-katex';
 import classNames from 'classnames';
-import CodeSection from './CodeSection';
 import Asterisk from '../tooltip/Asterisk';
 import TextTooltip from '../tooltip/TextTooltip';
+import {
+  CPPSection,
+  JavaSection,
+  LanguageSection,
+  PySection,
+} from './LanguageSection';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -102,8 +107,10 @@ const components = {
     />
   ),
   IM: ({ children }) => <InlineMath>{children}</InlineMath>,
-  'code-section': CodeSection,
-  'code-comment': props => <div {...props} />,
+  LanguageSection: LanguageSection,
+  CPPSection: CPPSection,
+  JavaSection: JavaSection,
+  PySection: PySection,
   Asterisk: Asterisk,
   table: ({ className, ...props }) => (
     <table

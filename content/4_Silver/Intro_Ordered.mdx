@@ -30,11 +30,11 @@ In **ordered** sets and maps, the entries are sorted in order of key. Insertions
 
 ## Ordered Sets
 
-<code-comment lang="cpp">
+<LanguageSection>
+
+<CPPSection>
 
 As well as those supported by `unordered_set`, the ordered set also allows four additional operations: `begin()`, which returns an iterator to the lowest element in the set, `end()`, which returns an iterator to the highest element in the set, `lower_bound`, which returns an iterator to the least element greater than or equal to some element `k`, and `upper_bound`, which returns an iterator to the least element strictly greater than some element `k`.
-
-</code-comment>
 
 ```cpp
 set<int> s;
@@ -52,11 +52,13 @@ cout << *(--it) << '\n'; // 14
 s.erase(s.upper_bound(6)); // [1, 2, 14]
 ```
 
-<code-comment lang="java">
+The primary limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an order statistic tree (see Gold - Binary Indexed Trees).
+
+</CPPSection>
+
+<JavaSection>
 
 As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
-
-</code-comment>
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();
@@ -75,13 +77,18 @@ System.out.println(set.higher(23); // ERROR, no such element exists
 
 One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an **order statistic tree** (see Gold - Point Update Range Sum).
 
+</JavaSection>
+
+</LanguageSection>
+
+
 ## Ordered Maps
 
-<code-comment lang="cpp">
+<LanguageSection>
+
+<CPPSection>
 
 The ordered map supports all of the operations that an `unordered_map` supports, and additionally supports `lower_bound` and `upper_bound`, returning the iterator pointing to the lowest entry not less than the specified key, and the iterator pointing to the lowest entry strictly greater than the specified key respectively.
-
-</code-comment>
 
 ```cpp
 map<int, int> m;
@@ -97,11 +104,11 @@ if (m.upper_bound(10) == m.end())
 }
 ```
 
-<code-comment lang="java">
+</CPPSection>
+
+<JavaSection>
 
 The ordered map supports all of the operations that an unordered map supports, and additionally supports `firstKey` / `firstEntry` and `lastKey` / `lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
-
-</code-comment>
 
 ```java
 TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -117,15 +124,20 @@ System.out.println(map.lowerKey(4)); // 3
 System.out.println(map.lowerKey(3)); // ERROR
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 ## Multisets
 
 Lastly, there is the **multiset**, which is essentially a sorted set that allows multiple copies of the same element. 
 
-<code-comment lang="cpp">
+<LanguageSection>
+
+<CPPSection>
 
 In addition to all of the regular set operations, the multiset `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest. The `begin()`, `end()`, `lower_bound()`, and `upper_bound()` operations work the same way they do in the normal sorted set. **Warning:** If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
 
-</code-comment>
 
 ```cpp
 multiset<int> ms;
@@ -144,11 +156,12 @@ ms.erase(9);
 cout << ms.count(9) << '\n'; // 0
 ```
 
-<code-comment lang="java">
+</CPPSection>
+
+<JavaSection>
 
 While there is no multiset in Java, we can implement one using the `TreeMap` from values to their respective frequencies. We declare the `TreeMap` implementation globally so that we can write functions for adding and removing elements from it. The `first`, `last`, `higher`, and `lower` operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
 
-</code-comment>
 
 ```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
@@ -173,10 +186,12 @@ static void remove(int x){
 }
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 
 ## Using Iterators
-
-(prev(), next())
 
 ## Standard
 
