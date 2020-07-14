@@ -39,8 +39,12 @@ export const Authors: Author[] = [
   },
   {
     photo: 'benq',
-    name: 'Somebody Else',
+    name: 'Michael Cao',
     title: 'Content Author',
-    blurb: 'The number of authors must be a multiple of two, otherwise the website looks ugly and I\'m lazy to fix it :( ',
+    blurb: 'Is a wizard.',
+    facebook: "mike.lao.9400",
+    codeforces: "caoash",
+    email: "cao.michael14@gmail.com",
+    github: "caoash",
   },
 ];
