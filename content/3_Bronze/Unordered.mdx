@@ -40,9 +40,11 @@ Both Java and C++ contain two versions of sets and maps; one in which the keys a
 
 ## HashSets
 
-### C++
+<LanguageSection>
 
-The operations on an unordered set are `insert`, which adds an element to the set if not already present, `erase`, which deletes an element if it exists, and `count`, which returns `1` if the set contains the element and `0` if it doesn't.
+<CPPSection>
+
+The operations on an [`unordered_set`](http://www.cplusplus.com/reference/unordered_set/unordered_set/) are `insert`, which adds an element to the set if not already present, `erase`, which deletes an element if it exists, and `count`, which returns `1` if the set contains the element and `0` if it doesn't.
 
 ```cpp
 unordered_set<int> s;
@@ -64,7 +66,9 @@ cout << endl;
 // You can iterate through an unordered set, but it will do so in arbitrary order
 ```
 
-### Java
+</CPPSection>
+
+<JavaSection>
 
 The operations on an unordered set are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
 
@@ -87,13 +91,19 @@ for(int element : set){
 // You can iterate through an unordered set, but it will do so in arbitrary order
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 ## HashMaps
 
 <problems-list problems={metadata.problems.ex} />
 
-### C++
+<LanguageSection>
 
-In an unordered map `m`, the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0. The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map. Lastly, `erase(key)` and `erase(it)` removes the map entry associated with the specified key or iterator. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+<CPPSection>
+
+In an [`unordered_map`](http://www.cplusplus.com/reference/unordered_map/unordered_map/) `m`, the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0. The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map. Lastly, `erase(key)` and `erase(it)` removes the map entry associated with the specified key or iterator. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
 
 ```cpp
 unordered_map<int, int> m;
@@ -105,6 +115,11 @@ cout << m[1] << '\n'; // 5
 cout << m.count(7) << '\n' ; // 0
 cout << m.count(1) << '\n' ; // 1
 ```
+
+
+</CPPSection>
+
+<JavaSection>
 
 ### Java
 
@@ -121,13 +136,21 @@ System.out.println(map.containsKey(7)); // false
 System.out.println(map.containsKey(1)); // true
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 ## Hacking
 
 In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however. 
 
+<LanguageSection>
+
+<CPPSection>
+
 <resources>
-	<resource source="Mark Nelson" title="Hash Functions for C++ Unordered Containers" url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html" starred>How to create user-defined hash function for `unordered_map`.</resource>
-	<resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</resource>
+  <resource source="Mark Nelson" title="Hash Functions for C++ Unordered Containers" url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html" starred>How to create user-defined hash function for `unordered_map`.</resource>
+  <resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</resource>
 </resources>
 
 ### Implementation
@@ -147,6 +170,17 @@ unordered_map<int,int,chash> U;
 ```
 
 (explain assumptions that are required for this to work)
+
+
+</CPPSection>
+
+<JavaSection>
+
+
+
+</JavaSection>
+
+</LanguageSection>
 
 ## Problems
 
