@@ -55,7 +55,7 @@ After sorting, it should look like
 2 3 10
 ```
 
-With C++, the easiest method is to use nested pairs:
+With C++, the easiest method is to use nested pairs or a `vector` of `array<int,3>` or `vector<int>`.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -76,8 +76,6 @@ int main() {
 }
 ```
 
-We can also use `array<int,3>` or `vector<int>`:
-
 ```cpp
 int main() {
     int M = 4;
@@ -91,7 +89,9 @@ int main() {
 }
 ```
 
-The same goes for Python, but these aren't automatically provided by Java. What should we do?
+In Python, we can use a list of lists.
+
+But in Java, we can't immediately sort an arraylist of arraylists. What should we do?
 
   - If we only stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. 
   - However, if we create a **class** (or struct) representing the edges and define a **custom comparator** to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
@@ -99,9 +99,13 @@ The same goes for Python, but these aren't automatically provided by Java. What 
 
 ## Classes
 
-First, we need to define a **class** that represents what we want to sort (or a C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) , which is the same as a C++ `class` but all members are public by default). 
+First, we need to define a **class** that represents what we want to sort. In our example we will define a class `Edge` that contains the two endpoints of the edge and the weight.
 
-In our example we will define a class `Edge` that contains the two endpoints of the edge and the weight.
+<LanguageSection>
+
+<CPPSection>
+
+A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -121,6 +125,11 @@ int main() {
     for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 import java.util.*;
 
@@ -150,11 +159,17 @@ public class Sol {
 }
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 ## Comparators
 
 Normally, sorting functions rely on moving objects with a lower value in front of objects with a higher value if sorting in ascending order, and vice versa if in descending order. This is done through comparing two objects at a time.
 
-### C++
+<LanguageSection>
+
+<CPPSection>
 
 <resources>
   <resource source="CPH" title="3.2 - User-Defined Structs, Comparison Functions" starred></resource>
@@ -172,28 +187,6 @@ In addition to returning the correct answer, comparators should also satisfy the
 
  - The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)`is `true`, then `compare(y, x)` should be `false` and vice versa.
  - The function must be transitive. If `compare(x, y)` is true and `compare(y, z)` is true, then `compare(x, z)` should also be true. If the first two compare functions both return `false`, the third must also return `false`.
-
-### Java
-
-<resources>
-  <resource source="IUSACO" title="Ch 8 - Sorting & Comparators" starred></resource>
-</resources>
-
-What a `Comparator` does is compare two objects as follows, based on our comparison criteria:
-
-- If object $x$ is less than object $y$, return a negative integer.
-- If object $x$ is greater than object $y$, return a positive integer.
-- If object $x$ is equal to object $y$, return 0.
-
-In addition to returning the correct number, comparators should also satisfy the following conditions:
-
-- The function must be consistent with respect to reversing the order of the arguments: if `compare(x, y)` is positive, then `compare(y, x)` should be negative and vice versa.
-- The function must be transitive. If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`. Same applies if the compare functions return negative numbers.
-- Equality must be consistent. If `compare(x, y) = 0`, then `compare(x, z)` and `compare(y, z)` must both be positive, both negative, or both zero. Note that they don't have to be equal, they just need to have the same sign.
-
-Java has default functions for comparing `int`, `long`, `double` types. The `Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two arguments $x$ and $y$ and compare them as described above.
-
-## C++
 
 ### Method 1: Overloading the Less Than Operator
 
@@ -241,6 +234,7 @@ struct Edge {
 };
 ```
 
+
 ### Method 2: Comparison Function
 
 This works for both objects and primitives, and you can declare many different comparators for the same object.
@@ -274,7 +268,27 @@ We can also use [lambda expressions](https://www.geeksforgeeks.org/lambda-expres
 sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });
 ```
 
-## Java
+</CPPSection>
+
+<JavaSection>
+
+<resources>
+  <resource source="IUSACO" title="Ch 8 - Sorting & Comparators" starred></resource>
+</resources>
+
+What a `Comparator` does is compare two objects as follows, based on our comparison criteria:
+
+- If object $x$ is less than object $y$, return a negative integer.
+- If object $x$ is greater than object $y$, return a positive integer.
+- If object $x$ is equal to object $y$, return 0.
+
+In addition to returning the correct number, comparators should also satisfy the following conditions:
+
+- The function must be consistent with respect to reversing the order of the arguments: if `compare(x, y)` is positive, then `compare(y, x)` should be negative and vice versa.
+- The function must be transitive. If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`. Same applies if the compare functions return negative numbers.
+- Equality must be consistent. If `compare(x, y) = 0`, then `compare(x, z)` and `compare(y, z)` must both be positive, both negative, or both zero. Note that they don't have to be equal, they just need to have the same sign.
+
+Java has default functions for comparing `int`, `long`, `double` types. The `Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two arguments $x$ and $y$ and compare them as described above.
 
 There are two ways of implementing this in Java: `Comparable`, and `Comparator`. They essentially serve the same purpose, but `Comparable` is generally easier and shorter to code. `Comparable` is a function implemented within the class containing the custom object, while `Comparator` is its own class.
 
@@ -356,7 +370,9 @@ public class Sol {
 
 When using `Comparator`, the syntax for using the built-in sorting function requires a second argument: `Arrays.sort(arr, new Comp())`, or `Collections.sort(list, new Comp())`. 
 
-## Python
+</JavaSection>
+
+<PySection>
 
 ### Defining Less Than Operator
 
@@ -425,15 +441,23 @@ for e in v:
 	print(e.a,e.b,e.w)
 ```
 
+</PySection>
+
+</LanguageSection>
+
 ## Variations
 
 ### Sorting in Decreasing Order of Weight
 
-We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code. Similarly, we can replace all occurrences of `Integer.compare(x, y)` with `-Integer.compare(x, y)` in our Java code.
+We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code. Similarly, we can replace all occurrences of `Integer.compare(x, y)` with `-Integer.compare(x, y)` in our Java code or negate the key in Python.
 
 ### Sorting by Two Criteria
 
 Now, suppose we wanted to sort a list of `Edge`s in ascending order, primarily by weight and secondarily by first vertex (`a`). We can do this quite similarly to how we handled sorting by one criterion earlier. What the comparator function needs to do is to compare the weights if the weights are not equal, and otherwise compare first vertices.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 struct Edge {
@@ -444,6 +468,11 @@ struct Edge {
     }
 };
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 static class Edge implements Comparable<Edge> {
     int a,b,w;
@@ -454,6 +483,11 @@ static class Edge implements Comparable<Edge> {
     }
 }
 ```
+
+</JavaSection>
+
+<PySection>
+
 ```py
 class Edge:
     def __init__(self, a, b, w):
@@ -465,7 +499,23 @@ class Edge:
 
 ```
 
-Sorting by an arbitrary number of criteria is done similarly. With Java, we can implement a comparator for arrays of arbitrary length (although this might be more confusing than creating a separate class).
+</PySection>
+
+</LanguageSection>
+
+Sorting by an arbitrary number of criteria is done similarly. 
+
+<LanguageSection>
+
+<CPPSection>
+
+
+
+</CPPSection>
+
+<JavaSection>
+
+With Java, we can implement a comparator for arrays of arbitrary length (although this might be more confusing than creating a separate class).
 
 ```java
 import java.util.*;
@@ -499,6 +549,14 @@ public class Sol {
 	}
 }
 ```
+
+</JavaSection>
+
+<PySection>
+
+</PySection>
+
+</LanguageSection>
 
 ## Problems
 

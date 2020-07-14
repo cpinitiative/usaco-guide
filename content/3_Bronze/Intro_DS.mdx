@@ -33,7 +33,9 @@ A **data structure** determines how data is stored (is it sorted? indexed? what 
 
 ## Introduction
 
-### C++
+<LanguageSection>
+
+<CPPSection>
 
 The C++ [standard library data structures](http://www.cplusplus.com/reference/stl/) are designed to store any type of data. We put the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
@@ -47,7 +49,9 @@ For our examples below, we will primarily use the `int` data type, but note that
 
 Essentially every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
 
-### Java
+</CPPSection>
+
+<JavaSection>
 
 Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
@@ -59,7 +63,11 @@ This creates an `ArrayList` structure that only stores objects of type `String`.
 
 For our examples below, we will primarily use the `Integer` data type, but note that you can have Collections of any object type, including `Strings` , other Collections, or user-defined objects.
 
-Collections data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
+`Collections` data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
+
+</JavaSection>
+
+</LanguageSection>
 
 ## Dynamic Arrays
 
@@ -67,12 +75,21 @@ You're probably already familiar with regular (static) arrays. Now, there are al
 
 In a dynamic array, we can also add and delete elements at the end in $O(1)$ time. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 vector<int> v;
 for(int i = 1; i <= 10; i++){
     v.push_back(i);
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
 for(int i = 1; i <= 10; i++){
@@ -80,37 +97,66 @@ for(int i = 1; i <= 10; i++){
 }
 ```
 
-In C++ we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
+</JavaSection>
+
+</LanguageSection>
+
+In C++, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 vector<int> v(30); // one way
 vector<int> v; v.resize(30); // another way
 ```
 
-<code-comment lang="java">
+</CPPSection>
 
-There is no Java equivalent; just use a for loop.
+<JavaSection>
 
-</code-comment>
+Unfortunately, there is no Java equivalent; just use a for loop.
 
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
 for (int i = 1; i <= 30; i++) list.add(0);
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 We can ensure that a dynamic array's **capacity** must be at least $x$, meaning that it will not reallocate storage until we add more than $x$ elements to it. If the dynamic array's capacity is already at least $x$, then nothing occurs. Note that capacity is **not** the same thing as size. For example, if you declare a dynamic array with initial capacity $30$ and try to edit the element at index $5$, this will throw an error since the size of the dynamic array is still zero.
 
 The following code initializes a dynamic array with initial capacity $30$:
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 vector<int> v; v.reserve(30);
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>(30); // one way
 ArrayList<Integer> list = new ArrayList<Integer>(); list.ensureCapacity(30); // another way
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 We can add and remove at any index of a dynamic array in $O(n)$ time.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 vector<int> v;
@@ -131,6 +177,11 @@ cout << v[2]; // 5
 v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
 // this erases the first three elements; O(n)
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
 list.add(2); // [2]
@@ -146,7 +197,15 @@ list.remove(list.size()-1); // [2, 7, 5]
 System.out.println(list.get(2)); // 5
 ```
 
+</JavaSection>
+
+</LanguageSection>
+    
 To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 vector<int> v;
@@ -161,6 +220,11 @@ for(int element : arr){
 }
 cout << endl;
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
 list.add(1); list.add(7); list.add(4); list.add(5); list.add(2);
@@ -172,16 +236,22 @@ for(int element : arr){ // for-each
     System.out.println(element);
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
  
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
 ## Iterators
 
-An **iterator** allows you to traverse a container by pointing to an object within the container (although they are **not** the same thing as pointers). 
+An **iterator** allows you to traverse a container by pointing to an object within the container.
 
-### C++
+<LanguageSection>
 
-For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+<CPPSection>
+
+However, they are **not** the same thing as pointers. For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
 
 ```cpp
 for (vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it) {
@@ -200,9 +270,11 @@ for(auto element : v) {
 }
 ```
 
-### Java
+</CPPSection>
 
-??
+
+</LanguageSection>
+
 
 ## Sorting
 
@@ -210,7 +282,9 @@ for(auto element : v) {
 
 **Sorting** refers to arranging items in some particular order. You do not need to know how to sort an array in $O(N\log N)$ time for Bronze, but you should be aware of how to use built-in methods to sort a (possibly dynamic) array.
 
-### C++
+<LanguageSection>
+
+<CPPSection>
 
 In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
 
@@ -219,7 +293,9 @@ In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin
   - [Golovanov399 - C++ Tricks](https://codeforces.com/blog/entry/74684)
     - first two related to sorting
 
-### Java
+</CPPSection>
+
+<JavaSection>
 
 In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
  
@@ -233,11 +309,16 @@ Two ways to avoid this:
   - Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
   - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
 
-### Python
+</JavaSection>
+
+<PySection>
 
   - [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
 
-## Problems
+</PySection>
 
+</LanguageSection>
+
+## Problems
 
 <problems-list problems={metadata.problems.easy} />

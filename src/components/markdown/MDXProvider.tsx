@@ -14,6 +14,7 @@ import {
   LanguageSection,
   PySection,
 } from './LanguageSection';
+import { IncompleteSection } from './IncompleteSection';
 
 const components = {
   'module-excerpt': props => <div {...props} />,
@@ -111,6 +112,7 @@ const components = {
   CPPSection: CPPSection,
   JavaSection: JavaSection,
   PySection: PySection,
+  IncompleteSection: IncompleteSection,
   Asterisk: Asterisk,
   table: ({ className, ...props }) => (
     <table

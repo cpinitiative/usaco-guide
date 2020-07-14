@@ -40,6 +40,8 @@ export const metadata = {
   <resource source="IUSACO" title="12 - Binary Search">module is based off this</resource>
 </resources>
 
+<br />
+
 When we binary search on an answer, we start with a search space of size $N$ which we know the answer lies in. Then each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
 
 Let's say we have a function `check(x)` that returns `true` if the answer of $x$ is possible, and `false` otherwise. Usually, in such problems, we want to find the maximum or minimum value of $x$ such that `check(x)` is true. Similarly to how binary search on an array only works on a sorted array, binary search on the answer only works if the answer function is [monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it is always non-decreasing or always non-increasing. 
@@ -110,7 +112,16 @@ int main() {
 }
 ```
 
+(todo: remove one of these)
+
+<IncompleteSection />
+
 There is also another approach to binary searching based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element.
+
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 long long search(){
     long long pos = 0; long long max = 2E9;
@@ -120,6 +131,11 @@ long long search(){
     return pos;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 static long search(){
     long pos = 0; long max = (long)2E9;
@@ -129,6 +145,11 @@ static long search(){
     return pos;
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
+
 ## Example: Maximum Median
 
 <problems-list problems={metadata.problems.ex} />
@@ -146,6 +167,10 @@ $$
 If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns `true`. Otherwise, $x$ cannot be the median, so our check function returns `false`.
 
 The solution codes use the jump implementation of binary search.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int n;
@@ -184,6 +209,11 @@ int main() {
     cout << search() << '\n';
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 static int n;
 static long k;
@@ -221,6 +251,11 @@ static boolean check(long x){
     else{ return false; }
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## USACO Problems
 

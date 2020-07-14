@@ -1,14 +1,30 @@
 ---
 id: io
 title: Input & Output
-author: Darren Yao
-description: Demonstrates how to read input and print output for USACO contests.
+author: Darren Yao, Benjamin Qi, Nathan Wang
+description: Demonstrates how to read input and print output for USACO contests, including an example problem.
 ---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    fence: [
+      new Problem("Bronze", "Fence Painting", "567", "Very Easy"),
+    ],
+    general: [
+      new Problem("Bronze", "Promotion Counting", "591", "Very Easy"),
+      new Problem("Bronze", "Word Processor", "987", "Very Easy"),
+      new Problem("Bronze", "Square Pasture", "663", "Very Easy"),
+      new Problem("Bronze", "Bucket Brigade", "939", "Very Easy"),
+    ]
+  }
+};
 
 <resources>
   <resource source="IUSACO" title="2.1 - Input and Output">module is based off this</resource>
   <resource source="CPH" title="1.2 - Input and Output" starred>cin, getline, files</resource>
-  <resource source="PAPS" title="2.4">cin, getline</resource>
+  <resource source="PAPS" title="2.4 - Input and Output">cin, getline</resource>
 </resources>
 
 ## Standard I/O
@@ -63,7 +79,7 @@ int main() {
 
 In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use `BufferedReader` and `PrintWriter` instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
 
-Here is a Java template for input and output, which is effectively a faster Scanner. We import the entire `util` and `io` libraries for ease of use.
+Here is a Java template for input and output, which is effectively a faster Scanner. We import the entire `util` and `io` libraries for ease of use. Note that this **must** be declared within a file named `template.java`.
 
 ```java
 import java.io.*;
@@ -73,12 +89,10 @@ public class template {
     static class InputReader {
         BufferedReader reader;
         StringTokenizer tokenizer;
-
         public InputReader(InputStream stream) {
             reader = new BufferedReader(new InputStreamReader(stream), 32768);
             tokenizer = null;
         }
-
         String next() { // reads in the next string
             while (tokenizer == null || !tokenizer.hasMoreTokens()) {
                 try {
@@ -89,23 +103,12 @@ public class template {
             }
             return tokenizer.nextToken();
         }
-
-        public int nextInt() { // reads in the next int
-            return Integer.parseInt(next());
-        }
-
-        public long nextLong() { // reads in the next long
-            return Long.parseLong(next());
-        }
-
-        public double nextDouble() { // reads in the next double
-            return Double.parseDouble(next());
-        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
     }
-
     static InputReader r = new InputReader(System.in);
     static PrintWriter pw = new PrintWriter(System.out);
-
     public static void main(String[] args) {
 
         // YOUR CODE HERE
@@ -126,6 +129,23 @@ Here's a brief description of the methods in our `InputReader` class, with an in
 | `r.nextDouble()`   | Reads the next token (up to a whitespace) and returns as a `double` |
 | `pw.println()`     | Prints the argument to designated output stream and adds newline    |
 | `pw.print()`       | Prints the argument to designated output stream                     |
+
+
+Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
+
+```java
+// InputReader template code above
+static InputReader r = new InputReader(System.in);
+static PrintWriter pw = new PrintWriter(System.out);
+
+public static void main(String[] args) {
+    int a = r.nextInt();
+    int b = r.nextInt();
+    int c = r.nextInt()
+    pw.println(a + b + c);
+    pw.close();
+}
+```
 
 
 </JavaSection>
@@ -174,7 +194,7 @@ int main() {
 
 <JavaSection>
 
-We can modify the template above to support file I/O.
+We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
 
 ```java
 import java.util.*;
@@ -184,13 +204,11 @@ public class template {
     static class InputReader {
         BufferedReader reader;
         StringTokenizer tokenizer;
-
         public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("template.in"));
+            reader = new BufferedReader(new FileReader("problemname.in"));
             tokenizer = null;
         }
-
-        String next() { // reads in the next String
+        String next() {
             while (tokenizer == null || !tokenizer.hasMoreTokens()) {
                 try {
                     tokenizer = new StringTokenizer(reader.readLine());
@@ -200,24 +218,13 @@ public class template {
             }
             return tokenizer.nextToken();
         }
-
-        public int nextInt() { // reads in the next int
-            return Integer.parseInt(next());
-        }
-
-        public long nextLong() { // reads in the next long
-            return Long.parseLong(next());
-        }
-
-        public double nextDouble() { // reads in the next double
-            return Double.parseDouble(next());
-        }
+        public int nextInt() { return Integer.parseInt(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
     }
-
     public static void main(String[] args) throws FileNotFoundException, IOException {
-
         InputReader r = new InputReader();
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("template.out")));
+        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
 
         // YOUR CODE HERE
 
@@ -227,24 +234,195 @@ public class template {
 ```
 
 
-Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
+Some sources say to use 
 
 ```java
-// InputReader template code above
-static InputReader r = new InputReader(System.in);
-static PrintWriter pw = new PrintWriter(System.out);
-
-public static void main(String[] args) {
-    int a = r.nextInt();
-    int b = r.nextInt();
-    int c = r.nextInt()
-    pw.println(a + b + c);
-    pw.close();
-}
+PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
+
+instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
 
 </JavaSection>
 
 </LanguageSection>
 
+## Example: Fence Painting
 
+<resources>
+    <resource source="USACO" title="Technical Specifications for Contests" url="http://www.usaco.org/index.php?page=instructions" starred>Make sure to read this.</resource>
+</resources>
+
+<br />
+
+Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
+
+![bad](./Error.png)
+
+<problems-list problems={metadata.problems.fence} />
+
+
+<LanguageSection>
+
+<CPPSection>
+
+[Here](https://www.geeksforgeeks.org/bitsstdc-h-c/) is some info about `<bits/stdc++.h>` if you are not familiar with it.
+
+### Method 1
+
+Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you comment out both of the lines containing `freopen` then the program reads from standard in and writes to standard out as usual.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    freopen("paint.in","r",stdin); // reuse standard in to read from "paint.in"
+    freopen("paint.out","w",stdout); // reuse standard out to write to "paint.out"
+    vector<bool> cover(100);
+    int a, b, c, d; cin >> a >> b >> c >> d;
+    for (int i = a; i < b; ++i) cover[i] = 1;
+    for (int i = c; i < d; ++i) cover[i] = 1;
+    int ans = 0; 
+    for (int i = 0; i < 100; ++i) ans += cover[i];
+    cout << ans;
+    // cout << ans << endl; is OK
+    // cout << ans << "\n"; is OK
+    // cout << ans << " "; is NOT OK
+    // cout << ans << "\n\n"; is NOT OK
+}
+```
+
+### Method 2
+
+Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ifstream fin("paint.in");
+    ofstream fout("paint.out");
+    vector<bool> cover(100);
+    int a, b, c, d; fin >> a >> b >> c >> d;
+    for (int i = a; i < b; ++i) cover[i] = 1;
+    for (int i = c; i < d; ++i) cover[i] = 1;
+    int ans = 0; 
+    for (int i = 0; i < 100; ++i) ans += cover[i];
+    fout << ans;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Method 1
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class paintSol { // must be declared in paintSol.java
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("paint.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+        int[] cover = new int[100];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
+
+        for (int i = a; i < b; i++) cover[i] = 1;
+        for (int i = c; i < d; i++) cover[i] = 1;
+        int ans = 0; 
+        for (int i = 0; i < 100; i++) ans += cover[i];
+        pw.println(ans); 
+        pw.close(); // make sure to include this line -- flushes the output.
+    }
+}
+```
+
+### Method 2
+
+Alternatively, we can use the `InputReader` given above.
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class template {
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader() throws FileNotFoundException {
+            reader = new BufferedReader(new FileReader("paint.in"));
+            tokenizer = null;
+        }
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+    }
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        InputReader r = new InputReader();
+        PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+
+        int a = r.nextInt(), b = r.nextInt();
+        int c = r.nextInt(), d = r.nextInt();
+
+        int[] cover = new int[100];
+        for (int i = a; i < b; i++) cover[i] = 1;
+        for (int i = c; i < d; i++) cover[i] = 1;
+        int ans = 0; 
+        for (int i = 0; i < 100; i++) ans += cover[i];
+        
+        pw.println(ans); 
+        pw.close(); // flush output
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
+
+```py
+fin = open("paint.in","r")
+fout = open("paint.out","w")
+cover = [0 for i in range(100)]
+a,b = map(int,fin.readline().split())
+c,d = map(int,fin.readline().split())
+for i in range(a,b):
+    cover[i] = 1
+for i in range(c,d):
+    cover[i] = 1
+ans = 0
+for i in range(100):
+    ans += cover[i]
+fout.write(str(ans))
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Introductory Problems
+
+The following require relatively little programming experience and no algorithmic knowledge. Do as many as you want, then move on! You do not have to do all of them.
+
+<problems-list problems={metadata.problems.general} />
+
+Also check the [CSES Introductory Problems](https://cses.fi/problemset/list/) up to and including "Palindrome Reorder."

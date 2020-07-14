@@ -7,12 +7,18 @@ export const LanguageSection = props => {
   let lang = userSettings.primaryLang;
 
   let sections = {};
-  props.children.forEach(child => {
+  React.Children.map(props.children, child => {
     let type = child.props.mdxType;
     if (type === 'CPPSection') sections['cpp'] = child;
     if (type === 'JavaSection') sections['java'] = child;
     if (type === 'PySection') sections['py'] = child;
   });
+  // props.children.forEach(child => {
+  //   let type = child.props.mdxType;
+  //   if (type === 'CPPSection') sections['cpp'] = child;
+  //   if (type === 'JavaSection') sections['java'] = child;
+  //   if (type === 'PySection') sections['py'] = child;
+  // });
   const languages = {
     cpp: 'C++',
     java: 'Java',

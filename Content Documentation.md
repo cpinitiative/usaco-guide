@@ -8,6 +8,19 @@ You can use [StackEdit](https://stackedit.io/) to check that latex renders prope
 
 [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
 
+#### Using Sublime Text with .mdx
+
+Seems that stuff can get messed up if you don't follow this.
+
+1. Download [here](https://www.sublimetext.com/).
+2. Open the command palette and install package control.
+3. Install package -> PackageResourceViewer
+4. Extract the HTML package with PackageResourceViewer.
+5. Now you can modify `html_completions.py` by adding to `normal_tags` (ex. `spoiler`, `CPPSection`)
+   - actually, for some reason uppercase doesn't work ...
+6. Open a `.mdx` file and set syntax highlighting to be the same as `.md` with `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
+7. Make snippets!
+
 ### `ordering.ts`
 
 Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory

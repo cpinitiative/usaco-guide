@@ -61,6 +61,10 @@ Now, when do we stop? First, if Alice and Bob ever have the same coordinates, th
 
 Example code is displayed below. Here, as in other examples, input processing will be omitted.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 int ax = 0; int ay = 0; // alice's x and y coordinates
 int bx = r; int by = s; // bob's x and y coordinates
@@ -77,6 +81,11 @@ if(ax == bx && ay == by){ // if they are in the same location
     cout << -1 << endl; // they never meet
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 int ax = 0; int ay = 0; // alice's x and y coordinates
 int bx = r; int by = s; // bob's x and y coordinates
@@ -94,6 +103,10 @@ if(ax == bx && ay == by){ // if they are in the same location
 }
 out.close(); // flush the output
 ```
+
+</JavaSection>
+
+</LanguageSection>
 
 </spoiler>
 
@@ -120,6 +133,10 @@ Please print one line of output, containing $N$ space-separated integers: the fi
 
 Once again, we can simulate the process of pouring one bucket into the next. The amount of milk poured from bucket $B$ to bucket $B+1$ is the smaller of the amount of water in bucket $B$ (after all previous operations have been completed) and the remaining space in bucket $B+1$, which is $C_{B+1} - A_{B+1}$. We can just handle all of these operations in order, using an array $C$ to store the maximum capacities of each bucket, and an array $A$ to store the current water level in each bucket, which we update during the process. Example code is below (note that arrays are zero-indexed, so the indices of our buckets go from $0$ to $N-1$ rather than from $1$ to $N$).
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 for(int i = 0; i < n-1; i++){
     int amt = min(A[i], C[i+1]-A[i+1]);
@@ -136,6 +153,11 @@ for(int i = 0; i < n; i++){
 }
 cout << endl;
 ```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 for(int i = 0; i < n-1; i++){
     int amt = Math.min(A[i], C[i+1]-A[i+1]);
@@ -153,6 +175,10 @@ for(int i = 0; i < n; i++){
 pw.println(); // print newline
 pw.close(); // flush the output
 ```
+
+</JavaSection>
+
+</LanguageSection>
 
 </spoiler>
 

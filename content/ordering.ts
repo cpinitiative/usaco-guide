@@ -14,7 +14,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     "running-cpp",
     "data-types",
     "io",
-    "ex-prob",
   ],
   "general": [
     "resources",

@@ -10,75 +10,27 @@ import { Problem } from "../models";
 
 export const metadata = {
   problems: {
-    permSam: [
-      new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
-    ],
-    perm: [
-      new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
-    ]
+	permSam: [
+	  new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
+	],
+	perm: [
+      new Problem("CSES", "Chessboard and Queens", "1624", "Normal", false, [], "Recursively backtrack. See CSES book for more details."),
+	  new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
+	]
   }
 };
+
+<problems-list problems={metadata.problems.permSam} />
+
+<br />
+
+A **permutation** is a reordering of a list of elements. Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
 
 <resources>
   <resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </resource>
 </resources>
 
-<problems-list problems={metadata.problems.permSam} />
-
-A **permutation** is a reordering of a list of elements. Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
-
-### C++
-
-We can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
-```cpp
-do {
-    check(v); // process or check the current permutation for validity
-} while(next_permutation(v.begin(), v.end()));
-```
-
-This generates the permutations in **lexicographical order**.
-
-### Java
-
-We'll have to implement this ourselves, which is called [Heap's Algorithm](https://en.wikipedia.org/wiki/Heap%27s_algorithm) (no relation to the heap data structure). What's going to be in the check function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
-
-For the array $[1, 2, 3]$, here are all of its permutations, in **lexicographical order**.
-
-$$
-[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]
-$$
-
-```java
-import java.util.*;
-
-public class Test {
-	static boolean[] used;
-  	static ArrayList<Integer> cur = new ArrayList<Integer>();
-  	static int n;
-  	static void gen() {
-    	if (cur.size() == n) {
-      		check(cur); // check current permutation for validity, or print it, etc.
-      		return;
-		}
-    }
-    for (int i = 0; i < n; ++i) if (!used[i]) {
-      	used[i] = true; cur.add(i+1);
-      	gen();
-      	used[i] = false; cur.remove(cur.size()-1);
-    }
-}
-  
-static void genPerm(int _n) {
-	n = _n; used = new boolean[n];
-    gen();
-}
-  
-public static void main(String[] Args) {
-	genPerm(5);
-}
-```
-
-### What's lexicographical order?
+## What's Lexicographical Order?
 
 Think about how are words ordered in a dictionary. (In fact, this is where the term "lexicographical" comes from.)
 
@@ -95,6 +47,61 @@ $$
 Notice that the list starts with permutations beginning with 1 (just like a dictionary that starts with words beginning with 'a'), followed by those beginning with 2 and those beginning with 3. Within the same starting element, the second element is used to make comparisions.
 
 Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
+
+## Checking Permutations in Lexicographical Order 
+
+What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
+
+<LanguageSection>
+
+<CPPSection>
+
+We can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
+
+```cpp
+do {
+	check(v); // process or check the current permutation for validity
+} while(next_permutation(v.begin(), v.end()));
+```
+
+This makes $O(N!)$ swaps.
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class Test {
+	static boolean[] used;
+	static ArrayList<Integer> cur = new ArrayList<Integer>();
+	static int n;
+	static void gen() {
+		if (cur.size() == n) {
+			check(cur); // check current permutation for validity, or print it, etc.
+			return;
+		}
+		for (int i = 0; i < n; ++i) if (!used[i]) {
+			used[i] = true; cur.add(i+1);
+			gen();
+			used[i] = false; cur.remove(cur.size()-1);
+		}
+	}
+	  
+	static void genPerm(int _n) {
+		n = _n; used = new boolean[n];
+		gen();
+	}
+	public static void main(String[] Args) {
+		genPerm(5);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 ### Problems
 
