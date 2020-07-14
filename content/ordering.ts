@@ -20,13 +20,18 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     },
     "data-types",
     "io",
-    "practicing",
-    "contest-strategy",
     {
-      name: "Other",
+      name: "Optional",
       items: [
+        "practicing",
+        "contest-strategy",
         "resources",
         "contests",
+      ]
+    },
+    {
+      name: "Move to usaco.org?",
+      items: [
         "proposing",
       ]
     },
