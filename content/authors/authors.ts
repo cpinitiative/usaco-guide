@@ -23,6 +23,12 @@ export const Authors: Author[] = [
     github: "bqi343"
   },
   {
+    photo: 'briancdean',
+    name: 'Brian C. Dean',
+    title: 'Content Director',
+    blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
+  },
+  {
     photo: 'nathanw',
     name: 'Nathan Wang',
     title: 'Coordinator / Webmaster',
@@ -30,5 +36,11 @@ export const Authors: Author[] = [
     website: "https://thecodingwizard.me/",
     email: "nathan.r.wang@gmail.com",
     github: "thecodingwizard",
+  },
+  {
+    photo: 'benq',
+    name: 'Somebody Else',
+    title: 'Content Author',
+    blurb: 'The number of authors must be a multiple of two, otherwise the website looks ugly and I\'m lazy to fix it :( ',
   },
 ];
