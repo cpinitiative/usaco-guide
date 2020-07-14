@@ -27,6 +27,101 @@ export const metadata = {
   <resource source="PAPS" title="2.4 - Input and Output">cin, getline</resource>
 </resources>
 
+## File I/O
+
+In USACO, input is read from a file called `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, for [this problem](http://www.usaco.org/index.php?page=viewproblem2&cpid=1035), you would replace `problemname` with `socdist1` to get `socdist1.in` and `socdist1.out`.
+
+<LanguageSection>
+
+<CPPSection>
+
+You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem.
+
+Below, is a C++ template for input and output. We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them.
+
+```cpp
+#include <cstdio>
+using namespace std;
+
+int main() {
+    freopen("problemname.in", "r", stdin);
+    freopen("problemname.out", "w", stdout);
+    // the following optional line improves performance (see the "Tips and Tricks" module)
+    cin.tie(0); ios_base::sync_with_stdio(0);
+
+    // rest of your code ...
+}
+```
+
+Alternatively, we can use `<fstream>`. This is less common, and you cannot use C-style I/O (`scanf`, `printf`) with this method.
+
+```cpp
+#include <fstream>
+using namespace std;
+
+int main() {
+    ifstream fin("problemname.in");
+    ofstream fout("problemname.out");
+    // rest of your code ...
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class template {
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader() throws FileNotFoundException {
+            reader = new BufferedReader(new FileReader("problemname.in"));
+            tokenizer = null;
+        }
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+    }
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        InputReader r = new InputReader();
+        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+
+        // YOUR CODE HERE
+
+        pw.close(); // flushes the output once printing is done
+    }
+}
+```
+
+
+Some sources say to use
+
+```java
+PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
+```
+
+instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
+
+</JavaSection>
+
+</LanguageSection>
+
 ## Standard I/O
 
 In most websites (such as CodeForces and CSES), input and output are **standard**.
@@ -42,6 +137,9 @@ The [<iostream\>](http://www.cplusplus.com/reference/iostream/) library suffices
 using namespace std;
 
 int main() {
+    // the following optional line improves performance (see the "Tips and Tricks" module)
+    cin.tie(0); ios_base::sync_with_stdio(0);
+    
     int x; cin >> x;
     cout << "FOUND " << x << "\n";
 }
@@ -147,100 +245,6 @@ public static void main(String[] args) {
 }
 ```
 
-
-</JavaSection>
-
-</LanguageSection>
-
-## File I/O
-
-In USACO, input is read from a file called `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, for [this problem](http://www.usaco.org/index.php?page=viewproblem2&cpid=1035), you would replace `problemname` with `socdist1` to get `socdist1.in` and `socdist1.out`.
-
-<LanguageSection>
-
-<CPPSection>
-
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem.
-
-Below, we have included C++ templates for input and output. We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them.
-
-If `<cstdio>` is used:
-
-```cpp
-#include <cstdio>
-using namespace std;
-
-int main() {
-    freopen("problemname.in", "r", stdin);
-    freopen("problemname.out", "w", stdout);
-    // rest of your code ...
-}
-```
-
-If `<fstream>` is used: (Note that you cannot use C-style I/O (`scanf`, `printf`) with this method):
-
-```cpp
-#include <fstream>
-using namespace std;
-
-int main() {
-    ifstream fin("problemname.in");
-    ofstream fout("problemname.out");
-    // rest of your code ...
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
-
-```java
-import java.util.*;
-import java.io.*;
-
-public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("problemname.in"));
-            tokenizer = null;
-        }
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-    }
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        InputReader r = new InputReader();
-        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
-
-        // YOUR CODE HERE
-
-        pw.close(); // flushes the output once printing is done
-    }
-}
-```
-
-
-Some sources say to use 
-
-```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
-```
-
-instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
 
 </JavaSection>
 
