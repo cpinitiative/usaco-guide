@@ -58,7 +58,6 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       ]
     },
     "intro-graphs",
-    "ad-hoc"
   ],
   "silver": [
     "prefix-sums",
