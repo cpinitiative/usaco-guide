@@ -11,7 +11,7 @@ import ModuleOrdering, {
   ModuleOrderingItem,
 } from '../../../content/ordering';
 import Dots from '../Dots';
-import ReportIssueSlideover from '../ReportIssueSlideover';
+import ContactUsSlideover from '../ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import Asterisk from '../tooltip/Asterisk';
@@ -107,7 +107,7 @@ const Breadcrumbs = ({
   </nav>
 );
 
-const SidebarBottomButtons = ({ onReportIssue, onGetHelp }) => {
+const SidebarBottomButtons = ({ onContactUs }) => {
   const languages = {
     cpp: 'C++',
     java: 'Java',
@@ -145,7 +145,7 @@ const SidebarBottomButtons = ({ onReportIssue, onGetHelp }) => {
       <div className="flex-shrink-0 border-t border-gray-200 flex">
         <button
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={onReportIssue}
+          onClick={onContactUs}
         >
           <svg
             className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
@@ -161,44 +161,6 @@ const SidebarBottomButtons = ({ onReportIssue, onGetHelp }) => {
           Contact Us
         </button>
       </div>
-      {/*<div className="flex-shrink-0 border-t border-gray-200 flex">*/}
-      {/*  <button*/}
-      {/*    className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"*/}
-      {/*    onClick={onReportIssue}*/}
-      {/*  >*/}
-      {/*    <svg*/}
-      {/*      className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"*/}
-      {/*      fill="none"*/}
-      {/*      viewBox="0 0 24 24"*/}
-      {/*      stroke="currentColor"*/}
-      {/*      strokeLinecap="round"*/}
-      {/*      strokeLinejoin="round"*/}
-      {/*      strokeWidth="2"*/}
-      {/*    >*/}
-      {/*      <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />*/}
-      {/*    </svg>*/}
-      {/*    Complain*/}
-      {/*  </button>*/}
-      {/*</div>*/}
-      {/*<div className="flex-shrink-0 border-t border-gray-200 flex">*/}
-      {/*  <button*/}
-      {/*    className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"*/}
-      {/*    onClick={onGetHelp}*/}
-      {/*  >*/}
-      {/*    <svg*/}
-      {/*      className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"*/}
-      {/*      fill="none"*/}
-      {/*      viewBox="0 0 24 24"*/}
-      {/*      stroke="currentColor"*/}
-      {/*      strokeLinecap="round"*/}
-      {/*      strokeLinejoin="round"*/}
-      {/*      strokeWidth="2"*/}
-      {/*    >*/}
-      {/*      <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />*/}
-      {/*    </svg>*/}
-      {/*    Get Help*/}
-      {/*  </button>*/}
-      {/*</div>*/}
     </>
   );
 };
@@ -339,8 +301,7 @@ export default function ModuleLayout({
   children: React.ReactNode;
 }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [isReportIssueActive, setIsReportIssueActive] = useState(false);
-  const [isGetHelpActive, setIsGetHelpActive] = useState(false);
+  const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const [moduleProgress, setModuleProgress] = useState('Not Started');
 
@@ -461,13 +422,9 @@ export default function ModuleLayout({
                   </nav>
                 </div>
                 <SidebarBottomButtons
-                  onReportIssue={() => {
+                  onContactUs={() => {
                     setIsMobileNavOpen(false);
-                    setIsReportIssueActive(true);
-                  }}
-                  onGetHelp={() => {
-                    setIsMobileNavOpen(false);
-                    setIsGetHelpActive(true);
+                    setIsContactUsActive(true);
                   }}
                 />
               </div>
@@ -491,8 +448,7 @@ export default function ModuleLayout({
             </nav>
           </div>
           <SidebarBottomButtons
-            onReportIssue={() => setIsReportIssueActive(true)}
-            onGetHelp={() => setIsGetHelpActive(true)}
+            onContactUs={() => setIsContactUsActive(true)}
           />
         </div>
       </div>
@@ -588,9 +544,9 @@ export default function ModuleLayout({
           </div>
         </main>
       </div>
-      <ReportIssueSlideover
-        isOpen={isReportIssueActive}
-        onClose={() => setIsReportIssueActive(false)}
+      <ContactUsSlideover
+        isOpen={isContactUsActive}
+        onClose={() => setIsContactUsActive(false)}
         activeModule={module}
       />
     </>

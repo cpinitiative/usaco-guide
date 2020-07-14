@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Transition from '../Transition';
+import { FormEvent } from 'react';
 
 type SlideoverProps = {
   isOpen: boolean;
@@ -8,9 +9,10 @@ type SlideoverProps = {
   subtitle: React.ReactNode;
   children: React.ReactNode;
   footerButtons: React.ReactNode;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
 
-export default function Slideover(props: SlideoverProps) {
+export default function SlideoverForm(props: SlideoverProps) {
   return (
     <Transition show={props.isOpen} timeout={700}>
       <div className="fixed inset-0 overflow-hidden">
@@ -39,7 +41,10 @@ export default function Slideover(props: SlideoverProps) {
               leaveTo="translate-x-full"
             >
               <div className="w-screen max-w-md">
-                <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                <form
+                  className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
+                  onSubmit={props.onSubmit}
+                >
                   <div className="flex-1 h-0 overflow-y-auto">
                     <header className="space-y-1 py-6 px-4 bg-blue-700 sm:px-6">
                       <div className="flex items-center justify-between space-x-3">
@@ -81,7 +86,7 @@ export default function Slideover(props: SlideoverProps) {
                   <div className="flex-shrink-0 px-4 py-4 space-x-4 flex justify-end">
                     {props.footerButtons}
                   </div>
-                </div>
+                </form>
               </div>
             </Transition>
           </section>
