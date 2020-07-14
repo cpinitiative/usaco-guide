@@ -109,11 +109,13 @@ const Breadcrumbs = ({
 
 const SidebarBottomButtons = ({ onContactUs }) => {
   const languages = {
+    showAll: 'All',
     cpp: 'C++',
     java: 'Java',
     py: 'Python',
   };
   const nextLang = {
+    showAll: 'cpp',
     cpp: 'java',
     java: 'py',
     py: 'cpp',

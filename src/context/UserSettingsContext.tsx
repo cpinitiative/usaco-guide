@@ -3,15 +3,18 @@ import * as React from 'react';
 import useStickyState from '../hooks/useStickyState';
 
 const UserSettingsContext = createContext({
-  primaryLang: 'cpp',
+  primaryLang: 'showAll',
   setPrimaryLang: null,
 });
 
 export const UserSettingsProvider = ({ children }) => {
   const [primaryLang, setPrimaryLang] = useStickyState(
-    'cpp',
+    'showAll',
     'user-primary-lang'
   );
+  React.useEffect(() => {
+    if (primaryLang === 'showAll') setPrimaryLang('cpp');
+  }, []);
   return (
     <UserSettingsContext.Provider
       value={{

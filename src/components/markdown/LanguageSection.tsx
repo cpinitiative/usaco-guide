@@ -5,6 +5,7 @@ import { useContext } from 'react';
 export const LanguageSection = props => {
   const userSettings = useContext(UserSettingsContext);
   let lang = userSettings.primaryLang;
+
   let sections = {};
   props.children.forEach(child => {
     let type = child.props.mdxType;
@@ -17,6 +18,20 @@ export const LanguageSection = props => {
     java: 'Java',
     py: 'Python',
   };
+
+  if (lang === 'showAll') {
+    return (
+      <>
+        {Object.keys(sections).map(lang => (
+          <>
+            <p className="text-lg font-bold">{languages[lang]}</p>
+            {sections[lang]}
+          </>
+        ))}
+      </>
+    );
+  }
+
   if (!sections.hasOwnProperty(lang)) {
     return (
       <div className="p-4 bg-red-100 text-red-800 rounded">
