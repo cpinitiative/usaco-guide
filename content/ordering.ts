@@ -21,7 +21,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     "data-types",
     "io",
     {
-      name: "Optional",
+      name: "General",
       items: [
         "practicing",
         "contest-strategy",
