@@ -8,7 +8,7 @@ export default ({ children, className }) => {
   if (className === undefined) {
     // no styling, just a regular pre tag
     return (
-      <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap">
+      <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all">
         {children}
       </pre>
     );
@@ -25,7 +25,7 @@ export default ({ children, className }) => {
         <div className="gatsby-highlight" data-language={language}>
           <pre
             className={
-              '-mx-4 sm:-mx-6 lg:mx-0 lg:rounded whitespace-pre-wrap p-4 mb-4 ' +
+              '-mx-4 sm:-mx-6 lg:mx-0 lg:rounded whitespace-pre-wrap break-all p-4 mb-4 ' +
               className
             }
             style={{ ...style }}
