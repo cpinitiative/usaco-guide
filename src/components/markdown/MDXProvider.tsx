@@ -43,7 +43,7 @@ const components = {
         </div>
         <div className="ml-3 flex-1">
           <h3 className="info-block__heading">{title}</h3>
-          <div className="info-block__body">{children}</div>
+          <div className="info-block__body no-bottom-margin">{children}</div>
         </div>
       </div>
     </div>
@@ -68,8 +68,8 @@ const components = {
           <h3 className="text-sm leading-5 font-medium text-yellow-800">
             Warning!
           </h3>
-          <div className="mt-2 text-sm leading-5 text-yellow-700">
-            <p>{children}</p>
+          <div className="mt-2 text-sm leading-5 text-yellow-700 no-bottom-margin">
+            {children}
           </div>
         </div>
       </div>
