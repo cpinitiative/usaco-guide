@@ -135,7 +135,35 @@ Instead, we can select the event that ends as early as possible. This correctly 
 
 In fact, this algorithm always works. A brief explanation of correctness is as follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than $E_1$, then it is always optimal to select $E_1$. This is because selecting $E_1$ gives us more choices for future events. If we can select an event to go after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first. Thus, the set of events that can go after $E_2$ is a subset of the events that can go after $E_1$, making $E_1$ the optimal choice.
 
-For the following code, let's say we have the array `events` of events, which each contain a start and an end point. We'll be using the following static class to store each event:
+For the following code, let's say we have the array `events` of events, which each contain a start and an end point. 
+
+<LanguageSection>
+
+<CPPSection>
+
+We'll be using the C++ built in container pair to store each event. Note that since the standard sort in C++ sorts by first element, we will store each event as `pair<end, start>`. 
+
+```cpp
+// read in the input, store the events in pair<int, int>[] events.
+sort(events, events + n); // sorts by first element (ending time)
+int currentEventEnd = -1; // end of event currently attending
+int ans = 0; // how many events were attended?
+for(int i = 0; i < n; i++){ // process events in order of end time
+    if(events[i].second >= currentEventEnd){ // if event can be attended
+    // we know that this is the earliest ending event that we can attend
+    // because of how the events are sorted
+        currentEventEnd = events[i].first;
+        ans++;
+    }
+}
+cout << ans << endl;
+```
+
+</CPPSection>
+
+<JavaSection>
+
+We'll be using the following static class to store each event:
 
 ```java
 static class Event implements Comparable<Event>{
@@ -149,7 +177,6 @@ static class Event implements Comparable<Event>{
 }
 ```
 
-<br />
 
 ```java
 // read in the input, store the events in Event[] events.
@@ -167,6 +194,11 @@ for(int i = 0; i < n; i++){ // process events in order of end time
 pw.println(ans);
 pw.close();
 ```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## When Greedy Fails
 
