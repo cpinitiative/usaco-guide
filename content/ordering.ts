@@ -14,27 +14,20 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Languages",
       items: [
         "lang",
-        "running-cpp",
-        "running-java",
-        "running-python",
+        "running-code",
+        "tips-tricks",
       ]
     },
     "data-types",
     "io",
-  ],
-  "general": [
-    "resources",
     "practicing",
-    "contests",
     "contest-strategy",
-    "proposing",
     {
-      name: "Language-Specific",
+      name: "Other",
       items: [
-        "io-speed",
-        "why-cpp",
-        "shorten-cpp",
-        "debugging",
+        "resources",
+        "contests",
+        "proposing",
       ]
     },
   ],

@@ -1,9 +1,4 @@
----
-id: io-speed
-title: Input / Output Speed
-author: Benjamin Qi, Nathan Chen
-description: ""
----
+# Input/Output
 
 Generally, input and output speed isn't an issue. However, some platinum tasks have relatively large input files. The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions) briefly mentions some ways of speeding up I/O; let's check that these actually make a difference.
 
@@ -15,9 +10,9 @@ The largest USACO input file I know of is test case 11 of [USACO Platinum - Robo
 
 <CPPSection>
 
-### Method 1: `freopen` with `cin` 
+### Method 1: `freopen` with `cin`
 
-The slowest method. 
+The slowest method.
 
 <spoiler title="973ms">
 
@@ -65,6 +60,7 @@ int main() {
 	else printf("%lld",1000000000000000000LL);
 }
 ```
+
 </spoiler>
 
 ### Method 3: `ifstream` and `ofstream`
@@ -122,17 +118,29 @@ int main() {
 
 ### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
 
-Adding this line as the first line of `main()` reduced the runtime of the first method to 254 ms.  
+Adding this line as the first line of `main()` reduced the runtime of the first method to 254 ms.
 
 <resources>
-	<resource source="CF" url="blog/entry/5217" title="Yet again on C++ I/O" starred>timing various I/O methods</resource>
-	<resource source="SO" url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull" title="Significance of [above]"> </resource>
+  <resource
+    source="CF"
+    url="blog/entry/5217"
+    title="Yet again on C++ I/O"
+    starred
+  >
+    timing various I/O methods
+  </resource>
+  <resource
+    source="SO"
+    url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
+    title="Significance of [above]"
+  >
+    {' '}
+  </resource>
 </resources>
 
 <br />
 
 Actually, the former link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
-
 
 </CPPSection>
 
@@ -150,20 +158,20 @@ import java.io.*;
 
 //3188ms
 public class roboherd_scanner {
-	
+
 	static int P[][] = new int[100000][];
-	
+
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(new File("roboherd.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-		
+
 		int N = sc.nextInt();
 		int K = sc.nextInt();
 		for(int i = 0; i < N; ++i) {
 			int M = sc.nextInt(); P[i] = new int[M];
 			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
 		}
-		
+
 		if(N == 3) pw.println(61);
 		else pw.println(1000000000000000000L);
 		pw.close();
@@ -177,7 +185,7 @@ A common alternative to reading input for programming contests is [`BufferedRead
 
 Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String` or the `.nextToken()` in [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html). Notice that `StringTokenizer` for splitting strings is slightly faster than `.split()`. Apparently [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html) is even faster!
 
-*Reading input with `BufferedReader` and `.split()`*:
+_Reading input with `BufferedReader` and `.split()`_:
 
 <spoiler title="1209ms">
 
@@ -187,13 +195,13 @@ import java.io.*;
 
 //1209ms
 public class roboherd_buffered_reader_string_split {
-	
+
 	static int P[][] = new int[100000][];
-	
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-		
+
 		String[] tokens = br.readLine().split(" ");
 		int N = Integer.parseInt(tokens[0]);
 		int K = Integer.parseInt(tokens[1]);
@@ -202,17 +210,17 @@ public class roboherd_buffered_reader_string_split {
 			int M = Integer.parseInt(tokens[0]); P[i] = new int[M];
 			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(tokens[j+1]);
 		}
-		
+
 		if(N == 3) pw.println(61);
 		else pw.println(1000000000000000000L);
 		pw.close();
 	}
 }
 ```
+
 </spoiler>
 
-
-*Reading input with `BufferedReader` and `StringTokenizer`*:
+_Reading input with `BufferedReader` and `StringTokenizer`_:
 
 <spoiler title="986ms">
 
@@ -222,13 +230,13 @@ import java.io.*;
 
 //986ms
 public class roboherd_buffered_reader_string_tokenizer {
-	
+
 	static int P[][] = new int[100000][];
-	
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out")));
-		
+
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int K = Integer.parseInt(st.nextToken());
@@ -237,16 +245,17 @@ public class roboherd_buffered_reader_string_tokenizer {
 			int M = Integer.parseInt(st.nextToken()); P[i] = new int[M];
 			for(int j = 0; j < M; ++j) P[i][j] = Integer.parseInt(st.nextToken());
 		}
-		
+
 		if(N == 3) pw.println(61);
 		else pw.println(1000000000000000000L);
 		pw.close();
 	}
 }
 ```
+
 </spoiler>
 
-*Reading input with `BufferedReader` and `StreamTokenizer`*:
+_Reading input with `BufferedReader` and `StreamTokenizer`_:
 
 <spoiler title="569ms">
 
@@ -264,7 +273,7 @@ public class roboherd {
     public static void main(String[] args) throws Exception {
         in = new StreamTokenizer(new BufferedReader(new FileReader("roboherd.in")));
         PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-        
+
         int N = nextInt();
         int K = nextInt();
         for(int i = 0; i < N; ++i) {
@@ -291,30 +300,30 @@ import java.io.*;
 
 //320ms
 public class roboherd_is {
-	
+
 	static int P[][] = new int[100000][];
-	
+
 	public static void main(String[] args) throws Exception {
 		FastIO sc = new FastI("roboherd.in");
 		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-		
+
 		int N = sc.nextInt();
 		int K = sc.nextInt();
 		for(int i = 0; i < N; ++i) {
 			int M = sc.nextInt(); P[i] = new int[M];
 			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
 		}
-		
+
 		if(N == 3) pw.println(61);
 		else pw.println(1000000000000000000L);
 		pw.close();
 	}
-	
+
 	// new FastI("file_name") to read a file
 	// new FastI(System.in) to read from stdin
 	// has similar syntax to Scanner, though much faster :)
 	static class FastI {
-		
+
 		InputStream dis;
 		byte[] buffer = new byte[1 << 17];
 		int pointer = 0;
@@ -393,6 +402,7 @@ public class roboherd_is {
 	}
 }
 ```
+
 </spoiler>
 
 The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary.

@@ -196,7 +196,7 @@ export default function Template(props) {
         {/* End Hero Section */}
 
         <div className="pb-8" id="content">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
             <div
               className="mb-8 bg-white shadow-md rounded-lg relative"
               style={{ marginTop: '-12rem' }}
@@ -237,7 +237,7 @@ export default function Template(props) {
                 </nav>
               </div>
 
-              <ol className="list-inside py-8 px-8 text-lg space-y-1">
+              <ol className="list-inside p-4 sm:p-8 text-lg space-y-1">
                 {module.map((m, idx) => {
                   if (m.hasOwnProperty('items')) {
                     return (
