@@ -13,6 +13,9 @@ export const metadata = {
 	permSam: [
 	  new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
 	],
+	ex: [
+	  new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], ""),
+	],
 	perm: [
       new Problem("CSES", "Chessboard and Queens", "1624", "Normal", false, [], "Recursively backtrack. See CSES book for more details."),
 	  new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
@@ -30,7 +33,11 @@ A **permutation** is a reordering of a list of elements. Some problems will ask 
   <resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </resource>
 </resources>
 
-## What's Lexicographical Order?
+## Lexicographical Order
+
+This term is mentioned quite frequently:
+
+<problems-list problems={metadata.problems.ex} />
 
 Think about how are words ordered in a dictionary. (In fact, this is where the term "lexicographical" comes from.)
 
@@ -56,7 +63,11 @@ What's going to be in the `check` function depends on the problem, but it should
 
 <CPPSection>
 
-We can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
+($O(N\cdot N!)$ code)
+
+<IncompleteSection />
+
+Alternatively, we can just use the [`next_permutation()`](https://en.cppreference.com/w/cpp/algorithm/next_permutation) function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
 
 ```cpp
 do {
@@ -64,7 +75,7 @@ do {
 } while(next_permutation(v.begin(), v.end()));
 ```
 
-This makes $O(N!)$ swaps.
+Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
 
 </CPPSection>
 
@@ -88,7 +99,6 @@ public class Test {
 			used[i] = false; cur.remove(cur.size()-1);
 		}
 	}
-	  
 	static void genPerm(int _n) {
 		n = _n; used = new boolean[n];
 		gen();
