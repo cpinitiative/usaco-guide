@@ -11,9 +11,13 @@ Generally, input and output speed isn't an issue. However, some platinum tasks h
 
 The largest USACO input file I know of is test case 11 of [USACO Platinum - Robotic Cow Herd](http://www.usaco.org/index.php?page=viewproblem2&cpid=674), which is 10.3 megabytes! The answer to this test case is $10^{18}$ (with $N=K=10^5$ and all microcontrollers costing $10^8$).
 
-### C++
+<LanguageSection>
 
-`freopen` with `cin` was the slowest method. 
+<CPPSection>
+
+### Method 1: `freopen` with `cin` 
+
+The slowest method. 
 
 <spoiler title="973ms">
 
@@ -38,7 +42,9 @@ int main() {
 
 </spoiler>
 
-`freopen` with `scanf` is significantly faster.
+### Method 2: `freopen` with `scanf`
+
+Significantly faster.
 
 <spoiler title="281ms">
 
@@ -61,7 +67,9 @@ int main() {
 ```
 </spoiler>
 
-Using `ifstream` and `ofstream` is also about as fast.
+### Method 3: `ifstream` and `ofstream`
+
+About as fast.
 
 <spoiler title="258ms">
 
@@ -86,7 +94,9 @@ int main() { // 258 ms
 
 </spoiler>
 
-Of course, there are faster methods. For example, if we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
+### A Faster Method
+
+I we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
 
 <spoiler title="91ms">
 
@@ -110,7 +120,7 @@ int main() {
 
 </spoiler>
 
-#### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
+### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
 
 Adding this line as the first line of `main()` reduced the runtime of the first method to 254 ms.  
 
@@ -119,9 +129,14 @@ Adding this line as the first line of `main()` reduced the runtime of the first 
 	<resource source="SO" url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull" title="Significance of [above]"> </resource>
 </resources>
 
+<br />
+
 Actually, the former link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
 
-### Java
+
+</CPPSection>
+
+<JavaSection>
 
 Keep in mind that a Java program that only reads in $N$ and outputs a number takes 138ms on USACO.
 
@@ -381,7 +396,9 @@ public class roboherd_is {
 
 The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary.
 
-### Python
+</JavaSection>
+
+<PySection>
 
 Faster than the first C++ method! Significantly less if $P$ does not need to be stored.
 
@@ -402,15 +419,26 @@ else:
 
 </spoiler>
 
+</PySection>
+
+</LanguageSection>
 
 ## Fast Output
 
 In general, it may be faster to store the answer all in a single `string` (C++) or `StringBuffer` (Java) and outputting it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
 
-### C++
+<LanguageSection>
+
+<CPPSection>
 
 The CF blog mentioned above notes that when printing many lines in C++, it may be faster to use the newline character `\n` in place of `endl`. Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that they don't immediately print their output, but store some of it. At some point, the buffer's contents are written (i.e. "flushed") to the output device, whether it be the standard output stream or a file. Buffering the output helps with efficiency if accessing the output device (like a file) is slow. Because `endl` flushes the output, it may be faster to use `\n` instead and avoid unnecessary flushes.
 
-### Java
+</CPPSection>
+
+<JavaSection>
 
 When printing to the standard output stream in Java, it is faster to use `new PrintWriter(System.out)` than `System.out`. The syntax for `PrintWriter` is equivalent to that of `System.out` so it should be easy to use. The only difference is that one has to call `.flush()` or `.close()` on the `PrintWriter` at the very end of the program in order to write the output.
+
+</JavaSection>
+
+</LanguageSection>
