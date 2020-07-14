@@ -26,7 +26,10 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={`${module.title} (${divisionLabels[division]})`} />
+      <SEO
+        title={`${module.title} (${divisionLabels[division]})`}
+        description={module.description}
+      />
 
       <div className="h-screen flex overflow-hidden bg-white">
         <ModuleLayout
