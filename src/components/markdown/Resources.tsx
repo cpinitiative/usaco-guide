@@ -2,6 +2,8 @@ import * as React from 'react';
 import Dots from '../Dots';
 import Tooltip from '../tooltip/Tooltip';
 import TextTooltip from '../tooltip/TextTooltip';
+import { useContext } from 'react';
+import UserSettingsContext from '../../context/UserSettingsContext';
 
 export function ResourcesListComponent(props) {
   const embedded = props.embedded;
@@ -44,7 +46,6 @@ export function ResourcesListComponent(props) {
 const books = {
   CPH: '/CPH.pdf',
   PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
-  IUSACO: 'https://darrenyao.com/usacobook/java.pdf',
   CP1:
     'https://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf',
 };
@@ -91,10 +92,18 @@ export const sourceTooltip = {
 };
 
 export function ResourceComponent(props) {
+  const userSettings = useContext(UserSettingsContext);
+
   const source = props.source;
   let url = props.url;
   if (!url) {
-    if (source in books) {
+    if (source === 'IUSACO') {
+      if (userSettings.primaryLang === 'java') {
+        url = 'https://darrenyao.com/usacobook/java.pdf';
+      } else {
+        url = 'https://darrenyao.com/usacobook/cpp.pdf';
+      }
+    } else if (source in books) {
       url = books[source];
     } else
       throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;

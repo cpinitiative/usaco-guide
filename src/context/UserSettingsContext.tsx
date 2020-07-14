@@ -1,5 +1,6 @@
-import { createContext, useCallback, useState } from 'react';
+import { createContext } from 'react';
 import * as React from 'react';
+import useStickyState from '../hooks/useStickyState';
 
 const UserSettingsContext = createContext({
   primaryLang: 'cpp',
@@ -7,7 +8,10 @@ const UserSettingsContext = createContext({
 });
 
 export const UserSettingsProvider = ({ children }) => {
-  const [primaryLang, setPrimaryLang] = useState('cpp');
+  const [primaryLang, setPrimaryLang] = useStickyState(
+    'cpp',
+    'user-primary-lang'
+  );
   return (
     <UserSettingsContext.Provider
       value={{

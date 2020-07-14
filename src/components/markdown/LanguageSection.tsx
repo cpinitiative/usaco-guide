@@ -12,11 +12,21 @@ export const LanguageSection = props => {
     if (type === 'JavaSection') sections['java'] = child;
     if (type === 'PySection') sections['py'] = child;
   });
+  const languages = {
+    cpp: 'C++',
+    java: 'Java',
+    py: 'Python',
+  };
   if (!sections.hasOwnProperty(lang)) {
     return (
-      <div>
-        This section isn't yet available in your chosen language: {lang}. Please
-        choose a different default language.
+      <div className="p-4 bg-red-100 text-red-800 rounded">
+        <b>
+          This section isn't yet available in your chosen language:{' '}
+          {languages[lang]}.
+        </b>{' '}
+        Please choose a different default language for now. Feel free to file a
+        request to add support for {languages[lang]} using the "Contact Us"
+        button.
       </div>
     );
   }
@@ -24,13 +34,13 @@ export const LanguageSection = props => {
 };
 
 export const CPPSection = props => {
-  return <div>{props.children}</div>;
+  return <>{props.children}</>;
 };
 
 export const JavaSection = props => {
-  return <div>{props.children}</div>;
+  return <>{props.children}</>;
 };
 
 export const PySection = props => {
-  return <div>{props.children}</div>;
+  return <>{props.children}</>;
 };
