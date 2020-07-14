@@ -68,7 +68,7 @@ const Breadcrumbs = ({
   division: string;
   module: ModuleLinkInfo;
 }) => (
-  <nav className="flex items-center text-sm leading-5 font-medium">
+  <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
     <Link
       to="/"
       className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
@@ -103,7 +103,7 @@ const Breadcrumbs = ({
         clipRule="evenodd"
       />
     </svg>
-    <span className="text-gray-500">{module.title}</span>
+    <span className="text-gray-500 whitespace-no-wrap">{module.title}</span>
   </nav>
 );
 
@@ -240,22 +240,29 @@ const SidebarNavLinks = ({ links }: { links: NavLinkItem[] }) => {
   return <>{links.map(renderLink)}</>;
 };
 
-const TopNav = ({
+const NavBar = ({
   division,
   module,
   prevModule,
   nextModule,
+  alignNavButtonsRight = true,
 }: {
   division: any;
   module: ModuleLinkInfo;
   prevModule: ModuleLinkInfo | null;
   nextModule: ModuleLinkInfo | null;
+  alignNavButtonsRight?: boolean;
 }) => {
   const disabledClasses = 'text-gray-200 pointer-events-none';
   const activeClasses =
     'text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out';
   return (
-    <div className="flex justify-between">
+    <div
+      className={`flex ${
+        alignNavButtonsRight ? 'sm:justify-between' : 'justify-between'
+      }`}
+    >
+      {alignNavButtonsRight && <div className="flex-1 sm:hidden" />}
       <span className="-ml-4 rounded-md">
         <Link
           to={prevModule === null ? module.url : prevModule.url}
@@ -306,76 +313,6 @@ const TopNav = ({
     </div>
   );
 };
-
-const CompactNav = ({
-  division,
-  module,
-  prevModule,
-  nextModule,
-}: {
-  division: string;
-  module: ModuleLinkInfo;
-  prevModule: ModuleLinkInfo | null;
-  nextModule: ModuleLinkInfo | null;
-}) => (
-  <div className="flex">
-    <div className="hidden sm:flex items-center">
-      <Breadcrumbs division={division} module={module} />
-    </div>
-    <div className="flex-1 flex items-center justify-between sm:justify-end">
-      <span className="rounded-md">
-        {prevModule && (
-          <Link
-            to={prevModule.url}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-          >
-            <svg
-              className="-ml-0.5 mr-1 h-4 w-4"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M15 19l-7-7 7-7" />
-            </svg>
-            Prev
-          </Link>
-        )}
-      </span>
-      {/*<span className="ml-3 rounded-md">*/}
-      {/*  <button*/}
-      {/*    type="button"*/}
-      {/*    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"*/}
-      {/*  >*/}
-      {/*    Mark Complete*/}
-      {/*  </button>*/}
-      {/*</span>*/}
-      <span className="ml-3 rounded-md">
-        {nextModule && (
-          <Link
-            to={nextModule.url}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-          >
-            Next
-            <svg
-              className="-mr-0.5 ml-1 h-4 w-4"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        )}
-      </span>
-    </div>
-  </div>
-);
 
 const flattenNavLinks = (navLinks: NavLinkItem[]) => {
   let links: ModuleLinkInfo[] = [];
@@ -513,13 +450,13 @@ export default function ModuleLayout({
                   </button>
                 </div>
                 <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                  <div className="flex-shrink-0 flex items-center px-4">
-                    <img className="h-12 w-auto" src={logo} alt="Workflow" />
-                  </div>
+                  <Link className="flex-shrink-0 flex items-center px-4" to="/">
+                    <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+                  </Link>
                   <div className="mt-4 px-6">
                     <Breadcrumbs division={division} module={module} />
                   </div>
-                  <nav className="mt-2">
+                  <nav className="mt-6">
                     <SidebarNavLinks links={navLinks} />
                   </nav>
                 </div>
@@ -545,9 +482,9 @@ export default function ModuleLayout({
       <div className="hidden lg:flex lg:flex-shrink-0">
         <div className="flex flex-col w-64 border-r border-gray-200 bg-white">
           <div className="h-0 flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <img className="h-12 w-auto" src={logo} alt="Workflow" />
-            </div>
+            <Link className="flex items-center flex-shrink-0 px-4" to="/">
+              <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+            </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <nav className="mt-2 flex-1 bg-white">
               <SidebarNavLinks links={navLinks} />
@@ -560,9 +497,9 @@ export default function ModuleLayout({
         </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
+        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
+            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
             aria-label="Open sidebar"
             onClick={() => setIsMobileNavOpen(true)}
           >
@@ -580,6 +517,14 @@ export default function ModuleLayout({
               />
             </svg>
           </button>
+          <div className="flex-1 ml-4 mr-4 sm:mr-6">
+            <NavBar
+              division={division}
+              module={module}
+              prevModule={prevModule}
+              nextModule={nextModule}
+            />
+          </div>
         </div>
         <main
           className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
@@ -588,15 +533,7 @@ export default function ModuleLayout({
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div>
               <div className="hidden lg:block">
-                <TopNav
-                  division={division}
-                  module={module}
-                  prevModule={prevModule}
-                  nextModule={nextModule}
-                />
-              </div>
-              <div className="lg:hidden mb-6">
-                <CompactNav
+                <NavBar
                   division={division}
                   module={module}
                   prevModule={prevModule}
@@ -640,11 +577,12 @@ export default function ModuleLayout({
             </h3>
 
             <div className="border-t border-gray-200 pt-4">
-              <CompactNav
+              <NavBar
                 division={division}
                 module={module}
                 prevModule={prevModule}
                 nextModule={nextModule}
+                alignNavButtonsRight={false}
               />
             </div>
           </div>

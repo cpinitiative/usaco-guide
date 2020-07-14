@@ -144,7 +144,7 @@ const components = {
   p: props => <p {...props} className="mb-4" />,
   'ol.li': ({ children, ...props }) => (
     <li {...props}>
-      <div>{children}</div>
+      <div className="flex-1">{children}</div>
     </li>
   ),
 };

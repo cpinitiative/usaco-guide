@@ -36,7 +36,7 @@ export default function Template(props) {
         >
           <div className="py-4">
             {prereqs && (
-              <div className="rounded-md bg-blue-50 p-4 mb-6">
+              <div className="rounded-md bg-blue-50 p-4 mb-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
@@ -66,7 +66,7 @@ export default function Template(props) {
             )}
 
             {module.description && (
-              <p className="font-bold mt-6 mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
+              <p className="font-bold mb-8 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
                 <KatexRenderer>{module.description}</KatexRenderer>
               </p>
             )}

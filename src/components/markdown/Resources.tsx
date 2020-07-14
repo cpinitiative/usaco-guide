@@ -106,23 +106,29 @@ export function ResourceComponent(props) {
   }
   return (
     <tr className="block sm:table-row">
-      {props.source && (
-        <td className="pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-          {sourceTooltip.hasOwnProperty(props.source) ? (
-            <TextTooltip content={sourceTooltip[props.source]}>
-              {props.source}
-            </TextTooltip>
-          ) : (
-            props.source
-          )}
-        </td>
-      )}
-      <td className="px-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+      <td className="pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+        {props.source && (
+          <>
+            {sourceTooltip.hasOwnProperty(props.source) ? (
+              <TextTooltip content={sourceTooltip[props.source]}>
+                {props.source}
+              </TextTooltip>
+            ) : (
+              props.source
+            )}
+          </>
+        )}
+      </td>
+      <td
+        className={`${
+          props.source && 'pl-2 sm:pl-6'
+        } pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900`}
+      >
         <div className="flex items-center">
           {props.starred && (
             <Tooltip content="Starred resources are ones we think are worth the read. Use starred resources first, and if you're still stuck, try reading some of the unstarred ones!">
               <svg
-                className="h-4 w-6 text-blue-400 pr-2"
+                className="h-4 w-4 text-blue-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -130,7 +136,9 @@ export function ResourceComponent(props) {
               </svg>
             </Tooltip>
           )}
-          <a href={url}>{props.title}</a>
+          <a href={url} className={props.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}>
+            {props.title}
+          </a>
         </div>
       </td>
       <td className="block sm:table-cell px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
