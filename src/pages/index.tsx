@@ -396,7 +396,7 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Complain" button on the bottom left of the screen, or
+                      "Contact Us" button on the bottom left of the screen, or
                       contact the guide coordinator directly.
                     </p>
                   </dd>
@@ -436,8 +436,8 @@ export default function IndexPage(props: PageProps) {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
                       If you get stuck, feel free to ask for help by clicking
-                      the "Get Help" button on the bottom left of the screen. It
-                      may take some time for your question to be addressed.
+                      the "Contact Us" button on the bottom left of the screen.
+                      It may take some time for your question to be addressed.
                     </p>
                   </dd>
                 </div>
