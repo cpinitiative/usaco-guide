@@ -135,7 +135,7 @@ export function ResourceComponent(props) {
       >
         <div className="flex items-center">
           {props.starred && (
-            <Tooltip content="Starred resources are ones we think are worth the read. Use starred resources first, and if you're still stuck, try reading some of the unstarred ones!">
+            <Tooltip content="You should read all starred resources before proceeding!">
               <svg
                 className="h-4 w-4 text-blue-400"
                 fill="currentColor"
