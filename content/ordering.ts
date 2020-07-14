@@ -10,8 +10,15 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "intro": [
     "using-this-guide",
     "intro",
-    "lang",
-    "running-cpp",
+    {
+      name: "Languages",
+      items: [
+        "lang",
+        "running-cpp",
+        "running-java",
+        "running-python",
+      ]
+    },
     "data-types",
     "io",
   ],
