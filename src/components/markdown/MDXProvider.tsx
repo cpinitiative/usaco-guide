@@ -103,7 +103,7 @@ const components = {
   inlineCode: props => (
     <code
       {...props}
-      className="font-mono text-sm inline bg-gray-200 rounded px-1 py-05"
+      className="font-mono inline bg-gray-200 rounded px-1 py-05"
     />
   ),
   IM: ({ children }) => <InlineMath>{children}</InlineMath>,
