@@ -29,10 +29,10 @@ export const LanguageSection = props => {
     return (
       <>
         {Object.keys(sections).map(lang => (
-          <>
+          <div key={lang}>
             <p className="text-lg font-bold">{languages[lang]}</p>
             {sections[lang]}
-          </>
+          </div>
         ))}
       </>
     );

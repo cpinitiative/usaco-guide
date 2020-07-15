@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ModuleLinkInfo } from '../../../module';
 import { Link } from 'gatsby';
 import ItemLink from './ItemLink';
+import Accordion from './Accordion';
 
 export interface NavLinkGroup {
   label: string;
@@ -23,18 +24,25 @@ export const SidebarNav = ({
   const renderLink = (link: NavLinkItem) => {
     if (link instanceof ModuleLinkInfo) {
       return (
-        <ItemLink key={link.url} link={link} isActive={link === activeLink} />
+        <ItemLink
+          key={link.url}
+          link={link}
+          isActive={link.id === activeLink.id}
+        />
       );
     }
     return (
-      <div className="bg-gray-100 mb-4" key={link.label}>
-        <div
-          className={`flex items-center px-6 py-3 text-sm leading-5 font-medium text-gray-600 border-b border-gray-200`}
-        >
-          {link.label}
-        </div>
+      <Accordion
+        key={link.label}
+        label={link.label}
+        isActive={
+          link.children.findIndex(
+            x => x instanceof ModuleLinkInfo && x.id === activeLink.id
+          ) !== -1
+        }
+      >
         {link.children.map(renderLink)}
-      </div>
+      </Accordion>
     );
   };
   return <>{links.map(renderLink)}</>;
