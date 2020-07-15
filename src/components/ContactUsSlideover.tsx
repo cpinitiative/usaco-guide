@@ -40,9 +40,9 @@ export default function ContactUsSlideover({
   const [location, setLocation] = useState('');
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
-    'Typo',
-    'Broken Link',
     'Unclear Explanation',
+    'Problem Editorial Request',
+    'Typo / Broken Link',
     'Suggestion',
     'Website Bug',
     'Other',

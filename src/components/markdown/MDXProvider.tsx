@@ -48,7 +48,7 @@ const components = {
       </div>
     </div>
   ),
-  'warning-block': ({ children }) => (
+  'warning-block': ({ children, title }) => (
     <div className="rounded-md bg-yellow-50 p-4">
       <div className="flex">
         <div className="flex-shrink-0">
@@ -66,7 +66,7 @@ const components = {
         </div>
         <div className="ml-3">
           <h3 className="text-sm leading-5 font-medium text-yellow-800">
-            Warning!
+            Warning{title ? ': ' + title : '!'}
           </h3>
           <div className="mt-2 text-sm leading-5 text-yellow-700 no-bottom-margin">
             {children}
