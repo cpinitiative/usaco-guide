@@ -24,7 +24,7 @@ export function ResourcesListComponent(props) {
               <tr>
                 <th
                   colSpan={4}
-                  className={`px-6 border-b text-left font-medium uppercase ${
+                  className={`px-4 sm:px-6 border-b text-left font-medium uppercase ${
                     embedded
                       ? 'text-sm py-2 border-gray-200 bg-gray-50 text-gray-500'
                       : 'py-3 border-purple-200 bg-purple-50 text-purple-500'
@@ -115,7 +115,7 @@ export function ResourceComponent(props) {
   }
   return (
     <tr className="block sm:table-row">
-      <td className="pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
         {props.source && (
           <>
             {sourceTooltip.hasOwnProperty(props.source) ? (
@@ -131,7 +131,7 @@ export function ResourceComponent(props) {
       <td
         className={`${
           props.source && 'pl-2 sm:pl-6'
-        } pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900`}
+        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900`}
       >
         <div className="flex items-center">
           {props.starred && (
@@ -150,7 +150,7 @@ export function ResourceComponent(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
+      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
         {props.children}
       </td>
     </tr>
