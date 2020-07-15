@@ -12,7 +12,8 @@ const Container = styled.div`
 
 const Label = styled.div`
   &:hover {
-    ${tw`bg-blue-50`}//background-color: #f7faff;;;;;;;;
+    //background-color: #f7faff
+    ${tw`bg-blue-50`}
   }
 `;
 
