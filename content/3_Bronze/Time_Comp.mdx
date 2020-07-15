@@ -21,6 +21,9 @@ We want a method to calculate how many operations it takes to run each algorithm
 
 The following code is $O(1)$, because it executes a constant number of operations.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 int a = 5;
 int b = 7;
@@ -28,87 +31,298 @@ int c = 4;
 int d = a + b + c + 153;
 ```
 
+</CPPSection>
+<JavaSection>
+
+```java
+int a = 5;
+int b = 7;
+int c = 4;
+int d = a + b + c + 153;
+```
+
+</JavaSection>
+<PySection>
+
+```py
+a = 5
+b = 7
+c = 4
+d = a + b + c + 153
+```
+
+</PySection>
+</LanguageSection>
+
 Input and output operations are also assumed to be $O(1)$. In the following examples, we assume that the code inside the loops is $O(1)$.
 
 The time complexity of loops is the number of iterations that the loop runs. For example, the following code examples are both $O(n)$.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= n; i++){
+for (int i = 1; i <= n; i++) {
     // constant time code here
 }
 ```
 
-<div />
-
 ```cpp
 int i = 0;
-while(i < n){
+while (i < n) {
     // constant time node here
     i++;
 }
 ```
 
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= n; i++) {
+    // constant time code here
+}
+```
+
+```java
+int i = 0;
+while (i < n) {
+    // constant time node here
+    i++;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for i in range(1, n+1):
+    # constant time code here
+```
+
+```py
+i = 0
+while (i < n):
+    # constant time node here
+    i += 1
+```
+
+</PySection>
+</LanguageSection>
+
 Because we ignore constant factors and lower order terms, the following examples are also $O(n)$:
 
+
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= 5*n + 17; i++){
+for (int i = 1; i <= 5*n + 17; i++) {
     // constant time code here
 }
 ```
 
-<div />
-
 ```cpp
-for(int i = 1; i <= n + 457737; i++){
+for (int i = 1; i <= n + 457737; i++) {
     // constant time code here
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= 5*n + 17; i++) {
+    // constant time code here
+}
+```
+
+```java
+for (int i = 1; i <= n + 457737; i++) {
+    // constant time code here
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for i in range(5*n + 17):
+    # constant time code here
+
+for i in range(n + 457737):
+    # constant time code here
+```
+
+</PySection>
+</LanguageSection>
+
+
 
 We can find the time complexity of multiple loops by multiplying together the time complexities of each loop. This example is $O(nm)$, because the outer loop runs $O(n)$ iterations and the inner loop $O(m)$.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= n; i++){
-    for(int j = 1; j <= m; j++){
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
         // constant time code here
     }
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+        // constant time code here
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+
+```py
+for i in range(n):
+    for j in range(m):
+        # constant time code here
+```
+
+</PySection>
+</LanguageSection>
+
+
 
 In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk>We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n*(n-1)/2 = (n^2 - n)/2 = O(n^2)</Asterisk> Thus, this code is $O(n^2)$.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= n; i++){
-    for(int j = i; j <= n; j++){
+for (int i = 1; i <= n; i++) {
+    for (int j = i; j <= n; j++) {
         // constant time code here
     }
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= n; i++) {
+    for (int j = i; j <= n; j++) {
+        // constant time code here
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for i in range(n):
+    for j in range(i, n):
+        # constant time code here
+```
+
+</PySection>
+</LanguageSection>
 
 If an algorithm contains multiple blocks, then its time complexity is the worst time complexity out of any block. For example, the following code is $O(n^2)$.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= n; i++){
-    for(int j = 1; j <= n; j++){
+for (int i = 1; i <= n; i++) {
+    for(int j = 1; j <= n; j++) {
         // constant time code here
     }
 }
-for(int i = 1; i <= n + 58834; i++){
+for (int i = 1; i <= n + 58834; i++) {
     // more constant time code here
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= n; i++) {
+    for(int j = 1; j <= n; j++) {
+        // constant time code here
+    }
+}
+for (int i = 1; i <= n + 58834; i++) {
+    // more constant time code here
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for i in range(n):
+    for j in range(n):
+        # constant time code here
+
+for i in range(n + 58834):
+    # more constant time code here
+```
+
+</PySection>
+</LanguageSection>
 
 The following code is $O(n^2 + m)$, because it consists of two blocks of complexity $O(n^2)$ and $O(m)$, and neither of them is a lower order function with respect to the other.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
-for(int i = 1; i <= n; i++){
-    for(int j = 1; j <= n; j++){
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
         // constant time code here
     }
 }
-for(int j = 1; j <= m; j++){
+for (int i = 1; i <= m; i++) {
     // more constant time code here
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+        // constant time code here
+    }
+}
+for (int i = i; j <= m; i++) {
+    // more constant time code here
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for i in range(n):
+    for j in range(n):
+        # constant time code here
+
+for i in range(m):
+    # more constant time code here
+```
+
+</PySection>
+</LanguageSection>
 
 ## Constant Factor
 
