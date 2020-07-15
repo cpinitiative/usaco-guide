@@ -4,7 +4,7 @@ import { useContext, useRef, useState } from 'react';
 // @ts-ignore
 import logo from '../../assets/logo.svg';
 import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../../module';
-import { Link } from 'gatsby';
+import { graphql, Link, useStaticQuery } from 'gatsby';
 import ModuleOrdering, {
   divisionLabels,
   isModuleOrderingGroup,
@@ -21,6 +21,7 @@ import {
   NavLinkItem,
   SidebarNav,
 } from './SidebarNav/SidebarNav';
+import { graphqlToModuleLinks } from '../../utils';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -258,12 +259,10 @@ const flattenNavLinks = (navLinks: NavLinkItem[]) => {
 };
 
 export default function ModuleLayout({
-  moduleLinks,
   division,
   module,
   children,
 }: {
-  moduleLinks: { [moduleID: string]: ModuleLinkInfo };
   division: string;
   module: ModuleInfo;
   children: React.ReactNode;
@@ -280,6 +279,27 @@ export default function ModuleLayout({
       setModuleProgress(progress);
     }
   }, []);
+
+  const data = useStaticQuery(graphql`
+    query {
+      allMdx {
+        edges {
+          node {
+            frontmatter {
+              title
+              id
+            }
+            fields {
+              division
+            }
+          }
+        }
+      }
+    }
+  `);
+  const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
+    data.allMdx,
+  ]);
 
   const navLinks: NavLinkItem[] = React.useMemo(() => {
     const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
@@ -378,7 +398,7 @@ export default function ModuleLayout({
                     </svg>
                   </button>
                 </div>
-                <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+                <div className="flex-1 h-0 pt-5 overflow-y-auto">
                   <Link className="flex-shrink-0 flex items-center px-4" to="/">
                     <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
                   </Link>
@@ -412,7 +432,7 @@ export default function ModuleLayout({
           className="flex flex-col border-r border-gray-200 bg-white"
           style={{ width: '20rem' }}
         >
-          <div className="h-0 flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+          <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
             <Link className="flex items-center flex-shrink-0 px-4" to="/">
               <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
             </Link>

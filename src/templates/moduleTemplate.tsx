@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
 import { divisionLabels } from '../../content/ordering';
-import { graphqlToModuleInfo, graphqlToModuleLinks } from '../utils';
+import { graphqlToModuleInfo } from '../utils';
 import SEO from '../components/seo';
 import { KatexRenderer } from '../components/markdown/KatexRenderer';
 import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
@@ -14,13 +14,10 @@ const renderPrerequisite = prerequisite => {
 };
 
 export default function Template(props) {
-  const { mdx, allMdx } = props.data; // data.markdownRemark holds your post data
+  const { mdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
-  const moduleLinks = React.useMemo(() => graphqlToModuleLinks(allMdx), [
-    allMdx,
-  ]);
-  const division = props.pageContext.division;
+  const division = module.division;
 
   const prereqs = mdx.frontmatter.prerequisites;
 
@@ -32,11 +29,7 @@ export default function Template(props) {
       />
 
       <div className="h-screen flex overflow-hidden bg-white">
-        <ModuleLayout
-          module={module}
-          moduleLinks={moduleLinks}
-          division={division}
-        >
+        <ModuleLayout module={module} division={division}>
           <div className="py-4">
             {prereqs && (
               <div className="rounded-md bg-blue-50 p-4 mb-4">
@@ -93,6 +86,9 @@ export const pageQuery = graphql`
         description
         frequency
       }
+      fields {
+        division
+      }
     }
     allMdx {
       edges {
@@ -100,6 +96,9 @@ export const pageQuery = graphql`
           frontmatter {
             title
             id
+          }
+          fields {
+            division
           }
         }
       }

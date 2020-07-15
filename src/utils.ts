@@ -1,4 +1,4 @@
-import ModuleOrdering, { moduleIDToDivisionMap } from '../content/ordering';
+import ModuleOrdering from '../content/ordering';
 import { ModuleInfo, ModuleLinkInfo } from './module';
 
 export const getModule = (allModules, division) => {
@@ -35,7 +35,7 @@ export function graphqlToModuleLinks(
   return allMdx.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = new ModuleLinkInfo(
       cur.node.frontmatter.id,
-      moduleIDToDivisionMap[cur.node.frontmatter.id],
+      cur.node.fields.division,
       cur.node.frontmatter.title
     );
     return acc;
@@ -43,9 +43,10 @@ export function graphqlToModuleLinks(
 }
 
 export function graphqlToModuleInfo(mdx: any): ModuleInfo {
+  console.log(mdx);
   return new ModuleInfo(
     mdx.frontmatter.id,
-    moduleIDToDivisionMap[mdx.frontmatter.id],
+    mdx.fields.division,
     mdx.frontmatter.title,
     mdx.body,
     mdx.frontmatter.author,

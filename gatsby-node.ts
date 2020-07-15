@@ -1,30 +1,50 @@
-import ModuleOrdering, { divisions } from './content/ordering';
+import { divisions } from './content/ordering';
 
-exports.createPages = async ({ actions }) => {
+exports.onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions;
+  if (node.internal.type === 'Mdx') {
+    const ordering = require('./content/ordering');
+    createNodeField({
+      name: 'division',
+      node,
+      value: ordering.moduleIDToDivisionMap[node.frontmatter.id],
+    });
+  }
+};
+
+exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
-
-  // Generate Module Pages //
-  const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
-  Object.keys(ModuleOrdering).forEach(division => {
-    const processItem = item => {
-      if (typeof item === 'object') {
-        // this is a nested module
-        item.items.forEach(x => processItem(x));
-      } else {
-        createPage({
-          path: `/${division}/${item}`,
-          component: moduleTemplate,
-          context: {
-            // additional data can be passed via context
-            id: item,
-            division: division,
-          },
-        });
+  const result = await graphql(`
+    query {
+      allMdx {
+        edges {
+          node {
+            frontmatter {
+              title
+              id
+            }
+            fields {
+              division
+            }
+          }
+        }
       }
-    };
-    ModuleOrdering[division].forEach(item => processItem(item));
+    }
+  `);
+  if (result.errors) {
+    reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
+  }
+  const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
+  const modules = result.data.allMdx.edges;
+  modules.forEach(({ node }, index) => {
+    createPage({
+      path: `/${node.fields.division}/${node.frontmatter.id}`,
+      component: moduleTemplate,
+      context: {
+        id: node.frontmatter.id,
+      },
+    });
   });
-  // End Generate Module Pages //
 
   // Generate Syllabus Pages //
   const syllabusTemplate = require.resolve(
