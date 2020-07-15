@@ -110,36 +110,30 @@ import java.awt.Rectangle; //needed to use Rectangle class
 import java.io.*;
 import java.util.*;
 
-public class blockedBillboard{
-	public static void main(String[] args) throws IOException{
-		Scanner sc = new Scanner(new File("billboard.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-		int x1, y1, x2, y2;
+public class blockedBillboard {
+    public static void main(String[] args) throws IOException{
+        Scanner sc = new Scanner(new File("billboard.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
+        int x1, y1, x2, y2;
 
-		//the top left point is (0,0), so you need to do -y2
+        // the top left point is (0,0), so you need to do -y2
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+        x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+        Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
 
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-		Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
-
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-		Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
-
-		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-		Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
-
-		long firstIntersect = getArea(firstRect.intersection(truck));
-		long secondIntersect = getArea(secondRect.intersection(truck));
-
-		pw.println(getArea(firstRect) + getArea(secondRect) 
-				- firstIntersect - secondIntersect);
-		pw.close();
-	}
-	public static long getArea(Rectangle r){
-		if(r.getWidth() <= 0 || r.getHeight() <= 0){
-			return 0;
-		}
-		return (long)r.getHeight() * (long)r.getWidth();
-	}
+        long firstIntersect = getArea(firstRect.intersection(truck));
+        long secondIntersect = getArea(secondRect.intersection(truck));
+        pw.println(getArea(firstRect)+getArea(secondRect) 
+                - firstIntersect - secondIntersect);
+        pw.close();
+    }
+    public static long getArea(Rectangle r){ 
+        if (r.isEmpty()) return 0;
+        return (long)r.getHeight()*(long)r.getWidth(); 
+    }
 }
 ```
 </spoiler>
@@ -150,35 +144,28 @@ public class blockedBillboard{
 import java.io.*;
 import java.util.*;
 
-class blockedBillboard{
-    public static void main(String[] args) throws IOException{
-    	Scanner sc = new Scanner(new File("billboard.in"));
+class Rect {
+    int x1, y1, x2, y2;
+    Rect() {}
+}
+
+public class blockedBillboard {
+    public static void main (String[] args) throws IOException{
+        Scanner sc = new Scanner(new File("billboard.in"));
         PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-        Rect a = new Rect();
-        Rect b = new Rect();
-        Rect t = new Rect();
+        Rect a = new Rect(), b = new Rect(), t = new Rect();
         int x1, y1, x2, y2;
         a.x1 = sc.nextInt(); a.y1 = sc.nextInt(); a.x2 = sc.nextInt(); a.y2 = sc.nextInt();
         b.x1 = sc.nextInt(); b.y1 = sc.nextInt(); b.x2 = sc.nextInt(); b.y2 = sc.nextInt();
         t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
         pw.println(area(a) + area(b) - intersect(a, t) - intersect(b, t));
         pw.close();
-        sc.close();
     }
-    static int area(Rect r){
-        return (r.y2 - r.y1) * (r.x2 - r.x1);
-    }
+    static int area(Rect r){ return (r.y2 - r.y1) * (r.x2 - r.x1); }
     static int intersect(Rect p, Rect q) {
         int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
         int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
         return xOverlap * yOverlap;
-    }
-}
-
-class Rect{
-    int x1, y1, x2, y2;
-    Rect(){
-
     }
 }
 ```
