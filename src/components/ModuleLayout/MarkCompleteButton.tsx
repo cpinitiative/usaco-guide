@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Transition from '../Transition';
-
-const options = ['Not Started', 'Reading', 'Practicing', 'Complete', 'Skipped'];
+import { ModuleProgressOptions } from '../../context/UserSettingsContext';
 
 const MarkCompleteButton = ({
   state,
@@ -80,7 +79,7 @@ const MarkCompleteButton = ({
               aria-orientation="vertical"
               aria-labelledby="options-menu"
             >
-              {options.map(option => (
+              {ModuleProgressOptions.map(option => (
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}

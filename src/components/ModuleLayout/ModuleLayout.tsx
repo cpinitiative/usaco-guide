@@ -244,18 +244,13 @@ export default function ModuleLayout({
   module: ModuleInfo;
   children: React.ReactNode;
 }) {
+  const { userProgress, setModuleProgress } = useContext(UserSettingsContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
-  const [moduleProgress, setModuleProgress] = useState('Not Started');
-
-  React.useEffect(() => {
-    let progress = window.localStorage.getItem(`progress--${module.id}`);
-    if (progress !== null) {
-      console.log(progress);
-      setModuleProgress(progress);
-    }
-  }, []);
+  console.log(userProgress);
+  const moduleProgress =
+    (userProgress && userProgress[module.id]) || 'Not Started';
 
   const data = useStaticQuery(graphql`
     query {
@@ -280,8 +275,7 @@ export default function ModuleLayout({
 
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
-    setModuleProgress(progress);
-    window.localStorage.setItem(`progress--${module.id}`, progress);
+    setModuleProgress(module.id, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
