@@ -223,10 +223,17 @@ export function ProblemComponent(props: ProblemComponentProps) {
         {problem.sketch && (
           <span
             className="text-blue-600 hover:text-blue-900 cursor-pointer"
-            onClick={() => props.onShowSolution(problem)}
+            onClick={() => problem.sketch && props.onShowSolution(problem)}
           >
             Show Solution
           </span>
+        )}
+        {!problem.sketch && (
+          <Tooltip
+            content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
+          >
+            <span className="text-gray-300">Show Solution</span>
+          </Tooltip>
         )}
       </td>
     </tr>
