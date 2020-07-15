@@ -135,7 +135,7 @@ export function ResourceComponent(props) {
       >
         <div className="flex items-center">
           {props.starred && (
-            <Tooltip content="You should read all starred resources before proceeding!">
+            <Tooltip content="You should read all starred resources (unless you already know it) before proceeding!">
               <svg
                 className="h-4 w-4 text-blue-400"
                 fill="currentColor"
@@ -150,7 +150,7 @@ export function ResourceComponent(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
+      <td className="block sm:table-cell sm:w-full px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
         {props.children}
       </td>
     </tr>
