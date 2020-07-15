@@ -14,10 +14,13 @@ import Dots from '../Dots';
 import ContactUsSlideover from '../ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
-import Asterisk from '../tooltip/Asterisk';
-import Tooltip from '../tooltip/Tooltip';
 import TextTooltip from '../tooltip/TextTooltip';
 import UserSettingsContext from '../../context/UserSettingsContext';
+import {
+  isNavLinkGroup,
+  NavLinkItem,
+  SidebarNav,
+} from './SidebarNav/SidebarNav';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -165,43 +168,6 @@ const SidebarBottomButtons = ({ onContactUs }) => {
       </div>
     </>
   );
-};
-
-export interface NavLinkGroup {
-  label: string;
-  children: NavLinkItem[];
-}
-
-export type NavLinkItem = ModuleLinkInfo | NavLinkGroup;
-
-export const isNavLinkGroup = (x: NavLinkItem): x is NavLinkGroup =>
-  x.hasOwnProperty('label');
-
-const SidebarNavLinks = ({ links }: { links: NavLinkItem[] }) => {
-  const renderLink = (link: NavLinkItem) => {
-    if (link instanceof ModuleLinkInfo) {
-      return (
-        <Link
-          to={link.url}
-          className={`flex items-center px-6 py-3 text-sm leading-5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150`}
-          key={link.url}
-        >
-          {link.title}
-        </Link>
-      );
-    }
-    return (
-      <div className="bg-gray-100 mb-4" key={link.label}>
-        <div
-          className={`flex items-center px-6 py-3 text-sm leading-5 font-medium text-gray-600 border-b border-gray-200`}
-        >
-          {link.label}
-        </div>
-        {link.children.map(renderLink)}
-      </div>
-    );
-  };
-  return <>{links.map(renderLink)}</>;
 };
 
 const NavBar = ({
@@ -420,7 +386,10 @@ export default function ModuleLayout({
                     <Breadcrumbs division={division} module={module} />
                   </div>
                   <nav className="mt-6">
-                    <SidebarNavLinks links={navLinks} />
+                    <SidebarNav
+                      links={navLinks}
+                      activeLink={moduleLinks[module.id]}
+                    />
                   </nav>
                 </div>
                 <SidebarBottomButtons
@@ -446,7 +415,10 @@ export default function ModuleLayout({
             </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <nav className="mt-2 flex-1 bg-white">
-              <SidebarNavLinks links={navLinks} />
+              <SidebarNav
+                links={navLinks}
+                activeLink={moduleLinks[module.id]}
+              />
             </nav>
           </div>
           <SidebarBottomButtons
