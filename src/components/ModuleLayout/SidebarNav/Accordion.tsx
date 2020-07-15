@@ -12,7 +12,7 @@ const Container = styled.div`
 
 const Label = styled.div`
   &:hover {
-    background-color: #f7faff;
+    ${tw`bg-blue-50`}//background-color: #f7faff;;;;
   }
 `;
 
@@ -30,7 +30,7 @@ export default function Accordion({ label, isActive, children }) {
       style={isActive ? { backgroundColor: '#f7faff' } : null}
     >
       <Label
-        className="font-medium cursor-pointer text-gray-600 relative flex items-center px-6 py-3 text-sm leading-5"
+        className="font-semibold cursor-pointer relative flex items-center px-4 py-3 text-sm leading-5 transition ease-in-out duration-150 "
         onClick={() => setExpanded(!expanded)}
       >
         <span className="flex-1">{label}</span>

@@ -408,7 +408,10 @@ export default function ModuleLayout({
       </Transition>
       {/* Static sidebar for desktop */}
       <div className="hidden lg:flex lg:flex-shrink-0">
-        <div className="flex flex-col w-64 border-r border-gray-200 bg-white">
+        <div
+          className="flex flex-col border-r border-gray-200 bg-white"
+          style={{ width: '20rem' }}
+        >
           <div className="h-0 flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <Link className="flex items-center flex-shrink-0 px-4" to="/">
               <img className="h-12 w-auto" src={logo} alt="USACO Guide" />

@@ -11,7 +11,7 @@ export function ResourcesListComponent(props) {
     <div className="flex flex-col">
       <div
         className={`overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2 ${
-          embedded ? 'mb-2' : ''
+          embedded ? 'mb-2' : 'mb-4'
         }`}
       >
         <div
