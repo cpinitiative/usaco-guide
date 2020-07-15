@@ -3,8 +3,11 @@ import { Link } from 'gatsby';
 import { ModuleLinkInfo } from '../../../module';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import { useContext } from 'react';
+import ModuleLayoutContext from '../../../context/ModuleLayoutContext';
+import UserSettingsContext from '../../../context/UserSettingsContext';
 
-const LinkWithProgress = styled(Link)`
+const LinkWithProgress = styled.span`
   ${tw`block relative`}
 
   &::after {
@@ -19,7 +22,7 @@ const LinkWithProgress = styled(Link)`
 
   &::after {
     border-radius: 100%;
-    ${tw`bg-gray-200`}
+    ${props => props.dotColorStyle};
   }
 
   &::before {
@@ -30,7 +33,7 @@ const LinkWithProgress = styled(Link)`
     left: 27px;
     top: 0;
     bottom: 0;
-    ${({ isActive }) => (isActive ? tw`bg-blue-700` : tw`bg-gray-200`)};
+    ${props => props.lineColorStyle};
   }
 
   &:first-of-type::before {
@@ -64,8 +67,8 @@ const StyledLink = styled.span`
   &::before {
     transform: ${({ isActive }) => (isActive ? 'scale(1)' : 'scale(0.1)')};
     border-radius: 100%;
-    ${({ isActive }) => (isActive ? tw`bg-blue-600` : tw`bg-gray-200`)}
     z-index: 1;
+    ${({ isActive }) => (isActive ? tw`bg-blue-600` : tw`bg-gray-200`)}
   }
 
   &:hover {
@@ -76,13 +79,9 @@ const StyledLink = styled.span`
   }
 `;
 
-const ItemLink = ({
-  link,
-  isActive,
-}: {
-  link: ModuleLinkInfo;
-  isActive: boolean;
-}) => {
+const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
+  const { module } = useContext(ModuleLayoutContext);
+  const isActive = module.id === link.id;
   const itemRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -91,11 +90,40 @@ const ItemLink = ({
     }
   }, [isActive]);
 
+  const { userProgress } = useContext(UserSettingsContext);
+  const progress = userProgress[link.id] || 'Not Started';
+
+  let lineColorStyle = tw`bg-gray-200`;
+  let dotColorStyle = tw`bg-gray-200`;
+
+  if (progress === 'Reading') {
+    lineColorStyle = tw`bg-yellow-400`;
+    dotColorStyle = tw`bg-yellow-400`;
+  } else if (progress === 'Practicing') {
+    lineColorStyle = tw`bg-orange-400`;
+    dotColorStyle = tw`bg-orange-400`;
+  } else if (progress === 'Complete') {
+    lineColorStyle = tw`bg-green-400`;
+    dotColorStyle = tw`bg-green-400`;
+  } else if (progress === 'Skipped') {
+    lineColorStyle = tw`bg-blue-300`;
+    dotColorStyle = tw`bg-blue-300`;
+  }
+
+  if (isActive) {
+    lineColorStyle = tw`bg-blue-700`;
+  }
+
   return (
-    <LinkWithProgress isActive={isActive} to={link.url} key={link.url}>
-      <StyledLink isActive={isActive} ref={itemRef}>
-        {link.title}
-      </StyledLink>
+    <LinkWithProgress
+      lineColorStyle={lineColorStyle}
+      dotColorStyle={dotColorStyle}
+    >
+      <Link to={link.url}>
+        <StyledLink isActive={isActive} ref={itemRef}>
+          {link.title}
+        </StyledLink>
+      </Link>
     </LinkWithProgress>
   );
 };

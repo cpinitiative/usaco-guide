@@ -33,11 +33,7 @@ export const SidebarNav = () => {
           isActive={group.children.findIndex(x => x.id === module.id) !== -1}
         >
           {group.children.map(link => (
-            <ItemLink
-              key={link.id}
-              link={link}
-              isActive={link.id === module.id}
-            />
+            <ItemLink key={link.id} link={link} />
           ))}
         </Accordion>
       ))}
