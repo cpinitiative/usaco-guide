@@ -49,7 +49,7 @@ const components = {
     </div>
   ),
   'warning-block': ({ children, title }) => (
-    <div className="rounded-md bg-yellow-50 p-4">
+    <div className="rounded-md bg-yellow-50 p-4 mb-4">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg

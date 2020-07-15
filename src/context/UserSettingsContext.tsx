@@ -1,6 +1,5 @@
-import { createContext } from 'react';
+import { createContext, useRef, useState } from 'react';
 import * as React from 'react';
-import useStickyState from '../hooks/useStickyState';
 
 const UserSettingsContext = createContext({
   primaryLang: 'showAll',
@@ -8,13 +7,22 @@ const UserSettingsContext = createContext({
 });
 
 export const UserSettingsProvider = ({ children }) => {
-  const [primaryLang, setPrimaryLang] = useStickyState(
-    'showAll',
-    'user-primary-lang'
-  );
+  const key = 'guide:userSettings:primaryLang';
+  const [primaryLang, setPrimaryLang] = useState('showAll');
+  const initialRender = useRef(true);
+
   React.useEffect(() => {
-    if (primaryLang === 'showAll') setPrimaryLang('cpp');
-  }, []);
+    if (initialRender.current) {
+      const stickyValue = window.localStorage.getItem(key);
+      if (stickyValue !== null) setPrimaryLang(JSON.parse(stickyValue));
+      else setPrimaryLang('C++');
+
+      initialRender.current = false;
+    } else if (primaryLang !== 'showAll') {
+      window.localStorage.setItem(key, JSON.stringify(primaryLang));
+    }
+  }, [key, primaryLang]);
+
   return (
     <UserSettingsContext.Provider
       value={{
