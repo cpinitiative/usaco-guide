@@ -9,25 +9,27 @@ const UserSettingsContext = createContext({
 export const UserSettingsProvider = ({ children }) => {
   const key = 'guide:userSettings:primaryLang';
   const [primaryLang, setPrimaryLang] = useState('showAll');
-  const initialRender = useRef(true);
 
   React.useEffect(() => {
-    if (initialRender.current) {
-      const stickyValue = window.localStorage.getItem(key);
-      if (stickyValue !== null) setPrimaryLang(JSON.parse(stickyValue));
-      else setPrimaryLang('C++');
-
-      initialRender.current = false;
-    } else if (primaryLang !== 'showAll') {
-      window.localStorage.setItem(key, JSON.stringify(primaryLang));
+    const stickyValue = window.localStorage.getItem(key);
+    let v = null;
+    try {
+      v = JSON.parse(stickyValue);
+    } catch (e) {
+      console.error("Couldn't parse user primary language", e);
     }
-  }, [key, primaryLang]);
+    if (v === 'cpp' || v === 'java' || v === 'py') setPrimaryLang(v);
+    else setPrimaryLang('cpp');
+  }, []);
 
   return (
     <UserSettingsContext.Provider
       value={{
         primaryLang,
-        setPrimaryLang,
+        setPrimaryLang: lang => {
+          window.localStorage.setItem(key, JSON.stringify(lang));
+          setPrimaryLang(lang);
+        },
       }}
     >
       {children}
