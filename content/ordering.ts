@@ -9,17 +9,26 @@ export const isModuleOrderingGroup = (x: ModuleOrderingItem): x is ModuleOrderin
 const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "intro": [
     "using-this-guide",
-    "intro",
     {
-      name: "Languages",
+      name: "Getting Started",
       items: [
-        "lang",
+        "intro",
+        "choosing-lang",
         "running-code",
-        "tips-tricks",
+        "data-types",
+        "io",
+        "expected",
       ]
     },
-    "data-types",
-    "io",
+    {
+      name: "Language-Specific",
+      items: [
+        "factors-choosing",
+        "fast-io",
+        "shorten-cpp",
+        "debugging",
+      ]
+    },
     {
       name: "General",
       items: [

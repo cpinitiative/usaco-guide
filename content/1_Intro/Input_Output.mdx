@@ -3,12 +3,17 @@ id: io
 title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang
 description: Demonstrates how to read input and print output for USACO contests, including an example problem.
+prerequisites:
+ - Intro - Data Types
 ---
 
 import { Problem } from "../models";
 
 export const metadata = {
   problems: {
+    cses: [
+      new Problem("CSES", "Weird Algorithm", "1068", "Very Easy"),
+    ],
     fence: [
       new Problem("Bronze", "Fence Painting", "567", "Very Easy"),
     ],
@@ -23,112 +28,61 @@ export const metadata = {
 
 <resources>
   <resource source="IUSACO" title="2.1 - Input and Output">module is based off this</resource>
-  <resource source="CPH" title="1.2 - Input and Output" starred>cin, getline, files</resource>
+  <resource source="CPH" title="1.2 - Input and Output">cin, getline, files</resource>
   <resource source="PAPS" title="2.4 - Input and Output">cin, getline</resource>
 </resources>
-
-## File I/O
-
-In USACO, input is read from a file called `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, for [this problem](http://www.usaco.org/index.php?page=viewproblem2&cpid=1035), you would replace `problemname` with `socdist1` to get `socdist1.in` and `socdist1.out`.
 
 <LanguageSection>
 
 <CPPSection>
 
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) or the [<fstream\>](http://www.cplusplus.com/reference/fstream/) library. Essentially, replace every instance of the word `problemname` in the word below with the input/output file name, which should be given in the problem.
+## Code Template
 
-Below, is a C++ template for input and output. We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them.
+<resources>
+  <resource source="CPH" title="1.1 - C++ Code Template" starred></resource>
+  <resource source="GFG" title="GFG - <bits/stdc++.h>" url="bitsstdc-h-c"> </resource>
+</resources>
+
+From CPH:
 
 ```cpp
-#include <cstdio>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-    freopen("problemname.in", "r", stdin);
-    freopen("problemname.out", "w", stdout);
-    // the following optional line improves performance (see the "Tips and Tricks" module)
-    cin.tie(0); ios_base::sync_with_stdio(0);
-
-    // rest of your code ...
+    // solution comes here
 }
 ```
 
-Alternatively, we can use `<fstream>`. This is less common, and you cannot use C-style I/O (`scanf`, `printf`) with this method.
-
-```cpp
-#include <fstream>
-using namespace std;
-
-int main() {
-    ifstream fin("problemname.in");
-    ofstream fout("problemname.out");
-    // rest of your code ...
-}
-```
+For all subsequent modules, `#include <bits/stdc++.h>` will be used in place of separately including libraries.
 
 </CPPSection>
 
 <JavaSection>
 
-We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
 
-```java
-import java.util.*;
-import java.io.*;
-
-public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("problemname.in"));
-            tokenizer = null;
-        }
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-    }
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        InputReader r = new InputReader();
-        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
-
-        // YOUR CODE HERE
-
-        pw.close(); // flushes the output once printing is done
-    }
-}
-```
-
-
-Some sources say to use
-
-```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
-```
-
-instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
 
 </JavaSection>
 
 </LanguageSection>
 
+
+
+<!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
+
 ## Standard I/O
 
 In most websites (such as CodeForces and CSES), input and output are **standard**.
 
+<problems-list problems={metadata.problems.cses} />
+
+Note that this problem requires 64-bit integers (`long long` in C++, `long` in Java).
+
 <LanguageSection>
 
 <CPPSection>
+
+### C++
 
 The [<iostream\>](http://www.cplusplus.com/reference/iostream/) library suffices.
 
@@ -138,8 +92,7 @@ using namespace std;
 
 int main() {
     // the following optional line improves performance (see the "Tips and Tricks" module)
-    cin.tie(0); ios_base::sync_with_stdio(0);
-
+    ios_base::sync_with_stdio(0); cin.tie(0);
     int x; cin >> x;
     cout << "FOUND " << x << "\n";
 }
@@ -174,6 +127,8 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+
+### Java
 
 In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use `BufferedReader` and `PrintWriter` instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
 
@@ -245,12 +200,109 @@ public static void main(String[] args) {
 }
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
+## File I/O
+
+<problems-list problems={metadata.problems.fence} />
+
+In USACO, input is read from a file called `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
+
+<LanguageSection>
+
+<CPPSection>
+
+### Method 1: `freopen`
+
+You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library. 
+
+```cpp
+#include <cstdio>
+using namespace std;
+
+int main() {
+    freopen("problemname.in", "r", stdin);
+    freopen("problemname.out", "w", stdout);
+    // rest of your code ...
+    // can use cin or scanf
+}
+```
+
+### Method 2: [`<fstream>`](http://www.cplusplus.com/reference/fstream/)
+
+You cannot use C-style I/O (`scanf`, `printf`) with this method.
+
+```cpp
+#include <fstream>
+using namespace std;
+
+int main() {
+    ifstream fin("problemname.in");
+    ofstream fout("problemname.out");
+    // rest of your code ...
+
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class template {
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader() throws FileNotFoundException {
+            reader = new BufferedReader(new FileReader("problemname.in"));
+            tokenizer = null;
+        }
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+    }
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        InputReader r = new InputReader();
+        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+
+        // YOUR CODE HERE
+
+        pw.close(); // flushes the output once printing is done
+    }
+}
+```
+
+
+Some sources say to use
+
+```java
+PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
+```
+
+instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
 
 </JavaSection>
 
 </LanguageSection>
 
-## Example: Fence Painting
+## Example Solutions - Fence Painting
 
 <resources>
     <resource source="USACO" title="Technical Specifications for Contests" url="http://www.usaco.org/index.php?page=instructions" starred>Make sure to read this.</resource>
@@ -262,14 +314,9 @@ Importantly, USACO will automatically add a newline to the end of your file if i
 
 ![bad](./Error.png)
 
-<problems-list problems={metadata.problems.fence} />
-
-
 <LanguageSection>
 
 <CPPSection>
-
-[Here](https://www.geeksforgeeks.org/bitsstdc-h-c/) is some info about `<bits/stdc++.h>` if you are not familiar with it.
 
 ### Method 1
 
@@ -422,11 +469,3 @@ fout.write(str(ans))
 </PySection>
 
 </LanguageSection>
-
-## Introductory Problems
-
-The following require relatively little programming experience and no algorithmic knowledge. Do as many as you want, then move on! You do not have to do all of them.
-
-<problems-list problems={metadata.problems.general} />
-
-Also check the [CSES Introductory Problems](https://cses.fi/problemset/list/) up to and including "Palindrome Reorder."
