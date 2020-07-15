@@ -55,7 +55,7 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     "time-comp",
     "simulation",
     "rect-geo",
-    "ad hoc",
+    "ad-hoc",
     {
       name: "Data Structures",
       items: [
