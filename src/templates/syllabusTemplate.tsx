@@ -3,7 +3,7 @@ import * as React from 'react';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { graphql, Link } from 'gatsby';
-import { divisionLabels, divisions } from '../../content/ordering';
+import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import SyllabusModule from '../components/SyllabusModule';
 import { getModule } from '../utils';
 
@@ -83,7 +83,7 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={divisionLabels[selectedDivision]} />
+      <SEO title={SECTION_LABELS[selectedDivision]} />
 
       <div className="min-h-screen bg-gray-50">
         {/* Begin Hero Section */}
@@ -208,16 +208,16 @@ export default function Template(props) {
                   onChange={e => handleDivisionChange(e.target.value)}
                   value={selectedDivision}
                 >
-                  {divisions.map(division => (
+                  {SECTIONS.map(division => (
                     <option key={division} value={division}>
-                      {divisionLabels[division]}
+                      {SECTION_LABELS[division]}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="hidden sm:block border-b border-gray-200">
                 <nav className="flex -mb-px">
-                  {divisions.map(division => (
+                  {SECTIONS.map(division => (
                     <a
                       key={division}
                       href={`/${division}`}
@@ -231,7 +231,7 @@ export default function Template(props) {
                           : unselectedTabClasses
                       }
                     >
-                      {divisionLabels[division]}
+                      {SECTION_LABELS[division]}
                     </a>
                   ))}
                 </nav>

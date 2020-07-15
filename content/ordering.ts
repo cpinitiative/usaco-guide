@@ -1,12 +1,13 @@
-export type ModuleOrderingID = string;
-export type ModuleOrderingGroup = {
-  name: string;
-  items: ModuleOrderingItem[];
-};
-export type ModuleOrderingItem = ModuleOrderingID | ModuleOrderingGroup;
-export const isModuleOrderingGroup = (x: ModuleOrderingItem): x is ModuleOrderingGroup => x.hasOwnProperty("name");
+// Section -> Category -> Module
 
-const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
+export type SectionID = "intro" | "bronze" | "silver" | "gold" | "plat" | "adv";
+
+export type Category = {
+  name: string;
+  items: string[];
+}
+
+const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
   "intro": [
     {
       name: "About This Guide",
@@ -52,10 +53,15 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     },
   ],
   "bronze": [
-    "time-comp",
-    "simulation",
-    "rect-geo",
-    "ad-hoc",
+    {
+      name: "Basics",
+      items: [
+        "time-comp",
+        "simulation",
+        "rect-geo",
+        "ad-hoc",
+      ]
+    },
     {
       name: "Data Structures",
       items: [
@@ -71,10 +77,20 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "gen-perm",
       ]
     },
-    "intro-graphs",
+    {
+      name: "Graphs",
+      items: [
+        "intro-graphs",
+      ]
+    }
   ],
   "silver": [
-    "prefix-sums",
+    {
+      name: "Prefix Sums",
+      items: [
+        "prefix-sums",
+      ]
+    },
     {
       name: "Binary Search",
       items: [
@@ -115,8 +131,18 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     },
   ],
   "gold": [
-    "dp",
-    "intro-nt",
+    {
+      name: "Dynamic Programming",
+      items: [
+        "dp",
+      ]
+    },
+    {
+      name: "Number Theory",
+      items: [
+        "intro-nt", // does this really belong so high up on the list??
+      ]
+    },
     {
       name: "Graphs",
       items: [
@@ -153,7 +179,12 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
     }
   ],
   "plat": [
-    "oly",
+    {
+      name: "Additional Practice",
+      items: [
+        "oly",
+      ]
+    },
     {
       name: "Range Queries",
       items: [
@@ -209,9 +240,14 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "slope",
       ]
     },
-    "bitsets",
-    "fracture",
-    "dyna",
+    {
+      name: "Misc. Topics",
+      items: [
+        "bitsets",
+        "fracture",
+        "dyna",
+      ]
+    }
   ],
   "adv": [
     {
@@ -237,19 +273,23 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "fft-ext",
       ]
     },
-    "critical",
-    "string-suffix",
-    "game-theory",
-    "multiplicative",
-    "matroid-isect",
+    {
+      name: "Misc. Topics",
+      items: [
+        "critical",
+        "string-suffix",
+        "game-theory",
+        "multiplicative",
+        "matroid-isect",
+      ]
+    }
   ]
 };
 
-export default ModuleOrdering;
-export const divisions = Object.keys(ModuleOrdering);
-export const divisionLabels = {
+export default MODULE_ORDERING;
+export const SECTIONS: SectionID[] = Object.keys(MODULE_ORDERING) as SectionID[];
+export const SECTION_LABELS: {[key in SectionID]: string} = {
   "intro": "Intro",
-  "general": "General",
   "bronze": "Bronze",
   "silver": "Silver",
   "gold": "Gold",
@@ -257,16 +297,14 @@ export const divisionLabels = {
   "adv": "Advanced",
 };
 
-const moduleIDToDivisionMap = {};
+const moduleIDToSectionMap: {[key: string]: SectionID} = {};
 
-Object.keys(ModuleOrdering).forEach(division => {
-  const process = module => {
-    if (module.hasOwnProperty('name')) {
-      return module.items.forEach(process);
-    }
-    moduleIDToDivisionMap[module] = division;
-  };
-  ModuleOrdering[division].forEach(process);
+SECTIONS.forEach(section => {
+  MODULE_ORDERING[section].forEach(category => {
+    category.items.forEach(moduleID => {
+      moduleIDToSectionMap[moduleID] = section;
+    })
+  });
 });
 
-export { moduleIDToDivisionMap };
+export { moduleIDToSectionMap };

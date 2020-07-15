@@ -3,47 +3,40 @@ import { ModuleLinkInfo } from '../../../module';
 import { Link } from 'gatsby';
 import ItemLink from './ItemLink';
 import Accordion from './Accordion';
+import MODULE_ORDERING, { Category } from '../../../../content/ordering';
+import { useContext } from 'react';
+import ModuleLayoutContext from '../../../context/ModuleLayoutContext';
 
 export interface NavLinkGroup {
   label: string;
-  children: NavLinkItem[];
+  children: ModuleLinkInfo[];
 }
 
-export type NavLinkItem = ModuleLinkInfo | NavLinkGroup;
+export const SidebarNav = () => {
+  const { module, moduleLinks } = useContext(ModuleLayoutContext);
 
-export const isNavLinkGroup = (x: NavLinkItem): x is NavLinkGroup =>
-  x.hasOwnProperty('label');
+  const links: NavLinkGroup[] = React.useMemo(() => {
+    return MODULE_ORDERING[module.division].map((category: Category) => ({
+      label: category.name,
+      children: category.items.map(
+        moduleID => moduleLinks.find(link => link.id === moduleID) // lol O(n^2)?
+      ),
+    }));
+  }, [module.division, moduleLinks]);
 
-export const SidebarNav = ({
-  links,
-  activeLink,
-}: {
-  links: NavLinkItem[];
-  activeLink: ModuleLinkInfo;
-}) => {
-  const renderLink = (link: NavLinkItem) => {
-    if (link instanceof ModuleLinkInfo) {
-      return (
-        <ItemLink
-          key={link.url}
-          link={link}
-          isActive={link.id === activeLink.id}
-        />
-      );
-    }
-    return (
-      <Accordion
-        key={link.label}
-        label={link.label}
-        isActive={
-          link.children.findIndex(
-            x => x instanceof ModuleLinkInfo && x.id === activeLink.id
-          ) !== -1
-        }
-      >
-        {link.children.map(renderLink)}
-      </Accordion>
-    );
-  };
-  return <>{links.map(renderLink)}</>;
+  return (
+    <>
+      {links.map(group => (
+        <Accordion
+          key={group.label}
+          label={group.label}
+          isActive={group.children.findIndex(x => x.id === module.id) !== -1}
+        >
+          {group.children.map(link => (
+            <ItemLink link={link} isActive={link.id === module.id} />
+          ))}
+        </Accordion>
+      ))}
+    </>
+  );
 };

@@ -1,4 +1,4 @@
-import { divisions } from './content/ordering';
+import { SECTIONS } from './content/ordering';
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -7,7 +7,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: 'division',
       node,
-      value: ordering.moduleIDToDivisionMap[node.frontmatter.id],
+      value: MODULE_ORDERING.moduleIDToDivisionMap[node.frontmatter.id],
     });
   }
 };
@@ -51,7 +51,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const syllabusTemplate = require.resolve(
     `./src/templates/syllabusTemplate.tsx`
   );
-  divisions.forEach(division => {
+  SECTIONS.forEach(division => {
     createPage({
       path: `/${division}`,
       component: syllabusTemplate,

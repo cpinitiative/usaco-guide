@@ -5,10 +5,9 @@ import { useContext, useRef, useState } from 'react';
 import logo from '../../assets/logo.svg';
 import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../../module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
-import ModuleOrdering, {
-  divisionLabels,
-  isModuleOrderingGroup,
-  ModuleOrderingItem,
+import MODULE_ORDERING, {
+  Category,
+  SECTION_LABELS,
 } from '../../../content/ordering';
 import Dots from '../Dots';
 import ContactUsSlideover from '../ContactUsSlideover';
@@ -16,12 +15,9 @@ import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../tooltip/TextTooltip';
 import UserSettingsContext from '../../context/UserSettingsContext';
-import {
-  isNavLinkGroup,
-  NavLinkItem,
-  SidebarNav,
-} from './SidebarNav/SidebarNav';
+import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils';
+import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -65,51 +61,49 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   );
 };
 
-const Breadcrumbs = ({
-  division,
-  module,
-}: {
-  division: string;
-  module: ModuleLinkInfo;
-}) => (
-  <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
-    <Link
-      to="/"
-      className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
-    >
-      Home
-    </Link>
-    <svg
-      className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-        clipRule="evenodd"
-      />
-    </svg>
-    <Link
-      to={`/${division}`}
-      className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
-    >
-      {divisionLabels[division]}
-    </Link>
-    <svg
-      className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-        clipRule="evenodd"
-      />
-    </svg>
-    <span className="text-gray-500 whitespace-no-wrap">{module.title}</span>
-  </nav>
-);
+const Breadcrumbs = () => {
+  const moduleLayoutInfo = useContext(ModuleLayoutContext);
+  const module = moduleLayoutInfo.module;
+  return (
+    <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
+      <Link
+        to="/"
+        className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
+      >
+        Home
+      </Link>
+      <svg
+        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+      <Link
+        to={`/${module.division}`}
+        className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
+      >
+        {SECTION_LABELS[module.division]}
+      </Link>
+      <svg
+        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+      <span className="text-gray-500 whitespace-no-wrap">{module.title}</span>
+    </nav>
+  );
+};
 
 const SidebarBottomButtons = ({ onContactUs }) => {
   const languages = {
@@ -171,19 +165,17 @@ const SidebarBottomButtons = ({ onContactUs }) => {
   );
 };
 
-const NavBar = ({
-  division,
-  module,
-  prevModule,
-  nextModule,
-  alignNavButtonsRight = true,
-}: {
-  division: any;
-  module: ModuleLinkInfo;
-  prevModule: ModuleLinkInfo | null;
-  nextModule: ModuleLinkInfo | null;
-  alignNavButtonsRight?: boolean;
-}) => {
+const NavBar = ({ alignNavButtonsRight = true }) => {
+  const moduleLayoutInfo = useContext(ModuleLayoutContext);
+  const { module, moduleLinks } = moduleLayoutInfo;
+  let moduleIdx = React.useMemo(
+    () => moduleLinks.findIndex(x => x.id === module.id),
+    [module, moduleLinks]
+  );
+  let prevModule = moduleIdx === 0 ? null : moduleLinks[moduleIdx - 1];
+  let nextModule =
+    moduleIdx === moduleLinks.length - 1 ? null : moduleLinks[moduleIdx + 1];
+
   const disabledClasses = 'text-gray-200 pointer-events-none';
   const activeClasses =
     'text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out';
@@ -217,7 +209,7 @@ const NavBar = ({
         </Link>
       </span>
       <div className="hidden sm:flex items-center">
-        <Breadcrumbs division={division} module={module} />
+        <Breadcrumbs />
       </div>
       <span className="rounded-md -mr-4">
         <Link
@@ -245,25 +237,10 @@ const NavBar = ({
   );
 };
 
-const flattenNavLinks = (navLinks: NavLinkItem[]) => {
-  let links: ModuleLinkInfo[] = [];
-  const flatten = (link: NavLinkItem) => {
-    if (isNavLinkGroup(link)) {
-      link.children.forEach(flatten);
-    } else {
-      links.push(link);
-    }
-  };
-  navLinks.forEach(flatten);
-  return links;
-};
-
 export default function ModuleLayout({
-  division,
   module,
   children,
 }: {
-  division: string;
   module: ModuleInfo;
   children: React.ReactNode;
 }) {
@@ -301,37 +278,6 @@ export default function ModuleLayout({
     data.allMdx,
   ]);
 
-  const navLinks: NavLinkItem[] = React.useMemo(() => {
-    const getLinks = (item: ModuleOrderingItem): NavLinkItem => {
-      if (isModuleOrderingGroup(item)) {
-        return {
-          label: item.name,
-          children: item.items.map(getLinks),
-        };
-      }
-      if (!moduleLinks.hasOwnProperty(item)) {
-        throw `${item} not found!`;
-      }
-      return moduleLinks[item];
-    };
-    return ModuleOrdering[division].map(getLinks);
-  }, []);
-
-  const prevModule: ModuleLinkInfo | null = React.useMemo(() => {
-    const links = flattenNavLinks(navLinks);
-    for (let i = 0; i < links.length - 1; i++) {
-      if (links[i + 1].id === module.id) return links[i];
-    }
-    return null;
-  }, [navLinks]);
-  const nextModule: ModuleLinkInfo | null = React.useMemo(() => {
-    const links = flattenNavLinks(navLinks);
-    for (let i = 1; i < links.length; i++) {
-      if (links[i - 1].id === module.id) return links[i];
-    }
-    return null;
-  }, [navLinks]);
-
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(progress);
@@ -344,7 +290,7 @@ export default function ModuleLayout({
   };
 
   return (
-    <>
+    <ModuleLayoutContext.Provider value={{ module, moduleLinks }}>
       <ModuleConfetti
         show={isConfettiActive}
         onDone={() => setIsConfettiActive(false)}
@@ -403,13 +349,10 @@ export default function ModuleLayout({
                     <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
                   </Link>
                   <div className="mt-4 px-6">
-                    <Breadcrumbs division={division} module={module} />
+                    <Breadcrumbs />
                   </div>
                   <nav className="mt-6">
-                    <SidebarNav
-                      links={navLinks}
-                      activeLink={moduleLinks[module.id]}
-                    />
+                    <SidebarNav />
                   </nav>
                 </div>
                 <SidebarBottomButtons
@@ -438,10 +381,7 @@ export default function ModuleLayout({
             </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <nav className="mt-2 flex-1 bg-white">
-              <SidebarNav
-                links={navLinks}
-                activeLink={moduleLinks[module.id]}
-              />
+              <SidebarNav />
             </nav>
           </div>
           <SidebarBottomButtons
@@ -471,12 +411,7 @@ export default function ModuleLayout({
             </svg>
           </button>
           <div className="flex-1 ml-4 mr-4 sm:mr-6">
-            <NavBar
-              division={division}
-              module={module}
-              prevModule={prevModule}
-              nextModule={nextModule}
-            />
+            <NavBar />
           </div>
         </div>
         <main
@@ -486,12 +421,7 @@ export default function ModuleLayout({
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div>
               <div className="hidden lg:block">
-                <NavBar
-                  division={division}
-                  module={module}
-                  prevModule={prevModule}
-                  nextModule={nextModule}
-                />
+                <NavBar />
               </div>
               <div className="px-1.5 lg:mt-8">
                 {module.frequency !== null && (
@@ -530,13 +460,7 @@ export default function ModuleLayout({
             </h3>
 
             <div className="border-t border-gray-200 pt-4">
-              <NavBar
-                division={division}
-                module={module}
-                prevModule={prevModule}
-                nextModule={nextModule}
-                alignNavButtonsRight={false}
-              />
+              <NavBar alignNavButtonsRight={false} />
             </div>
           </div>
         </main>
@@ -546,6 +470,6 @@ export default function ModuleLayout({
         onClose={() => setIsContactUsActive(false)}
         activeModule={module}
       />
-    </>
+    </ModuleLayoutContext.Provider>
   );
 }

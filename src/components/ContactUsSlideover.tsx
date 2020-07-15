@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ModuleInfo } from '../module';
-import { divisionLabels } from '../../content/ordering';
+import { SECTION_LABELS } from '../../content/ordering';
 import SlideoverForm from './Slideover/SlideoverForm';
 import { useState } from 'react';
 import useStickyState from '../hooks/useStickyState';
@@ -54,7 +54,7 @@ export default function ContactUsSlideover({
   React.useEffect(() => {
     if (activeModule)
       setLocation(
-        `${activeModule.title} - ${divisionLabels[activeModule.division]}`
+        `${activeModule.title} - ${SECTION_LABELS[activeModule.division]}`
       );
     else setLocation('');
   }, [activeModule]);

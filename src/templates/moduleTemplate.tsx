@@ -3,7 +3,7 @@ import { graphql } from 'gatsby';
 import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
-import { divisionLabels } from '../../content/ordering';
+import { SECTION_LABELS } from '../../content/ordering';
 import { graphqlToModuleInfo } from '../utils';
 import SEO from '../components/seo';
 import { KatexRenderer } from '../components/markdown/KatexRenderer';
@@ -24,12 +24,12 @@ export default function Template(props) {
   return (
     <Layout>
       <SEO
-        title={`${module.title} (${divisionLabels[division]})`}
+        title={`${module.title} (${SECTION_LABELS[division]})`}
         description={module.description}
       />
 
       <div className="h-screen flex overflow-hidden bg-white">
-        <ModuleLayout module={module} division={division}>
+        <ModuleLayout module={module}>
           <div className="py-4">
             {prereqs && (
               <div className="rounded-md bg-blue-50 p-4 mb-4">

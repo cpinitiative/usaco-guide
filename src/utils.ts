@@ -1,8 +1,8 @@
-import ModuleOrdering from '../content/ordering';
+import MODULE_ORDERING from '../content/ordering';
 import { ModuleInfo, ModuleLinkInfo } from './module';
 
 export const getModule = (allModules, division) => {
-  return ModuleOrdering[division].map(k => {
+  return MODULE_ORDERING[division].map(k => {
     // rip spaghetti code, clean this up
     if (typeof k === 'object') {
       return {
@@ -29,21 +29,18 @@ export const getModule = (allModules, division) => {
   });
 };
 
-export function graphqlToModuleLinks(
-  allMdx: any
-): { [moduleID: string]: ModuleLinkInfo } {
-  return allMdx.edges.reduce((acc, cur) => {
-    acc[cur.node.frontmatter.id] = new ModuleLinkInfo(
-      cur.node.frontmatter.id,
-      cur.node.fields.division,
-      cur.node.frontmatter.title
-    );
-    return acc;
-  }, {});
+export function graphqlToModuleLinks(allMdx: any): ModuleLinkInfo[] {
+  return allMdx.edges.map(
+    cur =>
+      new ModuleLinkInfo(
+        cur.node.frontmatter.id,
+        cur.node.fields.division,
+        cur.node.frontmatter.title
+      )
+  );
 }
 
 export function graphqlToModuleInfo(mdx: any): ModuleInfo {
-  console.log(mdx);
   return new ModuleInfo(
     mdx.frontmatter.id,
     mdx.fields.division,
