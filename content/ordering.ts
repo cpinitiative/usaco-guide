@@ -8,7 +8,13 @@ export const isModuleOrderingGroup = (x: ModuleOrderingItem): x is ModuleOrderin
 
 const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
   "intro": [
-    "using-this-guide",
+    {
+      name: "About This Guide",
+      items: [
+        "using-this-guide",
+        "modules",
+      ]
+    },
     {
       name: "Getting Started",
       items: [
