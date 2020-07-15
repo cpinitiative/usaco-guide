@@ -75,6 +75,27 @@ $$X = 15, \qquad N = 6, \qquad a_i = \{ 4, 3, 8, 4, 7, 3 \}$$
 After sorting the array, we have $\{ 3, 3, 4, 4, 7, 8 \}$. Within the maximum of 15 minutes, Steph can learn four algorithms in a total of $3+3+4+4 = 14$ minutes.
 The implementation of this algorithm is very simple. We sort the array, and then take as many elements as possible while the sum of times of algorithms chosen so far is less than $X$. Sorting the array takes $O(N \log N)$ time, and iterating through the array takes $O(N)$ time, for a total time complexity of $O(N \log N)$.
 
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// read in the input, store the algorithms in a vector, algorithms
+sort(algorithms.begin(), algorithms.end());
+int count = 0; // number of minutes used so far
+int i = 0;
+while(count + algorithms[i] <= x){
+    // while there is enough time, learn more algorithms
+    count += algorithms[i];
+    i++;
+}
+cout << i << endl; // print the ans
+```
+
+</CPPSection>
+
+<JavaSection>
+
 ```java
 // read in the input, store the algorithms in int[] algorithms
 Arrays.sort(algorithms);
@@ -88,6 +109,11 @@ while(count + algorithms[i] <= x){
 pw.println(i); // print the ans
 pw.close();
 ```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## The Scheduling Problem
 
