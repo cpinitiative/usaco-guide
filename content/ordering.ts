@@ -60,8 +60,8 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
       name: "Data Structures",
       items: [
         "intro-ds",
-        "unordered",
         "pairs-tuples",
+        "unordered",
       ]
     },
     {
@@ -144,7 +144,13 @@ const ModuleOrdering: {[key: string]: ModuleOrderingItem[]} = {
         "tree-euler",
       ]
     },
-    "hashing",
+    {
+      name: "Hashing",
+      items: [
+        "faster-hashmap",
+        "string-hashing",
+      ]
+    }
   ],
   "plat": [
     "oly",
