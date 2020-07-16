@@ -57,6 +57,7 @@ export const plugins = [
   },
   `gatsby-plugin-styled-components`,
   `gatsby-plugin-react-helmet`,
+  `gatsby-plugin-catch-links`,
   `gatsby-transformer-sharp`,
   {
     resolve: `gatsby-plugin-manifest`,
