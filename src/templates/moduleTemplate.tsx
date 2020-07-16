@@ -6,7 +6,6 @@ import Markdown from '../components/markdown/Markdown';
 import { SECTION_LABELS } from '../../content/ordering';
 import { graphqlToModuleInfo } from '../utils';
 import SEO from '../components/seo';
-import { KatexRenderer } from '../components/markdown/KatexRenderer';
 import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
 
 const renderPrerequisite = prerequisite => {
@@ -63,7 +62,7 @@ export default function Template(props) {
 
             {module.description && (
               <p className="font-bold mb-8 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
-                <KatexRenderer>{module.description}</KatexRenderer>
+                {module.description}
               </p>
             )}
 

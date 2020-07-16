@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Problem } from '../../../content/models';
 import Transition from '../Transition';
-import renderMathInElement from 'katex/contrib/auto-render/auto-render';
-import { KatexRenderer } from './KatexRenderer';
 import Tooltip from '../tooltip/Tooltip';
 import TextTooltip from '../tooltip/TextTooltip';
 import { sourceTooltip } from './Resources';
@@ -117,9 +115,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                     Solution Sketch: {problem?.name}
                   </h3>
                   <div className="mt-4">
-                    <p className="text-gray-700">
-                      <KatexRenderer>{problem?.sketch}</KatexRenderer>
-                    </p>
+                    <p className="text-gray-700">{problem?.sketch}</p>
                   </div>
                 </div>
               </div>
