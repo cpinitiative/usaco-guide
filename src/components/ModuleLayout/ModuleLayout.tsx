@@ -168,13 +168,24 @@ const SidebarBottomButtons = ({ onContactUs }) => {
 const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useContext(ModuleLayoutContext);
   const { module, moduleLinks } = moduleLayoutInfo;
+  const sortedModuleLinks = React.useMemo(() => {
+    let links: ModuleLinkInfo[] = [];
+    for (let group of MODULE_ORDERING[module.division]) {
+      for (let id of group.items) {
+        links.push(moduleLinks.find(x => x.id === id));
+      }
+    }
+    return links;
+  }, [moduleLinks]);
   let moduleIdx = React.useMemo(
-    () => moduleLinks.findIndex(x => x.id === module.id),
-    [module, moduleLinks]
+    () => sortedModuleLinks.findIndex(x => x.id === module.id),
+    [module, sortedModuleLinks]
   );
-  let prevModule = moduleIdx === 0 ? null : moduleLinks[moduleIdx - 1];
+  let prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
   let nextModule =
-    moduleIdx === moduleLinks.length - 1 ? null : moduleLinks[moduleIdx + 1];
+    moduleIdx === sortedModuleLinks.length - 1
+      ? null
+      : sortedModuleLinks[moduleIdx + 1];
 
   const disabledClasses = 'text-gray-200 pointer-events-none';
   const activeClasses =
