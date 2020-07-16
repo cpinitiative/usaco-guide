@@ -53,7 +53,7 @@ export const UserSettingsProvider = ({ children }) => {
     } catch (e) {
       console.error("Couldn't parse user progress", e);
     }
-    setUserProgress(v);
+    setUserProgress(v || {});
   }, []);
 
   return (

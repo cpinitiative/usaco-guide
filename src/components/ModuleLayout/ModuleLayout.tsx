@@ -248,7 +248,6 @@ export default function ModuleLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
-  console.log(userProgress);
   const moduleProgress =
     (userProgress && userProgress[module.id]) || 'Not Started';
 
