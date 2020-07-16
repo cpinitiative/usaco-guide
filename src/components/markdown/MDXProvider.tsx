@@ -4,7 +4,6 @@ import SpoilerComponent from './SpoilerComponent';
 import { ProblemsListComponent } from './Problems';
 import { ResourceComponent, ResourcesListComponent } from './Resources';
 import CodeBlock from './CodeBlock';
-import { InlineMath } from 'react-katex';
 import classNames from 'classnames';
 import Asterisk from '../tooltip/Asterisk';
 import TextTooltip from '../tooltip/TextTooltip';
@@ -107,7 +106,6 @@ const components = {
       className="font-mono inline bg-gray-200 rounded px-1 py-05"
     />
   ),
-  IM: ({ children }) => <InlineMath>{children}</InlineMath>,
   LanguageSection: LanguageSection,
   CPPSection: CPPSection,
   JavaSection: JavaSection,
@@ -117,10 +115,15 @@ const components = {
   table: ({ className, ...props }) => (
     <table
       {...props}
-      className={classNames('text-base border-gray-600', className)}
+      className={classNames(
+        'text-base border-gray-600 no-bottom-margin',
+        className
+      )}
     />
   ),
-  th: props => <th {...props} className="border py-1 px-3" />,
+  th: ({ className, ...props }) => (
+    <th {...props} className={classNames('border py-1 px-3', className)} />
+  ),
   td: ({ className, ...props }) => (
     <td {...props} className={classNames('border py-1 px-3', className)} />
   ),
