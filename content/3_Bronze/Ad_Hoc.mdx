@@ -11,10 +11,12 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     general: [
-      new Problem("Bronze", "Mad Scientist", "1012", "Normal", false, [], "Flip all ranges that mismatch greedily."),
       new Problem("Bronze", "Cow Tipping", "689", "Hard", false, [], "Cells in the last row and column can be toggled uniquely. Toggle the appropriate ones and then recurse to the rectangle in the previous row/column, and solve the same way."),
       new Problem("Bronze", "Race", "989", "Very Hard", false, [], "Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K."),
     ],
+    greedy-tutorial: [
+      new Problem("Bronze", "Mad Scientist", "1012", "Normal", false, [], ""),
+    ]
   }
 };
 
@@ -32,8 +34,35 @@ Since Ad Hoc problems don't fall under any specific category, they can be hard t
 
 These tips are very useful in solving Ad Hoc problems. However, in the end, the best way to get better at Ad Hoc problems (or any type of problems) is to do a lot of them. Try to solve as many practice problems below as you can, and click the solution sketch tab if you can't figure the solution out.
 
+## Greedy Problems
+
+One thing to note about Ad Hoc problems in the USACO Bronze division is that many of them, while difficult to categorize into specific algorithms or data structures, can be solved using **Greedy** techniques. While this idea will be covered more in future [modules](https://usaco-guide.netlify.app/silver/greedy), we'll introduce the general mindset in this section.
+
+When approaching a greedy problem, we want to make argument about the structure of the solution of the problem. Specifically, that certain "greedy" actions, or actions that create the best possible solution at some local point in the algorithm, will lead to an optimal solution at the end. 
+
+Consider some possible greedy algorithms for the USACO Bronze problem "Mad Scientist."
+
+<problem-list problems={metadata.problems.greedy-tutorial} />
+
+<spoiler title="Correct Greedy Algorithm">
+
+ In this problem, the correct greedy solution is to continually flip the longest possible ranges of mismatching cows. 
+
+ Mad Scientist has an excellent [editorial](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html) with a video solution and intuitive proof. It is highly recommended you read it before continuing to gain a better understanding of the greedy algorithm.
+</spoiler> 
+
+However, not all greedy problems in the bronze division nessecarily require mathematical proofs of correctness. It is often good enough to intuitively convince yourself your algorithm is correct.
+
+<info-block title="Pro Tip">
+Sometimes, if the algorithm is easy enough to implement, you don't even need to convince yourself it's correct: just let the online judge prove it for you by coding it and seeing if it passes. This is often called a Proof by AC.
+
+<!-- Don't overuse it though? -->
+
+</info-block>
+
 <problems-list problems={metadata.problems.general} />
 
 <IncompleteSection>
 
 </IncompleteSection>
+<!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->
