@@ -15,19 +15,19 @@ The material in this guide will be grouped into **modules** such as the one you'
 
 The module lesson is a curated collection of external resources, problems, and supplementary text we've written ourselves.
 
-  - The goal is to introduce you to the concept.
-  - Everything is meant to be completed in order.
-  - It usually begins with at least one standard problem, marked "Intro" in the difficulty column.
-    - The standard problem is a direct application of the concept, and is useful in testing your implementation.
-  - We'll **star** external resources that we highly recommend you read. Feel free to read the others if you don't understand something.
+	- The goal is to introduce you to the concept.
+	- Everything is meant to be completed in order.
+	- It usually begins with at least one standard problem, marked "Intro" in the difficulty column.
+		- The standard problem is a direct application of the concept, and is useful in testing your implementation.
+	- We'll **star** external resources that we highly recommend you read. Feel free to read the others if you don't understand something.
 
 ### Implementations
 
 The module lesson usually contains an implementation of the solution to the standard problem. All implementations should compile, have example input / output provided, and have relatively few macros. If any code does not compile or is hard to read, submit a complaint using the "Contact Us" button.
 
-  - For Bronze, we will provide code snippets in C++, Java, and Python.
-  - For Silver and Gold, we will provide code snippets in C++ and Java and sometimes Python.
-  - For Platinum, code snippets might only be provided in C++.
+	- For Bronze, we will provide code snippets in C++, Java, and Python.
+	- For Silver and Gold, we will provide code snippets in C++ and Java and sometimes Python.
+	- For Platinum, code snippets might only be provided in C++.
 
 Implementations we provide will follow certain [conventions listed at the bottom of this module](#code-conventions). You do not have to copy our conventions!
 
@@ -61,54 +61,82 @@ Some modules may also have additional content at the end that isn't needed for U
 
 ## Code Conventions
 
-The code we provide will generally follow the conventions below. Please note that you do _not_ have to copy our conventions; there is no "right" convention for coding!
+The code we provide should follow the conventions below. Please note that you do _not_ have to copy our conventions; there is no "right" convention for coding!
+
+### General
+
+ - Indent using tabs (that are 4 spaces wide).
+ - Binary operators should be spaced on both sides. For example, `a+b` should be written as `a + b` and `x=a+b` should be written as `x = a + b`.
+ - Unary operators should only be spaced on the left side, ex. `x = -y`.
+ - Braces that open on one line should close on another. Always include braces, even if the code inside them is only one line.
+ - Parentheses should be spaced from the outside. For example, we would write `if (a == b) {` or `for (int i = 0; i < n; ++i) {`.
+ - Use `++x` rather than `x++` to increment a variable (ie. in a `for` loop).
+ - Start your `else` statement on the same line as the closing brace of your `if` statement, like so:
+
+	```cpp
+	if (a == b) {
+		++a;
+	} else {
+		++b;
+	}
+	```
+
+ - Use `true / false` for boolean values, not `1 / 0`. 
+ - Explain the use of any not well known standard library functions with comments that haven't been introduced before like `__builtin_ffs()` or `tie(a, b, c)` in C++. 
+
+<LanguageSection>
+
+<CPPSection>
 
 ### C++
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(false); cin.tie(NULL); // see Fast Input & Output
+	freopen((name+".in").c_str(),"r",stdin); // see Input & Output
+	freopen((name+".out").c_str(),"w",stdout);
+}
+
+int main() {
+	setIO();
+
+}
+```
+
 <resources>
-  <resource source = "CF" title = "Competitive C++ Manifesto" url="blog/entry/64218"> some material directly from this blog post</resource> 
+	<resource source = "CF" title = "Competitive C++ Manifesto" url="blog/entry/64218"> some material directly from this blog post</resource> 
 </resources>
 
 <!-- Avoid using tabs? Does this cause any problems on usaco-guide? -->
 
 <!-- Any preferences? Also, this doesn't apply to the custom sorting module, make sure to include all 3! :) -->
 
- - Use `using namespace std` rather than `std::`. 
- - Indent using tabs.
- - Avoid the use of macros. If you end up using a macro, include the `#define` statement.
- - Braces that open on one line should close on another. Always include braces, even if the code inside them is only one line.
- - Braces open on the same line like `if (a == b) {` and have a space directly to the left of the brace. Statements before the brace should be spaced as well, such as `for (int i = 0; i < n; ++i) {`
+ - Avoid the use of macros (`#define`) other than those in the template above. See "Shortening C++" for more information about macros.
  - Separate multiple operations on the same line with a comma like `a = b, c = d;` or split them into different lines and use semicolons.
- - Use `++x` rather than `x++` to increment a variable (ie. in a `for` loop).
- - Start your `else` statement on the same line as the closing brace of your `if` statement, like so:
-
-    ```cpp
-    if (a == b) {
-       ++a;
-    } else{
-       ++b;
-    }
-    ```
-
- - Binary operators should be spaced on both sides. For example, `a+b` should be written as `a + b` and `x=a+b` should be written as `x = a + b`.
- - Unary operators should only be spaced on the left side, ex. `x = -y`.
+ - Use `const` in C++ for variables that don't change through the code.
  - Use `make_pair` rather than `{}` to store a pair. 
- - Use `auto` when dealing with iterators. 
- - Use `true / false` for boolean values, not `1 / 0`. 
- - Use `struct` instead of `class`. 
- - Even if you are copy pasting a `struct`, space it out rather than squeezing it into one line.
- - Explain the use of any not well known standard library functions with comments that haven't been introduced before like `__builtin_ffs()` or `tie(a, b, c)`. 
- - There should not be any extra spaces at the end of each line.
- - Use `const` for variables that don't change through the code.
- - Capitalize **Types with UpperCamelCase** (`SegTree, Point`), **functions with lowerCamelCase or lowercase** (`solve(), binarySearch()`) and **constants fully capitalized** (`INF, MOD, SOME_CONST`). 
+ - Use `auto` to increase readability (ex. when dealing with iterators). 
+ - Use `struct` instead of `class`. <!-- Even if you are copy pasting a `struct`, space it out rather than squeezing it into one line. -->
+ - Use UpperCamelCase for custom structs (`SegTree, Point`) and lowerCamelCase for functions (`solve(), binarySearch()`). Constants should be fully capitalized (`INF, MOD, SOME_CONST`). 
 
-### Java
+</CPPSection>
 
-// todo
 
-### Python
-
-// todo
+</LanguageSection>
 
 ## Interactive Elements
 
@@ -142,9 +170,9 @@ A warning block like this will contain common errors that you should avoid.
 
 <!-- Difficulty should be comparable across a division. Say that you have *almost-solved* a question if you scored at least $n-2$ out of $n$ test cases. At least for platinum, difficulty levels should correspond approximately to the following USA Pre-college almost-solve rates on a USACO contest:
 
-  - Easy: $\ge 40\%$ (ex. Fort Moo, Team Building, Redistricting)
-  - Normal: $\ge 20\%$ (ex. Card Game, Balancing, Gathering)
-  - Hard: $\ge 10\%$ (ex. Mooriokart, Train Tracking 2, Friendcross)
+	- Easy: $\ge 40\%$ (ex. Fort Moo, Team Building, Redistricting)
+	- Normal: $\ge 20\%$ (ex. Card Game, Balancing, Gathering)
+	- Hard: $\ge 10\%$ (ex. Mooriokart, Train Tracking 2, Friendcross)
 
 Old gold problems should probably be bumped up one level. -->
 
