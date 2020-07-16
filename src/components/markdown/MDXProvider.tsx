@@ -25,7 +25,7 @@ const components = {
     children: React.ReactNode;
     title: string;
   }) => (
-    <div className="rounded-md bg-blue-50 p-4 mb-8 info-block">
+    <div className="rounded-md bg-blue-50 p-4 mb-4 info-block">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg

@@ -1,4 +1,4 @@
-import { moduleIDToSectionMap, SECTIONS } from './content/ordering';
+import { SECTIONS } from './content/ordering';
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -7,7 +7,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: 'division',
       node,
-      value: moduleIDToSectionMap[node.frontmatter.id],
+      value: ordering.moduleIDToSectionMap[node.frontmatter.id],
     });
   }
 };
