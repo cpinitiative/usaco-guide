@@ -4,9 +4,14 @@ import * as React from 'react';
 import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import Prism from './SyntaxHighlighting/prism';
+import { useState } from 'react';
 
 export default ({ children, className }) => {
-  if (className === undefined) {
+  const [firstRender, setFirstRender] = useState(true);
+  React.useEffect(() => {
+    setFirstRender(false);
+  }, []);
+  if (firstRender || className === undefined) {
     // no styling, just a regular pre tag
     return (
       <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all">
