@@ -14,6 +14,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "using-this-guide",
         "modules",
+        "code-con",
       ]
     },
     {
