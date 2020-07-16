@@ -117,18 +117,18 @@ The idea is that we can arbitrarily label a node and then run DFS. Every time we
 bool is_bipartite = true;
 void dfs(int node)
 {
-  visited[node] = true;
-  for(int u:adj_list[node])
-    if(visited[u])
-    {
-      if(color[u] == color[node])
-        is_bipartite = false;
-    }
-    else
-    {
-      color[u] = !color[node];
-      dfs(u);
-    }
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(visited[u])
+		{
+			if(color[u] == color[node])
+				is_bipartite = false;
+		}
+		else
+		{
+			color[u] = !color[node];
+			dfs(u);
+		}
 }
 ```
 

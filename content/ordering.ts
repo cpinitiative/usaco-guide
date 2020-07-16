@@ -43,8 +43,8 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "factors-choosing",
         "fast-io",
-        "shorten-cpp",
         "debugging",
+        "cpp-tips",
       ]
     },
     {

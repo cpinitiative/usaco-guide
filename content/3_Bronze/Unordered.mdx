@@ -94,7 +94,7 @@ set.remove(0); // [2, 4] in arbitrary order
 // if the element to be removed does not exist, nothing happens
 
 for(int element : set){
-    System.out.println(element);
+	System.out.println(element);
 }
 // You can iterate through an unordered set, but it will do so in arbitrary order
 ```
@@ -168,11 +168,11 @@ typedef pair<int,int> pi;
 #define s second
 
 struct hashPi {
-    size_t operator()(const pi& p) const { return p.f^p.s; }
+	size_t operator()(const pi& p) const { return p.f^p.s; }
 };
 
 int main() {
-    unordered_map<pi,int,hashPi> um;
+	unordered_map<pi,int,hashPi> um;
 
 }
 ```
@@ -186,13 +186,13 @@ typedef pair<int,int> pi;
 #define s second
 
 namespace std {
-    template<> struct hash<pi> {
-        size_t operator()(const pi& p) const { return p.f^p.s; }
-    };
+	template<> struct hash<pi> {
+		size_t operator()(const pi& p) const { return p.f^p.s; }
+	};
 }
 
 int main() {
-    unordered_map<pi,int> um;
+	unordered_map<pi,int> um;
 
 }
 ```
@@ -231,10 +231,10 @@ Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above
 
 ```cpp
 struct chash { /// use most bits rather than just the lowest ones
-  const uint64_t C = ll(2e18*PI)+71; // large odd number
-  const int RANDOM = rng();
-  ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-    return __builtin_bswap64((x^RANDOM)*C); }
+	const uint64_t C = ll(2e18*PI)+71; // large odd number
+	const int RANDOM = rng();
+	ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x^RANDOM)*C); }
 };
 template<class K,class V> using um = unordered_map<K,V,chash>;
 ```
