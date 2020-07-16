@@ -66,12 +66,9 @@ export const UserSettingsProvider = ({ children }) => {
         },
         userProgress,
         setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
-          userProgress[moduleID] = progress;
-          window.localStorage.setItem(
-            progressKey,
-            JSON.stringify(userProgress)
-          );
-          setUserProgress(userProgress);
+          const newProgress = { ...userProgress, [moduleID]: progress };
+          window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
+          setUserProgress(newProgress);
         },
       }}
     >

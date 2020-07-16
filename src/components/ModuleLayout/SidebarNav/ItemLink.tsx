@@ -48,10 +48,8 @@ const LinkWithProgress = styled.span`
 const StyledLink = styled.span`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
-  ${({ isActive }) =>
-    isActive
-      ? tw`text-blue-700 font-semibold`
-      : tw`text-gray-600`}
+  ${({ isActive, activeTextStyle }) =>
+    isActive ? activeTextStyle : tw`text-gray-600`}
   
 
   &::before {
@@ -68,7 +66,7 @@ const StyledLink = styled.span`
     transform: ${({ isActive }) => (isActive ? 'scale(1)' : 'scale(0.1)')};
     border-radius: 100%;
     z-index: 1;
-    ${({ isActive }) => (isActive ? tw`bg-blue-600` : tw`bg-gray-200`)}
+    ${({ dotColorStyle }) => dotColorStyle}
   }
 
   &:hover {
@@ -95,23 +93,29 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
 
   let lineColorStyle = tw`bg-gray-200`;
   let dotColorStyle = tw`bg-gray-200`;
+  let activeTextStyle = tw`text-blue-700 font-medium`;
+
+  if (isActive) {
+    lineColorStyle = tw`bg-blue-700`;
+    dotColorStyle = tw`bg-blue-700`;
+  }
 
   if (progress === 'Reading') {
     lineColorStyle = tw`bg-yellow-400`;
     dotColorStyle = tw`bg-yellow-400`;
+    activeTextStyle = tw`text-yellow-700 font-medium`;
   } else if (progress === 'Practicing') {
     lineColorStyle = tw`bg-orange-400`;
     dotColorStyle = tw`bg-orange-400`;
+    activeTextStyle = tw`text-orange-700 font-medium`;
   } else if (progress === 'Complete') {
     lineColorStyle = tw`bg-green-400`;
     dotColorStyle = tw`bg-green-400`;
+    activeTextStyle = tw`text-green-700 font-medium`;
   } else if (progress === 'Skipped') {
     lineColorStyle = tw`bg-blue-300`;
     dotColorStyle = tw`bg-blue-300`;
-  }
-
-  if (isActive) {
-    lineColorStyle = tw`bg-blue-700`;
+    activeTextStyle = tw`text-blue-700 font-medium`;
   }
 
   return (
@@ -120,7 +124,12 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
       dotColorStyle={dotColorStyle}
     >
       <Link to={link.url}>
-        <StyledLink isActive={isActive} ref={itemRef}>
+        <StyledLink
+          isActive={isActive}
+          ref={itemRef}
+          dotColorStyle={dotColorStyle === tw`bg-gray-200`}
+          activeTextStyle={activeTextStyle}
+        >
           {link.title}
         </StyledLink>
       </Link>
