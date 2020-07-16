@@ -1,8 +1,9 @@
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
 import * as React from 'react';
-import Highlight, { defaultProps } from 'prism-react-renderer';
+import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
+import Prism from './SyntaxHighlighting/prism';
 
 export default ({ children, className }) => {
   if (className === undefined) {
@@ -15,8 +16,9 @@ export default ({ children, className }) => {
   }
   const language = className.replace(/language-/, '');
   return (
+    // @ts-ignore
     <Highlight
-      {...defaultProps}
+      Prism={Prism as any}
       code={children.trim()}
       language={language}
       theme={vsDark}
