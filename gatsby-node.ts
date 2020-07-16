@@ -1,4 +1,4 @@
-import { SECTIONS } from './content/ordering';
+import { moduleIDToSectionMap, SECTIONS } from './content/ordering';
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -7,7 +7,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: 'division',
       node,
-      value: MODULE_ORDERING.moduleIDToDivisionMap[node.frontmatter.id],
+      value: moduleIDToSectionMap[node.frontmatter.id],
     });
   }
 };
@@ -36,7 +36,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
   const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.allMdx.edges;
-  modules.forEach(({ node }, index) => {
+  modules.forEach(({ node }) => {
     if (!node.fields.division) return;
     createPage({
       path: `/${node.fields.division}/${node.frontmatter.id}`,

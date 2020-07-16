@@ -90,18 +90,5 @@ export const pageQuery = graphql`
         division
       }
     }
-    allMdx {
-      edges {
-        node {
-          frontmatter {
-            title
-            id
-          }
-          fields {
-            division
-          }
-        }
-      }
-    }
   }
 `;
