@@ -28,21 +28,21 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       ]
     },
     {
+      name: "General",
+      items: [
+        "resources",
+        "contests",
+        "practicing",
+        "contest-strategy",
+      ]
+    },
+    {
       name: "Language-Specific",
       items: [
         "factors-choosing",
         "fast-io",
         "shorten-cpp",
         "debugging",
-      ]
-    },
-    {
-      name: "General",
-      items: [
-        "practicing",
-        "contest-strategy",
-        "resources",
-        "contests",
       ]
     },
     {
