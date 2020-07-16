@@ -101,7 +101,14 @@ Includes `-Wall -Wextra -Wshadow`
 
 ### Other Options
 
+<warning-block>
+
+Ben - I don't use these because they can significantly slow down compilation time and I don't find these messages particularly helpful (But maybe I'm wrong? I'm not so familiar with these.)
+
+</warning-block>
+
 In Errichto's blog he says that he uses the following as part of his compilation command:
+
 
 ```
 -fsanitize=undefined -fsanitize=address -D_GLIBCXX_DEBUG -g
@@ -128,6 +135,8 @@ zsh: segmentation fault  ./prog
 
 `g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
 
+<spoiler title="AddressSanitizer">
+
 ```
 AddressSanitizer:DEADLYSIGNAL
 =================================================================
@@ -148,7 +157,11 @@ SUMMARY: AddressSanitizer: SEGV (prog:x86_64+0x100001325) in main
 zsh: abort      ./prog
 ```
 
+</spoiler>
+
 Finally, `g++ prog.cpp -o prog -D_GLIBCXX_DEBUG -g && ./prog` produces:
+
+<spoiler title="Debug">
 
 ```
 /usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/debug/vector:427:
@@ -170,6 +183,8 @@ Objects involved in the operation:
     }
 zsh: abort      ./prog
 ```
+
+</spoiler>
 
 Another example with `prog.cpp` as the following:
 
@@ -195,6 +210,8 @@ prog.cpp:6:13: runtime error: load of address 0x7ffee0a77a94 with insufficient s
 ```
 
 `g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
+
+<spoiler title="AddressSanitizer">
 
 ```
 =================================================================
@@ -247,7 +264,7 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 zsh: abort      ./prog
 ```
 
-I don't use these because they can significantly slow down compilation time and I don't find these messages particularly helpful (but maybe I'm wrong?)
+</spoiler>
 
 ## Running (on Mac)
 
@@ -358,6 +375,8 @@ Cons of using a debugger:
 <CPPSection>
 
 (gdb, valgrind?)
+
+<IncompleteSection />
 
 </CPPSection>
 

@@ -32,9 +32,10 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       name: "General",
       items: [
         "resources",
-        "contests",
         "practicing",
         "contest-strategy",
+        "contests",
+        "oly",
       ]
     },
     {
@@ -180,12 +181,6 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     }
   ],
   "plat": [
-    {
-      name: "Additional Practice",
-      items: [
-        "oly",
-      ]
-    },
     {
       name: "Range Queries",
       items: [
