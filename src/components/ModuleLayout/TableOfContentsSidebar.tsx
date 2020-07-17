@@ -4,7 +4,7 @@ import { Link } from 'gatsby';
 import { useActiveHash } from '../../hooks/useActiveHash';
 import { useMemo } from 'react';
 
-const TableOfContentsDesktop = ({
+const TableOfContentsSidebar = ({
   tableOfContents,
 }: {
   tableOfContents: TOCHeading[];
@@ -18,7 +18,7 @@ const TableOfContentsDesktop = ({
   let curDepth = -1;
   let indentIdx = 0;
   let indent = ['0', '1.5rem', '3rem', '4.5rem'];
-  tableOfContents.forEach(heading => {
+  tableOfContents.forEach((heading, idx) => {
     if (curDepth === -1) curDepth = heading.depth;
     if (heading.depth > curDepth) {
       indentIdx++;
@@ -37,7 +37,15 @@ const TableOfContentsDesktop = ({
         }
         style={{
           marginLeft: indent[indentIdx],
-          marginTop: indentIdx === 0 ? '1rem' : '0',
+          marginTop:
+            indentIdx === 0 &&
+            ((idx !== 0 && tableOfContents[idx - 1].depth > heading.depth) ||
+              (idx !== tableOfContents.length - 1 &&
+                tableOfContents[idx + 1].depth > heading.depth))
+              ? '1rem'
+              : indentIdx === 0
+              ? '0.5rem'
+              : 0,
         }}
       >
         {heading.value}
@@ -46,7 +54,7 @@ const TableOfContentsDesktop = ({
   });
 
   return (
-    <div className="sticky pl-12" style={{ top: '2.5rem' }}>
+    <div className="sticky" style={{ top: '2.5rem' }}>
       <h2 className="uppercase text-gray-500 font-bold mb-4 text-sm tracking-wider">
         Table of Contents
       </h2>
@@ -55,4 +63,4 @@ const TableOfContentsDesktop = ({
   );
 };
 
-export default TableOfContentsDesktop;
+export default TableOfContentsSidebar;
