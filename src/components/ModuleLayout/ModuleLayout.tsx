@@ -18,6 +18,7 @@ import UserSettingsContext from '../../context/UserSettingsContext';
 import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
+import TableOfContentsDesktop from './TableOfContentsDesktop';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -268,12 +269,17 @@ export default function ModuleLayout({
   module: ModuleInfo;
   children: React.ReactNode;
 }) {
-  const { userProgress, setModuleProgress } = useContext(UserSettingsContext);
+  const { userProgress, setModuleProgress, primaryLang } = useContext(
+    UserSettingsContext
+  );
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgress && userProgress[module.id]) || 'Not Started';
+
+  const tableOfContents =
+    primaryLang in module.toc ? module.toc[primaryLang] : module.toc['cpp'];
 
   const data = useStaticQuery(graphql`
     query {
@@ -313,7 +319,7 @@ export default function ModuleLayout({
         onDone={() => setIsConfettiActive(false)}
       />
       <Transition show={isMobileNavOpen} timeout={300}>
-        <div className="lg:hidden">
+        <div className="xl:hidden">
           <div className="fixed inset-0 flex z-40">
             <Transition
               enter="transition-opacity ease-linear duration-300"
@@ -387,7 +393,7 @@ export default function ModuleLayout({
         </div>
       </Transition>
       {/* Static sidebar for desktop */}
-      <div className="hidden lg:flex lg:flex-shrink-0">
+      <div className="hidden xl:flex xl:flex-shrink-0">
         <div
           className="flex flex-col border-r border-gray-200 bg-white"
           style={{ width: '20rem' }}
@@ -407,7 +413,7 @@ export default function ModuleLayout({
         </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
+        <div className="xl:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
             aria-label="Open sidebar"
@@ -435,82 +441,88 @@ export default function ModuleLayout({
           className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
           tabIndex={0}
         >
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div>
-              <div className="hidden lg:block">
-                <NavBar />
-              </div>
-              <div className="px-1.5 lg:mt-8">
-                {module.frequency !== null && (
-                  <Frequency frequency={module.frequency} />
-                )}
-              </div>
-              <div className="sm:flex sm:items-center sm:justify-between">
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                    {module.title}
-                  </h1>
-                  <p className={`text-gray-500`}>Author: {module.author}</p>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex">
+              <div className="flex-1">
+                <div className="hidden xl:block">
+                  <NavBar />
                 </div>
-                <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
-                  <MarkCompleteButton
-                    state={moduleProgress}
-                    onChange={handleCompletionChange}
-                  />
-                </div>
-              </div>
-            </div>
 
-            {module.prerequisites && (
-              <div className="rounded-md bg-blue-50 p-4 mb-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-blue-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                <div className="px-1.5 lg:mt-8">
+                  {module.frequency !== null && (
+                    <Frequency frequency={module.frequency} />
+                  )}
+                </div>
+                <div className="sm:flex sm:items-center sm:justify-between">
+                  <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                      {module.title}
+                    </h1>
+                    <p className={`text-gray-500`}>Author: {module.author}</p>
                   </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm leading-5 font-medium text-blue-800">
-                      Prerequisites
-                    </h3>
-                    <div className="mt-2 text-sm leading-5 text-blue-800">
-                      <ul className="list-disc list-inside pl-3 space-y-1">
-                        {module.prerequisites.map(x =>
-                          renderPrerequisite(x, moduleLinks)
-                        )}
-                      </ul>
+                  <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
+                    <MarkCompleteButton
+                      state={moduleProgress}
+                      onChange={handleCompletionChange}
+                    />
+                  </div>
+                </div>
+
+                {module.prerequisites && (
+                  <div className="rounded-md bg-blue-50 p-4 mt-4">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <svg
+                          className="h-5 w-5 text-blue-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm leading-5 font-medium text-blue-800">
+                          Prerequisites
+                        </h3>
+                        <div className="mt-2 text-sm leading-5 text-blue-800">
+                          <ul className="list-disc list-inside pl-3 space-y-1">
+                            {module.prerequisites.map(x =>
+                              renderPrerequisite(x, moduleLinks)
+                            )}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                )}
+
+                {children}
+
+                <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
+                  <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
+                    Module Progress
+                  </TextTooltip>
+                  :
+                  <span className="ml-4">
+                    <MarkCompleteButton
+                      onChange={handleCompletionChange}
+                      state={moduleProgress}
+                      dropdownAbove
+                    />
+                  </span>
+                </h3>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
-            )}
-
-            {children}
-
-            <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
-              <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
-                Module Progress
-              </TextTooltip>
-              :
-              <span className="ml-4">
-                <MarkCompleteButton
-                  onChange={handleCompletionChange}
-                  state={moduleProgress}
-                  dropdownAbove
-                />
-              </span>
-            </h3>
-
-            <div className="border-t border-gray-200 pt-4">
-              <NavBar alignNavButtonsRight={false} />
+              <div className="w-64 mt-48">
+                <TableOfContentsDesktop tableOfContents={tableOfContents} />
+              </div>
             </div>
           </div>
         </main>

@@ -12,6 +12,18 @@ export class ModuleLinkInfo {
 
 export type ModuleFrequency = null | 0 | 1 | 2 | 3 | 4;
 
+export type TOCHeading = {
+  depth: number;
+  value: string;
+  slug: string;
+};
+
+export type TableOfContents = {
+  cpp: TOCHeading[];
+  java: TOCHeading[];
+  py: TOCHeading[];
+};
+
 // there's probably a way to do this without the duplicated types...
 export class ModuleInfo extends ModuleLinkInfo {
   constructor(
@@ -22,7 +34,8 @@ export class ModuleInfo extends ModuleLinkInfo {
     public author: string,
     public prerequisites: string[],
     public description: string,
-    public frequency: ModuleFrequency
+    public frequency: ModuleFrequency,
+    public toc: TableOfContents
   ) {
     super(id, division, title);
   }

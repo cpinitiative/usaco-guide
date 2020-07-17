@@ -293,7 +293,7 @@ export const SECTION_LABELS: {[key in SectionID]: string} = {
   "adv": "Advanced",
 };
 
-const moduleIDToSectionMap: {[key: string]: SectionID} = {};
+let moduleIDToSectionMap: {[key: string]: SectionID} = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {

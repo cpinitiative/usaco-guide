@@ -49,6 +49,7 @@ export function graphqlToModuleInfo(mdx: any): ModuleInfo {
     mdx.frontmatter.author,
     mdx.frontmatter.prerequisites,
     mdx.frontmatter.description,
-    mdx.frontmatter.frequency
+    mdx.frontmatter.frequency,
+    mdx.toc
   );
 }

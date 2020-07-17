@@ -39,7 +39,7 @@ export const plugins = [
           },
         },
         // {
-        //   resolve: require.resolve('./src/mdx-plugins/code-tabs.ts'),
+        //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
       ],
       plugins: [`gatsby-remark-autolink-headers`],

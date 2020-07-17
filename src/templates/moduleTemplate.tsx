@@ -12,12 +12,10 @@ export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
-  const division = module.division;
-
   return (
     <Layout>
       <SEO
-        title={`${module.title} (${SECTION_LABELS[division]})`}
+        title={`${module.title} (${SECTION_LABELS[module.division]})`}
         description={module.description}
       />
 
@@ -51,6 +49,23 @@ export const pageQuery = graphql`
       }
       fields {
         division
+      }
+      toc {
+        cpp {
+          depth
+          value
+          slug
+        }
+        java {
+          depth
+          value
+          slug
+        }
+        py {
+          depth
+          value
+          slug
+        }
       }
     }
   }
