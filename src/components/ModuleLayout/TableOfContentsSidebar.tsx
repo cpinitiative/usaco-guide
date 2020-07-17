@@ -23,7 +23,7 @@ const TableOfContentsSidebar = ({
     if (heading.depth > curDepth) {
       indentIdx++;
     } else if (heading.depth < curDepth) {
-      indentIdx = Math.max(0, indentIdx - 1);
+      indentIdx = Math.max(0, indentIdx - (curDepth - heading.depth));
     }
     curDepth = heading.depth;
     links.push(
