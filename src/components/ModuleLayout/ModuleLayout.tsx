@@ -444,7 +444,7 @@ export default function ModuleLayout({
         >
           <div className="mx-auto">
             <div className="flex justify-center">
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 mb-4">
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8">
                 <div className="hidden lg:block">
                   <NavBar />
                 </div>
@@ -454,7 +454,7 @@ export default function ModuleLayout({
                     <Frequency frequency={module.frequency} />
                   )}
                 </div>
-                <div className="sm:flex sm:items-center sm:justify-between">
+                <div className="sm:flex sm:items-center sm:justify-between mb-4">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {module.title}
