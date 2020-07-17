@@ -29,7 +29,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Source
                   </th>
-                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
