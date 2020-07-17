@@ -2,10 +2,10 @@ import './src/styles/main.css';
 import './src/styles/anchor.css';
 import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';
-import { UserSettingsProvider } from './src/context/UserSettingsContext';
+import { UserDataProvider } from './src/context/UserDataContext';
 
 export const wrapRootElement = ({ element }) => (
   <MDXProvider>
-    <UserSettingsProvider>{element}</UserSettingsProvider>
+    <UserDataProvider>{element}</UserDataProvider>
   </MDXProvider>
 );

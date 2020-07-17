@@ -3,7 +3,7 @@ import Dots from '../Dots';
 import Tooltip from '../tooltip/Tooltip';
 import TextTooltip from '../tooltip/TextTooltip';
 import { useContext } from 'react';
-import UserSettingsContext from '../../context/UserSettingsContext';
+import UserDataContext from '../../context/UserDataContext';
 
 export function ResourcesListComponent(props) {
   const embedded = props.embedded;
@@ -92,13 +92,13 @@ export const sourceTooltip = {
 };
 
 export function ResourceComponent(props) {
-  const userSettings = useContext(UserSettingsContext);
+  const userSettings = useContext(UserDataContext);
 
   const source = props.source;
   let url = props.url;
   if (!url) {
     if (source === 'IUSACO') {
-      if (userSettings.primaryLang === 'java') {
+      if (userSettings.lang === 'java') {
         url = 'https://darrenyao.com/usacobook/java.pdf';
       } else {
         url = 'https://darrenyao.com/usacobook/cpp.pdf';

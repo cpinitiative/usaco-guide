@@ -1,5 +1,5 @@
 import * as React from 'react';
-import UserSettingsContext from '../../context/UserSettingsContext';
+import UserDataContext from '../../context/UserDataContext';
 import { useContext } from 'react';
 
 export const IncompleteSection = props => {

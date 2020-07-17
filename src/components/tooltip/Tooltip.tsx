@@ -15,11 +15,17 @@ const StyledTippy = styled(Tippy)`
   font-weight: normal !important;
   text-align: center;
 
-  & > .tippy-arrow::before {
-    ${p =>
-      p.placement === 'top'
-        ? 'border-top-color'
-        : 'border-bottom-color'}: #252f3f !important;
+  &[data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: #252f3f !important;
+  }
+  &[data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: #252f3f !important;
+  }
+  &[data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: #252f3f !important;
+  }
+  &[data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: #252f3f !important;
   }
 `;
 
@@ -28,9 +34,21 @@ const AsteriskTippy = styled(StyledTippy)`
     p.placement === 'top' ? 'translateY(10px)' : 'translateY(-7px)'};
 `;
 
-const Tooltip = ({ children, content, position = 'top', type = 'normal' }) => {
+const CompactTippy = styled(StyledTippy)`
+  font-size: 0.875rem !important;
+  padding: 0rem;
+`;
+
+const Tooltip = ({
+  children,
+  content,
+  position = 'top',
+  type = 'normal',
+  ...other
+}) => {
   let Component = StyledTippy;
   if (type === 'asterisk') Component = AsteriskTippy;
+  else if (type === 'compact') Component = CompactTippy;
   return (
     <Component
       content={content}
@@ -38,6 +56,7 @@ const Tooltip = ({ children, content, position = 'top', type = 'normal' }) => {
       theme="material"
       duration={200}
       placement={position}
+      {...other}
     >
       {children}
     </Component>

@@ -25,6 +25,7 @@ const TableOfContentsBlock = ({
     curDepth = heading.depth;
     links.push(
       <Link
+        key={heading.slug}
         to={'#' + heading.slug}
         className="block mb-2 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600"
         style={{

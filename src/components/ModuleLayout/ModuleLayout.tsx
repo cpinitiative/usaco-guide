@@ -14,7 +14,7 @@ import ContactUsSlideover from '../ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../tooltip/TextTooltip';
-import UserSettingsContext from '../../context/UserSettingsContext';
+import UserDataContext, { UserLang } from '../../context/UserDataContext';
 import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
@@ -114,21 +114,19 @@ const SidebarBottomButtons = ({ onContactUs }) => {
     java: 'Java',
     py: 'Python',
   };
-  const nextLang = {
+  const nextLang: { [key: string]: UserLang } = {
     showAll: 'cpp',
     cpp: 'java',
     java: 'py',
     py: 'cpp',
   };
-  const userSettings = useContext(UserSettingsContext);
+  const userSettings = useContext(UserDataContext);
   return (
     <>
       <div className="flex-shrink-0 border-t border-gray-200 flex">
         <button
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() =>
-            userSettings.setPrimaryLang(nextLang[userSettings.primaryLang])
-          }
+          onClick={() => userSettings.setLang(nextLang[userSettings.lang])}
         >
           <svg
             className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
@@ -141,7 +139,7 @@ const SidebarBottomButtons = ({ onContactUs }) => {
           >
             <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
           </svg>
-          Language: {languages[userSettings.primaryLang]}
+          Language: {languages[userSettings.lang]}
         </button>
       </div>
       <div className="flex-shrink-0 border-t border-gray-200 flex">
@@ -270,9 +268,7 @@ export default function ModuleLayout({
   module: ModuleInfo;
   children: React.ReactNode;
 }) {
-  const { userProgress, setModuleProgress, primaryLang } = useContext(
-    UserSettingsContext
-  );
+  const { userProgress, setModuleProgress, lang } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
@@ -280,7 +276,7 @@ export default function ModuleLayout({
     (userProgress && userProgress[module.id]) || 'Not Started';
 
   const tableOfContents =
-    primaryLang in module.toc ? module.toc[primaryLang] : module.toc['cpp'];
+    lang in module.toc ? module.toc[lang] : module.toc['cpp'];
 
   const data = useStaticQuery(graphql`
     query {
@@ -444,7 +440,7 @@ export default function ModuleLayout({
         >
           <div className="mx-auto">
             <div className="flex justify-center">
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8">
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0">
                 <div className="hidden lg:block">
                   <NavBar />
                 </div>
@@ -531,7 +527,7 @@ export default function ModuleLayout({
                   <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
-              <div className="hidden xl:block ml-6 w-64 mt-48">
+              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
                 <TableOfContentsSidebar tableOfContents={tableOfContents} />
               </div>
             </div>

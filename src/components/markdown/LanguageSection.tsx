@@ -1,10 +1,10 @@
 import * as React from 'react';
-import UserSettingsContext from '../../context/UserSettingsContext';
+import UserDataContext from '../../context/UserDataContext';
 import { useContext } from 'react';
 
 export const LanguageSection = props => {
-  const userSettings = useContext(UserSettingsContext);
-  let lang = userSettings.primaryLang;
+  const userSettings = useContext(UserDataContext);
+  let lang = userSettings.lang;
 
   let sections = {};
   React.Children.map(props.children, child => {

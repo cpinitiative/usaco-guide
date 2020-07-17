@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useContext } from 'react';
 import ModuleLayoutContext from '../../../context/ModuleLayoutContext';
-import UserSettingsContext from '../../../context/UserSettingsContext';
+import UserDataContext from '../../../context/UserDataContext';
 
 const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -88,7 +88,7 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
     }
   }, [isActive]);
 
-  const { userProgress } = useContext(UserSettingsContext);
+  const { userProgress } = useContext(UserDataContext);
   const progress = userProgress[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;

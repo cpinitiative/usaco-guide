@@ -4,6 +4,7 @@ import Transition from '../Transition';
 import Tooltip from '../tooltip/Tooltip';
 import TextTooltip from '../tooltip/TextTooltip';
 import { sourceTooltip } from './Resources';
+import ProblemStatusCheckbox from '../ProblemStatusCheckbox';
 
 type ProblemsListComponentProps = {
   title?: string;
@@ -22,6 +23,9 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
             <table className="w-full no-markdown">
               <thead>
                 <tr>
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Source
                   </th>
@@ -146,6 +150,9 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
   return (
     <tr>
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium text-center">
+        <ProblemStatusCheckbox problem={problem} />
+      </td>
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
         {sourceTooltip.hasOwnProperty(problem.source) ? (
           <TextTooltip content={sourceTooltip[problem.source]}>

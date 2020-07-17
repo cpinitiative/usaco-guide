@@ -25,6 +25,10 @@ export class Problem {
   public difficulty: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane';
   public isIntro: boolean;
 
+  get uniqueID() {
+    return this.url;
+  }
+
   constructor(
     public source: string,
     public name: string,

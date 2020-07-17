@@ -28,6 +28,7 @@ const TableOfContentsSidebar = ({
     curDepth = heading.depth;
     links.push(
       <Link
+        key={heading.slug}
         to={'#' + heading.slug}
         className={
           'block mb-1 text-sm transition duration-150 ease-in-out ' +
