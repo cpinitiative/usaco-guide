@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ModuleInfo } from '../module';
+import { ModuleInfo } from '../models/module';
 import { SECTION_LABELS } from '../../content/ordering';
 import SlideoverForm from './Slideover/SlideoverForm';
 import { useState } from 'react';
@@ -83,7 +83,7 @@ export default function ContactUsSlideover({
   React.useEffect(() => {
     if (activeModule)
       setLocation(
-        `${activeModule.title} - ${SECTION_LABELS[activeModule.division]}`
+        `${activeModule.title} - ${SECTION_LABELS[activeModule.section]}`
       );
     else setLocation('');
   }, [activeModule]);

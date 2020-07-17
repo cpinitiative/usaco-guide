@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import { ModuleLinkInfo } from '../../../module';
+import { ModuleLinkInfo } from '../../../models/module';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useContext } from 'react';
@@ -88,8 +88,8 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
     }
   }, [isActive]);
 
-  const { userProgress } = useContext(UserDataContext);
-  const progress = userProgress[link.id] || 'Not Started';
+  const { userProgressOnModules } = useContext(UserDataContext);
+  const progress = userProgressOnModules[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;
   let dotColorStyle = tw`bg-gray-200`;

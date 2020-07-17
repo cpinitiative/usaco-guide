@@ -1,50 +1,30 @@
-import { createContext, useState } from 'react';
 import * as React from 'react';
+import { createContext, useState } from 'react';
 import { Problem } from '../../content/models';
+import { ModuleProgress } from '../models/module';
+import { ProblemProgress } from '../models/problem';
 
-export type ModuleProgress =
-  | 'Not Started'
-  | 'Reading'
-  | 'Practicing'
-  | 'Complete'
-  | 'Skipped';
-export const ModuleProgressOptions: ModuleProgress[] = [
-  'Not Started',
-  'Reading',
-  'Practicing',
-  'Complete',
-  'Skipped',
-];
-export type UserProgress = { [key: string]: ModuleProgress };
 export type UserLang = 'showAll' | 'cpp' | 'java' | 'py';
-export type ProblemStatus =
-  | 'Not Attempted'
-  | 'Solving'
-  | 'Solved'
-  | "Can't Solve"
-  | 'Skipped';
-export const NEXT_PROBLEM_STATUS: { [key in ProblemStatus]: ProblemStatus } = {
-  'Not Attempted': 'Solving',
-  Solving: 'Solved',
-  Solved: "Can't Solve",
-  "Can't Solve": 'Skipped',
-  Skipped: 'Not Attempted',
-};
 
 const UserDataContext = createContext<{
   lang: UserLang;
   setLang: (lang: UserLang) => void;
-  userProgress: UserProgress;
+
+  userProgressOnModules: { [key: string]: ModuleProgress };
   setModuleProgress: (moduleID: string, progress: ModuleProgress) => void;
-  problemStatus: { [key: string]: ProblemStatus };
-  setProblemStatus: (problem: Problem, status: ProblemStatus) => void;
+
+  userProgressOnProblems: { [key: string]: ProblemProgress };
+  setUserProgressOnProblems: (
+    problem: Problem,
+    status: ProblemProgress
+  ) => void;
 }>({
   lang: 'showAll',
   setLang: null,
-  userProgress: null,
+  userProgressOnModules: null,
   setModuleProgress: null,
-  problemStatus: null,
-  setProblemStatus: null,
+  userProgressOnProblems: null,
+  setUserProgressOnProblems: null,
 });
 
 const langKey = 'guide:userData:lang';
@@ -86,9 +66,11 @@ const getProblemStatusFromStorage = () => {
 
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
-  const [userProgress, setUserProgress] = useState<UserProgress>({});
+  const [userProgress, setUserProgress] = useState<{
+    [key: string]: ModuleProgress;
+  }>({});
   const [problemStatus, setProblemStatus] = useState<{
-    [key: string]: ProblemStatus;
+    [key: string]: ProblemProgress;
   }>({});
 
   React.useEffect(() => {
@@ -105,7 +87,7 @@ export const UserDataProvider = ({ children }) => {
           window.localStorage.setItem(langKey, JSON.stringify(lang));
           setLang(lang);
         },
-        userProgress,
+        userProgressOnModules: userProgress,
         setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
           const newProgress = {
             ...getProgressFromStorage(),
@@ -114,8 +96,8 @@ export const UserDataProvider = ({ children }) => {
           window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
           setUserProgress(newProgress);
         },
-        problemStatus,
-        setProblemStatus: (problem, status) => {
+        userProgressOnProblems: problemStatus,
+        setUserProgressOnProblems: (problem, status) => {
           const newStatus = {
             ...getProblemStatusFromStorage(),
             [problem.uniqueID]: status,

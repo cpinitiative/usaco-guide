@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import * as React from 'react';
-import { ModuleInfo, ModuleLinkInfo } from '../module';
+import { ModuleInfo, ModuleLinkInfo } from '../models/module';
 
 const ModuleLayoutContext = createContext<{
   module: ModuleInfo;

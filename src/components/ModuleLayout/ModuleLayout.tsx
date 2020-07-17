@@ -3,7 +3,11 @@ import Transition from '../Transition';
 import { useContext, useRef, useState } from 'react';
 // @ts-ignore
 import logo from '../../assets/logo.svg';
-import { ModuleFrequency, ModuleInfo, ModuleLinkInfo } from '../../module';
+import {
+  ModuleFrequency,
+  ModuleInfo,
+  ModuleLinkInfo,
+} from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import MODULE_ORDERING, {
   Category,
@@ -86,10 +90,10 @@ const Breadcrumbs = () => {
         />
       </svg>
       <Link
-        to={`/${module.division}`}
+        to={`/${module.section}`}
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
-        {SECTION_LABELS[module.division]}
+        {SECTION_LABELS[module.section]}
       </Link>
       <svg
         className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
@@ -170,7 +174,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const { module, moduleLinks } = moduleLayoutInfo;
   const sortedModuleLinks = React.useMemo(() => {
     let links: ModuleLinkInfo[] = [];
-    for (let group of MODULE_ORDERING[module.division]) {
+    for (let group of MODULE_ORDERING[module.section]) {
       for (let id of group.items) {
         links.push(moduleLinks.find(x => x.id === id));
       }
@@ -254,7 +258,7 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
     return (
       <li key={prerequisite}>
         <Link to={moduleLink.url} className="underline text-black">
-          {SECTION_LABELS[moduleLink.division]} - {moduleLink.title}
+          {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
         </Link>
       </li>
     );
@@ -268,12 +272,15 @@ export default function ModuleLayout({
   module: ModuleInfo;
   children: React.ReactNode;
 }) {
-  const { userProgress, setModuleProgress, lang } = useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress, lang } = useContext(
+    UserDataContext
+  );
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
-    (userProgress && userProgress[module.id]) || 'Not Started';
+    (userProgressOnModules && userProgressOnModules[module.id]) ||
+    'Not Started';
 
   const tableOfContents =
     lang in module.toc ? module.toc[lang] : module.toc['cpp'];

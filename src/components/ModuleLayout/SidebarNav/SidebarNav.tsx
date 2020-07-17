@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ModuleLinkInfo } from '../../../module';
+import { ModuleLinkInfo } from '../../../models/module';
 import { Link } from 'gatsby';
 import ItemLink from './ItemLink';
 import Accordion from './Accordion';
@@ -16,13 +16,13 @@ export const SidebarNav = () => {
   const { module, moduleLinks } = useContext(ModuleLayoutContext);
 
   const links: NavLinkGroup[] = React.useMemo(() => {
-    return MODULE_ORDERING[module.division].map((category: Category) => ({
+    return MODULE_ORDERING[module.section].map((category: Category) => ({
       label: category.name,
       children: category.items.map(
         moduleID => moduleLinks.find(link => link.id === moduleID) // lol O(n^2)?
       ),
     }));
-  }, [module.division, moduleLinks]);
+  }, [module.section, moduleLinks]);
 
   return (
     <>

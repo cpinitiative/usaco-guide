@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TOCHeading } from '../../module';
+import { TOCHeading } from '../../models/module';
 import { Link } from 'gatsby';
 import { useActiveHash } from '../../hooks/useActiveHash';
 import { useMemo } from 'react';

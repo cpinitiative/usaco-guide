@@ -1,12 +1,8 @@
 export class ModuleLinkInfo {
   public url: string;
 
-  constructor(
-    public id: string,
-    public division: string,
-    public title: string
-  ) {
-    this.url = `/${division}/${id}`;
+  constructor(public id: string, public section: string, public title: string) {
+    this.url = `/${section}/${id}`;
   }
 }
 
@@ -24,11 +20,10 @@ export type TableOfContents = {
   py: TOCHeading[];
 };
 
-// there's probably a way to do this without the duplicated types...
 export class ModuleInfo extends ModuleLinkInfo {
   constructor(
     public id: string,
-    public division: string,
+    public section: string,
     public title: string,
     public body: any,
     public author: string,
@@ -37,6 +32,21 @@ export class ModuleInfo extends ModuleLinkInfo {
     public frequency: ModuleFrequency,
     public toc: TableOfContents
   ) {
-    super(id, division, title);
+    super(id, section, title);
   }
 }
+
+export type ModuleProgress =
+  | 'Not Started'
+  | 'Reading'
+  | 'Practicing'
+  | 'Complete'
+  | 'Skipped';
+
+export const ModuleProgressOptions: ModuleProgress[] = [
+  'Not Started',
+  'Reading',
+  'Practicing',
+  'Complete',
+  'Skipped',
+];

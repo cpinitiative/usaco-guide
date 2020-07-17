@@ -2,20 +2,20 @@ import * as React from 'react';
 import Tooltip from './tooltip/Tooltip';
 import { Problem } from '../../content/models';
 import { useContext } from 'react';
-import UserDataContext, {
-  NEXT_PROBLEM_STATUS,
-  ProblemStatus,
-} from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext';
+import { NEXT_PROBLEM_STATUS, ProblemProgress } from '../models/problem';
 
 export default function ProblemStatusCheckbox({
   problem,
 }: {
   problem: Problem;
 }) {
-  const { problemStatus, setProblemStatus } = useContext(UserDataContext);
-  let status: ProblemStatus =
-    problemStatus[problem.uniqueID] || 'Not Attempted';
-  const color: { [key in ProblemStatus]: string } = {
+  const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
+    UserDataContext
+  );
+  let status: ProblemProgress =
+    userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
+  const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200',
     Solving: 'bg-yellow-300',
     Solved: 'bg-green-500',
@@ -23,7 +23,7 @@ export default function ProblemStatusCheckbox({
     Skipped: 'bg-blue-300',
   };
   const handleClick = () => {
-    setProblemStatus(problem, NEXT_PROBLEM_STATUS[status]);
+    setUserProgressOnProblems(problem, NEXT_PROBLEM_STATUS[status]);
   };
   return (
     <Tooltip

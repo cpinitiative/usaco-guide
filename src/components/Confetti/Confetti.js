@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { random, sample, range, getDiameter } from './Confetti.helpers';
 import { createCircle, createTriangle, createZigZag } from './confetti-shapes';
 
-import Canvas from '../Canvas/Canvas';
+import Canvas from './Canvas';
 
 class Confetti extends Component {
   static propTypes = {

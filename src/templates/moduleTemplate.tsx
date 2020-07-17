@@ -15,7 +15,7 @@ export default function Template(props) {
   return (
     <Layout>
       <SEO
-        title={`${module.title} (${SECTION_LABELS[module.division]})`}
+        title={`${module.title} (${SECTION_LABELS[module.section]})`}
         description={module.description}
       />
 
