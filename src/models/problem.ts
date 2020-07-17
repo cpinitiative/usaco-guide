@@ -75,12 +75,14 @@ export type ProblemProgress =
   | "Can't Solve"
   | 'Skipped';
 
-export const NEXT_PROBLEM_STATUS: {
-  [key in ProblemProgress]: ProblemProgress;
-} = {
-  'Not Attempted': 'Solving',
-  Solving: 'Solved',
-  Solved: "Can't Solve",
-  "Can't Solve": 'Skipped',
-  Skipped: 'Not Attempted',
-};
+let options = ['Not Attempted', 'Solving', 'Solved', "Can't Solve", 'Skipped'];
+
+let NEXT_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
+let PREV_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
+for (let i = 0; i < options.length; i++) {
+  NEXT_PROBLEM_STATUS[options[i]] = options[(i + 1) % options.length];
+  PREV_PROBLEM_STATUS[options[i]] =
+    options[(i - 1 + options.length) % options.length];
+}
+
+export { NEXT_PROBLEM_STATUS, PREV_PROBLEM_STATUS };

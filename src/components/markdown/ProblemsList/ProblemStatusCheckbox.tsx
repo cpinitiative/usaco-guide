@@ -3,7 +3,11 @@ import Tooltip from '../../Tooltip/Tooltip';
 import { Problem } from '../../../../content/models';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext';
-import { NEXT_PROBLEM_STATUS, ProblemProgress } from '../../../models/problem';
+import {
+  NEXT_PROBLEM_STATUS,
+  PREV_PROBLEM_STATUS,
+  ProblemProgress,
+} from '../../../models/problem';
 
 export default function ProblemStatusCheckbox({
   problem,
@@ -25,6 +29,10 @@ export default function ProblemStatusCheckbox({
   const handleClick = () => {
     setUserProgressOnProblems(problem, NEXT_PROBLEM_STATUS[status]);
   };
+  const handleRightClick = e => {
+    e.preventDefault();
+    setUserProgressOnProblems(problem, PREV_PROBLEM_STATUS[status]);
+  };
   return (
     <Tooltip
       content={status}
@@ -32,7 +40,11 @@ export default function ProblemStatusCheckbox({
       type="compact"
       position="left"
     >
-      <span onClick={handleClick} className="inline-block h-6 w-6">
+      <span
+        onClick={handleClick}
+        onContextMenu={handleRightClick}
+        className="inline-block h-6 w-6"
+      >
         <span
           className={
             'inline-block h-6 w-6 rounded-full cursor-pointer transition duration-100 ease-out ' +
