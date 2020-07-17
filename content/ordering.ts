@@ -51,6 +51,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       name: "Move to usaco.org?",
       items: [
         "proposing",
+        "usaco-camp",
       ]
     },
   ],
