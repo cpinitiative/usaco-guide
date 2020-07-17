@@ -18,7 +18,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
-        <div className="-my-2 py-2 overflow-x-auto lg:-mx-8 lg:px-8">
+        <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
           <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg border-b border-gray-200">
             <table className="w-full no-markdown">
               <thead>
@@ -35,7 +35,7 @@ export function ProblemsListComponent(props: ProblemsListComponentProps) {
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50" />
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50" />
                   <th className="pl-4 pr-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50" />
                 </tr>
               </thead>
@@ -150,8 +150,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
   return (
     <tr>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium text-center">
-        <ProblemStatusCheckbox problem={problem} />
+      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
+        <div
+          style={{ height: '1.25rem' }}
+          className="flex items-center justify-center"
+        >
+          <ProblemStatusCheckbox problem={problem} />
+        </div>
       </td>
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
         {sourceTooltip.hasOwnProperty(problem.source) ? (
@@ -204,7 +209,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {!showTags && (
           <a
             href="#"
