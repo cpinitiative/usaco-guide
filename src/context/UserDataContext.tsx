@@ -5,6 +5,12 @@ import { ModuleProgress } from '../models/module';
 import { ProblemProgress } from '../models/problem';
 
 export type UserLang = 'showAll' | 'cpp' | 'java' | 'py';
+export const LANGUAGE_LABELS: { [key in UserLang]: string } = {
+  showAll: 'All',
+  cpp: 'C++',
+  java: 'Java',
+  py: 'Python',
+};
 
 const UserDataContext = createContext<{
   lang: UserLang;

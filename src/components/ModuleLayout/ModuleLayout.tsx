@@ -13,17 +13,17 @@ import MODULE_ORDERING, {
   Category,
   SECTION_LABELS,
 } from '../../../content/ordering';
-import Dots from '../Dots';
-import ContactUsSlideover from '../ContactUsSlideover';
+import ModuleFrequencyDots from './ModuleFrequencyDots';
+import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
-import TextTooltip from '../tooltip/TextTooltip';
+import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext, { UserLang } from '../../context/UserDataContext';
 import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
-import TableOfContentsSidebar from './TableOfContentsSidebar';
-import TableOfContentsBlock from './TableOfContentsBlock';
+import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
+import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -59,7 +59,11 @@ const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
     <span
       className={`inline-flex items-center font-medium ${textColors[frequency]}`}
     >
-      <Dots count={frequency} totalCount={4} color={circleColors[frequency]} />
+      <ModuleFrequencyDots
+        count={frequency}
+        totalCount={4}
+        color={circleColors[frequency]}
+      />
       <TextTooltip position="bottom" content={hints[frequency]}>
         {labels[frequency]}
       </TextTooltip>

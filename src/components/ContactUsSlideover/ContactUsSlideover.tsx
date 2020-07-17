@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ModuleInfo } from '../models/module';
-import { SECTION_LABELS } from '../../content/ordering';
-import SlideoverForm from './Slideover/SlideoverForm';
+import { ModuleInfo } from '../../models/module';
+import { SECTION_LABELS } from '../../../content/ordering';
+import SlideoverForm from './SlideoverForm';
 import { useState } from 'react';
-import useStickyState from '../hooks/useStickyState';
+import useStickyState from '../../hooks/useStickyState';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 

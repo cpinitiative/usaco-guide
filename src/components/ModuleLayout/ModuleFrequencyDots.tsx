@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export default function Dots({ count, color, totalCount }) {
+export default function ModuleFrequencyDots({ count, color, totalCount }) {
   const emptyCircle = 'text-gray-300';
   return (
     <>

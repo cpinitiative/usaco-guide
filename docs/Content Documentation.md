@@ -1,5 +1,7 @@
 ## Content Formatting Documentation
 
+**Note:** It is highly recommended to [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes.
+
 All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site.
 These special additions are still under development, so they may change frequently.
 If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.

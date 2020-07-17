@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { Problem } from '../../../content/models';
-import Transition from '../Transition';
-import Tooltip from '../tooltip/Tooltip';
-import TextTooltip from '../tooltip/TextTooltip';
-import { sourceTooltip } from './Resources';
-import ProblemStatusCheckbox from '../ProblemStatusCheckbox';
+import { Problem } from '../../../../content/models';
+import Transition from '../../Transition';
+import Tooltip from '../../Tooltip/Tooltip';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import { sourceTooltip } from '../ResourcesList';
+import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 
-type ProblemsListComponentProps = {
+type ProblemsListProps = {
   title?: string;
   children?: React.ReactChildren;
   problems: Problem[];
 };
 
-export function ProblemsListComponent(props: ProblemsListComponentProps) {
+export function ProblemsList(props: ProblemsListProps) {
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   return (

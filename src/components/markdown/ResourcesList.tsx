@@ -1,11 +1,10 @@
 import * as React from 'react';
-import Dots from '../Dots';
-import Tooltip from '../tooltip/Tooltip';
-import TextTooltip from '../tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
+import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext';
 
-export function ResourcesListComponent(props) {
+export function ResourcesList(props) {
   const embedded = props.embedded;
   return (
     <div className="flex flex-col mb-4">
@@ -91,7 +90,7 @@ export const sourceTooltip = {
   'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
 };
 
-export function ResourceComponent(props) {
+export function Resource(props) {
   const userSettings = useContext(UserDataContext);
 
   const source = props.source;

@@ -9,8 +9,8 @@ As much as possible, please try to keep the markdown files independent of the fr
 
 ## Documentation
 
-- To get this site running locally, refer to the [Front End Documentation](Front%20End%20Documentation.md).
-- For information regarding Content Writing, refer to the [Content Documentation](Content%20Documentation.md).
+- To get this site running locally, refer to the [Front End Documentation](docs/Front%20End%20Documentation.md).
+- For information regarding Content Writing, refer to the [Content Documentation](docs/Content%20Documentation.md).
 
 ## Tech Stack
 

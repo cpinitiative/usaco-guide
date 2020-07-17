@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const SpoilerComponent = ({ children, title }) => {
+const Spoiler = ({ children, title }) => {
   const [show, setShow] = React.useState(false);
 
   return (
@@ -44,4 +44,4 @@ const SpoilerComponent = ({ children, title }) => {
   );
 };
 
-export default SpoilerComponent;
+export default Spoiler;

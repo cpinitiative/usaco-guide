@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Tooltip from './tooltip/Tooltip';
-import { Problem } from '../../content/models';
+import Tooltip from '../../Tooltip/Tooltip';
+import { Problem } from '../../../../content/models';
 import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext';
-import { NEXT_PROBLEM_STATUS, ProblemProgress } from '../models/problem';
+import UserDataContext from '../../../context/UserDataContext';
+import { NEXT_PROBLEM_STATUS, ProblemProgress } from '../../../models/problem';
 
 export default function ProblemStatusCheckbox({
   problem,
