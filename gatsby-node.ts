@@ -94,7 +94,9 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `TableOfContents`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, info);
+          let mdast = await resolve(source, args, context, {
+            fieldName: 'mdast',
+          });
           let cpp = [],
             java = [],
             py = [];
