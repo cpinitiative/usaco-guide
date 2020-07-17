@@ -5,7 +5,9 @@ import SlideoverForm from './Slideover/SlideoverForm';
 import { useState } from 'react';
 import useStickyState from '../hooks/useStickyState';
 
-const Field = ({ label, id, value, onChange }) => {
+// Warning: this file is insanely messy. This should be rewritten soon :)
+
+const Field = ({ label, id, value, onChange, errorMsg = null }) => {
   return (
     <div className="space-y-1">
       <label
@@ -17,14 +19,40 @@ const Field = ({ label, id, value, onChange }) => {
       <div className="relative rounded-md shadow-sm">
         <input
           id={id}
-          className="form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+          className={
+            'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 ' +
+            (errorMsg
+              ? 'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+              : '')
+          }
           value={value}
           onChange={onChange}
         />
+        {errorMsg && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-red-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        )}
       </div>
+      {errorMsg && <p className="mt-2 text-sm text-red-600">{errorMsg}</p>}
     </div>
   );
 };
+
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 export default function ContactUsSlideover({
   isOpen,
@@ -50,6 +78,7 @@ export default function ContactUsSlideover({
   const [message, setMessage] = useStickyState('', 'contact_form_message');
   const [showSuccess, setShowSuccess] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(true);
+  const [showErrors, setShowErrors] = useState(false);
 
   React.useEffect(() => {
     if (activeModule)
@@ -62,12 +91,24 @@ export default function ContactUsSlideover({
   React.useEffect(() => {
     if (isOpen) {
       setShowSuccess(false);
+      setShowErrors(false);
       setSubmitEnabled(true);
     }
   }, [isOpen]);
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    setShowErrors(true);
+    if (
+      name === '' ||
+      email === '' ||
+      !validateEmail(email) ||
+      message === ''
+    ) {
+      return;
+    }
+
     let data = new FormData();
     data.append('name', name);
     data.append('email', email);
@@ -90,6 +131,8 @@ export default function ContactUsSlideover({
     } catch (e) {
       setSubmitEnabled(true);
       alert('Form submission failed: ' + e.message);
+    } finally {
+      setShowErrors(false);
     }
   };
 
@@ -129,22 +172,44 @@ export default function ContactUsSlideover({
     >
       <div className="px-4 sm:px-6">
         {showSuccess && (
-          <>
-            <p className="pt-6">
-              We've received your message! We will try our best to respond (if
-              one is needed) within a week.
-            </p>
-            <p className="pt-2">
-              For urgent requests, please feel free to email{' '}
-              <a
-                href="mailto:nathan.r.wang@gmail.com"
-                className="underline text-blue-600"
-              >
-                nathan.r.wang@gmail.com
-              </a>
-              .
-            </p>
-          </>
+          <div className="rounded-md bg-green-50 p-4 mt-6">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm leading-5 font-medium text-green-800">
+                  Message received!
+                </h3>
+                <div className="mt-2 text-sm leading-5 text-green-700">
+                  <p>
+                    We will try our best to respond (if one is needed) within a
+                    week.
+                  </p>
+                  <p className="pt-2">
+                    For urgent requests, please feel free to email{' '}
+                    <a
+                      href="mailto:nathan.r.wang@gmail.com"
+                      className="underline text-blue-600"
+                    >
+                      nathan.r.wang@gmail.com
+                    </a>
+                    .
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
         {!showSuccess && (
           <div className="space-y-6 pt-6 pb-5">
@@ -153,12 +218,24 @@ export default function ContactUsSlideover({
               id="contact_name"
               value={name}
               onChange={e => setName(e.target.value)}
+              errorMsg={
+                showErrors && name === '' ? 'This field is required.' : null
+              }
             />
             <Field
               label="Email"
               id="contact_email"
               value={email}
               onChange={e => setEmail(e.target.value)}
+              errorMsg={
+                showErrors
+                  ? email === ''
+                    ? 'This field is required.'
+                    : !validateEmail(email)
+                    ? 'Please enter a valid email address.'
+                    : null
+                  : null
+              }
             />
             <Field
               label="Module (If Applicable)"
@@ -208,11 +285,36 @@ export default function ContactUsSlideover({
                 <textarea
                   id="contact_message"
                   rows={4}
-                  className="form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+                  className={
+                    'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 ' +
+                    (showErrors && message === ''
+                      ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+                      : '')
+                  }
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                 />
+                {showErrors && message === '' && (
+                  <div className="absolute top-0 pt-2 right-0 pr-3 flex items-center pointer-events-none">
+                    <svg
+                      className="h-5 w-5 text-red-500"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                )}
               </div>
+              {showErrors && message === '' && (
+                <p className="mt-2 text-sm text-red-600">
+                  This field is required.
+                </p>
+              )}
             </div>
           </div>
         )}

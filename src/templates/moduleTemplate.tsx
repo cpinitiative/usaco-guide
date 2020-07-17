@@ -22,12 +22,6 @@ export default function Template(props) {
       <div className="h-screen flex overflow-hidden bg-white">
         <ModuleLayout module={module}>
           <div className="py-4">
-            {module.description && (
-              <p className="font-bold mb-8 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
-                {module.description}
-              </p>
-            )}
-
             <Markdown body={body} />
           </div>
         </ModuleLayout>

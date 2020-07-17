@@ -18,7 +18,8 @@ import UserSettingsContext from '../../context/UserSettingsContext';
 import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
-import TableOfContentsDesktop from './TableOfContentsDesktop';
+import TableOfContentsSidebar from './TableOfContentsSidebar';
+import TableOfContentsBlock from './TableOfContentsBlock';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -319,7 +320,7 @@ export default function ModuleLayout({
         onDone={() => setIsConfettiActive(false)}
       />
       <Transition show={isMobileNavOpen} timeout={300}>
-        <div className="xl:hidden">
+        <div className="lg:hidden">
           <div className="fixed inset-0 flex z-40">
             <Transition
               enter="transition-opacity ease-linear duration-300"
@@ -393,7 +394,7 @@ export default function ModuleLayout({
         </div>
       </Transition>
       {/* Static sidebar for desktop */}
-      <div className="hidden xl:flex xl:flex-shrink-0">
+      <div className="hidden lg:flex lg:flex-shrink-0">
         <div
           className="flex flex-col border-r border-gray-200 bg-white"
           style={{ width: '20rem' }}
@@ -413,7 +414,7 @@ export default function ModuleLayout({
         </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="xl:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
+        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
             aria-label="Open sidebar"
@@ -441,10 +442,10 @@ export default function ModuleLayout({
           className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
           tabIndex={0}
         >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex">
-              <div className="flex-1">
-                <div className="hidden xl:block">
+          <div className="mx-auto">
+            <div className="flex justify-center">
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 mb-4">
+                <div className="hidden lg:block">
                   <NavBar />
                 </div>
 
@@ -469,7 +470,7 @@ export default function ModuleLayout({
                 </div>
 
                 {module.prerequisites && (
-                  <div className="rounded-md bg-blue-50 p-4 mt-4">
+                  <div className="rounded-md bg-blue-50 p-4 mb-4">
                     <div className="flex">
                       <div className="flex-shrink-0">
                         <svg
@@ -500,6 +501,16 @@ export default function ModuleLayout({
                   </div>
                 )}
 
+                {module.description && (
+                  <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
+                    {module.description}
+                  </p>
+                )}
+
+                <div className="xl:hidden">
+                  <TableOfContentsBlock tableOfContents={tableOfContents} />
+                </div>
+
                 {children}
 
                 <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
@@ -520,8 +531,8 @@ export default function ModuleLayout({
                   <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
-              <div className="w-64 mt-48">
-                <TableOfContentsDesktop tableOfContents={tableOfContents} />
+              <div className="hidden xl:block ml-6 w-64 mt-48">
+                <TableOfContentsSidebar tableOfContents={tableOfContents} />
               </div>
             </div>
           </div>
