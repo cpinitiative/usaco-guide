@@ -15,22 +15,12 @@ export default function ProblemStatusCheckbox({
   const { problemStatus, setProblemStatus } = useContext(UserDataContext);
   let status: ProblemStatus =
     problemStatus[problem.uniqueID] || 'Not Attempted';
-  const icon: { [key in ProblemStatus]: React.ReactNode } = {
-    'Not Attempted': (
-      <span className="inline-block h-6 w-6 rounded-full bg-gray-200 cursor-pointer" />
-    ),
-    Solving: (
-      <span className="inline-block h-6 w-6 rounded-full bg-yellow-300 cursor-pointer" />
-    ),
-    Solved: (
-      <span className="inline-block h-6 w-6 rounded-full bg-green-500 cursor-pointer" />
-    ),
-    "Can't Solve": (
-      <span className="inline-block h-6 w-6 rounded-full bg-red-500 cursor-pointer" />
-    ),
-    Skipped: (
-      <span className="inline-block h-6 w-6 rounded-full bg-blue-300 cursor-pointer" />
-    ),
+  const color: { [key in ProblemStatus]: string } = {
+    'Not Attempted': 'bg-gray-200',
+    Solving: 'bg-yellow-300',
+    Solved: 'bg-green-500',
+    "Can't Solve": 'bg-red-500',
+    Skipped: 'bg-blue-300',
   };
   const handleClick = () => {
     setProblemStatus(problem, NEXT_PROBLEM_STATUS[status]);
@@ -43,7 +33,12 @@ export default function ProblemStatusCheckbox({
       position="left"
     >
       <span onClick={handleClick} className="inline-block h-6 w-6">
-        {icon[status]}
+        <span
+          className={
+            'inline-block h-6 w-6 rounded-full cursor-pointer transition duration-100 ease-out ' +
+            color[status]
+          }
+        />
       </span>
     </Tooltip>
   );
