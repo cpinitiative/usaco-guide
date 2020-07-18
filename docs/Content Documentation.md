@@ -10,7 +10,7 @@ You can use [StackEdit](https://stackedit.io/) to check that latex renders prope
 
 [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
 
-#### Using Sublime Text with .mdx
+### Using Sublime Text with .mdx
 
 1. Download [here](https://www.sublimetext.com/).
 2. Open the command palette (Cmd-Shift-P) and install package control.
@@ -23,15 +23,12 @@ You can use [StackEdit](https://stackedit.io/) to check that latex renders prope
 
 ### `ordering.ts`
 
-Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory
-(it matches based on "slug"). Let Nathan Wang know if you have questions.
+Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory (it matches based on "slug"). Let Nathan Wang know if you have questions.
 
 ### Frontmatter
 
 [Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded
 by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
-
-YAML formatting is _extremely strict_. Be careful about spaces. Additionally, escape special characters by wrapping the string with double quotes.
 
 - **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify
   the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
@@ -107,7 +104,7 @@ export const metadata = {
 
 Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
 
-<problems-list problems={metadata.problems.standard} />
+<Problems problems={metadata.problems.standard} />
 ```
 
 ### Spoilers
@@ -116,41 +113,41 @@ Spoilers are collapsible elements that only show themselves when the user clicks
 when writing solutions to problems.
 
 ```
-<spoiler title="Show Solution">
+<Spoiler title="Show Solution">
 
 - Insert OP benq solution here
 
-</spoiler>
+</Spoiler>
 ```
 
 ### Info Block
 
 ```
-<info-block title="Insert Title Here">
+<Info title="Insert Title Here">
 
 **Markdown is Supported!!**
 
-</info-block>
+</Info>
 ```
 
 ### Warning Block
 
 ```
-<warning-block title="Insert Title Here">
+<Warning title="Insert Title Here">
 
 **Markdown is Supported!!**
 
-</warning-block>
+</Warning>
 ```
 
 ### Optional Block
 
 ```
-<optional-content title="Insert Title Here">
+<Optional title="Insert Title Here">
 
 Fun fact: the title attribute is optional.
 
-</optional-content>
+</Optional>
 ```
 
 ### Example Module

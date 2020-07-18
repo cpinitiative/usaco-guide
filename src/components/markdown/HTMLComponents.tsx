@@ -1,5 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import CodeBlock from './CodeBlock/CodeBlock';
 
 const OffsetAnchor = ({ id, ...props }) => (
   <span
@@ -62,6 +63,13 @@ const HTMLComponents = {
       <div className="flex-1">{children}</div>
     </li>
   ),
+  inlineCode: props => (
+    <code
+      {...props}
+      className="font-mono inline bg-gray-200 rounded px-1 py-05"
+    />
+  ),
+  code: CodeBlock,
 };
 
 export default HTMLComponents;

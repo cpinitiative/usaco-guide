@@ -1,0 +1,122 @@
+---
+id: complete-search
+title: "Complete Search"
+author: Darren Yao
+description: "Solving bronze problems with complete search, or checking all possible cases in the solution space."
+frequency: 4
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    easier: [
+      new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion"], "all $2^n$ subsets"),
+      new Problem("Bronze", "Diamond Collector", "639", "Easy", false, ["Nested Loop"], "fix the min"), // 99.9
+      new Problem("Bronze", "Milk Pails", "615", "Easy", false, ["Nested Loop"], "Hint: Fix the number of first-type operations you perform."), // 99.71
+      new Problem("Bronze", "Bovine Genomics", "736", "Easy", false, ["Nested Loop"], ""), // 99.73
+      new Problem("Bronze", "Cow Gymnastics", "963", "Easy", false, ["Nested Loop"], "Hint: Brute force over all possible pairs."), // 99.93
+      new Problem("Bronze", "Where Am I?", "964", "Easy", false, [], "Hint: Brute force over all possible substrings."), // 99.48
+      new Problem("Bronze", "Triangles", "1011", "Easy", false, [], "loop over the possible right angles"), // 98.02
+    ],
+    harder: [
+      new Problem("Bronze", "Lifeguards", "784", "Normal", false, [], "Hint: Try removing each lifeguard one at a time."), // 98.76
+      new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], "Hint: Figure out what exactly you're complete searching."), // 98.45
+      new Problem("Bronze", "Back & Forth", "857", "Hard", false, [], "exponential time going through all possibilities"), // 99.63
+      new Problem("Bronze", "Field Reduction", "641", "Hard", false, [], "Hint: For this problem, you can't do a full complete search; you have to do a reduced search."), // 91.75
+      new Problem("Bronze", "Circle Cross", "712", "Hard", false, [], "For every pair, check if they cross (draw small cases to figure out how). Be careful about overcounting."), // 89.6
+      new Problem("Silver", "Bovine Genomics", "739", "Hard", false, [], "Brute force every substring and check if they explain spottiness."),
+      new Problem("Bronze", "Load Balancing", "617", "Very Hard", false, [], ""), // 82.79
+      new Problem("Bronze", "Bull in a China Shop", "640", "Very Hard", false, [], "lots of WA on this one"), // 47.38
+      new Problem("Silver", "Field Reduction", "642", "Very Hard", false, [], ""),
+    ],
+  }
+};
+
+<Resources>
+  <Resource source="IUSACO" title="6 - Simulation">module is based off this</Resource>
+  <Resource source="CPH" title="5.1 to 5.3 - Complete Search"> </Resource>
+</Resources>
+
+<br />
+
+In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
+
+## Example
+
+You are given $N$ $(3 \leq N \leq 5000)$ integer points on the coordinate plane. Find the square of the maximum Euclidean distance (aka length of the straight line) between any two of the points.
+
+### Input Format
+
+The first line contains an integer $N$.
+
+The second line contains $N$ integers, the $x$-coordinates of the points: $x_1, x_2, \dots, x_N$ ($-1000 \leq x_i \leq 1000$).
+
+The third line contains $N$ integers, the $y$-coordinates of the poitnts: $y_1, y_2, \dots, y_N$ ($-1000 \leq y_i \leq 1000$).
+
+### Output Format
+
+Print one integer, the square of the maximum Euclidean distance between any two of the points.
+
+<Spoiler title="Solution">
+
+We can brute-force every pair of points and find the square of the distance between them, by squaring the formula for Euclidean distance: $\text{distance}^2 = (x_2-x_1)^2 + (y_2-y_1)^2$. Thus, we store the coordinates in arrays `X[]` and `Y[]`, such that `X[i]` and `Y[i]` are the $x$- and $y$-coordinates of the $i_{th}$ point, respectively. Then, we iterate through all possible pairs of points, using a variable max to store the maximum square of distance between any pair seen so far, and if the square of the distance between a pair is greater than our current maximum, we set our current maximum to it.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int high = 0; // storing the current maximum
+for(int i = 0; i < n; i++){ // for each first point
+    for(int j = i+1; j < n; j++){ // for each second point
+        int dx = x[i] - x[j];
+        int dy = y[i] - y[j];
+        high = max(high, dx*dx + dy*dy);
+        // if the square of the distance between the two points is greater than
+        // our current maximum, then update the maximum
+    }
+}
+cout << high << endl;
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+int max = 0; // storing the current maximum
+for(int i = 0; i < n; i++){ // for each first point
+    for(int j = i+1; j < n; j++){ // for each second point
+        int dx = x[i] - x[j];
+        int dy = y[i] - y[j];
+        max = Math.max(max, dx*dx + dy*dy);
+        // if the square of the distance between the two points is greater than
+        // our current maximum, then update the maximum
+    }
+}
+pw.println(max);
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<br />
+
+A couple notes:
+
+  - First, since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount.
+  - Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in an integer variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. Using a floating point variable will probably work, but you should generally stay with integers whenever possible.
+
+</Spoiler>
+
+## Problems
+
+### Easier
+
+<Problems problems={metadata.problems.easier} />
+
+### Harder
+
+<Problems problems={metadata.problems.harder} />

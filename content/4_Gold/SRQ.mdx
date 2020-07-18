@@ -1,0 +1,88 @@
+---
+id: SRQ
+title: "Static Range Queries"
+author: Benjamin Qi
+description: "Range queries for any associative operation over a static array."
+frequency: 1
+---
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    rmqSample: [
+      new Problem("YS", "Static RMQ", "staticrmq", "Easy", false, [], "equivalent to [CSES Range Minimum Queries I](https://cses.fi/problemset/task/1647)"),
+    ],
+    diviSample: [      
+      new Problem("ojuz", "JOI Secret", "JOI14_secret", "Easy", false, [], ""),
+    ],
+    general: [
+      new Problem("CC", "Product on Segment", "SEGPROD", "Normal", false, [], ""),
+      new Problem("DMOJ", "Continued Fractions", "dmopc19c7p4", "Hard", false, [], ""),
+      new Problem("Plat", "Non-Decreasing Subsequences", "997", "Very Hard", false, [], ""),
+    ],
+  }
+};
+
+Given a static array $A[1],A[2],\ldots,A[N]$, you want to answer queries in the form $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$ where $\ominus$ denotes any associative operation.
+
+With $O(N\log N)$ time preprocessing, we can get $O(1)$ queries.
+
+## [Range Minimum Query](https://en.wikipedia.org/wiki/Range_minimum_query)
+
+First we'll consider the special case when $\ominus$ denotes `min`. 
+
+<Problems problems={metadata.problems.rmqSample} />
+
+### Resources
+
+<Resources>
+  <Resource source="CPH" title="9.1 - Minimum Queries" starred>diagrams</Resource>
+  <Resource source="PAPS" title="11.2.2 - Sparse Tables" starred>code</Resource>
+  <Resource source="cp-algo" title="RMQ" url="sequences/rmq.html"></Resource>
+  <Resource source="cp-algo" title="Sparse Table" url="data_structures/sparse-table.html"></Resource>
+</Resources>
+
+<Optional title="Faster Preprocessing">
+
+[CF: $O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
+ 
+</Optional>
+
+### Implementation
+
+<IncompleteSection />
+
+## Divide & Conquer
+
+<Problems problems={metadata.problems.diviSample} />
+
+**Divide & conquer** can refer to many different techniques. In this case, we use it to answer $Q$ queries offline in $O((N+Q)\log N)$ time. 
+
+Suppose that all queries satisfiy $L\le l\le r\le R$ (initially, $L=1$ and $R=N$). Letting $M=\left\lfloor \frac{L+R}{2}\right\rfloor$, we can compute 
+$$
+lef[l]=A[l]\ominus A[l+1]\ominus \cdots \ominus A[M]
+$$ 
+for all $L\le l\le M$ and 
+$$
+rig[r]=A[M+1]\ominus A[M+2] \ominus \cdots\ominus A[r]
+$$ 
+for each $M< r\le R$. Then the answer for all queries satisfying $l\le M< r$ is simply $lef[l]\ominus rig[r]$ due to the associativity condition. After that, we recurse on all query intervals completely contained within $[L,M]$ and $[M+1,R]$ independently.
+
+Actually, this can be adjusted to answer queries online in $O(1)$ time each. See my implementation [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RangeQuery.h).
+
+<Optional title="Faster Preprocessing">
+
+A data structure known as **sqrt-tree** can speed up preprocessing time to $O(N\log \log N)$.
+
+ - [CF Blog Pt 1](http://codeforces.com/blog/entry/57046)
+ - [CF Blog Pt 2](http://codeforces.com/blog/entry/59092)
+
+</Optional>
+
+### Implementation
+
+<IncompleteSection />
+
+## Problems
+
+<Problems problems={metadata.problems.general} />

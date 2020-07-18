@@ -1,6 +1,6 @@
 # Front End Documentation
 
-If you are familiar with Gatsby development, just run `yarn install` and `yarn develop` to get started.
+If you are familiar with Gatsby development, just run `yarn` and `yarn develop` to get started.
 
 ## Quickstart
 
@@ -14,10 +14,11 @@ The following is written for individuals without front-end development experienc
 2. Clone repo
    - `git clone https://github.com/thecodingwizard/usaco-guide.git`
 3. Install Dependencies
-   - `yarn install`
+   - `yarn`
 4. Run development server
    - `yarn develop`
 
 ## Credits
 
 - Confetti taken from Josh Comeau: https://github.com/joshwcomeau/react-europe-talk-2018
+- Lots of inspiration from Josh Comeau's blog and Gatsbyjs documentation site
