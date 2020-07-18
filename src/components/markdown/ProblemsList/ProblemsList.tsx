@@ -186,15 +186,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
           >
             {problem.name}
           </a>
-          {problem.isIntro && (
-            <span
-              className={
-                'ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 text-teal-800'
-              }
-            >
-              Intro
-            </span>
-          )}
         </div>
       </td>
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap leading-5 w-full">
