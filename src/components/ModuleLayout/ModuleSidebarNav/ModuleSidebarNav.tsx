@@ -11,7 +11,7 @@ export interface NavLinkGroup {
   children: ModuleLinkInfo[];
 }
 
-export const SidebarNav = () => {
+export const ModuleSidebarNav = () => {
   const { module, moduleLinks } = useContext(ModuleLayoutContext);
 
   const links: NavLinkGroup[] = React.useMemo(() => {
