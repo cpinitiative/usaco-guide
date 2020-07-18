@@ -70,7 +70,11 @@ prerequisites:
 ...
 ```
 
-## 4. MDX and Custom Components
+## 4. Table of Contents
+
+A table of contents will be auto-generated based off of the headings in the Markdown. Keep this in mind when formatting your module.
+
+## 5. MDX and Custom Components
 
 We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React components are supported, so it is possible to add interactivity / custom components to each module.
 
@@ -145,7 +149,7 @@ when writing solutions to problems.
 ```
 <Warning title="Insert Title Here">
 
-**Markdown is Supported!!**
+Fun fact: the title attribute is optional.
 
 </Warning>
 ```
@@ -162,20 +166,20 @@ Fun fact: the title attribute is optional.
 
 ### Problem Lists
 
-todo document this... Relevant files are `content/models.ts` and `src/components/markdown/Problems.tsx`. Hopefully, the existing mdx files can help you out...
-
 Problem constructor:
 
 ```typescript
-constructor(
-  public source: string,
-  public name: string,
-  public id: string,
-  public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
-  public starred?: boolean,
-  public tags?: string[],
-  public sketch?: string,
-)
+class Problem {
+  constructor(
+    public source: string,
+    public name: string,
+    public id: string,
+    public difficulty?: 'Intro' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard',
+    public starred?: boolean,
+    public tags?: string[],
+    public sketch?: string,
+  ) {}
+}
 ```
 
 Example usage:
@@ -247,8 +251,33 @@ stub
 
 ### Language-Specific Content
 
-stub
+```mdx
+<LanguageSection>
+<CPPSection>
+
+# A heading that only appears in C++
+
+CPP content goes here, note the newlines!
+
+</CPPSection>
+<JavaSection>
+
+Java content goes here!
+
+</JavaSection>
+<PySection />
+</LanguageSection>
+```
+
+In the example above, nothing will be rendered for Python.
 
 ### Incomplete Section
 
-stub
+```mdx
+<IncompleteSection>
+
+- this list is optional and can be used to specify what is missing
+- missing 32-bit integer explanation
+
+</IncompleteSection>
+```
