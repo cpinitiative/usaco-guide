@@ -17,11 +17,13 @@ export const metadata = {
     ],
     general: [
       new Problem("CSES", "Monsters", "1194", "Easy", false, ["BFS"]),
-      new Problem("Gold", "Cow Navigation", "695", "Easy", false, ["BFS"], "lots of casework"),
       new Problem("CSA", "BFS-DFS", "bfs-dfs", "Normal", false, ["BFS", "DFS"]),
       new Problem("Gold", "Lasers", "671", "Normal", false, ["BFS"]),
       new Problem("Gold", "Dream", "575", "Hard", false, ["BFS"]),
     ],
+    example: [
+      new Problem("Gold", "Cow Navigation", "695", "Easy", false, ["BFS"]),
+    ]
   }
 };
 
@@ -38,6 +40,33 @@ export const metadata = {
   <Resource source="cp-algo" title="0/1 BFS" url="graph/01_bfs.html"></Resource>
   <Resource source="IUSACO" title="10.4 - Graph Traversal Algorithms"></Resource>
 </Resources>
+
+## Modifying Graphs
+
+In the gold division, the problem statement will never directly be, "Given an unweighted graph, find the shortest path between node $u$ and $v$." Instead, the difficulty in many BFS problems are modifying the problem into a graph on which we can run BFS and get the answer.
+
+### Example: Cow Navigation
+
+<Problems problems={metadata.problems.example} />
+
+In this problem, Bessie stands on a grid and wants to go from the lower left corner to upper-right corner in as few moves as possible. An initial idea could be to model the grid as a graph, where adjacent cells are connected by edges, and run a BFS to find the shortest path. 
+
+However, two additional constriants play a role in this problem: Bessie must be able to reach the destination regardless of which direction she starts in, and she can only move in the direction she is facing.
+
+Let's imagine now that there are two cows standing on the cell $(1, 1)$, and both of them move the same way on each operation. Since $N \leq 20$, we can modify the original graph to support this new problem. Let's create a new graph $G'$ as follows:
+
+For each pair of cells in the grid, $(x, y)$ and $x_2, y_2$, add 16 <!-- wow that's a lot --> nodes in the graph storing six parameters each, {$x$ coordinate of cow $a$, $y$ coordinate of cow a, $x$ coordinate of cow $b$, $y$ coordinate of cow $b$, direction of cow $a$, direction of cow $b$} for all $4 ^ 2$ directions each cow could be facing. 
+
+Given this new graph, we add edges between two "states" which are reachable from each other. For example, if we apply the "turn left" operation, we add an edge to the state where both cows directions turn left.
+
+<Warning>
+Don't forget that once Bessie reaches the goal, she will ignore further commands. In the modified problem, if one of the two cows is at the goal, stop applying commands to her.
+</Warning>
+
+### Implementation
+<!-- I really don't want to write Cow Navigation. Anyone have code? -->
+
+<IncompleteSection />
 
 ## Implementation
 
