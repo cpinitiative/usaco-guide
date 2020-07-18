@@ -1,8 +1,6 @@
 import * as React from 'react';
 import Transition from '../Transition';
 import { useContext, useRef, useState } from 'react';
-// @ts-ignore
-import logo from '../../assets/logo.svg';
 import {
   ModuleFrequency,
   ModuleInfo,
@@ -24,6 +22,7 @@ import { graphqlToModuleLinks } from '../../utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import Sidebar, { SidebarLogo } from '../Sidebar/Sidebar';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -279,9 +278,9 @@ export default function ModuleLayout({
   const { userProgressOnModules, setModuleProgress, lang } = useContext(
     UserDataContext
   );
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[module.id]) ||
     'Not Started';
@@ -326,101 +325,67 @@ export default function ModuleLayout({
         show={isConfettiActive}
         onDone={() => setIsConfettiActive(false)}
       />
-      <Transition show={isMobileNavOpen} timeout={300}>
-        <div className="lg:hidden">
-          <div className="fixed inset-0 flex z-40">
-            <Transition
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div
-                className="fixed inset-0"
+      <Sidebar
+        isMobileNavOpen={isMobileNavOpen}
+        onMobileNavStateChange={setIsMobileNavOpen}
+        mobileSidebarContent={
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+            <div className="absolute top-0 right-0 -mr-14 p-1">
+              <button
+                className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                aria-label="Close sidebar"
                 onClick={() => setIsMobileNavOpen(false)}
               >
-                <div className="absolute inset-0 bg-gray-600 opacity-75" />
-              </div>
-            </Transition>
-
-            <Transition
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
-                <div className="absolute top-0 right-0 -mr-14 p-1">
-                  <button
-                    className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
-                    aria-label="Close sidebar"
-                    onClick={() => setIsMobileNavOpen(false)}
-                  >
-                    <svg
-                      className="h-6 w-6 text-white"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="flex-1 h-0 pt-5 overflow-y-auto">
-                  <Link className="flex-shrink-0 flex items-center px-4" to="/">
-                    <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
-                  </Link>
-                  <div className="mt-4 px-6">
-                    <Breadcrumbs />
-                  </div>
-                  <nav className="mt-6">
-                    <SidebarNav />
-                  </nav>
-                </div>
-                <SidebarBottomButtons
-                  onContactUs={() => {
-                    setIsMobileNavOpen(false);
-                    setIsContactUsActive(true);
-                  }}
-                />
-              </div>
-            </Transition>
-            <div className="flex-shrink-0 w-14">
-              {/* Force sidebar to shrink to fit close icon */}
+                <svg
+                  className="h-6 w-6 text-white"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
+            <div className="flex-1 h-0 pt-5 overflow-y-auto">
+              <SidebarLogo />
+              <div className="mt-4 px-6">
+                <Breadcrumbs />
+              </div>
+              <nav className="mt-6">
+                <SidebarNav />
+              </nav>
+            </div>
+            <SidebarBottomButtons
+              onContactUs={() => {
+                setIsMobileNavOpen(false);
+                setIsContactUsActive(true);
+              }}
+            />
           </div>
-        </div>
-      </Transition>
-      {/* Static sidebar for desktop */}
-      <div className="hidden lg:flex lg:flex-shrink-0">
-        <div
-          className="flex flex-col border-r border-gray-200 bg-white"
-          style={{ width: '20rem' }}
-        >
-          <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
-            <Link className="flex items-center flex-shrink-0 px-4" to="/">
-              <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
-            </Link>
-            {/* Sidebar component, swap this element with another sidebar if you like */}
-            <nav className="mt-2 flex-1 bg-white">
-              <SidebarNav />
-            </nav>
+        }
+        desktopSidebarContent={
+          <div
+            className="flex flex-col border-r border-gray-200 bg-white"
+            style={{ width: '20rem' }}
+          >
+            <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
+              <SidebarLogo />
+              {/* Sidebar component, swap this element with another sidebar if you like */}
+              <nav className="mt-2 flex-1 bg-white">
+                <SidebarNav />
+              </nav>
+            </div>
+            <SidebarBottomButtons
+              onContactUs={() => setIsContactUsActive(true)}
+            />
           </div>
-          <SidebarBottomButtons
-            onContactUs={() => setIsContactUsActive(true)}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
+        }
+      >
         <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
@@ -544,7 +509,7 @@ export default function ModuleLayout({
             </div>
           </div>
         </main>
-      </div>
+      </Sidebar>
       <ContactUsSlideover
         isOpen={isContactUsActive}
         onClose={() => setIsContactUsActive(false)}
