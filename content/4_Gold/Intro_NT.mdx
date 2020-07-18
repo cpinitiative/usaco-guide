@@ -13,7 +13,10 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     sample: [
-      new Problem("CF", "VK Cup Wildcard R1 C - Prime Factorization", "problemset/problem/162/C", "Intro", false, []),
+      new Problem("CF", "VK Cup Wildcard R1 C - Prime Factorization", "problemset/problem/162/C", "Intro|Very Easy", false, []),
+    ],
+    kat: [
+      new Problem("Kattis","Modular Arithmetic", "modulararithmetic"),
     ],
     general: [
       new Problem("AC", "Div Game", "https://atcoder.jp/contests/abc169/tasks/abc169_d", "Easy", false, ["Prime Factorization"], "Prime factorize the given number. Consider each prime in the factorization separately. For each prime, decrement the exponent by 1 the first time, 2 the second time, and so on, until we can no longer continue without repeating a previously used exponent."),
@@ -69,7 +72,11 @@ $$
 \end{cases}
 $$
 
-This algorithm is very easy to implement using a recursive function in Java, as follows:
+This algorithm is very easy to implement using a recursive function, as follows:
+
+<LanguageSection>
+
+<JavaSection>
 
 ```java
 public int gcd(int a, int b){
@@ -77,6 +84,10 @@ public int gcd(int a, int b){
     return gcd(b, a % b);
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
 
 For C++, use the built-in `__gcd(a,b)`. Finding the GCD of two numbers can be done in $O(\log n)$ time, where $n = \min(a, b)$.
 
@@ -118,7 +129,11 @@ $$
 
 **Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
-Here is C++ code to compute $x ^ n \pmod m$:
+Here is code to compute $x ^ n \pmod m$:
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 long long binpow(long long x, long long n, long long m) {
@@ -133,6 +148,11 @@ long long binpow(long long x, long long n, long long m) {
     return res;
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
+
 
 ### Modular Inverse
 
@@ -155,6 +175,23 @@ The above only works for **prime** modulos. Modulo inverses are *much more nuanc
 (Ben - could have another module explaining modular inverses)
 
 <IncompleteSection />
+
+### Euclidean Algorithm
+
+```cpp
+ll invGeneral(ll a, ll b) {
+    array<ll,3> x = {1,0,a}, y = {0,1,b};
+    for (;y[2];swap(x,y)) {
+        ll k = x[2]/y[2]; 
+        F0R(i,3) x[i] -= k*y[i];
+    }
+    assert(x[2] == 1); return x[0];
+}
+```
+
+<Problems problems={metadata.problems.kat} />
+
+Note: when multiplication / division is involved, $n^2 < \texttt{LLONG_MAX}$.
 
 ## Problems
 
