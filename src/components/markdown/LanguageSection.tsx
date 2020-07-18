@@ -30,14 +30,33 @@ export const LanguageSection = props => {
 
   if (!sections.hasOwnProperty(lang)) {
     return (
-      <div className="p-4 bg-red-100 text-red-800 rounded">
-        <b>
-          This section isn't yet available in your chosen language:{' '}
-          {LANGUAGE_LABELS[lang]}.
-        </b>{' '}
-        Please choose a different default language for now. Feel free to file a
-        request to add support for {LANGUAGE_LABELS[lang]} using the "Contact
-        Us" button.
+      <div className="p-4 bg-red-50 text-red-800 rounded-md">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg
+              className="h-5 w-5 text-red-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <h3 className="text-sm leading-5 font-medium text-red-800">
+              This section isn't yet available in your chosen language:{' '}
+              {LANGUAGE_LABELS[lang]}.
+            </h3>
+            <div className="mt-2 text-sm leading-5 text-red-700">
+              Please choose a different default language for now. Feel free to
+              file a request to add support for {LANGUAGE_LABELS[lang]} using
+              the "Contact Us" button.
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

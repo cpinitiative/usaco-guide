@@ -7,7 +7,7 @@ const Info = ({
   children: React.ReactNode;
   title: string;
 }) => (
-  <div className="rounded-md bg-blue-50 p-4 mb-4 info">
+  <div className="rounded-md bg-blue-50 p-4 mb-4 tailwind-alert">
     <div className="flex">
       <div className="flex-shrink-0">
         <svg
@@ -23,8 +23,12 @@ const Info = ({
         </svg>
       </div>
       <div className="ml-3 flex-1">
-        <h3 className="info__heading">{title}</h3>
-        <div className="info__body no-bottom-margin">{children}</div>
+        <h3 className="text-sm leading-5 font-medium text-blue-800 my-0">
+          {title}
+        </h3>
+        <div className="text-sm leading-5 text-blue-700 mt-2 no-bottom-margin">
+          {children}
+        </div>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@ const Optional = ({
   className?: string;
 }) => (
   <div
-    className={`bg-white overflow-hidden shadow rounded-lg border border-purple-400 mb-8`}
+    className={`bg-white overflow-hidden shadow rounded-lg border border-purple-400 mb-4`}
   >
     <div className="p-4 flex items-center font-medium text-purple-800 bg-purple-50">
       <svg className="h-6 w-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
