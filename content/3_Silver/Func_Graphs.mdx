@@ -1,0 +1,86 @@
+---
+id: func-graphs
+title: Functional Graphs
+author: Siyong Huang
+prerequisites: 
+ - dfs
+description: "Properties of a functional graphs, directed graphs in which every vertex has exactly one outgoing edge."
+frequency: 1
+---
+
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CF", "Div 2 B - Badge", "contest/1020/problem/B", "Very Easy", false, ["Func Graph"], "Try to solve the problem in $O(N)$!"),
+    ],
+    general: [
+      new Problem("Silver", "The Bovine Shuffle", "764", "Normal", false, ["Func Graph"], "Try to solve the problem in $O(N)$!"),
+      new Problem("CSES", "Planets Cycles", "1751", "Normal", false, ["Func Graph"], ""),
+      new Problem("Silver", "Swapity Swapity Swap", "1014", "Normal", false, ["Permutation"], ""),
+      new Problem("POI", "Mafia", "https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement", "Hard", false, ["Func Graph"], ""),
+      new Problem("POI", "Spies", "https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement", "Hard", false, [], ""),
+      new Problem("POI", "Frog", "https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement", "Hard", false, [], ""),
+    ],
+  }
+};
+
+We'll consider graphs like the one presented in this problem:
+
+<Problems problems={metadata.problems.sample} />
+
+< br/>
+
+Aka **successor graph**.
+
+<Resources>
+  <Resource source="CPH" title="16.3, 16.4 - Successor Graphs"></Resource>
+</Resources>
+
+## Implementation
+
+The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//UNTESTED
+
+//Each node points to next_node[node]
+
+bool visited[MAXN], on_stack[MAXN];
+int number_of_cycles = 0, next_node[MAXN];
+void dfs(int n)
+{
+	visited[n] = on_stack[n] = true;
+	int u = next_node[n];
+	if(on_stack[u])
+		number_of_cycles++;
+	else if(!visited[u])
+		dfs(u);
+	on_stack[n] = false;
+}
+int main()
+{
+	//read input, etc
+	for(int i = 1;i <= N;i++)
+		if(!visited[i])
+			dfs(i);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+(floyd's algo?)
+
+<IncompleteSection />
+
+## Problems
+
+<Problems problems={metadata.problems.general} />

@@ -1,10 +1,11 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext';
+import UserDataContext, {
+  LANGUAGE_LABELS,
+} from '../../context/UserDataContext';
 import { useContext } from 'react';
 
 export const LanguageSection = props => {
-  const userSettings = useContext(UserDataContext);
-  let lang = userSettings.lang;
+  const { lang } = useContext(UserDataContext);
 
   let sections = {};
   React.Children.map(props.children, child => {
@@ -13,24 +14,13 @@ export const LanguageSection = props => {
     if (type === 'JavaSection') sections['java'] = child;
     if (type === 'PySection') sections['py'] = child;
   });
-  // props.children.forEach(child => {
-  //   let type = child.props.mdxType;
-  //   if (type === 'CPPSection') sections['cpp'] = child;
-  //   if (type === 'JavaSection') sections['java'] = child;
-  //   if (type === 'PySection') sections['py'] = child;
-  // });
-  const languages = {
-    cpp: 'C++',
-    java: 'Java',
-    py: 'Python',
-  };
 
   if (lang === 'showAll') {
     return (
       <>
         {Object.keys(sections).map(lang => (
           <div key={lang}>
-            <p className="text-lg font-bold">{languages[lang]}</p>
+            <p className="text-lg font-bold">{LANGUAGE_LABELS[lang]}</p>
             {sections[lang]}
           </div>
         ))}
@@ -43,11 +33,11 @@ export const LanguageSection = props => {
       <div className="p-4 bg-red-100 text-red-800 rounded">
         <b>
           This section isn't yet available in your chosen language:{' '}
-          {languages[lang]}.
+          {LANGUAGE_LABELS[lang]}.
         </b>{' '}
         Please choose a different default language for now. Feel free to file a
-        request to add support for {languages[lang]} using the "Contact Us"
-        button.
+        request to add support for {LANGUAGE_LABELS[lang]} using the "Contact
+        Us" button.
       </div>
     );
   }

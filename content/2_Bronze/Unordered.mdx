@@ -1,0 +1,254 @@
+---
+id: unordered
+title: Unordered Maps & Sets
+author: Darren Yao, Benjamin Qi
+description: "An introduction to unordered maps and sets in multiple languages, two powerful data structures can help simplify bronze problems."
+frequency: 2
+prerequisites:
+ - pairs-tuples
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    dis: [
+      new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, [], "Store every number in a set and print the size."),
+    ],
+    ex: [
+      new Problem("YS", "Associative Array", "associative_array", "Easy")
+    ],
+    standard: [
+      new Problem("CSES", "Sum of Two Values", "1640", "Easy", false, [], "Brute force one value by going through a[], then check if the other exists."),
+      new Problem("Bronze", "Where Am I?", "964", "Easy", false, [], "Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice."),
+      new Problem("Silver", "Cities & States", "667", "Hard", false, [], "Store two maps of counts for the first two letters of a city and state code, then iterate over the cities and use the maps to efficently query for the corresponding counts."),
+    ],
+  }
+};
+
+<Resources>
+  <Resource source="IUSACO" title="4.3 - Sets & Maps">module is based off this</Resource>
+</Resources>
+
+## What Are Sets and Maps?
+
+A **set** is a collection of objects that contains no duplicates. A **map** is a set of ordered pairs, each containing a key and a value. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: one to add a specified key-value pairing, one to retrieve the value for a given key, and one to remove a key-value pairing from the map. Like sets, maps can be unordered or ordered.
+
+Both Java and C++ contain two versions of sets and maps; one in which the keys are stored in sorted order, and one in which **hashing** is used. Bronze problems shouldn't distinguish between the two, so we'll cover only the latter in this module.
+
+## Hashing
+
+**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order. 
+
+(more in-depth explanation?)
+
+<IncompleteSection />
+
+## Sets
+
+<Problems problems={metadata.problems.dis} />
+
+<LanguageSection>
+
+<CPPSection>
+
+The operations on an [`unordered_set`](http://www.cplusplus.com/reference/unordered_set/unordered_set/) are `insert`, which adds an element to the set if not already present, `erase`, which deletes an element if it exists, and `count`, which returns `1` if the set contains the element and `0` if it doesn't.
+
+```cpp
+unordered_set<int> s;
+s.insert(1); // [1]
+s.insert(4); // [1, 4] in arbitrary order
+s.insert(2); // [1, 4, 2] in arbitrary order
+s.insert(1); // [1, 4, 2] in arbitrary order
+// the add method did nothing because 1 was already in the set
+cout << s.count(1) << endl; // 1
+set.erase(1); // [2, 4] in arbitrary order
+cout << s.count(5) << endl; // 0
+s.erase(0); // [2, 4] in arbitrary order
+// if the element to be removed does not exist, nothing happens
+
+for(int element : s){
+    cout << element << " ";
+}
+cout << endl;
+// You can iterate through an unordered set, but it will do so in arbitrary order
+```
+
+</CPPSection>
+
+<JavaSection>
+
+The operations on a `HashSet` are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
+
+```java
+HashSet<Integer> set = new HashSet<Integer>();
+set.add(1); // [1]
+set.add(4); // [1, 4] in arbitrary order
+set.add(2); // [1, 4, 2] in arbitrary order
+set.add(1); // [1, 4, 2] in arbitrary order
+// the add method did nothing because 1 was already in the set
+System.out.println(set.contains(1)); // true
+set.remove(1); // [2, 4] in arbitrary order
+System.out.println(set.contains(5)); // false
+set.remove(0); // [2, 4] in arbitrary order
+// if the element to be removed does not exist, nothing happens
+
+for(int element : set){
+	System.out.println(element);
+}
+// You can iterate through an unordered set, but it will do so in arbitrary order
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Maps
+
+<Problems problems={metadata.problems.ex} />
+
+<LanguageSection>
+
+<CPPSection>
+
+In an [`unordered_map`](http://www.cplusplus.com/reference/unordered_map/unordered_map/) `m`, the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0. The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map. Lastly, `erase(key)` and `erase(it)` removes the map entry associated with the specified key or iterator. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+
+```cpp
+unordered_map<int, int> m;
+m[1] = 5; // [(1, 5)]
+m[3] = 14; // [(1, 5); (3, 14)]
+m[2] = 7; // [(1, 5); (3, 14); (2, 7)]
+m.erase(2); // [(1, 5); (3, 14)]
+cout << m[1] << '\n'; // 5
+cout << m.count(7) << '\n' ; // 0
+cout << m.count(1) << '\n' ; // 1
+```
+
+</CPPSection>
+
+<JavaSection>
+
+In a `HashMap`, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+
+```java
+HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+map.put(1, 5); // [(1, 5)]
+map.put(3, 14); // [(1, 5); (3, 14)]
+map.put(2, 7); // [(1, 5); (3, 14); (2, 7)]
+map.remove(2); // [(1, 5); (3, 14)]
+System.out.println(map.get(1)); // 5
+System.out.println(map.containsKey(7)); // false
+System.out.println(map.containsKey(1)); // true
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+(iterating over map?)
+
+### Custom Hashing
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+  <Resource source="Mark Nelson" title="Hash Functions for C++ Unordered Containers" url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html" starred>How to create user-defined hash function for `unordered_map`.</Resource>
+</Resources>
+
+The link provides an example of hashing pairs of strings. More examples (for pairs of ints)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int,int> pi;
+#define f first
+#define s second
+
+struct hashPi {
+	size_t operator()(const pi& p) const { return p.f^p.s; }
+};
+
+int main() {
+	unordered_map<pi,int,hashPi> um;
+
+}
+```
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int,int> pi;
+#define f first
+#define s second
+
+namespace std {
+	template<> struct hash<pi> {
+		size_t operator()(const pi& p) const { return p.f^p.s; }
+	};
+}
+
+int main() {
+	unordered_map<pi,int> um;
+
+}
+```
+
+However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket.
+
+</CPPSection>
+
+</LanguageSection>
+
+## Hacking
+
+<Warning>
+
+You don't need to know this for USACO, but you will need this to pass some of the problems in this module.
+
+</Warning>
+
+In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however. 
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+  <Resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</Resource>
+</Resources>
+
+Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above in place of `unordered_map<int, int>`.
+
+### Another Hash Function
+
+<Resources>
+  <Resource source="Benq (from KACTL)" title="HashMap" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h" starred> </Resource>
+</Resources>
+
+```cpp
+struct chash { /// use most bits rather than just the lowest ones
+	const uint64_t C = ll(2e18*PI)+71; // large odd number
+	const int RANDOM = rng();
+	ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x^RANDOM)*C); }
+};
+template<class K,class V> using um = unordered_map<K,V,chash>;
+```
+
+(explain assumptions that are required for this to work)
+
+</CPPSection>
+
+</LanguageSection>
+
+### `gp_hash_table`
+
+Mentioned in several of the links above. See Gold for dtails.
+
+## Problems
+
+<Problems problems={metadata.problems.standard} />

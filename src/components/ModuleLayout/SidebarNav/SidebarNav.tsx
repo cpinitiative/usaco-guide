@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ModuleLinkInfo } from '../../../models/module';
-import { Link } from 'gatsby';
 import ItemLink from './ItemLink';
 import Accordion from './Accordion';
 import MODULE_ORDERING, { Category } from '../../../../content/ordering';

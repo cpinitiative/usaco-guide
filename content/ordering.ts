@@ -62,7 +62,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "time-comp",
         "simulation",
         "rect-geo",
-        "ad-hoc",
+        "intro-greedy",
       ]
     },
     {

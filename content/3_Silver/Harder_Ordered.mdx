@@ -1,0 +1,132 @@
+---
+id: harder-ordered
+title: "Harder Problems with Ordered Sets"
+author: Benjamin Qi
+prerequisites: 
+ - custom-cpp-stl
+ - stacks-queues
+description: "More advanced uses of ordered sets with example problems."
+frequency: 2
+---
+
+import { Problem } from "../models";
+
+export const metadata = {
+  problems: {
+    sample: [
+      new Problem("CSES", "Bit Inversions", "1188", "Normal", false, []),
+    ],
+    general: [
+      new Problem("Silver", "Milk Measurement", "763", "Normal", false, []),
+      new Problem("Silver", "Convention II", "859", "Normal", false, []),
+      new Problem("Gold", "Snow Boots", "813", "Normal", false, []),
+      new Problem("CF", "Jury Marks", "contest/831/problem/C", "Hard", false, [], "Hard, would recommend skipping (1700 on CF)"),
+      new Problem("CF", "Mahmoud & Ehab & Function", "contest/862/problem/E", "Hard", false, [], "Hard, do not attempt until Gold/Plat (2100 on CF)"),
+      new Problem("CF", "Tournament", "contest/878/problem/C", "Very Hard", false, [], "First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF)"),
+    ]
+  }
+};
+
+
+## Example: Using Iterators
+
+<Problems problems={metadata.problems.sample} />
+
+<Spoiler title="Solution">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (x).size()
+
+string s;
+int m;
+multiset<int> ans, ret;
+ 
+void modify(int x) {
+  if (x == 0 || x == sz(s)) return;
+  auto it = ans.find(x);
+  if (it != end(ans)) {
+    int a = *prev(it), b = *next(it);
+    ret.erase(ret.find(x-a)), ret.erase(ret.find(b-x));
+    ret.insert(b-a);
+    ans.erase(it);
+  } else {
+    it = ans.insert(x);
+    int a = *prev(it), b = *next(it);
+    ret.erase(ret.find(b-a));
+    ret.insert(x-a), ret.insert(b-x);
+  }
+}
+ 
+int main() {
+  ios_base::sync_with_stdio(0); cin.tie(0);
+  cin >> s >> m;
+  ans.insert(0); ans.insert(sz(s));
+  for (int i = 0; i < sz(s)-1; ++i) 
+    if (s[i] != s[i+1]) ans.insert(i+1);
+  for (auto it = ans.begin(); next(it) != ans.end(); it ++)
+    ret.insert(*next(it)-*it);
+  for (int i = 0; i < m; ++i) {
+    int x; cin >> x;
+    modify(x-1); modify(x);
+    cout << *ret.rbegin() << " ";
+  }
+}
+```
+
+<br />
+
+Note that `multiset` has a high constant factor, so replacing `ret` with an array and a `priority_queue` reduces the runtime by a factor of 2.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (x).size()
+
+string s;
+int m;
+set<int> ans;
+priority_queue<int> ret;
+int cnt[200005];
+ 
+void ad(int x) { cnt[x] ++; ret.push(x);  }
+void modify(int x) {
+  if (x == 0 || x == sz(s)) return;
+  auto it = ans.find(x);
+  if (it != end(ans)) {
+    int a = *prev(it), b = *next(it); ans.erase(it);
+    cnt[x-a] --, cnt[b-x] --; ad(b-a);
+  } else {
+    it = ans.insert(x).first;
+    int a = *prev(it), b = *next(it);
+    cnt[b-a] --, ad(x-a), ad(b-x);
+  }
+}
+ 
+int main() {
+  ios_base::sync_with_stdio(0); cin.tie(0);
+  cin >> s >> m;
+  ans.insert(0); ans.insert(sz(s));
+  for (int i = 0; i < sz(s)-1; ++i) 
+    if (s[i] != s[i+1]) ans.insert(i+1);
+  for (auto it = ans.begin(); next(it) != ans.end(); it ++) 
+    ad(*next(it)-*it);
+  for (int i = 0; i < m; ++i) {
+    int x; cin >> x;
+    modify(x-1); modify(x);
+    while (!cnt[ret.top()]) ret.pop();
+    cout << ret.top() << " ";
+  }
+}
+```
+
+</Spoiler>
+
+<IncompleteSection />
+
+## Problems
+
+<Problems problems={metadata.problems.general} />
