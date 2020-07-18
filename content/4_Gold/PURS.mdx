@@ -4,7 +4,7 @@ title: "Point Update Range Sum"
 author: Benjamin Qi
 prerequisites: 
  - Silver - Prefix Sums
-description: "Introducing Binary Indexed Trees & Indexed Sets (C++ only)."
+description: "Introducing Segment Trees, Binary Indexed Trees, and Indexed Sets (C++ only)."
 frequency: 3
 ---
 
@@ -12,6 +12,10 @@ import { Problem } from "../models";
 
 export const metadata = {
   problems: {
+    seg: [
+      new Problem("CSES", "Range Minimum Queries II", "1649", "Intro|Easy", false, ["PURQ"], ""),
+      new Problem("YS", "Point Set Range Composite", "point_set_range_composite", "Easy", false, ["PURQ"], "Order of operations matters!"),
+    ],
     sample: [
       new Problem("YS", "Point Add Range Sum", "point_add_range_sum", "Easy", false, ["PURS"], ""),
       new Problem("CSES", "Range Sum Queries II", "1648", "Easy", false, ["PURS"], "Can also do range XOR queries w/ update."),
@@ -24,7 +28,7 @@ export const metadata = {
       new Problem("CSES", "Increasing Subsequence II", "1748", "Easy", false, undefined, ""),
       new Problem("CSES", "Intersection Points", "1740", "Easy", false, undefined, ""),
       new Problem("Kattis", "Mega Inversions", "megainversions", "Easy", false, undefined, "also just inversion counting"),
-      new Problem("HackerEarth", "Twin Permutations", "https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/", "Easy", false, undefined, "Offline 2D queries can be done with a 1D data structure"),
+      new Problem("HE", "Twin Permutations", "https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/", "Easy", false, undefined, "Offline 2D queries can be done with a 1D data structure"),
       new Problem("CSES", "Distinct Values Queries", "1734", "Normal", false, undefined, "Do queries in increasing order of $a$."),
       new Problem("CSES", "Robot Path", "1742", "Hard", false, undefined, ""),
     ],
@@ -42,14 +46,76 @@ export const metadata = {
   }
 };
 
-## Binary Indexed Tree
-
 <Problems problems={metadata.problems.sample} />
 
-A *Binary Indexed Tree* (aka *Fenwick Tree*) allows you to perform the following tasks in $O(\log N)$ time each on an array of size $N$:
+<br />
+
+Most gold range query problems require you to support following tasks in $O(\log N)$ time each on an array of size $N$:
 
  - Update the element at a single position (point).
- - Query the sum of a prefix of the array.
+ - Query the sum of some consecutive subarray.
+
+Both **segment tree*s* and **binary indexed trees** can accomplish this.
+
+## Segment Tree
+
+<Problems problems={metadata.problems.seg} />
+
+A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation. 
+
+### Resources
+
+<Info title="Pro Tip">
+
+You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](../plat/seg-ext).
+
+</Info>
+
+<Resources>
+  <Resource source="CSA" title="Segment Trees" url="segment_trees" starred>interactive</Resource>
+  <Resource source="CPH" title="9.3 - Segment Trees" starred>same implementation as below</Resource>
+  <Resource source="CPC" title="3 - Data Structures" url="03_data_structures" starred>see slides after union-find</Resource>
+  <Resource source="cp-algo" title="Segment Tree" url="data_structures/segment_tree.html" starred></Resource>
+  <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource>
+</Resources>
+
+### Implementations
+
+<Resources>
+  <Resource source="CF" title="AICash - Efficient and easy segment trees" url="blog/entry/18051" starred>simple implementation</Resource>
+  <Resource source="Benq" title="SegTree" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h">based off above</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+template<class T> struct Seg { // comb(ID,b) = b
+  const T ID = 0; T comb(T a, T b) { return a+b; } 
+  int n; vector<T> seg;
+  void init(int _n) { n = _n; seg.assign(2*n,ID); }
+  void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+  void upd(int p, T val) { // set val at position p
+    seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+  T query(int l, int r) { // sum on interval [l, r]
+    T ra = ID, rb = ID; 
+    for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+      if (l&1) ra = comb(ra,seg[l++]);
+      if (r&1) rb = comb(seg[--r],rb);
+    }
+    return comb(ra,rb);
+  }
+};
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Binary Indexed Tree
+
+Implementation is shorter than segment tree, but maybe more confusing at first glance.
 
 ### Resources
 
@@ -77,7 +143,6 @@ Suppose that we want a data structure that supports all the operations as a `set
 
   - `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`. 
   - `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
-
 
 ### Indexed Set
 
@@ -121,14 +186,19 @@ int main() {
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
-### Using a BIT
+### With a BIT
 
 Assumes all updates are in the range $[1,N]$.
 
 <Resources>
   <Resource source="CF" url="blog/entry/11275" title="adamant - About Ordered Set" starred> log N </Resource>
-  <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource>
 </Resources>
+
+<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
+
+### With a Segment Tree
+
+Covered in [platinum](../plat/seg-ext).
 
 ## Practice Problems
 

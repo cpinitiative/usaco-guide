@@ -3,7 +3,7 @@ id: intro-nt
 title: "Introductory Number Theory"
 author: Darren Yao, Michael Cao
 prerequisites:
- - Gold - Introduction to Dynamic Programming
+ - intro-dp
 description: Introduces divisibility and modular arithmetic.
 frequency: 1
 ---
@@ -33,7 +33,6 @@ export const metadata = {
   <Resource source="IUSACO" title="13 - Elementary Number Theory">module is based off this</Resource>
   <Resource source="CPH" title="21.1, 21.2 - Number Theory">primes and factors, modular arithmetic</Resource>
   <Resource source="PAPS" title="16 - Number Theory">same as below</Resource>
-	<Resource source="CP-Algorithms" title="Modular Multiplicative Inverse" url="https://cp-algorithms.com/algebra/module-inverse.html">Various ways to take modular inverse</Resource>
   <Resource source="CF" title="CodeNCode - Number Theory Course" url="blog/entry/77137">lots of advanced stuff you don't need to know at this level</Resource>
 </Resources>
 
@@ -126,7 +125,9 @@ $$
 a^b \bmod {m} = (a \bmod m)^b \bmod m
 $$
 
-### Modular Exponentiation
+## Modular Exponentiation
+
+Under a **prime** modulus, division can be performed using modular inverses.
 
 **Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
@@ -154,12 +155,15 @@ long long binpow(long long x, long long n, long long m) {
 
 </LanguageSection>
 
+## Modular Inverse (Prime Moduli)
 
-### Modular Inverse
+<Resources>
+	<Resource source="CP-Algorithms" title="Modular Multiplicative Inverse" url="https://cp-algorithms.com/algebra/module-inverse.html">Various ways to take modular inverse</Resource>
+</Resources>
 
-Under a **prime** modulus, division can be performed using modular inverses.
+### With Exponentiation
 
-To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. (The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with **Euler's theorem**, but we will not explain the theorem here).
+To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. (The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with **Fermat's Little Theorem**, but we will not explain the theorem here).
 
 The modular inverse is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
 
@@ -167,32 +171,15 @@ Because it takes $\mathcal{O}(\log \mathrm{MOD})$ time to compute a modular inve
 
 Also, one must always ensure that they do not attempt to divide by 0. Be aware that after applying modulo, a nonzero number can become zero, so be very careful when dividing by non-constant values.
 
-<Warning>
-
-The above only works for **prime** modulos. Modulo inverses are *much more nuanced* for composite modulos.
-
-</Warning>
-
-(Ben - could have another module explaining modular inverses)
-
 <IncompleteSection />
 
-### Euclidean Algorithm
+### With Extended Euclidean Algorithm
 
-```cpp
-ll invGeneral(ll a, ll b) {
-    array<ll,3> x = {1,0,a}, y = {0,1,b};
-    for (;y[2];swap(x,y)) {
-        ll k = x[2]/y[2]; 
-        F0R(i,3) x[i] -= k*y[i];
-    }
-    assert(x[2] == 1); return x[0];
-}
-```
+<Optional>
+  
+See [this module](../adv/extend-euclid).
 
-<Problems problems={metadata.problems.kat} />
-
-Note: when multiplication / division is involved, $n^2 < \texttt{LLONG_MAX}$.
+</Optional>
 
 ## Problems
 
