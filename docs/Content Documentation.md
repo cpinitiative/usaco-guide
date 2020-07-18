@@ -1,14 +1,17 @@
-## Content Formatting Documentation
+# Content Documentation
 
-**Note:** It is highly recommended to [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes.
+The following two modules are good to read:
 
-All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site.
-These special additions are still under development, so they may change frequently.
-If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
+1. https://usaco-guide.netlify.app/intro/modules
+2. https://usaco-guide.netlify.app/intro/code-con
 
-You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
+All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
 
-[Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
+## 1. Getting Started
+
+### Running Site Locally
+
+It is highly recommended to [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes.
 
 ### Using Sublime Text with .mdx
 
@@ -21,11 +24,22 @@ You can use [StackEdit](https://stackedit.io/) to check that latex renders prope
 6. Open a `.mdx` file and set syntax highlighting to be the same as `.md` with `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
 7. Make snippets!
 
+### Other Tools
+
+- You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
+- [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
+
+## 2. Module Ordering
+
+### Organization
+
+There are six **sections** in the guide: Intro, Bronze, Silver, Gold, Platinum, and Advanced. Each section is subdivided into **categories**, which is just a group of modules. Each **module** represents one "article" or "page" on the site.
+
 ### `ordering.ts`
 
 Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory (it matches based on "slug"). Let Nathan Wang know if you have questions.
 
-### Frontmatter
+## 3. Frontmatter
 
 [Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded
 by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
@@ -35,8 +49,116 @@ by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores 
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
-- **Prerequisites**: _Optional_. Any prerequisites for this module. (Coming soon: If you want to reference a module as a prerequisite, you can list the module ID.)
+- **Prerequisites**: _Optional_. Any prerequisites for this module. If you want to reference a module as a prerequisite, list it as a module ID. A link will be auto-generated.
 - **Frequency**: _Optional_. Takes a number 0-4 inclusive, where 0 = never shown up before and 4 = shows up ~once a contest. Leave this field out if you don't want to show the frequency.
+
+### Example Frontmatter
+
+```
+---
+id: getting-started
+title: Getting Started
+description: Welcome to the guide! We'll introduce what programming competitions are and how this guide is organized.
+author: Nathan Wang
+order: 1
+prerequisites:
+ - Dummy prerequisite
+ - running-cpp
+---
+
+# Getting Started
+...
+```
+
+## 4. MDX and Custom Components
+
+We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React components are supported, so it is possible to add interactivity / custom components to each module.
+
+Some components are globally available in every module (without having to be imported):
+
+- `<Spoiler>`
+- `<Info>`
+- `<Warning>`
+- `<Optional>`
+- `<Problems>`
+- `<Resources>`
+- `<Resource>`
+- `<TextTooltip>`
+- `<LanguageSection>`
+- `<CPPSection>`
+- `<JavaSection>`
+- `<PySection>`
+- `<IncompleteSection>`
+- `<Asterisk>`
+
+These are all documented below.
+
+### Using Custom Components
+
+Interleaving Markdown in JSX is currently a work-in-progress: https://github.com/mdx-js/mdx/issues/628. As such, in order to use markdown with custom components, we need to leave **blank lines** between the HTML tags and the markdown.
+
+```mdx
+Good:
+
+<Spoiler>
+
+This is **bold**.
+
+</Spoiler>
+```
+
+```mdx
+Bad:
+
+<Spoiler>
+This is NOT **bold**.
+</Spoiler>
+
+<Spoiler>This isn't **bold** either!</Spoiler>
+```
+
+### Spoilers
+
+Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
+when writing solutions to problems.
+
+```
+<Spoiler title="Show Solution">
+
+- Insert OP benq solution here
+
+</Spoiler>
+```
+
+### Info Block
+
+```
+<Info title="Insert Title Here">
+
+**Markdown is Supported!!**
+
+</Info>
+```
+
+### Warning Block
+
+```
+<Warning title="Insert Title Here">
+
+**Markdown is Supported!!**
+
+</Warning>
+```
+
+### Optional Content
+
+```
+<Optional title="Insert Title Here">
+
+Fun fact: the title attribute is optional.
+
+</Optional>
+```
 
 ### Problem Lists
 
@@ -107,62 +229,26 @@ Do roughly the first half of the Sorting and Searching section in the [CSES Prob
 <Problems problems={metadata.problems.standard} />
 ```
 
-### Spoilers
+### Resource Lists
 
-Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
-when writing solutions to problems.
+stub
 
-```
-<Spoiler title="Show Solution">
+### Tooltips
 
-- Insert OP benq solution here
+stub
 
-</Spoiler>
-```
+#### `<TextTooltip>`
 
-### Info Block
+stub
 
-```
-<Info title="Insert Title Here">
+#### `<Asterisk>`
 
-**Markdown is Supported!!**
+stub
 
-</Info>
-```
+### Language-Specific Content
 
-### Warning Block
+stub
 
-```
-<Warning title="Insert Title Here">
+### Incomplete Section
 
-**Markdown is Supported!!**
-
-</Warning>
-```
-
-### Optional Block
-
-```
-<Optional title="Insert Title Here">
-
-Fun fact: the title attribute is optional.
-
-</Optional>
-```
-
-### Example Module
-
-```
----
-id: getting-started
-title: Getting Started
-description: Welcome to the guide! We'll introduce what programming competitions are and how this guide is organized.
-author: Nathan Wang
-order: 1
-prerequisites:
- - Dummy prerequisite
- - running-cpp
----
-
-# Hello World!
-```
+stub
