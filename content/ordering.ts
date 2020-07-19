@@ -304,3 +304,15 @@ SECTIONS.forEach(section => {
 });
 
 export { moduleIDToSectionMap };
+
+let moduleIDToURLMap: {[key: string]: string} = {};
+
+SECTIONS.forEach(section => {
+  MODULE_ORDERING[section].forEach(category => {
+    category.items.forEach(moduleID => {
+      moduleIDToURLMap[moduleID] = `/${section}/${moduleID}`;
+    })
+  });
+});
+
+export { moduleIDToURLMap };
