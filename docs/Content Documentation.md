@@ -196,41 +196,39 @@ prerequisites:
 
 import { Problem } from '../models';
 
-export const metadata = {
-  problems: {
-    standard: [
-      new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
-      new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
-      new Problem(
-        'CSES',
-        'Sum of Two Values',
-        '1640',
-        'Intro',
-        false,
-        [],
-        'Can be solved without sets.'
-      ),
-      new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
-        'iterators',
-      ]),
-      new Problem('CSES', 'Towers', '1073', 'Easy', false, [
-        'multiset',
-        'greedy',
-      ]),
-      new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
-      new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
-        'multiset',
-        'greedy',
-      ]),
-    ],
-  },
+export const problems = {
+  standard: [
+    new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
+    new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
+    new Problem(
+      'CSES',
+      'Sum of Two Values',
+      '1640',
+      'Intro',
+      false,
+      [],
+      'Can be solved without sets.'
+    ),
+    new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
+      'iterators',
+    ]),
+    new Problem('CSES', 'Towers', '1073', 'Easy', false, [
+      'multiset',
+      'greedy',
+    ]),
+    new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
+    new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
+      'multiset',
+      'greedy',
+    ]),
+  ],
 };
 
 ## Standard
 
 Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
 
-<Problems problems={metadata.problems.standard} />
+<Problems problems={problems.standard} />
 ```
 
 ### Resource Lists

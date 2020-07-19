@@ -1,6 +1,8 @@
 import { SECTIONS } from './content/ordering';
-const toString = require('mdast-util-to-string');
+
+const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
+const Problem = require('./src/models/problem').Problem; // needed to eval export
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -83,6 +85,19 @@ exports.createSchemaCustomization = ({ actions }) => {
       java: [Heading]
       py: [Heading]
     }
+    
+    type Problem {
+      source: String!
+      name: String!
+      id: String!
+      difficulty: String
+      starred: Boolean
+      tags: [String]
+      sketch: String
+      url: String
+      isIntro: Boolean
+      uniqueID: String
+    }
   `;
   createTypes(typeDefs);
 };
@@ -118,8 +133,8 @@ exports.createResolvers = ({ createResolvers }) => {
             if (node.type === 'heading') {
               let val = {
                 depth: node.depth,
-                value: toString(node),
-                slug: slugger.slug(toString(node)),
+                value: mdastToString(node),
+                slug: slugger.slug(mdastToString(node)),
               };
               if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
                 cpp.push(val);
@@ -141,6 +156,29 @@ exports.createResolvers = ({ createResolvers }) => {
             java,
             py,
           };
+        },
+      },
+      problems: {
+        type: `[Problem]`,
+        async resolve(source, args, context, info) {
+          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
+          let mdast = await resolve(source, args, context, {
+            fieldName: 'mdast',
+          });
+          let problems = [];
+          mdast.children.forEach(node => {
+            if (
+              node.type === 'export' &&
+              node.value.includes('export const problems =')
+            ) {
+              let str = node.value.replace('export ', '') + '; problems';
+              let res = eval(str);
+              Object.keys(res).forEach(k => {
+                problems.push(...res[k]);
+              });
+            }
+          });
+          return problems;
         },
       },
     },

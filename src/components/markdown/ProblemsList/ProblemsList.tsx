@@ -147,9 +147,16 @@ export function ProblemComponent(props: ProblemComponentProps) {
   };
   const [showTags, setShowTags] = React.useState(false);
   const { problem } = props;
-
+  const id = `problem-${problem.uniqueID}`;
   return (
-    <tr>
+    <tr
+      id={id}
+      style={
+        window && window.location && window.location.hash === '#' + id
+          ? { backgroundColor: '#FDFDEA' }
+          : null
+      }
+    >
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
         <div
           style={{ height: '1.25rem' }}

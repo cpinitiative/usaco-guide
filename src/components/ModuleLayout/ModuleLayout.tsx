@@ -77,7 +77,7 @@ const Breadcrumbs = () => {
   return (
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
       <Link
-        to="/"
+        to="/dashboard"
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
         Home

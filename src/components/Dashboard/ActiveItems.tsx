@@ -28,30 +28,6 @@ export default function ActiveItems({
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           Active {type === 'problems' ? 'Problems' : 'Modules'}
         </h3>
-        {/*<div className="mt-3 max-w-xl text-gray-500">*/}
-        {/*  <p className="mb-2">*/}
-        {/*    <a*/}
-        {/*      href="#"*/}
-        {/*      className="inline-flex items-center font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"*/}
-        {/*    >*/}
-        {/*      Intro: Input & Output*/}
-        {/*      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-green-100 text-green-800">*/}
-        {/*                  Practicing*/}
-        {/*                </span>*/}
-        {/*    </a>*/}
-        {/*  </p>*/}
-        {/*  <p>*/}
-        {/*    <a*/}
-        {/*      href="#"*/}
-        {/*      className="inline-flex items-center font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"*/}
-        {/*    >*/}
-        {/*      Intro: Expected Knowledge*/}
-        {/*      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800">*/}
-        {/*                  Skipped*/}
-        {/*                </span>*/}
-        {/*    </a>*/}
-        {/*  </p>*/}
-        {/*</div>*/}
         <div className="mt-4 text-gray-500">
           {items.map((item, idx) => (
             <p className={idx === 0 ? '' : 'mt-2'}>

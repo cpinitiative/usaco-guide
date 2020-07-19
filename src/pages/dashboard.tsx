@@ -22,9 +22,22 @@ export default function DashboardPage(props: PageProps) {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
   }, {});
+  const problemIDMap = modules.edges.reduce((acc, cur) => {
+    cur.node.problems.forEach(problem => {
+      console.log(problem.uniqueID, cur.node.frontmatter.id);
+      acc[problem.uniqueID] = {
+        label: `${problem.source}: ${problem.name}`,
+        url: `${moduleIDToURLMap[cur.node.frontmatter.id]}/#problem-${
+          problem.uniqueID
+        }`,
+      };
+    });
+    return acc;
+  }, {});
   const {
     lastViewedModule: lastViewedModuleID,
     userProgressOnModules,
+    userProgressOnProblems,
   } = React.useContext(UserDataContext);
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -44,7 +57,18 @@ export default function DashboardPage(props: PageProps) {
           userProgressOnModules[x] === 'Skipped' ? 'Skipped' : 'In Progress',
       }));
   }, [userProgressOnModules]);
-  const activeProblems: ActiveItem[] = [];
+  const activeProblems: ActiveItem[] = React.useMemo(() => {
+    return Object.keys(userProgressOnProblems)
+      .filter(
+        x =>
+          userProgressOnProblems[x] === 'Solving' ||
+          userProgressOnProblems[x] === 'Skipped'
+      )
+      .map(x => ({
+        ...problemIDMap[x],
+        status: userProgressOnProblems[x] as 'Solving' | 'Skipped',
+      }));
+  }, [userProgressOnProblems]);
 
   return (
     <Layout>
@@ -200,6 +224,11 @@ export const pageQuery = graphql`
           frontmatter {
             title
             id
+          }
+          problems {
+            uniqueID
+            source
+            name
           }
         }
       }
