@@ -48,9 +48,8 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       ]
     },
     {
-      name: "Move to usaco.org?",
+      name: "USACO",
       items: [
-        "proposing",
         "usaco-camp",
       ]
     },
@@ -216,6 +215,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "eulers-formula",
         "max-flow",
         "eulerian-tours",
+        "offline-con",
       ]
     },
     {
@@ -230,7 +230,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "geo-pri",
         "sweep-line",
-        "hull",
+        "convex-hull",
         "LC",
         "lagrange",
         "slope",
@@ -241,7 +241,6 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "bitsets",
         "fracture",
-        "dyna",
       ]
     }
   ],
@@ -258,7 +257,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     {
       name: "Flows",
       items: [
-        "more-flows",
+        "flow-lb",
         "min-cost-flow",
       ]
     },

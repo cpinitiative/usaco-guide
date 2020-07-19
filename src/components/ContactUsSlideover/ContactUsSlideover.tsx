@@ -68,11 +68,12 @@ export default function ContactUsSlideover({
   const [location, setLocation] = useState('');
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
-    'Unclear Explanation',
-    'Problem Editorial Request',
     'Typo / Broken Link',
-    'Suggestion',
+    'Unclear Explanation',
     'Website Bug',
+    'Request - Missing Section',
+    'Request - Problem Editorial',
+    'Suggestion',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
