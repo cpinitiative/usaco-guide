@@ -445,13 +445,22 @@ export default function IndexPage(props: PageProps) {
                   </div>
                   <div className="ml-4">
                     <h4 className="text-lg leading-6 font-medium text-gray-900">
-                      Officially Recognized
+                      Stay Motivated
                     </h4>
                     <p className="mt-2 text-base leading-6 text-gray-500">
-                      This guide is developed in collaboration with USACO Staff
-                      and USACO Director Dr. Brian Dean.
+                      Use our progress-tracking tools to track your progress in
+                      the Guide and stay motivated.
                     </p>
                   </div>
+                  {/*<div className="ml-4">*/}
+                  {/*  <h4 className="text-lg leading-6 font-medium text-gray-900">*/}
+                  {/*    Officially Recognized*/}
+                  {/*  </h4>*/}
+                  {/*  <p className="mt-2 text-base leading-6 text-gray-500">*/}
+                  {/*    This guide is developed in collaboration with USACO Staff*/}
+                  {/*    and USACO Director Dr. Brian Dean.*/}
+                  {/*  </p>*/}
+                  {/*</div>*/}
                 </div>
               </li>
             </ul>
@@ -539,15 +548,13 @@ export default function IndexPage(props: PageProps) {
               <div className="mt-12 md:mt-0">
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900">
-                    Is this guide for Platinum contestants?
+                    Is this guide for non-USACO competitive programmers?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      While we offer many resources targeted towards platinum
-                      contestants, the platinum division has too many topics for
-                      us to cover everything. For platinum contestants, we
-                      recommend you treat this as more of a <i>resource</i> than
-                      a <i>guide</i>.
+                      Of course! While we structure our content around USACO,
+                      feel free to use this guide even if you don't do USACO.
+                      You will still learn a lot from it!
                     </p>
                   </dd>
                 </div>
