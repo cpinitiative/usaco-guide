@@ -13,7 +13,7 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     sample: [
-      new Problem("CSES", "Building Roads", "1666", "Intro|Very Easy", false, ["DFS"]),
+      new Problem("CSES", "Building Roads", "1666", "Intro|Easy", false, ["DFS"]),
     ],
     general: [
       new Problem("CF", "Bear & Friendship", "problemset/problem/771/A", "Easy", false, ["DFS"]),
@@ -27,6 +27,7 @@ export const metadata = {
       new Problem("Silver", "Milk Pails", "620", "Normal", false, ["DFS"]),
       new Problem("Silver", "Wormhole Sort", "992", "Normal", false, ["DFS", "Binary Search"]),
       new Problem("Silver", "Moo Particle", "1040", "Normal", false, ["Sorting"]),
+      new Problem("Gold", "Moocast", "669", "Normal", false, [], ""),
     ],
     tree: [
       new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"]),
@@ -38,6 +39,7 @@ export const metadata = {
       new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
       new Problem("HE", "Birthday Gifts", "https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/", "Normal", false, ["Tree", "PIE"], ""),
       new Problem("CSA", "Tree Construction", "contest/860/problem/D", "Hard", false, ["Tree", "DFS"], "several cases"),
+      new Problem("Gold", "Cow At Large", "790", "Hard", false, [], ""),
     ],
     bipsample: [
       new Problem("CSES", "Building Teams", "1668", "Easy", false, ["Bipartite"]),
@@ -45,6 +47,7 @@ export const metadata = {
     bip: [
       new Problem("CF", "Bipartiteness", "contest/862/problem/B", "Easy", false, ["Bipartite"]),
       new Problem("Silver", "The Great Revegetation", "920", "Easy", false, ["Bipartite"]),
+      new Problem("Silver", "Clock Tree", "1016", "Hard", false, []),
     ],
   }
 };
@@ -67,7 +70,59 @@ export const metadata = {
 
 ### Implementation
 
-(code?)
+Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//UNTESTED
+bool visited[MN];
+void dfs(int node)
+{
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(!visited[u])
+			dfs(u);
+}
+int count_components()
+{
+	int count=0;
+	for(int i=1;i<=N;++i)
+		if(!visited[i])
+			dfs(i), ++count;
+	return count;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//UNTESTED
+boolean[] visited = new boolean[MN];
+public static void dfs(int node)
+{
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(!visited[u])
+			dfs(u);
+}
+public static int count_components()
+{
+	int count=0;
+	for(int i=1;i<=N;++i)
+		if(!visited[i])
+			dfs(i), ++count;
+	return count;
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <IncompleteSection />
 
@@ -79,7 +134,59 @@ export const metadata = {
 
 ### Implementation
 
-(code?)
+Trees are generally treated very differently from general graph problems.
+Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
+The implementation below computes those numbers.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//untested
+int parent[MN];
+int subtree_size[MN];
+int depth[MN];
+void dfs(int node)
+{
+	subtree_size[node] = 1;
+	for(auto u:adj_list[node])
+		if(u != parent[node])
+		{
+			parent[u] = node;
+			depth[u] = depth[node] + 1;
+			dfs(u);
+			subtree_size[node] += subtree_size[u];
+		}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//untested
+int[] parent = new int[MN];
+int[] subtree_size = new int[MN];
+int[] depth = new int[MN];
+public static void dfs(int node)
+{
+	subtree_size[node] = 1;
+	for(auto u:adj_list[node])
+		if(u != parent[node])
+		{
+			parent[u] = node;
+			depth[u] = depth[node] + 1;
+			dfs(u);
+			subtree_size[node] += subtree_size[u];
+		}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <IncompleteSection />
 
@@ -113,7 +220,6 @@ The idea is that we can arbitrarily label a node and then run DFS. Every time we
 
 ```cpp
 //UNTESTED
-
 bool is_bipartite = true;
 void dfs(int node)
 {
@@ -133,6 +239,30 @@ void dfs(int node)
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+//UNTESTED
+boolean is_bipartite = true;
+public static void dfs(int node)
+{
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(visited[u])
+		{
+			if(color[u] == color[node])
+				is_bipartite = false;
+		}
+		else
+		{
+			color[u] = !color[node];
+			dfs(u);
+		}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 

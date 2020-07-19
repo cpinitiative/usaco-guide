@@ -137,7 +137,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     {
       name: "Dynamic Programming",
       items: [
-        "dp",
+        "intro-dp",
       ]
     },
     {
@@ -161,7 +161,6 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "SRQ",
         "springboards",
         "PURS",
-        "PURQ",  
       ]
     },
     {
@@ -273,6 +272,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     {
       name: "Misc. Topics",
       items: [
+        "extend-euclid",
         "critical",
         "string-suffix",
         "game-theory",
