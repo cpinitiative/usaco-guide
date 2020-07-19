@@ -1,7 +1,7 @@
 ---
 id: centroid
 title: "Centroid Decomposition"
-author: Benjamin Qi
+author: Benjamin Qi, Siyong Huang
 prerequisites: 
  - dfs
  - SRQ
@@ -14,12 +14,12 @@ import { Problem } from "../models";
 export const metadata = {
   problems: {
     general: [
-      new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"]),
+      new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"], ""),
 			new Problem("CF", "Sherlock's bet to Moriarty", "contest/776/problem/F", "Normal", false, ["Centroid"], ""),
 			new Problem("CF", "Digit Tree", "contest/715/problem/C", "Normal", false, ["Centroid", "NT"], ""),
 			new Problem("CF", "Double Tree", "contest/1140/problem/G", "Normal", false, ["Centroid", "DP"], ""),
 			new Problem("ojuz", "JOI - Factories", "JOI14_factories", "Normal", false, ["Centroid"], ""),
-			new Problem("CF", "Sum of Prefix Sums", contest/1303/problem/G", "Hard", false, ["Centroid", "CHT"], ""),
+			new Problem("CF", "Sum of Prefix Sums", "contest/1303/problem/G", "Hard", false, ["Centroid", "CHT"], ""),
       new Problem("YS", "Frequency Table of Tree Distance", "frequency_table_of_tree_distance", "Hard", false, ["Centroid", "FFT"], ""),
       new Problem("DMOJ", "Bob Equilibrium", "dmopc19c7p6", "Hard", false, ["Centroid"], "tight time limit"),
       new Problem("DMOJ", "Time Traveller Imaxblue", "tc19summerh", "Hard", false, ["Centroid"], ""),
@@ -29,12 +29,66 @@ export const metadata = {
   }
 };
 
+## Centroid Decomposition
+
+**Centroid Decomposition** is a divide and conquer technique for trees.
+The **centroid** of a tree is a node which, if rooted, results in no other nodes having a subtree of size greater than $\frac{N}{2}$.
+**Centroid Decomposition** works by repeated splitting the tree and each of the resulting subgraphs at the centroid, producing $O(\log N)$ layers of subgraphs.
+
 ### Tutorial
 
 <Resources>
   <Resource source="Carpanese" title="Illustrated Intro to Centroid Decomposition" url="https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308" starred></Resource>
   <Resource source="GFG" title="Centroid Decomposition of Tree" url="centroid-decomposition-of-tree"></Resource>
 </Resources>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
+
+```cpp
+bool r[MN];//removed
+int s[MN];//subtree size
+int dfs(int n, int p = 0)
+{
+	s[n] = 1;
+	for(int x : a[n])
+		if(x != p && !r[x])
+			s[n] += dfs(x, n);
+	return s[n];
+}
+int get_centroid(int n, int ms, int p = 0)//n = node, ms = size of tree, p = parent
+{
+	for(int x : a[n])
+		if(x != p && !r[x])
+			if(s[x]*2 > ms)
+				return get_centroid(x, ms, n);
+	return n;
+}
+void centroid(int n = 1)
+{
+	int C = get_centroid(n, dfs(n));
+ 
+	//do something
+
+	r[C] = 1;
+	for(int x : a[C])
+		if(!r[x])
+			centroid(x);
+}
+```
+
+</CPPSection>
+
+<JavaSection />
+
+<PySection />
+
+</LanguageSection>
 
 ### Problems
 

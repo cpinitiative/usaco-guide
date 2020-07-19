@@ -5,7 +5,7 @@ author: Siyong Huang, Benjamin Qi
 prerequisites: 
  - sorting-custom
  - intro-ordered
-description: "?"
+description: "More ways to write custom comparators in C++ and incorporating them into STL objects."
 frequency: 1
 ---
 
@@ -43,7 +43,6 @@ int main() {
 }
 ```
 
-
 ## Comparator
 
 ```cpp
@@ -67,10 +66,20 @@ int main() {
 }
 ```
 
+<Info title="Pro Tip" >
+
+You can also use the following syntax to declare set `v` using a function
+
+`set<Edge,decltype(*cmp)> v(cmp);`
+
+</Info>
+
 Lambda expressions also work:
 
 ```cpp
 auto cmp = [](const Edge& x, const Edge& y) { return x.w < y.w; };
+//The real type of cmp is function<bool(const Edge&, const Edge&)>
+//auto is used for short
 
 int main() {
     int M = 4;
@@ -83,7 +92,13 @@ int main() {
 }
 ```
 
-In this case, we can shorten the declaration of `v` by writing `set<Edge,decltype(cmp)> v(cmp);` instead.
+<Info title="Pro Tip" >
+
+You can also use the following syntax to declare set `v` using a lambda
+
+`set<Edge,decltype(cmp)> v(cmp);`
+
+</Info>
 
 ## Functors
 
@@ -127,9 +142,17 @@ int main() {
 }
 ```
 
+<Info title="Pro Tip">
+
+One functor can be used for multiple objects. Just keep overloading the `()` operator!
+
+</Info>
+
 ## Built-In Functors
 
-Overloading the less than operator (`<`) automatically generates the functor `less<Edge>`. Similarly, overloading `>` automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater). We can use this to store a set in reverse order.
+Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less).
+Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater).
+We can use this to store a set in reverse order.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -167,3 +190,16 @@ set<int,greater<int>> a;
 map<int,string,greater<int>> b;
 priority_queue<int,vector<int>,greater<int>> c;
 ```
+
+<Warning title="Priority Queues">
+
+In C++, priority queues are sorted in decreasing order.
+Specifically, larger elements have higher 'priority' and are popped first.
+
+If you want smaller elements to be at the front of the queue, two ways are listed below
+
+1. Overload the (`<`) operator to output the opposite effect.
+
+2. Overload the (`>`) operator properly and use the (`greater<T>`) functor.
+
+</Warning>
