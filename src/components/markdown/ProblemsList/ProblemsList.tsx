@@ -170,7 +170,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
         <div className="flex items-center">
           {problem.starred && (
-            <Tooltip content="You should read all starred resources (unless you already know it) before proceeding!">
+            <Tooltip content="We highly recommend you do all starred problems!">
               <svg
                 className="h-4 w-4 text-blue-400"
                 fill="currentColor"
