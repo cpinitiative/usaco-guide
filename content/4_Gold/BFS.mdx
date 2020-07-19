@@ -102,8 +102,76 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+ 
+Implementation of the CSAcademy article's problem in Java:
 
+```java
+import java.util.*;
+import java.io.*;
 
+class Main {
+
+    static ArrayList<Integer> edges[];
+    static int dist[];
+    static boolean visited[];
+
+    static void bfs(int startNode) {
+        Queue<Integer> q = new ArrayDeque<Integer>(); //You can choose any implementation of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
+  
+        q.add(startNode);
+        visited[startNode] = true;
+        dist[startNode] = 0;
+       
+        while(!q.isEmpty()) {
+            int currentNode = q.poll();
+
+            for(int adj : edges[currentNode]) {
+                if(!visited[adj]) {
+                    visited[adj] = true;
+                    dist[adj] = dist[currentNode]+1;
+                    q.add(adj);
+                }
+            }
+        }
+    }
+  
+    public static void main (String[] args) throws Exception {
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); //Read about fast Java input in "Intro - Fast I/O"
+
+	StringTokenizer st = new StringTokenizer(br.readLine());
+	int N = Integer.parseInt(st.nextToken());
+	int M = Integer.parseInt(st.nextToken());
+
+	int start = Integer.parseInt(st.nextToken());
+	start--;
+
+	edges = new ArrayList[N];
+	dist = new int[N];
+	visited = new boolean[N];
+	for(int i = 0; i < N; i++) {
+	    edges[i] = new ArrayList<Integer>();
+	    dist[i] = -1;
+	}
+
+	for(int i = 0; i < M; i++) {
+	    st = new StringTokenizer(br.readLine());
+	    int a = Integer.parseInt(st.nextToken());
+	    int b = Integer.parseInt(st.nextToken());
+
+	    a--; b--;
+	    edges[a].add(b);
+	}
+
+	bfs(start);
+
+	PrintWriter pw = new PrintWriter(System.out);
+
+	for(int i : dist) pw.print(i + " ");
+	    pw.println();
+	    pw.close();
+	}
+}
+```
 
 </JavaSection>
 

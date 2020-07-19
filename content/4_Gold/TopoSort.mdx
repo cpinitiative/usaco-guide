@@ -1,7 +1,7 @@
 ---
 id: toposort
 title: "Topological Sort"
-author: Benjamin Qi, Michael Cao
+author: Benjamin Qi, Michael Cao, Nathan Chen
 prerequisites: 
  - Gold - Breadth First Search
  - Gold - Introduction to Dynamic Programming
@@ -40,7 +40,7 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 ## Tutorial
 
 <Resources>
-  <Resource source="CSA" title="Topological Sorting" url="topological_sorting" starred>both BFS, DFS</Resource>
+  <Resource source="CSA" title="Topological Sorting" url="topological_sorting" starred>The algorithms to find a topological sort are based on BFS and DFS.</Resource>
 </Resources>
 
 ### DFS
@@ -58,7 +58,73 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 
 The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 
-(implementation)
+<LanguageSection>
+
+<CppSection>
+
+```cpp
+int in_degree[100000];
+vector<int> edge[100000];
+
+int N; //number of nodes
+
+void compute() {
+	queue<int> q;
+	for(int i = 0; i < N; i++) {
+		if(in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		for(int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		//[put problem-specific processing here]
+	}
+
+}
+```
+
+</CppSection>
+
+<JavaSection>
+
+```java
+	static int in_degree[];
+	static ArrayList<Integer> edge[]; //adjacency list
+
+	static int N; //number of nodes
+
+	static void topological_sort() {
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		for(int i = 0; i < N; i++) {
+			if(in_degree[i] == 0) {
+				q.add(i);
+			}
+		}
+
+		while(!q.isEmpty()) {
+			int node = q.poll();
+
+			for(int next : edge[node]) {
+				in_degree[next]--;
+				if(in_degree[next] == 0) q.add(next);
+			}
+
+			//[put problem-specific processing here]
+		}
+	}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <IncompleteSection />
 
@@ -82,11 +148,308 @@ $$
 dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
 $$
 
-or zero if $v$ has in-degree $0$. If we process the states in topological order, it is guarangeed that $dp[u]$ will already have been computed before computing $dp[v]$.
+or $1$ if $v$ is node $1$. If we process the states in topological order, it is guaranteed that $dp[u]$ will already have been computed before computing $dp[v]$.
 
-(implementation?)
+Note that the implementation of this idea below uses Kahn's algorithm for topological sorting:
 
-<IncompleteSection />
+<LanguageSection>
+
+<CppSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int prev_flight[100000];
+int dist[100000];
+int in_degree[100000];
+vector<int> edge[100000];
+vector<int> backEdge[100000];
+
+int N, M;
+
+//Does a topological sort
+void compute() {
+	queue<int> q;
+	for(int i = 0; i < N; i++) {
+		if(in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		for(int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		//The below block computes the DP
+		int mx = -999999999;
+		int mx_node = -1;
+		for(int prev : backEdge[node]) {
+			if(dist[prev] + 1 > mx) {
+				mx = dist[prev] + 1;
+				mx_node = prev;
+			}
+		}
+
+		dist[node] = mx;
+		if(node == 0) dist[node] = 1;
+		prev_flight[node] = mx_node;
+	}
+
+}
+
+int main() { //See "Intro - Fast I/O" for more information about the first two lines in the main function
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	cin >> N >> M;
+
+	for(int i = 0; i < N; i++) {
+		prev_flight[i] = -1;
+		dist[i] = -999999999;
+		in_degree[i] = 0;
+	}
+
+	for(int i = 0; i < M; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		in_degree[b]++;
+		edge[a].push_back(b);
+
+		backEdge[b].push_back(a);
+	}
+
+	compute();
+
+	stack<int> answer;
+	int temp = N-1;
+
+	bool contains0 = false;
+	if(temp == 0) contains0 = true;
+
+	while(temp != -1 && dist[temp] >= 0) {
+		answer.push(temp);
+		temp = prev_flight[temp];
+		if(temp == 0) contains0 = true;
+	}
+
+	if(contains0) {
+		cout << dist[N-1] << "\n";
+		while(!answer.empty()) {
+			cout << answer.top()+1;
+			answer.pop();
+			if(!answer.empty()) cout << " ";
+		}
+		cout << "\n";
+	} else {
+		cout << "IMPOSSIBLE\n";
+	}
+
+	return 0;
+}
+ ```
+ 
+</CppSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+//longest_path
+public class Main {
+
+	static int prev_flight[], dist[], in_degree[];
+	static ArrayList<Integer> edge[];
+	static ArrayList<Integer> backEdge[];
+
+	static int N, M;
+
+	//does a topological sort
+	static void compute() {
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		for(int i = 0; i < N; i++) {
+			if(in_degree[i] == 0) {
+				q.add(i);
+			}
+		}
+
+		while(!q.isEmpty()) {
+			int node = q.poll();
+
+			for(int next : edge[node]) {
+				in_degree[next]--;
+				if(in_degree[next] == 0) q.add(next);
+			}
+
+			//The below block computes the DP
+			int mx = -999999999;
+			int mx_node = -1;
+			for(int prev : backEdge[node]) {
+				if(dist[prev] + 1 > mx) {
+					mx = dist[prev] + 1;
+					mx_node = prev;
+				}
+			}
+
+			dist[node] = mx;
+			if(node == 0) dist[node] = 1;
+			prev_flight[node] = mx_node;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in); //View "Intro - Fast I/O" for more information about the "FastIO" class
+
+		N = sc.nextInt();
+		M = sc.nextInt();
+
+		prev_flight = new int[N];
+		dist = new int[N];
+		in_degree = new int[N];
+		edge = new ArrayList[N];
+		backEdge = new ArrayList[N];
+
+		for(int i = 0; i < N; i++) {
+			prev_flight[i] = -1;
+			dist[i] = -999999999;
+			in_degree[i] = 0;
+			edge[i] = new ArrayList<Integer>();
+			backEdge[i] = new ArrayList<Integer>();
+		}
+
+		for(int i = 0; i < M; i++) {
+			int a = sc.nextInt(), b = sc.nextInt();
+			a--; b--;
+			in_degree[b]++;
+			edge[a].add(b);
+			backEdge[b].add(a);
+		}
+
+		compute();
+
+		PrintWriter pw = new PrintWriter(System.out);
+
+		ArrayDeque<Integer> answer = new ArrayDeque<Integer>(); //Acts as a Stack
+		int temp = N-1;
+
+		boolean contains0 = false;
+		if(temp == 0) contains0 = true;
+
+		while(temp != -1 && dist[temp] >= 0) {
+			answer.push(temp);
+			temp = prev_flight[temp];
+			if(temp == 0) contains0 = true;
+		}
+
+		if(contains0) {
+			pw.println(dist[N-1]);
+			while(!answer.isEmpty()) {
+				pw.print(answer.peekFirst()+1);
+				answer.pop();
+				if(!answer.isEmpty()) pw.print(" ");
+			}
+			pw.println();
+		} else {
+			pw.println("IMPOSSIBLE\n");
+		}
+		pw.close();
+	}
+
+	//practically a necessity for Java users on CSES
+	static class FastIO {
+
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
+
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
+		}
+
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
+		}
+
+		int nextInt() throws Exception {
+			int ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		long nextLong() throws Exception {
+			long ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
+
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
+
+			return ret.toString();
+		}
+
+	}
+}
+
+ ```
+ 
+</JavaSection>
+
+</LanguageSection>
 
 </Spoiler>
 
