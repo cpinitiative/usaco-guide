@@ -72,6 +72,32 @@ struct DSU {
 
 </CPPSection>
 
+<JavaSection>
+
+This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only. 
+
+```java
+//finds the "representative" node in a's component
+int find(int a) {
+	if (p[a] == a)
+		return a;
+	else
+		return p[a] = find(p[a]);
+}
+
+//returns whether the merge changed connectivity
+boolean merge(int a, int b) {
+	int A = find(a);
+	int B = find(b);
+	if (A == B)
+		return false;
+	p[a] = p[b] = p[A] = p[B];
+	return true;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Problems
