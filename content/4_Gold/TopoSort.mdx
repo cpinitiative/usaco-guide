@@ -40,7 +40,7 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 ## Tutorial
 
 <Resources>
-  <Resource source="CSA" title="Topological Sorting" url="topological_sorting" starred>both BFS, DFS</Resource>
+  <Resource source="CSA" title="Topological Sorting" url="topological_sorting" starred>The algorithms to find a topological sort are based on BFS and DFS.</Resource>
 </Resources>
 
 ### DFS
@@ -58,7 +58,73 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 
 The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 
-(implementation)
+<LanguageSection>
+
+<CppSection>
+
+```cpp
+int in_degree[100000];
+vector<int> edge[100000];
+
+int N; //number of nodes
+
+void compute() {
+	queue<int> q;
+	for(int i = 0; i < N; i++) {
+		if(in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		for(int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		//[put problem-specific processing here]
+	}
+
+}
+```
+
+</CppSection>
+
+<JavaSection>
+
+```java
+	static int in_degree[];
+	static ArrayList<Integer> edge[]; //adjacency list
+
+	static int N; //number of nodes
+
+	static void topological_sort() {
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		for(int i = 0; i < N; i++) {
+			if(in_degree[i] == 0) {
+				q.add(i);
+			}
+		}
+
+		while(!q.isEmpty()) {
+			int node = q.poll();
+
+			for(int next : edge[node]) {
+				in_degree[next]--;
+				if(in_degree[next] == 0) q.add(next);
+			}
+
+			//[put problem-specific processing here]
+		}
+	}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <IncompleteSection />
 
@@ -83,6 +149,8 @@ dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
 $$
 
 or $1$ if $v$ is node $1$. If we process the states in topological order, it is guaranteed that $dp[u]$ will already have been computed before computing $dp[v]$.
+
+Note that the implementation of this idea below uses Kahn's algorithm for topological sorting:
 
 <LanguageSection>
 
