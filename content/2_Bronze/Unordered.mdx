@@ -149,6 +149,8 @@ System.out.println(map.containsKey(1)); // true
 
 ### Custom Hashing
 
+There is no built in method for hashing pairs or vectors. Namely, `unordered_set<vector<int>>` does not work. In this case, we can use an [ordered map](../silver/intro-ordered) (which supports all of the functions used in the code above) or declare our own hash function.
+
 <LanguageSection>
 
 <CPPSection>
@@ -197,7 +199,7 @@ int main() {
 }
 ```
 
-However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket.
+However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so it would easily be **hacked**).
 
 </CPPSection>
 
@@ -232,9 +234,11 @@ Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above
 ```cpp
 struct chash { /// use most bits rather than just the lowest ones
 	const uint64_t C = ll(2e18*PI)+71; // large odd number
-	const int RANDOM = rng();
-	ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-		return __builtin_bswap64((x^RANDOM)*C); }
+	const int RANDOM = rng(); // random 32-bit number
+	ll operator()(ll x) const { 
+		// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x^RANDOM)*C); 
+	}
 };
 template<class K,class V> using um = unordered_map<K,V,chash>;
 ```
@@ -247,7 +251,7 @@ template<class K,class V> using um = unordered_map<K,V,chash>;
 
 ### `gp_hash_table`
 
-Mentioned in several of the links above. See Gold for dtails.
+Mentioned in several of the links above. See [Gold](../gold/faster-hashmap) for details.
 
 ## Problems
 

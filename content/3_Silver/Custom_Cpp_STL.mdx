@@ -5,12 +5,14 @@ author: Siyong Huang, Benjamin Qi
 prerequisites: 
  - sorting-custom
  - intro-ordered
+ - lambda
 description: "More ways to write custom comparators in C++ and incorporating them into STL objects."
 frequency: 1
 ---
 
 <Resources>
   <Resource source="fushar" title="Comparison Functions in C++" starred url="http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/">Covers all of this material.</Resource>
+  <Resource source="CPP" url="https://en.cppreference.com/w/cpp/container/set" title="Set">reference</Resource>
 </Resources>
 
 <br />
@@ -45,6 +47,12 @@ int main() {
 
 ## Comparator
 
+<Resources>
+    <Resource source="SO" title="Using custom std::set comparator" url="https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator"> </Resource>
+</Resources>
+
+### With a Function
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -66,20 +74,14 @@ int main() {
 }
 ```
 
-<Info title="Pro Tip" >
+You can also use the following syntax to declare set `v` using a function:
 
-You can also use the following syntax to declare set `v` using a function
+`set<Edge,decltype(&cmp)> v(cmp);`
 
-`set<Edge,decltype(*cmp)> v(cmp);`
-
-</Info>
-
-Lambda expressions also work:
+### With Lambda Expressions
 
 ```cpp
 auto cmp = [](const Edge& x, const Edge& y) { return x.w < y.w; };
-//The real type of cmp is function<bool(const Edge&, const Edge&)>
-//auto is used for short
 
 int main() {
     int M = 4;
@@ -92,13 +94,11 @@ int main() {
 }
 ```
 
-<Info title="Pro Tip" >
-
-You can also use the following syntax to declare set `v` using a lambda
+You can also use the following syntax to declare set `v` using a lambda:
 
 `set<Edge,decltype(cmp)> v(cmp);`
 
-</Info>
+though `decltype(cmp)` is **not** actually equivalent to `bool(*)(const Edge&,const Edge&)`.
 
 ## Functors
 
@@ -191,15 +191,4 @@ map<int,string,greater<int>> b;
 priority_queue<int,vector<int>,greater<int>> c;
 ```
 
-<Warning title="Priority Queues">
-
-In C++, priority queues are sorted in decreasing order.
-Specifically, larger elements have higher 'priority' and are popped first.
-
-If you want smaller elements to be at the front of the queue, two ways are listed below
-
-1. Overload the (`<`) operator to output the opposite effect.
-
-2. Overload the (`>`) operator properly and use the (`greater<T>`) functor.
-
-</Warning>
+Using a custom comparator for priority queues is especially common. Again, a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.
