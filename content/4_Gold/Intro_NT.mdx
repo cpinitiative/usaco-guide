@@ -21,14 +21,12 @@ export const metadata = {
     ],
     general: [
       new Problem("AC", "Div Game", "https://atcoder.jp/contests/abc169/tasks/abc169_d", "Easy", false, ["Prime Factorization"], "Prime factorize the given number. Consider each prime in the factorization separately. For each prime, decrement the exponent by 1 the first time, 2 the second time, and so on, until we can no longer continue without repeating a previously used exponent."),
+      new Problem("CF", "Orac and LCM", "contest/1349/problem/A", "Normal", false, ["Prime Factorization"], "Prime factorize each number. For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer."),
       new Problem("Gold", "Cow Poetry", "897", "Normal", false, ["Knapsack", "Exponentiation"], "First consider the case where there are only two lines with the same class."),
       new Problem("Gold", "Exercise", "1043", "Normal", false, ["Knapsack", "Prime Factorization"], "Prime factorize $K$."),
-      new Problem("CF", "Orac and LCM", "contest/1349/problem/A", "Normal", false, ["Prime Factorization"], "Prime factorize each number. For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer.")
     ],
   }
 };
-
-## Additional Resources
 
 <Resources>
   <Resource source="IUSACO" title="13 - Elementary Number Theory">module is based off this</Resource>
@@ -69,8 +67,9 @@ Let's look at an example of how this algorithm works, for $n = 252$.
 
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
+## Divisibility
 
-## GCD
+### GCD
 
 The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two numbers, we use the **Euclidean Algorithm**, which is as follows:
 
@@ -119,7 +118,7 @@ proof?
 
 </IncompleteSection>
 
-## LCM
+### LCM
 
 The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest integer divisible by both $a$ and $b$.
 
@@ -165,7 +164,7 @@ $$
 a^b \bmod {m} = (a \bmod m)^b \bmod m
 $$
 
-## Modular Exponentiation
+### Modular Exponentiation
 
 <Resources>
 	<Resource source="cp-algo" title="Binary Exponentiation" url="algebra/binary-exp.html"> </Resource>
@@ -197,7 +196,7 @@ long long binpow(long long x, long long n, long long m) {
 
 </LanguageSection>
 
-## Modular Inverse
+### Modular Inverse
 
 We'll only consider **prime** moduli here. Division can be performed using modular inverses.
 
@@ -205,7 +204,7 @@ We'll only consider **prime** moduli here. Division can be performed using modul
 	<Resource source="cp-algo" title="Modular Multiplicative Inverse" url="algebra/module-inverse.html">Various ways to take modular inverse</Resource>
 </Resources>
 
-### With Exponentiation
+#### With Exponentiation
 
 To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. (The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with **Fermat's Little Theorem**, but we will not explain the theorem here).
 
@@ -217,7 +216,7 @@ Also, one must always ensure that they do not attempt to divide by 0. Be aware t
 
 <IncompleteSection />
 
-### With Extended Euclidean Algorithm
+#### With Extended Euclidean Algorithm
 
 <Optional>
   
