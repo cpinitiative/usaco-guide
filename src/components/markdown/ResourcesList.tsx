@@ -11,14 +11,14 @@ export function ResourcesList(props) {
         className={`overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2`}
       >
         <div
-          className={`align-middle inline-block min-w-full overflow-hidden shadow rounded-lg border border-purple-400`}
+          className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-gray-200`}
         >
           <table className="min-w-full">
             <thead>
               <tr>
                 <th
                   colSpan={4}
-                  className={`px-4 sm:px-6 border-b text-left font-medium uppercase py-3 border-purple-200 bg-purple-50 text-purple-500`}
+                  className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 bg-purple-50 text-purple-500`}
                 >
                   Resources{props.title ? `: ${props.title}` : ''}
                 </th>
@@ -76,6 +76,7 @@ export const sourceTooltip = {
   LC: 'LeetCode',
   POI: 'Polish Olympiad in Informatics',
   SO: 'StackOverflow',
+  KA: 'KhanAcademy',
   'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',

@@ -20,6 +20,7 @@ export const metadata = {
       new Problem("Silver", "The Bovine Shuffle", "764", "Normal", false, ["Func Graph"], "Try to solve the problem in $O(N)$!"),
       new Problem("CSES", "Planets Cycles", "1751", "Normal", false, ["Func Graph"], ""),
       new Problem("Silver", "Swapity Swapity Swap", "1014", "Normal", false, ["Permutation"], ""),
+			new Problem("Codeforces", "Cooperative Game", "https://codeforces.com/contest/1137/problem/D", "Normal", false, ["Func Graph, Floyd's Algorithm"], "Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"),
       new Problem("POI", "Mafia", "https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement", "Hard", false, ["Func Graph"], ""),
       new Problem("POI", "Spies", "https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement", "Hard", false, [], ""),
       new Problem("POI", "Frog", "https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement", "Hard", false, [], ""),
@@ -77,7 +78,36 @@ int main()
 
 </LanguageSection>
 
-(floyd's algo?)
+## Tortoise and Hare (Floyd's Algorithm)
+
+**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself)
+
+```cpp
+//UNTESTED
+pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
+{
+	int t=start_node, h=start_node; //tortoise and hare
+	do
+	{
+		t=next[t], h=next[h];
+	} while(t != h)
+
+	int dist=0;
+	t = start_node;
+	while(t != h)
+		++dist, t=next[t], h=next[h];
+	
+	int len=1;
+	h = next[t];
+	while(h != t)
+		++len, h=next[h];
+	return make_pair(len, dist);
+}
+```
+
+<Resources>
+  <Resource source="Medium" title="The Tortoise and the Hare (Floyd's Algorithm)" url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"></Resource>
+</Resources>
 
 <IncompleteSection />
 
