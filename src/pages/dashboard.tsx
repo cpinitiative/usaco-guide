@@ -10,7 +10,7 @@ import logoSquare from '../assets/logo-square.png';
 import SectionProgress from '../components/Dashboard/SectionProgress';
 import SectionProgressBar from '../components/Dashboard/SectionProgressBar';
 
-export default function SyllabusPage(props: PageProps) {
+export default function DashboardPage(props: PageProps) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (

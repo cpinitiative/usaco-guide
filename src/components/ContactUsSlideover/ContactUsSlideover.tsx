@@ -141,7 +141,7 @@ export default function ContactUsSlideover({
       isOpen={isOpen}
       onClose={onClose}
       title="Contact Us"
-      subtitle="Contact us about anything: suggestions, bugs, assistance, and more! Don't submit any personal information through this form."
+      subtitle="Contact us about anything: suggestions, bugs, assistance, and more!"
       footerButtons={
         <>
           <span className="inline-flex rounded-md shadow-sm">
