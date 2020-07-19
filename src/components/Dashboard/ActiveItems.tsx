@@ -23,7 +23,7 @@ export default function ActiveItems({
   items: ActiveItem[];
 }) {
   return (
-    <div className="bg-white shadow rounded-lg mb-8">
+    <div className="bg-white shadow sm:rounded-lg mb-8">
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           Active {type === 'problems' ? 'Problems' : 'Modules'}
@@ -33,7 +33,7 @@ export default function ActiveItems({
             <p className={idx === 0 ? '' : 'mt-2'}>
               <Link
                 to={item.url}
-                className="inline-flex items-center font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"
+                className="font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"
               >
                 {item.label}
                 <span

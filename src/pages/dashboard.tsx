@@ -16,7 +16,6 @@ import DashboardNav from '../components/Dashboard/DashboardNav';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 
 export default function DashboardPage(props: PageProps) {
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const { modules } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
@@ -24,7 +23,6 @@ export default function DashboardPage(props: PageProps) {
   }, {});
   const problemIDMap = modules.edges.reduce((acc, cur) => {
     cur.node.problems.forEach(problem => {
-      console.log(problem.uniqueID, cur.node.frontmatter.id);
       acc[problem.uniqueID] = {
         label: `${problem.source}: ${problem.name}`,
         url: `${moduleIDToURLMap[cur.node.frontmatter.id]}/#problem-${
@@ -77,16 +75,16 @@ export default function DashboardPage(props: PageProps) {
       <div className="min-h-screen bg-gray-100">
         <DashboardNav />
 
-        <main className="pt-4 pb-12">
+        <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
-            <div className="flex overflow-x-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex overflow-x-auto lg:px-8 lg:pt-10 pb-6">
               <WelcomeBackBanner
                 lastViewedModuleURL={lastViewedModuleURL}
                 lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
               />
             </div>
           </div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 gap-8">
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
               <div>
                 <ActiveItems type="problems" items={activeProblems} />
@@ -106,7 +104,7 @@ export default function DashboardPage(props: PageProps) {
             </div>
           </header>
           <div className="max-w-7xl mx-auto mb-8">
-            <div className="flex overflow-x-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-2 gap-8">
+            <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">
               <div className="bg-white shadow hover:shadow-lg transition duration-150 ease-in-out sm:rounded-lg">
                 <div className="px-4 py-5 sm:p-6 cursor-pointer">
                   <p className="text-sm leading-5 text-gray-500">
@@ -137,8 +135,40 @@ export default function DashboardPage(props: PageProps) {
             </div>
           </header>
           <div className="max-w-7xl mx-auto">
-            <div className="px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-2 gap-8">
-              <div className="space-y-8">
+            <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
+              <div className="space-y-8 order-2">
+                <div className="bg-white shadow sm:rounded-lg">
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      All Modules
+                    </h3>
+                    <div className="mt-6">
+                      <SectionProgress />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white shadow sm:rounded-lg">
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      All Starred Problems
+                    </h3>
+                    <div className="mt-6">
+                      <SectionProgress />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white shadow sm:rounded-lg order-6">
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      All Problems
+                    </h3>
+                    <div className="mt-6">
+                      <SectionProgress />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-8 order-1">
                 {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">*/}
                 {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
@@ -172,38 +202,6 @@ export default function DashboardPage(props: PageProps) {
                       <SectionProgressBar title="Gold" />
                       <SectionProgressBar title="Plat" />
                       <SectionProgressBar title="Advanced" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-8">
-                <div className="bg-white shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Modules
-                    </h3>
-                    <div className="mt-6">
-                      <SectionProgress />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Starred Problems
-                    </h3>
-                    <div className="mt-6">
-                      <SectionProgress />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white shadow sm:rounded-lg order-6">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Problems
-                    </h3>
-                    <div className="mt-6">
-                      <SectionProgress />
                     </div>
                   </div>
                 </div>
