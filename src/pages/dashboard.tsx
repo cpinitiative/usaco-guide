@@ -3,7 +3,7 @@ import { graphql, Link, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useState } from 'react';
-import SectionProgress from '../components/Dashboard/SectionProgress';
+import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import SectionProgressBar from '../components/Dashboard/SectionProgressBar';
 import UserDataContext from '../context/UserDataContext';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
@@ -14,6 +14,30 @@ import {
 } from '../../content/ordering';
 import DashboardNav from '../components/Dashboard/DashboardNav';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
+
+const getProgressInfo = (
+  keys: string[],
+  data: { [key: string]: string },
+  completedValues: string[],
+  inProgressValues: string[],
+  skippedValues: string[],
+  notStartedValues: string[]
+) => {
+  let res = {
+    completed: 0,
+    inProgress: 0,
+    skipped: 0,
+    notStarted: 0,
+  };
+  for (let key of keys) {
+    if (!(key in data)) res.notStarted++;
+    else if (completedValues.includes(data[key])) res.completed++;
+    else if (inProgressValues.includes(data[key])) res.inProgress++;
+    else if (skippedValues.includes(data[key])) res.skipped++;
+    else if (notStartedValues.includes(data[key])) res.notStarted++;
+  }
+  return res;
+};
 
 export default function DashboardPage(props: PageProps) {
   const { modules } = props.data as any;
@@ -28,6 +52,7 @@ export default function DashboardPage(props: PageProps) {
         url: `${moduleIDToURLMap[cur.node.frontmatter.id]}/#problem-${
           problem.uniqueID
         }`,
+        starred: problem.starred,
       };
     });
     return acc;
@@ -68,6 +93,36 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
+  let allModulesProgressInfo = getProgressInfo(
+    Object.keys(moduleIDToName),
+    userProgressOnModules,
+    ['Complete'],
+    ['Reading', 'Practicing'],
+    ['Skipped'],
+    ['Not Started']
+  );
+
+  const allProblemIDs = Object.keys(problemIDMap);
+  // const allStarredProblemIDs = allProblemIDs.filter(
+  //   x => problemIDMap[x].starred
+  // );
+  const allProblemsProgressInfo = getProgressInfo(
+    allProblemIDs,
+    userProgressOnProblems,
+    ['Solved'],
+    ['Solving'],
+    ['Skipped'],
+    ['Not Attempted']
+  );
+  // const allStarredProblemsProgressInfo = getProgressInfo(
+  //   allStarredProblemIDs,
+  //   userProgressOnProblems,
+  //   ['Solved'],
+  //   ['Solving'],
+  //   ['Skipped'],
+  //   ['Not Attempted']
+  // );
+
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -96,37 +151,37 @@ export default function DashboardPage(props: PageProps) {
               </div>
             )}
           </div>
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900">
-                Announcements
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">
-              <div className="bg-white shadow hover:shadow-lg transition duration-150 ease-in-out sm:rounded-lg">
-                <div className="px-4 py-5 sm:p-6 cursor-pointer">
-                  <p className="text-sm leading-5 text-gray-500">
-                    <time dateTime="2020-07-18">July 18, 2020</time>
-                  </p>
-                  <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">
-                    Looking for Contributors!
-                  </h3>
-                  <p className="mt-3 text-base leading-6 text-gray-500">
-                    Welcome to the USACO Guide! We're still in pre-release mode,
-                    so things may be a bit rough around the edges. Learn more
-                    about what this means, and how you can help contribute!
-                  </p>
-                  <div className="mt-3">
-                    <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">
-                      Continue Reading
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/*<header>*/}
+          {/*  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
+          {/*    <h1 className="text-3xl font-bold leading-tight text-gray-900">*/}
+          {/*      Announcements*/}
+          {/*    </h1>*/}
+          {/*  </div>*/}
+          {/*</header>*/}
+          {/*<div className="max-w-7xl mx-auto mb-8">*/}
+          {/*  <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">*/}
+          {/*    <div className="bg-white shadow hover:shadow-lg transition duration-150 ease-in-out sm:rounded-lg">*/}
+          {/*      <div className="px-4 py-5 sm:p-6 cursor-pointer">*/}
+          {/*        <p className="text-sm leading-5 text-gray-500">*/}
+          {/*          <time dateTime="2020-07-18">July 18, 2020</time>*/}
+          {/*        </p>*/}
+          {/*        <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">*/}
+          {/*          Looking for Contributors!*/}
+          {/*        </h3>*/}
+          {/*        <p className="mt-3 text-base leading-6 text-gray-500">*/}
+          {/*          Welcome to the USACO Guide! We're still in pre-release mode,*/}
+          {/*          so things may be a bit rough around the edges. Learn more*/}
+          {/*          about what this means, and how you can help contribute!*/}
+          {/*        </p>*/}
+          {/*        <div className="mt-3">*/}
+          {/*          <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
+          {/*            Continue Reading*/}
+          {/*          </span>*/}
+          {/*        </div>*/}
+          {/*      </div>*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">
@@ -136,39 +191,48 @@ export default function DashboardPage(props: PageProps) {
           </header>
           <div className="max-w-7xl mx-auto">
             <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
-              <div className="space-y-8 order-2">
+              <div className="space-y-8">
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       All Modules
                     </h3>
                     <div className="mt-6">
-                      <SectionProgress />
+                      <DashboardProgress
+                        {...allModulesProgressInfo}
+                        total={Object.keys(moduleIDToName).length}
+                      />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Starred Problems
-                    </h3>
-                    <div className="mt-6">
-                      <SectionProgress />
-                    </div>
-                  </div>
-                </div>
+                {/*<div className="bg-white shadow sm:rounded-lg">*/}
+                {/*  <div className="px-4 py-5 sm:p-6">*/}
+                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*      All Starred Problems*/}
+                {/*    </h3>*/}
+                {/*    <div className="mt-6">*/}
+                {/*      <DashboardProgress*/}
+                {/*        {...allStarredProblemsProgressInfo}*/}
+                {/*        total={Object.keys(allStarredProblemIDs).length}*/}
+                {/*      />*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
+                {/*</div>*/}
+              </div>
+              <div className="space-y-8">
                 <div className="bg-white shadow sm:rounded-lg order-6">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       All Problems
                     </h3>
                     <div className="mt-6">
-                      <SectionProgress />
+                      <DashboardProgress
+                        {...allProblemsProgressInfo}
+                        total={Object.keys(allProblemIDs).length}
+                      />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="space-y-8 order-1">
                 {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">*/}
                 {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
@@ -187,24 +251,24 @@ export default function DashboardPage(props: PageProps) {
                 {/*    alt="Cow"*/}
                 {/*  />*/}
                 {/*</div>*/}
-                <div className="bg-white shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Section Breakdown
-                    </h3>
-                    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
-                      <p>Below is your progress on modules for each section.</p>
-                    </div>
-                    <div className="mt-4">
-                      <SectionProgressBar title="Intro" />
-                      <SectionProgressBar title="Bronze" />
-                      <SectionProgressBar title="Silver" />
-                      <SectionProgressBar title="Gold" />
-                      <SectionProgressBar title="Plat" />
-                      <SectionProgressBar title="Advanced" />
-                    </div>
-                  </div>
-                </div>
+                {/*<div className="bg-white shadow sm:rounded-lg">*/}
+                {/*  <div className="px-4 py-5 sm:p-6">*/}
+                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*      Section Breakdown*/}
+                {/*    </h3>*/}
+                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
+                {/*      <p>Below is your progress on modules for each section.</p>*/}
+                {/*    </div>*/}
+                {/*    <div className="mt-4">*/}
+                {/*      <SectionProgressBar title="Intro" />*/}
+                {/*      <SectionProgressBar title="Bronze" />*/}
+                {/*      <SectionProgressBar title="Silver" />*/}
+                {/*      <SectionProgressBar title="Gold" />*/}
+                {/*      <SectionProgressBar title="Plat" />*/}
+                {/*      <SectionProgressBar title="Advanced" />*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
+                {/*</div>*/}
               </div>
             </div>
           </div>
@@ -227,6 +291,7 @@ export const pageQuery = graphql`
             uniqueID
             source
             name
+            starred
           }
         }
       }
