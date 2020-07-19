@@ -22,13 +22,13 @@ export const Authors: Author[] = [
     email: "nathan.r.wang@gmail.com",
     github: "thecodingwizard",
   },
-  {
-    photo: 'briancdean',
-    name: 'Brian C. Dean',
-    title: 'Content Director',
-    blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
-    email: 'bcdean@clemson.edu',
-  },
+  // {
+  //   photo: 'briancdean',
+  //   name: 'Brian C. Dean',
+  //   title: 'Content Director',
+  //   blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
+  //   email: 'bcdean@clemson.edu',
+  // },
   {
     photo: 'benq',
     name: 'Benjamin Qi',
