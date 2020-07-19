@@ -4,6 +4,7 @@ title: "Introductory Number Theory"
 author: Darren Yao, Michael Cao
 prerequisites:
  - intro-dp
+ - binary representation
 description: Introduces divisibility and modular arithmetic.
 frequency: 1
 ---
@@ -31,6 +32,8 @@ export const metadata = {
 
 <Resources>
   <Resource source="IUSACO" title="13 - Elementary Number Theory">module is based off this</Resource>
+  <Resource source="AoPS" title="Alcumus" url="https://artofproblemsolving.com/alcumus/problem" starred>practice problems, set focus to number theory!</Resource>
+  <Resource source="AoPS" title ="Intro to NT" url="https://artofproblemsolving.com/store/item/intro-number-theory?gtmlist=Bookstore_AoPS_Side">good book :D</Resource>
   <Resource source="CPH" title="21.1, 21.2 - Number Theory">primes and factors, modular arithmetic</Resource>
   <Resource source="PAPS" title="16 - Number Theory">same as below</Resource>
   <Resource source="CF" title="CodeNCode - Number Theory Course" url="blog/entry/77137">lots of advanced stuff you don't need to know at this level</Resource>
@@ -52,6 +55,12 @@ Now, we will discuss how to find the prime factorization of an integer.
 
 ![Pseudocode](factoralgorithm1.png)
 
+<IncompleteSection>
+
+replace with code in all langs?
+
+</IncompleteSection>
+
 This algorithm runs in $O(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
 
 Let's look at an example of how this algorithm works, for $n = 252$.
@@ -61,9 +70,9 @@ Let's look at an example of how this algorithm works, for $n = 252$.
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
 
-## GCD & LCM
+## GCD
 
-The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two numbers, we use the Euclidean Algorithm, which is as follows:
+The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two numbers, we use the **Euclidean Algorithm**, which is as follows:
 
 $$
 \gcd(a, b) = \begin{cases}
@@ -80,24 +89,51 @@ This algorithm is very easy to implement using a recursive function, as follows:
 
 ```java
 public int gcd(int a, int b){
-    if(b == 0) return a;
+    if (b == 0) return a;
     return gcd(b, a % b);
 }
 ```
 
 </JavaSection>
 
+<CPPSection>
+
+```cpp
+int GCD(int a, int b){
+	if (b == 0) return a;
+	return GCD(b, a % b);
+}
+```
+
+For C++14 and below, use the built-in `__gcd(a,b)`. C++17 has built in `gcd(a,b)`.
+
+</CPPSection>
+
 </LanguageSection>
 
-For C++, use the built-in `__gcd(a,b)`. Finding the GCD of two numbers can be done in $O(\log n)$ time, where $n = \min(a, b)$.
+This function runs in $O(\log \max(a,b))$ time.
+
+<IncompleteSection>
+
+proof?
+
+</IncompleteSection>
+
+## LCM
 
 The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest integer divisible by both $a$ and $b$.
 
 The LCM can easily be calculated from the following property with the GCD:
 
 $$
-\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}.
+\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}=\frac{a}{\gcd(a,b)}\cdot b.
 $$
+
+<Warning>
+
+Dividing by $\gcd(a,b)$ first might prevent integer overflow.
+
+</Warning>
 
 If we want to take the GCD or LCM of more than two elements, we can do so two at a time, in any order. For example,
 
@@ -107,7 +143,11 @@ $$
 
 ## Modular Arithmetic
 
-In **modular arithmetic**, instead of working with integers themselves, we work with their remainders when divided by $m$. We call this taking modulo $m$. For example, if we take $m = 23$, then instead of working with $x = 247$, we use $x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the two most common values are $10^9 + 7$, and $998\,244\,353$. Modular arithmetic is used to avoid dealing with numbers that overflow built-in data types, because we can take remainders, according to the following formulas:
+<Resources>
+	<Resource source="David Altizio" title="Modular Arithmetic" url="https://davidaltizio.web.illinois.edu/ModularArithmetic.pdf" starred> </Resource>
+</Resources>
+
+In **modular arithmetic**, instead of working with integers themselves, we work with their remainders when divided by $m$. We call this taking modulo $m$. For example, if we take $m = 23$, then instead of working with $x = 247$, we use $x \bmod 23 = 17$. Usually, $m$ will be a large prime, given in the problem; the two most common values are $10^9 + 7$, and $998\,244\,353=119\cdot 2^{23}+1$. Modular arithmetic is used to avoid dealing with numbers that overflow built-in data types, because we can take remainders, according to the following formulas:
 
 $$
 (a+b) \bmod m = (a \bmod m + b \bmod m) \bmod m
@@ -127,7 +167,9 @@ $$
 
 ## Modular Exponentiation
 
-Under a **prime** modulus, division can be performed using modular inverses.
+<Resources>
+	<Resource source="cp-algo" title="Binary Exponentiation" url="algebra/binary-exp.html"> </Resource>
+</Resources>
 
 **Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
@@ -155,10 +197,12 @@ long long binpow(long long x, long long n, long long m) {
 
 </LanguageSection>
 
-## Modular Inverse (Prime Moduli)
+## Modular Inverse
+
+We'll only consider **prime** moduli here. Division can be performed using modular inverses.
 
 <Resources>
-	<Resource source="CP-Algorithms" title="Modular Multiplicative Inverse" url="https://cp-algorithms.com/algebra/module-inverse.html">Various ways to take modular inverse</Resource>
+	<Resource source="cp-algo" title="Modular Multiplicative Inverse" url="algebra/module-inverse.html">Various ways to take modular inverse</Resource>
 </Resources>
 
 ### With Exponentiation
@@ -177,7 +221,7 @@ Also, one must always ensure that they do not attempt to divide by 0. Be aware t
 
 <Optional>
   
-See [this module](../adv/extend-euclid).
+See the module in the [Advanced](../adv/extend-euclid) section.
 
 </Optional>
 

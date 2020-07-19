@@ -76,6 +76,7 @@ export const sourceTooltip = {
   LC: 'LeetCode',
   POI: 'Polish Olympiad in Informatics',
   SO: 'StackOverflow',
+  KA: 'KhanAcademy',
   'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
