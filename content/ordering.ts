@@ -45,6 +45,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "fast-io",
         "debugging",
         "cpp-tips",
+        "lambda",
       ]
     },
     {

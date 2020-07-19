@@ -3,7 +3,7 @@ id: intro-ordered
 title: "Introduction to Ordered Sets"
 author: Darren Yao, Benjamin Qi
 prerequisites: 
- - Bronze - Unordered Maps & Sets
+ - unordered
 description: "A data structure that supports quick insertion and deletion by maintaining keys in sorted order."
 frequency: 2
 ---
@@ -127,7 +127,7 @@ System.out.println(map.lowerKey(3)); // ERROR
 
 ## Multisets
 
-Lastly, there is the **multiset**, which is essentially a sorted set that allows multiple copies of the same element. 
+A **multiset** is a sorted set that allows multiple copies of the same element. 
 
 <LanguageSection>
 
@@ -187,6 +187,54 @@ static void remove(int x){
 
 </LanguageSection>
 
+## Priority Queues
+
+A **priority queue** supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue. Like sets, priority is based on a **comparator function**.
+
+Of course, all of these functions are supported by multisets, but priority queues are simpler (so they are much faster).
+
+<LanguageSection>
+
+<CPPSection>
+
+### [C++](http://www.cplusplus.com/reference/queue/priority_queue/)
+
+```cpp
+priority_queue<int> pq;
+pq.push(7); // [7]
+pq.push(2); // [2, 7]
+pq.push(1); // [1, 2, 7]
+pq.push(5); // [1, 2, 5, 7]
+cout << pq.top() << endl; // 7
+pq.pop(); // [1, 2, 5]
+pq.pop(); // [1, 2]
+pq.push(6); // [1, 2, 6]
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Java
+
+In Java, we delete and retrieve the element of **lowest** rather than highest priority.
+
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+pq.add(7); // [7]
+pq.add(2); // [7, 2]
+pq.add(1); // [7, 2, 1]
+pq.add(5); // [7, 5, 2, 1]
+System.out.println(pq.peek()); // 1
+pq.poll(); // [7, 5, 2]
+pq.poll(); // [7, 5]
+pq.add(6); // [7, 6, 5]
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 ## Using Iterators
 
 
@@ -196,13 +244,8 @@ static void remove(int x){
 
 next(), prev(), ++, --
 
+
 </CPPSection>
-
-<JavaSection>
-
-
-
-</JavaSection>
 
 </LanguageSection>
 
