@@ -1,29 +1,33 @@
 ---
 id: lambda
-title: Lambda Functions in C++
+title: Lambda Expressions
 author: Benjamin Qi
-description: "?"
+description: "Unnamed function objects capable of capturing variables in scope."
 ---
+
+<LanguageSection>
+
+<CPPSection>
+
 
 ## Introduction
 
 <Resources>
-  <Resource
-    source="GFG"
-    url="lambda-expression-in-c"
-    title="Lambda Expressions in C++"
-  >
-    {' '}
-  </Resource>
-  <Resource source="SO" url="https://stackoverflow.com/questions/41121441/type-of-a-lambda-function-using-auto" title="Type of a lambda function, using auto">
-
-  </Resource>
-  <Resource source="CPP" url="https://en.cppreference.com/w/cpp/language/lambda" title="Lambda">reference</Resource>
+  <Resource source="CPP" url="https://en.cppreference.com/w/cpp/language/lambda" title="Lambda expressions">reference</Resource>
+  <Resource source="UMich" url="http://umich.edu/~eecs381/handouts/Lambda.pdf" title="Using C++ Lambdas" starred> </Resource>
+  <Resource source="SO" url="https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11" title="What is a lambda expression in C++11?"> </Resource>
+  <Resource source="Microsoft" url="https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019" title="Lambda Expressions in C++"> </Resource>
 </Resources>
 
-(describe more)
+Anything more beginner-friendly?
 
-oops sort of confusing
+<IncompleteSection />
+
+<Resources title="FAQ">
+  <Resource source="SO" url="https://stackoverflow.com/questions/41121441/type-of-a-lambda-function-using-auto" title="Type of a lambda function using auto?">
+  </Resource>
+  <Resource source="SO" url="https://stackoverflow.com/questions/11323811/what-is-meant-by-retain-state-in-c" title="What is meant by 'retain state' in c++?"> </Resource>
+</Resources>
 
 ## Recursive Lambdas
 
@@ -32,40 +36,48 @@ oops sort of confusing
   <Resource source="RIP Tutorial" url="https://riptutorial.com/cplusplus/example/8508/recursive-lambdas" title="Recursive Lambdas"> </Resource>
 </Resources>
 
-We can do stuff like the following in C++14:
+If we add the following from the link above in C++14:
 
 ```cpp
 namespace std {
  
 template<class Fun>
 class y_combinator_result {
-	Fun fun_;
+  Fun fun_;
 public:
-	template<class T>
-	explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+  template<class T>
+  explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
  
-	template<class ...Args>
-	decltype(auto) operator()(Args &&...args) {
-		return fun_(std::ref(*this), std::forward<Args>(args)...);
-	}
+  template<class ...Args>
+  decltype(auto) operator()(Args &&...args) {
+    return fun_(std::ref(*this), std::forward<Args>(args)...);
+  }
 };
  
 template<class Fun>
 decltype(auto) y_combinator(Fun &&fun) {
-	return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
+  return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
 }
  
 } // namespace std
+```
 
+Then we can have code like the following!
+
+```cpp
 int main() {
-	cout << y_combinator([](auto gcd, int a, int b) -> int {
-		return b == 0 ? a : gcd(b, a % b);
-	})(20,30) << "\n"; // outputs 10
+  cout << y_combinator([](auto gcd, int a, int b) -> int {
+    return b == 0 ? a : gcd(b, a % b);
+  })(20,30) << "\n"; // outputs 10
 }
 ```
 
 Looks like [ecnerwal](https://codeforces.com/contest/1375/submission/86008510) uses these a lot ...
 
+
+</CPPSection>
+
+</LanguageSection>
 
 <!-- 
 import InputOutput from "../../additionalcontent/Input_Output.mdx";

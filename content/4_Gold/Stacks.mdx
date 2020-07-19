@@ -1,6 +1,6 @@
 ---
-id: stacks-queues
-title: Introduction to Stacks & Queues
+id: stacks
+title: Stacks
 author: Darren Yao
 description: "Two data structures to efficently add and remove the first and last element."
 prerequisites:
@@ -16,13 +16,10 @@ export const problems = {
     general: [
       new Problem("LC", "Max Histogram Area", "largest-rectangle-in-histogram", "Normal", false, [],""),
       new Problem("Old Gold", "Concurrently Balanced Strings", "194", "Normal", false, [],""),
-      new Problem("YS","Persistent Queue","persistent_queue","Normal",false,["DFS"],""),
       new Problem("Gold", "Modern Art 2","743", "Hard", false, [], ""),
       new Problem("Gold", "Dishwashing","922", "Hard", false, [], ""),
     ],
 };
-
-## Additional Reading
 
 <Resources>
   <Resource source="CPH" title="4.5 - Stacks, Queues, Priority Queues"></Resource>
@@ -79,101 +76,8 @@ System.out.println(s.size()); // 2
 
 </LanguageSection>
 
-## Queues
 
-A queue is a First In First Out (FIFO) data structure that supports three operations, all in $O(1)$ time. 
-
-<LanguageSection>
-
-<CPPSection>
-
-### [C++](http://www.cplusplus.com/reference/queue/queue/)
-
- - `push`: insertion at the back of the queue
- - `pop`: deletion from the front of the queue 
- - `front`: which retrieves the element at the front without removing it.
-
-```cpp
-queue<int> q;
-q.push(1); // [1]
-q.push(3); // [3, 1]
-q.push(4); // [4, 3, 1]
-q.pop(); // [4, 3]
-cout << q.front() << endl; // 3
-```
-
-</CPPSection>
-
-<JavaSection>
-
-### Java
-
- - `add`: insertion at the back of the queue
- - `poll`: deletion from the front of the queue
- - `peek`: which retrieves the element at the front without removing it
-
-Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
-
-```java
-Queue<Integer> q = new LinkedList<Integer>();
-q.add(1); // [1]
-q.add(3); // [3, 1]
-q.add(4); // [4, 3, 1]
-q.poll(); // [4, 3]
-System.out.println(q.peek()); // 3
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-## Deques
-
-A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
-
-<LanguageSection>
-
-<CPPSection>
-
-### [C++](http://www.cplusplus.com/reference/deque/deque/)
-
-The four methods for adding and removing are `push_back`, `pop_back`, `push_front`, and `pop_front`. 
-
-```cpp
-deque<int> d;
-d.push_front(3); // [3]
-d.push_front(4); // [4, 3]
-d.push_back(7); // [4, 3, 7]
-d.pop_front(); // [3, 7]
-d.push_front(1); // [1, 3, 7]
-d.pop_back(); // [1, 3]
-```
-
-</CPPSection>
-
-<JavaSection>
-
-### Java
-
-In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
-
-```java
-ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
-deque.addFirst(3); // [3]
-deque.addFirst(4); // [4, 3]
-deque.addLast(7); // [4, 3, 7]
-deque.removeFirst(); // [3, 7]
-deque.addFirst(1); // [1, 3, 7]
-deque.removeLast(); // [1, 3]
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-
-
-## Monotonic Stack
+## Application: Nearest Smaller Element
 
 <Problems problems={problems.nearest} />
 
@@ -181,23 +85,21 @@ Consider the following problem:
 
 > Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$. 
 
-To solve this, let's store a stack of pairs of `<value, index>` and iterate over the array from left to right.  For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
+<Resources>
+  <Resource source="CPH" title="8.2 - Nearest Smaller Element"></Resource>
+  <Resource source="Medium" title="Monotonic Stack" url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"></Resource>
+</Resources>
+
+To solve this, let's store a stack of pairs of `<value, index>` and iterate over the array from left to right. For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
 
 - Keep popping the top element off the stack as long as $value \ge a_i$. This is because we know that the pair containing $value$ will never be the solution to any index $j > i$, since $a_i$ is less than or equal to than $value$ and has an index further to the right.
 - If $value < a_i$, set $ans[i]$ to $index$, because a stack stores the most recently added values first (or in this case, the rightmost ones), $index$ will contain the rightmost value which is less than $a_i$. Then, pop the top element off the stack, because $index$ can't be the solution for two elements.
 
 The stack we used is called a **monotonic stack** because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing. 
 
-(add code)
+### Implementation
 
 <IncompleteSection />
-
-### Further Reading
-
-<Resources>
-  <Resource source="CPH" title="8.2 - Nearest Smaller Element"></Resource>
-  <Resource source="Medium" title="Monotonic Stack" url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"></Resource>
-</Resources>
 
 ## Problems
 

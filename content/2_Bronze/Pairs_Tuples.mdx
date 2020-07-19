@@ -2,7 +2,7 @@
 id: pairs-tuples
 title: Pairs & Tuples
 author: Benjamin Qi, Nathan Wang, Darren Yao, Abutalib Namazov
-description: "Introduction to pairs, which allow you to store two objects (possibly of different types) as a single unit, as well as tuples, which are a generalization of pairs."
+description: "Storing two or more objects (possibly of different types) as a single unit."
 prerequisites:
  - intro-ds
 ---
@@ -55,18 +55,17 @@ If you sort one of $x_i$ and $y_i$ without considering the other, the points wil
 Example:
 
 ```cpp
-#include <iostream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-  pair<string, int> myPair1 = make_pair("Testing", 123);
-  cout << myPair1.first << " " << myPair1.second << endl; // Testing 123
-  myPair1.first = "It is possible to edit pairs after declaring them";
-  cout << myPair1.first << " " << myPair1.second << endl;
-  
-  pair<string, string> myPair2 = {"Testing", "curly braces"};
-  cout << myPair2.first << " " << myPair2.second << endl; // Testing curly braces
+	pair<string, int> myPair1 = make_pair("Testing", 123);
+	cout << myPair1.first << " " << myPair1.second << endl; // Testing 123
+	myPair1.first = "It is possible to edit pairs after declaring them";
+	cout << myPair1.first << " " << myPair1.second << endl;
+	
+	pair<string, string> myPair2 = {"Testing", "curly braces"};
+	cout << myPair2.first << " " << myPair2.second << endl; // Testing curly braces
 }
 
 /* Output
@@ -99,23 +98,20 @@ This is not frequently used by competitive programmers, but it is good to know a
 Example:
 
 ```cpp
-#include <iostream>
-#include <tuple> /// needs additional library
-#include <string>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-    int a = 3, b = 4, c = 5;
-    tuple<int, int, int> t = tie(a, b, c);
-    cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
-    get<0>(t) = 7;
-    cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+	int a = 3, b = 4, c = 5;
+	tuple<int, int, int> t = tie(a, b, c);
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+	get<0>(t) = 7;
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
 
-    tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
-    string s1, s2; int x;
-    tie(s1, s2, x) = tp2;
-    cout << s1 << " " << s2 << " " << x << endl;
+	tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
+	string s1, s2; int x;
+	tie(s1, s2, x) = tp2;
+	cout << s1 << " " << s2 << " " << x << endl;
 }
 /* Output
  * 3 4 5
@@ -139,12 +135,12 @@ Example from CPH:
 using namespace std;
 
 int main() {
-  vector<pair<int,int>> v;
-  v.push_back({1,5});
-  v.push_back({2,3});
-  v.push_back({1,2});
-  sort(v.begin(), v.end());
-  for (pair<int,int> p: v) cout << p.first << " " << p.second << "\n";
+	vector<pair<int,int>> v;
+	v.push_back({1,5});
+	v.push_back({2,3});
+	v.push_back({1,2});
+	sort(v.begin(), v.end());
+	for (pair<int,int> p: v) cout << p.first << " " << p.second << "\n";
 }
 
 /* Output: 
