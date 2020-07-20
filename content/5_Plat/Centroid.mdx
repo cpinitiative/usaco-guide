@@ -9,12 +9,20 @@ description: "?"
 frequency: 1
 ---
 
+<!--
+
+TODO:
+ - Add more resources
+
+-->
+
 import { Problem } from "../models";
 
 export const metadata = {
   problems: {
     general: [
       new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"], ""),
+			new Problem("Plat", "New Barns", "817", "Normal", true, ["Centroid"], ""),
 			new Problem("CF", "Sherlock's bet to Moriarty", "contest/776/problem/F", "Normal", false, ["Centroid"], ""),
 			new Problem("CF", "Digit Tree", "contest/715/problem/C", "Normal", false, ["Centroid", "NT"], ""),
 			new Problem("CF", "Double Tree", "contest/1140/problem/G", "Normal", false, ["Centroid", "DP"], ""),
@@ -84,9 +92,43 @@ void centroid(int n = 1)
 
 </CPPSection>
 
-<JavaSection />
+<JavaSection>
 
-<PySection />
+<!-- Modified from above. I can't guarauntee it compiles and functions as expected -->
+
+```java
+boolean[] r = new boolean[MN];//removed
+int[] s = new int[MN];//subtree size
+public int dfs(int n, int p)
+{
+	s[n] = 1;
+	for(int x : a[n])
+		if(x != p && !r[x])
+			s[n] += dfs(x, n);
+	return s[n];
+}
+public int get_centroid(int n, int ms, int p)//n = node, ms = size of tree, p = parent
+{
+	for(int x : a[n])
+		if(x != p && !r[x])
+			if(s[x]*2 > ms)
+				return get_centroid(x, ms, n);
+	return n;
+}
+public void centroid(int n)
+{
+	int C = get_centroid(n, dfs(n, 0), 0);
+ 
+	//do something
+
+	r[C] = 1;
+	for(int x : a[C])
+		if(!r[x])
+			centroid(x);
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
