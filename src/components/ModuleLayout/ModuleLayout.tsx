@@ -468,7 +468,10 @@ export default function ModuleLayout({
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {module.title}
                     </h1>
-                    <p className={`text-gray-500`}>Author: {module.author}</p>
+                    <p className={`text-gray-500`}>
+                      Author{module.author.indexOf(',') != -1 ? 's' : ''}:{' '}
+                      {module.author}
+                    </p>
                   </div>
                   <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
                     <MarkCompleteButton
