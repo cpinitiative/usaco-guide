@@ -89,8 +89,6 @@ export default function Template(props) {
     ['Skipped'],
     ['Not Attempted']
   );
-  // try to break travis
-  console.log(window.location.hostname);
 
   return (
     <Layout>
