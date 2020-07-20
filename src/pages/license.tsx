@@ -9,13 +9,6 @@ export default function LicensePage(props: PageProps) {
       <SEO title="License and Usage" />
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={() => {
-            throw 'Hello Sentry??';
-          }}
-        >
-          Break the app (and test sentry!)
-        </button>
         <Link to="/" className="block mt-4 underline text-blue-600">
           &larr; Back to Home
         </Link>
