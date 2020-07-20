@@ -5,17 +5,19 @@ author: Siyong Huang, Benjamin Qi
 prerequisites: 
  - sorting-custom
  - intro-ordered
-description: "?"
+ - lambda
+description: "Incorporating custom comparators into STL objects."
 frequency: 1
 ---
 
 <Resources>
   <Resource source="fushar" title="Comparison Functions in C++" starred url="http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/">Covers all of this material.</Resource>
+  <Resource source="CPP" url="https://en.cppreference.com/w/cpp/container/set" title="Set">reference</Resource>
 </Resources>
 
 <br />
 
-What if we want to use a C++ `set` with the `Edge` struct that was defined in "Sorting with Custom Comparators"?
+What if we want to use a C++ `set` with the `Edge` struct that was defined in [Sorting with Custom Comparators](./sorting-custom)?
 
 ## Operator Overloading
 
@@ -43,8 +45,13 @@ int main() {
 }
 ```
 
-
 ## Comparator
+
+<Resources>
+    <Resource source="SO" title="Using custom std::set comparator" url="https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator"> </Resource>
+</Resources>
+
+### With a Function
 
 ```cpp
 #include <bits/stdc++.h>
@@ -67,7 +74,11 @@ int main() {
 }
 ```
 
-Lambda expressions also work:
+You can also use the following syntax to declare set `v` using a function:
+
+`set<Edge,decltype(&cmp)> v(cmp);`
+
+### With Lambda Expressions
 
 ```cpp
 auto cmp = [](const Edge& x, const Edge& y) { return x.w < y.w; };
@@ -83,7 +94,11 @@ int main() {
 }
 ```
 
-In this case, we can shorten the declaration of `v` by writing `set<Edge,decltype(cmp)> v(cmp);` instead.
+You can also use the following syntax to declare set `v` using a lambda:
+
+`set<Edge,decltype(cmp)> v(cmp);`
+
+though `decltype(cmp)` is **not** actually equivalent to `bool(*)(const Edge&,const Edge&)`.
 
 ## Functors
 
@@ -127,9 +142,17 @@ int main() {
 }
 ```
 
+<Info title="Pro Tip">
+
+One functor can be used for multiple objects. Just keep overloading the `()` operator!
+
+</Info>
+
 ## Built-In Functors
 
-Overloading the less than operator (`<`) automatically generates the functor `less<Edge>`. Similarly, overloading `>` automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater). We can use this to store a set in reverse order.
+Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less).
+Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater).
+We can use this to store a set in reverse order.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -167,3 +190,5 @@ set<int,greater<int>> a;
 map<int,string,greater<int>> b;
 priority_queue<int,vector<int>,greater<int>> c;
 ```
+
+Using a custom comparator for priority queues is especially common. Again, a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.

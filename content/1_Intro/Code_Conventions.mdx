@@ -1,20 +1,38 @@
 ---
 id: code-con
 title: Code Conventions
-author: Nathan Wang, Benjamin Qi, Michael Cao
-description: "?"
+author: Nathan Wang, Benjamin Qi, Michael Cao, Nathan Chen
+description: "What the code we provide should look like."
 prerequisites: 
  - expected
+ - modules
+ - cpp-tips
 ---
 
 The code we provide should follow the conventions below. Please note that you do _not_ have to copy our conventions; there is no "right" convention for coding!
 
-Everything should compile assuming that the templates below are included. If any code does not compile or is hard to read, submit a complaint using the "Contact Us" button.
+<LanguageSection>
+
+<CPPSection>
+
+If you find unrecognizable symbols or functions in `C++` code, note the template below; everything should compile assuming that the template below is included.
+
+</CPPSection>
+
+<JavaSection />
+
+<PySection />
+
+</LanguageSection>
+
+If any code does not compile or is hard to read, submit a complaint using the "Contact Us" button.
 
 ## General
 
+Note that these conventions mostly apply to `C++` and `Java`.
+
 <Resources>
-  <Resource source = "CF" title = "Swift - Competitive C++ Manifesto" url="blog/entry/64218"> some material directly from this blog post</Resource>
+  <Resource source = "CF" title = "Swift - Competitive C++ Manifesto" url="blog/entry/64218">most material directly from this blog</Resource>
 </Resources>
 
  - Indenting with either tabs or 4 spaces is fine.
@@ -26,24 +44,61 @@ Everything should compile assuming that the templates below are included. If any
  - Use `++x` rather than `x++` to increment a variable (ie. in a `for` loop).
  - Start your `else` statement on the same line as the closing brace of your `if` statement, like so:
 
-  ```cpp
-  if (a == b) {
-    ++a;
-  } else {
-    ++b;
-  }
-  ```
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+if (a == b) {
+	++a;
+} else {
+	++b;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+if (a == b) {
+	++a;
+} else {
+	++b;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+if (a == b):
+	a += 1
+else
+	b += 1
+```
+
+</PySection>
+
+</LanguageSection>
+ 
 
  - Use `true / false` for boolean values, not `1 / 0`. 
- - Explain the use of any not well known standard library functions with comments that haven't been introduced before like `__builtin_ffs()` or `tie(a, b, c)` in C++. 
+ - Write comments to explain any uncommon library functions like the C++ functions `__builtin_ffs()` or `tie(a, b, c)`.
+ - Write comments to explain anything weird in general! :)
 
 ## Template
+
+The "template" refers to code that is assumed to be in every file.
 
 <LanguageSection>
 
 <CPPSection>
 
-See [C++ Tips & Tricks](./cpp-tips).
+Templates in C++ can take advantange of more powerful features than the other contest languages, and they can be more customized to each competitor. Don't be afraid to write your own template or don't use one at all! Regardless, The USACO Guide will assume the use of the below template in any C++ Code.
+
+<!-- See [C++ Tips & Tricks](./cpp-tips) for explanations of the following code. -->
 
 ```cpp
 #include <bits/stdc++.h>
@@ -78,6 +133,8 @@ int main() {
 
 <!-- Any preferences? Also, this doesn't apply to the custom sorting module, make sure to include all 3! :) -->
 
+Additional C++ Conventions:
+
  - Avoid the use of macros (`#define`) other than those in the template above.
  - Use `const` in C++ for variables that don't change through the code.
  - Use `make_pair` rather than `{}` to store a pair. 
@@ -87,7 +144,26 @@ int main() {
 
 </CPPSection>
 
-<JavaSection />
+<JavaSection>
+
+A normal Java template will contain a main method, helpful imports, and some form of I/O (for USACO, this would probably be File I/O)
+
+```java
+import java.io.*; //Imports necessary classes to read and write files
+import java.util.*; //Imports many useful data structures and algorithms libraries
+
+public class Main { //Name your program whatever you like. Note the class name must match the file name (e.g. this file would be "Main.java")
+
+	public static void main(String[] args) throws Exception { //The code below reads from stdin and also uses a slow input method. Read "Intro - Fast I/O" for other Java I/O techniques.
+		Scanner sc = new Scanner(System.in);
+		PrintWriter pw = new PrintWriter(System.out);
+	}
+}
+
+```
+
+</JavaSection>
+
 <PySection />
 
 </LanguageSection>

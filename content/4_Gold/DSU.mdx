@@ -10,19 +10,18 @@ frequency: 3
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     sample: [
       new Problem("YS", "Union Find", "unionfind", "Intro|Easy", false, []),
     ],
     general: [
       new Problem("Gold", "Closing the Farm", "646", "Easy", false, [], "Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)"),
       new Problem("Gold", "Mootube", "789", "Normal", false, [], "Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)"),
+      new Problem("Gold", "Favorite Colors", "1042", "Very Hard", false, ["DSU"], "Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time."),
     ],
-  }
 };
 
-<Problems problems={metadata.problems.sample} />
+<Problems problems={problems.sample} />
 
 ## Resources
 
@@ -46,11 +45,11 @@ Note: You may prefer to use this in place of DFS for computing connected compone
 
 ## Implementations
 
-Check PAPS for the explanation. `e[x]` contains the negation of the size of $x$'s component if $x$ is the representative of its component, and the parent of $x$ otherwise.
-
 <LanguageSection>
 
 <CPPSection>
+	
+Check PAPS for the explanation. `e[x]` contains the negation of the size of $x$'s component if $x$ is the representative of its component, and the parent of $x$ otherwise.
 
 <resource source="Benq (from KACTL)" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"> </resource>
 
@@ -71,8 +70,34 @@ struct DSU {
 
 </CPPSection>
 
+<JavaSection>
+
+This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only. 
+
+```java
+//finds the "representative" node in a's component
+int find(int a) {
+	if (p[a] == a)
+		return a;
+	else
+		return p[a] = find(p[a]);
+}
+
+//returns whether the merge changed connectivity
+boolean merge(int a, int b) {
+	int A = find(a);
+	int B = find(b);
+	if (A == B)
+		return false;
+	p[a] = p[b] = p[A] = p[B];
+	return true;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Problems
 
-<Problems problems={metadata.problems.general} />
+<Problems problems={problems.general} />

@@ -4,14 +4,20 @@ import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
 import { SECTION_LABELS } from '../../content/ordering';
-import { graphqlToModuleInfo } from '../utils';
+import { graphqlToModuleInfo } from '../utils/utils';
 import SEO from '../components/seo';
 import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext';
 
 export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
+  const { setLastViewedModule } = useContext(UserDataContext);
+  React.useEffect(() => {
+    setLastViewedModule(module.id);
+  }, []);
   return (
     <Layout>
       <SEO

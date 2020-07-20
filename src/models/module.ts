@@ -1,7 +1,12 @@
 export class ModuleLinkInfo {
   public url: string;
 
-  constructor(public id: string, public section: string, public title: string) {
+  constructor(
+    public id: string,
+    public section: string,
+    public title: string,
+    public description?: string
+  ) {
     this.url = `/${section}/${id}`;
   }
 }
@@ -41,7 +46,8 @@ export type ModuleProgress =
   | 'Reading'
   | 'Practicing'
   | 'Complete'
-  | 'Skipped';
+  | 'Skipped'
+  | 'Ignored';
 
 export const ModuleProgressOptions: ModuleProgress[] = [
   'Not Started',
@@ -49,4 +55,5 @@ export const ModuleProgressOptions: ModuleProgress[] = [
   'Practicing',
   'Complete',
   'Skipped',
+  'Ignored',
 ];

@@ -195,7 +195,7 @@ export default function IndexPage(props: PageProps) {
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                   <div className="rounded-md shadow">
                     <Link
-                      to="/intro"
+                      to="/dashboard/"
                       className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       View Guide
@@ -319,8 +319,8 @@ export default function IndexPage(props: PageProps) {
               </div>
               <div className="ml-3">
                 <p className="text-sm leading-5 text-yellow-700 text-left">
-                  This guide is not a syllabus. Topics on this guide reflect{' '}
-                  <i>past</i> problems, not future problems.
+                  This guide is not an official syllabus. Topics on this guide
+                  reflect <i>past</i> problems, not future problems.
                 </p>
               </div>
             </div>
@@ -445,13 +445,22 @@ export default function IndexPage(props: PageProps) {
                   </div>
                   <div className="ml-4">
                     <h4 className="text-lg leading-6 font-medium text-gray-900">
-                      Officially Recognized
+                      Stay Motivated
                     </h4>
                     <p className="mt-2 text-base leading-6 text-gray-500">
-                      This guide is developed in collaboration with USACO Staff
-                      and USACO Director Dr. Brian Dean.
+                      Use our progress-tracking tools to track your progress in
+                      the Guide and stay motivated.
                     </p>
                   </div>
+                  {/*<div className="ml-4">*/}
+                  {/*  <h4 className="text-lg leading-6 font-medium text-gray-900">*/}
+                  {/*    Officially Recognized*/}
+                  {/*  </h4>*/}
+                  {/*  <p className="mt-2 text-base leading-6 text-gray-500">*/}
+                  {/*    This guide is developed in collaboration with USACO Staff*/}
+                  {/*    and USACO Director Dr. Brian Dean.*/}
+                  {/*  </p>*/}
+                  {/*</div>*/}
                 </div>
               </li>
             </ul>
@@ -477,7 +486,7 @@ export default function IndexPage(props: PageProps) {
           <div className="mt-8 flex justify-center">
             <div className="rounded-md shadow">
               <Link
-                to="/intro"
+                to="/dashboard/"
                 className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
               >
                 View Guide
@@ -498,15 +507,14 @@ export default function IndexPage(props: PageProps) {
               <div>
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900">
-                    Is this a Syllabus?
+                    Is this an official syllabus?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      <b>No. This guide is NOT a syllabus.</b> USACO does not
-                      have an official syllabus. This guide merely lists topics
-                      that have <i>historically</i> appeared in USACO contests;
-                      it makes no guarantees about the topics in future USACO
-                      contests.
+                      <b>No, USACO does not have an official syllabus.</b>
+                      This guide merely lists topics that have{' '}
+                      <i>historically</i> appeared in USACO contests; it makes
+                      no guarantees about the topics in future USACO contests.
                     </p>
                   </dd>
                 </div>
@@ -539,15 +547,13 @@ export default function IndexPage(props: PageProps) {
               <div className="mt-12 md:mt-0">
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900">
-                    Is this guide for Platinum contestants?
+                    Is this guide for non-USACO competitive programmers?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      While we offer many resources targeted towards platinum
-                      contestants, the platinum division has too many topics for
-                      us to cover everything. For platinum contestants, we
-                      recommend you treat this as more of a <i>resource</i> than
-                      a <i>guide</i>.
+                      Of course! While we structure our content around USACO,
+                      feel free to use this guide even if you don't do USACO.
+                      You will still learn a lot from it!
                     </p>
                   </dd>
                 </div>

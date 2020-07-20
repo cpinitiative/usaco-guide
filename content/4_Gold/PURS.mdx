@@ -4,17 +4,17 @@ title: "Point Update Range Sum"
 author: Benjamin Qi
 prerequisites: 
  - prefix-sums
-description: "Introducing Segment Trees, Binary Indexed Trees, and Indexed Sets (C++ only)."
+description: "Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only)."
 frequency: 3
 ---
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     seg: [
       new Problem("CSES", "Range Minimum Queries II", "1649", "Intro|Easy", false, ["PURQ"], ""),
       new Problem("YS", "Point Set Range Composite", "point_set_range_composite", "Easy", false, ["PURQ"], "Order of operations matters!"),
+      new Problem("Plat", "Slingshot", "816", "Very Hard", false, ["PURQ"], ""),
     ],
     sample: [
       new Problem("YS", "Point Add Range Sum", "point_add_range_sum", "Easy", false, ["PURS"], ""),
@@ -43,10 +43,9 @@ export const metadata = {
       new Problem("Old Gold", "Cow Hopscotch", "532", "Hard", false, [], ""),
       new Problem("Plat", "Out of Sorts", "840", "Hard", false, [], ""),
     ],
-  }
 };
 
-<Problems problems={metadata.problems.sample} />
+<Problems problems={problems.sample} />
 
 <br />
 
@@ -59,7 +58,7 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 ## Segment Tree
 
-<Problems problems={metadata.problems.seg} />
+<Problems problems={problems.seg} />
 
 A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation. 
 
@@ -105,7 +104,6 @@ template<class T> struct Seg { // comb(ID,b) = b
       if (r&1) rb = comb(seg[--r],rb);
     }
     return comb(ra,rb);
-  }
 };
 ```
 
@@ -149,7 +147,7 @@ Suppose that we want a data structure that supports all the operations as a `set
   - `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`. 
   - `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
 
-### Indexed Set
+### Order Statistic Tree
 
 Luckily, such a built-in data structure already exists in C++.
 
@@ -207,10 +205,10 @@ Covered in [platinum](../plat/seg-ext).
 
 ## Practice Problems
 
-<Problems problems={metadata.problems.practice} />
+<Problems problems={problems.practice} />
 
 ## USACO Problems
 
 Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting.
 
-<Problems problems={metadata.problems.usaco} />
+<Problems problems={problems.usaco} />

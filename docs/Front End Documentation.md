@@ -22,3 +22,4 @@ The following is written for individuals without front-end development experienc
 
 - Confetti taken from Josh Comeau: https://github.com/joshwcomeau/react-europe-talk-2018
 - Lots of inspiration from Josh Comeau's blog and Gatsbyjs documentation site
+- Syllabus template from https://www.howtographql.com/

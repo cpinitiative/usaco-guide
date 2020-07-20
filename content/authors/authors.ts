@@ -22,13 +22,13 @@ export const Authors: Author[] = [
     email: "nathan.r.wang@gmail.com",
     github: "thecodingwizard",
   },
-  {
-    photo: 'briancdean',
-    name: 'Brian C. Dean',
-    title: 'Content Director',
-    blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
-    email: 'bcdean@clemson.edu',
-  },
+  // {
+  //   photo: 'briancdean',
+  //   name: 'Brian C. Dean',
+  //   title: 'Content Director',
+  //   blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
+  //   email: 'bcdean@clemson.edu',
+  // },
   {
     photo: 'benq',
     name: 'Benjamin Qi',
@@ -57,5 +57,21 @@ export const Authors: Author[] = [
     email: 'darren.yao@gmail.com',
     codeforces: "darren_yao",
     github: "darren-yao",
+  },
+  {
+    photo: 'michael',
+    name: 'Siyong Huang',
+    title: 'Content Author',
+    blurb: '',
+    codeforces: "frodakcin",
+    github: "frodakcin",
+  },
+  {
+    photo: 'nathanc',
+    name: 'Nathan Chen',
+    title: 'Content Author',
+    blurb: '',
+    codeforces: "nchn27",
+    github: "nchn27",
   },
 ];

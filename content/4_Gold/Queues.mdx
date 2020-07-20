@@ -1,0 +1,133 @@
+---
+id: queues
+title: Queues
+author: Darren Yao
+description: "Two data structures to efficently add and remove the first and last element."
+prerequisites:
+ - intro-ds
+ - sliding
+---
+
+import { Problem } from "../models";
+
+export const problems = {
+  ys: [
+    new Problem("YS","Persistent Queue","persistent_queue","Normal",false,["DFS"],""),
+    new Problem("YS","Queue Composite","queue_operate_all_composite","Hard",true,[],""),
+  ],
+  sam: [
+    new Problem("LC", "Sliding Window Maximum", "sliding-window-maximum", "Easy", false, [], ""),
+  ],
+};
+
+<Resources>
+  <Resource source="CPH" title="4.5 - Queues, Deques"></Resource>
+  <Resource source="PAPS" title="3.2, 6.3 - Queues"></Resource>
+</Resources>
+
+## Queues
+
+A queue is a First In First Out (FIFO) data structure that supports three operations, all in $O(1)$ time. 
+
+<LanguageSection>
+
+<CPPSection>
+
+### [C++](http://www.cplusplus.com/reference/queue/queue/)
+
+ - `push`: insertion at the back of the queue
+ - `pop`: deletion from the front of the queue 
+ - `front`: which retrieves the element at the front without removing it.
+
+```cpp
+queue<int> q;
+q.push(1); // [1]
+q.push(3); // [3, 1]
+q.push(4); // [4, 3, 1]
+q.pop(); // [4, 3]
+cout << q.front() << endl; // 3
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Java
+
+ - `add`: insertion at the back of the queue
+ - `poll`: deletion from the front of the queue
+ - `peek`: which retrieves the element at the front without removing it
+
+Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
+
+```java
+Queue<Integer> q = new LinkedList<Integer>();
+q.add(1); // [1]
+q.add(3); // [3, 1]
+q.add(4); // [4, 3, 1]
+q.poll(); // [4, 3]
+System.out.println(q.peek()); // 3
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Deques
+
+A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
+
+<LanguageSection>
+
+<CPPSection>
+
+### [C++](http://www.cplusplus.com/reference/deque/deque/)
+
+The four methods for adding and removing are `push_back`, `pop_back`, `push_front`, and `pop_front`. 
+
+```cpp
+deque<int> d;
+d.push_front(3); // [3]
+d.push_front(4); // [4, 3]
+d.push_back(7); // [4, 3, 7]
+d.pop_front(); // [3, 7]
+d.push_front(1); // [1, 3, 7]
+d.pop_back(); // [1, 3]
+```
+
+(important: you can also access like array ...)
+
+</CPPSection>
+
+<JavaSection>
+
+### Java
+
+In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+
+```java
+ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
+deque.addFirst(3); // [3]
+deque.addFirst(4); // [4, 3]
+deque.addLast(7); // [4, 3, 7]
+deque.removeFirst(); // [3, 7]
+deque.addFirst(1); // [1, 3, 7]
+deque.removeLast(); // [1, 3]
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Sliding Window Minimum in $O(N)$
+
+<Problems problems={problems.sam} />
+
+<Resources>
+  <Resource source="CPH" title="8.3 - Sliding Window Minimum"></Resource>
+  <Resource source="cp-algo" title="Minimum stack / Minimum queue" url="data_structures/stack_queue_modification.html" starred>Mentions two ways to solve this (both are important)!</Resource>
+</Resources>
+
+## Problems
+
+<Problems problems={problems.ys} />

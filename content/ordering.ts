@@ -1,16 +1,18 @@
-// Section -> Category -> Module
+// Section -> Chapter -> Module
 
 export type SectionID = "intro" | "bronze" | "silver" | "gold" | "plat" | "adv";
 
-export type Category = {
+export type Chapter = {
   name: string;
   items: string[];
+  description?: string;
 }
 
-const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
+const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
   "intro": [
     {
       name: "About This Guide",
+      description: "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
       items: [
         "using-this-guide",
         "modules",
@@ -45,12 +47,12 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "fast-io",
         "debugging",
         "cpp-tips",
+        "lambda",
       ]
     },
     {
-      name: "Move to usaco.org?",
+      name: "USACO",
       items: [
-        "proposing",
         "usaco-camp",
       ]
     },
@@ -95,18 +97,23 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       ]
     },
     {
-      name: "Binary Search",
+      name: "Sorting",
       items: [
         "binary-search-sorted",
-        "binary-search-ans",
+        "sorting-custom",
+        "greedy",
       ]
     },
     {
-      name: "Sorting",
+      name: "Two Pointers",
       items: [
-        "sorting-methods",
-        "sorting-custom",
-        "greedy",
+        "2P",
+      ]
+    },
+    {
+      name: "Binary Search",
+      items: [
+        "binary-search-ans",
       ]
     },
     {
@@ -114,14 +121,6 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "intro-ordered",
         "custom-cpp-stl",
-        "harder-ordered",
-      ]
-    },
-    {
-      name: "Stacks & Queues",
-      items: [
-        "stacks-queues",
-        "sliding",
       ]
     },
     {
@@ -134,6 +133,14 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     },
   ],
   "gold": [
+    {
+      name: "Data Structures",
+      items: [
+        "stacks",
+        "sliding",
+        "queues",
+      ]
+    },
     {
       name: "Dynamic Programming",
       items: [
@@ -216,6 +223,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
         "eulers-formula",
         "max-flow",
         "eulerian-tours",
+        "offline-con",
       ]
     },
     {
@@ -230,7 +238,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "geo-pri",
         "sweep-line",
-        "hull",
+        "convex-hull",
         "LC",
         "lagrange",
         "slope",
@@ -241,7 +249,6 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
       items: [
         "bitsets",
         "fracture",
-        "dyna",
       ]
     }
   ],
@@ -258,7 +265,7 @@ const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
     {
       name: "Flows",
       items: [
-        "more-flows",
+        "flow-lb",
         "min-cost-flow",
       ]
     },
@@ -305,3 +312,15 @@ SECTIONS.forEach(section => {
 });
 
 export { moduleIDToSectionMap };
+
+let moduleIDToURLMap: {[key: string]: string} = {};
+
+SECTIONS.forEach(section => {
+  MODULE_ORDERING[section].forEach(category => {
+    category.items.forEach(moduleID => {
+      moduleIDToURLMap[moduleID] = `/${section}/${moduleID}`;
+    })
+  });
+});
+
+export { moduleIDToURLMap };

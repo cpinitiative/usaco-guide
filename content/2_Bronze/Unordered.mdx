@@ -2,7 +2,7 @@
 id: unordered
 title: Unordered Maps & Sets
 author: Darren Yao, Benjamin Qi
-description: "An introduction to unordered maps and sets in multiple languages, two powerful data structures can help simplify bronze problems."
+description: "?"
 frequency: 2
 prerequisites:
  - pairs-tuples
@@ -10,8 +10,7 @@ prerequisites:
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     dis: [
       new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, [], "Store every number in a set and print the size."),
     ],
@@ -23,7 +22,6 @@ export const metadata = {
       new Problem("Bronze", "Where Am I?", "964", "Easy", false, [], "Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice."),
       new Problem("Silver", "Cities & States", "667", "Hard", false, [], "Store two maps of counts for the first two letters of a city and state code, then iterate over the cities and use the maps to efficently query for the corresponding counts."),
     ],
-  }
 };
 
 <Resources>
@@ -46,7 +44,7 @@ Both Java and C++ contain two versions of sets and maps; one in which the keys a
 
 ## Sets
 
-<Problems problems={metadata.problems.dis} />
+<Problems problems={problems.dis} />
 
 <LanguageSection>
 
@@ -105,7 +103,7 @@ for(int element : set){
 
 ## Maps
 
-<Problems problems={metadata.problems.ex} />
+<Problems problems={problems.ex} />
 
 <LanguageSection>
 
@@ -148,6 +146,8 @@ System.out.println(map.containsKey(1)); // true
 (iterating over map?)
 
 ### Custom Hashing
+
+There is no built in method for hashing pairs or vectors. Namely, `unordered_set<vector<int>>` does not work. In this case, we can use an [ordered map](../silver/intro-ordered) (which supports all of the functions used in the code above) or declare our own hash function.
 
 <LanguageSection>
 
@@ -197,7 +197,7 @@ int main() {
 }
 ```
 
-However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket.
+However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so it would easily be **hacked**).
 
 </CPPSection>
 
@@ -232,9 +232,11 @@ Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above
 ```cpp
 struct chash { /// use most bits rather than just the lowest ones
 	const uint64_t C = ll(2e18*PI)+71; // large odd number
-	const int RANDOM = rng();
-	ll operator()(ll x) const { /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-		return __builtin_bswap64((x^RANDOM)*C); }
+	const int RANDOM = rng(); // random 32-bit number
+	ll operator()(ll x) const { 
+		// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x^RANDOM)*C); 
+	}
 };
 template<class K,class V> using um = unordered_map<K,V,chash>;
 ```
@@ -247,8 +249,8 @@ template<class K,class V> using um = unordered_map<K,V,chash>;
 
 ### `gp_hash_table`
 
-Mentioned in several of the links above. See Gold for dtails.
+Mentioned in several of the links above. See [Gold](../gold/faster-hashmap) for details.
 
 ## Problems
 
-<Problems problems={metadata.problems.standard} />
+<Problems problems={problems.standard} />

@@ -72,10 +72,10 @@ export type ProblemProgress =
   | 'Not Attempted'
   | 'Solving'
   | 'Solved'
-  | "Can't Solve"
-  | 'Skipped';
+  | 'Skipped'
+  | 'Ignored';
 
-let options = ['Not Attempted', 'Solving', 'Solved', "Can't Solve", 'Skipped'];
+let options = ['Not Attempted', 'Solving', 'Solved', 'Skipped', 'Ignored'];
 
 let NEXT_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
 let PREV_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};

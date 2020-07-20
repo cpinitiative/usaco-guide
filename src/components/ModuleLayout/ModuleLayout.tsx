@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Transition from '../Transition';
 import { useContext, useRef, useState } from 'react';
+// @ts-ignore
+import logo from '../../assets/logo.svg';
 import {
   ModuleFrequency,
   ModuleInfo,
@@ -8,7 +10,7 @@ import {
 } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import MODULE_ORDERING, {
-  Category,
+  Chapter,
   SECTION_LABELS,
 } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
@@ -17,16 +19,11 @@ import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext, { UserLang } from '../../context/UserDataContext';
-import {
-  NavLinkGroup,
-  ModuleSidebarNav,
-} from './ModuleSidebarNav/ModuleSidebarNav';
-import { graphqlToModuleLinks } from '../../utils';
+import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
+import { graphqlToModuleLinks } from '../../utils/utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
-import Sidebar, { SidebarLogo } from '../Sidebar/Sidebar';
-import SidebarBottomButtons from '../Sidebar/SidebarBottomButtons';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -80,7 +77,7 @@ const Breadcrumbs = () => {
   return (
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
       <Link
-        to="/"
+        to="/dashboard/"
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
         Home
@@ -97,7 +94,7 @@ const Breadcrumbs = () => {
         />
       </svg>
       <Link
-        to={`/${module.section}`}
+        to={`/${module.section}/`}
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
         {SECTION_LABELS[module.section]}
@@ -115,6 +112,64 @@ const Breadcrumbs = () => {
       </svg>
       <span className="text-gray-500 whitespace-no-wrap">{module.title}</span>
     </nav>
+  );
+};
+
+const SidebarBottomButtons = ({ onContactUs }) => {
+  const languages = {
+    showAll: 'All',
+    cpp: 'C++',
+    java: 'Java',
+    py: 'Python',
+  };
+  const nextLang: { [key: string]: UserLang } = {
+    showAll: 'cpp',
+    cpp: 'java',
+    java: 'py',
+    py: 'cpp',
+  };
+  const userSettings = useContext(UserDataContext);
+  return (
+    <>
+      <div className="flex-shrink-0 border-t border-gray-200 flex">
+        <button
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          onClick={() => userSettings.setLang(nextLang[userSettings.lang])}
+        >
+          <svg
+            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          >
+            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          Language: {languages[userSettings.lang]}
+        </button>
+      </div>
+      <div className="flex-shrink-0 border-t border-gray-200 flex">
+        <button
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          onClick={onContactUs}
+        >
+          <svg
+            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          >
+            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+          Contact Us
+        </button>
+      </div>
+    </>
   );
 };
 
@@ -224,8 +279,9 @@ export default function ModuleLayout({
   const { userProgressOnModules, setModuleProgress, lang } = useContext(
     UserDataContext
   );
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isContactUsActive, setIsContactUsActive] = useState(false);
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[module.id]) ||
     'Not Started';
@@ -270,23 +326,101 @@ export default function ModuleLayout({
         show={isConfettiActive}
         onDone={() => setIsConfettiActive(false)}
       />
-      <Sidebar
-        activeModule={module}
-        isMobileNavOpen={isMobileNavOpen}
-        onMobileNavStateChange={setIsMobileNavOpen}
-        desktopSidebarContent={<ModuleSidebarNav />}
-        mobileSidebarContent={
-          <>
-            <SidebarLogo />
-            <div className="mt-4 px-6">
-              <Breadcrumbs />
+      <Transition show={isMobileNavOpen} timeout={300}>
+        <div className="lg:hidden">
+          <div className="fixed inset-0 flex z-40">
+            <Transition
+              enter="transition-opacity ease-linear duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity ease-linear duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div
+                className="fixed inset-0"
+                onClick={() => setIsMobileNavOpen(false)}
+              >
+                <div className="absolute inset-0 bg-gray-600 opacity-75" />
+              </div>
+            </Transition>
+
+            <Transition
+              enter="transition ease-in-out duration-300 transform"
+              enterFrom="-translate-x-full"
+              enterTo="translate-x-0"
+              leave="transition ease-in-out duration-300 transform"
+              leaveFrom="translate-x-0"
+              leaveTo="-translate-x-full"
+            >
+              <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+                <div className="absolute top-0 right-0 -mr-14 p-1">
+                  <button
+                    className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                    aria-label="Close sidebar"
+                    onClick={() => setIsMobileNavOpen(false)}
+                  >
+                    <svg
+                      className="h-6 w-6 text-white"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 h-0 pt-5 overflow-y-auto">
+                  <Link className="flex-shrink-0 flex items-center px-4" to="/">
+                    <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+                  </Link>
+                  <div className="mt-4 px-6">
+                    <Breadcrumbs />
+                  </div>
+                  <nav className="mt-6">
+                    <SidebarNav />
+                  </nav>
+                </div>
+                <SidebarBottomButtons
+                  onContactUs={() => {
+                    setIsMobileNavOpen(false);
+                    setIsContactUsActive(true);
+                  }}
+                />
+              </div>
+            </Transition>
+            <div className="flex-shrink-0 w-14">
+              {/* Force sidebar to shrink to fit close icon */}
             </div>
-            <nav className="mt-6">
-              <ModuleSidebarNav />
+          </div>
+        </div>
+      </Transition>
+      {/* Static sidebar for desktop */}
+      <div className="hidden lg:flex lg:flex-shrink-0">
+        <div
+          className="flex flex-col border-r border-gray-200 bg-white"
+          style={{ width: '20rem' }}
+        >
+          <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
+            <Link className="flex items-center flex-shrink-0 px-4" to="/">
+              <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+            </Link>
+            {/* Sidebar component, swap this element with another sidebar if you like */}
+            <nav className="mt-2 flex-1 bg-white">
+              <SidebarNav />
             </nav>
-          </>
-        }
-      >
+          </div>
+          <SidebarBottomButtons
+            onContactUs={() => setIsContactUsActive(true)}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
@@ -410,7 +544,12 @@ export default function ModuleLayout({
             </div>
           </div>
         </main>
-      </Sidebar>
+      </div>
+      <ContactUsSlideover
+        isOpen={isContactUsActive}
+        onClose={() => setIsContactUsActive(false)}
+        activeModule={module}
+      />
     </ModuleLayoutContext.Provider>
   );
 }

@@ -53,6 +53,7 @@ const sources = {
 };
 
 export const sourceTooltip = {
+  AoPS: 'Art of Problem Solving',
   CPH: "Book - Competitive Programmer's Handbook",
   PAPS: 'Book - Principles of Algorithmic Problem Solving',
   IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
@@ -77,6 +78,7 @@ export const sourceTooltip = {
   POI: 'Polish Olympiad in Informatics',
   SO: 'StackOverflow',
   KA: 'KhanAcademy',
+  USACO: 'USA Computing Olympiad',
   'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',

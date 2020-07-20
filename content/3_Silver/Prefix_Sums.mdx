@@ -10,8 +10,7 @@ frequency: 3
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     sample: [
       new Problem("YS", "Static Range Sum", "static_range_sum", "Easy", false, [], "equivalent to [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646)"),
     ],
@@ -24,6 +23,7 @@ export const metadata = {
       new Problem("Old Bronze", "Haybale Stacking", "104", "Easy", false, [], "**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array. **Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)"),
       new Problem("CSES", "Subarray Sums II", "1661", "Easy", false, [], "Find prefix sums, then enumerate the right end of the interval, while maintaining a multiset of all prefix sum values that currently exist to the left"),
       new Problem("CSES", "Subarray Divisibility", "1662", "Easy", false, [], "Find prefix sums modulo n, then find number of pairs of equal prefix sums"),
+      new Problem("Gold", "Help Yourself", "1018", "Very Hard", false, [], ""),
     ],
     maxsum: [
       new Problem("CSES", "Max Subarray Sum", "1643", "Easy", false, ["Prefix Sums"], "Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left"),
@@ -46,7 +46,6 @@ export const metadata = {
       new Problem("Google KickStart", "Candies (Test Set 1)", "https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d", "Easy", false, ["Prefix Sums"], ""),
       new Problem("AC", "Multiple of 2019", "https://atcoder.jp/contests/abc164/tasks/abc164_d", "Hard", false, ["Prefix Sums"], "Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."),
     ],
-  }
 };
 
 
@@ -58,7 +57,7 @@ export const metadata = {
 
 ## Introduction
 
-<Problems problems={metadata.problems.sample} />
+<Problems problems={problems.sample} />
 
 Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to compute the value of
 $$
@@ -205,13 +204,13 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 ### Problems
 
-<Problems problems={metadata.problems.cum} />
+<Problems problems={problems.cum} />
 
 ## Max Subarray Sum
 
 Now we'll look at some extensions.
 
-<Problems problems={metadata.problems.maxsum} />
+<Problems problems={problems.maxsum} />
 
 This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
 
@@ -225,11 +224,11 @@ Consider the desired maximum subarray. As you go along from left to right, the p
 
 Similar to prefix sums, you can also take prefix minimum or maximum; but *you cannot* answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
 
-<Problems problems={metadata.problems.related} />
+<Problems problems={problems.related} />
 
 ## 2D Prefix Sums
 
-<Problems problems={metadata.problems.sample2} />
+<Problems problems={problems.sample2} />
 
 Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a $N$ rows by $M$ columns matrix in two dimensions? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
 
@@ -474,7 +473,7 @@ as expected.
 
 Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $O(1)$ per query after an $O(NM)$ preprocessing.
 
-<Problems problems={metadata.problems.cum2} />
+<Problems problems={problems.cum2} />
 
 ## More Complex Applications
 
@@ -507,4 +506,4 @@ $$
 
 Which is what we were looking for!
 
-<Problems problems={metadata.problems.complex} />
+<Problems problems={problems.complex} />

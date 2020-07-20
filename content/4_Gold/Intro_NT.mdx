@@ -11,8 +11,7 @@ frequency: 1
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     sample: [
       new Problem("CF", "VK Cup Wildcard R1 C - Prime Factorization", "problemset/problem/162/C", "Intro|Very Easy", false, []),
     ],
@@ -21,27 +20,26 @@ export const metadata = {
     ],
     general: [
       new Problem("AC", "Div Game", "https://atcoder.jp/contests/abc169/tasks/abc169_d", "Easy", false, ["Prime Factorization"], "Prime factorize the given number. Consider each prime in the factorization separately. For each prime, decrement the exponent by 1 the first time, 2 the second time, and so on, until we can no longer continue without repeating a previously used exponent."),
+      new Problem("CF", "Orac and LCM", "contest/1349/problem/A", "Normal", false, ["Prime Factorization"], "Prime factorize each number. For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer."),
       new Problem("Gold", "Cow Poetry", "897", "Normal", false, ["Knapsack", "Exponentiation"], "First consider the case where there are only two lines with the same class."),
       new Problem("Gold", "Exercise", "1043", "Normal", false, ["Knapsack", "Prime Factorization"], "Prime factorize $K$."),
-      new Problem("CF", "Orac and LCM", "contest/1349/problem/A", "Normal", false, ["Prime Factorization"], "Prime factorize each number. For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer.")
     ],
-  }
 };
-
-## Additional Resources
 
 <Resources>
   <Resource source="IUSACO" title="13 - Elementary Number Theory">module is based off this</Resource>
   <Resource source="AoPS" title="Alcumus" url="https://artofproblemsolving.com/alcumus/problem" starred>practice problems, set focus to number theory!</Resource>
   <Resource source="AoPS" title ="Intro to NT" url="https://artofproblemsolving.com/store/item/intro-number-theory?gtmlist=Bookstore_AoPS_Side">good book :D</Resource>
   <Resource source="CPH" title="21.1, 21.2 - Number Theory">primes and factors, modular arithmetic</Resource>
-  <Resource source="PAPS" title="16 - Number Theory">same as below</Resource>
-  <Resource source="CF" title="CodeNCode - Number Theory Course" url="blog/entry/77137">lots of advanced stuff you don't need to know at this level</Resource>
+  <Resource source="PAPS" title="16.1, 16.2, 16.4 - Number Theory"></Resource>
 </Resources>
+
+<!-- <Resource source="CF" title="CodeNCode - Number Theory Course" url="blog/entry/77137">lots of advanced stuff you don't need to know at this level</Resource>
+   -->
 
 ## Prime Factorization
 
-<Problems problems={metadata.problems.sample} />
+<Problems problems={problems.sample} />
 
 A number $a$ is called a **divisor** or a **factor** of a number $b$ if $b$ is divisible by $a$, which means that there exists some integer $k$ such that $b = ka$. Conventionally, $1$ and $n$ are considered divisors of $n$. A number $n > 1$ is **prime** if its only divisors are $1$ and $n$. Numbers greater than \(1\) that are not prime are **composite**.
 
@@ -69,8 +67,9 @@ Let's look at an example of how this algorithm works, for $n = 252$.
 
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
+## Divisibility
 
-## GCD
+### GCD
 
 The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two numbers, we use the **Euclidean Algorithm**, which is as follows:
 
@@ -119,7 +118,7 @@ proof?
 
 </IncompleteSection>
 
-## LCM
+### LCM
 
 The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest integer divisible by both $a$ and $b$.
 
@@ -165,7 +164,7 @@ $$
 a^b \bmod {m} = (a \bmod m)^b \bmod m
 $$
 
-## Modular Exponentiation
+### Modular Exponentiation
 
 <Resources>
 	<Resource source="cp-algo" title="Binary Exponentiation" url="algebra/binary-exp.html"> </Resource>
@@ -197,7 +196,7 @@ long long binpow(long long x, long long n, long long m) {
 
 </LanguageSection>
 
-## Modular Inverse
+### Modular Inverse
 
 We'll only consider **prime** moduli here. Division can be performed using modular inverses.
 
@@ -205,9 +204,15 @@ We'll only consider **prime** moduli here. Division can be performed using modul
 	<Resource source="cp-algo" title="Modular Multiplicative Inverse" url="algebra/module-inverse.html">Various ways to take modular inverse</Resource>
 </Resources>
 
-### With Exponentiation
+#### With Exponentiation
 
-To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. (The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with **Fermat's Little Theorem**, but we will not explain the theorem here).
+To find the modular inverse of some number, simply raise it to the power of $\mathrm{MOD} - 2$, where $\mathrm{MOD}$ is the modulus being used, using the function described above. The reasons for raising the number to $\mathrm{MOD} - 2$ can be explained with **Fermat's Little Theorem**.
+
+<IncompleteSection>
+
+explain theorem?
+
+</IncompleteSection>
 
 The modular inverse is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$.
 
@@ -215,16 +220,14 @@ Because it takes $\mathcal{O}(\log \mathrm{MOD})$ time to compute a modular inve
 
 Also, one must always ensure that they do not attempt to divide by 0. Be aware that after applying modulo, a nonzero number can become zero, so be very careful when dividing by non-constant values.
 
-<IncompleteSection />
-
-### With Extended Euclidean Algorithm
+#### With Extended Euclidean Algorithm
 
 <Optional>
-  
+
 See the module in the [Advanced](../adv/extend-euclid) section.
 
 </Optional>
 
 ## Problems
 
-<Problems problems={metadata.problems.general} />
+<Problems problems={problems.general} />
