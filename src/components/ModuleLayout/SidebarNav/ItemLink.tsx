@@ -48,8 +48,7 @@ const LinkWithProgress = styled.span`
 const StyledLink = styled.span`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
-  ${({ isActive, activeTextStyle }) =>
-    isActive ? activeTextStyle : tw`text-gray-600`}
+  ${({ textStyle }) => textStyle}
   
 
   &::before {
@@ -116,6 +115,10 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
     lineColorStyle = tw`bg-blue-300`;
     dotColorStyle = tw`bg-blue-300`;
     activeTextStyle = tw`text-blue-700 font-medium`;
+  } else if (progress === 'Ignored') {
+    lineColorStyle = tw`bg-gray-100`;
+    dotColorStyle = tw`bg-gray-100`;
+    activeTextStyle = tw`text-gray-400 font-medium`;
   }
 
   return (
@@ -128,7 +131,13 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
           isActive={isActive}
           ref={itemRef}
           dotColorStyle={dotColorStyle === tw`bg-gray-200`}
-          activeTextStyle={activeTextStyle}
+          textStyle={
+            isActive
+              ? activeTextStyle
+              : progress === 'Ignored'
+              ? tw`text-gray-400`
+              : tw`text-gray-600`
+          }
         >
           {link.title}
         </StyledLink>

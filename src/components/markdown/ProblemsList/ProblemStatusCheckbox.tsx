@@ -23,7 +23,7 @@ export default function ProblemStatusCheckbox({
     'Not Attempted': 'bg-gray-200',
     Solving: 'bg-yellow-300',
     Solved: 'bg-green-500',
-    "Can't Solve": 'bg-red-500',
+    Ignored: 'bg-red-100',
     Skipped: 'bg-blue-300',
   };
   const handleClick = () => {

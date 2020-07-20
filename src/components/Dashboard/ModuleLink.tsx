@@ -108,43 +108,40 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
 
   let lineColorStyle = tw`bg-gray-200`;
   let dotColorStyle = tw`bg-white`;
-  let activeTextStyle = tw`text-blue-700 font-medium`;
-
-  // if (isActive) {
-  //   lineColorStyle = tw`bg-blue-700`;
-  //   dotColorStyle = tw`bg-blue-700`;
-  // }
 
   if (progress === 'Reading') {
     lineColorStyle = tw`bg-yellow-400`;
     dotColorStyle = tw`bg-yellow-400`;
-    activeTextStyle = tw`text-yellow-700 font-medium`;
   } else if (progress === 'Practicing') {
     lineColorStyle = tw`bg-orange-400`;
     dotColorStyle = tw`bg-orange-400`;
-    activeTextStyle = tw`text-orange-700 font-medium`;
   } else if (progress === 'Complete') {
     lineColorStyle = tw`bg-green-400`;
     dotColorStyle = tw`bg-green-400`;
-    activeTextStyle = tw`text-green-700 font-medium`;
   } else if (progress === 'Skipped') {
     lineColorStyle = tw`bg-blue-300`;
     dotColorStyle = tw`bg-blue-300`;
-    activeTextStyle = tw`text-blue-700 font-medium`;
+  } else if (progress === 'Ignored') {
+    lineColorStyle = tw`bg-gray-100`;
+    dotColorStyle = tw`bg-gray-100`;
   }
 
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
       dotColorStyle={dotColorStyle}
-      small={progress === 'Not Started'}
+      small={progress === 'Not Started' || progress === 'Ignored'}
     >
       <Link to={link.url}>
         <StyledLink
           dotColorStyle={dotColorStyle === tw`bg-gray-200`}
           className="group"
         >
-          <p className="text-gray-600 group-hover:text-blue-800 transition duration-150 ease-in-out">
+          <p
+            className={`${
+              progress === 'Ignored' ? 'text-gray-400' : 'text-gray-600'
+            } group-hover:text-blue-800 transition duration-150 ease-in-out`}
+          >
             {link.title}
           </p>
           <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out">

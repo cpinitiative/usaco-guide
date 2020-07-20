@@ -46,7 +46,8 @@ export type ModuleProgress =
   | 'Reading'
   | 'Practicing'
   | 'Complete'
-  | 'Skipped';
+  | 'Skipped'
+  | 'Ignored';
 
 export const ModuleProgressOptions: ModuleProgress[] = [
   'Not Started',
@@ -54,4 +55,5 @@ export const ModuleProgressOptions: ModuleProgress[] = [
   'Practicing',
   'Complete',
   'Skipped',
+  'Ignored',
 ];
