@@ -28,6 +28,12 @@ export const problems = {
     ]
 };
 
+<Warning>
+
+This is **not** built into Python. The Python [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) stores keys in the same order as they were inserted in, **not** in sorted order.
+
+</Warning>
+
 <Resources>
   <Resource source="IUSACO" title="4.3 - Sets & Maps">module is based off this</Resource>
   <Resource source="CPH" title="4.2 to 4.4 - Data Structures" starred>sets, maps, set iterators</Resource>
@@ -37,15 +43,16 @@ export const problems = {
 
 In **ordered** sets and maps, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set or map. Accessing or removing the next key higher or lower than some input $k$ is also supported.
 
-(**not** the same as [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) in Python ...)
-
 ## Ordered Sets
 
 <LanguageSection>
 
 <CPPSection>
 
-As well as those supported by `unordered_set`, the ordered set also allows four additional operations: `begin()`, which returns an iterator to the lowest element in the set, `end()`, which returns an iterator to the highest element in the set, `lower_bound`, which returns an iterator to the least element greater than or equal to some element `k`, and `upper_bound`, which returns an iterator to the least element strictly greater than some element `k`.
+In addition to the `unordered_set` operations mentioned in the prerequisite module, the ordered `set` also allows: 
+
+  - `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
+  - `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
 
 ```cpp
 set<int> s;
@@ -88,7 +95,7 @@ System.out.println(set.higher(23); // ERROR, no such element exists
 
 </LanguageSection>
 
-One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an **order statistic tree** (see Gold - Point Update Range Sum).
+One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an [order statistic tree](../gold/PURS#order-statistic-tree).
 
 ## Ordered Maps
 
@@ -96,7 +103,10 @@ One limitation of the ordered set is that we can't efficiently access the $k^{th
 
 <CPPSection>
 
-The ordered map supports all of the operations that an `unordered_map` supports, and additionally supports `lower_bound` and `upper_bound`, returning the iterator pointing to the lowest entry not less than the specified key, and the iterator pointing to the lowest entry strictly greater than the specified key respectively.
+In addition to the `unordered_map` operations mentioned in the prerequisite module, the ordered `map` also allows: 
+
+ - `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
+ - `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
 
 ```cpp
 map<int, int> m;
@@ -144,7 +154,10 @@ A **multiset** is a sorted set that allows multiple copies of the same element.
 
 <CPPSection>
 
-In addition to all of the regular set operations, the multiset `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest. The `begin()`, `end()`, `lower_bound()`, and `upper_bound()` operations work the same way they do in the normal sorted set. **Warning:** If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
+In addition to all of the regular set operations, 
+
+ - the `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest. 
+ - If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
 
 
 ```cpp
@@ -198,11 +211,26 @@ static void remove(int x){
 
 </LanguageSection>
 
+## Using Iterators
+
+<LanguageSection>
+
+<CPPSection>
+
+next(), prev(), ++, --
+
+
+</CPPSection>
+
+</LanguageSection>
+
+<IncompleteSection />
+
 ## Priority Queues
 
 A **priority queue** supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue. Like sets, priority is based on a **comparator function**.
 
-Of course, all of these functions are supported by multisets, but priority queues are simpler (so they are much faster).
+Of course, all of these functions are supported by multisets, but priority queues are simpler and faster.
 
 <LanguageSection>
 
@@ -246,31 +274,21 @@ pq.add(6); // [7, 6, 5]
 
 </LanguageSection>
 
-## Using Iterators
+## Introductory Problems
 
+<Problems problems={problems.standard} />
+
+## Harder Example: Bit Inversions
+
+<Problems problems={problems.sample} />
+
+### Solution
+
+<Spoiler title="Solution">
 
 <LanguageSection>
 
 <CPPSection>
-
-next(), prev(), ++, --
-
-
-</CPPSection>
-
-</LanguageSection>
-
-<IncompleteSection />
-
-## Easy
-
-<Problems problems={problems.standard} />
-
-## Example: Using Iterators
-
-<Problems problems={problems.sample} />
-
-<Spoiler title="Solution">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -322,7 +340,7 @@ Note that `multiset` has a high constant factor, so replacing `ret` with an arra
 #include <bits/stdc++.h>
 using namespace std;
 
-#define sz(x) (x).size()
+#define sz(x) (int)(x).size()
 
 string s;
 int m;
@@ -361,10 +379,13 @@ int main() {
 }
 ```
 
+
+</CPPSection>
+
+</LanguageSection>
+
 </Spoiler>
 
-<IncompleteSection />
-
-## Problems
+## Harder Problems
 
 <Problems problems={problems.general} />
