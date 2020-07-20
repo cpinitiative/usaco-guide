@@ -1,9 +1,9 @@
 ---
-id: gen-perm
-title: "Generating Permutations"
+id: complete-rec
+title: "Complete Search with Recursion"
 author: Darren Yao, Sam Zhang
-description: "Methods to generate all permutations of an array, a common technique associated with complete search."
-frequency: 1
+description: "Includes generating subsets and permutations."
+frequency: 2
 prerequisites:
  - intro-complete
 ---
@@ -11,17 +11,38 @@ prerequisites:
 import { Problem } from "../models";
 
 export const problems = {
-	permSam: [
-	  new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
-	],
-	ex: [
-	  new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], ""),
-	],
-	perm: [
-      new Problem("CSES", "Chessboard and Queens", "1624", "Normal", false, [], "Recursively backtrack. See CSES book for more details."),
-	  new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
-	]
+  subset: [
+    new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion", "Subsets"], "all $2^n$ subsets"),
+  ],
+  permSam: [
+    new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "all perms of string"),
+  ],
+  ex: [
+    new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], ""),
+  ],
+  back: [
+    new Problem("CSES", "Chessboard and Queens", "1624", "Normal", false, [], "Recursively backtrack. See CSES book for more details."),
+    new Problem("CSES", "Grid Paths", "1625", "Insane", false, [], "Recursively backtrack. See CSES book for more details."),
+  ],
+  gen: [
+    new Problem("Bronze", "Back & Forth", "857", "Hard", false, [], "exponential time going through all possibilities"), // 99.63
+    new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
+  ],
 };
+
+## Generating Subsets
+
+<Resources>
+	<Resource source="CPH" title="5.1 - Generating Subsets" starred> </Resource>
+</Resources>
+
+<Problems problems={problems.subset} />
+
+## Generating Permutations
+
+<Resources>
+	<Resource source="CPH" title="5.2 - Generating Permutations" starred> </Resource>
+</Resources>
 
 <Problems problems={problems.permSam} />
 
@@ -33,7 +54,7 @@ A **permutation** is a reordering of a list of elements. Some problems will ask 
   <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
 </Resources>
 
-## Lexicographical Order
+### Lexicographical Order
 
 This term is mentioned quite frequently:
 
@@ -55,7 +76,7 @@ Notice that the list starts with permutations beginning with 1 (just like a dict
 
 Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
 
-## Checking Permutations in Lexicographical Order 
+### Checking Permutations in Lexicographical Order 
 
 What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
 
@@ -63,13 +84,13 @@ What's going to be in the `check` function depends on the problem, but it should
 
 <CPPSection>
 
-### Method 1
+#### Method 1
 
 ($O(N\cdot N!)$ code)
 
 <IncompleteSection />
 
-### Method 2
+#### Method 2
 
 <Resources>
 	<Resource source="Mark Nelson" title="Next Permutation" url="https://marknelson.us/posts/2002/03/01/next-permutation.html"> </Resource>
@@ -121,6 +142,18 @@ public class Test {
 
 </LanguageSection>
 
-### Problems
+## Backtracking
 
-<Problems problems={problems.perm} />
+<Problems problems={problems.back} />
+
+<Resources>
+	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning"> </Resource>
+</Resources>
+
+No (current) bronze problem should require pruning ...
+
+## Problems
+
+<Problems problems={problems.gen} />
+
+<IncompleteSection />
