@@ -78,7 +78,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       name: "Complete Search",
       items: [
         "complete-search",
-        "gen-perm",
       ]
     },
     {
