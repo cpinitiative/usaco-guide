@@ -124,7 +124,7 @@ export default function Template(props) {
                     <div className="mt-6">
                       <DashboardProgress
                         {...problemsProgressInfo}
-                        total={section.length}
+                        total={problemIDs.length}
                       />
                     </div>
                   </div>
