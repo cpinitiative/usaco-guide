@@ -21,6 +21,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
     },
     {
       name: "Getting Started",
+      description: "Start here if you're new to competitive programming.",
       items: [
         "intro",
         "choosing-lang",
@@ -118,6 +119,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
     },
     {
       name: "Sets & Maps",
+      description: "Maintaining collections of distinct elements.",
       items: [
         "unordered",
         "intro-ordered",
