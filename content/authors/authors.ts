@@ -59,7 +59,7 @@ export const Authors: Author[] = [
     github: "darren-yao",
   },
   {
-    photo: 'michael',
+    photo: 'cow',
     name: 'Siyong Huang',
     title: 'Content Author',
     blurb: '',

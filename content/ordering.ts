@@ -64,7 +64,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "time-comp",
         "simulation",
         "rect-geo",
-        "intro-greedy",
       ]
     },
     {
@@ -83,8 +82,10 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       ]
     },
     {
-      name: "Graphs",
+      name: "Unusual",
       items: [
+        "ad-hoc",
+        "intro-greedy",
         "intro-graphs",
       ]
     }
@@ -220,10 +221,10 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "sp-neg",
         "BCC-2CC",
         "SCC",
-        "eulers-formula",
         "max-flow",
         "eulerian-tours",
         "offline-con",
+        "eulers-formula",
       ]
     },
     {
