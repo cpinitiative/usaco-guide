@@ -70,8 +70,9 @@ export const Authors: Author[] = [
     photo: 'nathanc',
     name: 'Nathan Chen',
     title: 'Content Author',
-    blurb: '',
+    blurb: 'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently',
     codeforces: "nchn27",
     github: "nchn27",
+    email: "nchn27@gmail.com",
   },
 ];
