@@ -65,7 +65,6 @@ export default function Template(props) {
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  console.log(moduleIDs);
   let moduleProgressInfo = getProgressInfo(
     moduleIDs,
     userProgressOnModules,

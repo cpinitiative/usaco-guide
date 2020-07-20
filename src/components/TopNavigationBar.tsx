@@ -1,11 +1,8 @@
 import * as React from 'react';
-// @ts-ignore
-import logo from '../assets/logo.svg';
-// @ts-ignore
-import logoSquare from '../assets/logo-square.png';
 import { useState } from 'react';
 import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import { Link } from 'gatsby';
+import Logo from './Logo';
 
 export default function TopNavigationBar() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -35,7 +32,7 @@ export default function TopNavigationBar() {
               {/*  src={logo}*/}
               {/*  alt="USACO Guide"*/}
               {/*/>*/}
-              <img className="block h-12 w-auto" src={logo} alt="USACO Guide" />
+              <Logo className="block" />
             </Link>
             <div className="hidden lg:ml-6 xl:ml-12 lg:flex space-x-8">
               {links.map((link, idx) => (

@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { graphql, Link, PageProps } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import { useState } from 'react';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import SectionProgressBar from '../components/Dashboard/SectionProgressBar';
 import UserDataContext from '../context/UserDataContext';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import {
