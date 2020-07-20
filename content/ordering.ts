@@ -1,16 +1,18 @@
-// Section -> Category -> Module
+// Section -> Chapter -> Module
 
 export type SectionID = "intro" | "bronze" | "silver" | "gold" | "plat" | "adv";
 
-export type Category = {
+export type Chapter = {
   name: string;
   items: string[];
+  description?: string;
 }
 
-const MODULE_ORDERING: {[key in SectionID]: Category[]} = {
+const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
   "intro": [
     {
       name: "About This Guide",
+      description: "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
       items: [
         "using-this-guide",
         "modules",

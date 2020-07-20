@@ -1,7 +1,12 @@
 export class ModuleLinkInfo {
   public url: string;
 
-  constructor(public id: string, public section: string, public title: string) {
+  constructor(
+    public id: string,
+    public section: string,
+    public title: string,
+    public description?: string
+  ) {
     this.url = `/${section}/${id}`;
   }
 }

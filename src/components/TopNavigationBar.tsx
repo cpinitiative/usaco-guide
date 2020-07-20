@@ -1,26 +1,26 @@
 import * as React from 'react';
 // @ts-ignore
-import logo from '../../assets/logo.svg';
+import logo from '../assets/logo.svg';
 // @ts-ignore
-import logoSquare from '../../assets/logo-square.png';
+import logoSquare from '../assets/logo-square.png';
 import { useState } from 'react';
-import { SECTION_LABELS, SECTIONS } from '../../../content/ordering';
+import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import { Link } from 'gatsby';
 
-export default function DashboardNav() {
+export default function TopNavigationBar() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const links = [
     {
       label: 'Dashboard',
-      url: '/dashboard',
+      url: '/dashboard/',
     },
     ...SECTIONS.map(section => ({
       label: SECTION_LABELS[section],
-      url: `/${section}`,
+      url: `/${section}/`,
     })),
   ];
   return (
-    <nav className="bg-white shadow">
+    <nav className="bg-white shadow relative">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex px-2 lg:px-0">

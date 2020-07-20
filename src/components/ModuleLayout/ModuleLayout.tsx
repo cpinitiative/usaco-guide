@@ -10,7 +10,7 @@ import {
 } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import MODULE_ORDERING, {
-  Category,
+  Chapter,
   SECTION_LABELS,
 } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
@@ -20,7 +20,7 @@ import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext, { UserLang } from '../../context/UserDataContext';
 import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
-import { graphqlToModuleLinks } from '../../utils';
+import { graphqlToModuleLinks } from '../../utils/utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
@@ -77,7 +77,7 @@ const Breadcrumbs = () => {
   return (
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
       <Link
-        to="/dashboard"
+        to="/dashboard/"
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
         Home
@@ -94,7 +94,7 @@ const Breadcrumbs = () => {
         />
       </svg>
       <Link
-        to={`/${module.section}`}
+        to={`/${module.section}/`}
         className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
       >
         {SECTION_LABELS[module.section]}

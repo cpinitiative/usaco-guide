@@ -1,5 +1,5 @@
-import MODULE_ORDERING from '../content/ordering';
-import { ModuleInfo, ModuleLinkInfo } from './models/module';
+import MODULE_ORDERING from '../../content/ordering';
+import { ModuleInfo, ModuleLinkInfo } from '../models/module';
 
 export const getModule = (allModules, division) => {
   return MODULE_ORDERING[division].map(k => {
@@ -16,6 +16,7 @@ export const getModule = (allModules, division) => {
             slug: `/${division}/${allModules[k2 as string].frontmatter.id}`,
           };
         }),
+        description: k.description,
       };
     } else {
       if (!allModules.hasOwnProperty(k)) {

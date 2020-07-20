@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
 import { SECTION_LABELS } from '../../content/ordering';
-import { graphqlToModuleInfo } from '../utils';
+import { graphqlToModuleInfo } from '../utils/utils';
 import SEO from '../components/seo';
 import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
 import { useContext } from 'react';

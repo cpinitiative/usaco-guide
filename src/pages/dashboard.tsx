@@ -12,32 +12,9 @@ import {
   moduleIDToURLMap,
   SECTION_LABELS,
 } from '../../content/ordering';
-import DashboardNav from '../components/Dashboard/DashboardNav';
+import TopNavigationBar from '../components/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
-
-const getProgressInfo = (
-  keys: string[],
-  data: { [key: string]: string },
-  completedValues: string[],
-  inProgressValues: string[],
-  skippedValues: string[],
-  notStartedValues: string[]
-) => {
-  let res = {
-    completed: 0,
-    inProgress: 0,
-    skipped: 0,
-    notStarted: 0,
-  };
-  for (let key of keys) {
-    if (!(key in data)) res.notStarted++;
-    else if (completedValues.includes(data[key])) res.completed++;
-    else if (inProgressValues.includes(data[key])) res.inProgress++;
-    else if (skippedValues.includes(data[key])) res.skipped++;
-    else if (notStartedValues.includes(data[key])) res.notStarted++;
-  }
-  return res;
-};
+import getProgressInfo from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
   const { modules } = props.data as any;
@@ -128,7 +105,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100">
-        <DashboardNav />
+        <TopNavigationBar />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
