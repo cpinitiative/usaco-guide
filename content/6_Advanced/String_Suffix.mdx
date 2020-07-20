@@ -251,18 +251,59 @@ Using these two pieces of information, we can construct the suffix tree from the
 <CPPSection>
 
 ```cpp
-//untested
-int N, sa[MN], lcp[MN];//length of string, suffix array, lcp array: lcp[i] stores longest common prefix of sa[i] and sa[i+1]
+//lightly tested
 
+int N;
+char s[MN];
+int sa[MN], lcp[MN]; //suffix and lcp array
 struct Edge
 {
 public:
 	int n, l, r; //node, edge covers s[l..r]
+	Edge(int n=-1, int l=-1, int r=-1):n(n), l(l), r(r) {}
 	explicit operator bool() const {return n!=-1;}
-} c[MN*2][26]; // edges of suffix tree
-
+} c[MN*2][MK]; // edges of suffix tree
+int d[MN*2];//length of string in suffix tree
+int q[MN*2], Q, ctr, rm[MN];//q is used as stack. ctr counts number of nodes in tree
+std::stack<int> ins[MN];
 void build_tree()
 {
+	q[0]=N; Q=0;
+	for(int i=N-1;i>=1;--i)
+	{
+		while(Q&&lcp[q[Q]]>lcp[i])--Q;
+		if(lcp[q[Q]]!=lcp[i]) ++rm[q[Q]];
+		q[++Q]=i;
+	}
+	q[0]=0, Q=0;
+	for(int i=1;i<N;++i)
+	{
+		while(Q&&lcp[q[Q]]>lcp[i])--Q;
+		if(lcp[q[Q]]!=lcp[i]) ins[q[Q]].push(i);
+		q[++Q]=i;
+	}
+	q[0]=0, Q=0;
+	auto nn=[&](int l, int dd)
+	{
+		++ctr;
+		d[ctr]=dd;
+		int p=q[Q], r=l+dd;
+		l+=d[p];
+		c[p][s[l]]={ctr,l,r};
+		return ctr;
+	};
+	for(int i=0;i<N;++i)
+	{
+		Q-=rm[i];
+		assert(Q>=0);
+		for(int x;!ins[i].empty();ins[i].pop())
+		{
+			x=ins[i].top();
+			x=nn(sa[x], lcp[x]);
+			q[++Q]=x;
+		}
+		nn(sa[i], N-sa[i]);
+	}
 }
 ```
 
