@@ -71,7 +71,7 @@ export const Authors: Author[] = [
     photo: 'cow',
     name: 'Siyong Huang',
     title: 'Content Author',
-    blurb: '',
+    blurb: 'Siyong Huang is a two-time USACO Finalist.',
     codeforces: "frodakcin",
     github: "frodakcin",
   },
