@@ -52,7 +52,7 @@ export const Authors: Author[] = [
     photo: 'darren',
     name: 'Darren Yao',
     title: 'Content Author',
-    blurb: '',
+    blurb: 'Darren Yao is a USACO Platinum competitor and author of the textbook An Introduction to the USA Computing Olympiad.',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
     codeforces: "darren_yao",

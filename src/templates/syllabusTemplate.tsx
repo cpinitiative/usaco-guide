@@ -61,7 +61,10 @@ export default function Template(props) {
   const { userProgressOnModules, userProgressOnProblems } = React.useContext(
     UserDataContext
   );
-  const moduleIDs = section.reduce((acc, cur) => [...acc, ...cur.items], []);
+  const moduleIDs = section.reduce(
+    (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
+    []
+  );
   let moduleProgressInfo = getProgressInfo(
     moduleIDs,
     userProgressOnModules,

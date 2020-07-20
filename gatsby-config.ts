@@ -17,6 +17,13 @@ export const plugins = [
       name: `content`,
     },
   },
+  {
+    resolve: `gatsby-source-filesystem`,
+    options: {
+      path: `${__dirname}/src/assets`,
+      name: `assets`,
+    },
+  },
   `gatsby-plugin-sharp`,
   {
     resolve: `gatsby-plugin-mdx`,

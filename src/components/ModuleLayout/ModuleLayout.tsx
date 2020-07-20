@@ -1,29 +1,25 @@
 import * as React from 'react';
 import Transition from '../Transition';
 import { useContext, useRef, useState } from 'react';
-// @ts-ignore
-import logo from '../../assets/logo.svg';
 import {
   ModuleFrequency,
   ModuleInfo,
   ModuleLinkInfo,
 } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
-import MODULE_ORDERING, {
-  Chapter,
-  SECTION_LABELS,
-} from '../../../content/ordering';
+import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext, { UserLang } from '../../context/UserDataContext';
-import { NavLinkGroup, SidebarNav } from './SidebarNav/SidebarNav';
+import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import Logo from '../Logo';
 
 const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
@@ -377,7 +373,7 @@ export default function ModuleLayout({
                 </div>
                 <div className="flex-1 h-0 pt-5 overflow-y-auto">
                   <Link className="flex-shrink-0 flex items-center px-4" to="/">
-                    <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+                    <Logo />
                   </Link>
                   <div className="mt-4 px-6">
                     <Breadcrumbs />
@@ -407,8 +403,8 @@ export default function ModuleLayout({
           style={{ width: '20rem' }}
         >
           <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
-            <Link className="flex items-center flex-shrink-0 px-4" to="/">
-              <img className="h-12 w-auto" src={logo} alt="USACO Guide" />
+            <Link className="flex items-center flex-shrink-0 px-4 pb-2" to="/">
+              <Logo />
             </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <nav className="mt-2 flex-1 bg-white">
