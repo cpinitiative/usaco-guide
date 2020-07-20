@@ -469,7 +469,7 @@ export default function ModuleLayout({
                       {module.title}
                     </h1>
                     <p className={`text-gray-500`}>
-                      Author{module.author.indexOf(',') != -1 ? 's' : ''}:{' '}
+                      Author{module.author.indexOf(',') !== -1 ? 's' : ''}:{' '}
                       {module.author}
                     </p>
                   </div>
