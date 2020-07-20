@@ -319,8 +319,8 @@ export default function IndexPage(props: PageProps) {
               </div>
               <div className="ml-3">
                 <p className="text-sm leading-5 text-yellow-700 text-left">
-                  This guide is not a syllabus. Topics on this guide reflect{' '}
-                  <i>past</i> problems, not future problems.
+                  This guide is not an official syllabus. Topics on this guide
+                  reflect <i>past</i> problems, not future problems.
                 </p>
               </div>
             </div>
@@ -507,15 +507,14 @@ export default function IndexPage(props: PageProps) {
               <div>
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900">
-                    Is this a Syllabus?
+                    Is this an official syllabus?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      <b>No. This guide is NOT a syllabus.</b> USACO does not
-                      have an official syllabus. This guide merely lists topics
-                      that have <i>historically</i> appeared in USACO contests;
-                      it makes no guarantees about the topics in future USACO
-                      contests.
+                      <b>No, USACO does not have an official syllabus.</b>
+                      This guide merely lists topics that have{' '}
+                      <i>historically</i> appeared in USACO contests; it makes
+                      no guarantees about the topics in future USACO contests.
                     </p>
                   </dd>
                 </div>
