@@ -94,9 +94,10 @@ export default function LicensePage(props: PageProps) {
             >
               nathan.r.wang@gmail.com
             </a>
-            . While USACO Director Dr. Brian Dean will make all final decisions,
-            please do not contact him directly. Instead, direct any questions
-            related to the USACO Guide to the coordinator, Nathan Wang.
+            .
+            {/*While USACO Director Dr. Brian Dean will make all final decisions,*/}
+            {/*please do not contact him directly. Instead, direct any questions*/}
+            {/*related to the USACO Guide to the coordinator, Nathan Wang.*/}
           </p>
           <Link to="/" className="block mb-4 underline text-blue-600">
             &larr; Back to Home
