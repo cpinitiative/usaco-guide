@@ -10,12 +10,13 @@ prerequisites:
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     three: [
       new Problem("Gold", "3SUM", "994", "Normal", false, [], ""),
     ],
-  }
+    four: [
+      new Problem("CSES", "Sum of Four Values", "1642", "Normal", false, [], ""),
+    ],
 };
 
 <Resources>
@@ -97,7 +98,7 @@ then the actual size of `g` is always at least `1<<16` (regardless of calls to `
 
 ### Solving ThreeSum
 
-<Problems problems={metadata.problems.three} />
+<Problems problems={problems.three} />
 
 You're supposed to use array since values are small :|
 
@@ -106,9 +107,9 @@ You're supposed to use array since values are small :|
 using namespace std;
  
 void setIO(string name) {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    freopen((name+".in").c_str(),"r",stdin);
-    freopen((name+".out").c_str(),"w",stdout);
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen((name+".in").c_str(),"r",stdin);
+	freopen((name+".out").c_str(),"w",stdout);
 }
  
  
@@ -120,27 +121,31 @@ long long ans[5000][5000];
 vector<int> A;
  
 int main() {
-  setIO("threesum");
-  cin >> N >> Q;
-  A.resize(N); for (int i = 0; i < N; ++i) cin >> A[i];
-  for (int i = 0; i < N; ++i) {
-    gp_hash_table<int,int> g({},{},{},{},{1<<13}); 
-    // initialize with certain capacity, must be power of 2
-    for (int j = i+1; j < N; ++j) {
-      int res = -A[i]-A[j];
-      auto it = g.find(res); 
-      if (it != end(g)) ans[i][j] = it->second;
-      g[A[j]] ++;
-    }
-  }
-  for (int i = N-1; i >= 0; --i) for (int j = i+1; j < N; ++j)
-    ans[i][j] += ans[i+1][j]+ans[i][j-1]-ans[i+1][j-1];
-  for (int i = 0; i < Q; ++i) {
-    int a,b; cin >> a >> b;
-    cout << ans[a-1][b-1] << "\n";
-  }
-  // you should actually read the stuff at the bottom
+	setIO("threesum");
+	cin >> N >> Q;
+	A.resize(N); for (int i = 0; i < N; ++i) cin >> A[i];
+	for (int i = 0; i < N; ++i) {
+		gp_hash_table<int,int> g({},{},{},{},{1<<13}); 
+		// initialize with certain capacity, must be power of 2
+		for (int j = i+1; j < N; ++j) {
+			int res = -A[i]-A[j];
+			auto it = g.find(res); 
+			if (it != end(g)) ans[i][j] = it->second;
+			g[A[j]] ++;
+		}
+	}
+	for (int i = N-1; i >= 0; --i) for (int j = i+1; j < N; ++j)
+		ans[i][j] += ans[i+1][j]+ans[i][j-1]-ans[i+1][j-1];
+	for (int i = 0; i < Q; ++i) {
+		int a,b; cin >> a >> b;
+		cout << ans[a-1][b-1] << "\n";
+	}
+	// you should actually read the stuff at the bottom
 }
 ```
 
 <IncompleteSection />
+
+## Problems
+
+<Problems problems={problems.four} />

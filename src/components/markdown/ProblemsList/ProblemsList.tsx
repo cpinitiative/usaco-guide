@@ -146,10 +146,14 @@ export function ProblemComponent(props: ProblemComponentProps) {
     Insane: 'bg-red-100 text-red-800',
   };
   const [showTags, setShowTags] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
-
+  const id = `problem-${problem.uniqueID}`;
+  React.useEffect(() => {
+    setIsActive(window && window.location && window.location.hash === '#' + id);
+  }, []);
   return (
-    <tr>
+    <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
         <div
           style={{ height: '1.25rem' }}

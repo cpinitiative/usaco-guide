@@ -1,0 +1,61 @@
+---
+id: sliding
+title: "Sliding Window"
+author: Darren Yao, Benjamin Qi
+prerequisites:
+ - intro-ordered
+ - 2P
+description: "Maintaining data over consecutive subarrays."
+frequency: 2
+---
+
+import { Problem } from "../models";
+
+export const problems = {
+    constantSam: [
+      new Problem("LC", "Sliding Window Maximum", "sliding-window-maximum", "Easy", false, [], ""),
+    ],
+    constant: [
+      new Problem("CSES", "Max Subarray Sum II", "1644", "Normal", false, ["prefix-sums"], ""),
+      new Problem("CSES", "Sliding Median", "1076", "Normal", false, [], ""),
+      new Problem("CSES", "Sliding Cost", "1077", "Hard", false, [], ""),
+    ],
+    general: [
+      new Problem("CSES", "Playlist", "1141", "Easy", false, ["2P"], ""),
+      new Problem("Gold", "Haybale Feast", "767", "Easy", false, ["Set", "Sliding Window"]),
+      new Problem("Plat", "Fort Moo", "600", "Hard", false, ["Sliding Window"]),
+    ]
+};
+
+## Sliding Window
+
+<Problems problems={problems.constantSam} />
+
+From CPH:
+
+> A sliding window is a constant-size subarray that moves from left to right
+through the array.
+
+For each position of the window, we want to compute some information. For example, we could store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $O(\log N)$. 
+
+<!-- To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
+ -->
+
+<Resources>
+  <Resource source="Medium" title="Introduction to Sliding Window Algorithms" url="https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7"> </Resource>
+  <Resource source="GFG" title="Window Sliding Technique" url="window-sliding-technique"> </Resource>
+</Resources>
+
+### Implementation
+
+<IncompleteSection />
+
+### Problems
+
+<Problems problems={problems.constant} />
+
+## With Two Pointers
+
+In general, it is not required for the subarray to have constant size as long as both the left and right endpoints of the subarray only move to the right.
+
+<Problems problems={problems.general} />

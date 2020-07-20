@@ -24,6 +24,9 @@ const UserDataContext = createContext<{
     problem: Problem,
     status: ProblemProgress
   ) => void;
+
+  lastViewedModule: string;
+  setLastViewedModule: (moduleID: string) => void;
 }>({
   lang: 'showAll',
   setLang: null,
@@ -31,6 +34,8 @@ const UserDataContext = createContext<{
   setModuleProgress: null,
   userProgressOnProblems: null,
   setUserProgressOnProblems: null,
+  lastViewedModule: null,
+  setLastViewedModule: null,
 });
 
 const langKey = 'guide:userData:lang';
@@ -70,6 +75,18 @@ const getProblemStatusFromStorage = () => {
   return v || {};
 };
 
+const lastViewedModuleKey = 'guide:userData:lastViewedModule';
+const getLastViewedModuleFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(lastViewedModuleKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse last viewed module", e);
+  }
+  return v || null;
+};
+
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
   const [userProgress, setUserProgress] = useState<{
@@ -78,44 +95,57 @@ export const UserDataProvider = ({ children }) => {
   const [problemStatus, setProblemStatus] = useState<{
     [key: string]: ProblemProgress;
   }>({});
+  const [lastViewedModule, setLastViewedModule] = useState<string>(null);
 
   React.useEffect(() => {
     setLang(getLangFromStorage());
     setUserProgress(getProgressFromStorage());
     setProblemStatus(getProblemStatusFromStorage());
+    setLastViewedModule(getLastViewedModuleFromStorage());
   }, []);
 
+  const userData = React.useMemo(
+    () => ({
+      lang: lang as UserLang,
+      setLang: lang => {
+        window.localStorage.setItem(langKey, JSON.stringify(lang));
+        setLang(lang);
+      },
+      userProgressOnModules: userProgress,
+      setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
+        const newProgress = {
+          ...getProgressFromStorage(),
+          [moduleID]: progress,
+        };
+        window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
+        setUserProgress(newProgress);
+      },
+      userProgressOnProblems: problemStatus,
+      setUserProgressOnProblems: (problem, status) => {
+        const newStatus = {
+          ...getProblemStatusFromStorage(),
+          [problem.uniqueID]: status,
+        };
+        window.localStorage.setItem(
+          problemStatusKey,
+          JSON.stringify(newStatus)
+        );
+        setProblemStatus(newStatus);
+      },
+      lastViewedModule,
+      setLastViewedModule: moduleID => {
+        window.localStorage.setItem(
+          lastViewedModuleKey,
+          JSON.stringify(moduleID)
+        );
+        setLastViewedModule(moduleID);
+      },
+    }),
+    [lang, userProgress, problemStatus, lastViewedModule]
+  );
+
   return (
-    <UserDataContext.Provider
-      value={{
-        lang: lang as UserLang,
-        setLang: lang => {
-          window.localStorage.setItem(langKey, JSON.stringify(lang));
-          setLang(lang);
-        },
-        userProgressOnModules: userProgress,
-        setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
-          const newProgress = {
-            ...getProgressFromStorage(),
-            [moduleID]: progress,
-          };
-          window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
-          setUserProgress(newProgress);
-        },
-        userProgressOnProblems: problemStatus,
-        setUserProgressOnProblems: (problem, status) => {
-          const newStatus = {
-            ...getProblemStatusFromStorage(),
-            [problem.uniqueID]: status,
-          };
-          window.localStorage.setItem(
-            problemStatusKey,
-            JSON.stringify(newStatus)
-          );
-          setProblemStatus(newStatus);
-        },
-      }}
-    >
+    <UserDataContext.Provider value={userData}>
       {children}
     </UserDataContext.Provider>
   );

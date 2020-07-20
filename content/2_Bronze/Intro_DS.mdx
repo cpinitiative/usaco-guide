@@ -2,24 +2,25 @@
 id: intro-ds
 title: Introduction to Data Structures
 author: Darren Yao, Benjamin Qi
-description: "Basic data structures in multiple languages such as dynamic arrays."
+description: "Basic data structures in multiple languages, dynamic arrays and sorting."
 frequency: 4
 ---
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     bubble: [
-      new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Easy", false, [], "O(N^2)"),
+      new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Very Easy", false, [], ""),
       ],
     easy: [
       new Problem("CSES", "Distinct Numbers", "1621", "Easy"),
       new Problem("CSES", "Stick Lengths", "1074", "Normal", false, [], "Spoiler: Optimal length is median"),
-      new Problem("Silver", "Teleportation", "812", "Very Hard", false, [], ""),
     ],
-  }
 };
+
+<!-- 
+  new Problem("Silver", "Teleportation", "812", "Very Hard", false, [], ""),
+ -->
 
 <Resources>
   <Resource source="IUSACO" title="4.1 - Dynamic Arrays">module is based off this</Resource>
@@ -279,20 +280,29 @@ for(auto element : v) {
 
 ## Sorting
 
-<Problems problems={metadata.problems.bubble} />
+<Problems problems={problems.bubble} />
 
-**Sorting** refers to arranging items in some particular order. You do not need to know how to sort an array in $O(N\log N)$ time for Bronze, but you should be aware of how to use built-in methods to sort a (possibly dynamic) array.
+**Sorting** refers to arranging items in some particular order. 
+
+<Resources>
+  <Resource source="CPH" title="3.1 - Sorting Theory"> </Resource>
+</Resources>
+
+<!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
+
+You should know how to use built-in methods to sort a (possibly dynamic) array.
 
 <LanguageSection>
 
 <CPPSection>
 
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
+<Resources>
+  <Resource source="CPH" title="3.2 - Sorting in C++" starred>can stop before comparison operators, which are covered in silver</Resource>
+  <Resource source="CPP" title="std::sort" url="https://en.cppreference.com/w/cpp/algorithm/sort">reference</Resource>
+  <Resource source="CF" title="C++ Tricks" url="blog/entry/74684">first two related to sorting</Resource>
+</Resources>
 
-  - [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort)
-  - [std::stable\_sort](http://www.cplusplus.com/reference/algorithm/stable_sort/)
-  - [Golovanov399 - C++ Tricks](https://codeforces.com/blog/entry/74684)
-    - first two related to sorting
+In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
 
 </CPPSection>
 
@@ -322,4 +332,4 @@ Two ways to avoid this:
 
 ## Problems
 
-<Problems problems={metadata.problems.easy} />
+<Problems problems={problems.easy} />

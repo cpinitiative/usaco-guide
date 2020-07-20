@@ -195,7 +195,7 @@ export default function IndexPage(props: PageProps) {
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                   <div className="rounded-md shadow">
                     <Link
-                      to="/intro"
+                      to="/dashboard"
                       className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       View Guide
@@ -486,7 +486,7 @@ export default function IndexPage(props: PageProps) {
           <div className="mt-8 flex justify-center">
             <div className="rounded-md shadow">
               <Link
-                to="/intro"
+                to="/dashboard"
                 className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
               >
                 View Guide

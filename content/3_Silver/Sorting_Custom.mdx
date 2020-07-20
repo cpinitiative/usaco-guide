@@ -5,13 +5,13 @@ frequency: 3
 author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi
 prerequisites: 
  - pairs-tuples
-description: "Both Java and C++ have built-in functions for sorting. However, if we use custom objects, or if we want to sort elements in a different order, then we'll need to use a custom comparator."
+ - lambda
+description: "If we use custom objects or if we want to sort elements in an order other than the default, then we'll need to define a custom comparator."
 ---
 
 import { Problem } from "../models";
 
-export const metadata = {
-  problems: {
+export const problems = {
     sample: [
       new Problem("Silver", "Wormhole Sort", "992", "Normal", false, [], ""),
     ],
@@ -25,7 +25,6 @@ export const metadata = {
       new Problem("Silver", "Triangles", "1015", "Hard", false, [], ""),
       new Problem("Silver", "Meetings", "967", "Very Hard", false, [], ""),
     ],
-  }
 };
 
 <Resources>
@@ -36,7 +35,7 @@ export const metadata = {
 
 ## Example: Wormhole Sort
 
-<Problems problems={metadata.problems.sample} />
+<Problems problems={problems.sample} />
 
 There are multiple ways to solve this problem. We won't discuss the full solution here, but all of them start by sorting the edges in nondecreasing order of weight. For example, the sample contains the following edges:
 
@@ -279,7 +278,7 @@ int main() {
 ```
 
 
-We can also use [lambda expressions](https://www.geeksforgeeks.org/lambda-expression-in-c/) in C++11 or above.
+We can also use lambda expressions in C++11 or above:
 
 ```cpp
 sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });
@@ -573,4 +572,4 @@ public class Sol {
 
 ## Problems
 
-<Problems problems={metadata.problems.general} />
+<Problems problems={problems.general} />
