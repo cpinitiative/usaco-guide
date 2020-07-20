@@ -19,8 +19,7 @@ prerequisites:
 
 There are several main **data types** that are used in contests: integers, floating point numbers, booleans, characters, and strings. Assuming that you are familiar with the language you are using, this should be mostly review.
 
-The normal **32-bit integer** data type (`int` in C++ and Java) supports values between $−2\,147\,483\,648 and 2\,147\,483\,647, which is
-roughly equal to $\pm 2 \cdot 10^9$.
+The normal **32-bit integer** data type (`int` in C++ and Java) supports values between $−2\,147\,483\,648$ and $2\,147\,483\,647$, which is roughly equal to $\pm 2 \cdot 10^9$.
 
 Some problems require you to use **64-bit integers** (`long long` in C++ and `long` in Java) instead of 32-bit integers (`int`). 64-bit integers are less likely to have overflow issues, since they can store any number between $-9\,223\,372\,036\,854\,775\,808$ and $9\,223\,372\,036\,854\,775\,807$ which is roughly equal to $\pm 9 \times 10^{18}$.
 
@@ -30,16 +29,14 @@ Sometimes (but not always) a USACO problem statement (ex. [Haircut](http://www.u
 
 Contest problems are usually set such that the 64-bit integer is sufficient, so it might be a good idea to use 64-bit integers in place of 32-bit integers everywhere. Of course, you shouldn't do this when time and/or memory limits are tight, which may be the case in higher divisions of USACO. Also note that in Java, you will need to cast `long` back to `int` when accessing array indices. 
 
-**Floating point numbers** are used to store decimal values. It is important to know that floating point numbers are not exact, because the binary architecture of computers can only store decimals to a certain precision. Hence, we should always expect that floating point numbers are slightly off. It's generally a bad idea to compare two floating-point numbers for exact equality (`==`); instead, check if their absolute difference is less than some small constant like $10^{-9}$. 
+**Floating point numbers** are used to store decimal values. It is important to know that floating point numbers are not exact, because the binary architecture of computers can only store decimals to a certain precision. Hence, we should always expect that floating point numbers are slightly off, so it's generally a bad idea to compare two floating-point numbers for exact equality (`==`).
 
-Contest problems will accommodate the inaccuracy of floating point numbers in two different ways. 
+Contest problems will usually accommodate the inaccuracy of floating point numbers by checking if the **absolute** or **relative** difference between your output and the answer is less than some small constant like $\epsilon=10^{-9}$. 
 
-USACO problems generally have a unique answer, so when floating point is necessary, the output format will be something along the lines of "Print $10^6$ times the maximum probability of receiving exactly one accepted invitation, rounded down to the nearest integer." See [USACO Cow Dating](http://www.usaco.org/index.php?page=viewproblem2&cpid=924).
+- If your output is $x$ and the answer is $y$, the absolute difference is $|x-y|$.
+- If your output is $x$ and the answer is $y$, the relative difference is $\frac{|x-y|}{|y|}$.
 
-In CodeForces or other contests, your output will be marked as correct if its absolute or relative difference from the actual answer is less than a given $\epsilon$. 
-
-- If your output is x and the answer is y, the absolute difference is $|x-y|$.
-- If your output is x and the answer is y, the relative difference is $\frac{|x-y|}{y}$.
+This is not the case for USACO, where problems generally have a unique correct output. So when floating point is necessary, the output format will be something along the lines of "Print $10^6$ times the maximum probability of receiving exactly one accepted invitation, rounded down to the nearest integer." (ex. [Cow Dating](http://www.usaco.org/index.php?page=viewproblem2&cpid=924)).
 
 **Boolean** variables have two possible states: `true` and `false`. We'll usually use booleans to mark whether a certain process is done, and arrays of booleans to mark which components of an algorithm have finished.
 
