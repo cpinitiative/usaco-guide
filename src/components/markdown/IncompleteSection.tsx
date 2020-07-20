@@ -22,9 +22,9 @@ export const IncompleteSection = ({ children }) => {
             This section is not complete.
           </h3>
           <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin">
-            {children}
             Feel free to file a request to complete this using the "Contact Us"
-            button.
+            button. <br />
+            <i>{children}</i>
           </div>
         </div>
       </div>

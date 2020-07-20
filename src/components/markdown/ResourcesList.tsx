@@ -53,6 +53,7 @@ const sources = {
 };
 
 export const sourceTooltip = {
+  AoPS: 'Art of Problem Solving',
   CPH: "Book - Competitive Programmer's Handbook",
   PAPS: 'Book - Principles of Algorithmic Problem Solving',
   IUSACO: 'Book - An Introduction to the USA Computing Olympiad',

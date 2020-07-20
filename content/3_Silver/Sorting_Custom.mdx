@@ -6,7 +6,7 @@ author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi
 prerequisites: 
  - pairs-tuples
  - lambda
-description: "Both Java and C++ have built-in functions for sorting. However, if we use custom objects, or if we want to sort elements in a different order, then we'll need to use a custom comparator."
+description: "If we use custom objects or if we want to sort elements in an order other than the default, then we'll need to define a custom comparator."
 ---
 
 import { Problem } from "../models";
@@ -20,7 +20,6 @@ export const problems = {
       new Problem("Silver", "Lifeguards", "786", "Easy", false, [], "Similar to above."),
       new Problem("Silver", "Rental Service", "787", "Easy", false, [], ""),
       new Problem("Silver", "Mountains", "896", "Easy", false, [], ""),
-      new Problem("Silver", "Mooyo Mooyo", "860", "Easy", false, [], "Not a sorting problem, but you can use sorting to simulate gravity. - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same."),
       new Problem("Gold", "Splitting the Field", "645", "Normal", false, [], ""),
       new Problem("Silver", "Triangles", "1015", "Hard", false, [], ""),
       new Problem("Silver", "Meetings", "967", "Very Hard", false, [], ""),
@@ -28,7 +27,8 @@ export const problems = {
 };
 
 <Resources>
-  <Resource source="IUSACO" title="8 - Sorting & Comparators"></Resource>
+  <Resource source="IUSACO" title="8 - Sorting & Comparators">partially based off this</Resource>
+  <Resource source="CPH" title="3.2 - User-Defined Structs, Comparison Functions">short overflow of what this module will cover</Resource>
 </Resources>
 
 <br />
@@ -55,7 +55,7 @@ After sorting, it should look like
 2 3 10
 ```
 
-With C++, the easiest method is to use nested pairs or a `vector` of `array<int,3>` or `vector<int>`.
+With C++, the easiest method is to use a `vector` of nested `pair`s:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -76,6 +76,8 @@ int main() {
 }
 ```
 
+or a `vector` of `array<int,3>`s or `vector<int>`s:
+
 ```cpp
 int main() {
     int M = 4;
@@ -91,10 +93,10 @@ int main() {
 
 In Python, we can use a list of lists.
 
-But in Java, we can't immediately sort an arraylist of arraylists. What should we do?
+But in Java, we can't sort an `ArrayList` of `ArrayList`s without writing some additional code. What should we do?
 
   - If we only stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges. 
-  - However, if we create a **class** (or struct) representing the edges and define a **custom comparator** to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
+  - However, if we create a **class** representing the edges and define a **custom comparator** to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
 
 
 ## Classes
@@ -105,6 +107,10 @@ First, we need to define a **class** that represents what we want to sort. In ou
 
 <CPPSection>
 
+### C++
+
+A C++ `struct` is the same as a class in C++, but all members are public by default.
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -112,6 +118,13 @@ using namespace std;
 struct Edge {
     int a,b,w;
 };
+
+/* alternatively,
+class Edge {
+	public:
+		int a,b,w;
+};
+*/
 
 int main() {
     int M = 4;
@@ -188,10 +201,6 @@ Normally, sorting functions rely on moving objects with a lower value in front o
 
 <CPPSection>
 
-<Resources>
-  <Resource source="CPH" title="3.2 - User-Defined Structs, Comparison Functions" starred></Resource>
-</Resources>
-
 What a comparator does is compare two objects as follows, based on our comparison criteria:
 
  - If object $x$ is less than object $y$, return `true`
@@ -201,7 +210,7 @@ Essentially, the comparator determines whether object $x$ belongs to the left of
  
 In addition to returning the correct answer, comparators should also satisfy the following conditions:
 
- - The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)`is `true`, then `compare(y, x)` should be `false` and vice versa.
+ - The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)` is `true`, then `compare(y, x)` should be `false` and vice versa.
  - The function must be transitive. If `compare(x, y)` is true and `compare(y, z)` is true, then `compare(x, z)` should also be true. If the first two compare functions both return `false`, the third must also return `false`.
 
 ### Method 1: Overloading the Less Than Operator
@@ -209,7 +218,7 @@ In addition to returning the correct answer, comparators should also satisfy the
 This is the easiest to implement. However, it only works for objects (not primitives) and it doesn't allow you to define multiple ways to compare the same type of class.
 
 In the context of Wormhole Sort (note the use of 
-[const T&](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)):
+[const Edge&](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)):
 
 ```cpp
 #include <bits/stdc++.h>
@@ -278,7 +287,7 @@ int main() {
 ```
 
 
-We can also use lambda expressions in C++11 or above:
+We can also use [lambda expressions](../intro/lambda) in C++11 or above:
 
 ```cpp
 sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });

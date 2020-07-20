@@ -97,18 +97,23 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       ]
     },
     {
-      name: "Binary Search",
+      name: "Sorting",
       items: [
         "binary-search-sorted",
-        "binary-search-ans",
+        "sorting-custom",
+        "greedy",
       ]
     },
     {
-      name: "Sorting",
+      name: "Two Pointers",
       items: [
-        "sorting-methods",
-        "sorting-custom",
-        "greedy",
+        "2P",
+      ]
+    },
+    {
+      name: "Binary Search",
+      items: [
+        "binary-search-ans",
       ]
     },
     {
@@ -116,14 +121,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "intro-ordered",
         "custom-cpp-stl",
-        "harder-ordered",
-      ]
-    },
-    {
-      name: "Stacks & Queues",
-      items: [
-        "stacks-queues",
-        "sliding",
       ]
     },
     {
@@ -136,6 +133,14 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
     },
   ],
   "gold": [
+    {
+      name: "Data Structures",
+      items: [
+        "stacks",
+        "sliding",
+        "queues",
+      ]
+    },
     {
       name: "Dynamic Programming",
       items: [
