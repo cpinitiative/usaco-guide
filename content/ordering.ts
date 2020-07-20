@@ -76,8 +76,10 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
     },
     {
       name: "Complete Search",
+      description: "Solving bronze problems by checking all possible cases in the solution space.",
       items: [
-        "complete-search",
+        "intro-complete",
+        "gen-perm"
       ]
     },
     {
