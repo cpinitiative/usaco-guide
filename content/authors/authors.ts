@@ -42,7 +42,7 @@ export const Authors: Author[] = [
     photo: 'michael',
     name: 'Michael Cao',
     title: 'Content Author',
-    blurb: 'How do you even write anything that's not extremely underwhelming following Benq? Author of classics such as Snowcow and Flooded Farm!!!',
+    blurb: 'How do you even write anything that\'s not extremely underwhelming following Benq? Author of classics such as Snowcow and Flooded Farm!!!',
     facebook: "mike.lao.9400",
     codeforces: "caoash",
     email: "cao.michael14@gmail.com",
