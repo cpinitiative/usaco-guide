@@ -121,6 +121,17 @@ export const plugins = [
       // cookieDomain: "example.com",
     },
   },
+  {
+    resolve: 'gatsby-plugin-sentry',
+    options: {
+      dsn:
+        'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
+      // Optional settings, see https://docs.sentry.io/clients/node/config/#optional-settings
+      environment: process.env.NODE_ENV,
+      enabled: (() =>
+        ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
+    },
+  },
   // 'gatsby-plugin-webpack-bundle-analyser-v2',
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline
