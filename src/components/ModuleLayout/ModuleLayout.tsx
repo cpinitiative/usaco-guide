@@ -372,7 +372,10 @@ export default function ModuleLayout({
                   </button>
                 </div>
                 <div className="flex-1 h-0 pt-5 overflow-y-auto">
-                  <Link className="flex-shrink-0 flex items-center px-4" to="/">
+                  <Link
+                    className="flex-shrink-0 flex items-center px-4"
+                    to="/dashboard/"
+                  >
                     <Logo />
                   </Link>
                   <div className="mt-4 px-6">
@@ -403,7 +406,10 @@ export default function ModuleLayout({
           style={{ width: '20rem' }}
         >
           <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
-            <Link className="flex items-center flex-shrink-0 px-4 pb-2" to="/">
+            <Link
+              className="flex items-center flex-shrink-0 px-4 pb-2"
+              to="/dashboard/"
+            >
               <Logo />
             </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
