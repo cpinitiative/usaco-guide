@@ -16,7 +16,7 @@ export const Authors: Author[] = [
     photo: 'nathanw',
     name: 'Nathan Wang',
     title: 'Coordinator & Webmaster',
-    blurb: 'Nathan Wang is a two-time USACO Finalist and does web development in his free time.',
+    blurb: 'Nathan Wang is a two-time USACO Finalist and web development enthusiast.',
     website: "https://thecodingwizard.me/",
     codeforces: 'thecodingwizard',
     email: "nathan.r.wang@gmail.com",
