@@ -187,6 +187,8 @@ export function ProblemComponent(props: ProblemComponentProps) {
           <a
             href={problem.url}
             className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
           >
             {problem.name}
           </a>

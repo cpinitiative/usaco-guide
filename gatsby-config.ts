@@ -55,6 +55,7 @@ export const plugins = [
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
       ],
+      remarkPlugins: [require(`remark-external-links`)],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,
