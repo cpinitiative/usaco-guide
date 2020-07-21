@@ -538,8 +538,23 @@ export default function IndexPage(props: PageProps) {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
                       If you would like to contribute towards this guide, please
-                      contact the guide coordinator. We appreciate any and all
+                      contact the guide coordinator with what you specifically
+                      intend to contribute. We appreciate any and all
                       contributions!
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                    Is this open source?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500">
+                      Currently the site is closed source for potential security
+                      concerns, though we're looking for a way for others to
+                      contribute more easily. If there are any points
+                      for/against open-sourcing this project, please let the
+                      guide coordinator know.
                     </p>
                   </dd>
                 </div>
