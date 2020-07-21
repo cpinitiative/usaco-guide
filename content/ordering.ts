@@ -253,6 +253,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "bitsets",
         "fracture",
+        "mat-exp",
       ]
     }
   ],
