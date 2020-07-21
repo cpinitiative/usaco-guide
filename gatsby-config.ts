@@ -1,6 +1,6 @@
 export const siteMetadata = {
   title: `USACO Guide`,
-  description: `A collection of curated, high-quality resources to take you from Bronze to Platinum.`,
+  description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
   author: `@usacoteam`,
 };
 export const plugins = [
