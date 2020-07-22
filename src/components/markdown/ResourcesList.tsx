@@ -139,7 +139,12 @@ export function Resource(props) {
               </svg>
             </Tooltip>
           )}
-          <a href={url} className={props.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}>
+          <a
+            href={url}
+            className={props.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+          >
             {props.title}
           </a>
         </div>

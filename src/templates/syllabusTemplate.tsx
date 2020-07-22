@@ -132,9 +132,9 @@ export default function Template(props) {
               </div>
             </div>
           </div>
-          <DottedLineContainer className="py-12 px-4">
+          <DottedLineContainer className="py-12 px-4 max-w-screen-xl mx-auto">
             {section.map(category => (
-              <SectionContainer>
+              <SectionContainer key={category.name}>
                 <div className="flex-1 md:text-right pr-12 group">
                   <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 group-hover:text-gray-800 transition duration-150 ease-in-out">
                     {category.name}
@@ -146,6 +146,7 @@ export default function Template(props) {
                 <div className="flex-1 pl-12">
                   {category.items.map(item => (
                     <ModuleLink
+                      key={item.frontmatter.id}
                       link={
                         new ModuleLinkInfo(
                           item.frontmatter.id,

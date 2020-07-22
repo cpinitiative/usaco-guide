@@ -4,6 +4,7 @@ import Img from 'gatsby-image';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 const AuthorCard = ({
   author,
@@ -129,6 +130,7 @@ export default function IndexPage(props: PageProps) {
   return (
     <Layout>
       <SEO title={null} />
+      <TopNavigationBar indexPage />
 
       {/* Begin Hero */}
       <div className="relative bg-white overflow-hidden">
@@ -160,7 +162,7 @@ export default function IndexPage(props: PageProps) {
               </pattern>
             </defs>
             <rect
-              y="72"
+              y="0"
               width="640"
               height="640"
               className="text-gray-50"
@@ -175,10 +177,7 @@ export default function IndexPage(props: PageProps) {
           </svg>
         </div>
 
-        <div
-          className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32 border-blue-600"
-          style={{ borderTopWidth: '12px' }}
-        >
+        <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
           <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
               <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
@@ -537,9 +536,28 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      If you would like to contribute towards this guide, please
-                      contact the guide coordinator. We appreciate any and all
-                      contributions!
+                      To learn more about contributing, please visit{' '}
+                      <Link
+                        to="/intro/using-this-guide/#for-contributors"
+                        className="text-blue-600 underline"
+                      >
+                        this page
+                      </Link>
+                      . We appreciate any and all contributions!
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                    Is this open source?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500">
+                      Currently the site is closed source for potential security
+                      concerns, though we're looking for a way for others to
+                      contribute more easily. If there are any points
+                      for/against open-sourcing this project, please let the
+                      guide coordinator know.
                     </p>
                   </dd>
                 </div>

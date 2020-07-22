@@ -453,7 +453,7 @@ export default function ModuleLayout({
         >
           <div className="mx-auto">
             <div className="flex justify-center">
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0">
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0">
                 <div className="hidden lg:block">
                   <NavBar />
                 </div>

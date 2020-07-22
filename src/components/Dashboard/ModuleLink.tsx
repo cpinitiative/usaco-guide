@@ -140,11 +140,11 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
           <p
             className={`${
               progress === 'Ignored' ? 'text-gray-400' : 'text-gray-600'
-            } group-hover:text-blue-800 transition duration-150 ease-in-out`}
+            } group-hover:text-blue-800 transition duration-150 ease-in-out mb-1`}
           >
             {link.title}
           </p>
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out">
+          <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out leading-5">
             {link.description}
           </p>
         </StyledLink>
