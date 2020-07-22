@@ -54,7 +54,8 @@ export class Problem {
       | 'Intro|Insane',
     public starred?: boolean,
     public tags?: string[],
-    public sketch?: string
+    public sketch?: string,
+    public solution?: string
   ) {
     this.isIntro = labels && labels.includes('Intro|');
     if (labels) labels = labels.replace('Intro|', '') as any;
