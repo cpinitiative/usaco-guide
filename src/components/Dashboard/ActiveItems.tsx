@@ -30,7 +30,7 @@ export default function ActiveItems({
         </h3>
         <div className="mt-4 text-gray-500">
           {items.map((item, idx) => (
-            <p className={idx === 0 ? '' : 'mt-2'}>
+            <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link
                 to={item.url}
                 className="font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"

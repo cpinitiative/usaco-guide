@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 export const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
   author: `@usacoteam`,
 };
+
 export const plugins = [
   {
     resolve: `gatsby-plugin-typescript`,
@@ -96,30 +99,9 @@ export const plugins = [
   {
     resolve: `gatsby-plugin-google-analytics`,
     options: {
-      // The property ID; the tracking code won't be generated without it
       trackingId: 'UA-55628264-7',
-      // Defines where to place the tracking script - `true` in the head and `false` in the body
       head: false,
-      // Setting this parameter is optional
-      // anonymize: true,
-      // Setting this parameter is also optional
-      // respectDNT: true,
-      // Avoids sending pageview hits from custom paths
-      // exclude: ["/preview/**", "/do-not-track/me/too/"],
-      // Delays sending pageview hits on route update (in milliseconds)
       pageTransitionDelay: 100,
-      // Enables Google Optimize using your container Id
-      // optimizeId: "YOUR_GOOGLE_OPTIMIZE_TRACKING_ID",
-      // Enables Google Optimize Experiment ID
-      // experimentId: "YOUR_GOOGLE_EXPERIMENT_ID",
-      // Set Variation ID. 0 for original 1,2,3....
-      // variationId: "YOUR_GOOGLE_OPTIMIZE_VARIATION_ID",
-      // Defers execution of google analytics script after page load
-      // defer: false,
-      // Any additional optional fields
-      // sampleRate: 5,
-      // siteSpeedSampleRate: 10,
-      // cookieDomain: "example.com",
     },
   },
   {
@@ -127,10 +109,18 @@ export const plugins = [
     options: {
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
-      // Optional settings, see https://docs.sentry.io/clients/node/config/#optional-settings
       environment: process.env.NODE_ENV,
       enabled: (() =>
         ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
+    },
+  },
+  {
+    // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
+    resolve: `gatsby-plugin-algolia`,
+    options: {
+      appId: process.env.ALGOLIA_APP_ID,
+      apiKey: process.env.ALGOLIA_API_KEY,
+      queries: require('./src/utils/algolia-queries'),
     },
   },
   // 'gatsby-plugin-webpack-bundle-analyser-v2',
