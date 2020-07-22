@@ -40,15 +40,17 @@ using namespace __gnu_pbds;
 
 ## Hacking
 
-`gp_hash_table` is also vulnerable to hacking. 
-
-(example of hash function that fails)
-
-To avoid this, we can use one of the custom hash functions mentioned in the Bronze module.
+`gp_hash_table` is also vulnerable to hacking. The hash function mentioned in the blog:
 
 ```cpp
-template<class K,class V> using ht = gp_hash_table<K,V,chash>;
+const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
+struct chash {
+    int operator()(int x) const { return x ^ RANDOM; }
+};
+gp_hash_table<key, int, chash> table;
 ```
+
+is easily hackable (see [neal's comment](https://codeforces.com/blog/entry/60737?#comment-454122)). To avoid this, we can replace `chash` with one of the custom hash functions mentioned [previously](../silver/unordered#another-hash-function).
 
 ## Resizing
 
@@ -100,19 +102,9 @@ then the actual size of `g` is always at least `1<<16` (regardless of calls to `
 
 <Problems problems={problems.three} />
 
-You're supposed to use array since values are small :|
+You're supposed to use array since values are small. Note that initializing the initial capacity makes a significant difference in the runtime.
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
- 
-void setIO(string name) {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen((name+".in").c_str(),"r",stdin);
-	freopen((name+".out").c_str(),"w",stdout);
-}
- 
- 
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
  
@@ -140,7 +132,6 @@ int main() {
 		int a,b; cin >> a >> b;
 		cout << ans[a-1][b-1] << "\n";
 	}
-	// you should actually read the stuff at the bottom
 }
 ```
 

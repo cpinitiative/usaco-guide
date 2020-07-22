@@ -68,6 +68,31 @@ In general, it is not required for the subarray to have constant size as long as
   <Resource source="Medium" title="Introduction to Sliding Window Algorithms" url="https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7"> </Resource>
 </Resources>
 
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int n;
+set<int> s;
+int a[200000], ans;
+ 
+int main() {
+    int r = -1;
+    cin >> n; F0R(i,n) cin >> a[i];
+    F0R(i,n) {
+        while (r < n-1 && !s.count(a[r+1])) s.insert(a[++r]);
+        ans = max(ans,r-i+1);
+        s.erase(a[i]);
+    }
+    cout << ans;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 ### Problems
 
 <Problems problems={problems.general} />
