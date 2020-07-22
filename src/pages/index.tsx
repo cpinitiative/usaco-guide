@@ -4,6 +4,7 @@ import Img from 'gatsby-image';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 const AuthorCard = ({
   author,
@@ -131,6 +132,9 @@ export default function IndexPage(props: PageProps) {
       <SEO title={null} />
 
       {/* Begin Hero */}
+
+      <TopNavigationBar />
+
       <div className="relative bg-white overflow-hidden">
         <div className="hidden lg:block lg:absolute lg:inset-0">
           <svg
