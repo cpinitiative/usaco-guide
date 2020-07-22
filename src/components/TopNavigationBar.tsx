@@ -6,7 +6,9 @@ import {
   InstantSearch,
   connectAutoComplete,
   Highlight,
+  Snippet,
   Configure,
+  PoweredBy,
 } from 'react-instantsearch-dom';
 import {
   moduleIDToURLMap,
@@ -19,9 +21,15 @@ import Logo from './Logo';
 import LogoSquare from './LogoSquare';
 
 const SearchResultDescription = styled.p`
-  ${tw`text-gray-500`}
+  ${tw`leading-4`}
 
-  > .ais-Highlight > * {
+  > p > .ais-Highlight > * {
+    ${tw`text-gray-700`}
+    ${tw`text-sm!`}
+  }
+
+  > .ais-Snippet > * {
+    ${tw`text-gray-400`}
     ${tw`text-sm!`}
   }
 `;
@@ -49,7 +57,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   }, [ref.current]);
 
   return (
-    <div className="sm:relative" ref={ref}>
+    <div className="lg:relative" ref={ref}>
       <label htmlFor="search" className="sr-only">
         Search
       </label>
@@ -79,22 +87,25 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         />
       </div>
       {showResults && (
-        <div className="absolute z-10 bg-white sm:rounded shadow-md sm:border sm:border-gray-400 z-10 mt-3 inset-x-0 sm:left-auto sm:w-screen sm:max-w-lg">
-          <h2 className="text-lg font-medium text-gray-700 px-4 pt-3">
-            Search Results
-          </h2>
+        <div className="absolute z-10 bg-white lg:rounded shadow-md lg:border lg:border-gray-400 z-10 mt-3 inset-x-0 lg:left-auto lg:w-screen lg:max-w-3xl">
+          <div className="px-4 pt-4">
+            <PoweredBy />
+          </div>
           <div className="mt-2">
             {hits.map(hit => (
               <Link
                 to={moduleIDToURLMap[hit.id]}
                 className="block hover:bg-blue-100 px-4 py-2 transition duration-150 ease-in-out"
               >
-                <h3 className="text-gray-800">
+                <h3 className="text-lg text-gray-600 font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
                 <SearchResultDescription>
-                  <Highlight hit={hit} attribute="description" />
+                  <p className="mb-1">
+                    <Highlight hit={hit} attribute="description" />
+                  </p>
+                  <Snippet hit={hit} attribute="content" />
                 </SearchResultDescription>
               </Link>
             ))}
@@ -167,7 +178,10 @@ export default function TopNavigationBar({ indexPage = false }) {
           >
             <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>
-                <Configure hitsPerPage={10} />
+                <Configure
+                  hitsPerPage={10}
+                  attributesToSnippet={['content:30']}
+                />
                 <ConnectedModuleSearch />
               </InstantSearch>
             </div>

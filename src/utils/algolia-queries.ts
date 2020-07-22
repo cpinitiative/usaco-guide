@@ -1,4 +1,5 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
+import extractSearchableText from './extract-searchable-text';
 
 const pageQuery = `{
   pages: allMdx {
@@ -13,17 +14,21 @@ const pageQuery = `{
         fields {
           division
         }
+        mdxAST
       }
     }
   }
 }`;
 
-function pageToAlgoliaRecord({ node: { id, frontmatter, fields, ...rest } }) {
+function pageToAlgoliaRecord({
+  node: { id, frontmatter, fields, mdxAST, ...rest },
+}) {
   return {
     objectID: id,
     ...frontmatter,
     ...fields,
     ...rest,
+    content: extractSearchableText(mdxAST),
   };
 }
 
