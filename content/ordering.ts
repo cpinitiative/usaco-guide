@@ -226,8 +226,8 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "SCC",
         "max-flow",
         "eulerian-tours",
-        "offline-con",
         "eulers-formula",
+        "offline-con",
       ]
     },
     {
