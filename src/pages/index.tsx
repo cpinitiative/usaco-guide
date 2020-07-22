@@ -130,7 +130,7 @@ export default function IndexPage(props: PageProps) {
   return (
     <Layout>
       <SEO title={null} />
-      <TopNavigationBar compact />
+      <TopNavigationBar indexPage />
 
       {/* Begin Hero */}
       <div className="relative bg-white overflow-hidden">

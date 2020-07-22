@@ -107,7 +107,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
 
 const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
 
-export default function TopNavigationBar({ compact = false }) {
+export default function TopNavigationBar({ indexPage = false }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const links = [
     {
@@ -123,28 +123,25 @@ export default function TopNavigationBar({ compact = false }) {
     <nav className="bg-white shadow relative z-10">
       <div
         className={`${
-          compact ? 'max-w-6xl' : 'max-w-7xl'
-        } mx-auto px-2 sm:px-4 lg:px-8`}
+          indexPage
+            ? 'max-w-6xl px-4 lg:px-6'
+            : 'max-w-7xl px-2 sm:px-4 lg:px-8'
+        } mx-auto`}
       >
         <div className="flex justify-between h-16">
           <div className="flex px-2 lg:px-0">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              {compact && <LogoSquare className="block" />}
-              {!compact && (
-                <>
-                  <div className="block sm:hidden h-10">
-                    <LogoSquare />
-                  </div>
-                  <div className="hidden sm:block h-9">
-                    <Logo />
-                  </div>
-                </>
-              )}
+              <div className="block sm:hidden h-10">
+                <LogoSquare />
+              </div>
+              <div className="hidden sm:block h-9">
+                <Logo />
+              </div>
             </Link>
             <div
               className={`hidden ${
-                compact ? 'ml-6' : 'lg:ml-6 xl:ml-12'
-              } lg:flex space-x-8`}
+                indexPage ? 'ml-4' : 'lg:ml-6 xl:ml-12'
+              } lg:flex space-x-6`}
             >
               {links.map((link, idx) => (
                 <Link
@@ -161,7 +158,11 @@ export default function TopNavigationBar({ compact = false }) {
               ))}
             </div>
           </div>
-          <div className="flex-1 flex items-center justify-center px-2 md:px-0 lg:ml-6 lg:justify-end">
+          <div
+            className={`flex-1 flex items-center justify-center px-2 lg:px-0 ${
+              indexPage ? 'lg:ml-8' : 'lg:ml-6'
+            } lg:justify-end`}
+          >
             <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>
                 <Configure hitsPerPage={10} />
