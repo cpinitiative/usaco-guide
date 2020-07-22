@@ -255,7 +255,7 @@ export default function DashboardPage(props: PageProps) {
 
 export const pageQuery = graphql`
   query {
-    modules: allMdx {
+    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
       edges {
         node {
           frontmatter {

@@ -1,7 +1,7 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
 
 const pageQuery = `{
-  pages: allMdx {
+  pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
         id

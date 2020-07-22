@@ -23,6 +23,13 @@ export const plugins = [
   {
     resolve: `gatsby-source-filesystem`,
     options: {
+      path: `${__dirname}/solutions`,
+      name: `solutions`,
+    },
+  },
+  {
+    resolve: `gatsby-source-filesystem`,
+    options: {
       path: `${__dirname}/src/assets`,
       name: `assets`,
     },

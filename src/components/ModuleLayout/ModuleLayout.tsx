@@ -287,7 +287,7 @@ export default function ModuleLayout({
 
   const data = useStaticQuery(graphql`
     query {
-      allMdx {
+      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {

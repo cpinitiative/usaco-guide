@@ -5,6 +5,8 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import { sourceTooltip } from '../ResourcesList';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import { Link } from 'gatsby';
+import { moduleIDToURLMap } from '../../../../content/ordering';
 
 type ProblemsListProps = {
   title?: string;
@@ -244,19 +246,18 @@ export function ProblemComponent(props: ProblemComponentProps) {
         )}
         {!problem.sketch && problem.solution && (
           <a
-            href={problem.solution}
-            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            href={`/solutions/${problem.solution}/`}
             target="_blank"
-            rel="nofollow noopener noreferrer"
+            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
           >
-            Show Tutorial
+            View Solution
           </a>
         )}
         {!problem.sketch && !problem.solution && (
           <Tooltip
             content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
           >
-            <span className="text-gray-300">Show Sketch</span>
+            <span className="text-gray-300">View Solution</span>
           </Tooltip>
         )}
       </td>
