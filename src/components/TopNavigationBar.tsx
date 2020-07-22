@@ -129,16 +129,22 @@ export default function TopNavigationBar({ indexPage = false }) {
         } mx-auto`}
       >
         <div className="flex justify-between h-16">
-          <div className="flex px-2 lg:px-0">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <div className="block sm:hidden h-10">
-                <LogoSquare />
-              </div>
-              <div className="hidden sm:block h-9">
-                <Logo />
-              </div>
-            </Link>
-            <div className={`hidden lg:ml-4 lg:flex space-x-6`}>
+          <div
+            className={`${indexPage ? 'hidden lg:flex' : 'flex'} px-2 lg:px-0`}
+          >
+            {!indexPage && (
+              <Link to="/" className="flex-shrink-0 flex items-center">
+                <div className="block sm:hidden h-10">
+                  <LogoSquare />
+                </div>
+                <div className="hidden sm:block h-9">
+                  <Logo />
+                </div>
+              </Link>
+            )}
+            <div
+              className={`hidden ${!indexPage && 'lg:ml-6'} lg:flex space-x-8`}
+            >
               {links.map((link, idx) => (
                 <Link
                   key={link.url}
@@ -155,7 +161,9 @@ export default function TopNavigationBar({ indexPage = false }) {
             </div>
           </div>
           <div
-            className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
+            className={`flex-1 flex items-center ${
+              indexPage ? 'justify-start' : 'justify-center'
+            } px-2 lg:px-0 lg:ml-6 lg:justify-end`}
           >
             <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>
