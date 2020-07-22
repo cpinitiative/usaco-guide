@@ -537,10 +537,14 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      If you would like to contribute towards this guide, please
-                      contact the guide coordinator with what you specifically
-                      intend to contribute. We appreciate any and all
-                      contributions!
+                      To learn more about contributing, please visit{' '}
+                      <Link
+                        to="/intro/using-this-guide/#for-contributors"
+                        className="text-blue-600 underline"
+                      >
+                        this page
+                      </Link>
+                      . We appreciate any and all contributions!
                     </p>
                   </dd>
                 </div>
