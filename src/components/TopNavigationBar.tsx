@@ -124,7 +124,7 @@ export default function TopNavigationBar({ indexPage = false }) {
       <div
         className={`${
           indexPage
-            ? 'max-w-6xl px-4 lg:px-6'
+            ? 'max-w-6xl px-2 lg:px-6'
             : 'max-w-7xl px-2 sm:px-4 lg:px-8'
         } mx-auto`}
       >
@@ -138,7 +138,7 @@ export default function TopNavigationBar({ indexPage = false }) {
                 <Logo />
               </div>
             </Link>
-            <div className={`hidden lg:ml-4 xl:ml-8 lg:flex space-x-8`}>
+            <div className={`hidden lg:ml-4 lg:flex space-x-6`}>
               {links.map((link, idx) => (
                 <Link
                   key={link.url}
@@ -155,9 +155,7 @@ export default function TopNavigationBar({ indexPage = false }) {
             </div>
           </div>
           <div
-            className={`flex-1 flex items-center justify-center px-2 lg:px-0 ${
-              indexPage ? 'hidden' : 'lg:ml-6'
-            } lg:justify-end`}
+            className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
           >
             <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>
