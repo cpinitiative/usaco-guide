@@ -13,9 +13,10 @@ import {
   SECTION_LABELS,
   SECTIONS,
 } from '../../content/ordering';
-import Logo from './Logo';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import Logo from './Logo';
+import LogoSquare from './LogoSquare';
 
 const SearchResultDescription = styled.p`
   ${tw`text-gray-500`}
@@ -78,7 +79,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         />
       </div>
       {showResults && (
-        <div className="absolute bg-white sm:rounded shadow-md sm:border sm:border-gray-400 z-10 mt-3 inset-x-0 sm:left-auto sm:w-screen sm:max-w-lg">
+        <div className="absolute z-10 bg-white sm:rounded shadow-md sm:border sm:border-gray-400 z-10 mt-3 inset-x-0 sm:left-auto sm:w-screen sm:max-w-lg">
           <h2 className="text-lg font-medium text-gray-700 px-4 pt-3">
             Search Results
           </h2>
@@ -106,7 +107,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
 
 const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
 
-export default function TopNavigationBar() {
+export default function TopNavigationBar({ compact = false }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const links = [
     {
@@ -119,24 +120,32 @@ export default function TopNavigationBar() {
     })),
   ];
   return (
-    <nav className="bg-white shadow relative">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+    <nav className="bg-white shadow relative z-10">
+      <div
+        className={`${
+          compact ? 'max-w-6xl' : 'max-w-7xl'
+        } mx-auto px-2 sm:px-4 lg:px-8`}
+      >
         <div className="flex justify-between h-16">
           <div className="flex px-2 lg:px-0">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              {/*<img*/}
-              {/*  className="block sm:hidden h-8 w-auto"*/}
-              {/*  src={logoSquare}*/}
-              {/*  alt="USACO Guide"*/}
-              {/*/>*/}
-              {/*<img*/}
-              {/*  className="hidden sm:block h-12 w-auto"*/}
-              {/*  src={logo}*/}
-              {/*  alt="USACO Guide"*/}
-              {/*/>*/}
-              <Logo className="block" />
+              {compact && <LogoSquare className="block" />}
+              {!compact && (
+                <>
+                  <div className="block sm:hidden h-10">
+                    <LogoSquare />
+                  </div>
+                  <div className="hidden sm:block h-9">
+                    <Logo />
+                  </div>
+                </>
+              )}
             </Link>
-            <div className="hidden lg:ml-6 xl:ml-12 lg:flex space-x-8">
+            <div
+              className={`hidden ${
+                compact ? 'ml-6' : 'lg:ml-6 xl:ml-12'
+              } lg:flex space-x-8`}
+            >
               {links.map((link, idx) => (
                 <Link
                   key={link.url}
@@ -153,7 +162,7 @@ export default function TopNavigationBar() {
             </div>
           </div>
           <div className="flex-1 flex items-center justify-center px-2 md:px-0 lg:ml-6 lg:justify-end">
-            <div className="max-w-lg w-full lg:max-w-xs">
+            <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>
                 <Configure hitsPerPage={10} />
                 <ConnectedModuleSearch />
