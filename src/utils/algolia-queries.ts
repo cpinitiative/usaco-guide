@@ -2,7 +2,7 @@ import { moduleIDToSectionMap } from '../../content/ordering';
 import extractSearchableText from './extract-searchable-text';
 
 const pageQuery = `{
-  pages: allMdx {
+  pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
         id

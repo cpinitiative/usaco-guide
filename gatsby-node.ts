@@ -6,7 +6,10 @@ const Problem = require('./src/models/problem').Problem; // needed to eval expor
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
-  if (node.internal.type === 'Mdx') {
+  if (
+    node.internal.type === 'Mdx' &&
+    node.fileAbsolutePath.includes('content')
+  ) {
     const ordering = require('./content/ordering');
     createNodeField({
       name: 'division',
@@ -20,15 +23,27 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
   const result = await graphql(`
     query {
-      allMdx {
+      modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+        edges {
+          node {
+            frontmatter {
+              id
+            }
+            fields {
+              division
+            }
+          }
+        }
+      }
+
+      solutions: allMdx(
+        filter: { fileAbsolutePath: { regex: "/solutions/" } }
+      ) {
         edges {
           node {
             frontmatter {
               title
               id
-            }
-            fields {
-              division
             }
           }
         }
@@ -39,12 +54,25 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
   const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
-  const modules = result.data.allMdx.edges;
+  const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
     if (!node.fields.division) return;
     createPage({
       path: `/${node.fields.division}/${node.frontmatter.id}`,
       component: moduleTemplate,
+      context: {
+        id: node.frontmatter.id,
+      },
+    });
+  });
+  const solutionTemplate = require.resolve(
+    `./src/templates/solutionTemplate.tsx`
+  );
+  const solutions = result.data.solutions.edges;
+  solutions.forEach(({ node }) => {
+    createPage({
+      path: `/solutions/${node.frontmatter.id}`,
+      component: solutionTemplate,
       context: {
         id: node.frontmatter.id,
       },
