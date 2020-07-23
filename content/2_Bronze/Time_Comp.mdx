@@ -7,7 +7,7 @@ description: "Evaluating a program's time complexity, or how fast your program r
 
 <Resources>
   <Resource source="IUSACO" title="3 - Algorithm Analysis">module is based off this</Resource>
-  <Resource source="CPH" title="2 - Time Complexity" starred>Intro and examples</Resource>
+  <Resource source="CPH" title="2 - Time Complexity">Intro and examples</Resource>
   <Resource source="PAPS" title="5 - Time Complexity">More in-depth. In particular, 5.2 gives a formal definition of Big O.</Resource>
 </Resources>
 
@@ -198,9 +198,16 @@ for i in range(n):
 
 
 
-In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk>We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n*(n-1)/2 = (n^2 - n)/2 = O(n^2)</Asterisk> Thus, this code is $O(n^2)$.
+In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk> We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n\*(n-1)/2 = (n^2 - n)/2 = O(n^2)</Asterisk> Thus, this code is $O(n^2)$.
+
+<IncompleteSection>
+
+fix math
+
+</IncompleteSection>
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -335,12 +342,6 @@ this is a terrible definition
 </IncompleteSection>
 
 Normally when using big-O notation, we ignore the constant factor: $O(3n) = O(n)$. This is fine most of the time, but sometimes we have an algorithm that just barely gets TLE, perhaps by just a few hundred milliseconds. When this happens, it is worth optimizing the constant factor of our algorithm. For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.)
-
-<IncompleteSection>
-
-fix math
-
-</IncompleteSection>
 
 For now, don't worry about how to optimize constant factors -- just be aware of them.
 

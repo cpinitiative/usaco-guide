@@ -7,7 +7,7 @@ const OffsetAnchor = ({ id, ...props }) => (
     id={id}
     {...props}
     className="absolute"
-    style={{ bottom: '100px', height: '2px' }}
+    style={{ bottom: '60px', height: '2px' }}
   />
 );
 

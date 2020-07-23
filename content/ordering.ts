@@ -238,11 +238,12 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       ]
     },
     {
-      name: "Geometry",
+      name: "Convexity",
       items: [
         "geo-pri",
         "sweep-line",
         "convex-hull",
+        "cht",
         "LC",
         "lagrange",
         "slope",

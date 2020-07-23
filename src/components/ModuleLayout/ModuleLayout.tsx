@@ -278,6 +278,7 @@ export default function ModuleLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [pageRendered, setPageRendered] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[module.id]) ||
     'Not Started';
@@ -287,7 +288,7 @@ export default function ModuleLayout({
 
   const data = useStaticQuery(graphql`
     query {
-      allMdx {
+      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
             frontmatter {
@@ -315,6 +316,10 @@ export default function ModuleLayout({
     )
       setIsConfettiActive(true);
   };
+
+  React.useEffect(() => {
+    setPageRendered(true);
+  }, []);
 
   return (
     <ModuleLayoutContext.Provider value={{ module, moduleLinks }}>
@@ -449,6 +454,7 @@ export default function ModuleLayout({
         </div>
         <main
           className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
+          style={pageRendered ? { scrollBehavior: 'smooth' } : null}
           tabIndex={0}
         >
           <div className="mx-auto">

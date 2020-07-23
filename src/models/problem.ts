@@ -30,6 +30,8 @@ export class Problem {
     | 'Very Hard'
     | 'Insane';
   public isIntro: boolean;
+  public sketch: string | null = null;
+  public solution: string | null = null;
 
   get uniqueID() {
     return this.url;
@@ -54,8 +56,13 @@ export class Problem {
       | 'Intro|Insane',
     public starred?: boolean,
     public tags?: string[],
-    public sketch?: string
+    sol?: string
   ) {
+    if (/^[a-zA-z\-0-9]+$/.test(sol)) {
+      this.solution = sol;
+    } else {
+      this.sketch = sol;
+    }
     this.isIntro = labels && labels.includes('Intro|');
     if (labels) labels = labels.replace('Intro|', '') as any;
     this.difficulty = labels as any;

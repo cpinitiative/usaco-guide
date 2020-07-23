@@ -60,19 +60,19 @@ using namespace std;
 
 int main() {
 	pair<string, int> myPair1 = make_pair("Testing", 123);
-	cout << myPair1.first << " " << myPair1.second << endl; // Testing 123
+	cout << myPair1.first << " " << myPair1.second << endl;
 	myPair1.first = "It is possible to edit pairs after declaring them";
 	cout << myPair1.first << " " << myPair1.second << endl;
 	
 	pair<string, string> myPair2 = {"Testing", "curly braces"};
-	cout << myPair2.first << " " << myPair2.second << endl; // Testing curly braces
+	cout << myPair2.first << " " << myPair2.second << endl;
 }
 
-/* Output
- * Testing 123
- * Testing curly braces
- * It is possible to edit pairs after declaring them 123
- */
+/* Output:
+Testing 123
+It is possible to edit pairs after declaring them 123
+Testing curly braces
+*/
 ```
 
 
@@ -82,18 +82,18 @@ Of course, we can hold more than two values with something like `pair<int,pair<i
 
  - `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
  - `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
- - `get<i>(t)`: Returns the $i$'th element of the tuple `t`. Only works for constant $i$. Can be used to change the element of a tuple.
+ - `get<i>(t)`: Returns the `i`'th element of the tuple `t`.  Can also be used to change the element of a tuple.
 
-Note that it is illegal to do something like the following since $z$ is not constant:
+This operation only works for constant `i`. Namely, it is **not** allowed to do something like the following since `i` is not constant:
 
 ```cpp
 tuple<int,int,int> t{3,4,5};
-int z = 1; cout << get<z>(t);
+int i = 1; cout << get<i>(t);
 ```
 
  - `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple $t$ accordingly.
 
-This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes. 
+<!-- This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes.  -->
 
 Example:
 
@@ -113,11 +113,12 @@ int main() {
 	tie(s1, s2, x) = tp2;
 	cout << s1 << " " << s2 << " " << x << endl;
 }
-/* Output
- * 3 4 5
- * 7 4 5
- * Hello world 100
- */
+
+/* Output:
+3 4 5
+7 4 5
+Hello world 100
+*/
 ```
 
 ## Sorting Pairs & Tuples

@@ -168,7 +168,7 @@ export default function Template(props) {
 }
 export const pageQuery = graphql`
   query {
-    modules: allMdx {
+    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
       edges {
         node {
           id

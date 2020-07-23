@@ -4,6 +4,8 @@ import Img from 'gatsby-image';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
+import TopNavigationBar from '../components/TopNavigationBar';
+import { useRef } from 'react';
 
 const AuthorCard = ({
   author,
@@ -126,9 +128,12 @@ const AuthorCard = ({
 };
 
 export default function IndexPage(props: PageProps) {
+  const learnMoreRef = useRef();
+
   return (
     <Layout>
       <SEO title={null} />
+      <TopNavigationBar indexPage />
 
       {/* Begin Hero */}
       <div className="relative bg-white overflow-hidden">
@@ -160,7 +165,7 @@ export default function IndexPage(props: PageProps) {
               </pattern>
             </defs>
             <rect
-              y="72"
+              y="0"
               width="640"
               height="640"
               className="text-gray-50"
@@ -175,10 +180,7 @@ export default function IndexPage(props: PageProps) {
           </svg>
         </div>
 
-        <div
-          className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32 border-blue-600"
-          style={{ borderTopWidth: '12px' }}
-        >
+        <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
           <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
               <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
@@ -204,6 +206,13 @@ export default function IndexPage(props: PageProps) {
                   <div className="mt-3 sm:mt-0 sm:ml-3">
                     <a
                       href="#learn-more"
+                      onClick={e => {
+                        e.preventDefault();
+                        // @ts-ignore
+                        learnMoreRef.current.scrollIntoView({
+                          behavior: 'smooth',
+                        });
+                      }}
                       className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-600 hover:bg-blue-50 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       Learn More
@@ -288,7 +297,7 @@ export default function IndexPage(props: PageProps) {
       </div>
       {/* End Hero */}
 
-      <div className="py-12 bg-white" id="learn-more">
+      <div className="py-12 bg-white" id="learn-more" ref={learnMoreRef}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <p className="text-base leading-6 text-blue-600 font-semibold tracking-wide uppercase">
@@ -511,10 +520,10 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      <b>No, USACO does not have an official syllabus.</b>
-                      This guide merely lists topics that have{' '}
-                      <i>historically</i> appeared in USACO contests; it makes
-                      no guarantees about the topics in future USACO contests.
+                      <b>No, USACO does not have an official syllabus.</b> This
+                      guide merely lists topics that have <i>historically</i>{' '}
+                      appeared in USACO contests; it makes no guarantees about
+                      the topics in future USACO contests.
                     </p>
                   </dd>
                 </div>

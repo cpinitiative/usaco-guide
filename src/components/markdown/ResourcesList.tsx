@@ -34,6 +34,7 @@ export function ResourcesList(props) {
   );
 }
 const books = {
+  GCP: 'https://link.springer.com/book/10.1007/978-3-319-72547-5',
   CPH: '/CPH.pdf',
   PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
   CP1:
@@ -53,6 +54,7 @@ const sources = {
 };
 
 export const sourceTooltip = {
+  GCP: 'Guide to Competitive Programming (based off CPH)',
   AoPS: 'Art of Problem Solving',
   CPH: "Book - Competitive Programmer's Handbook",
   PAPS: 'Book - Principles of Algorithmic Problem Solving',
