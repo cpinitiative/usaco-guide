@@ -70,6 +70,13 @@ prerequisites:
 ...
 ```
 
+### Linking to Modules
+
+Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module: 
+
+ - If the module is in Intro then do `[insert text here](./code-con)`.
+ - Otherwise do `[insert text here](../intro/code-con)`.
+
 ## 4. Table of Contents
 
 A table of contents will be auto-generated based off of the headings in the Markdown. Keep this in mind when formatting your module.
