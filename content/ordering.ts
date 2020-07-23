@@ -72,6 +72,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "intro-ds",
         "pairs-tuples",
+        "unordered",
       ]
     },
     {
@@ -122,7 +123,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       name: "Sets & Maps",
       description: "Maintaining collections of distinct elements.",
       items: [
-        "unordered",
         "intro-ordered",
         "custom-cpp-stl",
       ]
