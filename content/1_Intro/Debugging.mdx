@@ -82,7 +82,7 @@ examples for all of input, output, debug?
 
 ## Compiling
 
-I use the following to compile and run.
+I use the following in my `.zshenv` to compile and run.
 
 ```
 co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
@@ -111,24 +111,34 @@ Includes `-Wall -Wextra -Wshadow`
 
 <IncompleteSection>
 
-when is -Wextra useful?
+Add explanation, how useful is -Wextra?
 
 </IncompleteSection>
 
 ### Other Options
 
-<Warning>
+<IncompleteSection>
 
-Ben - I don't use these because they can significantly slow down compilation time and I don't find these messages particularly helpful (But maybe I'm wrong? I'm not so familiar with these.)
+Ben - Are there beginner-friendly sources to learn about these? I'm not so familiar with these.
 
-</Warning>
+</IncompleteSection>
 
 In Errichto's blog he says that he uses the following as part of his compilation command:
-
 
 ```
 -fsanitize=undefined -fsanitize=address -D_GLIBCXX_DEBUG -g
 ```
+
+<Warning>
+	
+These can significantly slow down both compilation time and runtime.
+
+</Warning>
+
+<Resources>
+	<Resource source="GCC" title="Program Instrumentation Options" url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html">documentation for -fsanitize</Resource>
+	<Resource source="GCC" title="Using Debug Mode" url="https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode">documentation for -D_GLIBCXX_DEBUG</Resource>
+</Resources>
 
 Let's demonstrate what each of these do with the following program `prog.cpp`, which gives a segmentation fault.
 
@@ -281,6 +291,24 @@ zsh: abort      ./prog
 ```
 
 </Spoiler>
+
+`-fsanitize=undefined` also catches integer overflow. Let `prog.cpp` be the following:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int x = 1<<30;
+	cout << x+x;
+}
+```
+
+`g++ prog.cpp -o prog -fsanitize=undefined && ./prog` produces:
+
+```
+oops.cpp:7:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
+```
 
 ## Running (on Mac)
 
