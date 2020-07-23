@@ -449,6 +449,7 @@ export default function ModuleLayout({
         </div>
         <main
           className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
+          style={{ scrollBehavior: 'smooth' }}
           tabIndex={0}
         >
           <div className="mx-auto">

@@ -208,6 +208,7 @@ export default function IndexPage(props: PageProps) {
                       href="#learn-more"
                       onClick={e => {
                         e.preventDefault();
+                        // @ts-ignore
                         learnMoreRef.current.scrollIntoView({
                           behavior: 'smooth',
                         });
