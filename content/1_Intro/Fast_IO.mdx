@@ -97,7 +97,7 @@ int main() { // 258 ms
 
 ### A Faster Method
 
-I we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
+If we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
 
 <Spoiler title="91ms">
 
@@ -123,7 +123,31 @@ int main() {
 
 ### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
 
-Adding this line as the first line of `main()` reduced the runtime of the first method to 254 ms.
+Adding this immediately after `main()` significantly reduces the runtime of method 1.
+
+<Spoiler title="254ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> P[100000];
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("roboherd.in","r",stdin);
+	freopen("roboherd.out","w",stdout);
+	int N,K; cin >> N >> K;
+	for (int i = 0; i < N; ++i) {
+		int M; cin >> M; P[i].resize(M);
+		for (int j = 0; j < M; ++j) cin >> P[i][j];
+	}
+	if (N == 3) cout << 61;
+	else cout << 1000000000000000000;
+}
+```
+
+</Spoiler>
 
 <Resources>
   <Resource
@@ -151,7 +175,12 @@ Adding this line as the first line of `main()` reduced the runtime of the first 
 
 You may see `cin.sync_with_stdio(0);` used in place of `ios_base::sync_with_stdio(0);` but they should have the same effect.
 
+<Warning>
+
 Actually, the first link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
+
+</Warning>
+
 
 </CPPSection>
 
