@@ -5,6 +5,7 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
 import TopNavigationBar from '../components/TopNavigationBar';
+import { useRef } from 'react';
 
 const AuthorCard = ({
   author,
@@ -127,6 +128,8 @@ const AuthorCard = ({
 };
 
 export default function IndexPage(props: PageProps) {
+  const learnMoreRef = useRef();
+
   return (
     <Layout>
       <SEO title={null} />
@@ -203,6 +206,12 @@ export default function IndexPage(props: PageProps) {
                   <div className="mt-3 sm:mt-0 sm:ml-3">
                     <a
                       href="#learn-more"
+                      onClick={e => {
+                        e.preventDefault();
+                        learnMoreRef.current.scrollIntoView({
+                          behavior: 'smooth',
+                        });
+                      }}
                       className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-600 hover:bg-blue-50 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       Learn More
@@ -287,7 +296,7 @@ export default function IndexPage(props: PageProps) {
       </div>
       {/* End Hero */}
 
-      <div className="py-12 bg-white" id="learn-more">
+      <div className="py-12 bg-white" id="learn-more" ref={learnMoreRef}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <p className="text-base leading-6 text-blue-600 font-semibold tracking-wide uppercase">
@@ -510,10 +519,10 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      <b>No, USACO does not have an official syllabus.</b>
-                      This guide merely lists topics that have{' '}
-                      <i>historically</i> appeared in USACO contests; it makes
-                      no guarantees about the topics in future USACO contests.
+                      <b>No, USACO does not have an official syllabus.</b> This
+                      guide merely lists topics that have <i>historically</i>{' '}
+                      appeared in USACO contests; it makes no guarantees about
+                      the topics in future USACO contests.
                     </p>
                   </dd>
                 </div>
