@@ -5,7 +5,7 @@ author: Benjamin Qi, Siyong Huang
 prerequisites: 
  - dfs
  - SRQ
-description: "?"
+description: "Decomposing the tree to faciliate path computations"
 frequency: 1
 ---
 
@@ -20,17 +20,18 @@ import { Problem } from "../models";
 
 export const problems = {
     general: [
-      new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"], ""),
-			new Problem("Plat", "New Barns", "817", "Normal", true, ["Centroid"], ""),
-			new Problem("CF", "Sherlock's bet to Moriarty", "contest/776/problem/F", "Normal", false, ["Centroid"], ""),
-			new Problem("CF", "Digit Tree", "contest/715/problem/C", "Normal", false, ["Centroid", "NT"], ""),
-			new Problem("CF", "Double Tree", "contest/1140/problem/G", "Normal", false, ["Centroid", "DP"], ""),
-			new Problem("ojuz", "JOI - Factories", "JOI14_factories", "Normal", false, ["Centroid"], ""),
-			new Problem("CF", "Sum of Prefix Sums", "contest/1303/problem/G", "Hard", false, ["Centroid", "CHT"], ""),
+      new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"], "Keep setting the centroid to the next rank"),
+			new Problem("Plat", "New Barns", "817", "Normal", true, ["Centroid"], "Build centroid decomp on the whole tree first and perform updates for each 'root' as expected."),
+			new Problem("CF", "Sherlock's bet to Moriarty", "contest/776/problem/F", "Normal", false, ["Centroid"], "Similar to Ceil the Commander, but annoying to interpret input and order regions"),
+			new Problem("CF", "Digit Tree", "contest/715/problem/C", "Normal", false, ["Centroid", "NT"], "M is coprime to 10, so use Euler's Theorem and maps storing mods to count pairs."),
+			new Problem("CF", "Double Tree", "contest/1140/problem/G", "Normal", false, ["Centroid", "DP"], "DP + Centroid"),
+			new Problem("ojuz", "JOI - Factories", "JOI14_factories", "Normal", false, ["Centroid"], "Very similar to New Barns"),
+			new Problem("CF", "Sum of Prefix Sums", "contest/1303/problem/G", "Hard", false, ["Centroid", "CHT"], "Maintain convex hull trick as you iterate through subtrees. It's easier to have a different dfs for querying and updating CHT. Also run forwards and backwards to account for direction of prefix sum."),
       new Problem("YS", "Frequency Table of Tree Distance", "frequency_table_of_tree_distance", "Hard", false, ["Centroid", "FFT"], ""),
       new Problem("DMOJ", "Bob Equilibrium", "dmopc19c7p6", "Hard", false, ["Centroid"], "tight time limit"),
       new Problem("DMOJ", "Time Traveller Imaxblue", "tc19summerh", "Hard", false, ["Centroid"], ""),
-      new Problem("ojuz", "JOI - Synchronization", "JOI13_synchronization", "Hard", false, ["Centroid", "Small to Large"], "Looks like $O(N \log^3 N)$ is very fast!"),
+      new Problem("ojuz", "JOI - Synchronization", "JOI13_synchronization", "Hard", false, ["Centroid", "Small to Large"], "Looks like $O(N \log^3 N)$ is very fast! When deleting an edge, remember how many systems that edge was used to synchronize. Also, each moment there is a connected component, all computers in the component have the same value."),
+			new Problem("CF", "Raining Season", "contest/1019/problem/E", "Very Hard", false, ["Centroid", "CHT", "Set Merging"], "Merge a bunch of smaller convex hull tricks together to create the ultimate convex hull trick"),
       new Problem("Plat", "At Large", "793", "Very Hard", false, ["Centroid"], "tight time limit"),
     ]
 };
