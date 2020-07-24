@@ -145,7 +145,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
           >
             {link.title}
           </p>
-          {link.frequency ? (
+          {link.frequency !== null ? (
             <p className="text-sm mb-1">
               <Frequency frequency={link.frequency} />
             </p>
