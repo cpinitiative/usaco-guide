@@ -203,6 +203,78 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+<Spoiler title="With Scanner">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class template {
+    public static void main(String[] args) {
+        Scanner r = new Scanner(System.in);
+        long x = r.nextLong();
+        while (x != 1) {
+            System.out.print(x+" ");
+            if (x%2 == 0) x /= 2;
+            else x = 3*x+1;
+        }
+        System.out.print(x);
+    }
+}
+```
+
+</Spoiler>
+
+<Spoiler title="With InputReader / PrintWriter">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class template {
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+    }
+    static InputReader r = new InputReader(System.in);
+    static PrintWriter pw = new PrintWriter(System.out);
+    public static void main(String[] args) {
+        long x = r.nextLong();
+        while (x != 1) {
+            pw.print(x+" ");
+            if (x%2 == 0) x /= 2;
+            else x = 3*x+1;
+        }
+        pw.print(x);
+        pw.close(); // flushes the output once printing is done
+    }
+}
+```
+
+</Spoiler>
+
+
+</JavaSection>
+
 </LanguageSection>
 
 ## File I/O

@@ -48,7 +48,7 @@ If you installed Clang on Mac, then you can download `stdc++.h` from [here](http
 
 <Resources>
   <Resource source="LearnCPP" title="6.13 - Typedefs and type aliases" url="https://www.learncpp.com/cpp-tutorial/typedefs-and-type-aliases/" starred> </Resource>
-  <Resource source="Quora" title="What is the difference between 'typedef' and 'using' in C++?" url="https://www.quora.com/What-is-the-difference-between-typedef-and-using-in-C++"> </Resource>
+  <Resource source="Quora" title="Difference between 'typedef' and 'using' in C++?" url="https://www.quora.com/What-is-the-difference-between-typedef-and-using-in-C++"> </Resource>
 </Resources>
 
 ## Macros
@@ -104,6 +104,43 @@ cout << sz(x)-1 << "\n"; // -1
 vi v = {2,4,1,5,3};
 sort(1+all(v)); // {2,1,3,4,5}
 sort(all(v)); // {1,2,3,4,5}
+```
+
+## Templates
+
+### With Functions
+
+<Resources>
+  <Resource source="LearnCPP" title="13.1 - Function Templates" url="https://www.learncpp.com/cpp-tutorial/131-function-templates/" starred> </Resource>
+</Resources>
+
+For example,
+
+```cpp
+template<class T> bool ckmin(T& a, const T& b) { 
+	return b < a ? a = b, 1 : 0; }
+```
+
+will set $a$ equal to $\min(a,b)$, and return `true` if the value of $a$ changes.
+
+### With Classes
+
+<Resources>
+  <Resource source="LearnCPP" title="13.3 - Template Classes" url="https://www.learncpp.com/cpp-tutorial/133-template-classes/" starred> </Resource>
+  <Resource source="CPP" title="Type Alias" url="https://en.cppreference.com/w/cpp/language/type_alias">documention for using</Resource>
+</Resources>
+
+Can also use with `using` (check documentation for details).
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class T> using vec = vector<T>;
+
+int main() {
+	vec<int> v; // same as vector<int>
+}
 ```
 
 ## Other Stuff
