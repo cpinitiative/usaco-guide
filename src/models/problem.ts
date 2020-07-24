@@ -18,7 +18,7 @@ const sources = {
   LC: 'https://leetcode.com/problems/',
   ojuz: 'https://oj.uz/problem/view/',
   HR: 'https://www.hackerrank.com/',
-  infoarena: 'https://infoarena.ro/problema/'
+  infoarena: 'https://infoarena.ro/problema/',
 };
 
 export class Problem {
