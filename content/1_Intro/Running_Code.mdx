@@ -9,7 +9,9 @@ prerequisites:
 
 Please let us know if these installation instructions do not work for you.
 
-# Running Code Online (C++, Python, Java)
+# Running Code Online
+
+In all of C++, Python, Java.
 
 - [OnlineGDB](https://www.onlinegdb.com/)
   - online compiler with embedded GDB debugger
@@ -53,7 +55,7 @@ You can run your C++ programs from the command line and use a text editor of you
     Fast, lightweight. Unlimited free evaluation period, though it will repeatedly ask you to purchase a license.
   </Resource>
   <Resource title="Vim" url="https://www.vim.org/" starred>
-    Classic text editor, usually preinstalled on Linux. Also see NeoVim, MacVim?
+    Classic text editor, usually preinstalled on Linux. Also see Neovim, MacVim
   </Resource>
   <Resource title="Atom" url="https://atom.io/">
     From the makers of Github.
@@ -73,15 +75,17 @@ Vim is probably the easiest way to print syntax-highlighted code on Mac, see the
 - [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding) (I don't use)
   - test manager can be useful
   - linting is covered by the above
-  - stress testing is covered in "Debugging"
+  - stress testing is covered in [Debugging](./debugging)
   - can't get debug to work
 
 <!--    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
     - no need to do this if you just use command line to compile & run -->
 
+## Installing GCC
 
+[USACO](http://www.usaco.org/index.php?page=instructions) (and most contests) use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s `g++` to compile and run your code. You'll need `g++` specifically to use the `#include <bits/stdc++.h>` header file within the template provided in [Code Conventions](./code-con#template); see [C++ Tips & Tricks](./cpp-tips#include-bitsstdch) for details.
 
-## On Linux
+### On Linux
 
 GCC is usually preinstalled on most Linux distros. You can check if it is installed with
 
@@ -91,30 +95,36 @@ whereis g++
 
 If it is not preinstalled, you can probably install it using your distro's package manager.
 
-## On Windows
+### On Windows
 
-### [MinGW](http://mingw.org/)
+<Resources>
+  <Resource source="Jetbrains" title="Configuring CLion on Windows" url="https://www.jetbrains.com/help/clion/quick-tutorial-on-configuring-clion-on-windows.html#MinGW">setting up Cygwin, MinGW, WSL, or MSVC</Resource>
+</Resources>
 
-First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+#### [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
 
-[Adding MinGW to PATH](https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm)
+<Resources>
+  <Resource source="Microsoft" title="VSCode - GCC on Windows" url="https://code.visualstudio.com/docs/cpp/config-mingw">MinGW</Resource>
+  <Resource source="Rose-Hulman" title="Adding MinGW to PATH" url="https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm"> </Resource>
+</Resources>
 
-### Windows Subsystem for Linux (WSL)
+ 1. First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/). 
+ 2. Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+
+#### [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) (Windows Subsystem for Linux)
 
 This is what I (Anthony) personally use, although it may be more difficult to properly set up.
 
-[VSCode Docs for WSL](https://code.visualstudio.com/docs/cpp/config-wsl) (difficult for beginners)
+<Resources>
+  <Resource source="Microsoft" title="VSCode - GCC on WSL" url="https://code.visualstudio.com/docs/cpp/config-wsl">difficult for beginners</Resource>
+</Resources>
 
 If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
 - Note that WSL has a max stack size of 64MB; I am unsure if this limitation is resolved yet.
 - Note that WSL/vim clipboard integration is imperfect.
 
-## On Mac
-
-[Clang](https://en.wikipedia.org/wiki/Clang) is the default compiler for Mac OS X, but you should use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s `g++` since that's what [USACO](http://www.usaco.org/index.php?page=instructions) uses to compile your code. You'll need this to use [`<bits/stdc++.h>`](../cpp-tips#include-bitsstdch).
-
-### Installing GCC
+### On Mac
 
 1.  Open the **Terminal** application and familiarize yourself with some basic commands.
 
@@ -145,6 +155,8 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
     softwareupdate --list # list updates
     softwareupdate -i -a # installs all updates
     ```
+
+    After this step, `clang` should be installed (try running `clang --version` in Terminal).
 
 3.  Install [Homebrew](https://brew.sh/).
 
@@ -191,7 +203,7 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 Consider a simple program such as the following, which we'll save in `name.cpp`.
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
 int main() {
