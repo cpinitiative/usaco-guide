@@ -51,6 +51,7 @@ const sources = {
   Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
   HR: 'https://www.hackerrank.com/',
   SO: 'https://stackoverflow.com/',
+  Infoarena: 'https://infoarena.ro/',
 };
 
 export const sourceTooltip = {
