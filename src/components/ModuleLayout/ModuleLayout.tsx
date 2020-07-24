@@ -21,7 +21,7 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import Logo from '../Logo';
 
-const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
+export const Frequency = ({ frequency }: { frequency: ModuleFrequency }) => {
   const textColors = [
     'text-red-600',
     'text-orange-600',

@@ -152,7 +152,8 @@ export default function Template(props) {
                           item.frontmatter.id,
                           moduleIDToSectionMap[item.frontmatter.id],
                           item.frontmatter.title,
-                          item.frontmatter.description
+                          item.frontmatter.description,
+                          item.frontmatter.frequency
                         )
                       }
                     />
@@ -178,6 +179,7 @@ export const pageQuery = graphql`
             author
             prerequisites
             description
+            frequency
           }
           problems {
             uniqueID
