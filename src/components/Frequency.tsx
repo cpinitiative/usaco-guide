@@ -18,11 +18,11 @@ export const FrequencyTextColors = [
   'text-green-600', // group-hover:text-green-600
 ];
 export const FrequencyCircleColors = [
-  'text-red-500',
-  'text-orange-500',
-  'text-yellow-500',
-  'text-teal-500',
-  'text-green-500',
+  'text-red-500', // group-hover:text-red-500
+  'text-orange-500', // group-hover:text-orange-500
+  'text-yellow-500', // group-hover:text-yellow-500
+  'text-teal-500', // group-hover:text-teal-500
+  'text-green-500', // group-hover:text-green-500
 ];
 export const FrequencyHints = [
   'Historically, this module has not appeared in this division before. However, it can still show up in future contests.',
