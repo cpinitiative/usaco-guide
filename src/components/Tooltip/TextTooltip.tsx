@@ -2,12 +2,18 @@
 
 import * as React from 'react';
 import Tooltip from './Tooltip';
+import classNames from 'classnames';
 
-const TextTooltip = ({ children, ...props }) => {
+const TextTooltip = ({ children, className, ...props }) => {
   return (
     // @ts-ignore
     <Tooltip {...props}>
-      <span className="border-b border-dashed border-gray-600 cursor-pointer">
+      <span
+        className={classNames(
+          'border-b border-dashed border-gray-600 cursor-pointer',
+          className
+        )}
+      >
         {children}
       </span>
     </Tooltip>

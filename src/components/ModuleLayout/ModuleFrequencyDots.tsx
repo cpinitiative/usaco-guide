@@ -6,9 +6,7 @@ export default function ModuleFrequencyDots({ count, color, totalCount }) {
     <>
       {new Array(totalCount).fill(null).map((_, idx) => (
         <svg
-          className={`-ml-1 mr-1.5 h-2.5 w-2.5 ${
-            idx >= count ? emptyCircle : color
-          }`}
+          className={`mr-0.5 h-2.5 w-2.5 ${idx >= count ? emptyCircle : color}`}
           fill="currentColor"
           viewBox="0 0 8 8"
           key={idx}

@@ -176,8 +176,6 @@ export const pageQuery = graphql`
           frontmatter {
             title
             id
-            author
-            prerequisites
             description
             frequency
           }

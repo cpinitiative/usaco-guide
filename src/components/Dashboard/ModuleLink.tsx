@@ -6,7 +6,13 @@ import { useContext } from 'react';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import UserDataContext from '../../context/UserDataContext';
 import { Link } from 'gatsby';
-import { Frequency } from '../ModuleLayout/ModuleLayout';
+import ModuleFrequencyDots from '../ModuleLayout/ModuleFrequencyDots';
+import TextTooltip from '../Tooltip/TextTooltip';
+import {
+  FrequencyCircleColors,
+  FrequencyLabels,
+  FrequencyTextColors,
+} from '../Frequency';
 
 const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -140,16 +146,31 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
         >
           <p
             className={`${
-              progress === 'Ignored' ? 'text-gray-400' : 'text-gray-600'
-            } group-hover:text-blue-800 transition duration-150 ease-in-out mb-1`}
+              progress === 'Ignored' ? 'text-gray-400' : 'text-gray-700'
+            } group-hover:text-blue-800 transition duration-150 ease-in-out mb-1 flex items-center`}
           >
-            {link.title}
+            <span className="mr-2">{link.title}</span>
           </p>
-          {link.frequency !== null ? (
-            <p className="text-sm mb-1">
-              <Frequency frequency={link.frequency} />
+          {link.frequency && (
+            <p className="text-sm flex items-center leading-4 mb-1">
+              <ModuleFrequencyDots
+                count={link.frequency}
+                totalCount={4}
+                color={
+                  'transition duration-150 ease-in-out text-gray-400 group-hover:' +
+                  FrequencyCircleColors[link.frequency]
+                }
+              />
+              <span
+                className={
+                  `ml-1 transition duration-150 ease-in-out text-gray-500 group-hover:` +
+                  FrequencyTextColors[link.frequency]
+                }
+              >
+                {FrequencyLabels[link.frequency]}
+              </span>
             </p>
-          ) : null}
+          )}
           <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out leading-5">
             {link.description}
           </p>
