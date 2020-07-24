@@ -87,12 +87,12 @@ export default function LicensePage(props: PageProps) {
           <p className="mb-6">
             If you have questions regarding the usage of this site, or would
             like to request to use these resources outside of the authorized use
-            cases described above, please contact Nathan Wang at{' '}
+            cases described above, please contact us at{' '}
             <a
-              href="mailto:nathan.r.wang@gmail.com"
+              href="mailto:usacoguide@gmail.com"
               className="text-blue-600 underline"
             >
-              nathan.r.wang@gmail.com
+              usacoguide@gmail.com
             </a>
             .
             {/*While USACO Director Dr. Brian Dean will make all final decisions,*/}

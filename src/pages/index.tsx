@@ -548,7 +548,7 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       To learn more about contributing, please visit{' '}
                       <Link
-                        to="/intro/using-this-guide/#for-contributors"
+                        to="/intro/contributing"
                         className="text-blue-600 underline"
                       >
                         this page
@@ -604,12 +604,12 @@ export default function IndexPage(props: PageProps) {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
                       If you have any questions related to this guide, please
-                      contact the guide coordinator, Nathan Wang, at{' '}
+                      contact us at{' '}
                       <a
+                        href="mailto:usacoguide@gmail.com"
                         className="text-blue-600 underline"
-                        href="mailto:nathan.r.wang@gmail.com"
                       >
-                        nathan.r.wang@gmail.com
+                        usacoguide@gmail.com
                       </a>
                       .
                     </p>

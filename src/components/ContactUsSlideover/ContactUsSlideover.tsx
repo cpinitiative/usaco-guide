@@ -74,6 +74,7 @@ export default function ContactUsSlideover({
     'Request - Missing Section',
     'Request - Problem Editorial',
     'Suggestion',
+    'I want to contribute!',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
@@ -194,7 +195,7 @@ export default function ContactUsSlideover({
                     We will try our best to respond (if one is needed) within a
                     week.
                   </p>
-                  <p className="pt-2">
+                  {/* <p className="pt-2">
                     For urgent requests, please feel free to email{' '}
                     <a
                       href="mailto:nathan.r.wang@gmail.com"
@@ -203,7 +204,7 @@ export default function ContactUsSlideover({
                       nathan.r.wang@gmail.com
                     </a>
                     .
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

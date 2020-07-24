@@ -16,6 +16,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "using-this-guide",
         "modules",
+        "contributing",
         "code-con",
       ]
     },
