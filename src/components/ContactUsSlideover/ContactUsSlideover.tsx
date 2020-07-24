@@ -118,14 +118,11 @@ export default function ContactUsSlideover({
     data.append('message', message);
     setSubmitEnabled(false);
     try {
-      await fetch(
-        'https://formsubmit.co/ajax/da14a047686367521c3c8c5a79b03c97',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          body: data,
-        }
-      );
+      await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
+        method: 'POST',
+        mode: 'no-cors',
+        body: data,
+      });
       setTopic('');
       setMessage('');
       setShowSuccess(true);
