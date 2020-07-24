@@ -18,6 +18,7 @@ const sources = {
   LC: 'https://leetcode.com/problems/',
   ojuz: 'https://oj.uz/problem/view/',
   HR: 'https://www.hackerrank.com/',
+  Infoarena: 'https://infoarena.ro/problema/',
 };
 
 export class Problem {
