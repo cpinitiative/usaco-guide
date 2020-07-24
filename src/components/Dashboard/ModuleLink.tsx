@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import ModuleLayoutContext from '../../context/ModuleLayoutContext';
 import UserDataContext from '../../context/UserDataContext';
 import { Link } from 'gatsby';
+import { Frequency } from '../ModuleLayout/ModuleLayout';
 
 const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -144,6 +145,11 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
           >
             {link.title}
           </p>
+          {link.frequency !== null ? (
+            <p className="text-sm mb-1">
+              <Frequency frequency={link.frequency} />
+            </p>
+          ) : null}
           <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out leading-5">
             {link.description}
           </p>

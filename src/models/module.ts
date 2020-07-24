@@ -5,7 +5,8 @@ export class ModuleLinkInfo {
     public id: string,
     public section: string,
     public title: string,
-    public description?: string
+    public description?: string,
+    public frequency?: ModuleFrequency
   ) {
     this.url = `/${section}/${id}`;
   }
