@@ -285,6 +285,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         {/* {sol} */}
         {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
         {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
+        {/* {problem.id} */}
         {msg && sol}
         {external && (
           <a
