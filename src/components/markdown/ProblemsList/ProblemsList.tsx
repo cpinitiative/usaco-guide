@@ -139,6 +139,7 @@ type ProblemComponentProps = {
 };
 
 export function ProblemComponent(props: ProblemComponentProps) {
+  let id_to_sol = require('./id_to_sol.json');
   const difficultyClasses = {
     'Very Easy': 'bg-gray-100 text-gray-800',
     Easy: 'bg-green-100 text-green-800',
@@ -154,6 +155,25 @@ export function ProblemComponent(props: ProblemComponentProps) {
   React.useEffect(() => {
     setIsActive(window && window.location && window.location.hash === '#' + id);
   }, []);
+  const isUsaco = source => {
+    const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
+    for (let ind = 0; ind < posi.length; ++ind) {
+      if (source.includes(posi[ind])) return true;
+    }
+    return false;
+  };
+  const external = link => {
+    return link.startsWith('http') || link.startsWith('www');
+  };
+  let sol = ''; // problem.solution
+  if (problem.solution != null) {
+    if (!external(sol)) {
+      sol = '/solutions/' + problem.solution;
+    }
+  }
+  if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
+    sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
+  }
   return (
     <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
@@ -235,8 +255,30 @@ export function ProblemComponent(props: ProblemComponentProps) {
             ? problem.tags.join(', ')
             : 'None')}
       </td>
-      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-none font-medium">
-        {problem.sketch && (
+      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+        {sol.length > 0 && external(sol) && (
+          <Tooltip content="External Solution">
+            <a
+              href={sol}
+              target="_blank"
+              className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            >
+              Ext Solution
+            </a>
+          </Tooltip>
+        )}
+        {sol.length > 0 && !external(sol) && (
+          <Tooltip content="Internal Solution">
+            <a
+              href={sol}
+              target="_blank"
+              className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            >
+              Int Solution
+            </a>
+          </Tooltip>
+        )}
+        {sol.length == 0 && problem.sketch && (
           <span
             className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group"
             onClick={() => problem.sketch && props.onShowSolution(problem)}
