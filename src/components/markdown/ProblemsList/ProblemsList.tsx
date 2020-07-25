@@ -281,7 +281,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             ? problem.tags.join(', ')
             : 'None')}
       </td>
-      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm font-medium">
+      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm font-medium leading-none">
         {/* {sol} */}
         {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
         {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
