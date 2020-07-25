@@ -1,0 +1,72 @@
+---
+id: cses-1621
+title: CSES Distinct Numbers
+author: Nathan Wang
+---
+
+This problem asks us to calculate the number of distinct values in a given list.
+
+There are two ways to approach this problem: We can either use a `set`, or we can sort the array.
+
+# Using a Set
+
+This is probably the easier of the two methods, but requires knowledge of sets. If you're still on [Bronze - Intro to Data Structures](/bronze/intro-ds), skip down to the "Sorting the Array" solution.
+
+Because sets only store one copy of each value, we can insert all the numbers into a set, and then print out the side of the set.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    set<int> distinctNumbers;
+    for (int i = 0; i < n; i++) {
+        int number; cin >> number;
+        distinctNumbers.insert(number);
+    }
+
+    cout << distinctNumbers.size() << endl;
+
+    return 0;
+}
+```
+
+# Sorting the Array
+
+This problem is also solvable without sets. Sort a vector containing all the numbers. The answer is the number of times two adjacent numbers are not equal; more formally, the number of times $a_i \neq a_{i + 1}$, $+ 1$.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    int A[n];
+    for (int i = 0; i < n; ++i) {
+        cin >> A[i];
+    }
+
+    sort(A, A+n);
+
+    int answer = 1;
+
+    for (int i = 0; i < n - 1; ++i) {
+        if (A[i] != A[i + 1]) {
+            answer++;
+        }
+    }
+
+    cout << answer << endl;
+
+    return 0;
+}
+```
