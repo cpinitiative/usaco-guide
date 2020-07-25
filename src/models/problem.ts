@@ -57,7 +57,8 @@ export class Problem {
       | 'Intro|Insane',
     public starred?: boolean,
     public tags?: string[],
-    sol?: string
+    sol?: string,
+    public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
     if (/^[a-zA-z\-0-9]+$/.test(sol)) {
       this.solution = sol;

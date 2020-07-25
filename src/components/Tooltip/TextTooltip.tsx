@@ -4,7 +4,7 @@ import * as React from 'react';
 import Tooltip from './Tooltip';
 import classNames from 'classnames';
 
-const TextTooltip = ({ children, className, ...props }) => {
+const TextTooltip = ({ children, className = null, ...props }) => {
   return (
     // @ts-ignore
     <Tooltip {...props}>
