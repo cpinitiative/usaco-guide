@@ -198,7 +198,9 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
     `g++ --version` should now output the same thing as `g++-9 --version`.
 
-## Compiling & Running With the Command Line
+## Command Line
+
+### Basics of Compiling & Running
 
 Consider a simple program such as the following, which we'll save in `name.cpp`.
 
@@ -230,6 +232,7 @@ If you type some integer and then press enter, then the program should produce o
 g++ name.cpp -o name && ./name
 ```
 
+
 ### Redirecting Input & Output
 
 If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
@@ -256,11 +259,13 @@ Explanation:
 
 You should always compile with these flags.
 
-### Adding Shortcuts (Mac and Linux only)
+### Mac-Specific
 
-<Info title="Windows Users">
+#### Adding Shortcuts
 
-If you're on Windows, you can use an IDE to get these shortcuts, or you can install WSL (mentioned above).
+<Info title="For Users of Linux & Windows">
+
+The process is similar for Linux. If you're on Windows, you can use an IDE to get these shortcuts, or you can install WSL (mentioned above).
 
 </Info>
 
@@ -282,15 +287,145 @@ or some text editor (ex. sublime text with `subl`).
 subl ~/.zshenv
 ```
 
-You can add **aliases** and **functions** here, such as the following to compile and run C++.
+You can add **aliases** and **functions** here, such as the following to compile and run C++ on Mac.
 
 ```
-co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow; }
+co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall; }
 run() { co $1 && ./$1 & fg; }
 ```
 
 Now you can easily compile and run `name.cpp` from the command line with `co name && ./name` or `run name`. Note that all occurrences of `$1` in the function are replaced with `name`.
 
+#### What is `& fg` for?
+
+<Resources>
+	<Resource source="SO" url="https://stackoverflow.com/questions/45023243/displaying-or-redirecting-a-shells-job-control-messages" title="Displaying or redirecting a shell's job control messages"> </Resource>
+</Resources>
+
+Let `prog.cpp` denote the following file:
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> v;
+    cout << v[-1];
+}
+```
+
+According to the resource above, the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog`.
+
+If `& fg` is removed from the run command above then the terminal displays no message at all. Leaving it in produces the following (ignore the first two lines):
+
+```
+[2] 30594
+[2]  - running    ./$1
+zsh: segmentation fault  ./$1
+```
+
+#### Measuring Time & Memory Usage
+
+<Resources>
+	<Resource source="CF" title="How to Find Total Memory Consumption of C++ Program" url="https://codeforces.com/blog/entry/49371?#comment-333749">for Linux</Resource>
+	<Resource source="SO" title="time -v on Mac" url="https://stackoverflow.com/questions/32515381/mac-os-x-usr-bin-time-verbose-flag">use gtime</Resource>
+</Resources>
+
+For example, suppose that `prog.cpp` consists of the following:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int BIG = 1e7;
+int a[BIG];
+
+int main() {
+	int sum = 0;
+	for (int i = 0; i < BIG; ++i) sum += a[i];
+	cout << sum;
+}
+```
+
+Then `co prog && gtime -v ./prog` gives the following:
+
+```
+  Command being timed: "./prog"
+  User time (seconds): 0.01
+  System time (seconds): 0.01
+  Percent of CPU this job got: 11%
+  Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.22
+  Average shared text size (kbytes): 0
+  Average unshared data size (kbytes): 0
+  Average stack size (kbytes): 0
+  Average total size (kbytes): 0
+  Maximum resident set size (kbytes): 40216
+  Average resident set size (kbytes): 0
+  Major (requiring I/O) page faults: 91
+  Minor (reclaiming a frame) page faults: 10088
+  Voluntary context switches: 3
+  Involuntary context switches: 38
+  Swaps: 0
+  File system inputs: 0
+  File system outputs: 0
+  Socket messages sent: 0
+  Socket messages received: 0
+  Signals delivered: 0
+  Page size (bytes): 4096
+  Exit status: 0
+```
+
+Note that $10^7$ integers require $4\cdot 10^7\cdot 10^{-3}\approx 40000$ kilobytes of memory, which is close to $40216$ in the above output as expected.
+
+#### Adjusting Stack Size
+
+Let `A.cpp` denote the following program:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int res(int x) { 
+	if (x == 200000) return x;
+	return res(x+1);
+}
+
+int main() { 
+	cout << res(0) << "\n"; 
+}
+```
+
+If we compile and run this with `g++ A.cpp -o A && ./A`, this outputs `200000`. However, changing `200000` to `300000` gives a segmentation fault. Similarly,
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() { 
+	int arr[2000000];
+	cout << arr[0] << "\n";
+}
+```
+
+runs, but changing `2000000` to `3000000` also gives a segmentation fault. This is because the **stack size** on Mac appears to be limited to 8 megabytes by default.
+
+<Resources>
+	<Resource source="Wikipedia" url="https://en.wikipedia.org/wiki/Stack_overflow" title="Stack overflow">explanation of the issue</Resource>
+	<Resource source="CF" url="https://codeforces.com/blog/entry/60999?#comment-449312" title="Solving on Mac"> </Resource>
+</Resources>
+
+To get around this, we can pass a [linker option](https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html). According to the manual for [`ld`](https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_mono/ld.html) (enter `man ld` in Terminal), the option `-stack_size size` does the following:
+
+> Specifies the maximum stack size for the main thread in a program.  Without this option a program has a 8MB stack.  The argument size is a hexadecimal number with an optional leading 0x. The size should be a multiple of the architecture's page size (4KB or 16KB).
+
+So including `-Wl,-stack_size -Wl,0x10000000` as part of your compilation command will set the maximum stack size to $16^7$ bytes $\approx$ $256$ megabytes, which is usually sufficient. However, running the first program above with `200000` replaced by `1e7` still gives an error. In this case, you can further increase the maximum stack size (ex. by adding another `0` to the end).
+
+<Warning>
+
+This matters particularly for contests such as [Facebook Hacker Cup](https://www.facebook.com/hackercup) where you submit the output of a program you run locally.
+
+</Warning>
 
 </CPPSection>
 

@@ -82,23 +82,6 @@ examples for all of input, output, debug?
 
 ## Compiling
 
-I use the following in my `.zshenv` to compile and run.
-
-```
-co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall -Wextra -Wshadow -DLOCAL -Wl,-stack_size -Wl,0xF0000000; }
-run() { co $1 && ./$1 & fg; }
-```
-
-### Mac
-
-According to [this comment](https://codeforces.com/blog/entry/60999?#comment-449312), `-Wl,-stack_size -Wl,0xF0000000` increases the stack size on Mac. Without it, you might get a runtime error if you have many levels of recursion. This matters particularly for contests such as Facebook Hacker Cup where you submit the output of a program you run locally.
-
-<IncompleteSection>
-
-Documentation?
-
-</IncompleteSection>
-
 ### [Warning Options](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
 
 Includes `-Wall -Wextra -Wshadow`
@@ -309,70 +292,6 @@ int main() {
 ```
 oops.cpp:7:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
 ```
-
-## Running (on Mac)
-
-According to [StackOverflow](https://stackoverflow.com/a/60516966/5834770) the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog`.
-
-If `& fg` is removed from the run command above then the terminal displays no message at all. Leaving it in produces the following (ignore the first two lines):
-
-```
-[2] 30594
-[2]  - running    ./$1
-zsh: segmentation fault  ./$1
-```
-
-### Measuring Time & Memory Usage
-
-- [CF Comment](https://codeforces.com/blog/entry/49371?#comment-333749)
-- [time -v on Mac](https://stackoverflow.com/questions/32515381/mac-os-x-usr-bin-time-verbose-flag)
-  - use `gtime`
-
-For example, suppose that `prog.cpp` consists of the following:
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int BIG = 1e7;
-int a[BIG];
-
-int main() {
-	int sum = 0;
-	for (int i = 0; i < BIG; ++i) sum += a[i];
-	cout << sum;
-}
-```
-
-Then `co prog && gtime -v ./prog` gives the following:
-
-```
-  Command being timed: "./prog"
-  User time (seconds): 0.01
-  System time (seconds): 0.01
-  Percent of CPU this job got: 11%
-  Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.22
-  Average shared text size (kbytes): 0
-  Average unshared data size (kbytes): 0
-  Average stack size (kbytes): 0
-  Average total size (kbytes): 0
-  Maximum resident set size (kbytes): 40216
-  Average resident set size (kbytes): 0
-  Major (requiring I/O) page faults: 91
-  Minor (reclaiming a frame) page faults: 10088
-  Voluntary context switches: 3
-  Involuntary context switches: 38
-  Swaps: 0
-  File system inputs: 0
-  File system outputs: 0
-  Socket messages sent: 0
-  Socket messages received: 0
-  Signals delivered: 0
-  Page size (bytes): 4096
-  Exit status: 0
-```
-
-Note that $10^7$ integers require $4\cdot 10^7\cdot 10^{-3}\approx 40000$ kilobytes of memory, which is close to $40216$ in the above output as expected.
 
 </CPPSection>
 
