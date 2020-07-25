@@ -62,7 +62,9 @@ export class Problem {
   ) {
     if (
       sol !== undefined &&
-      (sol.startsWith('http') || sol.startsWith('www') || /^[a-zA-z\-0-9]+$/.test(sol))
+      (sol.startsWith('http') ||
+        sol.startsWith('www') ||
+        /^[a-zA-z\-0-9]+$/.test(sol))
     ) {
       this.solution = sol;
     } else {
