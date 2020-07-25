@@ -257,15 +257,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
       </td>
       <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
         {sol.length > 0 && external(sol) && (
-          <Tooltip content="External Solution">
-            <a
-              href={sol}
-              target="_blank"
-              className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
-            >
-              External Sol
-            </a>
-          </Tooltip>
+          <a
+            href={sol}
+            target="_blank"
+            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+          >
+            External Sol
+          </a>
         )}
         {/* {sol.length > 0 && !external(sol) && (
           <Tooltip content="Internal Solution">
@@ -315,11 +313,9 @@ export function ProblemComponent(props: ProblemComponentProps) {
                 </svg>
               </Tooltip>
             )}
-            <Tooltip content="Internal Solution">
-              <a href={sol} target="_blank">
-                Internal Sol
-              </a>
-            </Tooltip>
+            <a href={sol} target="_blank">
+              Internal Sol
+            </a>
           </div>
         )}
         {sol.length == 0 && problem.sketch && (
