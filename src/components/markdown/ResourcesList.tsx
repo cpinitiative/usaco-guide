@@ -62,6 +62,8 @@ export const sourceTooltip = {
   IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
   CP1: 'Book - Competitive Programming 1',
   TC: 'TopCoder',
+  IOI: 'International Olympiad in Informatics',
+  TLX: 'tlx.toki.id',
   CPC:
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
   CF: 'CodeForces',
