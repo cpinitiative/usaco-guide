@@ -263,11 +263,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
               target="_blank"
               className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
             >
-              Ext Solution
+              External Sol
             </a>
           </Tooltip>
         )}
-        {sol.length > 0 && !external(sol) && (
+        {/* {sol.length > 0 && !external(sol) && (
           <Tooltip content="Internal Solution">
             <a
               href={sol}
@@ -277,28 +277,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
               Int Solution
             </a>
           </Tooltip>
-        )}
-        {sol.length == 0 && problem.sketch && (
-          <span
-            className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group"
-            onClick={() => problem.sketch && props.onShowSolution(problem)}
-          >
-            <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
-              <svg
-                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Tooltip>
-            Show Sketch
-          </span>
-        )}
+        )} */}
         {!problem.sketch && problem.solution && (
           <div
             className={
@@ -336,12 +315,35 @@ export function ProblemComponent(props: ProblemComponentProps) {
                 </svg>
               </Tooltip>
             )}
-            <a href={`/solutions/${problem.solution}/`} target="_blank">
-              View Solution
-            </a>
+            <Tooltip content="Internal Solution">
+              <a href={sol} target="_blank">
+                Internal Sol
+              </a>
+            </Tooltip>
           </div>
         )}
-        {!problem.sketch && !problem.solution && (
+        {sol.length == 0 && problem.sketch && (
+          <span
+            className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group"
+            onClick={() => problem.sketch && props.onShowSolution(problem)}
+          >
+            <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
+              <svg
+                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Tooltip>
+            Show Sketch
+          </span>
+        )}
+        {sol.length == 0 && !problem.sketch && (
           <Tooltip
             content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
           >
