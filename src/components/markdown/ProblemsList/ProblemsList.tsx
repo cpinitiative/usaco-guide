@@ -37,8 +37,12 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50" />
-                  <th className="pl-4 pr-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50" />
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider text-right">
+                    Tags
+                  </th>
+                  <th className="pl-4 pr-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider text-right">
+                    Solution
+                  </th>
                 </tr>
               </thead>
               <tbody className="table-alternating-stripes">
@@ -161,15 +165,40 @@ export function ProblemComponent(props: ProblemComponentProps) {
     }
     return false;
   };
-  const external = link => {
+  const isExternal = link => {
     return link.startsWith('http');
   };
+  const isInternal = link => {
+    return /^[a-zA-Z\-0-9]+$/.test(link);
+  };
+  let msg = false;
+  let internal = false;
+  let external = false;
   let sol = problem.solution ? problem.solution : '';
-  if (sol.length > 0 && !external(sol)) {
+  if (sol.length > 0 && isInternal(sol)) {
+    internal = true;
     sol = '/solutions/' + sol;
-  }
-  if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
-    sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
+  } else {
+    if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
+      sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
+    }
+    if (
+      sol == '' &&
+      problem.source == 'CF' &&
+      problem.id.startsWith('contest/')
+    ) {
+      sol = '@Check CF';
+    }
+    if (isExternal(sol)) {
+      external = true;
+    } else if (sol.startsWith('@')) {
+      msg = true;
+      sol = sol.substring(1);
+    } else {
+      if (sol.length != 0) {
+        throw new Error('Unrecognied solution - ' + sol);
+      }
+    }
   }
   return (
     <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
@@ -190,7 +219,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           problem.source
         )}
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
         <div className="flex items-center">
           {problem.starred && (
             <Tooltip content="We highly recommend you do all starred problems!">
@@ -252,9 +281,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
             ? problem.tags.join(', ')
             : 'None')}
       </td>
-      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-none font-medium">
+      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm font-medium leading-none">
         {/* {sol} */}
-        {sol.length > 0 && external(sol) && (
+        {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
+        {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
+        {/* {problem.id} */}
+        {msg && sol}
+        {external && (
           <a
             href={sol}
             target="_blank"
@@ -263,7 +296,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             External Sol
           </a>
         )}
-        {sol.length > 0 && !external(sol) && (
+        {internal && (
           <div
             className={
               'inline-flex items-center h-5 group ' +
@@ -305,7 +338,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             </a>
           </div>
         )}
-        {sol.length == 0 && problem.sketch && (
+        {!msg && !external && !internal && problem.sketch && (
           <span
             className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
             onClick={() => problem.sketch && props.onShowSolution(problem)}
@@ -326,7 +359,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             Show Sketch
           </span>
         )}
-        {sol.length == 0 && !problem.sketch && (
+        {!msg && !external && !internal && !problem.sketch && (
           <Tooltip
             content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
           >

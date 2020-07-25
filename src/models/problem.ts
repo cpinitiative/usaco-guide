@@ -63,8 +63,8 @@ export class Problem {
     if (
       sol !== undefined &&
       (sol.startsWith('http') ||
-        sol.startsWith('www') ||
-        /^[a-zA-z\-0-9]+$/.test(sol))
+        /^[a-zA-Z\-0-9]+$/.test(sol) ||
+        sol.startsWith('@'))
     ) {
       this.solution = sol;
     } else {
@@ -75,6 +75,14 @@ export class Problem {
     this.difficulty = labels as any;
     if (!id.startsWith('http')) {
       if (source in sources) {
+        if (source == 'CF' && /^[0-9]+[A-Z]$/.test(id)) {
+          id =
+            'contest/' +
+            id.substring(0, id.length - 1) +
+            '/problem/' +
+            id[id.length - 1];
+        }
+        this.id = id;
         this.url = sources[source] + id;
       } else
         throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`;
