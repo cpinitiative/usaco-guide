@@ -60,7 +60,11 @@ export class Problem {
     sol?: string,
     public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
-    if (/^[a-zA-z\-0-9]+$/.test(sol)) {
+    if (
+      /^[a-zA-z\-0-9]+$/.test(sol) ||
+      sol.startsWith('http') ||
+      sol.startsWith('www')
+    ) {
       this.solution = sol;
     } else {
       this.sketch = sol;

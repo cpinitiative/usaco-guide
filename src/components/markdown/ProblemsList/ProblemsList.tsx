@@ -164,10 +164,12 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const external = link => {
     return link.startsWith('http') || link.startsWith('www');
   };
-  let sol = ''; // problem.solution
+  let sol = '';
   if (problem.solution != null) {
-    if (!external(sol)) {
+    if (!external(problem.solution)) {
       sol = '/solutions/' + problem.solution;
+    } else {
+      sol = problem.solution;
     }
   }
   if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
@@ -275,7 +277,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             </a>
           </Tooltip>
         )} */}
-        {!problem.sketch && problem.solution && (
+        {!problem.sketch && problem.solution && !external(sol) && (
           <div
             className={
               'inline-flex items-center h-5 group ' +
