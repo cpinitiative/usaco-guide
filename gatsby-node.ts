@@ -56,7 +56,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
-    if (!node.fields.division) return;
+    if (!node.fields?.division) return;
     createPage({
       path: `/${node.fields.division}/${node.frontmatter.id}`,
       component: moduleTemplate,
