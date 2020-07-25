@@ -121,6 +121,7 @@ export const plugins = [
         ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
     },
   },
+  `gatsby-plugin-netlify-cache`,
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: `gatsby-plugin-algolia`,

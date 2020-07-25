@@ -173,6 +173,24 @@ Fun fact: the title attribute is optional.
 
 ### Problem Lists
 
+**Problem sketches are deprecated. Do not add any new problem sketches.**
+
+To add problem editorials, create a new file under the `solutions/` folder. Try to name it something reasonable; follow existing naming conventions.
+
+Editorials are also written in MDX. The frontmatter has three fields:
+
+```
+---
+id: cses-1621
+title: CSES Distinct Numbers
+author: Nathan Wang
+---
+
+... solution
+```
+
+The author field is optional.
+
 Problem constructor:
 
 ```typescript
