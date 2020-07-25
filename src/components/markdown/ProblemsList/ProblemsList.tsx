@@ -5,8 +5,8 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import { sourceTooltip } from '../ResourcesList';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-import { Link } from 'gatsby';
-import { moduleIDToURLMap } from '../../../../content/ordering';
+// @ts-ignore
+import id_to_sol from './id_to_sol.json';
 
 type ProblemsListProps = {
   title?: string;
@@ -139,7 +139,6 @@ type ProblemComponentProps = {
 };
 
 export function ProblemComponent(props: ProblemComponentProps) {
-  let id_to_sol = require('./id_to_sol.json');
   const difficultyClasses = {
     'Very Easy': 'bg-gray-100 text-gray-800',
     Easy: 'bg-green-100 text-green-800',
@@ -255,7 +254,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             ? problem.tags.join(', ')
             : 'None')}
       </td>
-      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-none font-medium">
         {sol.length > 0 && external(sol) && (
           <a
             href={sol}
@@ -320,7 +319,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         )}
         {sol.length == 0 && problem.sketch && (
           <span
-            className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group"
+            className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
             onClick={() => problem.sketch && props.onShowSolution(problem)}
           >
             <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
