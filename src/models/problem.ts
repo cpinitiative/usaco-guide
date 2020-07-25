@@ -60,7 +60,10 @@ export class Problem {
     sol?: string,
     public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
-    if (/^[a-zA-z\-0-9]+$/.test(sol)) {
+    if (
+      sol !== undefined &&
+      (sol.startsWith('http') || /^[a-zA-z\-0-9]+$/.test(sol))
+    ) {
       this.solution = sol;
     } else {
       this.sketch = sol;
