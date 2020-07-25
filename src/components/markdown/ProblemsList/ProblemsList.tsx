@@ -162,15 +162,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
     return false;
   };
   const external = link => {
-    return link.startsWith('http') || link.startsWith('www');
+    return link.startsWith('http');
   };
-  let sol = '';
-  if (problem.solution != null) {
-    if (!external(problem.solution)) {
-      sol = '/solutions/' + problem.solution;
-    } else {
-      sol = problem.solution;
-    }
+  let sol = problem.solution ? problem.solution : '';
+  if (sol.length > 0 && !external(sol)) {
+    sol = '/solutions/' + sol;
   }
   if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
     sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
@@ -257,6 +253,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             : 'None')}
       </td>
       <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm leading-none font-medium">
+        {/* {sol} */}
         {sol.length > 0 && external(sol) && (
           <a
             href={sol}
@@ -266,18 +263,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             External Sol
           </a>
         )}
-        {/* {sol.length > 0 && !external(sol) && (
-          <Tooltip content="Internal Solution">
-            <a
-              href={sol}
-              target="_blank"
-              className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
-            >
-              Int Solution
-            </a>
-          </Tooltip>
-        )} */}
-        {!problem.sketch && problem.solution && !external(sol) && (
+        {sol.length > 0 && !external(sol) && (
           <div
             className={
               'inline-flex items-center h-5 group ' +
