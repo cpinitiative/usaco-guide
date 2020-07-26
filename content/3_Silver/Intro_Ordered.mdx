@@ -1,10 +1,10 @@
 ---
 id: intro-ordered
-title: "Introduction to Ordered Sets"
+title: "More Operations on Ordered Sets"
 author: Darren Yao, Benjamin Qi
 prerequisites: 
- - unordered
-description: "By maintaining keys in sorted order."
+ - intro-sets
+description: "Using iterators with sets, finding the next element smaller or larger than a specified key in a set."
 frequency: 2
 ---
 
@@ -28,20 +28,28 @@ export const problems = {
     ]
 };
 
-<Warning>
-
-This is **not** built into Python. The Python [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) stores keys in the same order as they were inserted in, **not** in sorted order.
-
-</Warning>
-
 <Resources>
   <Resource source="IUSACO" title="4.3 - Sets & Maps">module is based off this</Resource>
-  <Resource source="CPH" title="4.2 to 4.4 - Data Structures" starred>sets, maps, set iterators</Resource>
+  <Resource source="CPH" title="4.4 - Iterators & Ranges" starred>set iterators</Resource>
 </Resources>
 
 <br />
 
-In **ordered** sets and maps, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set or map. Accessing or removing the next key higher or lower than some input $k$ is also supported.
+In ordered sets and maps, accessing or removing the next key higher or lower than some input `k` is also supported.
+
+## Using Iterators
+
+<LanguageSection>
+
+<CPPSection>
+
+next(), prev(), ++, --
+
+</CPPSection>
+
+</LanguageSection>
+
+<IncompleteSection />
 
 ## Ordered Sets
 
@@ -49,7 +57,7 @@ In **ordered** sets and maps, the entries are sorted in order of key. Insertions
 
 <CPPSection>
 
-In addition to the `unordered_set` operations mentioned in the prerequisite module, the ordered `set` also allows: 
+The ordered `set` also allows: 
 
   - `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
   - `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
@@ -74,7 +82,7 @@ s.erase(s.upper_bound(6)); // [1, 2, 14]
 
 <JavaSection>
 
-As well as those supported by the unordered set, the ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
+The ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();
@@ -103,7 +111,7 @@ One limitation of the ordered set is that we can't efficiently access the $k^{th
 
 <CPPSection>
 
-In addition to the `unordered_map` operations mentioned in the prerequisite module, the ordered `map` also allows: 
+The ordered `map` also allows: 
 
  - `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
  - `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
@@ -126,7 +134,7 @@ if (m.upper_bound(10) == m.end())
 
 <JavaSection>
 
-The ordered map supports all of the operations that an unordered map supports, and additionally supports `firstKey` / `firstEntry` and `lastKey` / `lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
+The ordered map additionally supports `firstKey` / `firstEntry` and `lastKey` / `lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
 
 ```java
 TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -211,24 +219,9 @@ static void remove(int x){
 
 </LanguageSection>
 
-## Using Iterators
-
-<LanguageSection>
-
-<CPPSection>
-
-next(), prev(), ++, --
-
-
-</CPPSection>
-
-</LanguageSection>
-
-<IncompleteSection />
-
 ## Priority Queues
 
-A **priority queue** supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue. Like sets, priority is based on a **comparator function**.
+A **priority queue** supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue.
 
 Of course, all of these functions are supported by multisets, but priority queues are simpler and faster.
 

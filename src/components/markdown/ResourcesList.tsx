@@ -87,6 +87,10 @@ export const sourceTooltip = {
   'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
   'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
+  Bronze: 'USACO 2015-16 to present',
+  Silver: 'USACO 2015-16 to present',
+  Gold: 'USACO 2015-16 to present',
+  Plat: 'USACO 2015-16 to present',
   ZLE: 'kauntaofficial.github.io',
 };
 

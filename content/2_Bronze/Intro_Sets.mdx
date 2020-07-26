@@ -1,0 +1,180 @@
+---
+id: intro-sets
+title: Introduction to Sets & Maps
+author: Darren Yao
+description: "Maintaining collections of distinct elements."
+frequency: 2
+prerequisites:
+ - pairs-tuples
+---
+
+import { Problem } from "../models";
+
+export const problems = {
+    dis: [
+      new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, [], "cses-1621"),
+    ],
+    ex: [
+      new Problem("YS", "Associative Array", "associative_array", "Easy")
+    ],
+    standard: [
+      new Problem("CSES", "Sum of Two Values", "1640", "Easy", false, [], "Brute force one value by going through a[], then check if the other exists."),
+      new Problem("Bronze", "Not Last", "687", "Easy"),
+      new Problem("Bronze", "Where Am I?", "964", "Easy", false, [], "Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice."),
+      new Problem("Silver", "Bovine Genomics", "739", "Easy", false, [], ""),
+      new Problem("Silver", "Cities & States", "667", "Normal", false, [], "Store two maps of counts for the first two letters of a city and state code, then iterate over the cities and use the maps to efficently query for the corresponding counts."),
+    ],
+};
+
+<Resources>
+  <Resource source="IUSACO" title="4.4 - Sets & Maps">module is based off this</Resource>
+  <Resource source="CPH" title="4.2, 4.3 - Sets, Maps" starred></Resource>
+</Resources>
+
+Both Java and C++ contain two versions of sets and maps; one using **sorting** and the other using **hashing**. We'll only introduce the former version in this module.
+
+
+## Sets
+
+<Problems problems={problems.dis} />
+
+A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set.
+
+<LanguageSection>
+
+<CPPSection>
+
+The operations on a C++ [`set`](http://www.cplusplus.com/reference/set/set/) include:
+
+ - `insert`, which adds an element to the set if not already present.
+ - `erase`, which deletes an element if it exists.
+ - `count`, which returns `1` if the set contains the element and `0` if it doesn't.
+
+```cpp
+set<int> s;
+s.insert(1); // [1]
+s.insert(4); // [1, 4]
+s.insert(2); // [1, 2, 4]
+s.insert(1); // [1, 2, 4]
+// the add method did nothing because 1 was already in the set
+cout << s.count(1) << endl; // 1
+s.erase(1); // [2, 4]
+cout << s.count(5) << endl; // 0
+s.erase(0); // [2, 4]
+// if the element to be removed does not exist, nothing happens
+
+for (int element : s) {
+    cout << element << " ";
+}
+cout << endl;
+// You can iterate through an set in sorted order
+```
+
+</CPPSection>
+
+<JavaSection>
+
+The operations on a `TreeSet` are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
+
+```java
+Set<Integer> set = new TreeSet<Integer>();
+set.add(1); // [1]
+set.add(4); // [1, 4] 
+set.add(2); // [1, 2, 4]
+set.add(1); // [1, 2, 4]
+// the add method did nothing because 1 was already in the set
+System.out.println(set.contains(1)); // true
+set.remove(1); // [2, 4]
+System.out.println(set.contains(5)); // false
+set.remove(0); // [2, 4]
+// if the element to be removed does not exist, nothing happens
+
+for(int element : set){
+  System.out.println(element);
+}
+// You can iterate through an set in sorted order
+```
+
+</JavaSection>
+
+<PySection>
+
+<Warning>
+
+Ordered sets and maps are **not** built into Python. The Python [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) stores keys in the same order as they were inserted in, **not** in sorted order.
+
+</Warning>
+
+</PySection>
+
+</LanguageSection>
+
+<IncompleteSection>
+
+What about `size()`?
+
+</IncompleteSection>
+
+## Maps
+
+<Problems problems={problems.ex} />
+
+A **map** is a set of ordered pairs, each containing a **key** and a **value**. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods: 
+
+  - one to add a specified key-value pairing
+  - one to retrieve the value for a given key
+  - one to remove a key-value pairing from the map
+
+Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the map.
+
+<LanguageSection>
+
+<CPPSection>
+
+In a C++ [`map`](http://www.cplusplus.com/reference/map/map/) `m`:
+
+ - the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0. 
+ - The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map. 
+ - Lastly, `erase(key)` removes the map entry associated with the specified key. 
+
+```cpp
+map<int, int> m;
+m[1] = 5; // [(1, 5)]
+m[3] = 14; // [(1, 5); (3, 14)]
+m[2] = 7; // [(1, 5); (2, 7); (3, 14)]
+m.erase(2); // [(1, 5); (3, 14)]
+cout << m[1] << '\n'; // 5
+cout << m.count(7) << '\n' ; // 0
+cout << m.count(1) << '\n' ; // 1
+```
+
+</CPPSection>
+
+<JavaSection>
+
+In a `TreeMap`, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+
+```java
+Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
+map.put(1, 5); // [(1, 5)]
+map.put(3, 14); // [(1, 5); (3, 14)]
+map.put(2, 7); // [(1, 5); (2, 7); (3, 14)]
+map.remove(2); // [(1, 5); (3, 14)]
+System.out.println(map.get(1)); // 5
+System.out.println(map.containsKey(7)); // false
+System.out.println(map.containsKey(1)); // true
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<IncompleteSection>
+
+What about `size()`, iterating over map?
+
+</IncompleteSection>
+
+## Problems
+
+<Problems problems={problems.standard} />
