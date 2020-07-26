@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { createContext, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { Problem } from '../../content/models';
 import { ModuleProgress } from '../models/module';
 import { ProblemProgress } from '../models/problem';
 import useFirebase from '../hooks/useFirebase';
+
+// this file needs some serious cleanup
 
 export type UserLang = 'showAll' | 'cpp' | 'java' | 'py';
 export const LANGUAGE_LABELS: { [key in UserLang]: string } = {
@@ -95,12 +98,21 @@ const getLastViewedModuleFromStorage = () => {
   return v || null;
 };
 
+function areEqualShallow(a, b) {
+  for (let key of Object.keys(a)) {
+    if (a[key] !== b[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
-  const [userProgress, setUserProgress] = useState<{
+  const [userProgressOnModules, setUserProgressOnModules] = useState<{
     [key: string]: ModuleProgress;
   }>({});
-  const [problemStatus, setProblemStatus] = useState<{
+  const [userProgressOnProblems, setUserProgressOnProblems] = useState<{
     [key: string]: ProblemProgress;
   }>({});
   const [lastViewedModule, setLastViewedModule] = useState<string>(null);
@@ -116,10 +128,76 @@ export const UserDataProvider = ({ children }) => {
 
   React.useEffect(() => {
     setLang(getLangFromStorage());
-    setUserProgress(getProgressFromStorage());
-    setProblemStatus(getProblemStatusFromStorage());
+    setUserProgressOnModules(getProgressFromStorage());
+    setUserProgressOnProblems(getProblemStatusFromStorage());
     setLastViewedModule(getLastViewedModuleFromStorage());
   }, []);
+
+  React.useEffect(() => {
+    if (firebaseUser) {
+      // sync all local data with firebase
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .get()
+        .then(snapshot => {
+          const data = snapshot.data();
+          let newLang = lang,
+            newUserProgressOnModules = userProgressOnModules,
+            newUserProgressOnProblems = userProgressOnProblems,
+            newLastViewedModule = lastViewedModule;
+          if (data) {
+            newLang = data.lang || lang;
+            newUserProgressOnModules = {
+              ...userProgressOnModules,
+              ...data.userProgressOnModules,
+            };
+            newUserProgressOnProblems = {
+              ...userProgressOnProblems,
+              ...data.userProgressOnProblems,
+            };
+            newLastViewedModule = data.lastViewedModule || lastViewedModule;
+          }
+          if (
+            !data ||
+            newLang !== lang ||
+            newLastViewedModule !== lastViewedModule ||
+            !areEqualShallow(userProgressOnModules, newUserProgressOnModules) ||
+            !areEqualShallow(userProgressOnProblems, newUserProgressOnProblems)
+          ) {
+            firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+              {
+                lang: newLang,
+                userProgressOnModules: newUserProgressOnModules,
+                userProgressOnProblems: newUserProgressOnProblems,
+                lastViewedModule: newLastViewedModule,
+              },
+              { merge: true }
+            );
+            ReactDOM.unstable_batchedUpdates(() => {
+              window.localStorage.setItem(langKey, JSON.stringify(newLang));
+              window.localStorage.setItem(
+                lastViewedModuleKey,
+                JSON.stringify(newLastViewedModule)
+              );
+              window.localStorage.setItem(
+                problemStatusKey,
+                JSON.stringify(newUserProgressOnProblems)
+              );
+              window.localStorage.setItem(
+                progressKey,
+                JSON.stringify(newUserProgressOnModules)
+              );
+              setLang(newLang);
+              setLastViewedModule(newLastViewedModule);
+              setUserProgressOnModules(newUserProgressOnModules);
+              setUserProgressOnProblems(newUserProgressOnProblems);
+            });
+          }
+        });
+    }
+  }, [firebaseUser]);
 
   const userData = React.useMemo(
     () => ({
@@ -128,16 +206,26 @@ export const UserDataProvider = ({ children }) => {
         window.localStorage.setItem(langKey, JSON.stringify(lang));
         setLang(lang);
       },
-      userProgressOnModules: userProgress,
+      userProgressOnModules,
       setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
         const newProgress = {
           ...getProgressFromStorage(),
           [moduleID]: progress,
         };
         window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
-        setUserProgress(newProgress);
+
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              userProgressOnModules: newProgress,
+            },
+            { merge: true }
+          );
+        }
+
+        setUserProgressOnModules(newProgress);
       },
-      userProgressOnProblems: problemStatus,
+      userProgressOnProblems,
       setUserProgressOnProblems: (problem, status) => {
         const newStatus = {
           ...getProblemStatusFromStorage(),
@@ -147,7 +235,17 @@ export const UserDataProvider = ({ children }) => {
           problemStatusKey,
           JSON.stringify(newStatus)
         );
-        setProblemStatus(newStatus);
+
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              userProgressOnProblems: newStatus,
+            },
+            { merge: true }
+          );
+        }
+
+        setUserProgressOnProblems(newStatus);
       },
       lastViewedModule,
       setLastViewedModule: moduleID => {
@@ -155,6 +253,16 @@ export const UserDataProvider = ({ children }) => {
           lastViewedModuleKey,
           JSON.stringify(moduleID)
         );
+
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              lastViewedModule: moduleID,
+            },
+            { merge: true }
+          );
+        }
+
         setLastViewedModule(moduleID);
       },
       firebaseUser,
@@ -169,8 +277,8 @@ export const UserDataProvider = ({ children }) => {
     }),
     [
       lang,
-      userProgress,
-      problemStatus,
+      userProgressOnModules,
+      userProgressOnProblems,
       lastViewedModule,
       firebaseUser,
       firebase,
