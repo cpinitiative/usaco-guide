@@ -135,7 +135,6 @@ export const UserDataProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (firebaseUser) {
-      // sync all local data with firebase
       return firebase
         .firestore()
         .collection('users')
@@ -143,6 +142,7 @@ export const UserDataProvider = ({ children }) => {
         .onSnapshot(snapshot => {
           const data = snapshot.data();
           if (!data) {
+            // sync all local data with firebase if the firebase account doesn't exist yet
             firebase.firestore().collection('users').doc(firebaseUser.uid).set(
               {
                 lang,
@@ -174,10 +174,9 @@ export const UserDataProvider = ({ children }) => {
             .collection('users')
             .doc(firebaseUser.uid)
             .set({ lang }, { merge: true });
-        } else {
-          window.localStorage.setItem(langKey, JSON.stringify(lang));
-          setLang(lang);
         }
+        window.localStorage.setItem(langKey, JSON.stringify(lang));
+        setLang(lang);
       },
       userProgressOnModules,
       setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
