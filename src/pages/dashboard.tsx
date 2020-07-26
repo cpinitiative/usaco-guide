@@ -126,37 +126,40 @@ export default function DashboardPage(props: PageProps) {
               </div>
             )}
           </div>
-          {/*<header>*/}
-          {/*  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
-          {/*    <h1 className="text-3xl font-bold leading-tight text-gray-900">*/}
-          {/*      Announcements*/}
-          {/*    </h1>*/}
-          {/*  </div>*/}
-          {/*</header>*/}
-          {/*<div className="max-w-7xl mx-auto mb-8">*/}
-          {/*  <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">*/}
-          {/*    <div className="bg-white shadow hover:shadow-lg transition duration-150 ease-in-out sm:rounded-lg">*/}
-          {/*      <div className="px-4 py-5 sm:p-6 cursor-pointer">*/}
-          {/*        <p className="text-sm leading-5 text-gray-500">*/}
-          {/*          <time dateTime="2020-07-18">July 18, 2020</time>*/}
-          {/*        </p>*/}
-          {/*        <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">*/}
-          {/*          Looking for Contributors!*/}
-          {/*        </h3>*/}
-          {/*        <p className="mt-3 text-base leading-6 text-gray-500">*/}
-          {/*          Welcome to the USACO Guide! We're still in pre-release mode,*/}
-          {/*          so things may be a bit rough around the edges. Learn more*/}
-          {/*          about what this means, and how you can help contribute!*/}
-          {/*        </p>*/}
-          {/*        <div className="mt-3">*/}
-          {/*          <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
-          {/*            Continue Reading*/}
-          {/*          </span>*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
+          <header>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900">
+                Announcements
+              </h1>
+            </div>
+          </header>
+          <div className="max-w-7xl mx-auto mb-8">
+            <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">
+              <div className="bg-white shadow transition duration-150 ease-in-out sm:rounded-lg">
+                {/* hover:shadow-lg */}
+                <div className="px-4 py-5 sm:p-6">
+                  {/* cursor-pointer */}
+                  <p className="text-sm leading-5 text-gray-500">
+                    <time dateTime="2020-07-18">July 26, 2020</time>
+                  </p>
+                  <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">
+                    User Accounts in Beta
+                  </h3>
+                  <p className="mt-3 text-base leading-6 text-gray-500">
+                    Due to popular demand, we've added <b>beta</b> support for
+                    user accounts. There is a risk of complete data loss, so
+                    please use it at your own risk. Please report all issues you
+                    encounter using the "Feedback" or "Contact Us" buttons.
+                  </p>
+                  {/*<div className="mt-3">*/}
+                  {/*  <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
+                  {/*    Continue Reading*/}
+                  {/*  </span>*/}
+                  {/*</div>*/}
+                </div>
+              </div>
+            </div>
+          </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">

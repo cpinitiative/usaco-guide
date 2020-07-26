@@ -267,9 +267,15 @@ export const UserDataProvider = ({ children }) => {
       },
       firebaseUser,
       signIn: () => {
-        firebase
-          .auth()
-          .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+        if (
+          confirm(
+            'Warning: User accounts is still in beta. There is a risk of complete data loss. Are you sure you want to proceed?'
+          )
+        ) {
+          firebase
+            .auth()
+            .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+        }
       },
       signOut: () => {
         firebase.auth().signOut();
