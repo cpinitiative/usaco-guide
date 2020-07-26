@@ -17,7 +17,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "using-this-guide",
         "modules",
         "contributing",
-        "code-con",
       ]
     },
     {
@@ -30,6 +29,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "data-types",
         "io",
         "expected",
+        "code-con",
       ]
     },
     {
