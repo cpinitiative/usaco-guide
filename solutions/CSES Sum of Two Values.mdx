@@ -16,7 +16,9 @@ One idea that comes to mind would be to used a boolean array to store the values
 
 However, we can store the values in an (un)ordered set, and use the `.contains` method to check whether a value exists. 
 
-The last detail we need to deal with is that the problem asks us to return the indices of the values, rather than the values themselves. To deal with this, let's store each value in the array as a pair, $value_i, index_i$, and use `lower_bound` to find the smallest value $\geq x - value_i$. If this value equals $x - value_i$, then we've found our answer. 
+The last detail we need to deal with is that the problem asks us to return the indices of the values, rather than the values themselves. To deal with this, let's find the two correct values first, and then find two values which have these indices. 
+
+To be careful not to count the same index twice, we'll add values to the set as we iterate through it, so at some index $i$ you only consider values with index $j < i$.
 
 <LanguageSection>
 
@@ -46,17 +48,23 @@ void setIO(string name = "") { // name is nonempty for USACO file I/O
 int main() {
     int n, x; cin >> n >> x;
     vi a(n);
-    set<pi> vals;
+    set<int> vals;
     for (int i = 0; i < n; i++) {
         cin >> a[i];
-        vals.insert(mp(a[i], i));
     }
+    int v1 = -1, v2 = -1;
     for (int i = 0; i < n; i++) {
-        auto it = vals.lower_bound(mp(x - a[i], INT_MIN)); //finds the smallest value >= x - a[i]
-        if(it != vals.end() && it -> f == x - a[i] && it -> s != i){ 
-            cout << i + 1 << " " << (it -> s) + 1 << '\n';
-            return 0;
+        if(vals.count(x - a[i])){
+            v1 = i + 1;
+            for(int j = 0; j < i; j++){
+                if(a[j] == (x - a[i])){
+                    v2 = j + 1;
+                    cout << v1 << " " << v2 << "\n";
+                    return 0;
+                }
+            }
         }
+        vals.insert(a[i]);
     }
     cout << "IMPOSSIBLE" << '\n';
 }
@@ -67,7 +75,4 @@ int main() {
 </LanguageSection>
 
 <IncompleteSection>
-
-Ben - There's no need to use lower_bound or deal with iterators (which are covered in silver).
-
 </IncompleteSection>
