@@ -6,7 +6,7 @@ import Markdown from '../components/markdown/Markdown';
 import { SECTION_LABELS } from '../../content/ordering';
 import { graphqlToModuleInfo } from '../utils/utils';
 import SEO from '../components/seo';
-import ModuleLayout from '../components/ModuleLayout/ModuleLayout';
+import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext';
 
@@ -26,11 +26,11 @@ export default function Template(props) {
       />
 
       <div className="h-screen flex overflow-hidden bg-white">
-        <ModuleLayout module={module}>
+        <MarkdownLayout markdownData={module}>
           <div className="py-4">
             <Markdown body={body} />
           </div>
-        </ModuleLayout>
+        </MarkdownLayout>
       </div>
     </Layout>
   );

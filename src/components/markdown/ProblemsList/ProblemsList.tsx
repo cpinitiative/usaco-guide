@@ -175,6 +175,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   let internal = false;
   let external = false;
   let sol = problem.solution ? problem.solution : '';
+  let hover = '';
   if (sol.length > 0 && isInternal(sol)) {
     internal = true;
     sol = '/solutions/' + sol;
@@ -188,6 +189,12 @@ export function ProblemComponent(props: ProblemComponentProps) {
       problem.id.startsWith('contest/')
     ) {
       sol = '@Check CF';
+      hover =
+        'Check contest materials, located to the right of the problem statement.';
+    }
+    if (sol == '' && problem.source == 'CSA') {
+      sol = '@Check CSA';
+      hover = 'The editorial tab should be right next to the statement tab.';
     }
     if (isExternal(sol)) {
       external = true;
@@ -286,7 +293,17 @@ export function ProblemComponent(props: ProblemComponentProps) {
         {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
         {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
         {/* {problem.id} */}
-        {msg && sol}
+        {msg && hover.length == 0 && sol}
+        {msg && hover.length > 0 && sol && (
+          <Tooltip content={hover}>
+            <div>{sol}</div>
+          </Tooltip>
+        )}
+        {/* {msg && hover.length > 0 && sol && (
+          <div>
+            {sol}
+          </div>
+        )} */}
         {external && (
           <a
             href={sol}

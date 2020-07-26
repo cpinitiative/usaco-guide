@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { ModuleLinkInfo } from '../../models/module';
 import { useContext } from 'react';
-import ModuleLayoutContext from '../../context/ModuleLayoutContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import UserDataContext from '../../context/UserDataContext';
 import { Link } from 'gatsby';
-import ModuleFrequencyDots from '../ModuleLayout/ModuleFrequencyDots';
+import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import TextTooltip from '../Tooltip/TextTooltip';
 import {
   FrequencyCircleColors,
@@ -153,7 +153,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
               {link.isIncomplete ? (
-                <Tooltip content="This module has incomplete sections.">
+                <Tooltip content="This module has incomplete sections. Please help! D:">
                   <svg
                     className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 ml-1.5 transition ease-in-out duration-150"
                     viewBox="0 0 20 20"

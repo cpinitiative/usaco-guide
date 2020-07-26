@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: "Complete Search with Recursion"
-author: Darren Yao, Sam Zhang
+author: Darren Yao, Sam Zhang, Michael Cao
 description: "Includes generating subsets and permutations."
 frequency: 2
 prerequisites:
@@ -12,51 +12,160 @@ import { Problem } from "../models";
 
 export const problems = {
   subset: [
-    new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion", "Subsets"], "cses-1623"),
+    new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion", "Subsets"], "@Below"),
   ],
   permSam: [
-    new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "cses-1622"),
+    new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "@Below"),
   ],
   ex: [
     new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], "Brute force the value of $a_1$ and then recover the remaining values, printing the lexicographically smallest one."),
   ],
   back: [
-    new Problem("CSES", "Chessboard and Queens", "1624", "Normal", false, [], "cses-1624"),
+    new Problem("CSES", "Chessboard & Queens", "1624", "Normal", false, [], "@CPH 5.3"),
+    new Problem("CSES", "Grid Paths", "1625", "Insane", false, [], "@CPH 5.4"),
   ],
   gen: [
     new Problem("Bronze", "Back & Forth", "857", "Hard", false, [], "Try all $10 * 11^4$ possibilities for each day, and simulate for each possibility. See the editorial for more details."), // 99.63
     new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
-    new Problem("CSES", "Grid Paths", "1625", "Insane", false, [], "Recursively backtrack. See CSES book for more details."),
   ],
 };
 
-## Generating Subsets
 
-<Resources>
-	<Resource source="CPH" title="5.1 - Generating Subsets" starred> </Resource>
-</Resources>
+## Subsets
 
 <Problems problems={problems.subset} />
 
-### Implementation
-
-<IncompleteSection />
-
-## Generating Permutations
+### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.2 - Generating Permutations" starred> </Resource>
+	<Resource source="CPH" title="5.1 - Generating Subsets" starred>good explanation + code, no need to repeat</Resource>
 </Resources>
 
-<Problems problems={problems.permSam} />
+### Solution - Apple Division
 
-<br />
+Since $n\le 20$, we can try all possible divisions of $n$ apples into two sets and find the one with the minimum difference in weights. There are two ways to achieve this.
 
-A **permutation** is a reordering of a list of elements. Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
+<Spoiler title="Method 1 - Recursion">
 
-<Resources>
-  <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
-</Resources>
+The first method would be to write a recursive function which searches over all possibilities.
+
+At some index, we either add $weight_i$ to the first set or the second set, storing two sums $s_1$ and $s_2$ with the sum of values in each set.
+
+Then, we return the difference between the two sums once we've reached the end of the array.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+ll solve(int i, ll s1, ll s2){
+    if(i == n){
+        return abs(s1 - s2);
+    }
+    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]));
+}
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    cout << solve(0, 0, 0) << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Method 2 - Bitmasks">
+
+By iterating through all bitmasks, we can consider the toggled bits as apples placed in the first set, and untoggled bits as apples placed in the second. Then, sum up the weights into $s1$ and $s2$ like before, and find the minimum difference.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    ll ans = (ll)1e18;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        ll s1 = 0, s2 = 0;
+        for (int j = 0; j < n; j++) {
+            if (mask & (1 << j)) { //if the j-th bit is toggled
+                s1 += weights[j];
+            }
+            else{
+                s2 += weights[j];
+            }
+        }
+        ans = min(ans, abs(s1 - s2));
+    }
+    cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Permutations
+
+A **permutation** is a reordering of a list of elements. 
 
 ### Lexicographical Order
 
@@ -80,7 +189,102 @@ Notice that the list starts with permutations beginning with 1 (just like a dict
 
 Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
 
-### Checking Permutations in Lexicographical Order 
+### Generating Permutations
+
+<Problems problems={problems.permSam} />
+
+Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
+
+<Resources>
+	<Resource source="CPH" title="5.2 - Generating Permutations" starred>good explanation + code, no need to repeat</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+### About `next_permutation`
+
+<Resources>
+	<Resource source="Mark Nelson" title="Next Permutation" url="https://marknelson.us/posts/2002/03/01/next-permutation.html" starred> </Resource>
+</Resources>
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+
+`next_permutation` is not available in Java.
+
+</Warning>
+
+</JavaSection>
+
+</LanguageSection>
+
+### Solution - Creating Strings I
+
+<Spoiler title="Method 1 - Recursively">
+
+<IncompleteSection />
+
+</Spoiler>
+
+<Spoiler title="Method 2 - With next_permutation">
+
+One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int main() {
+    setIO();
+    string s; cin >> s;
+    vector<string> out;
+    sort(all(s));
+    do {
+        out.pb(s);
+    } while(next_permutation(all(s)));
+    cout << sz(out) << "\n";
+    for(int i = 0; i < sz(out); i++){
+        cout << out[i] << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<!-- <Resources>
+  <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
+</Resources> -->
+
+<!-- ### Checking Permutations in Lexicographical Order 
 
 What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
 
@@ -96,9 +300,7 @@ What's going to be in the `check` function depends on the problem, but it should
 
 #### Method 2
 
-<Resources>
-	<Resource source="Mark Nelson" title="Next Permutation" url="https://marknelson.us/posts/2002/03/01/next-permutation.html"> </Resource>
-</Resources>
+
 
 Alternatively, we can just use the [`next_permutation()`](https://en.cppreference.com/w/cpp/algorithm/next_permutation) function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
 
@@ -146,24 +348,130 @@ public class Test {
 
 </LanguageSection>
 
-<IncompleteSection />
+<IncompleteSection /> -->
 
 ## Backtracking
 
 <Problems problems={problems.back} />
 
+### Resources
+
 <Resources>
-	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning"> </Resource>
+	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning" starred>how to solve the above two problems</Resource>
 </Resources>
 
-No (current) bronze problem should require pruning ...
+<Warning>
 
-### Implementation
+No (current) bronze problem should require pruning like that which "Grid Paths" requires.
 
-<IncompleteSection />
+</Warning>
+
+### Solution - Chessboard & Queens
+
+<Spoiler title="Method 1 - Generating Permutations">
+
+Since no two queens can be in the same column, let's generate a permutation of length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
+
+By generating all permutations, we can quickly test all possible placements, and count how many are valid.
+
+To make the implementation easier, we can observe that some bottom-left to top-right diagonal can be represented as all squares $i, j$ such that $i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+bool ok[8][8];
+
+int ans = 0;
+
+int main() {
+    setIO();
+    for (int i = 0; i < 8; i++) {
+        string s; cin >> s;
+        for (int j = 0; j < 8; j++) {
+            ok[i][j] = (s[j] == '.');
+        }
+    }
+    vi vals(8);
+
+    iota(all(vals), 0); //set vals to 0 1 ... 7
+
+    do {
+        bool works = true;
+        bool blocked[16];
+        for(int i = 0; i < 8; i++){
+            if(!ok[i][vals[i]]){
+                works = false;
+            }
+        }
+        memset(blocked, false, sizeof(blocked)); //first mark all squares as not blocked
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + vals[i]]){
+                works = false;
+            }
+            blocked[i + vals[i]] = true; //mark this diagonal
+        }
+        memset(blocked, false, sizeof(blocked));
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + 7 - vals[i]]){
+                works = false;
+            }
+            blocked[i + 7 - vals[i]] = true;
+        }
+        if(works) ++ans;
+    } while(next_permutation(all(vals)));
+
+    cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Method 2 - Backtracking">
+
+Since the bounds are small, we can recursively backtrack over all ways to place the queens, storing the current state of the board.
+
+Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by a queen or blocked and recurse, before removing this queen and backtracking.
+
+Finally, when we have placed all the queens and the boardstate is valid, then increment the answer.
+
+<IncompleteSection>
+
+</IncompleteSection>
+
+</Spoiler>
 
 ## Problems
 
 <Problems problems={problems.gen} />
 
-<IncompleteSection />
+<IncompleteSection>
+
+more probs?
+
+</IncompleteSection>

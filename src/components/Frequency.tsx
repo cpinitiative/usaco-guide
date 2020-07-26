@@ -1,5 +1,5 @@
 import { ModuleFrequency } from '../models/module';
-import ModuleFrequencyDots from './ModuleLayout/ModuleFrequencyDots';
+import ModuleFrequencyDots from './MarkdownLayout/ModuleFrequencyDots';
 import TextTooltip from './Tooltip/TextTooltip';
 import * as React from 'react';
 

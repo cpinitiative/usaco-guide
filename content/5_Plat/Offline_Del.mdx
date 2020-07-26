@@ -1,6 +1,6 @@
 ---
-id: offline-con
-title: "Offline Dynamic Connectivity"
+id: offline-del
+title: "Offline Deletion"
 author: Benjamin Qi, Siyong Huang
 prerequisites:
  - dsu
@@ -35,13 +35,12 @@ ins: [
 Using a persistent data structure or rollbacking, you are able to simulate deleting from a data structure while only using insertion operations.
 
 <Resources>
-  <Resource source="CP-Algorithms" title="Deleting from a data structure in O(T(n) log n)" url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html" starred></Resource>
+  <Resource source="CP-Algorithms" title="Deleting from a data structure in O(T(n) log n)" url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html" starred>includes code (but no explanation) for dynamic connectivity</Resource>
 </Resources>
 
 ## Dynamic Connectivity
 
-**Dynamic Connectivity** is the most common problem using the deleting trick.
-The problem is to determine whether pairs of nodes are in the same connected component while edges are being inserted and removed.
+**Dynamic Connectivity** is the most common problem using the deleting trick. The problem is to determine whether pairs of nodes are in the same connected component while edges are being inserted and removed.
 
 <Problems problems={problems.sam} />
 
@@ -51,9 +50,15 @@ The problem is to determine whether pairs of nodes are in the same connected com
 
 <Problems problems={problems.rollback} />
 
+<IncompleteSection>
+  
+explanation? check Guide to CP?
+
+</IncompleteSection>
+
 <Warning title="Watch Out!">
 
-Because path compression is amortized, it alone does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merge by rank.
+Because path compression is amortized, it does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merging by rank.
 
 </Warning>
 
@@ -74,8 +79,7 @@ int setv(int *a, int b)
 	return b;
 }
 void rollback(int x) {for(;X>x;) --X, *t[X] = v[X];}
-int find(int n) {return p[n] ? setv(p+n, find(p[n])) : n;}
-//path compression is entirely optional. It's shown here for demonstration purposes.
+int find(int n) {return p[n] ? find(p[n]) : n;}
 bool merge(int a, int b)
 {
 	a = find(a), b = find(b);

@@ -325,26 +325,11 @@ for i in range(m):
 </PySection>
 </LanguageSection>
 
-## Constant Factor
-
-The **constant factor** of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $O(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$. 
-
-<IncompleteSection>
-
-this is a terrible definition
-
-</IncompleteSection>
-
-Normally when using big-O notation, we ignore the constant factor: $O(3n) = O(n)$. This is fine most of the time, but sometimes we have an algorithm that just barely gets TLE, perhaps by just a few hundred milliseconds. When this happens, it is worth optimizing the constant factor of our algorithm. For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.)
-
-For now, don't worry about how to optimize constant factors -- just be aware of them.
-
 ## Common Complexities and Constraints
 
-Complexity factors that come from some common algorithms and data structures are as follows:
+Complexity factors that come from some common algorithms and data structures are as follows (If you don't recognize these topics, they will be introduced later):
 
 - Mathematical formulas that just calculate an answer: $O(1)$
-- Unordered set/map: $O(1)$ per operation
 - Binary search: $O(\log n)$
 - Ordered set/map or priority queue: $O(\log n)$ per operation
 - Prime factorization of an integer, or checking primality or compositeness of an integer naively: $O(\sqrt{n})$
@@ -381,3 +366,21 @@ Here are conservative upper bounds on the value of $n$ for each time complexity.
 A significant portion of Bronze problems will have $n\le 100$. This doesn't give much of a hint regarding the intended time complexity is (could be anywhere from say, $O(n)$ to $O(n^4)$!).
 
 </Warning>
+
+## Constant Factor
+
+<!-- The **constant factor** of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $O(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$. -->
+
+**Constant factor** refers to the idea that different operations with the same complexity take slightly different amounts of time to run.
+For example, three addition operations take a bit longer than a single addition operation.
+Another example is that although binary search and set insertion are both $O(\log n)$, binary searching is noticeably faster.
+
+**Constant factor** is entirely ignored in big-O notation.
+This is fine most of the time, but if the time limit is particularly tight, you may TLE with the intended complexity.
+When this happens, it is important to keep the constant factor in mind. 
+One example is, a piece of code that iterates through all ordered triplets runs in $O(n^3)$ time, but could be sped up by a factor of $6$ by iterating through unordered triplets.
+
+<!-- For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.) -->
+<!-- Bitsets are significantly faster (and so are bitwise operations vs iterating through bits). I don't want to make it sound insignificant -->
+
+For now, don't worry about optimizing constant factors -- just be aware of them.

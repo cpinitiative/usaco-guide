@@ -4,7 +4,7 @@ import { ModuleLinkInfo } from '../../../models/module';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useContext } from 'react';
-import ModuleLayoutContext from '../../../context/ModuleLayoutContext';
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import UserDataContext from '../../../context/UserDataContext';
 
 const LinkWithProgress = styled.span`
@@ -77,8 +77,8 @@ const StyledLink = styled.span`
 `;
 
 const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
-  const { module } = useContext(ModuleLayoutContext);
-  const isActive = module.id === link.id;
+  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
+  const isActive = markdownLayoutInfo.id === link.id;
   const itemRef = React.useRef(null);
 
   React.useEffect(() => {

@@ -10,7 +10,7 @@ Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given on
 
 So the question reduces to, given some value $a$, does some other value $x - a$ exist?
 
-# Using a Set
+# Using a Map
 
 One idea that comes to mind would be to used a boolean array to store the values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
 
@@ -46,17 +46,16 @@ void setIO(string name = "") { // name is nonempty for USACO file I/O
 int main() {
     int n, x; cin >> n >> x;
     vi a(n);
-    set<pi> vals;
+    map<int, int> vals;
     for (int i = 0; i < n; i++) {
         cin >> a[i];
-        vals.insert(mp(a[i], i));
     }
     for (int i = 0; i < n; i++) {
-        auto it = vals.lower_bound(mp(x - a[i], INT_MIN)); //finds the smallest value >= x - a[i]
-        if(it != vals.end() && it -> f == x - a[i] && it -> s != i){
-            cout << i + 1 << " " << (it -> s) + 1 << '\n';
+        if(vals.count(x - a[i])){
+            cout << i + 1 << " " << vals[x - a[i]] << "\n";
             return 0;
         }
+        vals[a[i]] = i + 1;
     }
     cout << "IMPOSSIBLE" << '\n';
 }
