@@ -327,17 +327,26 @@ for i in range(m):
 
 ## Constant Factor
 
-The **constant factor** of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $O(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$. 
+<!-- The **constant factor** of an algorithm refers to the coefficient of the complexity of an algorithm. If an algorithm runs in $O(kn)$ time, where $k$ is a constant and $n$ is the input size, then the "constant factor" would be $k$. -->
+**Constant factor** of refers to the idea that different operations with the same complexity take slightly different amounts of time to run.
+For example, three addition operations take a bit longer than a single addition operation.
+Another example is that although binary search and set insertion are both $O(\log N)$, binary searching is noticeably faster.
 
 <IncompleteSection>
 
-this is a terrible definition
+Improve definition of constant factor
 
 </IncompleteSection>
 
-Normally when using big-O notation, we ignore the constant factor: $O(3n) = O(n)$. This is fine most of the time, but sometimes we have an algorithm that just barely gets TLE, perhaps by just a few hundred milliseconds. When this happens, it is worth optimizing the constant factor of our algorithm. For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.)
+Constant factor is entirely ignored in big-O notation.
+This is fine most of the time, but if the time limit is particularly tight, you may TLE with the intended complexity.
+When this happens, it is important to keep the constant factor in mind. 
+One example is, a piece of code that iterates through all ordered triplets runs in $O(N^3)$ time, but could be sped up by a factor of $6$ by iterating through unordered triplets.
 
-For now, don't worry about how to optimize constant factors -- just be aware of them.
+<!-- For example, if our code currently runs in $O(n^2)$ time, perhaps we can modify our code to make it run in $O(n^2/32)$ by using a bitset. (Of course, with big-O notation, $O(n^2) = O(n^2/32)$.) -->
+<!-- Bitsets are significantly faster (and so are bitwise operations vs iterating through bits). I don't want to make it sound insignificant -->
+
+For now, don't worry about optimizing constant factors -- just be aware of them.
 
 ## Common Complexities and Constraints
 
