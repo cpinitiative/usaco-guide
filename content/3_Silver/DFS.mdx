@@ -1,7 +1,7 @@
 ---
 id: dfs
 title: Depth First Search (DFS)
-author: Siyong Huang
+author: Siyong Huang, Nathan Chen
 prerequisites: 
  - intro-graphs
 description: "A way to recursively traverse a graph."
@@ -283,129 +283,52 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class subordinates {
+public class Subordinates
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
 
-	static ArrayList<Integer> children[];
-	static int subtree_size[];
+	public static final int MN = 200020;
 
-	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in);
-		PrintWriter pw = new PrintWriter(System.out);
+	static int N, M, ans;
+	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
 
-		int N = sc.nextInt();
-		subtree_size = new int[N];
-		children = new ArrayList[N];
-		for(int i = 0; i < N; i++) children[i] = new ArrayList<Integer>();
-
-		for(int i = 1; i < N; i++) {
-			int parent = sc.nextInt()-1; //this node is the parent of node i... Also notice the -1 in order to make the node 0-indexed
-			children[parent].add(i);
-		}
-
-		dfs_size(0);
-
-		for(int i = 0; i < N; i++) {
-			pw.print(subtree_size[i]-1); //the # of subordinates is the size of the subtree minus 1 to take out the root node
-			if(i != N-1) pw.print(" ");
-		}
-		pw.println();
-		pw.close();
+	public static void adde(int u, int v, int id)
+	{
+		nx[id] = hd[u];
+		hd[u] = id;
+		to[id] = v;
 	}
-
-	static void dfs_size(int node) {
-		subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
-
-		for(int child : children[node]) {
-			dfs_size(child);
-			subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
+	public static void dfs(int node)
+	{
+		s[node]=1;
+		for(int id=hd[node];id!=0;id=nx[id])
+		{
+			dfs(to[id]);
+			s[node]+=s[to[id]];
 		}
 	}
-
-	//See "Intro - FastIO" to for more details about this code
-	//FastIO is almost a necessity for Java users on CSES
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		for(int i=2;i<=N;++i)
+		{
+			p[i]=in.nextInt();
+			adde(p[i], i, i);
 		}
-
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
+		dfs(1);
+		for(int i=1;i<=N;++i)
+		{
+			out.print(s[i]-1);
+			if(i<N) out.print(" ");
+			else out.println();
 		}
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		long nextLong() throws Exception {
-			long ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-
+		out.close();
 	}
 }
-
 ```
 
 </JavaSection>
