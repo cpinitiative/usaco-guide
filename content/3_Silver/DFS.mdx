@@ -223,36 +223,63 @@ Trees are generally treated very differently from general graph problems.
 ### Solution - Subordinates
 
 Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
-The implementation below computes those numbers.
+
+See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
+
+<IncompleteSection>
+Probably want to define subtree.
+</IncompleteSection>
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <cstdio>
-#include <vector>
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
-const int MN = 2e5+10;
+using namespace std;
 
-int N, p[MN], s[MN];
-std::vector<int> a[MN];
-void dfs(int node)
-{
-	s[node]=1;
-	for(int u:a[node])
-		dfs(u), s[node]+=s[u];
+#define IN_PROGRESS 1
+#if IN_PROGRESS > 0
+
+vector<int> children[200000];
+int subtree_size[200000];
+
+void dfs_size(int node) {
+	subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
+
+	for(int child : children[node]) {
+		dfs_size(child);
+		subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
+	}
 }
-int main()
-{
-	scanf("%d", &N);
-	for(int i=2;i<=N;++i)
-		scanf("%d", p+i), a[p[i]].push_back(i);
-	dfs(1);
-	for(int i=1;i<=N;++i)
-		printf("%d%c", s[i]-1, " \n"[i==N]);
+
+int main() {
+	//read more about Fast IO in "Intro - FastIO"
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N; cin >> N;
+	
+	for(int i = 1; i < N; i++) {
+		int parent; cin >> parent; parent--; //this node is the parent of node i... Also notice the decrement operator in order to make the node 0-indexed
+		children[parent].push_back(i);
+	}
+
+	dfs_size(0);
+
+	for(int i = 0; i < N; i++) {
+		cout << subtree_size[i]-1;
+		if(i != N-1) cout << " ";
+	}
+	cout << "\n";
+
 	return 0;
 }
+#endif
+
 ```
 
 </CPPSection>
@@ -260,52 +287,129 @@ int main()
 <JavaSection>
 
 ```java
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class Subordinates
-{
-	static InputReader in = new InputReader(System.in);
-	static PrintWriter out = new PrintWriter(System.out);
+public class subordinates {
 
-	public static final int MN = 200020;
+	static ArrayList<Integer> children[];
+	static int subtree_size[];
 
-	static int N, M, ans;
-	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in);
+		PrintWriter pw = new PrintWriter(System.out);
 
-	public static void adde(int u, int v, int id)
-	{
-		nx[id] = hd[u];
-		hd[u] = id;
-		to[id] = v;
+		int N = sc.nextInt();
+		subtree_size = new int[N];
+		children = new ArrayList[N];
+		for(int i = 0; i < N; i++) children[i] = new ArrayList<Integer>();
+
+		for(int i = 1; i < N; i++) {
+			int parent = sc.nextInt()-1; //this node is the parent of node i... Also notice the -1 in order to make the node 0-indexed
+			children[parent].add(i);
+		}
+
+		dfs_size(0);
+
+		for(int i = 0; i < N; i++) {
+			pw.print(subtree_size[i]-1); //the # of subordinates is the size of the subtree minus 1 to take out the root node
+			if(i != N-1) pw.print(" ");
+		}
+		pw.println();
+		pw.close();
 	}
-	public static void dfs(int node)
-	{
-		s[node]=1;
-		for(int id=hd[node];id!=0;id=nx[id])
-		{
-			dfs(to[id]);
-			s[node]+=s[to[id]];
+
+	static void dfs_size(int node) {
+		subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
+
+		for(int child : children[node]) {
+			dfs_size(child);
+			subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
 		}
 	}
-	public static void main(String... args)
-	{
-		N=in.nextInt();
-		for(int i=2;i<=N;++i)
-		{
-			p[i]=in.nextInt();
-			adde(p[i], i, i);
+
+	//See "Intro - FastIO" to for more details about this code
+	//FastIO is almost a necessity for Java users on CSES
+	static class FastIO {
+
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
+
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
 		}
-		dfs(1);
-		for(int i=1;i<=N;++i)
-		{
-			out.print(s[i]-1);
-			if(i<N) out.print(" ");
-			else out.println();
+
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
 		}
-		out.close();
+
+		int nextInt() throws Exception {
+			int ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		long nextLong() throws Exception {
+			long ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
+
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
+
+			return ret.toString();
+		}
+
 	}
 }
+
 ```
 
 </JavaSection>
