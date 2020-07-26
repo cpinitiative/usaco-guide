@@ -1,10 +1,10 @@
 ---
 id: offline-con
 title: "Offline Dynamic Connectivity"
-author: Benjamin Qi
+author: Benjamin Qi, Siyong Huang
 prerequisites:
  - dsu
-description: "?"
+description: "Erasing from non-amortized insert-only data structures."
 frequency: 0
 ---
 
@@ -19,6 +19,7 @@ export const problems = {
     ],
     res: [
       new Problem("CF", "Edu F - Extending Set of Points", "contest/1140/problem/F", "Normal", false, ["DSUrb"], ""),
+			new Problem("CF", "Forced Online Queries Problem", "contest/1217/problem/F", "Hard", false, ["Dynacon"], "Editorial solution is online N sqrt N, but you can solve this in offline N log N using this trick."),
       new Problem("CF", "BOI - Joker", "contest/1386/problem/C", "Very Hard", false, ["D&C", "DSUrb"], ""),
     ]
 };
@@ -29,27 +30,65 @@ ins: [
 ], 
 -->
 
-## DSU With Rollback
+## Offline Deleting from a Data Structure
 
-<Problems problems={problems.rollback} />
+Using a persistent data structure or rollbacking, you are able to simulate deleting from a data structure while only using insertion operations.
 
-no path compression
-
-### Implementation
-
-<IncompleteSection>
-
-(tutorial?)
-
-</IncompleteSection>
+<Resources>
+  <Resource source="CP-Algorithms" title="Deleting from a data structure in O(T(n) log n)" url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html" starred></Resource>
+</Resources>
 
 ## Dynamic Connectivity
 
+**Dynamic Connectivity** is the most common problem using the deleting trick.
+The problem is to determine whether pairs of nodes are in the same connected component while edges are being inserted and removed.
+
 <Problems problems={problems.sam} />
 
-<IncompleteSection>
-(tutorial?)
-</IncompleteSection>
+### DSU With Rollback
+
+**DSU with rollback** is a subproblem required to solve the above task.
+
+<Problems problems={problems.rollback} />
+
+<Warning title="Watch Out!">
+
+Because path compression is amortized, it alone does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merge by rank.
+
+</Warning>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- verified at https://codeforces.com/contest/1217/submission/62335472 -->
+
+```cpp
+int p[MN], r[MN];
+int *t[MN*40], v[MN*40], X;
+int setv(int *a, int b)
+{
+	if(*a != b) t[X] = a, v[X] = *a, *a = b, ++X;
+	return b;
+}
+void rollback(int x) {for(;X>x;) --X, *t[X] = v[X];}
+int find(int n) {return p[n] ? setv(p+n, find(p[n])) : n;}
+//path compression is entirely optional. It's shown here for demonstration purposes.
+bool merge(int a, int b)
+{
+	a = find(a), b = find(b);
+	if(a==b) return 0;
+	if(r[b]>r[a]) std::swap(a,b);
+	if(r[a]==r[b]) setv(r+a, r[a]+1);
+	return setv(p+b, a), 1;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 
