@@ -1,0 +1,111 @@
+---
+id: cses-1623
+title: CSES Apple Division
+author: Michael Cao
+---
+
+In this problem, we're asked to split $n$ apples into two sets such that the difference in weights is minimized.
+
+Looking at the bounds, $n \leq 20$, complete search comes to mind as a solution. If you don't know what that is, read [Bronze - Introduction to Complete Search](/bronze/intro-complete). 
+
+Specifically, let's try all possible divisions of $n$ apples into two sets, and find the one with the minimum difference in weights. There are two ways to achieve this.
+
+# Recursion
+
+The first method would be to write a recursive function which searches over all possibilities. 
+
+At some index, we either add $weight_i$ to the first set or the second set, storing two sums $s_1$ and $s_2$ with the sum of values in each set. 
+
+Then, we return the difference between the two sums once we've reached the end of the array. 
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+ll solve(int i, ll s1, ll s2){
+    if(i == n){
+        return abs(s1 - s2);
+    }
+    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]));
+}
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    cout << solve(0, 0, 0) << "\n";
+}
+```
+
+# Bitmasks
+
+An easier way to search through all divisions is to use bitmasks. If you don't know what those are, read [CPH Chapter 5](https://usaco-guide.vercel.app/CPH.pdf) section "Generating Subsets". 
+
+By iterating through all bitmasks, we can consider the toggled bits as apples placed in the first set, and untoggled bits as apples placed in the second. Then, sum up the weights into $s1$ and $s2$ like before, and find the minimum difference.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    ll ans = (ll)1e18;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        ll s1 = 0, s2 = 0;
+        for (int j = 0; j < n; j++) {
+            if (mask & (1 << j)) { //if the j-th bit is toggled
+                s1 += weights[j];
+            }
+            else{
+                s2 += weights[j];
+            }
+        }
+        ans = min(ans, abs(s1 - s2));
+    }
+    cout << ans << "\n";
+}
+```
