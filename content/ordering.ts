@@ -289,6 +289,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       name: "Misc. Topics",
       items: [
         "extend-euclid",
+        "xor-basis",
         "critical",
         "string-suffix",
         "game-theory",
