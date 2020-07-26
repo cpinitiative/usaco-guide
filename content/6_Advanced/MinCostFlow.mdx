@@ -1,18 +1,199 @@
 ---
 id: min-cost-flow
 title: "Minimum Cost Flow"
-author: Benjamin Qi
-description: "?"
+author: Siyong Huang, Benjamin Qi
+description: "Triangle Inequality, Johnson's Algorithm, and Min Cost Flow"
 prerequisites:
  - Platinum - Maximum Flow
 frequency: 1
 ---
 
+export const problems = {
+	sam: [
+	],
+	general: [
+		new Problem("CF", "Build String", "contest/237/problem/E", "Normal", false, ["Min Cost Max Flow"], "4 layers. Source -> Strings -> Characters -> Sink"),
+		new Problem("CF", "Four Melodies", "contest/818/problem/G", "Normal", false, ["Min Cost Flow"], "I view it as a N x 3 lattice-pattern of edges. The top two layers correspond to an 'entrance' and 'exit' node for each array element, connected by an edge of flow 1 and cost -1. These are the only nodes with costs. Each 'exit' node points to to next 'exit' node of the same value, and also point to the 3rd layer. The 3rd layer tracks modulos, and points to the next layer 3 node with the same modulo. Every entrance node has at most 3 in-edges: from the closest +1 exit node, the closest -1 exit node, and the closest layer 3 node with the same modulo. Overall a graph with $\approx 3N$ nodes and $\approx 9N$ edges."),
+	]
+};
+
+In this section I will briefly walk over my understanding of min cost flow.
+I would highly recommend reading through [CP-Algorithm's Min Cost Flow](https://cp-algorithms.com/graph/min_cost_flow.html) to understand the solution idea first.
+Additionally, check the [TopCoder tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/minimum-cost-flow-part-two-algorithms/) for a more detailed explanation.
+
+## Triangle Inequality
+
+In graph theory, the **Triangle Inequality** states that if there is an edge $u \rightarrow v$ with weight $w$, and $d_k$ be the shortest path to node $k$ (for some reasonable definition of shortest path), then $d_v - d_u \leq w$.
+
+<Resources>
+
+<Resource source="Wikipedia" title="Triangle Inequality" url="https://en.wikipedia.org/wiki/Triangle_inequality"> Mainly in geometry, but it has the gist of the idea. </Resource>
+
+</Resources>
+
+## Johnson's Algorithm
+
+The main idea of **Johnson's Algorithm** is that if all edge weights are positive, then running Dijkstra's from each node would result in a $O(VE \log E)$ algorithm.
+If there are any negative edges, **Johnson's Algorithm** defines a potential function $\pi$, such that for every edge $u,v,w$, the following holds: $w>=\pi(u)-\pi(v)$.
+Then, each edge weight can be transformed into $w \rightarrow w + \pi(v)-\pi(u)$, resulting in positive weight.
+This condition coincides with the **Triangle Inequality**, so we can arbitrarily pick a node and run a $O(VE)$ shortest path algorithm to determine this function.
+
+<Resources>
+
+<Resource source="GFG" title="Johnson's Algorithm for All-pairs shortest paths" url="https://www.geeksforgeeks.org/johnsons-algorithm/"></Resource>
+<Resource source="Wikipedia" title="Johnson's Algorithm" url="https://en.wikipedia.org/wiki/Johnson%27s_algorithm"> </Resource>
+
+</Resources>
+
+## Minimum Cost Flow
+
+The general idea of Min Cost Flow is to repeatedly push flow along the shortest path.
+Since flow graphs have negative edges, each step naively would take $O(VE)$ time.
+To speed it up, we can use the same potential function from **Johnson's Algorithm** to employ Dijkstra for this process.
+In this case we *must* use distance from $S$, the source node, as the $\pi$ function.
+At each step, run Dijkstra's using the $\pi$ function, update the $\pi$ function to match the current distances, and then push flow along the shortest path, reversing edges as needed.
+Once flow is met or the sink is unreachable, terminate.
+
+<Info title="Important Clarification">
+
+Note that the $\pi$ function stores values *before* the edge reverses happen.
+Luckily the **triangle inequality**'s equality case is along the shortest path, meaning that in a flow network it holds both forwards and backwards along edges in the shortest path.
+This means that although the $\pi$ function does not store the shortest paths, it still satisfies the **triangle inequality** for all edges.
+
+$\pi(u)-\pi(v)=w \implies \pi(v)-\pi(u)=-w$
+
+</Info>
+
+<Resources>
+
+<Resource source="CP-Algorithms" title="Minimum-cost flow" url="https://cp-algorithms.com/graph/min_cost_flow.html" starred>Note: Does not use optimal solution, but explains the concept well.</Resource>
+<Resource source="TopCoder" title="Minimum Cost Flow Algorithms" url="https://www.topcoder.com/community/competitive-programming/tutorials/minimum-cost-flow-part-two-algorithms/" starred></Resource>
+
+</Resources>
+
+## Implementation
+
+With all this being said, here is my implementation.
+
+<!-- Confirmed Here: https://codeforces.com/contest/818/submission/82266882 -->
+
+```cpp
+template<int MN, int MM>
+struct MCF//MN = nodes, MM = edges [assume edges one-directional]
+{
+public:
+	int N, M, S, T;
+	int flow[MM*2], cap[MM*2], hd[MN], nx[MM*2], to[MM*2], cost[MM*2];
+	int pi[MN], p[MN], d[MN];
+	int vis[MN];
+	void init(int n, int s, int t)
+	{
+		N=n, S=s, T=t;
+		memset(hd, -1, sizeof hd);
+	}
+	void adde1(int a, int b, int f, int c)
+	{
+		nx[M]=hd[a], hd[a]=M;
+		to[M]=b, cost[M]=c, cap[M]=f;
+		M++;
+	}
+	void adde(int a, int b, int f, int c)
+	{
+		adde1(a, b, f, c);
+		adde1(b, a, 0, -c);
+	}
+	void setpi()
+	{
+		std::queue<int> q;
+		memset(pi, 0x3e, sizeof pi);
+		memset(vis, 0, sizeof vis);
+		q.push(S);
+		pi[S] = 0;
+		for(int n;!q.empty();)
+		{
+			n = q.front(); q.pop();
+			for(int id=hd[n],x;~id;id=nx[id])
+			{
+				if(cap[id] - flow[id] <= 0) continue;
+				x = to[id];
+				if(ckmin(pi[x], pi[n]+cost[id]))
+					assert(++vis[x] <= N), q.push(x);
+			}
+		}
+	}
+	struct state
+	{
+	public:
+		int n, d;
+		bool operator > (state o) const {return d > o.d;}
+	};
+	void dijk()
+	{
+		std::priority_queue<state, std::vector<state>, std::greater<state> > q;
+		memset(p, -1, N * sizeof p[0]);
+		memset(vis, 0, N * sizeof vis[0]);
+		memset(d, 0x3e, N * sizeof d[0]);
+
+		d[S] = 0;
+		q.push({S, 0});
+		for(int n;!q.empty();)
+		{
+			n = q.top().n; q.pop();
+			if(vis[n]) continue;
+			vis[n]=1;
+			for(int id=hd[n],x,w;~id;id=nx[id])
+			{
+				if(cap[id] - flow[id] <= 0) continue;
+				x = to[id];
+				w = cost[id] + pi[n] - pi[x];
+				if(ckmin(d[x], w+d[n]))
+					p[x]=id, q.push({x, d[x]});
+			}
+		}
+	}
+	int mincost(int F)
+	{
+		setpi();
+		int C=0;
+		while(F>0)
+		{
+			dijk();
+			if(d[T] == INF)
+				return INF;
+			int c = d[T] + pi[T] - pi[S], f = F;
+			for(int x=T;x!=S;x=to[p[x]^1])
+				ckmin(f, cap[p[x]]-flow[p[x]]);
+			C += c*f;
+			for(int x=T;x!=S;x=to[p[x]^1])
+			{
+				flow[p[x]  ] += f;
+				flow[p[x]^1] -= f;
+			}
+			F -= f;
+			for(int i=0;i<N;++i)
+				pi[i] += d[i];
+		}
+		return C;
+	}
+};
+```
+
+Also check out [Benq's Implementation](https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Flows%20(12.3)/MCMF.h) and [KACTL's Implementation](https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MinCostMaxFlow.h) (which are a lot better than mine).
+
+## Problems
+
+<Problems problems={problems.general} />
+
+## TBA
+
+<IncompleteSection>
+
+applications
+
+</IncompleteSection>
+
 (Hungarian)
 
-* Tutorial
-  * [TopCoder](https://www.topcoder.com/community/data-science/data-science-tutorials/minimum-cost-flow-part-two-algorithms/)
-  * [Johnson's Algorithm](https://en.wikipedia.org/wiki/Johnson%27s_algorithm)
 * Problems
   * [April Fool's Problem](http://codeforces.com/contest/802/problem/N)
   * [Cow & Exercise](https://codeforces.com/contest/1307/problem/G)

@@ -52,13 +52,13 @@ Using a persistent data structure or rollbacking, you are able to simulate delet
 
 <IncompleteSection>
   
-explanation? check Guide to CP? remove path compression from code
+explanation? check Guide to CP?
 
 </IncompleteSection>
 
 <Warning title="Watch Out!">
 
-Because path compression is amortized, it alone does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merge by rank.
+Because path compression is amortized, it does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merging by rank.
 
 </Warning>
 
@@ -79,8 +79,7 @@ int setv(int *a, int b)
 	return b;
 }
 void rollback(int x) {for(;X>x;) --X, *t[X] = v[X];}
-int find(int n) {return p[n] ? setv(p+n, find(p[n])) : n;}
-//path compression is entirely optional. It's shown here for demonstration purposes.
+int find(int n) {return p[n] ? find(p[n]) : n;}
 bool merge(int a, int b)
 {
 	a = find(a), b = find(b);
