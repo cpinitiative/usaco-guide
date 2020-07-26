@@ -1,6 +1,6 @@
 ---
-id: apio-11-colour
-title: APIO 2011 Table Colouring
+id: apio-11-color
+title: APIO 2011 Table Coloring
 author: Andi Qu
 ---
 
@@ -13,34 +13,46 @@ we use 2-SAT to determine which one it is.
 
 Let $c(x, y) = 1$ if the cell $(x, y)$ is blue and $0$ otherwise. For convenience, also add a row 0 and column 0.
 
-Firstly, notice that if we already know the colour of 3 cells in a $2 \times 2$ table, then we also know the last colour.
+Firstly, notice that if we already know the color of 3 cells in a $2 \times 2$ table, then we also know the last color.
 
-From this, we get the recurrence $c(x, y) = \lnot (c(x - 1, y - 1) \oplus c(x - 1, y) \oplus c(x, y - 1))$
+From this, we get the recurrence
+$$
+c(x, y) = \lnot (c(x - 1, y - 1) \oplus c(x - 1, y) \oplus c(x, y - 1))
+$$
 for all $x, y > 1$.
 
-After analysing this recurrence, we find that we actually have $c(x, y) = \lnot (c(0, 0) \oplus c(0, y) \oplus c(x, 0) \oplus ((x \cdot y) % 2))$
+After analysing this recurrence, we find that we actually have
+$$
+c(x, y) = \lnot (c(0, 0) \oplus c(0, y) \oplus c(x, 0) \oplus ((x \cdot y) \% 2))
+$$
 
 I made a [helpful spreadsheet](https://docs.google.com/spreadsheets/d/1cSNyb3wBq39R2FsSD-kuPpfBsLXCVxSXKsqllo2sUs0/edit?usp=sharing)
 for you to visualise this.
 
-## Counting the Colourings
+## Counting the colorings
 
-Without loss of generality, let the cell $(0, 0)$ be red (since its colour doesn't change the answer). This means
-that without any already-coloured cells, all cells $(x, 0)$ and $(0, y)$ are independent.
+Without loss of generality, let the cell $(0, 0)$ be red (since its color doesn't change the answer). This means
+that without any already-colored cells, all cells $(x, 0)$ and $(0, y)$ are independent.
 
-However, an already-coloured cell $(x, y)$ makes the 2 cells $(x, 0)$ and $(0, y)$ depend on each other.
+However, an already-colored cell $(x, y)$ makes the 2 cells $(x, 0)$ and $(0, y)$ depend on each other.
 
 View the grid as a graph:
 - All cells $(x, 0)$ and $(0, y)$ are nodes.
-- For each already-coloured cell $(x, y)$, add an edge between $(x, 0)$ and $(0, y)$.
+- For each already-colored cell $(x, y)$, add an edge between $(x, 0)$ and $(0, y)$.
 
 This creates $K$ connected components. The answer is thus either $2^{K - 1}$ or $0$.
 This is because each node in a connected component is dependent on the other nodes in that component
 and all connected components are independent.
-If it simply isn't possible to colour the table, the answer is $0$.
+If it simply isn't possible to color the table, the answer is $0$.
 
-Since the colours of the already-coloured cells give us some boolean equations, we can thus use 2-SAT
-to check whether they are all satisfiable.
+## Checking Whether the Answer is $0$
+
+Since each already-colored cell $(x, y)$ determines whether the colors of the cells $(x, 0)$ and $(0, y)$
+are the same, we can instead split each node in our graph into 2 nodes (one for each color) and create edges
+between nodes we know must be the same color.
+
+This problem then becomes checking whether there is an odd cycle in the resulting graph, which we can answer
+efficiently using DSU or DFS.
 
 ## Complexity
 
