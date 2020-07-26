@@ -225,21 +225,28 @@ The implementation below computes those numbers.
 <CPPSection>
 
 ```cpp
-//untested
-int parent[MN];
-int subtree_size[MN];
-int depth[MN];
+#include <cstdio>
+#include <vector>
+
+const int MN = 2e5+10;
+
+int N, p[MN], s[MN];
+std::vector<int> a[MN];
 void dfs(int node)
 {
-	subtree_size[node] = 1;
-	for(auto u:adj_list[node])
-		if(u != parent[node])
-		{
-			parent[u] = node;
-			depth[u] = depth[node] + 1;
-			dfs(u);
-			subtree_size[node] += subtree_size[u];
-		}
+	s[node]=1;
+	for(int u:a[node])
+		dfs(u), s[node]+=s[u];
+}
+int main()
+{
+	scanf("%d", &N);
+	for(int i=2;i<=N;++i)
+		scanf("%d", p+i), a[p[i]].push_back(i);
+	dfs(1);
+	for(int i=1;i<=N;++i)
+		printf("%d%c", s[i]-1, " \n"[i==N]);
+	return 0;
 }
 ```
 
@@ -248,21 +255,51 @@ void dfs(int node)
 <JavaSection>
 
 ```java
-//untested
-int[] parent = new int[MN];
-int[] subtree_size = new int[MN];
-int[] depth = new int[MN];
-public static void dfs(int node)
+import java.io.*;
+import java.util.*;
+
+public class Subordinates
 {
-	subtree_size[node] = 1;
-	for(auto u:adj_list[node])
-		if(u != parent[node])
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 200020;
+
+	static int N, M, ans;
+	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
+
+	public static void adde(int u, int v, int id)
+	{
+		nx[id] = hd[u];
+		hd[u] = id;
+		to[id] = v;
+	}
+	public static void dfs(int node)
+	{
+		s[node]=1;
+		for(int id=hd[node];id!=0;id=nx[id])
 		{
-			parent[u] = node;
-			depth[u] = depth[node] + 1;
-			dfs(u);
-			subtree_size[node] += subtree_size[u];
+			dfs(to[id]);
+			s[node]+=s[to[id]];
 		}
+	}
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		for(int i=2;i<=N;++i)
+		{
+			p[i]=in.nextInt();
+			adde(p[i], i, i);
+		}
+		dfs(1);
+		for(int i=1;i<=N;++i)
+		{
+			out.print(s[i]-1);
+			if(i<N) out.print(" ");
+			else out.println();
+		}
+		out.close();
+	}
 }
 ```
 
