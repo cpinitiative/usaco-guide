@@ -20,3 +20,4 @@ Things to check:
   - [ ] There are sufficient problems
   - [ ] Problems are tagged with difficulty and tags as needed
   - [ ] Problems either are linked to a good enough external solution, or a solution is written for them
+  - [ ] There are *no solution sketches* -- migrate solution sketches into full editorial pages.
