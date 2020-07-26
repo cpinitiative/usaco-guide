@@ -123,9 +123,17 @@ export default function Template(props) {
             <p className="text-base text-center leading-6 text-blue-600 font-semibold tracking-wide uppercase">
               Problem Solution
             </p>
-            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-              {mdx.frontmatter.title}
-            </h1>
+            <div className="mt-2 mb-6">
+              <h1 className="mb-2 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
+                {mdx.frontmatter.title}
+              </h1>
+              {mdx.frontmatter.author ? (
+                <p className="text-gray-500 text-center mb-2">
+                  Author{mdx.frontmatter.author.indexOf(',') !== -1 ? 's' : ''}:{' '}
+                  {mdx.frontmatter.author}
+                </p>
+              ) : null}
+            </div>
           </div>
           <div className="mx-auto max-w-4xl">
             <Markdown body={body} />
