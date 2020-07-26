@@ -1,0 +1,105 @@
+---
+id: bipartite
+title: Bipartite Graphs
+author: Siyong Huang, Nathan Chen
+prerequisites: 
+ - dfs
+description: "?"
+frequency: 2
+---
+
+import { Problem } from "../models";
+
+export const problems = {
+  bipsample: [
+    new Problem("CSES", "Building Teams", "1668", "Easy", false, ["Bipartite"]),
+  ],    
+  bip: [
+    new Problem("CF", "Bipartiteness", "contest/862/problem/B", "Easy", false, ["Bipartite"]),
+    new Problem("Silver", "The Great Revegetation", "920", "Easy", false, ["Bipartite"]),
+    new Problem("Silver", "Clock Tree", "1016", "Hard", false, []),
+    new Problem("CF", "BOI - Graph", "contest/1387/problem/A", "Hard", false, [], ""),
+    new Problem("DMOJ", "APIO - Table Coloring", "apio11p1", "Insane", false, [], "apio-11-color"),
+  ],
+};
+
+**Graph two-coloring** refers to assigning a boolean value to each node of the graph, dictated by the edge configuration.
+The most common example of a two-colored graph is a **bipartite graph**, in which each edge connects two nodes of opposite colors.
+
+<Problems problems={problems.bipsample} />
+
+### Resources
+
+<Resources>
+  <Resource source="IUSACO" title="10.7 - Bipartite Graphs" starred></Resource>
+  <Resource source="CPH" title="12.3 - Graph Traversal: Applications"></Resource>
+</Resources>
+
+<!-- <Resource source="cp-algo" title="Bipartite Check" url="graph/bipartite-check.html">Uses BFS, but DFS accomplishes the same task.</Resource> 
+-->
+
+### Solution - Building Teams
+
+The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
+
+<IncompleteSection>
+
+code doesn't compile ...
+
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//UNTESTED
+bool is_bipartite = true;
+void dfs(int node)
+{
+  visited[node] = true;
+  for(int u:adj_list[node])
+    if(visited[u])
+    {
+      if(color[u] == color[node])
+        is_bipartite = false;
+    }
+    else
+    {
+      color[u] = !color[node];
+      dfs(u);
+    }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//UNTESTED
+boolean is_bipartite = true;
+public static void dfs(int node)
+{
+  visited[node] = true;
+  for(int u:adj_list[node])
+    if(visited[u])
+    {
+      if(color[u] == color[node])
+        is_bipartite = false;
+    }
+    else
+    {
+      color[u] = !color[node];
+      dfs(u);
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems={problems.bip} />

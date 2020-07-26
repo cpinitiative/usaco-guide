@@ -134,6 +134,8 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       name: "Graphs",
       items: [
         "dfs",
+        "intro-tree",
+        "bipartite",
         "ff",
         "func-graphs",
       ]

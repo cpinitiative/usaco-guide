@@ -1,0 +1,159 @@
+---
+id: intro-tree
+title: Introduction to Tree Algorithms
+author: Siyong Huang, Nathan Chen
+prerequisites: 
+ - dfs
+description: "?"
+frequency: 2
+---
+
+import { Problem } from "../models";
+
+export const problems = {
+    treeSam: [
+      new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"]),
+    ],
+    tree: [
+      new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
+      new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
+      new Problem("HE", "Birthday Gifts", "https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/", "Normal", false, ["Tree", "PIE"], ""),
+      new Problem("Gold", "Cow At Large", "790", "Hard", false, [], ""),
+    ],
+};
+
+**Trees** are generally treated very differently from general graph problems.
+
+<Problems problems={problems.treeSam} />
+
+### Resources
+
+<Resources>
+  <Resource source="CPH" title="14 - Tree algorithms">traversing tree, longest paths</Resource>
+</Resources>
+
+
+### Solution - Subordinates
+
+Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
+
+See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
+
+<IncompleteSection>
+Probably want to define subtree.
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+
+vector<int> children[200000];
+int subtree_size[200000];
+
+void dfs_size(int node) {
+	subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
+
+	for(int child : children[node]) {
+		dfs_size(child);
+		subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
+	}
+}
+
+int main() {
+	//read more about Fast IO in "Intro - FastIO"
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N; cin >> N;
+	
+	for(int i = 1; i < N; i++) {
+		int parent; cin >> parent; parent--; //this node is the parent of node i... Also notice the decrement operator in order to make the node 0-indexed
+		children[parent].push_back(i);
+	}
+
+	dfs_size(0);
+
+	for(int i = 0; i < N; i++) {
+		cout << subtree_size[i]-1;
+		if(i != N-1) cout << " ";
+	}
+	cout << "\n";
+
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Subordinates
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 200020;
+
+	static int N, M, ans;
+	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
+
+	public static void adde(int u, int v, int id)
+	{
+		nx[id] = hd[u];
+		hd[u] = id;
+		to[id] = v;
+	}
+	public static void dfs(int node)
+	{
+		s[node]=1;
+		for(int id=hd[node];id!=0;id=nx[id])
+		{
+			dfs(to[id]);
+			s[node]+=s[to[id]];
+		}
+	}
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		for(int i=2;i<=N;++i)
+		{
+			p[i]=in.nextInt();
+			adde(p[i], i, i);
+		}
+		dfs(1);
+		for(int i=1;i<=N;++i)
+		{
+			out.print(s[i]-1);
+			if(i<N) out.print(" ");
+			else out.println();
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<IncompleteSection />
+
+### Problems
+
+<Problems problems={problems.tree} />

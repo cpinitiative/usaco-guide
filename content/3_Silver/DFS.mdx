@@ -15,40 +15,17 @@ export const problems = {
       new Problem("CSES", "Building Roads", "1666", "Intro|Easy", false, ["DFS"]),
     ],
     general: [
-      new Problem("CF", "Bear & Friendship", "problemset/problem/771/A", "Easy", false, ["DFS"]),
+      new Problem("CF", "Bear & Friendship", "contest/771/problem/A", "Easy", false, ["DFS"]),
       new Problem("Silver", "Closing the Farm", "644", "Easy", false, ["DFS"]),
       new Problem("Silver", "Moocast", "668", "Easy", false, ["DFS"]),
       new Problem("Silver", "Fence Planning", "944", "Easy", false, ["DFS"]),
       new Problem("Kattis", "Birthday Party", "birthday", "Easy", false, ["DFS"], "DFS with each edge removed"),
       new Problem("Silver", "Mootube", "788", "Easy", false, ["Tree", "DFS"]),
-      new Problem("CF", "PolandBall & Forest", "problemset/problem/755/C", "Easy", false, ["Tree", "DFS"]),
+      new Problem("CF", "PolandBall & Forest", "contest/problem/755/C", "Easy", false, ["Tree", "DFS"]),
       new Problem("Silver", "Milk Visits", "968", "Normal", false, ["DFS"]),
       new Problem("Silver", "Wormhole Sort", "992", "Normal", false, ["DFS", "Binary Search"]),
       new Problem("Silver", "Moo Particle", "1040", "Normal", false, ["Sorting"]),
       new Problem("Gold", "Moocast", "669", "Normal", false, [], ""),
-    ],
-    treeSam: [
-      new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"]),
-    ],
-    tree: [
-      new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
-      new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
-      new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
-      new Problem("HE", "Birthday Gifts", "https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/", "Normal", false, ["Tree", "PIE"], ""),
-      new Problem("Gold", "Cow At Large", "790", "Hard", false, [], ""),
-    ],
-    bipsample: [
-      new Problem("CSES", "Building Teams", "1668", "Easy", false, ["Bipartite"]),
-    ],    
-    bip: [
-      new Problem("CF", "Bipartiteness", "contest/862/problem/B", "Easy", false, ["Bipartite"]),
-      new Problem("Silver", "The Great Revegetation", "920", "Easy", false, ["Bipartite"]),
-      new Problem("Silver", "Clock Tree", "1016", "Hard", false, []),
-      new Problem("CF", "BOI - Graph", "contest/1387/problem/A", "Hard", false, [], ""),
-	  new Problem("DMOJ", "APIO - Table Coloring", "apio11p1", "Insane", false, [], "apio-11-color"),
     ],
 };
 
@@ -57,34 +34,46 @@ export const problems = {
 not a good example
 -->
 
-## Resources
-
-<Resources>
-  <Resource source="CPH" title="12.1 - DFS, 14 - Tree algorithms" starred></Resource>
-  <Resource source="CSA" title="Depth First Search" url="depth_first_search" starred>interactive</Resource>
-  <Resource source="IUSACO" title="10.4 - Graph Traversal Algorithms"></Resource>
-  <Resource source="PAPS" title="12.2 - Depth-First Search">with an example problem</Resource>
-  <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
-  <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
-  <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2"></Resource>
-</Resources>
-
 ## Counting Connected Components
 
-A **Connected Component** is a maximal set of connected nodes.
-In other words, two nodes are in the same connected component *if and only if* they can reach each other via edges in the graph.
+A **connected component** is a maximal set of connected nodes. In other words, two nodes are in the same connected component *if and only if* they can reach each other via edges in the graph.
 
 <Problems problems={problems.sample} />
 
-The goal of this problem is to add edges such that the entire graph is a single connected component.
+For example, the goal of this problem is to add edges such that the entire graph is a single connected component.
+
+### Resources
+
+<Resources>
+  <Resource source="CSA" title="Depth First Search" url="depth_first_search" starred>code + interactive, don't worry about back edges</Resource>
+  <Resource source="CPH" title="12.1 - DFS">code + example</Resource>
+  <Resource source="IUSACO" title="10.4 - Depth First Search">code + example</Resource>
+  <Resource source="PAPS" title="12.2 - Depth-First Search">pseudocode + example + code</Resource>
+</Resources>
+
+<!-- oops
+
+   <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
+   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource> 
+   <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2"></Resource>
+
+-->
+
+### Solution - Building Roads
+
 Note that each edge can connect at most two connected components, reducing the overall count by one.
 Since this is always possible, you must add $N-1$ edges.
 In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions.
 For example, pick a representative from each component and link them together in a line. 
 
+<IncompleteSection>
+
+What's $N$?
+
+</IncompleteSection>
+
 <!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
-### Solution - Building Roads
 
 <!-- Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. -->
 
@@ -213,206 +202,3 @@ public class BuildingRoads
 ### Problems
 
 <Problems problems={problems.general} />
-
-## Tree Problems
-
-Trees are generally treated very differently from general graph problems.
-
-<Problems problems={problems.treeSam} />
-
-### Solution - Subordinates
-
-Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
-
-See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
-
-<IncompleteSection>
-Probably want to define subtree.
-</IncompleteSection>
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-
-using namespace std;
-
-vector<int> children[200000];
-int subtree_size[200000];
-
-void dfs_size(int node) {
-	subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
-
-	for(int child : children[node]) {
-		dfs_size(child);
-		subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
-	}
-}
-
-int main() {
-	//read more about Fast IO in "Intro - FastIO"
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	int N; cin >> N;
-	
-	for(int i = 1; i < N; i++) {
-		int parent; cin >> parent; parent--; //this node is the parent of node i... Also notice the decrement operator in order to make the node 0-indexed
-		children[parent].push_back(i);
-	}
-
-	dfs_size(0);
-
-	for(int i = 0; i < N; i++) {
-		cout << subtree_size[i]-1;
-		if(i != N-1) cout << " ";
-	}
-	cout << "\n";
-
-	return 0;
-}
-
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Subordinates
-{
-	static InputReader in = new InputReader(System.in);
-	static PrintWriter out = new PrintWriter(System.out);
-
-	public static final int MN = 200020;
-
-	static int N, M, ans;
-	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
-
-	public static void adde(int u, int v, int id)
-	{
-		nx[id] = hd[u];
-		hd[u] = id;
-		to[id] = v;
-	}
-	public static void dfs(int node)
-	{
-		s[node]=1;
-		for(int id=hd[node];id!=0;id=nx[id])
-		{
-			dfs(to[id]);
-			s[node]+=s[to[id]];
-		}
-	}
-	public static void main(String... args)
-	{
-		N=in.nextInt();
-		for(int i=2;i<=N;++i)
-		{
-			p[i]=in.nextInt();
-			adde(p[i], i, i);
-		}
-		dfs(1);
-		for(int i=1;i<=N;++i)
-		{
-			out.print(s[i]-1);
-			if(i<N) out.print(" ");
-			else out.println();
-		}
-		out.close();
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-<IncompleteSection />
-
-### Problems
-
-<Problems problems={problems.tree} />
-
-## Graph Two-Coloring
-
-*Graph two-coloring* refers to assigning a boolean value to each node of the graph, dictated by the edge configuration.
-The most common example of a two-colored graph is a *bipartite graph*, in which each edge connects two nodes of opposite colors.
-
-<Problems problems={problems.bipsample} />
-
-### Resources
-
-<Resources>
-  <Resource source="IUSACO" title="10.7 - Bipartite Graphs" starred></Resource>
-  <Resource source="CPH" title="12.3 - Graph Traversal: Applications"></Resource>
-  <Resource source="cp-algo" title="Bipartite Check" url="graph/bipartite-check.html">Uses BFS, but DFS accomplishes the same task.</Resource>
-</Resources>
- 
-
-### Implementation
-
-The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule. For example, an implementation of coloring a bipartite graph is shown below.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-//UNTESTED
-bool is_bipartite = true;
-void dfs(int node)
-{
-	visited[node] = true;
-	for(int u:adj_list[node])
-		if(visited[u])
-		{
-			if(color[u] == color[node])
-				is_bipartite = false;
-		}
-		else
-		{
-			color[u] = !color[node];
-			dfs(u);
-		}
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-//UNTESTED
-boolean is_bipartite = true;
-public static void dfs(int node)
-{
-	visited[node] = true;
-	for(int u:adj_list[node])
-		if(visited[u])
-		{
-			if(color[u] == color[node])
-				is_bipartite = false;
-		}
-		else
-		{
-			color[u] = !color[node];
-			dfs(u);
-		}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-### Problems
-
-<Problems problems={problems.bip} />
