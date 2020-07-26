@@ -136,63 +136,28 @@ export const UserDataProvider = ({ children }) => {
   React.useEffect(() => {
     if (firebaseUser) {
       // sync all local data with firebase
-      firebase
+      return firebase
         .firestore()
         .collection('users')
         .doc(firebaseUser.uid)
-        .get()
-        .then(snapshot => {
+        .onSnapshot(snapshot => {
           const data = snapshot.data();
-          let newLang = lang,
-            newUserProgressOnModules = userProgressOnModules,
-            newUserProgressOnProblems = userProgressOnProblems,
-            newLastViewedModule = lastViewedModule;
-          if (data) {
-            newLang = data.lang || lang;
-            newUserProgressOnModules = {
-              ...userProgressOnModules,
-              ...data.userProgressOnModules,
-            };
-            newUserProgressOnProblems = {
-              ...userProgressOnProblems,
-              ...data.userProgressOnProblems,
-            };
-            newLastViewedModule = data.lastViewedModule || lastViewedModule;
-          }
-          if (
-            !data ||
-            newLang !== lang ||
-            newLastViewedModule !== lastViewedModule ||
-            !areEqualShallow(userProgressOnModules, newUserProgressOnModules) ||
-            !areEqualShallow(userProgressOnProblems, newUserProgressOnProblems)
-          ) {
+          if (!data) {
             firebase.firestore().collection('users').doc(firebaseUser.uid).set(
               {
-                lang: newLang,
-                userProgressOnModules: newUserProgressOnModules,
-                userProgressOnProblems: newUserProgressOnProblems,
-                lastViewedModule: newLastViewedModule,
+                lang,
+                userProgressOnModules,
+                userProgressOnProblems,
+                lastViewedModule,
               },
               { merge: true }
             );
+          } else {
             ReactDOM.unstable_batchedUpdates(() => {
-              window.localStorage.setItem(langKey, JSON.stringify(newLang));
-              window.localStorage.setItem(
-                lastViewedModuleKey,
-                JSON.stringify(newLastViewedModule)
-              );
-              window.localStorage.setItem(
-                problemStatusKey,
-                JSON.stringify(newUserProgressOnProblems)
-              );
-              window.localStorage.setItem(
-                progressKey,
-                JSON.stringify(newUserProgressOnModules)
-              );
-              setLang(newLang);
-              setLastViewedModule(newLastViewedModule);
-              setUserProgressOnModules(newUserProgressOnModules);
-              setUserProgressOnProblems(newUserProgressOnProblems);
+              setLang(data.lang);
+              setLastViewedModule(data.lastViewedModule);
+              setUserProgressOnModules(data.userProgressOnModules);
+              setUserProgressOnProblems(data.userProgressOnProblems);
             });
           }
         });
@@ -203,57 +168,71 @@ export const UserDataProvider = ({ children }) => {
     () => ({
       lang: lang as UserLang,
       setLang: lang => {
-        window.localStorage.setItem(langKey, JSON.stringify(lang));
-        setLang(lang);
+        if (firebaseUser) {
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set({ lang }, { merge: true });
+        } else {
+          window.localStorage.setItem(langKey, JSON.stringify(lang));
+          setLang(lang);
+        }
       },
       userProgressOnModules,
       setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
-        const newProgress = {
-          ...getProgressFromStorage(),
-          [moduleID]: progress,
-        };
-        window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
-
         if (firebaseUser) {
-          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
-            {
-              userProgressOnModules: newProgress,
-            },
-            { merge: true }
-          );
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(
+              {
+                userProgressOnModules: {
+                  [moduleID]: progress,
+                },
+              },
+              { merge: true }
+            );
+        } else {
+          const newProgress = {
+            ...getProgressFromStorage(),
+            [moduleID]: progress,
+          };
+          window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
+          setUserProgressOnModules(newProgress);
         }
-
-        setUserProgressOnModules(newProgress);
       },
       userProgressOnProblems,
       setUserProgressOnProblems: (problem, status) => {
-        const newStatus = {
-          ...getProblemStatusFromStorage(),
-          [problem.uniqueID]: status,
-        };
-        window.localStorage.setItem(
-          problemStatusKey,
-          JSON.stringify(newStatus)
-        );
-
         if (firebaseUser) {
-          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
-            {
-              userProgressOnProblems: newStatus,
-            },
-            { merge: true }
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(
+              {
+                userProgressOnProblems: {
+                  [problem.uniqueID]: status,
+                },
+              },
+              { merge: true }
+            );
+        } else {
+          const newStatus = {
+            ...getProblemStatusFromStorage(),
+            [problem.uniqueID]: status,
+          };
+          window.localStorage.setItem(
+            problemStatusKey,
+            JSON.stringify(newStatus)
           );
-        }
 
-        setUserProgressOnProblems(newStatus);
+          setUserProgressOnProblems(newStatus);
+        }
       },
       lastViewedModule,
       setLastViewedModule: moduleID => {
-        window.localStorage.setItem(
-          lastViewedModuleKey,
-          JSON.stringify(moduleID)
-        );
-
         if (firebaseUser) {
           firebase.firestore().collection('users').doc(firebaseUser.uid).set(
             {
@@ -261,9 +240,13 @@ export const UserDataProvider = ({ children }) => {
             },
             { merge: true }
           );
+        } else {
+          window.localStorage.setItem(
+            lastViewedModuleKey,
+            JSON.stringify(moduleID)
+          );
+          setLastViewedModule(moduleID);
         }
-
-        setLastViewedModule(moduleID);
       },
       firebaseUser,
       signIn: () => {
@@ -274,11 +257,14 @@ export const UserDataProvider = ({ children }) => {
         ) {
           firebase
             .auth()
-            .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+            .signInWithPopup(new firebase.auth.GoogleAuthProvider());
         }
       },
       signOut: () => {
-        firebase.auth().signOut();
+        firebase
+          .auth()
+          .signOut()
+          .then(() => window.location.reload());
       },
     }),
     [
