@@ -1,6 +1,6 @@
 # Module Review Checklist
 
-Read through the module and check for errors.
+Read through the module and check for errors. Also see: https://usaco-guide.vercel.app/intro/contributing
 
 Languages Checked:
 
@@ -16,6 +16,8 @@ Things to check:
 - [ ] Resources are good
   - [ ] Resources are starred appropriately (star == must read)
   - [ ] All resources are useful (get rid of ones that aren't needed)
+  - [ ] All resources should have descriptions
+- [ ] Explanations do not unnecessarily repeat what resources already cover.
 - [ ] Problems are good
   - [ ] There are sufficient problems
   - [ ] Problems are tagged with difficulty and tags as needed
