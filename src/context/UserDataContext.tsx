@@ -140,24 +140,36 @@ export const UserDataProvider = ({ children }) => {
         .collection('users')
         .doc(firebaseUser.uid)
         .onSnapshot(snapshot => {
-          const data = snapshot.data();
+          let data = snapshot.data();
+          let updateData = true;
           if (!data) {
-            // sync all local data with firebase if the firebase account doesn't exist yet
-            firebase.firestore().collection('users').doc(firebaseUser.uid).set(
-              {
-                lang,
-                userProgressOnModules,
-                userProgressOnProblems,
-                lastViewedModule,
-              },
-              { merge: true }
-            );
-          } else {
+            if (lastViewedModule !== null) {
+              if (confirm('Upload local progress to server?')) {
+                // sync all local data with firebase if the firebase account doesn't exist yet
+                firebase
+                  .firestore()
+                  .collection('users')
+                  .doc(firebaseUser.uid)
+                  .set(
+                    {
+                      lang,
+                      userProgressOnModules,
+                      userProgressOnProblems,
+                      lastViewedModule,
+                    },
+                    { merge: true }
+                  );
+                updateData = true;
+              }
+            }
+          }
+          if (updateData) {
+            data = data || {};
             ReactDOM.unstable_batchedUpdates(() => {
-              setLang(data.lang);
-              setLastViewedModule(data.lastViewedModule);
-              setUserProgressOnModules(data.userProgressOnModules);
-              setUserProgressOnProblems(data.userProgressOnProblems);
+              setLang(data.lang || 'cpp');
+              setLastViewedModule(data.lastViewedModule || null);
+              setUserProgressOnModules(data.userProgressOnModules || {});
+              setUserProgressOnProblems(data.userProgressOnProblems || {});
             });
           }
         });
