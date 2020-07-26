@@ -16,12 +16,15 @@ Let $c(x, y) = 1$ if the cell $(x, y)$ is blue and $0$ otherwise. For convenienc
 Firstly, notice that if we already know the color of 3 cells in a $2 \times 2$ table, then we also know the last color.
 
 From this, we get the recurrence
+
 $$
 c(x, y) = \lnot (c(x - 1, y - 1) \oplus c(x - 1, y) \oplus c(x, y - 1))
 $$
+
 for all $x, y > 1$.
 
 After analysing this recurrence, we find that we actually have
+
 $$
 c(x, y) = \lnot (c(0, 0) \oplus c(0, y) \oplus c(x, 0) \oplus ((x \cdot y) \% 2))
 $$
@@ -37,6 +40,7 @@ that without any already-colored cells, all cells $(x, 0)$ and $(0, y)$ are inde
 However, an already-colored cell $(x, y)$ makes the 2 cells $(x, 0)$ and $(0, y)$ depend on each other.
 
 View the grid as a graph:
+
 - All cells $(x, 0)$ and $(0, y)$ are nodes.
 - For each already-colored cell $(x, y)$, add an edge between $(x, 0)$ and $(0, y)$.
 

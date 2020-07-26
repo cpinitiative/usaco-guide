@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { ModuleLinkInfo } from '../../models/module';
 import { useContext } from 'react';
-import ModuleLayoutContext from '../../context/ModuleLayoutContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import UserDataContext from '../../context/UserDataContext';
 import { Link } from 'gatsby';
-import ModuleFrequencyDots from '../ModuleLayout/ModuleFrequencyDots';
+import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import TextTooltip from '../Tooltip/TextTooltip';
 import {
   FrequencyCircleColors,

@@ -16,15 +16,17 @@ import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext, { UserLang } from '../../context/UserDataContext';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
-import ModuleLayoutContext from '../../context/ModuleLayoutContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import Logo from '../Logo';
 import { Frequency } from '../Frequency';
+import { SolutionInfo } from '../../models/solution';
 
 const Breadcrumbs = () => {
-  const moduleLayoutInfo = useContext(ModuleLayoutContext);
-  const module = moduleLayoutInfo.module;
+  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
+  const module = moduleLayoutInfo.markdownLayoutInfo;
+  if (module instanceof SolutionInfo) return null;
   return (
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
       <Link
@@ -125,20 +127,23 @@ const SidebarBottomButtons = ({ onContactUs }) => {
 };
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
-  const moduleLayoutInfo = useContext(ModuleLayoutContext);
-  const { module, moduleLinks } = moduleLayoutInfo;
+  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
+  const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
+
+  if (markdownLayoutInfo instanceof SolutionInfo) return null;
+
   const sortedModuleLinks = React.useMemo(() => {
     let links: ModuleLinkInfo[] = [];
-    for (let group of MODULE_ORDERING[module.section]) {
+    for (let group of MODULE_ORDERING[markdownLayoutInfo.section]) {
       for (let id of group.items) {
-        links.push(moduleLinks.find(x => x.id === id));
+        links.push(sidebarLinks.find(x => x.id === id));
       }
     }
     return links;
-  }, [moduleLinks]);
+  }, [sidebarLinks]);
   let moduleIdx = React.useMemo(
-    () => sortedModuleLinks.findIndex(x => x.id === module.id),
-    [module, sortedModuleLinks]
+    () => sortedModuleLinks.findIndex(x => x.id === markdownLayoutInfo.id),
+    [markdownLayoutInfo, sortedModuleLinks]
   );
   let prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
   let nextModule =
@@ -158,7 +163,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       {alignNavButtonsRight && <div className="flex-1 sm:hidden" />}
       <span className="-ml-4 rounded-md">
         <Link
-          to={prevModule === null ? module.url : prevModule.url}
+          to={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
           className={
             'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
             (prevModule === null ? disabledClasses : activeClasses)
@@ -183,7 +188,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       </div>
       <span className="rounded-md -mr-4">
         <Link
-          to={nextModule === null ? module.url : nextModule.url}
+          to={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
           className={
             'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
             (nextModule === null ? disabledClasses : activeClasses)
@@ -220,11 +225,11 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   return <li key={prerequisite}>{prerequisite}</li>;
 };
 
-export default function ModuleLayout({
-  module,
+export default function MarkdownLayout({
+  markdownData,
   children,
 }: {
-  module: ModuleInfo;
+  markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
   const { userProgressOnModules, setModuleProgress, lang } = useContext(
@@ -235,11 +240,11 @@ export default function ModuleLayout({
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const [pageRendered, setPageRendered] = useState(false);
   const moduleProgress =
-    (userProgressOnModules && userProgressOnModules[module.id]) ||
+    (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
 
   const tableOfContents =
-    lang in module.toc ? module.toc[lang] : module.toc['cpp'];
+    lang in markdownData.toc ? markdownData.toc[lang] : markdownData.toc['cpp'];
 
   const data = useStaticQuery(graphql`
     query {
@@ -264,7 +269,7 @@ export default function ModuleLayout({
 
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
-    setModuleProgress(module.id, progress);
+    setModuleProgress(markdownData.id, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
@@ -277,7 +282,9 @@ export default function ModuleLayout({
   }, []);
 
   return (
-    <ModuleLayoutContext.Provider value={{ module, moduleLinks }}>
+    <MarkdownLayoutContext.Provider
+      value={{ markdownLayoutInfo: markdownData, sidebarLinks: moduleLinks }}
+    >
       <ModuleConfetti
         show={isConfettiActive}
         onDone={() => setIsConfettiActive(false)}
@@ -420,65 +427,70 @@ export default function ModuleLayout({
                 </div>
 
                 <div className="px-0.5 lg:mt-8">
-                  {module.frequency !== null && (
-                    <Frequency frequency={module.frequency} />
-                  )}
+                  {markdownData instanceof ModuleInfo &&
+                    markdownData.frequency !== null && (
+                      <Frequency frequency={markdownData.frequency} />
+                    )}
                 </div>
                 <div className="sm:flex sm:items-center sm:justify-between mb-4">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                      {module.title}
+                      {markdownData.title}
                     </h1>
                     <p className={`text-gray-500`}>
-                      Author{module.author.indexOf(',') !== -1 ? 's' : ''}:{' '}
-                      {module.author}
+                      Author{markdownData.author.indexOf(',') !== -1 ? 's' : ''}
+                      : {markdownData.author}
                     </p>
                   </div>
-                  <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
-                    <MarkCompleteButton
-                      state={moduleProgress}
-                      onChange={handleCompletionChange}
-                    />
-                  </div>
+                  {markdownData instanceof ModuleInfo && (
+                    <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
+                      <MarkCompleteButton
+                        state={moduleProgress}
+                        onChange={handleCompletionChange}
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {module.prerequisites && (
-                  <div className="rounded-md bg-blue-50 p-4 mb-4">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <svg
-                          className="h-5 w-5 text-blue-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm leading-5 font-medium text-blue-800">
-                          Prerequisites
-                        </h3>
-                        <div className="mt-2 text-sm leading-5 text-blue-800">
-                          <ul className="list-disc list-inside pl-3 space-y-1">
-                            {module.prerequisites.map(x =>
-                              renderPrerequisite(x, moduleLinks)
-                            )}
-                          </ul>
+                {markdownData instanceof ModuleInfo &&
+                  markdownData.prerequisites && (
+                    <div className="rounded-md bg-blue-50 p-4 mb-4">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <svg
+                            className="h-5 w-5 text-blue-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm leading-5 font-medium text-blue-800">
+                            Prerequisites
+                          </h3>
+                          <div className="mt-2 text-sm leading-5 text-blue-800">
+                            <ul className="list-disc list-inside pl-3 space-y-1">
+                              {markdownData.prerequisites.map(x =>
+                                renderPrerequisite(x, moduleLinks)
+                              )}
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {module.description && (
-                  <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
-                    {module.description}
-                  </p>
-                )}
+                {markdownData instanceof ModuleInfo &&
+                  markdownData.description && (
+                    <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
+                      {markdownData.description}
+                    </p>
+                  )}
 
                 <div className="xl:hidden">
                   <TableOfContentsBlock tableOfContents={tableOfContents} />
@@ -486,19 +498,21 @@ export default function ModuleLayout({
 
                 {children}
 
-                <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
-                  <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
-                    Module Progress
-                  </TextTooltip>
-                  :
-                  <span className="ml-4">
-                    <MarkCompleteButton
-                      onChange={handleCompletionChange}
-                      state={moduleProgress}
-                      dropdownAbove
-                    />
-                  </span>
-                </h3>
+                {markdownData instanceof ModuleInfo && (
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
+                    <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
+                      Module Progress
+                    </TextTooltip>
+                    :
+                    <span className="ml-4">
+                      <MarkCompleteButton
+                        onChange={handleCompletionChange}
+                        state={moduleProgress}
+                        dropdownAbove
+                      />
+                    </span>
+                  </h3>
+                )}
 
                 <div className="border-t border-gray-200 pt-4">
                   <NavBar alignNavButtonsRight={false} />
@@ -514,8 +528,8 @@ export default function ModuleLayout({
       <ContactUsSlideover
         isOpen={isContactUsActive}
         onClose={() => setIsContactUsActive(false)}
-        activeModule={module}
+        activeModule={markdownData instanceof ModuleInfo ? markdownData : null}
       />
-    </ModuleLayoutContext.Provider>
+    </MarkdownLayoutContext.Provider>
   );
 }

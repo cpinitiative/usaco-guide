@@ -21,6 +21,7 @@ This suggests that we should turn our rectangles into planar graphs.
 ## Making the Planar Graph
 
 We can turn a rectangle into a planar graph as so:
+
 - Put temporary river segments outside the border of the rectangle.
 - For each river segment, we insert its 4 corners into a set of nodes and its 4 sides into a set of edges.
 
@@ -104,7 +105,7 @@ struct Segtree {
 } vertices, edges_horiz, edges_vert, rivers;
 
 int mx_r, mn_r, mx_c, mn_c;
- 
+
 void add_river(int x, int y) {
     vertices.add(x, y);
     vertices.add(x + 1, y);
@@ -116,7 +117,7 @@ void add_river(int x, int y) {
     edges_vert.add(x, y + 1);
     rivers.add(x, y);
 }
- 
+
 void init(int R, int C, int sr, int sc, int M, char *S) {
     add_river(sr, sc);
     mx_r = mn_r = sr;
@@ -137,7 +138,7 @@ void init(int R, int C, int sr, int sc, int M, char *S) {
     edges_vert.build();
     rivers.build();
 }
- 
+
 int colour(int ar, int ac, int br, int bc) {
     int E = edges_horiz.query(ar + 1, br, ac, bc) + edges_vert.query(ar, br, ac + 1, bc);
     int V = vertices.query(ar + 1, br, ac + 1, bc);
