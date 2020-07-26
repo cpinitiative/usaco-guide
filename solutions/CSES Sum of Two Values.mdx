@@ -8,15 +8,15 @@ Given an array of $n$ elements, you are asked to find two values which sum to $x
 
 Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case $a$ cannot be a valid first value).
 
-So the question reduces to, given some value $a$, does some other value $x - a$ exist? 
+So the question reduces to, given some value $a$, does some other value $x - a$ exist?
 
 # Using a Set
 
 One idea that comes to mind would be to used a boolean array to store the values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
 
-However, we can store the values in an (un)ordered set, and use the `.contains` method to check whether a value exists. 
+However, we can store the values in an (un)ordered set, and use the `.contains` method to check whether a value exists.
 
-The last detail we need to deal with is that the problem asks us to return the indices of the values, rather than the values themselves. To deal with this, let's store each value in the array as a pair, $value_i, index_i$, and use `lower_bound` to find the smallest value $\geq x - value_i$. If this value equals $x - value_i$, then we've found our answer. 
+The last detail we need to deal with is that the problem asks us to return the indices of the values, rather than the values themselves. To deal with this, let's store each value in the array as a pair, $value_i, index_i$, and use `lower_bound` to find the smallest value $\geq x - value_i$. If this value equals $x - value_i$, then we've found our answer.
 
 <LanguageSection>
 
@@ -53,7 +53,7 @@ int main() {
     }
     for (int i = 0; i < n; i++) {
         auto it = vals.lower_bound(mp(x - a[i], INT_MIN)); //finds the smallest value >= x - a[i]
-        if(it != vals.end() && it -> f == x - a[i] && it -> s != i){ 
+        if(it != vals.end() && it -> f == x - a[i] && it -> s != i){
             cout << i + 1 << " " << (it -> s) + 1 << '\n';
             return 0;
         }

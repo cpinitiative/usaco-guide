@@ -3,6 +3,7 @@ import { createContext, useState } from 'react';
 import { Problem } from '../../content/models';
 import { ModuleProgress } from '../models/module';
 import { ProblemProgress } from '../models/problem';
+import useFirebase from '../hooks/useFirebase';
 
 export type UserLang = 'showAll' | 'cpp' | 'java' | 'py';
 export const LANGUAGE_LABELS: { [key in UserLang]: string } = {
@@ -27,6 +28,10 @@ const UserDataContext = createContext<{
 
   lastViewedModule: string;
   setLastViewedModule: (moduleID: string) => void;
+
+  firebaseUser: any;
+  signIn: Function;
+  signOut: Function;
 }>({
   lang: 'showAll',
   setLang: null,
@@ -36,6 +41,9 @@ const UserDataContext = createContext<{
   setUserProgressOnProblems: null,
   lastViewedModule: null,
   setLastViewedModule: null,
+  firebaseUser: null,
+  signIn: null,
+  signOut: null,
 });
 
 const langKey = 'guide:userData:lang';
@@ -96,6 +104,15 @@ export const UserDataProvider = ({ children }) => {
     [key: string]: ProblemProgress;
   }>({});
   const [lastViewedModule, setLastViewedModule] = useState<string>(null);
+  const [firebaseUser, setFirebaseUser] = useState(null);
+
+  useFirebase(firebase => {
+    return firebase.auth().onAuthStateChanged(user => {
+      setFirebaseUser(user);
+    });
+  });
+
+  const firebase = useFirebase();
 
   React.useEffect(() => {
     setLang(getLangFromStorage());
@@ -140,8 +157,24 @@ export const UserDataProvider = ({ children }) => {
         );
         setLastViewedModule(moduleID);
       },
+      firebaseUser,
+      signIn: () => {
+        firebase
+          .auth()
+          .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+      },
+      signOut: () => {
+        firebase.auth().signOut();
+      },
     }),
-    [lang, userProgress, problemStatus, lastViewedModule]
+    [
+      lang,
+      userProgress,
+      problemStatus,
+      lastViewedModule,
+      firebaseUser,
+      firebase,
+    ]
   );
 
   return (
