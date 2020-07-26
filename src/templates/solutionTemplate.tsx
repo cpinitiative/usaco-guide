@@ -124,7 +124,7 @@ export default function Template(props) {
               Problem Solution
             </p>
             <div className="mt-2 mb-6">
-              <h1 className="mt-2 mb-2 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
+              <h1 className="mb-2 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
                 {mdx.frontmatter.title}
               </h1>
               {mdx.frontmatter.author ? (
