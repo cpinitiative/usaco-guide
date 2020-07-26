@@ -1,7 +1,7 @@
 ---
 id: dfs
 title: Depth First Search (DFS)
-author: Siyong Huang
+author: Siyong Huang, Nathan Chen
 prerequisites: 
  - intro-graphs
 description: "A way to recursively traverse a graph."
@@ -223,36 +223,59 @@ Trees are generally treated very differently from general graph problems.
 ### Solution - Subordinates
 
 Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
-The implementation below computes those numbers.
+
+See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
+
+<IncompleteSection>
+Probably want to define subtree.
+</IncompleteSection>
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <cstdio>
-#include <vector>
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
-const int MN = 2e5+10;
+using namespace std;
 
-int N, p[MN], s[MN];
-std::vector<int> a[MN];
-void dfs(int node)
-{
-	s[node]=1;
-	for(int u:a[node])
-		dfs(u), s[node]+=s[u];
+vector<int> children[200000];
+int subtree_size[200000];
+
+void dfs_size(int node) {
+	subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
+
+	for(int child : children[node]) {
+		dfs_size(child);
+		subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
+	}
 }
-int main()
-{
-	scanf("%d", &N);
-	for(int i=2;i<=N;++i)
-		scanf("%d", p+i), a[p[i]].push_back(i);
-	dfs(1);
-	for(int i=1;i<=N;++i)
-		printf("%d%c", s[i]-1, " \n"[i==N]);
+
+int main() {
+	//read more about Fast IO in "Intro - FastIO"
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N; cin >> N;
+	
+	for(int i = 1; i < N; i++) {
+		int parent; cin >> parent; parent--; //this node is the parent of node i... Also notice the decrement operator in order to make the node 0-indexed
+		children[parent].push_back(i);
+	}
+
+	dfs_size(0);
+
+	for(int i = 0; i < N; i++) {
+		cout << subtree_size[i]-1;
+		if(i != N-1) cout << " ";
+	}
+	cout << "\n";
+
 	return 0;
 }
+
 ```
 
 </CPPSection>
