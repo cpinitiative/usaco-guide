@@ -6,17 +6,17 @@ author: Michael Cao
 
 In this problem, we're asked to split $n$ apples into two sets such that the difference in weights is minimized.
 
-Looking at the bounds, $n \leq 20$, complete search comes to mind as a solution. If you don't know what that is, read [Bronze - Introduction to Complete Search](/bronze/intro-complete). 
+Looking at the bounds, $n \leq 20$, complete search comes to mind as a solution. If you don't know what that is, read [Bronze - Introduction to Complete Search](/bronze/intro-complete).
 
 Specifically, let's try all possible divisions of $n$ apples into two sets, and find the one with the minimum difference in weights. There are two ways to achieve this.
 
 # Recursion
 
-The first method would be to write a recursive function which searches over all possibilities. 
+The first method would be to write a recursive function which searches over all possibilities.
 
-At some index, we either add $weight_i$ to the first set or the second set, storing two sums $s_1$ and $s_2$ with the sum of values in each set. 
+At some index, we either add $weight_i$ to the first set or the second set, storing two sums $s_1$ and $s_2$ with the sum of values in each set.
 
-Then, we return the difference between the two sums once we've reached the end of the array. 
+Then, we return the difference between the two sums once we've reached the end of the array.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -60,7 +60,7 @@ int main() {
 
 # Bitmasks
 
-An easier way to search through all divisions is to use bitmasks. If you don't know what those are, read [CPH Chapter 5](https://usaco-guide.vercel.app/CPH.pdf) section "Generating Subsets". 
+An easier way to search through all divisions is to use bitmasks. If you don't know what those are, read [CPH Chapter 5](https://usaco-guide.vercel.app/CPH.pdf) section "Generating Subsets".
 
 By iterating through all bitmasks, we can consider the toggled bits as apples placed in the first set, and untoggled bits as apples placed in the second. Then, sum up the weights into $s1$ and $s2$ like before, and find the minimum difference.
 
