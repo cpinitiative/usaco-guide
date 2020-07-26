@@ -68,23 +68,39 @@ not a good example
 
 ## Counting Connected Components
 
+A **Connected Component** is a maximal set of connected nodes.
+In other words, two nodes are in the same connected component *if and only if* they can reach each other via edges in the graph.
+
 <Problems problems={problems.sample} />
 
-You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1).
+The goal of this problem is to add edges such that the entire graph is a single connected component.
+Note that each edge can connect at most two connected components, reducing the overall count by one.
+Since this is always possible, you must add $N-1$ edges.
+In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions.
+For example, pick a representative from each component and link them together in a line. 
 
-<IncompleteSection />
+<!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
-### Implementation
+### Sample Implementation
 
-Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. 
+<!-- Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. -->
 
 <LanguageSection>
 
 <CPPSection>
 
+<!-- Tested on CSES -->
+
 ```cpp
-//UNTESTED
+#include <cstdio>
+#include <vector>
+
+const int MN = 1e5+10;
+
+int N, M, ans, rep[MN];
+std::vector<int> adj_list[MN];
 bool visited[MN];
+
 void dfs(int node)
 {
 	visited[node] = true;
@@ -97,8 +113,23 @@ int count_components()
 	int count=0;
 	for(int i=1;i<=N;++i)
 		if(!visited[i])
-			dfs(i), ++count;
+		{
+			rep[count++]=i;
+			dfs(i);
+		}
 	return count;
+}
+
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i<M;++i)
+		scanf("%d%d", &u, &v), adj_list[u].push_back(v), adj_list[v].push_back(u);
+	ans = count_components();
+	printf("%d\n", ans-1);
+	for(int i=1;i<ans;++i)
+		printf("%d %d\n", rep[i-1], rep[i]);
+	return 0;
 }
 ```
 
@@ -107,22 +138,67 @@ int count_components()
 <JavaSection>
 
 ```java
-//UNTESTED
-boolean[] visited = new boolean[MN];
-public static void dfs(int node)
+import java.io.*;
+import java.util.*;
+
+public class BuildingRoads
 {
-	visited[node] = true;
-	for(int u:adj_list[node])
-		if(!visited[u])
-			dfs(u);
-}
-public static int count_components()
-{
-	int count=0;
-	for(int i=1;i<=N;++i)
-		if(!visited[i])
-			dfs(i), ++count;
-	return count;
+	static InputReader in = new InputReader(System.in); //Check Intro/IO
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 100010, MM = 200020;
+
+	static int N, M, ans;
+	static int[] rep = new int[MN], hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
+	//Sorry about using chinese edge representation. Normal adjacency list exceeds time limit.
+	static boolean[] visited = new boolean[MN];
+
+	public static void adde(int u, int v, int id)
+	{
+		nx[id] = hd[u];
+		hd[u] = id;
+		to[id] = v;
+	}
+	public static void dfs(int node)
+	{
+		visited[node] = true;
+		for(int id=hd[node], u;id!=-1;id=nx[id])
+		{
+			u=to[id];
+			if(!visited[u])
+				dfs(u);
+		}
+	}
+	public static int count_components()
+	{
+		int count=0;
+		for(int i=1;i<=N;++i)
+			if(!visited[i])
+			{
+				rep[count++]=i;
+				dfs(i);
+			}
+		return count;
+	}
+
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		M=in.nextInt();
+		for(int i=1;i<=N;++i) hd[i]=-1;
+		for(int i=0,u,v;i<M;++i)
+		{
+			u = in.nextInt();
+			v = in.nextInt();
+			adde(u, v, i*2);
+			adde(v, u, i*2+1);
+		}
+		ans = count_components();
+		out.println(ans-1);
+		for(int i=1;i<ans;++i)
+			out.println(rep[i-1] + " " + rep[i]);
+		out.close();
+	}
 }
 ```
 
