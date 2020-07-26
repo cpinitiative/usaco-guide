@@ -13,6 +13,7 @@ import {
   FrequencyLabels,
   FrequencyTextColors,
 } from '../Frequency';
+import Tooltip from '../Tooltip/Tooltip';
 
 const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -149,7 +150,24 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
               progress === 'Ignored' ? 'text-gray-400' : 'text-gray-700'
             } group-hover:text-blue-800 transition duration-150 ease-in-out mb-1 flex items-center`}
           >
-            <span className="mr-2">{link.title}</span>
+            <span className="mr-2 inline-flex items-end">
+              {link.title}{' '}
+              {link.isIncomplete ? (
+                <Tooltip content="This module has incomplete sections.">
+                  <svg
+                    className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 ml-1.5 transition ease-in-out duration-150"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Tooltip>
+              ) : null}
+            </span>
           </p>
           {link.frequency !== null && (
             <p className="text-sm flex items-center leading-4 mb-1">

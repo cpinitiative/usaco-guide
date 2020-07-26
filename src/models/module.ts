@@ -6,8 +6,14 @@ export class ModuleLinkInfo {
     public section: string,
     public title: string,
     public description?: string,
-    public frequency?: ModuleFrequency
+    public frequency?: ModuleFrequency,
+    public isIncomplete?: boolean
   ) {
+    if (this.id === 'using-this-guide') {
+      // The "Using This Guide" module is complete already, but it contains an <IncompleteModule> tag
+      // We want to ignore it and manually mark it as complete
+      this.isIncomplete = false;
+    }
     this.url = `/${section}/${id}`;
   }
 }
