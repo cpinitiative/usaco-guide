@@ -437,10 +437,14 @@ export default function MarkdownLayout({
                     <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                       {markdownData.title}
                     </h1>
-                    <p className={`text-gray-500`}>
-                      Author{markdownData.author.indexOf(',') !== -1 ? 's' : ''}
-                      : {markdownData.author}
-                    </p>
+                    {markdownData.author && (
+                      <p className={`text-gray-500`}>
+                        Author
+                        {markdownData.author.indexOf(',') !== -1
+                          ? 's'
+                          : ''}: {markdownData.author}
+                      </p>
+                    )}
                   </div>
                   {markdownData instanceof ModuleInfo && (
                     <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
