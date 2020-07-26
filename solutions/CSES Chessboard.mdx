@@ -1,0 +1,101 @@
+---
+id: cses-1624
+title: CSES Chessboard and Queens
+author: Michael Cao
+---
+
+In this problem, we are given an $8$ by $8$ board and asked to calculate the number of ways to place queens on squares that aren't blocked such that no two queens attack each other.
+
+# Permutations
+
+Since no two queens can be in the same column, let's generate a permutation of length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
+
+By generating all permutations, we can quickly test all possible placements, and count how many are valid.
+
+To make the implementation easier, we can observe that some bottom-left to top-right diagonal can be represented as all squares $i, j$ such that $i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+bool ok[8][8];
+
+int ans = 0;
+
+int main() {
+    setIO();
+    for (int i = 0; i < 8; i++) {
+        string s; cin >> s;
+        for (int j = 0; j < 8; j++) {
+            ok[i][j] = (s[j] == '.');
+        }
+    }
+    vi vals(8);
+
+    iota(all(vals), 0); //set vals to 0 1 ... 7
+
+    do {
+        bool works = true;
+        bool blocked[16];
+        for(int i = 0; i < 8; i++){
+            if(!ok[i][vals[i]]){
+                works = false;
+            }
+        }
+        memset(blocked, false, sizeof(blocked)); //first mark all squares as not blocked
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + vals[i]]){
+                works = false;
+            }
+            blocked[i + vals[i]] = true; //mark this diagonal
+        }
+        memset(blocked, false, sizeof(blocked));
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + 7 - vals[i]]){
+                works = false;
+            }
+            blocked[i + 7 - vals[i]] = true;
+        }
+        if(works) ++ans;
+    } while(next_permutation(all(vals)));
+
+    cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+# Recursive Backtracking
+
+Since the bounds are small, we can recursively backtrack over all ways to place the queens, storing the current state of the board.
+
+Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by a queen or blocked and recurse, before removing this queen and backtracking.
+
+Finally, when we have placed all the queens and the boardstate is valid, then increment the answer.
+
+<IncompleteSection>
+
+</IncompleteSection>

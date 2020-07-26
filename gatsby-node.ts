@@ -209,6 +209,25 @@ exports.createResolvers = ({ createResolvers }) => {
           return problems;
         },
       },
+      isIncomplete: {
+        type: `Boolean`,
+        async resolve(source, args, context, info) {
+          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
+          let mdast = await resolve(source, args, context, {
+            fieldName: 'mdast',
+          });
+          let incomplete = false;
+          mdast.children.forEach(node => {
+            if (
+              node.type === 'jsx' &&
+              node.value.includes('<IncompleteSection')
+            ) {
+              incomplete = true;
+            }
+          });
+          return incomplete;
+        },
+      },
     },
   };
   createResolvers(resolvers);

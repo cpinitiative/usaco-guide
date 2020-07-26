@@ -6,6 +6,7 @@ import { graphql } from 'gatsby';
 import MODULE_ORDERING, {
   moduleIDToSectionMap,
   SECTION_LABELS,
+  SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar';
@@ -45,6 +46,15 @@ const SectionContainer = styled.div`
     ${tw`text-gray-500`}
   }
 `;
+
+const HeroBGColor: { [key in SectionID]: string } = {
+  intro: 'bg-blue-600',
+  bronze: 'bg-orange-600',
+  silver: 'bg-teal-600',
+  gold: 'bg-yellow-600',
+  plat: 'bg-purple-600',
+  adv: 'bg-green-600',
+};
 
 export default function Template(props) {
   const data = props.data;
@@ -97,9 +107,9 @@ export default function Template(props) {
         <TopNavigationBar />
 
         <main>
-          <div className="bg-gray-100 py-12">
+          <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-              <h1 className="mb-8 text-blue-700 text-5xl tracking-tight leading-10 font-extrabold text-white sm:leading-none md:text-6xl text-center">
+              <h1 className="mb-8 sm:mb-12 text-white text-5xl tracking-tight leading-10 font-extrabold text-white sm:leading-none md:text-6xl text-center">
                 {SECTION_LABELS[division]}
               </h1>
               <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
@@ -153,7 +163,8 @@ export default function Template(props) {
                           moduleIDToSectionMap[item.frontmatter.id],
                           item.frontmatter.title,
                           item.frontmatter.description,
-                          item.frontmatter.frequency
+                          item.frontmatter.frequency,
+                          item.isIncomplete
                         )
                       }
                     />
@@ -182,6 +193,7 @@ export const pageQuery = graphql`
           problems {
             uniqueID
           }
+          isIncomplete
         }
       }
     }

@@ -1,4 +1,12 @@
-# Module Review Checklist
+---
+name: Module Review
+about: Quality control for modules
+title: ''
+labels: module review
+assignees: ''
+---
+
+**Module Review Checklist**
 
 Read through the module and check for errors. Also see: https://usaco-guide.vercel.app/intro/contributing
 
@@ -22,4 +30,4 @@ Things to check:
   - [ ] There are sufficient problems
   - [ ] Problems are tagged with difficulty and tags as needed
   - [ ] Problems either are linked to a good enough external solution, or a solution is written for them
-  - [ ] There are *no solution sketches* -- migrate solution sketches into full editorial pages.
+  - [ ] There are _no solution sketches_ -- migrate solution sketches into full editorial pages.

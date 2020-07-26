@@ -175,6 +175,12 @@ Fun fact: the title attribute is optional.
 
 **Problem sketches are deprecated. Do not add any new problem sketches.**
 
+Problem constructor syntax:
+
+```
+new Problem("Source", "Problem Name", "Problem ID (this is used to generate link to problem)", "Difficulty", starred, ["tags"], "editorial-id", "editorial quality")
+```
+
 To add problem editorials, create a new file under the `solutions/` folder. Try to name it something reasonable; follow existing naming conventions.
 
 Editorials are also written in MDX. The frontmatter has three fields:
@@ -190,6 +196,14 @@ author: Nathan Wang
 ```
 
 The author field is optional.
+
+To reference that editorial:
+
+```
+new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, ["sets"], "cses-1621", "good")
+```
+
+The important parameters are the last two: `cses-1621` is equal to the frontmatter ID, and `good` shows a green check next to the problem to indicate that the editorial is of high quality.
 
 Problem constructor:
 
@@ -271,19 +285,102 @@ Do roughly the first half of the Sorting and Searching section in the [CSES Prob
 
 ### Resource Lists
 
-stub
+```
+<Resources>
+  <Resource
+    source="Errichto"
+    title="Video - How to test your solution"
+    url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
+    starred
+  >
+    using a script to stress test
+  </Resource>
+  ...
+</Resources>
+```
+
+Special functionality based on source:
+
+- If the source is a book, it'll automatically set the URL to point to the book.
+  - Supported books:
+    - `GCP` (Guide to Competitive Programming)
+    - `CPH` (Competitive Programming Handbook)
+    - `PAPS`
+    - `CP1` (Competitive Programming 1)
+    - `IUSACO` (Darren's book; will auto-set URL based on user language; uses C++ for Python users)
+- Some sources have URL shortcuts that they will prepend to the URL.
+  - ```typescript
+    const sources = {
+      TC: 'https://www.topcoder.com/community/competitive-programming/tutorials/',
+      CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
+      CF: 'http://codeforces.com/',
+      'cp-algo': 'https://cp-algorithms.com/',
+      CSA: 'https://csacademy.com/lesson/',
+      GFG: 'https://www.geeksforgeeks.org/',
+      Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
+      HR: 'https://www.hackerrank.com/',
+      SO: 'https://stackoverflow.com/',
+      Infoarena: 'https://infoarena.ro/',
+    };
+    ```
+- Some sources will automatically have tooltips generated for them.
+  - ```typescript
+    export const sourceTooltip = {
+      GCP: 'Guide to Competitive Programming (based off CPH)',
+      AoPS: 'Art of Problem Solving',
+      CPH: "Book - Competitive Programmer's Handbook",
+      PAPS: 'Book - Principles of Algorithmic Problem Solving',
+      IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
+      CP1: 'Book - Competitive Programming 1',
+      TC: 'TopCoder',
+      IOI: 'International Olympiad in Informatics',
+      TLX: 'tlx.toki.id',
+      CPC:
+        'Competitive Programming Course (taught at Reykjavík University, Iceland)',
+      CF: 'CodeForces',
+      'cp-algo': 'CP Algorithms',
+      CSA: 'CS Academy',
+      GFG: 'Geeks For Geeks',
+      Benq: 'github.com/bqi343/USACO',
+      HR: 'HackerRank',
+      CSES: 'Code Submission Evaluation System (includes CPH problemset)',
+      HE: 'HackerEarth',
+      AC: 'AtCoder',
+      CC: 'CodeChef',
+      DMOJ: 'Don Mills Online Judge',
+      SPOJ: 'Sphere Online Judge',
+      YS: 'Library Checker',
+      LC: 'LeetCode',
+      POI: 'Polish Olympiad in Informatics',
+      SO: 'StackOverflow',
+      KA: 'KhanAcademy',
+      USACO: 'USA Computing Olympiad',
+      'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
+      'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
+      'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
+      Bronze: 'USACO 2015-16 to present',
+      Silver: 'USACO 2015-16 to present',
+      Gold: 'USACO 2015-16 to present',
+      Plat: 'USACO 2015-16 to present',
+      ZLE: 'kauntaofficial.github.io',
+    };
+    ```
 
 ### Tooltips
 
-stub
+There are two main types of tooltips: text tooltips, which display a dotted underline under the text, and asterisk tooltips, which render an asterisk that can be hovered over.
 
 #### `<TextTooltip>`
 
-stub
+```jsx
+<TextTooltip content="Popup text goes here">short text goes here</TextTooltip>
+```
 
 #### `<Asterisk>`
 
-stub
+```jsx
+<Asterisk>Popup text goes here</Asterisk>
+```
 
 ### Language-Specific Content
 
