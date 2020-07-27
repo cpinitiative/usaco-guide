@@ -153,6 +153,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       name: "Dynamic Programming",
       items: [
         "intro-dp",
+        "dp-trees",
       ]
     },
     {
@@ -183,7 +184,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "dsu",
         "mst",
-        "dp-trees",
         "tree-euler",
       ]
     },
@@ -219,6 +219,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
       items: [
         "dp-bitmasks",
         "dp-ranges",
+        "comb-sub",
         "dp-more",
       ]
     },
