@@ -14,9 +14,9 @@ So the question reduces to, given some value $a$, does some other value $x - a$ 
 
 One idea that comes to mind would be to used a boolean array to store the values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
 
-However, we can store the values in an (un)ordered map which maps each value to an index, and use the `.count` method to check whether a value exists, and return the corresponding index if it does.
+However, we can store the values in an (un)ordered set, and use the `.contains` method to check whether a value exists.
 
-To be careful not to count the same index twice, we'll add values to the map as we iterate through it, so at some index $i$ you only consider values with index $j < i$.
+The last detail we need to deal with is that the problem asks us to return the indices of the values, rather than the values themselves. To deal with this, let's store each value in the array as a pair, $value_i, index_i$, and use `lower_bound` to find the smallest value $\geq x - value_i$. If this value equals $x - value_i$, then we've found our answer.
 
 <LanguageSection>
 
