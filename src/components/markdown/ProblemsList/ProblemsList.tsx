@@ -37,10 +37,10 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider text-right">
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Tags
                   </th>
-                  <th className="pl-4 pr-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider text-right">
+                  <th className="pl-10 pr-4 md:pr-6 md:pl-12 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Solution
                   </th>
                 </tr>
@@ -158,66 +158,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
   React.useEffect(() => {
     setIsActive(window && window.location && window.location.hash === '#' + id);
   }, []);
-  const isUsaco = source => {
-    const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.includes(posi[ind])) return true;
-    }
-    return false;
-  };
-  const isExternal = link => {
-    return link.startsWith('http');
-  };
-  const isInternal = link => {
-    return /^[a-zA-Z\-0-9]+$/.test(link);
-  };
-  let msg = false;
-  let internal = false;
-  let external = false;
-  let sol = problem.solution ? problem.solution : '';
-  let hover = '';
-  if (sol.length > 0 && isInternal(sol)) {
-    internal = true;
-    sol = '/solutions/' + sol;
-  } else {
-    if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
-      sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
-    }
-    if (
-      sol == '' &&
-      problem.source == 'CF' &&
-      problem.id.startsWith('contest/')
-    ) {
-      sol = '@Check CF';
-      hover =
-        'Check contest materials, located to the right of the problem statement.';
-    }
-    if (sol == '' && problem.source == 'CSA') {
-      sol = '@Check CSA';
-      hover = 'The editorial tab should be right next to the statement tab.';
-    }
-    if (sol == '' && problem.source == 'HE') {
-      sol = '@Check HE';
-      hover = 'The editorial tab should be right next to the problem tab.';
-    }
-    if (isExternal(sol)) {
-      external = true;
-    } else if (sol.startsWith('@')) {
-      if (sol == '@@') {
-        sol = '';
-      } else if (sol == '@B') {
-        msg = true;
-        sol = 'Below';
-      } else {
-        msg = true;
-        sol = sol.substring(1);
-      }
-    } else {
-      if (sol.length != 0) {
-        throw new Error('Unrecognied solution - ' + sol);
-      }
-    }
-  }
   return (
     <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
@@ -299,81 +239,114 @@ export function ProblemComponent(props: ProblemComponentProps) {
             ? problem.tags.join(', ')
             : 'None')}
       </td>
-      <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-right text-sm font-medium leading-none">
-        {/* {sol} */}
-        {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
-        {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
-        {/* {problem.id} */}
-        {msg && hover.length == 0 && sol}
-        {msg && hover.length > 0 && sol && (
-          <Tooltip content={hover}>
-            <div>{sol}</div>
-          </Tooltip>
-        )}
-        {/* {msg && hover.length > 0 && sol && (
-          <div>
-            {sol}
-          </div>
-        )} */}
-        {external && (
-          <a
-            href={sol}
-            target="_blank"
-            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
-          >
-            External Sol
-          </a>
-        )}
-        {internal && (
-          <div
-            className={
-              'inline-flex items-center h-5 group ' +
-              (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6')
-            }
-          >
-            {problem.solQuality === 'good' && (
-              <Tooltip content="This solution is verified to be complete and of high quality.">
-                <svg
-                  className="h-5 w-5 text-green-400 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Tooltip>
-            )}
-            {problem.solQuality === 'bad' && (
-              <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
-                <svg
-                  className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 mr-1 transition ease-in-out duration-150"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Tooltip>
-            )}
-            <a href={sol} target="_blank">
-              Internal Sol
-            </a>
-          </div>
-        )}
-        {!msg && !external && !internal && problem.sketch && (
-          <span
-            className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
-            onClick={() => problem.sketch && props.onShowSolution(problem)}
-          >
+      <ProblemSolutionCell
+        problem={props.problem}
+        onShowSolution={props.onShowSolution}
+      />
+    </tr>
+  );
+}
+
+const ProblemSolutionCell = (props: ProblemComponentProps) => {
+  const { problem } = props;
+  const isUsaco = source => {
+    const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
+    for (let ind = 0; ind < posi.length; ++ind) {
+      if (source.includes(posi[ind])) return true;
+    }
+    return false;
+  };
+  const isExternal = link => {
+    return link.startsWith('http');
+  };
+  const isInternal = link => {
+    return /^[a-zA-Z\-0-9]+$/.test(link);
+  };
+  let msg = false;
+  let internal = false;
+  let external = false;
+  let sol = problem.solution ? problem.solution : '';
+  let hover = '';
+  if (sol.length > 0 && isInternal(sol)) {
+    internal = true;
+    sol = '/solutions/' + sol;
+  } else {
+    if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
+      sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
+    }
+    if (
+      sol == '' &&
+      problem.source == 'CF' &&
+      problem.id.startsWith('contest/')
+    ) {
+      sol = '@Check CF';
+      hover =
+        'Check contest materials, located to the right of the problem statement.';
+    }
+    if (sol == '' && problem.source == 'CSA') {
+      sol = '@Check CSA';
+      hover = 'The editorial tab should be right next to the statement tab.';
+    }
+    if (sol == '' && problem.source == 'HE') {
+      sol = '@Check HE';
+      hover = 'The editorial tab should be right next to the problem tab.';
+    }
+    if (isExternal(sol)) {
+      external = true;
+    } else if (sol.startsWith('@')) {
+      if (sol == '@@') {
+        sol = '';
+      } else if (sol == '@B') {
+        msg = true;
+        sol = 'Below';
+      } else {
+        msg = true;
+        sol = sol.substring(1);
+      }
+    } else {
+      if (sol.length != 0) {
+        throw new Error('Unrecognied solution - ' + sol);
+      }
+    }
+  }
+  return (
+    <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
+      {/* {sol} */}
+      {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
+      {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
+      {/* {problem.id} */}
+      {msg && hover.length === 0 && <span className="pl-6">{sol}</span>}
+      {msg && hover.length > 0 && sol && (
+        <Tooltip content={hover}>
+          <span className="pl-6">{sol}</span>
+        </Tooltip>
+      )}
+      {external && (
+        <a href={sol} target="_blank" className="pl-6">
+          External Sol
+        </a>
+      )}
+      {internal && (
+        <div className={`inline-flex items-center h-5 group`}>
+          {problem.solQuality === 'good' && (
+            <Tooltip content="This solution is verified to be complete and of high quality.">
+              <svg
+                className="h-5 w-5 text-green-400 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Tooltip>
+          )}
+          {problem.solQuality === 'bad' && (
             <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
               <svg
-                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
+                className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 mr-1 transition ease-in-out duration-150"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -384,17 +357,41 @@ export function ProblemComponent(props: ProblemComponentProps) {
                 />
               </svg>
             </Tooltip>
-            Show Sketch
-          </span>
-        )}
-        {!msg && !external && !internal && !problem.sketch && (
-          <Tooltip
-            content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
-          >
-            <span className="text-gray-300">View Solution</span>
+          )}
+          {problem.solQuality === 'ok' && <span className="w-6" />}
+          <a href={sol} target="_blank">
+            Internal Sol
+          </a>
+        </div>
+      )}
+      {!msg && !external && !internal && problem.sketch && (
+        <span
+          className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
+          onClick={() => problem.sketch && props.onShowSolution(problem)}
+        >
+          <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
+            <svg
+              className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
           </Tooltip>
-        )}
-      </td>
-    </tr>
+          Show Sketch
+        </span>
+      )}
+      {!msg && !external && !internal && !problem.sketch && (
+        <Tooltip
+          content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
+        >
+          <span className="text-gray-300 pl-6">View Solution</span>
+        </Tooltip>
+      )}
+    </td>
   );
-}
+};
