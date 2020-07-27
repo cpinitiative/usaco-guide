@@ -40,6 +40,7 @@ const queries = [
         .filter(x => x.node.frontmatter.id in moduleIDToSectionMap)
         .map(pageToAlgoliaRecord),
     indexName: process.env.ALGOLIA_INDEX_NAME,
+    matchFields: ['title', 'description', 'content', 'id', 'division'],
   },
 ];
 
