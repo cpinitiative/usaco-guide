@@ -124,7 +124,7 @@ export const plugins = [
   `gatsby-plugin-netlify-cache`,
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
-    resolve: `gatsby-plugin-algolia`,
+    resolve: 'gatsby-plugin-algolia',
     options: {
       appId: process.env.ALGOLIA_APP_ID,
       apiKey: process.env.ALGOLIA_API_KEY,

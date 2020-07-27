@@ -5,7 +5,6 @@ const pageQuery = `{
   pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
-        id
         frontmatter {
           id
           title
@@ -24,7 +23,7 @@ function pageToAlgoliaRecord({
   node: { id, frontmatter, fields, mdxAST, ...rest },
 }) {
   return {
-    objectID: id,
+    objectID: frontmatter.id,
     ...frontmatter,
     ...fields,
     ...rest,
