@@ -24,7 +24,7 @@ export const problems = {
       new Problem("POI", "Spies", "https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement", "Hard", false, [], ""),
       new Problem("POI", "Frog", "https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement", "Hard", false, [], ""),
       new Problem("ojuz", "Space Pirate", "JOI14_space_pirate", "Insane", false, ["Graphs"], "One of the most difficult problems of all time. Build a tree with a single back edge. Break into four cases: path -> other cycle, non-cycle path -> non-subtree, cycle path -> non-subtree, path -> subtree. For the 3rd and 4th cases, let D = depth[B]-depth[A]. Valid B nodes form a 'triangle' in the graph and have some interesting common properties. Then proceed with black magic."),
-    ],
+    ]
 };
 
 ## Functional Graphs
@@ -41,12 +41,148 @@ This is also commonly referred to as a **successor graph**.
 ### Resources
 
 <Resources>
+
   <Resource source="CPH" title="16.3 Successor Graphs"></Resource>
+
 </Resources>
 
-### Implementation
+### Solution - Badge
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MN = 1e3+10;
+
+int N, p[MN], f[MN];
+bool v[MN], u[MN];
+int dfs(int n)
+{
+	v[n]=u[n]=true;
+	if(u[p[n]])//Cycle created
+	{
+		f[n]=n;//Nodes in cycle point to themselves
+		u[p[n]]=false;//remember where cycle started
+		u[n]=false;
+		return -1;
+	}
+	else if(v[p[n]])//You point into some already visited cycle
+	{
+		u[n]=false;
+		return f[n]=f[p[n]];
+	}
+	else
+	{
+		int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
+		if(t!=-1)
+		{
+			u[n]=false;
+			return f[n]=t;
+		}
+		else if(u[n])//You are part of the cycle, and so is the node that points to you.
+		{
+			u[n]=false;
+			f[n]=n;
+			return -1;
+		}
+		else//You are the start of the cycle. Whatever points to you is not part of the cycle anymore
+			return f[n]=n;
+	}
+}
+int main()
+{
+	scanf("%d", &N);
+	for(int i=1;i<=N;++i)
+		scanf("%d", p+i);
+	for(int i=1;i<=N;++i)
+		if(!v[i])
+			dfs(i);
+	for(int i=1;i<=N;++i)
+		printf("%d%c", f[i], " \n"[i==N]);
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public class badge
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+	public static final int MN = 1010;
+
+	public static int N;
+	public static int[] p = new int[MN], f = new int[MN];
+	public static boolean[] v = new boolean[MN], u = new boolean[MN];
+	public static int dfs(int n)
+	{
+		v[n]=u[n]=true;
+		if(u[p[n]])//Cycle created
+		{
+			f[n]=n;//Nodes in cycle point to themselves
+			u[p[n]]=false;//remember where cycle started
+			u[n]=false;
+			return -1;
+		}
+		else if(v[p[n]])//You point into some already visited cycle
+		{
+			u[n]=false;
+			return f[n]=f[p[n]];
+		}
+		else
+		{
+			int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
+			if(t!=-1)
+			{
+				u[n]=false;
+				return f[n]=t;
+			}
+			else if(u[n])//You are part of the cycle, and so is the node that points to you.
+			{
+				u[n]=false;
+				f[n]=n;
+				return -1;
+			}
+			else//You are the start of the cycle. Whatever points to you is not part of the cycle anymore
+				return f[n]=n;
+		}
+	}
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		for(int i=1;i<=N;++i)
+			p[i]=in.nextInt();
+		for(int i=1;i<=N;++i)
+			if(!v[i])
+				dfs(i);
+		for(int i=1;i<=N;++i)
+		{
+			out.print(f[i]);
+			if(i<N) out.print(" ");
+			else out.println();
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Count Cycles
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
+
+<IncompleteSection>
+
+Find example problem to submit to?
+
+</IncompleteSection>
 
 <LanguageSection>
 
@@ -87,11 +223,20 @@ int main()
 **Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself)
 
 <Resources>
+
   <Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
+
   <Resource source="Medium" title="The Tortoise and the Hare (Floyd's Algorithm)" url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"></Resource>
+
 </Resources>
 
 ### Implementation
+
+<IncompleteSection>
+
+Find example problem to submit to?
+
+</IncompleteSection>
 
 ```cpp
 //UNTESTED
@@ -116,7 +261,8 @@ pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of c
 }
 ```
 
-
 ### Problems
 
 <Problems problems={problems.general} />
+
+
