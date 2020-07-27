@@ -212,6 +212,7 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "merging",
         "hld",
         "centroid",
+        "comb-sub",
       ]
     },
     {
