@@ -10,36 +10,36 @@ vl dp[101][101];
 vpi child[101];
 
 vl comb(vl a, vl b) {
-  vl c(sz(a)+sz(b)-1,INF);
-  F0R(i,sz(a)) F0R(j,sz(b)) ckmin(c[i+j],a[i]+b[j]);
-  return c;
+	vl c(sz(a)+sz(b)-1,INF);
+	F0R(i,sz(a)) F0R(j,sz(b)) ckmin(c[i+j],a[i]+b[j]);
+	return c;
 }
 
 vl bet(vl a, vl b) {
-  b.insert(begin(b),INF);
-  while (sz(a) < sz(b)) a.pb(INF);
-  F0R(i,sz(b)) ckmin(a[i],b[i]);
-  return a;
+	b.insert(begin(b),INF);
+	while (sz(a) < sz(b)) a.pb(INF);
+	F0R(i,sz(b)) ckmin(a[i],b[i]);
+	return a;
 }
 
 vl go(int a, int p, int d) {
-  if (sz(dp[a][p])) return dp[a][p];
-  dp[a][p] = {d*w[a]};
-  trav(t,child[a]) {
-    vl v = go(t.f,p,d+t.s);
-    dp[a][p] = comb(dp[a][p],v);
-  }
-  if (p != a) dp[a][p] = bet(dp[a][p],go(a,a,0));
-  return dp[a][p];
+	if (sz(dp[a][p])) return dp[a][p];
+	dp[a][p] = {d*w[a]};
+	trav(t,child[a]) {
+		vl v = go(t.f,p,d+t.s);
+		dp[a][p] = comb(dp[a][p],v);
+	}
+	if (p != a) dp[a][p] = bet(dp[a][p],go(a,a,0));
+	return dp[a][p];
 }
 
 int main() {
-  setIO(); re(n,k);
-  FOR(i,1,n+1) {
-    re(w[i],v[i],d[i]);
-    child[v[i]].pb({i,d[i]});
-  }
-  vl res = go(0,0,0);
-  ps(res[k]);
+	setIO(); re(n,k);
+	FOR(i,1,n+1) {
+		re(w[i],v[i],d[i]);
+		child[v[i]].pb({i,d[i]});
+	}
+	vl res = go(0,0,0);
+	ps(res[k]);
 }
 ```
