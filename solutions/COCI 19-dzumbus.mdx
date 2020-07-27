@@ -1,0 +1,58 @@
+---
+id: coci-dzum
+title: COCI 19 - Dzumbus
+author: Benjamin Qi
+---
+
+```cpp
+int N,M,D[1001];
+vi adj[1001];
+vl dp[1001][3];
+bool vis[1001];
+
+vl ad(const vl& a, const vl& b) {
+	vl c(sz(a)+sz(b)-1,INF);
+	F0R(i,sz(a)) F0R(j,sz(b)) ckmin(c[i+j],a[i]+b[j]);
+	return c;
+}
+
+vl mn(vl a, const vl& b) {
+	while (sz(a) < sz(b)) a.pb(INF);
+	F0R(i,sz(b)) ckmin(a[i],b[i]);
+	return a;
+}
+
+void dfs(int x, int p) {
+	assert(!vis[x]); vis[x] = 1;
+	dp[x][0] = {0}; dp[x][1] = {INF,D[x]};
+	trav(t,adj[x]) if (t != p) {
+		dfs(t,x);
+		dp[x][0] = ad(dp[x][0],mn(dp[t][0],dp[t][2]));
+		dp[x][2] = mn(ad(dp[x][2],mn(mn(dp[t][0],dp[t][1]),dp[t][2])),ad(dp[x][1],mn(dp[t][1],dp[t][2])));
+		dp[x][1] = ad(dp[x][1],dp[t][0]);
+	}
+}
+
+int main() {
+	setIO(); re(N,M);
+	FOR(i,1,N+1) re(D[i]);
+	F0R(i,M) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	vl res = {0};
+	FOR(i,1,N+1) if (!vis[i]) {
+		dfs(i,0);
+		res = ad(res,mn(dp[i][0],dp[i][2]));
+	}
+	R0F(i,sz(res)-1) ckmin(res[i],res[i+1]);
+	int Q; re(Q);
+	F0R(i,Q) {
+		int S; re(S);
+		int ind = lstTrue(0,sz(res)-1,[&](int x) {
+			return res[x] <= S;
+		});
+		ps(ind);
+	}
+}
+```

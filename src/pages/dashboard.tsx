@@ -158,6 +158,33 @@ export default function DashboardPage(props: PageProps) {
                   {/*</div>*/}
                 </div>
               </div>
+              <div className="bg-white shadow transition duration-150 ease-in-out sm:rounded-lg">
+                {/* hover:shadow-lg */}
+                <div className="px-4 py-5 sm:p-6">
+                  {/* cursor-pointer */}
+                  <p className="text-sm leading-5 text-gray-500">
+                    <time dateTime="2020-07-18">July 27, 2020</time>
+                  </p>
+                  <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">
+                    Looking for Contributors
+                  </h3>
+                  <p className="mt-3 text-base leading-6 text-gray-500">
+                    We're particularly interested in{' '}
+                    <b>Bronze - Gold competitors</b> who are willing to review
+                    most (if not all) of the modules in their corresponding
+                    divisions. Check the module about{' '}
+                    <u>
+                      <a href="/intro/contributing">contributing</a>
+                    </u>{' '}
+                    for details regarding what this would entail.
+                  </p>
+                  {/*<div className="mt-3">*/}
+                  {/*  <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
+                  {/*    Continue Reading*/}
+                  {/*  </span>*/}
+                  {/*</div>*/}
+                </div>
+              </div>
             </div>
           </div>
           <header>

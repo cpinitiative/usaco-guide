@@ -5,7 +5,7 @@ author: Benjamin Qi, Siyong Huang
 prerequisites: 
  - sorting-custom
  - intro-ordered
- - lambda
+ - cpp-tips
 description: "Incorporating custom comparators into STL objects."
 frequency: 1
 ---
@@ -127,6 +127,12 @@ int main() {
 }
 ```
 
+<Info title="Pro Tip">
+
+One functor can be used for multiple objects.
+
+</Info>
+
 We can also use `cmp` like a normal function by adding `()` after it.
 
 ```cpp
@@ -142,13 +148,8 @@ int main() {
 }
 ```
 
-<Info title="Pro Tip">
 
-One functor can be used for multiple objects. Just keep overloading the `()` operator!
-
-</Info>
-
-## Built-In Functors
+### Built-In Functors
 
 Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less).
 Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater).
@@ -191,4 +192,4 @@ map<int,string,greater<int>> b;
 priority_queue<int,vector<int>,greater<int>> c;
 ```
 
-Using a custom comparator for priority queues is especially common. Again, a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.
+Using a custom comparator for priority queues is especially common. Recall that a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.

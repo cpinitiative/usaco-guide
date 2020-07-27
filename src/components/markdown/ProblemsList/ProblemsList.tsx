@@ -196,11 +196,22 @@ export function ProblemComponent(props: ProblemComponentProps) {
       sol = '@Check CSA';
       hover = 'The editorial tab should be right next to the statement tab.';
     }
+    if (sol == '' && problem.source == 'HE') {
+      sol = '@Check HE';
+      hover = 'The editorial tab should be right next to the problem tab.';
+    }
     if (isExternal(sol)) {
       external = true;
     } else if (sol.startsWith('@')) {
-      msg = true;
-      sol = sol.substring(1);
+      if (sol == '@@') {
+        sol = '';
+      } else if (sol == '@B') {
+        msg = true;
+        sol = 'Below';
+      } else {
+        msg = true;
+        sol = sol.substring(1);
+      }
     } else {
       if (sol.length != 0) {
         throw new Error('Unrecognied solution - ' + sol);
