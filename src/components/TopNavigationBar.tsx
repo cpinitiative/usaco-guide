@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'gatsby';
 import algoliasearch from 'algoliasearch/lite';
 import {
@@ -19,6 +19,8 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import Logo from './Logo';
 import LogoSquare from './LogoSquare';
+import FirebaseContext from '../context/FirebaseContext';
+import UserDataContext from '../context/UserDataContext';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -117,6 +119,15 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
 };
 
 const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
+
+const UserAuthButton = props => {
+  const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
+  return (
+    <button {...props} onClick={() => (firebaseUser ? signOut() : signIn())}>
+      {firebaseUser ? 'Logout' : 'Login'}
+    </button>
+  );
+};
 
 export default function TopNavigationBar({ indexPage = false }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -226,6 +237,11 @@ export default function TopNavigationBar({ indexPage = false }) {
               </svg>
             </button>
           </div>
+          <div className="hidden lg:ml-4 lg:flex lg:items-center">
+            <div className="flex-shrink-0">
+              <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-sm leading-5 font-medium rounded-md text-gray-700 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
+            </div>
+          </div>
         </div>
       </div>
       {/*
@@ -248,6 +264,9 @@ export default function TopNavigationBar({ indexPage = false }) {
               {link.label}
             </Link>
           ))}
+        </div>
+        <div className="pt-4 pb-3 border-t border-gray-200">
+          <UserAuthButton className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" />
         </div>
       </div>
     </nav>

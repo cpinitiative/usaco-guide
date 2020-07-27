@@ -50,7 +50,6 @@ const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
         "debugging",
         "generic",
         "cpp-tips",
-        "lambda",
       ]
     },
     {
