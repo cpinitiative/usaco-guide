@@ -11,23 +11,21 @@ prerequisites:
   <Resource source="Aryansh" url="https://sendtoaryansh.gitbook.io/informatics-notes/writing-generic-code" title="Writing Generic Code">integrated here to enhance the USACO Guide</Resource>
 </Resources>
 
-**Generic code** is an important concept in informatics. Of course, as all concepts go, you may dodge generic code and continue to write in a hyper-specific style. As such, begin by questioning purpose. 
+# Writing Generic Code
 
-## Why write generic code?
+Generic code is an important concept in informatics. Of course, as all concepts go, you may dodge generic code and continue to write in a hyper-specific style.
 
 Generic code is **adaptable**, meaning that it can be put to use immediately in many ways without major changes. It can be reused, extended, and even versioned powerfully to save time. Time is of essence in informatics, where I refer to both algorithmic time _complexity_ and _coding_ time.
 
-Even if you are writing a very specific data structure or algorithm, to truly grasp it, a good contemplation is "Can I generalize what I have learned to a broader class of problems?" Answer this by then attempting to generalize. That said, before you proceed, I issue the below warning:
+Even if you are writing a very specific data structure or algorithm, to truly grasp it, a good contemplation is "Can I generalize what I have learned to a broader class of problems?" Answer this by then attempting to generalize. 
 
-<Warning>
+That said, before you proceed, I issue the below warning:
 
-Generic code can easily assist **black-boxing**, where you write a snippet of code such that you either forget its meaning or have no idea what it means in the first place. This is a common pitfall, and you should avoid this as much as possible if you truly want to grasp a concept in informatics.
-
-</Warning>
+_Generic code can easily assist black-boxing, where you write a snippet of code such that you either forget its meaning or have no idea what it means in the first place. This is a common pitfall, and you should avoid this as much as possible if you truly want to grasp a concept in informatics._ 
 
 Modern C++, a groundbreaking language in the current informatics scene, indeed has several builtin features to support and streamline generic code. Here, we will cover the basic important ones you will definitely want to add to your coding arsenal. 
 
-## Classes
+### Classes & Structs
 
 **Classes** are by far the most important utility in extensible code. If you ever want to write a data structure that has several member functions to process stored data, classes are for you. Of course, classes can have public and private sections. For instance, consider a class `human`, which maintains several relevant member functions. 
 
@@ -40,6 +38,9 @@ class human {
         int body_temperature, temper
         string name; 
     public: //external reactions
+        string id() { //what do other people call him
+            return name; 
+        }
         string feeling() { //answers "how do I feel"
             if(body_temperature >= 97 && body_temperature <= 99) return "good"; 
             else return "bad"; 
@@ -70,6 +71,9 @@ class human {
         int body_temperature = 98, temper = 25; 
         string name = "Sal"; 
     public: //external reactions
+        string id() { //what do other people call him
+            return name; 
+        }
         string feeling() { //answers "how do I feel"
             if(body_temperature >= 97 && body_temperature <= 99) return "good"; 
             else return "bad"; 
@@ -87,7 +91,7 @@ This gives us something to work with, and we can now create `Sal` in `main()` as
 ```cpp
 int main() {
     human Sal; 
-    cout << Sal.name() <<  " feels " << Sal.feeling() << " and is " << Sal.emotion() 
+    cout << Sal.id() <<  " feels " << Sal.feeling() << " and is " << Sal.emotion() 
     << "\n"; 
 }
 ```
@@ -105,9 +109,12 @@ class human {
         int body_temperature, temper; 
         string name; 
     public: //external reactions
-        human(string _name, int body_temperature, int temper) {
+        human(string _name, int _body_temperature, int _temper) {
             name = _name; 
             body_temperature = _body_temperature, temper = _temper; 
+        }
+        string id() { //what do other people call him
+            return name; 
         }
         string feeling() { //answers "how do I feel"
             if(body_temperature >= 97 && body_temperature <= 99) return "good"; 
@@ -122,7 +129,7 @@ class human {
 
 int main() {
     human Sal("Sal", 98, 25); 
-    cout << Sal.name() << " feels " << Sal.feeling() << " and is " << Sal.emotion() 
+    cout << Sal.id() << " feels " << Sal.feeling() << " and is " << Sal.emotion() 
     << "\n"; 
 }
 ```
@@ -131,7 +138,7 @@ This is immediately very extensible if we wish to create multiple instances of `
 
 ```cpp
 void condition(human h) {
-    cout << h.name() << " feels " << h.feeling() << " and is " << h.emotion(); 
+    cout << h.id() << " feels " << h.feeling() << " and is " << h.emotion(); 
 }
 
 int main() {
@@ -147,8 +154,6 @@ human(string name, int body_temperature, int temper) :
 name(name), body_temperature(body_temperature), temper(temper) {}
 ```
 
-## Structs
-
 **Structs** are useful when we care less about keeping private properties and more about having just a general reusable data structure. This means everything is public in a struct by default, and a `human` struct, along with the reformatted constructor above, would look like:
 
 ```cpp
@@ -157,6 +162,9 @@ struct human {
     string name; 
     human(string name, int body_temperature, int temper) : 
     name(name), body_temperature(body_temperature), temper(temper) {}
+    string id() { //what do other people call him
+        return name; 
+    }
     string feeling() { //answers "how do I feel"
         if(body_temperature >= 97 && body_temperature <= 99) return "good"; 
         else return "bad"; 
@@ -188,12 +196,7 @@ human Sal{"Sal", 98, 25};
 
 Needless to say, all of this enables very clean initialization and manipulation of classes and structs, integral to generic code. 
 
-## Templates
-
-<Resources>
-  <Resource source="LearnCPP" title="13.1 - Function Templates" url="https://www.learncpp.com/cpp-tutorial/131-function-templates/"> </Resource>
-  <Resource source="LearnCPP" title="13.3 - Template Classes" url="https://www.learncpp.com/cpp-tutorial/133-template-classes/"> </Resource>
-</Resources>
+### Templates
 
 The `human` class example, though well-defined, was mostly intended to serve as an example of the versatility of classes and structs. We now switch to something simpler. Imagine a three-dimensional point in space as the following struct, where we create some sample instances `P1` and `P2`
 
@@ -221,16 +224,7 @@ pt<double> P3{1.1, 2.2, 3.3};
 pt<long long> P4{9223372036854775807, 9223372036854775807, 9223372036854775807}; 
 ```
 
-It would be narrow-minded to think that templates are in any way limited to classes and structs. They can be used with functions and much more. For example,
-
-```cpp
-template<class T> bool ckmin(T& a, const T& b) { 
-  return b < a ? a = b, 1 : 0; }
-```
-
-will set $a$ equal to $\min(a,b)$, and return `true` if the value of $a$ changes.
-
-One interesting use case is that of the size of various containers. The size member function of a container usually returns a type incompatible with integer, but we can easily write a templated function to fix this, handling all class types `T` of container at once:
+It would be narrow-minded to think that templates are in any way limited to classes and structs. They can be used with functions and much more. One interesting use case is that of the size of various containers. The size member function of a container usually returns a type incompatible with integer, but we can easily write a templated function to fix this, handling all class types `T` of container at once:
 
 ```cpp
 template<class T> inline int sz(T container) {
@@ -259,17 +253,13 @@ In fact, we can even have templates that take a variable number of arguments, kn
 
 As a fun fact, just as templates give us so much control over the generality of the language, a lot of the C++ standard in itself is written generically with templates under the hood. 
 
-## Type Aliases With `using`
+### Macros
 
-<Resources>
-  <Resource source="LearnCPP" title="6.13 - Typedefs and type aliases" url="https://www.learncpp.com/cpp-tutorial/typedefs-and-type-aliases/" starred> </Resource>
-  <Resource source="Quora" title="Difference between 'typedef' and 'using' in C++?" url="https://www.quora.com/What-is-the-difference-between-typedef-and-using-in-C++"> </Resource>
-  <Resource source="CPP" title="Type Alias" url="https://en.cppreference.com/w/cpp/language/type_alias">documention for using</Resource>
-</Resources>
+Macros are infamous among many C++ users as terrible due to almost inevitable confusion when developers collaborate with each other. Nevertheless, macros are important to many in the informatics community to simplify notations in the standard. 
 
-`typedef` is now rather outdated \(though still used by some\) because it is more or less just an annoying version of `using` with frustrating semantics, so we will not cover it here. 
+Among various types of macros you will see are keywords such as `typedef`, `using`, and `#define`. Of these, `typedef` is now rather outdated \(though still used by some\) because it is more or less just an annoying version of `using` with frustrating semantics, so we will not cover it here. 
 
-`using` is a fascinating keyword, frequently used to simplify namespace prefixing when applicable. For instance, statements like
+We start with `using`. This is a fascinating keyword, frequently used to simplify namespace prefixing when applicable. For instance, statements like
 
 ```cpp
 using namespace std; 
@@ -305,13 +295,8 @@ using str = string;
 using pii = pair<int, int>; 
 using pll = pair<ll, ll>; 
 using vi = vector<int>; 
+//warning: avoid these in collaborative projects to avoid headaches
 ```
-
-<Warning>
-
-If you use too many type aliases or macros then your code will become unreadable to anyone besides yourself!
-
-</Warning>
 
 Finally, we can take `using` to the next step and invoke templates! For instance, if we want to be able to write `ar<int, 6>` instead of `std::array<int, 6>`, we write:
 
@@ -351,26 +336,7 @@ int main() {
 }
 ```
 
-## Macros
-
-We end this section off with `#define`, which is used to define **macros**.
-
-<Resources>
-  <Resource source="CPH" title="1.4 - Shortening Code" starred>simple examples of macros, describes a common bug</Resource>
-  <Resource
-    source="GNU"
-    url="https://gcc.gnu.org/onlinedocs/cpp/Macros.html"
-    title="GCC Online Docs - Macros"
-  >
-    reference
-  </Resource>
-  <Resource source="GFG" url="cc-preprocessors" title="Macros"></Resource>
-</Resources>
-
-
-Nevertheless, macros are important to many in the informatics community to simplify notations in the standard. 
-
-In principle, good code should not need this \(because `using` exists\), but `#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.    
+We end this section off with `#define`. In principle, good code should not need this \(because `using` exists\), but `#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.    
 
 ```cpp
 #define MOD 1e9 + 7
@@ -392,7 +358,7 @@ int main() {
 
 The takeaway is to use `using` and templates and avoid `#define`. If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control.
 
-## Preprocessing Logic
+### Preprocessing Logic
 
 As far as preprocessor magic goes, we are in no way limited to `#define` butchery. Ever wanted to write a program that compiles in different ways depending on some initial conditions? We can use preprocessor directives like `#if` and `#else`, or `#ifdef` and `#ifndef` to allow for this. 
 
@@ -428,14 +394,14 @@ There are many clever applications of this, including versioning. Importantly, i
 
 ```cpp
 #if(__cplusplus < 201703L)
-  template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
-    assert(!(hi < lo));
-    return (v < lo) ? lo : (hi < v) ? hi : v;
-  }
+    template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
+        assert(!(hi < lo));
+        return (v < lo) ? lo : (hi < v) ? hi : v;
+    }
 #endif
 ```
 
-## Namespaces
+### Namespaces & Inline Namespaces
 
 Finally, we can write our own namespaces to separate various functions. Within a namespace, we can have functions, variables, classes, and even more namespaces. Then, we can invoke `using` declarations to use the whole namespace. 
 
@@ -481,4 +447,4 @@ int main() {
 }
 ```
 
-Now, not using a namespace will automatically use v2. But if we want access to v1 of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you have it, simple and effective version control! 
+Now, not using a namespace will automatically use v2. But if we want access to v1 of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you have it, simple and effective version control!
