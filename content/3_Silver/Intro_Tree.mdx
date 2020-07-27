@@ -4,7 +4,7 @@ title: Introduction to Tree Algorithms
 author: Nathan Chen
 prerequisites: 
  - dfs
-description: "Introducing a special type of graph: Trees"
+description: "Introducing a special type of graph: trees."
 frequency: 2
 ---
 
@@ -12,12 +12,12 @@ import { Problem } from "../models";
 
 export const problems = {
     treeSam: [
-      new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"], "@B"),
     ],
     tree: [
       new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"]),
+      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"], "@CSES 14.2"),
+      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"], "@CSES 14.2, 14.3"),
       new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
       new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
       new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
@@ -33,7 +33,7 @@ export const problems = {
 ### Resources
 
 <Resources>
-  <Resource source="CPH" title="14 - Tree algorithms">traversing tree, longest paths</Resource>
+  <Resource source="CPH" title="14 - Tree algorithms" starred>traversing tree, diameter, longest paths</Resource>
 </Resources>
 
 
@@ -42,10 +42,6 @@ export const problems = {
 Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
 
 See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
-
-<IncompleteSection>
-Probably want to define subtree.
-</IncompleteSection>
 
 <LanguageSection>
 
@@ -62,11 +58,13 @@ vector<int> children[200000];
 int subtree_size[200000];
 
 void dfs_size(int node) {
-	subtree_size[node] = 1; //This one represents the root of `node's` subtree (which would be `node` itself)
+	subtree_size[node] = 1; // This one represents the root of `node's` subtree 
+	// (which would be `node` itself)
 
 	for(int child : children[node]) {
 		dfs_size(child);
-		subtree_size[node] += subtree_size[child]; //Add `node's` children's subtrees to the size of `node's` subtree
+		subtree_size[node] += subtree_size[child]; 
+		// Add `node's` children's subtrees to the size of `node's` subtree
 	}
 }
 
@@ -78,7 +76,9 @@ int main() {
 	int N; cin >> N;
 	
 	for(int i = 1; i < N; i++) {
-		int parent; cin >> parent; parent--; //this node is the parent of node i... Also notice the decrement operator in order to make the node 0-indexed
+		int parent; cin >> parent; parent--; 
+		// this node is the parent of node i ... Also notice 
+		// the decrement operator in order to make the node 0-indexed
 		children[parent].push_back(i);
 	}
 
