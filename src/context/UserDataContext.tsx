@@ -7,6 +7,12 @@ import { ProblemProgress } from '../models/problem';
 import useFirebase from '../hooks/useFirebase';
 
 // this file needs some serious cleanup
+// be SUPER careful when modifying this file
+// as a matter of fact, I'd strongly recommend rewriting this file before modifying it
+
+// Imagine this: You're in a speedforces contest solving a trivial div2a problem
+// The maintainability of the code you write for that problem should be roughly equal
+// to the maintainability of this file.
 
 export type UserLang = 'showAll' | 'cpp' | 'java' | 'py';
 export const LANGUAGE_LABELS: { [key in UserLang]: string } = {
@@ -32,22 +38,13 @@ const UserDataContext = createContext<{
   lastViewedModule: string;
   setLastViewedModule: (moduleID: string) => void;
 
+  lastReadAnnouncement: string;
+  setLastReadAnnouncement: (announcementID: string) => void;
+
   firebaseUser: any;
   signIn: Function;
   signOut: Function;
-}>({
-  lang: 'showAll',
-  setLang: null,
-  userProgressOnModules: null,
-  setModuleProgress: null,
-  userProgressOnProblems: null,
-  setUserProgressOnProblems: null,
-  lastViewedModule: null,
-  setLastViewedModule: null,
-  firebaseUser: null,
-  signIn: null,
-  signOut: null,
-});
+}>(null);
 
 const langKey = 'guide:userData:lang';
 const getLangFromStorage = () => {
@@ -98,6 +95,18 @@ const getLastViewedModuleFromStorage = () => {
   return v || null;
 };
 
+const lastReadAnnouncementKey = 'guide:userData:lastReadAnnouncement';
+const getLastReadAnnouncementFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(lastReadAnnouncementKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse last read announcement", e);
+  }
+  return v || null;
+};
+
 function areEqualShallow(a, b) {
   for (let key of Object.keys(a)) {
     if (a[key] !== b[key]) {
@@ -116,6 +125,9 @@ export const UserDataProvider = ({ children }) => {
     [key: string]: ProblemProgress;
   }>({});
   const [lastViewedModule, setLastViewedModule] = useState<string>(null);
+  const [lastReadAnnouncement, setLastReadAnnouncement] = useState<string>(
+    null
+  );
   const [firebaseUser, setFirebaseUser] = useState(null);
 
   useFirebase(firebase => {
@@ -131,6 +143,7 @@ export const UserDataProvider = ({ children }) => {
     setUserProgressOnModules(getProgressFromStorage());
     setUserProgressOnProblems(getProblemStatusFromStorage());
     setLastViewedModule(getLastViewedModuleFromStorage());
+    setLastReadAnnouncement(getLastReadAnnouncementFromStorage());
   }, []);
 
   React.useEffect(() => {
@@ -156,6 +169,7 @@ export const UserDataProvider = ({ children }) => {
                       userProgressOnModules,
                       userProgressOnProblems,
                       lastViewedModule,
+                      lastReadAnnouncement,
                     },
                     { merge: true }
                   );
@@ -170,6 +184,7 @@ export const UserDataProvider = ({ children }) => {
               setLastViewedModule(data.lastViewedModule || null);
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
+              setLastReadAnnouncement(data.lastReadAnnouncement || null);
             });
           }
         });
@@ -258,6 +273,22 @@ export const UserDataProvider = ({ children }) => {
           );
           setLastViewedModule(moduleID);
         }
+      },
+      lastReadAnnouncement,
+      setLastReadAnnouncement: announcementID => {
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              lastReadAnnouncement: announcementID,
+            },
+            { merge: true }
+          );
+        }
+        window.localStorage.setItem(
+          lastReadAnnouncementKey,
+          JSON.stringify(announcementID)
+        );
+        setLastReadAnnouncement(announcementID);
       },
       firebaseUser,
       signIn: () => {
