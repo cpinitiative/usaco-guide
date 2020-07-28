@@ -65,7 +65,8 @@ export const plugins = [
           resolve: `gatsby-remark-images`,
           options: {
             maxWidth: 832,
-            quality: 90,
+            quality: 100,
+            disableBgImageOnAlpha: true,
           },
         },
         // {

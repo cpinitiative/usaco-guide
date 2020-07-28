@@ -23,6 +23,7 @@ First, let $p_i$ be the sum of $a_j$ for all $j \leq i$.
 Let $dp[i][j]$ be the maximum number of points we can get if we have made $j$ splits and the $j$-th split is between $a_i$ and $a_{i + 1}$.
 
 We have the following recurrence:
+
 $$
 dp[i][j] = \max_{l = 0}^{i - 1}(dp[l][j - 1] + (p_i - p_l) \cdot (p_{n - 1} - p_i))
 $$
@@ -36,6 +37,7 @@ Computing this naively would take $O(n^2k)$ time, but we can do much better than
 Look at the DP recurrence again. Can you see how it's effectively finding the maximum of several linear functions at a point?
 
 We can rearrange the recurrence to become
+
 $$
 dp[i][j] = \max_{l = 0}^{i - 1}(dp[l][j - 1] - p_l \cdot (p_{n - 1} - p_i)) + p_i \cdot (p_{n - 1} - p_i)
 $$
@@ -68,21 +70,21 @@ Memory: $O(n)$.
 #define FOR(i, x, y) for (int i = x; i < y; i++)
 typedef long long ll;
 using namespace std;
- 
+
 int n, k;
 int where[201][100001];
 ll pref[100001]{0}, dp[2][100001], q[100001], l = 1, r = 1;
- 
+
 bool case1(int x, int y, int i) {
     return (dp[0][y] - dp[0][x] >=
             (pref[y] - pref[x]) * (pref[n] - pref[i]));
 }
- 
+
 bool case2(int x, int y, int i) {
     return ((dp[0][y] - dp[0][x]) * (pref[i] - pref[y]) <=
             (dp[0][i] - dp[0][y]) * (pref[y] - pref[x]));
 }
- 
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -92,24 +94,24 @@ int main() {
         cin >> x;
         pref[i] = pref[i - 1] + x;
     }
- 
+
     fill(dp[0], dp[0] + n + 1, 0);
     FOR(i, 1, k + 1) {
         q[r++] = 0;
         FOR(j, 1, n + 1) {
             while (r - l > 1 && case1(q[l], q[l + 1], j)) l++;
- 
+
             ll x = q[l];
             dp[1][j] = dp[0][x] + (pref[j] - pref[x]) * (pref[n] - pref[j]);
             where[i][j] = x;
- 
+
             while (r - l > 1 && case2(q[r - 2], q[r - 1], j)) r--;
             q[r++] = j;
         }
         l = r = 1;
         FOR(j, 1, n + 1) dp[0][j] = dp[1][j];
     }
- 
+
     ll mx = -1;
     int indx = -1;
     FOR(i, 1, n + 1) {
