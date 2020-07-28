@@ -44,6 +44,7 @@ export default function DashboardPage(props: PageProps) {
     userProgressOnProblems,
     lastReadAnnouncement,
     setLastReadAnnouncement,
+    firebaseUser,
   } = React.useContext(UserDataContext);
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -123,11 +124,18 @@ export default function DashboardPage(props: PageProps) {
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
-            <div className="flex overflow-x-auto lg:px-8 lg:pt-10 pb-6">
-              <WelcomeBackBanner
-                lastViewedModuleURL={lastViewedModuleURL}
-                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-              />
+            <div className="lg:px-8 pt-4 pb-6">
+              <p className="mb-4 text-center">
+                {firebaseUser
+                  ? `Signed in as ${firebaseUser.email}.`
+                  : `Not signed in.`}
+              </p>
+              <div className="flex overflow-x-auto">
+                <WelcomeBackBanner
+                  lastViewedModuleURL={lastViewedModuleURL}
+                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+                />
+              </div>
             </div>
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
