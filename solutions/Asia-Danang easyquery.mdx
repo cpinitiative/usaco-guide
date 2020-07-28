@@ -13,7 +13,7 @@ The first step is to determine $s_u$ and $s_v$ for each query with a Wavelet tre
 ```cpp
 template<int SZ> struct Wavelet {
     vi nex[2*SZ][2];
-    void build(vi& a, int ind, int L, int R) { 
+    void build(vi& a, int ind, int L, int R) {
         if (L == R) return;
         F0R(i,2) nex[ind][i] = {0};
         vi A[2]; int M = (L+R)/2;
@@ -41,9 +41,9 @@ Wavelet<1<<18> W;
 typedef array<int,30> T;
 T ID;
 
-T comb(T a, T b) { F0R(i,30) ckmin(a[i],b[i]); return a; } 
+T comb(T a, T b) { F0R(i,30) ckmin(a[i],b[i]); return a; }
 
-struct Seg { 
+struct Seg {
     int n; vector<T> seg;
     void init(int _n) { n = _n; seg = vector<T>(2*n,ID); }
     void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
@@ -52,7 +52,7 @@ struct Seg {
         for (p /= 2; p; p /= 2) pull(p);
     }
     T query(int l, int r) {  // sum on interval [l, r]
-        T ra = ID, rb = ID; 
+        T ra = ID, rb = ID;
         for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
             if (l&1) ra = comb(ra,seg[l++]);
             if (r&1) rb = comb(seg[--r],rb);
@@ -86,7 +86,7 @@ void solve() {
     re(n,q); a.rsz(n); re(a);
     m.clear(); rm.clear();
     trav(t,a) m[t] = 0;
-    int co = 0; 
+    int co = 0;
     trav(t,m) {
         rm.pb(t.f);
         t.s = co++;
@@ -98,7 +98,7 @@ void solve() {
     F0R(i,q) {
         int l,r,u,v; re(l,r,u,v); l--,r--; u--,v--;
         // get s_u and # of occurrences
-        pi a = W.lef(l,r+1,u,v+1,1,0,sz(m)-1); a.f = rm[a.f]; 
+        pi a = W.lef(l,r+1,u,v+1,1,0,sz(m)-1); a.f = rm[a.f];
         // get s_v and # of occurrences
         pi b = W.rig(l,r+1,u,v+1,1,0,sz(m)-1); b.f = rm[b.f];
         FOR(j,1,min(a.s,3)+1) ans[i][j] |= a.f;
@@ -122,7 +122,7 @@ void solve() {
 }
 
 int main() {
-    cin.sync_with_stdio(0); cin.tie(0); 
+    cin.sync_with_stdio(0); cin.tie(0);
     F0R(i,30) ID[i] = MOD;
     int t; re(t);
     F0R(i,t) solve();
