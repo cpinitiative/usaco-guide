@@ -45,7 +45,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'USACO',
-      items: ['usaco-camp'],
+      items: ['usaco-month', 'usaco-camp'],
     },
   ],
   bronze: [
@@ -88,7 +88,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Sets & Maps',
       description: 'Maintaining collections of distinct elements.',
-      items: ['unordered', 'intro-ordered', 'custom-cpp-stl'],
+      items: ['intro-ordered', 'custom-cpp-stl'],
     },
     {
       name: 'Graphs',
@@ -124,7 +124,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Hashing',
-      items: ['faster-hashmap', 'string-hashing'],
+      items: ['unordered', 'faster-hashmap', 'string-hashing'],
     },
   ],
   plat: [

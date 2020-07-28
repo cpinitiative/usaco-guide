@@ -94,6 +94,8 @@ def go(source):
 		offset += 5
 	elif source == "PAPS":
 		offset += 12
+	elif source == "CP2":
+		offset += 16
 	else:
 		assert(false)
 	for a in res[source]:
@@ -103,4 +105,5 @@ go("CPP")
 go("JAVA")
 go("CPH")
 go("PAPS")
+go("CP2")
 print(json.dumps(res,indent=4))

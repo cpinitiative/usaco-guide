@@ -60,7 +60,7 @@ export const sourceTooltip = {
   CPH: "Book - Competitive Programmer's Handbook",
   PAPS: 'Book - Principles of Algorithmic Problem Solving',
   IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
-  CP1: 'Book - Competitive Programming 1',
+  CP2: 'Book - Competitive Programming 2',
   TC: 'TopCoder',
   IOI: 'International Olympiad in Informatics',
   TLX: 'tlx.toki.id',
@@ -103,17 +103,15 @@ export function Resource(props) {
     const get = (dictKey, book, title) => {
       const parts = title.split(' ');
       let url = book;
-      for (let i = 0; i < parts.length; ++i) {
-        if (parts[i] in PGS[dictKey]) {
-          url += '#page=' + PGS[dictKey][parts[i]];
-          break;
-        }
-      }
+      let sec = parts[0];
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey]))
+        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+      url += '#page=' + PGS[dictKey][sec];
       return url;
     };
-    if (source === 'CPH' || source === 'PAPS') {
-      url = get(source, books[source], props.title);
-    } else if (source === 'IUSACO') {
+    if (source === 'IUSACO') {
       if (userSettings.lang === 'java') {
         url = get(
           'JAVA',
@@ -127,6 +125,8 @@ export function Resource(props) {
           props.title
         );
       }
+    } else if (source in PGS) {
+      url = get(source, books[source], props.title);
     } else if (source in books) {
       url = books[source];
     } else
@@ -137,6 +137,7 @@ export function Resource(props) {
     } else
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
   }
+  // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
   return (
     <tr className="block sm:table-row">
       <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">

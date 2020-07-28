@@ -276,8 +276,8 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     }
     if (
       sol == '' &&
-      problem.source == 'CF' &&
-      problem.id.startsWith('contest/')
+      problem.source == 'CF'
+      // && problem.id.startsWith('contest/')
     ) {
       sol = '@Check CF';
       hover =
