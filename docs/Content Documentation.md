@@ -305,8 +305,8 @@ Special functionality based on source:
   - Supported books:
     - `GCP` (Guide to Competitive Programming)
     - `CPH` (Competitive Programming Handbook)
-    - `PAPS`
-    - `CP1` (Competitive Programming 1)
+    - `PAPS` (Principles of Algorithmic Problem Solving)
+    - `CP2` (Competitive Programming 2)
     - `IUSACO` (Darren's book; will auto-set URL based on user language; uses C++ for Python users)
 - Some sources have URL shortcuts that they will prepend to the URL.
   - ```typescript

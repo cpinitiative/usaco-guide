@@ -36,9 +36,8 @@ export function ResourcesList(props) {
 const books = {
   GCP: 'https://link.springer.com/book/10.1007/978-3-319-72547-5',
   CPH: '/CPH.pdf',
-  PAPS: 'https://www.csc.kth.se/~jsannemo/slask/main.pdf',
-  CP1:
-    'https://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp1.pdf',
+  PAPS: '/PAPS.pdf',
+  CP2: '/CP2.pdf',
 };
 
 const sources = {
