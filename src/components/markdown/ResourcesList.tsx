@@ -3,6 +3,7 @@ import Tooltip from '../Tooltip/Tooltip';
 import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext';
+import PGS from './PGS.json';
 
 export function ResourcesList(props) {
   return (
@@ -99,11 +100,32 @@ export function Resource(props) {
   const source = props.source;
   let url = props.url;
   if (!url) {
-    if (source === 'IUSACO') {
+    const get = (dictKey, book, title) => {
+      const parts = title.split(' ');
+      let url = book;
+      for (let i = 0; i < parts.length; ++i) {
+        if (parts[i] in PGS[dictKey]) {
+          url += '#page=' + PGS[dictKey][parts[i]];
+          break;
+        }
+      }
+      return url;
+    };
+    if (source === 'CPH' || source === 'PAPS') {
+      url = get(source, books[source], props.title);
+    } else if (source === 'IUSACO') {
       if (userSettings.lang === 'java') {
-        url = 'https://darrenyao.com/usacobook/java.pdf';
+        url = get(
+          'JAVA',
+          'https://darrenyao.com/usacobook/java.pdf',
+          props.title
+        );
       } else {
-        url = 'https://darrenyao.com/usacobook/cpp.pdf';
+        url = get(
+          'CPP',
+          'https://darrenyao.com/usacobook/cpp.pdf',
+          props.title
+        );
       }
     } else if (source in books) {
       url = books[source];
