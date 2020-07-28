@@ -98,13 +98,46 @@ ht<int,null_type> g({},{},{},{},{1<<16});
 
 then the actual size of `g` is always at least `1<<16` (regardless of calls to `resize`). The last argument **must** be a power of 2 (or else errors will be thrown).
 
-### Solving ThreeSum
+### Solving 3SUM
 
 <Problems problems={problems.three} />
 
-You're supposed to use array since values are small. Note that initializing the initial capacity makes a significant difference in the runtime.
+<Spoiler title="Solution">
+
+Since all the values are quite small, you can use an array instead of a hashmap. But if you didn't read the constraints carefully enough, you're in luck!
+
+<Warning>
+
+Passes in 1180ms when initial capacity is specified, TLEs when it is not.
+
+</Warning>
 
 ```cpp
+#include <bits/stdc++.h> // see C++ Tips & Tricks
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
  
@@ -135,7 +168,7 @@ int main() {
 }
 ```
 
-<IncompleteSection />
+</Spoiler>
 
 ## Problems
 
