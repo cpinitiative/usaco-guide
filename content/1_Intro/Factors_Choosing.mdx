@@ -1,17 +1,17 @@
 ---
 id: factors-choosing
-title: "Factors to Consider When Choosing a Language"
+title: 'Factors to Consider When Choosing a Language'
 author: Benjamin Qi
 description: Reasons why choice of language matters significantly outside of USACO Bronze.
 prerequisites:
- - choosing-lang
+  - choosing-lang
 ---
 
 ## Notes
 
- - USACO problemsetters don't always test Java (and rarely Python) solutions when setting constraints.
- - Python lacks a data structure that keeps its keys in sorted order (the equivalent of `set` in C++), which is required for some silver problems.
- - Java lacks features such as `#define`, `typedef`, and `auto` that are present in C++ (which some contestants rely on extensively, see "Shortening C++"). 
+- USACO problemsetters don't always test Java (and rarely Python) solutions when setting constraints.
+- Python lacks a data structure that keeps its keys in sorted order (the equivalent of `set` in C++), which is required for some silver problems.
+- Java lacks features such as `#define`, `typedef`, and `auto` that are present in C++ (which some contestants rely on extensively, see "Shortening C++").
 
 ## Time Limit
 
@@ -19,7 +19,7 @@ Although both Python and Java receive two times the C++ time limit in USACO, thi
 
 <!-- (may need to rewrite these solutions so they are more similar) -->
 
-Rewriting the C++ solution for [USACO Silver Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python receives TLE (Time Limit Exceeded) on 2/10 cases. 
+Rewriting the C++ solution for [USACO Silver Wormsort](http://www.usaco.org/index.php?page=viewproblem2&cpid=992) in Python receives TLE (Time Limit Exceeded) on 2/10 cases.
 
 <Spoiler title="Python3 8/10 Solution">
 
@@ -228,6 +228,7 @@ int main() {
   cout << minW;
 }
 ```
+
 </Spoiler>
 
 It's possible to pass using DSU, although this is not a Silver topic.
@@ -242,7 +243,7 @@ N, M = map(int, file.readline().split())
 P = tuple(map(int, ('0 '+file.readline()).split()))
 W = [ tuple(map(int, file.readline().split())) for i in range(M) ]
 W.sort(key=lambda w:-w[2])
- 
+
 par = list(range(N+1))
 def find(u):
 	if par[u]==u:
@@ -250,13 +251,13 @@ def find(u):
 	else:
 		par[u] = find(par[u])
 		return par[u]
- 
+
 w = -1
 for n in range(1, N+1):
 	while find(n)!=find(P[n]):
 		w += 1
 		par[find(W[w][1])] = find(W[w][0])
- 
+
 out = open('wormsort.out', 'w')
 out.write('-1' if w==-1 else str(W[w][2]))
 out.close()

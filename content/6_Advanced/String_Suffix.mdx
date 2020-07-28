@@ -1,35 +1,155 @@
 ---
 id: string-suffix
-title: "String Suffix Structures"
+title: 'String Suffix Structures'
 author: Siyong Huang, Benjamin Qi
-description: "Suffix Automata, Suffix Trees, and (TBD) Palindromic Trees"
+description: 'Suffix Automata, Suffix Trees, and (TBD) Palindromic Trees'
 prerequisites:
- - string-search
+  - string-search
 frequency: 0
 ---
 
 export const problems = {
 	auto: [
-		new Problem("Plat", "Standing Out from the Herd", "768", "Hard", false, [], ""),
+		new Problem(
+			'Plat',
+			'Standing Out from the Herd',
+			'768',
+			'Hard',
+			false,
+			[],
+			''
+		),
 	],
 	general_suffix: [
-		new Problem("CF", "Suffix Array", "edu/course/2/lesson/2/2/practice/contest/269103/problem/A", "Easy", true, ["Suffix Structures"], "Try building suffix tree/automaton and converting!"),
-		new Problem("Kattis", "String Multimatching", "problems/stringmultimatching", "Easy", false, [], "Try solving it using Suffix Tree or Suffix Automaton!"),
-		new Problem("onlinejudge.org", "I Love Strings!!", "https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620", "Easy", false, [], ""),
-		new Problem("SPOJ", "Lexicographical String Seaerch", "problems/SUBLEX/", "Normal", true, ["Suffix Structures"], "Remember, each path (starting from the root) in a suffix automaton is a distinct substring!"),
-		new Problem("Hackerearth", "Power of String 3", "https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/", "Normal", false, ["Suffix Structures"], ""),
-		new Problem("CF", "Cyclical Quest", "contest/235/problem/C", "Normal", false, ["Suffix Structures"], ""),
-		new Problem("CF", "Paper Task", "contest/653/problem/F", "Hard", false, ["Suffix Structures"], ""),
-		new Problem("CF", "Incomparable Pairs", "gym/102129/problem/I", "Hard", false, ["Suffix Structures"], ""),
-		new Problem("CF", "Yet Another LCP Problem", "contest/1073/problem/G", "Hard", false, ["Suffix Structures"], ""),
-		new Problem("CF", "Indie Album", "contest/1207/problem/G", "Hard", false, ["Suffix Structures"], ""),
-		new Problem("CF", "String Journey", "contest/1063/problem/F", "Very Hard", false, ["Suffix Structures", "DP"], ""),
-	  new Problem("CF", "Security", "contest/1037/problem/H", "Very Hard", false, ["Suffix Tree"], ""),
+		new Problem(
+			'CF',
+			'Suffix Array',
+			'edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
+			'Easy',
+			true,
+			['Suffix Structures'],
+			'Try building suffix tree/automaton and converting!'
+		),
+		new Problem(
+			'Kattis',
+			'String Multimatching',
+			'problems/stringmultimatching',
+			'Easy',
+			false,
+			[],
+			'Try solving it using Suffix Tree or Suffix Automaton!'
+		),
+		new Problem(
+			'onlinejudge.org',
+			'I Love Strings!!',
+			'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'SPOJ',
+			'Lexicographical String Seaerch',
+			'problems/SUBLEX/',
+			'Normal',
+			true,
+			['Suffix Structures'],
+			'Remember, each path (starting from the root) in a suffix automaton is a distinct substring!'
+		),
+		new Problem(
+			'Hackerearth',
+			'Power of String 3',
+			'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
+			'Normal',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Cyclical Quest',
+			'contest/235/problem/C',
+			'Normal',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Paper Task',
+			'contest/653/problem/F',
+			'Hard',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Incomparable Pairs',
+			'gym/102129/problem/I',
+			'Hard',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Yet Another LCP Problem',
+			'contest/1073/problem/G',
+			'Hard',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Indie Album',
+			'contest/1207/problem/G',
+			'Hard',
+			false,
+			['Suffix Structures'],
+			''
+		),
+		new Problem(
+			'CF',
+			'String Journey',
+			'contest/1063/problem/F',
+			'Very Hard',
+			false,
+			['Suffix Structures', 'DP'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Security',
+			'contest/1037/problem/H',
+			'Very Hard',
+			false,
+			['Suffix Tree'],
+			''
+		),
 	],
 	paltree: [
-		new Problem("CF", "Palindromic Partition", "contest/932/problem/G", "Very Hard", false, ["Palindromic Tree"], ""),
-		new Problem("CF", "Palindromic Magic", "contest/1081/problem/H", "Insane", false, ["Palindromic Tree"], ""),
-	]
+		new Problem(
+			'CF',
+			'Palindromic Partition',
+			'contest/932/problem/G',
+			'Very Hard',
+			false,
+			['Palindromic Tree'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Palindromic Magic',
+			'contest/1081/problem/H',
+			'Insane',
+			false,
+			['Palindromic Tree'],
+			''
+		),
+	],
 };
 
 A lot of problems can be solved with Suffix Arrays, Suffix Automata, or Suffix Trees. The solution may just be slightly easier/harder with the various data structures.
@@ -39,26 +159,60 @@ A lot of problems can be solved with Suffix Arrays, Suffix Automata, or Suffix T
 The **Suffix Automaton** is a directed acyclic word graph (DAWG), such that each path in the graph traces out a distinct substring of the original string.
 
 <Resources>
-  <Resource source="CF" title="A short guide to suffix automata" url="blog/entry/20861">Explanation of Suffix Automata</Resource>
-  <Resource source="cp-algo" title="Suffix Automaton" url="string/suffix-automaton.html" starred>Excellent Suffix Automaton tutorial</Resource>
-  <Resource source="CF" title="adamant - history of recurring problem" url="blog/entry/62331">More problems!</Resource>
+	<Resource
+		source="CF"
+		title="A short guide to suffix automata"
+		url="blog/entry/20861"
+	>
+		Explanation of Suffix Automata
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Suffix Automaton"
+		url="string/suffix-automaton.html"
+		starred
+	>
+		Excellent Suffix Automaton tutorial
+	</Resource>
+	<Resource
+		source="CF"
+		title="adamant - history of recurring problem"
+		url="blog/entry/62331"
+	>
+		More problems!
+	</Resource>
 </Resources>
 
 ### Implementation
 
 <Resources>
-  <Resource source="Benq" title="Suffix Automaton" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Heavy/SuffixAutomaton.h"> </Resource>
+	<Resource
+		source="Benq"
+		title="Suffix Automaton"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Heavy/SuffixAutomaton.h"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 ## Suffix Tree
 
-The **Suffix Tree** is a trie that contains all suffixes of a string.
-Naively, this would take up $O(N^2)$ memory, but *path compression* enables it to be represented and computed in linear memory. 
+The **Suffix Tree** is a trie that contains all suffixes of a string. Naively, this would take up $O(N^2)$ memory, but _path compression_ enables it to be represented and computed in linear memory.
 
 <Resources>
 
-<Resource source="CF" title="Suffix Tree. Ukkonen's algorithm" url="blog/entry/16780">Explanation of Ukkonen's Suffix Tree Algorithm</Resource>
-<Resource source="Stack Overflow" title="Ukkonen's suffix tree algorithm in plain English" url="https://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english" />
+<Resource
+	source="CF"
+	title="Suffix Tree. Ukkonen's algorithm"
+	url="blog/entry/16780"
+>
+	Explanation of Ukkonen's Suffix Tree Algorithm
+</Resource>
+<Resource
+	source="Stack Overflow"
+	title="Ukkonen's suffix tree algorithm in plain English"
+	url="https://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english"
+/>
 
 </Resources>
 
@@ -66,8 +220,18 @@ Naively, this would take up $O(N^2)$ memory, but *path compression* enables it t
 
 <Resources>
 
-<Resource source="Benq" title="Suffix Tree" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Heavy/SuffixTree.h" />
-<Resource source="cp-algo" title="Suffix Tree. Ukkonen's Algorithm" url="string/suffix-tree-ukkonen.html">Implementation of Ukkonen's Algorithm</Resource>
+<Resource
+	source="Benq"
+	title="Suffix Tree"
+	url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Heavy/SuffixTree.h"
+/>
+<Resource
+	source="cp-algo"
+	title="Suffix Tree. Ukkonen's Algorithm"
+	url="string/suffix-tree-ukkonen.html"
+>
+	Implementation of Ukkonen's Algorithm
+</Resource>
 
 </Resources>
 
@@ -106,6 +270,7 @@ void dfs(int n=0, int d=0)
 		sa[ctr++]=N-d;
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>
@@ -114,15 +279,11 @@ void dfs(int n=0, int d=0)
 
 ### Generate Suffix Tree from Suffix Array
 
-Of course, the above operation can be reversed as well.
-Each element in the suffix array corresponds to a leaf in the suffix tree.
-The LCP array stores information about the Lowest Common Ancestor of two adjacent elements in the suffix array.
-Using these two pieces of information, we can construct the suffix tree from the suffix array in linear time.
+Of course, the above operation can be reversed as well. Each element in the suffix array corresponds to a leaf in the suffix tree. The LCP array stores information about the Lowest Common Ancestor of two adjacent elements in the suffix array. Using these two pieces of information, we can construct the suffix tree from the suffix array in linear time.
 
 <Info title="Pro Tip!">
 
-Frequently, string suffix structures are greatly simplified by adding a 'terminator' character, such as `$` or `-`, to the end of the string.
-In the following samples, these terminators will be explicitly added.
+Frequently, string suffix structures are greatly simplified by adding a 'terminator' character, such as `$` or `-`, to the end of the string. In the following samples, these terminators will be explicitly added.
 
 </Info>
 
@@ -196,8 +357,7 @@ void build_tree()
 
 ### Generate Suffix Tree from Suffix Automaton
 
-One interesting thing about Suffix Trees and Suffix Automata is that the link tree of a Suffix Automaton is equivalent to the Suffix Tree of the reversed string.
-Since Suffix Automata are much easier to create than Suffix Trees, we can use this as an alternate method to build a Suffix Tree, all in linear time too!
+One interesting thing about Suffix Trees and Suffix Automata is that the link tree of a Suffix Automaton is equivalent to the Suffix Tree of the reversed string. Since Suffix Automata are much easier to create than Suffix Trees, we can use this as an alternate method to build a Suffix Tree, all in linear time too!
 
 <Spoiler title="Sample Code: Suffix Tree from Suffix Automaton">
 
@@ -397,12 +557,19 @@ int main(void)
 
 <Resources>
 
-<Resource source="CF" title="A bit more about palindromes" url="blog/entry/19193" />
-<Resource source="CF" title="Palindromic tree: Behind the Scenes" url="blog/entry/13959" />
+<Resource
+	source="CF"
+	title="A bit more about palindromes"
+	url="blog/entry/19193"
+/>
+<Resource
+	source="CF"
+	title="Palindromic tree: Behind the Scenes"
+	url="blog/entry/13959"
+/>
 
 </Resources>
 
 ### Problems
 
 <Problems problems={problems.paltree} />
-

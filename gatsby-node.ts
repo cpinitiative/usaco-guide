@@ -100,6 +100,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
     type MdxFrontmatter implements Node {
       prerequisites: [String]
+      date: String
     }
     
     type Heading {

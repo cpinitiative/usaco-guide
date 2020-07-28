@@ -1,26 +1,66 @@
 ---
 id: dsu
-title: "Disjoint Set Union"
-author: Benjamin Qi, Michael Cao 
+title: 'Disjoint Set Union'
+author: Benjamin Qi, Michael Cao
 prerequisites:
- - dfs
-description: "The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected."
+  - dfs
+description: 'The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.'
 frequency: 3
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("YS", "Union Find", "unionfind", "Intro|Easy", false, []),
-    ],
-    general: [
-      new Problem("Gold", "Closing the Farm", "646", "Easy", false, [], "Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)"),
-      new Problem("Gold", "Mootube", "789", "Normal", false, [], "Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)"),
-      new Problem("Gold", "Favorite Colors", "1042", "Very Hard", false, ["DSU"], "Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time."),
-      new Problem("DMOJ", "APIO - Table Coloring", "apio11p1", "Insane", false, [], "apio-11-color"),
-      new Problem("Plat", "Valleys", "950", "Insane", false, ["DSU"], "usaco-950"),
-    ],
+	sample: [
+		new Problem('YS', 'Union Find', 'unionfind', 'Intro|Easy', false, []),
+	],
+	general: [
+		new Problem(
+			'Gold',
+			'Closing the Farm',
+			'646',
+			'Easy',
+			false,
+			[],
+			'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)'
+		),
+		new Problem(
+			'Gold',
+			'Mootube',
+			'789',
+			'Normal',
+			false,
+			[],
+			'Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)'
+		),
+		new Problem(
+			'Gold',
+			'Favorite Colors',
+			'1042',
+			'Very Hard',
+			false,
+			['DSU'],
+			'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time.'
+		),
+		new Problem(
+			'DMOJ',
+			'APIO - Table Coloring',
+			'apio11p1',
+			'Insane',
+			false,
+			[],
+			'apio-11-color'
+		),
+		new Problem(
+			'Plat',
+			'Valleys',
+			'950',
+			'Insane',
+			false,
+			['DSU'],
+			'usaco-950'
+		),
+	],
 };
 
 <Problems problems={problems.sample} />
@@ -28,20 +68,43 @@ export const problems = {
 ## Resources
 
 <Resources>
-  <Resource source="CSA" title="Disjoint Data Sets" url="disjoint_data_sets" starred>both optimizations, diagrams</Resource>
-  <Resource source="PAPS" title="11.1 - Disjoint Sets" starred>both optimizations, no diagrams</Resource>
-  <Resource source="CPH" title="15.2 - Union-Find">small to large, diagrams</Resource>
-  <Resource source="IUSACO" title="10.6 - Disjoint-Set Data Structure">path compression, diagrams</Resource>
-  <Resource source="TC" title="Disjoint Set Data Structures" url="disjoint-set-data-structures">diagrams</Resource>
-  <Resource source="CPC" title="3 - Data Structures" url="03_data_structures"></Resource>
+	<Resource
+		source="CSA"
+		title="Disjoint Data Sets"
+		url="disjoint_data_sets"
+		starred
+	>
+		both optimizations, diagrams
+	</Resource>
+	<Resource source="PAPS" title="11.1 - Disjoint Sets" starred>
+		both optimizations, no diagrams
+	</Resource>
+	<Resource source="CPH" title="15.2 - Union-Find">
+		small to large, diagrams
+	</Resource>
+	<Resource source="IUSACO" title="10.6 - Disjoint-Set Data Structure">
+		path compression, diagrams
+	</Resource>
+	<Resource
+		source="TC"
+		title="Disjoint Set Data Structures"
+		url="disjoint-set-data-structures"
+	>
+		diagrams
+	</Resource>
+	<Resource
+		source="CPC"
+		title="3 - Data Structures"
+		url="03_data_structures"
+	></Resource>
 </Resources>
 
 Note: You may prefer to use this in place of DFS for computing connected components.
 
 <Optional title="DSU Complexity Proofs">
 
-   - [$\log^* n$](https://en.wikipedia.org/wiki/Proof_of_O(log*n)\_time_complexity\_of_union%E2%80%93find)
-   - [$\alpha (m,n)$](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
+- [$\log^* n$](<https://en.wikipedia.org/wiki/Proof_of_O(log*n)_time_complexity_of_union%E2%80%93find>)
+- [$\alpha (m,n)$](https://dl.acm.org/doi/pdf/10.1145/321879.321884)
 
 </Optional>
 
@@ -54,14 +117,20 @@ Note: You may prefer to use this in place of DFS for computing connected compone
 Check PAPS for the explanation. `e[x]` contains the negation of the size of $x$'s component if $x$ is the representative of its component, and the parent of $x$ otherwise.
 
 <Resources>
-	<Resource source="Benq (from KACTL)" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h" title="DSU"> </Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
+		title="DSU"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 ```cpp
 struct DSU {
 	vi e; void init(int N) { e = vi(N,-1); }
 	// get representive component, uses path compression
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); } 
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
 	bool unite(int x, int y) { // union by size
@@ -76,7 +145,7 @@ struct DSU {
 
 <JavaSection>
 
-This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only. 
+This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only.
 
 ```java
 //finds the "representative" node in a's component

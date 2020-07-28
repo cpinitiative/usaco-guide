@@ -4,8 +4,7 @@
 
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
-All markdown files belong in `content/`. Other files are for the front-end website interface.
-As much as possible, please try to keep the markdown files independent of the front-end implementation.
+All markdown files belong in `content/`. Other files are for the front-end website interface. As much as possible, please try to keep the markdown files independent of the front-end implementation.
 
 ## Documentation
 

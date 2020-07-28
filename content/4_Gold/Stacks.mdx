@@ -2,30 +2,56 @@
 id: stacks
 title: Stacks
 author: Darren Yao, Michael Cao
-description: "A data structures that only allows insertion and deletion at one end."
+description: 'A data structures that only allows insertion and deletion at one end.'
 prerequisites:
- - intro-ds
+  - intro-ds
 frequency: 1
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    nearest: [
-      new Problem("CSES", "Nearest Smaller Values", "1645", "Easy", false, [], ""),
-    ],
-    general: [
-      new Problem("LC", "Max Histogram Area", "largest-rectangle-in-histogram", "Normal", false, [],""),
-      new Problem("Old Gold", "Concurrently Balanced Strings", "194", "Normal", false, [],""),
-      new Problem("Gold", "Modern Art 2","743", "Hard", false, [], ""),
-      new Problem("Gold", "Dishwashing","922", "Hard", false, [], ""),
-    ],
+	nearest: [
+		new Problem(
+			'CSES',
+			'Nearest Smaller Values',
+			'1645',
+			'Easy',
+			false,
+			[],
+			''
+		),
+	],
+	general: [
+		new Problem(
+			'LC',
+			'Max Histogram Area',
+			'largest-rectangle-in-histogram',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Old Gold',
+			'Concurrently Balanced Strings',
+			'194',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem('Gold', 'Modern Art 2', '743', 'Hard', false, [], ''),
+		new Problem('Gold', 'Dishwashing', '922', 'Hard', false, [], ''),
+	],
 };
 
 <Resources>
-  <Resource source="CPH" title="4.5 - Stacks"></Resource>
-  <Resource source="PAPS" title="3.3, 6.2 - Stacks"></Resource>
-  <Resource source="CP2" title="2.2 - Data Structures with Built-in Libraries"> </Resource>
+	<Resource source="CPH" title="4.5 - Stacks"></Resource>
+	<Resource source="PAPS" title="3.3, 6.2 - Stacks"></Resource>
+	<Resource source="CP2" title="2.2 - Data Structures with Built-in Libraries">
+		{' '}
+	</Resource>
 </Resources>
 
 ## Stacks
@@ -38,9 +64,9 @@ A stack is a **Last In First Out** (LIFO) data structure that supports three ope
 
 ### [C++](http://www.cplusplus.com/reference/stack/stack/)
 
- - `push`: adds an element to the top of the stack
- - `pop`: removes an element from the top of the stack
- - `top`: retrieves the element at the top without removing it
+- `push`: adds an element to the top of the stack
+- `pop`: removes an element from the top of the stack
+- `top`: retrieves the element at the top without removing it
 
 ```cpp
 stack<int> s;
@@ -58,9 +84,9 @@ cout << s.size() << endl; // 2
 
 ### Java
 
- - `push`: adds an element to the top of the stack
- - `pop`: removes an element from the top of the stack
- - `peek`: retrieves the element at the top without removing it
+- `push`: adds an element to the top of the stack
+- `pop`: removes an element from the top of the stack
+- `peek`: retrieves the element at the top without removing it
 
 ```java
 Stack<Integer> s = new Stack<Integer>();
@@ -76,18 +102,21 @@ System.out.println(s.size()); // 2
 
 </LanguageSection>
 
-
 ## Application: Nearest Smaller Element
 
 <Problems problems={problems.nearest} />
 
-Consider the following problem: 
+Consider the following problem:
 
-> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$. 
+> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
 
 <Resources>
-  <Resource source="CPH" title="8.2 - Nearest Smaller Element"></Resource>
-  <Resource source="Medium" title="Monotonic Stack" url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"></Resource>
+	<Resource source="CPH" title="8.2 - Nearest Smaller Element"></Resource>
+	<Resource
+		source="Medium"
+		title="Monotonic Stack"
+		url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"
+	></Resource>
 </Resources>
 
 To solve this, let's store a stack of pairs of $value, index$ and iterate over the array from left to right. For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
@@ -95,7 +124,7 @@ To solve this, let's store a stack of pairs of $value, index$ and iterate over t
 - Keep popping the top element off the stack as long as $value \ge a_i$. This is because we know that the pair containing $value$ will never be the solution to any index $j > i$, since $a_i$ is less than or equal to than $value$ and has an index further to the right.
 - If $value < a_i$, set $ans[i]$ to $index$, because a stack stores the most recently added values first (or in this case, the rightmost ones), $index$ will contain the rightmost value which is less than $a_i$. Then, add ($a_i, i$) to the stack.
 
-The stack we used is called a **monotonic stack** because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing. 
+The stack we used is called a **monotonic stack** because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing.
 
 ### Implementation
 
@@ -105,7 +134,7 @@ The stack we used is called a **monotonic stack** because we keep popping off th
 
 ```cpp
 int n;
- 
+
 int main() {
 	setIO(); re(n);
 	vpi v; v.pb({0,0});
@@ -128,12 +157,11 @@ convert this
 
 </LanguageSection>
 
-
 ## Problems
 
 <Problems problems={problems.general} />
 
-<!-- 
+<!--
 
 (actually go through these and check ...)
 
@@ -143,7 +171,7 @@ convert this
   - UVa 00732 - Anagram by Stack
   - UVa 01062 - Containers
 
-### Queue / Deque 
+### Queue / Deque
 
   - UVa 10172 - The Lonesome Cargo
   - UVa 10901 - Ferry Loading III

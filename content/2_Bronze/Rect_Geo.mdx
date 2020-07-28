@@ -1,30 +1,45 @@
 ---
 id: rect-geo
-title: "Rectangle Geometry"
+title: 'Rectangle Geometry'
 author: Darren Yao, Michael Cao, Benjamin Qi
-description: "Problems involving rectangles whose sides are parallel to the coordinate axes."
+description: 'Problems involving rectangles whose sides are parallel to the coordinate axes.'
 frequency: 2
 ---
-import { Problem } from "../models";
+
+import { Problem } from '../models';
 
 export const problems = {
-    blocked: [
-        new Problem("Bronze", "Blocked Billboard", "759", "Easy", false, ["rect"]),
-    ],
-    general: [
-        new Problem("Bronze", "Square Pasture", "663", "Very Easy", false, ["rect"]),
-        new Problem("Bronze", "Blocked Billboard II", "783", "Easy", false, ["rect"]),
-        new Problem("CF", "D3C White Sheet", "contest/1216/problem/C", "Normal", false, ["rect"], ""),
-    ]
+	blocked: [
+		new Problem('Bronze', 'Blocked Billboard', '759', 'Easy', false, ['rect']),
+	],
+	general: [
+		new Problem('Bronze', 'Square Pasture', '663', 'Very Easy', false, [
+			'rect',
+		]),
+		new Problem('Bronze', 'Blocked Billboard II', '783', 'Easy', false, [
+			'rect',
+		]),
+		new Problem(
+			'CF',
+			'D3C White Sheet',
+			'contest/1216/problem/C',
+			'Normal',
+			false,
+			['rect'],
+			''
+		),
+	],
 };
 
 <Resources>
-	<Resource source="IUSACO" title="7.1 - Rectangle Geometry">module is based off this</Resource>
+	<Resource source="IUSACO" title="7.1 - Rectangle Geometry">
+		module is based off this
+	</Resource>
 </Resources>
 
-<br/>
+<br />
 
-Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution. 
+Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution.
 
 ## Example: Blocked Billboard
 
@@ -52,15 +67,15 @@ int main() {
 	for (int i = 0; i < 3; ++i) {
 		int x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
 		x1 += 1000, y1 += 1000, x2 += 1000, y2 += 1000;
-		for (int x = x1; x < x2; ++x) 
+		for (int x = x1; x < x2; ++x)
 			for (int y = y1; y < y2; ++y) {
 				if (i < 2) ok[x][y] = 1;
 				else ok[x][y] = 0;
 			}
 	}
 	int ans = 0;
-	for (int x = 0; x < 2000; ++x) 
-		for (int y = 0; y < 2000; ++y) 
+	for (int x = 0; x < 2000; ++x)
+		for (int y = 0; y < 2000; ++y)
 			ans += ok[x][y];
 	cout << ans << "\n";
 }
@@ -76,7 +91,7 @@ Of course, this wouldn't suffice if the coordinates were up to $10^9$.
 
 ### Rectangle Class
 
-A useful class in Java for dealing with rectangle geometry problems (though definitely overkill) is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class. 
+A useful class in Java for dealing with rectangle geometry problems (though definitely overkill) is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class.
 
 <LanguageSection>
 
@@ -86,10 +101,10 @@ To create a new rectangle, use the following constructor:
 
 ```java
 // creates a rectangle with upper-left corner at (x,y) with a specified width and height
-Rectangle newRect = new Rectangle(x, y, width, height); 
+Rectangle newRect = new Rectangle(x, y, width, height);
 ```
 
-The `Rectangle` class supports numerous useful methods, including the following: 
+The `Rectangle` class supports numerous useful methods, including the following:
 
 - `firstRect.intersects(secondRect)` checks if two rectangles intersect.
 - `firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
@@ -124,16 +139,17 @@ public class blockedBillboard {
 
 				long firstIntersect = getArea(firstRect.intersection(truck));
 				long secondIntersect = getArea(secondRect.intersection(truck));
-				pw.println(getArea(firstRect)+getArea(secondRect) 
+				pw.println(getArea(firstRect)+getArea(secondRect)
 								- firstIntersect - secondIntersect);
 				pw.close();
 		}
-		public static long getArea(Rectangle r){ 
+		public static long getArea(Rectangle r){
 				if (r.isEmpty()) return 0;
-				return (long)r.getHeight()*(long)r.getWidth(); 
+				return (long)r.getHeight()*(long)r.getWidth();
 		}
 }
 ```
+
 </Spoiler>
 
 <Spoiler title="Java Solution Without Built-in Rectangle Class">
@@ -167,6 +183,7 @@ public class blockedBillboard {
 		}
 }
 ```
+
 </Spoiler>
 
 </JavaSection>
@@ -181,8 +198,8 @@ Unfortunately, C++ doesn't have a built in rectangle class, so you need to write
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Rect { 
-	int x1,y1,x2,y2; 
+struct Rect {
+	int x1,y1,x2,y2;
 	int area() { return (y2-y1)*(x2-x1); }
 };
 int intersect(Rect p, Rect q){
@@ -201,12 +218,12 @@ int main(){
 	cout << a.area()+b.area()-intersect(a,t)-intersect(b,t) << endl;
 }
 ```
+
 </Spoiler>
 
 </CPPSection>
 
 </LanguageSection>
-
 
 ## Problems
 

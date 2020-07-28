@@ -3,24 +3,38 @@ id: eulers-formula
 title: "Euler's Formula"
 author: Benjamin Qi
 description: A formula for finding the number of faces in a planar graph.
-prerequisites: 
- - dsu
- - 2DRQ
+prerequisites:
+  - dsu
+  - 2DRQ
 frequency: 1
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    e1: [
-      new Problem("DMOJ", "Land of the Rainbow Gold", "apio17p1", "Hard", false, [], "apio-17-rainbow"),
-    ],
-    e2: [
-      new Problem("Plat", "Valleys", "950", "Hard", false, [], ""),
-    ],
-    other: [
-      new Problem("Kattis", "Island Archipelago", "https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago", "Very Hard", false, [],""),
-    ],
+	e1: [
+		new Problem(
+			'DMOJ',
+			'Land of the Rainbow Gold',
+			'apio17p1',
+			'Hard',
+			false,
+			[],
+			'apio-17-rainbow'
+		),
+	],
+	e2: [new Problem('Plat', 'Valleys', '950', 'Hard', false, [], '')],
+	other: [
+		new Problem(
+			'Kattis',
+			'Island Archipelago',
+			'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+	],
 };
 
 ## Example 1
@@ -62,7 +76,7 @@ template<int SZ> struct DSU {
 			if (ok(x,t.f+xd[i],t.s+yd[i])) {
 				measure[x] --;
 				int j = (i+1)%4;
-				if (ok(x,t.f+xd[j],t.s+yd[j]) && 
+				if (ok(x,t.f+xd[j],t.s+yd[j]) &&
 					ok(x,t.f+xd[j]+xd[i],t.s+yd[j]+yd[i])) measure[x] ++;
 			}
 		}
@@ -91,7 +105,7 @@ void solve(int x, int y) {
 }
 
 int main() {
-	setIO("valleys"); 
+	setIO("valleys");
 	re(N);
 	F0R(i,N) F0R(j,N) {
 		re(h[i][j]);

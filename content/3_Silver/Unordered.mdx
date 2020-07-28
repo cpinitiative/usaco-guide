@@ -2,10 +2,10 @@
 id: unordered
 title: Unordered Maps & Sets
 author: Darren Yao, Benjamin Qi
-description: "Maintaining collections of distinct elements with hashing."
+description: 'Maintaining collections of distinct elements with hashing.'
 frequency: 0
 prerequisites:
- - intro-sets
+  - intro-sets
 ---
 
 <Warning>
@@ -15,12 +15,14 @@ You can (almost always) use the sets introduced in the prerequisite module inste
 </Warning>
 
 <Resources>
-  <Resource source="IUSACO" title="4.4 - Sets & Maps">module is based off this</Resource>
+	<Resource source="IUSACO" title="4.4 - Sets & Maps">
+		module is based off this
+	</Resource>
 </Resources>
 
 ## Hashing
 
-**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order. 
+**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order.
 
 (more in-depth explanation?)
 
@@ -41,7 +43,14 @@ There is no built in method for hashing pairs or vectors. Namely, `unordered_set
 <CPPSection>
 
 <Resources>
-  <Resource source="Mark Nelson" title="Hash Functions for C++ Unordered Containers" url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html" starred>How to create user-defined hash function for `unordered_map`.</Resource>
+	<Resource
+		source="Mark Nelson"
+		title="Hash Functions for C++ Unordered Containers"
+		url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html"
+		starred
+	>
+		How to create user-defined hash function for `unordered_map`.
+	</Resource>
 </Resources>
 
 The link provides an example of hashing pairs of strings. More examples (for pairs of ints)
@@ -98,14 +107,21 @@ You don't need to know this for USACO, but you will need this to pass some of th
 
 </Warning>
 
-In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however. 
+In USACO contests, unordered sets and maps generally fine, but the built-in hashing algorithm for C++ is vulnerable to pathological data sets causing abnormally slow runtimes. Apparently [Java](https://codeforces.com/blog/entry/62393?#comment-464875) is not vulnerable to this, however.
 
 <LanguageSection>
 
 <CPPSection>
 
 <Resources>
-  <Resource title="Blowing up Unordered Map" source="CF" url="blog/entry/62393" starred>Explanation of this problem and how to fix it.</Resource>
+	<Resource
+		title="Blowing up Unordered Map"
+		source="CF"
+		url="blog/entry/62393"
+		starred
+	>
+		Explanation of this problem and how to fix it.
+	</Resource>
 </Resources>
 
 Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above in place of `unordered_map<int, int>`.
@@ -113,16 +129,23 @@ Essentially use `unordered_map<int, int, custom_hash>` defined in the blog above
 ### Another Hash Function
 
 <Resources>
-  <Resource source="Benq (from KACTL)" title="HashMap" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h" starred> </Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		title="HashMap"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h"
+		starred
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 ```cpp
 struct chash { /// use most bits rather than just the lowest ones
 	const uint64_t C = ll(2e18*PI)+71; // large odd number
 	const int RANDOM = rng(); // random 32-bit number
-	ll operator()(ll x) const { 
+	ll operator()(ll x) const {
 		// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-		return __builtin_bswap64((x^RANDOM)*C); 
+		return __builtin_bswap64((x^RANDOM)*C);
 	}
 };
 template<class K,class V> using um = unordered_map<K,V,chash>;

@@ -1,42 +1,106 @@
 ---
 id: dp-trees
-title: "Introduction to Dynamic Programming on Trees"
+title: 'Introduction to Dynamic Programming on Trees'
 author: Michael Cao
-prerequisites: 
- - dfs
- - intro-dp
-description: "Using subtrees as subproblems."
+prerequisites:
+  - dfs
+  - intro-dp
+description: 'Using subtrees as subproblems.'
 frequency: 2
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("CSES", "Tree Matching", "1130", "Easy", false, ["DP"], ""),
-    ],
-    allRoots: [
-      new Problem("AC", "Subtree", "https://atcoder.jp/contests/dp/tasks/dp_v", "Normal", false, [], ""),
-    ],
-    usaco: [
-      new Problem("AC", "Independent Set", "https://atcoder.jp/contests/dp/tasks/dp_p", "Easy", false, [], ""),
-      new Problem("Gold", "Barn Painting", "766", "Easy", false, ["DP"], "similar to independent set on tree"),
-      new Problem("Gold", "Directory Traversal", "814", "Normal", false, [], ""),
-      new Problem("CF", "Baltic OI - Village (Minimum)", "contest/1387/problem/B1", "Normal", false, [], ""),
-      new Problem("Gold", "Delegation", "1019", "Hard", false, ["Greedy"], ""),
-      new Problem("Plat", "Delegation", "1020", "Very Hard", false, ["DP", "Binary Search"], ""),
-      new Problem("Plat", "Cow At Large", "793", "Insane", false, [], "usaco-793"),
-      new Problem("CSES", "Creating Offices", "1752", "Insane", false, ["Greedy"], "equivalent to Baltic OI - Cat in a Tree. Exists a greedy-ish strategy!"),
-    ],
-}
+	sample: [
+		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], ''),
+	],
+	allRoots: [
+		new Problem(
+			'AC',
+			'Subtree',
+			'https://atcoder.jp/contests/dp/tasks/dp_v',
+			'Normal',
+			false,
+			[],
+			''
+		),
+	],
+	usaco: [
+		new Problem(
+			'AC',
+			'Independent Set',
+			'https://atcoder.jp/contests/dp/tasks/dp_p',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Barn Painting',
+			'766',
+			'Easy',
+			false,
+			['DP'],
+			'similar to independent set on tree'
+		),
+		new Problem('Gold', 'Directory Traversal', '814', 'Normal', false, [], ''),
+		new Problem(
+			'CF',
+			'Baltic OI - Village (Minimum)',
+			'contest/1387/problem/B1',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem('Gold', 'Delegation', '1019', 'Hard', false, ['Greedy'], ''),
+		new Problem(
+			'Plat',
+			'Delegation',
+			'1020',
+			'Very Hard',
+			false,
+			['DP', 'Binary Search'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'Cow At Large',
+			'793',
+			'Insane',
+			false,
+			[],
+			'usaco-793'
+		),
+		new Problem(
+			'CSES',
+			'Creating Offices',
+			'1752',
+			'Insane',
+			false,
+			['Greedy'],
+			'equivalent to Baltic OI - Cat in a Tree. Exists a greedy-ish strategy!'
+		),
+	],
+};
 
 <Problems problems={problems.sample} />
 
 ## Tutorial
 
 <Resources>
-  <Resource source="CF" title="DP on Trees" url="blog/entry/20935"> </Resource>
-  <Resource source="Philippines" title="DP on Trees and DAGs" url="https://noi.ph/training/weekly/week5.pdf">lol this code format is terrible </Resource>
+	<Resource source="CF" title="DP on Trees" url="blog/entry/20935">
+		{' '}
+	</Resource>
+	<Resource
+		source="Philippines"
+		title="DP on Trees and DAGs"
+		url="https://noi.ph/training/weekly/week5.pdf"
+	>
+		lol this code format is terrible{' '}
+	</Resource>
 </Resources>
 
 ## Solution - Tree Matching
@@ -59,7 +123,7 @@ export const problems = {
 template<int SZ> struct SubtreeDP {
   int par[SZ]; vi adj[SZ];
   void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
-  struct T { 
+  struct T {
     mi v = 1;
     T& operator+=(const T& b) { v *= b.v; return *this; }
     void tran() { ++v; }
@@ -115,7 +179,6 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
 
 </Spoiler>
 

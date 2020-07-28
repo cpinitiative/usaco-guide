@@ -4,28 +4,29 @@ title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang
 description: Demonstrates how to read input and print output for USACO contests, including an example problem.
 prerequisites:
- - data-types
+  - data-types
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    cses: [
-      new Problem("CSES", "Weird Algorithm", "1068", "Very Easy"),
-    ],
-    fence: [
-      new Problem("Bronze", "Fence Painting", "567", "Very Easy"),
-    ],
+	cses: [new Problem('CSES', 'Weird Algorithm', '1068', 'Very Easy')],
+	fence: [new Problem('Bronze', 'Fence Painting', '567', 'Very Easy')],
 };
 
 <Resources>
-  <Resource source="IUSACO" title="2.1 - Input and Output">module is based off this</Resource>
-  <Resource source="CPH" title="1.2 - Input and Output">cin, getline, files</Resource>
-  <Resource source="PAPS" title="2.4 - Input and Output">cin, getline</Resource>
+	<Resource source="IUSACO" title="2.1 - Input and Output">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="1.2 - Input and Output">
+		cin, getline, files
+	</Resource>
+	<Resource source="PAPS" title="2.4 - Input and Output">
+		cin, getline
+	</Resource>
 </Resources>
 
 <!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
-
 
 ## Standard I/O
 
@@ -45,7 +46,6 @@ Whichever you're most comfortable with!
 
 ### Method 1: [<iostream\>](http://www.cplusplus.com/reference/iostream/)
 
-
 ```cpp
 #include <iostream>
 using namespace std;
@@ -56,7 +56,7 @@ int main() {
 }
 ```
 
-### Method 2: [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) 
+### Method 2: [<cstdio\>](http://www.cplusplus.com/reference/cstdio/)
 
 This library includes the `scanf` and `printf` functions, which are slightly more complicated to use, but are significantly faster (generally only an issue with large input sizes):
 
@@ -85,7 +85,6 @@ int main() {
 ```
 
 The first method can be sped up so that the difference in speed is not significant; see [Fast I/O](./fast-io) for details.
-
 
 </CPPSection>
 
@@ -136,16 +135,14 @@ public class template {
 
 Here's a brief description of the methods in our `InputReader` class, with an instance `r`, and `PrintWriter` with an instance `pw`.
 
-
-| Method             | Description                                                         |
-| ------------------ | ------------------------------------------------------------------- |
-| `r.next()`         | Reads the next token (up to a whitespace) and returns a `String`    |
-| `r.nextInt()`      | Reads the next token (up to a whitespace) and returns as an `int`   |
-| `r.nextLong()`     | Reads the next token (up to a whitespace) and returns as a `long`   |
-| `r.nextDouble()`   | Reads the next token (up to a whitespace) and returns as a `double` |
-| `pw.println()`     | Prints the argument to designated output stream and adds newline    |
-| `pw.print()`       | Prints the argument to designated output stream                     |
-
+| Method | Description |
+| --- | --- |
+| `r.next()` | Reads the next token (up to a whitespace) and returns a `String` |
+| `r.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
+| `r.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
+| `r.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
+| `pw.println()` | Prints the argument to designated output stream and adds newline |
+| `pw.print()` | Prints the argument to designated output stream |
 
 Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
 
@@ -170,11 +167,12 @@ public static void main(String[] args) {
 ## Example Solution - Weird Algorithm
 
 <Resources>
-    <Resource source="GCP" title="1.3 -  CSES Problem Set" starred>example solution for this problem</Resource>
+	<Resource source="GCP" title="1.3 -  CSES Problem Set" starred>
+		example solution for this problem
+	</Resource>
 </Resources>
 
-As noted in the resource above, this problem requires *64-bit integers*.
-
+As noted in the resource above, this problem requires _64-bit integers_.
 
 <LanguageSection>
 
@@ -272,7 +270,6 @@ public class template {
 
 </Spoiler>
 
-
 </JavaSection>
 
 </LanguageSection>
@@ -289,7 +286,7 @@ In USACO, input is read from a file called `problemname.in`. After the program i
 
 ### Method 1: `freopen`
 
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library. 
+You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library.
 
 ```cpp
 #include <cstdio>
@@ -323,7 +320,7 @@ int main() {
 
 <JavaSection>
 
-We can slightly modify the template above to support file I/O. Note how  `r` and `pw` must be initialized in a different way.
+We can slightly modify the template above to support file I/O. Note how `r` and `pw` must be initialized in a different way.
 
 ```java
 import java.util.*;
@@ -362,7 +359,6 @@ public class template {
 }
 ```
 
-
 Some sources say to use
 
 ```java
@@ -378,7 +374,14 @@ instead. There is no need for this since `PrintWriter` [uses buffered output](ht
 ## Example Solution - Fence Painting
 
 <Resources>
-    <Resource source="USACO" title="Technical Specifications for Contests" url="http://www.usaco.org/index.php?page=instructions" starred>Make sure to read this.</Resource>
+	<Resource
+		source="USACO"
+		title="Technical Specifications for Contests"
+		url="http://www.usaco.org/index.php?page=instructions"
+		starred
+	>
+		Make sure to read this.
+	</Resource>
 </Resources>
 
 <br />
@@ -407,7 +410,7 @@ int main() {
     int a, b, c, d; cin >> a >> b >> c >> d;
     for (int i = a; i < b; ++i) cover[i] = 1;
     for (int i = c; i < d; ++i) cover[i] = 1;
-    int ans = 0; 
+    int ans = 0;
     for (int i = 0; i < 100; ++i) ans += cover[i];
     cout << ans;
     // cout << ans << endl; is OK
@@ -433,7 +436,7 @@ int main() {
     int a, b, c, d; fin >> a >> b >> c >> d;
     for (int i = a; i < b; ++i) cover[i] = 1;
     for (int i = c; i < d; ++i) cover[i] = 1;
-    int ans = 0; 
+    int ans = 0;
     for (int i = 0; i < 100; ++i) ans += cover[i];
     fout << ans;
 }
@@ -462,9 +465,9 @@ public class paintSol { // must be declared in paintSol.java
 
         for (int i = a; i < b; i++) cover[i] = 1;
         for (int i = c; i < d; i++) cover[i] = 1;
-        int ans = 0; 
+        int ans = 0;
         for (int i = 0; i < 100; i++) ans += cover[i];
-        pw.println(ans); 
+        pw.println(ans);
         pw.close(); // make sure to include this line -- flushes the output.
     }
 }
@@ -510,10 +513,10 @@ public class template {
         int[] cover = new int[100];
         for (int i = a; i < b; i++) cover[i] = 1;
         for (int i = c; i < d; i++) cover[i] = 1;
-        int ans = 0; 
+        int ans = 0;
         for (int i = 0; i < 100; i++) ans += cover[i];
-        
-        pw.println(ans); 
+
+        pw.println(ans);
         pw.close(); // flush output
     }
 }

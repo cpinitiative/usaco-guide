@@ -1,33 +1,73 @@
 ---
 id: offline-del
-title: "Offline Deletion"
+title: 'Offline Deletion'
 author: Benjamin Qi, Siyong Huang
 prerequisites:
- - dsu
-description: "Erasing from non-amortized insert-only data structures."
+  - dsu
+description: 'Erasing from non-amortized insert-only data structures.'
 frequency: 0
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    rollback: [
-      new Problem("YS", "Persistent Union Find", "persistent_unionfind", "Easy", false, ["DSUrb"], ""),
-    ],
-    sam: [
-      new Problem("YS", "Vertex Add Component Sum", "dynamic_graph_vertex_add_component_sum", "Normal", false, ["DSUrb"], ""),
-    ],
-    res: [
-      new Problem("CF", "Edu F - Extending Set of Points", "contest/1140/problem/F", "Normal", false, ["DSUrb"], ""),
-			new Problem("CF", "Forced Online Queries Problem", "contest/1217/problem/F", "Hard", false, ["Dynacon"], "Editorial solution is online N sqrt N, but you can solve this in offline N log N using this trick."),
-      new Problem("CF", "Baltic OI - Joker", "contest/1386/problem/C", "Very Hard", false, ["D&C", "DSUrb"], ""),
-    ]
+	rollback: [
+		new Problem(
+			'YS',
+			'Persistent Union Find',
+			'persistent_unionfind',
+			'Easy',
+			false,
+			['DSUrb'],
+			''
+		),
+	],
+	sam: [
+		new Problem(
+			'YS',
+			'Vertex Add Component Sum',
+			'dynamic_graph_vertex_add_component_sum',
+			'Normal',
+			false,
+			['DSUrb'],
+			''
+		),
+	],
+	res: [
+		new Problem(
+			'CF',
+			'Edu F - Extending Set of Points',
+			'contest/1140/problem/F',
+			'Normal',
+			false,
+			['DSUrb'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Forced Online Queries Problem',
+			'contest/1217/problem/F',
+			'Hard',
+			false,
+			['Dynacon'],
+			'Editorial solution is online N sqrt N, but you can solve this in offline N log N using this trick.'
+		),
+		new Problem(
+			'CF',
+			'Baltic OI - Joker',
+			'contest/1386/problem/C',
+			'Very Hard',
+			false,
+			['D&C', 'DSUrb'],
+			''
+		),
+	],
 };
 
-<!--    
+<!--
 ins: [
   new Problem("Old Gold", "Fencing the Herd", "534", "Hard", false, [], ""),
-], 
+],
 -->
 
 ## Offline Deleting from a Data Structure
@@ -35,7 +75,14 @@ ins: [
 Using a persistent data structure or rollbacking, you are able to simulate deleting from a data structure while only using insertion operations.
 
 <Resources>
-  <Resource source="CP-Algorithms" title="Deleting from a data structure in O(T(n) log n)" url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html" starred>includes code (but no explanation) for dynamic connectivity</Resource>
+	<Resource
+		source="CP-Algorithms"
+		title="Deleting from a data structure in O(T(n) log n)"
+		url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
+		starred
+	>
+		includes code (but no explanation) for dynamic connectivity
+	</Resource>
 </Resources>
 
 ## Dynamic Connectivity
@@ -58,7 +105,7 @@ explanation? check Guide to CP?
 
 <Warning title="Watch Out!">
 
-Because path compression is amortized, it does not guarauntee $O(N \log^2 N)$ runtime. You *must* use merging by rank.
+Because path compression is amortized, it does not guarauntee $O(N \log^2 N)$ runtime. You _must_ use merging by rank.
 
 </Warning>
 

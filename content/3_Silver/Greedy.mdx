@@ -1,39 +1,88 @@
 ---
 id: greedy
-title: "Greedy Algorithms involving Sorting"
+title: 'Greedy Algorithms involving Sorting'
 author: Darren Yao
-prerequisites: 
- - intro-greedy
- - sorting-custom
- - intro-ordered
+prerequisites:
+  - intro-greedy
+  - sorting-custom
+  - intro-ordered
 frequency: 3
 ---
 
-import {Problem} from "../models"
+import { Problem } from '../models';
 
 export const problems = {
-    movie: [
-      new Problem("CSES", "Movie Festival", "1629", "Easy", false, [], ""),
-    ],
-    cses: [
-      new Problem("CSES", "Stick Lengths", "1074", "Easy", false, [], "Spoiler: Optimal length is median"),
-      new Problem("CSES", "Apartments", "1084", "Easy", false, [], "Sort applicants and apartments, then greedily assign applicants"),
-      new Problem("CSES", "Ferris Wheel", "1090", "Easy", false, [], "Sort children, keep a left pointer and a right pointer. Each gondola either is one child from the right pointer or two children, one left and one right."),
-      new Problem("CSES", "Towers", "1073", "Easy", false, ["multiset", "greedy"]),
-      new Problem("CSES", "Room Allocation", "1164", "Normal", false, ["multiset", "greedy"], "similar to above"),
-      new Problem("CSES", "Tasks & Deadlines", "1630", "Easy", false, [], ""),
-      new Problem("CSES", "Movie Festival II", "1632", "Easy", false, [], ""),
-      new Problem("CSES", "Stick Division", "1161", "Hard", false, [], ""),
-    ],
-    other: [
-      new Problem("Silver", "Paired Up", "738", "Easy", false, ["2P", "Sorting"]),
-      new Problem("Silver", "Lemonade Line", "835", "Easy", false, ["Sorting"], ""),
-      new Problem("Silver", "High Card Wins", "571", "Normal", false, [], ""),
-      new Problem("Gold", "High Card Low Card", "573", "Normal", false, [], ""),
-      new Problem("Silver", "Berry Picking", "990", "Normal", false, [], ""),
-      new Problem("Silver", "Why ... (helpcross)", "714", "Normal", false, ["Sorting"], ""),
-      new Problem("CSA", "Sure Bet", "sure-bet", "Normal", false, [], ""),
-    ],
+	movie: [new Problem('CSES', 'Movie Festival', '1629', 'Easy', false, [], '')],
+	cses: [
+		new Problem(
+			'CSES',
+			'Stick Lengths',
+			'1074',
+			'Easy',
+			false,
+			[],
+			'Spoiler: Optimal length is median'
+		),
+		new Problem(
+			'CSES',
+			'Apartments',
+			'1084',
+			'Easy',
+			false,
+			[],
+			'Sort applicants and apartments, then greedily assign applicants'
+		),
+		new Problem(
+			'CSES',
+			'Ferris Wheel',
+			'1090',
+			'Easy',
+			false,
+			[],
+			'Sort children, keep a left pointer and a right pointer. Each gondola either is one child from the right pointer or two children, one left and one right.'
+		),
+		new Problem('CSES', 'Towers', '1073', 'Easy', false, [
+			'multiset',
+			'greedy',
+		]),
+		new Problem(
+			'CSES',
+			'Room Allocation',
+			'1164',
+			'Normal',
+			false,
+			['multiset', 'greedy'],
+			'similar to above'
+		),
+		new Problem('CSES', 'Tasks & Deadlines', '1630', 'Easy', false, [], ''),
+		new Problem('CSES', 'Movie Festival II', '1632', 'Easy', false, [], ''),
+		new Problem('CSES', 'Stick Division', '1161', 'Hard', false, [], ''),
+	],
+	other: [
+		new Problem('Silver', 'Paired Up', '738', 'Easy', false, ['2P', 'Sorting']),
+		new Problem(
+			'Silver',
+			'Lemonade Line',
+			'835',
+			'Easy',
+			false,
+			['Sorting'],
+			''
+		),
+		new Problem('Silver', 'High Card Wins', '571', 'Normal', false, [], ''),
+		new Problem('Gold', 'High Card Low Card', '573', 'Normal', false, [], ''),
+		new Problem('Silver', 'Berry Picking', '990', 'Normal', false, [], ''),
+		new Problem(
+			'Silver',
+			'Why ... (helpcross)',
+			'714',
+			'Normal',
+			false,
+			['Sorting'],
+			''
+		),
+		new Problem('CSA', 'Sure Bet', 'sure-bet', 'Normal', false, [], ''),
+	],
 };
 
 <!-- new Problem("Silver", "Rest Stops", "810", "?", false, [], ""), -->
@@ -42,24 +91,34 @@ export const problems = {
 <!-- new Problem("CF", "Permutation", "contest/864/problem/D", "?", false, [], ""), -->
 <!--   new Problem("CF", "New Year and Three Musketeers", "contest/611/problem/E", "Hard", false, [], "needs maps"), -->
 
-
 <Resources>
-  <Resource source="IUSACO" title="9 - Greedy Algorithms">Module is based off this.</Resource>
-  <Resource source="CPH" title="6 - Greedy Algorithms" starred>Scheduling, Tasks & Deadlines, Huffman Coding</Resource>
-  <Resource source="PAPS" title="8 - Greedy Algorithms">DAGs, Scheduling</Resource>
-  <Resource source="CPC" title="5 - Greedy Algorithms" url="05_greedy_algorithms">slides from Intro to Algorithms</Resource>
+	<Resource source="IUSACO" title="9 - Greedy Algorithms">
+		Module is based off this.
+	</Resource>
+	<Resource source="CPH" title="6 - Greedy Algorithms" starred>
+		Scheduling, Tasks & Deadlines, Huffman Coding
+	</Resource>
+	<Resource source="PAPS" title="8 - Greedy Algorithms">
+		DAGs, Scheduling
+	</Resource>
+	<Resource
+		source="CPC"
+		title="5 - Greedy Algorithms"
+		url="05_greedy_algorithms"
+	>
+		slides from Intro to Algorithms
+	</Resource>
 </Resources>
 
 <br />
 
-Usually, when using a greedy algorithm, there is a **heuristic** or **value function** that determines which choice is considered most optimal. 
+Usually, when using a greedy algorithm, there is a **heuristic** or **value function** that determines which choice is considered most optimal.
 
 (what's a heuristic or value function?)
 
 <IncompleteSection />
 
 Here, we'll focus on problems where some sorting step is involved.
-
 
 ## Example: Studying Algorithms
 
@@ -131,28 +190,100 @@ There are $N$ events, each described by their starting and ending times. You can
 One possible ordering for a greedy algorithm would always select the next possible event that begins as soon as possible. Let's look at the following example, where the selected events are highlighted in red:
 
 <svg viewBox="0 0 200 40">
-  <line x1="10" y1="5" x2="80" y2="5" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="40" y1="15" x2="120" y2="15" style="stroke:rgb(0,0,0);stroke-width:1" />
-  <line x1="110" y1="25" x2="180" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(0,0,0);stroke-width:1" />
+	<line
+		x1="10"
+		y1="5"
+		x2="80"
+		y2="5"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="120"
+		y2="15"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
+	<line
+		x1="110"
+		y1="25"
+		x2="180"
+		y2="25"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
 </svg>
 
 In this example, the greedy algorithm selects two events, which is optimal. However, this doesn't always work, as shown by the following counterexample:
 
 <svg viewBox="0 0 200 40">
-  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(0,0,0);stroke-width:1" />
-  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(0,0,0);stroke-width:1" />
-  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(0,0,0);stroke-width:1" />
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
 </svg>
 
 In this case, the greedy algorithm selects to attend only one event. However, the optimal solution would be the following:
 
 <svg viewBox="0 0 200 40">
-  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(0,0,0);stroke-width:1" />
-  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(255,0,0);stroke-width:1" />
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
 </svg>
 
 ### Correct Greedy: Earliest Ending Next Event
@@ -160,21 +291,45 @@ In this case, the greedy algorithm selects to attend only one event. However, th
 Instead, we can select the event that ends as early as possible. This correctly selects the three events.
 
 <svg viewBox="0 0 200 40">
-  <line x1="10" y1="5" x2="160" y2="5" style="stroke:rgb(0,0,0);stroke-width:1" />
-  <line x1="40" y1="15" x2="80" y2="15" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="100" y1="25" x2="135" y2="25" style="stroke:rgb(255,0,0);stroke-width:1" />
-  <line x1="150" y1="35" x2="180" y2="35" style="stroke:rgb(255,0,0);stroke-width:1" />
+	<line
+		x1="10"
+		y1="5"
+		x2="160"
+		y2="5"
+		style="stroke:rgb(0,0,0);stroke-width:1"
+	/>
+	<line
+		x1="40"
+		y1="15"
+		x2="80"
+		y2="15"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="100"
+		y1="25"
+		x2="135"
+		y2="25"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
+	<line
+		x1="150"
+		y1="35"
+		x2="180"
+		y2="35"
+		style="stroke:rgb(255,0,0);stroke-width:1"
+	/>
 </svg>
 
 In fact, this algorithm always works. A brief explanation of correctness is as follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than $E_1$, then it is always optimal to select $E_1$. This is because selecting $E_1$ gives us more choices for future events. If we can select an event to go after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first. Thus, the set of events that can go after $E_2$ is a subset of the events that can go after $E_1$, making $E_1$ the optimal choice.
 
-For the following code, let's say we have the array `events` of events, which each contain a start and an end point. 
+For the following code, let's say we have the array `events` of events, which each contain a start and an end point.
 
 <LanguageSection>
 
 <CPPSection>
 
-We'll be using the C++ built in container pair to store each event. Note that since the standard sort in C++ sorts by first element, we will store each event as `pair<end, start>`. 
+We'll be using the C++ built in container pair to store each event. Note that since the standard sort in C++ sorts by first element, we will store each event as `pair<end, start>`.
 
 ```cpp
 // read in the input, store the events in pair<int, int>[] events.
@@ -210,7 +365,6 @@ static class Event implements Comparable<Event>{
 }
 ```
 
-
 ```java
 // read in the input, store the events in Event[] events.
 Arrays.sort(events); // sorts by comparator we defined above
@@ -232,7 +386,6 @@ pw.close();
 
 </LanguageSection>
 
-
 ## When Greedy Fails
 
 We'll provide a few common examples of when greedy fails, so that you can avoid falling into obvious traps and wasting time getting wrong answers in contest.
@@ -250,7 +403,7 @@ Let's take the following example, where we have a maximum capacity of 4:
 <center>
 
 | Item | Weight | Value | Value Per Weight |
-|------|--------|-------|------------------|
+| ---- | ------ | ----- | ---------------- |
 | A    | 3      | 18    | 6                |
 | B    | 2      | 10    | 5                |
 | C    | 2      | 10    | 5                |
@@ -258,8 +411,6 @@ Let's take the following example, where we have a maximum capacity of 4:
 </center>
 
 If we use greedy based on highest value first, we choose item A and then we are done, as we don't have remaining weight to fit either of the other two. Using greedy based on value per weight again selects item A and then quits. However, the optimal solution is to select items B and C, as they combined have a higher value than item A alone. In fact, there is no working greedy solution. The solution to this problem uses **dynamic programming**, which is covered in gold.
-
-
 
 ## CSES Problems
 
