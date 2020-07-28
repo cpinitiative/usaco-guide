@@ -1,27 +1,50 @@
 ---
 id: fracture
-title: "Fracturing Search"
+title: 'Fracturing Search'
 author: Benjamin Qi
-prerequisites: 
- - Gold - Minimum Spanning Tree
- - some familiarity with "Robotic Cow Herd" solution
+prerequisites:
+  - Gold - Minimum Spanning Tree
+  - some familiarity with "Robotic Cow Herd" solution
 description: A simple solution to "Robotic Cow Herd" that generalizes.
 frequency: 1
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("Plat", "Robotic Cow Herd", "674", "Normal", false, [], ""),
-    ],
-    general: [
-      new Problem("CSES", "Baltic OI - Olympiads", "https://cses.fi/248/list/", "Normal", false, [], "http://boi2019.eio.ee/wp-content/uploads/2019/05/olymp.sol_.en_.pdf"),
-      new Problem("DMOJ", "CCO - Shopping Plans", "cco20p6", "Very Hard", false, [], "Generalization of RoboHerd."),
-      new Problem("YS", "K-th Shortest Walk", "k_shortest_walk", "Very Hard", false, [], "(english description?), [Relevant Paper](https://www.ics.uci.edu/~eppstein/pubs/Epp-SJC-98.pdf), Can use to solve RoboHerd!"),
-    ],
+	sample: [
+		new Problem('Plat', 'Robotic Cow Herd', '674', 'Normal', false, [], ''),
+	],
+	general: [
+		new Problem(
+			'CSES',
+			'Baltic OI - Olympiads',
+			'https://cses.fi/248/list/',
+			'Normal',
+			false,
+			[],
+			'http://boi2019.eio.ee/wp-content/uploads/2019/05/olymp.sol_.en_.pdf'
+		),
+		new Problem(
+			'DMOJ',
+			'CCO - Shopping Plans',
+			'cco20p6',
+			'Very Hard',
+			false,
+			[],
+			'Generalization of RoboHerd.'
+		),
+		new Problem(
+			'YS',
+			'K-th Shortest Walk',
+			'k_shortest_walk',
+			'Very Hard',
+			false,
+			[],
+			'(english description?), [Relevant Paper](https://www.ics.uci.edu/~eppstein/pubs/Epp-SJC-98.pdf), Can use to solve RoboHerd!'
+		),
+	],
 };
-
 
 ## General Outline
 
@@ -45,14 +68,14 @@ There are ways to do this in $O(K)$ time for a binary tree if you don't need to 
 
 ### Generalizing
 
-Suppose that you want to find the $K$ objects with the smallest values in some (potentially very large) search space. 
+Suppose that you want to find the $K$ objects with the smallest values in some (potentially very large) search space.
 
- - First, we need to impose a tree structure satisfying the properties mentioned above. Say that $b$ lies in the subtree of $a$ if $a$ lies above (or is equal to) $b$ in the tree. 
- - Let the "root" be the object of smallest value. Every object must lie in the subtree of the root.
- - The children of the root should partition the entire search space (aside from the root) into a bounded number of disjoint subspaces. 
- - Of course, each child should also have the smallest value in its subtree.
+- First, we need to impose a tree structure satisfying the properties mentioned above. Say that $b$ lies in the subtree of $a$ if $a$ lies above (or is equal to) $b$ in the tree.
+- Let the "root" be the object of smallest value. Every object must lie in the subtree of the root.
+- The children of the root should partition the entire search space (aside from the root) into a bounded number of disjoint subspaces.
+- Of course, each child should also have the smallest value in its subtree.
 
-Essentially, we start with the entire search space and then we *fracture* it into *subspaces* based on the children of the root. Then we can finish with either of the two approaches.
+Essentially, we start with the entire search space and then we _fracture_ it into _subspaces_ based on the children of the root. Then we can finish with either of the two approaches.
 
 ## $K$-th Smallest Spanning Tree (USACO Camp 2018)
 
@@ -70,14 +93,14 @@ Let's look at an example.
 
 For this problem, the objects are spanning trees. The root is the minimum spanning tree (which can be calculated with Kruskal's algorithm), and contains all objects in its subtree.
 
-The idea is to designate a small number of children of the root, each of which should be formed by modifying the root slightly. If we can somehow ensure that each object has at most $N$ "children" then we only need to consider $O(NK)$ spanning trees in order to find the $K$-th smallest. 
+The idea is to designate a small number of children of the root, each of which should be formed by modifying the root slightly. If we can somehow ensure that each object has at most $N$ "children" then we only need to consider $O(NK)$ spanning trees in order to find the $K$-th smallest.
 
 The first step is to consider the easier problem of finding the second MST. To do this, we can choose to exclude one edge of the MST and then find the smallest possible replacement for it. Let the edges in the MST be labeled $1\ldots N-1$. Then one idea is to let the $i$-th child subspace of the root to consist of all spanning trees not including edge $i$ of the minimum spanning tree for each $i\in [1,N-1]$.
 
 Unfortunately, this doesn't work because the child subspaces overlap. We can instead let the $i$-th child subspace contain all spanning trees that
 
- - include the first $i-1$ edges of the MST
- - do not include the $i$-th edge of the MST
+- include the first $i-1$ edges of the MST
+- do not include the $i$-th edge of the MST
 
 for each $i\in [1,N-1]$. Every spanning tree other than the root is contained within exactly one of these child subspaces, which is what we want. After sorting the edges in increasing order of weight once, we can compute the MST within each child subspace in $O(M\alpha (N))$ time with DSU.
 
@@ -93,7 +116,7 @@ typedef vector<int> vi;
 
 struct DSU { // for Kruskal's
 	vi e; void init(int n) { e = vi(n,-1); }
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); } 
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
 	bool unite(int x, int y) { // union by size
@@ -116,7 +139,7 @@ struct Partition {
 };
 bool operator<(const Partition& l, const Partition& r) { return l.wei > r.wei; } // for pq
 
-int main() { 
+int main() {
 	cin >> N >> M >> K;
 	for (int i = 0; i < M; ++i) {
 		int a,b,c; cin >> a >> b >> c;
@@ -142,16 +165,15 @@ int main() {
 
 </Spoiler>
 
-
 ## Robotic Cow Herd
 
 <Problems problems={problems.sample} />
 
 As with the analysis, for each location you should
 
- - sort the controllers of that location by cost
- - add the controller of minimum cost for each location to the cost of the cheapest robot
- - subtract that minimum cost from every controller at that location (so now the minimum cost controller for each location is just zero)
+- sort the controllers of that location by cost
+- add the controller of minimum cost for each location to the cost of the cheapest robot
+- subtract that minimum cost from every controller at that location (so now the minimum cost controller for each location is just zero)
 
 Importantly, we should then sort the locations by their respective second-minimum controller costs.
 
@@ -200,8 +222,8 @@ int main() {
 	freopen("roboherd.out","w",stdout);
 	cin >> N >> K;
 	for (int i = 0; i < N; ++i) {
-		int m; cin >> m; 
-		vi p(m); for (int& x: p) cin >> x; 
+		int m; cin >> m;
+		vi p(m); for (int& x: p) cin >> x;
 		sort(begin(p),end(p));
 		tot += p[0]; for (int j = m-1; j >= 0; --j) p[j] -= p[0];
 		if (p.size() > 1) v.push_back(p);
@@ -222,7 +244,7 @@ int main() {
 
 ### Approach 2
 
-There's also an $O(N\log N+K\log K)$ time solution with a priority queue that constructs the robots in increasing order of cost. As before, we want each robot to have a bounded number of "child" robots. However, if you look at my DFS function above, it seems that every robot can have up to $N$ children! Nevertheless, the DFS takes $O(K)$ rather than $O(KN)$ time due to the break statement, which works since we sorted by second-cheapest robot. 
+There's also an $O(N\log N+K\log K)$ time solution with a priority queue that constructs the robots in increasing order of cost. As before, we want each robot to have a bounded number of "child" robots. However, if you look at my DFS function above, it seems that every robot can have up to $N$ children! Nevertheless, the DFS takes $O(K)$ rather than $O(KN)$ time due to the break statement, which works since we sorted by second-cheapest robot.
 
 In fact, we can modify the DFS function so that every robot has at most three rather than $N$ children.
 
@@ -242,15 +264,15 @@ Now I'll describe what how the priority queue solution works:
 
 First start with the robot of minimum cost. The robot with second-minimum cost can be formed by just choosing the second-minimum controller for the first location. After this, we have a few options:
 
- - We can choose the third-minimum controller for the first location.
- - We can discard the second-minimum controller for the first location and select the second-minimum controller for the second location (and never again change the controller selected for the first location).
- - We can keep the second-minimum controller for the first location and select the second-minimum controller for the second location (and never again change the controller selected for the first location).
+- We can choose the third-minimum controller for the first location.
+- We can discard the second-minimum controller for the first location and select the second-minimum controller for the second location (and never again change the controller selected for the first location).
+- We can keep the second-minimum controller for the first location and select the second-minimum controller for the second location (and never again change the controller selected for the first location).
 
 None of these options can result in a robot of lower cost. In general, suppose that we have a robot and are currently selecting the $j$-th cheapest controller for the $i$-th location. Then the transitions are as follows:
 
- - Select the $j+1$-th cheapest controller for the $i$-th location instead.
- - If $j=2$, select the $1$-st cheapest controller for the $i$-th location instead and also select the $2$-nd cheapest controller for the $i+1$-st.
- - Keep the $j$-th cheapest controller for the $i$-th location and also select the $2$-nd cheapest controller for the $i+1$-st.
+- Select the $j+1$-th cheapest controller for the $i$-th location instead.
+- If $j=2$, select the $1$-st cheapest controller for the $i$-th location instead and also select the $2$-nd cheapest controller for the $i+1$-st.
+- Keep the $j$-th cheapest controller for the $i$-th location and also select the $2$-nd cheapest controller for the $i+1$-st.
 
 Since there exists exactly one way to get from the cheapest robot to every possible robot, we can just use a priority queue.
 
@@ -279,19 +301,19 @@ int main() {
 	freopen("roboherd.out","w",stdout);
 	cin >> N >> K;
 	for (int i = 0; i < N; ++i) {
-		int m; cin >> m; 
-		vi p(m); for (int& x: p) cin >> x; 
+		int m; cin >> m;
+		vi p(m); for (int& x: p) cin >> x;
 		sort(begin(p),end(p));
 		tot += p[0]; for (int j = m-1; j >= 0; --j) p[j] -= p[0];
 		if (p.size() > 1) v.push_back(p);
 	}
 	sort(begin(v),end(v)); // sort by second-cheapest
-	pq.push({0,{0,0}}); 
+	pq.push({0,{0,0}});
 	ll ans = 0;
 	for (int i = 0; i < K; ++i) {
 		auto a = pq.top(); pq.pop();
 		ans += tot+a.f; int pos = a.s.f, id = a.s.s;
-		if (id+1 < v[pos].size()) 
+		if (id+1 < v[pos].size())
 			pq.push({a.f+v[pos][id+1]-v[pos][id],{pos,id+1}});
 		if (pos+1 < v.size()) {
 			if (id == 1) pq.push({a.f-v[pos][1]+v[pos+1][1],{pos+1,1}});

@@ -1,35 +1,82 @@
 ---
 id: complete-rec
-title: "Complete Search with Recursion"
+title: 'Complete Search with Recursion'
 author: Darren Yao, Sam Zhang, Michael Cao
-description: "Includes generating subsets and permutations."
+description: 'Includes generating subsets and permutations.'
 frequency: 2
 prerequisites:
- - intro-complete
+  - intro-complete
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-  subset: [
-    new Problem("CSES", "Apple Division", "1623", "Intro|Very Easy", false, ["Recursion", "Subsets"], "@Below"),
-  ],
-  permSam: [
-    new Problem("CSES", "Creating Strings I", "1622", "Intro|Easy", false, [], "@Below"),
-  ],
-  ex: [
-    new Problem("Bronze", "Photoshoot", "988", "Normal", false, [], "Brute force the value of $a_1$ and then recover the remaining values, printing the lexicographically smallest one."),
-  ],
-  back: [
-    new Problem("CSES", "Chessboard & Queens", "1624", "Normal", false, [], "@CPH 5.3"),
-    new Problem("CSES", "Grid Paths", "1625", "Insane", false, [], "@CPH 5.4"),
-  ],
-  gen: [
-    new Problem("Bronze", "Back & Forth", "857", "Hard", false, [], "Try all $10 * 11^4$ possibilities for each day, and simulate for each possibility. See the editorial for more details."), // 99.63
-    new Problem("Bronze", "Livestock Lineup", "965", "Hard", false, ["permutations"], ""), // 91.95
-  ],
+	subset: [
+		new Problem(
+			'CSES',
+			'Apple Division',
+			'1623',
+			'Intro|Very Easy',
+			false,
+			['Recursion', 'Subsets'],
+			'@Below'
+		),
+	],
+	permSam: [
+		new Problem(
+			'CSES',
+			'Creating Strings I',
+			'1622',
+			'Intro|Easy',
+			false,
+			[],
+			'@Below'
+		),
+	],
+	ex: [
+		new Problem(
+			'Bronze',
+			'Photoshoot',
+			'988',
+			'Normal',
+			false,
+			[],
+			'Brute force the value of $a_1$ and then recover the remaining values, printing the lexicographically smallest one.'
+		),
+	],
+	back: [
+		new Problem(
+			'CSES',
+			'Chessboard & Queens',
+			'1624',
+			'Normal',
+			false,
+			[],
+			'@CPH 5.3'
+		),
+		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
+	],
+	gen: [
+		new Problem(
+			'Bronze',
+			'Back & Forth',
+			'857',
+			'Hard',
+			false,
+			[],
+			'Try all $10 * 11^4$ possibilities for each day, and simulate for each possibility. See the editorial for more details.'
+		), // 99.63
+		new Problem(
+			'Bronze',
+			'Livestock Lineup',
+			'965',
+			'Hard',
+			false,
+			['permutations'],
+			''
+		), // 91.95
+	],
 };
-
 
 ## Subsets
 
@@ -38,7 +85,9 @@ export const problems = {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.1 - Generating Subsets" starred>good explanation + code, no need to repeat</Resource>
+	<Resource source="CPH" title="5.1 - Generating Subsets" starred>
+		good explanation + code, no need to repeat
+	</Resource>
 </Resources>
 
 ### Solution - Apple Division
@@ -108,8 +157,9 @@ int main() {
 A bitmask is an integer whose binary representation is used to represent a subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$), we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$. We can iterate through all subsets $s_1$ if we check all bitmasks ranging from $0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the minimum difference between their sums.
 
 Note the fancy bitwise operations:
- - $(1 << x)$ for an integer $x$ is another way of writing $2^x$, which, in binary, has only the $x$'th bit turned on.
- - The $\&$ (and) operator will take two integers and return a new integer. $a \& b$ for integers $a$ and $b$ will return a new integer whose $i$'th bit is turned on if and only if the $i$'th bit is turned on for both $a$ and $b$. Thus, $mask \& (1 << x)$ will return a positive value only if the $x$'th bit is turned on in $mask$.
+
+- $(1 << x)$ for an integer $x$ is another way of writing $2^x$, which, in binary, has only the $x$'th bit turned on.
+- The $\&$ (and) operator will take two integers and return a new integer. $a \& b$ for integers $a$ and $b$ will return a new integer whose $i$'th bit is turned on if and only if the $i$'th bit is turned on for both $a$ and $b$. Thus, $mask \& (1 << x)$ will return a positive value only if the $x$'th bit is turned on in $mask$.
 
 <LanguageSection>
 
@@ -169,7 +219,7 @@ int main() {
 
 ## Permutations
 
-A **permutation** is a reordering of a list of elements. 
+A **permutation** is a reordering of a list of elements.
 
 ### Lexicographical Order
 
@@ -183,11 +233,11 @@ In dictionaries, you will see that words beginning with the letter 'a' appears a
 
 Permutations can be placed into lexicographical order in almost the same way. We first group permutations by their first element; if the first element of two permutations are equal, then we compare them by the second element; if the second element is also equal, then we compare by the third element, and so on.
 
-For example, the permutations of 3 elements, in lexicographical order, are 
+For example, the permutations of 3 elements, in lexicographical order, are
 
 $$
 [1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1].
-$$ 
+$$
 
 Notice that the list starts with permutations beginning with 1 (just like a dictionary that starts with words beginning with 'a'), followed by those beginning with 2 and those beginning with 3. Within the same starting element, the second element is used to make comparisions.
 
@@ -200,7 +250,9 @@ Generally, unless you are specifically asked to find the lexicographically small
 Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
 
 <Resources>
-	<Resource source="CPH" title="5.2 - Generating Permutations" starred>good explanation + code, no need to repeat</Resource>
+	<Resource source="CPH" title="5.2 - Generating Permutations" starred>
+		good explanation + code, no need to repeat
+	</Resource>
 </Resources>
 
 <LanguageSection>
@@ -210,7 +262,14 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 ### About `next_permutation`
 
 <Resources>
-	<Resource source="Mark Nelson" title="Next Permutation" url="https://marknelson.us/posts/2002/03/01/next-permutation.html" starred> </Resource>
+	<Resource
+		source="Mark Nelson"
+		title="Next Permutation"
+		url="https://marknelson.us/posts/2002/03/01/next-permutation.html"
+		starred
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 </CPPSection>
@@ -288,7 +347,7 @@ int main() {
   <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
 </Resources> -->
 
-<!-- ### Checking Permutations in Lexicographical Order 
+<!-- ### Checking Permutations in Lexicographical Order
 
 What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
 
@@ -361,7 +420,9 @@ public class Test {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning" starred>how to solve the above two problems</Resource>
+	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning" starred>
+		how to solve the above two problems
+	</Resource>
 </Resources>
 
 <Warning>

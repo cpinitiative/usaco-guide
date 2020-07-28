@@ -2,27 +2,45 @@
 id: faster-hashmap
 title: A Faster Hash Table in C++
 author: Benjamin Qi
-description: "Introduces gp_hash_table."
+description: 'Introduces gp_hash_table.'
 frequency: 1
 prerequisites:
- - unordered
+  - unordered
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    three: [
-      new Problem("Gold", "3SUM", "994", "Normal", false, [], ""),
-    ],
-    four: [
-      new Problem("CSES", "Sum of Four Values", "1642", "Normal", false, [], ""),
-    ],
+	three: [new Problem('Gold', '3SUM', '994', 'Normal', false, [], '')],
+	four: [
+		new Problem('CSES', 'Sum of Four Values', '1642', 'Normal', false, [], ''),
+	],
 };
 
 <Resources>
-  <Resource source="CF" url="https://codeforces.com/blog/entry/60737" title="Chilli - Order of magnitude faster hash tables" starred>Introduces gp_hash_table</Resource>
-  <Resource source="GCC" url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html#Resize_Policy566860465" title="gp_hash_table Interface">documentation</Resource>
-  <Resource source="Benq (from KACTL)" title="HashMap" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h" starred> </Resource>
+	<Resource
+		source="CF"
+		url="https://codeforces.com/blog/entry/60737"
+		title="Chilli - Order of magnitude faster hash tables"
+		starred
+	>
+		Introduces gp_hash_table
+	</Resource>
+	<Resource
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html#Resize_Policy566860465"
+		title="gp_hash_table Interface"
+	>
+		documentation
+	</Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		title="HashMap"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h"
+		starred
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 <br />
@@ -54,21 +72,21 @@ is easily hackable (see [neal's comment](https://codeforces.com/blog/entry/60737
 
 ## Resizing
 
-Unordered map has [`reserve`](http://www.cplusplus.com/reference/unordered_map/unordered_map/reserve/). Calling this function before inserting any elements can result in a constant factor speedup. 
+Unordered map has [`reserve`](http://www.cplusplus.com/reference/unordered_map/unordered_map/reserve/). Calling this function before inserting any elements can result in a constant factor speedup.
 
 We can modify the declaration of `gp_hash_table` so that it supports the `resize` function, which operates similarly.
 
 ```cpp
 template<class K,class V> using ht = gp_hash_table<
-    K, 
-    null_type, 
-    hash<K>, 
-    equal_to<K>, 
-    direct_mask_range_hashing<>, 
+    K,
+    null_type,
+    hash<K>,
+    equal_to<K>,
+    direct_mask_range_hashing<>,
     linear_probe_fn<>,
     hash_standard_resize_policy<
-      hash_exponential_size_policy<>, 
-      hash_load_check_resize_trigger<>, 
+      hash_exponential_size_policy<>,
+      hash_load_check_resize_trigger<>,
       true
     >
 >;
@@ -87,7 +105,13 @@ int main() {
 When calling `g.resize(x)`, `x` is rounded up to the nearest power of 2. Then the actual size of `g` is changed to be equal to `x` (unless `x < g.size()`, in which case an error is thrown).
 
 <Resources>
-  <Resource source="GCC" url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/hash_standard_resize_policy.html" title="Resize Policy">documentation</Resource>
+	<Resource
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/hash_standard_resize_policy.html"
+		title="Resize Policy"
+	>
+		documentation
+	</Resource>
 </Resources>
 
 Furthermore, if we construct `g` with the following arguments:
@@ -140,21 +164,21 @@ void setIO(string name = "") { // name is nonempty for USACO file I/O
 
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
- 
+
 int N,Q;
 long long ans[5000][5000];
 vector<int> A;
- 
+
 int main() {
 	setIO("threesum");
 	cin >> N >> Q;
 	A.resize(N); for (int i = 0; i < N; ++i) cin >> A[i];
 	for (int i = 0; i < N; ++i) {
-		gp_hash_table<int,int> g({},{},{},{},{1<<13}); 
+		gp_hash_table<int,int> g({},{},{},{},{1<<13});
 		// initialize with certain capacity, must be power of 2
 		for (int j = i+1; j < N; ++j) {
 			int res = -A[i]-A[j];
-			auto it = g.find(res); 
+			auto it = g.find(res);
 			if (it != end(g)) ans[i][j] = it->second;
 			g[A[j]] ++;
 		}

@@ -1,27 +1,43 @@
 ---
 id: mst
-title: "Minimum Spanning Trees"
+title: 'Minimum Spanning Trees'
 author: Benjamin Qi
 prerequisites:
- - sp
- - dsu
-description: "A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed."
+  - sp
+  - dsu
+description: 'A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed.'
 frequency: 2
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    standard: [
-      new Problem("CSES", "Road Reparation", "1675", "Easy", false, ["MST"], ""),
-    ],
-    general: [
-      new Problem("Old Silver", "SuperBull", "531", "Easy", false, ["MST", "Prim"], "Prim's is recommended; Kruskal's algorithm might TLE"),
-      new Problem("Gold", "Fencedin", "623", "Easy", false, ["MST"], ""),
-      new Problem("Gold", "Walk", "946", "Normal", false, ["Math", "Prim"], ""),
-      new Problem("HR", "Spanning Tree Fraction", "https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem", "Normal", false, ["MST", "Binary Search"], ""),
-      new Problem("Plat", "Fencedin", "625", "Hard", false, ["Kruskal"], ""),
-    ],
+	standard: [
+		new Problem('CSES', 'Road Reparation', '1675', 'Easy', false, ['MST'], ''),
+	],
+	general: [
+		new Problem(
+			'Old Silver',
+			'SuperBull',
+			'531',
+			'Easy',
+			false,
+			['MST', 'Prim'],
+			"Prim's is recommended; Kruskal's algorithm might TLE"
+		),
+		new Problem('Gold', 'Fencedin', '623', 'Easy', false, ['MST'], ''),
+		new Problem('Gold', 'Walk', '946', 'Normal', false, ['Math', 'Prim'], ''),
+		new Problem(
+			'HR',
+			'Spanning Tree Fraction',
+			'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+			'Normal',
+			false,
+			['MST', 'Binary Search'],
+			''
+		),
+		new Problem('Plat', 'Fencedin', '625', 'Hard', false, ['Kruskal'], ''),
+	],
 };
 
 <Problems problems={problems.standard} />
@@ -31,11 +47,27 @@ export const problems = {
 ## Resources
 
 <Resources>
-  <Resource source="CPH" title="15 - Spanning Trees" starred>Kruskal's & Prim's</Resource>
-  <Resource source="PAPS" title="12.4">Kruskal's</Resource>
-  <Resource source="cp-algo" title="Prim's" url="graph/mst_prim.html"></Resource>
-  <Resource source="cp-algo" title="Kruskal's" url="graph/mst_kruskal.html"></Resource>
-  <Resource source="cp-algo" title="Kruskal's with DSU" url="graph/mst_kruskal_with_dsu.html"></Resource>
+	<Resource source="CPH" title="15 - Spanning Trees" starred>
+		Kruskal's & Prim's
+	</Resource>
+	<Resource source="PAPS" title="12.4">
+		Kruskal's
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Prim's"
+		url="graph/mst_prim.html"
+	></Resource>
+	<Resource
+		source="cp-algo"
+		title="Kruskal's"
+		url="graph/mst_kruskal.html"
+	></Resource>
+	<Resource
+		source="cp-algo"
+		title="Kruskal's with DSU"
+		url="graph/mst_kruskal_with_dsu.html"
+	></Resource>
 </Resources>
 
 ## Solution - Road Reparation
@@ -47,7 +79,13 @@ export const problems = {
 <CPPSection>
 
 <Resources>
-  <Resource source="Benq (from KACTL)" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h" title="DSU">Disjoint Set Union + Kruskal</Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
+		title="DSU"
+	>
+		Disjoint Set Union + Kruskal
+	</Resource>
 </Resources>
 
 ```cpp
@@ -56,13 +94,12 @@ export const problems = {
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	sort(all(ed));
 	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f; 
+	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
 	return ans;
 }
 ```
 
 </CPPSection>
-
 
 </LanguageSection>
 

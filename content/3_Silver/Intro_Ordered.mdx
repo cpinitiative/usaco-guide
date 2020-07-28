@@ -1,36 +1,78 @@
 ---
 id: intro-ordered
-title: "More Operations on Ordered Sets"
+title: 'More Operations on Ordered Sets'
 author: Darren Yao, Benjamin Qi
-prerequisites: 
- - intro-sets
-description: "Using iterators with sets, finding the next element smaller or larger than a specified key in a set."
+prerequisites:
+  - intro-sets
+description: 'Using iterators with sets, finding the next element smaller or larger than a specified key in a set.'
 frequency: 2
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    standard: [
-      new Problem("CSES", "Concert Tickets", "1091", "Easy", false, ["iterators"], "just do upper_bound"),
-      new Problem("CSES", "Traffic Lights", "1163", "Normal", false, ["set"], "just insert into set one at a time"),
-    ],
-    sample: [
-      new Problem("CSES", "Bit Inversions", "1188", "Normal", false, []),
-    ],
-    general: [
-      new Problem("Silver", "Milk Measurement", "763", "Normal", false, []),
-      new Problem("Silver", "Convention II", "859", "Normal", false, []),
-      new Problem("Gold", "Snow Boots", "813", "Normal", false, []),
-      new Problem("CF", "Jury Marks", "contest/831/problem/C", "Hard", false, [], "Hard, would recommend skipping (1700 on CF)"),
-      new Problem("CF", "Mahmoud & Ehab & Function", "contest/862/problem/E", "Hard", false, [], "Hard, do not attempt until Gold/Plat (2100 on CF)"),
-      new Problem("CF", "Tournament", "contest/878/problem/C", "Very Hard", false, [], "First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF)"),
-    ]
+	standard: [
+		new Problem(
+			'CSES',
+			'Concert Tickets',
+			'1091',
+			'Easy',
+			false,
+			['iterators'],
+			'just do upper_bound'
+		),
+		new Problem(
+			'CSES',
+			'Traffic Lights',
+			'1163',
+			'Normal',
+			false,
+			['set'],
+			'just insert into set one at a time'
+		),
+	],
+	sample: [new Problem('CSES', 'Bit Inversions', '1188', 'Normal', false, [])],
+	general: [
+		new Problem('Silver', 'Milk Measurement', '763', 'Normal', false, []),
+		new Problem('Silver', 'Convention II', '859', 'Normal', false, []),
+		new Problem('Gold', 'Snow Boots', '813', 'Normal', false, []),
+		new Problem(
+			'CF',
+			'Jury Marks',
+			'contest/831/problem/C',
+			'Hard',
+			false,
+			[],
+			'Hard, would recommend skipping (1700 on CF)'
+		),
+		new Problem(
+			'CF',
+			'Mahmoud & Ehab & Function',
+			'contest/862/problem/E',
+			'Hard',
+			false,
+			[],
+			'Hard, do not attempt until Gold/Plat (2100 on CF)'
+		),
+		new Problem(
+			'CF',
+			'Tournament',
+			'contest/878/problem/C',
+			'Very Hard',
+			false,
+			[],
+			'First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF)'
+		),
+	],
 };
 
 <Resources>
-  <Resource source="IUSACO" title="4.3 - Sets & Maps">module is based off this</Resource>
-  <Resource source="CPH" title="4.4 - Iterators & Ranges" starred>set iterators</Resource>
+	<Resource source="IUSACO" title="4.3 - Sets & Maps">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.4 - Iterators & Ranges" starred>
+		set iterators
+	</Resource>
 </Resources>
 
 <br />
@@ -57,10 +99,10 @@ next(), prev(), ++, --
 
 <CPPSection>
 
-The ordered `set` also allows: 
+The ordered `set` also allows:
 
-  - `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
-  - `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
+- `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
+- `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
 
 ```cpp
 set<int> s;
@@ -111,10 +153,10 @@ One limitation of the ordered set is that we can't efficiently access the $k^{th
 
 <CPPSection>
 
-The ordered `map` also allows: 
+The ordered `map` also allows:
 
- - `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
- - `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
+- `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
+- `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
 
 ```cpp
 map<int, int> m;
@@ -156,17 +198,16 @@ System.out.println(map.lowerKey(3)); // ERROR
 
 ## Multisets
 
-A **multiset** is a sorted set that allows multiple copies of the same element. 
+A **multiset** is a sorted set that allows multiple copies of the same element.
 
 <LanguageSection>
 
 <CPPSection>
 
-In addition to all of the regular set operations, 
+In addition to all of the regular set operations,
 
- - the `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest. 
- - If you want to remove a value *once*, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove *all* instances of `val`.
-
+- the `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest.
+- If you want to remove a value _once_, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove _all_ instances of `val`.
 
 ```cpp
 multiset<int> ms;
@@ -190,7 +231,6 @@ cout << ms.count(9) << '\n'; // 0
 <JavaSection>
 
 While there is no multiset in Java, we can implement one using the `TreeMap` from values to their respective frequencies. We declare the `TreeMap` implementation globally so that we can write functions for adding and removing elements from it. The `first`, `last`, `higher`, and `lower` operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
-
 
 ```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
@@ -292,7 +332,7 @@ using namespace std;
 string s;
 int m;
 multiset<int> ans, ret;
- 
+
 void modify(int x) {
   if (x == 0 || x == sz(s)) return;
   auto it = ans.find(x);
@@ -308,12 +348,12 @@ void modify(int x) {
     ret.insert(x-a), ret.insert(b-x);
   }
 }
- 
+
 int main() {
   ios_base::sync_with_stdio(0); cin.tie(0);
   cin >> s >> m;
   ans.insert(0); ans.insert(sz(s));
-  for (int i = 0; i < sz(s)-1; ++i) 
+  for (int i = 0; i < sz(s)-1; ++i)
     if (s[i] != s[i+1]) ans.insert(i+1);
   for (auto it = ans.begin(); next(it) != ans.end(); it ++)
     ret.insert(*next(it)-*it);
@@ -340,7 +380,7 @@ int m;
 set<int> ans;
 priority_queue<int> ret;
 int cnt[200005];
- 
+
 void ad(int x) { cnt[x] ++; ret.push(x);  }
 void modify(int x) {
   if (x == 0 || x == sz(s)) return;
@@ -354,14 +394,14 @@ void modify(int x) {
     cnt[b-a] --, ad(x-a), ad(b-x);
   }
 }
- 
+
 int main() {
   ios_base::sync_with_stdio(0); cin.tie(0);
   cin >> s >> m;
   ans.insert(0); ans.insert(sz(s));
-  for (int i = 0; i < sz(s)-1; ++i) 
+  for (int i = 0; i < sz(s)-1; ++i)
     if (s[i] != s[i+1]) ans.insert(i+1);
-  for (auto it = ans.begin(); next(it) != ans.end(); it ++) 
+  for (auto it = ans.begin(); next(it) != ans.end(); it ++)
     ad(*next(it)-*it);
   for (int i = 0; i < m; ++i) {
     int x; cin >> x;
@@ -371,7 +411,6 @@ int main() {
   }
 }
 ```
-
 
 </CPPSection>
 

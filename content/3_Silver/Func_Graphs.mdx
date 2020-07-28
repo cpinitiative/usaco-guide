@@ -2,45 +2,117 @@
 id: func-graphs
 title: Functional Graphs
 author: Siyong Huang
-prerequisites: 
- - dfs
-description: "Properties of functional graphs, directed graphs in which every vertex has exactly one outgoing edge."
+prerequisites:
+  - dfs
+description: 'Properties of functional graphs, directed graphs in which every vertex has exactly one outgoing edge.'
 frequency: 1
 ---
 
-
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("CF", "Div 2 B - Badge", "contest/1020/problem/B", "Very Easy", false, ["Func Graph"], "Try to solve the problem in $O(N)$!"),
-    ],
-    general: [
-      new Problem("Silver", "The Bovine Shuffle", "764", "Easy", false, ["Func Graph"], "Try to solve the problem in $O(N)$!"),
-      new Problem("CSES", "Planets Cycles", "1751", "Normal", false, ["Func Graph"], ""),
-      new Problem("Silver", "Swapity Swapity Swap", "1014", "Normal", false, ["Permutation"], ""),
-	  new Problem("CF", "Cooperative Game", "https://codeforces.com/contest/1137/problem/D", "Normal", false, ["Func Graph, Floyd's Algorithm"], "Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"),
-      new Problem("POI", "Mafia", "https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement", "Hard", false, ["Func Graph"], ""),
-      new Problem("POI", "Spies", "https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement", "Hard", false, [], ""),
-      new Problem("POI", "Frog", "https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement", "Hard", false, [], ""),
-      new Problem("ojuz", "Space Pirate", "JOI14_space_pirate", "Insane", false, ["Graphs"], "One of the most difficult problems of all time. Build a tree with a single back edge. Break into four cases: path -> other cycle, non-cycle path -> non-subtree, cycle path -> non-subtree, path -> subtree. For the 3rd and 4th cases, let D = depth[B]-depth[A]. Valid B nodes form a 'triangle' in the graph and have some interesting common properties. Then proceed with black magic."),
-    ]
+	sample: [
+		new Problem(
+			'CF',
+			'Div 2 B - Badge',
+			'contest/1020/problem/B',
+			'Very Easy',
+			false,
+			['Func Graph'],
+			'Try to solve the problem in $O(N)$!'
+		),
+	],
+	general: [
+		new Problem(
+			'Silver',
+			'The Bovine Shuffle',
+			'764',
+			'Easy',
+			false,
+			['Func Graph'],
+			'Try to solve the problem in $O(N)$!'
+		),
+		new Problem(
+			'CSES',
+			'Planets Cycles',
+			'1751',
+			'Normal',
+			false,
+			['Func Graph'],
+			''
+		),
+		new Problem(
+			'Silver',
+			'Swapity Swapity Swap',
+			'1014',
+			'Normal',
+			false,
+			['Permutation'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Cooperative Game',
+			'https://codeforces.com/contest/1137/problem/D',
+			'Normal',
+			false,
+			["Func Graph, Floyd's Algorithm"],
+			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
+		),
+		new Problem(
+			'POI',
+			'Mafia',
+			'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
+			'Hard',
+			false,
+			['Func Graph'],
+			''
+		),
+		new Problem(
+			'POI',
+			'Spies',
+			'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'POI',
+			'Frog',
+			'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'ojuz',
+			'Space Pirate',
+			'JOI14_space_pirate',
+			'Insane',
+			false,
+			['Graphs'],
+			"One of the most difficult problems of all time. Build a tree with a single back edge. Break into four cases: path -> other cycle, non-cycle path -> non-subtree, cycle path -> non-subtree, path -> subtree. For the 3rd and 4th cases, let D = depth[B]-depth[A]. Valid B nodes form a 'triangle' in the graph and have some interesting common properties. Then proceed with black magic."
+		),
+	],
 };
 
 We'll consider graphs like the one presented in this problem:
 
 <Problems problems={problems.sample} />
 
-<br/>
+<br />
 
-In a **functional graph**, each node has exactly one out-edge. 
-This is also commonly referred to as a **successor graph**.
+In a **functional graph**, each node has exactly one out-edge. This is also commonly referred to as a **successor graph**.
 
 ## Resources
 
 <Resources>
 
-  <Resource source="CPH" title="16.3 Successor Graphs"></Resource>
+{' '}
+
+<Resource source="CPH" title="16.3 Successor Graphs"></Resource>
 
 </Resources>
 
@@ -222,9 +294,17 @@ int main()
 
 <Resources>
 
-  <Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
+{' '}
 
-  <Resource source="Medium" title="The Tortoise and the Hare (Floyd's Algorithm)" url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"></Resource>
+<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
+
+{' '}
+
+<Resource
+	source="Medium"
+	title="The Tortoise and the Hare (Floyd's Algorithm)"
+	url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
+></Resource>
 
 </Resources>
 
@@ -250,7 +330,7 @@ pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of c
 	t = start_node;
 	while(t != h)
 		++dist, t=next[t], h=next[h];
-	
+
 	int len=1;
 	h = next[t];
 	while(h != t)
@@ -262,5 +342,3 @@ pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of c
 ## Problems
 
 <Problems problems={problems.general} />
-
-

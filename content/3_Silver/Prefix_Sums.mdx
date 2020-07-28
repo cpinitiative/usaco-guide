@@ -1,59 +1,209 @@
 ---
 id: prefix-sums
-title: "Prefix Sums"
+title: 'Prefix Sums'
 author: Darren Yao, Eric Wei
-description: "Computing range sum queries in constant time over a fixed array."
+description: 'Computing range sum queries in constant time over a fixed array.'
 prerequisites:
- - intro-ds
+  - intro-ds
 frequency: 3
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("YS", "Static Range Sum", "static_range_sum", "Easy", false, [], "@B"),
-    ],
-    cum: [
-      new Problem("LC", "Find Pivot Index", "find-pivot-index", "Easy", false, [], "Calculate all prefix and suffix sums"),
-      new Problem("Silver", "Breed Counting", "572", "Easy", false, [], "Find separate prefix sums for each breed"),
-      new Problem("Silver", "Subsequences Summing to Sevens", "595", "Easy", false, [], "Find prefix sums modulo 7, and find a pair of equal (modulo 7) prefix sums as far away from each other as possible"),
-      new Problem("Silver", "Hoof Paper Scissors", "691", "Easy", false, [], "Find prefix sums for the number of hoofs, papers, and scissors separately, the enumerate where the change takes place and consider all the possibilities of what gesture to use before and after the change"),
-      new Problem("Silver", "Max Cross", "715", "Easy", false, [], "Find prefix sum of number of broken signals, then enumerate all possible locations of the interval"),
-      new Problem("Old Bronze", "Haybale Stacking", "104", "Easy", false, [], "**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array. **Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)"),
-      new Problem("CSES", "Subarray Sums II", "1661", "Easy", false, [], "Find prefix sums, then enumerate the right end of the interval, while maintaining a multiset of all prefix sum values that currently exist to the left"),
-      new Problem("CSES", "Subarray Divisibility", "1662", "Easy", false, [], "Find prefix sums modulo n, then find number of pairs of equal prefix sums"),
-      new Problem("Gold", "Help Yourself", "1018", "Very Hard", false, [], ""),
-    ],
-    maxsum: [
-      new Problem("CSES", "Max Subarray Sum", "1643", "Easy", false, ["Prefix Sums"], "Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left"),
-    ],
-    maxsumext: [
-      new Problem("CSES", "Max Subarray Sum II", "1644", "Normal", false, ["Prefix Sums"], "Enumerate the right endpoint while maintaining multiset of prefix sums in the interval where the left endpoint might lie in"),
-    ],
-    sample2: [
-      new Problem("CSES", "Forest Queries", "1652", "Easy", false, ["Prefix Sums"], "@B"),
-    ],
-    cum2: [
-      new Problem("Silver", "Painting the Barn", "919", "Easy", false, ["Prefix Sums"], "When adding a rectangle, we need to add one to some corners and subtract one to other corners (think about which) in a temporary 2D array. At the end, take its prefix sum."),
-      new Problem("Gold", "Painting the Barn", "923", "Hard", false, ["Prefix Sums", "Max Subarray Sum"], "Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated."),
-    ],
-    related: [
-      new Problem("Silver", "My Cow Ate My Homework", "762", "Easy", false, ["Prefix Sums"], "Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums."),
-      new Problem("CSES", "Range XOR Queries", "1650", "Easy", false, ["Prefix Sums"], "XOR prefix[r] with prefix[l-1]"),
-    ],
-    complex: [
-      new Problem("Google KickStart", "Candies (Test Set 1)", "https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d", "Easy", false, ["Prefix Sums"], ""),
-      new Problem("AC", "Multiple of 2019", "https://atcoder.jp/contests/abc164/tasks/abc164_d", "Hard", false, ["Prefix Sums"], "Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."),
-    ],
+	sample: [
+		new Problem(
+			'YS',
+			'Static Range Sum',
+			'static_range_sum',
+			'Easy',
+			false,
+			[],
+			'@B'
+		),
+	],
+	cum: [
+		new Problem(
+			'LC',
+			'Find Pivot Index',
+			'find-pivot-index',
+			'Easy',
+			false,
+			[],
+			'Calculate all prefix and suffix sums'
+		),
+		new Problem(
+			'Silver',
+			'Breed Counting',
+			'572',
+			'Easy',
+			false,
+			[],
+			'Find separate prefix sums for each breed'
+		),
+		new Problem(
+			'Silver',
+			'Subsequences Summing to Sevens',
+			'595',
+			'Easy',
+			false,
+			[],
+			'Find prefix sums modulo 7, and find a pair of equal (modulo 7) prefix sums as far away from each other as possible'
+		),
+		new Problem(
+			'Silver',
+			'Hoof Paper Scissors',
+			'691',
+			'Easy',
+			false,
+			[],
+			'Find prefix sums for the number of hoofs, papers, and scissors separately, the enumerate where the change takes place and consider all the possibilities of what gesture to use before and after the change'
+		),
+		new Problem(
+			'Silver',
+			'Max Cross',
+			'715',
+			'Easy',
+			false,
+			[],
+			'Find prefix sum of number of broken signals, then enumerate all possible locations of the interval'
+		),
+		new Problem(
+			'Old Bronze',
+			'Haybale Stacking',
+			'104',
+			'Easy',
+			false,
+			[],
+			'**Task:** Given an array of size $N$, do the following operation $Q$ times: add $X$ to the values between $i$ and $j$. Afterwards, print the final array. **Solution:** Consider the array formed by $a_i-a_{i-1}$. When processing a range addition, only two values in this difference array change! At the end, we can recover the original array using prefix sums. (The math is left as an exercise to the reader.)'
+		),
+		new Problem(
+			'CSES',
+			'Subarray Sums II',
+			'1661',
+			'Easy',
+			false,
+			[],
+			'Find prefix sums, then enumerate the right end of the interval, while maintaining a multiset of all prefix sum values that currently exist to the left'
+		),
+		new Problem(
+			'CSES',
+			'Subarray Divisibility',
+			'1662',
+			'Easy',
+			false,
+			[],
+			'Find prefix sums modulo n, then find number of pairs of equal prefix sums'
+		),
+		new Problem('Gold', 'Help Yourself', '1018', 'Very Hard', false, [], ''),
+	],
+	maxsum: [
+		new Problem(
+			'CSES',
+			'Max Subarray Sum',
+			'1643',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
+		),
+	],
+	maxsumext: [
+		new Problem(
+			'CSES',
+			'Max Subarray Sum II',
+			'1644',
+			'Normal',
+			false,
+			['Prefix Sums'],
+			'Enumerate the right endpoint while maintaining multiset of prefix sums in the interval where the left endpoint might lie in'
+		),
+	],
+	sample2: [
+		new Problem(
+			'CSES',
+			'Forest Queries',
+			'1652',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'@B'
+		),
+	],
+	cum2: [
+		new Problem(
+			'Silver',
+			'Painting the Barn',
+			'919',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'When adding a rectangle, we need to add one to some corners and subtract one to other corners (think about which) in a temporary 2D array. At the end, take its prefix sum.'
+		),
+		new Problem(
+			'Gold',
+			'Painting the Barn',
+			'923',
+			'Hard',
+			false,
+			['Prefix Sums', 'Max Subarray Sum'],
+			'Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated.'
+		),
+	],
+	related: [
+		new Problem(
+			'Silver',
+			'My Cow Ate My Homework',
+			'762',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.'
+		),
+		new Problem(
+			'CSES',
+			'Range XOR Queries',
+			'1650',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'XOR prefix[r] with prefix[l-1]'
+		),
+	],
+	complex: [
+		new Problem(
+			'Google KickStart',
+			'Candies (Test Set 1)',
+			'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			''
+		),
+		new Problem(
+			'AC',
+			'Multiple of 2019',
+			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
+			'Hard',
+			false,
+			['Prefix Sums'],
+			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
+		),
+	],
 };
 
 <!-- equivalent to [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646) -->
 
 <Resources title="Additional">
-  <Resource source="IUSACO" title="11 - Prefix Sums" starred>module is based off this</Resource>
-  <Resource source="CPH" title="9.1 - Sum Queries">rather brief</Resource>
-  <Resource source="PAPS" title="11.2.1 - Prefix Precomputation">also rather brief</Resource>
+	<Resource source="IUSACO" title="11 - Prefix Sums" starred>
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="9.1 - Sum Queries">
+		rather brief
+	</Resource>
+	<Resource source="PAPS" title="11.2.1 - Prefix Precomputation">
+		also rather brief
+	</Resource>
 </Resources>
 
 ## Introduction
@@ -61,16 +211,18 @@ export const problems = {
 <Problems problems={problems.sample} />
 
 Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to compute the value of
+
 $$
 \texttt{arr}[a]+\texttt{arr}[a+1]+\cdots+\texttt{arr}[b]
 $$
+
 for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the following example with $N = 6$:
 
 <center>
 
-| Index $i$ | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- |
-| $\texttt{arr}[i]$ | 1 | 6 | 4 | 2 | 5 | 3 |
+| Index $i$         | 1   | 2   | 3   | 4   | 5   | 6   |
+| ----------------- | --- | --- | --- | --- | --- | --- |
+| $\texttt{arr}[i]$ | 1   | 6   | 4   | 2   | 5   | 3   |
 
 </center>
 
@@ -92,9 +244,9 @@ For the example case, our prefix sum array looks like this:
 
 <center>
 
-| Index $i$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| $\texttt{prefix}[i]$ | 0 | 1 | 7 | 11 | 13 | 18 | 21 |
+| Index $i$            | 0   | 1   | 2   | 3   | 4   | 5   | 6   |
+| -------------------- | --- | --- | --- | --- | --- | --- | --- |
+| $\texttt{prefix}[i]$ | 0   | 1   | 7   | 11  | 13  | 18  | 21  |
 
 </center>
 
@@ -158,6 +310,7 @@ $\texttt{arr}[i]$
 </center>
 
 Using prefix sums:
+
 $$
 \texttt{prefix}[5] - \texttt{prefix}[1] = 18 - 1 = 17.
 $$
@@ -223,12 +376,13 @@ Consider the desired maximum subarray. As you go along from left to right, the p
 
 ## Prefix Minimum, XOR, etc.
 
-
 <Resources title="Additional">
-  <Resource source="CPH" title="10.2 - Bit Operations" starred>defines XOR</Resource>
+	<Resource source="CPH" title="10.2 - Bit Operations" starred>
+		defines XOR
+	</Resource>
 </Resources>
 
-Similar to prefix sums, you can also take prefix minimum or maximum; but *you cannot* answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
+Similar to prefix sums, you can also take prefix minimum or maximum; but _you cannot_ answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
 
 <Problems problems={problems.related} />
 
@@ -241,48 +395,48 @@ Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
 <center>
 
 <table className="text-center">
-<tbody>
-  <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>1</td>
-    <td>5</td>
-    <td>6</td>
-    <td>11</td>
-    <td>8</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>1</td>
-    <td>7</td>
-    <td>11</td>
-    <td>9</td>
-    <td>4</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>4</td>
-    <td>6</td>
-    <td>1</td>
-    <td>3</td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>7</td>
-    <td>5</td>
-    <td>4</td>
-    <td>2</td>
-    <td>3</td>
-  </tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>5</td>
+			<td>6</td>
+			<td>11</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>7</td>
+			<td>11</td>
+			<td>9</td>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>4</td>
+			<td>6</td>
+			<td>1</td>
+			<td>3</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>5</td>
+			<td>4</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</tbody>
 </table>
 
 </center>
@@ -291,52 +445,51 @@ Naively, each sum query would then take $O(NM)$ time, for a total of $O(QNM)$. T
 
 Let's take the following example region, which we want to sum:
 
-
 <center>
 
 <table className="text-center">
-<tbody>
-  <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>1</td>
-    <td>5</td>
-    <td>6</td>
-    <td>11</td>
-    <td>8</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>1</td>
-    <td className="bg-blue-100">7</td>
-    <td className="bg-blue-100">11</td>
-    <td className="bg-blue-100">9</td>
-    <td>4</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>4</td>
-    <td className="bg-blue-100">6</td>
-    <td className="bg-blue-100">1</td>
-    <td className="bg-blue-100">3</td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>7</td>
-    <td>5</td>
-    <td>4</td>
-    <td>2</td>
-    <td>3</td>
-  </tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>5</td>
+			<td>6</td>
+			<td>11</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td className="bg-blue-100">7</td>
+			<td className="bg-blue-100">11</td>
+			<td className="bg-blue-100">9</td>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>4</td>
+			<td className="bg-blue-100">6</td>
+			<td className="bg-blue-100">1</td>
+			<td className="bg-blue-100">3</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>5</td>
+			<td>4</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</tbody>
 </table>
 
 </center>
@@ -348,48 +501,48 @@ The first logical optimization would be to do one-dimensional prefix sums of eac
 <center>
 
 <table className="text-center">
-<tbody>
-<tr>
-  <td>0</td>
-  <td>0</td>
-  <td>0</td>
-  <td>0</td>
-  <td>0</td>
-  <td>0</td>
-</tr>
-<tr>
-  <td>0</td>
-  <td>1</td>
-  <td>6</td>
-  <td>12</td>
-  <td>23</td>
-  <td>31</td>
-</tr>
-<tr>
-  <td>0</td>
-  <td className="bg-red-200">1</td>
-  <td>8</td>
-  <td>19</td>
-  <td className="bg-green-200">28</td>
-  <td>32</td>
-</tr>
-<tr>
-  <td>0</td>
-  <td className="bg-red-200">4</td>
-  <td>10</td>
-  <td>11</td>
-  <td className="bg-green-200">14</td>
-  <td>16</td>
-</tr>
-<tr>
-  <td>0</td>
-  <td>7</td>
-  <td>12</td>
-  <td>16</td>
-  <td>18</td>
-  <td>21</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>6</td>
+			<td>12</td>
+			<td>23</td>
+			<td>31</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200">1</td>
+			<td>8</td>
+			<td>19</td>
+			<td className="bg-green-200">28</td>
+			<td>32</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200">4</td>
+			<td>10</td>
+			<td>11</td>
+			<td className="bg-green-200">14</td>
+			<td>16</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>7</td>
+			<td>12</td>
+			<td>16</td>
+			<td>18</td>
+			<td>21</td>
+		</tr>
+	</tbody>
 </table>
 
 </center>
@@ -403,6 +556,7 @@ $$
 $$
 
 This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
+
 $$
 \texttt{prefix}[i][j]
     = \texttt{prefix}[i-1][j]
@@ -420,7 +574,7 @@ $$
         + \texttt{prefix}[a-1][b-1]
 $$
 
-Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have 
+Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have
 
 $$
 65-23-6+1 = 37,
@@ -431,48 +585,48 @@ as expected.
 <center>
 
 <table className="text-center">
-<tbody>
-  <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td className="bg-gray-200">1</td>
-    <td>6</td>
-    <td>12</td>
-    <td className="bg-red-200">23</td>
-    <td>31</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>2</td>
-    <td>14</td>
-    <td>31</td>
-    <td>51</td>
-    <td>63</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td className="bg-red-200">6</td>
-    <td>24</td>
-    <td>42</td>
-    <td className="bg-green-200">65</td>
-    <td>79</td>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>13</td>
-    <td>36</td>
-    <td>58</td>
-    <td>83</td>
-    <td>100</td>
-  </tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-gray-200">1</td>
+			<td>6</td>
+			<td>12</td>
+			<td className="bg-red-200">23</td>
+			<td>31</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>2</td>
+			<td>14</td>
+			<td>31</td>
+			<td>51</td>
+			<td>63</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td className="bg-red-200">6</td>
+			<td>24</td>
+			<td>42</td>
+			<td className="bg-green-200">65</td>
+			<td>79</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>13</td>
+			<td>36</td>
+			<td>58</td>
+			<td>83</td>
+			<td>100</td>
+		</tr>
+	</tbody>
 </table>
 
 </center>
@@ -490,22 +644,27 @@ For instance, let's see how to quickly answer the following type of query:
 > Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
 
 First, define the following:
+
 $$
 \texttt{ps}[i] = a_1+a_2+a_3+a_4+\cdots+a_i
 $$
+
 $$
 \texttt{ips}[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i
 $$
 
 Then, we have:
+
 $$
 l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]
 $$
+
 $$
 (l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
 $$
 
 And so,
+
 $$
 1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
 $$

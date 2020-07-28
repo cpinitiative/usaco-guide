@@ -2,42 +2,74 @@
 id: dfs
 title: Depth First Search (DFS)
 author: Siyong Huang
-prerequisites: 
- - intro-graphs
-description: "A way to recursively traverse a graph."
+prerequisites:
+  - intro-graphs
+description: 'A way to recursively traverse a graph.'
 frequency: 4
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("CSES", "Building Roads", "1666", "Intro|Easy", false, ["DFS"], "@B"),
-    ],
-    general: [
-      new Problem("CF", "Bear & Friendship", "contest/771/problem/A", "Easy", false, ["DFS"]),
-      new Problem("Silver", "Closing the Farm", "644", "Easy", false, ["DFS"]),
-      new Problem("Silver", "Moocast", "668", "Easy", false, ["DFS"]),
-      new Problem("Silver", "Fence Planning", "944", "Easy", false, ["DFS"]),
-      new Problem("Kattis", "Birthday Party", "birthday", "Easy", false, ["DFS"], "DFS with each edge removed"),
-      new Problem("Silver", "Mootube", "788", "Easy", false, ["Tree", "DFS"]),
-      new Problem("CF", "PolandBall & Forest", "contest/755/problem/C", "Easy", false, ["Tree", "DFS"]),
-      new Problem("Silver", "Milk Visits", "968", "Normal", false, ["DFS"]),
-      new Problem("Silver", "Wormhole Sort", "992", "Normal", false, ["DFS", "Binary Search"]),
-      new Problem("Silver", "Moo Particle", "1040", "Normal", false, ["Sorting"]),
-      new Problem("Gold", "Moocast", "669", "Normal", false, [], ""),
-    ],
+	sample: [
+		new Problem(
+			'CSES',
+			'Building Roads',
+			'1666',
+			'Intro|Easy',
+			false,
+			['DFS'],
+			'@B'
+		),
+	],
+	general: [
+		new Problem(
+			'CF',
+			'Bear & Friendship',
+			'contest/771/problem/A',
+			'Easy',
+			false,
+			['DFS']
+		),
+		new Problem('Silver', 'Closing the Farm', '644', 'Easy', false, ['DFS']),
+		new Problem('Silver', 'Moocast', '668', 'Easy', false, ['DFS']),
+		new Problem('Silver', 'Fence Planning', '944', 'Easy', false, ['DFS']),
+		new Problem(
+			'Kattis',
+			'Birthday Party',
+			'birthday',
+			'Easy',
+			false,
+			['DFS'],
+			'DFS with each edge removed'
+		),
+		new Problem('Silver', 'Mootube', '788', 'Easy', false, ['Tree', 'DFS']),
+		new Problem(
+			'CF',
+			'PolandBall & Forest',
+			'contest/755/problem/C',
+			'Easy',
+			false,
+			['Tree', 'DFS']
+		),
+		new Problem('Silver', 'Milk Visits', '968', 'Normal', false, ['DFS']),
+		new Problem('Silver', 'Wormhole Sort', '992', 'Normal', false, [
+			'DFS',
+			'Binary Search',
+		]),
+		new Problem('Silver', 'Moo Particle', '1040', 'Normal', false, ['Sorting']),
+		new Problem('Gold', 'Moocast', '669', 'Normal', false, [], ''),
+	],
 };
 
-<!-- new Problem("CSA", "Tree Reconstruction", "tree-construct", "Hard", false, ["Tree", "DFS"], "several cases"), 
+<!-- new Problem("CSA", "Tree Reconstruction", "tree-construct", "Hard", false, ["Tree", "DFS"], "several cases"),
 
 not a good example
 -->
 
 ## Counting Connected Components
 
-A **connected component** is a maximal set of connected nodes.
-In other words, two nodes are in the same connected component *if and only if* they can reach each other via edges in the graph.
+A **connected component** is a maximal set of connected nodes. In other words, two nodes are in the same connected component _if and only if_ they can reach each other via edges in the graph.
 
 <Problems problems={problems.sample} />
 
@@ -46,26 +78,36 @@ For example, the goal of this problem is to add edges such that the entire graph
 ### Resources
 
 <Resources>
-  <Resource source="CSA" title="Depth First Search" url="depth_first_search" starred>code + interactive, don't worry about back edges</Resource>
-  <Resource source="CPH" title="12.1 - DFS">code + example</Resource>
-  <Resource source="IUSACO" title="10.4 - Depth First Search">code + example</Resource>
-  <Resource source="PAPS" title="12.2 - Depth-First Search">pseudocode + example + code</Resource>
+	<Resource
+		source="CSA"
+		title="Depth First Search"
+		url="depth_first_search"
+		starred
+	>
+		code + interactive, don't worry about back edges
+	</Resource>
+	<Resource source="CPH" title="12.1 - DFS">
+		code + example
+	</Resource>
+	<Resource source="IUSACO" title="10.4 - Depth First Search">
+		code + example
+	</Resource>
+	<Resource source="PAPS" title="12.2 - Depth-First Search">
+		pseudocode + example + code
+	</Resource>
 </Resources>
 
 <!-- oops
 
    <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
-   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource> 
+   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
    <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2"></Resource>
 
 -->
 
 ### Solution - Building Roads
 
-Note that each edge can connect at most two connected components, reducing the overall count by one.
-Since this is always possible, you must add $C-1$ edges, where $C$ is the number of connected components in the graph.
-In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions.
-For example, pick a representative from each component and link them together in a line. 
+Note that each edge can connect at most two connected components, reducing the overall count by one. Since this is always possible, you must add $C-1$ edges, where $C$ is the number of connected components in the graph. In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions. For example, pick a representative from each component and link them together in a line.
 
 <!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
@@ -125,8 +167,7 @@ int main()
 
 <Warning>
 
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE.
-Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
+Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
 
 </Warning>
 
@@ -197,7 +238,6 @@ public class BuildingRoads
 </JavaSection>
 
 </LanguageSection>
-
 
 ### Problems
 

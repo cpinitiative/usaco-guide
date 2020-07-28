@@ -2,31 +2,47 @@
 id: ff
 title: Flood Fill
 author: Darren Yao
-prerequisites: 
- - dfs
-description: "A variant of DFS which finds connected components in a graph respresented by a grid."
+prerequisites:
+  - dfs
+description: 'A variant of DFS which finds connected components in a graph respresented by a grid.'
 frequency: 3
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("CSES", "Counting Rooms", "1192", "Easy", false, [], "@B"),
-    ],
-    general: [
-      new Problem("CSES", "Labyrinth", "1193", "Easy", false, []),
-      new Problem("Silver", "Why ... (Count Cross)", "716", "Easy", false, ["FF"]),
-      new Problem("Silver", "Ice Perimeter", "895", "Easy", false, []),
-      new Problem("Silver", "Switching on the Lights", "570", "Normal", false, []),
-      new Problem("Silver", "Build Gates", "596", "Normal", false, []),
-      new Problem("Silver", "Milk Pails", "620", "Normal", false, []),
-      new Problem("Silver", "Where's Bessie?", "740", "Normal", false, []),
-      new Problem("Silver", "Why Did the Cow Cross the Road III", "716", "Normal", false, []),
-      new Problem("Silver", "Multiplayer Moo", "836", "Hard", false, []),
-      new Problem("Silver", "Snow Boots", "811", "Hard", false, []),
-      new Problem("Silver", "Mooyo Mooyo", "860", "Normal", false, [], ""),
-    ],
+	sample: [
+		new Problem('CSES', 'Counting Rooms', '1192', 'Easy', false, [], '@B'),
+	],
+	general: [
+		new Problem('CSES', 'Labyrinth', '1193', 'Easy', false, []),
+		new Problem('Silver', 'Why ... (Count Cross)', '716', 'Easy', false, [
+			'FF',
+		]),
+		new Problem('Silver', 'Ice Perimeter', '895', 'Easy', false, []),
+		new Problem(
+			'Silver',
+			'Switching on the Lights',
+			'570',
+			'Normal',
+			false,
+			[]
+		),
+		new Problem('Silver', 'Build Gates', '596', 'Normal', false, []),
+		new Problem('Silver', 'Milk Pails', '620', 'Normal', false, []),
+		new Problem('Silver', "Where's Bessie?", '740', 'Normal', false, []),
+		new Problem(
+			'Silver',
+			'Why Did the Cow Cross the Road III',
+			'716',
+			'Normal',
+			false,
+			[]
+		),
+		new Problem('Silver', 'Multiplayer Moo', '836', 'Hard', false, []),
+		new Problem('Silver', 'Snow Boots', '811', 'Hard', false, []),
+		new Problem('Silver', 'Mooyo Mooyo', '860', 'Normal', false, [], ''),
+	],
 };
 
 <!-- new Problem("LC", "Flood Fill", "https://leetcode.com/problems/flood-fill/", "Intro|Easy", false, []), -->
@@ -38,15 +54,13 @@ export const problems = {
 <br />
 
 <Resources>
-    <Resource source="IUSACO" title="10.5 - Flood Fill">module is based off this</Resource>
+	<Resource source="IUSACO" title="10.5 - Flood Fill">
+		module is based off this
+	</Resource>
 </Resources>
 
-**Flood fill** is an algorithm that identifies and labels the connected component that a
-particular cell belongs to, in a multi-dimensional array. Essentially, it’s DFS, but on a grid,
-and we want to find the connected component of all the connected cells with the same number.    
-For example, let’s look at the following grid and see how floodfill works, starting from the
-top-left cell. The color scheme will be the same: red for the node currently being processed,
-blue for nodes already visited, and uncolored for nodes not yet visited.
+**Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to, in a multi-dimensional array. Essentially, it’s DFS, but on a grid, and we want to find the connected component of all the connected cells with the same number.  
+For example, let’s look at the following grid and see how floodfill works, starting from the top-left cell. The color scheme will be the same: red for the node currently being processed, blue for nodes already visited, and uncolored for nodes not yet visited.
 
 <IncompleteSection>
 
@@ -54,16 +68,9 @@ add tables from book
 
 </IncompleteSection>
 
-As opposed to an explicit graph where the edges are given, a grid is an implicit graph.
-This means that the neighbors are just the nodes directly adjacent in the four cardinal
-directions.
+As opposed to an explicit graph where the edges are given, a grid is an implicit graph. This means that the neighbors are just the nodes directly adjacent in the four cardinal directions.
 
-Usually, grids given in problems will be $N$ by $M$, so the first line of the input contains the
-numbers $N$ and $M$. In this example, we will use an two-dimensional integer array to store the
-grid, but depending on the problem, a two-dimensional character array or a two-dimensional
-boolean array may be more appropriate. Then, there are $N$ rows, each with $M$ numbers
-containing the contents of each square in the grid. Example input might look like the following
-(varies between problems):
+Usually, grids given in problems will be $N$ by $M$, so the first line of the input contains the numbers $N$ and $M$. In this example, we will use an two-dimensional integer array to store the grid, but depending on the problem, a two-dimensional character array or a two-dimensional boolean array may be more appropriate. Then, there are $N$ rows, each with $M$ numbers containing the contents of each square in the grid. Example input might look like the following (varies between problems):
 
 ```
 3 4
@@ -108,17 +115,16 @@ int main(){
 ## Solution - Counting Rooms
 
 <Resources>
-  <Resource source="GFG" title="Flood Fill" url="flood-fill-algorithm-implement-fill-paint"></Resource>
+	<Resource
+		source="GFG"
+		title="Flood Fill"
+		url="flood-fill-algorithm-implement-fill-paint"
+	></Resource>
 </Resources>
 
-When doing floodfill, we will maintain an $N\times M$ array of booleans to keep track of
-which squares have been visited, and a global variable to maintain the size of the current
-component we are visiting. Make sure to store the grid, the visited array, dimensions, and
-the current size variable globally.
+When doing floodfill, we will maintain an $N\times M$ array of booleans to keep track of which squares have been visited, and a global variable to maintain the size of the current component we are visiting. Make sure to store the grid, the visited array, dimensions, and the current size variable globally.
 
-This means that we want to recursively call the search function from the squares above,
-below, and to the left and right of our current square. The algorithm to find the size of a
-connected component in a grid using floodfill is as follows (we’ll also maintain a 2D visited array).
+This means that we want to recursively call the search function from the squares above, below, and to the left and right of our current square. The algorithm to find the size of a connected component in a grid using floodfill is as follows (we’ll also maintain a 2D visited array).
 
 <LanguageSection>
 
