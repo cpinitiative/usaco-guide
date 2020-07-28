@@ -338,19 +338,17 @@ export default function MarkdownLayout({
                     </svg>
                   </button>
                 </div>
-                <div className="flex-1 h-0 pt-5 overflow-y-auto">
+                <div className="flex-1 h-0 pt-5 flex flex-col">
                   <Link
                     className="flex-shrink-0 flex items-center px-4"
                     to="/dashboard/"
                   >
                     <Logo />
                   </Link>
-                  <div className="mt-4 px-6">
+                  <div className="my-4 px-6">
                     <Breadcrumbs />
                   </div>
-                  <nav className="mt-6">
-                    <SidebarNav />
-                  </nav>
+                  <SidebarNav />
                 </div>
                 <SidebarBottomButtons
                   onContactUs={() => {
@@ -372,7 +370,7 @@ export default function MarkdownLayout({
           className="flex flex-col border-r border-gray-200 bg-white"
           style={{ width: '20rem' }}
         >
-          <div className="h-0 flex-1 flex flex-col pt-5 overflow-y-auto">
+          <div className="h-0 flex-1 flex flex-col pt-5">
             <Link
               className="flex items-center flex-shrink-0 px-4 pb-2"
               to="/dashboard/"
@@ -380,9 +378,7 @@ export default function MarkdownLayout({
               <Logo />
             </Link>
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <nav className="mt-2 flex-1 bg-white">
-              <SidebarNav />
-            </nav>
+            <SidebarNav />
           </div>
           <SidebarBottomButtons
             onContactUs={() => setIsContactUsActive(true)}
