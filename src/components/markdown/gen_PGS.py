@@ -24,11 +24,12 @@ def go(source):
 			for x in components:
 				cur = ""
 				periods = 0
+				bad = False
 				for c in x:
 					if c == '.':
 						periods += 1
 					else:
-						if periods > 1:
+						if periods > 1 or not bad:
 							tmp.append(cur)
 							tmp.append("".join(['.']*periods))
 							cur = ""
@@ -36,6 +37,7 @@ def go(source):
 						else:
 							cur += "".join(['.']*periods)
 							periods = 0
+						bad = True
 						cur += c
 				tmp.append(cur)
 				tmp.append("".join(['.']*periods))
@@ -84,6 +86,7 @@ def go(source):
 			# print("RESULT",tmp)
 			if len(tmp)%2 != 0:
 				print("OOPS",tmp)
+			# print(tmp)
 			for i in range(len(tmp)//2):
 				res[source][tmp[2*i]] = int(tmp[2*i+1])
 
