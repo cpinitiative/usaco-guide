@@ -314,6 +314,7 @@ export const UserDataProvider = ({ children }) => {
       userProgressOnModules,
       userProgressOnProblems,
       lastViewedModule,
+      lastReadAnnouncement,
       firebaseUser,
       firebase,
     ]
