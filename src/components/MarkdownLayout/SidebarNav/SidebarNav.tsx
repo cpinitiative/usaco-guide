@@ -39,7 +39,7 @@ export const SidebarNav = () => {
     <nav className="flex-1 bg-white flex flex-col h-0">
       <div className="flex-shrink-0">
         <select
-          className="mt-1 form-select block w-full text-center pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+          className="mt-1 form-select block w-full pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
           onChange={e => setActiveSection(e.target.value)}
         >
           {SECTIONS.map(s => (
