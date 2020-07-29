@@ -105,13 +105,11 @@ A related topic is **coordinate compression**, which takes some points and reass
 
 However, each of the points are in the range $0 \ldots 1,000,000,000$, meaning you can't store locations of haybales in, for instance, a boolean array.
 
+Let's place all of the locations of the haybales into a list and sort it. Now, let's map each integer to an integer in the range $1 \ldots N$. To do this, we can place the locations of haybales into a set along with the queries.
 
+Then, for a query $(q_l, q_r)$, we can set $q_l$ to the closest haybale $x$ such that $x \geq q_l$, and $q_r$ to the closest haybale such that $x \leq q_r$, since this won't affect the answers to the queries.
 
-Let's place all of the locations of the haybales into a list and sort it. Now, let's map each integer to an integer in the range $1 \ldots N$. To do this, we can place the locations of haybales into a set along with the queries. 
-
-Then, for a query $(q_l, q_r)$, we can set $q_l$ to the closest haybale $x$ such that $x \geq q_l$, and $q_r$ to the closest haybale such that $x \leq q_r$, since this won't affect the answers to the queries. 
-
-Now we have a set of at most $N$ distinct integers, so we can iterate through with a counter and increment every time you map a position to the counter. 
+Now we have a set of at most $N$ distinct integers, so we can iterate through with a counter and increment every time you map a position to the counter.
 
 <Spoiler title="Example Code">
 
@@ -145,7 +143,7 @@ const int maxn = 100005;
 set<int> pos; map<int, int> compress; int psums[maxn];
 
 int main() {
-    setIO("haybales"); 
+    setIO("haybales");
     int n, q; cin >> n >> q;
     vector<int> vals;
     for (int i = 0; i < n; i++) {

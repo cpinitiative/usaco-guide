@@ -17,7 +17,7 @@ int wei(int x) { return (x>>16)*a+(x&((1<<16)-1))*b; }
 
 /**
  * Description: Disjoint Set Union with path compression
- 	* and union by size. Add edges and test connectivity. 
+ 	* and union by size. Add edges and test connectivity.
  	* Use for Kruskal's or Boruvka's minimum spanning tree.
  * Time: O(\alpha(N))
  * Source: CSAcademy, KACTL
@@ -26,7 +26,7 @@ int wei(int x) { return (x>>16)*a+(x&((1<<16)-1))*b; }
 
 struct DSU {
 	vi e; void init(int N) { e = vi(N,-1); }
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); } 
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
 	bool unite(int x, int y) { // union by size
@@ -39,7 +39,7 @@ struct DSU {
 /**template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	sort(all(ed));
 	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f; 
+	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
 	return ans;
 }*/
 
@@ -50,7 +50,7 @@ DSU D;
 int cnt[1<<16];
 
 int main() {
-	setIO("walk"); 
+	setIO("walk");
 	clock_t beg = clock();
 	re(N,K); D.init(N+1);
 	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
@@ -92,7 +92,7 @@ int main(){
 	ofstream fout ("walk.out");
 	int n,k; fin >> n >> k;
 	int answer = 2019201997 - 48*n - 84*(k-1);
-	fout << answer << endl; 
+	fout << answer << endl;
 }
 ```
 

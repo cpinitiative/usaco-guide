@@ -365,12 +365,15 @@ export default function MarkdownLayout({
         </div>
       </Transition>
       {/* Static sidebar for desktop */}
-      <div className="hidden lg:flex lg:flex-shrink-0">
+      <div
+        className="hidden lg:block fixed z-10 top-0 left-0 bottom-0"
+        style={{ width: '20rem' }}
+      >
         <div
-          className="flex flex-col border-r border-gray-200 bg-white"
+          className="border-r border-gray-200 bg-white h-screen flex flex-col"
           style={{ width: '20rem' }}
         >
-          <div className="h-0 flex-1 flex flex-col pt-5">
+          <div className="flex-grow h-0 flex flex-col pt-5">
             <Link
               className="flex items-center flex-shrink-0 px-4 pb-2"
               to="/dashboard/"
@@ -385,7 +388,7 @@ export default function MarkdownLayout({
           />
         </div>
       </div>
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
+      <div className="h-screen">
         <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
@@ -411,12 +414,17 @@ export default function MarkdownLayout({
           </div>
         </div>
         <main
-          className="flex-1 relative z-0 overflow-y-auto sm:pt-2 pb-6 focus:outline-none"
+          className="relative z-0 sm:pt-2 pb-6 focus:outline-none"
           style={pageRendered ? { scrollBehavior: 'smooth' } : null}
           tabIndex={0}
         >
           <div className="mx-auto">
             <div className="flex justify-center">
+              {/* Placeholder for the sidebar */}
+              <div
+                className="flex-shrink-0 hidden lg:block"
+                style={{ width: '20rem' }}
+              />
               <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0">
                 <div className="hidden lg:block">
                   <NavBar />

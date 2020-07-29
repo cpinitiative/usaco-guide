@@ -36,7 +36,7 @@ export const SidebarNav = () => {
   }, [activeSection, sidebarLinks]);
 
   return (
-    <nav className="flex-1 bg-white flex flex-col h-0">
+    <nav className="flex-grow bg-white flex flex-col h-0">
       <div className="flex-shrink-0">
         <select
           className="mt-1 form-select block w-full pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
