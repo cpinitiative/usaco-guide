@@ -148,6 +148,126 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static int N;
+    static int weights[];
+
+    public static void main(String[] args) throws Exception {
+    	FastIO sc = new FastIO(System.in);	//See "Intro - FastIO" - this class acts similarly to Scanner, but faster
+    	PrintWriter pw = new PrintWriter(System.out);
+
+    	N = sc.nextInt();
+    	weights = new int[N];
+    	for(int i = 0; i < N; i++) {
+    		weights[i] = sc.nextInt();
+    	}
+
+    	pw.println(solve(0, 0, 0));
+    	pw.close();
+    }
+
+    static long solve(int index, long s1_sum, long s2_sum) {
+    	if(index == N) {
+    		return Math.abs(s1_sum - s2_sum);
+    	}
+
+    	return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+    }
+
+    //see "Intro - FastIO"
+    //this class acts similarly to Scanner, but faster
+    static class FastIO {
+
+    	InputStream dis;
+    	byte[] buffer = new byte[1 << 17];
+    	int pointer = 0;
+
+    	public FastIO(String fileName) throws Exception {
+    		dis = new FileInputStream(fileName);
+    	}
+
+    	public FastIO(InputStream is) throws Exception {
+    		dis = is;
+    	}
+
+    	int nextInt() throws Exception {
+    		int ret = 0;
+
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		boolean negative = false;
+    		if (b == '-') {
+    			negative = true;
+    			b = nextByte();
+    		}
+    		while (b >= '0' && b <= '9') {
+    			ret = 10 * ret + b - '0';
+    			b = nextByte();
+    		}
+
+    		return (negative) ? -ret : ret;
+    	}
+
+    	long nextLong() throws Exception {
+    		long ret = 0;
+
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		boolean negative = false;
+    		if (b == '-') {
+    			negative = true;
+    			b = nextByte();
+    		}
+    		while (b >= '0' && b <= '9') {
+    			ret = 10 * ret + b - '0';
+    			b = nextByte();
+    		}
+
+    		return (negative) ? -ret : ret;
+    	}
+
+    	byte nextByte() throws Exception {
+    		if (pointer == buffer.length) {
+    			dis.read(buffer, 0, buffer.length);
+    			pointer = 0;
+    		}
+    		return buffer[pointer++];
+    	}
+
+    	String next() throws Exception {
+    		StringBuffer ret = new StringBuffer();
+
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		while (b > ' ') {
+    			ret.appendCodePoint(b);
+    			b = nextByte();
+    		}
+
+    		return ret.toString();
+    	}
+
+    }
+
+}
+
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -213,6 +333,130 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
+		PrintWriter pw = new PrintWriter(System.out);
+
+		int N = sc.nextInt();
+		int weights[] = new int[N];
+		for(int i = 0; i < N; i++) {
+			weights[i] = sc.nextInt();
+		}
+
+		long ans = Long.MAX_VALUE;
+
+		for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
+			long s1 = 0;
+			long s2 = 0;
+
+			for(int i = 0; i < N; i++) {
+				if((bitmask & (1 << i)) > 0) {
+					s1 += weights[i];
+				} else {
+					s2 += weights[i];
+				}
+			}
+			ans = Math.min(ans, Math.abs(s1-s2));
+		}
+
+		pw.println(ans);
+		pw.close();
+	}
+
+
+	//See Intro - FastIO
+	//this class acts similarly to Scanner
+	static class FastIO {
+
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
+
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
+		}
+
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
+		}
+
+		int nextInt() throws Exception {
+			int ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		long nextLong() throws Exception {
+			long ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
+
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
+
+			return ret.toString();
+		}
+
+	}
+}
+
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -273,6 +517,7 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 </Resources>
 
 </CPPSection>
+
 <JavaSection>
 
 <Warning>
