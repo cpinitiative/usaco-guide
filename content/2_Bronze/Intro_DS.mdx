@@ -9,37 +9,7 @@ frequency: 4
 import { Problem } from '../models';
 
 export const problems = {
-	bubble: [
-		new Problem(
-			'HR',
-			'Bubble Sort',
-			'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-			'Very Easy',
-			false,
-			[],
-			"Implement the Bubble Sort algorithm. Read any of the resources if you don't know how to do that, or just google."
-		),
-	],
-	easy: [
-		new Problem(
-			'CSES',
-			'Distinct Numbers',
-			'1621',
-			'Easy',
-			false,
-			[],
-			'cses-1621'
-		),
-		new Problem(
-			'CF',
-			'Kayaking',
-			'contest/863/problem/B',
-			'Easy',
-			false,
-			[],
-			"Loop over all pairs of people too put in the single Kayaks. Then, sort the remaining people and pair $a_i$ with $a_{i + 1}$ because this minimizes the sum of absolute values (draw some cases if you're confused why)."
-		),
-	],
+	
 };
 
 <!--
@@ -308,77 +278,7 @@ for(auto element : v) {
 
 </LanguageSection>
 
-## Sorting
+There aren't any problems in this section because Dynamic Arrays can be used in almost any problem, and doesn't directly solve any USACO problems.
 
-<Problems problems={problems.bubble} />
+<!-- Unless someone has any. I really can't find anything... -->
 
-**Sorting** refers to arranging items in some particular order.
-
-<Resources>
-	<Resource source="CPH" title="3.1 - Sorting Theory"></Resource>
-	<Resource source="CSA" title="Sorting" url="sorting">
-		{' '}
-	</Resource>
-</Resources>
-
-<!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
-
-Although you do **not** need to know how sorting is implemented for Bronze, you should know how to use built-in methods to sort a (possibly dynamic) array.
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-	<Resource source="CPH" title="3.2 - Sorting in C++" starred>
-		can stop before comparison operators, which are covered in silver
-	</Resource>
-	<Resource
-		source="CPP"
-		title="std::sort"
-		url="https://en.cppreference.com/w/cpp/algorithm/sort"
-	>
-		reference
-	</Resource>
-	<Resource source="CF" title="C++ Tricks" url="blog/entry/74684">
-		first two related to sorting
-	</Resource>
-</Resources>
-
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
-
-</CPPSection>
-
-<JavaSection>
-
-In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
-
-- [Arrays.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])>)
-- [Collections.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)>)
-
-The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CodeForces.
-
-Two ways to avoid this:
-
-- Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
-- [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
-
-</JavaSection>
-
-<PySection>
-
-- [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
-
-</PySection>
-
-</LanguageSection>
-
-## Problems
-
-<Problems problems={problems.easy} />
-
-<IncompleteSection>
-
-what about USACO problems? (though sorting is _very_ rare in Bronze)
-
-</IncompleteSection>
