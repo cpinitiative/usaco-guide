@@ -54,7 +54,6 @@ export const problems = {
 			[],
 			'@CPH 5.3'
 		),
-		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 	gen: [
 		new Problem(
@@ -75,6 +74,7 @@ export const problems = {
 			['permutations'],
 			''
 		), // 91.95
+		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 };
 
@@ -495,7 +495,7 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 <Resources>
 	<Resource source="CPH" title="5.2 - Generating Permutations" starred>
-		good explanation + code, no need to repeat
+		good explanation + code including next_permutation, no need to repeat
 	</Resource>
 </Resources>
 
@@ -503,7 +503,7 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 <CPPSection>
 
-### About `next_permutation`
+### About [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
 
 <Resources>
 	<Resource
@@ -512,9 +512,22 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 		url="https://marknelson.us/posts/2002/03/01/next-permutation.html"
 		starred
 	>
-		{' '}
+		explains how it works with an example
 	</Resource>
 </Resources>
+
+Alternatively, we can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
+
+What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
+
+```cpp
+do {
+	check(v); // process or check the current permutation for validity
+} while(next_permutation(v.begin(), v.end()));
+```
+
+Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
+
 
 </CPPSection>
 
@@ -594,8 +607,6 @@ int main() {
 
 <!-- ### Checking Permutations in Lexicographical Order
 
-What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
-
 <LanguageSection>
 
 <CPPSection>
@@ -607,18 +618,6 @@ What's going to be in the `check` function depends on the problem, but it should
 <IncompleteSection />
 
 #### Method 2
-
-
-
-Alternatively, we can just use the [`next_permutation()`](https://en.cppreference.com/w/cpp/algorithm/next_permutation) function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
-
-```cpp
-do {
-	check(v); // process or check the current permutation for validity
-} while(next_permutation(v.begin(), v.end()));
-```
-
-Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
 
 </CPPSection>
 
@@ -665,19 +664,12 @@ public class Test {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning" starred>
-		how to solve the above two problems
+	<Resource source="CPH" title="5.3 - Backtracking" starred>
 	</Resource>
 	<Resource source="CP2" title="3.2 - Complete Search">
 		{' '}
 	</Resource>
 </Resources>
-
-<Warning>
-
-No (current) bronze problem should require pruning like that which "Grid Paths" requires.
-
-</Warning>
 
 ### Solution - Chessboard & Queens
 
@@ -780,6 +772,12 @@ Finally, when we have placed all the queens and the boardstate is valid, then in
 </Spoiler>
 
 ## Problems
+
+<Warning>
+
+Don't expect a problem like "Grid Paths" in an actual contest.
+
+</Warning>
 
 <Problems problems={problems.gen} />
 
