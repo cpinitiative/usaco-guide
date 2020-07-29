@@ -2,10 +2,10 @@
 id: intro-sets
 title: Introduction to Sorting, Sets, and Maps
 author: Darren Yao, Benjamin Qi
-description: 'Maintaining collections of distinct elements with ordered sets, and sorting.'
+description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
 frequency: 2
 prerequisites:
-  - pairs-tuples
+  - intro-ds
 ---
 
 import { Problem } from '../models';
@@ -19,10 +19,10 @@ export const problems = {
 			'Very Easy',
 			false,
 			[],
-			"Implement the Bubble Sort algorithm. Read any of the resources if you don't know how to do that, or just google."
+			''
 		),
 	],
-	easy: [
+	dis: [
 		new Problem(
 			'CSES',
 			'Distinct Numbers',
@@ -30,8 +30,12 @@ export const problems = {
 			'Easy',
 			false,
 			[],
-			'cses-1621'
+			'cses-1621',
+			'',
 		),
+	],
+	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
+	standard: [
 		new Problem(
 			'CF',
 			'Kayaking',
@@ -46,23 +50,10 @@ export const problems = {
 			'Why Did the Cow Cross the Road III',
 			'713',
 			'Easy',
-			[],
-			''
-		)
-	],
-	dis: [
-		new Problem(
-			'CSES',
-			'Distinct Numbers',
-			'1621',
-			'Easy',
 			false,
 			[],
-			'cses-1621'
+			''
 		),
-	],
-	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
-	standard: [
 		new Problem(
 			'CSES',
 			'Sum of Two Values',
@@ -117,6 +108,8 @@ export const problems = {
 
 <!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
 
+### Sorting (Dynamic) Arrays
+
 Although you do **not** need to know how sorting is implemented for Bronze, you should know how to use built-in methods to sort a (possibly dynamic) array.
 
 <LanguageSection>
@@ -167,21 +160,55 @@ Two ways to avoid this:
 
 </LanguageSection>
 
+### Sorting Pairs & Tuples
+
+<Resources>
+	<Resource source="CPH" title="3.2 - Comparison Operators" starred></Resource>
+</Resources>
+
+By default, C++ pairs are sorted by first element and then second element in case of a tie, which is precisely what we need for the example above.
+
+Example from CPH:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<pair<int,int>> v;
+	v.push_back({1,5});
+	v.push_back({2,3});
+	v.push_back({1,2});
+	sort(v.begin(), v.end());
+	for (pair<int,int> p: v) cout << p.first << " " << p.second << "\n";
+}
+
+/* Output:
+1 2
+1 5
+2 3
+*/
+```
+
+Tuples are sorted similarly.
+
 ## Problems
 
-<Problems problems={problems.easy} />
+<Problems problems={problems.dis} />
 
-<IncompleteSection>
+<!-- <IncompleteSection>
 
 what about USACO problems? (though sorting is _very_ rare in Bronze)
 
-</IncompleteSection>
+</IncompleteSection> -->
 
 <!-- I added one, but I can't find anything else -->
 
+## Ordered Sets & Maps
+
 Both Java and C++ contain two versions of sets and maps; one using **sorting** and the other using **hashing**. We'll only introduce the former version in this module.
 
-## Sets
+### Sets
 
 <Problems problems={problems.dis} />
 
@@ -262,7 +289,7 @@ What about `size()`?
 
 </IncompleteSection>
 
-## Maps
+### Maps
 
 <Problems problems={problems.ex} />
 

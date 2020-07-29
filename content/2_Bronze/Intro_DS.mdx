@@ -1,8 +1,8 @@
 ---
 id: intro-ds
 title: Introduction to Data Structures
-author: Darren Yao, Benjamin Qi
-description: 'Basic data structures in multiple languages, dynamic arrays and sorting.'
+author: Darren Yao, Benjamin Qi, Nathan Wang, Abutalib Namazov
+description: 'Introduces the concept of a data structure, dynamic arrays, pairs.'
 frequency: 4
 ---
 
@@ -16,26 +16,10 @@ export const problems = {
   new Problem("Silver", "Teleportation", "812", "Very Hard", false, [], ""),
  -->
 
-<Resources>
-	<Resource source="IUSACO" title="4.1 - Dynamic Arrays">
-		module is based off this
-	</Resource>
-	<Resource source="CPH" title="4.1 - Dynamic Arrays" starred>
-		vectors, strings
-	</Resource>
-	<Resource source="PAPS" title="3.1 - Vectors, 6.1 - Dynamic Arrays">
-		how dynamic arrays work
-	</Resource>
-	<Resource source="CPC" title="2 - Data Structures" url="02_data_structures">
-		assumes prior experience
-	</Resource>
-</Resources>
-
-<br />
 
 A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
 
-## Introduction
+## Data Structures
 
 <LanguageSection>
 
@@ -74,6 +58,24 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 </LanguageSection>
 
 ## Dynamic Arrays
+
+<Resources>
+	<Resource source="IUSACO" title="4.1 - Dynamic Arrays">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.1 - Dynamic Arrays" starred>
+		vectors, strings
+	</Resource>
+	<Resource source="PAPS" title="3.1 - Vectors, 6.1 - Dynamic Arrays">
+		how dynamic arrays work
+	</Resource>
+</Resources>
+
+<!-- <Resource source="CPC" title="2 - Data Structures" url="02_data_structures">
+	assumes prior experience
+</Resource> -->
+
+<br />
 
 You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++, [`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can repeatedly reallocate storage to accommodate more elements as they are added.
 
@@ -278,7 +280,146 @@ for(auto element : v) {
 
 </LanguageSection>
 
-There aren't any problems in this section because Dynamic Arrays can be used in almost any problem, and doesn't directly solve any USACO problems.
+## Pairs & Tuples
+
+Storing multiple elements as a single unit allows you to change the order of the elements (e.g. sorting) without mixing one component with another.
+
+**Example:** Given some points on a plane where the $i$-th point has coordinates $(x_i,y_i)$, sort these points in increasing order of $x$ coordinate and increasing order of $y$ in case there is a tie.
+
+If you sort one of $x_i$ and $y_i$ without considering the other, the points will not be in the correct order. We need to consider the pair $(x_i,y_i)$ as a single unit.
+
+<LanguageSection>
+<CPPSection />
+<PySection>
+
+<Warning title="Language Note">
+
+**Pairs are not available in Python.** Just use tuples; no need for pairs!
+
+</Warning>
+
+</PySection>
+<JavaSection>
+
+<Warning title="Language Note">
+
+**Pairs and tuples are not available in Java.** Just create your own class! If you are using Java, just skip this module.
+
+</Warning>
+
+</JavaSection>
+</LanguageSection>
+
+<LanguageSection>
+<CPPSection>
+
+### [Pairs](http://www.cplusplus.com/reference/utility/pair/pair/)
+
+- `pair<type1, type2> p`: Creates a pair `p` with two elements with the first one being of `type1` and the second one being of `type2`.
+- `make_pair(a, b)`: Returns a pair with values `a`, `b`.
+- `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
+- `pair.first`: The first value of the pair.
+- `pair.second`: The second value of the pair.
+
+Example:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	pair<string, int> myPair1 = make_pair("Testing", 123);
+	cout << myPair1.first << " " << myPair1.second << endl;
+	myPair1.first = "It is possible to edit pairs after declaring them";
+	cout << myPair1.first << " " << myPair1.second << endl;
+
+	pair<string, string> myPair2 = {"Testing", "curly braces"};
+	cout << myPair2.first << " " << myPair2.second << endl;
+}
+
+/* Output:
+Testing 123
+It is possible to edit pairs after declaring them 123
+Testing curly braces
+*/
+```
+
+### [Tuples](http://www.cplusplus.com/reference/tuple/)
+
+Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using **tuples** might be more convenient.
+
+- `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
+- `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
+- `get<i>(t)`: Returns the `i`'th element of the tuple `t`. Can also be used to change the element of a tuple.
+
+This operation only works for constant `i`. Namely, it is **not** allowed to do something like the following since `i` is not constant:
+
+```cpp
+tuple<int,int,int> t{3,4,5};
+int i = 1; cout << get<i>(t);
+```
+
+- `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple $t$ accordingly.
+
+<!-- This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes.  -->
+
+Example:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int a = 3, b = 4, c = 5;
+	tuple<int, int, int> t = tie(a, b, c);
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+	get<0>(t) = 7;
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+
+	tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
+	string s1, s2; int x;
+	tie(s1, s2, x) = tp2;
+	cout << s1 << " " << s2 << " " << x << endl;
+}
+
+/* Output:
+3 4 5
+7 4 5
+Hello world 100
+*/
+```
+
+
+</CPPSection>
+
+<JavaSection></JavaSection>
+
+<PySection>
+
+## Python Tuples
+
+Use the link below (if you know of a better one, please let us know!) to learn about tuples.
+
+Python automatically sorts a list of tuples by the first element, then the second, and so on. This can save you time and keystrokes for certain problems like the one above.
+
+<Resources>
+
+<Resource
+	source="Tutorialspoint"
+	title="Python Tuples"
+	url="https://www.tutorialspoint.com/python/python_tuples.htm"
+	starred
+/>
+
+</Resources>
+
+</PySection>
+
+</LanguageSection>
+
+<!-- ## Problems
+
+There aren't any problems in this section because Dynamic Arrays can be used in almost any problem, and doesn't directly solve any USACO problems. -->
 
 <!-- Unless someone has any. I really can't find anything... -->
 

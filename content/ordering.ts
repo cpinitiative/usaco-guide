@@ -55,7 +55,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['intro-ds', 'pairs-tuples', 'intro-sets'],
+      items: ['intro-ds', 'intro-sets'],
     },
     {
       name: 'Complete Search',
