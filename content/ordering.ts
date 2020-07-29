@@ -51,11 +51,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Basics',
-      items: ['time-comp', 'simulation', 'rect-geo'],
-    },
-    {
-      name: 'Data Structures',
-      items: ['intro-ds', 'pairs-tuples', 'intro-sets'],
+      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo', 'intro-sets'],
     },
     {
       name: 'Complete Search',
