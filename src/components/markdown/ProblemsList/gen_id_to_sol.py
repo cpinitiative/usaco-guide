@@ -93,15 +93,11 @@ edLinks = {}
 
 def processEdi(url):
 	soup = parse(url)
-	#pprint.pprint(soup)
-	#sys.exit(0)
 
 	for x in soup.find_all('div',["panel historypanel"]):
-		# print("HA",y,j)
 		res = []
 		for y in x.find_all('a'):
 			res.append(y['href'])
-		#print("FOUND",res)
 		ID = res[0][res[0].rfind('=')+1:]
 		edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
 
@@ -159,34 +155,12 @@ get_all()
 def id_to_sol():
 	month = ["dec","jan","feb","open"]
 	offset = [0, 1, 1, 1]
-	years = range(15,20)
-	pref = "http://www.usaco.org/index.php?page="
+	years = range(15,20) # recent USACO
+	pref = "http://www.usaco.org/index.php?page=" # prefix for each url
 	ed = []
 	for year in years:
 		for j in range(4):
-			# print("DOING",y,j)
 			url = pref+month[j]+str(year+offset[j])+"results"
 
-	# for a in edLinks:
-	# 	pprint(a)
-	# print(edLinks)
-	# for e in ed:
-	# 	p = parse(e)
-	# 	yes = False
-	# 	text = p.text.lower()
-	# 	# if text.count("map") or text.count("set"):
-	# 	# 	yes = True
-	# 	# print(p.text)
-	# 	# 
-	# 	# if "the" in p.text.lower():
-	# 	# 	yes = True
-	# 	for code in p.find_all('pre', ['prettyprint']):
-	# 		text = code.text.lower()
-	# 		# if 'queue<' in text or 'LinkedList' in text:
-	# 		# 	yes = True
-	# 		if text.count('set<') or text.count('map<'):
-	# 			yes = True
-	# 	if yes:
-	# 		print(e)
 
 # get_all()

@@ -19,7 +19,7 @@ export const problems = {
 			'Intro|Very Easy',
 			false,
 			['Recursion', 'Subsets'],
-			'@Below'
+			'@B'
 		),
 	],
 	permSam: [
@@ -30,7 +30,7 @@ export const problems = {
 			'Intro|Easy',
 			false,
 			[],
-			'@Below'
+			'@B'
 		),
 	],
 	ex: [
@@ -54,7 +54,6 @@ export const problems = {
 			[],
 			'@CPH 5.3'
 		),
-		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 	gen: [
 		new Problem(
@@ -75,6 +74,7 @@ export const problems = {
 			['permutations'],
 			''
 		), // 91.95
+		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 };
 
@@ -149,119 +149,121 @@ int main() {
 </CPPSection>
 
 <JavaSection>
-	
+
 ```java
 import java.util.*;
 import java.io.*;
 
 public class Main {
 
-	static int N;
-	static int weights[];
+    static int N;
+    static int weights[];
 
-	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in);	//See "Intro - FastIO" - this class acts similarly to Scanner, but faster
-		PrintWriter pw = new PrintWriter(System.out);
+    public static void main(String[] args) throws Exception {
+    	FastIO sc = new FastIO(System.in);	//See "Intro - FastIO" - this class acts similarly to Scanner, but faster
+    	PrintWriter pw = new PrintWriter(System.out);
 
-		N = sc.nextInt();
-		weights = new int[N];
-		for(int i = 0; i < N; i++) {
-			weights[i] = sc.nextInt();
-		}
+    	N = sc.nextInt();
+    	weights = new int[N];
+    	for(int i = 0; i < N; i++) {
+    		weights[i] = sc.nextInt();
+    	}
 
-		pw.println(solve(0, 0, 0));
-		pw.close();
-	}
+    	pw.println(solve(0, 0, 0));
+    	pw.close();
+    }
 
-	static long solve(int index, long s1_sum, long s2_sum) {
-		if(index == N) {
-			return Math.abs(s1_sum - s2_sum);
-		}
+    static long solve(int index, long s1_sum, long s2_sum) {
+    	if(index == N) {
+    		return Math.abs(s1_sum - s2_sum);
+    	}
 
-		return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
-	}
+    	return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+    }
 
-	//see "Intro - FastIO"
-	//this class acts similarly to Scanner, but faster
-	static class FastIO {
+    //see "Intro - FastIO"
+    //this class acts similarly to Scanner, but faster
+    static class FastIO {
 
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
+    	InputStream dis;
+    	byte[] buffer = new byte[1 << 17];
+    	int pointer = 0;
 
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
+    	public FastIO(String fileName) throws Exception {
+    		dis = new FileInputStream(fileName);
+    	}
 
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
+    	public FastIO(InputStream is) throws Exception {
+    		dis = is;
+    	}
 
-		int nextInt() throws Exception {
-			int ret = 0;
+    	int nextInt() throws Exception {
+    		int ret = 0;
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		boolean negative = false;
+    		if (b == '-') {
+    			negative = true;
+    			b = nextByte();
+    		}
+    		while (b >= '0' && b <= '9') {
+    			ret = 10 * ret + b - '0';
+    			b = nextByte();
+    		}
 
-			return (negative) ? -ret : ret;
-		}
+    		return (negative) ? -ret : ret;
+    	}
 
-		long nextLong() throws Exception {
-			long ret = 0;
+    	long nextLong() throws Exception {
+    		long ret = 0;
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		boolean negative = false;
+    		if (b == '-') {
+    			negative = true;
+    			b = nextByte();
+    		}
+    		while (b >= '0' && b <= '9') {
+    			ret = 10 * ret + b - '0';
+    			b = nextByte();
+    		}
 
-			return (negative) ? -ret : ret;
-		}
+    		return (negative) ? -ret : ret;
+    	}
 
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
+    	byte nextByte() throws Exception {
+    		if (pointer == buffer.length) {
+    			dis.read(buffer, 0, buffer.length);
+    			pointer = 0;
+    		}
+    		return buffer[pointer++];
+    	}
 
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
+    	String next() throws Exception {
+    		StringBuffer ret = new StringBuffer();
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
+    		byte b;
+    		do {
+    			b = nextByte();
+    		} while (b <= ' ');
+    		while (b > ' ') {
+    			ret.appendCodePoint(b);
+    			b = nextByte();
+    		}
 
-			return ret.toString();
-		}
+    		return ret.toString();
+    	}
 
-	}
+    }
+
 }
+
 ```
 
 </JavaSection>
@@ -453,6 +455,8 @@ public class Main {
 
 ```
 
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -491,7 +495,7 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 <Resources>
 	<Resource source="CPH" title="5.2 - Generating Permutations" starred>
-		good explanation + code, no need to repeat
+		good explanation + code including next_permutation, no need to repeat
 	</Resource>
 </Resources>
 
@@ -499,7 +503,7 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 <CPPSection>
 
-### About `next_permutation`
+### About [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
 
 <Resources>
 	<Resource
@@ -508,11 +512,25 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 		url="https://marknelson.us/posts/2002/03/01/next-permutation.html"
 		starred
 	>
-		{' '}
+		explains how it works with an example
 	</Resource>
 </Resources>
 
+Alternatively, we can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
+
+What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
+
+```cpp
+do {
+	check(v); // process or check the current permutation for validity
+} while(next_permutation(v.begin(), v.end()));
+```
+
+Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
+
+
 </CPPSection>
+
 <JavaSection>
 
 <Warning>
@@ -589,8 +607,6 @@ int main() {
 
 <!-- ### Checking Permutations in Lexicographical Order
 
-What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
-
 <LanguageSection>
 
 <CPPSection>
@@ -602,18 +618,6 @@ What's going to be in the `check` function depends on the problem, but it should
 <IncompleteSection />
 
 #### Method 2
-
-
-
-Alternatively, we can just use the [`next_permutation()`](https://en.cppreference.com/w/cpp/algorithm/next_permutation) function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
-
-```cpp
-do {
-	check(v); // process or check the current permutation for validity
-} while(next_permutation(v.begin(), v.end()));
-```
-
-Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
 
 </CPPSection>
 
@@ -660,19 +664,12 @@ public class Test {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.3, 5.4 - Backtracking, Pruning" starred>
-		how to solve the above two problems
+	<Resource source="CPH" title="5.3 - Backtracking" starred>
 	</Resource>
 	<Resource source="CP2" title="3.2 - Complete Search">
 		{' '}
 	</Resource>
 </Resources>
-
-<Warning>
-
-No (current) bronze problem should require pruning like that which "Grid Paths" requires.
-
-</Warning>
 
 ### Solution - Chessboard & Queens
 
@@ -775,6 +772,12 @@ Finally, when we have placed all the queens and the boardstate is valid, then in
 </Spoiler>
 
 ## Problems
+
+<Warning>
+
+Don't expect a problem like "Grid Paths" in an actual contest.
+
+</Warning>
 
 <Problems problems={problems.gen} />
 
