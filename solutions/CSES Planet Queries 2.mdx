@@ -14,9 +14,9 @@ An important property of a functional graph is that it's structure is composed o
 
 ## Tree Case
 
-The first case is if $u$ and $v$ are both on the same tree. To check this, we can store the corresponding root of the tree for each vertex on the functional graph, and check if the roots of $u$ and $v$ are equal.
+The first case is if $u$ and $v$ are on the same tree. To check this, we can store the root of the tree that each vertex is on in functional graph, and check if the roots for $u$ and $v$ are equal.
 
-In this case, the problem reduces to finding the distance between two vertices on a tree, which equals $depth_u + depth_v - 2 \cdot depth_{lca(u, v)}$ where $lca(a, b)$ denotes the lowest common ancestor of vertices $a$ and $b$ and $depth_x$ denotes the distance from the node to the root of its tree.. If you don't know how to compute $lca$, read [Binary Jumping](/plat/bin-jump).
+If they are, the problem reduces to finding the distance between two vertices on a tree, which equals $depth_u + depth_v - 2 \cdot depth_{lca(u, v)}$ where $lca(a, b)$ denotes the lowest common ancestor of vertices $a$ and $b$ and $depth_x$ denotes the distance from the vertex to the root of its tree. If you don't know how to compute $lca$, read [Binary Jumping](/plat/bin-jump).
 
 ## Cycle Case
 
@@ -27,7 +27,7 @@ The three situations where this occurs are:
 - Both vertices are on the cycle.
 - Both vertices are on trees, but they have different roots.
 
-In all 3 cases, the distance can be computed the same way as $depth_u + depth_v + dist_{r_u, r_v}$ where $r_x$ denotes the root of the tree $x$ is on. Note that if a node is on a cycle, it is the root of its tree. To compute the distance between roots, we can give an arbitrary vertex value $0$ and increase the value as you go around the cycle, similar to how you compute its length in the [Functional Graph](/silver/funct-graphs) article. 
+In all 3 cases, the distance can be computed the same way as $depth_u + depth_v + dist_{r_u, r_v}$ where $r_x$ denotes the root of the tree $x$ is on. Note that if a vertex is on a cycle, it is the root of its tree. To compute the distance between roots, we can give an arbitrary vertex value $0$ and increase the value as you go around the cycle, similar to how you compute its length in the [Functional Graph](/silver/funct-graphs) article. 
 
 Then, the distance between two roots is $min(len - (val_u - val_v), val_u - val_v)$ where $len$ is the length of the cycle and $val_u > val_v$, representing going from $u$ to $v$ in either direction.
 
