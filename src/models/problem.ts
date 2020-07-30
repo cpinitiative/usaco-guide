@@ -1,5 +1,3 @@
-import { ProblemsList } from '../components/markdown/ProblemsList/ProblemsList';
-
 const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
   CCO: ['DMOJ', 'Canadian Computing Olympiad'],
