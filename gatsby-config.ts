@@ -69,7 +69,6 @@ export const plugins = [
             disableBgImageOnAlpha: true,
           },
         },
-        'gatsby-remark-autolink-headers',
         // {
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
