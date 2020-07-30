@@ -21,6 +21,11 @@ const sources = {
   Infoarena: 'https://infoarena.ro/problema/',
 };
 
+const oly = {
+  CCO: 'DMOJ',
+  IZhO: 'ojuz',
+};
+
 export class Problem {
   public url: string;
   public difficulty:
@@ -84,7 +89,8 @@ export class Problem {
         }
         this.id = id;
         this.url = sources[source] + id;
-      } else
+      } else if (source in oly) this.url = sources[oly[source]] + id;
+      else
         throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`;
     } else this.url = id;
   }

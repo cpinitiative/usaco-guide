@@ -66,29 +66,22 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   silver: [
     {
-      name: 'Prefix Sums',
-      items: ['prefix-sums'],
-    },
-    {
       name: 'Sorting',
-      items: ['binary-search-sorted', 'sorting-custom', 'greedy'],
+      items: [
+        'binary-search-sorted',
+        'sorting-custom',
+        'intro-ordered',
+        'greedy',
+        'custom-cpp-stl',
+      ],
     },
     {
-      name: 'Two Pointers',
-      items: ['2P'],
-    },
-    {
-      name: 'Binary Search',
-      items: ['binary-search-ans'],
-    },
-    {
-      name: 'Sets & Maps',
-      description: 'Maintaining collections of distinct elements.',
-      items: ['intro-ordered', 'custom-cpp-stl'],
+      name: 'Misc. Topics',
+      items: ['prefix-sums', '2P', 'binary-search-ans'],
     },
     {
       name: 'Graphs',
-      items: ['dfs', 'intro-tree', 'bipartite', 'ff', 'func-graphs'],
+      items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
   gold: [
@@ -167,7 +160,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['bitsets', 'fracture', 'mat-exp'],
+      items: ['mat-exp', 'bitsets', 'fracture'],
     },
   ],
   adv: [

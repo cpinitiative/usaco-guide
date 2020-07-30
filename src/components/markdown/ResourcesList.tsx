@@ -57,6 +57,9 @@ const sources = {
 export const sourceTooltip = {
   GCP: 'Guide to Competitive Programming (based off CPH)',
   AoPS: 'Art of Problem Solving',
+  CCO: 'Canadian Computing Olympiad',
+  CCC: 'Canadian Computing Competition',
+  IZhO: 'International Zhautykov Olympiad',
   CPH: "Book - Competitive Programmer's Handbook",
   PAPS: 'Book - Principles of Algorithmic Problem Solving',
   IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
@@ -79,6 +82,7 @@ export const sourceTooltip = {
   DMOJ: 'Don Mills Online Judge',
   SPOJ: 'Sphere Online Judge',
   YS: 'Library Checker',
+  Kattis: 'open.kattis.com',
   LC: 'LeetCode',
   POI: 'Polish Olympiad in Informatics',
   SO: 'StackOverflow',

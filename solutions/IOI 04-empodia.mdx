@@ -1,0 +1,41 @@
+---
+id: ioi-empodia
+title: IOI 2004 - Empodia
+author: Benjamin Qi
+---
+
+```cpp
+const int BIG = 3000000;
+vi stor[2*BIG];
+int N;
+vi v;
+
+int ex(int x) { return v[x]-x+N; }
+
+int main() {
+	setIO(); re(N); v.rsz(N); re(v); 
+	if (N > BIG) exit(0);
+	dbg(v);
+	vi mn, mx;
+	int maxL = -1;
+	vpi ans;
+	F0R(i,sz(v)) {
+		while (sz(mn) && v[mn.bk] > v[i]) {
+			stor[ex(mn.bk)].pop_back();
+			mn.pop_back();
+		}
+		while (sz(mx) && v[mx.bk] < v[i]) mx.pop_back();
+		int ind = v[i]-i+N;
+		if (sz(stor[ind])) {
+			int x = stor[ind].bk;
+			if ((!sz(mx) || mx.bk < x) && x > maxL) {
+				maxL = x;
+				ans.pb({x,i});
+			}
+		}
+		mn.pb(i); mx.pb(i); stor[v[i]-i+N].pb(i);
+	}
+	ps(sz(ans));
+	trav(t,ans) ps(t.f+1,t.s+1);
+}
+```

@@ -291,6 +291,10 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       sol = '@Check HE';
       hover = 'The editorial tab should be right next to the problem tab.';
     }
+    if (sol == '' && problem.source == 'AC') {
+      sol = '@Check AC';
+      hover = 'The editorial tab should be second from the right.';
+    }
     if (isExternal(sol)) {
       external = true;
     } else if (sol.startsWith('@')) {
