@@ -76,6 +76,8 @@ Don't use relative links like `code-con`, that will break our link checker...
 
 ### Link Checker
 
+`yarn build && yarn serve` -- keep this terminal alive!
+
 `yarn check-links`
 
 ## 4. Table of Contents
