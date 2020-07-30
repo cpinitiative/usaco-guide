@@ -72,8 +72,8 @@ prerequisites:
 
 Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module:
 
-- If the module is in Intro then do `[insert text here](./code-con)`.
-- Otherwise do `[insert text here](../general/code-con)`.
+- If the module is in Intro then do `[insert text here](code-con)`.
+- Otherwise do `[insert text here](/general/code-con)`.
 
 ## 4. Table of Contents
 

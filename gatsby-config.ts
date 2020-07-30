@@ -70,13 +70,6 @@ export const plugins = [
           },
         },
         'gatsby-remark-autolink-headers',
-        {
-          resolve: 'gatsby-remark-check-links',
-          options: {
-            ignore: [],
-            exceptions: [],
-          },
-        },
         // {
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
