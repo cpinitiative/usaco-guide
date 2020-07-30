@@ -15,7 +15,7 @@ export const problems = {};
 
 ## Data Structures
 
-A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
+A **data structure** determines how data is organized so that information can be used efficiently. Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. Since different operations are supported efficiently by each data structure, you should carefully evaluate which one will work best for your particular problem.
 
 <LanguageSection>
 
@@ -31,13 +31,13 @@ This creates a `vector` structure that only stores objects of type `string`.
 
 For our examples below, we will primarily use the `int` data type, but note that you can use any data type including `string` and user-defined structures.
 
-Essentially every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
+Essentially, every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
 
 </CPPSection>
 
 <JavaSection>
 
-Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
+Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want our data structures to only store one type of data, like integers or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
 ```java
 ArrayList<String> list = new ArrayList<String>();
@@ -53,7 +53,27 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 
 </LanguageSection>
 
-## (Dynamic) Arrays
+## Arrays
+
+You already know one of the simplest data structures: the **array**! 
+
+<IncompleteSection>
+	Section in progress
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+</CPPSection>
+
+<JavaSection>
+
+</JavaSection>
+
+</LanguageSection>
+
+## Dynamic Arrays
 
 <Resources>
 	<Resource source="IUSACO" title="4.1, 4.2 - Dynamic Arrays">
@@ -72,14 +92,6 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 <LanguageSection>
 
 <CPPSection>
-
-### Arrays
-
-<IncompleteSection>
-
-C++11 style
-
-</IncompleteSection>
 
 ### Dynamic Arrays
 
@@ -314,17 +326,30 @@ Hello world 100
 
 <Warning title="Language Note">
 
-Pairs and tuples are not available in Java.
+Pairs and tuples are not available in Java's standard libraries, though we can work around that.
 
 </Warning>
 
-Of course, you can create your own class.
+We can create our own generic Pair class in Java:
 
-<IncompleteSection>
+```java
+static class Pair<K, V> {
+	K first;
+	V second;
 
-add class
+	public Pair(K first_value, V second_value) {
+		first = first_value;
+		second = second_value;
+	}
+}
+```
 
-</IncompleteSection>
+Then, we can use the `Pair` class as follows:
+
+```java
+Pair<Integer, String> p = new Pair(5, "hello");
+System.out.println(p.first + " " + p.second);
+```
 
 </JavaSection>
 
