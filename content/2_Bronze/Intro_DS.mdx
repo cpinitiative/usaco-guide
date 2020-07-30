@@ -122,20 +122,23 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 
 ### Iterating
 
+<Resources>
+	<Resource source="CPH" title="4.4 - Working With Ranges"> </Resource>
+	<Resource source="CPP" title="Reference - <iterator>" url="https://www.cplusplus.com/reference/iterator/"> </Resource>
+</Resources>
 One way to iterate through all elements of a static or dynamic array is to use a regular for loop.
 
 ```cpp
-vector<int> v;
-v.push_back(1); v.push_back(7); v.push_back(4); v.push_back(5); v.push_back(2);
+vector<int> v{1,7,4,5,2};
 for(int i = 0; i < v.size(); i++){
     cout << v[i] << " ";
 }
 cout << endl;
 ```
 
-We can also use **iterator**s. An iterator allows you to traverse a container by pointing to an object within the container. However, they are **not** the same thing as pointers.
+We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. However, they are **not** the same thing as pointers.
 
-For example, `v.begin()` returns an iterator pointing to the first element of the vector `v`. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+For example, `v.begin()` or `begin(v)` returns an iterator pointing to the first element of the vector `v`. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
 
 ```cpp
 for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
@@ -143,7 +146,16 @@ for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
 }
 ```
 
-However, a more generic way to do this is with a for-each loop. <!-- and `auto` (C++11 and later versions) that automatically infers the type of an object:  -->
+Here is another way to write this. `auto` (since C++11) automatically infers the type of an object:
+
+```cpp
+vector<int> v{1,7,4,5,2};
+for (auto it = begin(v); it != end(v); it = next(it)) {
+	cout << *it << " "; //prints the values in the vector using the iterator
+}
+```
+
+We can also use a for-each loop.
 
 ```cpp
 for (int element : v) {
