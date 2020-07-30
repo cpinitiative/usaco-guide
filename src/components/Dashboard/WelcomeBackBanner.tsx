@@ -9,7 +9,7 @@ export default function WelcomeBackBanner({
     <div className="bg-blue-700 shadow hover:shadow-lg transition duration-150 ease-in-out lg:rounded-lg w-full">
       <Link
         className="p-8 block sm:flex sm:items-center sm:justify-between"
-        to={lastViewedModuleURL || '/intro/using-this-guide'}
+        to={lastViewedModuleURL || '/general/using-this-guide'}
       >
         <div>
           <h3 className="text-2xl leading-7 font-medium text-white">

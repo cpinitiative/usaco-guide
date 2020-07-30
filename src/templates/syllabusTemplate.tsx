@@ -48,7 +48,7 @@ const SectionContainer = styled.div`
 `;
 
 const HeroBGColor: { [key in SectionID]: string } = {
-  intro: 'bg-blue-600',
+  general: 'bg-blue-600',
   bronze: 'bg-orange-600',
   silver: 'bg-teal-600',
   gold: 'bg-yellow-600',
