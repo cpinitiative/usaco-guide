@@ -70,10 +70,13 @@ prerequisites:
 
 ### Linking to Modules
 
-Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module:
+Do `[insert text here](/general/code-con)`.
 
-- If the module is in Intro then do `[insert text here](code-con)`.
-- Otherwise do `[insert text here](/general/code-con)`.
+Don't use relative links like `code-con`, that will break our link checker...
+
+### Link Checker
+
+`yarn check-links`
 
 ## 4. Table of Contents
 
