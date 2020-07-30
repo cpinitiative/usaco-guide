@@ -77,7 +77,6 @@ const probSources = {
     'The editorial should be available in the announcements tab.',
   ],
   'oj.uz': ['https://oj.uz/problem/view/', ''],
-  ojuz: ['https://oj.uz/problem/view/', ''],
   YS: ['https://judge.yosupo.jp/problem/', 'Library Checker'],
 };
 
