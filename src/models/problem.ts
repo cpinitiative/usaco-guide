@@ -12,6 +12,7 @@ const contests = {
   JOI: ['oj.uz', 'Japanese Olympiad in Informatics'],
   LMiO: ['oj.uz', 'Lithuanian Olympiad in Informatics'],
   RMI: ['oj.uz', 'Romanian Master of Informatics'],
+  'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
 };
 
 const probSources = {
@@ -149,8 +150,14 @@ export class Problem {
     this.url = id;
     // console.log(this.url)
     if (source in probSources) {
-      if (!this.url.startsWith('http'))
-        this.url = probSources[source][0] + this.url;
+      if (!this.url.startsWith('http')) {
+        if (
+          source == 'CF' &&
+          (this.url.startsWith('problemset') || this.url.startsWith('contest'))
+        )
+          this.url = 'http://codeforces.com/' + this.url;
+        else this.url = probSources[source][0] + this.url;
+      }
       this.des = probSources[source][1];
     } else if (source in contests) {
       if (!this.url.startsWith('http'))
