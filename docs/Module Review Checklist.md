@@ -1,6 +1,6 @@
 # Module Review Checklist
 
-Read through the module and check for errors. Also see: https://usaco-guide.vercel.app/intro/contributing
+Read through the module and check for errors. Also see: https://usaco-guide.vercel.app/general/contributing
 
 Languages Checked:
 

@@ -2,8 +2,8 @@
 
 The following two modules are good to read:
 
-1. https://usaco-guide.netlify.app/intro/modules
-2. https://usaco-guide.netlify.app/intro/code-con
+1. https://usaco-guide.netlify.app/general/modules
+2. https://usaco-guide.netlify.app/general/code-con
 
 All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
 
@@ -73,7 +73,7 @@ prerequisites:
 Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module:
 
 - If the module is in Intro then do `[insert text here](./code-con)`.
-- Otherwise do `[insert text here](../intro/code-con)`.
+- Otherwise do `[insert text here](../general/code-con)`.
 
 ## 4. Table of Contents
 

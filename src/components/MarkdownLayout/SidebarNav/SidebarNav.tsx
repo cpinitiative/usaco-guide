@@ -22,7 +22,7 @@ export const SidebarNav = () => {
   );
   const [activeSection, setActiveSection] = useState(
     markdownLayoutInfo instanceof SolutionInfo
-      ? 'intro'
+      ? 'general'
       : markdownLayoutInfo.section
   );
 
