@@ -64,7 +64,6 @@ const probSources = {
   ],
   DMOJ: ['https://dmoj.ca/problem/', 'Don Mills Online Judge'],
   HR: ['https://www.hackerrank.com/', 'HackerRank'],
-  InfoArena: ['https://infoarena.ro/', ''],
   Kattis: ['https://open.kattis.com/problems/', 'open.kattis.com'],
   LC: ['https://leetcode.com/problems/', 'LeetCode'],
   POI: [
