@@ -25,13 +25,11 @@ export default function Template(props) {
     <Layout>
       <SEO title={`Solution: ${mdx.frontmatter.title})`} />
 
-      <div className="h-screen flex overflow-hidden bg-white">
-        <MarkdownLayout markdownData={markdownData}>
-          <div className="py-4">
-            <Markdown body={body} />
-          </div>
-        </MarkdownLayout>
-      </div>
+      <MarkdownLayout markdownData={markdownData}>
+        <div className="py-4">
+          <Markdown body={body} />
+        </div>
+      </MarkdownLayout>
       {/*<p className="text-base text-center leading-6 text-blue-600 font-semibold tracking-wide uppercase">*/}
       {/*  Problem Solution*/}
       {/*</p>*/}
