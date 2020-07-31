@@ -1,39 +1,21 @@
 ---
 id: intro-ds
 title: Introduction to Data Structures
-author: Darren Yao, Benjamin Qi, Allen Li
-description: "Basic data structures in multiple languages, dynamic arrays and sorting."
-frequency: 4
+author: Darren Yao, Benjamin Qi, Nathan Wang, Abutalib Namazov, Allen Li
+description: 'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
-export const problems = {
-    bubble: [
-      new Problem("HR", "Bubble Sort", "https://www.hackerrank.com/challenges/ctci-bubble-sort/problem", "Very Easy", false, [], "Implement the Bubble Sort algorithm. Read any of the resources if you don't know how to do that, or just google."),
-      ],
-    easy: [
-      new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, [], "cses-1621"),
-      new Problem("CF", "Kayaking", "contest/863/problem/B", "Easy", false, [], "Loop over all pairs of people too put in the single Kayaks. Then, sort the remaining people and pair $a_i$ with $a_{i + 1}$ because this minimizes the sum of absolute values (draw some cases if you're confused why)."),
-    ],
-};
+export const problems = {};
 
-<!-- 
+<!--
   new Problem("Silver", "Teleportation", "812", "Very Hard", false, [], ""),
  -->
 
-<Resources>
-  <Resource source="IUSACO" title="4.1 - Dynamic Arrays">module is based off this</Resource>
-  <Resource source="CPH" title="4.1 - Dynamic Arrays" starred>vectors, strings</Resource>
-  <Resource source="PAPS" title="3.1 - Vectors, 6.1 - Dynamic Arrays">how dynamic arrays work</Resource>
-  <Resource source="CPC" title="2 - Data Structures" url="02_data_structures">assumes prior experience</Resource>
-</Resources>
+## Data Structures
 
-<br />
-
-A **data structure** determines how data is stored (is it sorted? indexed? what operations does it support?). Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all.
-
-## Introduction
+A **data structure** determines how data is organized so that information can be used efficiently. Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. Since different operations are supported by each data structure, you should carefully evaluate which data structure will work best for your particular problem.
 
 <LanguageSection>
 
@@ -49,13 +31,27 @@ This creates a `vector` structure that only stores objects of type `string`.
 
 For our examples below, we will primarily use the `int` data type, but note that you can use any data type including `string` and user-defined structures.
 
-Essentially every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
+Essentially, every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
+
+## Arrays
+
+You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
+
+```cpp
+array<int, 25> ar;
+```
+
+The array class supports the normal STL operations (such as `.empty()` or `.size()`) as well as the normal square-bracket access operator:
+
+```cpp
+ar[5] //access the element at the 5th index.
+```
 
 </CPPSection>
 
 <JavaSection>
 
-Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want this; instead, we want our data structures to only store one type of data, like integers, or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
+Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want our data structures to only store one type of data, like integers or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
 
 ```java
 ArrayList<String> list = new ArrayList<String>();
@@ -65,185 +61,67 @@ This creates an `ArrayList` structure that only stores objects of type `String`.
 
 For our examples below, we will primarily use the `Integer` data type, but note that you can have Collections of any object type, including `Strings` , other Collections, or user-defined objects.
 
-`Collections` data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise. 
+`Collections` data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
 
 </JavaSection>
 
-<PySection>
-
-The default way to store data in python is using a list, which can simply be initialized as follows:
-
-```py
-list = []
-```
-
-Python lists are generic. This means that they can store any kind of data type, including objects.
-
-Lists support many useful methods which will be explored further in the section below.
-
-</PySection>
+<PySection/>
 
 </LanguageSection>
 
-## Dynamic Arrays
-
-You're probably already familiar with regular (static) arrays. Now, there are also dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++, [`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can repeatedly reallocate storage to accommodate more elements as they are added. (Note that python arrays (lists) are, by default, dynamic.)
-
-In a dynamic array, we can also add and delete elements at the end in $O(1)$ time. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
-
 <LanguageSection>
-
-<CPPSection>
-
-```cpp
-vector<int> v;
-for(int i = 1; i <= 10; i++){
-    v.push_back(i);
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-for(int i = 1; i <= 10; i++){
-    list.add(i);
-}
-```
-
-</JavaSection>
 
 <PySection>
 
+## Lists
+
+The default way to store data in Python is using a **list**, which can automatically resize itself to accommodate more elements. We can add and delete elements at the end in $O(1)$ time. A list can be initialized as follows:
+
 ```py
 list = []
+```
+
+Python lists are **generic**. This means that they can store any kind of data type, including objects. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+
+```py
 for i in range(1, 11): # Note that range(i, j) includes i, but does not include j
     list.append(i)
 ```
 
-</PySection>
-
-</LanguageSection>
-
-In C++ and Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-vector<int> v(30); // one way
-vector<int> v; v.resize(30); // another way
-```
-
-</CPPSection>
-
-<JavaSection>
-
-Unfortunately, there is no Java equivalent; just use a for loop.
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-for (int i = 1; i <= 30; i++) list.add(0);
-```
-
-</JavaSection>
-
-<PySection>
+In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
 
 ```py
 list = [0] * 30
 ```
 
-</PySection>
+### Iterating
 
-</LanguageSection>
-
-We can ensure that a dynamic array's **capacity** must be at least $x$, meaning that it will not reallocate storage until we add more than $x$ elements to it. If the dynamic array's capacity is already at least $x$, then nothing occurs. Note that capacity is **not** the same thing as size. For example, if you declare a dynamic array with initial capacity $30$ and try to edit the element at index $5$, this will throw an error since the size of the dynamic array is still zero.
-
-The following code initializes a dynamic array with initial capacity $30$:
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-vector<int> v; v.reserve(30);
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>(30); // one way
-ArrayList<Integer> list = new ArrayList<Integer>(); list.ensureCapacity(30); // another way
-```
-
-</JavaSection>
-
-<PySection>
-
-Note that pre-allocation makes very little difference in python, but the equivalent is as follows:
+We can use a regular for loop to iterate through all elements of a list.
 
 ```py
-list = [None] * 30
+list = [1, 7, 4, 5, 2]
+
+for i in range(len(list)):
+    print(list[i], end = " ")
+print()
+
+for element in list:
+    print(element, end = " ")
+print()
 ```
 
-</PySection>
+We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. `iter(list)` returns an iterator pointing to the first element of the list `list`.
 
-</LanguageSection>
+```py
+list = [4, 2, 0, 0, 5]
+it = iter(list)
 
-We can add and remove at any index of a dynamic array in $O(n)$ time.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-vector<int> v;
-v.push_back(2); // [2]
-v.push_back(3); // [2, 3]
-v.push_back(7); // [2, 3, 7]
-v.push_back(5); // [2, 3, 7, 5]
-v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
-v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
-// this remove method is O(n); to be avoided
-v.push_back(8); // [2, 7, 5, 8]
-v.erase(v.end()-1); // [2, 7, 5]
-// here, we remove the element from the end of the list; this is O(1).
-v.push_back(4); // [2, 7, 5, 4]
-v.push_back(4); // [2, 7, 5, 4, 4]
-v.push_back(9); // [2, 7, 5, 4, 4, 9]
-cout << v[2]; // 5
-v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
-// this erases the first three elements; O(n)
+print(next(it)) # 4
+print(next(it)) # 2
+print(next(it)) # 0
 ```
 
-</CPPSection>
-
-<JavaSection>
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-list.add(2); // [2]
-list.add(3); // [2, 3]
-list.add(7); // [2, 3, 7]
-list.add(5); // [2, 3, 7, 5]
-list.set(1, 4); // sets element at index 1 to 4 -> [2, 4, 7, 5]
-list.remove(1); // removes element at index 1 -> [2, 7, 5]
-// this remove method is O(n); to be avoided
-list.add(8); // [2, 7, 5, 8]
-list.remove(list.size()-1); // [2, 7, 5]
-// here, we remove the element from the end of the list; this is $O(1)$.
-System.out.println(list.get(2)); // 5
-```
-
-</JavaSection>
-
-<PySection>
+### Inserting and Erasing
 
 ```py
 list = []
@@ -267,31 +145,146 @@ list = list[3:] # [4, 4, 9]
 
 </PySection>
 
-</LanguageSection>
-    
-To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
-
-<LanguageSection>
-
 <CPPSection>
+
+## Dynamic Arrays
+
+<Resources>
+	<Resource source="IUSACO" title="4.1, 4.2 - Dynamic Arrays">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.1 - Dynamic Arrays">
+		vectors, strings
+	</Resource>
+	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
+</Resources>
+
+Dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++) support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
+
+For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
 
 ```cpp
 vector<int> v;
-v.push_back(1); v.push_back(7); v.push_back(4); v.push_back(5); v.push_back(2);
-int arr[] = {1, 7, 4, 5, 2};
+for(int i = 1; i <= 10; i++){
+    v.push_back(i);
+}
+```
+
+In C++, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
+
+```cpp
+vector<int> v(30); // one way
+vector<int> v; v.resize(30); // another way
+```
+
+In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
+
+### Iterating
+
+<Resources>
+	<Resource source="CPH" title="4.4 - Working With Ranges">
+		{' '}
+	</Resource>
+	<Resource
+		source="CPP"
+		title="Reference - <iterator>"
+		url="https://www.cplusplus.com/reference/iterator/"
+	>
+		{' '}
+	</Resource>
+</Resources>
+One way to iterate through all elements of a static or dynamic array is to use a
+regular for loop.
+
+```cpp
+vector<int> v{1,7,4,5,2};
 for(int i = 0; i < v.size(); i++){
     cout << v[i] << " ";
 }
 cout << endl;
-for(int element : arr){
-    cout << element << " ";
-}
-cout << endl;
 ```
+
+We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. However, they are **not** the same thing as pointers.
+
+For example, `v.begin()` or `begin(v)` returns an iterator pointing to the first element of the vector `v`. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+
+```cpp
+for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+    cout << *it << " "; //prints the values in the vector using the iterator
+}
+```
+
+Here is another way to write this. `auto` (since C++11) automatically infers the type of an object:
+
+```cpp
+vector<int> v{1,7,4,5,2};
+for (auto it = begin(v); it != end(v); it = next(it)) {
+	cout << *it << " "; //prints the values in the vector using the iterator
+}
+```
+
+We can also use a for-each loop.
+
+```cpp
+for (int element : v) {
+    cout << element << " "; //prints the values in the vector
+}
+```
+
+### Inserting and Erasing
+
+Keep in mind that insertion and erasure in the middle of a `vector` are $O(n)$.
+
+```cpp
+vector<int> v;
+v.push_back(2); // [2]
+v.push_back(3); // [2, 3]
+v.push_back(7); // [2, 3, 7]
+v.push_back(5); // [2, 3, 7, 5]
+v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
+v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+v.push_back(8); // [2, 7, 5, 8]
+v.erase(v.end()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is O(1).
+v.push_back(4); // [2, 7, 5, 4]
+v.push_back(4); // [2, 7, 5, 4, 4]
+v.push_back(9); // [2, 7, 5, 4, 4, 9]
+cout << v[2]; // 5
+v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
+// this erases the first three elements; O(n)
+```
+
+### Strings
+
+<IncompleteSection>
+
+All the vector operations above also work on strings.
+
+</IncompleteSection>
 
 </CPPSection>
 
 <JavaSection>
+
+## Dynamic Arrays
+
+Dynamic arrays ([`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can repeatedly reallocate storage to accommodate more elements as they are added.
+
+In a dynamic array, we can also add and delete elements at the end in $O(1)$ time. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+for(int i = 1; i <= 10; i++){
+    list.add(i);
+}
+```
+
+In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
+
+### Iterating
+ 
+To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
 
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
@@ -305,125 +298,180 @@ for(int element : arr){ // for-each
 }
 ```
 
+### Adding and Removing
+
+We can add and remove at any index of a dynamic array in $O(n)$ time.
+
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(2); // [2]
+list.add(3); // [2, 3]
+list.add(7); // [2, 3, 7]
+list.add(5); // [2, 3, 7, 5]
+list.set(1, 4); // sets element at index 1 to 4 -> [2, 4, 7, 5]
+list.remove(1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+list.add(8); // [2, 7, 5, 8]
+list.remove(list.size()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is $O(1)$.
+System.out.println(list.get(2)); // 5
+```
+
 </JavaSection>
 
-<PySection>
-
-```py
-list = [1, 7, 4, 5, 2]
-
-for i in range(len(list)):
-    print(list[i], end = " ")
-print()
-
-for element in list:
-    print(element, end = " ")
-print()
-```
-
-</PySection>
-
 </LanguageSection>
- 
-In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
-## Iterators
+## Pairs & Tuples
 
-An **iterator** allows you to traverse a container by pointing to an object within the container.
+If we want to store a collection of points on the 2D plane, then we can use a dynamic array of **pairs**.
 
 <LanguageSection>
 
 <CPPSection>
 
-However, they are **not** the same thing as pointers. For example, `vector.begin()` returns an iterator pointing to the first element of the vector. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
+Of course, both `vector<vector<int>>` and `vector<array<int,2>>` would suffice for this case, but a pair can also store two elements of different types.
+
+### [C++ Pairs](http://www.cplusplus.com/reference/utility/pair/pair/)
+
+- `pair<type1, type2> p`: Creates a pair `p` with two elements with the first one being of `type1` and the second one being of `type2`.
+- `make_pair(a, b)`: Returns a pair with values `a`, `b`.
+- `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
+- `pair.first`: The first value of the pair.
+- `pair.second`: The second value of the pair.
+
+Example:
 
 ```cpp
-for (vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it) {
-    cout << *it;
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	pair<string, int> myPair1 = make_pair("Testing", 123);
+	cout << myPair1.first << " " << myPair1.second << endl;
+	myPair1.first = "It is possible to edit pairs after declaring them";
+	cout << myPair1.first << " " << myPair1.second << endl;
+	pair<string, string> myPair2 = {"Testing", "curly braces"};
+	cout << myPair2.first << " " << myPair2.second << endl;
 }
+
+/* Output:
+Testing 123
+It is possible to edit pairs after declaring them 123
+Testing curly braces
+*/
 ```
 
-C++11 and later versions can automatically infer the type of an object if you use the keyword `auto`, so the following are okay:
+### [C++ Tuples](http://www.cplusplus.com/reference/tuple/)
+
+Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using **tuples** might be more convenient.
+
+- `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
+- `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
+- `get<i>(t)`: Returns the `i`'th element of the tuple `t`. Can also be used to change the element of a tuple.
+
+This operation only works for constant `i`. Namely, it is **not** allowed to do something like the following since `i` is not constant:
 
 ```cpp
-for (auto it = myvector.begin(); it != myvector.end(); ++it) {
-    cout << *it;
-}
-for(auto element : v) {
-    cout << element;
-}
+tuple<int,int,int> t{3,4,5};
+int i = 1; cout << get<i>(t);
 ```
 
-</CPPSection>
+- `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple $t$ accordingly.
 
-<PySection>
+<!-- This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes.  -->
 
-```py
-list = [4, 2, 0, 0, 5]
-it = iter(list)
+Example:
 
-print(next(it)) # 4
-print(next(it)) # 2
-print(next(it)) # 0
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int a = 3, b = 4, c = 5;
+	tuple<int, int, int> t = tie(a, b, c);
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+	get<0>(t) = 7;
+	cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << endl;
+
+	tuple<string, string, int> tp2 = make_tuple("Hello", "world", 100);
+	string s1, s2; int x;
+	tie(s1, s2, x) = tp2;
+	cout << s1 << " " << s2 << " " << x << endl;
+}
+
+/* Output:
+3 4 5
+7 4 5
+Hello world 100
+*/
 ```
-
-</PySection>
-
-</LanguageSection>
-
-
-## Sorting
-
-<Problems problems={problems.bubble} />
-
-**Sorting** refers to arranging items in some particular order. 
-
-<Resources>
-  <Resource source="CPH" title="3.1 - Sorting Theory"> </Resource>
-</Resources>
-
-<!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
-
-Although you do **not** need to know how sorting is implemented for Bronze, you should know how to use built-in methods to sort a (possibly dynamic) array.
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-  <Resource source="CPH" title="3.2 - Sorting in C++" starred>can stop before comparison operators, which are covered in silver</Resource>
-  <Resource source="CPP" title="std::sort" url="https://en.cppreference.com/w/cpp/algorithm/sort">reference</Resource>
-  <Resource source="CF" title="C++ Tricks" url="blog/entry/74684">first two related to sorting</Resource>
-</Resources>
-
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
 
 </CPPSection>
 
 <JavaSection>
 
-In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
- 
-  - [Arrays.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[]))
-  - [Collections.sort](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List))
+### Java
 
-The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $O(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CodeForces. 
+<Warning title="Language Note">
 
-Two ways to avoid this:
+Pairs and tuples are not available in Java's standard libraries, though we can work around that.
 
-  - Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
-  - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+</Warning>
+
+We can create our own generic Pair class in Java:
+
+```java
+static class Pair<K, V> {
+	K first;
+	V second;
+
+	public Pair(K first_value, V second_value) {
+		first = first_value;
+		second = second_value;
+	}
+}
+```
+
+Then, we can use the `Pair` class as follows:
+
+```java
+Pair<Integer, String> p = new Pair(5, "hello");
+System.out.println(p.first + " " + p.second);
+```
 
 </JavaSection>
 
 <PySection>
 
-  - [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
+<Warning title="Language Note">
+
+**Pairs are not available in Python.** Just use tuples; no need for pairs!
+
+</Warning>
+
+### Python Tuples
+
+Use the link below (if you know of a better one, please let us know!) to learn about tuples.
+
+<!-- Python automatically sorts a list of tuples by the first element, then the second, and so on. This can save you time and keystrokes for certain problems like the one above.
+ -->
+
+<Resources>
+
+<Resource
+	source="Tutorialspoint"
+	title="Python Tuples"
+	url="https://www.tutorialspoint.com/python/python_tuples.htm"
+	starred
+/>
+
+</Resources>
 
 </PySection>
-
 </LanguageSection>
 
 ## Problems
 
-<Problems problems={problems.easy} />
+Nothing to see here! Arrays of fixed size suffice for almost every Bronze problem, but dynamic arrays, pairs, and tuples can greatly simplify implementation at times.
+
+<!-- Unless someone has any. I really can't find anything... -->

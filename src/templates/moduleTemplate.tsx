@@ -25,13 +25,11 @@ export default function Template(props) {
         description={module.description}
       />
 
-      <div className="h-screen flex overflow-hidden bg-white">
-        <MarkdownLayout markdownData={module}>
-          <div className="py-4">
-            <Markdown body={body} />
-          </div>
-        </MarkdownLayout>
-      </div>
+      <MarkdownLayout markdownData={module}>
+        <div className="py-4">
+          <Markdown body={body} />
+        </div>
+      </MarkdownLayout>
     </Layout>
   );
 }

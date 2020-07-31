@@ -1,0 +1,128 @@
+---
+id: coci-period
+title: COCI 08 - Periodni
+author: Benjamin Qi
+---
+
+```cpp
+/**
+ * Description: modular arithmetic operations
+ * Source:
+	* KACTL
+	* https://codeforces.com/blog/entry/63903
+	* https://codeforces.com/contest/1261/submission/65632855 (tourist)
+	* https://codeforces.com/contest/1264/submission/66344993 (ksun)
+	* also see https://github.com/ecnerwala/cp-book/blob/master/src/modnum.hpp (ecnerwal)
+ * Verification:
+	* https://open.kattis.com/problems/modulararithmetic
+ */
+
+template <int MOD, int RT> struct mint {
+	static const int mod = MOD;
+	static mint rt() { return RT; } // primitive root for FFT
+	int v; explicit operator int() const { return v; } // don't silently convert to int
+	mint() { v = 0; }
+	mint(ll _v) { v = (-MOD < _v && _v < MOD) ? _v : _v % MOD;
+		if (v < 0) v += MOD; }
+	friend bool operator==(const mint& a, const mint& b) {
+		return a.v == b.v; }
+	friend bool operator!=(const mint& a, const mint& b) {
+		return !(a == b); }
+	friend bool operator<(const mint& a, const mint& b) {
+		return a.v < b.v; }
+	friend void re(mint& a) { ll x; re(x); a = mint(x); }
+	friend str ts(mint a) { return ts(a.v); }
+
+	mint& operator+=(const mint& m) {
+		if ((v += m.v) >= MOD) v -= MOD;
+		return *this; }
+	mint& operator-=(const mint& m) {
+		if ((v -= m.v) < 0) v += MOD;
+		return *this; }
+	mint& operator*=(const mint& m) {
+		v = (ll)v*m.v%MOD; return *this; }
+	mint& operator/=(const mint& m) { return (*this) *= inv(m); }
+	friend mint pow(mint a, ll p) {
+		mint ans = 1; assert(p >= 0);
+		for (; p; p /= 2, a *= a) if (p&1) ans *= a;
+		return ans;
+	}
+	friend mint inv(const mint& a) { assert(a.v != 0);
+		return pow(a,MOD-2); }
+
+	mint operator-() const { return mint(-v); }
+	mint& operator++() { return *this += 1; }
+	mint& operator--() { return *this -= 1; }
+	friend mint operator+(mint a, const mint& b) { return a += b; }
+	friend mint operator-(mint a, const mint& b) { return a -= b; }
+	friend mint operator*(mint a, const mint& b) { return a *= b; }
+	friend mint operator/(mint a, const mint& b) { return a /= b; }
+};
+
+typedef mint<MOD,3> mi;
+typedef vector<mi> vmi;
+typedef pair<mi,mi> pmi;
+typedef vector<pmi> vpmi;
+
+vector<vmi> scmb; // small combinations
+void genComb(int SZ) {
+	scmb.assign(SZ,vmi(SZ)); scmb[0][0] = 1;
+	FOR(i,1,SZ) F0R(j,i+1)
+		scmb[i][j] = scmb[i-1][j]+(j?scmb[i-1][j-1]:0);
+}
+
+/**
+ * Description: pre-compute factorial mod inverses,
+ 	* assumes $MOD$ is prime and $SZ < MOD$.
+ * Time: O(SZ)
+ * Source: KACTL
+ * Verification: https://dmoj.ca/problem/tle17c4p5
+ */
+
+vi invs, fac, ifac; // make sure to convert to LL before doing any multiplications ...
+void genFac(int SZ) {
+	invs.rsz(SZ), fac.rsz(SZ), ifac.rsz(SZ);
+	invs[1] = fac[0] = ifac[0] = 1;
+	FOR(i,2,SZ) invs[i] = MOD-(ll)MOD/i*invs[MOD%i]%MOD;
+	FOR(i,1,SZ) {
+		fac[i] = (ll)fac[i-1]*i%MOD;
+		ifac[i] = (ll)ifac[i-1]*invs[i]%MOD;
+	}
+}
+ll comb(int a, int b) {
+	if (a < b || b < 0) return 0;
+	return (ll)fac[a]*ifac[b]%MOD*ifac[a-b]%MOD;
+}
+
+int N,K;
+vi h;
+
+vmi comb(vmi a, vmi b) {
+	vmi c(sz(a)+sz(b)-1);
+	F0R(i,sz(a)) F0R(j,sz(b)) c[i+j] += a[i]*b[j];
+	return c;
+}
+
+vmi tran(vmi a, int b) {
+	R0F(i,sz(a)) FOR(j,i+1,sz(a))
+		a[j] += mi(fac[j-i])*comb(sz(a)-1-i,j-i)*comb(b,j-i)*a[i];
+	return a;
+}
+
+vmi solve(int l, int r, int cur) {
+	if (l > r) return {1};
+	int mn = l; FOR(i,l,r+1) if (h[i] < h[mn]) mn = i;
+	vmi a = solve(l,mn-1,h[mn]), b = solve(mn+1,r,h[mn]);
+	vmi c = comb(a,b); c.pb(0);
+	c = tran(c,h[mn]-cur);
+	return c;
+}
+
+int main() {
+	genFac(1000005);
+	setIO(); re(N,K);
+	h.rsz(N); re(h);
+	vmi v = solve(0,N-1,0);
+	ps(K < sz(v) ? v[K] : 0);
+}
+```

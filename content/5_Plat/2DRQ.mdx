@@ -1,44 +1,113 @@
 ---
 id: 2DRQ
-title: "2D Range Queries"
+title: '2D Range Queries'
 author: Benjamin Qi
-prerequisites: 
- - RURQ
-description: "Extending Range Queries to 2D (and beyond)."
+prerequisites:
+  - RURQ
+description: 'Extending Range Queries to 2D (and beyond).'
 frequency: 1
 ---
 
 export const problems = {
-    bitSam: [
-      new Problem("CSES", "Forest Queries II", "1739", "Easy", false, ["2D BIT"], "Just implement a 2D BIT. See [thecodingwizard's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/cses/Forest%20Queries%20II.cpp)."),
-    ],
-    bit: [
-      new Problem("DMOJ", "Crowded Cities", "bfs17p6", "Normal", false, ["2D Max BIT"], ""),
-      new Problem("IOI", "Pairs", "https://oj.uz/problem/view/IOI07_pairs", "Normal", false, ["3D BIT"], "1D: Sort everything and binary search for the leftmost animal each animal can hear. 2D: Rotate everything by 45 degrees and use a 2D BIT. 3D: Extend the 2D solution to use a 3D BIT."),
-    ],
-    offSam: [
-      new Problem("DMOJ", "Soriya's Programming Project", "dmopc19c7p5", "Normal", false, ["2D BIT"], ""),
-    ],
-    off: [
-      new Problem("Plat", "Friendcross", "722", "Hard", false, ["2D BIT"], ""),
-      new Problem("Plat", "Mowing the Field", "601", "Hard", false, ["2D BIT"], ""),
-    ],
-    seg: [
-      new Problem("POI", "Tetris 3D", "https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement", "Hard", false, ["2D Seg"], "Lazy propagation doesn't work in 2D, so we have to get creative. The key observation here is that heights never decrease. Consider the following (simpler) problem: how can we do 1D range updates/queries without lazy propagation if values never decrease? To solve this, we store 2 values in each segment: the maximum value in that segment the last time all values in it were equal, and the maximum value in that segment currently. Using this and generalising it to 2D is left as an exercise for the reader."),
-      new Problem("ojuz", "IOI 2013 - Game", "IOI13_game", "Very Hard", false, ["2D Seg"], "A normal 2D sparse segment tree gets MLE, so we have to use a sparse segment tree of BBSTs (see Advanced - Treaps)."),
-      new Problem("ojuz", "JOI - Golf", "JOI17_golf", "Very Hard", false, ["Seg"], "http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2017/2017-open-golf-sol-en.pdf"),
-    ],
+	bitSam: [
+		new Problem(
+			'CSES',
+			'Forest Queries II',
+			'1739',
+			'Easy',
+			false,
+			['2D BIT'],
+			"Just implement a 2D BIT. See [thecodingwizard's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/cses/Forest%20Queries%20II.cpp)."
+		),
+	],
+	bit: [
+		new Problem(
+			'DMOJ',
+			'Crowded Cities',
+			'bfs17p6',
+			'Normal',
+			false,
+			['2D Max BIT'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'Pairs',
+			'https://oj.uz/problem/view/IOI07_pairs',
+			'Normal',
+			false,
+			['3D BIT'],
+			'https://ioinformatics.org/files/ioi2007solutions.pdf'
+		),
+	],
+	offSam: [
+		new Problem(
+			'DMOJ',
+			"Soriya's Programming Project",
+			'dmopc19c7p5',
+			'Normal',
+			false,
+			['2D BIT'],
+			''
+		),
+	],
+	off: [
+		new Problem('Plat', 'Friendcross', '722', 'Hard', false, ['2D BIT'], ''),
+		new Problem(
+			'Plat',
+			'Mowing the Field',
+			'601',
+			'Hard',
+			false,
+			['2D BIT'],
+			''
+		),
+	],
+	seg: [
+		new Problem(
+			'POI',
+			'Tetris 3D',
+			'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
+			'Hard',
+			false,
+			['2D Seg'],
+			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2006/editorial/tet.pdf'
+		),
+		new Problem(
+			'IOI',
+			'13 - Game',
+			'IOI13_game',
+			'Very Hard',
+			false,
+			['2D Seg'],
+			'A normal 2D sparse segment tree gets MLE, so we have to use a sparse segment tree of BBSTs (see Advanced - Treaps).'
+		),
+		new Problem(
+			'JOI',
+			'Golf',
+			'JOI17_golf',
+			'Very Hard',
+			false,
+			['Seg'],
+			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2017/2017-open-golf-sol-en.pdf'
+		),
+	],
 };
 
-See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)).
+See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
 
 ## 2D RMQ
 
 <Resources>
-  <Resource source="CF" title="retrograd - Multi-Dimensional RMQ" url="blog/entry/53810" starred></Resource>
+	<Resource
+		source="CF"
+		title="retrograd - Multi-Dimensional RMQ"
+		url="blog/entry/53810"
+		starred
+	></Resource>
 </Resources>
 
- - GP of Serbia 2020 B
+- GP of Serbia 2020 B
 
 ## 2D BIT
 
@@ -47,8 +116,16 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
 ### Tutorial
 
 <Resources>
-  <Resource source="GFG" title="2D BIT" url="two-dimensional-binary-indexed-tree-or-fenwick-tree"></Resource>
-  <Resource source="TC" title="Binary Indexed Trees" url="binary-indexed-trees"></Resource>
+	<Resource
+		source="GFG"
+		title="2D BIT"
+		url="two-dimensional-binary-indexed-tree-or-fenwick-tree"
+	></Resource>
+	<Resource
+		source="TC"
+		title="Binary Indexed Trees"
+		url="binary-indexed-trees"
+	></Resource>
 </Resources>
 
 ### Problems
@@ -59,8 +136,8 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
 
 Lazy propagation on segment trees does not extend to higher dimensions. However, you can extend the 1D BIT solution to solve range increment range sum in higher dimensions as well! See [this paper](https://arxiv.org/pdf/1311.6093.pdf) for details.
 
- - USACO Camp - "Cows Play Global Thermonuclear War" (2D case)
- 
+- USACO Camp - "Cows Play Global Thermonuclear War" (2D case)
+
 </Optional>
 
 ## 2D Offline Sum Queries
@@ -73,21 +150,21 @@ The intended complexity is $O(N\log^2 N)$ with a good constant factor. This requ
 
 Bad idea ... This gives $O(N\log^2N)$ memory and time and the constant factors for both are terrible.
 
-### Idea 2: Compress the points to be updated so that you only need $O(N\log N)$ memory. 
+### Idea 2: Compress the points to be updated so that you only need $O(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
-  - [my 1D offline BIT](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h)
-  - [my 2D offline BIT](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h)
+- [my 1D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h>)
+- [my 2D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h>)
 
 It's a bit difficult to pass the above problem within the time limit. Make sure to use fast input (and not `endl`)!
 
-  - [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
+- [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
 
 ### Idea 3: Use divide & conquer with a 1D BIT
 
-  - mentioned in [this article](https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html)
-  - [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp) based off above
+- mentioned in [this article](https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html)
+- [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp) based off above
 
 ### Problems
 
@@ -106,13 +183,21 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 ### Short Description
 
 <Resources>
-  <Resource source="CPH" title="28.2 (Sparse SegTree), 28.4 (2D)">brief description</Resource>
-  <Resource source="USACO" title="Analysis - Mowing the Field" url="http://www.usaco.org/current/data/sol_mowing_platinum_jan16.html">code</Resource>
+	<Resource source="CPH" title="28.2 (Sparse SegTree), 28.4 (2D)">
+		brief description
+	</Resource>
+	<Resource
+		source="USACO"
+		title="Analysis - Mowing the Field"
+		url="http://www.usaco.org/current/data/sol_mowing_platinum_jan16.html"
+	>
+		code
+	</Resource>
 </Resources>
 
 ### Reducing Memory Usage
 
-Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$, giving a memory bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=10^5$ (although it sufficed for "Mowing the Field" due to the higher memory limit). 
+Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$, giving a memory bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=10^5$ (although it sufficed for "Mowing the Field" due to the higher memory limit).
 
 To resolve this, reduce the memory usage of sparse segment tree while maintaing the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
 

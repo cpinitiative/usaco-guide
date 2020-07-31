@@ -548,7 +548,7 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       To learn more about contributing, please visit{' '}
                       <Link
-                        to="/intro/contributing"
+                        to="/general/contributing"
                         className="text-blue-600 underline"
                       >
                         this page

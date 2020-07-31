@@ -1,336 +1,234 @@
 // Section -> Chapter -> Module
 
-export type SectionID = "intro" | "bronze" | "silver" | "gold" | "plat" | "adv";
+export type SectionID =
+  | 'general'
+  | 'bronze'
+  | 'silver'
+  | 'gold'
+  | 'plat'
+  | 'adv';
 
 export type Chapter = {
   name: string;
   items: string[];
   description?: string;
-}
+};
 
-const MODULE_ORDERING: {[key in SectionID]: Chapter[]} = {
-  "intro": [
+const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
+  general: [
     {
-      name: "About This Guide",
-      description: "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: [
-        "using-this-guide",
-        "modules",
-        "contributing",
-      ]
+      name: 'About This Guide',
+      description:
+        "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
+      items: ['using-this-guide', 'modules', 'contributing'],
     },
     {
-      name: "Getting Started",
+      name: 'Getting Started',
       description: "Start here if you're new to competitive programming.",
       items: [
-        "intro",
-        "choosing-lang",
-        "running-code",
-        "data-types",
-        "io",
-        "expected",
-        "code-con",
-      ]
+        'intro',
+        'choosing-lang',
+        'running-code',
+        'data-types',
+        'io',
+        'expected',
+        'code-con',
+      ],
     },
     {
-      name: "General",
-      items: [
-        "resources",
-        "practicing",
-        "contest-strategy",
-        "contests",
-        "oly",
-      ]
+      name: 'General',
+      items: ['resources', 'practicing', 'contest-strategy', 'contests', 'oly'],
     },
     {
-      name: "Language-Specific",
+      name: 'Language-Specific',
       items: [
-        "factors-choosing",
-        "fast-io",
-        "debugging",
-        "generic",
-        "cpp-tips",
-      ]
+        'factors-choosing',
+        'fast-io',
+        'debugging',
+        'generic',
+        'cpp-tips',
+      ],
     },
     {
-      name: "USACO",
-      items: [
-        "usaco-camp",
-      ]
+      name: 'USACO',
+      items: ['usaco-month', 'usaco-camp'],
     },
   ],
-  "bronze": [
+  bronze: [
     {
-      name: "Basics",
-      items: [
-        "time-comp",
-        "simulation",
-        "rect-geo",
-      ]
+      name: 'Basics',
+      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo', 'intro-sets'],
     },
     {
-      name: "Data Structures",
-      items: [
-        "intro-ds",
-        "pairs-tuples",
-        "intro-sets",
-      ]
+      name: 'Complete Search',
+      description:
+        'Solving bronze problems by checking all possible cases in the solution space.',
+      items: ['intro-complete', 'complete-rec'],
     },
     {
-      name: "Complete Search",
-      description: "Solving bronze problems by checking all possible cases in the solution space.",
-      items: [
-        "intro-complete",
-        "complete-rec",
-      ]
-    },
-    {
-      name: "Unusual",
-      items: [
-        "ad-hoc",
-        "intro-greedy",
-        "intro-graphs",
-      ]
-    }
-  ],
-  "silver": [
-    {
-      name: "Prefix Sums",
-      items: [
-        "prefix-sums",
-      ]
-    },
-    {
-      name: "Sorting",
-      items: [
-        "binary-search-sorted",
-        "sorting-custom",
-        "greedy",
-      ]
-    },
-    {
-      name: "Two Pointers",
-      items: [
-        "2P",
-      ]
-    },
-    {
-      name: "Binary Search",
-      items: [
-        "binary-search-ans",
-      ]
-    },
-    {
-      name: "Sets & Maps",
-      description: "Maintaining collections of distinct elements.",
-      items: [
-        "unordered",
-        "intro-ordered",
-        "custom-cpp-stl",
-      ]
-    },
-    {
-      name: "Graphs",
-      items: [
-        "dfs",
-        "intro-tree",
-        "bipartite",
-        "ff",
-        "func-graphs",
-      ]
+      name: 'Unusual',
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
   ],
-  "gold": [
+  silver: [
     {
-      name: "Data Structures",
+      name: 'Sorting',
       items: [
-        "stacks",
-        "sliding",
-        "queues",
-      ]
+        'binary-search-sorted',
+        'sorting-custom',
+        'intro-ordered',
+        'greedy',
+        'custom-cpp-stl',
+      ],
     },
     {
-      name: "Dynamic Programming",
-      items: [
-        "intro-dp",
-      ]
+      name: 'Misc. Topics',
+      items: ['prefix-sums', '2P', 'binary-search-ans'],
     },
     {
-      name: "Number Theory",
-      items: [
-        "intro-nt", // does this really belong so high up on the list??
-      ]
+      name: 'Graphs',
+      items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
     },
-    {
-      name: "Graphs",
-      items: [
-        "bfs",
-        "toposort",
-        "cyc",
-        "sp",
-      ]
-    },
-    {
-      name: "Range Queries",
-      items: [
-        "SRQ",
-        "springboards",
-        "PURS",
-      ]
-    },
-    {
-      name: "Trees",
-      items: [
-        "dsu",
-        "mst",
-        "dp-trees",
-        "tree-euler",
-      ]
-    },
-    {
-      name: "Hashing",
-      items: [
-        "faster-hashmap",
-        "string-hashing",
-      ]
-    }
   ],
-  "plat": [
+  gold: [
     {
-      name: "Range Queries",
-      items: [
-        "seg-ext",
-        "RURQ",
-        "2DRQ",
-        "sqrt",
-      ]
+      name: 'Data Structures',
+      items: ['stacks', 'sliding', 'queues'],
     },
     {
-      name: "Trees",
-      items: [
-        "bin-jump",
-        "merging",
-        "hld",
-        "centroid",
-      ]
+      name: 'Dynamic Programming',
+      items: ['intro-dp', 'dp-trees'],
     },
     {
-      name: "Dynamic Programming",
+      name: 'Number Theory',
       items: [
-        "dp-bitmasks",
-        "dp-ranges",
-        "dp-more",
-      ]
+        'intro-nt', // does this really belong so high up on the list??
+      ],
     },
     {
-      name: "Graphs",
-      items: [
-        "sp-neg",
-        "BCC-2CC",
-        "SCC",
-        "max-flow",
-        "eulerian-tours",
-        "offline-del",
-        "eulers-formula",
-      ]
+      name: 'Graphs',
+      items: ['bfs', 'toposort', 'cyc', 'sp'],
     },
     {
-      name: "Strings",
-      items: [
-        "string-search",
-        "suffix-array",
-      ]
+      name: 'Range Queries',
+      items: ['SRQ', 'springboards', 'PURS'],
     },
     {
-      name: "Convexity",
-      items: [
-        "geo-pri",
-        "sweep-line",
-        "convex-hull",
-        "cht",
-        "LC",
-        "lagrange",
-        "slope",
-      ]
+      name: 'Trees',
+      items: ['dsu', 'mst', 'tree-euler'],
     },
     {
-      name: "Misc. Topics",
-      items: [
-        "bitsets",
-        "fracture",
-        "mat-exp",
-      ]
-    }
+      name: 'Hashing',
+      items: ['unordered', 'faster-hashmap', 'string-hashing'],
+    },
   ],
-  "adv": [
+  plat: [
     {
-      name: "Data Structures",
-      items: [
-        "treaps",
-        "persistent",
-        "segtree-beats",
-        "LCT",
-      ]
+      name: 'Range Queries',
+      items: ['seg-ext', 'RURQ', '2DRQ', 'sqrt'],
     },
     {
-      name: "Flows",
-      items: [
-        "flow-lb",
-        "min-cost-flow",
-      ]
+      name: 'Trees',
+      items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
-      name: "Polynomials",
-      items: [
-        "fft",
-        "fft-ext",
-      ]
+      name: 'Dynamic Programming',
+      items: ['dp-bitmasks', 'dp-ranges', 'comb-sub', 'dp-more'],
     },
     {
-      name: "Misc. Topics",
+      name: 'Graphs',
       items: [
-        "extend-euclid",
-        "xor-basis",
-        "critical",
-        "string-suffix",
-        "game-theory",
-        "multiplicative",
-        "matroid-isect",
-      ]
-    }
-  ]
+        'sp-neg',
+        'BCC-2CC',
+        'SCC',
+        'eulerian-tours',
+        'offline-del',
+        'eulers-formula',
+        'max-flow',
+        'min-cut',
+      ],
+    },
+    {
+      name: 'Strings',
+      items: ['string-search', 'suffix-array'],
+    },
+    {
+      name: 'Convexity',
+      items: [
+        'geo-pri',
+        'sweep-line',
+        'convex-hull',
+        'cht',
+        'LC',
+        'lagrange',
+        'slope',
+      ],
+    },
+    {
+      name: 'Misc. Topics',
+      items: ['mat-exp', 'bitsets', 'fracture'],
+    },
+  ],
+  adv: [
+    {
+      name: 'Data Structures',
+      items: ['treaps', 'persistent', 'segtree-beats', 'LCT'],
+    },
+    {
+      name: 'Flows',
+      items: ['flow-lb', 'min-cost-flow'],
+    },
+    {
+      name: 'Polynomials',
+      items: ['fft', 'fft-ext'],
+    },
+    {
+      name: 'Misc. Topics',
+      items: [
+        'extend-euclid',
+        'xor-basis',
+        'critical',
+        'string-suffix',
+        'game-theory',
+        'multiplicative',
+        'matroid-isect',
+      ],
+    },
+  ],
 };
 
 export default MODULE_ORDERING;
-export const SECTIONS: SectionID[] = Object.keys(MODULE_ORDERING) as SectionID[];
-export const SECTION_LABELS: {[key in SectionID]: string} = {
-  "intro": "Intro",
-  "bronze": "Bronze",
-  "silver": "Silver",
-  "gold": "Gold",
-  "plat": "Platinum",
-  "adv": "Advanced",
+export const SECTIONS: SectionID[] = Object.keys(
+  MODULE_ORDERING
+) as SectionID[];
+export const SECTION_LABELS: { [key in SectionID]: string } = {
+  general: 'General',
+  bronze: 'Bronze',
+  silver: 'Silver',
+  gold: 'Gold',
+  plat: 'Platinum',
+  adv: 'Advanced',
 };
 
-let moduleIDToSectionMap: {[key: string]: SectionID} = {};
+let moduleIDToSectionMap: { [key: string]: SectionID } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
     category.items.forEach(moduleID => {
       moduleIDToSectionMap[moduleID] = section;
-    })
+    });
   });
 });
 
 export { moduleIDToSectionMap };
 
-let moduleIDToURLMap: {[key: string]: string} = {};
+let moduleIDToURLMap: { [key: string]: string } = {};
 
 SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
     category.items.forEach(moduleID => {
       moduleIDToURLMap[moduleID] = `/${section}/${moduleID}`;
-    })
+    });
   });
 });
 

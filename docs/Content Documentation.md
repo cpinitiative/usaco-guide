@@ -2,8 +2,8 @@
 
 The following two modules are good to read:
 
-1. https://usaco-guide.netlify.app/intro/modules
-2. https://usaco-guide.netlify.app/intro/code-con
+1. https://usaco-guide.netlify.app/general/modules
+2. https://usaco-guide.netlify.app/general/code-con
 
 All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
 
@@ -41,11 +41,9 @@ Located at `content/ordering.ts`, this file stores the ordering of the modules. 
 
 ## 3. Frontmatter
 
-[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded
-by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
+[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
 
-- **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify
-  the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
+- **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
 - **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
@@ -72,10 +70,15 @@ prerequisites:
 
 ### Linking to Modules
 
-Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module: 
+Do `[insert text here](/general/code-con)`.
 
- - If the module is in Intro then do `[insert text here](./code-con)`.
- - Otherwise do `[insert text here](../intro/code-con)`.
+Don't use relative links like `code-con`, that will break our link checker...
+
+### Link Checker
+
+`yarn build && yarn serve` -- keep this terminal alive!
+
+`yarn check-links`
 
 ## 4. Table of Contents
 
@@ -121,17 +124,14 @@ This is **bold**.
 ```mdx
 Bad:
 
-<Spoiler>
-This is NOT **bold**.
-</Spoiler>
+<Spoiler>This is NOT **bold**.</Spoiler>
 
 <Spoiler>This isn't **bold** either!</Spoiler>
 ```
 
 ### Spoilers
 
-Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful
-when writing solutions to problems.
+Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful when writing solutions to problems.
 
 ```
 <Spoiler title="Show Solution">
@@ -209,28 +209,28 @@ Problem constructor:
 
 ```typescript
 class Problem {
-  constructor(
-    public source: string,
-    public name: string,
-    public id: string,
-    labels?:
-      | 'Very Easy'
-      | 'Easy'
-      | 'Normal'
-      | 'Hard'
-      | 'Very Hard'
-      | 'Insane'
-      | 'Intro|Very Easy'
-      | 'Intro|Easy'
-      | 'Intro|Normal'
-      | 'Intro|Hard'
-      | 'Intro|Very Hard'
-      | 'Intro|Insane',
-    public starred?: boolean,
-    public tags?: string[],
-    sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
-    public solQuality: 'bad' | 'ok' | 'good' = 'ok'
-  ) {}
+	constructor(
+		public source: string,
+		public name: string,
+		public id: string,
+		labels?:
+			| 'Very Easy'
+			| 'Easy'
+			| 'Normal'
+			| 'Hard'
+			| 'Very Hard'
+			| 'Insane'
+			| 'Intro|Very Easy'
+			| 'Intro|Easy'
+			| 'Intro|Normal'
+			| 'Intro|Hard'
+			| 'Intro|Very Hard'
+			| 'Intro|Insane',
+		public starred?: boolean,
+		public tags?: string[],
+		sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
+		public solQuality: 'bad' | 'ok' | 'good' = 'ok'
+	) {}
 }
 ```
 
@@ -249,31 +249,31 @@ prerequisites:
 import { Problem } from '../models';
 
 export const problems = {
-  standard: [
-    new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
-    new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
-    new Problem(
-      'CSES',
-      'Sum of Two Values',
-      '1640',
-      'Intro',
-      false,
-      [],
-      'Can be solved without sets.'
-    ),
-    new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
-      'iterators',
-    ]),
-    new Problem('CSES', 'Towers', '1073', 'Easy', false, [
-      'multiset',
-      'greedy',
-    ]),
-    new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
-    new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
-      'multiset',
-      'greedy',
-    ]),
-  ],
+	standard: [
+		new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
+		new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
+		new Problem(
+			'CSES',
+			'Sum of Two Values',
+			'1640',
+			'Intro',
+			false,
+			[],
+			'Can be solved without sets.'
+		),
+		new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
+			'iterators',
+		]),
+		new Problem('CSES', 'Towers', '1073', 'Easy', false, [
+			'multiset',
+			'greedy',
+		]),
+		new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
+		new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
+			'multiset',
+			'greedy',
+		]),
+	],
 };
 
 ## Standard
@@ -305,64 +305,66 @@ Special functionality based on source:
   - Supported books:
     - `GCP` (Guide to Competitive Programming)
     - `CPH` (Competitive Programming Handbook)
-    - `PAPS`
-    - `CP1` (Competitive Programming 1)
+    - `PAPS` (Principles of Algorithmic Problem Solving)
+    - `CP2` (Competitive Programming 2)
     - `IUSACO` (Darren's book; will auto-set URL based on user language; uses C++ for Python users)
 - Some sources have URL shortcuts that they will prepend to the URL.
   - ```typescript
     const sources = {
-      TC: 'https://www.topcoder.com/community/competitive-programming/tutorials/',
-      CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
-      CF: 'http://codeforces.com/',
-      'cp-algo': 'https://cp-algorithms.com/',
-      CSA: 'https://csacademy.com/lesson/',
-      GFG: 'https://www.geeksforgeeks.org/',
-      Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
-      HR: 'https://www.hackerrank.com/',
-      SO: 'https://stackoverflow.com/',
-      Infoarena: 'https://infoarena.ro/',
+    	TC:
+    		'https://www.topcoder.com/community/competitive-programming/tutorials/',
+    	CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
+    	CF: 'http://codeforces.com/',
+    	'cp-algo': 'https://cp-algorithms.com/',
+    	CSA: 'https://csacademy.com/lesson/',
+    	GFG: 'https://www.geeksforgeeks.org/',
+    	Benq:
+    		'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
+    	HR: 'https://www.hackerrank.com/',
+    	SO: 'https://stackoverflow.com/',
+    	Infoarena: 'https://infoarena.ro/',
     };
     ```
 - Some sources will automatically have tooltips generated for them.
   - ```typescript
     export const sourceTooltip = {
-      GCP: 'Guide to Competitive Programming (based off CPH)',
-      AoPS: 'Art of Problem Solving',
-      CPH: "Book - Competitive Programmer's Handbook",
-      PAPS: 'Book - Principles of Algorithmic Problem Solving',
-      IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
-      CP1: 'Book - Competitive Programming 1',
-      TC: 'TopCoder',
-      IOI: 'International Olympiad in Informatics',
-      TLX: 'tlx.toki.id',
-      CPC:
-        'Competitive Programming Course (taught at Reykjavík University, Iceland)',
-      CF: 'CodeForces',
-      'cp-algo': 'CP Algorithms',
-      CSA: 'CS Academy',
-      GFG: 'Geeks For Geeks',
-      Benq: 'github.com/bqi343/USACO',
-      HR: 'HackerRank',
-      CSES: 'Code Submission Evaluation System (includes CPH problemset)',
-      HE: 'HackerEarth',
-      AC: 'AtCoder',
-      CC: 'CodeChef',
-      DMOJ: 'Don Mills Online Judge',
-      SPOJ: 'Sphere Online Judge',
-      YS: 'Library Checker',
-      LC: 'LeetCode',
-      POI: 'Polish Olympiad in Informatics',
-      SO: 'StackOverflow',
-      KA: 'KhanAcademy',
-      USACO: 'USA Computing Olympiad',
-      'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
-      'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
-      'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
-      Bronze: 'USACO 2015-16 to present',
-      Silver: 'USACO 2015-16 to present',
-      Gold: 'USACO 2015-16 to present',
-      Plat: 'USACO 2015-16 to present',
-      ZLE: 'kauntaofficial.github.io',
+    	GCP: 'Guide to Competitive Programming (based off CPH)',
+    	AoPS: 'Art of Problem Solving',
+    	CPH: "Book - Competitive Programmer's Handbook",
+    	PAPS: 'Book - Principles of Algorithmic Problem Solving',
+    	IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
+    	CP1: 'Book - Competitive Programming 1',
+    	TC: 'TopCoder',
+    	IOI: 'International Olympiad in Informatics',
+    	TLX: 'tlx.toki.id',
+    	CPC:
+    		'Competitive Programming Course (taught at Reykjavík University, Iceland)',
+    	CF: 'CodeForces',
+    	'cp-algo': 'CP Algorithms',
+    	CSA: 'CS Academy',
+    	GFG: 'Geeks For Geeks',
+    	Benq: 'github.com/bqi343/USACO',
+    	HR: 'HackerRank',
+    	CSES: 'Code Submission Evaluation System (includes CPH problemset)',
+    	HE: 'HackerEarth',
+    	AC: 'AtCoder',
+    	CC: 'CodeChef',
+    	DMOJ: 'Don Mills Online Judge',
+    	SPOJ: 'Sphere Online Judge',
+    	YS: 'Library Checker',
+    	LC: 'LeetCode',
+    	POI: 'Polish Olympiad in Informatics',
+    	SO: 'StackOverflow',
+    	KA: 'KhanAcademy',
+    	USACO: 'USA Computing Olympiad',
+    	'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
+    	'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
+    	'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
+    	Bronze: 'USACO 2015-16 to present',
+    	Silver: 'USACO 2015-16 to present',
+    	Gold: 'USACO 2015-16 to present',
+    	Plat: 'USACO 2015-16 to present',
+    	ZLE: 'kauntaofficial.github.io',
     };
     ```
 

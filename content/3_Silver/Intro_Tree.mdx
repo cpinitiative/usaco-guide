@@ -2,29 +2,80 @@
 id: intro-tree
 title: Introduction to Tree Algorithms
 author: Nathan Chen
-prerequisites: 
- - dfs
-description: "Introducing a special type of graph: trees."
+prerequisites:
+  - dfs
+description: 'Introducing a special type of graph: trees.'
 frequency: 2
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    treeSam: [
-      new Problem("CSES", "Subordinates", "1674", "Very Easy", false, ["Tree", "DFS"], "@B"),
-    ],
-    tree: [
-      new Problem("CF", "Journey", "contest/839/problem/C", "Easy", false, ["Tree", "DFS"]),
-      new Problem("CSES", "Tree Diameter", "1131", "Normal", false, ["Tree", "DFS"], "@CSES 14.2"),
-      new Problem("CSES", "Tree Distances I", "1132", "Normal", false, ["Tree", "DFS"], "@CSES 14.2, 14.3"),
-      new Problem("CSES", "Tree Distances II", "1133", "Normal", false, ["Tree", "DFS"]),
-      new Problem("CF", "Wizard's Tour", "contest/860/problem/D", "Normal", false, ["Tree", "DFS"]),
-      new Problem("POI", "Hotels", "https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement", "Normal", false, ["Tree", "DFS"]),
-      new Problem("HE", "Birthday Gifts", "https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/", "Normal", false, ["Tree", "PIE"], ""),
-      new Problem("Gold", "Cow At Large", "790", "Hard", false, [], ""),
-    ],
+	treeSam: [
+		new Problem(
+			'CSES',
+			'Subordinates',
+			'1674',
+			'Very Easy',
+			false,
+			['Tree', 'DFS'],
+			'@B'
+		),
+	],
+	tree: [
+		new Problem('Silver', 'Milk Visits', '968', 'Normal', false, ['DFS']),
+		new Problem('CF', 'Journey', 'contest/839/problem/C', 'Normal', false, [
+			'Tree',
+			'DFS',
+		]),
+		new Problem(
+			'CSES',
+			'Tree Diameter',
+			'1131',
+			'Normal',
+			false,
+			['Tree', 'DFS'],
+			'@CSES 14.2'
+		),
+		new Problem('CSES', 'Tree Distances II', '1133', 'Normal', false, [
+			'Tree',
+			'DFS',
+		]),
+		new Problem('Silver', 'Clock Tree', '1016', 'Hard', false, []),
+		new Problem(
+			'CSES',
+			'Tree Distances I',
+			'1132',
+			'Hard',
+			false,
+			['Tree', 'DFS'],
+			'@CSES 14.3'
+		),
+		new Problem('CF', "Wizard's Tour", 'contest/860/problem/D', 'Hard', false, [
+			'Tree',
+			'DFS',
+		]),
+		new Problem(
+			'POI',
+			'Hotels',
+			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+			'Hard',
+			false,
+			['Tree', 'DFS']
+		),
+		new Problem('Gold', 'Cow At Large', '790', 'Hard', false, [], ''),
+	],
 };
+
+<!-- 		new Problem(
+			'HE',
+			'Birthday Gifts',
+			'https://www.hackerearth.com/practice/math/combinatorics/inclusion-exclusion/practice-problems/algorithm/mancunian-and-birthday-gifts-d44faa15/description/',
+			'Normal',
+			false,
+			['Tree', 'PIE'],
+			''
+		), -->
 
 **Trees** are generally treated very differently from general graph problems.
 
@@ -33,9 +84,10 @@ export const problems = {
 ### Resources
 
 <Resources>
-  <Resource source="CPH" title="14 - Tree algorithms" starred>traversing tree, diameter, longest paths</Resource>
+	<Resource source="CPH" title="14 - Tree algorithms" starred>
+		traversing tree, diameter, longest paths
+	</Resource>
 </Resources>
-
 
 ### Solution - Subordinates
 
@@ -58,26 +110,26 @@ vector<int> children[200000];
 int subtree_size[200000];
 
 void dfs_size(int node) {
-	subtree_size[node] = 1; // This one represents the root of `node's` subtree 
+	subtree_size[node] = 1; // This one represents the root of `node's` subtree
 	// (which would be `node` itself)
 
 	for(int child : children[node]) {
 		dfs_size(child);
-		subtree_size[node] += subtree_size[child]; 
+		subtree_size[node] += subtree_size[child];
 		// Add `node's` children's subtrees to the size of `node's` subtree
 	}
 }
 
 int main() {
-	//read more about Fast IO in "Intro - FastIO"
+	//read more about Fast IO in "General - FastIO"
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	int N; cin >> N;
-	
+
 	for(int i = 1; i < N; i++) {
-		int parent; cin >> parent; parent--; 
-		// this node is the parent of node i ... Also notice 
+		int parent; cin >> parent; parent--;
+		// this node is the parent of node i ... Also notice
 		// the decrement operator in order to make the node 0-indexed
 		children[parent].push_back(i);
 	}
@@ -101,8 +153,7 @@ int main() {
 
 <Warning>
 
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE.
-Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
+Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
 
 </Warning>
 

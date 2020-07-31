@@ -13,9 +13,15 @@ import {
 import TopNavigationBar from '../components/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import getProgressInfo from '../utils/getProgressInfo';
+import Announcements from '../components/Dashboard/Announcements';
+import {
+  AnnouncementInfo,
+  graphqlToAnnouncementInfo,
+} from '../models/announcement';
+import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
 
 export default function DashboardPage(props: PageProps) {
-  const { modules } = props.data as any;
+  const { modules, announcements } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -36,6 +42,9 @@ export default function DashboardPage(props: PageProps) {
     lastViewedModule: lastViewedModuleID,
     userProgressOnModules,
     userProgressOnProblems,
+    lastReadAnnouncement,
+    setLastReadAnnouncement,
+    firebaseUser,
   } = React.useContext(UserDataContext);
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -98,6 +107,14 @@ export default function DashboardPage(props: PageProps) {
   //   ['Not Attempted']
   // );
 
+  console.log(lastReadAnnouncement);
+
+  const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
+    return announcements.edges.map(node =>
+      graphqlToAnnouncementInfo(node.node)
+    );
+  }, []);
+
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -107,11 +124,18 @@ export default function DashboardPage(props: PageProps) {
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
-            <div className="flex overflow-x-auto lg:px-8 lg:pt-10 pb-6">
-              <WelcomeBackBanner
-                lastViewedModuleURL={lastViewedModuleURL}
-                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-              />
+            <div className="lg:px-8 pt-4 pb-6">
+              <p className="mb-4 text-center">
+                {firebaseUser
+                  ? `Signed in as ${firebaseUser.email}.`
+                  : `Not signed in.`}
+              </p>
+              <div className="flex overflow-x-auto">
+                <WelcomeBackBanner
+                  lastViewedModuleURL={lastViewedModuleURL}
+                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+                />
+              </div>
             </div>
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
@@ -134,58 +158,7 @@ export default function DashboardPage(props: PageProps) {
             </div>
           </header>
           <div className="max-w-7xl mx-auto mb-8">
-            <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8">
-              <div className="bg-white shadow transition duration-150 ease-in-out sm:rounded-lg">
-                {/* hover:shadow-lg */}
-                <div className="px-4 py-5 sm:p-6">
-                  {/* cursor-pointer */}
-                  <p className="text-sm leading-5 text-gray-500">
-                    <time dateTime="2020-07-18">July 26, 2020</time>
-                  </p>
-                  <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">
-                    User Accounts in Beta
-                  </h3>
-                  <p className="mt-3 text-base leading-6 text-gray-500">
-                    Due to popular demand, we've added <b>beta</b> support for
-                    user accounts. There is a risk of complete data loss, so
-                    please use it at your own risk. Please report all issues you
-                    encounter using the "Feedback" or "Contact Us" buttons.
-                  </p>
-                  {/*<div className="mt-3">*/}
-                  {/*  <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
-                  {/*    Continue Reading*/}
-                  {/*  </span>*/}
-                  {/*</div>*/}
-                </div>
-              </div>
-              <div className="bg-white shadow transition duration-150 ease-in-out sm:rounded-lg">
-                {/* hover:shadow-lg */}
-                <div className="px-4 py-5 sm:p-6">
-                  {/* cursor-pointer */}
-                  <p className="text-sm leading-5 text-gray-500">
-                    <time dateTime="2020-07-18">July 27, 2020</time>
-                  </p>
-                  <h3 className="mt-2 text-xl leading-7 font-semibold text-gray-900">
-                    Looking for Contributors
-                  </h3>
-                  <p className="mt-3 text-base leading-6 text-gray-500">
-                    We're particularly interested in{' '}
-                    <b>Bronze - Gold competitors</b> who are willing to review
-                    most (if not all) of the modules in their corresponding
-                    divisions. Check the module about{' '}
-                    <u>
-                      <a href="/intro/contributing">contributing</a>
-                    </u>{' '}
-                    for details regarding what this would entail.
-                  </p>
-                  {/*<div className="mt-3">*/}
-                  {/*  <span className="text-base leading-6 font-semibold text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150">*/}
-                  {/*    Continue Reading*/}
-                  {/*  </span>*/}
-                  {/*</div>*/}
-                </div>
-              </div>
-            </div>
+            <Announcements announcements={parsedAnnouncements} />
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -279,6 +252,15 @@ export default function DashboardPage(props: PageProps) {
           </div>
         </main>
       </div>
+
+      {parsedAnnouncements[0].id !== lastReadAnnouncement && (
+        <div className="h-12">
+          <AnnouncementBanner
+            announcement={parsedAnnouncements[0]}
+            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          />
+        </div>
+      )}
     </Layout>
   );
 }
@@ -298,6 +280,21 @@ export const pageQuery = graphql`
             name
             starred
           }
+        }
+      }
+    }
+    announcements: allMdx(
+      filter: { fileAbsolutePath: { regex: "/announcements/" } }
+      sort: { order: DESC, fields: frontmatter___order }
+    ) {
+      edges {
+        node {
+          frontmatter {
+            title
+            id
+            date
+          }
+          body
         }
       }
     }

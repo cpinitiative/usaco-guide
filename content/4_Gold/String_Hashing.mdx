@@ -1,29 +1,75 @@
 ---
 id: string-hashing
-title: "String Hashing"
+title: 'String Hashing'
 author: Benjamin Qi
-description: "Quickly test equality of substrings with a small probability of failure."
+description: 'Quickly test equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
- - intro-nt
+  - intro-nt
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    ex: [
-      new Problem("Gold", "Cownomics", "741", "Easy", false, [], ""),
-    ],
-    general: [
-      new Problem("CSA", "Palindromic Partitions", "palindromic-partitions", "Easy", false, ["Greedy", "Hashing"], ""),
-      new Problem("CF", "Palindromic Characteristics", "problemset/problem/835/D", "Easy", false, ["DP", "Hashing"], ""),
-      new Problem("Gold", "Lights Out", "599", "Normal", false, [], "oops you don't actually need hashing to pass ..."),
-      new Problem("CF", "Liar", "problemset/problem/822/E", "Hard", false, ["DP", "Hashing"], ""),
-      new Problem("Plat", "Bull in a China Shop", "649", "Insane", false, ["Hashing"], "what a terrible problem, incorrect constraints"),
-    ],
-    adj: [
-      new Problem("CF", "Berland SU Computer Network", "contest/847/problem/L", "Normal", false, [], ""),
-    ]
+	ex: [new Problem('Gold', 'Cownomics', '741', 'Easy', false, [], '')],
+	general: [
+		new Problem(
+			'CSA',
+			'Palindromic Partitions',
+			'palindromic-partitions',
+			'Easy',
+			false,
+			['Greedy', 'Hashing'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Palindromic Characteristics',
+			'contest/835/problem/D',
+			'Easy',
+			false,
+			['DP', 'Hashing'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Lights Out',
+			'599',
+			'Normal',
+			false,
+			[],
+			"oops you don't actually need hashing to pass ..."
+		),
+		new Problem(
+			'CF',
+			'Liar',
+			'contest/822/problem/E',
+			'Hard',
+			false,
+			['DP', 'Hashing'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'Bull in a China Shop',
+			'649',
+			'Insane',
+			false,
+			['Hashing'],
+			'what a terrible problem, incorrect constraints'
+		),
+	],
+	adj: [
+		new Problem(
+			'CF',
+			'Berland SU Computer Network',
+			'contest/847/problem/L',
+			'Normal',
+			false,
+			[],
+			''
+		),
+	],
 };
 
 ## Tutorial
@@ -39,15 +85,29 @@ export const problems = {
 
 <IncompleteSection />
 
-My implementation can be found [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Light/HashRange%20(14.2).h). It uses two bases rather than just one to decrease the probability that two random strings hash to the same value. As mentioned in the articles above, there is no need to calculate modular inverses.
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Light/HashRange%20(14.2).h"
+		title="HashRange"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+It's generally a good idea to use two bases rather than just one to decrease the probability that two random strings hash to the same value. As mentioned in the articles above, there is no need to calculate modular inverses.
 
 ## Example: Cownomics (Gold)
 
 <Problems problems={problems.ex} />
 
-  - Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $l\ldots r$ explain spotiness. 
-  - Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(N\log N)$ time (and you only need to check $O(M)$ of these pairs in total).
-  - Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions.
+<Spoiler title="Sketch">
+
+- Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $l\ldots r$ explain spotiness.
+- Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(N\log N)$ time (and you only need to check $O(M)$ of these pairs in total).
+- Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions.
+
+</Spoiler>
 
 <!-- ## Adjacency Lists
 
@@ -59,7 +119,13 @@ My implementation can be found [here](https://github.com/bqi343/USACO/blob/maste
 ## Hacking
 
 <Resources>
-  <Resource source="CF" title="dacin21 - Anti-Hash Tests" url="blog/entry/60442">On CF educational rounds in particular, make sure to randomize your bases.</Resource>
+	<Resource
+		source="CF"
+		title="dacin21 - Anti-Hash Tests"
+		url="blog/entry/60442"
+	>
+		On CF educational rounds in particular, make sure to randomize your bases.
+	</Resource>
 </Resources>
 
 ## Problems

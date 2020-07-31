@@ -1,11 +1,11 @@
 ---
 id: centroid
-title: "Centroid Decomposition"
+title: 'Centroid Decomposition'
 author: Siyong Huang, Benjamin Qi
-prerequisites: 
- - dfs
- - SRQ
-description: "Decomposing the tree to faciliate path computations"
+prerequisites:
+  - dfs
+  - SRQ
+description: 'Decomposing the tree to faciliate path computations'
 frequency: 1
 ---
 
@@ -16,41 +16,161 @@ TODO:
 
 -->
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sam: [
-        new Problem("CF", "Xenia & Tree", "problemset/problem/342/E", "Easy", false, ["Centroid"], ""),
-    ],
-    general: [
-        new Problem("CF", "Ciel the Commander", "problemset/problem/321/C", "Easy", false, ["Centroid"], "Keep setting the centroid to the next rank"),
-        new Problem("CF", "BOI - Village (Maximum)", "contest/1387/problem/B2", "Easy", true, ["Centroid"], "First, find one of the centroids in the tree and split the tree into 2 subtrees X and Y, where X is the smaller subtree and Y is rooted at the centroid. All citizens in X must move to Y and all citizens from the largest subtree of the centroid's children must move to X (otherwise the centroid isn't a centroid). Then just shift the remaining citizens arbitrarily."),
-        new Problem("Plat", "New Barns", "817", "Normal", true, ["Centroid"], "Build centroid decomp on the whole tree first and perform updates for each 'root' as expected."),
-        new Problem("CF", "Sherlock's bet to Moriarty", "contest/776/problem/F", "Normal", false, ["Centroid"], "Similar to Ceil the Commander, but annoying to interpret input and order regions"),
-        new Problem("CF", "Digit Tree", "contest/715/problem/C", "Normal", false, ["Centroid", "NT"], "M is coprime to 10, so use Euler's Theorem and maps storing mods to count pairs."),
-        new Problem("CF", "Double Tree", "contest/1140/problem/G", "Normal", false, ["Centroid", "DP"], "DP + Centroid"),
-        new Problem("ojuz", "JOI - Factories", "JOI14_factories", "Normal", false, ["Centroid"], "Very similar to New Barns"),
-        new Problem("CF", "Sum of Prefix Sums", "contest/1303/problem/G", "Hard", false, ["Centroid", "CHT"], "Maintain convex hull trick as you iterate through subtrees. It's easier to have a different dfs for querying and updating CHT. Also run forwards and backwards to account for direction of prefix sum."),
-        new Problem("YS", "Frequency Table of Tree Distance", "frequency_table_of_tree_distance", "Hard", false, ["Centroid", "FFT"], ""),
-        new Problem("DMOJ", "Bob Equilibrium", "dmopc19c7p6", "Hard", false, ["Centroid"], "tight time limit"),
-        new Problem("DMOJ", "Time Traveller Imaxblue", "tc19summerh", "Hard", false, ["Centroid"], ""),
-        new Problem("ojuz", "JOI - Synchronization", "JOI13_synchronization", "Hard", false, ["Centroid", "Small to Large"], "Looks like $O(N \log^3 N)$ is very fast! When deleting an edge, remember how many systems that edge was used to synchronize. Also, each moment there is a connected component, all computers in the component have the same value."),
-        new Problem("CF", "Raining Season", "contest/1019/problem/E", "Very Hard", false, ["Centroid", "CHT", "Set Merging"], "Merge a bunch of smaller convex hull tricks together to create the ultimate convex hull trick"),
-        new Problem("Plat", "At Large", "793", "Very Hard", false, ["Centroid"], "tight time limit"),
-    ]
+	sam: [
+		new Problem(
+			'CF',
+			'Xenia & Tree',
+			'problemset/problem/342/E',
+			'Easy',
+			false,
+			['Centroid'],
+			''
+		),
+	],
+	general: [
+		new Problem(
+			'CF',
+			'Ciel the Commander',
+			'321/problem/C',
+			'Easy',
+			false,
+			['Centroid'],
+			'Keep setting the centroid to the next rank'
+		),
+		new Problem(
+			'CF',
+			'Baltic OI - Village (Maximum)',
+			'1387/problem/B2',
+			'Easy',
+			true,
+			['Centroid'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'New Barns',
+			'817',
+			'Normal',
+			true,
+			['Centroid'],
+			"Build centroid decomp on the whole tree first and perform updates for each 'root' as expected."
+		),
+		new Problem(
+			'CF',
+			"Sherlock's bet to Moriarty",
+			'776/problem/F',
+			'Normal',
+			false,
+			['Centroid'],
+			'Similar to Ceil the Commander, but annoying to interpret input and order regions'
+		),
+		new Problem(
+			'CF',
+			'Digit Tree',
+			'715/problem/C',
+			'Normal',
+			false,
+			['Centroid', 'NT'],
+			"M is coprime to 10, so use Euler's Theorem and maps storing mods to count pairs."
+		),
+		new Problem(
+			'CF',
+			'Double Tree',
+			'1140/problem/G',
+			'Normal',
+			false,
+			['Centroid', 'DP'],
+			'DP + Centroid'
+		),
+		new Problem(
+			'JOI',
+			'Factories',
+			'JOI14_factories',
+			'Normal',
+			false,
+			['Centroid'],
+			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d1-factories-review.pdf'
+		),
+		new Problem(
+			'CF',
+			'Sum of Prefix Sums',
+			'1303/problem/G',
+			'Hard',
+			false,
+			['Centroid', 'CHT'],
+			"Maintain convex hull trick as you iterate through subtrees. It's easier to have a different dfs for querying and updating CHT. Also run forwards and backwards to account for direction of prefix sum."
+		),
+		new Problem(
+			'DMOJ',
+			'Bob Equilibrium',
+			'dmopc19c7p6',
+			'Hard',
+			false,
+			['Centroid'],
+			'tight time limit'
+		),
+		new Problem(
+			'DMOJ',
+			'Time Traveller Imaxblue',
+			'tc19summerh',
+			'Hard',
+			false,
+			['Centroid'],
+			''
+		),
+		new Problem(
+			'JOI',
+			'Synchronization',
+			'JOI13_synchronization',
+			'Hard',
+			false,
+			['Centroid', 'Small to Large'],
+			'Looks like $O(N log^3 N)$ is very fast! When deleting an edge, remember how many systems that edge was used to synchronize. Also, each moment there is a connected component, all computers in the component have the same value.'
+		),
+		new Problem(
+			'CF',
+			'Raining Season',
+			'1019/problem/E',
+			'Very Hard',
+			false,
+			['Centroid', 'CHT', 'Set Merging'],
+			'Merge a bunch of smaller convex hull tricks together to create the ultimate convex hull trick'
+		),
+		new Problem(
+			'Plat',
+			'At Large',
+			'793',
+			'Very Hard',
+			false,
+			['Centroid'],
+			'tight time limit'
+		),
+	],
 };
 
 ## Centroid Decomposition
 
 <Problems problems={problems.sam} />
 
-**Centroid Decomposition** is a divide and conquer technique for trees.
-The **centroid** of a tree is a node which, if rooted, results in no other nodes having a subtree of size greater than $\frac{N}{2}$.
-**Centroid Decomposition** works by repeated splitting the tree and each of the resulting subgraphs at the centroid, producing $O(\log N)$ layers of subgraphs.
+**Centroid Decomposition** is a divide and conquer technique for trees. The **centroid** of a tree is a node which, if rooted, results in no other nodes having a subtree of size greater than $\frac{N}{2}$. **Centroid Decomposition** works by repeated splitting the tree and each of the resulting subgraphs at the centroid, producing $O(\log N)$ layers of subgraphs.
 
 <Resources>
-  <Resource source="Carpanese" title="Illustrated Intro to Centroid Decomposition" url="https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308" starred>how to solve above problem</Resource>
-  <Resource source="GFG" title="Centroid Decomposition of Tree" url="centroid-decomposition-of-tree"></Resource>
+	<Resource
+		source="Carpanese"
+		title="Illustrated Intro to Centroid Decomposition"
+		url="https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308"
+		starred
+	>
+		how to solve above problem
+	</Resource>
+	<Resource
+		source="GFG"
+		title="Centroid Decomposition of Tree"
+		url="centroid-decomposition-of-tree"
+	></Resource>
 </Resources>
 
 ### Implementation
@@ -185,7 +305,7 @@ int get_centroid(int n, int ms, int p = 0)//n = node, ms = size of tree, p = par
 void centroid(int n = 1)
 {
 	int C = get_centroid(n, dfs(n));
- 
+
 	//do something
 
 	r[C] = 1;
@@ -223,7 +343,7 @@ public int get_centroid(int n, int ms, int p)//n = node, ms = size of tree, p = 
 public void centroid(int n)
 {
 	int C = get_centroid(n, dfs(n, 0), 0);
- 
+
 	//do something
 
 	r[C] = 1;
@@ -239,6 +359,6 @@ public void centroid(int n)
 
 ### Problems
 
-*Note:* Unfortunately, it seems like constant factor is especially important for DMOJ. :|
+_Note:_ Unfortunately, it seems like constant factor is especially important for DMOJ. :|
 
 <Problems problems={problems.general} />

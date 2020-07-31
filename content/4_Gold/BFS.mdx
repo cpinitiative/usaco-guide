@@ -1,30 +1,38 @@
 ---
 id: bfs
-title: "Breadth First Search (BFS)"
+title: 'Breadth First Search (BFS)'
 author: Benjamin Qi, Michael Cao
-prerequisites: 
- - dfs
-description: "Traversing a graph in a way such that vertices closer to the starting vertex are processed first."
+prerequisites:
+  - dfs
+description: 'Traversing a graph in a way such that vertices closer to the starting vertex are processed first.'
 frequency: 2
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    sample: [
-      new Problem("CSES", "Message Route", "1667", "Intro|Easy", false, ["BFS"]),
-    ],
-    general: [
-      new Problem("Silver", "Milk Pails", "620", "Very Easy", false, ["BFS"], "There is an easier solution in XYK time, but you can use BFS to solve it in XY time."),
-      new Problem("CSES", "Monsters", "1194", "Easy", false, ["BFS"]),
-      new Problem("CSA", "BFS-DFS", "bfs-dfs", "Normal", false, ["BFS", "DFS"]),
-      new Problem("Gold", "Lasers", "671", "Normal", false, ["BFS"]),
-      new Problem("Gold", "Dream", "575", "Hard", false, ["BFS"]),
-      new Problem("Gold", "A Pie for a Pie", "765", "Very Hard", false, [], ""),
-    ],
-    example: [
-      new Problem("Gold", "Cow Navigation", "695", "Normal", false, ["BFS"]),
-    ]
+	sample: [
+		new Problem('CSES', 'Message Route', '1667', 'Intro|Easy', false, ['BFS']),
+	],
+	general: [
+		new Problem(
+			'Silver',
+			'Milk Pails',
+			'620',
+			'Very Easy',
+			false,
+			['BFS'],
+			'There is an easier solution in XYK time, but you can use BFS to solve it in XY time.'
+		),
+		new Problem('CSES', 'Monsters', '1194', 'Easy', false, ['BFS']),
+		new Problem('CSA', 'BFS-DFS', 'bfs-dfs', 'Normal', false, ['BFS', 'DFS']),
+		new Problem('Gold', 'Lasers', '671', 'Normal', false, ['BFS']),
+		new Problem('Gold', 'Dream', '575', 'Hard', false, ['BFS']),
+		new Problem('Gold', 'A Pie for a Pie', '765', 'Very Hard', false, [], ''),
+	],
+	example: [
+		new Problem('Gold', 'Cow Navigation', '695', 'Normal', false, ['BFS']),
+	],
 };
 
 <Problems problems={problems.sample} />
@@ -32,13 +40,34 @@ export const problems = {
 ## Resources
 
 <Resources>
-  <Resource source="CSA" title="Breadth First Search" url="breadth_first_search" starred>interactive</Resource>
-  <Resource source="CPH" title="12.2 - Breadth-First Search"></Resource>
-  <Resource source="PAPS" title="12.1 - Breadth-First Search"></Resource>
-  <Resource source="KA" title="Breadth First Search and Its Uses" url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"></Resource>
-  <Resource source="cp-algo" title="Breadth First Search" url="graph/breadth-first-search.html"></Resource>
-  <Resource source="cp-algo" title="0/1 BFS" url="graph/01_bfs.html"></Resource>
-  <Resource source="IUSACO" title="10.4 - Graph Traversal Algorithms"></Resource>
+	<Resource
+		source="CSA"
+		title="Breadth First Search"
+		url="breadth_first_search"
+		starred
+	>
+		interactive
+	</Resource>
+	<Resource source="CPH" title="12.2 - Breadth-First Search"></Resource>
+	<Resource source="PAPS" title="12.1 - Breadth-First Search"></Resource>
+	<Resource
+		source="KA"
+		title="Breadth First Search and Its Uses"
+		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
+	></Resource>
+	<Resource
+		source="cp-algo"
+		title="Breadth First Search"
+		url="graph/breadth-first-search.html"
+	></Resource>
+	<Resource source="cp-algo" title="0/1 BFS" url="graph/01_bfs.html"></Resource>
+	<Resource
+		source="IUSACO"
+		title="10.4 - Graph Traversal Algorithms"
+	></Resource>
+	<Resource source="CP2" title="4.2.2 - BFS">
+		{' '}
+	</Resource>
 </Resources>
 
 ## Implementation
@@ -97,7 +126,6 @@ int main() {
 }
 ```
 
-
 </CPPSection>
 
 <JavaSection>
@@ -116,11 +144,11 @@ class Main {
 
     static void bfs(int startNode) {
         Queue<Integer> q = new ArrayDeque<Integer>(); //You can choose any implementation of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
-  
+
         q.add(startNode);
         visited[startNode] = true;
         dist[startNode] = 0;
-       
+
         while(!q.isEmpty()) {
             int currentNode = q.poll();
 
@@ -133,9 +161,9 @@ class Main {
             }
         }
     }
-  
+
     public static void main (String[] args) throws Exception {
-	BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); //Read about fast Java input in "Intro - Fast I/O"
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); //Read about fast Java input in "General - Fast I/O"
 
 	StringTokenizer st = new StringTokenizer(br.readLine());
 	int N = Integer.parseInt(st.nextToken());
@@ -182,7 +210,7 @@ In the gold division, the problem statement will never directly be, "Given an un
 
 <Problems problems={problems.example} />
 
-In this problem, Bessie stands on a grid and wants to go from the lower left corner to upper-right corner in as few moves as possible. An initial idea could be to model the grid as a graph, where adjacent cells are connected by edges, and run a BFS to find the shortest path. 
+In this problem, Bessie stands on a grid and wants to go from the lower left corner to upper-right corner in as few moves as possible. An initial idea could be to model the grid as a graph, where adjacent cells are connected by edges, and run a BFS to find the shortest path.
 
 However, two additional constriants play a role in this problem: Bessie must be able to reach the destination regardless of which direction she starts in, and she can only move in the direction she is facing.
 
@@ -197,7 +225,7 @@ For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ <!-- wow
 - direction of cow $a$
 - direction of cow $b$
 
-for all $4 ^ 2$ directions each cow could be facing. 
+for all $4 ^ 2$ directions each cow could be facing.
 
 Given this new graph, we add edges between two "states" which are reachable from each other. For example, if we apply the "turn left" operation, we add an edge to the state where both cows directions turn left.
 
@@ -213,8 +241,8 @@ Don't forget that once Bessie reaches the goal, she will ignore further commands
 
 <!-- You can change it, but keep the section on making modifications to graphs before. Maybe replace with a problem w/o a good editorial? -->
 
-
 ### Implementation
+
 <!-- I really don't want to write Cow Navigation. Anyone have code? -->
 
 <IncompleteSection />

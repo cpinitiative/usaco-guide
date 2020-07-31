@@ -100,8 +100,8 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
   }
 
   if (progress === 'Reading') {
-    lineColorStyle = tw`bg-yellow-400`;
-    dotColorStyle = tw`bg-yellow-400`;
+    lineColorStyle = tw`bg-yellow-300`;
+    dotColorStyle = tw`bg-yellow-300`;
     activeTextStyle = tw`text-yellow-700 font-medium`;
   } else if (progress === 'Practicing') {
     lineColorStyle = tw`bg-orange-400`;

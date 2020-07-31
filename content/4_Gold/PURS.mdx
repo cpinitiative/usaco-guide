@@ -1,48 +1,162 @@
 ---
 id: PURS
-title: "Point Update Range Sum"
+title: 'Point Update Range Sum'
 author: Benjamin Qi
-prerequisites: 
- - prefix-sums
-description: "Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only)."
+prerequisites:
+  - prefix-sums
+description: 'Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only).'
 frequency: 3
 ---
 
-import { Problem } from "../models";
+import { Problem } from '../models';
 
 export const problems = {
-    seg: [
-      new Problem("CSES", "Range Minimum Queries II", "1649", "Intro|Easy", false, ["PURQ"], ""),
-      new Problem("YS", "Point Set Range Composite", "point_set_range_composite", "Easy", false, ["PURQ"], "Order of operations matters!"),
-      new Problem("Plat", "Slingshot", "816", "Very Hard", false, ["PURQ"], ""),
-    ],
-    sample: [
-      new Problem("YS", "Point Add Range Sum", "point_add_range_sum", "Easy", false, ["PURS"], ""),
-      new Problem("CSES", "Range Sum Queries II", "1648", "Easy", false, ["PURS"], "Can also do range XOR queries w/ update."),
-      new Problem("SPOJ", "Inversion Counting", "INVCNT", "Easy", false, ["PURS"]),
-    ],
-    practice: [
-      new Problem("CSES", "List Removals", "1749", "Easy", false, undefined, "easy with indexed set"),
-      new Problem("CSES", "Salary Queries", "1144", "Easy", false, undefined, "easy with indexed set"),
-      new Problem("CSES", "Range Update Queries", "1651", "Easy", false, undefined, "not harder than point update range query"),
-      new Problem("CSES", "Increasing Subsequence II", "1748", "Easy", false, undefined, ""),
-      new Problem("CSES", "Intersection Points", "1740", "Easy", false, undefined, ""),
-      new Problem("Kattis", "Mega Inversions", "megainversions", "Easy", false, undefined, "also just inversion counting"),
-      new Problem("HE", "Twin Permutations", "https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/", "Easy", false, undefined, "Offline 2D queries can be done with a 1D data structure"),
-      new Problem("CSES", "Distinct Values Queries", "1734", "Normal", false, undefined, "Do queries in increasing order of $a$."),
-      new Problem("CSES", "Robot Path", "1742", "Hard", false, undefined, ""),
-    ],
-    usaco: [
-      new Problem("Gold", "Haircut", "1041", "Easy", false, undefined, ""),
-      new Problem("Gold", "Balanced Photo", "693", "Easy", false, undefined, ""),
-      new Problem("Gold", "Circle Cross", "719", "Easy", false, undefined, ""),
-      new Problem("Gold", "Sleepy Cow Sort", "898", "Easy", false, undefined, "All USACO problems (aside from some special exceptions) have only one possible output."),
-      new Problem("Plat", "Mincross", "720", "Easy", false, undefined, ""),
-      new Problem("Silver", "Out of Sorts", "834", "Normal", false, undefined, "aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."),
-      new Problem("Gold", "Out of Sorts", "837", "Hard", false, undefined, ""),
-      new Problem("Old Gold", "Cow Hopscotch", "532", "Hard", false, [], ""),
-      new Problem("Plat", "Out of Sorts", "840", "Hard", false, [], ""),
-    ],
+	seg: [
+		new Problem(
+			'CSES',
+			'Range Minimum Queries II',
+			'1649',
+			'Intro|Easy',
+			false,
+			['PURQ'],
+			''
+		),
+		new Problem(
+			'YS',
+			'Point Set Range Composite',
+			'point_set_range_composite',
+			'Easy',
+			false,
+			['PURQ'],
+			'Order of operations matters!'
+		),
+		new Problem('Plat', 'Slingshot', '816', 'Very Hard', false, ['PURQ'], ''),
+	],
+	sample: [
+		new Problem(
+			'YS',
+			'Point Add Range Sum',
+			'point_add_range_sum',
+			'Easy',
+			false,
+			['PURS'],
+			''
+		),
+		new Problem(
+			'CSES',
+			'Range Sum Queries II',
+			'1648',
+			'Easy',
+			false,
+			['PURS'],
+			'Can also do range XOR queries w/ update.'
+		),
+		new Problem('SPOJ', 'Inversion Counting', 'INVCNT', 'Easy', false, [
+			'PURS',
+		]),
+	],
+	practice: [
+		new Problem(
+			'CSES',
+			'List Removals',
+			'1749',
+			'Easy',
+			false,
+			undefined,
+			'easy with indexed set'
+		),
+		new Problem(
+			'CSES',
+			'Salary Queries',
+			'1144',
+			'Easy',
+			false,
+			undefined,
+			'easy with indexed set'
+		),
+		new Problem(
+			'CSES',
+			'Range Update Queries',
+			'1651',
+			'Easy',
+			false,
+			undefined,
+			'not harder than point update range query'
+		),
+		new Problem(
+			'CSES',
+			'Increasing Subsequence II',
+			'1748',
+			'Easy',
+			false,
+			undefined,
+			''
+		),
+		new Problem(
+			'CSES',
+			'Intersection Points',
+			'1740',
+			'Easy',
+			false,
+			undefined,
+			''
+		),
+		new Problem(
+			'Kattis',
+			'Mega Inversions',
+			'megainversions',
+			'Easy',
+			false,
+			undefined,
+			'also just inversion counting'
+		),
+		new Problem(
+			'HE',
+			'Twin Permutations',
+			'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/',
+			'Easy',
+			false,
+			undefined,
+			'Offline 2D queries can be done with a 1D data structure'
+		),
+		new Problem(
+			'CSES',
+			'Distinct Values Queries',
+			'1734',
+			'Normal',
+			false,
+			undefined,
+			'Do queries in increasing order of $a$.'
+		),
+		new Problem('CSES', 'Robot Path', '1742', 'Hard', false, undefined, ''),
+	],
+	usaco: [
+		new Problem('Gold', 'Haircut', '1041', 'Easy', false, undefined, ''),
+		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, undefined, ''),
+		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, undefined, ''),
+		new Problem(
+			'Gold',
+			'Sleepy Cow Sort',
+			'898',
+			'Easy',
+			false,
+			undefined,
+			'All USACO problems (aside from some special exceptions) have only one possible output.'
+		),
+		new Problem('Plat', 'Mincross', '720', 'Easy', false, undefined, ''),
+		new Problem(
+			'Silver',
+			'Out of Sorts',
+			'834',
+			'Normal',
+			false,
+			undefined,
+			"aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."
+		),
+		new Problem('Gold', 'Out of Sorts', '837', 'Hard', false, undefined, ''),
+		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, [], ''),
+		new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''),
+	],
 };
 
 <Problems problems={problems.sample} />
@@ -51,8 +165,8 @@ export const problems = {
 
 Most gold range query problems require you to support following tasks in $O(\log N)$ time each on an array of size $N$:
 
- - Update the element at a single position (point).
- - Query the sum of some consecutive subarray.
+- Update the element at a single position (point).
+- Query the sum of some consecutive subarray.
 
 Both **segment trees** and **binary indexed trees** can accomplish this.
 
@@ -60,29 +174,58 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 <Problems problems={problems.seg} />
 
-A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation. 
+A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
 
 ### Resources
 
 <Info title="Pro Tip">
 
-You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](../plat/seg-ext).
+You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](/plat/seg-ext).
 
 </Info>
 
 <Resources>
-  <Resource source="CSA" title="Segment Trees" url="segment_trees" starred>interactive</Resource>
-  <Resource source="CPH" title="9.3 - Segment Trees" starred>same implementation as below</Resource>
-  <Resource source="CPC" title="3 - Data Structures" url="03_data_structures" starred>see slides after union-find</Resource>
-  <Resource source="cp-algo" title="Segment Tree" url="data_structures/segment_tree.html" starred></Resource>
-  <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource>
+	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
+		interactive
+	</Resource>
+	<Resource source="CPH" title="9.3 - Segment Trees" starred>
+		same implementation as below
+	</Resource>
+	<Resource
+		source="CPC"
+		title="3 - Data Structures"
+		url="03_data_structures"
+		starred
+	>
+		see slides after union-find
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Segment Tree"
+		url="data_structures/segment_tree.html"
+		starred
+	></Resource>
+	<Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource>
 </Resources>
 
 ### Implementations
 
 <Resources>
-  <Resource source="CF" title="AICash - Efficient and easy segment trees" url="blog/entry/18051" starred>simple implementation</Resource>
-  <Resource source="Benq" title="SegTree" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h">based off above</Resource>
+	<Resource
+		source="CF"
+		title="AICash - Efficient and easy segment trees"
+		url="blog/entry/18051"
+		starred
+	>
+		simple implementation
+	</Resource>
+	<Resource
+		source="Benq"
+		title="SegTree"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h"
+	>
+		based off above
+	</Resource>
 </Resources>
 
 <LanguageSection>
@@ -91,14 +234,14 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 
 ```cpp
 template<class T> struct Seg { // comb(ID,b) = b
-  const T ID = 0; T comb(T a, T b) { return a+b; } 
+  const T ID = 0; T comb(T a, T b) { return a+b; }
   int n; vector<T> seg;
   void init(int _n) { n = _n; seg.assign(2*n,ID); }
   void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
   void upd(int p, T val) { // set val at position p
     seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
   T query(int l, int r) { // sum on interval [l, r]
-    T ra = ID, rb = ID; 
+    T ra = ID, rb = ID;
     for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
       if (l&1) ra = comb(ra,seg[l++]);
       if (r&1) rb = comb(seg[--r],rb);
@@ -118,10 +261,24 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 ### Resources
 
 <Resources>
-  <Resource source="CSA" title="Fenwick Trees" url="fenwick_trees" starred>interactive</Resource>
-  <Resource source="CPH" title="9.2, 9.4 - Binary Indexed Tree" starred>similar to above</Resource>
-  <Resource source="cp-algo" title="Fenwick Tree" url="data_structures/fenwick.html">also similar to above</Resource>
-  <Resource source="TC" title="Binary Indexed Trees" url="binary-indexed-trees"></Resource>
+	<Resource source="CSA" title="Fenwick Trees" url="fenwick_trees" starred>
+		interactive
+	</Resource>
+	<Resource source="CPH" title="9.2, 9.4 - Binary Indexed Tree" starred>
+		similar to above
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Fenwick Tree"
+		url="data_structures/fenwick.html"
+	>
+		also similar to above
+	</Resource>
+	<Resource
+		source="TC"
+		title="Binary Indexed Trees"
+		url="binary-indexed-trees"
+	></Resource>
 </Resources>
 
 ### Implementations
@@ -131,29 +288,50 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 <CPPSection>
 
 <Resources>
-  <Resource source="CF" title="mouse_wireless - Multi-dimensional BITs with Templates" url="https://codeforces.com/blog/entry/64914" starred></Resource>
-  <Resource source="Benq" title="BIT" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h">based off above</Resource>
+	<Resource
+		source="CF"
+		title="mouse_wireless - Multi-dimensional BITs with Templates"
+		url="https://codeforces.com/blog/entry/64914"
+		starred
+	></Resource>
+	<Resource
+		source="Benq"
+		title="BIT"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h"
+	>
+		based off above
+	</Resource>
 </Resources>
 
 </CPPSection>
 
 </LanguageSection>
 
-
 ## Finding $k$-th Element
 
 Suppose that we want a data structure that supports all the operations as a `set` in C++ in addition to the following:
 
-  - `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`. 
-  - `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
+- `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`.
+- `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
 
 ### Order Statistic Tree
 
 Luckily, such a built-in data structure already exists in C++.
 
 <Resources>
-  <Resource source="CF" url="blog/entry/11080" title="adamant - Policy Based Data Structures" starred> </Resource>
-  <Resource source="Benq" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h" title="Indexed Set"></Resource>
+	<Resource
+		source="CF"
+		url="blog/entry/11080"
+		title="adamant - Policy Based Data Structures"
+		starred
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h"
+		title="Indexed Set"
+	></Resource>
 </Resources>
 
 Using this, we can solve "Inversion Counting" in just a few lines (with template).
@@ -167,15 +345,15 @@ using namespace std;
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
-template <class T> using Tree = tree<T, null_type, less<T>, 
-	rb_tree_tag, tree_order_statistics_node_update>; 
+template <class T> using Tree = tree<T, null_type, less<T>,
+	rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int T; cin >> T;
 	for (int i = 0; i < T; ++i) {
 		int n; cin >> n;
 		Tree<int> TS; long long numInv = 0;
-		for (int j = 0; j < n; ++j) { 
+		for (int j = 0; j < n; ++j) {
 			int x; cin >> x;
 			numInv += j-TS.order_of_key(x); // gives # elements before it > x
 			TS.insert(x);
@@ -194,14 +372,22 @@ Note that if it were not the case that all elements of the input array were dist
 Assumes all updates are in the range $[1,N]$.
 
 <Resources>
-  <Resource source="CF" url="blog/entry/11275" title="adamant - About Ordered Set" starred> log N </Resource>
+	<Resource
+		source="CF"
+		url="blog/entry/11275"
+		title="adamant - About Ordered Set"
+		starred
+	>
+		{' '}
+		log N{' '}
+	</Resource>
 </Resources>
 
 <!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
 
 ### With a Segment Tree
 
-Covered in [platinum](../plat/seg-ext).
+Covered in [platinum](/plat/seg-ext).
 
 ## Practice Problems
 

@@ -30,6 +30,13 @@ export const plugins = [
   {
     resolve: `gatsby-source-filesystem`,
     options: {
+      path: `${__dirname}/announcements`,
+      name: `announcements`,
+    },
+  },
+  {
+    resolve: `gatsby-source-filesystem`,
+    options: {
       path: `${__dirname}/src/assets`,
       name: `assets`,
     },
@@ -58,7 +65,8 @@ export const plugins = [
           resolve: `gatsby-remark-images`,
           options: {
             maxWidth: 832,
-            quality: 90,
+            quality: 100,
+            disableBgImageOnAlpha: true,
           },
         },
         // {
@@ -124,7 +132,7 @@ export const plugins = [
   `gatsby-plugin-netlify-cache`,
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
-    resolve: `gatsby-plugin-algolia`,
+    resolve: 'gatsby-plugin-algolia',
     options: {
       appId: process.env.ALGOLIA_APP_ID,
       apiKey: process.env.ALGOLIA_API_KEY,

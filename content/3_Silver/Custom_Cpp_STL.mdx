@@ -1,23 +1,46 @@
 ---
 id: custom-cpp-stl
-title: "C++ Sets with Custom Comparators"
+title: 'C++ Sets with Custom Comparators'
 author: Benjamin Qi, Siyong Huang
-prerequisites: 
- - sorting-custom
- - intro-ordered
- - cpp-tips
-description: "Incorporating custom comparators into STL objects."
+prerequisites:
+  - sorting-custom
+  - intro-ordered
+  - cpp-tips
+description: 'Incorporating custom comparators into STL objects.'
 frequency: 1
 ---
 
+import { Problem } from '../models';
+
+export const problems = {
+	probs: [
+		new Problem('Silver', 'Cow Steeplechase II', '943', 'Insane', false, [
+			'Geometry',
+		]),
+	],
+};
+
 <Resources>
-  <Resource source="fushar" title="Comparison Functions in C++" starred url="http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/">Covers all of this material.</Resource>
-  <Resource source="CPP" url="https://en.cppreference.com/w/cpp/container/set" title="Set">reference</Resource>
+	<Resource
+		source="fushar"
+		title="Comparison Functions in C++"
+		starred
+		url="http://fusharblog.com/3-ways-to-define-comparison-functions-in-cpp/"
+	>
+		Covers all of this material.
+	</Resource>
+	<Resource
+		source="CPP"
+		url="https://en.cppreference.com/w/cpp/container/set"
+		title="Set"
+	>
+		reference
+	</Resource>
 </Resources>
 
 <br />
 
-What if we want to use a C++ `set` with the `Edge` struct that was defined in [Sorting with Custom Comparators](./sorting-custom)?
+What if we want to use a C++ `set` with the `Edge` struct that was defined in [Sorting with Custom Comparators](/silver/sorting-custom)?
 
 ## Operator Overloading
 
@@ -48,7 +71,13 @@ int main() {
 ## Comparator
 
 <Resources>
-    <Resource source="SO" title="Using custom std::set comparator" url="https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator"> </Resource>
+	<Resource
+		source="SO"
+		title="Using custom std::set comparator"
+		url="https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 ### With a Function
@@ -148,12 +177,9 @@ int main() {
 }
 ```
 
-
 ### Built-In Functors
 
-Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less).
-Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater).
-We can use this to store a set in reverse order.
+Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less). Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater). We can use this to store a set in reverse order.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -193,3 +219,15 @@ priority_queue<int,vector<int>,greater<int>> c;
 ```
 
 Using a custom comparator for priority queues is especially common. Recall that a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.
+
+## Problems
+
+<Warning>
+
+You'll need to be familiar with [Sweep Line](/plat/sweep-line) to solve this task.
+
+</Warning>
+
+<Problems problems={problems.probs} />
+
+<IncompleteSection />
