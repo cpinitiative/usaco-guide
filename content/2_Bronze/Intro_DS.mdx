@@ -1,7 +1,7 @@
 ---
 id: intro-ds
 title: Introduction to Data Structures
-author: Darren Yao, Benjamin Qi, Nathan Wang, Abutalib Namazov
+author: Darren Yao, Benjamin Qi, Nathan Wang, Abutalib Namazov, Allen Li
 description: 'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
 ---
 
@@ -33,6 +33,20 @@ For our examples below, we will primarily use the `int` data type, but note that
 
 Essentially, every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
 
+## Arrays
+
+You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
+
+```cpp
+array<int, 25> ar;
+```
+
+The array class supports the normal STL operations (such as `.empty()` or `.size()`) as well as the normal square-bracket access operator:
+
+```cpp
+ar[5] //access the element at the 5th index.
+```
+
 </CPPSection>
 
 <JavaSection>
@@ -51,35 +65,87 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 
 </JavaSection>
 
+<PySection/>
+
 </LanguageSection>
-
-## Arrays
-
-You already know one of the simplest data structures: the **array**!
 
 <LanguageSection>
 
+<PySection>
+
+## Lists
+
+The default way to store data in Python is using a **list**, which can automatically resize itself to accommodate more elements. We can add and delete elements at the end in $O(1)$ time. A list can be initialized as follows:
+
+```py
+list = []
+```
+
+Python lists are **generic**. This means that they can store any kind of data type, including objects. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+
+```py
+for i in range(1, 11): # Note that range(i, j) includes i, but does not include j
+    list.append(i)
+```
+
+In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
+
+```py
+list = [0] * 30
+```
+
+### Iterating
+
+We can use a regular for loop to iterate through all elements of a list.
+
+```py
+list = [1, 7, 4, 5, 2]
+
+for i in range(len(list)):
+    print(list[i], end = " ")
+print()
+
+for element in list:
+    print(element, end = " ")
+print()
+```
+
+We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. `iter(list)` returns an iterator pointing to the first element of the list `list`.
+
+```py
+list = [4, 2, 0, 0, 5]
+it = iter(list)
+
+print(next(it)) # 4
+print(next(it)) # 2
+print(next(it)) # 0
+```
+
+### Inserting and Erasing
+
+```py
+list = []
+list.append(2) # [2]
+list.append(3) # [2, 3]
+list.append(7) # [2, 3, 7]
+list.append(5) # [2, 3, 7, 5]
+list[1] = 4; # sets element at index 1 to 4 -> [2, 4, 7, 5]
+list.pop(1) # removes element at index 1 -> [2, 7, 5]
+# this remove method is O(n); to be avoided
+list.append(8) # [2, 7, 5, 8]
+list.pop() # [2, 7, 5]
+# here, we remove the element from the end of the list; this is O(1).
+list.append(4) # [2, 7, 5, 4]
+list.append(4) # [2, 7, 5, 4, 4]
+list.append(9) # [2, 7, 5, 4, 4, 9]
+print(list[2]) # 5
+list = list[3:] # [4, 4, 9]
+# this erases the first three elements; O(n)
+```
+
+</PySection>
+
 <CPPSection>
-
-In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
-
-```cpp
-array<int, 25> ar;
-```
-
-The array class supports the normal STL operations (such as `.empty()` or `.size()`) as well as the normal square-bracket access operator:
-
-```cpp
-ar[5] //access the element at the 5th index.
-```
-
-</CPPSection>
-
-<JavaSection />
-
-<PySection />
-
-</LanguageSection>
 
 ## Dynamic Arrays
 
@@ -92,16 +158,6 @@ ar[5] //access the element at the 5th index.
 	</Resource>
 	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
 </Resources>
-
-<!-- <Resource source="CPC" title="2 - Data Structures" url="02_data_structures">
-	assumes prior experience
-</Resource> -->
-
-<LanguageSection>
-
-<CPPSection>
-
-### Dynamic Arrays
 
 Dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++) support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
 
@@ -201,13 +257,17 @@ v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
 
 ### Strings
 
-<IncompleteSection />
+<IncompleteSection>
+
+All the vector operations above also work on strings.
+
+</IncompleteSection>
 
 </CPPSection>
 
 <JavaSection>
 
-### Dynamic Arrays
+## Dynamic Arrays
 
 Dynamic arrays ([`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can repeatedly reallocate storage to accommodate more elements as they are added.
 
@@ -223,7 +283,7 @@ for(int i = 1; i <= 10; i++){
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
 ### Iterating
-
+ 
 To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
 
 ```java
@@ -290,7 +350,6 @@ int main() {
 	cout << myPair1.first << " " << myPair1.second << endl;
 	myPair1.first = "It is possible to edit pairs after declaring them";
 	cout << myPair1.first << " " << myPair1.second << endl;
-
 	pair<string, string> myPair2 = {"Testing", "curly braces"};
 	cout << myPair2.first << " " << myPair2.second << endl;
 }
