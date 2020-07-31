@@ -285,7 +285,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       }
     } else {
       if (sol.length != 0) {
-        throw new Error('Unrecognied solution - ' + sol);
+        throw new Error('Unrecognized solution - ' + sol);
       }
     }
   }
@@ -297,9 +297,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       {/* {problem.id} */}
       {msg && problem.hover.length === 0 && <span className="pl-6">{sol}</span>}
       {msg && problem.hover.length > 0 && sol && (
-        <Tooltip content={problem.hover}>
-          <span className="pl-6">{sol}</span>
-        </Tooltip>
+        <span className="pl-6">
+          <TextTooltip content={problem.hover}>{sol}</TextTooltip>
+        </span>
       )}
       {external && (
         <a href={sol} target="_blank" className="pl-6">
