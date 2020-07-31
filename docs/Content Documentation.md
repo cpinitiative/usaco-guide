@@ -103,6 +103,7 @@ Some components are globally available in every module (without having to be imp
 - `<Warning>`
 - `<Optional>`
 - `<Problems>`
+- `<FocusProblem>`
 - `<Resources>`
 - `<Resource>`
 - `<TextTooltip>`
@@ -290,6 +291,16 @@ Do roughly the first half of the Sorting and Searching section in the [CSES Prob
 
 <Problems problems={problems.standard} />
 ```
+
+### Focus Problem
+
+Displays a singular problem as a "focus problem."
+
+```
+<FocusProblem problem={problems.genPermutations[0]} />
+```
+
+Make sure to still use an array: `gatsby-node.ts` expects all exported problems to be in arrays...
 
 ### Resource Lists
 
