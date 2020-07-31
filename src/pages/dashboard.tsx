@@ -107,8 +107,6 @@ export default function DashboardPage(props: PageProps) {
   //   ['Not Attempted']
   // );
 
-  console.log(lastReadAnnouncement);
-
   const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
     return announcements.edges.map(node =>
       graphqlToAnnouncementInfo(node.node)

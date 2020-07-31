@@ -238,7 +238,6 @@ export default function MarkdownLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
-  const [pageRendered, setPageRendered] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
@@ -278,7 +277,8 @@ export default function MarkdownLayout({
   };
 
   React.useEffect(() => {
-    setPageRendered(true);
+    document.querySelector('html').style.scrollBehavior = 'smooth';
+    return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   }, []);
 
   return (
@@ -388,7 +388,7 @@ export default function MarkdownLayout({
           />
         </div>
       </div>
-      <div className="h-screen">
+      <div>
         <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
@@ -415,7 +415,6 @@ export default function MarkdownLayout({
         </div>
         <main
           className="relative z-0 sm:pt-2 pb-6 focus:outline-none"
-          style={pageRendered ? { scrollBehavior: 'smooth' } : null}
           tabIndex={0}
         >
           <div className="mx-auto">
