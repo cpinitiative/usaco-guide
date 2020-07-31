@@ -64,11 +64,139 @@ export const problems = {
 **Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to, in a multi-dimensional array. Essentially, it’s DFS, but on a grid, and we want to find the connected component of all the connected cells with the same number.  
 For example, let’s look at the following grid and see how floodfill works, starting from the top-left cell. The color scheme will be the same: red for the node currently being processed, blue for nodes already visited, and uncolored for nodes not yet visited.
 
-<IncompleteSection>
+<center>
 
-add tables from book
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-red-200">2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
 
-</IncompleteSection>
+<br />
+
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-red-200">2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-red-200">2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td className="bg-red-200">2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+<br />
+
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td className="bg-red-200">2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<table className="text-center">
+    <tbody>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td className="bg-blue-200">2</td>
+            <td className="bg-blue-200">2</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+</center>
+
 
 As opposed to an explicit graph where the edges are given, a grid is an implicit graph. This means that the neighbors are just the nodes directly adjacent in the four cardinal directions.
 
@@ -82,6 +210,29 @@ Usually, grids given in problems will be $N$ by $M$, so the first line of the in
 ```
 
 And we’ll want to input the grid as follows:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int grid[MAXN][MAXM];
+int n, m;
+
+int main(){
+    cin >> n >> m;
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            cin >> grid[i][j];
+        }
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
 
 ```java
 static int[][] grid;
@@ -99,22 +250,11 @@ public static void main(String[] args){
 }
 ```
 
-```cpp
-int grid[MAXN][MAXM];
-int n, m;
+</JavaSection>
 
-int main(){
-    cin >> n >> m;
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++){
-            cin >> grid[i][j];
-        }
-    }
-    return 0;
-}
-```
+</LanguageSection>
 
-## Solution - Counting Rooms
+## Implementation
 
 <!--
 <Resources>
@@ -128,6 +268,9 @@ int main(){
 When doing floodfill, we will maintain an $N\times M$ array of booleans to keep track of which squares have been visited, and a global variable to maintain the size of the current component we are visiting. Make sure to store the grid, the visited array, dimensions, and the current size variable globally.
 
 This means that we want to recursively call the search function from the squares above, below, and to the left and right of our current square. The algorithm to find the size of a connected component in a grid using floodfill is as follows (we’ll also maintain a 2D visited array).
+
+The code below shows the global/static variables we need to maintain while doing floodfill,
+and the floodfill algorithm itself.
 
 <LanguageSection>
 
@@ -217,7 +360,51 @@ static void floodfill(int r, int c, int color){
 
 </LanguageSection>
 
-<IncompleteSection />
+## Solution - Counting Rooms
+
+<Spoiler title="Solution">
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+
+const int xd[4] = {0,1,0,-1}, yd[4] = {1,0,-1,0};
+
+int n,m;
+string g[2500];
+bool vis[2500][2500];
+ 
+void ff(int x, int y) {
+    if (x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '#' || vis[x][y]) return;
+    vis[x][y] = 1;
+    F0R(i,4) ff(x+xd[i],y+yd[i]);
+}
+ 
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> n >> m;
+    F0R(i,n) cin >> g[i];
+    int ans = 0;
+    F0R(i,n) F0R(j,m) if (g[i][j] == '.' && !vis[i][j]) {
+        ff(i,j);
+        ans ++;
+    }
+    cout << ans;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
 
 ## Problems
 
