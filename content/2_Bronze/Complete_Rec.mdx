@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: "Complete Search with Recursion"
-author: Darren Yao, Sam Zhang, Michael Cao
+author: Darren Yao, Sam Zhang, Michael Cao, Allen Li
 description: "Includes generating subsets and permutations."
 frequency: 2
 prerequisites:
@@ -99,6 +99,30 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+
+<Warning>
+Avoid recursion if you can with python. Not only is it slow, but python also has a shallow max stack size, which can be problematic if you are not careful!
+</Warning>
+
+```py
+def solve(i, s1, s2):
+    global n, weights
+    if i == n:
+        return abs(s1 - s2)
+    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]))
+
+def main():
+    global n, weights
+    n = int(input())
+    weights = [int(x) for x in input().split()]
+
+if __name__ == "__main__":
+    main()
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -158,6 +182,27 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+n = int(input())
+weights = [int(x) for x in input().split()]
+ans = int(1e18)
+
+for mask in range(1 << n):
+    s1 = 0; s2 = 0
+    for j in range(n):
+        if mask & (1 << j):
+            s1 += weights[j]
+        else:
+            s2 += weights[j]
+    ans = min(ans, abs(s1 - s2))
+
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -220,6 +265,16 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 </JavaSection>
 
+<PySection>
+
+### About `itertools.permutation`
+
+<Resources>
+	<Resource source="Geeksforgeeks" title="Itertools Permutation" url="https://www.geeksforgeeks.org/python-itertools-permutations" starred> </Resource>
+</Resources>
+
+</PySection>
+
 </LanguageSection>
 
 ### Solution - Creating Strings I
@@ -232,11 +287,11 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 
 <Spoiler title="Method 2 - With next_permutation">
 
-One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
-
 <LanguageSection>
 
 <CPPSection>
+
+One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -276,6 +331,22 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+
+```py
+from itertools import permutations
+
+s = input()
+p = permutations(s)
+
+for j in list(p):
+    for c in j:
+        print(c, end = "")
+    print()
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -299,7 +370,6 @@ What's going to be in the `check` function depends on the problem, but it should
 <IncompleteSection />
 
 #### Method 2
-
 
 
 Alternatively, we can just use the [`next_permutation()`](https://en.cppreference.com/w/cpp/algorithm/next_permutation) function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.

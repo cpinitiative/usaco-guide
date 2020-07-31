@@ -1,7 +1,7 @@
 ---
 id: rect-geo
 title: "Rectangle Geometry"
-author: Darren Yao, Michael Cao, Benjamin Qi
+author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li
 description: "Problems involving rectangles whose sides are parallel to the coordinate axes."
 frequency: 2
 ---
@@ -67,6 +67,36 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+Unfortunately, the naive python solution will only get 9/10 test cases.
+
+```py
+import sys
+
+sys.stdin = open("billboard.in", "r")
+sys.stdout = open("billboard.out", "w")
+
+ok = [[False for i in range(2000)] for j in range(2000)]
+
+for i in range(3):
+    x1, y1, x2, y2 = map(int, input().split())
+    x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000
+    for x in range(x1, x2):
+        for y in range(y1, y2):
+            if i < 2:
+                ok[x][y] = 1
+            else:
+                ok[x][y] = 0
+ans = 0
+for x in range(2000):
+    for y in range(2000):
+        ans += ok[x][y]
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -204,6 +234,43 @@ int main(){
 </Spoiler>
 
 </CPPSection>
+
+<PySection>
+
+Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class
+yourself.
+
+<Spoiler title = "Python Solution">
+
+```py
+import sys
+
+class Rect:
+    def __init__(self):
+        self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
+    
+    def area(self):
+        return (self.y2 - self.y1) * (self.x2 - self.x1)
+
+def intersect(p, q):
+    xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
+    yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
+    return xOverlap * yOverlap
+
+sys.stdin = open("billboard.in", "r")
+sys.stdout = open("billboard.out", "w")
+
+rects = []
+
+for i in range(3):
+    rects.append(Rect())
+
+print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - intersect(rects[1], rects[2]))
+```
+
+</Spoiler>
+
+</PySection>
 
 </LanguageSection>
 
