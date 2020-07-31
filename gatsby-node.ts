@@ -124,7 +124,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       tags: [String]
       sketch: String
       url: String
-      isIntro: Boolean
       uniqueID: String
     }
   `;

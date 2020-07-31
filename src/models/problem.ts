@@ -94,7 +94,6 @@ export class Problem {
     | 'Hard'
     | 'Very Hard'
     | 'Insane';
-  public isIntro: boolean;
   public sketch: string | null = null;
   public solution: string | null = null;
   public des: string = '';
@@ -108,19 +107,7 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    labels?:
-      | 'Very Easy'
-      | 'Easy'
-      | 'Normal'
-      | 'Hard'
-      | 'Very Hard'
-      | 'Insane'
-      | 'Intro|Very Easy'
-      | 'Intro|Easy'
-      | 'Intro|Normal'
-      | 'Intro|Hard'
-      | 'Intro|Very Hard'
-      | 'Intro|Insane',
+    labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
     public starred?: boolean,
     public tags?: string[],
     sol?: string,
@@ -140,8 +127,6 @@ export class Problem {
     } else {
       this.sketch = sol;
     }
-    this.isIntro = labels && labels.includes('Intro|');
-    if (labels) labels = labels.replace('Intro|', '') as any;
     this.difficulty = labels as any;
     this.url = id;
     // console.log(this.url)

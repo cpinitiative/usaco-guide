@@ -222,19 +222,7 @@ class Problem {
 		public source: string,
 		public name: string,
 		public id: string,
-		labels?:
-			| 'Very Easy'
-			| 'Easy'
-			| 'Normal'
-			| 'Hard'
-			| 'Very Hard'
-			| 'Insane'
-			| 'Intro|Very Easy'
-			| 'Intro|Easy'
-			| 'Intro|Normal'
-			| 'Intro|Hard'
-			| 'Intro|Very Hard'
-			| 'Intro|Insane',
+		labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
 		public starred?: boolean,
 		public tags?: string[],
 		sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
