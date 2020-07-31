@@ -149,7 +149,10 @@ export class Problem {
       if (!this.url.startsWith('http')) {
         if (
           source == 'CF' &&
-          (this.url.startsWith('problemset') || this.url.startsWith('contest'))
+          (this.url.startsWith('problemset') ||
+            this.url.startsWith('contest') ||
+            this.url.startsWith('gym') ||
+            this.url.startsWith('edu'))
         )
           this.url = 'http://codeforces.com/' + this.url;
         else this.url = probSources[source][0] + this.url;
@@ -162,6 +165,11 @@ export class Problem {
     } else {
       if (!this.url.startsWith('http'))
         throw `URL ${id} is not valid. Did you make a typo in the problem source (${source}), or in the URL? Problem name: ${name}`;
+      if (source.indexOf('@') != -1) {
+        const ind = source.indexOf('@');
+        this.des = source.substring(ind + 1, source.length);
+        this.source = source.substring(0, ind);
+      }
     }
   }
 }

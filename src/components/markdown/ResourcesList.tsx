@@ -71,7 +71,7 @@ const moduleSources = {
 
 export function Resource(props) {
   const userSettings = useContext(UserDataContext);
-  let source = props.source;
+  let source = props.source ? props.source : '';
   let url = props.url;
   let des = '';
   if (!url) {
@@ -113,10 +113,10 @@ export function Resource(props) {
   } else {
     if (!url.startsWith('http'))
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
-    if (source && source.indexOf('@') != -1) {
+    if (source.indexOf('@') != -1) {
       const ind = source.indexOf('@');
       des = source.substring(ind + 1, source.length);
-      source = source.substring(0, ind - 1);
+      source = source.substring(0, ind);
     }
   }
   // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
