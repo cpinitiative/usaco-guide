@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 
 import Markdown from '../components/markdown/Markdown';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { SolutionInfo } from '../models/solution';
 

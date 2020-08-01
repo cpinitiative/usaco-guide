@@ -9,7 +9,7 @@ import MODULE_ORDERING, {
   SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import UserDataContext from '../context/UserDataContext';
 import getProgressInfo from '../utils/getProgressInfo';
@@ -104,7 +104,7 @@ export default function Template(props) {
     <Layout>
       <SEO title={SECTION_LABELS[division]} />
       <div className="min-h-screen">
-        <TopNavigationBar />
+        <TopNavigationBar currentSection={division} />
 
         <main>
           <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>

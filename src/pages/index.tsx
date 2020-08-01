@@ -4,7 +4,7 @@ import Img from 'gatsby-image';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useRef } from 'react';
 
 const AuthorCard = ({

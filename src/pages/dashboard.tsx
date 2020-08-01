@@ -10,7 +10,7 @@ import {
   moduleIDToURLMap,
   SECTION_LABELS,
 } from '../../content/ordering';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import getProgressInfo from '../utils/getProgressInfo';
 import Announcements from '../components/Dashboard/Announcements';

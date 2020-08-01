@@ -57,11 +57,11 @@ function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
-  activeModule,
+  activeModule = null,
 }: {
   isOpen: boolean;
   onClose: any;
-  activeModule: ModuleInfo;
+  activeModule?: ModuleInfo;
 }) {
   const [name, setName] = useStickyState('', 'contact_form_name');
   const [email, setEmail] = useStickyState('', 'contact_form_email');
