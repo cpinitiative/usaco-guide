@@ -67,6 +67,7 @@ const moduleSources = {
     'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
   ],
+  GCC: ['https://gcc.gnu.org/onlinedocs/gcc/', 'GNU Compiler Collection'],
 };
 
 export function Resource(props) {
