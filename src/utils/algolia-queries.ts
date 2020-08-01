@@ -41,6 +41,15 @@ const queries = [
     indexName: process.env.ALGOLIA_INDEX_NAME + '_modules',
     matchFields: ['title', 'description', 'content', 'id', 'division'],
   },
+  {
+    query: pageQuery,
+    transformer: ({ data }) =>
+      data.pages.edges
+        .filter(x => x.node.frontmatter.id in moduleIDToSectionMap)
+        .map(pageToAlgoliaRecord),
+    indexName: process.env.ALGOLIA_INDEX_NAME + '_modules',
+    matchFields: ['title', 'description', 'content', 'id', 'division'],
+  },
 ];
 
 module.exports = queries;
