@@ -23,6 +23,7 @@ export default function HTML(props) {
           integrity="sha256-HB49n/BZjuqiCtQQf49OdZn63XuKFaxcIHWf0HNKte8="
           crossOrigin="anonymous"
         />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
       <body {...props.bodyAttributes}>
         {props.preBodyComponents}

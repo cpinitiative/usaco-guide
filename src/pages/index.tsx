@@ -133,6 +133,12 @@ export default function IndexPage(props: PageProps) {
   return (
     <Layout>
       <SEO title={null} />
+      {/*<a*/}
+      {/*  href="http://usaco.org/"*/}
+      {/*  className="block text-base font-medium text-center text-white bg-blue-600 py-2"*/}
+      {/*>*/}
+      {/*  &larr; Back to usaco.org*/}
+      {/*</a>*/}
       <TopNavigationBar indexPage />
 
       {/* Begin Hero */}
@@ -187,7 +193,7 @@ export default function IndexPage(props: PageProps) {
                 <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 sm:text-base lg:text-sm xl:text-base">
                   Pre-Release
                 </div>
-                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-extrabold text-gray-900 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
+                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
                   USACO <span className="text-blue-600">Guide</span>
                 </h2>
                 <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
@@ -488,7 +494,7 @@ export default function IndexPage(props: PageProps) {
             <br />
           </p>
 
-          <p className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mt-8">
+          <p className="text-3xl sm:text-4xl md:text-6xl font-black text-white mt-8">
             This is the guide for you.
           </p>
 
