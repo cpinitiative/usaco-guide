@@ -51,7 +51,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'USACO',
-      items: ['usaco-month', 'usaco-camp'],
+      items: [
+        'usaco-month',
+        // 'usaco-camp'
+      ],
     },
   ],
   bronze: [
