@@ -35,9 +35,11 @@ export default ({ children, className }) => {
           >
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span key={key} {...getTokenProps({ token, key })} />
-                ))}
+                {line.map((token, key) => {
+                  if (line.length === 1 && line[0].content === '')
+                    line[0].content = '\n';
+                  return <span key={key} {...getTokenProps({ token, key })} />;
+                })}
               </div>
             ))}
           </pre>
