@@ -1,7 +1,7 @@
 ---
 id: toposort
 title: 'Topological Sort'
-author: Benjamin Qi, Michael Cao, Nathan Chen
+author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu
 prerequisites:
   - bfs
   - intro-dp
@@ -97,9 +97,40 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 	</Resource>
 </Resources>
 
-(implementation)
+<LanguageSection>
 
-<IncompleteSection />
+<CPPSection>
+
+```cpp
+int N; // Number of nodes
+vector<int> graph[100000]; // Assume that this graph is a DAG
+bool visited[100000];
+int idx = 0, top_sort[100000];
+
+void dfs(int node) {
+    for (int i : graph[node]) {
+        if (!visited[i]) {
+            visited[i] = true;
+            dfs(i);
+        }
+    }
+    top_sort[idx++] = node;
+}
+
+void compute() {
+	for (int i = 0; i < N; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            dfs(i);
+        }
+    }
+	// The array `top_sort` is now topologically sorted
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### BFS
 
@@ -117,22 +148,22 @@ int N; //number of nodes
 
 void compute() {
 	queue<int> q;
-	for(int i = 0; i < N; i++) {
-		if(in_degree[i] == 0) {
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) {
 			q.push(i);
 		}
 	}
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
 
-		for(int next : edge[node]) {
+		for (int next : edge[node]) {
 			in_degree[next]--;
 			if(in_degree[next] == 0) q.push(next);
 		}
 
-		//[put problem-specific processing here]
+		// Put problem-specific processing here
 	}
 
 }
@@ -150,21 +181,21 @@ void compute() {
 
 	static void topological_sort() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
-		for(int i = 0; i < N; i++) {
-			if(in_degree[i] == 0) {
+		for (int i = 0; i < N; i++) {
+			if (in_degree[i] == 0) {
 				q.add(i);
 			}
 		}
 
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			int node = q.poll();
 
-			for(int next : edge[node]) {
+			for (int next : edge[node]) {
 				in_degree[next]--;
 				if(in_degree[next] == 0) q.add(next);
 			}
 
-			//[put problem-specific processing here]
+			// Put problem-specific processing here
 		}
 	}
 ```
