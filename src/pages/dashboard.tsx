@@ -51,9 +51,10 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnModules)
       .filter(
         x =>
-          userProgressOnModules[x] === 'Reading' ||
-          userProgressOnModules[x] === 'Practicing' ||
-          userProgressOnModules[x] === 'Skipped'
+          (userProgressOnModules[x] === 'Reading' ||
+            userProgressOnModules[x] === 'Practicing' ||
+            userProgressOnModules[x] === 'Skipped') &&
+          moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
         label: `${SECTION_LABELS[moduleIDToSectionMap[x]]}: ${
@@ -68,8 +69,9 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          userProgressOnProblems[x] === 'Solving' ||
-          userProgressOnProblems[x] === 'Skipped'
+          (userProgressOnProblems[x] === 'Solving' ||
+            userProgressOnProblems[x] === 'Skipped') &&
+          problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
