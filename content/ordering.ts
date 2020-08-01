@@ -77,7 +77,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans'],
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'complete-rec-silver'],
     },
     {
       name: 'Graphs',
