@@ -175,7 +175,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   adv: [
     {
       name: 'Data Structures',
-      items: ['treaps', 'persistent', 'segtree-beats', 'LCT'],
+      items: ['treaps', 'persistent', 'CntMin', 'segtree-beats', 'LCT'],
     },
     {
       name: 'Flows',
