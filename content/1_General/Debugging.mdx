@@ -6,7 +6,13 @@ description: 'Identifying errors within your program and how to avoid them in th
 ---
 
 <Resources>
-	<Resource source="Aryansh" url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly" title="Debugging Correctly">some parts taken from here</Resource>
+	<Resource
+		source="Aryansh"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly"
+		title="Debugging Correctly"
+	>
+		some parts taken from here
+	</Resource>
 </Resources>
 
 ## Stress Testing
@@ -76,12 +82,7 @@ script for multiple languages?
 	<Resource title="Assertions" source="GFG" url="assertions-cc">
 		subset of above
 	</Resource>
-	<Resource
-		title="Diagnostics"
-		source="GCC"
-		url="Diagnostics.html"
-		starred
-	>
+	<Resource title="Diagnostics" source="GCC" url="Diagnostics.html" starred>
 		#warning, #error
 	</Resource>
 </Resources>
@@ -90,26 +91,26 @@ script for multiple languages?
 
 ### Basic Print Statements
 
-The most basic way that you might debug is adding a print statement. This is great and serves the purpose for the most part. For instance, we can write the below to check the value of `x` at a point in our code. 
+The most basic way that you might debug is adding a print statement. This is great and serves the purpose for the most part. For instance, we can write the below to check the value of `x` at a point in our code.
 
 ```cpp
 #include <iostream>
-using namespace std; 
+using namespace std;
 
 int x = 10; // some important variable
 
 inline void dbg() { cout << "x is " << x << "\n"; }
 
 int main() {
-    dbg(); 
-    x = 5000; 
-    dbg();  
+    dbg();
+    x = 5000;
+    dbg();
 }
 ```
 
-Such print statements are great on a basic level, and we can comment or define them out of our main code when we need to compile and execute a more final version of our code. 
+Such print statements are great on a basic level, and we can comment or define them out of our main code when we need to compile and execute a more final version of our code.
 
-However, as great as print statements are, they are annoying to work with and efficiently separate from the actual parts of our code. This is important for example when we want an online judge \(OJ\) to read our output. 
+However, as great as print statements are, they are annoying to work with and efficiently separate from the actual parts of our code. This is important for example when we want an online judge \(OJ\) to read our output.
 
 ### Standard Error Stream
 
@@ -119,13 +120,13 @@ The standard error stream \(`cerr` in C++\) is a quick fix to this. Instead of p
 inline void dbg() { cerr << "x is " << x << "\n"; }
 
 int main() {
-    dbg(); 
-    x = 5000; 
-    dbg(); 
+    dbg();
+    x = 5000;
+    dbg();
 }
 ```
 
-Try running this program and you might be confused about the difference. You will be able to see the output of `cerr` right next to regular `cout` outputs. But this is the beauty of it! And if we use freopen to open up file pipes or submit this to an OJ, the program will not include the error stream. 
+Try running this program and you might be confused about the difference. You will be able to see the output of `cerr` right next to regular `cout` outputs. But this is the beauty of it! And if we use freopen to open up file pipes or submit this to an OJ, the program will not include the error stream.
 
 <Warning>
 
@@ -310,7 +311,7 @@ zsh: abort      ./prog
 
 </Spoiler>
 
-For more helpful information we should additionally compile with the `-ggdb` flag. `-ggdb` generates a debug report (in dSYM file format) based on the line numbering of the program. `-fsanitize=address` can then access the dSYM file at runtime and give meaningful errors. This is great because it helps diagnose (or "sanitize" if you will) errors such as out of bounds, exceptions, and segmentation faults, even indicating precise line numbers. Feel free to delete dSYM files after the run of course. 
+For more helpful information we should additionally compile with the `-ggdb` flag. `-ggdb` generates a debug report (in dSYM file format) based on the line numbering of the program. `-fsanitize=address` can then access the dSYM file at runtime and give meaningful errors. This is great because it helps diagnose (or "sanitize" if you will) errors such as out of bounds, exceptions, and segmentation faults, even indicating precise line numbers. Feel free to delete dSYM files after the run of course.
 
 <Spoiler title="-fsanitize=address -ggdb (note the difference!)">
 
@@ -324,10 +325,10 @@ AddressSanitizer:DEADLYSIGNAL
     #1 0x7fff6f2c1cc8 in start (libdyld.dylib:x86_64+0x1acc8)
 
 ==98773==Register values:
-rax = 0xfffffffffffffffc  rbx = 0x00007ffee5b4b9d0  rcx = 0xfffffffffffffffc  rdx = 0x20000fffffffffff  
-rdi = 0x00007ffee5b4b9f0  rsi = 0x1fffffffffffffff  rbp = 0x00007ffee5b4ba50  rsp = 0x00007ffee5b4b9d0  
- r8 = 0x0000000000000000   r9 = 0x0000000000000000  r10 = 0x0000000000000000  r11 = 0x0000000000000000  
-r12 = 0x00007ffee5b4ba30  r13 = 0x00000fffdcb6973a  r14 = 0x00007ffee5b4b9d0  r15 = 0x0000000000000000  
+rax = 0xfffffffffffffffc  rbx = 0x00007ffee5b4b9d0  rcx = 0xfffffffffffffffc  rdx = 0x20000fffffffffff
+rdi = 0x00007ffee5b4b9f0  rsi = 0x1fffffffffffffff  rbp = 0x00007ffee5b4ba50  rsp = 0x00007ffee5b4b9d0
+ r8 = 0x0000000000000000   r9 = 0x0000000000000000  r10 = 0x0000000000000000  r11 = 0x0000000000000000
+r12 = 0x00007ffee5b4ba30  r13 = 0x00000fffdcb6973a  r14 = 0x00007ffee5b4b9d0  r15 = 0x0000000000000000
 AddressSanitizer can not provide additional info.
 SUMMARY: AddressSanitizer: SEGV prog.cpp:6 in main
 ==98773==ABORTING
@@ -496,7 +497,7 @@ How to use gdb, valgrind for C++?
 
 ## Rewriting the Program
 
-Rewriting the program is sometimes a good idea, but remember to keep track of time! It is very easy to get carried away rewriting even parts of a program that are bug-free in obsessive hope that something might come through. 
+Rewriting the program is sometimes a good idea, but remember to keep track of time! It is very easy to get carried away rewriting even parts of a program that are bug-free in obsessive hope that something might come through.
 
 <Warning>
 
@@ -504,4 +505,4 @@ Do NOT delete your previous program. Make a new file! It's always possible that 
 
 </Warning>
 
-If the problem is with the program's implementation of your logic and not your logic itself, it is usually better to fix the program directly. 
+If the problem is with the program's implementation of your logic and not your logic itself, it is usually better to fix the program directly.

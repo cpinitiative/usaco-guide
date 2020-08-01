@@ -1,9 +1,13 @@
 import * as React from 'react';
-import Transition from '../Transition';
-import { SECTION_LABELS, SECTIONS } from '../../../content/ordering';
+import Transition from './Transition';
+import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import { Link } from 'gatsby';
 
-export default function SectionsDropdown({ currentSection = null }) {
+export default function SectionsDropdown({
+  currentSection = null,
+  sidebarNav = false,
+  onSelect = null,
+}) {
   const [isActive, setIsActive] = React.useState(false);
   const ref = React.useRef();
 
@@ -24,16 +28,17 @@ export default function SectionsDropdown({ currentSection = null }) {
         <button
           type="button"
           className={`group ${
-            isActive ? 'text-gray-900' : 'text-gray-500'
+            isActive || sidebarNav ? 'text-gray-900' : 'text-gray-500'
           } inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150`}
           onClick={() => setIsActive(!isActive)}
         >
           <span>
             {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
           </span>
-          {/* Item active: "text-gray-600", Item inactive: "text-gray-400" */}
           <svg
-            className="text-gray-400 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            className={`${
+              isActive ? 'text-gray-600' : 'text-gray-400'
+            } h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -54,7 +59,7 @@ export default function SectionsDropdown({ currentSection = null }) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <div className="origin-top-left absolute left-0 mt-2 w-56 -ml-4">
+          <div className="origin-top-left absolute z-20 left-0 mt-2 w-56 -ml-4">
             <div className="rounded-lg bg-white shadow-lg">
               <div className="rounded-lg shadow-xs overflow-hidden">
                 <div
@@ -85,6 +90,17 @@ export default function SectionsDropdown({ currentSection = null }) {
                           </svg>
                         </span>
                       </span>
+                    ) : sidebarNav ? (
+                      <button
+                        onClick={() => {
+                          onSelect(section);
+                          setIsActive(false);
+                        }}
+                        className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
+                        role="menuitem"
+                      >
+                        {SECTION_LABELS[section]}
+                      </button>
                     ) : (
                       <Link
                         to={`/${section}`}

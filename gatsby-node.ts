@@ -122,7 +122,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       difficulty: String
       starred: Boolean
       tags: [String]
-      sketch: String
+      sol: String
+      solQuality: String
       url: String
       uniqueID: String
     }

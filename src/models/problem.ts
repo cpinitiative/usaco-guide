@@ -87,13 +87,6 @@ const probSources = {
 
 export class Problem {
   public url: string;
-  public difficulty:
-    | 'Very Easy'
-    | 'Easy'
-    | 'Normal'
-    | 'Hard'
-    | 'Very Hard'
-    | 'Insane';
   public sketch: string | null = null;
   public solution: string | null = null;
   public des: string = '';
@@ -107,7 +100,14 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
+    public difficulty?:
+      | 'Very Easy'
+      | 'Easy'
+      | 'Normal'
+      | 'Hard'
+      | 'Very Hard'
+      | 'Insane'
+      | null,
     public starred?: boolean,
     public tags?: string[],
     sol?: string,
@@ -127,7 +127,6 @@ export class Problem {
     } else {
       this.sketch = sol;
     }
-    this.difficulty = labels as any;
     this.url = id;
     // console.log(this.url)
     if (source in probSources) {

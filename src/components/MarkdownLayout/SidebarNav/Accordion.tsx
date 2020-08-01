@@ -27,14 +27,14 @@ export default function Accordion({ label, isActive, children }) {
   }, [isActive]);
   return (
     <Container
-      className="border-t border-gray-200"
+      className="border-b border-gray-200"
       style={isActive ? { backgroundColor: '#f7faff' } : null}
     >
       <Label
         className="font-semibold cursor-pointer relative flex items-center px-4 py-3 text-sm leading-5 transition ease-in-out duration-150 "
         onClick={() => setExpanded(!expanded)}
       >
-        <span className="flex-1">{label}</span>
+        <span className="flex-1 text-gray-800">{label}</span>
         <svg
           className="h-5 w-5 flex-shrink-0 text-gray-600"
           fill="currentColor"
