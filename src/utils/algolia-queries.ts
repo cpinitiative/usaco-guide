@@ -31,6 +31,33 @@ function pageToAlgoliaRecord({
   };
 }
 
+const problemsQuery = `{
+  data: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+    edges {
+      node {
+        problems {
+          source
+          name
+          id
+          difficulty
+          starred
+          tags
+          sol
+          solQuality
+          uniqueID
+        }
+      }
+    }
+  }
+}`;
+
+function problemToAlgoliaRecord({ uniqueID, ...rest }) {
+  return {
+    objectID: uniqueID,
+    ...rest,
+  };
+}
+
 const queries = [
   {
     query: pageQuery,
@@ -42,13 +69,25 @@ const queries = [
     matchFields: ['title', 'description', 'content', 'id', 'division'],
   },
   {
-    query: pageQuery,
-    transformer: ({ data }) =>
-      data.pages.edges
-        .filter(x => x.node.frontmatter.id in moduleIDToSectionMap)
-        .map(pageToAlgoliaRecord),
-    indexName: process.env.ALGOLIA_INDEX_NAME + '_modules',
-    matchFields: ['title', 'description', 'content', 'id', 'division'],
+    query: problemsQuery,
+    transformer: ({ data }) => {
+      let res = [];
+      data.data.edges.forEach(edge => {
+        res = [...res, ...edge.node.problems.map(problemToAlgoliaRecord)];
+      });
+      return res;
+    },
+    indexName: process.env.ALGOLIA_INDEX_NAME + '_problems',
+    matchFields: [
+      'source',
+      'name',
+      'id',
+      'difficulty',
+      'starred',
+      'tags',
+      'sol',
+      'solQuality',
+    ],
   },
 ];
 
