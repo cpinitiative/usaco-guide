@@ -38,10 +38,7 @@ const books = {
   PAPS: ['/PAPS.pdf', ' Principles of Algorithmic Problem Solving'],
   CP2: ['/CP2.pdf', 'Competitive Programming 2'],
   CPH: ['/CPH.pdf', "Competitive Programmer's Handbook"],
-  IUSACO: [
-    'http://darrenyao.com/',
-    'An Introduction to the USA Computing Olympiad',
-  ],
+  IUSACO: ['http://darrenyao.com/', 'An Introduction to USACO'],
   GCP: [
     'https://link.springer.com/book/10.1007/978-3-319-72547-5',
     'Guide to Competitive Programming (based off CPH)',
@@ -60,7 +57,7 @@ const moduleSources = {
     'TopCoder',
   ],
   'cp-algo': ['https://cp-algorithms.com/', 'CP Algorithms'],
-  USACO: ['http://www.usaco.org/', 'USA Computing Olympiad'],
+  USACO: ['http://www.usaco.org/', 'USACO'],
   SO: ['https://stackoverflow.com/', 'StackOverflow'],
   GFG: ['https://www.geeksforgeeks.org/', 'Geeks For Geeks'],
   CPC: [
