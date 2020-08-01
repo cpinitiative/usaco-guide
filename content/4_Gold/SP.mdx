@@ -1,7 +1,7 @@
 ---
 id: sp
 title: 'Shortest Paths with Non-Negative Edge Weights'
-author: Benjamin Qi
+author: Benjamin Qi, Andi Qu
 prerequisites:
   - bfs
   - intro-ordered
@@ -57,12 +57,48 @@ export const problems = {
 			''
 		),
 		new Problem(
+			'IOI',
+			'2011 - Crocodile',
+			'https://oj.uz/problem/view/IOI11_crocodile',
+			'Easy',
+			false,
+			['SP'],
+			''
+		),
+		new Problem(
 			'Kattis',
 			'Lane Switching',
 			'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
 			'Normal',
 			false,
 			['SP'],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2018 - Commuter Pass',
+			'https://oj.uz/problem/view/JOI18_commuter_pass',
+			'Hard',
+			true,
+			['SP', 'DP'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2011 - Find the Path',
+			'https://dmoj.ca/problem/apio11p2',
+			'Hard',
+			false,
+			['SP', 'Geometry'],
+			''
+		),
+		new Problem(
+			'Balkan OI',
+			'2012 - Shortest Paths',
+			'https://www.acmicpc.net/problem/5250',
+			'Very Hard',
+			true,
+			['SP', 'LCA'],
 			''
 		),
 	],
@@ -85,6 +121,24 @@ export const problems = {
 			'Hard',
 			false,
 			['APSP', 'DP'],
+			''
+		),
+		new Problem(
+			'COCI',
+			'2009 - Gremlini',
+			'https://hsin.hr/coci/archive/2009_2010/contest6_tasks.pdf',
+			'Hard',
+			false,
+			['APSP', 'DP'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2017 - Traveling Merchant',
+			'https://oj.uz/problem/view/APIO17_merchant',
+			'Hard',
+			true,
+			['APSP', 'Binary Search'],
 			''
 		),
 	],
@@ -136,13 +190,48 @@ The USACO training pages present a $O(N^2)$ version, although this is rarely use
 	</Resource>
 </Resources>
 
-<IncompleteSection />
+<LanguageSection>
 
-(comments in code?)
+<CPPSection>
+
+```cpp
+vector<pair<int, int>> graph[100000]; // Adjacency list of (neighbour, edge weight)
+int dist[100000];
+
+int dijkstra(int src, int dest) { // Source and destination
+	memset(dist, 0x3f, sizeof dist); // Set all distances to infinity
+
+	// N.B. Priority queues sort in descending order, so we use negative distances
+    priority_queue<pair<int, int>> pq;
+    pq.push({0, src});
+    dist[src] = 0; // The shortest path from a node to itself is 0
+
+    while (pq.size()) {
+        int dist, node;
+        tie(dist, node) = pq.top();
+        pq.pop();
+        if (node == dest) return -dist; // We've found the shortest path
+
+        for (pair<int, int> i : graph[node]) {
+			// If we can reach a neighbouring node faster, we update its minimum distance
+            if (i.second - dist < dist[i.first]) {
+                dist[i.first] = i.second - dist;
+                pq.push({dist - i.second, i.first});
+            }
+        }
+    }
+
+    return -1; // We can't reach dest from src :(
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Optional title="Faster Dijkstra">
 
-Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap).
+Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
 
 </Optional>
 
@@ -184,7 +273,3 @@ Use the _Floyd-Warshall_ algorithm.
 ### Problems
 
 <Problems problems={problems.apsp} />
-
-(more?)
-
-<IncompleteSection />
