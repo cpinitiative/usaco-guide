@@ -7,28 +7,28 @@ import PGS from './PGS.json';
 
 export function ResourcesList(props) {
   return (
-    <div className="flex flex-col mb-4">
-      <div
-        className={`overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 -my-2 py-2`}
-      >
-        <div
-          className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-gray-200`}
-        >
-          <table className="min-w-full">
-            <thead>
-              <tr>
-                <th
-                  colSpan={4}
-                  className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 bg-purple-50 text-purple-500`}
-                >
-                  Resources{props.title ? `: ${props.title}` : ''}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="table-alternating-stripes">
-              {props.children}
-            </tbody>
-          </table>
+    <div className="-mx-4 sm:-mx-6 lg:mx-0">
+      <div className="flex flex-col mb-4">
+        <div className={`overflow-x-auto lg:-mx-4 lg:px-4 -my-2 py-2`}>
+          <div
+            className={`align-middle inline-block min-w-full shadow overflow-hidden lg:rounded-lg border-b border-gray-200`}
+          >
+            <table className="min-w-full">
+              <thead>
+                <tr>
+                  <th
+                    colSpan={4}
+                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 bg-purple-50 text-purple-500`}
+                  >
+                    Resources{props.title ? `: ${props.title}` : ''}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="table-alternating-stripes">
+                {props.children}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
