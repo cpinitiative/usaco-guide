@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Tooltip from '../../Tooltip/Tooltip';
-import { Problem } from '../../../../content/models';
+import { Problem } from '../../../models/problem';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext';
 import {
@@ -11,8 +11,10 @@ import {
 
 export default function ProblemStatusCheckbox({
   problem,
+  size = 'small',
 }: {
   problem: Problem;
+  size?: 'small' | 'large';
 }) {
   const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
     UserDataContext
@@ -43,11 +45,13 @@ export default function ProblemStatusCheckbox({
       <span
         onClick={handleClick}
         onContextMenu={handleRightClick}
-        className="inline-block h-6 w-6"
+        className={`inline-block ${size === 'small' ? 'h-6 w-6' : 'h-8 w-8'}`}
       >
         <span
           className={
-            'inline-block h-6 w-6 rounded-full cursor-pointer transition duration-100 ease-out ' +
+            `inline-block ${
+              size === 'small' ? 'h-6 w-6' : 'h-8 w-8'
+            } rounded-full cursor-pointer transition duration-100 ease-out ` +
             color[status]
           }
         />

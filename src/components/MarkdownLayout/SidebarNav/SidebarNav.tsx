@@ -10,6 +10,7 @@ import MODULE_ORDERING, {
 import { useContext, useState } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { SolutionInfo } from '../../../models/solution';
+import SectionsDropdown from '../../SectionsDropdown';
 
 export interface NavLinkGroup {
   label: string;
@@ -22,7 +23,7 @@ export const SidebarNav = () => {
   );
   const [activeSection, setActiveSection] = useState(
     markdownLayoutInfo instanceof SolutionInfo
-      ? 'intro'
+      ? 'general'
       : markdownLayoutInfo.section
   );
 
@@ -37,17 +38,24 @@ export const SidebarNav = () => {
 
   return (
     <nav className="flex-grow bg-white flex flex-col h-0">
-      <div className="flex-shrink-0">
-        <select
-          className="mt-1 form-select block w-full pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-          onChange={e => setActiveSection(e.target.value)}
-        >
-          {SECTIONS.map(s => (
-            <option selected={activeSection === s} value={s}>
-              {SECTION_LABELS[s]}
-            </option>
-          ))}
-        </select>
+      <div className="flex-shrink-0 border-b border-gray-200">
+        <div className="flex justify-center my-4">
+          <SectionsDropdown
+            currentSection={activeSection}
+            sidebarNav={true}
+            onSelect={s => setActiveSection(s)}
+          />
+        </div>
+        {/*<select*/}
+        {/*  className="mt-1 form-select block w-full pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"*/}
+        {/*  onChange={e => setActiveSection(e.target.value)}*/}
+        {/*>*/}
+        {/*  {SECTIONS.map(s => (*/}
+        {/*    <option selected={activeSection === s} value={s}>*/}
+        {/*      {SECTION_LABELS[s]}*/}
+        {/*    </option>*/}
+        {/*  ))}*/}
+        {/*</select>*/}
       </div>
       <div className="flex-1 h-0 overflow-y-auto">
         {links.map(group => (

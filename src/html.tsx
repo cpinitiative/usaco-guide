@@ -12,10 +12,10 @@ export default function HTML(props) {
         />
         {props.headComponents}
         {/* Appzi: Capture Insightful Feedback */}
-        <script
-          async
-          src="https://w.appzi.io/bootstrap/bundle.js?token=iIhbb"
-        />
+        {/*<script*/}
+        {/*  async*/}
+        {/*  src="https://w.appzi.io/bootstrap/bundle.js?token=iIhbb"*/}
+        {/*/>*/}
         {/* End Appzi */}
         <link
           rel="stylesheet"

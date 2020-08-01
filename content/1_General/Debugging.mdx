@@ -1,15 +1,23 @@
 ---
 id: debugging
 title: Debugging
-author: Benjamin Qi, Aaron Chew
+author: Benjamin Qi, Aaron Chew, Aryansh Shrivastava
 description: 'Identifying errors within your program and how to avoid them in the first place.'
 ---
 
-## Within Your Program
+<Resources>
+	<Resource
+		source="Aryansh"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly"
+		title="Debugging Correctly"
+	>
+		some parts taken from here
+	</Resource>
+</Resources>
 
-<LanguageSection>
+## Stress Testing
 
-<CPPSection>
+If your code is getting WA, one option is to run your buggy code against another that you're relatively confident is correct on randomly generated data until you find a difference. See the video for details.
 
 <Resources>
 	<Resource
@@ -28,23 +36,39 @@ description: 'Identifying errors within your program and how to avoid them in th
 	>
 		some parts from above video
 	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh"
+		title="Stress Testing"
+	>
+		script from Errichto's video
+	</Resource>
 </Resources>
 
-### Style
+<IncompleteSection>
+
+script for multiple languages?
+
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+## Style
 
 <Resources>
 	<Resource
 		source="CF"
 		title="Competitive C++ Manifesto: A Style Guide"
-		url="blog/entry/64218"
+		url="64218"
 		starred
 	>
-		{' '}
 		don't agree with everything but important to read nonetheless
 	</Resource>
 </Resources>
 
-### Assertions & Warnings
+## Assertions & Warnings
 
 <Resources>
 	<Resource
@@ -58,17 +82,59 @@ description: 'Identifying errors within your program and how to avoid them in th
 	<Resource title="Assertions" source="GFG" url="assertions-cc">
 		subset of above
 	</Resource>
-	<Resource
-		title="Diagnostics"
-		source="GNU"
-		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
-		starred
-	>
+	<Resource title="Diagnostics" source="GCC" url="Diagnostics.html" starred>
 		#warning, #error
 	</Resource>
 </Resources>
 
-### Printing Variables
+## Printing Variables
+
+### Basic Print Statements
+
+The most basic way that you might debug is adding a print statement. This is great and serves the purpose for the most part. For instance, we can write the below to check the value of `x` at a point in our code.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int x = 10; // some important variable
+
+inline void dbg() { cout << "x is " << x << "\n"; }
+
+int main() {
+    dbg();
+    x = 5000;
+    dbg();
+}
+```
+
+Such print statements are great on a basic level, and we can comment or define them out of our main code when we need to compile and execute a more final version of our code.
+
+However, as great as print statements are, they are annoying to work with and efficiently separate from the actual parts of our code. This is important for example when we want an online judge \(OJ\) to read our output.
+
+### Standard Error Stream
+
+The standard error stream \(`cerr` in C++\) is a quick fix to this. Instead of printing in standard iostream, we actually generate a whole new stream of data called the error stream. Simply replace all instances of `cout` with `cerr`. For example:
+
+```cpp
+inline void dbg() { cerr << "x is " << x << "\n"; }
+
+int main() {
+    dbg();
+    x = 5000;
+    dbg();
+}
+```
+
+Try running this program and you might be confused about the difference. You will be able to see the output of `cerr` right next to regular `cout` outputs. But this is the beauty of it! And if we use freopen to open up file pipes or submit this to an OJ, the program will not include the error stream.
+
+<Warning>
+
+Printing too much content to `stderr` can still cause TLE when submitting to an OJ.
+
+</Warning>
+
+### Debug Template
 
 Although not feasible if you have to write all code from scratch, [this template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h) is very helpful for simplifying input / output / debug output. Note that `dbg()` only produces debug output when `-DLOCAL` is included as part of the compilation command, so you don't need to comment out those lines before submitting.
 
@@ -84,9 +150,7 @@ examples for all of input, output, debug?
 
 </IncompleteSection>
 
-## Compiling
-
-### [Warning Options](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
+## [Warning Options](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
 
 Includes `-Wall -Wextra -Wshadow`
 
@@ -108,13 +172,7 @@ Add explanation, how useful is -Wextra?
 
 </IncompleteSection>
 
-### Other Options
-
-<IncompleteSection>
-
-Ben - Are there beginner-friendly sources to learn about these? I'm not so familiar with these.
-
-</IncompleteSection>
+## Other Options
 
 In Errichto's blog he says that he uses the following as part of his compilation command:
 
@@ -122,30 +180,33 @@ In Errichto's blog he says that he uses the following as part of his compilation
 -fsanitize=undefined -fsanitize=address -D_GLIBCXX_DEBUG -g
 ```
 
-<Warning>
-	
-These can significantly slow down both compilation time and runtime.
+<Warning title="Disclaimer">
+
+Ben - I don't use this on a regular basis, there are probably better sources to learn about these.
 
 </Warning>
+
+Let's give some examples of what each of these do.
+
+<Warning>
+	
+These can significantly slow down runtime.
+
+</Warning>
+
+### `-fsanitize=undefined`
 
 <Resources>
 	<Resource
 		source="GCC"
-		title="Program Instrumentation Options"
+		title="3.12 - Program Instrumentation Options"
 		url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html"
 	>
 		documentation for -fsanitize
 	</Resource>
-	<Resource
-		source="GCC"
-		title="Using Debug Mode"
-		url="https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode"
-	>
-		documentation for -D_GLIBCXX_DEBUG
-	</Resource>
 </Resources>
 
-Let's demonstrate what each of these do with the following program `prog.cpp`, which gives a segmentation fault.
+The following `prog.cpp` gives a segmentation fault.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -162,6 +223,70 @@ int main() {
 ```
 /usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/bits/stl_vector.h:1043:34: runtime error: pointer index expression with base 0x000000000000 overflowed to 0xfffffffffffffffc
 zsh: segmentation fault  ./prog
+```
+
+Another example with `prog.cpp` as the following:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int v[5];
+	cout << v[5];
+}
+```
+
+`g++ prog.cpp -o prog -fsanitize=undefined && ./prog` produces:
+
+```
+prog.cpp:6:13: runtime error: index 5 out of bounds for type 'int [5]'
+prog.cpp:6:13: runtime error: load of address 0x7ffee0a77a94 with insufficient space for an object of type 'int'
+0x7ffee0a77a94: note: pointer points here
+  b0 7a a7 e0 fe 7f 00 00  25 b0 a5 0f 01 00 00 00  b0 7a a7 e0 fe 7f 00 00  c9 8c 20 72 ff 7f 00 00
+              ^
+```
+
+`-fsanitize=undefined` also catches integer overflow. Let `prog.cpp` be the following:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int x = 1<<30;
+	cout << x+x;
+}
+```
+
+`g++ prog.cpp -o prog -fsanitize=undefined && ./prog` produces:
+
+```
+prog.cpp:6:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
+```
+
+### `-fsanitize=address`
+
+<Resources>
+	<Resource
+		source="GCC"
+		title="3.10 - Options for Debugging Your Program"
+		url="Debugging-Options.html"
+	>
+		documentation for -g, -ggdb
+	</Resource>
+</Resources>
+
+The following `prog.cpp` gives a segmentation fault.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    vector<int> v;
+    cout << v[-1];
+}
 ```
 
 `g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
@@ -190,32 +315,37 @@ zsh: abort      ./prog
 
 </Spoiler>
 
-Finally, `g++ prog.cpp -o prog -D_GLIBCXX_DEBUG -g && ./prog` produces:
+For more helpful information we should additionally compile with the `-ggdb` flag. `-ggdb` generates a debug report (in dSYM file format) based on the line numbering of the program. `-fsanitize=address` can then access the dSYM file at runtime and give meaningful errors. This is great because it helps diagnose (or "sanitize" if you will) errors such as out of bounds, exceptions, and segmentation faults, even indicating precise line numbers. Feel free to delete dSYM files after the run of course.
 
-<Spoiler title="Debug">
+<Spoiler title="-fsanitize=address -ggdb (note the difference!)">
 
 ```
-/usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/debug/vector:427:
-In function:
-    std::__debug::vector<_Tp, _Allocator>::reference
-    std::__debug::vector<_Tp,
-    _Allocator>::operator[](std::__debug::vector<_Tp,
-    _Allocator>::size_type) [with _Tp = int; _Allocator =
-    std::allocator<int>; std::__debug::vector<_Tp, _Allocator>::reference =
-    int&; std::__debug::vector<_Tp, _Allocator>::size_type = long unsigned
-    int]
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==98773==ERROR: AddressSanitizer: SEGV on unknown address (pc 0x00010a0b5316 bp 0x7ffee5b4ba50 sp 0x7ffee5b4b9d0 T0)
+==98773==The signal is caused by a READ memory access.
+==98773==Hint: this fault was caused by a dereference of a high value address (see register values below).  Dissassemble the provided pc to learn which register was used.
+    #0 0x10a0b5316 in main prog.cpp:6
+    #1 0x7fff6f2c1cc8 in start (libdyld.dylib:x86_64+0x1acc8)
 
-Error: attempt to subscript container with out-of-bounds index -1, but
-container only holds 0 elements.
-
-Objects involved in the operation:
-    sequence "this" @ 0x0x7ffee2503a50 {
-      type = std::__debug::vector<int, std::allocator<int> >;
-    }
+==98773==Register values:
+rax = 0xfffffffffffffffc  rbx = 0x00007ffee5b4b9d0  rcx = 0xfffffffffffffffc  rdx = 0x20000fffffffffff
+rdi = 0x00007ffee5b4b9f0  rsi = 0x1fffffffffffffff  rbp = 0x00007ffee5b4ba50  rsp = 0x00007ffee5b4b9d0
+ r8 = 0x0000000000000000   r9 = 0x0000000000000000  r10 = 0x0000000000000000  r11 = 0x0000000000000000
+r12 = 0x00007ffee5b4ba30  r13 = 0x00000fffdcb6973a  r14 = 0x00007ffee5b4b9d0  r15 = 0x0000000000000000
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV prog.cpp:6 in main
+==98773==ABORTING
 zsh: abort      ./prog
 ```
 
 </Spoiler>
+
+Of course, we can use `-fsanitize=address` together with `-fsanitize=undefined` and `-ggdb`:
+
+```
+-ggdb -fsanitize=address,undefined
+```
 
 Another example with `prog.cpp` as the following:
 
@@ -227,17 +357,6 @@ int main() {
 	int v[5];
 	cout << v[5];
 }
-```
-
-`g++ prog.cpp -o prog -fsanitize=undefined && ./prog` produces:
-
-```
-prog.cpp:6:13: runtime error: index 5 out of bounds for type 'int [5]'
-prog.cpp:6:13: runtime error: load of address 0x7ffee0a77a94 with insufficient space for an object of type 'int'
-0x7ffee0a77a94: note: pointer points here
-  b0 7a a7 e0 fe 7f 00 00  25 b0 a5 0f 01 00 00 00  b0 7a a7 e0 fe 7f 00 00  c9 8c 20 72 ff 7f 00 00
-              ^
-32766%
 ```
 
 `g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
@@ -297,48 +416,60 @@ zsh: abort      ./prog
 
 </Spoiler>
 
-`-fsanitize=undefined` also catches integer overflow. Let `prog.cpp` be the following:
+### `-D_GLIBCXX_DEBUG`
+
+<Resources>
+	<Resource
+		source="GCC"
+		title="Using Debug Mode"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode"
+	>
+		documentation for -D_GLIBCXX_DEBUG
+	</Resource>
+</Resources>
+
+The following `prog.cpp` gives a segmentation fault.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-	int x = 1<<30;
-	cout << x+x;
+    vector<int> v;
+    cout << v[-1];
 }
 ```
 
-`g++ prog.cpp -o prog -fsanitize=undefined && ./prog` produces:
+`g++ prog.cpp -o prog -D_GLIBCXX_DEBUG -g && ./prog` produces:
+
+<Spoiler title="Debug">
 
 ```
-oops.cpp:7:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
+/usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/debug/vector:427:
+In function:
+    std::__debug::vector<_Tp, _Allocator>::reference
+    std::__debug::vector<_Tp,
+    _Allocator>::operator[](std::__debug::vector<_Tp,
+    _Allocator>::size_type) [with _Tp = int; _Allocator =
+    std::allocator<int>; std::__debug::vector<_Tp, _Allocator>::reference =
+    int&; std::__debug::vector<_Tp, _Allocator>::size_type = long unsigned
+    int]
+
+Error: attempt to subscript container with out-of-bounds index -1, but
+container only holds 0 elements.
+
+Objects involved in the operation:
+    sequence "this" @ 0x0x7ffee2503a50 {
+      type = std::__debug::vector<int, std::allocator<int> >;
+    }
+zsh: abort      ./prog
 ```
+
+</Spoiler>
 
 </CPPSection>
 
 </LanguageSection>
-
-## Stress Testing
-
-<Resources>
-	<Resource
-		source="Benq (from Errichto)"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh"
-		title="Stress Testing"
-	>
-		run two solutions against each other on randomly generated data until you
-		find a difference
-	</Resource>
-</Resources>
-
-See Errichto's video for details. You can compare your buggy code against a slow solution that you write yourself or a correct solution that is publicly viewable.
-
-<IncompleteSection>
-
-script for multiple languages?
-
-</IncompleteSection>
 
 ## Debuggers
 
@@ -367,3 +498,15 @@ Cons of using a debugger:
 How to use gdb, valgrind for C++?
 
 </IncompleteSection>
+
+## Rewriting the Program
+
+Rewriting the program is sometimes a good idea, but remember to keep track of time! It is very easy to get carried away rewriting even parts of a program that are bug-free in obsessive hope that something might come through.
+
+<Warning>
+
+Do NOT delete your previous program. Make a new file! It's always possible that you might introduce more bugs.
+
+</Warning>
+
+If the problem is with the program's implementation of your logic and not your logic itself, it is usually better to fix the program directly.

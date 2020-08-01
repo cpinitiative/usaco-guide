@@ -9,7 +9,7 @@ import MODULE_ORDERING, {
   SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import UserDataContext from '../context/UserDataContext';
 import getProgressInfo from '../utils/getProgressInfo';
@@ -48,12 +48,46 @@ const SectionContainer = styled.div`
 `;
 
 const HeroBGColor: { [key in SectionID]: string } = {
-  intro: 'bg-blue-600',
+  general: 'bg-blue-600',
   bronze: 'bg-orange-600',
   silver: 'bg-teal-600',
   gold: 'bg-yellow-600',
   plat: 'bg-purple-600',
   adv: 'bg-green-600',
+};
+
+const HeroTextColor: { [key in SectionID]: string } = {
+  general: 'text-teal-200',
+  bronze: 'text-orange-100',
+  silver: 'text-teal-100',
+  gold: 'text-yellow-100',
+  plat: 'text-purple-100',
+  adv: 'text-green-100',
+};
+
+const topicsWarning = (
+  <>
+    The topics below are not exhaustive for this division.
+    <br />
+    Contest problems may contain topics not covered in the guide, or topics
+    listed under different divisions!
+  </>
+);
+const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
+  general: (
+    <>
+      You don't have to complete all the modules in this section before moving
+      on to Bronze.
+      <br />
+      Feel free to mark some as "skipped" and revisit them at a later time!
+    </>
+  ),
+  bronze: topicsWarning,
+  silver: topicsWarning,
+  gold: topicsWarning,
+  plat: topicsWarning,
+  adv:
+    'These topics are usually beyond the scope of Platinum and are intended only for interested readers.',
 };
 
 export default function Template(props) {
@@ -104,14 +138,19 @@ export default function Template(props) {
     <Layout>
       <SEO title={SECTION_LABELS[division]} />
       <div className="min-h-screen">
-        <TopNavigationBar />
+        <TopNavigationBar currentSection={division} />
 
         <main>
           <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-              <h1 className="mb-8 sm:mb-12 text-white text-5xl tracking-tight leading-10 font-extrabold text-white sm:leading-none md:text-6xl text-center">
+              <h1 className="mb-6 text-white text-5xl tracking-tight leading-10 font-extrabold text-white sm:leading-none md:text-6xl text-center">
                 {SECTION_LABELS[division]}
               </h1>
+              <p
+                className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12 px-4`}
+              >
+                {SECTION_DESCRIPTION[division]}
+              </p>
               <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">

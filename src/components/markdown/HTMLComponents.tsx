@@ -30,7 +30,7 @@ const HTMLComponents = {
   h1: ({ id, children, ...props }) => (
     <h1
       {...props}
-      className="leading-tight text-4xl font-bold mb-4 mt-12 text-gray-700"
+      className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700"
     >
       <OffsetAnchor id={id} />
       {children}
@@ -38,7 +38,7 @@ const HTMLComponents = {
   ),
   h2: ({ id, children, ...props }) => (
     <h2
-      className="leading-tight text-3xl font-bold mb-4 mt-12 text-gray-700 relative"
+      className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 relative"
       {...props}
     >
       <OffsetAnchor id={id} />

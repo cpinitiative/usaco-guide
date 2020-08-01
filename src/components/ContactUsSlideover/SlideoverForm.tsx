@@ -53,6 +53,7 @@ export default function SlideoverForm(props: SlideoverProps) {
                         </h2>
                         <div className="h-7 flex items-center">
                           <button
+                            type="button"
                             aria-label="Close panel"
                             className="text-blue-200 hover:text-white"
                             onClick={() => props.onClose()}

@@ -16,6 +16,7 @@ import Info from './Info';
 import Warning from './Warning';
 import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
+import FocusProblem from './FocusProblem';
 
 const components = {
   Spoiler,
@@ -23,6 +24,7 @@ const components = {
   Warning,
   Optional,
   Problems: ProblemsList,
+  FocusProblem,
   Resources: ResourcesList,
   Resource,
   TextTooltip,

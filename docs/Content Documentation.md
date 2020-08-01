@@ -2,8 +2,8 @@
 
 The following two modules are good to read:
 
-1. https://usaco-guide.netlify.app/intro/modules
-2. https://usaco-guide.netlify.app/intro/code-con
+1. https://usaco-guide.netlify.app/general/modules
+2. https://usaco-guide.netlify.app/general/code-con
 
 All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
 
@@ -70,10 +70,23 @@ prerequisites:
 
 ### Linking to Modules
 
-Use a relative link with the ID. For example, if you want to link to "Code Conventions" from another module:
+Do `[insert text here](/general/code-con)`.
 
-- If the module is in Intro then do `[insert text here](./code-con)`.
-- Otherwise do `[insert text here](../intro/code-con)`.
+Don't use relative links like `code-con`, that will break our link checker...
+
+### Link Checker
+
+`yarn build && yarn serve` -- keep this terminal alive!
+
+`yarn check-links`
+
+If crash due to some `bhttp` error, it's probably a timeout. To fix temporarily, run:
+
+```
+blc http://localhost:9000 -rof --exclude train.usaco.org
+```
+
+And find where it crashes, then check the broken link manually and add to exclusion list. As train.usaco.org sometimes crashes, it's added already.
 
 ## 4. Table of Contents
 
@@ -90,6 +103,7 @@ Some components are globally available in every module (without having to be imp
 - `<Warning>`
 - `<Optional>`
 - `<Problems>`
+- `<FocusProblem>`
 - `<Resources>`
 - `<Resource>`
 - `<TextTooltip>`
@@ -208,19 +222,7 @@ class Problem {
 		public source: string,
 		public name: string,
 		public id: string,
-		labels?:
-			| 'Very Easy'
-			| 'Easy'
-			| 'Normal'
-			| 'Hard'
-			| 'Very Hard'
-			| 'Insane'
-			| 'Intro|Very Easy'
-			| 'Intro|Easy'
-			| 'Intro|Normal'
-			| 'Intro|Hard'
-			| 'Intro|Very Hard'
-			| 'Intro|Insane',
+		labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
 		public starred?: boolean,
 		public tags?: string[],
 		sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
@@ -278,6 +280,16 @@ Do roughly the first half of the Sorting and Searching section in the [CSES Prob
 <Problems problems={problems.standard} />
 ```
 
+### Focus Problem
+
+Displays a singular problem as a "focus problem."
+
+```
+<FocusProblem problem={problems.genPermutations[0]} />
+```
+
+Make sure to still use an array: `gatsby-node.ts` expects all exported problems to be in arrays...
+
 ### Resource Lists
 
 ```
@@ -327,7 +339,7 @@ Special functionality based on source:
     	AoPS: 'Art of Problem Solving',
     	CPH: "Book - Competitive Programmer's Handbook",
     	PAPS: 'Book - Principles of Algorithmic Problem Solving',
-    	IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
+    	IUSACO: 'Book - An Introduction to USACO',
     	CP1: 'Book - Competitive Programming 1',
     	TC: 'TopCoder',
     	IOI: 'International Olympiad in Informatics',
@@ -351,7 +363,7 @@ Special functionality based on source:
     	POI: 'Polish Olympiad in Informatics',
     	SO: 'StackOverflow',
     	KA: 'KhanAcademy',
-    	USACO: 'USA Computing Olympiad',
+    	USACO: 'USACO',
     	'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
     	'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
     	'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',

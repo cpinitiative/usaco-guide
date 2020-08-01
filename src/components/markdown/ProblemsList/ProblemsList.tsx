@@ -3,7 +3,6 @@ import { Problem } from '../../../../content/models';
 import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
-import { sourceTooltip } from '../ResourcesList';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
@@ -169,10 +168,8 @@ export function ProblemComponent(props: ProblemComponentProps) {
         </div>
       </td>
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
-        {sourceTooltip.hasOwnProperty(problem.source) ? (
-          <TextTooltip content={sourceTooltip[problem.source]}>
-            {problem.source}
-          </TextTooltip>
+        {problem.des ? (
+          <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
         ) : (
           problem.source
         )}
@@ -198,15 +195,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
           >
             {problem.name}
           </a>
-          {problem.isIntro && (
-            <span
-              className={
-                'ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 text-teal-800'
-              }
-            >
-              Intro
-            </span>
-          )}
         </div>
       </td>
       <td className="pl-4 md:px-6 py-4 whitespace-no-wrap leading-5 w-full">
@@ -274,31 +262,6 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
       sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
     }
-    if (
-      sol == '' &&
-      problem.source == 'CF'
-      // && problem.id.startsWith('contest/')
-    ) {
-      sol = '@Check CF';
-      hover =
-        'Check contest materials, located to the right of the problem statement.';
-    }
-    if (sol == '' && problem.source == 'CSA') {
-      sol = '@Check CSA';
-      hover = 'The editorial tab should be right next to the statement tab.';
-    }
-    if (sol == '' && problem.source == 'HE') {
-      sol = '@Check HE';
-      hover = 'The editorial tab should be right next to the problem tab.';
-    }
-    if (sol == '' && problem.source == 'AC') {
-      sol = '@Check AC';
-      hover = 'The editorial tab should be second from the right.';
-    }
-    if (sol == '' && problem.source == 'TLX') {
-      sol = '@Check TLX';
-      hover = 'The editorial should be available in the announcements tab.';
-    }
     if (isExternal(sol)) {
       external = true;
     } else if (sol.startsWith('@')) {
@@ -313,7 +276,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       }
     } else {
       if (sol.length != 0) {
-        throw new Error('Unrecognied solution - ' + sol);
+        throw new Error('Unrecognized solution - ' + sol);
       }
     }
   }
@@ -323,11 +286,11 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
       {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
       {/* {problem.id} */}
-      {msg && hover.length === 0 && <span className="pl-6">{sol}</span>}
-      {msg && hover.length > 0 && sol && (
-        <Tooltip content={hover}>
-          <span className="pl-6">{sol}</span>
-        </Tooltip>
+      {msg && problem.hover.length === 0 && <span className="pl-6">{sol}</span>}
+      {msg && problem.hover.length > 0 && sol && (
+        <span className="pl-6">
+          <TextTooltip content={problem.hover}>{sol}</TextTooltip>
+        </span>
       )}
       {external && (
         <a href={sol} target="_blank" className="pl-6">

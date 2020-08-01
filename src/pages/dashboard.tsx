@@ -10,7 +10,7 @@ import {
   moduleIDToURLMap,
   SECTION_LABELS,
 } from '../../content/ordering';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import getProgressInfo from '../utils/getProgressInfo';
 import Announcements from '../components/Dashboard/Announcements';
@@ -51,9 +51,10 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnModules)
       .filter(
         x =>
-          userProgressOnModules[x] === 'Reading' ||
-          userProgressOnModules[x] === 'Practicing' ||
-          userProgressOnModules[x] === 'Skipped'
+          (userProgressOnModules[x] === 'Reading' ||
+            userProgressOnModules[x] === 'Practicing' ||
+            userProgressOnModules[x] === 'Skipped') &&
+          moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
         label: `${SECTION_LABELS[moduleIDToSectionMap[x]]}: ${
@@ -68,8 +69,9 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          userProgressOnProblems[x] === 'Solving' ||
-          userProgressOnProblems[x] === 'Skipped'
+          (userProgressOnProblems[x] === 'Solving' ||
+            userProgressOnProblems[x] === 'Skipped') &&
+          problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
@@ -106,8 +108,6 @@ export default function DashboardPage(props: PageProps) {
   //   ['Skipped'],
   //   ['Not Attempted']
   // );
-
-  console.log(lastReadAnnouncement);
 
   const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
     return announcements.edges.map(node =>

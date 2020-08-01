@@ -35,76 +35,48 @@ export function ResourcesList(props) {
   );
 }
 const books = {
-  GCP: 'https://link.springer.com/book/10.1007/978-3-319-72547-5',
-  CPH: '/CPH.pdf',
-  PAPS: '/PAPS.pdf',
-  CP2: '/CP2.pdf',
+  PAPS: ['/PAPS.pdf', ' Principles of Algorithmic Problem Solving'],
+  CP2: ['/CP2.pdf', 'Competitive Programming 2'],
+  CPH: ['/CPH.pdf', "Competitive Programmer's Handbook"],
+  IUSACO: ['http://darrenyao.com/', 'An Introduction to USACO'],
+  GCP: [
+    'https://link.springer.com/book/10.1007/978-3-319-72547-5',
+    'Guide to Competitive Programming (based off CPH)',
+  ],
 };
 
-const sources = {
-  TC: 'https://www.topcoder.com/community/competitive-programming/tutorials/',
-  CPC: 'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
-  CF: 'http://codeforces.com/',
-  'cp-algo': 'https://cp-algorithms.com/',
-  CSA: 'https://csacademy.com/lesson/',
-  GFG: 'https://www.geeksforgeeks.org/',
-  Benq: 'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
-  HR: 'https://www.hackerrank.com/',
-  SO: 'https://stackoverflow.com/',
-  Infoarena: 'https://infoarena.ro/',
-};
-
-export const sourceTooltip = {
-  GCP: 'Guide to Competitive Programming (based off CPH)',
-  AoPS: 'Art of Problem Solving',
-  CCO: 'Canadian Computing Olympiad',
-  CCC: 'Canadian Computing Competition',
-  IZhO: 'International Zhautykov Olympiad',
-  CPH: "Book - Competitive Programmer's Handbook",
-  PAPS: 'Book - Principles of Algorithmic Problem Solving',
-  IUSACO: 'Book - An Introduction to the USA Computing Olympiad',
-  CP2: 'Book - Competitive Programming 2',
-  TC: 'TopCoder',
-  IOI: 'International Olympiad in Informatics',
-  TLX: 'tlx.toki.id',
-  CPC:
+const moduleSources = {
+  CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
+  CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
+  Benq: [
+    'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
+    'github.com/bqi343/USACO',
+  ],
+  TC: [
+    'https://www.topcoder.com/community/competitive-programming/tutorials/',
+    'TopCoder',
+  ],
+  'cp-algo': ['https://cp-algorithms.com/', 'CP Algorithms'],
+  USACO: ['http://www.usaco.org/', 'USACO'],
+  SO: ['https://stackoverflow.com/', 'StackOverflow'],
+  GFG: ['https://www.geeksforgeeks.org/', 'Geeks For Geeks'],
+  CPC: [
+    'https://github.com/SuprDewd/T-414-AFLV/tree/master/',
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
-  CF: 'CodeForces',
-  'cp-algo': 'CP Algorithms',
-  CSA: 'CS Academy',
-  GFG: 'Geeks For Geeks',
-  Benq: 'github.com/bqi343/USACO',
-  HR: 'HackerRank',
-  CSES: 'Code Submission Evaluation System (includes CPH problemset)',
-  HE: 'HackerEarth',
-  AC: 'AtCoder',
-  CC: 'CodeChef',
-  DMOJ: 'Don Mills Online Judge',
-  SPOJ: 'Sphere Online Judge',
-  YS: 'Library Checker',
-  Kattis: 'open.kattis.com',
-  LC: 'LeetCode',
-  POI: 'Polish Olympiad in Informatics',
-  SO: 'StackOverflow',
-  KA: 'KhanAcademy',
-  USACO: 'USA Computing Olympiad',
-  'Old Bronze': 'USACO Platinum did not exist prior to 2015-16.',
-  'Old Silver': 'USACO Platinum did not exist prior to 2015-16.',
-  'Old Gold': 'USACO Platinum did not exist prior to 2015-16.',
-  Bronze: 'USACO 2015-16 to present',
-  Silver: 'USACO 2015-16 to present',
-  Gold: 'USACO 2015-16 to present',
-  Plat: 'USACO 2015-16 to present',
-  ZLE: 'kauntaofficial.github.io',
+  ],
+  GCC: ['https://gcc.gnu.org/onlinedocs/gcc/', 'GNU Compiler Collection'],
 };
 
 export function Resource(props) {
   const userSettings = useContext(UserDataContext);
-
-  const source = props.source;
+  let source = props.source ? props.source : '';
   let url = props.url;
+  let des = '';
   if (!url) {
-    const get = (dictKey, book, title) => {
+    // must be book
+    if (!(source in books))
+      throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
+    const getSec = (dictKey, book, title) => {
       const parts = title.split(' ');
       let url = book;
       let sec = parts[0];
@@ -117,43 +89,41 @@ export function Resource(props) {
     };
     if (source === 'IUSACO') {
       if (userSettings.lang === 'java') {
-        url = get(
+        url = getSec(
           'JAVA',
           'https://darrenyao.com/usacobook/java.pdf',
           props.title
         );
       } else {
-        url = get(
+        url = getSec(
           'CPP',
           'https://darrenyao.com/usacobook/cpp.pdf',
           props.title
         );
       }
     } else if (source in PGS) {
-      url = get(source, books[source], props.title);
-    } else if (source in books) {
-      url = books[source];
-    } else
-      throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
-  } else if (!url.startsWith('http')) {
-    if (source in sources) {
-      url = sources[source] + url;
-    } else
+      url = getSec(source, books[source][0], props.title);
+    } else url = books[source][0];
+    des = books[source][1];
+  } else if (source in moduleSources) {
+    if (!url.startsWith('http')) url = moduleSources[source][0] + url;
+    des = moduleSources[source][1];
+  } else {
+    if (!url.startsWith('http'))
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${props.title}`;
+    if (source.indexOf('@') != -1) {
+      const ind = source.indexOf('@');
+      des = source.substring(ind + 1, source.length);
+      source = source.substring(0, ind);
+    }
   }
   // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
   return (
     <tr className="block sm:table-row">
       <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-        {props.source && (
+        {source && (
           <>
-            {sourceTooltip.hasOwnProperty(props.source) ? (
-              <TextTooltip content={sourceTooltip[props.source]}>
-                {props.source}
-              </TextTooltip>
-            ) : (
-              props.source
-            )}
+            {des ? <TextTooltip content={des}>{source}</TextTooltip> : source}
           </>
         )}
       </td>

@@ -16,7 +16,7 @@ export const problems = {
 			'CSES',
 			'Range Minimum Queries II',
 			'1649',
-			'Intro|Easy',
+			'Easy',
 			false,
 			['PURQ'],
 			''
@@ -180,7 +180,7 @@ A **segment tree** allows you to do point update and range query in $O(\log N)$ 
 
 <Info title="Pro Tip">
 
-You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](../plat/seg-ext).
+You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](/plat/seg-ext).
 
 </Info>
 
@@ -214,7 +214,7 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 	<Resource
 		source="CF"
 		title="AICash - Efficient and easy segment trees"
-		url="blog/entry/18051"
+		url="18051"
 		starred
 	>
 		simple implementation
@@ -234,19 +234,20 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 
 ```cpp
 template<class T> struct Seg { // comb(ID,b) = b
-  const T ID = 0; T comb(T a, T b) { return a+b; }
-  int n; vector<T> seg;
-  void init(int _n) { n = _n; seg.assign(2*n,ID); }
-  void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-  void upd(int p, T val) { // set val at position p
-    seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-  T query(int l, int r) { // sum on interval [l, r]
-    T ra = ID, rb = ID;
-    for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-      if (l&1) ra = comb(ra,seg[l++]);
-      if (r&1) rb = comb(seg[--r],rb);
-    }
-    return comb(ra,rb);
+	const T ID = 0; T comb(T a, T b) { return a+b; }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) { // sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	 }
 };
 ```
 
@@ -321,17 +322,20 @@ Luckily, such a built-in data structure already exists in C++.
 <Resources>
 	<Resource
 		source="CF"
-		url="blog/entry/11080"
+		url="11080"
 		title="adamant - Policy Based Data Structures"
 		starred
-	>
-		{' '}
+	></Resource>
+	<Resource source="CPH" title="4.5 - Policy Based Data Structures">
+		brief overview with find_by_order and order_of_key
 	</Resource>
 	<Resource
 		source="Benq"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h"
 		title="Indexed Set"
-	></Resource>
+	>
+		code
+	</Resource>
 </Resources>
 
 Using this, we can solve "Inversion Counting" in just a few lines (with template).
@@ -372,12 +376,7 @@ Note that if it were not the case that all elements of the input array were dist
 Assumes all updates are in the range $[1,N]$.
 
 <Resources>
-	<Resource
-		source="CF"
-		url="blog/entry/11275"
-		title="adamant - About Ordered Set"
-		starred
-	>
+	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
 		{' '}
 		log N{' '}
 	</Resource>
@@ -387,7 +386,7 @@ Assumes all updates are in the range $[1,N]$.
 
 ### With a Segment Tree
 
-Covered in [platinum](../plat/seg-ext).
+Covered in [Platinum](/plat/seg-ext).
 
 ## Practice Problems
 

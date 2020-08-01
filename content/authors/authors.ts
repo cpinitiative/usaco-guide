@@ -27,7 +27,7 @@ export const Authors: Author[] = [
   //   photo: 'briancdean',
   //   name: 'Brian C. Dean',
   //   title: 'Content Director',
-  //   blurb: 'Brian Christopher Dean is the director of the USA Computing Olympiad.',
+  //   blurb: 'Brian Christopher Dean is the director of USACO.',
   //   email: 'bcdean@clemson.edu',
   // },
   {
@@ -55,7 +55,7 @@ export const Authors: Author[] = [
     name: 'Darren Yao',
     title: 'Content Author',
     blurb:
-      'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to the USA Computing Olympiad."',
+      'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to USACO."',
     website: 'http://darrenyao.com/',
     email: 'darren.yao@gmail.com',
     codeforces: 'darren_yao',

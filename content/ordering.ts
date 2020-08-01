@@ -1,6 +1,12 @@
 // Section -> Chapter -> Module
 
-export type SectionID = 'intro' | 'bronze' | 'silver' | 'gold' | 'plat' | 'adv';
+export type SectionID =
+  | 'general'
+  | 'bronze'
+  | 'silver'
+  | 'gold'
+  | 'plat'
+  | 'adv';
 
 export type Chapter = {
   name: string;
@@ -9,7 +15,7 @@ export type Chapter = {
 };
 
 const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
-  intro: [
+  general: [
     {
       name: 'About This Guide',
       description:
@@ -45,7 +51,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'USACO',
-      items: ['usaco-month', 'usaco-camp'],
+      items: [
+        'usaco-month',
+        // 'usaco-camp'
+      ],
     },
   ],
   bronze: [
@@ -166,7 +175,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   adv: [
     {
       name: 'Data Structures',
-      items: ['treaps', 'persistent', 'segtree-beats', 'LCT'],
+      items: ['treaps', 'persistent', 'CntMin', 'segtree-beats', 'LCT'],
     },
     {
       name: 'Flows',
@@ -196,7 +205,7 @@ export const SECTIONS: SectionID[] = Object.keys(
   MODULE_ORDERING
 ) as SectionID[];
 export const SECTION_LABELS: { [key in SectionID]: string } = {
-  intro: 'Intro',
+  general: 'General',
   bronze: 'Bronze',
   silver: 'Silver',
   gold: 'Gold',

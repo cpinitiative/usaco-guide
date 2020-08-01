@@ -4,7 +4,7 @@ import Img from 'gatsby-image';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useRef } from 'react';
 
 const AuthorCard = ({
@@ -307,7 +307,7 @@ export default function IndexPage(props: PageProps) {
               Not Just Another Resource.
             </h3>
             <p className="mt-4 max-w-4xl text-xl leading-7 text-gray-500 lg:mx-auto">
-              This is more than "just another resource." This is the first-ever
+              This is more than "just another resource." This is a
               comprehensive, organized roadmap carefully designed and crafted
               for USACO contestants – available to everyone, for free.
             </p>
@@ -548,7 +548,7 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500">
                       To learn more about contributing, please visit{' '}
                       <Link
-                        to="/intro/contributing"
+                        to="/general/contributing"
                         className="text-blue-600 underline"
                       >
                         this page

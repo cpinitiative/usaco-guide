@@ -1,11 +1,8 @@
 import * as React from 'react';
-import { graphql, Link, PageProps } from 'gatsby';
-import Img from 'gatsby-image';
+import { Link, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import { Author, Authors } from '../../content/authors/authors';
-import TopNavigationBar from '../components/TopNavigationBar';
-import { useRef } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function NotFoundPage(props: PageProps) {
   return (
