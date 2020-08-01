@@ -143,7 +143,7 @@ export default function Template(props) {
         <main>
           <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-              <h1 className="mb-6 text-white text-5xl tracking-tight leading-10 font-extrabold text-white sm:leading-none md:text-6xl text-center">
+              <h1 className="mb-6 text-white text-5xl tracking-tight leading-10 font-black text-white sm:leading-none md:text-6xl text-center">
                 {SECTION_LABELS[division]}
               </h1>
               <p
