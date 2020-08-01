@@ -147,7 +147,7 @@ export default function Template(props) {
                 {SECTION_LABELS[division]}
               </h1>
               <p
-                className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12`}
+                className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12 px-4`}
               >
                 {SECTION_DESCRIPTION[division]}
               </p>
