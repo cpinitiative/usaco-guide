@@ -41,6 +41,15 @@ export const problems = {
 			'Tree',
 			'DFS',
 		]),
+		new Problem(
+			'CSES',
+			'Tree Distances I',
+			'1132',
+			'Normal',
+			false,
+			['Tree', 'DFS'],
+			'@CPH 14.2'
+		),
 		new Problem('Silver', 'Clock Tree', '1016', 'Hard', false, []),
 		new Problem(
 			'CSES',
@@ -49,9 +58,9 @@ export const problems = {
 			'Hard',
 			false,
 			['Tree', 'DFS'],
-			'@CPH 14.3'
+			'@CPH 14.2'
 		),
-		new Problem('CF', "Wizard's Tour", 'contest/860/problem/D', 'Hard', false, [
+		new Problem('CF', "Wizard's Tour", '860/problem/D', 'Hard', false, [
 			'Tree',
 			'DFS',
 		]),
@@ -81,15 +90,15 @@ export const problems = {
 
 <Problems problems={problems.treeSam} />
 
-### Resources
+## Resources
 
 <Resources>
-	<Resource source="CPH" title="14 - Tree algorithms" starred>
-		traversing tree, diameter, longest paths
+	<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred>
+		traversing tree, diameter
 	</Resource>
 </Resources>
 
-### Solution - Subordinates
+## Solution - Subordinates
 
 Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
 
@@ -101,9 +110,6 @@ See how the below implementation computes subtree size. In a rooted tree, a subt
 
 ```cpp
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-
 using namespace std;
 
 vector<int> children[200000];
@@ -112,8 +118,7 @@ int subtree_size[200000];
 void dfs_size(int node) {
 	subtree_size[node] = 1; // This one represents the root of `node's` subtree
 	// (which would be `node` itself)
-
-	for(int child : children[node]) {
+	for (int child : children[node]) {
 		dfs_size(child);
 		subtree_size[node] += subtree_size[child];
 		// Add `node's` children's subtrees to the size of `node's` subtree
@@ -121,28 +126,19 @@ void dfs_size(int node) {
 }
 
 int main() {
-	//read more about Fast IO in "General - FastIO"
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-
 	int N; cin >> N;
-
 	for(int i = 1; i < N; i++) {
 		int parent; cin >> parent; parent--;
 		// this node is the parent of node i ... Also notice
 		// the decrement operator in order to make the node 0-indexed
 		children[parent].push_back(i);
 	}
-
 	dfs_size(0);
-
 	for(int i = 0; i < N; i++) {
 		cout << subtree_size[i]-1;
 		if(i != N-1) cout << " ";
 	}
 	cout << "\n";
-
-	return 0;
 }
 
 ```
@@ -212,6 +208,6 @@ public class Subordinates
 
 <IncompleteSection />
 
-### Problems
+## Problems
 
 <Problems problems={problems.tree} />
