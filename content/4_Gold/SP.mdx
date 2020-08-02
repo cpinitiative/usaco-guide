@@ -195,35 +195,58 @@ The USACO training pages present a $O(N^2)$ version, although this is rarely use
 <CPPSection>
 
 ```cpp
-vector<pair<int, int>> graph[100000]; // Adjacency list of (neighbour, edge weight)
-int dist[100000];
+#include <bits/stdc++.h>
+using namespace std;
 
-int dijkstra(int src, int dest) { // Source and destination
-	memset(dist, 0x3f, sizeof dist); // Set all distances to infinity
+using ll = long long;
+#define pb push_back
+
+vector<pair<int, int>> graph[100000]; // Adjacency list of (neighbour, edge weight)
+ll dist[100000];
+int N;
+
+void dijkstra(int src) { // Source and destination
+	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX; // Set all distances to infinity
 
 	// N.B. Priority queues sort in descending order, so we use negative distances
-    priority_queue<pair<int, int>> pq;
-    pq.push({0, src});
-    dist[src] = 0; // The shortest path from a node to itself is 0
+	priority_queue<pair<ll, int>> pq;
+	dist[src] = 0; // The shortest path from a node to itself is 0
+	pq.push({0, src});
 
-    while (pq.size()) {
-        int dist, node;
-        tie(dist, node) = pq.top();
-        pq.pop();
-        if (node == dest) return -dist; // We've found the shortest path
-
-        for (pair<int, int> i : graph[node]) {
+	while (pq.size()) {
+		ll dis, node; tie(dis, node) = pq.top(); 
+		pq.pop(); dis *= -1;
+		if (dis != dist[node]) continue;
+		for (pair<int, int> i : graph[node]) {
 			// If we can reach a neighbouring node faster, we update its minimum distance
-            if (i.second - dist < dist[i.first]) {
-                dist[i.first] = i.second - dist;
-                pq.push({dist - i.second, i.first});
-            }
-        }
-    }
+			if (dis+i.second < dist[i.first]) {
+				dist[i.first] = dis+i.second;
+				pq.push({-dist[i.first], i.first});
+			}
+		}
+	}
+}
 
-    return -1; // We can't reach dest from src :(
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b,c; cin >> a >> b >> c;
+		graph[a-1].pb({b-1,c});
+	}
+	dijkstra(0);
+	for (int i = 0; i < N; ++i) cout << dist[i] << " ";
 }
 ```
+
+<Warning>
+
+It's important to include the line `if (dis != dist[node]) continue;`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+
+(explanation of hack case)
+
+<IncompleteSection />
+
+</Warning>
 
 </CPPSection>
 

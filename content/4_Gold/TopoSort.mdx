@@ -13,6 +13,7 @@ import { Problem } from '../models';
 
 export const problems = {
 	sample: [new Problem('CSES', 'Course Schedule', '1679', 'Easy', false, [])],
+	dir: [new Problem('CSES', 'Round Trip II', '1678', 'Easy', false, ['Cycle'])],
 	dp: [new Problem('CSES', 'Longest Flight Route', '1680', 'Easy', false, [])],
 	general: [
 		new Problem(
@@ -66,8 +67,6 @@ To review, a **directed** graph consists of edges that can only be traversed in 
 
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering.
 
-## Tutorial
-
 <Resources>
 	<Resource
 		source="CSA"
@@ -82,7 +81,7 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 	</Resource>
 </Resources>
 
-### DFS
+## DFS
 
 <Resources>
 	<Resource source="CPH" title="16.1, 16.2 - Topological Sorting">
@@ -102,29 +101,51 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define pb push_back
+
 int N; // Number of nodes
-vector<int> graph[100000]; // Assume that this graph is a DAG
+vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
 bool visited[100000];
-int idx = 0, top_sort[100000];
 
 void dfs(int node) {
-    for (int i : graph[node]) {
-        if (!visited[i]) {
-            visited[i] = true;
-            dfs(i);
-        }
-    }
-    top_sort[idx++] = node;
+	for (int i : graph[node]) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	top_sort.pb(node);
 }
 
 void compute() {
 	for (int i = 0; i < N; i++) {
-        if (!visited[i]) {
-            visited[i] = true;
-            dfs(i);
-        }
-    }
-	// The array `top_sort` is now topologically sorted
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	reverse(begin(top_sort),end(top_sort));
+	// The vector `top_sort` is now topologically sorted
+}
+
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b; cin >> a >> b;
+		graph[a-1].pb(b-1);
+	}
+	compute();
+	vector<int> ind(N);
+	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
+	for (int i = 0; i < N; i++) for (int j: graph[i]) if (ind[j] <= ind[i]) {
+		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
+		exit(0);
+	}
+	for (int i: top_sort) cout << i+1 << " ";
+	cout << "\n";
 }
 ```
 
@@ -132,7 +153,65 @@ void compute() {
 
 </LanguageSection>
 
-### BFS
+### Finding Cycles
+
+<Problems problems={problems.dir} />
+
+We can modify the algorithm above to return a cycle in a directed graph in case a topological sort does not exist.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//UNTESTED
+
+bool visited[MAXN], on_stack[MAXN];
+vector<int> adj[MAXN];
+vector<int> cycle;
+bool dfs(int n)
+{
+	visited[n] = on_stack[n] = true;
+	for(int u:adj[n])
+	{
+		if(on_stack[u])
+			return cycle.push_back(v), cycle.push_back(u), on_stack[n] = on_stack[u] = false, true;
+		else if(!visited[u])
+		{
+			if(dfs(u))
+				if(on_stack[n])
+					return cycle.push_back(n), on_stack[n] = false, true;
+				else
+					return false;
+			if(!cycle.empty())
+				return false;
+		}
+	}
+	on_stack[n] = false;
+	return false;
+}
+int main()
+{
+	//take input, etc
+	for(int i = 1;cycle.empty() && i <= N;i++)
+		dfs(i);
+	if(cycle.empty())
+		printf("No cycle found!\n");
+	else
+	{
+		reverse(cycle.begin(), cycle.end());
+		printf("Cycle of length %u found!\n", cycle.size());
+		for(int n : cycle) printf("%d ", n);
+		printf("\n");
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## BFS
 
 The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 

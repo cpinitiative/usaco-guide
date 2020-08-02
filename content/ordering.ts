@@ -110,7 +110,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Graphs',
-      items: ['bfs', 'toposort', 'cyc', 'sp'],
+      items: ['bfs', 'toposort', 'sp'],
     },
     {
       name: 'Range Queries',
