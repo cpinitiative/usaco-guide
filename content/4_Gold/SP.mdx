@@ -1,7 +1,7 @@
 ---
 id: sp
 title: 'Shortest Paths with Non-Negative Edge Weights'
-author: Benjamin Qi
+author: Benjamin Qi, Andi Qu
 prerequisites:
   - bfs
   - intro-ordered
@@ -57,12 +57,48 @@ export const problems = {
 			''
 		),
 		new Problem(
+			'IOI',
+			'2011 - Crocodile',
+			'https://oj.uz/problem/view/IOI11_crocodile',
+			'Easy',
+			false,
+			['SP'],
+			''
+		),
+		new Problem(
 			'Kattis',
 			'Lane Switching',
 			'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
 			'Normal',
 			false,
 			['SP'],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2018 - Commuter Pass',
+			'https://oj.uz/problem/view/JOI18_commuter_pass',
+			'Hard',
+			true,
+			['SP', 'DP'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2011 - Find the Path',
+			'https://dmoj.ca/problem/apio11p2',
+			'Hard',
+			false,
+			['SP', 'Geometry'],
+			''
+		),
+		new Problem(
+			'Balkan OI',
+			'2012 - Shortest Paths',
+			'https://www.acmicpc.net/problem/5250',
+			'Very Hard',
+			true,
+			['SP', 'LCA'],
 			''
 		),
 	],
@@ -85,6 +121,24 @@ export const problems = {
 			'Hard',
 			false,
 			['APSP', 'DP'],
+			''
+		),
+		new Problem(
+			'COCI',
+			'2009 - Gremlini',
+			'https://hsin.hr/coci/archive/2009_2010/contest6_tasks.pdf',
+			'Hard',
+			false,
+			['APSP', 'DP'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2017 - Traveling Merchant',
+			'https://oj.uz/problem/view/APIO17_merchant',
+			'Hard',
+			true,
+			['APSP', 'Binary Search'],
 			''
 		),
 	],
@@ -136,13 +190,71 @@ The USACO training pages present a $O(N^2)$ version, although this is rarely use
 	</Resource>
 </Resources>
 
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+#define pb push_back
+
+vector<pair<int, int>> graph[100000]; // Adjacency list of (neighbour, edge weight)
+ll dist[100000];
+int N;
+
+void dijkstra(int src) { // Source and destination
+	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX; // Set all distances to infinity
+
+	// N.B. Priority queues sort in descending order, so we use negative distances
+	priority_queue<pair<ll, int>> pq;
+	dist[src] = 0; // The shortest path from a node to itself is 0
+	pq.push({0, src});
+
+	while (pq.size()) {
+		ll dis, node; tie(dis, node) = pq.top(); 
+		pq.pop(); dis *= -1;
+		if (dis != dist[node]) continue;
+		for (pair<int, int> i : graph[node]) {
+			// If we can reach a neighbouring node faster, we update its minimum distance
+			if (dis+i.second < dist[i.first]) {
+				dist[i.first] = dis+i.second;
+				pq.push({-dist[i.first], i.first});
+			}
+		}
+	}
+}
+
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b,c; cin >> a >> b >> c;
+		graph[a-1].pb({b-1,c});
+	}
+	dijkstra(0);
+	for (int i = 0; i < N; ++i) cout << dist[i] << " ";
+}
+```
+
+<Warning>
+
+It's important to include the line `if (dis != dist[node]) continue;`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+
+(explanation of hack case)
+
 <IncompleteSection />
 
-(comments in code?)
+</Warning>
+
+</CPPSection>
+
+</LanguageSection>
 
 <Optional title="Faster Dijkstra">
 
-Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap).
+Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
 
 </Optional>
 
@@ -184,7 +296,3 @@ Use the _Floyd-Warshall_ algorithm.
 ### Problems
 
 <Problems problems={problems.apsp} />
-
-(more?)
-
-<IncompleteSection />
