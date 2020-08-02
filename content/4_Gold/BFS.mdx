@@ -27,12 +27,10 @@ export const problems = {
 		new Problem('CSES', 'Monsters', '1194', 'Easy', false, ['BFS']),
 		new Problem('CSES', 'Graph Girth', '1707', 'Normal', false, ['Cycle']),
 		new Problem('CSA', 'BFS-DFS', 'bfs-dfs', 'Normal', false, ['BFS', 'DFS']),
+		new Problem('Gold', 'Cow Navigation', '695', 'Normal', false, ['BFS'], 'usaco-695'),
 		new Problem('Gold', 'Lasers', '671', 'Normal', false, ['BFS']),
 		new Problem('Gold', 'Dream', '575', 'Hard', false, ['BFS']),
 		new Problem('Gold', 'A Pie for a Pie', '765', 'Very Hard', false, [], ''),
-	],
-	example: [
-		new Problem('Gold', 'Cow Navigation', '695', 'Normal', false, ['BFS']),
 	],
 };
 
@@ -52,7 +50,7 @@ export const problems = {
 	<Resource source="CPH" title="12.2 - Breadth-First Search"></Resource>
 	<Resource source="PAPS" title="12.1 - Breadth-First Search"></Resource>
 	<Resource
-		source="KA"
+		source="KA@KhanAcademy"
 		title="Breadth First Search and Its Uses"
 		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
 	></Resource>
@@ -70,6 +68,12 @@ export const problems = {
 		{' '}
 	</Resource>
 </Resources>
+
+<IncompleteSection>
+
+remove some if they're not useful
+
+</IncompleteSection>
 
 ## Implementation
 
@@ -205,48 +209,11 @@ class Main {
 
 </LanguageSection>
 
-## Example: Cow Navigation
-
-In the gold division, the problem statement will never directly be, "Given an unweighted graph, find the shortest path between node $u$ and $v$." Instead, the difficulty in many BFS problems are modifying the problem into a graph on which we can run BFS and get the answer.
-
-<Problems problems={problems.example} />
-
-In this problem, Bessie stands on a grid and wants to go from the lower left corner to upper-right corner in as few moves as possible. An initial idea could be to model the grid as a graph, where adjacent cells are connected by edges, and run a BFS to find the shortest path.
-
-However, two additional constriants play a role in this problem: Bessie must be able to reach the destination regardless of which direction she starts in, and she can only move in the direction she is facing.
-
-Let's imagine now that there are two cows standing on the cell $(1, 1)$, and both of them move the same way on each operation. Since $N \leq 20$, we can modify the original graph to support this new problem. Let's create a new graph $G'$ as follows:
-
-For each pair of cells in the grid, $(x, y)$ and $(x_2, y_2)$, add $16$ <!-- wow that's a lot --> nodes in the graph storing six parameters each:
-
-- $x$ coordinate of cow $a$
-- $y$ coordinate of cow $a$
-- $x$ coordinate of cow $b$
-- $y$ coordinate of cow $b$
-- direction of cow $a$
-- direction of cow $b$
-
-for all $4 ^ 2$ directions each cow could be facing.
-
-Given this new graph, we add edges between two "states" which are reachable from each other. For example, if we apply the "turn left" operation, we add an edge to the state where both cows directions turn left.
-
-On this new graph, we can directly run a BFS, and retrieve the answer at the state $\{N, N, N, N, x, y\}$ where $x$ and $y$ represent directions.
-
 <Warning>
 
-Don't forget that once Bessie reaches the goal, she will ignore further commands. In the modified problem, if one of the two cows is at the goal, stop applying commands to her.
+In the gold division, the problem statement will almost never directly be, "Given an unweighted graph, find the shortest path between node $u$ and $v$." Instead, the difficulty in many BFS problems are converting the problem into a graph on which we can run BFS and get the answer.
 
 </Warning>
-
-<!-- (Ben - equivalent to existing editorial) -->
-
-<!-- You can change it, but keep the section on making modifications to graphs before. Maybe replace with a problem w/o a good editorial? -->
-
-### Implementation
-
-<!-- I really don't want to write Cow Navigation. Anyone have code? -->
-
-<IncompleteSection />
 
 ## Problems
 

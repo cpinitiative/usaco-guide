@@ -79,4 +79,12 @@ export const Authors: Author[] = [
     codeforces: 'frodakcin',
     github: 'frodakcin',
   },
+  {
+    photo: 'andi',
+    name: 'Andi Qu',
+    title: 'Content Author',
+    blurb: '',
+    codeforces: 'dolphingarlic',
+    github: 'dolphingarlic',
+  },
 ];
