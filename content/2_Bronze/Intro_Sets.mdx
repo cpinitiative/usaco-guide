@@ -1,27 +1,17 @@
 ---
 id: intro-sets
-title: Introduction to Sorting
+title: Introduction to Sets
 author: Darren Yao, Benjamin Qi, Allen Li
 description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
 frequency: 2
 prerequisites:
   - intro-ds
+  - intro-sorting
 ---
 
 import { Problem } from '../models';
 
 export const problems = {
-	bubble: [
-		new Problem(
-			'HR',
-			'Bubble Sort',
-			'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-			'Very Easy',
-			false,
-			[],
-			''
-		),
-	],
 	dis: [
 		new Problem(
 			'CSES',
@@ -85,150 +75,6 @@ export const problems = {
 		),
 	],
 };
-
-<Warning>
-
-Bronze problems are designed that you shouldn't need to sort, though the concept can come in very handy for some problems. This module is optional for Bronze contestants.
-
-</Warning>
-
-<Resources>
-	<Resource source="IUSACO" title="4.4 - Sets & Maps">
-		module is based off this
-	</Resource>
-	<Resource source="CPH" title="4.2, 4.3 - Sets, Maps" starred></Resource>
-</Resources>
-
-## Sorting
-
-<Problems problems={problems.bubble} />
-
-**Sorting** refers to arranging items in some particular order.
-
-<Resources>
-	<Resource source="CPH" title="3.1 - Sorting Theory"></Resource>
-	<Resource source="CSA" title="Sorting" url="sorting">
-		{' '}
-	</Resource>
-</Resources>
-
-<!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
-
-### Sorting (Dynamic) Arrays
-
-Although you usually do **not** need to know how sorting is implemented, you should know how to use built-in methods to sort a (possibly dynamic) array.
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-	<Resource source="CPH" title="3.2 - Sorting in C++" starred>
-		can stop before comparison operators, which are covered in silver
-	</Resource>
-	<Resource
-		source="CPP"
-		title="std::sort"
-		url="https://en.cppreference.com/w/cpp/algorithm/sort"
-	>
-		reference
-	</Resource>
-	<Resource source="CF" title="C++ Tricks" url="74684">
-		first two related to sorting
-	</Resource>
-</Resources>
-
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
-
-</CPPSection>
-
-<JavaSection>
-
-In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
-
-- [Arrays.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])>)
-- [Collections.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)>)
-
-<Warning>
-
-The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $\Theta(N^2)$ behavior in quicksort.
-
-</Warning>
-
-See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CodeForces.
-
-Two ways to avoid this:
-
-- Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
-- [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
-
-</JavaSection>
-
-<PySection>
-
-- [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
-
-</PySection>
-
-</LanguageSection>
-
-### Sorting Pairs & Tuples
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-	<Resource source="CPH" title="3.2 - Comparison Operators" starred></Resource>
-</Resources>
-
-By default, C++ pairs are sorted by first element and then second element in case of a tie.
-
-Example from CPH:
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-	vector<pair<int,int>> v;
-	v.push_back({1,5});
-	v.push_back({2,3});
-	v.push_back({1,2});
-	sort(v.begin(), v.end());
-	for (pair<int,int> p: v) cout << p.first << " " << p.second << "\n";
-}
-
-/* Output:
-1 2
-1 5
-2 3
-*/
-```
-
-Tuples are sorted similarly.
-
-</CPPSection>
-
-<JavaSection>
-
-You'll need to define your own **custom comparator**. This is covered in [Silver](/silver/sorting-custom).
-
-</JavaSection>
-
-</LanguageSection>
-
-## Problems
-
-<Problems problems={problems.dis} />
-
-<!-- <IncompleteSection>
-
-what about USACO problems? (though sorting is _very_ rare in Bronze)
-
-</IncompleteSection> -->
-
-<!-- I added one, but I can't find anything else -->
 
 ## Ordered Sets & Maps
 
@@ -387,5 +233,7 @@ What about iterating over map?
 </IncompleteSection>
 
 ## Problems
+
+Some of these problems are related to [sorting](/intro/intro-sorting). Make sure to read through that module too!
 
 <Problems problems={problems.standard} />
