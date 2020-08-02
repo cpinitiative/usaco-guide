@@ -100,7 +100,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['intro-dp', 'dp-trees'],
+      items: ['intro-dp', 'dp-trees', 'all-roots'],
     },
     {
       name: 'Number Theory',

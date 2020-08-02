@@ -1,0 +1,121 @@
+---
+id: all-roots
+title: 'DP on Trees - Solving For All Roots'
+author: Benjamin Qi
+prerequisites:
+ - dp-trees
+description: '?'
+frequency: 1
+---
+
+import { Problem } from '../models';
+
+export const problems = {
+  allRoots: [
+    new Problem(
+      'AC',
+      'Subtree',
+      'https://atcoder.jp/contests/dp/tasks/dp_v',
+      'Normal',
+      false,
+      [],
+      '@B'
+    ),
+  ],
+  roots: [
+    new Problem('Gold', 'Directory Traversal', '814', 'Hard', false, [], ''),
+    new Problem(
+      'Plat',
+      'Cow At Large',
+      '793',
+      'Very Hard',
+      false,
+      [],
+      'usaco-793'
+    ),
+  ]
+}
+
+<Problems problems={problems.allRoots} />
+
+## Solution - Subtree
+
+<IncompleteSection>
+    (dfs twice)
+</IncompleteSection>
+
+<Spoiler title="Solution">
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+template<int SZ> struct SubtreeDP {
+	int par[SZ]; vi adj[SZ];
+	void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
+	struct T {
+		mi v = 1;
+		T& operator+=(const T& b) { v *= b.v; return *this; }
+		void tran() { ++v; }
+	};
+	T up[SZ], down[SZ];
+	void dfs(int x) {
+		trav(t,adj[x]) if (t != par[x]) {
+			par[t] = x; dfs(t);
+			down[x] += down[t];
+		}
+		down[x].tran();
+	}
+	void dfs2(int x) {
+		{
+			T pre = up[x];
+			F0R(i,sz(adj[x])) {
+				int c = adj[x][i]; if (c == par[x]) continue;
+				up[c] += pre; pre += down[c];
+			}
+		}
+		{
+			T pre;
+			R0F(i,sz(adj[x])) {
+				int c = adj[x][i]; if (c == par[x]) continue;
+				up[c] += pre; pre += down[c];
+			}
+		}
+		F0R(i,sz(adj[x])) {
+			int c = adj[x][i]; if (c == par[x]) continue;
+			up[c].tran(); dfs2(c);
+		}
+	}
+	T getSub(int x, int y) { return par[x] == y ? down[x] : up[y]; }
+	void init(int n) {
+		par[1] = 0; dfs(1); dfs2(1);
+		FOR(i,1,n+1) {
+			T p = T(); trav(t,adj[i]) p += getSub(t,i);
+			ps(p.v);
+		}
+	}
+};
+
+int main() {
+	setIO(); int n; re(n,MOD);
+	SubtreeDP<MX> S;
+	F0R(i,n-1) {
+		int a,b; re(a,b);
+		S.ae(a,b);
+	}
+	S.init(n);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Problems
+
+<Problems problems={problems.roots} />
+
+<IncompleteSection />

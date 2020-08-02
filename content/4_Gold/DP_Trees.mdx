@@ -1,7 +1,7 @@
 ---
 id: dp-trees
-title: 'Introduction to Dynamic Programming on Trees'
-author: Michael Cao
+title: 'Introduction to DP on Trees'
+author: Michael Cao, Benjamin Qi
 prerequisites:
   - dfs
   - intro-dp
@@ -13,18 +13,7 @@ import { Problem } from '../models';
 
 export const problems = {
 	sample: [
-		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], ''),
-	],
-	allRoots: [
-		new Problem(
-			'AC',
-			'Subtree',
-			'https://atcoder.jp/contests/dp/tasks/dp_v',
-			'Normal',
-			false,
-			[],
-			''
-		),
+		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], '@B'),
 	],
 	usaco: [
 		new Problem(
@@ -34,7 +23,7 @@ export const problems = {
 			'Easy',
 			false,
 			[],
-			''
+			'@@'
 		),
 		new Problem(
 			'Gold',
@@ -45,7 +34,6 @@ export const problems = {
 			['DP'],
 			'similar to independent set on tree'
 		),
-		new Problem('Gold', 'Directory Traversal', '814', 'Normal', false, [], ''),
 		new Problem(
 			'CF',
 			'Baltic OI - Village (Minimum)',
@@ -60,25 +48,16 @@ export const problems = {
 			'Plat',
 			'Delegation',
 			'1020',
-			'Very Hard',
+			'Hard',
 			false,
 			['DP', 'Binary Search'],
 			''
 		),
 		new Problem(
-			'Plat',
-			'Cow At Large',
-			'793',
-			'Insane',
-			false,
-			[],
-			'usaco-793'
-		),
-		new Problem(
 			'CSES',
 			'Creating Offices',
 			'1752',
-			'Insane',
+			'Very Hard',
 			false,
 			['Greedy'],
 			'equivalent to Baltic OI - Cat in a Tree. Exists a greedy-ish strategy!'
@@ -92,54 +71,79 @@ export const problems = {
 
 <Resources>
 	<Resource source="CF" title="DP on Trees" url="20935">
-		{' '}
 	</Resource>
 	<Resource
 		source="Philippines"
 		title="DP on Trees and DAGs"
 		url="https://noi.ph/training/weekly/week5.pdf"
 	>
-		lol this code format is terrible{' '}
+		lol this code format is terrible
 	</Resource>
 </Resources>
 
+<Info title="Pro Tip">
+
+Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices in place of DP.
+
+</Info>
+
 ## Solution - Tree Matching
+
+### Solution 1
+
 In this problem, we're asked to find the maximum matching of a tree, or the largest set of edges such that no two edges share an endpoint. Let's use DP on trees to do this.
 
 Root the tree at node $1$, allowing us to define the subtree of each node.
 
-Let $dp_2_v$ represent the maximum matching of the subtree of $v$ such that we don't take any edges leading to some child of $v$. Similarly, let $dp_1_v$ represent the maximum matching of the subtree of $v$ such that we take one edge leading into a child of $v$. Note that we can't take more than one edge leading to a child, because then two edges would share an endpoint.
+Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we don't take any edges leading to some child of $v$. Similarly, let $dp_1[v]$ represent the maximum matching of the subtree of $v$ such that we take one edge leading into a child of $v$. Note that we can't take more than one edge leading to a child, because then two edges would share an endpoint.
 
-### Taking No Edges
+#### Taking No Edges
 
 Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
 
-\[dp_2_v = \sum_{u \in child(v)} max(dp_1_u, dp_2_u)\]
+$$
+dp_2[v] = \sum_{u \in child(v)} max(dp_1[u], dp_2[u])
+$$
 
-### Taking One Edge
+#### Taking One Edge
 
-The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1_v$ for the fixed $u$:
-\[dp_1_v = dp_2_u + 1 + dp_2_v - max(dp_2_u, dp_1_u)\]
-In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2_u + 1$. Then, to deal with the other children, we add: 
+The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1[v]$ for the fixed $u$:
 
-\[\sum_{w \in child(v), w \neq u} dp_2_w\].  
+$$
+dp_1[v] = dp_2[u] + 1 + dp_2[v] - max(dp_2[u], dp_1[u])
+$$
 
-Fortunately, since we've calculated $dp_2_v$ already, this expression simplifies to:
+In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the other children, we add: 
 
-\[dp_2_v - max(dp_2_u, dp_1_u)\]
+$$
+\sum_{w \in child(v), w \neq u} dp_2[w].
+$$
 
-Overall, to calculate the transitions for $dp_1_v$ over all possible children $u$:
+Fortunately, since we've calculated $dp_2[v]$ already, this expression simplifies to:
 
-\[dp_1_v = \max_{u \in child(v)} (dp_2_u + 1 + dp_2_v - max(dp_2_u, dp_1_u))\]
+$$
+dp_2[v] - \max(dp_2[u], dp_1[u])
+$$
 
-### Example Code
+Overall, to calculate the transitions for $dp_1[v]$ over all possible children $u$:
+
+$$
+dp_1[v] = \max_{u \in child(v)} (dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u]))
+$$
 
 <Warning>
-Loop through the children of $v$ twice to calculate $dp_1_v$ and $dp_2_v$ separately! You need to know $dp_2_v$ to calculate $dp_1_v$.
-<\Warning>
+
+Loop through the children of $v$ twice to calculate $dp_1[v]$ and $dp_2[v]$ separately! You need to know $dp_2[v]$ to calculate $dp_1[v]$.
+
+</Warning>
+
+<Spoiler title="Code">
+
 
 <LanguageSection>
+
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -189,79 +193,6 @@ int main() {
     cout << max(dp[0][0], dp[0][1]) << '\n';
 }
 ```
-</CPPSection>
-</LanguageSection>
-
-## Solving for All Roots
-
-<Problems problems={problems.allRoots} />
-
-<IncompleteSection>
-    (dfs twice)
-</IncompleteSection>
-
-<Spoiler title="Solution">
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-template<int SZ> struct SubtreeDP {
-  int par[SZ]; vi adj[SZ];
-  void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
-  struct T {
-    mi v = 1;
-    T& operator+=(const T& b) { v *= b.v; return *this; }
-    void tran() { ++v; }
-  };
-  T up[SZ], down[SZ];
-  void dfs(int x) {
-    trav(t,adj[x]) if (t != par[x]) {
-      par[t] = x; dfs(t);
-      down[x] += down[t];
-    }
-    down[x].tran();
-  }
-  void dfs2(int x) {
-    {
-      T pre = up[x];
-      F0R(i,sz(adj[x])) {
-        int c = adj[x][i]; if (c == par[x]) continue;
-        up[c] += pre; pre += down[c];
-      }
-    }
-    {
-      T pre;
-      R0F(i,sz(adj[x])) {
-        int c = adj[x][i]; if (c == par[x]) continue;
-        up[c] += pre; pre += down[c];
-      }
-    }
-    F0R(i,sz(adj[x])) {
-      int c = adj[x][i]; if (c == par[x]) continue;
-      up[c].tran(); dfs2(c);
-    }
-  }
-  T getSub(int x, int y) { return par[x] == y ? down[x] : up[y]; }
-  void init(int n) {
-    par[1] = 0; dfs(1); dfs2(1);
-    FOR(i,1,n+1) {
-      T p = T(); trav(t,adj[i]) p += getSub(t,i);
-      ps(p.v);
-    }
-};
-
-int main() {
-  setIO(); int n; re(n,MOD);
-  SubtreeDP<MX> S;
-  F0R(i,n-1) {
-    int a,b; re(a,b);
-    S.ae(a,b);
-  }
-  S.init(n);
-}
-```
 
 </CPPSection>
 
@@ -269,12 +200,42 @@ int main() {
 
 </Spoiler>
 
+
+
+### Solution 2 - Greedy
+
+Just keep matching a leaf with the only vertex adjacent to it while possible.
+
+<Spoiler title="Code">
+
+```cpp
+int n;
+vi adj[MX];
+bool done[MX];
+int ans = 0;
+ 
+void dfs(int pre, int cur) {
+    for (int i: adj[cur]) if (i != pre) {
+        dfs(cur,i);
+        if (!done[i] && !done[cur]) 
+          done[cur] = done[i] = 1, ans ++;
+    }
+}
+ 
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> n;
+    F0R(i,n-1) {
+        int a,b; cin >> a >> b;
+        adj[a].pb(b), adj[b].pb(a);
+    }
+    dfs(0,1);
+    cout << ans;
+}
+```
+
+</Spoiler>
+
 ## Problems
-
-<Info title="Pro Tip">
-
-Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices.
-
-</Info>
 
 <Problems problems={problems.usaco} />
