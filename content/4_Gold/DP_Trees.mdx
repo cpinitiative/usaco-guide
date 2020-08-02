@@ -104,14 +104,101 @@ export const problems = {
 </Resources>
 
 ## Solution - Tree Matching
+In this problem, we're asked to find the maximum matching of a tree, or the largest set of edges such that no two edges share an endpoint. Let's use DP on trees to do this.
 
-<IncompleteSection />
+Root the tree at node $1$, allowing us to define the subtree of each node.
+
+Let $dp_2_v$ represent the maximum matching of the subtree of $v$ such that we don't take any edges leading to some child of $v$. Similarly, let $dp_1_v$ represent the maximum matching of the subtree of $v$ such that we take one edge leading into a child of $v$. Note that we can't take more than one edge leading to a child, because then two edges would share an endpoint.
+
+### Taking No Edges
+
+Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
+
+\[dp_2_v = \sum_{u \in child(v)} max(dp_1_u, dp_2_u)\]
+
+### Taking One Edge
+
+The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1_v$ for the fixed $u$:
+\[dp_1_v = dp_2_u + 1 + dp_2_v - max(dp_2_u, dp_1_u)\]
+In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2_u + 1$. Then, to deal with the other children, we add: 
+
+\[\sum_{w \in child(v), w \neq u} dp_2_w\].  
+
+Fortunately, since we've calculated $dp_2_v$ already, this expression simplifies to:
+
+\[dp_2_v - max(dp_2_u, dp_1_u)\]
+
+Overall, to calculate the transitions for $dp_1_v$ over all possible children $u$:
+
+\[dp_1_v = \max_{u \in child(v)} (dp_2_u + 1 + dp_2_v - max(dp_2_u, dp_1_u))\]
+
+### Example Code
+
+<Warning>
+Loop through the children of $v$ twice to calculate $dp_1_v$ and $dp_2_v$ separately! You need to know $dp_2_v$ to calculate $dp_1_v$.
+<\Warning>
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+vi adj[200005]; int dp[200005][2];
+
+void dfs(int v, int p){
+    for (int to : adj[v]) {
+        if (to != p) {
+            dfs(to, v);
+            dp[v][0] += max(dp[to][0], dp[to][1]);
+        }
+    }
+    for (int to : adj[v]) {
+        if (to != p) {
+             dp[v][1] = max(dp[v][1], dp[to][0] + 1 + dp[v][0] - max(dp[to][0], dp[to][1]));
+        }
+    }
+}
+
+int main() {
+    setIO();
+    int n; cin >> n;
+    for (int i = 0; i < n - 1; i++) {
+        int u, v; cin >> u >> v;
+        u--, v--;
+        adj[u].pb(v), adj[v].pb(u);
+    }
+    dfs(0, -1);
+    cout << max(dp[0][0], dp[0][1]) << '\n';
+}
+```
+</CPPSection>
+</LanguageSection>
 
 ## Solving for All Roots
 
 <Problems problems={problems.allRoots} />
 
-(dfs twice)
+<IncompleteSection>
+    (dfs twice)
+</IncompleteSection>
 
 <Spoiler title="Solution">
 
