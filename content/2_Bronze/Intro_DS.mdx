@@ -488,15 +488,23 @@ Use the link below (if you know of a better one, please let us know!) to learn a
 
 ## Memory Allocation
 
-One thing to keep in mind when using arrays is the memory limit. Usually the USACO memory limit is 256 MB, which can store up to roughly 60 million 32-bit`int` values, or less if you're using 64-bit integers, long strings, custom objects, etc. As a general rule of thumb, if your array size exceeds $5 \cdot 10^6$ (5 million), you're at risk of running the memory limit and should consider alternative approaches to the problem.
+One thing to keep in mind when using arrays is the memory limit. Usually the USACO memory limit is 256 MB, which can store up to roughly 60 million 32-bit `int` values, or less if you're using 64-bit integers, long strings, custom objects, etc. As a general rule of thumb, if your array size exceeds $5 \cdot 10^6$ (5 million), you're at risk of running the memory limit and should consider alternative approaches to the problem.
 
+To do the calculation on how many `int` values can be stored:
+
+1. Calculate the total memory size in bytes: for 256 MB, that's $256*1024*1024$
+2. Divide by the size, in bytes, of an `int` (4), or a `long long` (8), etc: $256*1024*1024/4 \approx 60$ million
+3. Be aware that program overhead (which can be very significant, especially with recursive functions) will reduce memory available.
+
+<LanguageSection>
 <CppSection>
-	In C++, arrays initialized locally using the default syntax (i.e. `int
-	arr[10];` ) are initialized to random numbers, because C++ doesn't have
-	built-in memory management. In order to initialize your arrays to zero, either
-	declare them globally, or use either `memset(arr, 0, sizeof(arr))` or
-	`std::fill(arr, arr+N, 0)` where $N$ is the array length.
+
+In C++, arrays initialized locally using the default syntax (i.e. `int arr[10];` ) are initialized to random numbers, because C++ doesn't have built-in memory management. In order to initialize your arrays to zero, either declare them globally, or use either `memset(arr, 0, sizeof(arr))` or `std::fill(arr, arr+N, 0)` where $N$ is the array length.
+
 </CppSection>
+<JavaSection />
+<PySection />
+</LanguageSection>
 
 ## Problems
 
