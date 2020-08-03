@@ -18,7 +18,7 @@ import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
 import FocusProblem from './FocusProblem';
 
-const components = {
+export const components = {
   Spoiler,
   Info,
   Warning,

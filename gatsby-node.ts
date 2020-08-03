@@ -233,3 +233,11 @@ exports.createResolvers = ({ createResolvers }) => {
   };
   createResolvers(resolvers);
 };
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    node: {
+      fs: 'empty',
+    },
+  });
+};
