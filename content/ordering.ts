@@ -37,7 +37,15 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'General',
-      items: ['resources', 'practicing', 'contest-strategy', 'contests', 'oly'],
+      items: [
+        'practicing',
+        'contest-strategy',
+        'resources-learning-to-code',
+        'resources-cp',
+        'resources-usa',
+        'contests',
+        'oly',
+      ],
     },
     {
       name: 'Language-Specific',
