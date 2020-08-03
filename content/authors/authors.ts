@@ -83,8 +83,11 @@ export const Authors: Author[] = [
     photo: 'andi',
     name: 'Andi Qu',
     title: 'Content Author',
-    blurb: '',
+    blurb:
+      'Andi Qu is a two-time IOI participant and the winner of the 2019 South African Programming Olympiad.',
     codeforces: 'dolphingarlic',
     github: 'dolphingarlic',
+    email: 'andi@andiqu.com',
+    website: 'https://andiqu.com',
   },
 ];
