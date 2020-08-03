@@ -14,8 +14,6 @@ import { Problem } from '../models/problem';
 export default function ({ markdown }) {
   const [fn, setFn] = useState(null);
   useEffect(() => {
-    if (!markdown) return;
-
     (async () => {
       try {
         const fullScope = {
