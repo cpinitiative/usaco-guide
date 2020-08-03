@@ -5,10 +5,10 @@ import SEO from '../components/seo';
 import { useState } from 'react';
 
 const RawMarkdownRenderer = React.lazy(() =>
-  import('../components/AdminMarkdownRenderer')
+  import('../components/LiveUpdateMarkdownRenderer')
 );
 
-export default function AdminPage(props: PageProps) {
+export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useState('');
 
   return (
