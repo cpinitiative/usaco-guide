@@ -2,7 +2,7 @@ import * as React from 'react';
 import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const RawMarkdownRenderer = React.lazy(() =>
   import('../components/AdminMarkdownRenderer')
@@ -25,11 +25,13 @@ export default function AdminPage(props: PageProps) {
           />
         </div>
         <div className="flex-1 p-4 h-screen overflow-y-auto">
-          {typeof window !== 'undefined' && (
-            <React.Suspense fallback={'Loading'}>
-              <RawMarkdownRenderer markdown={markdown} />
-            </React.Suspense>
-          )}
+          <div className="markdown">
+            {typeof window !== 'undefined' && (
+              <React.Suspense fallback={'Loading'}>
+                <RawMarkdownRenderer markdown={markdown} />
+              </React.Suspense>
+            )}
+          </div>
         </div>
       </div>
     </Layout>

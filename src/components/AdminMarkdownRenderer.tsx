@@ -14,49 +14,58 @@ import { Problem } from '../models/problem';
 export default function ({ markdown }) {
   const [fn, setFn] = useState(null);
   useEffect(() => {
+    if (!markdown) return;
+
     (async () => {
-      const fullScope = {
-        mdx: createElement,
-        MDXProvider,
-        components,
-        Problem,
-        props: [],
-      };
-
-      const jsx = mdx(markdown, {
-        remarkPlugins: [remarkExternalLinks, remarkMath],
-        rehypePlugins: [rehypeKatex],
-        skipExport: true,
-      }).trim();
-
-      let code;
       try {
-        code = transform(jsx, {
-          objectAssign: 'Object.assign',
-        }).code;
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
+        const fullScope = {
+          mdx: createElement,
+          MDXProvider,
+          components,
+          Problem,
+          props: [],
+        };
 
-      const keys = Object.keys(fullScope);
-      const values = Object.values(fullScope);
-      // eslint-disable-next-line no-new-func
-      const fn = new Function(
-        '_fn',
-        'React',
-        ...keys,
-        `${code}
+        const jsx = (
+          await mdx(markdown, {
+            remarkPlugins: [remarkExternalLinks, remarkMath],
+            rehypePlugins: [rehypeKatex],
+            skipExport: true,
+          })
+        ).trim();
+
+        let code;
+        try {
+          code = transform(jsx, {
+            objectAssign: 'Object.assign',
+          }).code;
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+
+        code = code.replace('export const', 'const');
+
+        const keys = Object.keys(fullScope);
+        const values = Object.values(fullScope);
+        // eslint-disable-next-line no-new-func
+        const fn = new Function(
+          '_fn',
+          'React',
+          ...keys,
+          `${code}
         return React.createElement(MDXProvider, { components },
           React.createElement(MDXContent, props)
         );`
-      );
+        );
 
-      setFn(fn.bind(null, {}, React, ...values));
+        setFn(fn.bind(null, {}, React, ...values));
+      } catch (e) {
+        console.log('error', e);
+      }
     })();
   }, [markdown]);
-  if (fn) return fn();
-  return null;
+  return fn;
 }
 
 // Backup...
