@@ -11,6 +11,7 @@ const firebaseConfig = {
   storageBucket: 'usaco-guide.appspot.com',
   messagingSenderId: '862152331454',
   appId: '1:862152331454:web:8ba85fda47360ef9fe8eef',
+  measurementId: 'G-0PLQ9Y9S55',
 };
 
 export const FirebaseProvider = ({ children }) => {
@@ -21,10 +22,12 @@ export const FirebaseProvider = ({ children }) => {
       const app = import('firebase/app');
       const auth = import('firebase/auth');
       const firestore = import('firebase/firestore');
+      const analytics = import('firebase/analytics');
 
-      Promise.all([app, auth, firestore]).then(values => {
+      Promise.all([app, auth, firestore, analytics]).then(values => {
         const firebaseInstance = values[0];
         firebaseInstance.initializeApp(firebaseConfig);
+        firebaseInstance.analytics();
         setFirebase(firebaseInstance);
       });
     }
