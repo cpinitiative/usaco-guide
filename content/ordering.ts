@@ -95,13 +95,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'binary-search-sorted',
         'sorting-custom',
         'intro-ordered',
-        'greedy',
         'custom-cpp-stl',
       ],
     },
     {
       name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans'],
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
     },
     {
       name: 'Graphs',

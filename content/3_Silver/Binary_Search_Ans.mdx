@@ -186,57 +186,53 @@ check(7) = false
 check(8) = false
 ```
 
-If instead we're looking for the minimum `x` that satisfies some condition, then we can binary search if `check(x)` satisfies both of the following conditions:
-
-- If `check(x)` is true, then `check(y)` is true for all $y \geq x$.
-- If `check(x)` is false, then `check(y)` is false for all $y \leq x$.
-
-The binary search function for this is very similar. We will need to do the same thing, but when the condition is satisfied, we will cut the right part, and when it's not, the left part will be cut.
-
-Below, we present several algorithms for binary search, which search for the maximum `x` such that `check(x)` is true.
+Below, we present several algorithms for binary search, which search for the maximum `x` such that `f(x)` is true.
 
 ```cpp
-int l = range_start, r = range_end, res = -1;
-while(l <= r) {
-    int mid = (l + r) / 2; // find the middle of the current range
-    if (check(mid) == true) {
-        // if mid works, then all numbers smaller than mid also work
-        // so we only care about the part after mid
-        res = mid; // update the answer
-        l = mid + 1; // cut the part before mid
-        // notice that we already handled mid itself so we cut it as well
-    } else {
-        // if mid does not work, greater values would not work too
-        // so we don't care about them
-        r = mid - 1; // cut mid and after
-    }
-}
-// now res is the answer
-// if res is still -1 that means no value in the range satisfies the condition
-```
+#include <bits/stdc++.h>
+using namespace std;
 
-Here is a second implementation from Benq:
-
-```cpp
-int fstTrue(function<bool(int)> f, int lo, int hi) {
-  hi ++; assert(lo <= hi); // assuming f is increasing
-  while (lo < hi) { // find first index such that f is true
-    int mid = (lo+hi)/2; // returns hi+1 if no index exists
-    f(mid) ? hi = mid : lo = mid+1;
-  }
-  return lo;
+int lstTrue(function<bool(int)> f, int lo, int hi) {
+	int res = lo-1;
+	while (lo <= hi) {
+		int mid = (lo+hi)/2; // find the middle of the current range
+		if (f(mid)) {
+			// if mid works, then all numbers smaller than mid also work
+			// so we only care about the part after mid
+			res = mid; // update the answer
+			lo = mid+1; // cut the part before mid
+			// notice that we already handled mid itself so we cut it as well
+		} else {
+			// if mid does not work, greater values would not work too
+			// so we don't care about them
+			hi = mid-1; // cut mid and after
+		}
+	}
+	// now res is the answer
+	// if res is l-1 that means no value in the range satisfies the condition
+	return res;
 }
 
 int main() {
-  cout << fstTrue([](int x) { return 1; },2,10)) << "\n"; // 2
-  cout << fstTrue([](int x) { return x >= 5; },2,10)) << "\n"; // 5
-  cout << fstTrue([](int x) { return x >= 20; },2,10)) << "\n"; // 11
+	cout << lstTrue([](int x) { return true; },2,10) << "\n"; // 10
+	// all numbers satisfy the condition
+	cout << lstTrue([](int x) { return x*x <= 30; },2,10) << "\n"; // 5
+	cout << lstTrue([](int x) { return false; },2,10) << "\n"; // 1
+	// no numbers satisfy the condition
 }
 ```
 
-(todo: remove one of these)
+See [Lambda Expressions](/general/cpp-tips/#lambda-expressions) if you're not familiar with the syntax used in the main function. We can shorten the function by removing `res` and using a ternary if expression.
 
-<IncompleteSection />
+```cpp
+int lstTrue(function<bool(int)> f, int lo, int hi) {
+	for (lo --; lo < hi; ) {
+		int mid = (lo+hi+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+```
 
 There is also another approach to binary searching based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element.
 
@@ -271,6 +267,60 @@ static long search(){
 </JavaSection>
 
 </LanguageSection>
+
+If instead we're looking for the minimum `x` that satisfies some condition, then we can binary search if `check(x)` satisfies both of the following conditions:
+
+- If `check(x)` is true, then `check(y)` is true for all $y \geq x$.
+- If `check(x)` is false, then `check(y)` is false for all $y \leq x$.
+
+The binary search function for this is very similar. We will need to do the same thing, but when the condition is satisfied, we will cut the right part, and when it's not, the left part will be cut.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int fstTrue(function<bool(int)> f, int lo, int hi) { 
+	// returns smallest x in [lo,hi] that satisfies f
+	// hi+1 if no x satisfies f
+	for (hi ++; lo < hi; ) {
+		int mid = (lo+hi)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+
+int main() {
+	cout << fstTrue([](int x) { return true; },2,10) << "\n"; // 2
+	cout << fstTrue([](int x) { return x*x >= 30; },2,10) << "\n"; // 6
+	cout << fstTrue([](int x) { return false; },2,10) << "\n"; // 11
+}
+```
+
+<Warning>
+
+This code might not work if `lo` is negative. Consider the following example:
+
+```cpp
+int main() {
+	cout << fstTrue([](int x) { return false; },-10,-10) << "\n"; // -8, should be -9
+	cout << fstTrue([](int x) { return true; },-10,-10) << "\n"; // infinite loop
+}
+```
+
+This is because dividing an odd negative integer by two will round it up instead of down! Fixed version:
+
+```cpp
+int fstTrue(function<bool(int)> f, int lo, int hi) {
+	for (hi ++; lo < hi; ) {
+		int mid = lo+hi; mid = (mid-(mid&1))/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</Warning>
+
 
 ## Example: Maximum Median
 

@@ -65,8 +65,9 @@ const moduleSources = {
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
   ],
   GCC: ['https://gcc.gnu.org/onlinedocs/gcc/', 'GNU Compiler Collection'],
+  CPP: ['http://www.cplusplus.com/reference/algorithm/', 'cplusplus.com'],
   CPPR: ['https://en.cppreference.com/w/cpp/language/', 'en.cppreference.com'],
-  LCPP: ['https://www.learncpp.com/cpp-tutorial/', 'www.learncpp.com'],
+  LCPP: ['https://www.learncpp.com/cpp-tutorial/', 'learncpp.com'],
 };
 
 export function Resource(props) {

@@ -4,6 +4,7 @@ title: 'More Operations on Ordered Sets'
 author: Darren Yao, Benjamin Qi
 prerequisites:
   - intro-sets
+  - binary-search-sorted
 description: 'Using iterators with sets, finding the next element smaller or larger than a specified key in a set.'
 frequency: 2
 ---
@@ -130,6 +131,12 @@ auto it = s.end();
 cout << *(--it) << '\n'; // 14
 s.erase(s.upper_bound(6)); // [1, 2, 14]
 ```
+
+<Warning>
+
+We can replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)` which was the syntax that we used for vectors in the prerequisite module. Although the latter version will return iterators to the same elements, its time complexity is linear in the size of the set `s` rather than logarithmic, so make sure to avoid it!
+
+</Warning>
 
 </CPPSection>
 
