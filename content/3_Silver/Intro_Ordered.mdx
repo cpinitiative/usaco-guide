@@ -349,13 +349,13 @@ pq.add(6); // [7, 6, 5]
 
 <CPPSection>
 
-Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is equal to 
+Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is equal to
 
 $$
 \max(dif_2-dif_1,dif_3-dif_2,\ldots,dif_k-dif_{k-1}).
 $$
 
-We can store each of these differences in a multiset `ret`; after each inversion, we'll need to output the maximum element of `ret`. 
+We can store each of these differences in a multiset `ret`; after each inversion, we'll need to output the maximum element of `ret`.
 
 Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into `dif` if it not currently present or removing `x` if it is, and then doing the same with `x+1`. Whenever we insert or remove an element of `dif`, we should update `ret` accordingly.
 
@@ -444,7 +444,7 @@ int main() {
 	for (int i = 0; i < m; ++i) {
 		int x; cin >> x;
 		modify(x-1); modify(x);
-		while (!cnt[ret.top()]) ret.pop(); 
+		while (!cnt[ret.top()]) ret.pop();
 		// pop elements that should no longer be present in priority queue
 		cout << ret.top() << " ";
 	}
