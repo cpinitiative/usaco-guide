@@ -53,6 +53,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'factors-choosing',
         'fast-io',
         'debugging',
+        'cpp-command',
         'generic',
         'cpp-tips',
       ],
