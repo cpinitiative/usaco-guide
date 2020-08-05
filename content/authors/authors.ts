@@ -72,7 +72,7 @@ export const Authors: Author[] = [
     email: 'nchn27@gmail.com',
   },
   {
-    photo: 'cow',
+    photo: 'siyong1',
     name: 'Siyong Huang',
     title: 'Content Author',
     blurb: 'Siyong Huang is a two-time USACO Finalist.',
