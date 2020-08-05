@@ -1,11 +1,11 @@
 ---
 id: intro-tree
 title: Introduction to Tree Algorithms
-author: Nathan Chen
+author: Nathan Chen, Siyong Huang
 prerequisites:
   - dfs
 description: 'Introducing a special type of graph: trees.'
-frequency: 1
+frequency: 2
 ---
 
 import { Problem } from '../models';
@@ -77,16 +77,46 @@ export const problems = {
 			''
 		), -->
 
+## Trees
+
 **Trees** are generally treated very differently from general graph problems.
+
+<Spoiler title="Some common terms relating to trees">
+
+Some properties/definitions of trees:
+ - A graph is a **tree** iff it is connected and contains $N$ nodes and $N-1$ edges
+ - A graph is a **tree** iff every pair of nodes has exactly one non-intersecting path between them
+ - A graph is a **tree** iff it is connected and does not contain any cycles
+
+General Tree Terminology:
+ - A **leaf** of a tree is any node in the tree with degree $1$
+   - If the tree is rooted, the **root** with a single child is typically considered a leaf, but depending on the problem, this is not always the case
+ - A **star tree** has two common definitions. Try to understand what they mean - they typically appear in subtasks.
+   - Definition 1: Only one node has degree greater than $2$
+   - Definition 2: Only one node has degree greater than $1$
+ - A **forest** is a graph such that each **connected component** is a tree
+
+Rooted Tree Terminology:
+ - A **root** of a tree is any node of the tree that is considered to be at the 'top'
+ - A **parent** of a node $n$ is the first node along the path from $n$ to the **root**
+   - The **root** does not have a **parent**. This is typically done in code by setting the **parent** of the **root** to be $-1$.
+ - The **ancestors** of a node are its **parent** and **parent's** **ancestors**
+   - Typically, a node is considered its own ancestor as well (such as in the subtree definition)
+ - The **subtree** of a node $n$ are the set of nodes that have $n$ as an ancestor
+   - A node is typically considered to be in its own subtree
+   - Note: This is easily confused with **subgraph**
+ - The **depth**, or **level**, of a node is its distance from the root
+
+</Spoiler>
 
 <Problems problems={problems.treeSam} />
 
 ## Resources
 
 <Resources>
-	<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred>
-		traversing tree, diameter
-	</Resource>
+
+<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred> traversing tree, diameter </Resource>
+
 </Resources>
 
 ## Solution - Subordinates
@@ -197,7 +227,54 @@ public class Subordinates
 
 </LanguageSection>
 
-<IncompleteSection />
+## Computing parent, depth, and subtree sizes
+
+The following sample code computes the **parent**, **depth**, and **subtree sizes** of each node of a tree, assuming node 1 is the root.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//Not Tested
+#include <cstdio>
+#include <vector>
+
+const int MN = 2e5+10;
+std::vector<int> a[MN];
+int p[MN], d[MN], s[MN];
+void dfs(int n)
+{
+	s[n]=1;
+	for(int x:a[n])
+		if(x!=p[n])
+		{
+			d[x]=d[n]+1;
+			p[x]=n;
+			dfs(x);
+			s[n]+=s[x];
+		}
+}
+int main()
+{
+	for(int i=0,x,y;i+1<N;++i)
+		scanf("%d%d", &x, &y), a[x].push_back(y), a[y].push_back(x);
+	p[0]=-1;
+	d[0]=0;
+	dfs(1);
+	//do something
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+<IncompleteSection>
+
+Java, Python support
+
+</IncompleteSection>
 
 ## Problems
 
