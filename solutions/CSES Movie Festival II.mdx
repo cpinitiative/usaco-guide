@@ -1,0 +1,77 @@
+---
+id: cses-1632
+title: CSES Movie Festival II
+author: Shreyas Thumathy
+---
+
+<Warning title = "Optional">
+		
+This problem is significantly easier after solving Movie Festival.
+
+</Warning>
+
+First, solve the one person variant of this problem. We can use the same apporach and include multiple people instead of just one.
+
+Whenever we come across a movie, we check if someone who previously watched a movie can watch this one too. If there are multiple people that can have this movie assigned, choose the latest one (that way if we encounter a movie that has an earlier start time, we can still assign that movie).
+
+If the above condition doesn't hold and there are currently less than K people watching a movie, we can just assign a new person to this movie.
+
+We can keep a hold of the people watching movies by storing it in some sort of collection, a multiset is used below.
+
+
+Implementation using a multiset in C++:
+
+
+```cpp
+
+	#include <iostream>
+	#include <vector>
+	#include <set>
+	#include <algorithm>
+	using namespace std;
+	
+	
+	int n, k;
+	vector<pair<int, int> > v(200005);
+	
+	int main() {
+		cin >> n >> k;
+		v.resize(n); 
+		for (int i = 0; i < n; i++) {
+			// this will allow us to sort by end time.
+			cin >> v[i].second >> v[i].first;
+		}
+		sort(v.begin(), v.end());
+	
+	
+		int ans = 0;
+		multiset<int> st;
+	
+		// v[i].s is really the start time of movie i, and v[i].f is the end time.
+		for (int i = 0; i < n; i++) {
+	
+			bool flag = 0;
+			// try assigning this movie to someone already in the multiset.
+			if (!st.empty()) {
+				auto it = st.upper_bound(v[i].second);
+				if (it != st.begin()) {
+					--it;
+					if (*it <= v[i].second) {
+						st.erase(it);
+						st.insert(v[i].first);
+						flag = 1, ans++;
+					}
+				}
+			}
+	
+			if (st.size() < k && flag == false) {
+				st.insert(v[i].first);
+				ans++;
+			}
+		}
+	
+	
+		cout << ans;
+	}
+
+```
