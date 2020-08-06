@@ -37,7 +37,15 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'General',
-      items: ['resources', 'practicing', 'contest-strategy', 'contests', 'oly'],
+      items: [
+        'practicing',
+        'contest-strategy',
+        'resources-learning-to-code',
+        'resources-cp',
+        'resources-usa',
+        'contests',
+        'oly',
+      ],
     },
     {
       name: 'Language-Specific',
@@ -45,6 +53,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'factors-choosing',
         'fast-io',
         'debugging',
+        'cpp-command',
         'generic',
         'cpp-tips',
       ],
@@ -60,7 +69,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Basics',
-      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo', 'intro-sets'],
+      items: [
+        'time-comp',
+        'intro-ds',
+        'simulation',
+        'rect-geo',
+        'intro-sorting',
+        'intro-sets',
+      ],
     },
     {
       name: 'Complete Search',
@@ -80,13 +96,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'binary-search-sorted',
         'sorting-custom',
         'intro-ordered',
-        'greedy',
         'custom-cpp-stl',
       ],
     },
     {
       name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans', 'complete-rec-silver'],
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
     },
     {
       name: 'Graphs',

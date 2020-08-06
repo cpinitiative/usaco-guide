@@ -22,6 +22,17 @@ export const problems = {
 			'Try to solve the problem in $O(N)$!'
 		),
 	],
+	sample_floyd: [
+		new Problem(
+			'CF',
+			'Cooperative Game',
+			'https://codeforces.com/contest/1137/problem/D',
+			'Normal',
+			false,
+			["Func Graph, Floyd's Algorithm"],
+			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
+		),
+	],
 	general: [
 		new Problem(
 			'Silver',
@@ -49,15 +60,6 @@ export const problems = {
 			false,
 			['Permutation'],
 			''
-		),
-		new Problem(
-			'CF',
-			'Cooperative Game',
-			'https://codeforces.com/contest/1137/problem/D',
-			'Normal',
-			false,
-			["Func Graph, Floyd's Algorithm"],
-			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
 		),
 		new Problem(
 			'POI',
@@ -300,13 +302,13 @@ int main()
 	</Resouce>
 </Resources>
 
+The following problem uses this algorithm.
+
+<Problems problems={problems.sample_floyd} />
+
 ## Implementation
 
-<IncompleteSection>
-
-Find example problem to submit to?
-
-</IncompleteSection>
+<Spoiler title="Tortoise and Hare Algrotihm">
 
 ```cpp
 //UNTESTED
@@ -330,6 +332,58 @@ pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of c
 	return make_pair(len, dist);
 }
 ```
+
+</Spoiler>
+
+<Spoiler title="Solution to Cooperative Game">
+
+<!-- https://codeforces.com/contest/1137/submission/87195511 -->
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+void out(const std::vector<int>& x)
+{
+	printf("next");
+	for(auto a:x) printf(" %d", a);
+	printf("\n");
+	fflush(stdout);
+}
+int N, g[20];
+char s[20];
+void read()
+{
+	scanf("%d", &N);
+	for(int i=0;i<N;++i)
+	{
+		scanf(" %s", s);
+		for(int j=0;s[j];++j)
+			g[s[j]-'0']=i;
+	}
+}
+int main()
+{
+	for(;;)
+	{
+		out({0,1});
+		read();
+		out({0});
+		read();
+		if(g[0] == g[1]) break;
+	}
+	for(;;)
+	{
+		out({0,1,2,3,4,5,6,7,8,9});
+		read();
+		if(g[0] == g[2]) break;
+	}
+	printf("done\n");
+	return 0;
+}
+```
+
+</Spoiler>
 
 ## Problems
 

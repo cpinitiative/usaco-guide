@@ -1,9 +1,9 @@
 ---
 id: complete-rec
-title: 'Recursion in Bronze'
+title: 'Complete Search with Recursion'
 author: Darren Yao, Sam Zhang, Michael Cao
-description: 'An optional module regarding recursion in the bronze division.'
-frequency: 2
+description: 'Includes generating subsets and permutations.'
+frequency: 1
 prerequisites:
   - intro-complete
 ---
@@ -11,7 +11,43 @@ prerequisites:
 import { Problem } from '../models';
 
 export const problems = {
-	bronzePast: [
+	subset: [
+		new Problem(
+			'CSES',
+			'Apple Division',
+			'1623',
+			'Easy',
+			false,
+			['Recursion', 'Subsets'],
+			'@B'
+		),
+	],
+	permSam: [
+		new Problem('CSES', 'Creating Strings I', '1622', 'Easy', false, [], '@B'),
+	],
+	ex: [
+		new Problem(
+			'Bronze',
+			'Photoshoot',
+			'988',
+			'Normal',
+			false,
+			[],
+			'Brute force the value of $a_1$ and then recover the remaining values, printing the lexicographically smallest one.'
+		),
+	],
+	back: [
+		new Problem(
+			'CSES',
+			'Chessboard & Queens',
+			'1624',
+			'Normal',
+			false,
+			[],
+			'@CPH 5.3'
+		),
+	],
+	gen: [
 		new Problem(
 			'Bronze',
 			'Back & Forth',
@@ -23,27 +59,726 @@ export const problems = {
 		), // 99.63
 		new Problem(
 			'Bronze',
-			'Photoshoot',
-			'988',
-			'Normal',
-			false,
-			[],
-			'Brute force the value of $a_1$ and then recover the remaining values, printing the lexicographically smallest one.'
-		),
-		new Problem(
-			'Bronze',
 			'Livestock Lineup',
 			'965',
 			'Hard',
-			false,
+			true,
 			['permutations'],
 			''
 		), // 91.95
+		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 };
 
-Due to recursion not being required by any problems in USACO Bronze, this module has been moved to [Silver](/silver/complete-rec-silver).
+<Warning>
 
-However, it's not a bad idea for a bronze contestant to read the module listed above, as some problems in the bronze division (such as those listed below) are easier with recursion.
+Although knowledge of recursion is not strictly necessary for Bronze, we think that it makes more sense to include this module as part of Bronze rather than Silver.
 
-<Problems problems={problems.bronzePast} />
+</Warning>
+
+## Subsets
+
+<Problems problems={problems.subset} />
+
+### Resources
+
+<Resources>
+	<Resource source="CPH" title="5.1 - Generating Subsets" starred>
+		good explanation + code, no need to repeat
+	</Resource>
+</Resources>
+
+### Solution - Apple Division
+
+Since $n\le 20$, we can try all possible divisions of $n$ apples into two sets and find the one with the minimum difference in weights. There are two ways to achieve this.
+
+<Spoiler title="Method 1 - Recursion">
+
+The first method would be to write a recursive function which searches over all possibilities.
+
+At some index, we either add $weight_i$ to the first set or the second set, storing two sums $s_1$ and $s_2$ with the sum of values in each set.
+
+Then, we return the difference between the two sums once we've reached the end of the array.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+ll solve(int i, ll s1, ll s2){
+    if(i == n){
+        return abs(s1 - s2);
+    }
+    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]));
+}
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    cout << solve(0, 0, 0) << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static int N;
+    static int weights[];
+
+    public static void main(String[] args) throws Exception {
+        FastIO sc = new FastIO(System.in);  //See "Intro - FastIO" - this class acts similarly to Scanner, but faster
+        PrintWriter pw = new PrintWriter(System.out);
+
+        N = sc.nextInt();
+        weights = new int[N];
+        for(int i = 0; i < N; i++) {
+            weights[i] = sc.nextInt();
+        }
+
+        pw.println(solve(0, 0, 0));
+        pw.close();
+    }
+
+    static long solve(int index, long s1_sum, long s2_sum) {
+        if(index == N) {
+            return Math.abs(s1_sum - s2_sum);
+        }
+
+        return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+    }
+
+    //see "Intro - FastIO"
+    //this class acts similarly to Scanner, but faster
+    static class FastIO {
+
+        InputStream dis;
+        byte[] buffer = new byte[1 << 17];
+        int pointer = 0;
+
+        public FastIO(String fileName) throws Exception {
+            dis = new FileInputStream(fileName);
+        }
+
+        public FastIO(InputStream is) throws Exception {
+            dis = is;
+        }
+
+        int nextInt() throws Exception {
+            int ret = 0;
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
+
+            return (negative) ? -ret : ret;
+        }
+
+        long nextLong() throws Exception {
+            long ret = 0;
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
+
+            return (negative) ? -ret : ret;
+        }
+
+        byte nextByte() throws Exception {
+            if (pointer == buffer.length) {
+                dis.read(buffer, 0, buffer.length);
+                pointer = 0;
+            }
+            return buffer[pointer++];
+        }
+
+        String next() throws Exception {
+            StringBuffer ret = new StringBuffer();
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            while (b > ' ') {
+                ret.appendCodePoint(b);
+                b = nextByte();
+            }
+
+            return ret.toString();
+        }
+
+    }
+
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Method 2 - Bitmasks">
+
+A bitmask is an integer whose binary representation is used to represent a subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$), we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$. We can iterate through all subsets $s_1$ if we check all bitmasks ranging from $0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the minimum difference between their sums.
+
+Note the fancy bitwise operations:
+
+- $(1 << x)$ for an integer $x$ is another way of writing $2^x$, which, in binary, has only the $x$'th bit turned on.
+- The $\&$ (and) operator will take two integers and return a new integer. $a \& b$ for integers $a$ and $b$ will return a new integer whose $i$'th bit is turned on if and only if the $i$'th bit is turned on for both $a$ and $b$. Thus, $mask \& (1 << x)$ will return a positive value only if the $x$'th bit is turned on in $mask$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int n; ll weights[20];
+
+int main() {
+    setIO();
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+    ll ans = (ll)1e18;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        ll s1 = 0, s2 = 0;
+        for (int j = 0; j < n; j++) {
+            if (mask & (1 << j)) { //if the j-th bit is toggled
+                s1 += weights[j];
+            }
+            else{
+                s2 += weights[j];
+            }
+        }
+        ans = min(ans, abs(s1 - s2));
+    }
+    cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
+        PrintWriter pw = new PrintWriter(System.out);
+
+        int N = sc.nextInt();
+        int weights[] = new int[N];
+        for(int i = 0; i < N; i++) {
+            weights[i] = sc.nextInt();
+        }
+
+        long ans = Long.MAX_VALUE;
+
+        for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
+            long s1 = 0;
+            long s2 = 0;
+
+            for(int i = 0; i < N; i++) {
+                if((bitmask & (1 << i)) > 0) {
+                    s1 += weights[i];
+                } else {
+                    s2 += weights[i];
+                }
+            }
+            ans = Math.min(ans, Math.abs(s1-s2));
+        }
+
+        pw.println(ans);
+        pw.close();
+    }
+
+
+    //See Intro - FastIO
+    //this class acts similarly to Scanner
+    static class FastIO {
+
+        InputStream dis;
+        byte[] buffer = new byte[1 << 17];
+        int pointer = 0;
+
+        public FastIO(String fileName) throws Exception {
+            dis = new FileInputStream(fileName);
+        }
+
+        public FastIO(InputStream is) throws Exception {
+            dis = is;
+        }
+
+        int nextInt() throws Exception {
+            int ret = 0;
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
+
+            return (negative) ? -ret : ret;
+        }
+
+        long nextLong() throws Exception {
+            long ret = 0;
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
+
+            return (negative) ? -ret : ret;
+        }
+
+        byte nextByte() throws Exception {
+            if (pointer == buffer.length) {
+                dis.read(buffer, 0, buffer.length);
+                pointer = 0;
+            }
+            return buffer[pointer++];
+        }
+
+        String next() throws Exception {
+            StringBuffer ret = new StringBuffer();
+
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            while (b > ' ') {
+                ret.appendCodePoint(b);
+                b = nextByte();
+            }
+
+            return ret.toString();
+        }
+
+    }
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Permutations
+
+A **permutation** is a reordering of a list of elements.
+
+### Lexicographical Order
+
+This term is mentioned quite frequently:
+
+<Problems problems={problems.ex} />
+
+Think about how are words ordered in a dictionary. (In fact, this is where the term "lexicographical" comes from.)
+
+In dictionaries, you will see that words beginning with the letter 'a' appears at the very beginning, followed by words beginning with 'b', and so on. If two words have the same starting letter, the second letter is used to compare them; if both the first and second letters are the same, then use the third letter to compare them, and so on until we either reach a letter that is different, or we reach the end of some word (in this case, the shorter word goes first).
+
+Permutations can be placed into lexicographical order in almost the same way. We first group permutations by their first element; if the first element of two permutations are equal, then we compare them by the second element; if the second element is also equal, then we compare by the third element, and so on.
+
+For example, the permutations of 3 elements, in lexicographical order, are
+
+$$
+[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1].
+$$
+
+Notice that the list starts with permutations beginning with 1 (just like a dictionary that starts with words beginning with 'a'), followed by those beginning with 2 and those beginning with 3. Within the same starting element, the second element is used to make comparisions.
+
+Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
+
+### Generating Permutations
+
+<Problems problems={problems.permSam} />
+
+Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
+
+<Resources>
+	<Resource source="CPH" title="5.2 - Generating Permutations" starred>
+		good explanation + code including next_permutation, no need to repeat
+	</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+### About [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
+
+<Resources>
+	<Resource
+		source="Mark Nelson"
+		title="Next Permutation"
+		url="https://marknelson.us/posts/2002/03/01/next-permutation.html"
+		starred
+	>
+		explains how it works with an example
+	</Resource>
+</Resources>
+
+Alternatively, we can just use the `next_permutation()` function. This function takes in a range and modifies it to the next greater permutation. If there is no greater permutation, it returns false. To iterate through all permutations, place it inside a `do-while` loop. We are using a `do-while` loop here instead of a typical `while` loop because a `while` loop would modify the smallest permutation before we got a chance to process it.
+
+What's going to be in the `check` function depends on the problem, but it should verify whether the current permutation satisfies the constraints given in the problem.
+
+```cpp
+do {
+    check(v); // process or check the current permutation for validity
+} while(next_permutation(v.begin(), v.end()));
+```
+
+Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+`next_permutation` is not available in Java.
+
+</Warning>
+
+</JavaSection>
+
+</LanguageSection>
+
+### Solution - Creating Strings I
+
+<Spoiler title="Method 1 - Recursively">
+
+<IncompleteSection />
+
+</Spoiler>
+
+<Spoiler title="Method 2 - With next_permutation">
+
+One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int main() {
+    setIO();
+    string s; cin >> s;
+    vector<string> out;
+    sort(all(s));
+    do {
+        out.pb(s);
+    } while(next_permutation(all(s)));
+    cout << sz(out) << "\n";
+    for(int i = 0; i < sz(out); i++){
+        cout << out[i] << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<!-- <Resources>
+  <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
+</Resources> -->
+
+<!-- ### Checking Permutations in Lexicographical Order
+
+<LanguageSection>
+
+<CPPSection>
+
+#### Method 1
+
+($O(N\cdot N!)$ code)
+
+<IncompleteSection />
+
+#### Method 2
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class Test {
+    static boolean[] used;
+    static ArrayList<Integer> cur = new ArrayList<Integer>();
+    static int n;
+    static void gen() {
+        if (cur.size() == n) {
+            check(cur); // check current permutation for validity, or print it, etc.
+            return;
+        }
+        for (int i = 0; i < n; ++i) if (!used[i]) {
+            used[i] = true; cur.add(i+1);
+            gen();
+            used[i] = false; cur.remove(cur.size()-1);
+        }
+    }
+    static void genPerm(int _n) {
+        n = _n; used = new boolean[n];
+        gen();
+    }
+    public static void main(String[] Args) {
+        genPerm(5);
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<IncompleteSection /> -->
+
+## Backtracking
+
+<Problems problems={problems.back} />
+
+### Resources
+
+<Resources>
+	<Resource source="CPH" title="5.3 - Backtracking" starred></Resource>
+	<Resource source="CP2" title="3.2 - Complete Search">
+		{' '}
+	</Resource>
+</Resources>
+
+### Solution - Chessboard & Queens
+
+<Spoiler title="Method 1 - Generating Permutations">
+
+Since no two queens can be in the same column, let's generate a permutation of length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
+
+By generating all permutations, we can quickly test all possible placements, and count how many are valid.
+
+To make the implementation easier, we can observe that some bottom-left to top-right diagonal can be represented as all squares $i, j$ such that $i + j = S$ for some $S$. Similarly, some bottom-right to top-left diagonal can be represented as $i + 7 - j$ if $i, j$ are zero-indexed.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+bool ok[8][8];
+
+int ans = 0;
+
+int main() {
+    setIO();
+    for (int i = 0; i < 8; i++) {
+        string s; cin >> s;
+        for (int j = 0; j < 8; j++) {
+            ok[i][j] = (s[j] == '.');
+        }
+    }
+    vi vals(8);
+
+    iota(all(vals), 0); //set vals to 0 1 ... 7
+
+    do {
+        bool works = true;
+        bool blocked[16];
+        for(int i = 0; i < 8; i++){
+            if(!ok[i][vals[i]]){
+                works = false;
+            }
+        }
+        memset(blocked, false, sizeof(blocked)); //first mark all squares as not blocked
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + vals[i]]){
+                works = false;
+            }
+            blocked[i + vals[i]] = true; //mark this diagonal
+        }
+        memset(blocked, false, sizeof(blocked));
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + 7 - vals[i]]){
+                works = false;
+            }
+            blocked[i + 7 - vals[i]] = true;
+        }
+        if(works) ++ans;
+    } while(next_permutation(all(vals)));
+
+    cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Method 2 - Backtracking">
+
+Since the bounds are small, we can recursively backtrack over all ways to place the queens, storing the current state of the board.
+
+Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by a queen or blocked and recurse, before removing this queen and backtracking.
+
+Finally, when we have placed all the queens and the boardstate is valid, then increment the answer.
+
+<IncompleteSection>
+
+</IncompleteSection>
+
+</Spoiler>
+
+## Problems
+
+<Warning>
+
+Don't expect a problem like "Grid Paths" in an actual contest.
+
+</Warning>
+
+<Problems problems={problems.gen} />
+
+<IncompleteSection>
+
+more probs?
+
+</IncompleteSection>

@@ -10,6 +10,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     node.internal.type === 'Mdx' &&
     node.fileAbsolutePath.includes('content')
   ) {
+    delete require.cache[require.resolve('./content/ordering')];
     const ordering = require('./content/ordering');
     createNodeField({
       name: 'division',
@@ -232,4 +233,12 @@ exports.createResolvers = ({ createResolvers }) => {
     },
   };
   createResolvers(resolvers);
+};
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    node: {
+      fs: 'empty',
+    },
+  });
 };

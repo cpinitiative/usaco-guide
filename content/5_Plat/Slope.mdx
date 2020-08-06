@@ -473,7 +473,78 @@ int main() {
 
 ### Extension
 
-We can solve this problem when $\sum A_i+\sum B_i$ is not so small with lazy balanced binary search trees.
+We can solve this problem when $\sum A_i+\sum B_i$ is not so small by maintaining a map from $j$ to $dif[j+1]-dif[j]$ for all $j$ such that the latter quantity is nonzero. Then the operation "add $Z\cdot |j|$ to $DP[j]$ for all $j$" corresponds to a point update in the map (`advance()` in the code below).
+
+<Spoiler title="Code (from Alex Wei)">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const ll INF = 1LL << 60;
+
+ifstream fin("landscape.in");
+ofstream fout("landscape.out");
+
+const int MAXN = 100005;
+ll N, X, Y, Z, A, B;
+ll ls, rs, lv, zp;
+map<ll,ll> M;
+
+void fix_left(ll s){
+	if(ls >= s) return;
+	auto it = M.begin();
+	while(ls + it -> second <= s){
+		ls += it -> second;
+		lv += ls * (next(it) -> first - it -> first);
+		M.erase(it++);
+	}
+	it -> second -= s - ls;
+	ls = s;
+}
+
+void fix_right(ll s){
+	if(rs <= s) return;
+	auto it = --M.end();
+	while(rs - it -> second >= s){
+		rs -= it -> second;
+		M.erase(it--);
+	}
+	it -> second += s - rs;
+	rs = s;
+}
+
+void advance(){
+	ll lo = M.begin() -> first;
+	if(zp < lo) lv += ls * (zp - lo);
+	else lv += Z * (zp - lo);
+	ls -= Z, rs += Z;
+	M[zp] += 2 * Z;
+}
+
+int main(){
+	fin >> N >> X >> Y >> Z;
+	ls = -INF, rs = INF;
+	M[0] = 2 * INF;
+	for(int i = 0; i < N; i++){
+		fin >> A >> B;
+		zp += B - A;
+		fix_left(-Y);
+		fix_right(X);
+		advance();
+	}
+	ll res = lv, s = ls;
+	for(auto it = M.begin(); it -> first < zp; it++){
+		s += it -> second;
+		res += s * (next(it) -> first - it -> first);
+	}
+	fout << res << '\n';
+}
+```
+
+</Spoiler>
 
 ## Problems
 
