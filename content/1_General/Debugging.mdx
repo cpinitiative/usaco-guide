@@ -45,9 +45,34 @@ If your code is getting WA, one option is to run your buggy code against another
 	</Resource>
 </Resources>
 
+```
+# A and B are executables you want to compare, gen takes int 
+# as command line arg. Usage: 'sh stress.sh'
+for((i = 1; ; ++i)); do # if they are same then will loop forever
+    echo $i
+    ./gen $i > int
+    ./A < int > out1
+    ./B < int > out2
+    diff -w out1 out2 || break
+    # diff -w <(./A < int) <(./B < int) || break
+done
+```
+
+If you have the input and output files (ex. 1.in, 1.out, 2.in, 2.out, ..., 10.out for old USACO problems) then you can use the following instead.
+
+```
+# A is executable you want to test
+for((i = 1; i <= 10; ++i)); do
+    echo $i
+    ./A < $i.in > out
+    diff -w out $i.out || break
+done
+echo "ALL TESTS PASSED"
+```
+
 <IncompleteSection>
 
-script for multiple languages?
+scripts for multiple languages?
 
 </IncompleteSection>
 
