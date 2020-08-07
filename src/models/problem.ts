@@ -113,22 +113,8 @@ export class Problem {
     sol?: string,
     public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
-    if (!sol && source in probSources && probSources[source].length == 3) {
-      sol = '@Check ' + source;
-      this.hover = probSources[source][2];
-    }
-    if (
-      sol !== undefined &&
-      (sol.startsWith('http') ||
-        /^[a-zA-Z\-0-9]+$/.test(sol) ||
-        sol.startsWith('@'))
-    ) {
-      this.solution = sol;
-    } else {
-      this.sketch = sol;
-    }
-    this.url = id;
-    // console.log(this.url)
+    // generate URL
+    this.url = id; // console.log(this.url)
     if (source in probSources) {
       if (!this.url.startsWith('http')) {
         if (
@@ -154,6 +140,32 @@ export class Problem {
         this.des = source.substring(ind + 1, source.length);
         this.source = source.substring(0, ind);
       }
+    }
+    // generate solution
+    if (!sol) {
+      sol = '';
+      if (source in probSources && probSources[source].length == 3) {
+        sol = '@Check ' + source;
+        this.hover = probSources[source][2];
+      } else {
+        for (let source in probSources)
+          if (
+            probSources[source].length == 3 &&
+            this.url.startsWith(probSources[source][0])
+          ) {
+            sol = '@Check ' + source;
+            this.hover = probSources[source][2];
+          }
+      }
+    }
+    if (
+      sol.startsWith('http') ||
+      /^[a-zA-Z\-0-9]+$/.test(sol) ||
+      sol.startsWith('@')
+    ) {
+      this.solution = sol;
+    } else {
+      this.sketch = sol;
     }
   }
 }

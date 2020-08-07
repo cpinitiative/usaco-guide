@@ -137,7 +137,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Hashing',
-      items: ['unordered', 'faster-hashmap', 'string-hashing'],
+      items: ['string-hashing', 'unordered', 'faster-hashmap'],
     },
   ],
   plat: [
