@@ -111,7 +111,7 @@ export const problems = {
 
 Convex Hull Trick (CHT) problems are usually of the following form:
 
-> Given several **convex** functions $f_i(x)$ such that **any two functions intersect at most once**, answer $Q$ queries of the form "what is the maximum $f_i(x)$ for some given x?".
+> Given several **convex** functions $f_i(x)$ such that **any two functions intersect at most once**, answer $Q$ queries of the form "what is the maximum/minimum $f_i(x)$ for some given x?".
 
 Examples of such functions include:
 
@@ -120,6 +120,10 @@ Examples of such functions include:
 - The square-root function ($y = \sqrt{x - a} + b$)
 
 There are several data structures one can use to solve these problems efficiently.
+
+In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $O(N)$ using a `std::deque` in C++.
+
+(For the more general $O(N \log N)$ CHT, see [the LineContainer module](/plat/LC)).
 
 ### Tutorials
 
@@ -147,7 +151,17 @@ There are several data structures one can use to solve these problems efficientl
 
 <FocusProblem problem={problems.sample[0]} />
 
-<IncompleteSection>Analysis of the problem</IncompleteSection>
+I won't analyse this problem in great detail since the Codeforces blog in the resources already does so, but essentially, we sort the rectangles by $x$-coordinate and get the following DP recurrence:
+
+$$
+dp[i] = p_i \cdot q_i - a_i + \max_{j < i}(-p_j \cdot q_i + dp[j])
+$$
+
+Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a straight line $y = mx + c$.
+
+Since we sorted the rectangles and no two rectangles are nested, the slopes of the lines we insert are strictly increasing. The query positions are also strictly increasing.
+
+This means we can solve this problem using CHT in $O(N)$ time! Here is my implementation:
 
 <Spoiler title="Code">
 
