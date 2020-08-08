@@ -4,6 +4,9 @@ import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import PGS from '../PGS.json';
+import { books } from '../ResourcesList';
+
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
 
@@ -280,6 +283,24 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       }
     }
   }
+  let cph = false;
+  let cphUrl = '';
+  if (msg && sol.startsWith('CPH')) {
+    const getSec = (dictKey, book, title) => {
+      const parts = title.split(' ');
+      let url = book;
+      let sec = parts[0];
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey]))
+        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+      url += '#page=' + PGS[dictKey][sec];
+      return url;
+    };
+    let source = 'CPH';
+    cphUrl = getSec(source, books[source][0], sol.substring(4));
+    msg = false;
+  }
   return (
     <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
@@ -291,6 +312,11 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         <span className="pl-6">
           <TextTooltip content={problem.hover}>{sol}</TextTooltip>
         </span>
+      )}
+      {cphUrl && (
+        <a href={cphUrl} target="_blank" className="pl-6">
+          {sol}
+        </a>
       )}
       {external && (
         <a href={sol} target="_blank" className="pl-6">
@@ -356,7 +382,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           Show Sketch
         </span>
       )}
-      {!msg && !external && !internal && !problem.sketch && (
+      {!cphUrl && !msg && !external && !internal && !problem.sketch && (
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >

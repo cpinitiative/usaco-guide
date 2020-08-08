@@ -34,7 +34,7 @@ export function ResourcesList(props) {
     </div>
   );
 }
-const books = {
+export const books = {
   PAPS: ['/PAPS.pdf', ' Principles of Algorithmic Problem Solving'],
   CP2: ['/CP2.pdf', 'Competitive Programming 2'],
   CPH: ['/CPH.pdf', "Competitive Programmer's Handbook"],
