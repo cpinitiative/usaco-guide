@@ -23,7 +23,7 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={`Solution: ${mdx.frontmatter.title})`} />
+      <SEO title={`Solution: ${mdx.frontmatter.title}`} />
 
       <MarkdownLayout markdownData={markdownData}>
         <div className="py-4">

@@ -24,7 +24,6 @@ We can keep a hold of the people watching movies by storing it in some sort of c
 
 Implementation using a multiset in C++:
 
-
 ```cpp
 
 #include <iostream>
@@ -32,26 +31,26 @@ Implementation using a multiset in C++:
 #include <set>
 #include <algorithm>
 using namespace std;
-	
+
 int n, k;
 vector<pair<int, int> > v(200005);
-	
+
 int main() {
 	cin >> n >> k;
-	v.resize(n); 
+	v.resize(n);
 	for (int i = 0; i < n; i++) {
 		// this will allow us to sort by end time.
 		cin >> v[i].second >> v[i].first;
 	}
 	sort(v.begin(), v.end());
-	
-	
+
+
 	int ans = 0;
 	multiset<int> st;
-	
+
 	// v[i].s is really the start time of movie i, and v[i].f is the end time.
 	for (int i = 0; i < n; i++) {
-	
+
 		bool flag = 0;
 		// try assigning this movie to someone already in the multiset.
 		if (!st.empty()) {
@@ -65,14 +64,14 @@ int main() {
 				}
 			}
 		}
-	
+
 		if (st.size() < k && flag == false) {
 			st.insert(v[i].first);
 			ans++;
 		}
 	}
-	
-	
+
+
 	cout << ans;
 }
 
