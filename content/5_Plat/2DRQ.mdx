@@ -52,12 +52,12 @@ export const problems = {
 		),
 	],
 	off: [
-		new Problem('Plat', 'Friendcross', '722', 'Hard', false, ['2D BIT'], ''),
+		new Problem('Plat', 'Friendcross', '722', 'Normal', false, ['2D BIT'], ''),
 		new Problem(
 			'Plat',
 			'Mowing the Field',
 			'601',
-			'Hard',
+			'Normal',
 			false,
 			['2D BIT'],
 			''
@@ -77,7 +77,7 @@ export const problems = {
 			'IOI',
 			'13 - Game',
 			'IOI13_game',
-			'Very Hard',
+			'Hard',
 			false,
 			['2D Seg'],
 			'A normal 2D sparse segment tree gets MLE, so we have to use a sparse segment tree of BBSTs (see Advanced - Treaps).'
@@ -107,7 +107,9 @@ See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementa
 	></Resource>
 </Resources>
 
-- GP of Serbia 2020 B
+Quite rare, you'll (probably) never need it.
+
+<!-- - GP of Serbia 2020 B -->
 
 ## 2D BIT
 
@@ -128,6 +130,10 @@ See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementa
 	></Resource>
 </Resources>
 
+### Implementation
+
+<IncompleteSection />
+
 ### Problems
 
 <Problems problems={problems.bit} />
@@ -144,13 +150,17 @@ Lazy propagation on segment trees does not extend to higher dimensions. However,
 
 <Problems problems={problems.offSam} />
 
-The intended complexity is $O(N\log^2 N)$ with a good constant factor. This requires updating points and querying rectangle sums $N$ times for points with coordinates in the range $[1,N]$. However The 2D BITs mentioned above use $O(N^2)$ memory, which is too much. Since we know all of the updates and queries beforehand, we can reduce the memory usage while maintaining a decent constant factor.
+The intended complexity is $O(N\log^2 N)$ with a good constant factor. This requires updating points and querying rectangle sums $N$ times for points with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use $O(N^2)$ memory, which is too much. 
 
-### Idea 1: Use an unordered map instead of a 2D array.
+### Solution - Soriya's Programming Project
+
+Since we know all of the updates and queries beforehand, we can reduce the memory usage while maintaining a decent constant factor.
+
+#### Idea 1: Use an unordered map instead of a 2D array.
 
 Bad idea ... This gives $O(N\log^2N)$ memory and time and the constant factors for both are terrible.
 
-### Idea 2: Compress the points to be updated so that you only need $O(N\log N)$ memory.
+#### Idea 2: Compress the points to be updated so that you only need $O(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
@@ -161,7 +171,7 @@ It's a bit difficult to pass the above problem within the time limit. Make sure 
 
 - [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
 
-### Idea 3: Use divide & conquer with a 1D BIT
+#### Idea 3: Use divide & conquer with a 1D BIT
 
 - mentioned in [this article](https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html)
 - [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp) based off above
@@ -169,6 +179,12 @@ It's a bit difficult to pass the above problem within the time limit. Make sure 
 ### Problems
 
 <Problems problems={problems.off} />
+
+## Sparse Segment Tree
+
+### Implementation
+
+<IncompleteSection />
 
 ## 2D Segment Tree
 
@@ -180,12 +196,15 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 
 </Info>
 
-### Short Description
-
 <Resources>
 	<Resource source="CPH" title="28.2 (Sparse SegTree), 28.4 (2D)">
 		brief description
 	</Resource>
+</Resources>
+
+### Implementation
+
+<Resources>
 	<Resource
 		source="USACO"
 		title="Analysis - Mowing the Field"
@@ -195,13 +214,13 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 	</Resource>
 </Resources>
 
-### Reducing Memory Usage
+<IncompleteSection />
+
+### Note - Memory Usage
 
 Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$, giving a memory bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=10^5$ (although it sufficed for "Mowing the Field" due to the higher memory limit).
 
 To resolve this, reduce the memory usage of sparse segment tree while maintaing the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
-
-(implementation)
 
 ### Problems
 
