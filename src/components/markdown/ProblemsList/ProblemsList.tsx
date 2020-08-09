@@ -211,15 +211,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
         {problem.tags && problem.tags.length ? (
-          <details>
+          <details className="text-gray-500">
             <summary>Show Tags</summary>
-            <p className="text-xs text-gray-600">
-              {problem.tags && problem.tags.length
-                ? problem.tags.join(', ')
-                : 'None'}
-            </p>
+            <p className="text-xs">{problem.tags.join(', ')}</p>
           </details>
         ) : null}
       </td>
