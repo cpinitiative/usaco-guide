@@ -153,7 +153,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
     'Very Hard': 'bg-orange-100 text-orange-800',
     Insane: 'bg-red-100 text-red-800',
   };
-  const [showTags, setShowTags] = React.useState(false);
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueID}`;
@@ -212,23 +211,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        {!showTags && (
-          <a
-            href="#"
-            className="text-indigo-600 hover:text-indigo-900"
-            onClick={e => {
-              e.preventDefault();
-              setShowTags(true);
-            }}
-          >
-            Show Tags
-          </a>
-        )}
-        {showTags &&
-          (problem.tags && problem.tags.length
-            ? problem.tags.join(', ')
-            : 'None')}
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+        {problem.tags && problem.tags.length ? (
+          <details className="text-gray-500">
+            <summary>Show Tags</summary>
+            <p className="text-xs">{problem.tags.join(', ')}</p>
+          </details>
+        ) : null}
       </td>
       <ProblemSolutionCell
         problem={props.problem}
