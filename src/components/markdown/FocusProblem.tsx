@@ -15,10 +15,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
         <div className="flex items-center py-4 px-6">
           <div className="flex-1 mr-4">
             <div className="flex items-center">
-              <Link
-                to={problem.url}
-                className="flex-1 block group transition duration-150 ease-in-out"
-              >
+              <div className="flex-1 block group transition duration-150 ease-in-out">
                 <p className="text-xl font-medium text-black flex items-center">
                   {problem.name}
                   <svg
@@ -33,7 +30,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
                 <p className="text-gray-500 text-sm mt-1">
                   {problem.source} - {problem.difficulty}
                 </p>
-              </Link>
+              </div>
             </div>
           </div>
           <div
