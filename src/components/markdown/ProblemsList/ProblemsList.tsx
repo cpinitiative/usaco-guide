@@ -30,13 +30,13 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Source
                   </th>
                   <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
                   <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
@@ -169,7 +169,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           <ProblemStatusCheckbox problem={problem} />
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
         {problem.des ? (
           <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
         ) : (
@@ -191,7 +191,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
           )}
           <a
             href={problem.url}
-            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            className={
+              (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
+            }
+            style={{ maxWidth: '15rem' }}
             target="_blank"
             rel="nofollow noopener noreferrer"
           >
@@ -199,7 +202,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </a>
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap leading-5 w-full">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 w-full">
         {problem.difficulty && (
           <span
             className={
