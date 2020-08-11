@@ -1,0 +1,84 @@
+---
+id: kickstart-20-c-candies
+title: Kick Start 2020 Round C - Candies
+author: 
+---
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main () {
+	int t;
+	cin >> t;
+	for (int tt = 1; tt <= t; tt++) {
+		int n, q;
+		cin >> n >> q;
+
+		vector<long long> ipsEven(n + 1), ipsOdd(n + 1),  psEven(n + 1), psOdd(n + 1);
+		int ar[n];
+		for (int i = 0; i < n; i++) {
+			cin >> ar[i];
+			if ((i + 1) % 2 == 0) {
+				psEven[i + 1] = psEven[i] + ar[i];
+				ipsEven[i + 1] = ipsEven[i] + ar[i] * (i + 1);
+				psOdd[i + 1] = psOdd[i];
+				ipsOdd[i + 1] = ipsOdd[i];
+			} else {
+				psOdd[i + 1] = psOdd[i] + ar[i];
+				ipsOdd[i + 1] = ipsOdd[i] + ar[i] * (i + 1);
+				psEven[i + 1] = psEven[i];
+				ipsEven[i + 1] = ipsEven[i];
+			}
+		}
+
+		long long sol = 0;
+
+		while (q--) {
+			char tipo;
+			cin >> tipo;
+
+			if (tipo == 'Q') {
+				int l, r;
+				cin >> l >> r;
+				long long resta, suma, cur = 0;
+				if (l % 2 == 0) {
+					cur += ipsEven[r] - ipsEven[l - 1];
+					cur -= ipsOdd[r] - ipsOdd[l - 1];
+					cur -= (psEven[r] - psEven[l - 1]) * (l - 1);
+					cur += (psOdd[r] - psOdd[l - 1]) * (l - 1);
+				} else {
+					cur -= ipsEven[r] - ipsEven[l - 1];
+					cur += ipsOdd[r] - ipsOdd[l - 1];
+					cur += (psEven[r] - psEven[l - 1]) * (l - 1);
+					cur -= (psOdd[r] - psOdd[l - 1]) * (l - 1);
+				}
+
+				sol += cur;
+			} else {
+				int u, v;
+				cin >> u >> v;
+				u--;
+				ar[u] = v;
+				for (int i = u; i < n; i++) {
+					if ((i + 1) % 2 == 0) {
+						psEven[i + 1] = psEven[i] + ar[i];
+						ipsEven[i + 1] = ipsEven[i] + ar[i] * (i + 1);
+						psOdd[i + 1] = psOdd[i];
+						ipsOdd[i + 1] = ipsOdd[i];
+					} else {
+						psOdd[i + 1] = psOdd[i] + ar[i];
+						ipsOdd[i + 1] = ipsOdd[i] + ar[i] * (i + 1);
+						psEven[i + 1] = psEven[i];
+						ipsEven[i + 1] = ipsEven[i];
+					}
+				}
+			}
+		}
+
+		cout << "Case #" << tt << ": "<< sol << '\n';
+	}
+}
+
+```
