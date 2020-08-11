@@ -206,6 +206,55 @@ convert this
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+
+/**
+ * author: Kai Wang
+ */
+
+import java.io.*; import java.util.*;
+public class NearestSmallestVals {
+
+    /**
+     * We keep a stack of pairs (ind, value)
+     * Traverse the array from left to right, use ans to store answers
+     * If the value of the a_i> (stk.peek()=a_k) then I remove the top of the stack.
+     * This is okay because for all j>k, a_j>=a_k, or (j,a_j) is in the stack
+     * If a_k < a_i then we set ans[i]=k and insert (i,a_i)
+     * Note the stack elements are sorted in order of index
+     * 
+     */
+    public static void main(String[] args) throws IOException {
+        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+        int N=Integer.parseInt(br.readLine()); int[] a=new int[N+1];
+        StringTokenizer st=new StringTokenizer(br.readLine());
+        for (int i = 1; i <= N; i++) {
+            a[i]=Integer.parseInt(st.nextToken());
+        }
+        Stack<Integer> stk=new Stack<>();
+        stk.add(0);
+        stk.add(1); 
+        int[] ans=new int[N+1];ans[1]=0;
+        for (int i = 2; i <=N; i++) {
+            while(a[stk.peek()]>=a[i]){
+                stk.pop();
+            }
+            //stk.peek()<a[i]
+            //This exists because a[0]=0 and a[i]>0 for all i>0
+            ans[i]=stk.peek();
+            stk.push(i);
+        }
+        for (int i = 1; i <=N; i++) {
+            System.out.print(ans[i]+" ");
+        }
+    }   
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Problems
