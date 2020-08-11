@@ -4,8 +4,8 @@ title: 'Shortest Paths with Non-Negative Edge Weights'
 author: Benjamin Qi, Andi Qu
 prerequisites:
   - bfs
-  - intro-ordered
-description: "Introduces Dijkstra's Algorithm for a single source shortest path as well as Floyd-Warshall for All-Pairs Shortest Path."
+  - custom-cpp-stl
+description: "Introduces Bellman-Ford, Floyd-Warshall, Dijkstra."
 frequency: 3
 ---
 
@@ -115,6 +115,15 @@ export const problems = {
 	],
 	apsp: [
 		new Problem(
+			'Baltic OI',
+			'2017 - Toll',
+			'https://oj.uz/problem/view/BOI17_toll',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
 			'Gold',
 			'Moortal Cowmbat',
 			'971',
@@ -144,13 +153,44 @@ export const problems = {
 	],
 };
 
-## Single-Source Shortest Path
-
 <Problems problems={problems.sample} />
+
+## Bellman-Ford
+
+<IncompleteSection />
+
+## Floyd-Warshall
+
+All Pairs Shortest Path (APSP)
+
+<Problems problems={problems.apspSam} />
 
 ### Tutorial
 
-Use _Dijkstra's Algorithm_.
+<Resources>
+	<Resource source="CPH" title="13.3 - Floyd-Warshall" starred>
+		example calculation, code
+	</Resource>
+	<Resource source="PAPS" title="12.3.3"></Resource>
+	<Resource
+		source="cp-algo"
+		title="Floyd-Warshall"
+		url="graph/all-pair-shortest-path-floyd-warshall.html"
+	></Resource>
+	<Resource source="CP2" title="4.5 - All-Pairs Shortest Paths"></Resource>
+</Resources>
+
+<Optional title="Incorrect Floyd-Warshall">
+
+[Paper](https://arxiv.org/pdf/1904.01210.pdf)
+
+> A common mistake in implementing the Floyd–Warshall algorithm is to misorder the triply nested loops (The correct order is `KIJ`). The incorrect `IJK` and `IKJ` algorithms do not give correct solutions for some instance. However, we can prove that if these are repeated three times, we obtain the correct solutions.
+>
+> It would be emphasized that these fixes (repeating incorrect algorithms three times) have the same time complexity as the correct Floyd–Warshall algorithm up to constant factors. Therefore, our results suggest that, if one is confused by the order of the triply nested loops, one can repeat the procedure three times just to be safe.
+
+</Optional>
+
+## Dijkstra
 
 <Resources>
 	<Resource source="CPH" title="13.2 - Dijkstra" starred>
@@ -170,15 +210,13 @@ Use _Dijkstra's Algorithm_.
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph"></Resource>
 </Resources>
 
-### Implementation
-
-#### Part 1: $O(N^2)$
+### $O(N^2)$ Implementation
 
 The USACO training pages present a $O(N^2)$ version, although this is rarely used nowadays. (but describe anyways?)
 
 <IncompleteSection />
 
-#### Part 2: $O(M\log N)$
+### $O(M\log N)$ Implementation
 
 <Resources>
 	<Resource
@@ -238,6 +276,12 @@ int main() {
 }
 ```
 
+<IncompleteSection>
+
+rewrite with `greater<>`
+
+</IncompleteSection>
+
 <Warning>
 
 It's important to include the line `if (dis != dist[node]) continue;`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
@@ -258,41 +302,18 @@ Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wik
 
 </Optional>
 
-### Problems
+## Problems
+
+### Dijkstra
 
 <Problems problems={problems.dijk} />
 
-## All Pairs Shortest Path (APSP)
-
-<Problems problems={problems.apspSam} />
-
-Use the _Floyd-Warshall_ algorithm.
-
-### Tutorial
-
-<Resources>
-	<Resource source="CPH" title="13.3 - Floyd-Warshall" starred>
-		example calculation, code
-	</Resource>
-	<Resource source="PAPS" title="12.3.3"></Resource>
-	<Resource
-		source="cp-algo"
-		title="Floyd-Warshall"
-		url="graph/all-pair-shortest-path-floyd-warshall.html"
-	></Resource>
-	<Resource source="CP2" title="4.5 - All-Pairs Shortest Paths"></Resource>
-</Resources>
-
-<Optional title="Incorrect Floyd-Warshall">
-
-[Paper](https://arxiv.org/pdf/1904.01210.pdf)
-
-> A common mistake in implementing the Floyd–Warshall algorithm is to misorder the triply nested loops (The correct order is `KIJ`). The incorrect `IJK` and `IKJ` algorithms do not give correct solutions for some instance. However, we can prove that if these are repeated three times, we obtain the correct solutions.
->
-> It would be emphasized that these fixes (repeating incorrect algorithms three times) have the same time complexity as the correct Floyd–Warshall algorithm up to constant factors. Therefore, our results suggest that, if one is confused by the order of the triply nested loops, one can repeat the procedure three times just to be safe.
-
-</Optional>
-
-### Problems
+### Floyd-Warshall
 
 <Problems problems={problems.apsp} />
+
+<IncompleteSection>
+
+Move problems that involve negative edge weights.
+
+</IncompleteSection>

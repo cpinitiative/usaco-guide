@@ -5,7 +5,7 @@ author: Nathan Chen, Siyong Huang
 prerequisites:
   - dfs
 description: 'Introducing a special type of graph: trees.'
-frequency: 2
+frequency: 1
 ---
 
 import { Problem } from '../models';
@@ -55,15 +55,6 @@ export const problems = {
 			'Tree',
 			'DFS',
 		]),
-		new Problem(
-			'POI',
-			'Hotels',
-			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
-			'Hard',
-			false,
-			['Tree', 'DFS']
-		),
-		new Problem('Gold', 'Cow At Large', '790', 'Hard', false, [], ''),
 	],
 };
 
@@ -77,53 +68,61 @@ export const problems = {
 			''
 		), -->
 
-## Trees
+<Problems problems={problems.treeSam} />
+
+<br />
 
 **Trees** are generally treated very differently from general graph problems.
-
-<Spoiler title="Some common terms relating to trees">
-
-Some properties/definitions of trees:
- - A graph is a **tree** iff it is connected and contains $N$ nodes and $N-1$ edges
- - A graph is a **tree** iff every pair of nodes has exactly one non-intersecting path between them
- - A graph is a **tree** iff it is connected and does not contain any cycles
-
-General Tree Terminology:
- - A **leaf** of a tree is any node in the tree with degree $1$
-   - If the tree is rooted, the **root** with a single child is typically considered a leaf, but depending on the problem, this is not always the case
- - A **star tree** has two common definitions. Try to understand what they mean - they typically appear in subtasks.
-   - Definition 1: Only one node has degree greater than $2$
-   - Definition 2: Only one node has degree greater than $1$
- - A **forest** is a graph such that each **connected component** is a tree
-
-Rooted Tree Terminology:
- - A **root** of a tree is any node of the tree that is considered to be at the 'top'
- - A **parent** of a node $n$ is the first node along the path from $n$ to the **root**
-   - The **root** does not have a **parent**. This is typically done in code by setting the **parent** of the **root** to be $-1$.
- - The **ancestors** of a node are its **parent** and **parent's** **ancestors**
-   - Typically, a node is considered its own ancestor as well (such as in the subtree definition)
- - The **subtree** of a node $n$ are the set of nodes that have $n$ as an ancestor
-   - A node is typically considered to be in its own subtree
-   - Note: This is easily confused with **subgraph**
- - The **depth**, or **level**, of a node is its distance from the root
-
-</Spoiler>
-
-<Problems problems={problems.treeSam} />
 
 ## Resources
 
 <Resources>
 
-<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred> traversing tree, diameter </Resource>
+<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred>
+	{' '}
+	traversing tree, diameter{' '}
+</Resource>
 
 </Resources>
 
+<!-- 
+<Spoiler title="Some common terms relating to trees">
+ -->
+
+Some properties/definitions of trees:
+
+- A graph is a **tree** iff it is connected and contains $N$ nodes and $N-1$ edges
+- A graph is a **tree** iff every pair of nodes has exactly one simple path between them
+- A graph is a **tree** iff it is connected and does not contain any cycles
+
+General Tree Terminology:
+
+- A **leaf** of a tree is any node in the tree with degree $1$
+  - If the tree is rooted, the **root** with a single child is *not* typically considered a leaf, but depending on the problem, this is not always the case
+- A **star graph** has two common definitions. Try to understand what they mean - they typically appear in subtasks.
+  - Definition 1: Only one node has degree greater than $1$
+  - Definition 2: Only one node has degree greater than $2$
+- A **forest** is a graph such that each **connected component** is a tree
+
+Rooted Tree Terminology:
+
+- A **root** of a tree is any node of the tree that is considered to be at the 'top'
+- A **parent** of a node $n$ is the first node along the path from $n$ to the **root**
+  - The **root** does not have a **parent**. This is typically done in code by setting the **parent** of the **root** to be $-1$.
+- The **ancestors** of a node are its **parent** and **parent's** **ancestors**
+  - Typically, a node is considered its own ancestor as well (such as in the subtree definition)
+- The **subtree** of a node $n$ are the set of nodes that have $n$ as an ancestor
+  - A node is typically considered to be in its own subtree
+  - Note: This is easily confused with **subgraph**
+- The **depth**, or **level**, of a node is its distance from the root
+
+<!-- </Spoiler> -->
+
 ## Solution - Subordinates
 
-Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.
+<!-- Typically, after arbitrarily rooting a tree, some interesting pieces of information are a node's parent, subtree size, and depth.  -->
 
-See how the below implementation computes subtree size. In a rooted tree, a subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's children's subtrees.
+In this problem we are given the parent of each node of a rooted tree, and we want to compute the subtree size for each node. A subtree is composed of a root node and the subtrees of the root's children. Thus, the size of a subtree is one plus the size of the root's childrens' subtrees.
 
 <LanguageSection>
 
@@ -133,13 +132,16 @@ See how the below implementation computes subtree size. In a rooted tree, a subt
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> children[200000];
-int subtree_size[200000];
+const int SZ = 2e5;
+
+vector<int> children[SZ];
+int subtree_size[SZ], depth[SZ];
 
 void dfs_size(int node) {
 	subtree_size[node] = 1; // This one represents the root of `node's` subtree
 	// (which would be `node` itself)
 	for (int child : children[node]) {
+		depth[child] = depth[node]+1; // not needed for this problem
 		dfs_size(child);
 		subtree_size[node] += subtree_size[child];
 		// Add `node's` children's subtrees to the size of `node's` subtree
@@ -227,6 +229,7 @@ public class Subordinates
 
 </LanguageSection>
 
+<!-- 
 ## Computing parent, depth, and subtree sizes
 
 The following sample code computes the **parent**, **depth**, and **subtree sizes** of each node of a tree, assuming node 1 is the root.
@@ -272,9 +275,10 @@ int main()
 
 <IncompleteSection>
 
-Java, Python support
+just merge with above solution
 
-</IncompleteSection>
+</IncompleteSection> 
+-->
 
 ## Problems
 

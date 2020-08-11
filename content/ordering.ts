@@ -110,30 +110,20 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   gold: [
     {
-      name: 'Data Structures',
-      items: ['stacks', 'sliding', 'queues'],
-    },
-    {
       name: 'Dynamic Programming',
-      items: ['intro-dp', 'dp-trees', 'all-roots'],
-    },
-    {
-      name: 'Number Theory',
-      items: [
-        'intro-nt', // does this really belong so high up on the list??
-      ],
+      items: ['intro-dp', 'intro-nt'],
     },
     {
       name: 'Graphs',
-      items: ['bfs', 'toposort', 'sp'],
+      items: ['bfs', 'dsu', 'toposort', 'sp', 'mst'],
     },
     {
-      name: 'Range Queries',
-      items: ['SRQ', 'springboards', 'PURS'],
+      name: 'Data Structures',
+      items: ['stacks', 'sliding', 'PURS', 'SRQ', 'springboards'],
     },
     {
       name: 'Trees',
-      items: ['dsu', 'mst', 'tree-euler'],
+      items: ['dp-trees', 'all-roots', 'tree-euler'],
     },
     {
       name: 'Hashing',

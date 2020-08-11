@@ -141,32 +141,32 @@ export class Problem {
         this.source = source.substring(0, ind);
       }
     }
-    // generate solution
-    if (!sol) {
-      sol = '';
-      if (source in probSources && probSources[source].length == 3) {
-        sol = '@Check ' + source;
-        this.hover = probSources[source][2];
-      } else {
-        for (let source in probSources)
-          if (
-            probSources[source].length == 3 &&
-            this.url.startsWith(probSources[source][0])
-          ) {
-            sol = '@Check ' + source;
-            this.hover = probSources[source][2];
-          }
-      }
-    }
+    if (!sol) sol = '';
     if (
       sol.startsWith('http') ||
       /^[a-zA-Z\-0-9]+$/.test(sol) ||
       sol.startsWith('@')
     ) {
       this.solution = sol;
-    } else {
-      this.sketch = sol;
+      return;
     }
+    // generate solution
+    if (source in probSources && probSources[source].length == 3) {
+      this.solution = '@Check ' + source;
+      this.hover = probSources[source][2];
+      return;
+    } else {
+      for (let source in probSources)
+        if (
+          probSources[source].length == 3 &&
+          this.url.startsWith(probSources[source][0])
+        ) {
+          this.solution = '@Check ' + source;
+          this.hover = probSources[source][2];
+          return;
+        }
+    }
+    this.sketch = sol;
   }
 }
 

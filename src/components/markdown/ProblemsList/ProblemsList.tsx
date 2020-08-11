@@ -4,6 +4,9 @@ import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import PGS from '../PGS.json';
+import { books } from '../ResourcesList';
+
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
 
@@ -27,13 +30,13 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Source
                   </th>
                   <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
                   <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
@@ -150,7 +153,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
     'Very Hard': 'bg-orange-100 text-orange-800',
     Insane: 'bg-red-100 text-red-800',
   };
-  const [showTags, setShowTags] = React.useState(false);
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueID}`;
@@ -167,7 +169,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           <ProblemStatusCheckbox problem={problem} />
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
         {problem.des ? (
           <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
         ) : (
@@ -189,7 +191,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
           )}
           <a
             href={problem.url}
-            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            className={
+              (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
+            }
+            style={{ maxWidth: '15rem' }}
             target="_blank"
             rel="nofollow noopener noreferrer"
           >
@@ -197,7 +202,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </a>
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap leading-5 w-full">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 w-full">
         {problem.difficulty && (
           <span
             className={
@@ -209,23 +214,13 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        {!showTags && (
-          <a
-            href="#"
-            className="text-indigo-600 hover:text-indigo-900"
-            onClick={e => {
-              e.preventDefault();
-              setShowTags(true);
-            }}
-          >
-            Show Tags
-          </a>
-        )}
-        {showTags &&
-          (problem.tags && problem.tags.length
-            ? problem.tags.join(', ')
-            : 'None')}
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+        {problem.tags && problem.tags.length ? (
+          <details className="text-gray-500">
+            <summary>Show Tags</summary>
+            <p className="text-xs">{problem.tags.join(', ')}</p>
+          </details>
+        ) : null}
       </td>
       <ProblemSolutionCell
         problem={props.problem}
@@ -280,6 +275,24 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       }
     }
   }
+  let cph = false;
+  let cphUrl = '';
+  if (msg && sol.startsWith('CPH')) {
+    const getSec = (dictKey, book, title) => {
+      const parts = title.split(' ');
+      let url = book;
+      let sec = parts[0];
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey]))
+        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+      url += '#page=' + PGS[dictKey][sec];
+      return url;
+    };
+    let source = 'CPH';
+    cphUrl = getSec(source, books[source][0], sol.substring(4));
+    msg = false;
+  }
   return (
     <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
@@ -291,6 +304,11 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         <span className="pl-6">
           <TextTooltip content={problem.hover}>{sol}</TextTooltip>
         </span>
+      )}
+      {cphUrl && (
+        <a href={cphUrl} target="_blank" className="pl-6">
+          {sol}
+        </a>
       )}
       {external && (
         <a href={sol} target="_blank" className="pl-6">
@@ -356,7 +374,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           Show Sketch
         </span>
       )}
-      {!msg && !external && !internal && !problem.sketch && (
+      {!cphUrl && !msg && !external && !internal && !problem.sketch && (
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >

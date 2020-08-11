@@ -8,6 +8,9 @@ module.exports = {
       },
     },
   },
+  variants: {
+    translate: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
+  },
   plugins: [require('@tailwindcss/ui')],
   purge: {
     content: [

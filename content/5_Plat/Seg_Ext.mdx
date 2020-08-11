@@ -1,7 +1,7 @@
 ---
 id: seg-ext
 title: 'More Applications of Segment Tree'
-author: Benjamin Qi
+author: Benjamin Qi, Andi Qu
 prerequisites:
   - PURS
 description: Pushing the limits of what a segment tree can do.
@@ -31,6 +31,15 @@ export const problems = {
 	],
 	comb: [
 		new Problem('Old Gold', 'Marathon', '495', 'Easy', false, [], ''),
+		new Problem(
+			'Balkan OI',
+			'Election',
+			'https://oj.uz/problem/view/BOI18_election',
+			'Easy',
+			false,
+			[],
+			''
+		),
 		new Problem('Old Gold', 'Optimal Milking', '365', 'Normal', false, [], ''),
 		new Problem(
 			'POI',
@@ -96,7 +105,69 @@ Of course, you can do this in $O(\log^2N)$ time with a max segment tree and bina
 
 ### Solution - Hotel Queries
 
-<IncompleteSection />
+Instead of binary searching and querying the segment tree separately, let's do them together!
+
+Assume that you know that the answer is in some range $[l, r]$. Let $mid = \left \lfloor{\frac{l + r}{2}}\right \rfloor$.
+
+If $\max(a_l, \dots, a_{mid}) \geq x$, then we know that the answer is in the range $[l, mid]$. Otherwise, the answer is in the range $[mid + 1, r]$.
+
+Imagine that the segment tree is a decision tree. We start at the root and move down. When we're at some node that contains $\max(a_l, \dots, a_r)$ and we know that the answer is in the range $[l, r]$, we move to the left child if $\max(a_l, \dots, a_{mid}) \geq x$; otherwise, we move to the right child.
+
+This is convenient because $\max(a_l, \dots, a_{mid})$ is already stored in the left child, so we can find it in $O(1)$ time.
+
+<Spoiler title="Code">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200001;
+
+int n;
+int segtree[4 * MAXN], a[MAXN];
+
+void build(int l = 1, int r = n, int node = 1) {
+    if (l == r) segtree[node] = a[l];
+    else {
+        int mid = (l + r) / 2;
+        build(l, mid, node * 2);
+        build(mid + 1, r, node * 2 + 1);
+        segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+    }
+}
+
+void queryupdate(int val, int l = 1, int r = n, int node = 1) {
+    if (l == r) {
+        segtree[node] -= val;
+        cout << l << ' ';
+    } else {
+        int mid = (l + r) / 2;
+        if (segtree[node * 2] >= val) queryupdate(val, l, mid, node * 2);
+        else queryupdate(val, mid + 1, r, node * 2 + 1);
+
+        segtree[node] = max(segtree[node * 2], segtree[node * 2 + 1]);
+    }
+}
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+    int q;
+    cin >> n >> q;
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    build();
+
+    while (q--) {
+        int x;
+        cin >> x;
+        if (segtree[1] < x) cout << "0 ";
+        else queryupdate(x);
+    }
+    return 0;
+}
+```
+
+</Spoiler>
 
 ### Problems
 
@@ -108,7 +179,84 @@ Of course, you can do this in $O(\log^2N)$ time with a max segment tree and bina
 
 ### Solution - Subarray Sum Queries
 
-<IncompleteSection />
+In each node of the segment tree that stores information about the range $[l, r]$ we store the following information:
+
+- The maximum subarray sum in the range $[l, r]$. (Let this be $G$)
+- The maximum subarray sum in the range $[l, r]$ if it must contain $a_l$. (Let this be $L$)
+- The maximum subarray sum in the range $[l, r]$ if it must contain $a_r$. (Let this be $R$)
+- The total sum of the range. (Let this be $S$)
+
+When we combine two nodes $u$ (left child) and $v$ (right child) to make node $w$,
+
+- $w.G = \max(u.G, v.G, u.R + v.L)$
+- $w.L = \max(u.L, u.S + v.L)$
+- $w.R = \max(u.R + v.S, v.R)$
+- $w.S = u.S + v.S$
+
+Using a segment tree, we can handle updates and queries efficiently.
+
+<Spoiler title="Code">
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+const ll MAXN = 200001;
+
+struct Node {
+    ll g_max, l_max, r_max, sum;
+    Node operator +(Node b) {
+        return {
+            max(max(g_max, b.g_max), r_max + b.l_max),
+            max(l_max, sum + b.l_max),
+            max(b.r_max, r_max + b.sum),
+            sum + b.sum
+        };
+    }
+};
+
+ll n, a[MAXN];
+Node segtree[4 * MAXN];
+
+void build(ll l = 1, ll r = n, ll node = 1) {
+    if (l == r) segtree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
+    else {
+        ll mid = (l + r) / 2;
+        build(l, mid, node * 2);
+        build(mid + 1, r, node * 2 + 1);
+        segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+    }
+}
+void update(ll pos, ll val, ll l = 1, ll r = n, ll node = 1) {
+    if (l == r) segtree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
+    else {
+        ll mid = (l + r) / 2;
+        if (pos > mid) update(pos, val, mid + 1, r, node * 2 + 1);
+        else update(pos, val, l, mid, node * 2);
+        segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
+    }
+}
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+    ll q;
+    cin >> n >> q;
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    build();
+
+    while (q--) {
+        ll x, y;
+        cin >> x >> y;
+        update(x, y);
+        cout << segtree[1].g_max << '\n';
+    }
+    return 0;
+}
+```
+
+</Spoiler>
 
 ### Problems
 
@@ -121,11 +269,7 @@ Of course, you can do this in $O(\log^2N)$ time with a max segment tree and bina
 Like a segment tree on values rather than indices.
 
 <Resources>
-	<Resource
-		source="CF"
-		title="Intro to New DS: Wavelet Trees"
-		url="52854"
-	>
+	<Resource source="CF" title="Intro to New DS: Wavelet Trees" url="52854">
 		Link in blog post is broken, check my comment.
 	</Resource>
 </Resources>
