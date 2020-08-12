@@ -73,6 +73,7 @@ export default function SectionsDropdown({
                       <span
                         className="block px-4 py-2 text-base font-medium leading-6 text-gray-400 relative"
                         role="menuitem"
+                        key={section}
                       >
                         {SECTION_LABELS[section]}
 
@@ -98,6 +99,7 @@ export default function SectionsDropdown({
                         }}
                         className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
                         role="menuitem"
+                        key={section}
                       >
                         {SECTION_LABELS[section]}
                       </button>
@@ -106,6 +108,7 @@ export default function SectionsDropdown({
                         to={`/${section}`}
                         className="block px-4 py-2 text-base font-medium leading-6 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
                         role="menuitem"
+                        key={section}
                       >
                         {SECTION_LABELS[section]}
                       </Link>

@@ -5,7 +5,7 @@ author: Benjamin Qi, Andi Qu
 prerequisites:
   - bfs
   - custom-cpp-stl
-description: "Introduces Bellman-Ford, Floyd-Warshall, Dijkstra."
+description: 'Introduces Bellman-Ford, Floyd-Warshall, Dijkstra.'
 frequency: 3
 ---
 
@@ -121,7 +121,7 @@ export const problems = {
 			'Normal',
 			false,
 			[],
-			''
+			'baltic-17-toll'
 		),
 		new Problem(
 			'Gold',
@@ -241,16 +241,16 @@ using namespace std;
 using ll = long long;
 #define pb push_back
 
-vector<pair<int, int>> graph[100000]; 
+vector<pair<int, int>> graph[100000];
 // Adjacency list of (neighbour, edge weight)
 ll dist[100000];
 int N;
 
 void dijkstra(int src) { // Source and destination
-	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX; 
+	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX;
 	// Set all distances to infinity
 
-	using T = pair<ll,int>; priority_queue<T,vector<T>,greater<T>> pq; 
+	using T = pair<ll,int>; priority_queue<T,vector<T>,greater<T>> pq;
 	dist[src] = 0; // The shortest path from a node to itself is 0
 	pq.push({0, src});
 
@@ -258,7 +258,7 @@ void dijkstra(int src) { // Source and destination
 		ll cdist; int node; tie(cdist, node) = pq.top(); pq.pop();
 		if (cdist != dist[node]) continue;
 		for (pair<int, int> i : graph[node]) {
-			// If we can reach a neighbouring node faster, 
+			// If we can reach a neighbouring node faster,
 			// we update its minimum distance
 			if (cdist+i.second < dist[i.first]) {
 				pq.push({dist[i.first] = cdist+i.second, i.first});
