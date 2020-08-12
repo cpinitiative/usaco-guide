@@ -232,6 +232,8 @@ The USACO training pages present a $O(N^2)$ version, although this is rarely use
 
 <CPPSection>
 
+Recall from the second prerequisite module that we can use `greater<>` to make the top element of a priority queue the least instead of the greatest.
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -239,27 +241,27 @@ using namespace std;
 using ll = long long;
 #define pb push_back
 
-vector<pair<int, int>> graph[100000]; // Adjacency list of (neighbour, edge weight)
+vector<pair<int, int>> graph[100000]; 
+// Adjacency list of (neighbour, edge weight)
 ll dist[100000];
 int N;
 
 void dijkstra(int src) { // Source and destination
-	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX; // Set all distances to infinity
+	for (int i = 0; i < N; ++i) dist[i] = LLONG_MAX; 
+	// Set all distances to infinity
 
-	// N.B. Priority queues sort in descending order, so we use negative distances
-	priority_queue<pair<ll, int>> pq;
+	using T = pair<ll,int>; priority_queue<T,vector<T>,greater<T>> pq; 
 	dist[src] = 0; // The shortest path from a node to itself is 0
 	pq.push({0, src});
 
 	while (pq.size()) {
-		ll dis, node; tie(dis, node) = pq.top();
-		pq.pop(); dis *= -1;
-		if (dis != dist[node]) continue;
+		ll cdist; int node; tie(cdist, node) = pq.top(); pq.pop();
+		if (cdist != dist[node]) continue;
 		for (pair<int, int> i : graph[node]) {
-			// If we can reach a neighbouring node faster, we update its minimum distance
-			if (dis+i.second < dist[i.first]) {
-				dist[i.first] = dis+i.second;
-				pq.push({-dist[i.first], i.first});
+			// If we can reach a neighbouring node faster, 
+			// we update its minimum distance
+			if (cdist+i.second < dist[i.first]) {
+				pq.push({dist[i.first] = cdist+i.second, i.first});
 			}
 		}
 	}
@@ -276,19 +278,15 @@ int main() {
 }
 ```
 
-<IncompleteSection>
-
-rewrite with `greater<>`
-
-</IncompleteSection>
-
 <Warning>
 
-It's important to include the line `if (dis != dist[node]) continue;`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+
+<IncompleteSection>
 
 (explanation of hack case)
 
-<IncompleteSection />
+</IncompleteSection>
 
 </Warning>
 
