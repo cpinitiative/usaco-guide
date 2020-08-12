@@ -4,7 +4,7 @@ import * as React from 'react';
 import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import Prism from './SyntaxHighlighting/prism';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const renderTokens = (tokens, getLineProps, getTokenProps) => {
   return tokens.map((line, i) => {
@@ -30,6 +30,17 @@ export default ({ children, className }) => {
   }
   const language = className.replace(/language-/, '');
   const [collapsed, setCollapsed] = useState(true);
+
+  // console.warn() if line length is > 80. uncomment to enable
+  // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
+  // You may want to comment out pages/liveupdate.tsx (see file for instructions) to speed up build times
+  // let tooLong = false;
+  // for (let line of children.trim().split("\n")) {
+  //   if (line.length > 80) {
+  //     tooLong = true;
+  //     console.error(line + "               ---- too long! (" + line.length + " chars)")
+  //   }
+  // }
 
   return (
     // @ts-ignore
