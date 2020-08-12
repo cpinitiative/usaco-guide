@@ -46,7 +46,7 @@ export const Authors: Author[] = [
     title: 'Content Author',
     blurb:
       'Michael Cao is a USACO Platinum competitor and problemsetter of "Bessie\'s Snow Cow" and USACO Camp problem "Flooded Farm."',
-    codeforces: 'caoash',
+    codeforces: 'caohash',
     email: 'cao.michael14@gmail.com',
     github: 'caoash',
   },
