@@ -1,8 +1,8 @@
 ---
 id: cpp-tips
-title: (Bonus) Lambda Expressions
+title: (Bonus) Additional C++ Tips
 author: Benjamin Qi
-description: '?'
+description: 'Lambda Expressions, Vectorization'
 ---
 
 ## Lambda Expressions
@@ -117,3 +117,62 @@ int main() {
 ```
 
 Looks like [ecnerwala](https://codeforces.com/contest/1375/submission/86008510) uses these a lot.
+
+## Vectorization
+
+Sometimes you'll see the following lines at the beginning of a program.
+
+```cpp
+#pragma GCC optimize ("Ofast")
+#pragma GCC target ("avx2")
+```
+
+According to CodinGame,
+
+> Modern CPUs can execute up to four instructions at the same time if they are independent.
+
+### About
+
+<Resources>
+	<Resource source="KACTL" title="10.5.2 - Pragmas" url="https://github.com/kth-competitive-programming/kactl/blob/master/kactl.pdf"></Resource>
+	<Resource source="CF" title="What do SSE/AVX do?" url="https://codeforces.com/blog/entry/54682?#comment-387553"> </Resource>
+	<Resource source="CodinGame" title="Autovectorization" url="https://www.codingame.com/playgrounds/283/sse-avx-vectorization/autovectorization">some bugs :(, seems ok for most part?</Resource>
+</Resources>
+
+According to KACTL:
+
+ - `#pragma GCC optimize ("Ofast")` will make GCC auto-vectorize for loops and optimizes floating points better (assumes associativity and turns off denormals).
+ - `#pragma GCC target ("avx,avx2")` can double performance of vectorized code, but causes crashes on old machines. 
+ - Also consider the older `#pragma GCC target ("sse4")`.
+ 
+Can also check Wikipedia articles about [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) and [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions).
+
+<IncompleteSection>
+
+better source to learn about these?
+
+</IncompleteSection>
+
+### Examples from CF
+
+The occasional Div 1 E is trivialized by this!
+
+  - [Nagini](https://codeforces.com/contest/855/submission/47823825)
+    - only `Ofast`: TLE
+	- `avx`: 2339ms
+	- `avx2`: 1544ms
+	- `sse4`: 2479ms
+  - [Welcome home, Chtholly](https://codeforces.com/contest/896/submission/47824007)
+	- only `Ofast`: TLE
+	- `avx`: 2354ms
+	- `avx2`: 1684ms
+	- `sse4`: 2183ms
+  - [Awesome Substrings](https://codeforces.com/contest/1270/submission/68018017)
+	- `sse4` / `avx`: TLE
+	- `avx2`: 6894ms
+
+### Where Can I Use These?
+
+Definitely works on CF and DMOJ. As mentioned above, may cause runtime errors on some sites (ex. [Szkopuł](https://szkopul.edu.pl/)). I don't believe that these work for USACO. It's also unclear to me whether additional pragmas (ex. `#pragma GCC optimize("unroll-loops")`) actually make a difference in contest.
+
+<IncompleteSection />
