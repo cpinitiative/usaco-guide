@@ -11,7 +11,6 @@ prerequisites:
 import { Problem } from '../models';
 
 export const problems = {
-	ex: [new Problem('Gold', 'Cownomics', '741', 'Easy', false, [], '')],
 	general: [
 		new Problem(
 			'CSA',
@@ -31,6 +30,7 @@ export const problems = {
 			['DP', 'Hashing'],
 			''
 		),
+		new Problem('Gold', 'Cownomics', '741', 'Normal', false, [], "Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $l\ldots r$ explain spotiness. Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(N\log N)$ time (and you only need to check $O(M)$ of these pairs in total). Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions."),
 		new Problem(
 			'Gold',
 			'Lights Out',
@@ -81,12 +81,6 @@ export const problems = {
 	],
 };
 
-<Warning>
-
-Some Gold editorials mention hashing, but I haven't found any Gold problems that _require_ it.
-
-</Warning>
-
 ## Tutorial
 
 <Resources>
@@ -96,7 +90,9 @@ Some Gold editorials mention hashing, but I haven't found any Gold problems that
 
 </Resources>
 
-### Implementation
+## Implementation - Single Base
+
+As mentioned in the articles above, there is no need to calculate modular inverses.
 
 <LanguageSection>
 
@@ -126,7 +122,12 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 
 </LanguageSection>
 
+## Implementation - Multiple Bases
+
 <Resources>
+	<Resource source="CF" title="dacin21 - Anti-Hash Tests" url="60442" starred>
+		regarding CF educational rounds in particular
+	</Resource>
 	<Resource
 		source="Benq"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Light/HashRange%20(14.2).h"
@@ -136,19 +137,17 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 	</Resource>
 </Resources>
 
-It's generally a good idea to use two bases rather than just one to decrease the probability that two random strings hash to the same value. As mentioned in the articles above, there is no need to calculate modular inverses.
+It's generally a good idea to use two randomized bases rather than just one to decrease the probability that two random strings hash to the same value. 
 
-## Example: Cownomics (Gold)
+<IncompleteSection />
 
-<Problems problems={problems.ex} />
+## Example
 
-<Spoiler title="Sketch">
+<IncompleteSection>
 
-- Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $l\ldots r$ explain spotiness.
-- Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(N\log N)$ time (and you only need to check $O(M)$ of these pairs in total).
-- Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions.
+preferably smth that can't be fakesolved
 
-</Spoiler>
+</IncompleteSection>
 
 <!-- ## Adjacency Lists
 
@@ -157,14 +156,19 @@ It's generally a good idea to use two bases rather than just one to decrease the
 <Problems problems={problems.adj} />
  -->
 
-## Hacking
-
-<Resources>
-	<Resource source="CF" title="dacin21 - Anti-Hash Tests" url="60442">
-		On CF educational rounds in particular, make sure to randomize your bases.
-	</Resource>
-</Resources>
 
 ## Problems
 
+<Warning>
+
+The editorials of the Gold problems below mention hashing, but it's not difficult to pass slower solutions without hashing.
+
+</Warning>
+
 <Problems problems={problems.general} />
+
+<Warning>
+
+Constraints for "Bull in a China Shop" are incorrect, should say $R,C\le 500$. Also, time + memory limits are unnecessarily tight ...
+
+</Warning>
