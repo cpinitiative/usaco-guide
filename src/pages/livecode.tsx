@@ -35,23 +35,26 @@ export default function LiveCodePage(props: PageProps) {
         'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/clike/clike.js',
         'https://firepad.io/releases/v1.5.9/firepad.min.js',
       ],
-      () => {
-        const database = import('firebase/database');
-        database.then(() => {
-          var firepadRef = getExampleRef(firebase);
+      {
+        async: false,
+        success: () => {
+          const database = import('firebase/database');
+          database.then(() => {
+            var firepadRef = getExampleRef(firebase);
 
-          //// Create CodeMirror (with line numbers and the JavaScript mode).
-          var codeMirror = CodeMirror(ref.current, {
-            lineNumbers: true,
-            mode: 'text/x-c++src',
-          });
+            //// Create CodeMirror (with line numbers and the JavaScript mode).
+            var codeMirror = CodeMirror(ref.current, {
+              lineNumbers: true,
+              mode: 'text/x-c++src',
+            });
 
-          //// Create Firepad.
-          var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
-            defaultText:
-              '#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n  cout << "Hello World!" << endl;\n}\n',
+            //// Create Firepad.
+            var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
+              defaultText:
+                '#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n  cout << "Hello World!" << endl;\n}\n',
+            });
           });
-        });
+        },
       }
     );
   });
