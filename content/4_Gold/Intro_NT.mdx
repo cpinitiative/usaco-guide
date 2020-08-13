@@ -211,17 +211,13 @@ def gcd(a, b):
 
 </LanguageSection>
 
-This function runs in $O(\log \max(a,b))$ time.
+This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$. 
 
-<Spoiler title="Proof sketch">
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$.  for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$. 
 
-The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) for an explanation).
-
-In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$.
-
-This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps. Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $O(\log \max(a, b))$.
-
-</Spoiler>
+<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
+<!-- ^ this doesn't seem very helpful -->
+<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $O(\log ab)$. -->
 
 ### LCM
 
