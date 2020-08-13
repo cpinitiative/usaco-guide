@@ -157,11 +157,16 @@ better source to learn about these?
 
 The occasional Div 1 E is trivialized by this!
 
+<!-- - [`unroll-loops`](https://codeforces.com/contest/855/submission/89815160): TLE 49 -->
+<!-- - [`Ofast`, `unroll-loops`](https://codeforces.com/contest/855/submission/89815262): 3509ms -->
+
   - [Nagini](https://codeforces.com/contest/855/submission/47823825)
-    - only `Ofast`: TLE
-	- `avx`: 2339ms
-	- `avx2`: 1544ms
-	- `sse4`: 2479ms
+    - [no pragmas](https://codeforces.com/contest/855/submission/89815214): TLE 30
+    - [`O3`](https://codeforces.com/contest/855/submission/89815479): 3509ms
+    - [`Ofast`](https://codeforces.com/contest/855/submission/89815327): 3525ms
+	- [`Ofast`, `avx`](https://codeforces.com/contest/855/submission/72962496): 2339ms
+	- [`Ofast`, `avx2`](https://codeforces.com/contest/855/submission/72962508): 1544ms
+	- [`Ofast`, `sse4`](https://codeforces.com/contest/855/submission/72962469): 2479ms
   - [Welcome home, Chtholly](https://codeforces.com/contest/896/submission/47824007)
 	- only `Ofast`: TLE
 	- `avx`: 2354ms
@@ -173,6 +178,10 @@ The occasional Div 1 E is trivialized by this!
 
 ### Where Can I Use These?
 
-Definitely works on CF and DMOJ. As mentioned above, may cause runtime errors on some sites (ex. [Szkopuł](https://szkopul.edu.pl/)). I don't believe that these work for USACO. It's also unclear to me whether additional pragmas (ex. `#pragma GCC optimize("unroll-loops")`) actually make a difference in contest.
+ - Whether these pragmas are supported depends on the computer architecture (ex. see [here](https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#x86-Options)).
+ - As mentioned above, pragmas may cause runtime errors on some sites (ex. [Szkopuł](https://szkopul.edu.pl/)). 
+ - `Ofast` with `avx2` works on both CF and DMOJ. 
+ - I don't believe that these work on USACO. 
+ - `#pragma GCC optimize("unroll-loops")` seems to work on InfoArena (ex. compare [this](https://www.infoarena.ro/job_detail/2641920) and [this](https://www.infoarena.ro/job_detail/2641921)).
 
 <IncompleteSection />
