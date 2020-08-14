@@ -112,19 +112,48 @@ where the $p_i$ are distinct primes and the $a_i$ are positive integers.
 
 Now, we will discuss how to find the prime factorization of an integer.
 
-![Pseudocode](factoralgorithm1.png)
+<LanguageSection>
 
-<IncompleteSection>
+<CPPSection>
 
-replace with code in all langs?
+```cpp
+vector<int> factor(int n) {
+	vector<int> ret;
+	for (int i = 2; i * i <= n; i++) {
+		while (n % i == 0) {
+			ret.push_back(i);
+			n /= i;
+		}
+	}
+	return ret;
+}
+```
 
-</IncompleteSection>
+</CPPSection>
+
+<PySection>
+
+```py
+def factor(n):
+	ret = []
+	i = 2
+	while i * i <= n:
+		while n % i == 0:
+			ret.append(i)
+			n //= i
+		i += 1
+	return ret
+```
+
+</PySection>
+
+</LanguageSection>
 
 This algorithm runs in $O(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
 
 Let's look at an example of how this algorithm works, for $n = 252$.
 
-![Example](factoralgorithm2.png)
+![Example](factoralgorithm.png)
 
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
@@ -169,15 +198,26 @@ For C++14 and below, use the built-in `__gcd(a,b)`. C++17 has built in `gcd(a,b)
 
 </CPPSection>
 
+<PySection>
+
+```py
+def gcd(a, b):
+	if b == 0:
+		return a
+	return gcd(b, a % b)
+```
+
+</PySection>
+
 </LanguageSection>
 
-This function runs in $O(\log \max(a,b))$ time.
+This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$. 
 
-<IncompleteSection>
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$.  for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$. 
 
-proof?
-
-</IncompleteSection>
+<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
+<!-- ^ this doesn't seem very helpful -->
+<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $O(\log ab)$. -->
 
 ### LCM
 

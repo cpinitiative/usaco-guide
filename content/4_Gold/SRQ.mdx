@@ -10,26 +10,10 @@ import { Problem } from '../models';
 
 export const problems = {
 	rmqSample: [
-		new Problem(
-			'YS',
-			'Static RMQ',
-			'staticrmq',
-			'Easy',
-			false,
-			[],
-			'equivalent to [CSES Range Minimum Queries I](https://cses.fi/problemset/task/1647)'
-		),
+		new Problem('YS', 'Static RMQ', 'staticrmq', 'Easy', false, [], ''),
 	],
 	diviSample: [
-		new Problem(
-			'JOI',
-			'Secret',
-			'JOI14_secret',
-			'Easy',
-			false,
-			[],
-			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d2-secret-review.pdf'
-		),
+		new Problem('JOI', 'Secret', 'JOI14_secret', 'Easy', false, [], ''),
 	],
 	general: [
 		new Problem('CC', 'Product on Segment', 'SEGPROD', 'Hard', false, [], ''),
@@ -66,7 +50,7 @@ where $\ominus$ denotes any associative operation. With $O(N\log N)$ time prepro
 
 First we'll consider the special case when $\ominus$ denotes `min`.
 
-<Problems problems={problems.rmqSample} />
+<FocusProblem problem={problems.rmqSample[0]} />
 
 ### Resources
 
@@ -93,6 +77,10 @@ First we'll consider the special case when $\ominus$ denotes `min`.
 
 ### Implementation
 
+<LanguageSection>
+
+<CPPSection>
+
 <Resources>
 	<Resource
 		source="Benq"
@@ -101,11 +89,13 @@ First we'll consider the special case when $\ominus$ denotes `min`.
 	></Resource>
 </Resources>
 
-<IncompleteSection />
+</CPPSection>
+
+</LanguageSection>
 
 ## Divide & Conquer
 
-<Problems problems={problems.diviSample} />
+<FocusProblem problem={problems.diviSample[0]} />
 
 **Divide & conquer** can refer to many different techniques. In this case, we use it to answer $Q$ queries offline in $O((N+Q)\log N)$ time.
 
@@ -136,8 +126,52 @@ A data structure known as **sqrt-tree** can speed up preprocessing time to $O(N\
 
 ### Implementation
 
-<IncompleteSection />
+```cpp
+#include "secret.h"
+
+int prefix[1000][1000], n;
+
+void populate(int L, int R, int A[]) {
+    int mid = (L + R) / 2;
+    prefix[mid][mid] = A[mid];
+    prefix[mid + 1][mid + 1] = A[mid + 1];
+
+    for (int i = mid + 2; i <= R; i++)
+		prefix[mid + 1][i] = Secret(prefix[mid + 1][i - 1], A[i]);
+    for (int i = mid - 1; i >= L; i--)
+		prefix[mid][i] = Secret(A[i], prefix[mid][i + 1]);
+
+    if (L < mid) populate(L, mid, A);
+    if (mid + 1 < R) populate(mid + 1, R, A);
+}
+
+void Init(int N, int A[]) {
+    n = N;
+    populate(0, N - 1, A);
+}
+
+int Query(int L, int R) {
+    int a = 0, b = n - 1;
+
+    while (a != b) {
+        int mid = (a + b) / 2;
+        if (mid >= L && mid < R)
+			return Secret(prefix[mid][L], prefix[mid + 1][R]);
+        else if (mid == R) return prefix[mid][L];
+        else if (mid < L) a = mid + 1;
+        else b = mid;
+    }
+
+    return prefix[a][a];
+}
+```
 
 ## Problems
 
 <Problems problems={problems.general} />
+
+<IncompleteSection>
+
+Add more problems
+
+</IncompleteSection>
