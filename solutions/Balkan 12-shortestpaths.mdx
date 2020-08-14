@@ -12,8 +12,6 @@ Run Dijkstra's algorithm from node $A$ to every other node and construct the "sh
 
 Why is this useful? In this case, we get some cool properties from removing edges and we can use LCA.
 
-Specifically, notice how $lca(v, B)$ must lie on the lucky path for each node $v$.
-
 ## What happens when we remove an edge?
 
 When we remove an edge on the lucky path, the tree splits into two smaller trees - one containing $A$; one containing $B$.
@@ -26,9 +24,11 @@ Why is this true? We must "jump" from one subtree to the other at some point. If
 
 Remember how I said that LCA would be useful in this problem? Here's how we use it:
 
-Since $u$ and $v$ must be in separate subtrees, the path $A \rightarrow u \rightarrow v \rightarrow B$ is only a candidate for removing an edge if it lies between $lca(u, B)$ and $lca(v, B)$.
+An important observation is that $lca(v, B)$ must lie on the lucky path for each node $v$.
 
-We must thus only update the minimums of the edges between $lca(u, B)$ and $lca(v, B)$ for each $(u, v)$.
+Since $u$ and $v$ must be in separate subtrees, the path $A \rightarrow u \rightarrow v \rightarrow B$ is only a candidate for the shortest path after removing an edge if that edge lies between $lca(u, B)$ and $lca(v, B)$.
+
+We must thus only update the shortest paths after removing an edge for the edges between $lca(u, B)$ and $lca(v, B)$ for each $(u, v)$.
 
 Since the constraints are so low in this problem, we can naively find the LCA and update the minimums in $O(N)$ time.
 
