@@ -28,6 +28,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'intro',
         'choosing-lang',
+        'resources-learning-to-code',
         'running-code',
         'data-types',
         'io',
@@ -37,12 +38,11 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'General',
+      description: 'Useful for competitors of all levels.',
       items: [
         'practicing',
         'contest-strategy',
-        'resources-learning-to-code',
         'resources-cp',
-        'resources-usa',
         'contests',
         'oly',
       ],
@@ -51,16 +51,18 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Language-Specific',
       items: [
         'factors-choosing',
-        'fast-io',
-        'debugging',
         'cpp-command',
+        'debugging',
+        'fast-io',
         'generic',
         'cpp-tips',
       ],
     },
     {
-      name: 'USACO',
-      items: ['usaco-month', 'usaco-camp'],
+      name: 'USA',
+      description:
+        'Information specific to USACO as well as USA camps and contests.',
+      items: ['usaco-month', 'usaco-camp', 'resources-usa'],
     },
   ],
   bronze: [
