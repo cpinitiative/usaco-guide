@@ -33,20 +33,21 @@ When we combine two nodes $u$ (left child) and $v$ (right child) to make node $w
 - $w.R = \max(u.R + v.S, v.R)$
 - $w.S = u.S + v.S$
 
-To find $w.A$, we must consider three cases:
+Finding $w.A$ is a bit more tricky though. We will now prove that the lower bound on $w.A$ is
 
-- Case 1: the endpoints of the maximum prefix and suffix sums in $w$'s range lie in $u$ and $v$ respectively.
-    - In this case, we don't count any nullified votes twice.
-    - $w.A = u.L + v.R$
-- Case 2: the endpoints of the maximum prefix and suffix sums in $w$'s range both lie in either $u$ or $v$.
-    - In this case, we would count some nullified votes twice if we apply case 1.
-    - However, we know that all of Tony's votes must be nullified in $u$ and/or $v$.
-    - $w.A = u.A + v.S$ or $w.A = u.S + v.A$
-- Case 3: the endpoints of the maximum prefix and suffix sums in $w$'s range lie in $v$ and $u$ respectively.
-    - In this case, all of Tony's votes must be nullified.
-    - $w.A = u.L + v.R$
+$$
+\max(\max(u.A + v.S, u.S + v.A), u.L + v.R)
+$$
 
-We can simply take the maximum from all three of these cases and that will be $w.A$.
+and that it can be attained.
+
+We can say that the increasing condition must hold for the first $i$ votes and the decreasing condition must hold for the rest of the votes in the range.
+
+Consider the greedy strategy: iterate from left to right and change `T`s to satisfy the increasing condition, then do the same from right to left. Then equality holds when we set $i$ equal to one less than the position of the leftmost `T` removed when doing the right to left iteration.
+
+Therefore, this is a lower bound and it can be attained.
+
+The final complexity of this algorithm is $O((N + Q) \log N)$.
 
 ## Code
 
