@@ -11,7 +11,12 @@ frequency: 2
 import { Problem } from '../models';
 
 export const problems = {
-	bubble: [
+	count: [
+		new Problem('Silver', 'Counting Haybales', '666', 'Easy', false, []),
+	],
+};
+
+<!-- 	bubble: [
 		new Problem(
 			'HR',
 			'Bubble Sort',
@@ -22,30 +27,27 @@ export const problems = {
 			'O(N^2)'
 		),
 		new Problem('Silver', 'Out of Sorts', '834', 'Very Hard', false, []),
-	],
-	count: [
-		new Problem('Silver', 'Counting Haybales', '666', 'Normal', false, []),
-	],
-};
+	], -->
 
 Suppose that we want to find an element in a sorted array of size $N$ in $O(\log N)$ time. We can do this with [**binary search**](https://en.wikipedia.org/wiki/Binary_search_algorithm); each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing every element in an array.
 
 <Resources>
+	<Resource source="CSA" title="Binary Search" url="binary_search" starred>
+		animation, code, lower_bound + upper_bound
+	</Resource>
+	<Resource source="CPH" title="3.3 - Binary Search" starred>
+		code, lower_bound + upper_bound, some applications
+	</Resource>
 	<Resource
 		source="KA@KhanAcademy"
 		title="Binary Search"
 		url="https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search"
-		starred
 	>
-		animations!
+		plenty of diagrams, javascript implementation
 	</Resource>
-	<Resource source="CSA" title="Binary Search" url="binary_search" starred>
-		animation!
-	</Resource>
-	<Resource source="CPH" title="3.3 - Binary Search" starred></Resource>
-	<Resource source="TC" title="Binary Search" url="binary-search"></Resource>
-	<Resource source="GFG" title="Binary Search" url="binary-search"></Resource>
 </Resources>
+
+<!-- 	<Resource source="GFG" title="Binary Search" url="binary-search"></Resource> -->
 
 ## Library Functions
 
@@ -99,11 +101,9 @@ A related topic is **coordinate compression**, which takes some points and reass
 
 <!-- > Farmer John has just arranged his $N$ haybales $(1\le N \le 100,000)$ at various points along the one-dimensional road running across his farm. To make sure they are spaced out appropriately, please help him answer $Q$ queries ($1 \le Q \le 100,000$), each asking for the number of haybales within a specific interval along the road. -->
 
-As each of the points are in the range $0 \ldots 1,000,000,000$, storing locations of haybales in, for instance, a boolean array, would take too much memory.
+As each of the points are in the range $0 \ldots 1,000,000,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
 
 Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use the `lower_bound` and `upper_bound` functions given above to count the number of cows in any range $[A,B]$ in $O(\log N)$ time.
-
-<Spoiler title="Example Code">
 
 <LanguageSection>
 
@@ -151,7 +151,5 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 Of course, the [official solution](http://www.usaco.org/current/data/sol_haybales_silver_dec16.html) does not use a library implementation of binary search.

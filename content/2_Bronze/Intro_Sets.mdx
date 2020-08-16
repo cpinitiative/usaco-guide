@@ -26,16 +26,6 @@ export const problems = {
 	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
 	standard: [
 		new Problem(
-			'CSES',
-			'Distinct Numbers',
-			'1621',
-			'Easy',
-			false,
-			[],
-			'cses-1621',
-			'ok'
-		),
-		new Problem(
 			'Bronze',
 			'Why Did the Cow Cross the Road III',
 			'713',
@@ -75,11 +65,20 @@ export const problems = {
 	],
 };
 
+<Resources>
+	<Resource source="IUSACO" title="4.4 - Sets & Maps">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.2, 4.3 - Sets, Maps">
+		covers similar material
+	</Resource>
+</Resources>
+
 Both Java and C++ contain two versions of sets and maps; one using **sorting** and the other using **hashing**. We'll only introduce the former version in this module.
 
 ## Sets
 
-<Problems problems={problems.dis} />
+<FocusProblem problem={problems.dis[0]} />
 
 A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set.
 
@@ -152,9 +151,90 @@ Ordered sets and maps are **not** built into Python. The Python [OrderedDict](ht
 
 </LanguageSection>
 
+### Solution - Distinct Numbers
+
+This problem asks us to calculate the number of distinct values in a given list.
+
+#### Method 1 - Set
+
+This is probably the easier of the two methods, but requires knowledge of sets. Because sets only store one copy of each value, we can insert all the numbers into a set, and then print out the size of the set.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    set<int> distinctNumbers;
+    for (int i = 0; i < n; i++) {
+        int number; cin >> number;
+        distinctNumbers.insert(number);
+    }
+
+    cout << distinctNumbers.size() << endl;
+
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+#### Method 2 - Sorting the Array
+
+This problem is also solvable without sets. Sort a vector containing all the numbers. The answer is the number of times two adjacent numbers are not equal; more formally, the number of times $a_i \neq a_{i + 1}$, plus one.
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    int A[n];
+    for (int i = 0; i < n; ++i) {
+        cin >> A[i];
+    }
+
+    sort(A, A+n);
+
+    int answer = 1;
+
+    for (int i = 0; i < n - 1; ++i) {
+        if (A[i] != A[i + 1]) {
+            answer++;
+        }
+    }
+
+    cout << answer << endl;
+
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 ## Maps
 
-<Problems problems={problems.ex} />
+<FocusProblem problem={problems.ex[0]} />
 
 A **map** is a set of ordered pairs, each containing a **key** and a **value**. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods:
 
@@ -230,7 +310,7 @@ print(1 in dict.keys()) # True
 
 <CPPSection>
 
-To iterate over maps, you can use a simple loop.
+To iterate over maps, you can use a `for` loop.
 
 ```cpp
 for (pair<int,int> x : m) {
@@ -276,6 +356,6 @@ This allows you to modify the values of the pairs stored in the map.
 
 ## Problems
 
-Some of these problems are related to [sorting](/intro/intro-sorting). Make sure to read through that module too!
+Some of these problems can be solved by sorting alone.
 
 <Problems problems={problems.standard} />

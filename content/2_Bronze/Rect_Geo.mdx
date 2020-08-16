@@ -9,7 +9,7 @@ frequency: 2
 import { Problem } from '../models';
 
 export const problems = {
-	blocked: [
+	sam: [
 		new Problem('Bronze', 'Blocked Billboard', '759', 'Easy', false, ['rect']),
 	],
 	general: [
@@ -21,7 +21,7 @@ export const problems = {
 		]),
 		new Problem(
 			'CF',
-			'D3C White Sheet',
+			'D3C - White Sheet',
 			'contest/1216/problem/C',
 			'Normal',
 			false,
@@ -43,13 +43,11 @@ Most only include two or three squares or rectangles, in which case you can simp
 
 ## Example: Blocked Billboard
 
-<Problems problems={problems.blocked} />
+<FocusProblem problem={problems.sam[0]} />
 
 ### Naive Solution
 
 Since all coordinates are in the range $[-1000,1000]$, we can simply go through each of the $2000^2$ possible visible squares and check which ones are visible using nested for loops.
-
-<Spoiler title="Nested Loops">
 
 <LanguageSection>
 
@@ -96,26 +94,24 @@ sys.stdout = open("billboard.out", "w")
 ok = [[False for i in range(2000)] for j in range(2000)]
 
 for i in range(3):
-    x1, y1, x2, y2 = map(int, input().split())
-    x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000
-    for x in range(x1, x2):
-        for y in range(y1, y2):
-            if i < 2:
-                ok[x][y] = 1
-            else:
-                ok[x][y] = 0
+	x1, y1, x2, y2 = map(int, input().split())
+	x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000
+	for x in range(x1, x2):
+		for y in range(y1, y2):
+			if i < 2:
+				ok[x][y] = 1
+			else:
+				ok[x][y] = 0
 ans = 0
 for x in range(2000):
-    for y in range(2000):
-        ans += ok[x][y]
+	for y in range(2000):
+		ans += ok[x][y]
 print(ans)
 ```
 
 </PySection>
 
 </LanguageSection>
-
-</Spoiler>
 
 Of course, this wouldn't suffice if the coordinates were up to $10^9$.
 
@@ -144,9 +140,7 @@ The `Rectangle` class supports numerous useful methods, including the following:
 
 This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
 
-For example, here is a nice implementation of the problem ([editorial](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)).
-
-<Spoiler title="Java Solution With Built-in Rectangle Class">
+With Built-in Rectangle class:
 
 ```java
 import java.awt.Rectangle; //needed to use Rectangle class
@@ -154,75 +148,75 @@ import java.io.*;
 import java.util.*;
 
 public class blockedBillboard {
-		public static void main(String[] args) throws IOException{
-				Scanner sc = new Scanner(new File("billboard.in"));
-				PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-				int x1, y1, x2, y2;
+	public static void main(String[] args) throws IOException{
+		Scanner sc = new Scanner(new File("billboard.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
+		int x1, y1, x2, y2;
 
-				// the top left point is (0,0), so you need to do -y2
-				x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-				Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
-				x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-				Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
-				x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
-				Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		// the top left point is (0,0), so you need to do -y2
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle secondRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
+		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
+		Rectangle truck = new Rectangle(x1, -y2, x2-x1, y2-y1);
 
-				long firstIntersect = getArea(firstRect.intersection(truck));
-				long secondIntersect = getArea(secondRect.intersection(truck));
-				pw.println(getArea(firstRect)+getArea(secondRect)
-								- firstIntersect - secondIntersect);
-				pw.close();
-		}
-		public static long getArea(Rectangle r){
-				if (r.isEmpty()) return 0;
-				return (long)r.getHeight()*(long)r.getWidth();
-		}
+		long firstIntersect = getArea(firstRect.intersection(truck));
+		long secondIntersect = getArea(secondRect.intersection(truck));
+		pw.println(getArea(firstRect)+getArea(secondRect)
+						- firstIntersect - secondIntersect);
+		pw.close();
+	}
+	public static long getArea(Rectangle r){
+		if (r.isEmpty()) return 0;
+		return (long)r.getHeight()*(long)r.getWidth();
+	}
 }
 ```
 
-</Spoiler>
-
-<Spoiler title="Java Solution Without Built-in Rectangle Class">
+Without Built-in Rectangle class:
 
 ```java
 import java.io.*;
 import java.util.*;
 
 class Rect {
-		int x1, y1, x2, y2;
-		Rect() {}
-		int area() { return (y2-y1)*(x2-x1); }
+	int x1, y1, x2, y2;
+	Rect() {}
+	int area() { return (y2-y1)*(x2-x1); }
 }
 
 public class blockedBillboard {
-		public static void main (String[] args) throws IOException{
-				Scanner sc = new Scanner(new File("billboard.in"));
-				PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
-				Rect a = new Rect(), b = new Rect(), t = new Rect();
-				int x1, y1, x2, y2;
-				a.x1 = sc.nextInt(); a.y1 = sc.nextInt(); a.x2 = sc.nextInt(); a.y2 = sc.nextInt();
-				b.x1 = sc.nextInt(); b.y1 = sc.nextInt(); b.x2 = sc.nextInt(); b.y2 = sc.nextInt();
-				t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
-				pw.println(a.area()+b.area()-intersect(a, t)-intersect(b, t));
-				pw.close();
-		}
-		static int intersect(Rect p, Rect q) {
-				int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
-				int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
-				return xOverlap * yOverlap;
-		}
+	public static void main (String[] args) throws IOException{
+		Scanner sc = new Scanner(new File("billboard.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
+		Rect a = new Rect(), b = new Rect(), t = new Rect();
+		int x1, y1, x2, y2;
+		a.x1 = sc.nextInt(); a.y1 = sc.nextInt(); a.x2 = sc.nextInt(); a.y2 = sc.nextInt();
+		b.x1 = sc.nextInt(); b.y1 = sc.nextInt(); b.x2 = sc.nextInt(); b.y2 = sc.nextInt();
+		t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
+		pw.println(a.area()+b.area()-intersect(a, t)-intersect(b, t));
+		pw.close();
+    }
+	static int intersect(Rect p, Rect q) {
+		int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
+		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
+		return xOverlap * yOverlap;
+	}
 }
 ```
-
-</Spoiler>
 
 </JavaSection>
 
 <CPPSection>
 
-Unfortunately, C++ doesn't have a built in rectangle class, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!). A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default.
+Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!). 
 
-<Spoiler title="C++ Solution">
+<Info title="What's a struct?">
+
+A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
+
+</Info>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -232,6 +226,7 @@ struct Rect {
 	int x1,y1,x2,y2;
 	int area() { return (y2-y1)*(x2-x1); }
 };
+
 int intersect(Rect p, Rect q){
 	int xOverlap = max(0,min(p.x2,q.x2)-max(p.x1,q.x1));
 	int yOverlap = max(0,min(p.y2,q.y2)-max(p.y1,q.y1));
@@ -249,7 +244,6 @@ int main(){
 }
 ```
 
-</Spoiler>
 
 </CPPSection>
 
@@ -257,22 +251,20 @@ int main(){
 
 Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class yourself.
 
-<Spoiler title = "Python Solution">
-
 ```py
 import sys
 
 class Rect:
-    def __init__(self):
-        self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
+	def __init__(self):
+		self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
 
-    def area(self):
-        return (self.y2 - self.y1) * (self.x2 - self.x1)
+	def area(self):
+		return (self.y2 - self.y1) * (self.x2 - self.x1)
 
 def intersect(p, q):
-    xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
-    yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
-    return xOverlap * yOverlap
+	xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
+	yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
+	return xOverlap * yOverlap
 
 sys.stdin = open("billboard.in", "r")
 sys.stdout = open("billboard.out", "w")
@@ -280,12 +272,10 @@ sys.stdout = open("billboard.out", "w")
 rects = []
 
 for i in range(3):
-    rects.append(Rect())
+	rects.append(Rect())
 
 print(rects[0].area() + rects[1].area() - intersect(rects[0], rects[2]) - intersect(rects[1], rects[2]))
 ```
-
-</Spoiler>
 
 </PySection>
 
