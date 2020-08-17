@@ -1,8 +1,18 @@
 ---
 id: balkan-18-election
 title: Balkan OI 2018 Election
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
+
+# Method 1 (Offline)
+
+Consider the greedy strategy: iterate from left to right and change `T`s to satisfy the increasing condition, then do the same from right to left. 
+
+We can solve this problem offline by simulating this process.
+
+<IncompleteSection />
+
+# Method 2 (Online)
 
 ## A simpler case
 
@@ -33,17 +43,21 @@ When we combine two nodes $u$ (left child) and $v$ (right child) to make node $w
 - $w.R = \max(u.R + v.S, v.R)$
 - $w.S = u.S + v.S$
 
-Finding $w.A$ is a bit more tricky though. We will now prove that the lower bound on $w.A$ is
+Finding $w.A$ is a bit more tricky though. We will show that it is equal to
 
 $$
-\max(\max(u.A + v.S, u.S + v.A), u.L + v.R)
+w.A=\max(\max(u.A + v.S, u.S + v.A), u.L + v.R)
 $$
 
-and that it can be attained.
+For a range of length $L$, this calculates $\max_i\left(\max(\text{first }i\text{ prefix sums})+\max(\text{last }L-i\text{ suffix sums})\right)$
+
+**Claim 1:** This is a lower bound on the answer.
 
 We can say that the increasing condition must hold for the first $i$ votes and the decreasing condition must hold for the rest of the votes in the range.
 
-Consider the greedy strategy: iterate from left to right and change `T`s to satisfy the increasing condition, then do the same from right to left. Then equality holds when we set $i$ equal to one less than the position of the leftmost `T` removed when doing the right to left iteration.
+**Claim 2:** This lower bound can be attained.
+
+Consider the greedy strategy mentioned in method 1. Then equality holds when we set $i$ equal to one less than the position of the leftmost `T` removed when doing the right to left iteration.
 
 Therefore, this is a lower bound and it can be attained.
 
