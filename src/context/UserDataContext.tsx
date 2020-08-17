@@ -44,6 +44,11 @@ const UserDataContext = createContext<{
   firebaseUser: any;
   signIn: Function;
   signOut: Function;
+
+  lastVisitDate: number;
+  setLastVisitDate: (today: number) => void;
+
+  consecutiveVisits: number;
 }>(null);
 
 const langKey = 'guide:userData:lang';
@@ -107,14 +112,29 @@ const getLastReadAnnouncementFromStorage = () => {
   return v || null;
 };
 
-function areEqualShallow(a, b) {
-  for (let key of Object.keys(a)) {
-    if (a[key] !== b[key]) {
-      return false;
-    }
+const lastVisitDateKey = 'guide:userData:lastVisitDate';
+const getLastVisitDateFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(lastVisitDateKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse last visit date", e);
   }
-  return true;
-}
+  return v || new Date().setHours(0, 0, 0, 0);
+};
+
+const consecutiveVisitsKey = 'guide:userData:consecutiveVisits';
+const getConsecutiveVisitsFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(consecutiveVisitsKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse consecutive visits", e);
+  }
+  return v || 1;
+};
 
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
@@ -129,6 +149,8 @@ export const UserDataProvider = ({ children }) => {
     null
   );
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [lastVisitDate, setLastVisitDate] = useState<number>(null);
+  const [consecutiveVisits, setConsecutiveVisits] = useState<number>(null);
 
   useFirebase(firebase => {
     return firebase.auth().onAuthStateChanged(user => {
@@ -144,6 +166,8 @@ export const UserDataProvider = ({ children }) => {
     setUserProgressOnProblems(getProblemStatusFromStorage());
     setLastViewedModule(getLastViewedModuleFromStorage());
     setLastReadAnnouncement(getLastReadAnnouncementFromStorage());
+    setLastVisitDate(getLastVisitDateFromStorage());
+    setConsecutiveVisits(getConsecutiveVisitsFromStorage());
   }, []);
 
   React.useEffect(() => {
@@ -170,6 +194,8 @@ export const UserDataProvider = ({ children }) => {
                       userProgressOnProblems,
                       lastViewedModule,
                       lastReadAnnouncement,
+                      lastVisitDate,
+                      consecutiveVisits,
                     },
                     { merge: true }
                   );
@@ -185,6 +211,10 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
+              setLastVisitDate(
+                data.lastVisitDate || new Date().setHours(0, 0, 0, 0)
+              );
+              setConsecutiveVisits(data.consecutiveVisits || 1);
             });
           }
         });
@@ -205,6 +235,7 @@ export const UserDataProvider = ({ children }) => {
         window.localStorage.setItem(langKey, JSON.stringify(lang));
         setLang(lang);
       },
+
       userProgressOnModules,
       setModuleProgress: (moduleID: string, progress: ModuleProgress) => {
         if (firebaseUser) {
@@ -220,15 +251,15 @@ export const UserDataProvider = ({ children }) => {
               },
               { merge: true }
             );
-        } else {
-          const newProgress = {
-            ...getProgressFromStorage(),
-            [moduleID]: progress,
-          };
-          window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
-          setUserProgressOnModules(newProgress);
         }
+        const newProgress = {
+          ...getProgressFromStorage(),
+          [moduleID]: progress,
+        };
+        window.localStorage.setItem(progressKey, JSON.stringify(newProgress));
+        setUserProgressOnModules(newProgress);
       },
+
       userProgressOnProblems,
       setUserProgressOnProblems: (problem, status) => {
         if (firebaseUser) {
@@ -244,19 +275,19 @@ export const UserDataProvider = ({ children }) => {
               },
               { merge: true }
             );
-        } else {
-          const newStatus = {
-            ...getProblemStatusFromStorage(),
-            [problem.uniqueID]: status,
-          };
-          window.localStorage.setItem(
-            problemStatusKey,
-            JSON.stringify(newStatus)
-          );
-
-          setUserProgressOnProblems(newStatus);
         }
+        const newStatus = {
+          ...getProblemStatusFromStorage(),
+          [problem.uniqueID]: status,
+        };
+        window.localStorage.setItem(
+          problemStatusKey,
+          JSON.stringify(newStatus)
+        );
+
+        setUserProgressOnProblems(newStatus);
       },
+
       lastViewedModule,
       setLastViewedModule: moduleID => {
         if (firebaseUser) {
@@ -266,14 +297,14 @@ export const UserDataProvider = ({ children }) => {
             },
             { merge: true }
           );
-        } else {
-          window.localStorage.setItem(
-            lastViewedModuleKey,
-            JSON.stringify(moduleID)
-          );
-          setLastViewedModule(moduleID);
         }
+        window.localStorage.setItem(
+          lastViewedModuleKey,
+          JSON.stringify(moduleID)
+        );
+        setLastViewedModule(moduleID);
       },
+
       lastReadAnnouncement,
       setLastReadAnnouncement: announcementID => {
         if (firebaseUser) {
@@ -290,6 +321,7 @@ export const UserDataProvider = ({ children }) => {
         );
         setLastReadAnnouncement(announcementID);
       },
+
       firebaseUser,
       signIn: () => {
         if (
@@ -308,6 +340,33 @@ export const UserDataProvider = ({ children }) => {
           .signOut()
           .then(() => window.location.reload());
       },
+
+      lastVisitDate,
+      consecutiveVisits,
+      setLastVisitDate: today => {
+        if (!lastVisitDate) return;
+
+        let newVisits = consecutiveVisits;
+        if (today - lastVisitDate == 1000 * 60 * 60 * 24) newVisits++;
+        else if (today != lastVisitDate) newVisits = 1;
+
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              lastVisitDate: today,
+              consecutiveVisits: newVisits,
+            },
+            { merge: true }
+          );
+        }
+        window.localStorage.setItem(lastVisitDateKey, JSON.stringify(today));
+        window.localStorage.setItem(
+          consecutiveVisitsKey,
+          JSON.stringify(newVisits)
+        );
+        setConsecutiveVisits(newVisits);
+        setLastVisitDate(today);
+      },
     }),
     [
       lang,
@@ -316,6 +375,8 @@ export const UserDataProvider = ({ children }) => {
       lastViewedModule,
       lastReadAnnouncement,
       firebaseUser,
+      lastVisitDate,
+      consecutiveVisits,
       firebase,
     ]
   );
