@@ -4,6 +4,7 @@ const contests = {
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
   'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
   CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
+  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
   COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
   IOI: ['oj.uz', 'International Olympiad in Informatics'],
   IZhO: ['oj.uz', 'International Zhautykov Olympiad'],

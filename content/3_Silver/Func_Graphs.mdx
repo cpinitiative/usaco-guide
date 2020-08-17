@@ -1,10 +1,10 @@
 ---
 id: func-graphs
-title: Functional Graphs
-author: Siyong Huang
+title: Introduction to Functional Graphs
+author: Siyong Huang, Benjamin Qi
 prerequisites:
-  - dfs
-description: 'Properties of functional graphs, directed graphs in which every vertex has exactly one outgoing edge.'
+  - intro-tree
+description: 'Directed graphs in which every vertex has exactly one outgoing edge.'
 frequency: 1
 ---
 
@@ -19,7 +19,7 @@ export const problems = {
 			'Very Easy',
 			false,
 			['Func Graph'],
-			'Try to solve the problem in $O(N)$!'
+			''
 		),
 	],
 	sample_floyd: [
@@ -33,7 +33,7 @@ export const problems = {
 			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
 		),
 	],
-	general: [
+	probs: [
 		new Problem(
 			'Silver',
 			'The Bovine Shuffle',
@@ -47,7 +47,7 @@ export const problems = {
 			'CSES',
 			'Planets Cycles',
 			'1751',
-			'Normal',
+			'Easy',
 			false,
 			['Func Graph'],
 			''
@@ -61,60 +61,133 @@ export const problems = {
 			['Permutation'],
 			''
 		),
-		new Problem(
-			'POI',
-			'Mafia',
-			'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
-			'Very Hard',
-			false,
-			['Func Graph'],
-			''
-		),
-		new Problem(
-			'POI',
-			'Spies',
-			'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
-			'Very Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'Frog',
-			'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
-			'Very Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'JOI',
-			'Space Pirate',
-			'JOI14_space_pirate',
-			'Insane',
-			false,
-			['Graphs'],
-			"One of the most difficult problems of all time. Build a tree with a single back edge. Break into four cases: path -> other cycle, non-cycle path -> non-subtree, cycle path -> non-subtree, path -> subtree. For the 3rd and 4th cases, let D = depth[B]-depth[A]. Valid B nodes form a 'triangle' in the graph and have some interesting common properties. Then proceed with black magic."
-		),
 	],
 };
 
-We'll consider graphs like the one presented in this problem:
-
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 <br />
 
-In a **functional graph**, each node has exactly one out-edge. This is also commonly referred to as a **successor graph**.
+It's easy to solve the above problem in $O(N^2)$ time. We'll solve it in $O(N)$.
 
-## Resources
+
+## Introduction
+
+In a **functional graph**, each node has exactly one out-edge. This is also commonly referred to as a **successor graph**. 
 
 <Resources>
-	<Resource source="CPH" title="16.3 Successor Graphs"></Resource>
+	<Resource source="CPH" title="16.3 Successor Graphs" starred>diagrams</Resource>
 </Resources>
 
+You can think of every connected component of a functional graph as a rooted tree plus an additional edge going out of the root.
+
+## Floyd's Algorithm
+
+**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself).
+
+<Resources>
+	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
+	<Resource
+		source="Medium"
+		title="The Tortoise and the Hare (Floyd's Algorithm)"
+		url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
+	></Resource>
+	<Resouce source="CP2" title="5.7 - Cycle-Finding">
+		{' '}
+	</Resouce>
+</Resources>
+
+
+### Example - Cooperative Game
+
+<FocusProblem problem={problems.sample_floyd[0]} />
+
+<!-- <Spoiler title="Tortoise and Hare Algrotihm">
+
+```cpp
+//UNTESTED
+pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
+{
+	int t=start_node, h=start_node; //tortoise and hare
+	do
+	{
+		t=next[t], h=next[h];
+	} while(t != h)
+
+	int dist=0;
+	t = start_node;
+	while(t != h)
+		++dist, t=next[t], h=next[h];
+
+	int len=1;
+	h = next[t];
+	while(h != t)
+		++len, h=next[h];
+	return make_pair(len, dist);
+}
+```
+
+</Spoiler> -->
+
+<Spoiler title="Hint">
+
+You only need 3 friends.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+<!-- https://codeforces.com/contest/1137/submission/87195511 -->
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+void out(const std::vector<int>& x)
+{
+	printf("next");
+	for(auto a:x) printf(" %d", a);
+	printf("\n");
+	fflush(stdout);
+}
+int N, g[20];
+char s[20];
+void read()
+{
+	scanf("%d", &N);
+	for(int i=0;i<N;++i)
+	{
+		scanf(" %s", s);
+		for(int j=0;s[j];++j)
+			g[s[j]-'0']=i;
+	}
+}
+int main()
+{
+	for(;;)
+	{
+		out({0,1});
+		read();
+		out({0});
+		read();
+		if(g[0] == g[1]) break;
+	}
+	for(;;)
+	{
+		out({0,1,2,3,4,5,6,7,8,9});
+		read();
+		if(g[0] == g[2]) break;
+	}
+	printf("done\n");
+	return 0;
+}
+```
+
+</Spoiler>
+
 ## Solution - Badge
+
+<IncompleteSection />
 
 <LanguageSection>
 
@@ -242,7 +315,8 @@ public class badge
 
 </LanguageSection>
 
-## Count Cycles
+
+<!-- ## Count Cycles
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
 
@@ -284,107 +358,27 @@ int main()
 
 </CPPSection>
 
-</LanguageSection>
+</LanguageSection> -->
 
-## Floyd's Algorithm
 
-**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself)
 
-<Resources>
-	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
-	<Resource
-		source="Medium"
-		title="The Tortoise and the Hare (Floyd's Algorithm)"
-		url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
-	></Resource>
-	<Resouce source="CP2" title="5.7 - Cycle-Finding">
-		{' '}
-	</Resouce>
-</Resources>
+## $K$-th Successor
 
-The following problem uses this algorithm.
-
-<Problems problems={problems.sample_floyd} />
-
-## Implementation
-
-<Spoiler title="Tortoise and Hare Algrotihm">
-
-```cpp
-//UNTESTED
-pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
-{
-	int t=start_node, h=start_node; //tortoise and hare
-	do
-	{
-		t=next[t], h=next[h];
-	} while(t != h)
-
-	int dist=0;
-	t = start_node;
-	while(t != h)
-		++dist, t=next[t], h=next[h];
-
-	int len=1;
-	h = next[t];
-	while(h != t)
-		++len, h=next[h];
-	return make_pair(len, dist);
-}
-```
-
-</Spoiler>
-
-<Spoiler title="Solution to Cooperative Game">
-
-<!-- https://codeforces.com/contest/1137/submission/87195511 -->
-
-```cpp
-#include <cstdio>
-#include <vector>
-
-void out(const std::vector<int>& x)
-{
-	printf("next");
-	for(auto a:x) printf(" %d", a);
-	printf("\n");
-	fflush(stdout);
-}
-int N, g[20];
-char s[20];
-void read()
-{
-	scanf("%d", &N);
-	for(int i=0;i<N;++i)
-	{
-		scanf(" %s", s);
-		for(int j=0;s[j];++j)
-			g[s[j]-'0']=i;
-	}
-}
-int main()
-{
-	for(;;)
-	{
-		out({0,1});
-		read();
-		out({0});
-		read();
-		if(g[0] == g[1]) break;
-	}
-	for(;;)
-	{
-		out({0,1,2,3,4,5,6,7,8,9});
-		read();
-		if(g[0] == g[2]) break;
-	}
-	printf("done\n");
-	return 0;
-}
-```
-
-</Spoiler>
+As described briefly in CPH 16.3, can be found in $O(\log K)$ time using **binary jumping**. See the [Platinum module](/plat/bin-jump) for details.
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems={problems.probs} />
+
+Additional problems can be found in the [Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
+
+
+<!-- new Problem(
+	'JOI',
+	'Space Pirate',
+	'JOI14_space_pirate',
+	'Insane',
+	false,
+	['Graphs'],
+	"One of the most difficult problems of all time. Build a tree with a single back edge. Break into four cases: path -> other cycle, non-cycle path -> non-subtree, cycle path -> non-subtree, path -> subtree. For the 3rd and 4th cases, let D = depth[B]-depth[A]. Valid B nodes form a 'triangle' in the graph and have some interesting common properties. Then proceed with black magic."
+), -->

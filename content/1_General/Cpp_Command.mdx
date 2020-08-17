@@ -417,12 +417,31 @@ runs, but changing `2000000` to `3000000` also gives a segmentation fault. This 
 	>
 		explanation of the issue
 	</Resource>
+</Resources>
+
+<Warning>
+
+This matters particularly for contests such as [Facebook Hacker Cup](https://www.facebook.com/hackercup) where you submit the output of a program you run locally.
+
+</Warning>
+
+#### Method 1
+
+<Resources>
+	<Resource source="SO" url="https://stackoverflow.com/questions/13245019/how-to-change-the-stack-size-using-ulimit-or-per-process-on-mac-os-x-for-a-c-or" title="Change Stack Size on Mac OS?"> </Resource>
+</Resources>
+
+`ulimit -s 65532` will increase the stack size to about 64 MB. Unfortunately, this doesn't work for higher numbers.
+
+#### Method 2
+
+<Resources>
 	<Resource
 		source="CF"
 		url="https://codeforces.com/blog/entry/60999?#comment-449312"
-		title="Solving on Mac"
+		title="Terminal Command on Mac"
 	>
-		{' '}
+		looks like people complain about FHC every year!
 	</Resource>
 </Resources>
 
@@ -431,9 +450,3 @@ To get around this, we can pass a [linker option](https://gcc.gnu.org/onlinedocs
 > Specifies the maximum stack size for the main thread in a program. Without this option a program has a 8MB stack. The argument size is a hexadecimal number with an optional leading 0x. The size should be a multiple of the architecture's page size (4KB or 16KB).
 
 So including `-Wl,-stack_size -Wl,0x10000000` as part of your compilation command will set the maximum stack size to $16^7$ bytes $\approx$ $256$ megabytes, which is usually sufficient. However, running the first program above with `200000` replaced by `1e7` still gives an error. In this case, you can further increase the maximum stack size (ex. by adding another `0` to the end).
-
-<Warning>
-
-This matters particularly for contests such as [Facebook Hacker Cup](https://www.facebook.com/hackercup) where you submit the output of a program you run locally.
-
-</Warning>

@@ -286,32 +286,44 @@ $$
 	</Resource>
 </Resources>
 
-<IncompleteSection>
+**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. 
 
-when is binary introduced?
+To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
-</IncompleteSection>
+<!-- 
+Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently.  -->
 
-**Modular Exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. Finally, since $x ^ y$ for some $y \neq 1$ equals $2 \cdot x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently. To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
-
-Here is code to compute $x ^ n \pmod m$:
+#### Solution - Exponentiation
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h> // see C++ Tips & Tricks
+using namespace std;
+
 long long binpow(long long x, long long n, long long m) {
-    x %= m; //note: m*m must be less than 2^63-1 to avoid long long overflow
-    long long res = 1;
-    while (n > 0) {
-        if (n % 2 == 1) //if n is odd
-            res = res * x % m;
-        x = x * x % m;
-        n /= 2; //divide by two
-    }
-    return res;
+	assert(n >= 0);
+	x %= m; //note: m*m must be less than 2^63 to avoid long long overflow
+	long long res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) //if n is odd
+			res = res * x % m;
+		x = x * x % m;
+		n /= 2; //divide by two
+	}
+	return res;
 }
+
+int main() {
+	int TC; cin >> TC;
+	for (int i = 0; i < TC; ++i) {
+		int a, b; cin >> a >> b;
+		cout << binpow(a,b,1e9+7) << "\n";
+	}
+}
+
 ```
 
 </CPPSection>
@@ -326,13 +338,13 @@ make full solution to above problem
 
 ### Modular Inverse with Exponentiation
 
+The **modular inverse** is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider **prime** moduli here.
+
 <IncompleteSection>
 
-sample problem: compute modular inverse
+example - modular inverse
 
 </IncompleteSection>
-
-Division can be performed using modular inverses. The modular inverse is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider **prime** moduli here.
 
 <Resources>
 	<Resource
@@ -346,7 +358,7 @@ Division can be performed using modular inverses. The modular inverse is the equ
 
 <!-- To find a modular inverse of some number modulo $p$, simply raise it to the power of $p-2$. -->
 
-[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) (not to be confused with Fermat's **Last** Theorem) states that for any **prime number** $p$, all integers $a$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently, $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse of $a$ modulo $p$.
+[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) (not to be confused with Fermat's **Last** Theorem) states that for any **prime number** $p$, all integers $a$ not divisible by $p$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently, $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse of $a$ modulo $p$.
 
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo $p$, frequent use of division inside a loop can significantly increase the running time of a program. If the modular inverse of the same number(s) is/are being used many times, it is a good idea to precalculate it.
 
