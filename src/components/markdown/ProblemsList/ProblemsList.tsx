@@ -16,6 +16,8 @@ type ProblemsListProps = {
   problems: Problem[];
 };
 
+const showSols = false;
+
 export function ProblemsList(props: ProblemsListProps) {
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
@@ -39,12 +41,16 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     Difficulty
                   </th>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Tags
-                  </th>
-                  <th className="pl-10 pr-4 md:pr-6 md:pl-12 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Solution
-                  </th>
+                  {showSols && (
+                    <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Tags
+                    </th>
+                  )}
+                  {showSols && (
+                    <th className="pl-10 pr-4 md:pr-6 md:pl-12 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Solution
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="table-alternating-stripes">
@@ -214,18 +220,22 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
-        {problem.tags && problem.tags.length ? (
-          <details className="text-gray-500">
-            <summary>Show Tags</summary>
-            <p className="text-xs">{problem.tags.join(', ')}</p>
-          </details>
-        ) : null}
-      </td>
-      <ProblemSolutionCell
-        problem={props.problem}
-        onShowSolution={props.onShowSolution}
-      />
+      {showSols && (
+        <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+          {problem.tags && problem.tags.length ? (
+            <details className="text-gray-500">
+              <summary>Show Tags</summary>
+              <p className="text-xs">{problem.tags.join(', ')}</p>
+            </details>
+          ) : null}
+        </td>
+      )}
+      {showSols && (
+        <ProblemSolutionCell
+          problem={props.problem}
+          onShowSolution={props.onShowSolution}
+        />
+      )}
     </tr>
   );
 }
