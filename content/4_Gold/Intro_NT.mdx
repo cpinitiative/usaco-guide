@@ -53,7 +53,7 @@ export const problems = {
 			'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
 			'Hard',
 			false,
-			['Knapsack, Prime Factorization'],
+			['Knapsack, Prime Factorization']
 		),
 		new Problem(
 			'Plat',
@@ -84,14 +84,9 @@ export const problems = {
 			['Knapsack', 'Exponentiation'],
 			'First consider the case where there are only two lines with the same class.'
 		),
-		new Problem(
-			'Plat',
-			'Sprinkers 2',
-			'1044',
-			'Very Hard',
-			false,
-			['dp, modular inverse'],
-		),
+		new Problem('Plat', 'Sprinkers 2', '1044', 'Very Hard', false, [
+			'dp, modular inverse',
+		]),
 	],
 };
 
@@ -238,9 +233,9 @@ def gcd(a, b):
 
 </LanguageSection>
 
-This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$. 
+This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$.
 
-The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$.  for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$. 
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$.
 
 <!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
 <!-- ^ this doesn't seem very helpful -->
@@ -311,11 +306,11 @@ $$
 	</Resource>
 </Resources>
 
-**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. 
+**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$.
 
 To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
-<!-- 
+<!--
 Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently.  -->
 
 #### CSES - Exponentiation
@@ -364,16 +359,15 @@ int main() {
 
 </Spoiler>
 
-
 ### Modular Inverse
 
 The **modular inverse** is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider prime moduli $p$ here.
 
-For example, the inverse of $2$ modulo $p=10^9+7$ is $i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$, 
+For example, the inverse of $2$ modulo $p=10^9+7$ is $i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$,
 
 $$
 (2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
-$$ 
+$$
 
 For example, $10i\equiv 5\pmod{10^9+7}$.
 
@@ -457,13 +451,12 @@ $$
 \sum_{i = 1}^{sz(l)} l_i = N
 $$
 
-and 
+and
 
 $$
 LCM(l_1, l_2, \cdots l_{sz(l)}) = K
 $$
 
 -->
-
 
 <Problems problems={problems.permutations} />
