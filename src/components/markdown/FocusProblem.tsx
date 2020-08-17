@@ -9,7 +9,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
       to={problem.url}
       target="_blank"
       rel="noreferrer"
-      className="overflow-hidden shadow hover:shadow-lg block transition duration-150 ease-in-out transform hover:-translate-y-1"
+      className="shadow hover:shadow-lg block transition duration-150 ease-in-out transform hover:-translate-y-1"
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center py-4 px-6">
