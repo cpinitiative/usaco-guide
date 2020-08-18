@@ -11,14 +11,14 @@ export function ResourcesList(props) {
       <div className="flex flex-col mb-4">
         <div className={`overflow-x-auto lg:-mx-4 lg:px-4 -my-2 py-2`}>
           <div
-            className={`align-middle inline-block min-w-full shadow overflow-hidden lg:rounded-lg border-b border-gray-200`}
+            className={`align-middle inline-block min-w-full shadow overflow-hidden lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent`}
           >
             <table className="min-w-full">
               <thead>
                 <tr>
                   <th
                     colSpan={4}
-                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 bg-purple-50 text-purple-500`}
+                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-purple-800 bg-purple-50 text-purple-500 dark:bg-purple-900 dark:text-purple-200`}
                   >
                     Resources{props.title ? `: ${props.title}` : ''}
                   </th>
@@ -123,7 +123,7 @@ export function Resource(props) {
   // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
   return (
     <tr className="block sm:table-row">
-      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
         {source && (
           <>
             {des ? <TextTooltip content={des}>{source}</TextTooltip> : source}
@@ -133,7 +133,7 @@ export function Resource(props) {
       <td
         className={`${
           props.source && 'pl-2 sm:pl-6'
-        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900`}
+        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
       >
         <div className="flex items-center">
           {props.starred && (
@@ -157,7 +157,7 @@ export function Resource(props) {
           </a>
         </div>
       </td>
-      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500">
+      <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
         {props.children}
       </td>
     </tr>

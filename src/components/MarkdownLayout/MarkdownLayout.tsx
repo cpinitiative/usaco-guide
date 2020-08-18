@@ -28,10 +28,10 @@ const Breadcrumbs = () => {
   const module = moduleLayoutInfo.markdownLayoutInfo;
   if (module instanceof SolutionInfo) return null;
   return (
-    <nav className="flex flex-wrap items-center text-sm leading-loose font-medium">
+    <nav className="flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500 dark:text-dark-med-emphasis">
       <Link
         to="/dashboard/"
-        className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
+        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
       >
         Home
       </Link>
@@ -48,7 +48,7 @@ const Breadcrumbs = () => {
       </svg>
       <Link
         to={`/${module.section}/`}
-        className="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
+        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
       >
         {SECTION_LABELS[module.section]}
       </Link>
@@ -63,7 +63,7 @@ const Breadcrumbs = () => {
           clipRule="evenodd"
         />
       </svg>
-      <span className="text-gray-500 whitespace-no-wrap">{module.title}</span>
+      <span className="whitespace-no-wrap">{module.title}</span>
     </nav>
   );
 };
@@ -84,13 +84,13 @@ const SidebarBottomButtons = ({ onContactUs }) => {
   const userSettings = useContext(UserDataContext);
   return (
     <>
-      <div className="flex-shrink-0 border-t border-gray-200 flex">
+      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => userSettings.setLang(nextLang[userSettings.lang])}
         >
           <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -103,13 +103,13 @@ const SidebarBottomButtons = ({ onContactUs }) => {
           Language: {languages[userSettings.lang]}
         </button>
       </div>
-      <div className="flex-shrink-0 border-t border-gray-200 flex">
+      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={onContactUs}
         >
           <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -151,9 +151,10 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       ? null
       : sortedModuleLinks[moduleIdx + 1];
 
-  const disabledClasses = 'text-gray-200 pointer-events-none';
+  const disabledClasses =
+    'text-gray-200 pointer-events-none dark:text-dark-low-emphasis';
   const activeClasses =
-    'text-gray-500 hover:text-gray-800 transition duration-150 ease-in-out';
+    'text-gray-500 hover:text-gray-800 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out';
   return (
     <div
       className={`flex ${
@@ -217,7 +218,10 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   if (moduleLink)
     return (
       <li key={prerequisite}>
-        <Link to={moduleLink.url} className="underline text-black">
+        <Link
+          to={moduleLink.url}
+          className="underline text-black dark:text-blue-200"
+        >
           {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
         </Link>
       </li>
@@ -372,7 +376,7 @@ export default function MarkdownLayout({
         style={{ width: '20rem' }}
       >
         <div
-          className="border-r border-gray-200 bg-white h-screen flex flex-col"
+          className="border-r border-gray-200 bg-white dark:bg-dark-surface dark:border-gray-800 h-screen flex flex-col"
           style={{ width: '20rem' }}
         >
           <div className="flex-grow h-0 flex flex-col pt-5">
@@ -439,11 +443,13 @@ export default function MarkdownLayout({
                 </div>
                 <div className="sm:flex sm:items-center sm:justify-between mb-4">
                   <div className="flex-1 min-w-0">
-                    <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">
                       {markdownData.title}
                     </h1>
                     {markdownData.author && (
-                      <p className={`text-gray-500`}>
+                      <p
+                        className={`text-gray-500 dark:text-dark-med-emphasis`}
+                      >
                         Author
                         {markdownData.author.indexOf(',') !== -1
                           ? 's'
@@ -463,7 +469,7 @@ export default function MarkdownLayout({
 
                 {markdownData instanceof ModuleInfo &&
                   markdownData.prerequisites && (
-                    <div className="rounded-md bg-blue-50 p-4 mb-4">
+                    <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4">
                       <div className="flex">
                         <div className="flex-shrink-0">
                           <svg
@@ -479,10 +485,10 @@ export default function MarkdownLayout({
                           </svg>
                         </div>
                         <div className="ml-3">
-                          <h3 className="text-sm leading-5 font-medium text-blue-800">
+                          <h3 className="text-sm leading-5 font-medium text-blue-800 dark:text-dark-high-emphasis">
                             Prerequisites
                           </h3>
-                          <div className="mt-2 text-sm leading-5 text-blue-800">
+                          <div className="mt-2 text-sm leading-5 text-blue-800 dark:text-blue-200">
                             <ul className="list-disc list-inside pl-3 space-y-1">
                               {markdownData.prerequisites.map(x =>
                                 renderPrerequisite(x, moduleLinks)
@@ -496,7 +502,7 @@ export default function MarkdownLayout({
 
                 {markdownData instanceof ModuleInfo &&
                   markdownData.description && (
-                    <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4">
+                    <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4 dark:bg-green-800 dark:border-green-500 dark:text-green-100">
                       {markdownData.description}
                     </p>
                   )}

@@ -74,7 +74,7 @@ export default function ProblemStatusCheckbox({
   let status: ProblemProgress =
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
-    'Not Attempted': 'bg-gray-200',
+    'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
     Solving: 'bg-yellow-300',
     Solved: 'bg-green-500',
     Ignored: 'bg-red-100',

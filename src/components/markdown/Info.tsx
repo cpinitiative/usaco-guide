@@ -7,7 +7,7 @@ const Info = ({
   children: React.ReactNode;
   title: string;
 }) => (
-  <div className="rounded-md bg-blue-50 p-4 mb-4 tailwind-alert">
+  <div className="rounded-md bg-blue-50 dark:bg-blue-700 p-4 mb-4 tailwind-alert">
     <div className="flex">
       <div className="flex-shrink-0">
         <svg

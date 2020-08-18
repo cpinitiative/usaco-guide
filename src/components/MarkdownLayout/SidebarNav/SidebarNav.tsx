@@ -37,8 +37,8 @@ export const SidebarNav = () => {
   }, [activeSection, sidebarLinks]);
 
   return (
-    <nav className="flex-grow bg-white flex flex-col h-0">
-      <div className="flex-shrink-0 border-b border-gray-200">
+    <nav className="flex-grow bg-white dark:bg-dark-surface flex flex-col h-0">
+      <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
         <div className="flex justify-center my-4">
           <SectionsDropdown
             currentSection={activeSection}
