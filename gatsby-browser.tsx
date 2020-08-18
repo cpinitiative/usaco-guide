@@ -7,11 +7,9 @@ import { UserDataProvider } from './src/context/UserDataContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
 
 export const wrapRootElement = ({ element }) => (
-  <div className="mode-dark">
-    <FirebaseProvider>
-      <MDXProvider>
-        <UserDataProvider>{element}</UserDataProvider>
-      </MDXProvider>
-    </FirebaseProvider>
-  </div>
+  <FirebaseProvider>
+    <MDXProvider>
+      <UserDataProvider>{element}</UserDataProvider>
+    </MDXProvider>
+  </FirebaseProvider>
 );

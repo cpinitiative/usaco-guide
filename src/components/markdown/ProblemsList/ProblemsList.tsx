@@ -34,7 +34,7 @@ export function ProblemsList(props: ProblemsListProps) {
             <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
-                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider text-center">
                     Status
                   </th>
                   <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">

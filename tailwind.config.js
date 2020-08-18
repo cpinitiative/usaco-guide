@@ -40,6 +40,7 @@ module.exports = {
     //   'dark-odd',
     //   'dark-placeholder',
     // ],
+    display: ['responsive', 'dark'],
     backgroundColor: [
       'responsive',
       'group-hover',

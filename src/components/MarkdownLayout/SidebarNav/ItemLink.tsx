@@ -17,7 +17,7 @@ const LinkWithProgress = styled.span`
     height: 8px;
     width: 8px;
     position: absolute;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
   }
 
   &::after {
