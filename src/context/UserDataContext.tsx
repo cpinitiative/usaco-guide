@@ -41,6 +41,9 @@ const UserDataContext = createContext<{
   lastReadAnnouncement: string;
   setLastReadAnnouncement: (announcementID: string) => void;
 
+  hide: Boolean;
+  setHide: (b: Boolean) => void;
+
   firebaseUser: any;
   signIn: Function;
   signOut: Function;
@@ -129,6 +132,7 @@ export const UserDataProvider = ({ children }) => {
     null
   );
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [hide, setHide] = useState(false);
 
   useFirebase(firebase => {
     return firebase.auth().onAuthStateChanged(user => {
@@ -185,6 +189,7 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
+              setHide(data.hide || false);
             });
           }
         });
@@ -290,6 +295,17 @@ export const UserDataProvider = ({ children }) => {
         );
         setLastReadAnnouncement(announcementID);
       },
+      hide,
+      setHide: b => {
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              hide: b,
+            },
+            { merge: true }
+          );
+        }
+      },
       firebaseUser,
       signIn: () => {
         if (
@@ -315,6 +331,7 @@ export const UserDataProvider = ({ children }) => {
       userProgressOnProblems,
       lastViewedModule,
       lastReadAnnouncement,
+      hide,
       firebaseUser,
       firebase,
     ]

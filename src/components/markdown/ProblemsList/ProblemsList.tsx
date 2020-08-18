@@ -7,6 +7,9 @@ import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import PGS from '../PGS.json';
 import { books } from '../ResourcesList';
 
+import { useContext } from 'react';
+import UserDataContext from '../../../context/UserDataContext';
+
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
 
@@ -16,9 +19,11 @@ type ProblemsListProps = {
   problems: Problem[];
 };
 
-const showSols = false;
+let showSols = true;
 
 export function ProblemsList(props: ProblemsListProps) {
+  const userSettings = useContext(UserDataContext);
+  showSols = !userSettings.hide;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   return (
