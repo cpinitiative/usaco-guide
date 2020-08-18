@@ -41,6 +41,9 @@ const UserDataContext = createContext<{
   lastReadAnnouncement: string;
   setLastReadAnnouncement: (announcementID: string) => void;
 
+  hide: Boolean;
+  setHide: (b: Boolean) => void;
+
   firebaseUser: any;
   signIn: Function;
   signOut: Function;
@@ -107,14 +110,26 @@ const getLastReadAnnouncementFromStorage = () => {
   return v || null;
 };
 
-function areEqualShallow(a, b) {
-  for (let key of Object.keys(a)) {
-    if (a[key] !== b[key]) {
-      return false;
-    }
+const hideKey = 'guide:userData:hide';
+const getHideFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(hideKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse last hide", e);
   }
-  return true;
-}
+  return v || null;
+};
+
+// function areEqualShallow(a, b) {
+//   for (let key of Object.keys(a)) {
+//     if (a[key] !== b[key]) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
@@ -129,6 +144,7 @@ export const UserDataProvider = ({ children }) => {
     null
   );
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [hide, setHide] = useState(false);
 
   useFirebase(firebase => {
     return firebase.auth().onAuthStateChanged(user => {
@@ -144,6 +160,7 @@ export const UserDataProvider = ({ children }) => {
     setUserProgressOnProblems(getProblemStatusFromStorage());
     setLastViewedModule(getLastViewedModuleFromStorage());
     setLastReadAnnouncement(getLastReadAnnouncementFromStorage());
+    setHide(getHideFromStorage());
   }, []);
 
   React.useEffect(() => {
@@ -170,6 +187,7 @@ export const UserDataProvider = ({ children }) => {
                       userProgressOnProblems,
                       lastViewedModule,
                       lastReadAnnouncement,
+                      hide,
                     },
                     { merge: true }
                   );
@@ -185,6 +203,7 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
+              setHide(data.hide || false);
             });
           }
         });
@@ -290,6 +309,19 @@ export const UserDataProvider = ({ children }) => {
         );
         setLastReadAnnouncement(announcementID);
       },
+      hide,
+      setHide: b => {
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              hide: b,
+            },
+            { merge: true }
+          );
+        }
+        window.localStorage.setItem(hideKey, JSON.stringify(b));
+        setHide(b);
+      },
       firebaseUser,
       signIn: () => {
         if (
@@ -315,6 +347,7 @@ export const UserDataProvider = ({ children }) => {
       userProgressOnProblems,
       lastViewedModule,
       lastReadAnnouncement,
+      hide,
       firebaseUser,
       firebase,
     ]
