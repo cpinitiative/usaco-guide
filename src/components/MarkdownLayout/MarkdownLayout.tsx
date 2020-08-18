@@ -108,7 +108,7 @@ const SidebarBottomButtons = ({ onContactUs }) => {
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => userSettings.setHide(!userSettings.hide)}
         >
-          Hide Tags / Solutions: {userSettings.hide ? 'Yes' : 'No'}
+          Hide Tags and Solutions: {userSettings.hide ? 'Yes' : 'No'}
         </button>
       </div>
       <div className="flex-shrink-0 border-t border-gray-200 flex">
