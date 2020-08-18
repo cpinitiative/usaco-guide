@@ -125,7 +125,7 @@ const getHideFromStorage = () => {
   return v || null;
 };
 
-const darkModeKey = 'guide:userData:darkMode';
+export const darkModeKey = 'guide:userData:darkMode';
 const getDarkModeFromStorage = () => {
   let stickyValue = window.localStorage.getItem(darkModeKey);
   let v = null;
