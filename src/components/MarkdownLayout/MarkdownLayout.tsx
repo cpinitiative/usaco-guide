@@ -108,6 +108,29 @@ const SidebarBottomButtons = ({ onContactUs }) => {
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => userSettings.setHide(!userSettings.hide)}
         >
+          {userSettings.hide ? (
+            <>
+              <svg
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="mr-4 w-6 h-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </>
+          ) : (
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="mr-4 w-6 h-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150"
+            >
+              <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"></path>
+            </svg>
+          )}
           Hide Tags and Solutions: {userSettings.hide ? 'Yes' : 'No'}
         </button>
       </div>
