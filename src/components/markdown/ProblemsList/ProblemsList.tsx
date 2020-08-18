@@ -219,7 +219,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       </td>
       <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
         {problem.tags && problem.tags.length ? (
-          <details className="text-gray-500">
+          <details className="text-gray-500 dark:text-dark-med-emphasis">
             <summary>Show Tags</summary>
             <p className="text-xs">{problem.tags.join(', ')}</p>
           </details>
@@ -358,7 +358,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       )}
       {!msg && !external && !internal && problem.sketch && (
         <span
-          className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
+          className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
           onClick={() => problem.sketch && props.onShowSolution(problem)}
         >
           <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
@@ -381,7 +381,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >
-          <span className="text-gray-300 pl-6">View Solution</span>
+          <span className="text-gray-300 dark:text-gray-600 pl-6">
+            View Solution
+          </span>
         </Tooltip>
       )}
     </td>

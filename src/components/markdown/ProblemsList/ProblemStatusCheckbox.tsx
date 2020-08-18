@@ -75,10 +75,10 @@ export default function ProblemStatusCheckbox({
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
-    Solving: 'bg-yellow-300',
-    Solved: 'bg-green-500',
-    Ignored: 'bg-red-100',
-    Skipped: 'bg-blue-300',
+    Solving: 'bg-yellow-300 dark:bg-yellow-500',
+    Solved: 'bg-green-500 dark:bg-green-600',
+    Ignored: 'bg-red-100 dark:bg-red-900',
+    Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
   const tippyRef = useRef();
   return (

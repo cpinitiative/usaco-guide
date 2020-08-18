@@ -40,7 +40,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
-        <p className="text-xs italic text-gray-400 font-normal py-3 border-t border-gray-100 dark:border-gray-700 px-6 dark:text-dark-low-emphasis">
+        <p className="text-xs italic text-gray-400 font-normal py-3 border-t border-gray-100 dark:border-gray-700 px-6">
           Focus Problem – read through this problem before continuing!
         </p>
       </div>

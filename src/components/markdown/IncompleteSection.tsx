@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export const IncompleteSection = ({ children }) => {
   return (
-    <div className="p-4 bg-red-50 text-red-800 rounded-md tailwind-alert">
+    <div className="p-4 bg-red-50 rounded-md tailwind-alert dark:bg-red-900">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg
@@ -18,10 +18,10 @@ export const IncompleteSection = ({ children }) => {
           </svg>
         </div>
         <div className="ml-3">
-          <h3 className="text-sm leading-5 font-medium text-red-800">
+          <h3 className="text-sm leading-5 font-medium text-red-800 dark:text-red-200">
             This section is not complete.
           </h3>
-          <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin">
+          <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin dark:text-red-200">
             Feel free to file a request to complete this using the "Contact Us"
             button. <br />
             <i>{children}</i>

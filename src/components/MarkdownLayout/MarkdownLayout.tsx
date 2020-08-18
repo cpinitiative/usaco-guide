@@ -152,7 +152,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       : sortedModuleLinks[moduleIdx + 1];
 
   const disabledClasses =
-    'text-gray-200 pointer-events-none dark:text-dark-low-emphasis';
+    'text-gray-200 pointer-events-none dark:text-dark-disabled-emphasis';
   const activeClasses =
     'text-gray-500 hover:text-gray-800 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out';
   return (
@@ -514,7 +514,7 @@ export default function MarkdownLayout({
                 {children}
 
                 {markdownData instanceof ModuleInfo && (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">
                     <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
                       Module Progress
                     </TextTooltip>
@@ -529,7 +529,7 @@ export default function MarkdownLayout({
                   </h3>
                 )}
 
-                <div className="border-t border-gray-200 pt-4">
+                <div className="border-t border-gray-200 pt-4 dark:border-gray-800">
                   <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
