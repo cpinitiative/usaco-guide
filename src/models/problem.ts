@@ -46,7 +46,7 @@ const probSources = {
   AC: [
     'https://atcoder.jp/',
     'AtCoder',
-    'The editorial tab should be second from the right.',
+    'The editorial button is right next to the problem title. If "there is no editorial yet," check the "Overall Editorial" PDF below.',
   ],
   CC: ['https://www.codechef.com/problems/', 'CodeChef'],
   CF: [
