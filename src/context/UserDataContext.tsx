@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Problem } from '../../content/models';
 import { ModuleProgress } from '../models/module';
@@ -43,6 +43,9 @@ const UserDataContext = createContext<{
 
   hide: Boolean;
   setHide: (b: Boolean) => void;
+
+  darkMode: Boolean;
+  setDarkMode: (b: Boolean) => void;
 
   firebaseUser: any;
   signIn: Function;
@@ -122,6 +125,18 @@ const getHideFromStorage = () => {
   return v || null;
 };
 
+export const darkModeKey = 'guide:userData:darkMode';
+const getDarkModeFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(darkModeKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse dark mode", e);
+  }
+  return v || false;
+};
+
 // function areEqualShallow(a, b) {
 //   for (let key of Object.keys(a)) {
 //     if (a[key] !== b[key]) {
@@ -145,6 +160,20 @@ export const UserDataProvider = ({ children }) => {
   );
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [hide, setHide] = useState(false);
+  const [darkMode, setDarkMode] = useReducer((state, action) => {
+    if (action) {
+      document.documentElement.classList.add('mode-dark');
+    } else {
+      document.documentElement.classList.remove('mode-dark');
+    }
+    document.documentElement.classList.add('transitioning-color-scheme');
+    setTimeout(
+      () =>
+        document.documentElement.classList.remove('transitioning-color-scheme'),
+      0
+    );
+    return action;
+  }, false);
 
   useFirebase(firebase => {
     return firebase.auth().onAuthStateChanged(user => {
@@ -161,6 +190,7 @@ export const UserDataProvider = ({ children }) => {
     setLastViewedModule(getLastViewedModuleFromStorage());
     setLastReadAnnouncement(getLastReadAnnouncementFromStorage());
     setHide(getHideFromStorage());
+    setDarkMode(getDarkModeFromStorage());
   }, []);
 
   React.useEffect(() => {
@@ -204,6 +234,7 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
               setHide(data.hide || false);
+              setDarkMode(data.darkMode || false);
             });
           }
         });
@@ -322,6 +353,19 @@ export const UserDataProvider = ({ children }) => {
         window.localStorage.setItem(hideKey, JSON.stringify(b));
         setHide(b);
       },
+      darkMode,
+      setDarkMode: b => {
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              darkMode: b,
+            },
+            { merge: true }
+          );
+        }
+        window.localStorage.setItem(darkModeKey, JSON.stringify(b));
+        setDarkMode(b);
+      },
       firebaseUser,
       signIn: () => {
         if (
@@ -348,6 +392,7 @@ export const UserDataProvider = ({ children }) => {
       lastViewedModule,
       lastReadAnnouncement,
       hide,
+      darkMode,
       firebaseUser,
       firebase,
     ]

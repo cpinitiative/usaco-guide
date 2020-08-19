@@ -14,7 +14,7 @@ const TableOfContentsBlock = ({
   );
   return (
     <div>
-      <h2 className="uppercase text-gray-500 font-bold mt-8 mb-3 tracking-wider">
+      <h2 className="uppercase text-gray-500 dark:text-dark-med-emphasis font-bold mt-8 mb-3 tracking-wider">
         Table of Contents
       </h2>
       {links}

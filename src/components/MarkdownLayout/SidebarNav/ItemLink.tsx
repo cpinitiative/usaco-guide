@@ -17,7 +17,7 @@ const LinkWithProgress = styled.span`
     height: 8px;
     width: 8px;
     position: absolute;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
   }
 
   &::after {
@@ -36,6 +36,13 @@ const LinkWithProgress = styled.span`
     ${props => props.lineColorStyle};
   }
 
+  .mode-dark &::after {
+    ${tw`bg-gray-700`}
+  }
+  .mode-dark &::before {
+    ${tw`bg-gray-700`}
+  }
+
   &:first-of-type::before {
     top: 22px;
   }
@@ -48,8 +55,11 @@ const LinkWithProgress = styled.span`
 const StyledLink = styled.span`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
+  .mode-dark & {
+    ${tw`hover:bg-gray-900 hover:text-dark-high-emphasis focus:bg-gray-800`}
+  }
+
   ${({ textStyle }) => textStyle}
-  
 
   &::before {
     content: '';
@@ -72,6 +82,12 @@ const StyledLink = styled.span`
     &::before {
       transform: scale(1);
       ${tw`bg-blue-600`}
+    }
+  }
+
+  .mode-dark &:hover {
+    &::before {
+      ${tw`bg-gray-400`}
     }
   }
 `;
@@ -138,6 +154,7 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
               ? tw`text-gray-400`
               : tw`text-gray-600`
           }
+          className="dark:text-dark-med-emphasis"
         >
           {link.title}
         </StyledLink>
