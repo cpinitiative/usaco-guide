@@ -571,20 +571,20 @@ $$
 This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
 
 $$
-\texttt{prefix}[i][j]
-    = \texttt{prefix}[i-1][j]
-    + \texttt{prefix}[i][j-1]
-    - \texttt{prefix}[i-1][j-1]
-    + \texttt{arr}[i][j]
+\begin{aligned}
+\texttt{prefix}[i][j] =& \, \texttt{prefix}[i-1][j]+ \texttt{prefix}[i][j-1] \\
+    &- \texttt{prefix}[i-1][j-1]+ \texttt{arr}[i][j]
+\end{aligned}
 $$
 
 The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be expressed as follows:
 
 $$
-\sum_{i=a}^{A} \sum_{j=b}^{B} \texttt{arr}[i][j]=\texttt{prefix}[A][B]
-        - \texttt{prefix}[a-1][B]
-        - \texttt{prefix}[A][b-1]
-        + \texttt{prefix}[a-1][b-1]
+\begin{aligned}
+\sum_{i=a}^{A} \sum_{j=b}^{B} \texttt{arr}[i][j]=&\,\texttt{prefix}[A][B]
+        - \texttt{prefix}[a-1][B] \\
+        &- \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
+\end{aligned}
 $$
 
 Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have
