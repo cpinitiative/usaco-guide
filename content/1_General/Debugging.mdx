@@ -144,7 +144,7 @@ for((i = 1; ; ++i)); do # if they are same then will loop forever
 done
 ```
 
-If you have the input and output files (ex. `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for old USACO problems) then you can use the following instead.
+We can modify this to work for other situations. For example, if you have the input and output files (ex. `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for old USACO problems) then you can use the following:
 
 ```
 # A is executable you want to test
@@ -156,9 +156,23 @@ done
 echo "ALL TESTS PASSED"
 ```
 
+The following will break on the first input file such that the produced output file is empty.
+
+```
+for((i = 1; ; ++i)); do
+	echo $i
+	./gen $i > int
+	./A < int > out
+	if ! [[ -s "out" ]] ; then
+		echo "no output"
+		break
+	fi ;
+done
+```
+
 <IncompleteSection>
 
-scripts for multiple languages?
+scripts for multiple languages? can this be modified to break on an assertion failure?
 
 </IncompleteSection>
 
