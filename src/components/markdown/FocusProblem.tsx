@@ -4,12 +4,21 @@ import { Link } from 'gatsby';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({ problem }: { problem: Problem }) {
+  const ref = React.useRef();
   return (
-    <Link
-      to={problem.url}
+    <a
+      href={problem.url}
       target="_blank"
       rel="noreferrer"
       className="shadow hover:shadow-lg block transition duration-150 ease-in-out transform hover:-translate-y-1"
+      onClick={e => {
+        console.log(ref.current, e.target);
+        // @ts-ignore
+        if (ref.current.contains(e.target)) {
+          console.log('hi');
+          e.preventDefault();
+        }
+      }}
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center py-4 px-6">
@@ -35,7 +44,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
           </div>
           <div
             className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2"
-            onClick={e => e.preventDefault()}
+            ref={ref}
           >
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
@@ -44,6 +53,6 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
           Focus Problem – read through this problem before continuing!
         </p>
       </div>
-    </Link>
+    </a>
   );
 }
