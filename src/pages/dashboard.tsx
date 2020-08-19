@@ -79,8 +79,12 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
+  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const moduleProgressIDs = Object.keys(moduleIDToName).filter(
+    x => moduleIDToSectionMap[x] === lastViewedSection
+  );
   let allModulesProgressInfo = getProgressInfo(
-    Object.keys(moduleIDToName),
+    moduleProgressIDs,
     userProgressOnModules,
     ['Complete'],
     ['Reading', 'Practicing'],
@@ -88,12 +92,19 @@ export default function DashboardPage(props: PageProps) {
     ['Not Started']
   );
 
-  const allProblemIDs = Object.keys(problemIDMap);
-  // const allStarredProblemIDs = allProblemIDs.filter(
+  const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
+    return [
+      ...acc,
+      ...modules.edges
+        .find(x => x.node.frontmatter.id === cur)
+        .node.problems.map(x => x.uniqueID),
+    ];
+  }, []);
+  // const allStarredProblemIDs = problemStatisticsIDs.filter(
   //   x => problemIDMap[x].starred
   // );
   const allProblemsProgressInfo = getProgressInfo(
-    allProblemIDs,
+    problemStatisticsIDs,
     userProgressOnProblems,
     ['Solved'],
     ['Solving'],
@@ -173,12 +184,12 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Modules
+                      {SECTION_LABELS[lastViewedSection]} Modules Progress
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allModulesProgressInfo}
-                        total={Object.keys(moduleIDToName).length}
+                        total={moduleProgressIDs.length}
                       />
                     </div>
                   </div>
@@ -201,12 +212,12 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg order-6">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Problems
+                      {SECTION_LABELS[lastViewedSection]} Problems Progress
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allProblemsProgressInfo}
-                        total={Object.keys(allProblemIDs).length}
+                        total={Object.keys(problemStatisticsIDs).length}
                       />
                     </div>
                   </div>
