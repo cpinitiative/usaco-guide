@@ -317,7 +317,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     msg = false;
   }
   return (
-    <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
+    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
       {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
       {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
