@@ -19,6 +19,7 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
+import cow1 from '../assets/up-close-cow.png';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
@@ -44,14 +45,14 @@ export default function DashboardPage(props: PageProps) {
     userProgressOnProblems,
     lastReadAnnouncement,
     setLastReadAnnouncement,
+    lastVisitDate,
     setLastVisitDate,
     consecutiveVisits,
     firebaseUser,
   } = React.useContext(UserDataContext);
-
   React.useEffect(() => {
     setLastVisitDate(new Date().setHours(0, 0, 0, 0));
-  }, []);
+  }, [firebaseUser, lastVisitDate]);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -86,8 +87,15 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
+  const pref = lastViewedModuleURL
+    ? lastViewedModuleURL.split('/')[1]
+    : 'general';
+  // for (let key of Object.keys(moduleIDToName)) {
+  //   console.log(key,moduleIDToURLMap[key])
+  // }
+
   let allModulesProgressInfo = getProgressInfo(
-    Object.keys(moduleIDToName),
+    Object.keys(moduleIDToURLMap), // .filter(x => moduleIDToURLMap[x].split("/")[1] == pref), moduleIDToURLMap[x].split("/")[1] == pref), //
     userProgressOnModules,
     ['Complete'],
     ['Reading', 'Practicing'],
@@ -122,6 +130,11 @@ export default function DashboardPage(props: PageProps) {
     );
   }, []);
 
+  // console.log(moduleIDToName)
+  // console.log(moduleIDToURLMap)
+  // console.log(lastViewedModuleURL)
+  // console.log(moduleIDToName[lastViewedModuleID])
+  // console.log(pref)
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -185,11 +198,42 @@ export default function DashboardPage(props: PageProps) {
                     <div className="mt-6">
                       <DashboardProgress
                         {...allModulesProgressInfo}
-                        total={Object.keys(moduleIDToName).length}
+                        total={Object.keys(moduleIDToURLMap).length}
                       />
                     </div>
                   </div>
                 </div>
+                {consecutiveVisits >= 2 && (
+                  <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
+                    <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        🔥 {consecutiveVisits} Day Streak: Keep it up!
+                      </h3>
+                    </div>
+                  </div>
+                )}
+                {consecutiveVisits >= 3 && (
+                  <>
+                    <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
+                      <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900">
+                          🔥 3 Day Streak!
+                        </h3>
+                        <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
+                          <p>
+                            You've visited this guide for 3 consecutive days.
+                            Enjoy this cute cow photo as a reward!
+                          </p>
+                        </div>
+                      </div>
+                      <img
+                        className="h-64 w-full object-cover"
+                        src={cow1}
+                        alt="Cow"
+                      />
+                    </div>
+                  </>
+                )}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
@@ -218,11 +262,11 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                {/* {consecutiveVisits > 5 ? (
+                {consecutiveVisits >= 6 && (
                   <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
                     <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        🔥 6 Day Streak: Keep it up!
+                        🔥 6 Day Streak!
                       </h3>
                       <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
                         <p>
@@ -237,7 +281,7 @@ export default function DashboardPage(props: PageProps) {
                       alt="Cow"
                     />
                   </div>
-                ) : null} */}
+                )}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
