@@ -21,7 +21,13 @@ export default function Logo(props) {
       }
     }
   `);
-  return (
+  return props.noDarkMode ? (
+    <Img
+      fixed={data.light.childImageSharp.fixed}
+      alt="USACO Guide"
+      {...props}
+    />
+  ) : (
     <>
       <div className="dark:hidden">
         <Img

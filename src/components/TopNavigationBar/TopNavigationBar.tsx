@@ -170,7 +170,7 @@ export default function TopNavigationBar({
                   <LogoSquare />
                 </div>
                 <div className="hidden sm:block h-9">
-                  <Logo />
+                  <Logo noDarkMode={true} />
                 </div>
               </Link>
             )}
@@ -187,7 +187,10 @@ export default function TopNavigationBar({
               >
                 Dashboard
               </Link>
-              <SectionsDropdown currentSection={currentSection} />
+              <SectionsDropdown
+                currentSection={currentSection}
+                noDarkMode={true}
+              />
               {/*<Link*/}
               {/*  to="/problems"*/}
               {/*  getProps={({ isCurrent }) => ({*/}

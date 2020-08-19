@@ -7,6 +7,7 @@ export default function SectionsDropdown({
   currentSection = null,
   sidebarNav = false,
   onSelect = null,
+  noDarkMode = false,
 }) {
   const [isActive, setIsActive] = React.useState(false);
   const ref = React.useRef();
@@ -28,10 +29,10 @@ export default function SectionsDropdown({
         <button
           type="button"
           className={`group ${
-            isActive || sidebarNav
-              ? 'text-gray-900 dark:text-dark-high-emphasis'
-              : 'text-gray-500 dark:text-dark-high-emphasis'
-          } inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150`}
+            isActive || sidebarNav ? 'text-gray-900' : 'text-gray-500'
+          } inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
+            !noDarkMode && 'dark:text-dark-high-emphasis'
+          }`}
           onClick={() => setIsActive(!isActive)}
         >
           <span>
@@ -39,10 +40,11 @@ export default function SectionsDropdown({
           </span>
           <svg
             className={`${
-              isActive
-                ? 'text-gray-600 dark:text-dark-med-emphasis'
-                : 'text-gray-400 dark:text-dark-med-emphasis'
-            } h-5 w-5 group-hover:text-gray-500 dark-group-hover:text-dark-med-emphasis transition ease-in-out duration-150`}
+              isActive ? 'text-gray-600' : 'text-gray-400'
+            } h-5 w-5 group-hover:text-gray-500 transition ease-in-out duration-150 ${
+              !noDarkMode &&
+              'dark:text-dark-med-emphasis dark-group-hover:text-dark-med-emphasis'
+            }`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
