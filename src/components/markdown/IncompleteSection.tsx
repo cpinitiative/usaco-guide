@@ -21,7 +21,7 @@ export const IncompleteSection = ({ children }) => {
           <h3 className="text-sm leading-5 font-medium text-red-800 dark:text-red-200">
             This section is not complete.
           </h3>
-          <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin dark:text-red-200">
+          <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin dark:text-red-300">
             Feel free to file a request to complete this using the "Contact Us"
             button. <br />
             <i>{children}</i>
