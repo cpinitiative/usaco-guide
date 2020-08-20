@@ -110,7 +110,10 @@ export default function ProblemStatusCheckbox({
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem, progress);
-              if (moduleProgress == 'Not Started') {
+              if (
+                (progress == 'Solving' || progress == 'Solved') &&
+                moduleProgress == 'Not Started'
+              ) {
                 handleCompletionChange('Practicing');
               }
             }}
