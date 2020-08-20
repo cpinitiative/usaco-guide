@@ -20,7 +20,7 @@ export default function WelcomeBackBanner({
           <div className="mt-2 leading-5 text-teal-200">
             <p>
               {lastViewedModuleURL
-                ? `Pick up where you left off. Your last viewed module was ${lastViewedModuleLabel}.`
+                ? `Pick up where you left off. Your last viewed module was "${lastViewedModuleLabel}."`
                 : `Get started on the first module, "Using This Guide."`}
             </p>
           </div>

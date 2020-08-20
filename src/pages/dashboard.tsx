@@ -83,6 +83,9 @@ export default function DashboardPage(props: PageProps) {
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
+  // console.log(Object.keys(moduleIDToName).filter(
+  //   x => moduleIDToSectionMap[x] == null
+  // )); shouldn't be any ...
   let allModulesProgressInfo = getProgressInfo(
     moduleProgressIDs,
     userProgressOnModules,

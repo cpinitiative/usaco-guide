@@ -69,12 +69,12 @@ export default function ContactUsSlideover({
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
     'Typo / Broken Link',
+    'Request - Missing Section or Editorial',
     'Unclear Explanation',
     'Website Bug',
-    'Request - Missing Section',
-    'Request - Problem Editorial',
     'Suggestion',
-    'I want to contribute!',
+    // 'Request - Problem Editorial',
+    // 'I want to contribute!',
     'Other',
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
