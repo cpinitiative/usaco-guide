@@ -60,15 +60,9 @@ export default function DashboardPage(props: PageProps) {
     userProgressOnProblems,
     lastReadAnnouncement,
     setLastReadAnnouncement,
-    lastVisitDate,
-    setLastVisitDate,
     consecutiveVisits,
     firebaseUser,
-    isLoaded,
   } = React.useContext(UserDataContext);
-  React.useEffect(() => {
-    if (isLoaded) setLastVisitDate(new Date().getTime());
-  }, [isLoaded]);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
