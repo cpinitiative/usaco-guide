@@ -70,7 +70,7 @@ export default function ProblemStatusCheckbox({
   problem: Problem;
   size?: 'small' | 'large';
 }) {
-  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
+  const { markdownLayoutInfo, conf } = useContext(MarkdownLayoutContext);
   // console.log(markdownLayoutInfo)
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
@@ -84,11 +84,11 @@ export default function ProblemStatusCheckbox({
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(markdownLayoutInfo.id, progress);
-    // if (
-    //   moduleProgress !== 'Complete' &&
-    //   (progress === 'Practicing' || progress === 'Complete')
-    // )
-    // // setIsConfettiActive(true);
+    if (
+      moduleProgress !== 'Complete' &&
+      (progress === 'Practicing' || progress === 'Complete')
+    )
+      conf(true);
   };
   let status: ProblemProgress =
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';

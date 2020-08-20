@@ -365,7 +365,11 @@ export default function MarkdownLayout({
 
   return (
     <MarkdownLayoutContext.Provider
-      value={{ markdownLayoutInfo: markdownData, sidebarLinks: moduleLinks }}
+      value={{
+        markdownLayoutInfo: markdownData,
+        sidebarLinks: moduleLinks,
+        conf: setIsConfettiActive,
+      }}
     >
       <ModuleConfetti
         show={isConfettiActive}
