@@ -41,6 +41,9 @@ const UserDataContext = createContext<{
   lastReadAnnouncement: string;
   setLastReadAnnouncement: (announcementID: string) => void;
 
+  hide: Boolean;
+  setHide: (b: Boolean) => void;
+
   firebaseUser: any;
   signIn: Function;
   signOut: Function;
@@ -138,6 +141,27 @@ const getConsecutiveVisitsFromStorage = () => {
   return v || 1;
 };
 
+const hideKey = 'guide:userData:hide';
+const getHideFromStorage = () => {
+  let stickyValue = window.localStorage.getItem(hideKey);
+  let v = null;
+  try {
+    v = JSON.parse(stickyValue);
+  } catch (e) {
+    console.error("Couldn't parse last hide", e);
+  }
+  return v || null;
+};
+
+// function areEqualShallow(a, b) {
+//   for (let key of Object.keys(a)) {
+//     if (a[key] !== b[key]) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
+
 export const UserDataProvider = ({ children }) => {
   const [lang, setLang] = useState<UserLang>('showAll');
   const [userProgressOnModules, setUserProgressOnModules] = useState<{
@@ -151,6 +175,7 @@ export const UserDataProvider = ({ children }) => {
     null
   );
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [hide, setHide] = useState(false);
   const [lastVisitDate, setLastVisitDate] = useState<number>(null);
   const [consecutiveVisits, setConsecutiveVisits] = useState<number>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -171,6 +196,7 @@ export const UserDataProvider = ({ children }) => {
     setUserProgressOnProblems(getProblemStatusFromStorage());
     setLastViewedModule(getLastViewedModuleFromStorage());
     setLastReadAnnouncement(getLastReadAnnouncementFromStorage());
+    setHide(getHideFromStorage());
     setLastVisitDate(getLastVisitDateFromStorage());
     setConsecutiveVisits(getConsecutiveVisitsFromStorage());
   }, []);
@@ -199,6 +225,7 @@ export const UserDataProvider = ({ children }) => {
                       userProgressOnProblems,
                       lastViewedModule,
                       lastReadAnnouncement,
+                      hide,
                       lastVisitDate,
                       consecutiveVisits,
                     },
@@ -216,6 +243,7 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
+              setHide(data.hide || false);
               setLastVisitDate(data.lastVisitDate || new Date().getTime());
               setConsecutiveVisits(data.consecutiveVisits || 1);
             });
@@ -279,17 +307,18 @@ export const UserDataProvider = ({ children }) => {
               },
               { merge: true }
             );
-        }
-        const newStatus = {
-          ...getProblemStatusFromStorage(),
-          [problem.uniqueID]: status,
-        };
-        window.localStorage.setItem(
-          problemStatusKey,
-          JSON.stringify(newStatus)
-        );
+        } else {
+          const newStatus = {
+            ...getProblemStatusFromStorage(),
+            [problem.uniqueID]: status,
+          };
+          window.localStorage.setItem(
+            problemStatusKey,
+            JSON.stringify(newStatus)
+          );
 
-        setUserProgressOnProblems(newStatus);
+          setUserProgressOnProblems(newStatus);
+        }
       },
 
       lastViewedModule,
@@ -301,12 +330,13 @@ export const UserDataProvider = ({ children }) => {
             },
             { merge: true }
           );
+        } else {
+          window.localStorage.setItem(
+            lastViewedModuleKey,
+            JSON.stringify(moduleID)
+          );
+          setLastViewedModule(moduleID);
         }
-        window.localStorage.setItem(
-          lastViewedModuleKey,
-          JSON.stringify(moduleID)
-        );
-        setLastViewedModule(moduleID);
       },
 
       lastReadAnnouncement,
@@ -326,6 +356,19 @@ export const UserDataProvider = ({ children }) => {
         setLastReadAnnouncement(announcementID);
       },
 
+      hide,
+      setHide: b => {
+        if (firebaseUser) {
+          firebase.firestore().collection('users').doc(firebaseUser.uid).set(
+            {
+              hide: b,
+            },
+            { merge: true }
+          );
+        }
+        window.localStorage.setItem(hideKey, JSON.stringify(b));
+        setHide(b);
+      },
       firebaseUser,
       signIn: () => {
         if (
@@ -385,6 +428,7 @@ export const UserDataProvider = ({ children }) => {
       userProgressOnProblems,
       lastViewedModule,
       lastReadAnnouncement,
+      hide,
       firebaseUser,
       lastVisitDate,
       consecutiveVisits,

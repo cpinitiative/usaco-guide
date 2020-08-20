@@ -4,6 +4,7 @@ const contests = {
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
   'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
   CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
+  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
   COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
   IOI: ['oj.uz', 'International Olympiad in Informatics'],
   IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
@@ -45,7 +46,7 @@ const probSources = {
   AC: [
     'https://atcoder.jp/',
     'AtCoder',
-    'The editorial tab should be second from the right.',
+    'The editorial button is right next to the problem title. If "there is no editorial yet," check the "Overall Editorial" PDF below.',
   ],
   CC: ['https://www.codechef.com/problems/', 'CodeChef'],
   CF: [
@@ -177,14 +178,10 @@ export type ProblemProgress =
   | 'Skipped'
   | 'Ignored';
 
-let options = ['Not Attempted', 'Solving', 'Solved', 'Skipped', 'Ignored'];
-
-let NEXT_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
-let PREV_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
-for (let i = 0; i < options.length; i++) {
-  NEXT_PROBLEM_STATUS[options[i]] = options[(i + 1) % options.length];
-  PREV_PROBLEM_STATUS[options[i]] =
-    options[(i - 1 + options.length) % options.length];
-}
-
-export { NEXT_PROBLEM_STATUS, PREV_PROBLEM_STATUS };
+export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
+  'Not Attempted',
+  'Solving',
+  'Solved',
+  'Skipped',
+  'Ignored',
+];

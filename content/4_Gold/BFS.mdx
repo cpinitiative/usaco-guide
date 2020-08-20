@@ -41,6 +41,17 @@ export const problems = {
 		new Problem('Gold', 'Dream', '575', 'Hard', false, ['BFS']),
 		new Problem('Gold', 'A Pie for a Pie', '765', 'Very Hard', false, [], ''),
 	],
+	grav: [
+		new Problem(
+			'Old Silver',
+			"What's Up With Gravity?",
+			'282',
+			'Normal',
+			false,
+			['BFS'],
+			'@B'
+		),
+	],
 };
 
 ## Queues & Deques
@@ -120,11 +131,7 @@ d.push_front(1); // [1, 3, 7]
 d.pop_back(); // [1, 3]
 ```
 
-<IncompleteSection>
-
-(important: you can also access like array ...)
-
-</IncompleteSection>
+You can also access deques in constant time like an array in constant time with the `[]` operator. For example, to access the element $\texttt{i}$ for some deque $\texttt{dq}$, do $\texttt{dq[i]}$.
 
 </CPPSection>
 
@@ -254,7 +261,7 @@ class Main {
     static boolean visited[];
 
     static void bfs(int startNode) {
-        Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation 
+        Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
         // of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
         q.add(startNode);
         visited[startNode] = true;
@@ -321,9 +328,9 @@ In the gold division, the problem statement will almost never directly be, "Give
 
 </Info>
 
-### 0/1 BFS
+## 0/1 BFS
 
-Use a deque!
+A 0/1 BFS finds the shortest path in a graph where the weights on the edges can only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the resource below for an explanation of how the algorithm works.
 
 <Resources>
 	<Resource source="cp-algo" title="0-1 BFS" url="graph/01_bfs.html">
@@ -331,7 +338,15 @@ Use a deque!
 	</Resource>
 </Resources>
 
-<IncompleteSection />
+<!-- Sometimes, when a Dijkstra runs too slowly, you need to use a 0/1 BFS instead.  -->
+
+### Example: What's Up With Gravity?
+
+<FocusProblem problem={problems.grav[0]} />
+
+In this problem, let's connect two cells $(u, v)$ in the grid if you can reach $v$ from $u$ by flipping gravity, going left, or going right. Also, we should only store cells where CB doesn't fall in the direction of gravity.
+
+Now, we're given a weighted graph and we need to find the shortest path. Since the edge weights on the graph are only 1 if we change gravity and 0 otherwise, we can run a 0/1 BFS. <!-- which runs much faster than Dijkstra's algorithm. -->
 
 ## Problems
 

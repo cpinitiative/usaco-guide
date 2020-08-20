@@ -1,21 +1,27 @@
 import * as React from 'react';
 import { Problem } from '../../models/problem';
-import { Link } from 'gatsby';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 
 export default function FocusProblem({ problem }: { problem: Problem }) {
+  const [isHovered, setIsHovered] = React.useState(false);
   return (
-    <Link
-      to={problem.url}
-      target="_blank"
-      rel="noreferrer"
-      className="overflow-hidden shadow hover:shadow-lg block transition duration-150 ease-in-out transform hover:-translate-y-1"
+    <div
+      className={`shadow block transition duration-150 ease-in-out transform ${
+        isHovered && '-translate-y-1 shadow-lg'
+      }`}
     >
       <div className="border-t-4 border-blue-600">
-        <div className="flex items-center py-4 px-6">
+        <div className="flex items-center px-6">
           <div className="flex-1 mr-4">
             <div className="flex items-center">
-              <div className="flex-1 block group transition duration-150 ease-in-out">
+              <a
+                href={problem.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 block group transition duration-150 ease-in-out py-4"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
                 <p className="text-xl font-medium text-black flex items-center">
                   {problem.name}
                   <svg
@@ -30,13 +36,10 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
                 <p className="text-gray-500 text-sm mt-1">
                   {problem.source} - {problem.difficulty}
                 </p>
-              </div>
+              </a>
             </div>
           </div>
-          <div
-            className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2"
-            onClick={e => e.preventDefault()}
-          >
+          <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
@@ -44,6 +47,6 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
           Focus Problem – read through this problem before continuing!
         </p>
       </div>
-    </Link>
+    </div>
   );
 }

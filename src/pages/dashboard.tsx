@@ -45,8 +45,8 @@ export default function DashboardPage(props: PageProps) {
     userProgressOnProblems,
     lastReadAnnouncement,
     setLastReadAnnouncement,
-    consecutiveVisits,
     firebaseUser,
+    consecutiveVisits,
   } = React.useContext(UserDataContext);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
@@ -82,15 +82,12 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
-  const pref = lastViewedModuleURL
-    ? lastViewedModuleURL.split('/')[1]
-    : 'general';
-  // for (let key of Object.keys(moduleIDToName)) {
-  //   console.log(key,moduleIDToURLMap[key])
-  // }
-
+  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const moduleProgressIDs = Object.keys(moduleIDToName).filter(
+    x => moduleIDToSectionMap[x] === lastViewedSection
+  );
   let allModulesProgressInfo = getProgressInfo(
-    Object.keys(moduleIDToURLMap), // .filter(x => moduleIDToURLMap[x].split("/")[1] == pref), moduleIDToURLMap[x].split("/")[1] == pref), //
+    moduleProgressIDs,
     userProgressOnModules,
     ['Complete'],
     ['Reading', 'Practicing'],
@@ -98,12 +95,19 @@ export default function DashboardPage(props: PageProps) {
     ['Not Started']
   );
 
-  const allProblemIDs = Object.keys(problemIDMap);
-  // const allStarredProblemIDs = allProblemIDs.filter(
+  const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
+    return [
+      ...acc,
+      ...modules.edges
+        .find(x => x.node.frontmatter.id === cur)
+        .node.problems.map(x => x.uniqueID),
+    ];
+  }, []);
+  // const allStarredProblemIDs = problemStatisticsIDs.filter(
   //   x => problemIDMap[x].starred
   // );
   const allProblemsProgressInfo = getProgressInfo(
-    allProblemIDs,
+    problemStatisticsIDs,
     userProgressOnProblems,
     ['Solved'],
     ['Solving'],
@@ -125,12 +129,6 @@ export default function DashboardPage(props: PageProps) {
     );
   }, []);
 
-  // console.log(moduleIDToName)
-  // console.log(moduleIDToURLMap)
-  // console.log(lastViewedModuleURL)
-  // console.log(moduleIDToName[lastViewedModuleID])
-  // console.log(pref)
-  // const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -189,107 +187,62 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Modules
+                      {SECTION_LABELS[lastViewedSection]} Modules Progress
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allModulesProgressInfo}
-                        total={Object.keys(moduleIDToURLMap).length}
+                        total={moduleProgressIDs.length}
                       />
                     </div>
                   </div>
                 </div>
-                {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
-                {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
+                {/*<div className="bg-white shadow sm:rounded-lg">*/}
+                {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*      🔥 {consecutiveVisits} Day Streak: Keep it up!*/}
+                {/*      All Starred Problems*/}
                 {/*    </h3>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
-                {/*{cows.map((value, index) => {*/}
-                {/*  const need = index + 2;*/}
-                {/*  if (index % 2 == 0 && consecutiveVisits >= need) {*/}
-                {/*    return (*/}
-                {/*      <>*/}
-                {/*        <div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
-                {/*          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
-                {/*            <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*              🔥 {need} Day Streak!*/}
-                {/*            </h3>*/}
-                {/*            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*              <p>*/}
-                {/*                You've visited this guide for {need} consecutive*/}
-                {/*                days. Enjoy this cute cow photo as a reward!*/}
-                {/*              </p>*/}
-                {/*            </div>*/}
-                {/*          </div>*/}
-                {/*          <img*/}
-                {/*            className="w-full object-cover"*/}
-                {/*            src={value}*/}
-                {/*            alt="Cow"*/}
-                {/*          />*/}
-                {/*        </div>*/}
-                {/*      </>*/}
-                {/*    );*/}
-                {/*  }*/}
-                {/*  return <></>;*/}
-                {/*})}*/}
-                {/*  <div className="bg-white shadow sm:rounded-lg">*/}
-                {/*    <div className="px-4 py-5 sm:p-6">*/}
-                {/*      <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*        All Starred Problems*/}
-                {/*      </h3>*/}
-                {/*      <div className="mt-6">*/}
-                {/*        <DashboardProgress*/}
-                {/*          {...allStarredProblemsProgressInfo}*/}
-                {/*          total={Object.keys(allStarredProblemIDs).length}*/}
-                {/*        />*/}
-                {/*      </div>*/}
+                {/*    <div className="mt-6">*/}
+                {/*      <DashboardProgress*/}
+                {/*        {...allStarredProblemsProgressInfo}*/}
+                {/*        total={Object.keys(allStarredProblemIDs).length}*/}
+                {/*      />*/}
                 {/*    </div>*/}
                 {/*  </div>*/}
+                {/*</div>*/}
               </div>
               <div className="space-y-8">
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Problems
+                      {SECTION_LABELS[lastViewedSection]} Problems Progress
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allProblemsProgressInfo}
-                        total={Object.keys(allProblemIDs).length}
+                        total={Object.keys(problemStatisticsIDs).length}
                       />
                     </div>
                   </div>
                 </div>
-                {/*{cows.map((value, index) => {*/}
-                {/*  const need = index + 2;*/}
-                {/*  if (index % 2 == 1 && consecutiveVisits >= need) {*/}
-                {/*    return (*/}
-                {/*      <>*/}
-                {/*        <div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
-                {/*          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
-                {/*            <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*              🔥 {need} Day Streak!*/}
-                {/*            </h3>*/}
-                {/*            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*              <p>*/}
-                {/*                You've visited this guide for {need} consecutive*/}
-                {/*                days. Enjoy this cute cow photo as a reward!*/}
-                {/*              </p>*/}
-                {/*            </div>*/}
-                {/*          </div>*/}
-                {/*          <img*/}
-                {/*            className="w-full object-cover"*/}
-                {/*            src={value}*/}
-                {/*            alt="Cow"*/}
-                {/*          />*/}
-                {/*        </div>*/}
-                {/*      </>*/}
-                {/*    );*/}
-                {/*  }*/}
-                {/*  return <></>;*/}
-                {/*})}*/}
+                {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">*/}
+                {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
+                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*      🔥 6 Day Streak: Keep it up!*/}
+                {/*    </h3>*/}
+                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
+                {/*      <p>*/}
+                {/*        You've visited this guide for 6 consecutive days. Enjoy*/}
+                {/*        this cute cow photo as a reward!*/}
+                {/*      </p>*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
+                {/*  <img*/}
+                {/*    className="h-64 w-full object-cover"*/}
+                {/*    src="https://66.media.tumblr.com/709acf5805b63bf412dd5cf8d6e34803/tumblr_oplgjdcYJl1sgqqono1_500.jpg"*/}
+                {/*    alt="Cow"*/}
+                {/*  />*/}
+                {/*</div>*/}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}

@@ -37,6 +37,34 @@ export const problems = {
 			'Prime factorize each number. For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer.'
 		),
 	],
+	permutations: [
+		new Problem(
+			'Gold',
+			'Exercise',
+			'1043',
+			'Normal',
+			false,
+			['Knapsack', 'Prime Factorization'],
+			'Prime factorize $K$.'
+		),
+		new Problem(
+			'POI',
+			'Maximal',
+			'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+			'Hard',
+			false,
+			['Knapsack, Prime Factorization']
+		),
+		new Problem(
+			'Plat',
+			'Exercise',
+			'1045',
+			'Insane',
+			false,
+			['Knapsack', 'Prime Factorization'],
+			'Prime factorize $K$.'
+		),
+	],
 	dp: [
 		new Problem(
 			'CF',
@@ -56,15 +84,9 @@ export const problems = {
 			['Knapsack', 'Exponentiation'],
 			'First consider the case where there are only two lines with the same class.'
 		),
-		new Problem(
-			'Gold',
-			'Exercise',
-			'1043',
-			'Normal',
-			false,
-			['Knapsack', 'Prime Factorization'],
-			'Prime factorize $K$.'
-		),
+		new Problem('Plat', 'Sprinkers 2', '1044', 'Very Hard', false, [
+			'dp, modular inverse',
+		]),
 	],
 };
 
@@ -165,8 +187,8 @@ The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest
 
 $$
 \gcd(a, b) = \begin{cases}
-     a & b = 0 \\
-     \gcd(b, a \bmod b) & b \neq 0 \\
+	 a & b = 0 \\
+	 \gcd(b, a \bmod b) & b \neq 0 \\
 \end{cases}
 $$
 
@@ -178,8 +200,8 @@ This algorithm is very easy to implement using a recursive function, as follows:
 
 ```java
 public int gcd(int a, int b){
-    if (b == 0) return a;
-    return gcd(b, a % b);
+	if (b == 0) return a;
+	return gcd(b, a % b);
 }
 ```
 
@@ -211,9 +233,9 @@ def gcd(a, b):
 
 </LanguageSection>
 
-This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$. 
+This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$.
 
-The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$.  for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$. 
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$.
 
 <!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
 <!-- ^ this doesn't seem very helpful -->
@@ -274,8 +296,6 @@ $$
 
 ### Modular Exponentiation
 
-<FocusProblem problem={problems.expo[0]} />
-
 <Resources>
 	<Resource
 		source="cp-algo"
@@ -286,27 +306,35 @@ $$
 	</Resource>
 </Resources>
 
-**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$. 
+**Binary exponentiation** can be used to efficently compute $x ^ n \mod m$. To do this, let's break down $x ^ n$ into binary components. For example, $5 ^ {10}$ = $5 ^ {1010_2}$ = $5 ^ 8 \cdot 5 ^ 4$. Then, if we know $x ^ y$ for all $y$ which are powers of two ($x ^ 1$, $x ^ 2$, $x ^ 4$, $\dots$ , $x ^ {2^{\lfloor{\log_2n} \rfloor}}$, we can compute $x ^ n$ in $\mathcal{O}(\log n)$.
 
 To deal with $m$, observe that modulo doesn't affect multiplications, so we can directly implement the above "binary exponentiation" algorithm while adding a line to take results $\pmod m$.
 
-<!-- 
+<!--
 Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwise, we can compute these sums efficently.  -->
 
-#### Solution - Exponentiation
+#### CSES - Exponentiation
+
+To test your implementation of **Binary Exponentiation**, use the following problem, and check the example code if you're stuck.
+
+<FocusProblem problem={problems.expo[0]} />
+
+<Spoiler title="Solution">
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h> // see C++ Tips & Tricks
+#include <bits/stdc++.h>
 using namespace std;
 
-long long binpow(long long x, long long n, long long m) {
+using ll = long long;
+
+ll binpow(ll x, ll n, ll m) {
 	assert(n >= 0);
-	x %= m; //note: m*m must be less than 2^63 to avoid long long overflow
-	long long res = 1;
+	x %= m; //note: m*m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
 	while (n > 0) {
 		if (n % 2 == 1) //if n is odd
 			res = res * x % m;
@@ -323,42 +351,62 @@ int main() {
 		cout << binpow(a,b,1e9+7) << "\n";
 	}
 }
-
 ```
 
 </CPPSection>
 
 </LanguageSection>
 
-<IncompleteSection>
+</Spoiler>
 
-make full solution to above problem
+### Modular Inverse
 
-</IncompleteSection>
+The **modular inverse** is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider prime moduli $p$ here.
 
-### Modular Inverse with Exponentiation
+For example, the inverse of $2$ modulo $p=10^9+7$ is $i=\frac{p+1}{2}=5\cdot 10^8+4$. This means that for any integer $x$,
 
-The **modular inverse** is the equivalent of the reciprocal in real-number arithmetic; to divide $a$ by $b$, multiply $a$ by the modular inverse of $b$. We'll only consider **prime** moduli here.
+$$
+(2x)\cdot i\equiv x\cdot (2i)\equiv x\pmod{10^9+7}.
+$$
 
-<IncompleteSection>
+For example, $10i\equiv 5\pmod{10^9+7}$.
 
-example - modular inverse
+<!-- #### Example: Sprinkers 2
 
-</IncompleteSection>
+There aren't many good examples of Modular Inverses in USACO. One problem where it was useful was the platinum problem "Sprinkers 2".
+
+<FocusProblem problem={problems.dp[2]} />
+
+For the sake of example, we'll skip the details of this problem. Also, if you want to attempt it yourself, you should probably do that first. In this problem, our DP transition relies on dividing our answer at some state by $2$, under a prime moduli.
+
+To perform this, we'll instead multiply by $500000004$ or the modular inverse of $2$, and take it under the prime moduli for the same result.
+ -->
+
+<!-- To find a modular inverse of some number modulo $p$, simply raise it to the power of $p-2$. -->
 
 <Resources>
 	<Resource
 		source="cp-algo"
 		title="Modular Multiplicative Inverse"
 		url="algebra/module-inverse.html"
+		starred
 	>
-		Various ways to take modular inverse
+		Various ways to take modular inverse, we'll only discuss the second here
 	</Resource>
 </Resources>
 
-<!-- To find a modular inverse of some number modulo $p$, simply raise it to the power of $p-2$. -->
+#### With Exponentiation
 
-[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) (not to be confused with Fermat's **Last** Theorem) states that for any **prime number** $p$, all integers $a$ not divisible by $p$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently, $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse of $a$ modulo $p$.
+[**Fermat's Little Theorem**](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) (not to be confused with Fermat's **Last** Theorem) states that all integers $a$ not divisible by $p$ satisfy $a^{p - 1} \equiv 1 \pmod{p}$. Consequently, $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse of $a$ modulo $p$.
+
+```cpp
+int main() {
+	ll m = 1e9+7;
+	ll x = binpow(2,m-2,m);
+	cout << x << "\n"; // 500000004
+	assert(2*x%m == 1);
+}
+```
 
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo $p$, frequent use of division inside a loop can significantly increase the running time of a program. If the modular inverse of the same number(s) is/are being used many times, it is a good idea to precalculate it.
 
@@ -376,8 +424,39 @@ We can also use the extended Euclidean algorithm. See the module in the [Advance
 
 <Problems problems={problems.general} />
 
-<IncompleteSection />
-
 ### DP
 
 <Problems problems={problems.dp} />
+
+### Permutations
+
+<!-- Define the order of permutation $p$ as the number of times you need to apply $p$ to itself to get the identity permutation, or the permutation consisting of integers $1 \cdots N$ where $N$ is the length of permutation $p$.
+ -->
+
+<!-- We'll decompose the permutations into disjoint cycles. Then, observe that a cycle of length $l$ takes $l$ operations to match the identity permutation. That means that for $M$ cycles, the permutation requires $LCM(l_1, l_2, \cdots, l_M)$ operations for all the cycles to match the identity permutation.
+
+For a more formal proof, see [this article](http://mathonline.wikidot.com/the-order-of-a-permutation).
+
+</IncompleteSection> -->
+
+<!--
+
+#### Example: Exercise
+
+<FocusProblem problem={problems.permutations[0]} />
+
+Using the fact above, we can rephrase the problem as follows: find the sum of integers $K$ such that there exists an array of lengths $l$ such that
+
+$$
+\sum_{i = 1}^{sz(l)} l_i = N
+$$
+
+and
+
+$$
+LCM(l_1, l_2, \cdots l_{sz(l)}) = K
+$$
+
+-->
+
+<Problems problems={problems.permutations} />
