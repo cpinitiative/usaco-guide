@@ -19,7 +19,22 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
-import cow1 from '../assets/up-close-cow.png';
+import cow0 from '../assets/0.png';
+import cow1 from '../assets/1.png';
+import cow2 from '../assets/2.png';
+import cow3 from '../assets/3.png';
+import cow4 from '../assets/4.png';
+import cow5 from '../assets/5.png';
+import cow6 from '../assets/6.png';
+import cow7 from '../assets/7.png';
+
+// function importAll(r) {
+//   let images = {};
+//   r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+//   return images;
+// }
+
+// const images = importAll(require.context('./images', false, '/\.png/'));
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
@@ -52,7 +67,7 @@ export default function DashboardPage(props: PageProps) {
     isLoaded,
   } = React.useContext(UserDataContext);
   React.useEffect(() => {
-    if (isLoaded) setLastVisitDate(new Date().setHours(0, 0, 0, 0));
+    if (isLoaded) setLastVisitDate(new Date().getTime());
   }, [isLoaded]);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
@@ -136,6 +151,7 @@ export default function DashboardPage(props: PageProps) {
   // console.log(lastViewedModuleURL)
   // console.log(moduleIDToName[lastViewedModuleID])
   // console.log(pref)
+  const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -204,37 +220,41 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                {consecutiveVisits >= 2 && (
-                  <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                    <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        🔥 {consecutiveVisits} Day Streak: Keep it up!
-                      </h3>
-                    </div>
+                <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
+                  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      🔥 {consecutiveVisits} Day Streak: Keep it up!
+                    </h3>
                   </div>
-                )}
-                {consecutiveVisits >= 3 && (
-                  <>
-                    <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                      <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                          🔥 3 Day Streak!
-                        </h3>
-                        <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
-                          <p>
-                            You've visited this guide for 3 consecutive days.
-                            Enjoy this cute cow photo as a reward!
-                          </p>
+                </div>
+                {cows.map((value, index) => {
+                  const need = index + 2;
+                  if (index % 2 == 0 && consecutiveVisits >= need) {
+                    return (
+                      <>
+                        <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
+                          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900">
+                              🔥 {need} Day Streak!
+                            </h3>
+                            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
+                              <p>
+                                You've visited this guide for {need} consecutive
+                                days. Enjoy this cute cow photo as a reward!
+                              </p>
+                            </div>
+                          </div>
+                          <img
+                            className="w-full object-cover"
+                            src={value}
+                            alt="Cow"
+                          />
                         </div>
-                      </div>
-                      <img
-                        className="h-64 w-full object-cover"
-                        src={cow1}
-                        alt="Cow"
-                      />
-                    </div>
-                  </>
-                )}
+                      </>
+                    );
+                  }
+                  return <></>;
+                })}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
@@ -263,26 +283,34 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                {consecutiveVisits >= 6 && (
-                  <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                    <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        🔥 6 Day Streak!
-                      </h3>
-                      <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
-                        <p>
-                          You've visited this guide for 6 consecutive days.
-                          Enjoy this cute cow photo as a reward!
-                        </p>
-                      </div>
-                    </div>
-                    <img
-                      className="h-64 w-full object-cover"
-                      src="https://66.media.tumblr.com/709acf5805b63bf412dd5cf8d6e34803/tumblr_oplgjdcYJl1sgqqono1_500.jpg"
-                      alt="Cow"
-                    />
-                  </div>
-                )}
+                {cows.map((value, index) => {
+                  const need = index + 2;
+                  if (index % 2 == 1 && consecutiveVisits >= need) {
+                    return (
+                      <>
+                        <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
+                          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900">
+                              🔥 {need} Day Streak!
+                            </h3>
+                            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
+                              <p>
+                                You've visited this guide for {need} consecutive
+                                days. Enjoy this cute cow photo as a reward!
+                              </p>
+                            </div>
+                          </div>
+                          <img
+                            className="w-full object-cover"
+                            src={value}
+                            alt="Cow"
+                          />
+                        </div>
+                      </>
+                    );
+                  }
+                  return <></>;
+                })}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}

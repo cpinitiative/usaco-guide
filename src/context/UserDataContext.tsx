@@ -123,7 +123,7 @@ const getLastVisitDateFromStorage = () => {
   } catch (e) {
     console.error("Couldn't parse last visit date", e);
   }
-  return v || new Date().setHours(0, 0, 0, 0);
+  return v || new Date().getTime();
 };
 
 const consecutiveVisitsKey = 'guide:userData:consecutiveVisits';
@@ -216,9 +216,7 @@ export const UserDataProvider = ({ children }) => {
               setUserProgressOnModules(data.userProgressOnModules || {});
               setUserProgressOnProblems(data.userProgressOnProblems || {});
               setLastReadAnnouncement(data.lastReadAnnouncement || null);
-              setLastVisitDate(
-                data.lastVisitDate || new Date().setHours(0, 0, 0, 0)
-              );
+              setLastVisitDate(data.lastVisitDate || new Date().getTime());
               setConsecutiveVisits(data.consecutiveVisits || 1);
             });
           }
@@ -349,13 +347,18 @@ export const UserDataProvider = ({ children }) => {
 
       lastVisitDate,
       consecutiveVisits,
-      setLastVisitDate: today => {
-        if (!lastVisitDate) return;
-
+      setLastVisitDate: (today: number) => {
         let newVisits = consecutiveVisits;
-        if (today - lastVisitDate == 1000 * 60 * 60 * 24) newVisits++;
-        else if (today != lastVisitDate) newVisits = 1;
-
+        const x = new Date(lastVisitDate);
+        const y = new Date(today);
+        // console.log(x.toDateString())
+        // console.log(y.toDateString())
+        if (x.toDateString() == y.toDateString()) {
+        } else {
+          x.setDate(x.getDate() + 1);
+          if (x.toDateString() == y.toDateString()) newVisits++;
+          else newVisits = 1;
+        }
         if (firebaseUser) {
           firebase.firestore().collection('users').doc(firebaseUser.uid).set(
             {
