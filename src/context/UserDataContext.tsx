@@ -49,6 +49,8 @@ const UserDataContext = createContext<{
   setLastVisitDate: (today: number) => void;
 
   consecutiveVisits: number;
+
+  isLoaded: boolean;
 }>(null);
 
 const langKey = 'guide:userData:lang';
@@ -151,9 +153,12 @@ export const UserDataProvider = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [lastVisitDate, setLastVisitDate] = useState<number>(null);
   const [consecutiveVisits, setConsecutiveVisits] = useState<number>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useFirebase(firebase => {
     return firebase.auth().onAuthStateChanged(user => {
+      if (user == null) setIsLoaded(true);
+      else setIsLoaded(false);
       setFirebaseUser(user);
     });
   });
@@ -217,6 +222,7 @@ export const UserDataProvider = ({ children }) => {
               setConsecutiveVisits(data.consecutiveVisits || 1);
             });
           }
+          setIsLoaded(true);
         });
     }
   }, [firebaseUser]);
@@ -367,6 +373,8 @@ export const UserDataProvider = ({ children }) => {
         setConsecutiveVisits(newVisits);
         setLastVisitDate(today);
       },
+
+      isLoaded,
     }),
     [
       lang,
@@ -378,6 +386,7 @@ export const UserDataProvider = ({ children }) => {
       lastVisitDate,
       consecutiveVisits,
       firebase,
+      isLoaded,
     ]
   );
 
