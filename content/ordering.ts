@@ -109,8 +109,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   gold: [
     {
+      name: 'Introductory Number Theory',
+      items: ['divis', 'modular'],
+    },
+    {
       name: 'Dynamic Programming',
-      items: ['intro-dp', 'intro-nt'],
+      items: ['intro-dp'],
     },
     {
       name: 'Graphs',
@@ -121,8 +125,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['stacks', 'sliding', 'PURS', 'SRQ', 'springboards'],
     },
     {
+      name: 'More DP',
+      items: ['dp-nt', 'dp-trees', 'all-roots'],
+    },
+    {
       name: 'Trees',
-      items: ['dp-trees', 'all-roots', 'tree-euler'],
+      items: ['tree-euler'],
     },
     {
       name: 'Hashing',

@@ -4,7 +4,7 @@ title: AtCoder - Subtree
 author: Benjamin Qi, Andi Qu
 ---
 
-## Solving for one root
+## Solving for One Root
 
 Let's consider a simpler problem - assuming that node 1 is painted black, how many ways can we paint the tree?
 
@@ -54,19 +54,11 @@ Finding all $dp2[i]$ takes $O(N)$ time using a DFS, so the total complexity of t
 
 ## Code
 
-In the template below, just modify the contents of `struct T` as necessary.
+`down` corresponds to $dp$ and `up` corresponds to $dp2$.
 
 ```cpp
 /**
- * Description: modular arithmetic operations 
- * Source: 
-	* KACTL
-	* https://codeforces.com/blog/entry/63903
-	* https://codeforces.com/contest/1261/submission/65632855 (tourist)
-	* https://codeforces.com/contest/1264/submission/66344993 (ksun)
-	* also see https://github.com/ecnerwala/cp-book/blob/master/src/modnum.hpp (ecnerwal)
- * Verification: 
-	* https://open.kattis.com/problems/modulararithmetic
+ * Description: modular arithmetic operations
  */
 
 template<int MOD, int RT> struct mint {
@@ -121,6 +113,8 @@ void genComb(int SZ) {
 	FOR(i,1,SZ) F0R(j,i+1) 
 		scmb[i][j] = scmb[i-1][j]+(j?scmb[i-1][j-1]:0);
 }
+
+// END MODULAR ARITHMETIC TEMPLATE
 
 template<int SZ> struct SubtreeDP {
 	int par[SZ]; vi adj[SZ];
