@@ -19,6 +19,8 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
+import DailyStreak from '../components/Dashboard/DailyStreak';
+
 import cow0 from '../assets/0.png';
 import cow1 from '../assets/1.png';
 import cow2 from '../assets/2.png';
@@ -27,6 +29,8 @@ import cow4 from '../assets/4.png';
 import cow5 from '../assets/5.png';
 import cow6 from '../assets/6.png';
 import cow7 from '../assets/7.png';
+
+const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
 
 // function importAll(r) {
 //   let images = {};
@@ -145,7 +149,7 @@ export default function DashboardPage(props: PageProps) {
   // console.log(lastViewedModuleURL)
   // console.log(moduleIDToName[lastViewedModuleID])
   // console.log(pref)
-  const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
+  // const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
   return (
     <Layout>
       <SEO title="Dashboard" />
@@ -214,57 +218,57 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      🔥 {consecutiveVisits} Day Streak: Keep it up!
-                    </h3>
-                  </div>
-                </div>
-                {cows.map((value, index) => {
-                  const need = index + 2;
-                  if (index % 2 == 0 && consecutiveVisits >= need) {
-                    return (
-                      <>
-                        <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">
-                              🔥 {need} Day Streak!
-                            </h3>
-                            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
-                              <p>
-                                You've visited this guide for {need} consecutive
-                                days. Enjoy this cute cow photo as a reward!
-                              </p>
-                            </div>
-                          </div>
-                          <img
-                            className="w-full object-cover"
-                            src={value}
-                            alt="Cow"
-                          />
-                        </div>
-                      </>
-                    );
-                  }
-                  return <></>;
-                })}
-                {/*<div className="bg-white shadow sm:rounded-lg">*/}
-                {/*  <div className="px-4 py-5 sm:p-6">*/}
+                {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
+                {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*      All Starred Problems*/}
+                {/*      🔥 {consecutiveVisits} Day Streak: Keep it up!*/}
                 {/*    </h3>*/}
-                {/*    <div className="mt-6">*/}
-                {/*      <DashboardProgress*/}
-                {/*        {...allStarredProblemsProgressInfo}*/}
-                {/*        total={Object.keys(allStarredProblemIDs).length}*/}
-                {/*      />*/}
-                {/*    </div>*/}
                 {/*  </div>*/}
                 {/*</div>*/}
+                {/*{cows.map((value, index) => {*/}
+                {/*  const need = index + 2;*/}
+                {/*  if (index % 2 == 0 && consecutiveVisits >= need) {*/}
+                {/*    return (*/}
+                {/*      <>*/}
+                {/*        <div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
+                {/*          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
+                {/*            <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*              🔥 {need} Day Streak!*/}
+                {/*            </h3>*/}
+                {/*            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
+                {/*              <p>*/}
+                {/*                You've visited this guide for {need} consecutive*/}
+                {/*                days. Enjoy this cute cow photo as a reward!*/}
+                {/*              </p>*/}
+                {/*            </div>*/}
+                {/*          </div>*/}
+                {/*          <img*/}
+                {/*            className="w-full object-cover"*/}
+                {/*            src={value}*/}
+                {/*            alt="Cow"*/}
+                {/*          />*/}
+                {/*        </div>*/}
+                {/*      </>*/}
+                {/*    );*/}
+                {/*  }*/}
+                {/*  return <></>;*/}
+                {/*})}*/}
+                {/*  <div className="bg-white shadow sm:rounded-lg">*/}
+                {/*    <div className="px-4 py-5 sm:p-6">*/}
+                {/*      <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*        All Starred Problems*/}
+                {/*      </h3>*/}
+                {/*      <div className="mt-6">*/}
+                {/*        <DashboardProgress*/}
+                {/*          {...allStarredProblemsProgressInfo}*/}
+                {/*          total={Object.keys(allStarredProblemIDs).length}*/}
+                {/*        />*/}
+                {/*      </div>*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
               </div>
               <div className="space-y-8">
-                <div className="bg-white shadow sm:rounded-lg order-6">
+                <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       All Problems
@@ -277,34 +281,34 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                {cows.map((value, index) => {
-                  const need = index + 2;
-                  if (index % 2 == 1 && consecutiveVisits >= need) {
-                    return (
-                      <>
-                        <div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">
-                          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">
-                              🔥 {need} Day Streak!
-                            </h3>
-                            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">
-                              <p>
-                                You've visited this guide for {need} consecutive
-                                days. Enjoy this cute cow photo as a reward!
-                              </p>
-                            </div>
-                          </div>
-                          <img
-                            className="w-full object-cover"
-                            src={value}
-                            alt="Cow"
-                          />
-                        </div>
-                      </>
-                    );
-                  }
-                  return <></>;
-                })}
+                {/*{cows.map((value, index) => {*/}
+                {/*  const need = index + 2;*/}
+                {/*  if (index % 2 == 1 && consecutiveVisits >= need) {*/}
+                {/*    return (*/}
+                {/*      <>*/}
+                {/*        <div className="bg-white shadow sm:rounded-lg overflow-hidden flex flex-col">*/}
+                {/*          <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
+                {/*            <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*              🔥 {need} Day Streak!*/}
+                {/*            </h3>*/}
+                {/*            <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
+                {/*              <p>*/}
+                {/*                You've visited this guide for {need} consecutive*/}
+                {/*                days. Enjoy this cute cow photo as a reward!*/}
+                {/*              </p>*/}
+                {/*            </div>*/}
+                {/*          </div>*/}
+                {/*          <img*/}
+                {/*            className="w-full object-cover"*/}
+                {/*            src={value}*/}
+                {/*            alt="Cow"*/}
+                {/*          />*/}
+                {/*        </div>*/}
+                {/*      </>*/}
+                {/*    );*/}
+                {/*  }*/}
+                {/*  return <></>;*/}
+                {/*})}*/}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
@@ -324,6 +328,7 @@ export default function DashboardPage(props: PageProps) {
                 {/*  </div>*/}
                 {/*</div>*/}
               </div>
+              <DailyStreak streak={consecutiveVisits} />
             </div>
           </div>
         </main>
