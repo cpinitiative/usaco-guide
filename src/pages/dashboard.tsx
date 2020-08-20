@@ -21,25 +21,6 @@ import {
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
 import DailyStreak from '../components/Dashboard/DailyStreak';
 
-import cow0 from '../assets/0.png';
-import cow1 from '../assets/1.png';
-import cow2 from '../assets/2.png';
-import cow3 from '../assets/3.png';
-import cow4 from '../assets/4.png';
-import cow5 from '../assets/5.png';
-import cow6 from '../assets/6.png';
-import cow7 from '../assets/7.png';
-
-const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
-
-// function importAll(r) {
-//   let images = {};
-//   r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
-//   return images;
-// }
-
-// const images = importAll(require.context('./images', false, '/\.png/'));
-
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {

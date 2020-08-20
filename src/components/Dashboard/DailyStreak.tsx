@@ -1,17 +1,8 @@
 import * as React from 'react';
-
-import cow0 from '../../assets/0.png';
-import cow1 from '../../assets/1.png';
-import cow2 from '../../assets/2.png';
-import cow3 from '../../assets/3.png';
-import cow4 from '../../assets/4.png';
-import cow5 from '../../assets/5.png';
-import cow6 from '../../assets/6.png';
-import cow7 from '../../assets/7.png';
-import { useState } from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import Img from 'gatsby-image';
 
 // note: cows will be unlocked in reverse order
-const cows = [cow0, cow1, cow2, cow3, cow4, cow5, cow6, cow7];
 
 const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
   <div
@@ -31,9 +22,9 @@ const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
           Come back tomorrow to unlock this cow photo!
         </div>
       )}
-      <img
+      <Img
         className="w-full object-cover"
-        src={img}
+        fluid={img}
         alt="Cow"
         style={hiddenUntilTomorrow ? { filter: 'blur(60px)' } : null}
       />
@@ -42,6 +33,25 @@ const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
 );
 
 export default function DailyStreak({ streak }) {
+  const data = useStaticQuery(graphql`
+    query {
+      allFile(filter: { relativePath: { regex: "/^cows/.*/" } }) {
+        edges {
+          node {
+            childImageSharp {
+              fluid(maxWidth: 1000, quality: 100) {
+                ...GatsbyImageSharpFluid
+              }
+            }
+            name
+          }
+        }
+      }
+    }
+  `);
+  const cows = React.useMemo(() => {
+    return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
+  }, []);
   return (
     <>
       <div className="bg-white shadow sm:rounded-lg overflow-hidden lg:col-span-2">
