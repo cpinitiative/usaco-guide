@@ -78,7 +78,7 @@ export const problems = {
 			'JOI',
 			'2018 - Commuter Pass',
 			'https://oj.uz/problem/view/JOI18_commuter_pass',
-			'Hard',
+			'Normal',
 			true,
 			['SP', 'DP'],
 			''
@@ -96,9 +96,9 @@ export const problems = {
 			'Balkan OI',
 			'2012 - Shortest Paths',
 			'https://www.acmicpc.net/problem/5250',
-			'Very Hard',
+			'Hard',
 			true,
-			['SP', 'LCA'],
+			['SP'],
 			'balkan-12-shortestpaths'
 		),
 	],
@@ -115,15 +115,6 @@ export const problems = {
 	],
 	apsp: [
 		new Problem(
-			'Baltic OI',
-			'2017 - Toll',
-			'https://oj.uz/problem/view/BOI17_toll',
-			'Normal',
-			false,
-			[],
-			'baltic-17-toll'
-		),
-		new Problem(
 			'Gold',
 			'Moortal Cowmbat',
 			'971',
@@ -132,40 +123,31 @@ export const problems = {
 			['APSP', 'DP'],
 			''
 		),
-		new Problem(
-			'COCI',
-			'2009 - Gremlini',
-			'https://hsin.hr/coci/archive/2009_2010/contest6_tasks.pdf',
-			'Hard',
-			false,
-			['APSP', 'DP'],
-			''
-		),
-		new Problem(
-			'APIO',
-			'2017 - Traveling Merchant',
-			'https://oj.uz/problem/view/APIO17_merchant',
-			'Hard',
-			true,
-			['APSP', 'Binary Search'],
-			''
-		),
 	],
 };
 
-<FocusProblem problem={problems.sample[0]} />
+<!-- 	new Problem(
+		'COCI',
+		'2009 - Gremlini',
+		'https://hsin.hr/coci/archive/2009_2010/contest6_tasks.pdf',
+		'Hard',
+		false,
+		['APSP', 'DP'],
+		''
+	), 
+-->
+
+Nearly all Gold shortest path problems involve Dijkstra. However, it's a good idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
 
 ## Bellman-Ford
 
-<IncompleteSection>
-
-add resources, rearrange APSP, move probs w/ neg edge weights to advanced
-
-</IncompleteSection>
+<Resources>
+	<Resource source="CPH" title="13.1 - Bellman-Ford">up to but not including "Negative Cycles"</Resource>
+</Resources>
 
 ## Floyd-Warshall
 
-All Pairs Shortest Path (APSP)
+<!-- All Pairs Shortest Path (APSP) -->
 
 <FocusProblem problem={problems.apspSam[0]} />
 
@@ -175,12 +157,12 @@ All Pairs Shortest Path (APSP)
 	<Resource source="CPH" title="13.3 - Floyd-Warshall" starred>
 		example calculation, code
 	</Resource>
-	<Resource source="PAPS" title="12.3.3"></Resource>
 	<Resource
 		source="cp-algo"
 		title="Floyd-Warshall"
-		url="graph/all-pair-shortest-path-floyd-warshall.html"
-	></Resource>
+		url="graph/all-pair-shortest-path-floyd-warshall.html" starred
+	>code, why it works</Resource>
+	<Resource source="PAPS" title="12.3.3 - Floyd-Warshall">code, why it works</Resource>
 	<Resource source="CP2" title="4.5 - All-Pairs Shortest Paths"></Resource>
 </Resources>
 
@@ -194,7 +176,29 @@ All Pairs Shortest Path (APSP)
 
 </Optional>
 
+### Problems
+
+Used as the first step of the following:
+
+<Problems problems={problems.apsp} />
+
 ## Dijkstra
+
+<FocusProblem problem={problems.sample[0]} />
+
+### $O(N^2)$
+
+The USACO training pages present a $O(N^2)$ implementation, although this is rarely used nowadays.
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Dijkstra (Dense Graphs)"
+		url="graph/dijkstra.html"
+	></Resource>
+</Resources>
+
+### $O(M\log N)$
 
 <Resources>
 	<Resource source="CPH" title="13.2 - Dijkstra" starred>
@@ -202,23 +206,12 @@ All Pairs Shortest Path (APSP)
 	</Resource>
 	<Resource
 		source="cp-algo"
-		title="Dijkstra (Dense Graphs)"
-		url="graph/dijkstra.html"
-	></Resource>
-	<Resource
-		source="cp-algo"
 		title="Dijkstra (Sparse Graphs)"
 		url="graph/dijkstra_sparse.html"
 	></Resource>
-	<Resource source="CPC" title="8 - Graphs 2" url="08_graphs_2"></Resource>
+	<Resource source="CPC" title="8 - Shortest Paths" url="08_graphs_2"></Resource>
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph"></Resource>
 </Resources>
-
-### $O(N^2)$ Implementation
-
-The USACO training pages present a $O(N^2)$ version, although this is rarely used nowadays. (but describe anyways?)
-
-<IncompleteSection />
 
 ### $O(M\log N)$ Implementation
 
@@ -304,12 +297,6 @@ Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wik
 
 </Optional>
 
-## Problems
-
-### Dijkstra
+### Problems
 
 <Problems problems={problems.dijk} />
-
-### Floyd-Warshall
-
-<Problems problems={problems.apsp} />
