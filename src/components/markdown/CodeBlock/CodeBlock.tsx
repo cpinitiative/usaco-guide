@@ -23,7 +23,7 @@ export default ({ children, className }) => {
   if (className === undefined) {
     // no styling, just a regular pre tag
     return (
-      <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all">
+      <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
         {children}
       </pre>
     );

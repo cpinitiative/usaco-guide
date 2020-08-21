@@ -30,33 +30,33 @@ export function ProblemsList(props: ProblemsListProps) {
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
         <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
-          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg border-b border-gray-200">
-            <table className="w-full no-markdown">
+          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent">
+            <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
               <thead>
-                <tr className="pr-4 md:pr-6">
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-center text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
+                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider text-center">
                     Status
                   </th>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                     Source
                   </th>
-                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider whitespace-no-wrap">
+                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
                   <th
                     className={`pl-4 md:pl-6 ${
                       !showSols ? 'pr-4 md:pr-6' : ''
-                    } py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider`}
+                    } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
                   >
                     Difficulty
                   </th>
                   {showSols && (
-                    <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Tags
                     </th>
                   )}
                   {showSols && (
-                    <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Solution
                     </th>
                   )}
@@ -161,12 +161,15 @@ type ProblemComponentProps = {
 
 export function ProblemComponent(props: ProblemComponentProps) {
   const difficultyClasses = {
-    'Very Easy': 'bg-gray-100 text-gray-800',
-    Easy: 'bg-green-100 text-green-800',
-    Normal: 'bg-blue-100 text-blue-800',
-    Hard: 'bg-purple-100 text-purple-800',
-    'Very Hard': 'bg-orange-100 text-orange-800',
-    Insane: 'bg-red-100 text-red-800',
+    'Very Easy':
+      'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+    Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
+    Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
+    Hard:
+      'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
+    'Very Hard':
+      'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
+    Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
   };
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
@@ -176,7 +179,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   }, []);
   return (
     <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
-      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
+      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
         <div
           style={{ height: '1.25rem' }}
           className="flex items-center justify-center"
@@ -184,7 +187,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           <ProblemStatusCheckbox problem={problem} />
         </div>
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
         {problem.des ? (
           <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
         ) : (
@@ -236,7 +239,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       {showSols && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
-            <details className="text-gray-500">
+            <details className="text-gray-500 dark:text-dark-med-emphasis">
               <summary>Show Tags</summary>
               <p className="text-xs">{problem.tags.join(', ')}</p>
             </details>
@@ -378,7 +381,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       )}
       {!msg && !external && !internal && problem.sketch && (
         <span
-          className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
+          className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
           onClick={() => problem.sketch && props.onShowSolution(problem)}
         >
           <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
@@ -401,7 +404,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >
-          <span className="text-gray-300 pl-6">View Solution</span>
+          <span className="text-gray-300 dark:text-gray-600 pl-6">
+            View Solution
+          </span>
         </Tooltip>
       )}
     </td>

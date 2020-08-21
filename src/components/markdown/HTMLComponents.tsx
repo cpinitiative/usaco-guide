@@ -30,7 +30,7 @@ const HTMLComponents = {
   h1: ({ id, children, ...props }) => (
     <h1
       {...props}
-      className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700"
+      className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
     >
       <OffsetAnchor id={id} />
       {children}
@@ -38,7 +38,7 @@ const HTMLComponents = {
   ),
   h2: ({ id, children, ...props }) => (
     <h2
-      className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 relative"
+      className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
       {...props}
     >
       <OffsetAnchor id={id} />
@@ -66,7 +66,7 @@ const HTMLComponents = {
   inlineCode: props => (
     <code
       {...props}
-      className="font-mono inline bg-gray-200 rounded px-1 py-05"
+      className="font-mono inline bg-gray-200 rounded px-1 py-05 dark:bg-gray-800"
     />
   ),
   code: CodeBlock,

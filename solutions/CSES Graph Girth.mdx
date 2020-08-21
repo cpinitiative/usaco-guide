@@ -1,0 +1,74 @@
+---
+id: cses-1707
+title: CSES - Graph Girth
+author: Benjamin Qi
+---
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<IncompleteSection />
+
+```cpp
+int n,m,dist[2501],ans=MOD;
+vi adj[2501];
+ 
+int main() {
+	setIO(); re(n,m);
+	F0R(i,m) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	FOR(i,1,n+1) {
+		FOR(j,1,n+1) dist[j] = MOD;
+		queue<int> q; q.push(i); dist[i] = 0;
+		while (sz(q)) {
+			int x = q.front(); q.pop(); 
+			trav(t,adj[x]) {
+				if (dist[t] == MOD) 
+					dist[t] = dist[x]+1, q.push(t); 
+				else if (dist[t] >= dist[x]) 
+					ckmin(ans,dist[t]+dist[x]+1);
+			}
+		}
+	}
+	ps(ans == MOD ? -1 : ans);
+}
+```
+
+<Optional title="BFS-Cycle">
+
+We can modify the algorithm above to return either the length of the shortest cycle or the length of the shortest cycle plus one in $\mathcal{O}(N^2)$ time. See [here](https://people.csail.mit.edu/virgi/6.890/lecture9.pdf#page=4) for details.
+
+
+```cpp
+int n,m,dist[2501],ans=MOD;
+vi adj[2501];
+ 
+int main() {
+	setIO(); re(n,m);
+	F0R(i,m) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	FOR(i,1,n+1) {
+		FOR(j,1,n+1) dist[j] = MOD;
+		queue<int> q; q.push(i); dist[i] = 0;
+		while (sz(q)) {
+			int x = q.front(); q.pop(); 
+			trav(t,adj[x]) {
+				if (dist[t] == MOD) 
+					dist[t] = dist[x]+1, q.push(t); 
+				else if (dist[t] >= dist[x]) {
+					ckmin(ans,dist[t]+dist[x]+1);
+					goto DONE;
+				}
+			}
+		}
+		DONE:;
+	}
+	ps(ans == MOD ? -1 : ans);
+}
+```
+
+</Optional>
+

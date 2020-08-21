@@ -34,7 +34,7 @@ const MarkCompleteButton = ({
         <span className="rounded-md shadow-sm">
           <button
             type="button"
-            className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
+            className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 px-4 py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150"
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"

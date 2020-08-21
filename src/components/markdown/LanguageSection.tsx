@@ -30,7 +30,7 @@ export const LanguageSection = props => {
 
   if (!sections.hasOwnProperty(lang)) {
     return (
-      <div className="p-4 bg-red-50 text-red-800 rounded-md">
+      <div className="p-4 bg-red-50 rounded-md dark:bg-red-900">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg
@@ -46,11 +46,11 @@ export const LanguageSection = props => {
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm leading-5 font-medium text-red-800">
+            <h3 className="text-sm leading-5 font-medium text-red-800 dark:text-red-200">
               This section isn't yet available in your chosen language:{' '}
               {LANGUAGE_LABELS[lang]}.
             </h3>
-            <div className="mt-2 text-sm leading-5 text-red-700">
+            <div className="mt-2 text-sm leading-5 text-red-700 dark:text-red-300">
               Please choose a different default language for now. Feel free to
               file a request to add support for {LANGUAGE_LABELS[lang]} using
               the "Contact Us" button.
