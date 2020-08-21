@@ -7,6 +7,8 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import styled from 'styled-components';
 
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+
 const StyledTippy = styled(Tippy)`
   .tippy-content {
     padding: 0;
@@ -68,9 +70,26 @@ export default function ProblemStatusCheckbox({
   problem: Problem;
   size?: 'small' | 'large';
 }) {
+  const { markdownLayoutInfo, conf } = useContext(MarkdownLayoutContext);
+  // console.log(markdownLayoutInfo)
+  const { userProgressOnModules, setModuleProgress } = useContext(
+    UserDataContext
+  );
   const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
     UserDataContext
   );
+  const moduleProgress =
+    (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
+    'Not Started';
+  const handleCompletionChange = progress => {
+    if (moduleProgress === progress) return;
+    setModuleProgress(markdownLayoutInfo.id, progress);
+    if (
+      moduleProgress !== 'Complete' &&
+      (progress === 'Practicing' || progress === 'Complete')
+    )
+      conf(true);
+  };
   let status: ProblemProgress =
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
@@ -91,6 +110,12 @@ export default function ProblemStatusCheckbox({
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem, progress);
+              if (
+                (progress == 'Solving' || progress == 'Solved') &&
+                moduleProgress == 'Not Started'
+              ) {
+                handleCompletionChange('Practicing');
+              }
             }}
             currentProgress={status}
           />
