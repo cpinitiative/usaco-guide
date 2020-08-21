@@ -35,7 +35,10 @@ const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
 export default function DailyStreak({ streak }) {
   const data = useStaticQuery(graphql`
     query {
-      allFile(filter: { relativePath: { regex: "/^cows/.*/" } }) {
+      allFile(
+        filter: { relativePath: { regex: "/^cows/.*/" } }
+        sort: { fields: name }
+      ) {
         edges {
           node {
             childImageSharp {
