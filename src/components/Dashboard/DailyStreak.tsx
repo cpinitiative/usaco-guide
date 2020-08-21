@@ -50,7 +50,9 @@ export default function DailyStreak({ streak }) {
     }
   `);
   const cows = React.useMemo(() => {
-    return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
+    return data.allFile.edges
+      .map(({ node }) => node.childImageSharp.fluid)
+      .reverse();
   }, []);
   return (
     <>
