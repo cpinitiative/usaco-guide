@@ -187,7 +187,7 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {SECTION_LABELS[lastViewedSection]} Modules Progress
+                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
@@ -215,7 +215,7 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {SECTION_LABELS[lastViewedSection]} Problems Progress
+                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress

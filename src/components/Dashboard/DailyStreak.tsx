@@ -13,7 +13,7 @@ const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
   >
     <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
       <h3 className="text-lg leading-6 font-medium text-gray-900">
-        Day {day} photo
+        Day {day} Photo
       </h3>
     </div>
     <div className="overflow-hidden relative">
