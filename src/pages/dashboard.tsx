@@ -19,6 +19,7 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
+import DailyStreak from '../components/Dashboard/DailyStreak';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
@@ -45,7 +46,9 @@ export default function DashboardPage(props: PageProps) {
     lastReadAnnouncement,
     setLastReadAnnouncement,
     firebaseUser,
+    consecutiveVisits,
   } = React.useContext(UserDataContext);
+
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
@@ -187,7 +190,7 @@ export default function DashboardPage(props: PageProps) {
                 <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {SECTION_LABELS[lastViewedSection]} Modules Progress
+                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
@@ -212,10 +215,10 @@ export default function DashboardPage(props: PageProps) {
                 {/*</div>*/}
               </div>
               <div className="space-y-8">
-                <div className="bg-white shadow sm:rounded-lg order-6">
+                <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {SECTION_LABELS[lastViewedSection]} Problems Progress
+                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
@@ -262,6 +265,7 @@ export default function DashboardPage(props: PageProps) {
                 {/*  </div>*/}
                 {/*</div>*/}
               </div>
+              <DailyStreak streak={consecutiveVisits} />
             </div>
           </div>
         </main>

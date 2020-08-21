@@ -276,7 +276,7 @@ export default function IndexPage(props: PageProps) {
                     <img
                       className="w-full"
                       src="https://img.youtube.com/vi/ueNT-w7Oluw/maxresdefault.jpg"
-                      alt="Woman making a sale"
+                      alt="Video by William Lin"
                     />
                     <div className="absolute inset-0 w-full h-full flex items-center justify-center">
                       <svg
