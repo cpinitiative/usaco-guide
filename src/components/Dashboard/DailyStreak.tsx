@@ -81,7 +81,7 @@ export default function DailyStreak({ streak }) {
           if (photoNumber >= 0) {
             return (
               <PhotoCard
-                img={cows[photoNumber]}
+                img={cows[index]}
                 day={need + 1}
                 hiddenOnDesktop={photoNumber % 2 === 1}
                 hiddenUntilTomorrow={need === streak}
@@ -99,7 +99,7 @@ export default function DailyStreak({ streak }) {
           if (photoNumber % 2 === 1 && photoNumber >= 0) {
             return (
               <PhotoCard
-                img={cows[photoNumber]}
+                img={cows[index]}
                 day={need + 1}
                 hiddenOnDesktop={false}
                 hiddenUntilTomorrow={need === streak}
