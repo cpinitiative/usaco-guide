@@ -22,6 +22,26 @@ export default function ActiveItems({
   type: 'problems' | 'modules';
   items: ActiveItem[];
 }) {
+  items.sort((a, b) => {
+    const getLabel = x => {
+      const secs = [
+        'General',
+        'Bronze',
+        'Silver',
+        'Gold',
+        'Platinum',
+        'Advanced',
+      ];
+      for (let i = 0; i < secs.length; ++i) if (x.startsWith(secs[i])) return i;
+      return 100;
+    };
+    let aval = getLabel(a.label);
+    let bval = getLabel(b.label);
+    if (aval != bval) return aval - bval;
+    if (a.label < b.label) return -1;
+    if (a.label > b.label) return 1;
+    return 0;
+  });
   return (
     <div className="bg-white shadow sm:rounded-lg mb-8">
       <div className="px-4 py-5 sm:p-6">
