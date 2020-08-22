@@ -1,5 +1,7 @@
 import SimpleUserDataPropertyAPI from '../simpleUserDataPropertyAPI';
 
+export const darkModeKey = 'guide:userData:darkMode';
+
 export type DarkModeAPI = {
   darkMode: Boolean;
   setDarkMode: (b: Boolean) => void;
