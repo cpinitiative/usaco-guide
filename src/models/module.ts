@@ -7,7 +7,8 @@ export class ModuleLinkInfo {
     public title: string,
     public description?: string,
     public frequency?: ModuleFrequency,
-    public isIncomplete?: boolean
+    public isIncomplete?: boolean,
+    public probs?: any
   ) {
     if (this.id === 'using-this-guide') {
       // The "Using This Guide" module is complete already, but it contains an <IncompleteModule> tag

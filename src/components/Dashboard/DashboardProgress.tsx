@@ -17,11 +17,13 @@ const ProgressBar = ({ text, green, yellow, blue }) => {
           className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
         />
       </div>
-      <div className="text-right">
-        <span className="text-sm font-semibold inline-block text-gray-800">
-          {text}
-        </span>
-      </div>
+      {text && (
+        <div className="text-right">
+          <span className="text-sm font-semibold inline-block text-gray-800">
+            {text}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -81,5 +83,52 @@ export default function DashboardProgress({
         text={`${total} total`}
       />
     </div>
+  );
+}
+
+const ProgressBarSmall = ({ text, green, yellow, blue }) => {
+  return (
+    <>
+      <div className="inline-block">
+        <div className="overflow-hidden h-2 text-xs flex bg-gray-200 rounded-full w-24 inline">
+          <div
+            style={{ width: `${green}%` }}
+            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+          />
+          <div
+            style={{ width: `${yellow}%` }}
+            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300"
+          />
+          <div
+            style={{ width: `${blue}%` }}
+            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+          />
+        </div>
+      </div>
+      <div className="inline-block">
+        {text && (
+          <span className="text-sm font-semibold text-gray-800">
+            &nbsp;{text}
+          </span>
+        )}
+      </div>
+    </>
+  );
+};
+
+export function DashboardProgressSmall({
+  completed,
+  inProgress,
+  skipped,
+  notStarted,
+  total,
+}) {
+  return (
+    <ProgressBarSmall
+      text={completed + '/' + total}
+      green={(completed / total) * 100}
+      yellow={(inProgress / total) * 100}
+      blue={(skipped / total) * 100}
+    />
   );
 }

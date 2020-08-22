@@ -23,6 +23,9 @@ import Logo from '../Logo';
 import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
 
+import getProgressInfo from '../../utils/getProgressInfo';
+import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
+
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
   const module = moduleLayoutInfo.markdownLayoutInfo;
@@ -312,9 +315,12 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } = useContext(
-    UserDataContext
-  );
+  const {
+    userProgressOnModules,
+    setModuleProgress,
+    lang,
+    userProgressOnProblems,
+  } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
@@ -337,6 +343,9 @@ export default function MarkdownLayout({
             fields {
               division
             }
+            problems {
+              uniqueID
+            }
           }
         }
       }
@@ -345,6 +354,7 @@ export default function MarkdownLayout({
   const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
     data.allMdx,
   ]);
+  console.log(moduleLinks);
 
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
@@ -362,6 +372,23 @@ export default function MarkdownLayout({
   //   document.querySelector('html').style.scrollBehavior = 'smooth';
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
+
+  // console.log(markdownData)
+  // console.log(moduleLinks)
+  // console.log(userProgressOnProblems)
+  let ind = 0;
+  while (moduleLinks[ind].id != markdownData.id) ind++;
+  let problemIDs = [];
+  for (let problem of moduleLinks[ind].probs) problemIDs.push(problem.uniqueID);
+
+  const problemsProgressInfo = getProgressInfo(
+    problemIDs,
+    userProgressOnProblems,
+    ['Solved'],
+    ['Solving'],
+    ['Skipped'],
+    ['Not Attempted']
+  );
 
   return (
     <MarkdownLayoutContext.Provider
@@ -515,12 +542,17 @@ export default function MarkdownLayout({
                   <NavBar />
                 </div>
 
-                <div className="px-0.5 lg:mt-8">
-                  {markdownData instanceof ModuleInfo &&
-                    markdownData.frequency !== null && (
+                {markdownData instanceof ModuleInfo &&
+                  markdownData.frequency !== null && (
+                    <div className="px-0.5 lg:mt-8">
                       <Frequency frequency={markdownData.frequency} />
-                    )}
-                </div>
+                      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                      <DashboardProgressSmall
+                        {...problemsProgressInfo}
+                        total={problemIDs.length}
+                      />
+                    </div>
+                  )}
                 <div className="sm:flex sm:items-center sm:justify-between mb-4">
                   <div className="flex-1 min-w-0">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">
