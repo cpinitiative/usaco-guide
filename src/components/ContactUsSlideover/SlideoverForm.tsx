@@ -42,11 +42,11 @@ export default function SlideoverForm(props: SlideoverProps) {
             >
               <div className="w-screen max-w-md">
                 <form
-                  className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
+                  className="h-full flex flex-col bg-white dark:bg-dark-surface shadow-xl"
                   onSubmit={props.onSubmit}
                 >
                   <div className="flex-1 h-0 overflow-y-auto">
-                    <header className="space-y-1 py-6 px-4 bg-blue-700 sm:px-6">
+                    <header className="space-y-1 py-6 px-4 bg-blue-700 dark:bg-blue-900 sm:px-6">
                       <div className="flex items-center justify-between space-x-3">
                         <h2 className="text-lg leading-7 font-medium text-white">
                           {props.title}
@@ -84,7 +84,7 @@ export default function SlideoverForm(props: SlideoverProps) {
                       {props.children}
                     </div>
                   </div>
-                  <div className="flex-shrink-0 px-4 py-4 space-x-4 flex justify-end">
+                  <div className="flex-shrink-0 px-4 py-4 space-x-4 flex justify-end border-t border-gray-200 dark:border-gray-800">
                     {props.footerButtons}
                   </div>
                 </form>

@@ -11,18 +11,18 @@ export const FrequencyLabels = [
   'Very Frequent',
 ];
 export const FrequencyTextColors = [
-  'text-red-600', // group-hover:text-red-600
-  'text-orange-600', // group-hover:text-orange-600
-  'text-yellow-600', // group-hover:text-yellow-600
-  'text-teal-600', // group-hover:text-teal-600
-  'text-green-600', // group-hover:text-green-600
+  'text-red-600 dark:text-red-400', // group-hover:text-red-600
+  'text-orange-600 dark:text-orange-400', // group-hover:text-orange-600
+  'text-yellow-600 dark:text-yellow-400', // group-hover:text-yellow-600
+  'text-teal-600 dark:text-teal-400', // group-hover:text-teal-600
+  'text-green-600 dark:text-green-400', // group-hover:text-green-600
 ];
 export const FrequencyCircleColors = [
-  'text-red-500', // group-hover:text-red-500
-  'text-orange-500', // group-hover:text-orange-500
-  'text-yellow-500', // group-hover:text-yellow-500
-  'text-teal-500', // group-hover:text-teal-500
-  'text-green-500', // group-hover:text-green-500
+  'text-red-500 dark:text-red-400', // group-hover:text-red-500
+  'text-orange-500 dark:text-orange-400', // group-hover:text-orange-500
+  'text-yellow-500 dark:text-yellow-400', // group-hover:text-yellow-500
+  'text-teal-500 dark:text-teal-400', // group-hover:text-teal-500
+  'text-green-500 dark:text-green-400', // group-hover:text-green-500
 ];
 export const FrequencyHints = [
   'Historically, this module has not appeared in this division before. However, it can still show up in future contests.',

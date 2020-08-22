@@ -142,7 +142,7 @@ export default function DashboardPage(props: PageProps) {
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
-              <p className="mb-4 text-center">
+              <p className="mb-4 text-center text-gray-800">
                 {firebaseUser
                   ? `Signed in as ${firebaseUser.email}.`
                   : `Not signed in.`}

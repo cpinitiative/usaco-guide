@@ -12,7 +12,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
     <div className="space-y-1">
       <label
         htmlFor={id}
-        className="block text-sm font-medium leading-5 text-gray-900"
+        className="block text-sm font-medium leading-5 text-gray-900 dark:text-dark-high-emphasis"
       >
         {label}
       </label>
@@ -20,7 +20,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
         <input
           id={id}
           className={
-            'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 ' +
+            'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700' +
             (errorMsg
               ? 'pr-10 border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
               : '')
@@ -44,7 +44,11 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
           </div>
         )}
       </div>
-      {errorMsg && <p className="mt-2 text-sm text-red-600">{errorMsg}</p>}
+      {errorMsg && (
+        <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+          {errorMsg}
+        </p>
+      )}
     </div>
   );
 };
@@ -146,7 +150,7 @@ export default function ContactUsSlideover({
           <span className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
-              className="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
+              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition duration-150 ease-in-out"
               onClick={onClose}
             >
               Cancel
@@ -158,8 +162,8 @@ export default function ContactUsSlideover({
               disabled={!submitEnabled}
               className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition duration-150 ease-in-out ${
                 submitEnabled
-                  ? 'bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'
-                  : 'bg-blue-400 focus:outline-none cursor-default'
+                  ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dar-hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'
+                  : 'bg-blue-400 dark:bg-blue-800 focus:outline-none cursor-default'
               }`}
             >
               Contact Us
@@ -171,7 +175,7 @@ export default function ContactUsSlideover({
     >
       <div className="px-4 sm:px-6">
         {showSuccess && (
-          <div className="rounded-md bg-green-50 p-4 mt-6">
+          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4 mt-6">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -187,10 +191,10 @@ export default function ContactUsSlideover({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm leading-5 font-medium text-green-800">
+                <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
                   Message received!
                 </h3>
-                <div className="mt-2 text-sm leading-5 text-green-700">
+                <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
                   <p>
                     We will try our best to respond (if one is needed) within a
                     week.
@@ -243,7 +247,7 @@ export default function ContactUsSlideover({
               onChange={e => setLocation(e.target.value)}
             />
             <fieldset className="space-y-2">
-              <legend className="text-sm leading-5 font-medium text-gray-900">
+              <legend className="text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis">
                 Topic
               </legend>
               <div className="space-y-3">
@@ -255,7 +259,7 @@ export default function ContactUsSlideover({
                           id={`contact_topic_${idx}`}
                           type="radio"
                           name="type"
-                          className="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                          className="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out dark:bg-gray-600"
                           checked={topic === t}
                           onChange={() => setTopic(t)}
                         />
@@ -263,7 +267,7 @@ export default function ContactUsSlideover({
                       <div className="pl-7 text-sm leading-5">
                         <label
                           htmlFor={`contact_topic_${idx}`}
-                          className="font-medium text-gray-900"
+                          className="font-medium text-gray-900 dark:text-dark-high-emphasis"
                         >
                           {t}
                         </label>
@@ -276,7 +280,7 @@ export default function ContactUsSlideover({
             <div className="space-y-1">
               <label
                 htmlFor="contact_message"
-                className="block text-sm font-medium leading-5 text-gray-900"
+                className="block text-sm font-medium leading-5 text-gray-900 dark:text-dark-high-emphasis"
               >
                 Message
               </label>
@@ -285,7 +289,7 @@ export default function ContactUsSlideover({
                   id="contact_message"
                   rows={4}
                   className={
-                    'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 ' +
+                    'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700 ' +
                     (showErrors && message === ''
                       ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
                       : '')
@@ -310,7 +314,7 @@ export default function ContactUsSlideover({
                 )}
               </div>
               {showErrors && message === '' && (
-                <p className="mt-2 text-sm text-red-600">
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
                   This field is required.
                 </p>
               )}
