@@ -13,6 +13,7 @@ import { Problem } from '../models/problem';
 
 export default function ({ markdown }) {
   const [fn, setFn] = useState(null);
+  const [error, setError] = useState(null);
   useEffect(() => {
     (async () => {
       try {
@@ -58,11 +59,21 @@ export default function ({ markdown }) {
         );
 
         setFn(fn.bind(null, {}, React, ...values));
+        setError(null);
       } catch (e) {
         console.log('error', e);
+        setError(e);
       }
     })();
   }, [markdown]);
+  if (error) {
+    return (
+      <div>
+        An error occurred:
+        <pre className="mt-2 text-red-700">{error.toString()}</pre>
+      </div>
+    );
+  }
   return fn;
 }
 
