@@ -16,7 +16,7 @@ export const wrapRootElement = ({ element }) => (
 
 // https://joshwcomeau.com/gatsby/dark-mode/
 const MagicScriptTag = () => {
-  const codeToRunOnClient = `(function(){if(window.localStorage.getItem('${darkModeKey}'))document.documentElement.classList.add('mode-dark');})()`;
+  const codeToRunOnClient = `(function(){if(window.localStorage.getItem('${darkModeKey}')==='true')document.documentElement.classList.add('mode-dark');})()`;
   // eslint-disable-next-line react/no-danger
   return <script dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />;
 };
