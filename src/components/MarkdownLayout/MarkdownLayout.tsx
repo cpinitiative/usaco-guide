@@ -354,7 +354,7 @@ export default function MarkdownLayout({
   const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
     data.allMdx,
   ]);
-  console.log(moduleLinks);
+  // console.log(moduleLinks);
 
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
@@ -376,10 +376,13 @@ export default function MarkdownLayout({
   // console.log(markdownData)
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
-  let ind = 0;
-  while (moduleLinks[ind].id != markdownData.id) ind++;
   let problemIDs = [];
-  for (let problem of moduleLinks[ind].probs) problemIDs.push(problem.uniqueID);
+  if (markdownData instanceof ModuleInfo) {
+    let ind = 0;
+    while (moduleLinks[ind].id != markdownData.id) ind++;
+    for (let problem of moduleLinks[ind].probs)
+      problemIDs.push(problem.uniqueID);
+  }
 
   const problemsProgressInfo = getProgressInfo(
     problemIDs,
