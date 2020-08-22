@@ -1,8 +1,7 @@
 import * as React from 'react';
-import UserDataContext, {
-  LANGUAGE_LABELS,
-} from '../../context/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
+import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
 export const LanguageSection = props => {
   const { lang } = useContext(UserDataContext);

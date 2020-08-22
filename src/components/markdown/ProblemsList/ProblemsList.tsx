@@ -8,7 +8,7 @@ import PGS from '../PGS.json';
 import { books } from '../ResourcesList';
 
 import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';

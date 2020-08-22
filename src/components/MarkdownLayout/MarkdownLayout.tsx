@@ -13,7 +13,9 @@ import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
-import UserDataContext, { UserLang } from '../../context/UserDataContext';
+import UserDataContext, {
+  UserLang,
+} from '../../context/UserDataContext/UserDataContext';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';
-import { darkModeKey, UserDataProvider } from './src/context/UserDataContext';
+import {
+  darkModeKey,
+  UserDataProvider,
+} from './src/context/UserDataContext/UserDataContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
 
 export const wrapRootElement = ({ element }) => (

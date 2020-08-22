@@ -3,7 +3,7 @@ import { graphql, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import {
   moduleIDToSectionMap,
@@ -228,24 +228,6 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </div>
-                {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">*/}
-                {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*      🔥 6 Day Streak: Keep it up!*/}
-                {/*    </h3>*/}
-                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*      <p>*/}
-                {/*        You've visited this guide for 6 consecutive days. Enjoy*/}
-                {/*        this cute cow photo as a reward!*/}
-                {/*      </p>*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*  <img*/}
-                {/*    className="h-64 w-full object-cover"*/}
-                {/*    src="https://66.media.tumblr.com/709acf5805b63bf412dd5cf8d6e34803/tumblr_oplgjdcYJl1sgqqono1_500.jpg"*/}
-                {/*    alt="Cow"*/}
-                {/*  />*/}
-                {/*</div>*/}
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
                 {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}

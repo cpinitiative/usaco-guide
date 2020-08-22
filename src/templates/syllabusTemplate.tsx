@@ -11,7 +11,7 @@ import MODULE_ORDERING, {
 import { getModule } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import getProgressInfo from '../utils/getProgressInfo';
 import ModuleLink from '../components/Dashboard/ModuleLink';
 import { ModuleLinkInfo } from '../models/module';

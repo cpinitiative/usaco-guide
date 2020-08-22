@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import UserDataContext from '../../context/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import SectionsDropdown from '../SectionsDropdown';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 
