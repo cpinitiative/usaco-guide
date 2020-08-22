@@ -3,7 +3,7 @@ import { graphql, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import {
   moduleIDToSectionMap,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Problem, PROBLEM_PROGRESS_OPTIONS } from '../../../models/problem';
 import { useContext, useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemProgress } from '../../../models/problem';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';

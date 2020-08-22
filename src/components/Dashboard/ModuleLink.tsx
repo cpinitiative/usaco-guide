@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import { ModuleLinkInfo } from '../../models/module';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import UserDataContext from '../../context/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { Link } from 'gatsby';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import TextTooltip from '../Tooltip/TextTooltip';

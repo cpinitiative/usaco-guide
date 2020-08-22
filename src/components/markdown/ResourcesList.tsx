@@ -2,7 +2,7 @@ import * as React from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import PGS from './PGS.json';
 
 export function ResourcesList(props) {
