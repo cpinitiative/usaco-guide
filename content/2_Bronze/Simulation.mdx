@@ -1,71 +1,34 @@
 ---
 id: simulation
 title: 'Simulation'
-author: Darren Yao
+author: Darren Yao, Allen Li
 description: 'Directly simulating the problem statement, which many Bronze problems allow you to do.'
 frequency: 4
 ---
 
-import { Problem } from '../models';
+import { Problem } from "../models"
 
 export const problems = {
-	easier: [
-		new Problem('Bronze', 'Shell Game', '891', 'Easy', false, ['Nested Loop']), // 99.93
-		new Problem(
-			'Bronze',
-			'Mixing Milk',
-			'855',
-			'Easy',
-			false,
-			['Single Loop'],
-			'just pour 100 times'
-		), // 99.87
-		new Problem(
-			'Bronze',
-			'Speeding',
-			'568',
-			'Easy',
-			true,
-			['Nested Loop'],
-			'store speed for each mile'
-		), // 99.05
-		new Problem(
-			'Bronze',
-			'The Lost Cow',
-			'735',
-			'Easy',
-			false,
-			['Single Loop'],
-			''
-		), // 99.46
-		new Problem('Bronze', 'Hoof Paper Scissors', '688', 'Easy', false, []),
-		new Problem('Bronze', 'The Bovine Shuffle', '760', 'Easy', false, []), // 100
-		new Problem('Bronze', 'The Bucket List', '856', 'Easy', false, []),
-		new Problem(
-			'Bronze',
-			'Why Did the Cow Cross the Road',
-			'711',
-			'Easy',
-			false,
-			[]
-		),
-	],
-	harder: [
-		new Problem('Bronze', 'Circular Barn', '616', 'Normal', false, []), // 99.25
-		new Problem('Bronze', 'Block Game', '664', 'Normal', true), // 97.41
-		new Problem('Bronze', 'Team Tic Tac Toe', '831', 'Normal'), // 97.41
-		new Problem('Bronze', 'Cow Queue', '713', 'Normal', true, []), // 97.59
-		new Problem('Bronze', 'Mowing the Field', '593', 'Normal', false, []), // 97.16
-		new Problem('Bronze', 'Contaminated Milk', '569', 'Normal', true, []), // 95.97
-		new Problem('Bronze', 'Milk Measurement', '761', 'Hard'), // 95.97
-		new Problem('Bronze', 'Angry Cows', '592', 'Hard', true, [], ''), // 94.15
-	],
+    easier: [
+      new Problem("Bronze", "Shell Game", "891", "Easy", false, ["Nested Loop"]), // 99.93
+      new Problem("Bronze", "Mixing Milk", "855", "Easy", false, ["Single Loop"], "just pour 100 times"), // 99.87
+      new Problem("Bronze", "Speeding", "568", "Easy", true, ["Nested Loop"], "store speed for each mile"), // 99.05
+      new Problem("Bronze", "The Lost Cow", "735", "Easy", false, ["Single Loop"], ""), // 99.46
+      new Problem("Bronze", "The Bovine Shuffle", "760", "Easy", false, []), // 100
+    ],
+    harder: [
+      new Problem("Bronze", "Circular Barn", "616", "Normal", false, []), // 99.25
+      new Problem("Bronze", "Block Game", "664", "Normal", true), // 97.41
+      new Problem("Bronze", "Team Tic Tac Toe", "831", "Normal"), // 97.41
+      new Problem("Bronze", "Cow Queue", "713", "Normal", false, []), // 97.59
+      new Problem("Bronze", "Mowing the Field", "593", "Normal", false, []), // 97.16
+      new Problem("Bronze", "Milk Measurement", "761", "Hard"), // 95.97
+      new Problem("Bronze", "Angry Cows", "592", "Hard", true, [], ""), // 94.15
+    ]
 };
 
 <Resources>
-	<Resource source="IUSACO" title="5 - Simulation">
-		This module is based on Chapter 5 of Darren Yao's book
-	</Resource>
+  <Resource source="IUSACO" title="5 - Simulation">This module is based on Chapter 5 of Darren Yao's book</Resource>
 </Resources>
 
 <br />
@@ -143,9 +106,32 @@ pw.close(); // flush the output
 
 </JavaSection>
 
+<PySection>
+
+```py
+ax = 0
+ay = 0
+bx = r
+by = s
+t = 0
+while ax < bx and ay < by:
+    ax += m
+    ay += n
+    bx -= p
+    by -= q
+    t += 1
+if ax == bx and ay == by:
+    print(t)
+else:
+    print(-1)
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
+
 
 ## Example 2
 
@@ -216,17 +202,27 @@ pw.close(); // flush the output
 
 </JavaSection>
 
+<PySection>
+
+```py
+for i in range(n - 1):
+    amt = min(A[i], C[i + 1] - A[i + 1])
+    A[i] -= amt
+    A[i + 1] += amt
+
+for i in range(n):
+    print(A[i], end=" ")
+
+print()
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
 
 ## Problems
-
-<Warning>
-
-A lot of these are not very interesting, so don't feel the need to do all of them.
-
-</Warning>
 
 ### Easier
 
@@ -235,3 +231,4 @@ A lot of these are not very interesting, so don't feel the need to do all of the
 ### Harder
 
 <Problems problems={problems.harder} />
+
