@@ -136,7 +136,6 @@ for(int element : set){
 }
 // You can iterate through an set in sorted order
 ```
-
 </JavaSection>
 
 <PySection>
@@ -146,6 +145,26 @@ for(int element : set){
 Ordered sets and maps are **not** built into Python. The Python [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) stores keys in the same order as they were inserted in, **not** in sorted order.
 
 </Warning>
+
+The built in python unsorted set supports:
+
+- `add()`: Adds element to set
+- `remove()`: Removes element from set
+- `x in set`: Checks if element x is in the set
+
+```py
+set = set()
+set.add(1) # [1]
+set.add(4) # [1, 4]
+set.add(2) # [1, 4, 2]
+set.add(1) # [1, 4, 2]
+# the add method did nothing because 1 was already in the set
+print(1 in set) # True
+set.remove(1) # [4, 2]
+print(5 in set) # False
+set.remove(0); # [4, 2]
+# if the element to be removed does not exist, nothing happens
+```
 
 </PySection>
 
@@ -216,6 +235,17 @@ public class DistinctNumbers {
 
 </JavaSection>
 
+<PySection>
+
+```py
+n = int(input())
+nums = [int(x) for x in input().split()]
+distinctNumbers = set(nums)
+print(len(distinctNumbers))
+```
+
+</PySection>
+
 </LanguageSection>
 
 #### Method 2 - Sorting the Array
@@ -258,6 +288,23 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+n = int(input())
+arr = [int(x) for x in input().split()]
+arr = sorted(arr)
+
+ans = 1
+for i in range(n - 1):
+    if arr[i] != arr[i + 1]:
+        ans += 1
+
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -378,6 +425,17 @@ for (pair<int,int> x : m) {
 This allows you to modify the values of the pairs stored in the map.
 
 </CPPSection>
+
+<PySection>
+
+To iterate over dicts, you can use a `for` loop over the keys of the dict.
+
+```py
+for key in dict.keys():
+    print(f'{key} {dict[key]}')
+```
+
+</PySection>
 
 </LanguageSection>
 
