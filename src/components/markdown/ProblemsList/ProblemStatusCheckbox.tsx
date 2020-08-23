@@ -101,7 +101,7 @@ export default function ProblemStatusCheckbox({
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
       content={
-        <div className="w-56">
+        <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
               // @ts-ignore
