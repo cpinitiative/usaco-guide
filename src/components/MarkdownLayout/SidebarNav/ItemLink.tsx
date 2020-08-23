@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
-const LinkWithProgress = styled.span`
+export const LinkWithProgress = styled.span`
   ${tw`block relative`}
 
   &::after {
