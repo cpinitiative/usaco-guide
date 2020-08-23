@@ -477,7 +477,7 @@ export default function MarkdownLayout({
         </div>
       </div>
       <div>
-        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
+        <div className="sticky top-0 inset-x-0 bg-white dark:bg-dark-surface z-10 shadow lg:hidden pl-1 pt-1 flex items-center">
           <button
             className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
             aria-label="Open sidebar"
@@ -502,7 +502,7 @@ export default function MarkdownLayout({
           </div>
         </div>
         <main
-          className="relative z-0 sm:pt-2 pb-6 focus:outline-none"
+          className="relative z-0 pt-6 lg:pt-2 pb-6 focus:outline-none"
           tabIndex={0}
         >
           <div className="mx-auto">
