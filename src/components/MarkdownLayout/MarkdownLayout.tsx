@@ -24,6 +24,7 @@ import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import Logo from '../Logo';
 import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
+import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -478,8 +479,8 @@ export default function MarkdownLayout({
       </div>
       <div>
         <div className="sticky top-0 inset-x-0 bg-white dark:bg-dark-surface z-10 shadow lg:hidden pl-1 pt-1 flex items-center">
-          <button
-            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
+          <MobileMenuButtonContainer
+            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12"
             aria-label="Open sidebar"
             onClick={() => setIsMobileNavOpen(true)}
           >
@@ -496,7 +497,7 @@ export default function MarkdownLayout({
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-          </button>
+          </MobileMenuButtonContainer>
           <div className="flex-1 ml-4 mr-4 sm:mr-6">
             <NavBar />
           </div>

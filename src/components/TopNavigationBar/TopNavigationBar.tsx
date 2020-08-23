@@ -22,6 +22,7 @@ import LogoSquare from '../LogoSquare';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import SectionsDropdown from '../SectionsDropdown';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
+import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -239,8 +240,8 @@ export default function TopNavigationBar({
           </div>
           <div className="flex items-center lg:hidden">
             {/* Mobile menu button */}
-            <button
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+            <MobileMenuButtonContainer
+              className="inline-flex items-center justify-center p-2"
               aria-label="Main menu"
               aria-expanded="false"
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
@@ -275,7 +276,7 @@ export default function TopNavigationBar({
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
+            </MobileMenuButtonContainer>
           </div>
           <div className="hidden lg:ml-4 lg:flex lg:items-center">
             <div className="flex-shrink-0">
@@ -297,22 +298,22 @@ export default function TopNavigationBar({
               to={link.url}
               getProps={({ isCurrent }) => ({
                 className: isCurrent
-                  ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
-                  : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out',
+                  ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
+                  : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
               })}
             >
               {link.label}
             </Link>
           ))}
           <button
-            className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out"
+            className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
             onClick={() => setIsContactUsActive(true)}
           >
             Contact Us
           </button>
         </div>
-        <div className="pt-4 pb-3 border-t border-gray-200">
-          <UserAuthButton className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" />
+        <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+          <UserAuthButton className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" />
         </div>
       </div>
 
