@@ -17,4 +17,8 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   protected storageKey = 'lang';
   protected defaultValue = 'cpp';
   protected setterFunctionName = 'setLang';
+
+  // before page loads, we want to default to showing
+  // all languages for SEO purposes
+  protected value = 'showAll';
 }
