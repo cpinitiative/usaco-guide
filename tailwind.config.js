@@ -53,6 +53,18 @@ module.exports = {
       'dark-hover',
       'dark-focus',
     ],
+    backgroundOpacity: [
+      'responsive',
+      'group-hover',
+      'group-focus',
+      'hover',
+      'focus',
+      'active',
+      'dark',
+      'dark-group-hover',
+      'dark-hover',
+      'dark-focus',
+    ],
     borderColor: [
       'responsive',
       'group-hover',
@@ -65,6 +77,7 @@ module.exports = {
       'dark-focus',
     ],
     boxShadow: ['responsive', 'group-focus', 'hover', 'focus'],
+    placeholderColor: ['responsive', 'focus', 'dark', 'dark-focus'],
     textColor: [
       'responsive',
       'group-hover',

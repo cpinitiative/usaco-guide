@@ -31,9 +31,25 @@ const SearchResultDescription = styled.p`
     ${tw`text-sm!`}
   }
 
+  .mode-dark & > p > .ais-Highlight > * {
+    ${tw`text-gray-300`}
+  }
+
   > .ais-Snippet > * {
     ${tw`text-gray-400`}
     ${tw`text-sm!`}
+  }
+`;
+
+const SearchResultsContainer = styled.div`
+  ${tw`absolute z-10 bg-white lg:rounded shadow-md lg:border lg:border-gray-400 z-10 mt-3 inset-x-0 lg:left-auto lg:w-screen lg:max-w-3xl`}
+
+  .mode-dark & {
+    ${tw`bg-dark-surface lg:border-gray-700`}
+  }
+
+  .mode-dark & .ais-PoweredBy {
+    ${tw`text-dark-high-emphasis!`}
   }
 `;
 
@@ -80,7 +96,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         </div>
         <input
           id="search"
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out text-black"
+          className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-dark-high-emphasis focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out text-black"
           placeholder="Search"
           type="search"
           value={currentRefinement}
@@ -90,7 +106,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         />
       </div>
       {showResults && (
-        <div className="absolute z-10 bg-white lg:rounded shadow-md lg:border lg:border-gray-400 z-10 mt-3 inset-x-0 lg:left-auto lg:w-screen lg:max-w-3xl">
+        <SearchResultsContainer>
           <div className="px-4 pt-4">
             <PoweredBy />
           </div>
@@ -98,9 +114,9 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
             {hits.map(hit => (
               <Link
                 to={moduleIDToURLMap[hit.id]}
-                className="block hover:bg-blue-100 px-4 py-2 transition duration-150 ease-in-out"
+                className="block hover:bg-blue-100 dark-hover:bg-gray-700 px-4 py-2 transition duration-150 ease-in-out"
               >
-                <h3 className="text-gray-600 font-medium">
+                <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
@@ -113,7 +129,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
               </Link>
             ))}
           </div>
-        </div>
+        </SearchResultsContainer>
       )}
     </div>
   );
@@ -152,7 +168,7 @@ export default function TopNavigationBar({
   ];
 
   return (
-    <nav className="bg-white shadow relative z-10">
+    <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
       <div
         className={`${
           indexPage
@@ -170,7 +186,7 @@ export default function TopNavigationBar({
                   <LogoSquare />
                 </div>
                 <div className="hidden sm:block h-9">
-                  <Logo noDarkMode={true} />
+                  <Logo />
                 </div>
               </Link>
             )}
@@ -181,16 +197,13 @@ export default function TopNavigationBar({
                 to="/dashboard"
                 getProps={({ isCurrent }) => ({
                   className: isCurrent
-                    ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
-                    : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                    ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                    : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                 })}
               >
                 Dashboard
               </Link>
-              <SectionsDropdown
-                currentSection={currentSection}
-                noDarkMode={true}
-              />
+              <SectionsDropdown currentSection={currentSection} />
               {/*<Link*/}
               {/*  to="/problems"*/}
               {/*  getProps={({ isCurrent }) => ({*/}
@@ -202,7 +215,7 @@ export default function TopNavigationBar({
               {/*  Problems*/}
               {/*</Link>*/}
               <button
-                className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out focus:outline-none"
+                className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
                 onClick={() => setIsContactUsActive(true)}
               >
                 Contact Us
@@ -266,7 +279,7 @@ export default function TopNavigationBar({
           </div>
           <div className="hidden lg:ml-4 lg:flex lg:items-center">
             <div className="flex-shrink-0">
-              <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
+              <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
             </div>
           </div>
         </div>

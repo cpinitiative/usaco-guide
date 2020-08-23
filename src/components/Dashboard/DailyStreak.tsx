@@ -7,18 +7,18 @@ import Img from 'gatsby-image';
 const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
   <div
     className={
-      'bg-white shadow sm:rounded-lg overflow-hidden flex flex-col' +
+      'bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col' +
       (hiddenOnDesktop ? ' lg:hidden' : '')
     }
   >
     <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-      <h3 className="text-lg leading-6 font-medium text-gray-900">
+      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
         Day {day} Photo
       </h3>
     </div>
     <div className="overflow-hidden relative">
       {hiddenUntilTomorrow && (
-        <div className="absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white bg-opacity-25 z-10">
+        <div className="absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10">
           Come back tomorrow to unlock this cow photo!
         </div>
       )}
@@ -59,13 +59,13 @@ export default function DailyStreak({ streak }) {
   }, []);
   return (
     <>
-      <div className="bg-white shadow sm:rounded-lg overflow-hidden lg:col-span-2">
+      <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden lg:col-span-2">
         <div className="px-4 py-5 sm:p-6">
           <div className="text-center">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
               🔥 {streak} Day Streak: Keep it up!
             </h3>
-            <div className="mt-3 text-sm leading-5 text-gray-500 space-y-1">
+            <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
               <p>
                 You've visited this guide for {streak} consecutive day
                 {streak !== 1 && 's'}.
