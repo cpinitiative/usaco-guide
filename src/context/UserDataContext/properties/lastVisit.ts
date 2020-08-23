@@ -30,30 +30,36 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
       setLastVisitDate: (today: number) => {
-        let newVisits = this.consecutiveVisits;
-        const x = new Date(this.lastVisitDate);
-        const y = new Date(today);
-        // console.log(x.toDateString())
-        // console.log(y.toDateString())
-        if (x.toDateString() == y.toDateString()) {
-        } else {
-          x.setDate(x.getDate() + 1);
-          if (x.toDateString() == y.toDateString()) newVisits++;
-          else newVisits = 1;
+        let timeSinceLastVisit = today - this.lastVisitDate;
+        let oneDay = 1000 * 60 * 60 * 20,
+          twoDays = 1000 * 60 * 60 * 24 * 2;
+
+        let newLastVisit = null,
+          newConsecutiveVisits = null;
+
+        if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
+          newLastVisit = today;
+          newConsecutiveVisits = this.consecutiveVisits + 1;
+        } else if (timeSinceLastVisit > twoDays) {
+          newLastVisit = today;
+          newConsecutiveVisits = 1;
         }
-        if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
-            {
-              lastVisitDate: today,
-              consecutiveVisits: newVisits,
-            },
-            { merge: true }
-          );
+
+        if (newLastVisit !== null) {
+          if (this.firebaseUserDoc) {
+            this.firebaseUserDoc.set(
+              {
+                lastVisitDate: newLastVisit,
+                consecutiveVisits: newConsecutiveVisits,
+              },
+              { merge: true }
+            );
+          }
+          this.lastVisitDate = newLastVisit;
+          this.consecutiveVisits = newConsecutiveVisits;
+          this.writeValueToLocalStorage();
+          this.triggerRerender();
         }
-        this.lastVisitDate = today;
-        this.consecutiveVisits = newVisits;
-        this.writeValueToLocalStorage();
-        this.triggerRerender();
       },
     };
   };

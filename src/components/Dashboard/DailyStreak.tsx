@@ -1,36 +1,66 @@
 import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
+import { useContext } from 'react';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 // note: cows will be unlocked in reverse order
 
-const PhotoCard = ({ img, day, hiddenUntilTomorrow, hiddenOnDesktop }) => (
-  <div
-    className={
-      'bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col' +
-      (hiddenOnDesktop ? ' lg:hidden' : '')
-    }
-  >
-    <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-        Day {day} Photo
-      </h3>
+const ComeBackTimer = ({ tomorrowMilliseconds }) => {
+  const [milliseconds, setMilliseconds] = React.useState(tomorrowMilliseconds);
+
+  React.useEffect(() => {
+    let interval = setInterval(() => {
+      setMilliseconds(tomorrowMilliseconds - Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+  const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
+  const seconds = Math.floor((milliseconds / 1000) % 60);
+
+  return (
+    <div>
+      Come back in
+      <p className="text-2xl my-2">
+        {hours} hours {minutes} minutes {seconds} seconds
+      </p>{' '}
+      to unlock this cow photo!
     </div>
-    <div className="overflow-hidden relative">
-      {hiddenUntilTomorrow && (
-        <div className="absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10">
-          Come back tomorrow to unlock this cow photo!
-        </div>
-      )}
-      <Img
-        className="w-full object-cover"
-        fluid={img}
-        alt="Cow"
-        style={hiddenUntilTomorrow ? { filter: 'blur(60px)' } : null}
-      />
+  );
+};
+
+const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
+  return (
+    <div
+      className={
+        'bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col' +
+        (hiddenOnDesktop ? ' lg:hidden' : '')
+      }
+    >
+      <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+          Day {day} Photo
+        </h3>
+      </div>
+      <div className="overflow-hidden relative">
+        {tomorrowMilliseconds >= 0 ? (
+          <div className="absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10 p-4">
+            <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
+          </div>
+        ) : null}
+        <Img
+          className="w-full object-cover"
+          fluid={img}
+          alt="Cow"
+          style={tomorrowMilliseconds >= 0 ? { filter: 'blur(60px)' } : null}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function DailyStreak({ streak }) {
   const data = useStaticQuery(graphql`
@@ -57,6 +87,8 @@ export default function DailyStreak({ streak }) {
       .map(({ node }) => node.childImageSharp.fluid)
       .reverse();
   }, []);
+  const { lastVisitDate } = useContext(UserDataContext);
+  const tomorrowMilliseconds = lastVisitDate + 1000 * 60 * 60 * 20;
   return (
     <>
       <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden lg:col-span-2">
@@ -90,7 +122,9 @@ export default function DailyStreak({ streak }) {
                 img={cows[index]}
                 day={need + 1}
                 hiddenOnDesktop={photoNumber % 2 === 1}
-                hiddenUntilTomorrow={need === streak}
+                tomorrowMilliseconds={
+                  need === streak ? tomorrowMilliseconds : -1
+                }
               />
             );
           }
@@ -109,7 +143,9 @@ export default function DailyStreak({ streak }) {
                 img={cows[index]}
                 day={need + 1}
                 hiddenOnDesktop={false}
-                hiddenUntilTomorrow={need === streak}
+                tomorrowMilliseconds={
+                  need === streak ? tomorrowMilliseconds : -1
+                }
               />
             );
           }
