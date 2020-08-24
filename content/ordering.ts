@@ -140,7 +140,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   plat: [
     {
       name: 'Range Queries',
-      items: ['seg-ext', 'RURQ', '2DRQ', 'sqrt'],
+      items: ['seg-ext', 'RURQ', '2DRQ', 'dynamic-seg', 'sqrt'],
     },
     {
       name: 'Trees',
