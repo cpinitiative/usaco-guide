@@ -1,10 +1,10 @@
 ---
-id: dynamic-seg
-title: Sparse and Persistent Segment Trees
+id: sparse-seg
+title: Sparse Segment Trees
 author: Andi Qu
 prerequisites:
-  - PURS
-description: Range queries on big ranges
+  - RURQ
+description: "Querying big ranges."
 frequency: 1
 ---
 
@@ -15,21 +15,21 @@ export const problems = {
 		'IZhO',
 		'2012 - Monkey and Apple-trees',
 		'https://oj.uz/problem/view/IZhO12_apple',
-		'Easy',
+		'Normal',
 		false,
 		[],
 		''
 	),
 	sparseGeneral: [
-		new Problem(
-			'IOI',
-			'2005 - Mountain',
-			'https://dmoj.ca/problem/ioi05p3',
-			'Easy',
-			false,
-			[],
-			''
-		),
+        new Problem(
+            'IOI',
+            '2005 - Mountain',
+            'https://dmoj.ca/problem/ioi05p3',
+            'Normal',
+            false,
+            [],
+            'https://ioinformatics.org/files/ioi2005solutions.pdf'
+        ),
 		new Problem(
 			'Balkan OI',
 			'2015 - Happiness',
@@ -39,59 +39,34 @@ export const problems = {
 			[],
 			''
 		),
-		new Problem(
-			'Plat',
-			'Mowing the Field',
-			'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
-			'Hard',
-			true,
-			[],
-			''
-		),
-	],
-	persistentSample: new Problem(
-		'CSES',
-		'Range Queries and Copies',
-		'1737',
-		'Easy',
-		false,
-		[],
-		''
-	),
-	persistentGeneral: [
-		new Problem(
-			'APIO',
-			'2019 - Street Lights',
-			'https://oj.uz/problem/view/APIO19_street_lamps',
-			'Very Hard',
-			false,
-			[],
-			''
-		),
 	],
 };
 
-## Sparse Segment Trees
+<FocusProblem problem={problems.sparseSample} />
+
+<br />
 
 In problems where the query range is at most something like $10^6$, a normal segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$ in some cases), a normal segment tree results in MLE.
 
 Luckily, we can still use a segment tree to solve these types of problems.
 
+## Resources
+
 The main idea is that we don't have to store all the nodes at all times - we create nodes only when needed. In a normal segment tree, an update only affects $O(\log N)$ nodes, so in a sparse segment tree, we only store $O(Q \log N)$ nodes!
 
 We can implement this efficiently using pointers to a node's children - just like a trie! (Then again, a segment tree is basically a fancier binary trie.)
 
+<IncompleteSection />
+
 <Resources>
-	<Resource
-		source="Benq"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SparseSeg%20(9.2).h"
-		title="Implementation"
-	/>
+    <Resource
+        source="Benq"
+        url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SparseSeg%20(9.2).h"
+        title="Implementation"
+    />
 </Resources>
 
-### Example Problem
-
-<FocusProblem problem={problems.sparseSample} />
+## Solution
 
 We need to support two operations on a range:
 
@@ -224,101 +199,3 @@ int main() {
 ### Problems
 
 <Problems problems={problems.sparseGeneral} />
-
-## Persistent Segment Trees
-
-Persistent segment trees are very similar to sparse segment trees in the sense that we store child pointers. The key differences are that we have multiple roots and every time we "update" a node, we actually create a new node in its place (hence persistence).
-
-A nice thing about persistent segment trees is that they can be used for 2D static range sum queries (think about it like prefix sums). (It's probably better to use a 2D BIT instead though.)
-
-<IncompleteSection />
-
-### Example Problem
-
-<FocusProblem problem={problems.persistentSample} />
-
-<IncompleteSection />
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-typedef long long ll;
-using namespace std;
-
-struct Node {
-    ll val;
-    Node *l, *r;
-
-    Node(ll x) : val(x), l(nullptr), r(nullptr) {}
-    Node(Node *ll, Node *rr) {
-        l = ll, r = rr;
-        val = 0;
-        if (l) val += l->val;
-        if (r) val += r->val;
-    }
-    Node(Node *cp) : val(cp->val), l(cp->l), r(cp->r) {}
-};
-
-int n, cnt = 1;
-ll a[200001];
-Node* roots[200001];
-
-Node* build(int l = 1, int r = n) {
-    if (l == r) return new Node(a[l]);
-    int mid = (l + r) / 2;
-    return new Node(build(l, mid), build(mid + 1, r));
-}
-
-Node* update(Node* node, int val, int pos, int l = 1, int r = n) {
-    if (l == r) return new Node(val);
-    int mid = (l + r) / 2;
-    if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
-    else return new Node(update(node->l, val, pos, l, mid), node->r);
-}
-
-ll query(Node* node, int a, int b, int l = 1, int r = n) {
-    if (l > b || r < a) return 0;
-    if (l >= a && r <= b) return node->val;
-    int mid = (l + r) / 2;
-    return query(node->l, a, b, l, mid) + query(node->r, a, b, mid + 1, r);
-}
-
-int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int q;
-    cin >> n >> q;
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    roots[cnt++] = build();
-
-    while (q--) {
-        int t;
-        cin >> t;
-        if (t == 1) {
-            int k, i, x;
-            cin >> k >> i >> x;
-            roots[k] = update(roots[k], x, i);
-        } else if (t == 2) {
-            int k, l, r;
-            cin >> k >> l >> r;
-            cout << query(roots[k], l, r) << '\n';
-        } else {
-            int k;
-            cin >> k;
-            roots[cnt++] = new Node(roots[k]);
-        }
-    }
-    return 0;
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
-### Problems
-
-<IncompleteSection />
