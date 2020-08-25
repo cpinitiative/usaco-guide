@@ -19,7 +19,7 @@ export default function LiveUpdatePage(props: PageProps) {
 
   return (
     <Layout>
-      <SEO title="Admin Page" />
+      <SEO title="MDX Renderer" />
 
       <div className="h-screen flex">
         <div className="flex-1">

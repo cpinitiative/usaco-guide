@@ -17,12 +17,40 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
   protected storageKey = 'userProgressOnModules';
   private value = {};
 
+  initializeFromLocalStorage = () => {
+    let legacyValue = this.getValueFromLocalStorage(
+      'guide:userData:progress',
+      null
+    );
+    if (legacyValue !== null) {
+      window.localStorage.removeItem('guide:userData:progress');
+      this.value = legacyValue;
+      this.writeValueToLocalStorage();
+    } else {
+      this.value = this.getValueFromLocalStorage(
+        this.getLocalStorageKey(this.storageKey),
+        this.defaultValue
+      );
+    }
+  };
+
+  writeValueToLocalStorage = () => {
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey(this.storageKey),
+      this.value
+    );
+  };
+
   eraseFromLocalStorage = () => {
     window.localStorage.removeItem(this.getLocalStorageKey(this.storageKey));
   };
 
   exportValue = (): any => {
     return this.value;
+  };
+
+  importValueFromObject = (data: object) => {
+    this.value = data['userProgressOnModules'] || this.defaultValue;
   };
 
   getAPI = () => {
@@ -49,33 +77,5 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
         this.triggerRerender();
       },
     };
-  };
-
-  importValueFromObject = (data: object) => {
-    this.value = data['userProgressOnModules'] || this.defaultValue;
-  };
-
-  initializeFromLocalStorage = () => {
-    let legacyValue = this.getValueFromLocalStorage(
-      'guide:userData:progress',
-      null
-    );
-    if (legacyValue !== null) {
-      window.localStorage.removeItem('guide:userData:progress');
-      this.value = legacyValue;
-      this.writeValueToLocalStorage();
-    } else {
-      this.value = this.getValueFromLocalStorage(
-        this.getLocalStorageKey(this.storageKey),
-        this.defaultValue
-      );
-    }
-  };
-
-  writeValueToLocalStorage = () => {
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey(this.storageKey),
-      this.value
-    );
   };
 }

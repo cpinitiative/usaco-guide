@@ -26,7 +26,9 @@ export default function ActiveItems({
   items: ActiveItem[];
 }) {
   items.sort((a, b) => {
+    // sort active modules in order of section
     const getLabel = x => {
+      // put active USACO problems first
       const secs = [
         'General',
         'Bronze',

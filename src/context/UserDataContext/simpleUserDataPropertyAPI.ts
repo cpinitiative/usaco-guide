@@ -18,21 +18,22 @@ export default abstract class SimpleUserDataPropertyAPI extends UserDataProperty
   protected abstract setterFunctionName: string;
   protected value;
 
-  public getAPI = () => {
-    return {
-      [this.storageKey]: this.value,
-      [this.setterFunctionName]: v => {
-        this.value = v;
-        this.updateValueAndRerender(this.storageKey, v);
-      },
-    };
-  };
-
   public initializeFromLocalStorage = () => {
     this.value = this.getValueFromLocalStorage(
       this.getLocalStorageKey(this.storageKey),
       this.defaultValue
     );
+  };
+
+  public writeValueToLocalStorage = () => {
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey(this.storageKey),
+      this.value
+    );
+  };
+
+  public eraseFromLocalStorage = () => {
+    window.localStorage.removeItem(this.getLocalStorageKey(this.storageKey));
   };
 
   public exportValue = (): object => {
@@ -45,14 +46,13 @@ export default abstract class SimpleUserDataPropertyAPI extends UserDataProperty
     this.value = data[this.storageKey] || this.defaultValue;
   };
 
-  public writeValueToLocalStorage = () => {
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey(this.storageKey),
-      this.value
-    );
-  };
-
-  public eraseFromLocalStorage = () => {
-    window.localStorage.removeItem(this.getLocalStorageKey(this.storageKey));
+  public getAPI = () => {
+    return {
+      [this.storageKey]: this.value,
+      [this.setterFunctionName]: v => {
+        this.value = v;
+        this.updateValueAndRerender(this.storageKey, v);
+      },
+    };
   };
 }

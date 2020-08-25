@@ -11,6 +11,28 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
   private lastVisitDate: number;
   private consecutiveVisits: number;
 
+  initializeFromLocalStorage = () => {
+    this.lastVisitDate = this.getValueFromLocalStorage(
+      this.getLocalStorageKey('lastVisitDate'),
+      new Date().getTime()
+    );
+    this.consecutiveVisits = this.getValueFromLocalStorage(
+      this.getLocalStorageKey('consecutiveVisits'),
+      1
+    );
+  };
+
+  writeValueToLocalStorage = () => {
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey('lastVisitDate'),
+      this.lastVisitDate
+    );
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey('consecutiveVisits'),
+      this.consecutiveVisits
+    );
+  };
+
   eraseFromLocalStorage = () => {
     window.localStorage.removeItem(this.getLocalStorageKey('lastVisitDate'));
     window.localStorage.removeItem(
@@ -23,6 +45,11 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
     };
+  };
+
+  importValueFromObject = (data: object) => {
+    this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
+    this.consecutiveVisits = data['consecutiveVisits'] || 1;
   };
 
   getAPI = () => {
@@ -62,32 +89,5 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
         }
       },
     };
-  };
-
-  importValueFromObject = (data: object) => {
-    this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
-    this.consecutiveVisits = data['consecutiveVisits'] || 1;
-  };
-
-  initializeFromLocalStorage = () => {
-    this.lastVisitDate = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('lastVisitDate'),
-      new Date().getTime()
-    );
-    this.consecutiveVisits = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('consecutiveVisits'),
-      1
-    );
-  };
-
-  writeValueToLocalStorage = () => {
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('lastVisitDate'),
-      this.lastVisitDate
-    );
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('consecutiveVisits'),
-      this.consecutiveVisits
-    );
   };
 }
