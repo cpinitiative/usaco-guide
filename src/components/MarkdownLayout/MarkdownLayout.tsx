@@ -548,12 +548,16 @@ export default function MarkdownLayout({
                 {markdownData instanceof ModuleInfo &&
                   markdownData.frequency !== null && (
                     <div className="px-0.5 lg:mt-8">
-                      <Frequency frequency={markdownData.frequency} />
-                      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                      <DashboardProgressSmall
-                        {...problemsProgressInfo}
-                        total={problemIDs.length}
-                      />
+                      <div className="sm:flex sm:items-center sm:justify-between mb-4">
+                        <Frequency frequency={markdownData.frequency} />
+                        {/* <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> */}
+                        <div>
+                          <DashboardProgressSmall
+                            {...problemsProgressInfo}
+                            total={problemIDs.length}
+                          />
+                        </div>
+                      </div>
                     </div>
                   )}
                 <div className="sm:flex sm:items-center sm:justify-between mb-4">
