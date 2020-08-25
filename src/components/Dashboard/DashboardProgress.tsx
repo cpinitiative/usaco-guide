@@ -88,24 +88,24 @@ const ProgressBarSmall = ({ text, green, yellow, blue }) => {
   return (
     <div>
       <div className="inline-block">
-        <div className="overflow-hidden h-2 text-xs flex bg-gray-200 rounded-full w-24 inline">
+        <div className="overflow-hidden h-2 text-xs flex items-center bg-gray-200 rounded-full w-24 dark:bg-gray-700">
           <div
             style={{ width: `${green}%` }}
-            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+            className="h-2 bg-green-500 dark:bg-green-800"
           />
           <div
             style={{ width: `${yellow}%` }}
-            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300"
+            className="h-2 bg-yellow-300 dark:bg-yellow-800"
           />
           <div
             style={{ width: `${blue}%` }}
-            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+            className="h-2 bg-blue-500 dark:bg-blue-800"
           />
         </div>
       </div>
-      <div className="inline-block">
+      <div className="inline-block ml-1">
         {text && (
-          <span className="text-sm font-semibold text-gray-800">
+          <span className="text-sm font-semibold text-gray-800 dark:text-dark-med-emphasis">
             &nbsp;{text}
           </span>
         )}

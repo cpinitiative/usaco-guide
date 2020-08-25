@@ -551,7 +551,7 @@ export default function MarkdownLayout({
                 {markdownData instanceof ModuleInfo &&
                   markdownData.frequency !== null && (
                     <div className="px-0.5 lg:mt-8">
-                      <div className="sm:flex sm:items-center sm:justify-between mb-4">
+                      <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
                         <Frequency frequency={markdownData.frequency} />
                         {/* <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> */}
                         {problemIDs.length > 0 && (
