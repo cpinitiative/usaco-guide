@@ -152,7 +152,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Graphs',
-      items: ['BCC-2CC', 'SCC', 'eulers-formula'],
+      items: ['BCC-2CC', 'eulers-formula'],
     },
     {
       name: 'Strings',
@@ -182,7 +182,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Graphs',
-      items: ['sp-neg', 'eulerian-tours', 'offline-del', 'critical', 'LCT'],
+      items: [
+        'sp-neg',
+        'eulerian-tours',
+        'SCC',
+        'offline-del',
+        'critical',
+        'LCT',
+      ],
     },
     {
       name: 'Flows',
