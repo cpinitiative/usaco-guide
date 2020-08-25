@@ -554,12 +554,12 @@ export default function MarkdownLayout({
                       <div className="sm:flex sm:items-center sm:justify-between mb-4">
                         <Frequency frequency={markdownData.frequency} />
                         {/* <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> */}
-                        <div>
+                        {problemIDs.length > 0 && (
                           <DashboardProgressSmall
                             {...problemsProgressInfo}
                             total={problemIDs.length}
                           />
-                        </div>
+                        )}
                       </div>
                     </div>
                   )}

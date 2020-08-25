@@ -86,7 +86,7 @@ export default function DashboardProgress({
 
 const ProgressBarSmall = ({ text, green, yellow, blue }) => {
   return (
-    <>
+    <div>
       <div className="inline-block">
         <div className="overflow-hidden h-2 text-xs flex bg-gray-200 rounded-full w-24 inline">
           <div
@@ -110,7 +110,7 @@ const ProgressBarSmall = ({ text, green, yellow, blue }) => {
           </span>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
