@@ -92,8 +92,15 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   silver: topicsWarning,
   gold: topicsWarning,
   plat: topicsWarning,
-  adv:
-    'These topics are usually beyond the scope of Platinum and are intended only for interested readers.',
+  adv: (
+    <>
+      These topics have not appeared in Platinum and are intended only for
+      interested readers.
+      <br />
+      Some of these topics have appeared in Old Gold, USACO Camp, or other high
+      school Olympiads.
+    </>
+  ),
 };
 
 export default function Template(props) {

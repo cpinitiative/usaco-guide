@@ -140,7 +140,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   plat: [
     {
       name: 'Range Queries',
-      items: ['seg-ext', 'RURQ', '2DRQ', 'sqrt'],
+      items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'sqrt'],
     },
     {
       name: 'Trees',
@@ -148,20 +148,11 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'comb-sub', 'dp-more'],
+      items: ['dp-bitmasks', 'dp-ranges', 'dp-more'],
     },
     {
       name: 'Graphs',
-      items: [
-        'sp-neg',
-        'BCC-2CC',
-        'SCC',
-        'eulerian-tours',
-        'offline-del',
-        'eulers-formula',
-        'max-flow',
-        'min-cut',
-      ],
+      items: ['BCC-2CC', 'eulers-formula'],
     },
     {
       name: 'Strings',
@@ -187,11 +178,22 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   adv: [
     {
       name: 'Data Structures',
-      items: ['treaps', 'persistent', 'CntMin', 'segtree-beats', 'LCT'],
+      items: ['treaps', 'persistent', 'CntMin', 'segtree-beats'],
+    },
+    {
+      name: 'Graphs',
+      items: [
+        'sp-neg',
+        'eulerian-tours',
+        'SCC',
+        'offline-del',
+        'critical',
+        'LCT',
+      ],
     },
     {
       name: 'Flows',
-      items: ['flow-lb', 'min-cost-flow'],
+      items: ['max-flow', 'min-cut', 'flow-lb', 'min-cost-flow'],
     },
     {
       name: 'Polynomials',
@@ -200,9 +202,9 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Misc. Topics',
       items: [
+        'comb-sub',
         'extend-euclid',
         'xor-basis',
-        'critical',
         'string-suffix',
         'game-theory',
         'multiplicative',
