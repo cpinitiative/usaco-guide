@@ -36,7 +36,11 @@ export function graphqlToModuleLinks(allMdx: any): ModuleLinkInfo[] {
       new ModuleLinkInfo(
         cur.node.frontmatter.id,
         cur.node.fields.division,
-        cur.node.frontmatter.title
+        cur.node.frontmatter.title,
+        null,
+        null,
+        null,
+        cur.node.problems
       )
   );
 }
