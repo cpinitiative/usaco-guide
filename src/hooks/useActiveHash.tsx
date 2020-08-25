@@ -6,6 +6,8 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
   const [activeHash, setActiveHash] = useState(``);
 
   useEffect(() => {
+    if (!('IntersectionObserver' in window)) return;
+
     let isInteresting = {};
     const observer = new IntersectionObserver(
       entries => {
@@ -18,6 +20,7 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
     );
 
     itemIds.forEach(id => {
+      if (document.getElementById(id) === null) return;
       observer.observe(document.getElementById(id));
     });
 

@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import UserDataContext from '../../../context/UserDataContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
-const LinkWithProgress = styled.span`
+export const LinkWithProgress = styled.span`
   ${tw`block relative`}
 
   &::after {
@@ -37,10 +37,10 @@ const LinkWithProgress = styled.span`
   }
 
   .mode-dark &::after {
-    ${tw`bg-gray-700`}
+    ${props => props.darkDotColorStyle};
   }
   .mode-dark &::before {
-    ${tw`bg-gray-700`}
+    ${props => props.darkLineColorStyle};
   }
 
   &:first-of-type::before {
@@ -55,11 +55,11 @@ const LinkWithProgress = styled.span`
 const StyledLink = styled.span`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
+  ${({ textStyle }) => textStyle}
   .mode-dark & {
     ${tw`hover:bg-gray-900 hover:text-dark-high-emphasis focus:bg-gray-800`}
+    ${({ darkTextStyle }) => darkTextStyle}
   }
-
-  ${({ textStyle }) => textStyle}
 
   &::before {
     content: '';
@@ -75,7 +75,6 @@ const StyledLink = styled.span`
     transform: ${({ isActive }) => (isActive ? 'scale(1)' : 'scale(0.1)')};
     border-radius: 100%;
     z-index: 1;
-    ${({ dotColorStyle }) => dotColorStyle}
   }
 
   &:hover {
@@ -109,44 +108,65 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
   let lineColorStyle = tw`bg-gray-200`;
   let dotColorStyle = tw`bg-gray-200`;
   let activeTextStyle = tw`text-blue-700 font-medium`;
+  let darkLineColorStyle = tw`bg-gray-700`;
+  let darkDotColorStyle = tw`bg-gray-700`;
+  let darkActiveTextStyle = tw`text-blue-400 font-medium`;
 
   if (isActive) {
     lineColorStyle = tw`bg-blue-700`;
     dotColorStyle = tw`bg-blue-700`;
+    darkLineColorStyle = tw`bg-blue-400`;
+    darkDotColorStyle = tw`bg-blue-400`;
   }
 
   if (progress === 'Reading') {
     lineColorStyle = tw`bg-yellow-300`;
     dotColorStyle = tw`bg-yellow-300`;
+    darkLineColorStyle = tw`bg-yellow-400`;
+    darkDotColorStyle = tw`bg-yellow-400`;
     activeTextStyle = tw`text-yellow-700 font-medium`;
+    darkActiveTextStyle = tw`text-yellow-400 font-medium`;
   } else if (progress === 'Practicing') {
     lineColorStyle = tw`bg-orange-400`;
     dotColorStyle = tw`bg-orange-400`;
+    darkLineColorStyle = tw`bg-orange-500`;
+    darkDotColorStyle = tw`bg-orange-500`;
     activeTextStyle = tw`text-orange-700 font-medium`;
+    darkActiveTextStyle = tw`text-orange-400 font-medium`;
   } else if (progress === 'Complete') {
     lineColorStyle = tw`bg-green-400`;
     dotColorStyle = tw`bg-green-400`;
+    darkLineColorStyle = tw`bg-green-400`;
+    darkDotColorStyle = tw`bg-green-400`;
     activeTextStyle = tw`text-green-700 font-medium`;
+    darkActiveTextStyle = tw`text-green-400 font-medium`;
   } else if (progress === 'Skipped') {
     lineColorStyle = tw`bg-blue-300`;
     dotColorStyle = tw`bg-blue-300`;
+    darkLineColorStyle = tw`bg-blue-700`;
+    darkDotColorStyle = tw`bg-blue-700`;
     activeTextStyle = tw`text-blue-700 font-medium`;
+    darkActiveTextStyle = tw`text-blue-400 font-medium`;
   } else if (progress === 'Ignored') {
     lineColorStyle = tw`bg-gray-100`;
     dotColorStyle = tw`bg-gray-100`;
+    darkLineColorStyle = tw`bg-gray-800`;
+    darkDotColorStyle = tw`bg-gray-800`;
     activeTextStyle = tw`text-gray-400 font-medium`;
+    darkActiveTextStyle = tw`text-gray-500 font-medium`;
   }
 
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
       dotColorStyle={dotColorStyle}
+      darkLineColorStyle={darkLineColorStyle}
+      darkDotColorStyle={darkDotColorStyle}
     >
       <Link to={link.url}>
         <StyledLink
           isActive={isActive}
           ref={itemRef}
-          dotColorStyle={dotColorStyle === tw`bg-gray-200`}
           textStyle={
             isActive
               ? activeTextStyle
@@ -154,7 +174,13 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
               ? tw`text-gray-400`
               : tw`text-gray-600`
           }
-          className="dark:text-dark-med-emphasis"
+          darkTextStyle={
+            isActive
+              ? darkActiveTextStyle
+              : progress === 'Ignored'
+              ? tw`text-gray-600`
+              : tw`text-dark-med-emphasis`
+          }
         >
           {link.title}
         </StyledLink>

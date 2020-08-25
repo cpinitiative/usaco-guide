@@ -13,7 +13,9 @@ import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
-import UserDataContext, { UserLang } from '../../context/UserDataContext';
+import UserDataContext, {
+  UserLang,
+} from '../../context/UserDataContext/UserDataContext';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
@@ -22,6 +24,7 @@ import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import Logo from '../Logo';
 import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
+import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
@@ -505,9 +508,9 @@ export default function MarkdownLayout({
         </div>
       </div>
       <div>
-        <div className="lg:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 flex items-center">
-          <button
-            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150"
+        <div className="sticky top-0 inset-x-0 bg-white dark:bg-dark-surface z-10 shadow lg:hidden pl-1 pt-1 flex items-center">
+          <MobileMenuButtonContainer
+            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center"
             aria-label="Open sidebar"
             onClick={() => setIsMobileNavOpen(true)}
           >
@@ -524,13 +527,13 @@ export default function MarkdownLayout({
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-          </button>
+          </MobileMenuButtonContainer>
           <div className="flex-1 ml-4 mr-4 sm:mr-6">
             <NavBar />
           </div>
         </div>
         <main
-          className="relative z-0 sm:pt-2 pb-6 focus:outline-none"
+          className="relative z-0 pt-6 lg:pt-2 pb-6 focus:outline-none"
           tabIndex={0}
         >
           <div className="mx-auto">

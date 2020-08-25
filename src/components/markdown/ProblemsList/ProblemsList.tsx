@@ -4,11 +4,13 @@ import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+// @ts-ignore
 import PGS from '../PGS.json';
 import { books } from '../ResourcesList';
 
 import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import styled, { css } from 'styled-components';
 
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
@@ -159,18 +161,29 @@ type ProblemComponentProps = {
   onShowSolution: Function;
 };
 
+export const difficultyClasses = {
+  'Very Easy': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+  Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
+  Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
+  Hard: 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
+  'Very Hard':
+    'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
+  Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
+};
+
+const StyledProblemRow = styled.tr`
+  ${({ isActive }) =>
+    isActive
+      ? css`
+          background-color: #fdfdea;
+          .mode-dark & {
+            background-color: #3c3c00;
+          }
+        `
+      : null}
+`;
+
 export function ProblemComponent(props: ProblemComponentProps) {
-  const difficultyClasses = {
-    'Very Easy':
-      'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
-    Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
-    Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
-    Hard:
-      'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
-    'Very Hard':
-      'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
-    Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
-  };
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueID}`;
@@ -178,7 +191,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
     setIsActive(window && window.location && window.location.hash === '#' + id);
   }, []);
   return (
-    <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
+    <StyledProblemRow id={id} isActive={isActive}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
         <div
           style={{ height: '1.25rem' }}
@@ -252,7 +265,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           onShowSolution={props.onShowSolution}
         />
       )}
-    </tr>
+    </StyledProblemRow>
   );
 }
 

@@ -1,0 +1,48 @@
+---
+id: cses-1196
+title: CSES Flight Routes
+author: Benjamin Qi
+---
+
+**Time Complexity:** $\mathcal{O}(mk\log (mk))$
+
+Maintain a priority queue of the $k$ best distances found for each vertex. We'll iterate through the adjacency list of each vertex at most $k$ times.
+
+```cpp
+int n,m,k;
+priority_queue<ll> bes[MX];
+vector<pii> adj[MX];
+priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<pair<ll,int>>> pq;
+ 
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> n >> m >> k;
+    F0R(i,m) {
+        int a,b,c; cin >> a >> b >> c;
+        adj[a].pb({b,c});
+    }
+    bes[1].push(0); pq.push({0,1});
+    while (sz(pq)) {
+        auto a = pq.top(); pq.pop();
+        if (a.f > bes[a.s].top()) continue;
+        for (auto& i: adj[a.s]) {
+            ll tmp = a.f+i.s;
+            if (sz(bes[i.f]) < k) {
+                bes[i.f].push(tmp);
+                pq.push({tmp,i.f});
+            } else if (tmp < bes[i.f].top()) {
+                bes[i.f].pop();
+                bes[i.f].push(tmp);
+                pq.push({tmp,i.f});
+            }
+        }
+    } 
+    vector<ll> ans;
+    while (sz(bes[n])) {
+        ans.pb(bes[n].top());
+        bes[n].pop();
+    }
+    reverse(all(ans));
+    for (auto a: ans) cout << a << " ";
+}
+```

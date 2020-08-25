@@ -26,7 +26,8 @@ export default function LiveUpdatePage(props: PageProps) {
           <textarea
             value={markdown}
             onChange={e => setMarkdown(e.target.value)}
-            className="w-full border border-gray-200 h-screen overflow-y-auto"
+            className="w-full border border-gray-200 h-screen overflow-y-auto p-4 bg-gray-50 font-mono tracking-tight"
+            placeholder="Enter mdx here..."
             style={{ resize: 'none' }}
           />
         </div>

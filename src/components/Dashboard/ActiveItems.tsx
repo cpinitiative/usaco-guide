@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
+import DashboardCard from './DashboardCard';
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
 
 type ActiveItemStatus = 'Solving' | 'Skipped' | 'In Progress';
 
@@ -10,9 +12,10 @@ export type ActiveItem = {
 };
 
 const statusClasses: { [key in ActiveItemStatus]: string } = {
-  Solving: 'bg-yellow-100 text-yellow-800',
-  Skipped: 'bg-gray-100 text-gray-800',
-  'In Progress': 'bg-green-100 text-green-800',
+  Solving:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
+  Skipped: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
+  'In Progress': difficultyClasses.Easy,
 };
 
 export default function ActiveItems({
@@ -43,9 +46,9 @@ export default function ActiveItems({
     return 0;
   });
   return (
-    <div className="bg-white shadow sm:rounded-lg mb-8">
+    <DashboardCard>
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
           Active {type === 'problems' ? 'Problems' : 'Modules'}
         </h3>
         <div className="mt-4 text-gray-500">
@@ -53,7 +56,7 @@ export default function ActiveItems({
             <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link
                 to={item.url}
-                className="font-medium text-blue-600 hover:text-blue-500 transition ease-in-out duration-150"
+                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-300 dark-hover:text-blue-200 transition ease-in-out duration-150"
               >
                 {item.label}
                 <span
@@ -80,6 +83,6 @@ export default function ActiveItems({
           {/*</p>*/}
         </div>
       </div>
-    </div>
+    </DashboardCard>
   );
 }

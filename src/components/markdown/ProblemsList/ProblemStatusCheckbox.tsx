@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Problem, PROBLEM_PROGRESS_OPTIONS } from '../../../models/problem';
 import { useContext, useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { ProblemProgress } from '../../../models/problem';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
@@ -70,25 +70,22 @@ export default function ProblemStatusCheckbox({
   problem: Problem;
   size?: 'small' | 'large';
 }) {
-  const { markdownLayoutInfo, conf } = useContext(MarkdownLayoutContext);
-  // console.log(markdownLayoutInfo)
+  const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
   );
   const { userProgressOnProblems, setUserProgressOnProblems } = useContext(
     UserDataContext
   );
-  const moduleProgress =
-    (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
-    'Not Started';
-  const handleCompletionChange = progress => {
-    if (moduleProgress === progress) return;
-    setModuleProgress(markdownLayoutInfo.id, progress);
-    if (
-      moduleProgress !== 'Complete' &&
-      (progress === 'Practicing' || progress === 'Complete')
-    )
-      conf(true);
+  const updateModuleProgressToPracticing = () => {
+    if (markdownLayoutContext === null) return;
+    const { markdownLayoutInfo, conf } = markdownLayoutContext;
+    const moduleProgress =
+      (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
+      'Not Started';
+    if (moduleProgress !== 'Not Started') return;
+    setModuleProgress(markdownLayoutInfo.id, 'Practicing');
+    conf(true);
   };
   let status: ProblemProgress =
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
@@ -104,17 +101,14 @@ export default function ProblemStatusCheckbox({
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
       content={
-        <div className="w-56">
+        <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem, progress);
-              if (
-                (progress == 'Solving' || progress == 'Solved') &&
-                moduleProgress == 'Not Started'
-              ) {
-                handleCompletionChange('Practicing');
+              if (progress == 'Solving' || progress == 'Solved') {
+                updateModuleProgressToPracticing();
               }
             }}
             currentProgress={status}

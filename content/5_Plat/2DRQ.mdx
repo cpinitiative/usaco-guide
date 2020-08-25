@@ -3,7 +3,7 @@ id: 2DRQ
 title: '2D Range Queries'
 author: Benjamin Qi
 prerequisites:
-  - RURQ
+  - sparse-seg
 description: 'Extending Range Queries to 2D (and beyond).'
 frequency: 1
 ---
@@ -229,9 +229,11 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 
 ### Note - Memory Usage
 
-Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$, giving a memory bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=10^5$ (although it sufficed for "Mowing the Field" due to the higher memory limit).
+Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$ memory, giving a bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=C=10^5$ and 256 MB (although it sufficed for "Mowing the Field" due to the 512MB memory limit). Possible ways to get around this:
 
-To resolve this, reduce the memory usage of sparse segment tree while maintaing the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
+ - Use arrays of fixed size rather than pointers.
+ - Reduce the memory usage of sparse segment tree to $O(N)$ while maintaining the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
+ - Use [BBSTs](/adv/treaps) instead of sparse segment trees.
 
 ### Problems
 

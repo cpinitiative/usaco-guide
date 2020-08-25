@@ -23,15 +23,6 @@ export const problems = {
 			['Euler-Tree'],
 			'equivalent to https://judge.yosupo.jp/problem/vertex_add_subtree_sum'
 		),
-		new Problem(
-			'CSES',
-			'Path Queries',
-			'1138',
-			'Easy',
-			false,
-			['Euler-Tree', 'PURS'],
-			'equivalent to https://judge.yosupo.jp/problem/vertex_add_path_sum'
-		),
 	],
 	lca: [
 		new Problem(
@@ -46,6 +37,15 @@ export const problems = {
 		new Problem('CSES', 'Distance Queries', '1135', 'Easy', false, ['LCA'], ''),
 	],
 	problems: [
+		new Problem(
+			'CSES',
+			'Path Queries',
+			'1138',
+			'Normal',
+			false,
+			['Euler-Tree', 'PURS'],
+			'cses-1138'
+		),
 		new Problem(
 			'Gold',
 			'Cow Land',
@@ -106,7 +106,7 @@ export const problems = {
 
 ## Introduction
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 If we can preprocess a rooted tree such that every subtree corresponds to a contiguous range on an array, we can do updates and range queries on it!
 
@@ -114,29 +114,31 @@ If we can preprocess a rooted tree such that every subtree corresponds to a cont
 
 <Resources>
 	<Resource source="CPH" title="18.2 - Subtrees & Paths" starred>
-		Introduces tree traversal array
+		introduces tree traversal array, how to solve above problem
 	</Resource>
 </Resources>
 
 ### Implementation
+
+After running `dfs()`, each range `[st[i], en[i]]` contains all ranges `[st[j], en[j]]` for each `j` in the subtree of `i`. Also, `en[i]-st[i]+1` is equal to the subtree size of `i`.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-vector<int> graph[100000];
-int timer = 0, tin[100000], tout[100000];
-// After running `dfs()`, each range [tin[i], tout[i]] contains all ranges [tin[j], tout[j]] for each j in the subtree of i
+const int MX = 2e5+5;
+vector<int> adj[MX];
+int timer = 0, st[MX], en[MX];
 
-void dfs(int node = 0, int parent = -1) {
-	tin[node] = timer++;
-	for (int i : graph[node]) {
+void dfs(int node, int parent) {
+	st[node] = timer++;
+	for (int i : adj[node]) {
 		if (i != parent) {
 			dfs(i, node);
 		}
 	}
-	tout[node] = timer++;
+	en[node] = timer-1;
 }
 ```
 
@@ -144,9 +146,75 @@ void dfs(int node = 0, int parent = -1) {
 
 </LanguageSection>
 
+<IncompleteSection>
+
+example input
+
+</IncompleteSection>
+
+### Solution - Subtree Queries
+
+Assumes that `dfs()` code is included. Uses a segment tree.
+
+```cpp
+/**
+ * Description: 1D point update, range query where \texttt{comb} is
+	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * Time: O(\log N)
+ * Source: 
+	* http://codeforces.com/blog/entry/18051
+	* KACTL
+ * Verification: SPOJ Fenwick
+ */
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return a+b; } 
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID; 
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<ll> S;
+int v[MX];
+
+int main() {
+	int n,q; cin >> n >> q;
+	FOR(i,1,n+1) cin >> v[i];
+	F0R(i,n-1) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfs(1,0);
+	S.init(n);
+	FOR(i,1,n+1) S.upd(st[i],v[i]);
+	F0R(i,q) {
+		int t; cin >> t;
+		if (t == 1) {
+			int s,x; cin >> s >> x;
+			S.upd(st[s],x);
+		} else {
+			int s; cin >> s;
+			cout << S.query(st[s],en[s]) << "\n";
+		}
+	}
+}
+```
+
 ## LCA
 
-<Problems problems={problems.lca} />
+<FocusProblem problem={problems.lca[0]} />
+
+<FocusProblem problem={problems.lca[1]} />
 
 ### Tutorial
 

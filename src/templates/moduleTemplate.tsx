@@ -8,7 +8,7 @@ import { graphqlToModuleInfo } from '../utils/utils';
 import SEO from '../components/seo';
 import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data

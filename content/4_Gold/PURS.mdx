@@ -11,6 +11,17 @@ frequency: 3
 import { Problem } from '../models';
 
 export const problems = {
+	sample: [
+		new Problem(
+			'CSES',
+			'Range Sum Queries II',
+			'1648',
+			'Easy',
+			false,
+			['PURS'],
+			'Can also do range XOR queries w/ update.'
+		),
+	],
 	segSam: [
 		new Problem(
 			'CSES',
@@ -21,35 +32,8 @@ export const problems = {
 			['PURQ'],
 			''
 		),
-		new Problem(
-			'YS',
-			'Point Set Range Composite',
-			'point_set_range_composite',
-			'Easy',
-			false,
-			['PURQ'],
-			'Order of operations matters!'
-		),
 	],
-	sample: [
-		new Problem(
-			'YS',
-			'Point Add Range Sum',
-			'point_add_range_sum',
-			'Easy',
-			false,
-			['PURS'],
-			''
-		),
-		new Problem(
-			'CSES',
-			'Range Sum Queries II',
-			'1648',
-			'Easy',
-			false,
-			['PURS'],
-			'Can also do range XOR queries w/ update.'
-		),
+	inv: [
 		new Problem('SPOJ', 'Inversion Counting', 'INVCNT', 'Easy', false, [
 			'PURS',
 		]),
@@ -157,12 +141,31 @@ export const problems = {
 		new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''),
 	],
 	seg: [
+		new Problem(
+			'YS',
+			'Point Set Range Composite',
+			'point_set_range_composite',
+			'Easy',
+			false,
+			['PURQ'],
+			'Order of operations matters!'
+		),
 		new Problem('Gold', 'Springboards', '995', 'Hard', false, [], ''),
 		new Problem('Plat', 'Slingshot', '816', 'Very Hard', false, ['PURQ'], ''),
 	],
 };
 
-<Problems problems={problems.sample} />
+<!-- 	new Problem(
+		'YS',
+		'Point Add Range Sum',
+		'point_add_range_sum',
+		'Easy',
+		false,
+		['PURS'],
+		''
+	), -->
+
+<FocusProblem problem={problems.sample[0]} />
 
 <br />
 
@@ -175,7 +178,7 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 ## Segment Tree
 
-<Problems problems={problems.segSam} />
+<FocusProblem problem={problems.segSam[0]} />
 
 A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
 
@@ -337,7 +340,33 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
-Using this, we can solve "Inversion Counting" in just a few lines (with template).
+### With a BIT
+
+Assumes all updates are in the range $[1,N]$.
+
+<Resources>
+	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
+		{' '}
+		log N{' '}
+	</Resource>
+</Resources>
+
+<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
+
+### With a Segment Tree
+
+Covered in [Platinum](/plat/seg-ext).
+
+
+## Example - Inversion Counting
+
+<FocusProblem problem={problems.inv[0]} />
+
+### Solution
+
+<Spoiler title="Solution">
+
+Using indexed set, we can solve this in just a few lines.
 
 <!-- <Spoiler title="INVCNT with Indexed Set"> -->
 
@@ -370,28 +399,15 @@ int main() {
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
-### With a BIT
+</Spoiler>
 
-Assumes all updates are in the range $[1,N]$.
+## Range Sum Problems
 
-<Resources>
-	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
-		{' '}
-		log N{' '}
-	</Resource>
-</Resources>
-
-<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
-
-### With a Segment Tree
-
-Covered in [Platinum](/plat/seg-ext).
-
-## Practice Problems
+### General
 
 <Problems problems={problems.practice} />
 
-## USACO Problems
+### USACO
 
 Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting.
 
