@@ -179,6 +179,57 @@ boolean merge(int a, int b) {
 
 </LanguageSection>
 
+## Focus Problem Solution
+
+<FocusProblem problem={problems.sample[0]} />
+
+The solution below is more verbose than some of the templates above. Use whichever implementation you are most comfortable with.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// sz[i] = size of component i, defaults to 1
+// pa[i] = parent of component i. If i is the root component, then pa[i] = i.
+int sz[200000], pa[200000];
+
+int get(int x) {
+    return x == pa[x] ? x : pa[x] = get(pa[x]);
+}
+
+void unite(int a, int b) {
+    a = get(a), b = get(b);
+    if (a == b) return;
+    if (sz[a] > sz[b]) swap(a, b);
+    pa[a] = b;
+    sz[b] += sz[a];
+}
+
+int main() {
+    int n, q; cin >> n >> q;
+    for (int i = 0; i < n; i++) {
+        sz[i] = 1;
+        pa[i] = i;
+    }
+    for (int i = 0; i < q; i++) {
+        int t, u, v; cin >> t >> u >> v;
+        if (t == 0) {
+            unite(u, v);
+        } else {
+            cout << (get(u) == get(v) ? 1 : 0) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
 You should be familiar with the first two problems, as they are also present in the DFS module.
