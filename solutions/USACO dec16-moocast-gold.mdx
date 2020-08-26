@@ -1,0 +1,90 @@
+---
+id: usaco-669
+title: USACO December 2016 Gold - Moocast
+author: Óscar Garries
+---
+
+Official Editorial: http://www.usaco.org/current/data/sol_moocast_gold_dec16.html
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+const int maxN = 1e3;
+
+vector<int> x(maxN), y(maxN);
+vector<bool> visited(maxN);
+vector<vector<bool>> g(maxN, vector<bool>(maxN, false));
+int n;
+
+int dfs (int v) {
+	visited[v] = true;
+
+	int curCows = 0;
+
+	for (int i = 0; i < n; i++) {
+		if (visited[i] || !g[v][i]) continue;
+		curCows += dfs(i);
+	}
+
+	return (curCows + 1);
+}
+
+bool ok (ll mid) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			g[i][j] = false;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			ll dist = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
+			if (dist <= mid) g[i][j] = true;
+		}
+	}
+
+	fill (visited.begin(), visited.end(), false);
+
+	int cows = dfs(0);
+
+	return (cows == n);
+}
+
+int main () {
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
+
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		 cin >> x[i] >> y[i];
+	}
+
+	ll lo = 1, hi = 1e10;
+	ll sol = hi;
+
+	while (lo <= hi) {
+		ll mid = lo + (hi - lo)/2LL;
+
+		if (ok(mid)) {
+			sol = min (sol, mid);
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
