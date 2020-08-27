@@ -91,14 +91,20 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   bronze: topicsWarning,
   silver: topicsWarning,
   gold: topicsWarning,
-  plat: topicsWarning,
+  plat: (
+    <>
+      {topicsWarning}
+      <br />
+      Some lower-frequency topics are included in "Advanced."
+    </>
+  ),
   adv: (
     <>
-      These topics have not appeared in Platinum and are intended only for
-      interested readers.
+      Some these topics have not appeared in Platinum and probably never will
+      (ex. Matroid Intersection).
       <br />
-      Some of these topics have appeared in Old Gold, USACO Camp, or other high
-      school Olympiads.
+      Others have appeared in Old Gold or Platinum very infrequently (ex. BCC,
+      Suffix Array).
     </>
   ),
 };
