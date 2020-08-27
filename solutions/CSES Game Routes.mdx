@@ -6,13 +6,14 @@ author: Andrew Wang
 
 **Time Complexity:** $\mathcal{O}(N+M)$
 
-This problem is very similar to the Longest flight ruote discussed earlier in this module. Let $dp[v]$ denote the number of paths reaching $v$. We can see,
+This problem is very similar to the "Longest Flight Route" problem discussed earlier in this module. Let $dp[v]$ denote the number of paths reaching $v$. We can see,
 
 $$
 dp[v]= \sum_{\text{edge } u\to v \text{ exists}}dp[u],
 $$
 
 with an exception of $dp[1]$, or the starting node, having a value of 1. We process the nodes topologically so $dp[u]$ will already have been computed before $dp[v]$.
+
 ```cpp
 #include <iostream>
 #include <vector>
@@ -21,11 +22,11 @@ using namespace std;
 int n;
 vector<int> edge[100001];
 vector<int> backedge[100001];
-long ans = 0;
+
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
     int m; cin >> n >> m;
-    int in_degree[n+1]; long dp[n+1];
+    int in_degree[n+1], dp[n+1];
     for(int i = 0; i <= n; i++){
         in_degree[i] = 0;
         dp[i] = 0;
