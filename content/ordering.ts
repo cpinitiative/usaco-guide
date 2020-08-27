@@ -140,16 +140,20 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Hashing',
+      description: 'Rarely required at this level, but still good to know.',
       items: ['string-hashing', 'unordered', 'faster-hashmap'],
     },
   ],
   plat: [
     {
       name: 'Range Queries',
+      description:
+        'It seems that no Platinum contest is complete without a segment tree ...',
       items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'sqrt'],
     },
     {
       name: 'Trees',
+      description: '... or a tree!',
       items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
@@ -157,24 +161,9 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['dp-bitmasks', 'dp-ranges', 'dp-more'],
     },
     {
-      name: 'Graphs',
-      items: ['BCC-2CC', 'eulers-formula'],
-    },
-    {
-      name: 'Strings',
-      items: ['string-search', 'suffix-array'],
-    },
-    {
-      name: 'Convexity',
-      items: [
-        'geo-pri',
-        'sweep-line',
-        'convex-hull',
-        'cht',
-        'LC',
-        'lagrange',
-        'slope',
-      ],
+      name: 'Convex Hull',
+      description: 'Most Platinum geometry problems.',
+      items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
     {
       name: 'Misc. Topics',
@@ -184,15 +173,21 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   adv: [
     {
       name: 'Data Structures',
-      items: ['treaps', 'persistent', 'CntMin', 'segtree-beats'],
+      items: ['CntMin', 'segtree-beats', 'persistent', 'treaps'],
+    },
+    {
+      name: 'Convexity',
+      items: ['LC', 'lagrange', 'slope'],
     },
     {
       name: 'Graphs',
       items: [
         'sp-neg',
         'eulerian-tours',
+        'BCC-2CC',
         'SCC',
         'offline-del',
+        'eulers-formula',
         'critical',
         'LCT',
       ],
@@ -206,12 +201,15 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['fft', 'fft-ext'],
     },
     {
+      name: 'Strings',
+      items: ['string-search', 'suffix-array', 'string-suffix'],
+    },
+    {
       name: 'Misc. Topics',
       items: [
         'comb-sub',
         'extend-euclid',
         'xor-basis',
-        'string-suffix',
         'game-theory',
         'multiplicative',
         'matroid-isect',
