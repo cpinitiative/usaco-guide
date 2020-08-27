@@ -90,7 +90,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   silver: [
     {
-      name: 'Sorting',
+      name: 'Sorting & Sets',
       items: [
         'binary-search-sorted',
         'sorting-custom',
@@ -100,10 +100,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
+      description:
+        'Most of these require sorting and/or sets as a prerequisite.',
       items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
     },
     {
       name: 'Graphs',
+      description:
+        'Every (?) Silver and Gold contest has at least one graph problem.',
       items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
@@ -114,6 +118,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
+      description:
+        'Every (?) Gold and Platinum contest has at least one DP problem.',
       items: ['intro-dp'],
     },
     {
