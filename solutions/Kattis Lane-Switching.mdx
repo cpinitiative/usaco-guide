@@ -6,7 +6,7 @@ author: Benjamin Qi
 
 **Time Complexity**: $\mathcal{O}(M(\log M+\log R))$
 
-Similar to the previous two problems in this module, we can binary search on the answer. However, there's a bit more implementation involved, because we need to construct the graph first. Each vertex in the graph corresponds to a range of unoccupied space in a lane, and we draw an edge between two vertices with weight equal to the length of their vertical intersection.
+Similar to the previous two problems in this module, we can binary search on the answer. However, there's a bit more implementation involved because we need to construct the graph first. Each vertex in the graph corresponds to a range of unoccupied space in a lane, and we draw an edge between two vertices with weight equal to the length of their vertical intersection.
 
 ```cpp
 int N,M,R;
@@ -36,7 +36,8 @@ bool ok(int lo) {
 void ae(pi a, pi b) { // add an undirected edge to the graph
 	int A = label[a.f][a.s], B = label[b.f][b.s];
 	assert(A < sz(adj) && B < sz(adj));
-	int len = min(range[a.f][a.s].s,range[b.f][b.s].s)-max(range[a.f][a.s].f,range[b.f][b.s].f);
+	int len = min(range[a.f][a.s].s,range[b.f][b.s].s)
+			-max(range[a.f][a.s].f,range[b.f][b.s].f);
 	adj[A].pb({B,len}), adj[B].pb({A,len});
 }
 
