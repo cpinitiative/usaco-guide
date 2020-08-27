@@ -4,21 +4,21 @@ title: CSES Investigation
 author: Andrew Wang
 ---
 
-**Time Complexity:** $\mathcal{O}(ElogV)$ 
+**Time Complexity:** $\mathcal{O}(E\log V)$ 
 
-We can run djikstra keeping track of the distance: $dist[]$, the number of ways with the mininum distance: $num[]$, the minimum flights with the minimum 
-distance: $minf[]$, and the maximum flights with the minimum distance: $maxf[]$. For every node, $v$, we take into consideration all of it's neighbors, $u$. 
-If we can reach $u$ in a shorter distance than it's current minimum, we update the distance and reset $num[u]$, $minf[u]$, and $maxf[u]$. We also have 
-to take into consideration if we can reach $u$ in an equivalent distant. If so, we update:
+We can run Dijkstra keeping track of the distance: $dist[]$, the number of ways with the minimum distance: $num[]$, the minimum flights with the minimum 
+distance: $minf[]$, and the maximum flights with the minimum distance: $maxf[]$. For every node, $v$, we take into consideration all of its neighbors, $u$. 
+If we can reach $u$ in a shorter distance than its current minimum, we update the distance and reset $num[u]$, $minf[u]$, and $maxf[u]$. We also have 
+to take into consideration if we can reach $u$ in an equivalent distance. If so, we update:
 
 $$
-
 num[u] = num[v] + num[u]
-
+$$
+$$
 minf[u] = min(minf[u], minf[v] + 1)
-
+$$
+$$
 maxf[u] = max(maxf[u], maxf[v] + 1)
-
 $$
 
 ```cpp
@@ -67,7 +67,7 @@ int main(){
     int n; int m; cin >> n >> m;
     for(int i = 0; i < m; i++){
         int a,b,c; cin >> a >> b >> c;
-        pair<long, int> d; d.first = c; d.second = b;
+        pair<ll, int> d; d.first = c; d.second = b;
         edge[a].push_back(d);
     }
     for(int i = 0; i <= 100000; i++){
@@ -81,7 +81,4 @@ int main(){
     " " << minf[n] << " " << maxf[n];
     return 0;
 }
-
-
-
 ```
