@@ -79,13 +79,12 @@ export default function ProblemStatusCheckbox({
   );
   const updateModuleProgressToPracticing = () => {
     if (markdownLayoutContext === null) return;
-    const { markdownLayoutInfo, conf } = markdownLayoutContext;
+    const { markdownLayoutInfo } = markdownLayoutContext;
     const moduleProgress =
       (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
       'Not Started';
     if (moduleProgress !== 'Not Started') return;
     setModuleProgress(markdownLayoutInfo.id, 'Practicing');
-    conf(true);
   };
   let status: ProblemProgress =
     userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
@@ -107,8 +106,11 @@ export default function ProblemStatusCheckbox({
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem, progress);
-              if (progress == 'Solving' || progress == 'Solved') {
+              if (progress == 'Solving' || progress == 'Solved')
                 updateModuleProgressToPracticing();
+              const { conf } = markdownLayoutContext;
+              if (status != progress && progress == 'Solved') {
+                conf(true);
               }
             }}
             currentProgress={status}
