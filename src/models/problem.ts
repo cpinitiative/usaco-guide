@@ -48,7 +48,11 @@ const probSources = {
     'AtCoder',
     'The editorial button is right next to the problem title. If "there is no editorial yet," check the "Overall Editorial" PDF below.',
   ],
-  CC: ['https://www.codechef.com/problems/', 'CodeChef'],
+  CC: [
+    'https://www.codechef.com/problems/',
+    'CodeChef',
+    'There should be a link to the editorial at the bottom of the page.',
+  ],
   CF: [
     'https://codeforces.com/contest/',
     'CodeForces',
@@ -63,7 +67,11 @@ const probSources = {
     'https://cses.fi/problemset/task/',
     'Code Submission Evaluation System (includes CPH problemset)',
   ],
-  DMOJ: ['https://dmoj.ca/problem/', 'Don Mills Online Judge'],
+  DMOJ: [
+    'https://dmoj.ca/problem/',
+    'Don Mills Online Judge',
+    'There might be a "Read Editorial" button on the right side of the page.',
+  ],
   HR: ['https://www.hackerrank.com/', 'HackerRank'],
   Kattis: ['https://open.kattis.com/problems/', 'open.kattis.com'],
   LC: ['https://leetcode.com/problems/', 'LeetCode'],
