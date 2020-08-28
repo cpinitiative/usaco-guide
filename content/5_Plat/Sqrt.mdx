@@ -9,34 +9,20 @@ frequency: 1
 import { Problem } from '../models';
 
 export const problems = {
-	fst: [
+	sam: [
 		new Problem(
-			'CF',
-			'Tree Queries',
-			'contest/1254/problem/D',
-			'Hard',
+			'CSES',
+			'Range Sum Queries II',
+			'1648',
+			'Very Easy',
 			false,
 			[],
 			''
 		),
-		new Problem(
-			'wcipeg',
-			'COI 08-Otoci',
-			'https://wcipeg.com/problem/coi08p2',
-			'Hard',
-			false,
-			['HLD'],
-			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2009/solutions.pdf'
-		),
-		new Problem(
-			'Old Gold',
-			'Fencing the Herd',
-			'534',
-			'Very Hard',
-			false,
-			['Convex hull'],
-			''
-		),
+	],
+	fst: [
+		new Problem('APIO', 'Bridges', 'https://oj.uz/problem/view/APIO19_bridges', 'Hard', false, [], ''),
+		new Problem('Plat', 'Train Tracking', '841', 'Very Hard', false, [], ''),
 		new Problem(
 			'DMOJ',
 			'Fluid Dynamics',
@@ -46,9 +32,6 @@ export const problems = {
 			[],
 			''
 		),
-		new Problem('Plat', 'At Large', '793', 'Very Hard', false, [], ''),
-	],
-	block: [
 		new Problem(
 			'DMOJ',
 			'Arithmetic Subtrees',
@@ -59,44 +42,126 @@ export const problems = {
 			''
 		),
 	],
-	other: [
-		new Problem('Plat', 'Train Tracking', '841', 'Insane', false, [], ''),
+	bad: [
+		new Problem(
+			'Plat',
+			'New Barns',
+			'817',
+			'Hard',
+			false,
+			[],
+			'',
+		),
+		new Problem(
+			'CF',
+			'Tree Queries',
+			'contest/1254/problem/D',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Old Gold',
+			'Fencing the Herd',
+			'534',
+			'Very Hard',
+			false,
+			['Convex hull'],
+			''
+		),
+		new Problem('IOI', 'Elephants', 'https://oj.uz/problem/view/IOI11_elephants', 'Very Hard', false, [], ''),
+		new Problem('Plat', 'At Large', '793', 'Very Hard', false, [], ''),
 	],
 };
 
-https://oj.uz/problem/view/APIO19_bridges
+<!-- 	new Problem(
+		'wcipeg',
+		'COI 08-Otoci',
+		'https://wcipeg.com/problem/coi08p2',
+		'Hard',
+		false,
+		['HLD'],
+		'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2009/solutions.pdf'
+	), -->
 
-<IncompleteSection />
+<FocusProblem problem={problems.sam[0]} />
 
-## On Line
 
-processing sqrt queries / updates at a time
+## Blocks of $\sqrt N$
 
 partitioning into sqrt blocks (each block can have some sort of data structure ...)
 
-optimization tips? (ez to get TLE with bad constant ..., can get AC with suboptimal complexity ...)
+<IncompleteSection>
 
-<Problems problems={problems.fst} />
+solution for sample problem
 
-## Mo's
+</IncompleteSection>
+
+
+## Batches of $\sqrt N$
+
+processing sqrt queries / updates at a time
+
+<IncompleteSection>
+
+solution for sample problem
+
+</IncompleteSection>
+
+## Mo's Algorithm
 
 <Resources>
 	<Resource source="CF" title="Mo's Algorithm" url="7383"></Resource>
-	<Resource source="CF" title="Mo's on Trees" url="43230"></Resource>
 </Resources>
 
-[A2OJ](https://a2oj.com/category?ID=318)
+<!-- [A2OJ](https://a2oj.com/category?ID=318) -->
 
-## Other
+<IncompleteSection />
 
-### Block Tree
+## Additional Notes
 
-<Problems problems={problems.block} />
+Low constraints (ex. $N=5\cdot 10^4$) and/or high time limits (such as 9s) can be signs that sqrt decomp is intended.
+
+<IncompleteSection>
+
+optimization tips? (ez to get TLE with bad constant ..., can get AC with suboptimal complexity ...)
+
+</IncompleteSection>
+
+<Warning>
+
+optimal block size varies a lot
+
+</Warning>
+
+Some more discussion about how sqrt decomp can be used.
 
 <Resources>
+	<Resource source="CF" url="https://codeforces.com/blog/entry/54133" title="SQRT decomposition for beginners"> 
+		format isn't great but example is ok
+	</Resource>
+</Resources>
+
+## On Trees
+
+The techniques mentioned in the blogs below are extremely rare but worth a mention.
+
+<Resources>
+	<Resource source="CF" title="Mo's on Trees" url="43230"></Resource>
 	<Resource source="CF" title="Block Tree" url="46843"></Resource>
 </Resources>
 
-### Train Tracking
+## Problems
 
-<Problems problems={problems.other} />
+### A
+
+Problems where the best solution I know of involves sqrt decomp.
+
+<Problems problems={problems.fst} />
+
+### B
+
+Problems that can be solved without it. But you might as well try to use it!!
+
+<Problems problems={problems.bad} />

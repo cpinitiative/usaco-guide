@@ -75,39 +75,42 @@ export function Resource(props) {
   let source = props.source ? props.source : '';
   let url = props.url;
   let des = '';
-  if (!url) {
+  if (source in books) {
     // must be book
-    if (!(source in books))
-      throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
-    const getSec = (dictKey, book, title) => {
-      const parts = title.split(' ');
-      let url = book;
-      let sec = parts[0];
-      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
-      if (!/^\d.*$/.test(sec)) return url;
-      if (!(sec in PGS[dictKey]))
-        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
-      url += '#page=' + PGS[dictKey][sec];
-      return url;
-    };
-    if (source === 'IUSACO') {
-      if (userSettings.lang === 'java') {
-        url = getSec(
-          'JAVA',
-          'https://darrenyao.com/usacobook/java.pdf',
-          props.title
-        );
-      } else {
-        url = getSec(
-          'CPP',
-          'https://darrenyao.com/usacobook/cpp.pdf',
-          props.title
-        );
-      }
-    } else if (source in PGS) {
-      url = getSec(source, books[source][0], props.title);
-    } else url = books[source][0];
+    // if (!(source in books))
+    //   throw `No URL. Did you make a typo in the source (${source})? Resource title: ${props.title}`;
     des = books[source][1];
+    if (!url) {
+      // auto-gen page #
+      const getSec = (dictKey, book, title) => {
+        const parts = title.split(' ');
+        let url = book;
+        let sec = parts[0];
+        if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+        if (!/^\d.*$/.test(sec)) return url;
+        if (!(sec in PGS[dictKey]))
+          throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+        url += '#page=' + PGS[dictKey][sec];
+        return url;
+      };
+      if (source === 'IUSACO') {
+        if (userSettings.lang === 'java') {
+          url = getSec(
+            'JAVA',
+            'https://darrenyao.com/usacobook/java.pdf',
+            props.title
+          );
+        } else {
+          url = getSec(
+            'CPP',
+            'https://darrenyao.com/usacobook/cpp.pdf',
+            props.title
+          );
+        }
+      } else if (source in PGS) {
+        url = getSec(source, books[source][0], props.title);
+      } else url = books[source][0];
+    }
   } else if (source in moduleSources) {
     if (!url.startsWith('http')) url = moduleSources[source][0] + url;
     des = moduleSources[source][1];

@@ -1,10 +1,11 @@
 ---
 id: cht
 title: 'Convex Hull Trick'
-author: Benjamin Qi, Andi Qu
+author: Andi Qu
 description: A way to find the maximum or minimum value of several convex functions at given points.
 prerequisites:
   - convex-hull
+  - intro-dp
 frequency: 2
 ---
 
@@ -69,15 +70,6 @@ export const problems = {
 			'apio-14-sequence'
 		),
 		new Problem(
-			'Plat',
-			'Circular Barn',
-			'626',
-			'Hard',
-			false,
-			['DP', 'convex'],
-			''
-		),
-		new Problem(
 			'POI',
 			'2006 - Frogs',
 			'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
@@ -87,10 +79,10 @@ export const problems = {
 			''
 		),
 		new Problem(
-			'JOI',
-			'2017 - Long-Distance Coach',
-			'https://oj.uz/problem/view/JOI17_coach',
-			'Very Hard',
+			'Plat',
+			'Circular Barn',
+			'626',
+			'Hard',
 			false,
 			['DP', 'convex'],
 			''
@@ -99,33 +91,47 @@ export const problems = {
 			'Plat',
 			'Falling Portals',
 			'998',
-			'Very Hard',
+			'Hard',
 			false,
 			['convex'],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2017 - Long-Distance Coach',
+			'https://oj.uz/problem/view/JOI17_coach',
+			'Hard',
+			false,
+			['DP', 'convex'],
 			''
 		),
 	],
 };
 
-## Introduction
-
 Convex Hull Trick (CHT) problems are usually of the following form:
 
-> Given several **convex** functions $f_i(x)$ such that **any two functions intersect at most once**, answer $Q$ queries of the form "what is the maximum/minimum $f_i(x)$ for some given x?".
+> Given several **convex** functions $f_i(x)$ such that **any two functions intersect at most once**, answer $Q$ queries of the form "what is the maximum/minimum $f_i(x)$ for some given $x$?".
+
+<IncompleteSection>
+
+Ben - be clearer about what conditions need to be satisfied
+
+</IncompleteSection>
 
 Examples of such functions include:
 
 - The straight line ($y = mx + c$)
-- The parabola ($y = ax^2 + bx + c$)
 - The square-root function ($y = \sqrt{x - a} + b$)
+
+<!-- - The parabola ($y = ax^2 + bx + c$) -->
 
 There are several data structures one can use to solve these problems efficiently.
 
-In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $O(N)$ using a `std::deque` in C++.
+In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $O(N)$ using a `std::deque` in C++. For the more general $O(N \log N)$ CHT, see [the LineContainer module](/plat/LC).
 
-(For the more general $O(N \log N)$ CHT, see [the LineContainer module](/plat/LC)).
+<FocusProblem problem={problems.sample[0]} />
 
-### Tutorials
+## Tutorial
 
 <Resources>
 	<Resource
@@ -134,7 +140,7 @@ In this module, we'll focus on the special case of CHT where "slopes" of functio
 		url="63823"
 		starred
 	>
-		{' '}
+		solves problem above
 	</Resource>
 	<Resource source="GCP" title="15.4.1 - Convex Hull Trick">
 		{' '}
@@ -146,9 +152,7 @@ In this module, we'll focus on the special case of CHT where "slopes" of functio
 	></Resource>
 </Resources>
 
-### Example Problem
-
-<FocusProblem problem={problems.sample[0]} />
+## Solution - The Fair Nut and Rectangles
 
 I won't analyse this problem in great detail since the Codeforces blog in the resources already does so, but essentially, we sort the rectangles by $x$-coordinate and get the following DP recurrence:
 
@@ -161,8 +165,6 @@ Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a strai
 Since we sorted the rectangles and no two rectangles are nested, the slopes of the lines we insert are strictly increasing. The query positions are also strictly increasing.
 
 This means we can solve this problem using CHT in $O(N)$ time! Here is my implementation:
-
-<Spoiler title="Code">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -192,7 +194,8 @@ int main() {
     deque<ll> q;
     q.push_back(0);
     for (int i = 1; i <= n; i++) {
-        while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y) q.pop_front();
+        while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y) 
+        	q.pop_front();
 
         ll j = q.front();
         dp[i] = max(dp[i - 1], a[i].x * a[i].y - a[i].a + dp[j] - a[j].x * a[i].y);
@@ -205,8 +208,6 @@ int main() {
     return 0;
 }
 ```
-
-</Spoiler>
 
 ## Problems
 

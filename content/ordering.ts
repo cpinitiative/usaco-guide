@@ -128,7 +128,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding', 'PURS', 'SRQ', 'springboards'],
+      items: ['stacks', 'sliding', 'PURS', 'springboards'],
     },
     {
       name: 'More DP',
@@ -149,7 +149,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Range Queries',
       description:
         'It seems that no Platinum contest is complete without a segment tree ...',
-      items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'sqrt'],
+      items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'DC-SRQ', 'sqrt'],
     },
     {
       name: 'Trees',
@@ -157,17 +157,17 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
-      name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'dp-more'],
-    },
-    {
       name: 'Convex Hull',
       description: 'Most Platinum geometry problems.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
     {
+      name: 'Dynamic Programming',
+      items: ['dp-bitmasks', 'dp-ranges', 'DC-DP'],
+    },
+    {
       name: 'Misc. Topics',
-      items: ['mat-exp', 'bitsets', 'fracture'],
+      items: ['mat-exp', 'bitsets'],
     },
   ],
   adv: [
@@ -193,6 +193,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       ],
     },
     {
+      name: 'Dynamic Programming',
+      items: ['comb-sub', 'dp-more'],
+    },
+    {
       name: 'Flows',
       items: ['max-flow', 'min-cut', 'flow-lb', 'min-cost-flow'],
     },
@@ -207,9 +211,9 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Misc. Topics',
       items: [
-        'comb-sub',
         'extend-euclid',
         'xor-basis',
+        'fracture',
         'game-theory',
         'multiplicative',
         'matroid-isect',

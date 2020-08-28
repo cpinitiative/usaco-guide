@@ -4,7 +4,6 @@ title: 'Euler Tour Technique'
 author: Benjamin Qi, Andi Qu
 prerequisites:
   - intro-tree
-  - SRQ
   - PURS
 description: 'Flattening a tree into an array to easily query and update subtrees.'
 frequency: 2
@@ -35,6 +34,9 @@ export const problems = {
 			''
 		),
 		new Problem('CSES', 'Distance Queries', '1135', 'Easy', false, ['LCA'], ''),
+	],
+	rmqSample: [
+		new Problem('YS', 'Static RMQ', 'staticrmq', 'Easy', false, [], ''),
 	],
 	problems: [
 		new Problem(
@@ -244,12 +246,6 @@ int main() {
 	</Resource>
 </Resources>
 
-<IncompleteSection>
-
-don't use a segtree :/
-
-</IncompleteSection>
-
 <LanguageSection>
 
 <CPPSection>
@@ -301,6 +297,63 @@ int lca(int a, int b) {
 	return query(tin[a], tin[b]);
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Sparse Tables
+
+The above code does $O(N)$ time preprocessing and allows LCA queries in $O(\log N)$ time. If we replace the segment tree that computes minimums with a **sparse table**, then we do $O(N\log N)$ time preprocessing and query in $O(1)$ time.
+
+<!-- [](https://en.wikipedia.org/wiki/Range_minimum_query) -->
+
+<FocusProblem problem={problems.rmqSample[0]} />
+
+### Resources
+
+<Resources>
+	<Resource source="CPH" title="9.1 - Minimum Queries" url="/CPH.pdf#page=95" starred>
+		diagrams
+	</Resource>
+	<Resource source="PAPS" title="11.2.2 - Sparse Tables" starred>
+		code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Sparse Table"
+		url="data_structures/sparse-table.html"
+	></Resource>
+</Resources>
+
+<!-- <Resource source="cp-algo" title="RMQ" url="sequences/rmq.html"></Resource> -->
+
+<Optional title="Faster Preprocessing">
+
+From CPH:
+
+> There are also more sophisticated techniques where the preprocessing time is only $O(N)$, but such
+algorithms are not needed in competitive programming.
+
+Ex. the following:
+
+ - [CF: $O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
+
+</Optional>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RMQ%20(9.1).h"
+		title="RMQ"
+	></Resource>
+</Resources>
 
 </CPPSection>
 
