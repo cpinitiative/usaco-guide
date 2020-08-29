@@ -296,6 +296,30 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
       sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
     }
+    console.log(problem.name);
+    if (problem.source == 'IOI') {
+      if (sol == '') {
+        for (let i = 1994; i <= 2017; ++i) {
+          let des = i.toString();
+          if (problem.name.indexOf(des) != -1) {
+            let num = i - 1994 + 20;
+            sol = `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+            break;
+          }
+        }
+      }
+      if (sol == '') {
+        for (let i = 1994; i <= 2017; ++i) {
+          let des = (i % 100).toString();
+          if (des.length == 1) des = '0' + des;
+          if (problem.name.indexOf(des) != -1) {
+            let num = i - 1994 + 20;
+            sol = `https://ioinformatics.org/page/ioi-2010/` + num.toString();
+            break;
+          }
+        }
+      }
+    }
     if (isExternal(sol)) {
       external = true;
     } else if (sol.startsWith('@')) {

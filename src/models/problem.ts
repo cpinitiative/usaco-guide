@@ -100,6 +100,7 @@ export class Problem {
   public solution: string | null = null;
   public des: string = '';
   public hover: string = '';
+  public name: string = '';
 
   get uniqueID() {
     return this.url;
@@ -107,7 +108,7 @@ export class Problem {
 
   constructor(
     public source: string,
-    public name: string,
+    public Name: string,
     public id: string,
     public difficulty?:
       | 'Very Easy'
@@ -123,6 +124,7 @@ export class Problem {
     public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
     // generate URL
+    this.name = Name;
     this.url = id; // console.log(this.url)
     if (source in probSources) {
       if (!this.url.startsWith('http')) {

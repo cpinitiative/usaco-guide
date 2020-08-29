@@ -1,0 +1,52 @@
+---
+id: wizards-tour
+title: CF - Wizard's Tour
+author: Benjamin Qi
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/54604) (brief)
+
+> Obviously the task can be solved independently for each component.
+
+The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single connected component. First, figure out how to achieve this when the graph is a tree.
+
+## General Case
+
+<Spoiler title="Solution">
+
+First, find any spanning tree. Then for each edge $(a,b)$ not in the spanning tree, disconnect one of its endpoints (it doesn't matter which one). For example, if we disconnect $b$ then we treat the edge as $(a,x)$ instead, where $x$ is connected to no vertices aside from $a$. This reduces the problem to the tree case.
+
+```cpp
+int n,m, visit[200001], par[200001];
+vi adj[200001];
+vector<vi> ans;
+ 
+bool dfs(int x, int pre) {
+	visit[x] = 1;
+	vi cur;
+	for (int i: adj[x]) if (i != pre) {
+		if (visit[i]) {
+			if (x < i) cur.pb(i);
+		} else if (dfs(i,x)) cur.pb(i);
+	}
+	F0R(i,cur.size()/2) ans.pb({cur[2*i],x,cur[2*i+1]});
+	if (cur.size() % 2 == 0) return 1;
+	if (pre != -1) ans.pb({cur[cur.size()-1],x,pre});
+	return 0;
+}
+ 
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m;
+	F0R(i,m) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	FOR(i,1,n+1) if (!visit[i]) dfs(i,-1);
+	cout << ans.size() << "\n";
+	for (auto a: ans) cout << a[0] << " " << a[1] << " " << a[2] << "\n";
+}
+ ```
+
+</Spoiler>
+
