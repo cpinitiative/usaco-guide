@@ -1,0 +1,122 @@
+---
+id: kattis-quantum
+title: Kattis Quantum Superposition
+author: Andrew Wang
+---
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+The main idea for the solution is to find all possible lengths of routes in both universes so we can preprocess all possible sum of lengths to reach the end in each
+of the universes. 
+
+
+##Finding All Possible Lengths of Routes
+
+We can use dynamic programming by proccessing each node topologically to find the lengths of all the routes to the current node were considering. We can store
+the lengths in a set for each node. When we consider a node, we can add 1 to all the lengths reaching the previous node and insert it into the set for the current
+node. We can repeat this process for both universes to find the total lengths of all paths reaching the end node.
+
+
+##Finding all possible sums
+
+Once we know all possible path lengths for each universe, we can find all possible sums of lengths. We simply loop through both universe's route length's in a 
+nested loop and add them together. 
+
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+using namespace std;
+
+int main(){
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    int n1; int n2; int m1; int m2;
+    cin >> n1 >> n2 >> m1 >> m2;
+    vector<int> g1[1001]; vector<int> g2[1001];
+    vector<int> back1[1001]; vector<int> back2[1001];
+    unordered_set<int> dp1[1001]; unordered_set<int> dp2[1001];
+    int in_degree[1001];
+    for(int i = 0; i < 1001; i++){
+        in_degree[i] = 0;
+    }
+    for(int i = 0; i < m1; i++){
+        int a; int b; cin >> a >>b;
+        g1[a].push_back(b);
+        back1[b].push_back(a);
+        in_degree[b]++;
+    }
+    //finding length of routes of first universe
+    queue<int> q;
+    for(int i = 0; i <= n1; i++){
+        if(in_degree[i] == 0){
+            q.push(i);
+        }
+    }
+    while(!q.empty()){
+        int node = q.front(); q.pop();
+        //using dp while processing the nodes topologically
+        if(back1[node].empty()){
+            dp1[node].insert(0);
+        }
+        for(int before : back1[node]){
+            for(int i : dp1[before]){
+                dp1[node].insert(i+1);
+            }
+        }
+        for(int next: g1[node]){
+            in_degree[next]--;
+            if(in_degree[next] == 0) q.push(next);
+        }
+    }
+    for(int i = 0; i < 1001; i++){
+        in_degree[i] = 0;
+    }
+    for(int i = 0; i < m2; i++){
+        int a; int b; cin >> a >>b;
+        g2[a].push_back(b);
+        back2[b].push_back(a);
+        in_degree[b]++;
+    }
+    for(int i = 0; i <= n1; i++){
+        if(in_degree[i] == 0){
+            q.push(i);
+        }
+    }
+    //finding length of routes of second universe
+    while(!q.empty()){
+        int node = q.front(); q.pop();
+        if(back2[node].empty()){
+            dp2[node].insert(0);
+        }
+        for(int before : back2[node]){
+            for(int i : dp2[before]){
+                dp2[node].insert(i+1);
+            }
+        }
+        for(int next: g2[node]){
+            in_degree[next]--;
+            if(in_degree[next] == 0) q.push(next);
+        }
+    }
+    //preprocessing all possible sums between the universes
+    bool ans[2001];
+    for(int i : dp1[n1]){
+        for(int j : dp2[n2]){
+            ans[i+j] = true;
+        }
+    }
+    int Q; cin >> Q;
+    for(int i = 0; i < Q; i++){
+        int a; cin >> a;
+        if(ans[a]){
+            cout << "Yes" << endl;
+        }
+        else{
+            cout << "No" << endl;
+        }
+    }
+    return 0;
+}
+```
