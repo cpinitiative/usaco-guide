@@ -1,0 +1,62 @@
+---
+id: cses-1619
+title: CSES Restaurant Customers
+author: Michael Cao
+---
+
+In this problem, we're given $n$ intervals with distinct start and end points, and we want to find the maximum number of intervals overlapping some point.
+
+## Solution
+
+Let's transform the problem by assigning start points the value $1$ and end points the value $-1$. Then, if we put the start and end points into an array and sort them, the problem becomes: "given an array of values, find the maximum value of a prefix sum." This can be done by looping over the values and storing a running sum.
+
+<Warning>
+
+Make sure to not store the values in an `array`, as the maximum value can be up to $10^9$, and instead use something like a `vector`. 
+
+</Warning>
+
+## Code
+
+```cpp
+#include <bits/stdc++.h> 
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n; cin >> n;
+    vector<pi> vals;
+    for (int i = 0; i < n; i++) {
+        int l, r; 
+        cin >> l >> r;
+        vals.pb(mp(l, 1));
+        vals.pb(mp(r, -1));
+    }
+
+    sort(all(vals)); 
+
+    int sum = 0;
+    int ans = 0;
+    for (auto x : vals) {
+        sum += x.s;
+        ans = max(ans, sum);
+    }
+    cout << ans << '\n';
+}
+```
+
