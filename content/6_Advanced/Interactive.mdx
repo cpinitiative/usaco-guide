@@ -1,0 +1,310 @@
+---
+id: interactive
+title: Interactive and Communication Problems
+author: Andi Qu
+description: Some tips and tricks
+frequency: 1
+---
+
+import { Problem } from '../models';
+
+export const problems = {
+	interactiveDnC: new Problem(
+		'InfO(1) Cup',
+		'2017 - Easter Eggs',
+		'https://oj.uz/problem/view/info1cup17_eastereggs',
+		'Easy',
+		false,
+		[],
+		''
+	),
+	interactiveGeneral: [
+		new Problem(
+			'IOI',
+			'2013 - Cave',
+			'https://oj.uz/problem/view/IOI13_cave',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2018 - Combo',
+			'https://oj.uz/problem/view/IOI18_combo',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2017 - The Big Prize',
+			'https://oj.uz/problem/view/IOI17_prize',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2016 - Messy Bug',
+			'https://oj.uz/problem/view/IOI16_messy',
+			'Normal',
+			true,
+			[],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2016 - Gap',
+			'https://oj.uz/problem/view/APIO16_gap',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2014 - Rail',
+			'https://oj.uz/problem/view/IOI14_rail',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2015 - Scales',
+			'https://oj.uz/problem/view/IOI15_scales',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2015 - Towns',
+			'https://oj.uz/problem/view/IOI15_towns',
+			'Very Hard',
+			true,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2018 - Highway',
+			'https://oj.uz/problem/view/IOI18_highway',
+			'Very Hard',
+			true,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2017 - Simurgh',
+			'https://oj.uz/problem/view/IOI17_simurgh',
+			'Very Hard',
+			true,
+			[],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2017 - Koala Game',
+			'https://oj.uz/problem/view/APIO17_koala',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+	],
+	communicationMonovariant: new Problem(
+		'IOI',
+		'2010 - Saveit!',
+		'https://oj.uz/problem/view/IOI10_saveit',
+		'Normal',
+		false,
+		[],
+		''
+	),
+	communicationPermutations: new Problem(
+		'IOI',
+		'2011 - Parrots',
+		'https://oj.uz/problem/view/IOI11_parrots',
+		'Easy',
+		false,
+		[],
+		''
+	),
+	communicationGeneral: [
+		new Problem(
+			'CEOI',
+			'2014 - Question',
+			'https://oj.uz/problem/view/CEOI14_question_grader',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Balkan OI',
+			'2011 - cmp',
+			'https://oj.uz/problem/view/balkan11_cmp',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2012 - Last Supper',
+			'https://oj.uz/problem/view/IOI12_supper',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2015 - Navigation',
+			'https://dunjudge.me/analysis/problems/762/',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2020 - Stray Cat',
+			'https://oj.uz/problem/view/JOI20_stray',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2019 - Two Transportations',
+			'https://oj.uz/problem/view/JOI19_transportations',
+			'Hard',
+			true,
+			[],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2018 - Airline',
+			'https://oj.uz/problem/view/JOI18_airline',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2014 - Kanji Shiritori',
+			'https://dunjudge.me/analysis/problems/1042/',
+			'Insane',
+			true,
+			[],
+			''
+		),
+	],
+};
+
+In this module, we assume that "interactive" means problems that allow a limited number of queries and "communication" means problems about communicating between two separate programs.
+
+## Interactive Problems
+
+### Tip 1: Exploit the Limits
+
+Since almost all interactive problems have a limit on the number of queries you may ask, you should use that limit to guide your thinking. There's no point in trying to come up with a solution that uses $\log N$ queries when the limit is $N^2$!
+
+There are three types of interactive problems:
+
+1. Problems that directly tell you the target complexity of your solution (e.g. IOI 2014 Rail).
+2. Problems that only tell you the maximum number of queries you may use (e.g. IOI 2013 Cave).
+3. Problems that have a hidden limit on the number of queries (e.g. IOI 2015 Scales).
+
+The first type is nice because we get an idea of what our solution should look like.
+
+The second type is slightly less nice, but we can still approximate the target complexity (e.g. $N = 5000$ and $Q = 70000 \implies N \log N$ queries).
+
+The third type is the least nice, but fortunately, we can sometimes still figure out the hidden limit. For example, in problems with relative scoring (like IOI 2015 Scales), we can sumbit a solution that uses a fixed number of queries for each input and then reverse-engineer the limit from our score.
+
+### Tip 2: Divide and Conquer
+
+In most interactive problems, the solution is to **divide and conquer**. This is usually either binary search ($\log N$ queries) or something like merge sort ($N \log N$ queries)
+
+Whenever you see large input limits and small query limits, you should immediately think of binary search.
+
+<FocusProblem problem={problems.interactiveDnC} />
+
+In this problem, we have $N = 512$ and $Q \leq 9$. Notice how $2^9 = 512$ - this suggests that we should binary search.
+
+Indeed, that's the solution - try to come up with it yourself!
+
+<Spoiler title="Solution">
+
+The solution is to binary search on the DFS order of the tree for the largest prefix without an easter egg. This works because any prefix of the DFS order is a connected component.
+
+```cpp
+#include <bits/stdc++.h>
+#include "grader.h"
+using namespace std;
+
+vector<int> graph[513], ord;
+
+void dfs(int node = 1, int parent = 0) {
+    ord.push_back(node);
+    for (int i : graph[node]) if (i != parent) dfs(i, node);
+}
+
+int findEgg(int N, vector<pair<int, int>> bridges) {
+    for (int i = 1; i <= N; i++) graph[i].clear();
+    ord.clear();
+    for (pair<int, int> i : bridges) {
+        graph[i.first].push_back(i.second);
+        graph[i.second].push_back(i.first);
+    }
+    dfs();
+    int l = 0, r = N - 1;
+    while (l != r) {
+        int mid = (l + r + 1) / 2;
+        if (query(vector<int>(ord.begin(), ord.begin() + mid))) r = mid - 1;
+        else l = mid;
+    }
+    return ord[l];
+}
+```
+
+</Spoiler>
+
+### Problems
+
+<Problems problems={problems.interactiveGeneral} />
+
+## Communication Problems
+
+### Tip 1: Find a Monovariant
+
+<IncompleteSection />
+
+<FocusProblem problem={problems.communicationMonovariant} />
+
+### Tip 2: Brute Force
+
+Sometimes, the amount of information that we can send is (slightly) more than the amount of information we need to decode.
+
+In this case, we can simply map each piece of information we want to decode to a piece of information that we can send.
+
+<FocusProblem problem={problems.communicationPermutations} />
+
+In this problem, we want to encode and decode an array of 64 integers less than 256 using an unordered sequence of 320 integers less than 256.
+
+The number of arrays of 64 integers less than 256 is slightly less than the number of increasing sequences of 320 integers less than 256, so we can just map each array to an increasing sequence (using bignums) and send that sequence.
+
+### Problems
+
+<Problems problems={problems.communicationGeneral} />
