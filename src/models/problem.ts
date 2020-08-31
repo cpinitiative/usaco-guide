@@ -72,7 +72,11 @@ const probSources = {
     'Don Mills Online Judge',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
-  HR: ['https://www.hackerrank.com/', 'HackerRank'],
+  HR: [
+    'https://www.hackerrank.com/',
+    'HackerRank',
+    'The editorial tab should be right next to the discussions tab.',
+  ],
   Kattis: ['https://open.kattis.com/problems/', 'open.kattis.com'],
   LC: ['https://leetcode.com/problems/', 'LeetCode'],
   POI: [

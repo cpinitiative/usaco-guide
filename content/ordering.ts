@@ -107,14 +107,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Graphs',
       description:
-        'Every (?) Silver and Gold contest has at least one graph problem.',
+        'Every (?) Silver - Plat contest has at least one graph problem.',
       items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
   gold: [
     {
       name: 'Introductory Number Theory',
-      items: ['divis', 'modular'],
+      items: ['divis', 'modular', 'dp-nt'],
     },
     {
       name: 'Dynamic Programming',
@@ -131,12 +131,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['stacks', 'sliding', 'PURS', 'springboards'],
     },
     {
-      name: 'More DP',
-      items: ['dp-nt', 'dp-trees', 'all-roots'],
-    },
-    {
       name: 'Trees',
-      items: ['tree-euler'],
+      items: ['tree-euler', 'dp-trees', 'all-roots'],
     },
     {
       name: 'Hashing',
