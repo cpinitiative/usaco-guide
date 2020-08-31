@@ -111,7 +111,7 @@ export default function DailyStreak({ streak }) {
         </div>
       </div>
 
-      <div className="space-y-8">
+      <div className="grid gap-8">
         {cows.map((value, index) => {
           const need = cows.length - index;
           const photoNumber = streak - need;
