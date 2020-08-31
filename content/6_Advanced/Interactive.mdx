@@ -119,7 +119,7 @@ export const problems = {
 			''
 		),
 	],
-	communicationMonovariant: new Problem(
+	communicationCareLess: new Problem(
 		'IOI',
 		'2010 - Saveit!',
 		'https://oj.uz/problem/view/IOI10_saveit',
@@ -133,6 +133,15 @@ export const problems = {
 		'2011 - Parrots',
 		'https://oj.uz/problem/view/IOI11_parrots',
 		'Easy',
+		false,
+		[],
+		''
+	),
+	communicationXOR: new Problem(
+		'IOI',
+		'2017 - Coins',
+		'https://oj.uz/problem/view/IOI17_coins',
+		'Normal',
 		false,
 		[],
 		''
@@ -151,6 +160,15 @@ export const problems = {
 			'Balkan OI',
 			'2011 - cmp',
 			'https://oj.uz/problem/view/balkan11_cmp',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2019 - Transfer',
+			'https://oj.uz/problem/view/IOI19_transfer',
 			'Easy',
 			false,
 			[],
@@ -197,6 +215,15 @@ export const problems = {
 			'2018 - Airline',
 			'https://oj.uz/problem/view/JOI18_airline',
 			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Egyptian OI',
+			'2019 - Problemset',
+			'https://codeforces.com/group/swEqtABRxe/contest/253465/problem/C',
+			'Very Hard',
 			false,
 			[],
 			''
@@ -287,11 +314,100 @@ int findEgg(int N, vector<pair<int, int>> bridges) {
 
 ## Communication Problems
 
-### Tip 1: Find a Monovariant
+### Tip 1: Don't Send Everything
 
-<IncompleteSection />
+Don't worry about not being able to send all the available information - in most cases, you shouldn't be able to!
 
-<FocusProblem problem={problems.communicationMonovariant} />
+<FocusProblem problem={problems.communicationCareLess} />
+
+In this problem, it appears that we have to send the shortest paths from each hub to each other node.
+
+However, notice how the path $A \rightarrow C$ is never longer than the path $A \rightarrow B \rightarrow C$, so we can send $A \rightarrow B$ and $B \rightarrow C$ instead of $A \rightarrow B$ and $A \rightarrow C$ to potentially save some bits.
+
+In fact, if we continue breaking down paths this way, we can end up only having to send a single bit for each shortest path!
+
+```cpp
+#include "grader.h"
+#include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
+using namespace std;
+
+vector<int> graph[1000];
+int par[1000], dist[1000][36], state[1000];
+bool visited[1000];
+
+void e_dfs(int node = 0, int parent = 0) {
+    par[node] = parent;
+    visited[node] = true;
+    for (int i : graph[node]) if (!visited[i]) e_dfs(i, node);
+}
+
+void encode(int nv, int nh, int ne, int *v1, int *v2) {
+    FOR(i, 0, ne) {
+        graph[v1[i]].push_back(v2[i]);
+        graph[v2[i]].push_back(v1[i]);
+    }
+    e_dfs();
+    FOR(i, 0, nv) FOR(j, 0, 10) encode_bit((par[i] & (1 << j)) >> j);
+
+    FOR(hub, 0, nh) {
+        dist[hub][hub] = 1;
+        queue<int> q;
+        q.push(hub);
+        while (q.size()) {
+            int curr = q.front();
+            q.pop();
+            for (int i : graph[curr]) if (!dist[i][hub]) {
+                dist[i][hub] = dist[curr][hub] + 1;
+                q.push(i);
+            }
+        }
+
+        FOR(i, 0, nv) {
+            if (dist[i][hub] == dist[par[i]][hub]) state[i] = 0;
+            else if (dist[i][hub] > dist[par[i]][hub]) state[i] = 1;
+            else state[i] = 2;
+        }
+        for (int i = 0; i < nv; i += 5) {
+            int enc = 0;
+            FOR(j, i, min(i + 5, nv)) enc = (enc * 3 + state[j]);
+            FOR(j, 0, 8) encode_bit((enc & (1 << j)) >> j);
+        }
+    }
+}
+
+void d_dfs(int hub, int node = 0, int parent = 0) {
+    dist[node][hub] = dist[par[node]][hub] + (state[node] + 1) % 3 - 1;
+    for (int i : graph[node]) if (i != parent) d_dfs(hub, i, node);
+}
+
+void decode(int nv, int nh) {
+    FOR(i, 0, nv) {
+        FOR(j, 0, 10) par[i] += decode_bit() << j;
+        graph[par[i]].push_back(i);
+    }
+
+    FOR(hub, 0, nh) {
+        for (int i = 0; i < nv; i += 5) {
+            int enc = 0;
+            FOR(j, 0, 8) enc += decode_bit() << j;
+            for (int j = min(i + 5, nv) - 1; j >= i; j--) {
+                state[j] = enc % 3;
+                enc /= 3;
+            }
+        }
+
+        int curr = hub;
+        while (curr != par[curr]) {
+            dist[par[curr]][hub] = dist[curr][hub] - (state[curr] + 1) % 3 + 1;
+            curr = par[curr];
+        }
+        d_dfs(hub);
+
+        FOR(i, 0, nv) hops(hub, i, dist[i][hub]);
+    }
+}
+```
 
 ### Tip 2: Brute Force
 
@@ -304,6 +420,12 @@ In this case, we can simply map each piece of information we want to decode to a
 In this problem, we want to encode and decode an array of 64 integers less than 256 using an unordered sequence of 320 integers less than 256.
 
 The number of arrays of 64 integers less than 256 is slightly less than the number of increasing sequences of 320 integers less than 256, so we can just map each array to an increasing sequence (using bignums) and send that sequence.
+
+### Tipe 3: XOR
+
+XOR has a nice property where $A \oplus B \oplus A = B$. This lets us solve many problems where the data sent is corrupted or the receiver doesn't know what data the sender sent.
+
+<FocusProblem problem={problems.communicationXOR} />
 
 ### Problems
 
