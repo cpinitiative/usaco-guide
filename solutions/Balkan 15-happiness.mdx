@@ -106,11 +106,11 @@ A smarter solution is to split the elements of $M$ into the buckets $[2^i, 2^{i 
 
 Why is this convenient?
 
-Firstly, only the two least element in each bucket could potentially be bad (since $(2^k + a) + (2^k + b) \geq 2^{k + 1}$). This narrows down the number of elements we need to check significantly. (It turns out that only checking each element instead of each number less than the sum of the elements in $M$ is sufficient.)
+Firstly, only the two least elements in each bucket could potentially be bad (since $(2^k + a) + (2^k + b) \geq 2^{k + 1}$). This narrows down the number of elements we need to check significantly.
 
 Secondly, we can store the sum of the elements in each bucket and be able to find the prefix sums of buckets in $O(\log 10^{12})$ time.
 
-We can use multisets to store the elements in the buckets, so the complexity of this algorithm is also $O(KQ \log 10^{12})$, albeit with a much better constant factor.
+We can use multisets to store the elements in the buckets, so the complexity of this algorithm is $O(KQ (\log 10^{12} + \log KQ))$. In practice, this solution runs faster than the first solution.
 
 ### Code
 
