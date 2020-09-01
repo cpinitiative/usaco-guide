@@ -1,0 +1,75 @@
+---
+id: cses-1081
+title: CSES Common Divisor
+author: Andrew Wang
+---
+
+## Solution 1
+
+**Time Complexity:** $\mathcal{O}(N^2log(max(x_i)))$
+
+The naive approach would be to brute force every pair of numbers in the array and calculating the maximum GCD. Sadly, this solution TLE on half of the test cases.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int arr[200000];
+int gcd(int a, int b){
+    if(b == 0) return a;
+    return gcd(b, a%b);
+}
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n; cin >> n;
+    for(int i = 0; i < n; i++){
+        cin >> arr[i];
+    }
+    int ans = 1;
+    for(int i = 0; i < n-1; i++){
+        for(int j = i+1; j < n; j++){
+            ans = max(ans, gcd(arr[i], arr[j]));
+        }
+    }
+    cout << ans;
+    return 0;
+}
+```
+
+
+## Solution 2
+
+**Time Complexity:** $\mathcal{O}(Nsqrt(max(x_i)))$
+
+Maintain an array, $divisors[]$,  to store the count of divisors. For each value in the array, find its divisors, $u$, and increment its corresponding count, $divisors[u]$, by one. The greatest GCD shared by two elements in the array will be the greatest index in our stored count for divsors with a count greater than or equal to $2$.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int divisors[1000001]; //stores count of divisors
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n; cin >> n;
+    for(int i = 0; i < n; i++){
+        int a;cin >> a;
+        for (int j = 1; j*j <= a; j++) {
+            if(a % j == 0) {
+                divisors[j]++; 
+                if (j != a / j) divisors[a / j]++; 
+                // the divisor and quotient are both divisors of a
+            }
+        }
+    }
+    for(int i = 1000000; i >= 1; i--){
+        if(divisors[i] >= 2){
+            cout << i;
+            break;
+        }
+    }
+    return 0;
+}
+```
+
