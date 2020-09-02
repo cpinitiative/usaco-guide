@@ -34,13 +34,8 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
 
 const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
   return (
-    <div className="mb-8">
-      <div
-        className={
-          'bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col' +
-          (hiddenOnDesktop ? ' lg:hidden' : '')
-        }
-      >
+    <div className={'mb-8' + (hiddenOnDesktop ? ' lg:hidden' : '')}>
+      <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
         <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
             Day {day} Photo
