@@ -1,7 +1,7 @@
 ---
 id: mst
 title: 'Minimum Spanning Trees'
-author: Benjamin Qi
+author: Benjamin Qi, Andrew Wang
 prerequisites:
   - sp
   - dsu
@@ -48,6 +48,12 @@ export const problems = {
 	],
 };
 
+To review a couple of terms:
+- An **undirected edge** is an edge that goes both ways
+- A **connected graph** is a graph of vertices such that each vertex can reach every other vertex using undirected edges.
+- A **spanning tree** is a subgraph that's a tree which contains every vertex in the original graph
+- A **minimum spanning tree** is a spanning tree such that the sum of edge weights are minimized
+
 <!-- Prim's is recommended; Kruskal's algorithm might TLE -->
 
 <FocusProblem problem={problems.standard[0]} />
@@ -77,10 +83,13 @@ export const problems = {
 		description, example, explanation of correctness
 	</Resource> -->
 
+Kruskal's Algorithm finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using Union Find. Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $O(E \log E)$. 
+
+Although Kruskals is usually a little slower than Prim's, the implementation for it is much easier.
+
 ### Solution - Road Reparation
 
 <LanguageSection>
-
 <CPPSection>
 
 <Resources>
@@ -106,6 +115,10 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 
 </CPPSection>
 
+<JavaSection>
+	
+
+</JavaSection>
 </LanguageSection>
 
 ## Prim's
@@ -122,9 +135,115 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	</Resource>
 </Resources>
 
+Similar to Djikstra's, Prim's algorithm greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (Instead of closest to the source in Djikstra's) until all vertices have been added. 
+
+The process of finding the closest vertex to the MST can be done efficiently using a priority queue in $O(\log N)$ . After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue. 
+
+Note that Prim's algorithm has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. However, this can be improved to $O(E \log V)$ if we were to update the distances of vertices rather than re-add them. This keeps the maximum size of the priority queue bounded at $V$. 
+
+Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. Note that this complexity is preferable for dense graphs (in which $E \approx V^2$). 
+
 ### Solution - Road Reparation
 
-<IncompleteSection />
+<LanguageSection>
+
+<CPPSection>
+
+
+</CPPSection>
+
+<JavaSection>
+	
+```java
+import java.io.*; 
+import java.util.*; 
+ 
+class prim{
+   static Map<Integer, ArrayList<Edge>> tree;
+   static int N, ct;
+   static long[] dist;
+   static long max = 10000000000000000L;
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      N = Integer.parseInt(st.nextToken());
+      int M = Integer.parseInt(st.nextToken());
+      
+      tree = new HashMap<Integer, ArrayList<Edge>>();
+      for (int i = 1; i <= N; i++){
+         tree.put(i, new ArrayList<Edge>());
+      }
+      for (int m = 0; m < M; m++){
+         st = new StringTokenizer(sc.readLine());
+         int a = Integer.parseInt(st.nextToken());
+         int b = Integer.parseInt(st.nextToken());
+         int w = Integer.parseInt(st.nextToken());
+      
+         tree.get(a).add(new Edge(a,b,w));
+         tree.get(b).add(new Edge(b,a,w));
+      }
+      long ans = prim(1);
+      out.println((ct == N) ? ans : "IMPOSSIBLE");
+      out.close();
+   }
+   static long prim(int source){
+      dist = new long[N+1];
+      boolean[] visited= new boolean[N+1];
+      PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
+      Arrays.fill(dist, max);
+      dist[source] = 0;
+      long ret = 0;
+      pq.add(new Pair(0, source));
+      while(!pq.isEmpty()){
+         Pair p = pq.poll();
+         int v = p.b;
+         if(visited[v]){
+            continue;
+         }
+         visited[v] = true; ct++; ret += dist[v];
+         for(Edge e : tree.get(v)){
+            if(e.weight < dist[e.end] && !visited[e.end]){
+               dist[e.end] = e.weight;
+               pq.add(new Pair(dist[e.end], e.end));
+            }
+         }
+      }
+      return ret;
+   }
+}
+class Edge{
+   public int start, end, weight;
+   public Edge(int s, int e, int w){
+      start = s;
+      end = e;
+      weight = w;
+   }
+}
+class Pair implements Comparable<Pair>{
+   public long a;
+   public int b;
+   public Pair(long a, int b){
+      this.a = a;
+      this.b = b;
+   }
+   public int compareTo(Pair o){
+      if(this.a > o.a){
+         return 1;
+      }
+      else if(this.a == o.a){
+         return 0;
+      }
+      else{
+         return -1;
+      }
+   }
+}
+```
+</JavaSection>
+
+</LanguageSection>
 
 ## USACO Problems
 
