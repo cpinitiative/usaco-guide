@@ -83,7 +83,7 @@ To review a couple of terms:
 		description, example, explanation of correctness
 	</Resource> -->
 
-Kruskal's Algorithm finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using Union Find. Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $O(E \log E)$. 
+**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](https://usaco-guide.vercel.app/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $O(E \log E)$. 
 
 Although Kruskals is usually a little slower than Prim's, the implementation for it is much easier.
 
@@ -135,13 +135,15 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	</Resource>
 </Resources>
 
-Similar to Djikstra's, Prim's algorithm greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (Instead of closest to the source in Djikstra's) until all vertices have been added. 
+Similar to Djikstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (Instead of closest to the source in Djikstra's) until all vertices have been added. 
 
 The process of finding the closest vertex to the MST can be done efficiently using a priority queue in $O(\log N)$ . After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue. 
 
-Note that Prim's algorithm has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. However, this can be improved to $O(E \log V)$ if we were to update the distances of vertices rather than re-add them. This keeps the maximum size of the priority queue bounded at $V$. 
+### Complexity
 
-Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. Note that this complexity is preferable for dense graphs (in which $E \approx V^2$). 
+Note that **Prim's algorithm** has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. However, this can be improved to $O(E \log V)$ if we were to update the distances of vertices rather than re-add them. This keeps the maximum size of the priority-queue bounded at $V$. 
+
+Alternatively, we may linearly search for the closest vertex instead of using a priority-queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. Note that this complexity is preferable for dense graphs (in which $E \approx V^2$). 
 
 ### Solution - Road Reparation
 
@@ -154,6 +156,13 @@ Alternatively, we may linearly search for the closest vertex instead of using a 
 
 <JavaSection>
 	
+<Warning>
+
+The below implementation uses a priority-queue and has complexity $O(E \log E)$. To improve to $O(E \log V)$, use a TreeSet to update the distances rather than 
+re-adding them.
+
+</Warning>
+
 ```java
 import java.io.*; 
 import java.util.*; 
@@ -241,6 +250,7 @@ class Pair implements Comparable<Pair>{
    }
 }
 ```
+
 </JavaSection>
 
 </LanguageSection>
