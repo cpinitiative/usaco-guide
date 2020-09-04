@@ -1,6 +1,6 @@
 ---
 id: springboards
-title: 'Max Suffix Query with Insertions Only'
+title: '(Optional) Max Suffix Query with Insertions Only'
 author: Benjamin Qi
 prerequisites:
   - intro-ordered
@@ -14,6 +14,7 @@ export const problems = {
 	sample: [new Problem('Gold', 'Springboards', '995', 'Hard', false, [], '')],
 	problems: [
 		new Problem('Plat', 'Nocross', '721', 'Hard', false, [], ''),
+		new Problem('Gold', 'Rainbow Rectangles', '1396/problem/D', 'Very Hard', false, [], ''),
 		new Problem(
 			'CF',
 			'Karen & Cards',
@@ -35,7 +36,7 @@ export const problems = {
 	],
 };
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 <br />
 
@@ -44,7 +45,7 @@ To solve this problem, we need a data structure that supports operations similar
 1. Add a pair $(a,b)$.
 2. For any $x$, query the maximum value of $b$ over all pairs satisfying $a\ge x$.
 
-This can be solved with a **segment tree** (see "Point Update Range Sum"), but a simpler option is to use a map. We rely on the fact that if there exist pairs $(a,b)$ and $(c,d)$ in the map such that $a\le c$ and $b\le d$, we can simply ignore $(a,b)$ (and the answers to future queries will not be affected). So at every point in time, the pairs $(a_1,b_1),(a_2,b_2),\ldots,(a_k,b_k)$ that we store in the map will satisfy $a_1 < a_2 < \cdots < a_k$ and $b_1 > b_2 > \cdots > b_k$.
+This can be solved with a segment tree, but a simpler option is to use a map. We rely on the fact that if there exist pairs $(a,b)$ and $(c,d)$ in the map such that $a\le c$ and $b\le d$, we can simply ignore $(a,b)$ (and the answers to future queries will not be affected). So at every point in time, the pairs $(a_1,b_1),(a_2,b_2),\ldots,(a_k,b_k)$ that we store in the map will satisfy $a_1 < a_2 < \cdots < a_k$ and $b_1 > b_2 > \cdots > b_k$.
 
 - Querying for a certain $x$ can be done with a single `lower_bound` operation, as we just want the minimum $i$ such that $a_i\ge x$.
 - When adding a pair $(a',b')$, first check if there exists $(a,b)$ already in the map such that $a\ge a', b\ge b'$.
@@ -64,18 +65,20 @@ If there are $N$ insertions, then each query takes $O(\log N)$ time and adding a
 
 map<int,ll> m;
 void ins(int a, ll b) {
-  auto it = m.lb(a); if (it != end(m) && it->s >= b) return;
-  it = m.insert(it,{a,b}); it->s = b;
-  while (it != begin(m) && prev(it)->s <= b) m.erase(prev(it));
+	auto it = m.lb(a); if (it != end(m) && it->s >= b) return;
+	it = m.insert(it,{a,b}); it->s = b;
+	while (it != begin(m) && prev(it)->s <= b) m.erase(prev(it));
 }
 ll query(int x) { auto it = m.lb(x);
-  return it == end(m) ? 0 : it->s; }
+	return it == end(m) ? 0 : it->s; }
 // it = end(m) means that no pair satisfies a >= x
 ```
 
 </CPPSection>
 
 </LanguageSection>
+
+You can check the [official editorial](http://www.usaco.org/current/data/sol_boards_gold_jan20.html) for the full solution to the original problem.
 
 ## Problems
 

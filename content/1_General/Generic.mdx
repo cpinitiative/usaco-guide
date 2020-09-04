@@ -1,6 +1,6 @@
 ---
 id: generic
-title: Writing Generic Code
+title: (Optional) Writing Generic Code
 author: Aryansh Shrivastava, Benjamin Qi
 description: 'Writing code that can easily be reused or extended.'
 prerequisites:
@@ -15,9 +15,18 @@ prerequisites:
 	>
 		integrated here to enhance the USACO Guide
 	</Resource>
+	<Resource
+		source="LCPP"
+		url="https://www.learncpp.com/"
+		title="Learn C++"
+		starred
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 <LanguageSection>
+
 <CPPSection>
 
 **Generic code** is an important concept in informatics. Of course, as all concepts go, you may dodge generic code and continue to write in a hyper-specific style. As such, begin by questioning purpose.
@@ -35,6 +44,12 @@ Generic code can easily assist **black-boxing**, where you write a snippet of co
 </Warning>
 
 Modern C++, a groundbreaking language in the current informatics scene, indeed has several builtin features to support and streamline generic code. Here, we will cover the basic important ones you will definitely want to add to your coding arsenal.
+
+<Warning>
+
+Although you are **not** allowed to use pre-written code for USACO contests, the conventions covered in this module still apply when typing up a template from scratch.
+
+</Warning>
 
 ## Classes
 
@@ -105,8 +120,8 @@ This gives us something to work with, and we can now create `Sal` in `main()` as
 ```cpp
 int main() {
     human Sal;
-    cout << Sal.name() <<  " feels " << Sal.feeling() << " and is " << Sal.emotion()
-    << "\n";
+    cout << Sal.name() <<  " feels " << Sal.feeling()
+     << " and is " << Sal.emotion() << "\n";
 }
 ```
 
@@ -143,8 +158,8 @@ class human {
 
 int main() {
     human Sal("Sal", 98, 25);
-    cout << Sal.id() << " feels " << Sal.feeling() << " and is " << Sal.emotion()
-    << "\n";
+    cout << Sal.id() << " feels " << Sal.feeling() << " and is "
+     << Sal.emotion()  << "\n";
 }
 ```
 
@@ -213,14 +228,14 @@ Needless to say, all of this enables very clean initialization and manipulation 
 
 <Resources>
 	<Resource
-		source="LearnCPP"
+		source="LCPP"
 		title="13.1 - Function Templates"
 		url="https://www.learncpp.com/cpp-tutorial/131-function-templates/"
 	>
 		{' '}
 	</Resource>
 	<Resource
-		source="LearnCPP"
+		source="LCPP"
 		title="13.3 - Template Classes"
 		url="https://www.learncpp.com/cpp-tutorial/133-template-classes/"
 	>
@@ -296,22 +311,18 @@ As a fun fact, just as templates give us so much control over the generality of 
 
 <Resources>
 	<Resource
-		source="LearnCPP"
+		source="LCPP"
 		title="6.13 - Typedefs and type aliases"
 		url="https://www.learncpp.com/cpp-tutorial/typedefs-and-type-aliases/"
 		starred
-	>
-		{' '}
-	</Resource>
+	></Resource>
 	<Resource
 		source="Quora"
 		title="Difference between 'typedef' and 'using' in C++?"
 		url="https://www.quora.com/What-is-the-difference-between-typedef-and-using-in-C++"
-	>
-		{' '}
-	</Resource>
+	></Resource>
 	<Resource
-		source="CPP"
+		source="CPPR"
 		title="Type Alias"
 		url="https://en.cppreference.com/w/cpp/language/type_alias"
 	>
@@ -412,18 +423,23 @@ We end this section off with `#define`, which is used to define **macros**.
 		simple examples of macros, describes a common bug
 	</Resource>
 	<Resource
-		source="GNU"
+		source="GCC"
 		url="https://gcc.gnu.org/onlinedocs/cpp/Macros.html"
-		title="GCC Online Docs - Macros"
+		title="Online Docs - Macros"
 	>
 		reference
 	</Resource>
 	<Resource source="GFG" url="cc-preprocessors" title="Macros"></Resource>
+	<Resource
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/"
+		title="2.10 - Intro to the Preprocessor"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
-Nevertheless, macros are important to many in the informatics community to simplify notations in the standard.
-
-In principle, good code should not need this \(because `using` exists\), but `#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.
+`#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.
 
 ```cpp
 #define MOD 1e9 + 7
@@ -443,7 +459,57 @@ int main() {
 }
 ```
 
-The takeaway is to use `using` and templates and avoid `#define`. If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control.
+<Resources>
+	<Resource
+		source="LCPP"
+		title="4.13 - Const, constexpr, symbolic constants"
+		url="https://www.learncpp.com/cpp-tutorial/const-constexpr-and-symbolic-constants/"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+The takeaway is to avoid `#define` when possible. If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control.
+
+Of course, some competitive programmers use macros extensively. Some examples are presented below.
+
+### Pairs
+
+```cpp
+typedef pair<int,int> pi;
+#define mp make_pair
+#define f first
+#define s second
+```
+
+Pretty annoying to keep typing `first` and `second` (especially if you have nested pairs ...)
+
+### Vectors
+
+```cpp
+typedef vector<int> vi;
+#define sz(x) (int)x.size()
+#define all(x) begin(x), end(x)
+```
+
+It's generally a good idea to convert a size to a signed integer before doing anything with it to avoid cases like the following.
+
+```cpp
+vi x;
+cout << x.size()-1 << "\n"; // 18446744073709551615
+cout << sz(x)-1 << "\n"; // -1
+```
+
+`all(v)` makes sorting part or all of a vector a bit shorter.
+
+```cpp
+vi v{2,4,1,5,3};
+sort(1+all(v)); // {2,1,3,4,5}
+// this expands to sort(1+begin(v), end(v));
+sort(all(v)); // {1,2,3,4,5}
+```
+
+Note how `1+all(v)` expands to `1+begin(v), end(v)`.
 
 ## Preprocessing Logic
 

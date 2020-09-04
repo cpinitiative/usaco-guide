@@ -3,22 +3,22 @@ import * as React from 'react';
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
     <div className="relative">
-      <div className="overflow-hidden h-4 text-xs flex bg-gray-200">
+      <div className="overflow-hidden h-4 text-xs flex bg-gray-200 dark:bg-gray-700">
         <div
           style={{ width: `${green}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500 dark:bg-green-800"
         />
         <div
           style={{ width: `${yellow}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300"
+          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300 dark:bg-yellow-800"
         />
         <div
           style={{ width: `${blue}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 dark:bg-blue-800"
         />
       </div>
       <div className="text-right">
-        <span className="text-sm font-semibold inline-block text-gray-800">
+        <span className="text-sm font-semibold inline-block text-gray-800 dark:text-dark-med-emphasis">
           {text}
         </span>
       </div>
@@ -52,26 +52,26 @@ export default function DashboardProgress({
         <FancyNumber
           number={completed}
           text="Completed"
-          textColor="text-green-800"
-          bgColor="bg-green-100"
+          textColor="text-green-800 dark:text-green-100"
+          bgColor="bg-green-100 dark:bg-green-800"
         />
         <FancyNumber
           number={inProgress}
           text="In Progress"
-          textColor="text-yellow-800"
-          bgColor="bg-yellow-100"
+          textColor="text-yellow-800 dark:text-yellow-100"
+          bgColor="bg-yellow-100 dark:bg-yellow-800"
         />
         <FancyNumber
           number={skipped}
           text="Skipped"
-          textColor="text-blue-800"
-          bgColor="bg-blue-50"
+          textColor="text-blue-800 dark:text-blue-50"
+          bgColor="bg-blue-50 dark:bg-blue-800"
         />
         <FancyNumber
           number={notStarted}
           text="Not Started"
-          textColor="text-gray-800"
-          bgColor="bg-gray-100"
+          textColor="text-gray-800 dark:text-gray-100"
+          bgColor="bg-gray-100 dark:bg-gray-700"
         />
       </div>
       <ProgressBar
@@ -81,5 +81,52 @@ export default function DashboardProgress({
         text={`${total} total`}
       />
     </div>
+  );
+}
+
+const ProgressBarSmall = ({ text, green, yellow, blue }) => {
+  return (
+    <div>
+      <div className="inline-block">
+        <div className="overflow-hidden h-2 text-xs flex items-center bg-gray-200 rounded-full w-24 dark:bg-gray-700">
+          <div
+            style={{ width: `${green}%` }}
+            className="h-2 bg-green-500 dark:bg-green-800"
+          />
+          <div
+            style={{ width: `${yellow}%` }}
+            className="h-2 bg-yellow-300 dark:bg-yellow-800"
+          />
+          <div
+            style={{ width: `${blue}%` }}
+            className="h-2 bg-blue-500 dark:bg-blue-800"
+          />
+        </div>
+      </div>
+      <div className="inline-block ml-1">
+        {text && (
+          <span className="text-sm font-semibold text-gray-800 dark:text-dark-med-emphasis">
+            &nbsp;{text}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export function DashboardProgressSmall({
+  completed,
+  inProgress,
+  skipped,
+  notStarted,
+  total,
+}) {
+  return (
+    <ProgressBarSmall
+      text={completed + '/' + total}
+      green={(completed / total) * 100}
+      yellow={(inProgress / total) * 100}
+      blue={(skipped / total) * 100}
+    />
   );
 }

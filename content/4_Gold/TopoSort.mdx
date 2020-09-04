@@ -1,7 +1,7 @@
 ---
 id: toposort
 title: 'Topological Sort'
-author: Benjamin Qi, Michael Cao, Nathan Chen
+author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu
 prerequisites:
   - bfs
   - intro-dp
@@ -13,6 +13,7 @@ import { Problem } from '../models';
 
 export const problems = {
 	sample: [new Problem('CSES', 'Course Schedule', '1679', 'Easy', false, [])],
+	dir: [new Problem('CSES', 'Round Trip II', '1678', 'Easy', false, ['Cycle'])],
 	dp: [new Problem('CSES', 'Longest Flight Route', '1680', 'Easy', false, [])],
 	general: [
 		new Problem(
@@ -20,18 +21,18 @@ export const problems = {
 			'Game Routes',
 			'1681',
 			'Easy',
-			false,
-			[],
-			'counting paths on DAG'
+			true,
+			['TopoSort'],
+			'cses-1681'
 		),
 		new Problem(
 			'Kattis',
-			'Quantum',
-			'https://open.kattis.com/contests/acpc17open/problems/quantumsuperposition',
+			'Quantum Superposition',
+			'quantumsuperposition',
 			'Easy',
-			false,
-			[],
-			'enumerating paths on DAG'
+			true,
+			['TopoSort'],
+			'kattis-quantum'
 		),
 		new Problem(
 			'Gold',
@@ -62,11 +63,11 @@ To review, a **directed** graph consists of edges that can only be traversed in 
 
 ## Topological Sort
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering.
 
-## Tutorial
+There are two common ways to topologically sort, one involving DFS and the other involving BFS.
 
 <Resources>
 	<Resource
@@ -75,33 +76,144 @@ A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a dir
 		url="topological_sorting"
 		starred
 	>
-		The algorithms to find a topological sort are based on BFS and DFS.
-	</Resource>
-	<Resource source="CP2" title="4.2.5 - Topological Sort">
-		{' '}
+		interactive, both versions
 	</Resource>
 </Resources>
 
-### DFS
+## DFS
 
 <Resources>
-	<Resource source="CPH" title="16.1, 16.2 - Topological Sorting">
-		DFS
+	<Resource source="CPH" title="16.1 - Topological Sort">
+		example walkthrough
+	</Resource>
+	<Resource source="CP2" title="4.2.5 - Topological Sort">
+		code
 	</Resource>
 	<Resource
 		source="cp-algo"
 		title="Topological Sort"
 		url="graph/topological-sort.html"
 	>
-		DFS
+		code
 	</Resource>
 </Resources>
 
-(implementation)
+<LanguageSection>
 
-<IncompleteSection />
+<CPPSection>
 
-### BFS
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define pb push_back
+
+int N; // Number of nodes
+vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
+bool visited[100000];
+
+void dfs(int node) {
+	for (int i : graph[node]) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	top_sort.pb(node);
+}
+
+void compute() {
+	for (int i = 0; i < N; i++) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	reverse(begin(top_sort),end(top_sort));
+	// The vector `top_sort` is now topologically sorted
+}
+
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b; cin >> a >> b;
+		graph[a-1].pb(b-1);
+	}
+	compute();
+	vector<int> ind(N);
+	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
+	for (int i = 0; i < N; i++) for (int j: graph[i]) if (ind[j] <= ind[i]) {
+		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
+		exit(0);
+	}
+	for (int i: top_sort) cout << i+1 << " ";
+	cout << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Finding a Cycle
+
+<FocusProblem problem={problems.dir[0]} />
+
+We can modify the algorithm above to return a directed cycle in case a topological sort does not exist.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+//UNTESTED
+
+bool visited[MAXN], on_stack[MAXN];
+vector<int> adj[MAXN];
+vector<int> cycle;
+bool dfs(int n)
+{
+	visited[n] = on_stack[n] = true;
+	for(int u:adj[n])
+	{
+		if(on_stack[u])
+			return cycle.push_back(v), cycle.push_back(u), on_stack[n] = on_stack[u] = false, true;
+		else if(!visited[u])
+		{
+			if(dfs(u))
+				if(on_stack[n])
+					return cycle.push_back(n), on_stack[n] = false, true;
+				else
+					return false;
+			if(!cycle.empty())
+				return false;
+		}
+	}
+	on_stack[n] = false;
+	return false;
+}
+int main()
+{
+	//take input, etc
+	for(int i = 1;cycle.empty() && i <= N;i++)
+		dfs(i);
+	if(cycle.empty())
+		printf("No cycle found!\n");
+	else
+	{
+		reverse(cycle.begin(), cycle.end());
+		printf("Cycle of length %u found!\n", cycle.size());
+		for(int n : cycle) printf("%d ", n);
+		printf("\n");
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## BFS
 
 The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
 
@@ -117,22 +229,22 @@ int N; //number of nodes
 
 void compute() {
 	queue<int> q;
-	for(int i = 0; i < N; i++) {
-		if(in_degree[i] == 0) {
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) {
 			q.push(i);
 		}
 	}
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
 
-		for(int next : edge[node]) {
+		for (int next : edge[node]) {
 			in_degree[next]--;
 			if(in_degree[next] == 0) q.push(next);
 		}
 
-		//[put problem-specific processing here]
+		// Put problem-specific processing here
 	}
 
 }
@@ -150,21 +262,21 @@ void compute() {
 
 	static void topological_sort() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
-		for(int i = 0; i < N; i++) {
-			if(in_degree[i] == 0) {
+		for (int i = 0; i < N; i++) {
+			if (in_degree[i] == 0) {
 				q.add(i);
 			}
 		}
 
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			int node = q.poll();
 
-			for(int next : edge[node]) {
+			for (int next : edge[node]) {
 				in_degree[next]--;
 				if(in_degree[next] == 0) q.add(next);
 			}
 
-			//[put problem-specific processing here]
+			// Put problem-specific processing here
 		}
 	}
 ```
@@ -173,19 +285,19 @@ void compute() {
 
 </LanguageSection>
 
-<IncompleteSection />
-
 ## Dynamic Programming
 
 <Resources>
-	<Resource source="PAPS" title="9.1">
-		Best Path in a DAG
-	</Resource>
+	<Resource source="CPH" title="16.2 - Dynamic Programming" starred></Resource>
 </Resources>
+
+<!-- 	<Resource source="PAPS" title="9.2 - Dynamic Programming">
+		Best Path in a DAG
+	</Resource> -->
 
 One useful property of directed acyclic graphs is, as the name suggests, that no cycles exist. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
 
-<Problems problems={problems.dp} />
+<FocusProblem problem={problems.dp[0]} />
 
 In this task, we must find the longest path in a DAG.
 

@@ -1,9 +1,9 @@
 ---
 id: complete-rec
 title: 'Complete Search with Recursion'
-author: Darren Yao, Sam Zhang, Michael Cao, Allen Li
+author: Darren Yao, Sam Zhang, Michael Cao
 description: 'Includes generating subsets and permutations.'
-frequency: 2
+frequency: 1
 prerequisites:
   - intro-complete
 ---
@@ -16,7 +16,7 @@ export const problems = {
 			'CSES',
 			'Apple Division',
 			'1623',
-			'Very Easy',
+			'Easy',
 			false,
 			['Recursion', 'Subsets'],
 			'@B'
@@ -62,13 +62,19 @@ export const problems = {
 			'Livestock Lineup',
 			'965',
 			'Hard',
-			false,
+			true,
 			['permutations'],
 			''
 		), // 91.95
 		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 };
+
+<Warning>
+
+Although knowledge of recursion is not strictly necessary for Bronze, we think that it makes more sense to include this module as part of Bronze rather than Silver.
+
+</Warning>
 
 ## Subsets
 
@@ -78,7 +84,7 @@ export const problems = {
 
 <Resources>
 	<Resource source="CPH" title="5.1 - Generating Subsets" starred>
-		Read this!! good explanation + code, no need to repeat
+		good explanation + code, no need to repeat
 	</Resource>
 </Resources>
 
@@ -152,105 +158,105 @@ public class Main {
     static int weights[];
 
     public static void main(String[] args) throws Exception {
-    	FastIO sc = new FastIO(System.in);	//See "Intro - FastIO" - this class acts similarly to Scanner, but faster
-    	PrintWriter pw = new PrintWriter(System.out);
+        FastIO sc = new FastIO(System.in);  //See "Intro - FastIO" - this class acts similarly to Scanner, but faster
+        PrintWriter pw = new PrintWriter(System.out);
 
-    	N = sc.nextInt();
-    	weights = new int[N];
-    	for(int i = 0; i < N; i++) {
-    		weights[i] = sc.nextInt();
-    	}
+        N = sc.nextInt();
+        weights = new int[N];
+        for(int i = 0; i < N; i++) {
+            weights[i] = sc.nextInt();
+        }
 
-    	pw.println(solve(0, 0, 0));
-    	pw.close();
+        pw.println(solve(0, 0, 0));
+        pw.close();
     }
 
     static long solve(int index, long s1_sum, long s2_sum) {
-    	if(index == N) {
-    		return Math.abs(s1_sum - s2_sum);
-    	}
+        if(index == N) {
+            return Math.abs(s1_sum - s2_sum);
+        }
 
-    	return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+        return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
     }
 
     //see "Intro - FastIO"
     //this class acts similarly to Scanner, but faster
     static class FastIO {
 
-    	InputStream dis;
-    	byte[] buffer = new byte[1 << 17];
-    	int pointer = 0;
+        InputStream dis;
+        byte[] buffer = new byte[1 << 17];
+        int pointer = 0;
 
-    	public FastIO(String fileName) throws Exception {
-    		dis = new FileInputStream(fileName);
-    	}
+        public FastIO(String fileName) throws Exception {
+            dis = new FileInputStream(fileName);
+        }
 
-    	public FastIO(InputStream is) throws Exception {
-    		dis = is;
-    	}
+        public FastIO(InputStream is) throws Exception {
+            dis = is;
+        }
 
-    	int nextInt() throws Exception {
-    		int ret = 0;
+        int nextInt() throws Exception {
+            int ret = 0;
 
-    		byte b;
-    		do {
-    			b = nextByte();
-    		} while (b <= ' ');
-    		boolean negative = false;
-    		if (b == '-') {
-    			negative = true;
-    			b = nextByte();
-    		}
-    		while (b >= '0' && b <= '9') {
-    			ret = 10 * ret + b - '0';
-    			b = nextByte();
-    		}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
 
-    		return (negative) ? -ret : ret;
-    	}
+            return (negative) ? -ret : ret;
+        }
 
-    	long nextLong() throws Exception {
-    		long ret = 0;
+        long nextLong() throws Exception {
+            long ret = 0;
 
-    		byte b;
-    		do {
-    			b = nextByte();
-    		} while (b <= ' ');
-    		boolean negative = false;
-    		if (b == '-') {
-    			negative = true;
-    			b = nextByte();
-    		}
-    		while (b >= '0' && b <= '9') {
-    			ret = 10 * ret + b - '0';
-    			b = nextByte();
-    		}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
 
-    		return (negative) ? -ret : ret;
-    	}
+            return (negative) ? -ret : ret;
+        }
 
-    	byte nextByte() throws Exception {
-    		if (pointer == buffer.length) {
-    			dis.read(buffer, 0, buffer.length);
-    			pointer = 0;
-    		}
-    		return buffer[pointer++];
-    	}
+        byte nextByte() throws Exception {
+            if (pointer == buffer.length) {
+                dis.read(buffer, 0, buffer.length);
+                pointer = 0;
+            }
+            return buffer[pointer++];
+        }
 
-    	String next() throws Exception {
-    		StringBuffer ret = new StringBuffer();
+        String next() throws Exception {
+            StringBuffer ret = new StringBuffer();
 
-    		byte b;
-    		do {
-    			b = nextByte();
-    		} while (b <= ' ');
-    		while (b > ' ') {
-    			ret.appendCodePoint(b);
-    			b = nextByte();
-    		}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            while (b > ' ') {
+                ret.appendCodePoint(b);
+                b = nextByte();
+            }
 
-    		return ret.toString();
-    	}
+            return ret.toString();
+        }
 
     }
 
@@ -259,32 +265,6 @@ public class Main {
 ```
 
 </JavaSection>
-
-<PySection>
-
-<Warning>
-
-Avoid recursion if you can with python. Not only is it slow, but python also has a shallow max stack size, which can be problematic if you are not careful!
-
-</Warning>
-
-```py
-def solve(i, s1, s2):
-    global n, weights
-    if i == n:
-        return abs(s1 - s2)
-    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]))
-
-def main():
-    global n, weights
-    n = int(input())
-    weights = [int(x) for x in input().split()]
-
-if __name__ == "__main__":
-    main()
-```
-
-</PySection>
 
 </LanguageSection>
 
@@ -358,143 +338,122 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
-		PrintWriter pw = new PrintWriter(System.out);
+    public static void main(String[] args) throws Exception {
+        FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
+        PrintWriter pw = new PrintWriter(System.out);
 
-		int N = sc.nextInt();
-		int weights[] = new int[N];
-		for(int i = 0; i < N; i++) {
-			weights[i] = sc.nextInt();
-		}
+        int N = sc.nextInt();
+        int weights[] = new int[N];
+        for(int i = 0; i < N; i++) {
+            weights[i] = sc.nextInt();
+        }
 
-		long ans = Long.MAX_VALUE;
+        long ans = Long.MAX_VALUE;
 
-		for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
-			long s1 = 0;
-			long s2 = 0;
+        for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
+            long s1 = 0;
+            long s2 = 0;
 
-			for(int i = 0; i < N; i++) {
-				if((bitmask & (1 << i)) > 0) {
-					s1 += weights[i];
-				} else {
-					s2 += weights[i];
-				}
-			}
-			ans = Math.min(ans, Math.abs(s1-s2));
-		}
+            for(int i = 0; i < N; i++) {
+                if((bitmask & (1 << i)) > 0) {
+                    s1 += weights[i];
+                } else {
+                    s2 += weights[i];
+                }
+            }
+            ans = Math.min(ans, Math.abs(s1-s2));
+        }
 
-		pw.println(ans);
-		pw.close();
-	}
+        pw.println(ans);
+        pw.close();
+    }
 
 
-	//See Intro - FastIO
-	//this class acts similarly to Scanner
-	static class FastIO {
+    //See Intro - FastIO
+    //this class acts similarly to Scanner
+    static class FastIO {
 
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
+        InputStream dis;
+        byte[] buffer = new byte[1 << 17];
+        int pointer = 0;
 
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
+        public FastIO(String fileName) throws Exception {
+            dis = new FileInputStream(fileName);
+        }
 
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
+        public FastIO(InputStream is) throws Exception {
+            dis = is;
+        }
 
-		int nextInt() throws Exception {
-			int ret = 0;
+        int nextInt() throws Exception {
+            int ret = 0;
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
 
-			return (negative) ? -ret : ret;
-		}
+            return (negative) ? -ret : ret;
+        }
 
-		long nextLong() throws Exception {
-			long ret = 0;
+        long nextLong() throws Exception {
+            long ret = 0;
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            boolean negative = false;
+            if (b == '-') {
+                negative = true;
+                b = nextByte();
+            }
+            while (b >= '0' && b <= '9') {
+                ret = 10 * ret + b - '0';
+                b = nextByte();
+            }
 
-			return (negative) ? -ret : ret;
-		}
+            return (negative) ? -ret : ret;
+        }
 
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
+        byte nextByte() throws Exception {
+            if (pointer == buffer.length) {
+                dis.read(buffer, 0, buffer.length);
+                pointer = 0;
+            }
+            return buffer[pointer++];
+        }
 
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
+        String next() throws Exception {
+            StringBuffer ret = new StringBuffer();
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
+            byte b;
+            do {
+                b = nextByte();
+            } while (b <= ' ');
+            while (b > ' ') {
+                ret.appendCodePoint(b);
+                b = nextByte();
+            }
 
-			return ret.toString();
-		}
+            return ret.toString();
+        }
 
-	}
+    }
 }
 
 ```
 
 </JavaSection>
-
-<PySection>
-
-```py
-n = int(input())
-weights = [int(x) for x in input().split()]
-ans = int(1e18)
-
-for mask in range(1 << n):
-    s1 = 0; s2 = 0
-    for j in range(n):
-        if mask & (1 << j):
-            s1 += weights[j]
-        else:
-            s2 += weights[j]
-    ans = min(ans, abs(s1 - s2))
-
-print(ans)
-```
-
-</PySection>
 
 </LanguageSection>
 
@@ -508,7 +467,7 @@ A **permutation** is a reordering of a list of elements.
 
 This term is mentioned quite frequently:
 
-<FocusProblem problem={problems.ex[0]} />
+<Problems problems={problems.ex} />
 
 Think about how are words ordered in a dictionary. (In fact, this is where the term "lexicographical" comes from.)
 
@@ -561,7 +520,7 @@ What's going to be in the `check` function depends on the problem, but it should
 
 ```cpp
 do {
-	check(v); // process or check the current permutation for validity
+    check(v); // process or check the current permutation for validity
 } while(next_permutation(v.begin(), v.end()));
 ```
 
@@ -579,23 +538,6 @@ Each call to `next_permutation` makes a constant number of swaps on average if w
 
 </JavaSection>
 
-<PySection>
-
-### About `itertools.permutation`
-
-<Resources>
-	<Resource
-		source="Geeksforgeeks"
-		title="Itertools Permutation"
-		url="https://www.geeksforgeeks.org/python-itertools-permutations"
-		starred
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-</PySection>
-
 </LanguageSection>
 
 ### Solution - Creating Strings I
@@ -606,13 +548,13 @@ Each call to `next_permutation` makes a constant number of swaps on average if w
 
 </Spoiler>
 
-<Spoiler title="Method 2 - With Built-in Methods">
+<Spoiler title="Method 2 - With next_permutation">
+
+One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
 
 <LanguageSection>
 
 <CPPSection>
-
-One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -652,22 +594,6 @@ int main() {
 
 </CPPSection>
 
-<PySection>
-
-```py
-from itertools import permutations
-
-s = input()
-p = permutations(s)
-
-for j in p:
-    for c in j:
-        print(c, end = "")
-    print()
-```
-
-</PySection>
-
 </LanguageSection>
 
 </Spoiler>
@@ -688,6 +614,9 @@ for j in p:
 
 <IncompleteSection />
 
+#### Method 2
+
+</CPPSection>
 
 <JavaSection>
 
@@ -695,27 +624,27 @@ for j in p:
 import java.util.*;
 
 public class Test {
-	static boolean[] used;
-	static ArrayList<Integer> cur = new ArrayList<Integer>();
-	static int n;
-	static void gen() {
-		if (cur.size() == n) {
-			check(cur); // check current permutation for validity, or print it, etc.
-			return;
-		}
-		for (int i = 0; i < n; ++i) if (!used[i]) {
-			used[i] = true; cur.add(i+1);
-			gen();
-			used[i] = false; cur.remove(cur.size()-1);
-		}
-	}
-	static void genPerm(int _n) {
-		n = _n; used = new boolean[n];
-		gen();
-	}
-	public static void main(String[] Args) {
-		genPerm(5);
-	}
+    static boolean[] used;
+    static ArrayList<Integer> cur = new ArrayList<Integer>();
+    static int n;
+    static void gen() {
+        if (cur.size() == n) {
+            check(cur); // check current permutation for validity, or print it, etc.
+            return;
+        }
+        for (int i = 0; i < n; ++i) if (!used[i]) {
+            used[i] = true; cur.add(i+1);
+            gen();
+            used[i] = false; cur.remove(cur.size()-1);
+        }
+    }
+    static void genPerm(int _n) {
+        n = _n; used = new boolean[n];
+        gen();
+    }
+    public static void main(String[] Args) {
+        genPerm(5);
+    }
 }
 ```
 
@@ -727,7 +656,7 @@ public class Test {
 
 ## Backtracking
 
-<Problems problems={problems.back} />
+<FocusProblem problem={problems.back[0]} />
 
 ### Resources
 

@@ -3,8 +3,8 @@ id: fracture
 title: 'Fracturing Search'
 author: Benjamin Qi
 prerequisites:
-  - Gold - Minimum Spanning Tree
-  - some familiarity with "Robotic Cow Herd" solution
+  - mst
+  - some familiarity with "Robotic Cow Herd" analysis
 description: A simple solution to "Robotic Cow Herd" that generalizes.
 frequency: 1
 ---
@@ -167,7 +167,7 @@ int main() {
 
 ## Robotic Cow Herd
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 As with the analysis, for each location you should
 
@@ -180,8 +180,6 @@ Importantly, we should then sort the locations by their respective second-minimu
 ### Approach 1
 
 Binary search on the cost $c$ of the $K$-th robot. If we can compute the costs of all robots with cost at most $c$ or say that there are more than $K$ in $O(K)$ time, then we can solve this problem in $O(N\log N+K\log \max(c))$ time (similar to "Approach 2" above). This is the approach that the first analysis solution takes, although it includes an extra $\log N$ factor due to `upper_bound`. I have removed this in my solution below.
-
-<Spoiler title="My Solution 1">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -203,7 +201,8 @@ ll mx; ll res; int num;
 void dfs(int pos, ll cur, int id) {
 	if (cur > mx || num == K) return;
 	res += cur; num ++;
-	if (id+1 < v[pos].size()) dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
+	if (id+1 < v[pos].size()) 
+		dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
 	for (int i = pos+1; i < v.size(); ++i) {
 		ll CUR = cur+v[i][1];
 		if (num == K || CUR > mx) break;
@@ -240,8 +239,6 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 ### Approach 2
 
 There's also an $O(N\log N+K\log K)$ time solution with a priority queue that constructs the robots in increasing order of cost. As before, we want each robot to have a bounded number of "child" robots. However, if you look at my DFS function above, it seems that every robot can have up to $N$ children! Nevertheless, the DFS takes $O(K)$ rather than $O(KN)$ time due to the break statement, which works since we sorted by second-cheapest robot.
@@ -252,7 +249,8 @@ In fact, we can modify the DFS function so that every robot has at most three ra
 void dfs(int pos, ll cur, int id) {
 	if (cur > mx || num == K) return;
 	res += cur; num ++;
-	if (id+1 < v[pos].size()) dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
+	if (id+1 < v[pos].size()) 
+		dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
 	if (pos+1 < v.size()) {
 		if (id == 1) dfs(pos+1,cur-v[pos][1]+v[pos+1][1],1);
 		if (id) dfs(pos+1,cur+v[pos+1][1],1);
@@ -274,9 +272,7 @@ None of these options can result in a robot of lower cost. In general, suppose t
 - If $j=2$, select the $1$-st cheapest controller for the $i$-th location instead and also select the $2$-nd cheapest controller for the $i+1$-st.
 - Keep the $j$-th cheapest controller for the $i$-th location and also select the $2$-nd cheapest controller for the $i+1$-st.
 
-Since there exists exactly one way to get from the cheapest robot to every possible robot, we can just use a priority queue.
-
-<Spoiler title="My Solution 2">
+Since there exists exactly one way to get from the cheapest robot to every possible robot, we can use a priority queue.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -323,8 +319,6 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-
-</Spoiler>
 
 ## Other Problems
 

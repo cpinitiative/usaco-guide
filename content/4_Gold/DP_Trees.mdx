@@ -1,9 +1,10 @@
 ---
 id: dp-trees
-title: 'Introduction to Dynamic Programming on Trees'
-author: Michael Cao
+title: 'DP on Trees - Introduction'
+author: Michael Cao, Benjamin Qi
 prerequisites:
-  - dfs
+  - intro-tree
+  - func-graphs
   - intro-dp
 description: 'Using subtrees as subproblems.'
 frequency: 2
@@ -13,18 +14,7 @@ import { Problem } from '../models';
 
 export const problems = {
 	sample: [
-		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], ''),
-	],
-	allRoots: [
-		new Problem(
-			'AC',
-			'Subtree',
-			'https://atcoder.jp/contests/dp/tasks/dp_v',
-			'Normal',
-			false,
-			[],
-			''
-		),
+		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], '@B'),
 	],
 	usaco: [
 		new Problem(
@@ -32,9 +22,9 @@ export const problems = {
 			'Independent Set',
 			'https://atcoder.jp/contests/dp/tasks/dp_p',
 			'Easy',
-			false,
-			[],
-			''
+			true,
+			['Tree', 'DFS', 'DP'],
+			'AC-IndpendentSet'	
 		),
 		new Problem(
 			'Gold',
@@ -45,7 +35,6 @@ export const problems = {
 			['DP'],
 			'similar to independent set on tree'
 		),
-		new Problem('Gold', 'Directory Traversal', '814', 'Normal', false, [], ''),
 		new Problem(
 			'CF',
 			'Baltic OI - Village (Minimum)',
@@ -55,7 +44,71 @@ export const problems = {
 			[],
 			''
 		),
+		new Problem(
+			'POI',
+			'Hotels',
+			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+			'Normal',
+			false,
+			['Tree', 'DFS', 'DP']
+		),
+		new Problem(
+			'POI',
+			'Sabotage',
+			'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+			'Normal',
+			false,
+			['Binary-Search'],
+			''
+		),
+		new Problem(
+			'POI',
+			'Parade',
+			'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Infoarena',
+			'Countfefete',
+			'https://www.infoarena.ro/problema/countfefete',
+			'Hard',
+			false,
+			[],
+			''
+		),
 		new Problem('Gold', 'Delegation', '1019', 'Hard', false, ['Greedy'], ''),
+		new Problem(
+			'POI',
+			'Spies',
+			'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
+			'Hard',
+			false,
+			['Func Graph'],
+			'poi-spies'
+		),
+		new Problem(
+			'POI',
+			'Mafia',
+			'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
+			'Hard',
+			false,
+			['Func Graph'],
+			'poi-mafia'
+		),
+	],
+	insane: [
+		new Problem(
+			'CF',
+			'Boboniu and Jianghu',
+			'1394/problem/D',
+			'Very Hard',
+			false,
+			['DP'],
+			''
+		),
 		new Problem(
 			'Plat',
 			'Delegation',
@@ -66,13 +119,22 @@ export const problems = {
 			''
 		),
 		new Problem(
-			'Plat',
-			'Cow At Large',
-			'793',
-			'Insane',
+			'COI',
+			'2016 - Torrent',
+			'https://oj.uz/problem/view/COI16_torrent',
+			'Very Hard',
 			false,
 			[],
-			'usaco-793'
+			''
+		),
+		new Problem(
+			'IOI',
+			'2007 - Training',
+			'https://oj.uz/problem/view/IOI07_training',
+			'Insane',
+			true,
+			[],
+			''
 		),
 		new Problem(
 			'CSES',
@@ -83,96 +145,142 @@ export const problems = {
 			['Greedy'],
 			'equivalent to Baltic OI - Cat in a Tree. Exists a greedy-ish strategy!'
 		),
+		new Problem(
+			'Baltic OI',
+			'2016 - Swap',
+			'https://oj.uz/problem/view/BOI16_swap',
+			'Insane',
+			false,
+			[],
+			''
+		),
 	],
 };
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 ## Tutorial
 
 <Resources>
-	<Resource source="CF" title="DP on Trees" url="20935">
-		{' '}
-	</Resource>
+	<Resource source="CF" title="DP on Trees" url="20935"></Resource>
 	<Resource
 		source="Philippines"
 		title="DP on Trees and DAGs"
 		url="https://noi.ph/training/weekly/week5.pdf"
 	>
-		lol this code format is terrible{' '}
+		bad code format
 	</Resource>
 </Resources>
 
+<Info title="Pro Tip">
+
+Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices in place of DP.
+
+</Info>
+
 ## Solution - Tree Matching
 
-<IncompleteSection />
+### Solution 1
 
-## Solving for All Roots
+In this problem, we're asked to find the maximum matching of a tree, or the largest set of edges such that no two edges share an endpoint. Let's use DP on trees to do this.
 
-<Problems problems={problems.allRoots} />
+Root the tree at node $1$, allowing us to define the subtree of each node.
 
-(dfs twice)
+Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we don't take any edges leading to some child of $v$. Similarly, let $dp_1[v]$ represent the maximum matching of the subtree of $v$ such that we take one edge leading into a child of $v$. Note that we can't take more than one edge leading to a child, because then two edges would share an endpoint.
 
-<Spoiler title="Solution">
+#### Taking No Edges
+
+Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
+
+$$
+dp_2[v] = \sum_{u \in child(v)} max(dp_1[u], dp_2[u])
+$$
+
+#### Taking One Edge
+
+The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1[v]$ for the fixed $u$:
+
+$$
+dp_1[v] = dp_2[u] + 1 + dp_2[v] - max(dp_2[u], dp_1[u])
+$$
+
+In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the other children, we add:
+
+$$
+\sum_{w \in child(v), w \neq u} dp_2[w].
+$$
+
+Fortunately, since we've calculated $dp_2[v]$ already, this expression simplifies to:
+
+$$
+dp_2[v] - \max(dp_2[u], dp_1[u])
+$$
+
+Overall, to calculate the transitions for $dp_1[v]$ over all possible children $u$:
+
+$$
+dp_1[v] = \max_{u \in child(v)} (dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u]))
+$$
+
+<Warning>
+
+Loop through the children of $v$ twice to calculate $dp_1[v]$ and $dp_2[v]$ separately! You need to know $dp_2[v]$ to calculate $dp_1[v]$.
+
+</Warning>
+
+<Spoiler title="Code">
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-template<int SZ> struct SubtreeDP {
-  int par[SZ]; vi adj[SZ];
-  void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
-  struct T {
-    mi v = 1;
-    T& operator+=(const T& b) { v *= b.v; return *this; }
-    void tran() { ++v; }
-  };
-  T up[SZ], down[SZ];
-  void dfs(int x) {
-    trav(t,adj[x]) if (t != par[x]) {
-      par[t] = x; dfs(t);
-      down[x] += down[t];
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
     }
-    down[x].tran();
-  }
-  void dfs2(int x) {
-    {
-      T pre = up[x];
-      F0R(i,sz(adj[x])) {
-        int c = adj[x][i]; if (c == par[x]) continue;
-        up[c] += pre; pre += down[c];
-      }
+}
+
+vi adj[200005]; int dp[200005][2];
+
+void dfs(int v, int p){
+    for (int to : adj[v]) {
+        if (to != p) {
+            dfs(to, v);
+            dp[v][0] += max(dp[to][0], dp[to][1]);
+        }
     }
-    {
-      T pre;
-      R0F(i,sz(adj[x])) {
-        int c = adj[x][i]; if (c == par[x]) continue;
-        up[c] += pre; pre += down[c];
-      }
+    for (int to : adj[v]) {
+        if (to != p) {
+             dp[v][1] = max(dp[v][1], dp[to][0] + 1 + dp[v][0] - max(dp[to][0], dp[to][1]));
+        }
     }
-    F0R(i,sz(adj[x])) {
-      int c = adj[x][i]; if (c == par[x]) continue;
-      up[c].tran(); dfs2(c);
-    }
-  }
-  T getSub(int x, int y) { return par[x] == y ? down[x] : up[y]; }
-  void init(int n) {
-    par[1] = 0; dfs(1); dfs2(1);
-    FOR(i,1,n+1) {
-      T p = T(); trav(t,adj[i]) p += getSub(t,i);
-      ps(p.v);
-    }
-};
+}
 
 int main() {
-  setIO(); int n; re(n,MOD);
-  SubtreeDP<MX> S;
-  F0R(i,n-1) {
-    int a,b; re(a,b);
-    S.ae(a,b);
-  }
-  S.init(n);
+    setIO();
+    int n; cin >> n;
+    for (int i = 0; i < n - 1; i++) {
+        int u, v; cin >> u >> v;
+        u--, v--;
+        adj[u].pb(v), adj[v].pb(u);
+    }
+    dfs(0, -1);
+    cout << max(dp[0][0], dp[0][1]) << '\n';
 }
 ```
 
@@ -182,12 +290,60 @@ int main() {
 
 </Spoiler>
 
+### Solution 2 - Greedy
+
+Just keep matching a leaf with the only vertex adjacent to it while possible.
+
+<Spoiler title="Code">
+
+```cpp
+int n;
+vi adj[MX];
+bool done[MX];
+int ans = 0;
+
+void dfs(int pre, int cur) {
+	for (int i: adj[cur]) if (i != pre) {
+		dfs(cur,i);
+		if (!done[i] && !done[cur])
+		  done[cur] = done[i] = 1, ans ++;
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n;
+	F0R(i,n-1) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfs(0,1);
+	cout << ans;
+}
+```
+
+</Spoiler>
+
 ## Problems
 
-<Info title="Pro Tip">
+### Easier
 
-Don't just dive into trying to figure out a DP state and transitions -- make some observations if you don't see any obvious DP solution! Also, sometimes a greedy strategy suffices.
+<IncompleteSection>
 
-</Info>
+difficulties might not be accurate
+
+</IncompleteSection>
 
 <Problems problems={problems.usaco} />
+
+<Warning>
+
+Memory limit for "Spies" is very tight.
+
+</Warning>
+
+### Harder
+
+These problems are not Gold level. You may wish to return to these once you're in Platinum.
+
+<Problems problems={problems.insane} />

@@ -46,7 +46,7 @@ export const Authors: Author[] = [
     title: 'Content Author',
     blurb:
       'Michael Cao is a USACO Platinum competitor and problemsetter of "Bessie\'s Snow Cow" and USACO Camp problem "Flooded Farm."',
-    codeforces: 'caoash',
+    codeforces: 'caohash',
     email: 'cao.michael14@gmail.com',
     github: 'caoash',
   },
@@ -72,11 +72,22 @@ export const Authors: Author[] = [
     email: 'nchn27@gmail.com',
   },
   {
-    photo: 'cow',
+    photo: 'siyong1',
     name: 'Siyong Huang',
     title: 'Content Author',
     blurb: 'Siyong Huang is a two-time USACO Finalist.',
     codeforces: 'frodakcin',
     github: 'frodakcin',
+  },
+  {
+    photo: 'andi',
+    name: 'Andi Qu',
+    title: 'Content Author',
+    blurb:
+      'Andi Qu is a two-time IOI participant and the winner of the 2019 South African Programming Olympiad.',
+    codeforces: 'dolphingarlic',
+    github: 'dolphingarlic',
+    email: 'andi@andiqu.com',
+    website: 'https://andiqu.com',
   },
 ];

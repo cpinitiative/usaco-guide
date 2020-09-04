@@ -1,27 +1,16 @@
 ---
 id: intro-sets
-title: Introduction to Sorting
+title: Introduction to Sets & Maps
 author: Darren Yao, Benjamin Qi, Allen Li
 description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
 frequency: 2
 prerequisites:
-  - intro-ds
+  - intro-sorting
 ---
 
 import { Problem } from '../models';
 
 export const problems = {
-	bubble: [
-		new Problem(
-			'HR',
-			'Bubble Sort',
-			'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-			'Very Easy',
-			false,
-			[],
-			''
-		),
-	],
 	dis: [
 		new Problem(
 			'CSES',
@@ -36,15 +25,6 @@ export const problems = {
 	],
 	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
 	standard: [
-		new Problem(
-			'CF',
-			'Kayaking',
-			'contest/863/problem/B',
-			'Easy',
-			false,
-			[],
-			"Loop over all pairs of people too put in the single Kayaks. Then, sort the remaining people and pair $a_i$ with $a_{i + 1}$ because this minimizes the sum of absolute values (draw some cases if you're confused why)."
-		),
 		new Problem(
 			'Bronze',
 			'Why Did the Cow Cross the Road III',
@@ -63,17 +43,16 @@ export const problems = {
 			[],
 			'cses-1640'
 		),
-		new Problem('Bronze', 'Not Last', '687', 'Easy'),
 		new Problem(
 			'Bronze',
 			'Where Am I?',
 			'964',
 			'Easy',
-			false,
+			true,
 			[],
 			'Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice.'
 		),
-		new Problem('Silver', 'Bovine Genomics', '739', 'Normal', false, [], ''),
+		new Problem('Bronze', 'Not Last', '687', 'Normal', true),
 		new Problem(
 			'Silver',
 			'Cities & States',
@@ -90,147 +69,16 @@ export const problems = {
 	<Resource source="IUSACO" title="4.4 - Sets & Maps">
 		module is based off this
 	</Resource>
-	<Resource source="CPH" title="4.2, 4.3 - Sets, Maps" starred></Resource>
-</Resources>
-
-## Sorting
-
-<Problems problems={problems.bubble} />
-
-**Sorting** refers to arranging items in some particular order.
-
-<Resources>
-	<Resource source="CPH" title="3.1 - Sorting Theory"></Resource>
-	<Resource source="CSA" title="Sorting" url="sorting">
-		{' '}
+	<Resource source="CPH" title="4.2, 4.3 - Sets, Maps">
+		covers similar material
 	</Resource>
 </Resources>
-
-<!-- No bronze problem should require you to sort an array in $O(N\log N)$ time for Bronze,  -->
-
-### Sorting (Dynamic) Arrays
-
-Although you do **not** need to know how sorting is implemented for Bronze, you should know how to use built-in methods to sort a (possibly dynamic) array.
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-	<Resource source="CPH" title="3.2 - Sorting in C++" starred>
-		can stop before comparison operators, which are covered in silver
-	</Resource>
-	<Resource
-		source="CPP"
-		title="std::sort"
-		url="https://en.cppreference.com/w/cpp/algorithm/sort"
-	>
-		reference
-	</Resource>
-	<Resource source="CF" title="C++ Tricks" url="74684">
-		first two related to sorting
-	</Resource>
-</Resources>
-
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
-
-</CPPSection>
-
-<JavaSection>
-
-In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
-
-- [Arrays.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])>)
-- [Collections.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)>)
-
-<Warning>
-
-The `Arrays.sort()` function uses quicksort on primitive data types such as `long`s. This is fine for USACO, but in other contests such as CodeForces, it may time out on test cases specifically engineered to trigger worst-case $\Theta(N^2)$ behavior in quicksort.
-
-</Warning>
-
-See [here](https://codeforces.com/contest/1324/hacks/625031/) for an example of a solution that was hacked on CodeForces.
-
-Two ways to avoid this:
-
-- Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $O(N \log N)$.
-- [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
-
-</JavaSection>
-
-<PySection>
-
-- [Sorting Basics](https://docs.python.org/3/howto/sorting.html)
-
-</PySection>
-
-</LanguageSection>
-
-### Sorting Pairs & Tuples
-
-<LanguageSection>
-
-<CPPSection>
-
-<Resources>
-	<Resource source="CPH" title="3.2 - Comparison Operators" starred></Resource>
-</Resources>
-
-By default, C++ pairs are sorted by first element and then second element in case of a tie.
-
-Example from CPH:
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-	vector<pair<int,int>> v;
-	v.push_back({1,5});
-	v.push_back({2,3});
-	v.push_back({1,2});
-	sort(v.begin(), v.end());
-	for (pair<int,int> p: v) cout << p.first << " " << p.second << "\n";
-}
-
-/* Output:
-1 2
-1 5
-2 3
-*/
-```
-
-Tuples are sorted similarly.
-
-</CPPSection>
-
-<JavaSection>
-
-You'll need to define your own **custom comparator**. This is covered in [Silver](/silver/sorting-custom).
-
-</JavaSection>
-
-</LanguageSection>
-
-## Problems
-
-<Problems problems={problems.dis} />
-
-<!-- <IncompleteSection>
-
-what about USACO problems? (though sorting is _very_ rare in Bronze)
-
-</IncompleteSection> -->
-
-<!-- I added one, but I can't find anything else -->
-
-## Ordered Sets & Maps
 
 Both Java and C++ contain two versions of sets and maps; one using **sorting** and the other using **hashing**. We'll only introduce the former version in this module.
 
-### Sets
+## Sets
 
-<Problems problems={problems.dis} />
+<FocusProblem problem={problems.dis[0]} />
 
 A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set.
 
@@ -288,7 +136,6 @@ for(int element : set){
 }
 // You can iterate through an set in sorted order
 ```
-
 </JavaSection>
 
 <PySection>
@@ -299,13 +146,171 @@ Ordered sets and maps are **not** built into Python. The Python [OrderedDict](ht
 
 </Warning>
 
+The built in python unsorted set supports:
+
+- `add()`: Adds element to set
+- `remove()`: Removes element from set
+- `x in set`: Checks if element x is in the set
+
+```py
+set = set()
+set.add(1) # [1]
+set.add(4) # [1, 4]
+set.add(2) # [1, 4, 2]
+set.add(1) # [1, 4, 2]
+# the add method did nothing because 1 was already in the set
+print(1 in set) # True
+set.remove(1) # [4, 2]
+print(5 in set) # False
+set.remove(0); # [4, 2]
+# if the element to be removed does not exist, nothing happens
+```
+
 </PySection>
 
 </LanguageSection>
 
-### Maps
+### Solution - Distinct Numbers
 
-<Problems problems={problems.ex} />
+This problem asks us to calculate the number of distinct values in a given list.
+
+#### Method 1 - Set
+
+This is probably the easier of the two methods, but requires knowledge of sets. Because sets only store one copy of each value, we can insert all the numbers into a set, and then print out the size of the set.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    set<int> distinctNumbers;
+    for (int i = 0; i < n; i++) {
+        int number; cin >> number;
+        distinctNumbers.insert(number);
+    }
+
+    cout << distinctNumbers.size() << endl;
+
+    return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+// Source: Daniel
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
+public class DistinctNumbers {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		HashSet<Integer> set = new HashSet<Integer>();
+		for (int i = 0; i < n; i++) {
+			set.add(Integer.parseInt(st.nextToken()));
+		}
+		System.out.println(set.size());
+	}
+
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+nums = [int(x) for x in input().split()]
+distinctNumbers = set(nums)
+print(len(distinctNumbers))
+```
+
+</PySection>
+
+</LanguageSection>
+
+#### Method 2 - Sorting the Array
+
+This problem is also solvable without sets. Sort a vector containing all the numbers. The answer is the number of times two adjacent numbers are not equal; more formally, the number of times $a_i \neq a_{i + 1}$, plus one.
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    int A[n];
+    for (int i = 0; i < n; ++i) {
+        cin >> A[i];
+    }
+
+    sort(A, A+n);
+
+    int answer = 1;
+
+    for (int i = 0; i < n - 1; ++i) {
+        if (A[i] != A[i + 1]) {
+            answer++;
+        }
+    }
+
+    cout << answer << endl;
+
+    return 0;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+n = int(input())
+arr = [int(x) for x in input().split()]
+arr = sorted(arr)
+
+ans = 1
+for i in range(n - 1):
+    if arr[i] != arr[i + 1]:
+        ans += 1
+
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Maps
+
+<FocusProblem problem={problems.ex[0]} />
 
 A **map** is a set of ordered pairs, each containing a **key** and a **value**. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods:
 
@@ -330,7 +335,8 @@ map<int, int> m;
 m[1] = 5; // [(1, 5)]
 m[3] = 14; // [(1, 5); (3, 14)]
 m[2] = 7; // [(1, 5); (2, 7); (3, 14)]
-m.erase(2); // [(1, 5); (3, 14)]
+m[0] = -1; // [(0, -1); (1, 5); (2, 7); (3, 14)]
+m.erase(2); // [(0, -1); (1, 5); (3, 14)]
 cout << m[1] << '\n'; // 5
 cout << m.count(7) << '\n' ; // 0
 cout << m.count(1) << '\n' ; // 1
@@ -357,8 +363,7 @@ System.out.println(map.containsKey(1)); // true
 
 <PySection>
 
-Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have
-$O(1)$ insertion, deletion, and searches.
+Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have $O(1)$ insertion, deletion, and searches.
 
 ```py
 dict = {}
@@ -375,12 +380,69 @@ print(1 in dict.keys()) # True
 
 </LanguageSection>
 
-<IncompleteSection>
+### Iterating Over Maps
 
-What about iterating over map?
+<LanguageSection>
 
-</IncompleteSection>
+<CPPSection>
+
+To iterate over maps, you can use a `for` loop.
+
+```cpp
+for (pair<int,int> x : m) {
+	cout << x.first << " " << x.second << '\n';
+}
+for (auto x : m) {
+	cout << x.first << " " << x.second << '\n';
+}
+
+/* both output the following:
+0 -1
+1 5
+3 14
+*/
+```
+
+The map stores pairs in the form `{key, value}`. The `auto` keyword suffices to iterate over any type of pair. You can use these pairs normally, as introduced in [this module](/bronze/intro-ds#pairs--tuples).
+
+Additionally, you can pass by reference when iterating over a map, like this:
+
+```cpp
+for (auto& x : m) {
+	x.second = 3;
+}
+for (pair<int,int> x : m) {
+	cout << x.first << " " << x.second << '\n';
+}
+
+/*
+0 3
+1 3
+3 3
+*/
+```
+
+This allows you to modify the values of the pairs stored in the map.
+
+</CPPSection>
+
+<PySection>
+
+To iterate over dicts, you can use a `for` loop over the keys of the dict.
+
+```py
+for key in dict.keys():
+    print(f'{key} {dict[key]}')
+```
+
+</PySection>
+
+</LanguageSection>
+
+<!-- When passing by value (the first example), you can only access the `{key, value}` pairs. When you pass by reference (the second example),  --> <!-- you iterate through will change the values stored in the map. -->
 
 ## Problems
+
+Some of these problems can be solved by sorting alone.
 
 <Problems problems={problems.standard} />

@@ -1,0 +1,134 @@
+---
+id: all-roots
+title: (Optional) DP on Trees - Solving For All Roots
+author: Benjamin Qi, Andi Qu
+prerequisites:
+  - dp-trees
+description: Tree DP that uses the subtree from excluding each node's subtree.
+frequency: 1
+---
+
+import { Problem } from '../models';
+
+export const problems = {
+	ex: [
+		new Problem(
+			'CSES',
+			'Tree Distances I',
+			'1132',
+			'Easy',
+			false,
+			['Tree', 'DFS'],
+			'@CPH 14.3'
+		),
+	],
+	roots: [
+		new Problem(
+			'AC',
+			'Subtree',
+			'https://atcoder.jp/contests/dp/tasks/dp_v',
+			'Normal',
+			true,
+			['DP'],
+			'AC-Subtree'
+		),
+		new Problem('Gold', 'Directory Traversal', '814', 'Normal', false, [], ''),
+		new Problem('Plat', 'Cow At Large', '793', 'Hard', false, [], 'usaco-793'),
+		new Problem(
+			'APIO',
+			'2010 - Patrol',
+			'https://dmoj.ca/problem/apio10p2',
+			'Hard',
+			true,
+			['DP', 'Casework'],
+			'http://apio-olympiad.org/2010/solutions.pdf'
+		),
+		new Problem(
+			'APIO',
+			'2014 - Beads',
+			'https://oj.uz/problem/view/APIO14_beads',
+			'Very Hard',
+			false,
+			['DP', 'Casework'],
+			'apio-14-beads'
+		),
+	],
+};
+
+<FocusProblem problem={problems.ex[0]} />
+
+## Solution - Tree Distances I
+
+<Resources>
+	<Resource source="CPH" title="14.3 - All Longest Paths">
+		{' '}
+	</Resource>
+</Resources>
+
+DFS twice. See CPH and the code for more details.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> graph[200001];
+pair<int, int> best[200001];
+int sec[200001], ans[200001];
+
+void dfs1(int node = 1, int parent = 0) {
+    for (int i : graph[node]) if (i != parent) {
+        dfs1(i, node);
+        if (best[i].first + 1 > best[node].first) {
+            sec[node] = best[node].first;
+            best[node] = {best[i].first + 1, i};
+        } else if (best[i].first + 1 > sec[node]) {
+            sec[node] = best[i].first + 1;
+        }
+    }
+}
+
+void dfs2(int node = 1, int parent = 0, int to_p = 0) {
+    ans[node] = max(to_p, best[node].first);
+    for (int i : graph[node]) if (i != parent) {
+        if (i == best[node].second) dfs2(i, node, max(to_p, sec[node]) + 1);
+        else dfs2(i, node, ans[node] + 1);
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+    dfs1();
+    dfs2();
+    for (int i = 1; i <= n; i++) cout << ans[i] << ' ';
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Warning>
+
+Although the intended solution for "Cow At Large" is extremely difficult, it is not too hard to fakesolve!
+
+</Warning>
+
+<Problems problems={problems.roots} />
+
+<IncompleteSection />

@@ -35,6 +35,16 @@ Essentially, every standard library data structure supports the `size()` method,
 
 ## Arrays
 
+<Resources>
+	<Resource
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/6-15-an-introduction-to-stdarray/"
+		title="6.15 - Intro to std::array"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
 You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
 
 ```cpp
@@ -65,7 +75,7 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 
 </JavaSection>
 
-<PySection/>
+<PySection />
 
 </LanguageSection>
 
@@ -88,7 +98,7 @@ for i in range(1, 11): # Note that range(i, j) includes i, but does not include 
     list.append(i)
 ```
 
-In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes. 
+In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
 
 ```py
 list = [0] * 30
@@ -157,6 +167,13 @@ list = list[3:] # [4, 4, 9]
 		vectors, strings
 	</Resource>
 	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
+	<Resource
+		source="LCPP"
+		title="6.16 - Intro to std::vector"
+		url="https://www.learncpp.com/cpp-tutorial/6-16-an-introduction-to-stdvector/"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 Dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++) support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $O(1)$ time.
@@ -179,7 +196,15 @@ vector<int> v; v.resize(30); // another way
 
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
+<Warning>
+
+Nothing beyond this warning is required knowledge for Bronze, though you may find it useful.
+
+</Warning>
+
 ### Iterating
+
+Note: Iterating isn't required for Bronze, though it may be useful.
 
 <Resources>
 	<Resource source="CPH" title="4.4 - Working With Ranges">
@@ -192,9 +217,16 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 	>
 		{' '}
 	</Resource>
+	<Resource
+		source="LCPP"
+		title="6.17 - Intro to Iterators"
+		url="https://www.learncpp.com/cpp-tutorial/introduction-to-iterators/"
+	>
+		{' '}
+	</Resource>
 </Resources>
-One way to iterate through all elements of a static or dynamic array is to use a
-regular for loop.
+
+One way to iterate through all elements of a static or dynamic array is to use a regular for loop.
 
 ```cpp
 vector<int> v{1,7,4,5,2};
@@ -232,6 +264,8 @@ for (int element : v) {
 ```
 
 ### Inserting and Erasing
+
+Note: Inserting and Erasing isn't required for Bronze, though it may be useful.
 
 Keep in mind that insertion and erasure in the middle of a `vector` are $O(n)$.
 
@@ -283,7 +317,9 @@ for(int i = 1; i <= 10; i++){
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
 ### Iterating
- 
+
+Note: Iterating isn't required for Bronze, though it may be useful.
+
 To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
 
 ```java
@@ -299,6 +335,8 @@ for(int element : arr){ // for-each
 ```
 
 ### Adding and Removing
+
+Note: Adding and Removing isn't required for Bronze, though it may be useful.
 
 We can add and remove at any index of a dynamic array in $O(n)$ time.
 
@@ -322,6 +360,8 @@ System.out.println(list.get(2)); // 5
 </LanguageSection>
 
 ## Pairs & Tuples
+
+Note: Pairs & Tuples aren't required for Bronze, though it may be useful.
 
 If we want to store a collection of points on the 2D plane, then we can use a dynamic array of **pairs**.
 
@@ -468,6 +508,26 @@ Use the link below (if you know of a better one, please let us know!) to learn a
 </Resources>
 
 </PySection>
+</LanguageSection>
+
+## Memory Allocation
+
+One thing to keep in mind when using arrays is the memory limit. Usually the USACO memory limit is 256 MB, which can store up to roughly 60 million 32-bit `int` values, or less if you're using 64-bit integers, long strings, custom objects, etc. As a general rule of thumb, if your array size exceeds $5 \cdot 10^6$ (5 million), you're at risk of running the memory limit and should consider alternative approaches to the problem.
+
+To do the calculation on how many `int` values can be stored:
+
+1. Calculate the total memory size in bytes: for 256 MB, that's $256*1024*1024$
+2. Divide by the size, in bytes, of an `int` (4), or a `long long` (8), etc: $256*1024*1024/4 \approx 60$ million
+3. Be aware that program overhead (which can be very significant, especially with recursive functions) will reduce memory available.
+
+<LanguageSection>
+<CPPSection>
+
+In C++, arrays initialized locally using the default syntax (i.e. `int arr[10];` ) are initialized to random numbers, because C++ doesn't have built-in memory management. In order to initialize your arrays to zero, either declare them globally, or use either `memset(arr, 0, sizeof(arr))` or `std::fill(arr, arr+N, 0)` where $N$ is the array length.
+
+</CPPSection>
+<JavaSection />
+<PySection />
 </LanguageSection>
 
 ## Problems

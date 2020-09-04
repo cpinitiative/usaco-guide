@@ -2,6 +2,41 @@
 @tailwind base;
 @tailwind components;
 
+html {
+  background-color: white;
+}
+
+html.mode-dark {
+  @apply text-dark-high-emphasis bg-dark-surface min-h-screen;
+}
+
+html.transitioning-color-scheme,
+html.transitioning-color-scheme * {
+  transition-duration: 0ms !important;
+}
+
+@media (orientation: landscape) {
+  .mode-dark ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    @apply bg-gray-500;
+  }
+
+  .mode-dark ::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: transparent;
+  }
+
+  .mode-dark ::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    @apply bg-gray-700 border-2 border-gray-500;
+  }
+
+  .mode-dark ::-webkit-scrollbar-corner {
+    @apply bg-dark-surface;
+  }
+}
+
 /* Additional vertical padding used by kbd tag. */
 .py-05 {
   padding-top: 0.125rem;
@@ -28,6 +63,10 @@
   @apply text-blue-600 font-semibold;
 }
 
+.mode-dark .markdown a {
+  color: #a9c5ea;
+}
+
 .markdown strong a,
 .markdown a strong {
   @apply font-bold;
@@ -43,6 +82,10 @@
 
 .markdown blockquote {
   @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
+}
+
+.mode-dark .markdown blockquote {
+  @apply text-dark-high-emphasis border-dark-med-emphasis;
 }
 
 .markdown code.inline {
@@ -65,7 +108,7 @@
   @apply text-lg;
 }
 
-.markdown ul {
+.markdown ul:not(.no-markdown) {
   @apply pl-8 list-disc mb-6;
 }
 .markdown ol {
@@ -81,11 +124,11 @@
   list-style-type: square;
 }
 
-.markdown ul > li {
+.markdown ul:not(.no-markdown) > li {
   @apply mb-2;
 }
 
-.markdown ul > li:last-of-type {
+.markdown ul:not(.no-markdown) > li:last-of-type {
   @apply mb-0;
 }
 
@@ -121,6 +164,10 @@
 .markdown ol li:before {
   content: counters(number, '.') '.';
   @apply text-blue-600 font-semibold mr-2;
+}
+
+.mode-dark .markdown ol li:before {
+  @apply text-blue-300;
 }
 
 .markdown kbd {
@@ -159,6 +206,9 @@
 
 .table-alternating-stripes tr:nth-child(even) {
   @apply bg-gray-50;
+}
+.mode-dark .table-alternating-stripes tr:nth-child(even) {
+  background-color: #1c2538;
 }
 
 /* from https://www.lekoarts.de/en/blog/language-tabs-for-gatsbys-code-blocks */
@@ -211,5 +261,3 @@
   height: 100%;
 }
 /*! purgecss end ignore */
-
-@tailwind utilities;

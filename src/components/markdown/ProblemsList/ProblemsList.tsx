@@ -5,6 +5,14 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 // @ts-ignore
+import PGS from '../PGS.json';
+import { books } from '../ResourcesList';
+
+import { useContext } from 'react';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import styled, { css } from 'styled-components';
+
+// @ts-ignore
 import id_to_sol from './id_to_sol.json';
 
 type ProblemsListProps = {
@@ -13,35 +21,47 @@ type ProblemsListProps = {
   problems: Problem[];
 };
 
+let showSols = true;
+
 export function ProblemsList(props: ProblemsListProps) {
+  const userSettings = useContext(UserDataContext);
+  showSols = !userSettings.hide;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
         <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
-          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg border-b border-gray-200">
-            <table className="w-full no-markdown">
+          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent">
+            <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
               <thead>
-                <tr>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
+                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider text-center">
                     Status
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                     Source
                   </th>
-                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider whitespace-no-wrap">
+                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
-                  <th className="pl-4 md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    className={`pl-4 md:pl-6 ${
+                      !showSols ? 'pr-4 md:pr-6' : ''
+                    } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
+                  >
                     Difficulty
                   </th>
-                  <th className="pl-4 md:pl-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Tags
-                  </th>
-                  <th className="pl-10 pr-4 md:pr-6 md:pl-12 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Solution
-                  </th>
+                  {showSols && (
+                    <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                      Tags
+                    </th>
+                  )}
+                  {showSols && (
+                    <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                      Solution
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="table-alternating-stripes">
@@ -141,16 +161,29 @@ type ProblemComponentProps = {
   onShowSolution: Function;
 };
 
+export const difficultyClasses = {
+  'Very Easy': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+  Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
+  Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
+  Hard: 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
+  'Very Hard':
+    'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
+  Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
+};
+
+const StyledProblemRow = styled.tr`
+  ${({ isActive }) =>
+    isActive
+      ? css`
+          background-color: #fdfdea;
+          .mode-dark & {
+            background-color: #3c3c00;
+          }
+        `
+      : null}
+`;
+
 export function ProblemComponent(props: ProblemComponentProps) {
-  const difficultyClasses = {
-    'Very Easy': 'bg-gray-100 text-gray-800',
-    Easy: 'bg-green-100 text-green-800',
-    Normal: 'bg-blue-100 text-blue-800',
-    Hard: 'bg-purple-100 text-purple-800',
-    'Very Hard': 'bg-orange-100 text-orange-800',
-    Insane: 'bg-red-100 text-red-800',
-  };
-  const [showTags, setShowTags] = React.useState(false);
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueID}`;
@@ -158,8 +191,8 @@ export function ProblemComponent(props: ProblemComponentProps) {
     setIsActive(window && window.location && window.location.hash === '#' + id);
   }, []);
   return (
-    <tr id={id} style={isActive ? { backgroundColor: '#FDFDEA' } : null}>
-      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm text-gray-500 font-medium">
+    <StyledProblemRow id={id} isActive={isActive}>
+      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
         <div
           style={{ height: '1.25rem' }}
           className="flex items-center justify-center"
@@ -167,7 +200,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           <ProblemStatusCheckbox problem={problem} />
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 font-medium">
+      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
         {problem.des ? (
           <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
         ) : (
@@ -189,7 +222,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
           )}
           <a
             href={problem.url}
-            className={problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+            className={
+              (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
+            }
+            style={{ maxWidth: '15rem' }}
             target="_blank"
             rel="nofollow noopener noreferrer"
           >
@@ -197,7 +233,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </a>
         </div>
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap leading-5 w-full">
+      <td
+        className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
+          !showSols ? 'pr-4 md:pr-6' : ''
+        }`}
+      >
         {problem.difficulty && (
           <span
             className={
@@ -209,29 +249,23 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-        {!showTags && (
-          <a
-            href="#"
-            className="text-indigo-600 hover:text-indigo-900"
-            onClick={e => {
-              e.preventDefault();
-              setShowTags(true);
-            }}
-          >
-            Show Tags
-          </a>
-        )}
-        {showTags &&
-          (problem.tags && problem.tags.length
-            ? problem.tags.join(', ')
-            : 'None')}
-      </td>
-      <ProblemSolutionCell
-        problem={props.problem}
-        onShowSolution={props.onShowSolution}
-      />
-    </tr>
+      {showSols && (
+        <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+          {problem.tags && problem.tags.length ? (
+            <details className="text-gray-500 dark:text-dark-med-emphasis">
+              <summary>Show Tags</summary>
+              <p className="text-xs">{problem.tags.join(', ')}</p>
+            </details>
+          ) : null}
+        </td>
+      )}
+      {showSols && (
+        <ProblemSolutionCell
+          problem={props.problem}
+          onShowSolution={props.onShowSolution}
+        />
+      )}
+    </StyledProblemRow>
   );
 }
 
@@ -262,6 +296,30 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
       sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
     }
+    console.log(problem.name);
+    if (problem.source == 'IOI') {
+      if (sol == '') {
+        for (let i = 1994; i <= 2017; ++i) {
+          let des = i.toString();
+          if (problem.name.indexOf(des) != -1) {
+            let num = i - 1994 + 20;
+            sol = `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+            break;
+          }
+        }
+      }
+      if (sol == '') {
+        for (let i = 1994; i <= 2017; ++i) {
+          let des = (i % 100).toString();
+          if (des.length == 1) des = '0' + des;
+          if (problem.name.indexOf(des) != -1) {
+            let num = i - 1994 + 20;
+            sol = `https://ioinformatics.org/page/ioi-2010/` + num.toString();
+            break;
+          }
+        }
+      }
+    }
     if (isExternal(sol)) {
       external = true;
     } else if (sol.startsWith('@')) {
@@ -280,8 +338,26 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       }
     }
   }
+  let cph = false;
+  let cphUrl = '';
+  if (msg && sol.startsWith('CPH')) {
+    const getSec = (dictKey, book, title) => {
+      const parts = title.split(' ');
+      let url = book;
+      let sec = parts[0];
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey]))
+        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
+      url += '#page=' + PGS[dictKey][sec];
+      return url;
+    };
+    let source = 'CPH';
+    cphUrl = getSec(source, books[source][0], sol.substring(4));
+    msg = false;
+  }
   return (
-    <td className="pl-4 pr-4 md:px-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
+    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
       {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
       {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
@@ -291,6 +367,11 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         <span className="pl-6">
           <TextTooltip content={problem.hover}>{sol}</TextTooltip>
         </span>
+      )}
+      {cphUrl && (
+        <a href={cphUrl} target="_blank" className="pl-6">
+          {sol}
+        </a>
       )}
       {external && (
         <a href={sol} target="_blank" className="pl-6">
@@ -337,7 +418,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
       )}
       {!msg && !external && !internal && problem.sketch && (
         <span
-          className="text-blue-600 hover:text-blue-900 cursor-pointer inline-flex items-center group h-5"
+          className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
           onClick={() => problem.sketch && props.onShowSolution(problem)}
         >
           <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
@@ -356,11 +437,13 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           Show Sketch
         </span>
       )}
-      {!msg && !external && !internal && !problem.sketch && (
+      {!cphUrl && !msg && !external && !internal && !problem.sketch && (
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >
-          <span className="text-gray-300 pl-6">View Solution</span>
+          <span className="text-gray-300 dark:text-gray-600 pl-6">
+            View Solution
+          </span>
         </Tooltip>
       )}
     </td>

@@ -4,6 +4,7 @@ const contests = {
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
   'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
   CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
+  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
   COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
   IOI: ['oj.uz', 'International Olympiad in Informatics'],
   IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
@@ -45,9 +46,13 @@ const probSources = {
   AC: [
     'https://atcoder.jp/',
     'AtCoder',
-    'The editorial tab should be second from the right.',
+    'The editorial button is right next to the problem title. If "there is no editorial yet," check the "Overall Editorial" PDF below.',
   ],
-  CC: ['https://www.codechef.com/problems/', 'CodeChef'],
+  CC: [
+    'https://www.codechef.com/problems/',
+    'CodeChef',
+    'There should be a link to the editorial at the bottom of the page.',
+  ],
   CF: [
     'https://codeforces.com/contest/',
     'CodeForces',
@@ -62,8 +67,16 @@ const probSources = {
     'https://cses.fi/problemset/task/',
     'Code Submission Evaluation System (includes CPH problemset)',
   ],
-  DMOJ: ['https://dmoj.ca/problem/', 'Don Mills Online Judge'],
-  HR: ['https://www.hackerrank.com/', 'HackerRank'],
+  DMOJ: [
+    'https://dmoj.ca/problem/',
+    'Don Mills Online Judge',
+    'There might be a "Read Editorial" button on the right side of the page.',
+  ],
+  HR: [
+    'https://www.hackerrank.com/',
+    'HackerRank',
+    'The editorial tab should be right next to the discussions tab.',
+  ],
   Kattis: ['https://open.kattis.com/problems/', 'open.kattis.com'],
   LC: ['https://leetcode.com/problems/', 'LeetCode'],
   POI: [
@@ -91,6 +104,7 @@ export class Problem {
   public solution: string | null = null;
   public des: string = '';
   public hover: string = '';
+  public name: string = '';
 
   get uniqueID() {
     return this.url;
@@ -98,7 +112,7 @@ export class Problem {
 
   constructor(
     public source: string,
-    public name: string,
+    public Name: string,
     public id: string,
     public difficulty?:
       | 'Very Easy'
@@ -113,22 +127,9 @@ export class Problem {
     sol?: string,
     public solQuality: 'bad' | 'ok' | 'good' = 'ok'
   ) {
-    if (!sol && source in probSources && probSources[source].length == 3) {
-      sol = '@Check ' + source;
-      this.hover = probSources[source][2];
-    }
-    if (
-      sol !== undefined &&
-      (sol.startsWith('http') ||
-        /^[a-zA-Z\-0-9]+$/.test(sol) ||
-        sol.startsWith('@'))
-    ) {
-      this.solution = sol;
-    } else {
-      this.sketch = sol;
-    }
-    this.url = id;
-    // console.log(this.url)
+    // generate URL
+    this.name = Name;
+    this.url = id; // console.log(this.url)
     if (source in probSources) {
       if (!this.url.startsWith('http')) {
         if (
@@ -155,6 +156,32 @@ export class Problem {
         this.source = source.substring(0, ind);
       }
     }
+    if (!sol) sol = '';
+    if (
+      sol.startsWith('http') ||
+      /^[a-zA-Z\-0-9]+$/.test(sol) ||
+      sol.startsWith('@')
+    ) {
+      this.solution = sol;
+      return;
+    }
+    // generate solution
+    if (source in probSources && probSources[source].length == 3) {
+      this.solution = '@Check ' + source;
+      this.hover = probSources[source][2];
+      return;
+    } else {
+      for (let source in probSources)
+        if (
+          probSources[source].length == 3 &&
+          this.url.startsWith(probSources[source][0])
+        ) {
+          this.solution = '@Check ' + source;
+          this.hover = probSources[source][2];
+          return;
+        }
+    }
+    this.sketch = sol;
   }
 }
 
@@ -165,14 +192,10 @@ export type ProblemProgress =
   | 'Skipped'
   | 'Ignored';
 
-let options = ['Not Attempted', 'Solving', 'Solved', 'Skipped', 'Ignored'];
-
-let NEXT_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
-let PREV_PROBLEM_STATUS: { [key in ProblemProgress]?: ProblemProgress } = {};
-for (let i = 0; i < options.length; i++) {
-  NEXT_PROBLEM_STATUS[options[i]] = options[(i + 1) % options.length];
-  PREV_PROBLEM_STATUS[options[i]] =
-    options[(i - 1 + options.length) % options.length];
-}
-
-export { NEXT_PROBLEM_STATUS, PREV_PROBLEM_STATUS };
+export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
+  'Not Attempted',
+  'Solving',
+  'Solved',
+  'Skipped',
+  'Ignored',
+];

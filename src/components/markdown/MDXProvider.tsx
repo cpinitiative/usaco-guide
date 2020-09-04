@@ -17,8 +17,9 @@ import Warning from './Warning';
 import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
 import FocusProblem from './FocusProblem';
+import Youtube from './Youtube';
 
-const components = {
+export const components = {
   Spoiler,
   Info,
   Warning,
@@ -34,6 +35,7 @@ const components = {
   PySection,
   IncompleteSection,
   Asterisk,
+  Youtube,
 
   ...HTMLComponents,
 };

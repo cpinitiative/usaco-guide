@@ -1,17 +1,18 @@
 ---
 id: cht
 title: 'Convex Hull Trick'
-author: Benjamin Qi
+author: Andi Qu
 description: A way to find the maximum or minimum value of several convex functions at given points.
 prerequisites:
   - convex-hull
+  - intro-dp
 frequency: 2
 ---
 
 import { Problem } from '../models';
 
 export const problems = {
-	cht: [
+	sample: [
 		new Problem(
 			'CF',
 			'The Fair Nut and Rectangles',
@@ -19,12 +20,50 @@ export const problems = {
 			'Easy',
 			false,
 			['DP', 'convex'],
+			'@Later'
+		),
+	],
+	general: [
+		new Problem(
+			'APIO',
+			'2010 - Commando',
+			'https://dmoj.ca/problem/apio10p1',
+			'Easy',
+			false,
+			['DP', 'convex'],
+			'http://apio-olympiad.org/2010/solutions.pdf'
+		),
+		new Problem(
+			'CEOI',
+			'2004 - Two Sawmills',
+			'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+			'Easy',
+			false,
+			['DP', 'convex'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2002 - Batch Scheduling',
+			'https://wcipeg.com/problem/ioi0221',
+			'Easy',
+			false,
+			['DP', 'convex'],
+			'http://www.ioi2002.or.kr/eng/tasks/batch-handout.pdf'
+		),
+		new Problem(
+			'POI',
+			'2011 - Lightning Conductor',
+			'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
+			'Normal',
+			false,
+			['DP', 'convex'],
 			''
 		),
 		new Problem(
 			'APIO',
-			'Sequence',
-			'APIO14_sequence',
+			'2014 - Split the Sequence',
+			'https://oj.uz/problem/view/APIO14_sequence',
 			'Normal',
 			false,
 			['DP', 'convex'],
@@ -32,8 +71,8 @@ export const problems = {
 		),
 		new Problem(
 			'POI',
-			'2014 - Supercomputer',
-			'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+			'2006 - Frogs',
+			'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
 			'Hard',
 			false,
 			['DP', 'convex'],
@@ -49,55 +88,127 @@ export const problems = {
 			''
 		),
 		new Problem(
-			'POI',
-			'2006 - Frogs',
-			'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
+			'Plat',
+			'Falling Portals',
+			'998',
+			'Hard',
+			false,
+			['convex'],
+			''
+		),
+		new Problem(
+			'JOI',
+			'2017 - Long-Distance Coach',
+			'https://oj.uz/problem/view/JOI17_coach',
 			'Hard',
 			false,
 			['DP', 'convex'],
 			''
 		),
-		new Problem(
-			'JOI',
-			'2017 Spring Camp - Long Distance Coach',
-			'https://oj.uz/problem/view/JOI17_coach',
-			'Very Hard',
-			false,
-			['DP', 'convex'],
-			''
-		),
-		new Problem(
-			'Plat',
-			'Falling Portals',
-			'998',
-			'Very Hard',
-			false,
-			['convex'],
-			''
-		),
 	],
 };
 
+Convex Hull Trick (CHT) problems are usually of the following form:
+
+> Given several **convex** functions $f_i(x)$ such that **any two functions intersect at most once**, answer $Q$ queries of the form "what is the maximum/minimum $f_i(x)$ for some given $x$?".
+
+<IncompleteSection>
+
+Ben - be clearer about what conditions need to be satisfied
+
+</IncompleteSection>
+
+Examples of such functions include:
+
+- The straight line ($y = mx + c$)
+- The square-root function ($y = \sqrt{x - a} + b$)
+
+<!-- - The parabola ($y = ax^2 + bx + c$) -->
+
+There are several data structures one can use to solve these problems efficiently.
+
+In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $O(N)$ using a `std::deque` in C++. For the more general $O(N \log N)$ CHT, see [the LineContainer module](/plat/LC).
+
+<FocusProblem problem={problems.sample[0]} />
+
+## Tutorial
+
 <Resources>
-	<Resource
-		source="cp-algo"
-		title="Convex Hull Trick"
-		url="geometry/convex_hull_trick.html"
-		starred
-	>
-		{' '}
-	</Resource>
 	<Resource
 		source="CF"
 		title="Convex Hull Trick - Geo Being Useful"
 		url="63823"
 		starred
 	>
-		{' '}
+		solves problem above
 	</Resource>
 	<Resource source="GCP" title="15.4.1 - Convex Hull Trick">
 		{' '}
 	</Resource>
+	<Resource
+		source="Jeffrey Xiao"
+		title="Convex Hull Trick"
+		url="https://jeffreyxiao.me/blog/convex-hull-trick"
+	></Resource>
 </Resources>
 
-<Problems problems={problems.cht} />
+## Solution - The Fair Nut and Rectangles
+
+I won't analyse this problem in great detail since the Codeforces blog in the resources already does so, but essentially, we sort the rectangles by $x$-coordinate and get the following DP recurrence:
+
+$$
+dp[i] = p_i \cdot q_i - a_i + \max_{j < i}(-p_j \cdot q_i + dp[j])
+$$
+
+Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a straight line $y = mx + c$.
+
+Since we sorted the rectangles and no two rectangles are nested, the slopes of the lines we insert are strictly increasing. The query positions are also strictly increasing.
+
+This means we can solve this problem using CHT in $O(N)$ time! Here is my implementation:
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+struct Rect {
+    ll x, y, a;
+    bool operator<(Rect B) { return x < B.x; }
+};
+
+Rect a[1000001];
+ll dp[1000001];
+
+double slope(int i, int j) { return (double)(dp[i] - dp[j]) / (a[i].x - a[j].x); }
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+    ll n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i].x >> a[i].y >> a[i].a;
+    }
+    sort(a + 1, a + n + 1);
+
+    deque<ll> q;
+    q.push_back(0);
+    for (int i = 1; i <= n; i++) {
+        while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y) 
+        	q.pop_front();
+
+        ll j = q.front();
+        dp[i] = max(dp[i - 1], a[i].x * a[i].y - a[i].a + dp[j] - a[j].x * a[i].y);
+
+        while (q.size() > 1 && slope(q[q.size() - 2], q.back()) <= slope(q.back(), i)) q.pop_back();
+        q.push_back(i);
+    }
+
+    cout << dp[n];
+    return 0;
+}
+```
+
+## Problems
+
+<Problems problems={problems.general} />

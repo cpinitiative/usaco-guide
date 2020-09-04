@@ -27,37 +27,47 @@ export const problems = {
 			'LC',
 			'Max Histogram Area',
 			'largest-rectangle-in-histogram',
-			'Normal',
+			'Easy',
 			false,
 			[],
 			''
 		),
-		new Problem(
-			'Old Gold',
-			'Concurrently Balanced Strings',
-			'194',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem('Gold', 'Modern Art 2', '743', 'Hard', false, [], ''),
-		new Problem('Gold', 'Dishwashing', '922', 'Hard', false, [], ''),
-		new Problem('InfoArena', 'ssdj', 'https://infoarena.ro/ssdj', 'Very Hard', false, [], ''),
+		new Problem('Gold', 'Modern Art 2', '743', 'Normal', false, [], ''),
+		new Problem('Gold', 'Dishwashing', '922', 'Normal', false, [], ''),
+		new Problem('CSES', 'Maximum Building I', '1147', 'Normal', false, [], ''),
+		new Problem('CEOI', 'Fancy Fence', 'https://codeforces.com/contest/1402/problem/A', 'Normal', false, [], ''),
 		new Problem(
 			'IOI',
 			'2004 - Empodia',
 			'https://contest.yandex.com/ioi/contest/560/problems/D/',
-			'Very Hard',
+			'Hard',
 			false,
 			[],
 			'ioi-empodia'
 		),
 		new Problem(
+			'InfoArena',
+			'ssdj',
+			'https://infoarena.ro/problema/ssdj',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'CSES',
+			'Maximum Building II',
+			'1148',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
 			'Croatian OI',
 			'Žarulje',
 			'https://oj.uz/problem/view/COI15_zarulje',
-			'Insane',
+			'Very Hard',
 			false,
 			[],
 			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2015/final-exam1/solutions.pdf'
@@ -65,30 +75,42 @@ export const problems = {
 	],
 };
 
+<!-- 	new Problem(
+	'Old Gold',
+	'Concurrently Balanced Strings',
+	'194',
+	'Normal',
+	false,
+	[],
+	''
+), -->
+
 <!-- new Problem('oj.uz','IOI - Rectangles','IOI19_rect','Very Hard',false,[],'https://ioi2019.az/source/Tasks/Day1/Rect/review.pdf'), -->
 
 <Resources>
-	<Resource source="CPH" title="4.5 - Stacks"></Resource>
-	<Resource source="PAPS" title="3.3, 6.2 - Stacks"></Resource>
+	<Resource source="CPH" title="4.5 - Stacks">
+		brief description of operations
+	</Resource>
+	<Resource
+		source="CSA"
+		title="Stack Introduction"
+		url="stack_introduction"
+		starred
+	>
+		Bracket Matching Application
+	</Resource>
+</Resources>
+
+<!-- <Resource source="PAPS" title="3.3, 6.2 - Stacks"></Resource>
 	<Resource
 		source="CP2"
 		title="2.2 - Data Structures with Built-in Libraries"
 	></Resource>
-	<Resource source="CSA" title="Stack Introduction" url="stack_introduction">
-		{' '}
-	</Resource>
-	<Resource
-		source="CSA"
-		title="Stack Application - Soldier's Row"
-		url="stack_application_soldiers_row"
-	>
-		{' '}
-	</Resource>
-</Resources>
+-->
 
 ## Stacks
 
-A stack is a **Last In First Out** (LIFO) data structure that supports three operations, all in $O(1)$ time. Think of it like a real-world stack of papers (or cards).
+A stack is a **Last In First Out** (LIFO) data structure that supports three operations, all in $O(1)$ time. Think of it like a real-world stack of papers.
 
 <LanguageSection>
 
@@ -136,20 +158,33 @@ System.out.println(s.size()); // 2
 
 ## Application: Nearest Smaller Element
 
-<Problems problems={problems.nearest} />
+<FocusProblem problem={problems.nearest[0]} />
 
 Consider the following problem:
 
 > Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
 
 <Resources>
-	<Resource source="CPH" title="8.2 - Nearest Smaller Element"></Resource>
 	<Resource
+		source="CPH"
+		title="8.2 - Nearest Smaller Element"
+		starred
+	></Resource>
+	<Resource
+		source="CSA"
+		title="Stack Application - Soldier's Row"
+		url="stack_application_soldiers_row"
+		starred
+	>
+		similar application w/ animation
+	</Resource>
+</Resources>
+
+<!-- 	<Resource
 		source="Medium"
 		title="Monotonic Stack"
 		url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"
-	></Resource>
-</Resources>
+	></Resource> -->
 
 To solve this, let's store a stack of pairs of $value, index$ and iterate over the array from left to right. For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
 
@@ -186,6 +221,55 @@ convert this
 </IncompleteSection>
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+
+/**
+ * author: Kai Wang
+ */
+
+import java.io.*; import java.util.*;
+public class NearestSmallestVals {
+
+    /**
+     * We keep a stack of pairs (ind, value)
+     * Traverse the array from left to right, use ans to store answers
+     * If the value of the a_i> (stk.peek()=a_k) then I remove the top of the stack.
+     * This is okay because for all j>k, a_j>=a_k, or (j,a_j) is in the stack
+     * If a_k < a_i then we set ans[i]=k and insert (i,a_i)
+     * Note the stack elements are sorted in order of index
+     *
+     */
+    public static void main(String[] args) throws IOException {
+        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+        int N=Integer.parseInt(br.readLine()); int[] a=new int[N+1];
+        StringTokenizer st=new StringTokenizer(br.readLine());
+        for (int i = 1; i <= N; i++) {
+            a[i]=Integer.parseInt(st.nextToken());
+        }
+        Stack<Integer> stk=new Stack<>();
+        stk.add(0);
+        stk.add(1);
+        int[] ans=new int[N+1];ans[1]=0;
+        for (int i = 2; i <=N; i++) {
+            while(a[stk.peek()]>=a[i]){
+                stk.pop();
+            }
+            //stk.peek()<a[i]
+            //This exists because a[0]=0 and a[i]>0 for all i>0
+            ans[i]=stk.peek();
+            stk.push(i);
+        }
+        for (int i = 1; i <=N; i++) {
+            System.out.print(ans[i]+" ");
+        }
+    }
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 

@@ -13,47 +13,14 @@ description: 'Identifying errors within your program and how to avoid them in th
 	>
 		some parts taken from here
 	</Resource>
-</Resources>
-
-## Stress Testing
-
-If your code is getting WA, one option is to run your buggy code against another that you're relatively confident is correct on randomly generated data until you find a difference. See the video for details.
-
-<Resources>
 	<Resource
-		source="Errichto"
-		title="Video - How to test your solution"
-		url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
-		starred
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/basic-debugging-tactics/"
+		title="3.4 - A Strategy for Debugging"
 	>
-		using a script to stress test
-	</Resource>
-	<Resource
-		source="Errichto"
-		title="Asking for help FAQ"
-		url="https://codeforces.com/blog/entry/64993"
-		starred
-	>
-		some parts from above video
-	</Resource>
-	<Resource
-		source="Benq"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh"
-		title="Stress Testing"
-	>
-		script from Errichto's video
+		adding print statements
 	</Resource>
 </Resources>
-
-<IncompleteSection>
-
-script for multiple languages?
-
-</IncompleteSection>
-
-<LanguageSection>
-
-<CPPSection>
 
 ## Style
 
@@ -65,25 +32,6 @@ script for multiple languages?
 		starred
 	>
 		don't agree with everything but important to read nonetheless
-	</Resource>
-</Resources>
-
-## Assertions & Warnings
-
-<Resources>
-	<Resource
-		title="Asserts"
-		source="LearnCpp"
-		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
-		starred
-	>
-		includes static_assert and #define NDEBUG
-	</Resource>
-	<Resource title="Assertions" source="GFG" url="assertions-cc">
-		subset of above
-	</Resource>
-	<Resource title="Diagnostics" source="GCC" url="Diagnostics.html" starred>
-		#warning, #error
 	</Resource>
 </Resources>
 
@@ -140,17 +88,143 @@ Although not feasible if you have to write all code from scratch, [this template
 
 [Examples - Debug Output](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO_test.cpp)
 
+<Warning>
+	You are not allowed to use pre-written code for USACO contests, so `dbg()`
+	should only be used for other online contests.
+</Warning>
+
 <IncompleteSection>
 
 examples for all of input, output, debug?
 
 </IncompleteSection>
 
+## Stress Testing
+
+If your code is getting WA, one option is to run your buggy code against another that you're relatively confident is correct on randomly generated data until you find a difference. See the video for details.
+
+<Resources>
+	<Resource
+		source="Errichto"
+		title="Video - How to test your solution"
+		url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
+		starred
+	>
+		using a script to stress test
+	</Resource>
+	<Resource
+		source="Errichto"
+		title="Asking for help FAQ"
+		url="https://codeforces.com/blog/entry/64993"
+		starred
+	>
+		some parts from above video
+	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/stress.sh"
+		title="Stress Testing"
+	>
+		script from Errichto's video
+	</Resource>
+</Resources>
+
+Script that was mentioned in video:
+
+```
+# A and B are executables you want to compare, gen takes int
+# as command line arg. Usage: 'sh stress.sh'
+for((i = 1; ; ++i)); do # if they are same then will loop forever
+    echo $i
+    ./gen $i > int
+    ./A < int > out1
+    ./B < int > out2
+    diff -w out1 out2 || break
+    # diff -w <(./A < int) <(./B < int) || break
+done
+```
+
+We can modify this to work for other situations. For example, if you have the input and output files (ex. `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for old USACO problems) then you can use the following:
+
+```
+# A is executable you want to test
+for((i = 1; i <= 10; ++i)); do
+    echo $i
+    ./A < $i.in > out
+    diff -w out $i.out || break
+done
+echo "ALL TESTS PASSED"
+```
+
+The following will break on the first input file such that the produced output file is empty.
+
+```
+for((i = 1; ; ++i)); do
+	echo $i
+	./gen $i > int
+	./A < int > out
+	if ! [[ -s "out" ]] ; then
+		echo "no output"
+		break
+	fi ;
+done
+```
+
+<IncompleteSection>
+
+scripts for multiple languages? can this be modified to break on an assertion failure?
+
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+## Assertions & Warnings
+
+<Resources>
+	<Resource
+		title="Asserts"
+		source="LearnCpp"
+		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
+		starred
+	>
+		includes static_assert and #define NDEBUG
+	</Resource>
+	<Resource title="Assertions" source="GFG" url="assertions-cc">
+		subset of above
+	</Resource>
+	<Resource
+		title="5 - Diagnostics"
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
+		starred
+	>
+		#warning, #error
+	</Resource>
+</Resources>
+
 ## [Warning Options](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
 
-Includes `-Wall -Wextra -Wshadow`
+### `-Wall`
 
-[Variable shadowing](https://en.wikipedia.org/wiki/Variable_shadowing) should be avoided whenever possible.
+<IncompleteSection>
+
+</IncompleteSection>
+
+### `-Wextra`
+
+<IncompleteSection>
+
+Add explanation, how useful is -Wextra?
+
+</IncompleteSection>
+
+### `-Wshadow`
+
+[Variable shadowing](https://www.learncpp.com/cpp-tutorial/variable-shadowing-name-hiding/) should be avoided whenever possible.
+
+## Other Options
 
 <Resources>
 	<Resource
@@ -161,14 +235,6 @@ Includes `-Wall -Wextra -Wshadow`
 		more options
 	</Resource>
 </Resources>
-
-<IncompleteSection>
-
-Add explanation, how useful is -Wextra?
-
-</IncompleteSection>
-
-## Other Options
 
 In Errichto's blog he says that he uses the following as part of his compilation command:
 
@@ -468,6 +534,16 @@ zsh: abort      ./prog
 </LanguageSection>
 
 ## Debuggers
+
+<Resources>
+	<Resource
+		source="LCPP"
+		title="3.6 - Using an integrated debugger"
+		url="https://www.learncpp.com/cpp-tutorial/using-an-integrated-debugger-stepping/"
+	>
+		{' '}
+	</Resource>
+</Resources>
 
 Using a debugger varies from language to language and even IDE to different IDE. For now I will describe the basic operations of a debugger.
 

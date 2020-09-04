@@ -1,0 +1,140 @@
+---
+id: comb-sub
+title: 'DP on Trees - Combining Subtrees'
+author: Benjamin Qi
+prerequisites:
+  - dp-trees
+description: '?'
+frequency: 1
+---
+
+import { Problem } from '../models';
+
+export const problems = {
+	sam: [
+		new Problem(
+			'CF',
+			'Karen & Supermarket',
+			'contest/815/problem/C',
+			'Normal',
+			false,
+			[],
+			''
+		),
+	],
+	gen: [
+		new Problem(
+			'COCI',
+			'Dzumbus',
+			'COCI19_dzumbus',
+			'Normal',
+			false,
+			[],
+			'coci-dzum'
+		),
+		new Problem(
+			'CF',
+			'Div 1 D - Miss Punyverse',
+			'1280/problem/D',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'DMOJ',
+			'IOI - Rivers',
+			'ioi05p6',
+			'Normal',
+			false,
+			[],
+			'ioi-rivers'
+		),
+		new Problem(
+			'CF',
+			'Ostap & Tree',
+			'735/problem/E',
+			'Normal',
+			false,
+			['DP'],
+			'ostap-tree'
+		),
+		new Problem(
+			'DMOJ',
+			'COCI - Periodni',
+			'coci08c4p6',
+			'Hard',
+			false,
+			['NT'],
+			'coci-period'
+		),
+	],
+};
+
+<Problems problems={problems.sam} />
+
+<br />
+
+This was the first problem I saw that involved this trick.
+
+## Solution
+
+For two vectors $a$ and $b$, define the vector $c=a\oplus b$ to have entries $c_i=\min_{k=0}^i\left(a_k+b_{i-k}\right)$ for each $0\le i < \text{size}(a)+\text{size}(b)$.
+
+Similar to the editorial, define $\texttt{dp[x][0][g]}$ to be the minimum cost to buy exactly $g$ goods out of the subtree of $x$ if we don't use the coupon for $x$, and define $\texttt{dp[x][1][g]}$ to be the minimum cost to buy exactly $g$ goods out of the subtree of $x$ if we are allowed to use the coupon for $x$. We update $\texttt{dp[x][0]}$ with one of the child subtrees $t$ of $x$ by setting $\texttt{dp[x][0]}=\texttt{dp[x][0]}\oplus \texttt{dp[t][0]}$, and similarly for $\texttt{dp[x][1]}$.
+
+<Spoiler title="Code">
+
+```cpp
+int n,b,c[5001],d[5001];
+vl dp[5001][2];
+vi child[5001];
+
+vl comb(vl a, vl b) {
+	vl c(sz(a)+sz(b)-1,INF);
+	F0R(i,sz(a)) F0R(j,sz(b)) ckmin(c[i+j],a[i]+b[j]);
+	return c;
+}
+
+void go(int x) {
+	dp[x][0] = {0,c[x]}, dp[x][1] = {INF,d[x]};
+	trav(t,child[x]) {
+		go(t);
+		dp[x][0] = comb(dp[x][0],dp[t][0]);
+		dp[x][1] = comb(dp[x][1],dp[t][1]);
+	}
+	F0R(i,sz(dp[x][1])) ckmin(dp[x][1][i],dp[x][0][i]);
+}
+
+int main() {
+	setIO(); re(n,b);
+	FOR(i,1,n+1) {
+		re(c[i],d[i]); d[i] = c[i]-d[i];
+		if (i > 1) {
+			int x; re(x);
+			child[x].pb(i);
+		}
+	}
+	go(1);
+	R0F(i,n+1) if (dp[1][1][i] <= b) {
+		ps(i);
+		exit(0);
+	}
+}
+```
+
+</Spoiler>
+
+The editorial naively computes a bound of $O(N^3)$ on the running time of this solution. However, this actually runs in $O(N^2)$!
+
+## Time Complexity of Merging Subtrees
+
+<IncompleteSection>
+
+add proof
+
+</IncompleteSection>
+
+## Problems
+
+<Problems problems={problems.gen} />

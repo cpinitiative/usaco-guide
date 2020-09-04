@@ -3,7 +3,7 @@ import { graphql, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import {
   moduleIDToSectionMap,
@@ -19,6 +19,8 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
+import DailyStreak from '../components/Dashboard/DailyStreak';
+import Card from '../components/Dashboard/DashboardCard';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
@@ -45,7 +47,9 @@ export default function DashboardPage(props: PageProps) {
     lastReadAnnouncement,
     setLastReadAnnouncement,
     firebaseUser,
+    consecutiveVisits,
   } = React.useContext(UserDataContext);
+
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
@@ -79,8 +83,15 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
+  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const moduleProgressIDs = Object.keys(moduleIDToName).filter(
+    x => moduleIDToSectionMap[x] === lastViewedSection
+  );
+  // console.log(Object.keys(moduleIDToName).filter(
+  //   x => moduleIDToSectionMap[x] == null
+  // )); shouldn't be any ...
   let allModulesProgressInfo = getProgressInfo(
-    Object.keys(moduleIDToName),
+    moduleProgressIDs,
     userProgressOnModules,
     ['Complete'],
     ['Reading', 'Practicing'],
@@ -88,12 +99,19 @@ export default function DashboardPage(props: PageProps) {
     ['Not Started']
   );
 
-  const allProblemIDs = Object.keys(problemIDMap);
-  // const allStarredProblemIDs = allProblemIDs.filter(
+  const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
+    return [
+      ...acc,
+      ...modules.edges
+        .find(x => x.node.frontmatter.id === cur)
+        .node.problems.map(x => x.uniqueID),
+    ];
+  }, []);
+  // const allStarredProblemIDs = problemStatisticsIDs.filter(
   //   x => problemIDMap[x].starred
   // );
   const allProblemsProgressInfo = getProgressInfo(
-    allProblemIDs,
+    problemStatisticsIDs,
     userProgressOnProblems,
     ['Solved'],
     ['Solving'],
@@ -119,7 +137,7 @@ export default function DashboardPage(props: PageProps) {
     <Layout>
       <SEO title="Dashboard" />
 
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <TopNavigationBar />
 
         <main className="pb-12">
@@ -140,19 +158,19 @@ export default function DashboardPage(props: PageProps) {
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
-              <div>
+              <div className="mb-8">
                 <ActiveItems type="problems" items={activeProblems} />
               </div>
             )}
             {activeModules.length > 0 && (
-              <div>
+              <div className="mb-8">
                 <ActiveItems type="modules" items={activeModules} />
               </div>
             )}
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
                 Announcements
               </h1>
             </div>
@@ -162,7 +180,7 @@ export default function DashboardPage(props: PageProps) {
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
                 Statistics
               </h1>
             </div>
@@ -170,22 +188,22 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto">
             <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
               <div className="space-y-8">
-                <div className="bg-white shadow sm:rounded-lg">
+                <Card>
                   <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Modules
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allModulesProgressInfo}
-                        total={Object.keys(moduleIDToName).length}
+                        total={moduleProgressIDs.length}
                       />
                     </div>
                   </div>
-                </div>
+                </Card>
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">*/}
                 {/*      All Starred Problems*/}
                 {/*    </h3>*/}
                 {/*    <div className="mt-6">*/}
@@ -198,40 +216,22 @@ export default function DashboardPage(props: PageProps) {
                 {/*</div>*/}
               </div>
               <div className="space-y-8">
-                <div className="bg-white shadow sm:rounded-lg order-6">
+                <Card>
                   <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      All Problems
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
                     </h3>
                     <div className="mt-6">
                       <DashboardProgress
                         {...allProblemsProgressInfo}
-                        total={Object.keys(allProblemIDs).length}
+                        total={Object.keys(problemStatisticsIDs).length}
                       />
                     </div>
                   </div>
-                </div>
-                {/*<div className="bg-white shadow sm:rounded-lg overflow-hidden row-span-2 flex flex-col">*/}
-                {/*  <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
-                {/*      🔥 6 Day Streak: Keep it up!*/}
-                {/*    </h3>*/}
-                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*      <p>*/}
-                {/*        You've visited this guide for 6 consecutive days. Enjoy*/}
-                {/*        this cute cow photo as a reward!*/}
-                {/*      </p>*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*  <img*/}
-                {/*    className="h-64 w-full object-cover"*/}
-                {/*    src="https://66.media.tumblr.com/709acf5805b63bf412dd5cf8d6e34803/tumblr_oplgjdcYJl1sgqqono1_500.jpg"*/}
-                {/*    alt="Cow"*/}
-                {/*  />*/}
-                {/*</div>*/}
+                </Card>
                 {/*<div className="bg-white shadow sm:rounded-lg">*/}
                 {/*  <div className="px-4 py-5 sm:p-6">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900">*/}
+                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">*/}
                 {/*      Section Breakdown*/}
                 {/*    </h3>*/}
                 {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
@@ -248,6 +248,7 @@ export default function DashboardPage(props: PageProps) {
                 {/*  </div>*/}
                 {/*</div>*/}
               </div>
+              <DailyStreak streak={consecutiveVisits} />
             </div>
           </div>
         </main>

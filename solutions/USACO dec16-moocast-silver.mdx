@@ -1,0 +1,70 @@
+---
+id: usaco-668
+title: USACO December 2016 Silver - Moocast
+author: Óscar Garries
+---
+
+Official Editorial: http://www.usaco.org/current/data/sol_moocast_silver_dec16.html
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+vector<vector<bool>> isConnected(201, vector<bool>(201));
+vector<int> g[201];
+vector<bool> visited(201);
+int n;
+
+int dfs (int v) {
+	visited[v] = true;
+	int cows = 0;
+
+	for (int j = 0; j < n; j++) {
+		if (visited[j] || !isConnected[v][j]) continue;
+		visited[j] = true;
+		cows += dfs(j) + 1;
+	}
+	return cows;
+}
+
+int main () {
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
+
+	cin >> n;
+	int x[n], y[n], p[n];
+
+	for (int i = 0; i < n; i++) {
+		cin >> x[i] >> y[i] >> p[i];
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			int sumDist = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
+			int hip = p[i] * p[i];
+			if (sumDist <= hip) isConnected[i][j] = true;
+		}
+	}
+
+	int sol = 0;
+
+	for (int i = 0; i < n; i++) {
+		vector<bool> v(n + 1);
+		visited = v;
+		int cowHear = dfs(i) + 1;
+		sol = max(sol, cowHear);
+	}
+
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+</LanguageSection>

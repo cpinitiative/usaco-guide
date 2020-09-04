@@ -4,7 +4,7 @@ title: Flood Fill
 author: Darren Yao
 prerequisites:
   - dfs
-description: 'A variant of DFS which finds connected components in a graph respresented by a grid.'
+description: 'Finding connected components in a graph respresented by a grid.'
 frequency: 3
 ---
 
@@ -15,29 +15,35 @@ export const problems = {
 		new Problem('CSES', 'Counting Rooms', '1192', 'Easy', false, [], '@B'),
 	],
 	general: [
-		new Problem('CSES', 'Labyrinth', '1193', 'Easy', false, []),
-		new Problem('Silver', 'Why ... (Count Cross)', '716', 'Easy', false, [
-			'FF',
-		]),
-		new Problem('Silver', 'Ice Perimeter', '895', 'Easy', false, []),
+		new Problem('Silver', 'Ice Perimeter', '895', 'Easy', true, []),
 		new Problem(
 			'Silver',
 			'Switching on the Lights',
 			'570',
 			'Normal',
 			false,
-			[]
+			[],
+			'usaco-570'
 		),
 		new Problem('Silver', 'Build Gates', '596', 'Normal', false, []),
-		new Problem('Silver', 'Milk Pails', '620', 'Normal', false, []),
-		new Problem('Silver', "Where's Bessie?", '740', 'Normal', false, []),
 		new Problem(
 			'Silver',
-			'Why Did the Cow Cross the Road III',
-			'716',
+			'Milk Pails',
+			'620',
 			'Normal',
 			false,
-			[]
+			[],
+			'usaco-620'
+		),
+		new Problem('Silver', "Where's Bessie?", '740', 'Normal', true, []),
+		new Problem(
+			'Silver',
+			'Why Did ... (Count Cross)',
+			'716',
+			'Normal',
+			true,
+			[],
+			'usaco-716'
 		),
 		new Problem('Silver', 'Mooyo Mooyo', '860', 'Normal', false, [], ''),
 		new Problem('Silver', 'Multiplayer Moo', '836', 'Hard', false, []),
@@ -48,20 +54,23 @@ export const problems = {
 
 <!-- Mooyo Mooyo: Not a sorting problem, but you can use sorting to simulate gravity. - Write a custom comparator which puts zeroes at the front and use `stable_sort` to keep the relative order of other elements the same. -->
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
-<br />
+## Resources
 
 <Resources>
 	<Resource source="IUSACO" title="10.5 - Flood Fill">
 		module is based off this
 	</Resource>
 	<Resource source="CP2" title="4.2.4 - Flood Fill">
-		{' '}
+		code + example
 	</Resource>
 </Resources>
 
-**Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to, in a multi-dimensional array. Essentially, it’s DFS, but on a grid, and we want to find the connected component of all the connected cells with the same number.  
+## Introduction
+
+**Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to, in a multi-dimensional array. Essentially, it’s DFS, but on a grid, and we want to find the connected component of all the connected cells with the same number.
+
 For example, let’s look at the following grid and see how floodfill works, starting from the top-left cell. The color scheme will be the same: red for the node currently being processed, blue for nodes already visited, and uncolored for nodes not yet visited.
 
 <center>
@@ -360,8 +369,6 @@ static void floodfill(int r, int c, int color){
 
 ## Solution - Counting Rooms
 
-<Spoiler title="Solution">
-
 <LanguageSection>
 
 <CPPSection>
@@ -379,7 +386,7 @@ int n,m;
 string g[2500];
 bool vis[2500][2500];
 
-void ff(int x, int y) {
+void ff(int x, int y) { // flood fill!
     if (x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '#' || vis[x][y]) return;
     vis[x][y] = 1;
     F0R(i,4) ff(x+xd[i],y+yd[i]);
@@ -401,8 +408,6 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 ## Problems
 

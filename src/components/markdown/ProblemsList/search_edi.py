@@ -28,20 +28,22 @@ for _ in data:
 	# pprint.pprint(p.text)
 
 	yes = False
+	if text.lower().count('recur'):
+		yes = True
 	# if text.lower().count('pair'):
 	# 	yes = True
-	for code in p.find_all('pre', ['prettyprint']):
-		text = code.text.lower()
-		# print(text)
-		# if 'queue<' in text or 'LinkedList' in text:
-		# 	yes = True
-		# if text.count('pair<'): 
-		if text.count('vector<'): # or text.count('list'):
-			if text.count('vector<'):
-				print("FOUND VECTOR")
-			# if text.count("list"):
-			# 	print("FOUND ARRAYLIST")
-			yes = True
+	# for code in p.find_all('pre', ['prettyprint']):
+	# 	text = code.text.lower()
+	# 	# print(text)
+	# 	# if 'queue<' in text or 'LinkedList' in text:
+	# 	# 	yes = True
+	# 	# if text.count('pair<'): 
+	# 	if text.count('vector<'): # or text.count('list'):
+	# 		if text.count('vector<'):
+	# 			print("FOUND VECTOR")
+	# 		# if text.count("list"):
+	# 		# 	print("FOUND ARRAYLIST")
+	# 		yes = True
 	if yes:
 		print(e)
 	# yes = False

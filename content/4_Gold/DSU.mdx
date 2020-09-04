@@ -13,6 +13,7 @@ import { Problem } from '../models';
 export const problems = {
 	sample: [new Problem('YS', 'Union Find', 'unionfind', 'Easy', false, [])],
 	general: [
+		new Problem('CSES', 'Road Construction', '1676', 'Easy', false, [], ''),
 		new Problem(
 			'Gold',
 			'Closing the Farm',
@@ -26,42 +27,59 @@ export const problems = {
 			'Gold',
 			'Mootube',
 			'789',
+			'Easy',
+			true,
+			[],
+			'Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)'
+		),
+		new Problem('Silver', 'Wormhole Sort', '992', 'Easy', true, [
+			'DSU',
+		]),
+		new Problem('Gold', 'Moocast', '669', 'Easy', false, [
+			'DSU',
+		]),
+		new Problem(
+			'CSA',
+			'Mountain Time',
+			'mountain-time',
 			'Normal',
 			false,
 			[],
-			'Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)'
+			''
+		),
+	],
+	harder: [
+		new Problem(
+			'Baltic OI',
+			'2016 - Park',
+			'https://oj.uz/problem/view/BOI16_park',
+			'Very Hard',
+			false,
+			[],
+			'baltic-16-park'
 		),
 		new Problem(
 			'Gold',
 			'Favorite Colors',
 			'1042',
 			'Very Hard',
-			false,
+			true,
 			['DSU'],
 			'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $O(1)$ time.'
-		),
-		new Problem(
-			'DMOJ',
-			'APIO - Table Coloring',
-			'apio11p1',
-			'Insane',
-			false,
-			[],
-			'apio-11-color'
 		),
 		new Problem(
 			'Plat',
 			'Valleys',
 			'950',
-			'Insane',
+			'Very Hard',
 			false,
 			['DSU'],
 			'usaco-950'
 		),
-	],
+	]
 };
 
-<Problems problems={problems.sample} />
+<FocusProblem problem={problems.sample[0]} />
 
 ## Resources
 
@@ -90,14 +108,14 @@ export const problems = {
 	>
 		diagrams
 	</Resource>
+</Resources>
+
+<!--
 	<Resource
 		source="CPC"
 		title="3 - Data Structures"
 		url="03_data_structures"
-	></Resource>
-</Resources>
-
-Note: You may prefer to use this in place of DFS for computing connected components.
+	></Resource> -->
 
 <Optional title="DSU Complexity Proofs">
 
@@ -107,6 +125,8 @@ Note: You may prefer to use this in place of DFS for computing connected compone
 </Optional>
 
 ## Implementations
+
+As the implementation is quite simple, you may prefer to use this in place of DFS for computing connected components.
 
 <LanguageSection>
 
@@ -169,6 +189,67 @@ boolean merge(int a, int b) {
 
 </LanguageSection>
 
+## Focus Problem Solution
+
+<FocusProblem problem={problems.sample[0]} />
+
+The solution below is more verbose than some of the templates above. Use whichever implementation you are most comfortable with.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// sz[i] = size of component i, defaults to 1
+// pa[i] = parent of component i. If i is the root component, then pa[i] = i.
+int sz[200000], pa[200000];
+
+int get(int x) {
+    return x == pa[x] ? x : pa[x] = get(pa[x]);
+}
+
+void unite(int a, int b) {
+    a = get(a), b = get(b);
+    if (a == b) return;
+    if (sz[a] > sz[b]) swap(a, b);
+    pa[a] = b;
+    sz[b] += sz[a];
+}
+
+int main() {
+    int n, q; cin >> n >> q;
+    for (int i = 0; i < n; i++) {
+        sz[i] = 1;
+        pa[i] = i;
+    }
+    for (int i = 0; i < q; i++) {
+        int t, u, v; cin >> t >> u >> v;
+        if (t == 0) {
+            unite(u, v);
+        } else {
+            cout << (get(u) == get(v) ? 1 : 0) << endl;
+        }
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
+### Standard
+
+You should already be familiar with the DFS / Binary Search solutions to "Wormhole Sort" and "Moocast."
+
 <Problems problems={problems.general} />
+
+### Harder
+
+Don't worry about solving these if this is the first time you've encountered DSU.
+
+<Problems problems={problems.harder} />

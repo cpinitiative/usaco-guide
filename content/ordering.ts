@@ -28,6 +28,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'intro',
         'choosing-lang',
+        'resources-learning-to-code',
         'running-code',
         'data-types',
         'io',
@@ -37,30 +38,44 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'General',
-      items: ['resources', 'practicing', 'contest-strategy', 'contests', 'oly'],
+      description: 'Useful for competitors of all levels.',
+      items: [
+        'practicing',
+        'contest-strategy',
+        'resources-cp',
+        'contests',
+        'oly',
+      ],
     },
     {
       name: 'Language-Specific',
       items: [
         'factors-choosing',
-        'fast-io',
+        'cpp-command',
         'debugging',
+        'fast-io',
         'generic',
         'cpp-tips',
       ],
     },
     {
-      name: 'USACO',
-      items: [
-        'usaco-month',
-        // 'usaco-camp'
-      ],
+      name: 'USA',
+      description:
+        'Information specific to USACO as well as USA camps and contests.',
+      items: ['usaco-month', 'usaco-camp', 'resources-usa'],
     },
   ],
   bronze: [
     {
       name: 'Basics',
-      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo', 'intro-sets'],
+      items: [
+        'time-comp',
+        'intro-ds',
+        'simulation',
+        'rect-geo',
+        'intro-sorting',
+        'intro-sets',
+      ],
     },
     {
       name: 'Complete Search',
@@ -75,123 +90,126 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   silver: [
     {
-      name: 'Sorting',
+      name: 'Sorting & Sets',
       items: [
         'binary-search-sorted',
         'sorting-custom',
         'intro-ordered',
-        'greedy',
         'custom-cpp-stl',
       ],
     },
     {
       name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans'],
+      description:
+        'Most of these require sorting and/or sets as a prerequisite.',
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
     },
     {
       name: 'Graphs',
+      description:
+        'Every (?) Silver - Plat contest has at least one graph problem.',
       items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
   gold: [
     {
-      name: 'Data Structures',
-      items: ['stacks', 'sliding', 'queues'],
+      name: 'Introductory Number Theory',
+      items: ['divis', 'modular', 'dp-nt'],
     },
     {
       name: 'Dynamic Programming',
-      items: ['intro-dp', 'dp-trees'],
-    },
-    {
-      name: 'Number Theory',
-      items: [
-        'intro-nt', // does this really belong so high up on the list??
-      ],
+      description:
+        'Every (?) Gold and Platinum contest has at least one DP problem.',
+      items: ['intro-dp'],
     },
     {
       name: 'Graphs',
-      items: ['bfs', 'toposort', 'cyc', 'sp'],
+      items: ['bfs', 'dsu', 'toposort', 'sp', 'mst'],
     },
     {
-      name: 'Range Queries',
-      items: ['SRQ', 'springboards', 'PURS'],
+      name: 'Data Structures',
+      items: ['stacks', 'sliding', 'PURS', 'springboards'],
     },
     {
       name: 'Trees',
-      items: ['dsu', 'mst', 'tree-euler'],
+      items: ['tree-euler', 'dp-trees', 'all-roots'],
     },
     {
       name: 'Hashing',
-      items: ['unordered', 'faster-hashmap', 'string-hashing'],
+      description: 'Rarely required at this level, but still good to know.',
+      items: ['string-hashing', 'unordered', 'faster-hashmap'],
     },
   ],
   plat: [
     {
       name: 'Range Queries',
-      items: ['seg-ext', 'RURQ', '2DRQ', 'sqrt'],
+      description:
+        'It seems that no Platinum contest is complete without a segment tree ...',
+      items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'DC-SRQ', 'sqrt'],
     },
     {
       name: 'Trees',
+      description: '... or a tree!',
       items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
+      name: 'Convex Hull',
+      description: 'Most Platinum geometry problems.',
+      items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
+    },
+    {
       name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'comb-sub', 'dp-more'],
-    },
-    {
-      name: 'Graphs',
-      items: [
-        'sp-neg',
-        'BCC-2CC',
-        'SCC',
-        'eulerian-tours',
-        'offline-del',
-        'eulers-formula',
-        'max-flow',
-        'min-cut',
-      ],
-    },
-    {
-      name: 'Strings',
-      items: ['string-search', 'suffix-array'],
-    },
-    {
-      name: 'Convexity',
-      items: [
-        'geo-pri',
-        'sweep-line',
-        'convex-hull',
-        'cht',
-        'LC',
-        'lagrange',
-        'slope',
-      ],
+      items: ['dp-bitmasks', 'dp-ranges', 'DC-DP'],
     },
     {
       name: 'Misc. Topics',
-      items: ['mat-exp', 'bitsets', 'fracture'],
+      items: ['mat-exp', 'bitsets'],
     },
   ],
   adv: [
     {
       name: 'Data Structures',
-      items: ['treaps', 'persistent', 'segtree-beats', 'LCT'],
+      items: ['CntMin', 'segtree-beats', 'persistent', 'treaps'],
+    },
+    {
+      name: 'Convexity',
+      items: ['LC', 'lagrange', 'slope'],
+    },
+    {
+      name: 'Graphs',
+      items: [
+        'sp-neg',
+        'eulerian-tours',
+        'BCC-2CC',
+        'SCC',
+        'offline-del',
+        'eulers-formula',
+        'critical',
+        'LCT',
+      ],
+    },
+    {
+      name: 'Dynamic Programming',
+      items: ['comb-sub', 'dp-more'],
     },
     {
       name: 'Flows',
-      items: ['flow-lb', 'min-cost-flow'],
+      items: ['max-flow', 'min-cut', 'flow-lb', 'min-cost-flow'],
     },
     {
       name: 'Polynomials',
       items: ['fft', 'fft-ext'],
     },
     {
+      name: 'Strings',
+      items: ['string-search', 'suffix-array', 'string-suffix'],
+    },
+    {
       name: 'Misc. Topics',
       items: [
         'extend-euclid',
         'xor-basis',
-        'critical',
-        'string-suffix',
+        'fracture',
         'game-theory',
         'multiplicative',
         'matroid-isect',

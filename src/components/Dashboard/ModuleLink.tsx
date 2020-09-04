@@ -3,27 +3,15 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { ModuleLinkInfo } from '../../models/module';
 import { useContext } from 'react';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import UserDataContext from '../../context/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { Link } from 'gatsby';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
-import TextTooltip from '../Tooltip/TextTooltip';
-import {
-  FrequencyCircleColors,
-  FrequencyLabels,
-  FrequencyTextColors,
-} from '../Frequency';
+import { FrequencyLabels } from '../Frequency';
 import Tooltip from '../Tooltip/Tooltip';
+import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
 
-const LinkWithProgress = styled.span`
-  ${tw`block relative`}
-
+const LinkWithProgress = styled(SidebarLinkWithProgress)`
   &::after {
-    content: '';
-    //left: calc(-3rem - 12px); // -(3rem padding plus half of width)
-    //top: calc(1.5rem - 12px); // half of (1.5 + 1.5padding) rem minus half of height
-    //height: 24px;
-    //width: 24px;
     ${({ small }) => css`
       left: calc(-1.75rem - ${
         small ? '8px' : '10px'
@@ -44,38 +32,20 @@ const LinkWithProgress = styled.span`
       }); // -(3rem padding plus half of width)
     `}
     }
-
-    position: absolute;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
   }
 
   &::after {
-    border-radius: 100%;
-
-    ${props => props.dotColorStyle}
     ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
+  }
+  .mode-dark &::after {
+    ${({ small }) => small && tw`border-2 border-gray-500`}
   }
 
   &::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    display: block;
     left: calc(-1.75rem - 1px);
     @media (min-width: 768px) {
       left: calc(-3rem - 1px); // -(3rem padding plus half of width)
     }
-    top: 0;
-    bottom: 0;
-    ${props => props.lineColorStyle};
-  }
-
-  &:first-of-type::before {
-    top: 22px;
-  }
-
-  &:last-of-type::before {
-    bottom: calc(100% - 22px);
   }
 `;
 
@@ -99,7 +69,6 @@ const StyledLink = styled.div`
     transform: ${({ showDot }) => (showDot ? 'scale(1)' : 'scale(0.1)')};
     border-radius: 100%;
     z-index: 1;
-    ${({ dotColorStyle }) => dotColorStyle}
   }
 
   &:hover {
@@ -108,47 +77,101 @@ const StyledLink = styled.div`
       ${tw`bg-blue-600`}
     }
   }
+  .mode-dark &:hover {
+    &::before {
+      ${tw`bg-gray-400`}
+    }
+  }
 `;
+
+const FrequencyCircleColors = [
+  'group-hover:text-red-500 dark-group-hover:text-red-400',
+  'group-hover:text-orange-500 dark-group-hover:text-orange-400',
+  'group-hover:text-yellow-500 dark-group-hover:text-yellow-400',
+  'group-hover:text-teal-500 dark-group-hover:text-teal-400',
+  'group-hover:text-green-500 dark-group-hover:text-green-400',
+];
+
+const FrequencyTextColors = [
+  'group-hover:text-red-600 dark-group-hover:text-red-400',
+  'group-hover:text-orange-600 dark-group-hover:text-orange-400',
+  'group-hover:text-yellow-600 dark-group-hover:text-yellow-400',
+  'group-hover:text-teal-600 dark-group-hover:text-teal-400',
+  'group-hover:text-green-600 dark-group-hover:text-green-400',
+];
 
 const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
   const { userProgressOnModules } = useContext(UserDataContext);
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
+  // let lineColorStyle = tw`bg-gray-200`;
+  // let dotColorStyle = tw`bg-white`;
+  //
+  // if (progress === 'Reading') {
+  //   lineColorStyle = tw`bg-yellow-400`;
+  //   dotColorStyle = tw`bg-yellow-400`;
+  // } else if (progress === 'Practicing') {
+  //   lineColorStyle = tw`bg-orange-400`;
+  //   dotColorStyle = tw`bg-orange-400`;
+  // } else if (progress === 'Complete') {
+  //   lineColorStyle = tw`bg-green-400`;
+  //   dotColorStyle = tw`bg-green-400`;
+  // } else if (progress === 'Skipped') {
+  //   lineColorStyle = tw`bg-blue-300`;
+  //   dotColorStyle = tw`bg-blue-300`;
+  // } else if (progress === 'Ignored') {
+  //   lineColorStyle = tw`bg-gray-100`;
+  //   dotColorStyle = tw`bg-gray-100`;
+  // }
+
   let lineColorStyle = tw`bg-gray-200`;
-  let dotColorStyle = tw`bg-white`;
+  let dotColorStyle = tw`bg-gray-200`;
+  let darkLineColorStyle = tw`bg-gray-700`;
+  let darkDotColorStyle = tw`bg-gray-700`;
 
   if (progress === 'Reading') {
-    lineColorStyle = tw`bg-yellow-400`;
-    dotColorStyle = tw`bg-yellow-400`;
+    lineColorStyle = tw`bg-yellow-300`;
+    dotColorStyle = tw`bg-yellow-300`;
+    darkLineColorStyle = tw`bg-yellow-400`;
+    darkDotColorStyle = tw`bg-yellow-400`;
   } else if (progress === 'Practicing') {
     lineColorStyle = tw`bg-orange-400`;
     dotColorStyle = tw`bg-orange-400`;
+    darkLineColorStyle = tw`bg-orange-500`;
+    darkDotColorStyle = tw`bg-orange-500`;
   } else if (progress === 'Complete') {
     lineColorStyle = tw`bg-green-400`;
     dotColorStyle = tw`bg-green-400`;
+    darkLineColorStyle = tw`bg-green-400`;
+    darkDotColorStyle = tw`bg-green-400`;
   } else if (progress === 'Skipped') {
     lineColorStyle = tw`bg-blue-300`;
     dotColorStyle = tw`bg-blue-300`;
+    darkLineColorStyle = tw`bg-blue-700`;
+    darkDotColorStyle = tw`bg-blue-700`;
   } else if (progress === 'Ignored') {
     lineColorStyle = tw`bg-gray-100`;
     dotColorStyle = tw`bg-gray-100`;
+    darkLineColorStyle = tw`bg-gray-800`;
+    darkDotColorStyle = tw`bg-gray-800`;
   }
 
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
       dotColorStyle={dotColorStyle}
+      darkLineColorStyle={darkLineColorStyle}
+      darkDotColorStyle={darkDotColorStyle}
       small={progress === 'Not Started' || progress === 'Ignored'}
     >
       <Link to={link.url}>
-        <StyledLink
-          dotColorStyle={dotColorStyle === tw`bg-gray-200`}
-          className="group"
-        >
+        <StyledLink className="group">
           <p
             className={`${
-              progress === 'Ignored' ? 'text-gray-400' : 'text-gray-700'
-            } group-hover:text-blue-800 transition duration-150 ease-in-out mb-1 flex items-center`}
+              progress === 'Ignored'
+                ? 'text-gray-400 dark:text-gray-600'
+                : 'text-gray-700 dark:text-gray-400'
+            } group-hover:text-blue-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out mb-1 flex items-center`}
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
@@ -175,13 +198,13 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
                 count={link.frequency}
                 totalCount={4}
                 color={
-                  'transition duration-150 ease-in-out text-gray-400 group-hover:' +
+                  'transition duration-150 ease-in-out text-gray-400 ' +
                   FrequencyCircleColors[link.frequency]
                 }
               />
               <span
                 className={
-                  `ml-1 transition duration-150 ease-in-out text-gray-500 group-hover:` +
+                  `ml-1 transition duration-150 ease-in-out text-gray-500 ` +
                   FrequencyTextColors[link.frequency]
                 }
               >
@@ -189,7 +212,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
               </span>
             </p>
           )}
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 transition duration-150 ease-in-out leading-5">
+          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out leading-5">
             {link.description}
           </p>
         </StyledLink>

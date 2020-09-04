@@ -11,37 +11,7 @@ frequency: 3
 import { Problem } from '../models';
 
 export const problems = {
-	seg: [
-		new Problem(
-			'CSES',
-			'Range Minimum Queries II',
-			'1649',
-			'Easy',
-			false,
-			['PURQ'],
-			''
-		),
-		new Problem(
-			'YS',
-			'Point Set Range Composite',
-			'point_set_range_composite',
-			'Easy',
-			false,
-			['PURQ'],
-			'Order of operations matters!'
-		),
-		new Problem('Plat', 'Slingshot', '816', 'Very Hard', false, ['PURQ'], ''),
-	],
 	sample: [
-		new Problem(
-			'YS',
-			'Point Add Range Sum',
-			'point_add_range_sum',
-			'Easy',
-			false,
-			['PURS'],
-			''
-		),
 		new Problem(
 			'CSES',
 			'Range Sum Queries II',
@@ -51,6 +21,19 @@ export const problems = {
 			['PURS'],
 			'Can also do range XOR queries w/ update.'
 		),
+	],
+	segSam: [
+		new Problem(
+			'CSES',
+			'Range Minimum Queries II',
+			'1649',
+			'Easy',
+			false,
+			['PURQ'],
+			''
+		),
+	],
+	inv: [
 		new Problem('SPOJ', 'Inversion Counting', 'INVCNT', 'Easy', false, [
 			'PURS',
 		]),
@@ -111,7 +94,7 @@ export const problems = {
 			'also just inversion counting'
 		),
 		new Problem(
-			'HE',
+			'HE@HackerEarth',
 			'Twin Permutations',
 			'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/',
 			'Easy',
@@ -157,9 +140,32 @@ export const problems = {
 		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, [], ''),
 		new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''),
 	],
+	seg: [
+		new Problem(
+			'YS',
+			'Point Set Range Composite',
+			'point_set_range_composite',
+			'Easy',
+			false,
+			['PURQ'],
+			'Order of operations matters!'
+		),
+		new Problem('Gold', 'Springboards', '995', 'Hard', false, [], ''),
+		new Problem('Plat', 'Slingshot', '816', 'Very Hard', false, ['PURQ'], ''),
+	],
 };
 
-<Problems problems={problems.sample} />
+<!-- 	new Problem(
+		'YS',
+		'Point Add Range Sum',
+		'point_add_range_sum',
+		'Easy',
+		false,
+		['PURS'],
+		''
+	), -->
+
+<FocusProblem problem={problems.sample[0]} />
 
 <br />
 
@@ -172,7 +178,7 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 ## Segment Tree
 
-<Problems problems={problems.seg} />
+<FocusProblem problem={problems.segSam[0]} />
 
 A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
 
@@ -186,27 +192,24 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 
 <Resources>
 	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
-		interactive
+		Interactive updates.
 	</Resource>
 	<Resource source="CPH" title="9.3 - Segment Trees" starred>
-		same implementation as below
+		Same implementation as AICash below.
 	</Resource>
-	<Resource
-		source="CPC"
-		title="3 - Data Structures"
-		url="03_data_structures"
-		starred
-	>
-		see slides after union-find
+	<Resource source="CPC" title="3 - Data Structures" url="03_data_structures">
+		See slides after union-find. Also introduces sqrt bucketing.
 	</Resource>
 	<Resource
 		source="cp-algo"
-		title="Segment Tree"
+		title="Simplest form of a Segment Tree"
 		url="data_structures/segment_tree.html"
-		starred
-	></Resource>
-	<Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource>
+	>
+		Advanced versions will be covered in Plat.
+	</Resource>
 </Resources>
+
+<!-- <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource> -->
 
 ### Implementations
 
@@ -215,7 +218,6 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 		source="CF"
 		title="AICash - Efficient and easy segment trees"
 		url="18051"
-		starred
 	>
 		simple implementation
 	</Resource>
@@ -338,7 +340,33 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
-Using this, we can solve "Inversion Counting" in just a few lines (with template).
+### With a BIT
+
+Assumes all updates are in the range $[1,N]$.
+
+<Resources>
+	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
+		{' '}
+		log N{' '}
+	</Resource>
+</Resources>
+
+<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
+
+### With a Segment Tree
+
+Covered in [Platinum](/plat/seg-ext).
+
+
+## Example - Inversion Counting
+
+<FocusProblem problem={problems.inv[0]} />
+
+### Solution
+
+<Spoiler title="Solution">
+
+Using indexed set, we can solve this in just a few lines.
 
 <!-- <Spoiler title="INVCNT with Indexed Set"> -->
 
@@ -371,29 +399,22 @@ int main() {
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
-### With a BIT
+</Spoiler>
 
-Assumes all updates are in the range $[1,N]$.
+## Range Sum Problems
 
-<Resources>
-	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
-		{' '}
-		log N{' '}
-	</Resource>
-</Resources>
-
-<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
-
-### With a Segment Tree
-
-Covered in [Platinum](/plat/seg-ext).
-
-## Practice Problems
+### General
 
 <Problems problems={problems.practice} />
 
-## USACO Problems
+### USACO
 
 Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting.
 
 <Problems problems={problems.usaco} />
+
+## Segment Tree Problems
+
+So far, no Gold problem has _required_ a segment tree.
+
+<Problems problems={problems.seg} />
