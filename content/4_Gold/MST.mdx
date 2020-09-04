@@ -116,7 +116,92 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 </CPPSection>
 
 <JavaSection>
-	
+
+
+```java
+import java.io.*; 
+import java.util.*; 
+ 
+class kruskal{
+   static int comp;
+   static int disjoint[]; 
+   static int size[];
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      int N = Integer.parseInt(st.nextToken());
+      int M = Integer.parseInt(st.nextToken());
+      
+      PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
+      for (int m = 0; m < M; m++){
+         st = new StringTokenizer(sc.readLine());
+         int a = Integer.parseInt(st.nextToken());
+         int b = Integer.parseInt(st.nextToken());
+         int w = Integer.parseInt(st.nextToken());
+      
+         pq.add(new Edge(a,b,w));
+      }
+      comp = N;
+      long ans = 0;
+      disjoint = new int[N+1]; Arrays.fill(disjoint, -1);
+      size = new int[N+1]; Arrays.fill(size, 0);
+      while(!pq.isEmpty()){
+         Edge e = pq.poll();
+         if(find(e.start) != find(e.end)){
+            union(e.start, e.end);
+            ans += e.weight;
+         }
+      }
+      out.println((comp == 1) ? ans : "IMPOSSIBLE");
+      out.close();
+   }
+   public static int find(int v){
+      if(disjoint[v] == -1){
+         return v;
+      }
+      disjoint[v] = find(disjoint[v]);
+      return disjoint[v];
+   }
+   public static void union(int u, int v){
+      int uroot = find(u);
+      int vroot = find(v);
+      if(uroot == vroot){
+         return;
+      }
+      if(size[uroot] < size[vroot]){
+         disjoint[uroot] = vroot;
+         size[vroot] = size[uroot] + size[vroot];
+         comp--;
+      }
+      else{
+         disjoint[vroot] = uroot;
+         size[uroot] = size[uroot] + size[vroot];
+         comp--;
+      }
+   }
+}
+class Edge implements Comparable<Edge>{
+   public int start, end, weight;
+   public Edge(int s, int e, int w){
+      start = s;
+      end = e;
+      weight = w;
+   }
+   public int compareTo(Edge o){
+      if(this.weight < o.weight){
+         return -1;
+      }      
+      else if(this.weight == o.weight){
+         return 0;
+      }
+      else{
+         return 1;
+      }
+   }
+}
+```
 
 </JavaSection>
 </LanguageSection>
