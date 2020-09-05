@@ -44,6 +44,7 @@ const problemsQuery = `{
           tags
           sol
           solQuality
+          url
           uniqueID
         }
       }
