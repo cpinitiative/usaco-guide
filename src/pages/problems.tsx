@@ -37,29 +37,7 @@ export default function ProblemsPage(props: PageProps) {
           </div>
           <CustomHits />
         </InstantSearch>
-        {/*{JSON.stringify(problemIDMap)}*/}
       </div>
     </Layout>
   );
 }
-
-export const pageQuery = graphql`
-  query {
-    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-      edges {
-        node {
-          problems {
-            source
-            name
-            id
-            difficulty
-            starred
-            tags
-            sol
-            solQuality
-          }
-        }
-      }
-    }
-  }
-`;

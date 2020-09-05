@@ -42,7 +42,7 @@ const problemsQuery = `{
           difficulty
           starred
           tags
-          sol
+          solID
           solQuality
           url
           uniqueID
@@ -86,7 +86,7 @@ const queries = [
       'difficulty',
       'starred',
       'tags',
-      'sol',
+      'solID',
       'solQuality',
     ],
   },

@@ -1,12 +1,26 @@
 import * as React from 'react';
+import { Problem } from '../../models/problem';
 
 function ProblemHit({ hit }) {
+  const problem = new Problem(
+    hit.source,
+    hit.name,
+    hit.id,
+    hit.difficulty,
+    hit.starred,
+    hit.tags,
+    hit.solID,
+    hit.solQuality
+  );
+
   return (
     <div className="bg-white shadow p-4 sm:p-6 sm:rounded-lg">
-      <span className="text-blue-700 font-medium text-sm">{hit.source}</span>
+      <span className="text-blue-700 font-medium text-sm">
+        {problem.source}
+      </span>
       <p className="text-xl leading-6 mt-1 mb-2">
-        {hit.name}
-        {hit.starred && (
+        {problem.name}
+        {problem.starred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
             fill="currentColor"
@@ -16,24 +30,40 @@ function ProblemHit({ hit }) {
           </svg>
         )}
       </p>
-      <a
-        href={hit.url}
-        target="_blank"
-        className="underline text-gray-500 text-sm"
-      >
-        View Problem Statement
-        <svg
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="h-4 w-4 inline ml-0.5 mb-1"
+      <div>
+        <a href={problem.url} target="_blank" className="text-gray-500 text-sm">
+          View Problem Statement
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4 inline ml-0.5 mb-1"
+          >
+            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+          </svg>
+        </a>
+      </div>
+
+      {problem.solution?.url && (
+        <a
+          href={problem.solution?.url}
+          target="_blank"
+          className="text-gray-500 text-sm"
         >
-          <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-          <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-        </svg>
-      </a>
+          View Solution
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4 inline ml-0.5 mb-1"
+          >
+            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+          </svg>
+        </a>
+      )}
 
       <div className="pt-4 space-x-2">
-        {hit.tags?.map(tag => (
+        {problem.tags?.map(tag => (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800">
             {tag}
           </span>
@@ -47,7 +77,7 @@ export default function ProblemHits({ hits }) {
   return (
     <div className="grid sm:p-4 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {hits.map(hit => (
-        <ProblemHit hit={hit} />
+        <ProblemHit hit={hit} key={hit.uniqueID} />
       ))}
     </div>
   );

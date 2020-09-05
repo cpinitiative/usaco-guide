@@ -6,7 +6,6 @@ import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 // @ts-ignore
 import PGS from '../PGS.json';
-import { books } from '../ResourcesList';
 
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
@@ -14,6 +13,7 @@ import styled, { css } from 'styled-components';
 
 // @ts-ignore
 import id_to_sol from './id_to_sol.json';
+import { books } from '../../../utils/books';
 
 type ProblemsListProps = {
   title?: string;
@@ -144,7 +144,7 @@ export function ProblemsList(props: ProblemsListProps) {
                     Solution Sketch: {problem?.name}
                   </h3>
                   <div className="mt-4">
-                    <p className="text-gray-700">{problem?.sketch}</p>
+                    <p className="text-gray-700">{problem?.solution?.sketch}</p>
                   </div>
                 </div>
               </div>
@@ -201,8 +201,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
         </div>
       </td>
       <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
-        {problem.des ? (
-          <TextTooltip content={problem.des}>{problem.source}</TextTooltip>
+        {problem.tooltipHoverDescription ? (
+          <TextTooltip content={problem.tooltipHoverDescription}>
+            {problem.source}
+          </TextTooltip>
         ) : (
           problem.source
         )}
@@ -271,114 +273,28 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
 const ProblemSolutionCell = (props: ProblemComponentProps) => {
   const { problem } = props;
-  const isUsaco = source => {
-    const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.includes(posi[ind])) return true;
-    }
-    return false;
-  };
-  const isExternal = link => {
-    return link.startsWith('http');
-  };
-  const isInternal = link => {
-    return /^[a-zA-Z\-0-9]+$/.test(link);
-  };
-  let msg = false;
-  let internal = false;
-  let external = false;
-  let sol = problem.solution ? problem.solution : '';
-  let hover = '';
-  if (sol.length > 0 && isInternal(sol)) {
-    internal = true;
-    sol = '/solutions/' + sol;
-  } else {
-    if (sol == '' && isUsaco(problem.source) && problem.id in id_to_sol) {
-      sol = `http://www.usaco.org/current/data/` + id_to_sol[problem.id];
-    }
-    console.log(problem.name);
-    if (problem.source == 'IOI') {
-      if (sol == '') {
-        for (let i = 1994; i <= 2017; ++i) {
-          let des = i.toString();
-          if (problem.name.indexOf(des) != -1) {
-            let num = i - 1994 + 20;
-            sol = `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
-            break;
-          }
-        }
-      }
-      if (sol == '') {
-        for (let i = 1994; i <= 2017; ++i) {
-          let des = (i % 100).toString();
-          if (des.length == 1) des = '0' + des;
-          if (problem.name.indexOf(des) != -1) {
-            let num = i - 1994 + 20;
-            sol = `https://ioinformatics.org/page/ioi-2010/` + num.toString();
-            break;
-          }
-        }
-      }
-    }
-    if (isExternal(sol)) {
-      external = true;
-    } else if (sol.startsWith('@')) {
-      if (sol == '@@') {
-        sol = '';
-      } else if (sol == '@B') {
-        msg = true;
-        sol = 'Below';
-      } else {
-        msg = true;
-        sol = sol.substring(1);
-      }
-    } else {
-      if (sol.length != 0) {
-        throw new Error('Unrecognized solution - ' + sol);
-      }
-    }
-  }
-  let cph = false;
-  let cphUrl = '';
-  if (msg && sol.startsWith('CPH')) {
-    const getSec = (dictKey, book, title) => {
-      const parts = title.split(' ');
-      let url = book;
-      let sec = parts[0];
-      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
-      if (!/^\d.*$/.test(sec)) return url;
-      if (!(sec in PGS[dictKey]))
-        throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
-      url += '#page=' + PGS[dictKey][sec];
-      return url;
-    };
-    let source = 'CPH';
-    cphUrl = getSec(source, books[source][0], sol.substring(4));
-    msg = false;
-  }
   return (
     <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
       {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
       {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
       {/* {problem.id} */}
-      {msg && problem.hover.length === 0 && <span className="pl-6">{sol}</span>}
-      {msg && problem.hover.length > 0 && sol && (
+      {problem.solution?.label && problem.solution?.labelTooltip === null && (
+        <span className="pl-6">{problem.solution?.label}</span>
+      )}
+      {problem.solution?.label && problem.solution?.labelTooltip?.length > 0 && (
         <span className="pl-6">
-          <TextTooltip content={problem.hover}>{sol}</TextTooltip>
+          <TextTooltip content={problem.solution.labelTooltip}>
+            {problem.solution.label}
+          </TextTooltip>
         </span>
       )}
-      {cphUrl && (
-        <a href={cphUrl} target="_blank" className="pl-6">
-          {sol}
+      {problem.solution?.kind === 'link' && (
+        <a href={problem.solution.url} target="_blank" className="pl-6">
+          {problem.solution.label}
         </a>
       )}
-      {external && (
-        <a href={sol} target="_blank" className="pl-6">
-          External Sol
-        </a>
-      )}
-      {internal && (
+      {problem.solution?.kind === 'internal' && (
         <div className={`inline-flex items-center h-5 group`}>
           {problem.solQuality === 'good' && (
             <Tooltip content="This solution is verified to be complete and of high quality.">
@@ -411,15 +327,17 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
             </Tooltip>
           )}
           {problem.solQuality === 'ok' && <span className="w-6" />}
-          <a href={sol} target="_blank">
+          <a href={problem.solution.url} target="_blank">
             Internal Sol
           </a>
         </div>
       )}
-      {!msg && !external && !internal && problem.sketch && (
+      {problem.solution?.kind === 'sketch' && (
         <span
           className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
-          onClick={() => problem.sketch && props.onShowSolution(problem)}
+          onClick={() =>
+            problem.solution.sketch && props.onShowSolution(problem)
+          }
         >
           <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
             <svg
@@ -437,7 +355,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           Show Sketch
         </span>
       )}
-      {!cphUrl && !msg && !external && !internal && !problem.sketch && (
+      {!problem.solution && (
         <Tooltip
           content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
         >
