@@ -175,9 +175,9 @@ const StyledProblemRow = styled.tr`
   ${({ isActive }) =>
     isActive
       ? css`
-          background-color: #fdfdea;
+          background-color: #fdfdea !important;
           .mode-dark & {
-            background-color: #3c3c00;
+            background-color: #3c3c00 !important;
           }
         `
       : null}
