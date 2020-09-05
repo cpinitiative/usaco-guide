@@ -114,13 +114,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   gold: [
     {
       name: 'Introductory Number Theory',
-      items: ['divis', 'modular', 'dp-nt'],
+      items: ['divis', 'modular'],
     },
     {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp'],
+      items: ['intro-dp', 'dp-nt'],
     },
     {
       name: 'Graphs',
