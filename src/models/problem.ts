@@ -1,5 +1,5 @@
-import PGS from '../components/markdown/PGS.json';
-import id_to_sol from '../components/markdown/ProblemsList/id_to_sol.json';
+import { default as PGS } from '../components/markdown/PGS.json';
+import { default as id_to_sol } from '../components/markdown/ProblemsList/id_to_sol.json';
 import { books } from '../utils/books';
 
 const contests = {

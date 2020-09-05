@@ -3,7 +3,7 @@ import Tooltip from '../Tooltip/Tooltip';
 import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import PGS from './PGS.json';
+import { default as PGS } from './PGS.json';
 import { books } from '../../utils/books';
 
 export function ResourcesList(props) {
