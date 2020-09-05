@@ -35,6 +35,10 @@ const problemsQuery = `{
   data: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     edges {
       node {
+        frontmatter {
+          id
+          title
+        }
         problems {
           source
           name
@@ -52,10 +56,11 @@ const problemsQuery = `{
   }
 }`;
 
-function problemToAlgoliaRecord({ uniqueID, ...rest }) {
+function problemToAlgoliaRecord({ uniqueID, ...rest }, problemModules) {
   return {
     objectID: uniqueID,
     ...rest,
+    problemModules,
   };
 }
 
@@ -73,8 +78,25 @@ const queries = [
     query: problemsQuery,
     transformer: ({ data }) => {
       let res = [];
+      let problemModules = {};
       data.data.edges.forEach(edge => {
-        res = [...res, ...edge.node.problems.map(problemToAlgoliaRecord)];
+        edge.node.problems.forEach(x => {
+          if (!(x.id in problemModules)) {
+            problemModules[x.id] = [];
+          }
+          problemModules[x.id].push({
+            id: edge.node.frontmatter.id,
+            title: edge.node.frontmatter.title,
+          });
+        });
+      });
+      data.data.edges.forEach(edge => {
+        res = [
+          ...res,
+          ...edge.node.problems.map(x =>
+            problemToAlgoliaRecord(x, problemModules[x.id])
+          ),
+        ];
       });
       return res;
     },
@@ -88,6 +110,7 @@ const queries = [
       'tags',
       'solID',
       'solQuality',
+      'problemModules',
     ],
   },
 ];

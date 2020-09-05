@@ -1,5 +1,9 @@
 import * as React from 'react';
 import { Problem } from '../../models/problem';
+import MODULE_ORDERING, {
+  moduleIDToSectionMap,
+} from '../../../content/ordering';
+import { Link } from 'gatsby';
 
 function ProblemHit({ hit }) {
   const problem = new Problem(
@@ -61,6 +65,20 @@ function ProblemHit({ hit }) {
           </svg>
         </a>
       )}
+
+      <p className="text-sm text-gray-500 mt-2">Appears In:</p>
+      <ul className="list-disc ml-6">
+        {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
+          <li key={moduleID}>
+            <Link
+              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${problem.uniqueID}`}
+              className="text-sm text-blue-600"
+            >
+              {moduleLabel}
+            </Link>
+          </li>
+        ))}
+      </ul>
 
       <div className="pt-4 space-x-2">
         {problem.tags?.map(tag => (

@@ -4,16 +4,10 @@ import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-// @ts-ignore
-import PGS from '../PGS.json';
 
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
-
-// @ts-ignore
-import id_to_sol from './id_to_sol.json';
-import { books } from '../../../utils/books';
 
 type ProblemsListProps = {
   title?: string;

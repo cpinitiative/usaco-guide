@@ -1,7 +1,5 @@
-// @ts-ignore
-import PGS from '../components/markdown/PGS.json';
-// @ts-ignore
-import id_to_sol from '../components/markdown/ProblemsList/id_to_sol.json';
+import * as PGS from '../components/markdown/PGS.json';
+import * as id_to_sol from '../components/markdown/ProblemsList/id_to_sol.json';
 import { books } from '../utils/books';
 
 const contests = {
