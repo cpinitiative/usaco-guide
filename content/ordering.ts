@@ -128,7 +128,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding', 'PURS', 'springboards'],
+      items: ['stacks', 'sliding', 'PURS'],
     },
     {
       name: 'Trees',
@@ -169,7 +169,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   adv: [
     {
       name: 'Data Structures',
-      items: ['CntMin', 'segtree-beats', 'persistent', 'treaps'],
+      items: [
+        'springboards',
+        'CntMin',
+        'segtree-beats',
+        'persistent',
+        'treaps',
+      ],
     },
     {
       name: 'Convexity',
