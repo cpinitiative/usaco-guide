@@ -4,6 +4,7 @@ import MODULE_ORDERING, {
   moduleIDToSectionMap,
 } from '../../../content/ordering';
 import { Link } from 'gatsby';
+import { Highlight } from 'react-instantsearch-dom';
 
 function ProblemHit({ hit }) {
   const problem = new Problem(
@@ -23,7 +24,7 @@ function ProblemHit({ hit }) {
         {problem.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
-        {problem.name}
+        <Highlight hit={hit} attribute="name" />
         {problem.starred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
@@ -95,7 +96,7 @@ export default function ProblemHits({ hits }) {
   return (
     <div className="grid sm:p-4 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {hits.map(hit => (
-        <ProblemHit hit={hit} key={hit.uniqueID} />
+        <ProblemHit hit={hit} key={hit.name} />
       ))}
     </div>
   );
