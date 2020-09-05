@@ -8,6 +8,7 @@ import {
   connectSearchBox,
   connectHits,
   connectRefinementList,
+  PoweredBy,
 } from 'react-instantsearch-dom';
 import { searchClient } from '../utils/algoliaSearchClient';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
@@ -45,6 +46,9 @@ export default function ProblemsPage(props: PageProps) {
                 items.sort((x, y) => x.label.localeCompare(y.label))
               }
             />
+          </div>
+          <div className="flex justify-center mt-4">
+            <PoweredBy />
           </div>
           <CustomHits />
         </InstantSearch>
