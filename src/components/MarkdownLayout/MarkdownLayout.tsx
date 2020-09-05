@@ -13,9 +13,7 @@ import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
 import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
-import UserDataContext, {
-  UserLang,
-} from '../../context/UserDataContext/UserDataContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
@@ -28,6 +26,7 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
+import { Language } from '../../context/UserDataContext/properties/userLang';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -81,7 +80,7 @@ const SidebarBottomButtons = ({ onContactUs }) => {
     java: 'Java',
     py: 'Python',
   };
-  const nextLang: { [key: string]: UserLang } = {
+  const nextLang: { [key: string]: Language } = {
     showAll: 'cpp',
     cpp: 'java',
     java: 'py',
