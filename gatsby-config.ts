@@ -4,7 +4,7 @@ export const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
   author: `@usacoguide`,
-  siteUrl: `https://usaco-guide.vercel.app`,
+  siteUrl: `https://usaco.guide/`,
 };
 
 export const plugins = [
