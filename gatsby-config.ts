@@ -3,10 +3,17 @@ require('dotenv').config();
 export const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
-  author: `@usacoteam`,
+  author: `@usacoguide`,
+  siteUrl: `https://usaco-guide.vercel.app`,
 };
 
 export const plugins = [
+  {
+    resolve: 'gatsby-plugin-sitemap',
+    options: {
+      exclude: ['/license/', '/liveupdate/'],
+    },
+  },
   {
     resolve: `gatsby-plugin-typescript`,
     options: {
