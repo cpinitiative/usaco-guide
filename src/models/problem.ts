@@ -286,7 +286,6 @@ export class Problem {
       };
       let source = 'CPH';
       let cphUrl = getSec(source, books[source][0], solID.substring(5));
-      console.log(cphUrl);
       this.solution = {
         kind: 'link',
         label: solID.substring(1),
