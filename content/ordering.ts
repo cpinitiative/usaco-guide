@@ -171,6 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Data Structures',
       items: [
         'springboards',
+        'wavelet',
         'CntMin',
         'segtree-beats',
         'persistent',
