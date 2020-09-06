@@ -85,10 +85,10 @@ To review a couple of terms:
 
 **Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $O(E \log E)$. 
 
-Although Kruskals is usually a little slower than Prim's, the implementation for it is much easier.
+Because Kruskal's is much easier to implement, it is often much easier to use Kruskal's instead of Prim's.
 
-### Solution - Road Reparation
 
+### Implementation
 <LanguageSection>
 <CPPSection>
 
@@ -114,7 +114,11 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 ```
 
 </CPPSection>
+</LanguageSection>
 
+### Solution - Road Reparation
+
+<LanguageSection>
 <JavaSection>
 
 
@@ -226,7 +230,7 @@ The process of finding the closest vertex to the MST can be done efficiently usi
 
 ### Complexity
 
-Note that **Prim's algorithm** has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. However, this can be improved to $O(E \log V)$ if we were to update the distances of vertices rather than re-add them. This keeps the maximum size of the priority-queue bounded at $V$. 
+Note that **Prim's algorithm** has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. 
 
 Alternatively, we may linearly search for the closest vertex instead of using a priority-queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. Note that this complexity is preferable for dense graphs (in which $E \approx V^2$). 
 
@@ -327,6 +331,8 @@ class Pair implements Comparable<Pair>{
 </JavaSection>
 
 </LanguageSection>
+
+
 
 ## USACO Problems
 
