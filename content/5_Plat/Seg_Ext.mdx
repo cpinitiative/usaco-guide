@@ -4,7 +4,7 @@ title: 'More Applications of Segment Tree'
 author: Benjamin Qi, Andi Qu
 prerequisites:
   - PURS
-description: '?'
+description: 'Walking on a Segment Tree, Non-Commutative Combiner Functions'
 frequency: 3
 ---
 
@@ -19,6 +19,15 @@ export const problems = {
 		new Problem('Plat', 'Balancing', '624', 'Normal', false, [], ''),
 	],
 	combSam: [
+		new Problem(
+			'YS',
+			'Point Set Range Composite',
+			'point_set_range_composite',
+			'Easy',
+			false,
+			['PURQ'],
+			'Order of operations matters!'
+		),
 		new Problem(
 			'CSES',
 			'Subarray Sum Queries',
@@ -58,37 +67,6 @@ export const problems = {
 			false,
 			[],
 			'balkan-18-election'
-		),
-	],
-	waveletSam: [
-		new Problem(
-			'YS',
-			'Range K-th Smallest',
-			'range_kth_smallest',
-			'Normal',
-			false,
-			['Wavelet'],
-			'@Below'
-		),
-	],
-	wavelet: [
-		new Problem(
-			'Kattis',
-			'Easy Query',
-			'easyquery',
-			'Very Hard',
-			false,
-			['Wavelet'],
-			'easy-query'
-		),
-		new Problem(
-			'DMOJ',
-			"Ninjaclasher's Wrath 2",
-			'globexcup19s4',
-			'Very Hard',
-			false,
-			['Wavelet'],
-			''
 		),
 	],
 };
@@ -180,11 +158,21 @@ int main() {
 
 <Problems problems={problems.walk} />
 
-## Combining
+## Non-Commutative Combiner Functions
+
+<IncompleteSection>
+
+previously only considered commutative operations like sum, max
+
+</IncompleteSection>
 
 <FocusProblem problem={problems.combSam[0]} />
 
+<FocusProblem problem={problems.combSam[1]} />
+
 ### Solution - Subarray Sum Queries
+
+<Spoiler title="Solution">
 
 In each node of the segment tree that stores information about the range $[l, r]$ we store the following information:
 
@@ -261,31 +249,8 @@ int main() {
 }
 ```
 
+</Spoiler>
+
 ### Problems
 
 <Problems problems={problems.comb} />
-
-## Wavelet Tree
-
-<FocusProblem problem={problems.waveletSam[0]} />
-
-Like a segment tree on values rather than indices.
-
-<Resources>
-	<Resource
-		source="CF"
-		title="Intro to New DS: Wavelet Trees"
-		url="52854"
-		starred
-	>
-		Link in blog post is broken, check my comment.
-	</Resource>
-</Resources>
-
-### Solution - Range K-th Smallest
-
-<IncompleteSection />
-
-### Problems
-
-<Problems problems={problems.wavelet} />
