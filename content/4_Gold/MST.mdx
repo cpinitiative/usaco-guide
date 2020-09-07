@@ -51,7 +51,7 @@ To review a couple of terms:
 
 - An **undirected edge** is an edge that goes both ways
 - A **connected graph** is a graph of vertices such that each vertex can reach every other vertex using undirected edges.
-- A **spanning tree** is a subgraph that's a tree which contains every vertex in the original graph
+- A **spanning tree** is a set of edges that forms a tree and contains every vertex in the original graph
 - A **minimum spanning tree** is a spanning tree such that the sum of edge weights are minimized
 
 <!-- Prim's is recommended; Kruskal's algorithm might TLE -->
@@ -289,15 +289,15 @@ class Edge implements Comparable<Edge>{
   </Resource>
 </Resources>
 
-Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (Instead of closest to the source in Dijkstra's) until all vertices have been added. 
+Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added. 
 
 The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue. 
 
 ### Complexity
 
-Note that **Prim's algorithm** has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. 
+Our implementation has complexity $O(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. 
 
-Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. Note that this complexity is preferable for dense graphs (in which $E \approx V^2$). 
+Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $O(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $O(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$). 
 
 ### Solution - Road Reparation
 
