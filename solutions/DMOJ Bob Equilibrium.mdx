@@ -1,0 +1,175 @@
+---
+id: DMOJ-bob-equilibrium
+title: DMOJ - BOB Equilibrium
+author: Benjamin Qi
+---
+
+**Time Complexity:** $O(N\log N)$
+
+Using centroid decomposition, we can 
+
+ - update the value at some vertex in $O(\log N)$ time
+ - query the sum of the values of all vertices that are distance exactly $D$ away from any vertex in $O(\log N)$ time.
+
+You can check the second approach for [USACO At Large](http://www.usaco.org/current/data/sol_atlarge_platinum_jan18.html) for an explanation of how to do this.
+
+What we need for this problem is slightly different since we need the number of vertices $\le D$ away.
+
+(Note: quite close to TL ...)
+
+```cpp
+void ad(vi& a, int b) {
+	ckmin(b,sz(a)-1); if (b < 0) return;
+	a[b] ++;
+}
+int get(vi& a, int b) {
+	assert(b >= 0 && b < sz(a));
+	return a[b]; }
+void prop(vi& a) { R0F(i,sz(a)-1) a[i] += a[i+1]; }
+
+vi adj[MX];
+
+template<int SZ> struct Centroid {
+	int N;
+	bool done[SZ]; // processed as centroid yet
+	int sub[SZ], cen[SZ], lev[SZ], mn[SZ]; // subtree size
+	vi stor[SZ], STOR[SZ];
+	void dfs(int x, int p) { sub[x] = 1; 
+		trav(y,adj[x]) if (!done[y] && y != p) {
+			dfs(y,x); sub[x] += sub[y]; }
+	}
+	int centroid(int x) {
+		dfs(x,-1); 
+		for (int sz = sub[x];;) {
+			pi mx = {0,0};
+			trav(y,adj[x]) if (!done[y] && sub[y] < sub[x]) 
+				ckmax(mx,{sub[y],y});
+			if (mx.f*2 <= sz) return x; 
+			x = mx.s;
+		}
+	}
+	vector<vi> dist; // dists to all centroid ancs
+	void genDist(int x, int p, int lev) {
+		dist[lev][x] = dist[lev][p]+1;
+		trav(y,adj[x]) if (!done[y] && y != p) genDist(y,x,lev); 
+	} // CEN = {centroid above x, label of centroid subtree}
+	void gen(int CEN, int _x) {
+		int x = centroid(_x); done[x] = 1; 
+		cen[x] = CEN; sub[x] = sub[_x];
+		lev[x] = (CEN == -1 ? 0 : lev[CEN]+1);
+		stor[x].rsz(sub[x]), STOR[x].rsz(sub[x]+1); dbg("HA",x,sub[x]);
+		if (lev[x] >= sz(dist)) dist.eb(N+1,-1); 
+		dist[lev[x]][x] = 0; mn[x] = MOD;
+		trav(y,adj[x]) if (!done[y]) genDist(y,x,lev[x]);
+		trav(y,adj[x]) if (!done[y]) gen(x,y);
+	}
+	void init(int _N) { N = _N; gen(-1,1); } // start with vertex 1
+	void upd(int x, int y) {
+		int cur = x, pre = -1;
+		R0F(i,lev[x]+1) {
+			ad(stor[cur],y-dist[i][x]); 
+			if (pre != -1) ad(STOR[pre],y-dist[i][x]);
+			if (i > 0) pre = cur, cur = cen[cur];
+		}
+	}
+	void propAll() {
+		FOR(i,1,N+1) prop(stor[i]), prop(STOR[i]);
+	}
+	int query(int x) { 
+		int cur = x, pre = -1, ans = 0;
+		R0F(i,lev[x]+1) {
+			ans += get(stor[cur],dist[i][x]); 
+			if (pre != -1) ans -= get(STOR[pre],dist[i][x]);
+			if (i > 0) pre = cur, cur = cen[cur];
+		}
+		return ans;
+	}
+};
+
+/**
+ * Description: Calculates least common ancestor in tree 
+ 	* with root $R$ using binary jumping. 
+ * Time: O(N\log N) build, O(\log N) query
+ * Source: USACO Camp
+ * Verification: Debug the Bugs
+ */
+
+template<int SZ> struct LCA {
+	static const int BITS = 32-__builtin_clz(SZ);
+	int N, R = 1, par[BITS][SZ], depth[SZ]; // vi adj[SZ]; 
+	/// INITIALIZE
+	void ae(int u, int v) { adj[u].pb(v), adj[v].pb(u); }
+	void dfs(int u, int prv){
+		depth[u] = depth[par[0][u] = prv]+1;
+		trav(v,adj[u]) if (v != prv) dfs(v,u); }
+	void init(int _N) {
+		N = _N; dfs(R,0);
+		FOR(k,1,BITS) FOR(i,1,N+1) 
+			par[k][i] = par[k-1][par[k-1][i]];
+	}
+	/// QUERY
+	int getPar(int a, int b) {
+		R0F(k,BITS) if (b&(1<<k)) a = par[k][a];
+		return a; }
+	int lca(int u, int v){
+		if (depth[u] < depth[v]) swap(u,v);
+		u = getPar(u,depth[u]-depth[v]);
+		R0F(k,BITS) if (par[k][u] != par[k][v]) 
+			u = par[k][u], v = par[k][v];
+		return u == v ? u : par[0][u];
+	}
+	int dist(int u, int v) { // # edges on path
+		return depth[u]+depth[v]-2*depth[lca(u,v)]; }
+};
+
+LCA<MX> L;
+Centroid<MX> C;
+int close[MX];
+int N,K;
+
+void dfs1(int x, int p = 0) {
+	trav(t,adj[x]) if (t != p) {
+		dfs1(t,x);
+		ckmin(close[x],close[t]+1);
+	}
+}
+
+void dfs2(int x, int p = 0) {
+	trav(t,adj[x]) if (t != p) {
+		ckmin(close[t],close[x]+1);
+		dfs2(t,x);
+	}
+}
+
+void init() {
+	setIO(); re(N,K);
+	F0R(i,N-1) {
+		int x,y; re(x,y);
+		adj[x].pb(y), adj[y].pb(x);
+	}
+	L.init(N); C.init(N);
+	FOR(i,1,N+1) close[i] = MOD;
+	vi a(K); re(a);
+	trav(t,a) close[t] = 0;
+	dfs1(1); dfs2(1);
+}
+
+int main() {
+	init();
+	FOR(i,1,N+1) {
+		int f,p; re(f,p);
+		int d = L.dist(i,f);
+		if (d <= close[i]+p) {
+			C.upd(i,d-p-1);
+		} else {
+			C.upd(i,close[i]);
+		}
+	}
+	C.propAll();
+	FOR(i,1,N+1) {
+		int t = C.query(i); 
+		pr(t,' ');
+	}
+	ps();
+}
+```
