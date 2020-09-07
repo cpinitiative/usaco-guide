@@ -84,10 +84,9 @@ export default function DailyStreak({ streak }) {
     return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
   }, []);
   const { lastVisitDate } = useContext(UserDataContext);
-  const times = [2, 3, 5, 7, 11, 13, 17, 19, 1e9];
+  const times = [2, 3, 5, 7, 11, 13, 17, 19];
   let maxInd = 0;
-  while (times[maxInd] <= streak) maxInd++;
-
+  while (maxInd < times.length && times[maxInd] <= streak) maxInd++;
   const getComponent = (i, hideYesNo) => {
     if (times[i] <= streak) {
       return (
@@ -100,7 +99,7 @@ export default function DailyStreak({ streak }) {
         />
       );
     }
-    if (i == times.length - 1) {
+    if (i == times.length) {
       return (
         <div className="mb-8">
           <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
