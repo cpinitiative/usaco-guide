@@ -43,7 +43,9 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   };
 
   exportValue = (): any => {
-    return this.value;
+    return {
+      [this.storageKey]: this.value,
+    };
   };
 
   importValueFromObject = (data: object) => {

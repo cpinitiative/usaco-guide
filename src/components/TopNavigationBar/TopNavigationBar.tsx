@@ -23,6 +23,7 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import SectionsDropdown from '../SectionsDropdown';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
+import { searchClient } from '../../utils/algoliaSearchClient';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -54,10 +55,6 @@ const SearchResultsContainer = styled.div`
   }
 `;
 
-const searchClient = algoliasearch(
-  '3CFULMFIDW',
-  'b1b046e97b39abe6c905e0ad1df08d9e'
-);
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_modules' : 'dev_modules';
 
@@ -162,10 +159,10 @@ export default function TopNavigationBar({
       label: SECTION_LABELS[section],
       url: `/${section}/`,
     })),
-    // {
-    //   label: 'Problems',
-    //   url: '/problems',
-    // },
+    {
+      label: 'Problems',
+      url: '/problems/',
+    },
   ];
 
   return (
@@ -178,24 +175,24 @@ export default function TopNavigationBar({
         } mx-auto`}
       >
         <div className="flex justify-between h-16">
-          <div
-            className={`${indexPage ? 'hidden lg:flex' : 'flex'} px-2 lg:px-0`}
-          >
-            {!indexPage && (
-              <Link to="/" className="flex-shrink-0 flex items-center">
-                <div className="block sm:hidden h-10">
-                  <LogoSquare />
-                </div>
-                <div className="hidden sm:block h-9">
-                  <Logo />
-                </div>
-              </Link>
-            )}
+          <div className="flex px-2 lg:px-0">
+            <Link to="/" className="flex-shrink-0 flex items-center">
+              <div className="block sm:hidden h-10">
+                <LogoSquare />
+              </div>
+              <div
+                className={
+                  'hidden sm:block h-9' + (indexPage ? ' lg:hidden' : '')
+                }
+              >
+                <Logo />
+              </div>
+            </Link>
             <div
               className={`hidden ${!indexPage && 'lg:ml-6'} lg:flex space-x-8`}
             >
               <Link
-                to="/dashboard"
+                to="/dashboard/"
                 getProps={({ isCurrent }) => ({
                   className: isCurrent
                     ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
@@ -205,16 +202,16 @@ export default function TopNavigationBar({
                 Dashboard
               </Link>
               <SectionsDropdown currentSection={currentSection} />
-              {/*<Link*/}
-              {/*  to="/problems"*/}
-              {/*  getProps={({ isCurrent }) => ({*/}
-              {/*    className: isCurrent*/}
-              {/*      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'*/}
-              {/*      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',*/}
-              {/*  })}*/}
-              {/*>*/}
-              {/*  Problems*/}
-              {/*</Link>*/}
+              <Link
+                to="/problems/"
+                getProps={({ isCurrent }) => ({
+                  className: isCurrent
+                    ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
+                    : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                })}
+              >
+                Problems
+              </Link>
               <button
                 className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
                 onClick={() => setIsContactUsActive(true)}
@@ -224,9 +221,7 @@ export default function TopNavigationBar({
             </div>
           </div>
           <div
-            className={`flex-1 flex items-center ${
-              indexPage ? 'justify-start' : 'justify-center'
-            } px-2 lg:px-0 lg:ml-6 lg:justify-end`}
+            className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
           >
             <div className="max-w-lg w-full lg:max-w-sm">
               <InstantSearch indexName={indexName} searchClient={searchClient}>

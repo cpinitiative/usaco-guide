@@ -14,6 +14,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
       className={`relative z-10 shadow block transition duration-150 ease-in-out transform dark:bg-gray-900 ${
         isHovered && '-translate-y-1 shadow-lg'
       }`}
+      id={'problem-' + problem.uniqueID}
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center px-6">

@@ -1,0 +1,181 @@
+---
+id: intro-dp
+title: 'Introduction to DP'
+author: Michael Cao, Benjamin Qi
+prerequisites:
+  - complete-rec
+  - modular
+description: 'Speeding up naive recursive solutions with memoization.'
+frequency: 4
+---
+
+export const problems = {
+	usacoEasy: [
+		new Problem(
+			'Gold',
+			'Hoof Paper Scissors',
+			'694',
+			'Easy',
+			false,
+			['DP'],
+			'dp[first i games][# changes][last gesture] -> max games won'
+		),
+		new Problem(
+			'Gold',
+			'Time is Mooney',
+			'993',
+			'Easy',
+			true,
+			['DP'],
+			'dp[time][city] -> money'
+		),
+		new Problem(
+			'Gold',
+			'Teamwork',
+			'863',
+			'Easy',
+			false,
+			['DP'],
+			'let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums'
+		),
+		new Problem(
+			'Gold',
+			'Snakes',
+			'945',
+			'Easy',
+			false,
+			['DP'],
+			'dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums'
+		),
+	],
+	usacoPast: [
+		new Problem(
+			'Gold',
+			'Circular Barn Revisited',
+			'622',
+			'Normal',
+			true,
+			['DP', 'Brute Force'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Taming the Herd',
+			'815',
+			'Normal',
+			false,
+			['DP'],
+			'dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes'
+		),
+		new Problem('Plat', 'Team Building', '673', 'Hard', false, [], ''),
+		new Problem(
+			'Gold',
+			'Stamp Painting',
+			'791',
+			'Hard',
+			false,
+			['DP'],
+			'must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime'
+		),
+	],
+};
+
+<!-- 	new Problem(
+		'Gold',
+		'Moortal Cowmbat',
+		'971',
+		'Hard',
+		true,
+		['DP', 'Prefix Sums', 'All Pairs Shortest Path'],
+		'dp[first i letters form valid combo][last letter] -> time, Floyd Warshall on alphabet, then use prefix sums to speed up transitions.'
+	), -->
+
+**Dynamic Programming** (DP) is an important algorithmic technique in Competitive Programming from the gold division to competitions like the International Olympiad of Informatics. By breaking down the full task into sub-problems, DP avoids the redundant computations of brute force solutions.
+
+Although it is not too difficult to grasp the general ideas behind DP, the technique can be used in a diverse range of problems and is a must-know idea for competitors in the USACO Gold division.
+
+## General Resources
+
+<Resources>
+	<Resource source="CPH" title="7 - DP" starred>
+		Great introduction that covers most classical problems. Mentions
+		memoization.
+	</Resource>
+	<Resource
+		source="TC"
+		title="DP from Novice to Advanced"
+		url="dynamic-programming-from-novice-to-advanced"
+	>
+		great for all skill levels
+	</Resource>
+	<Resource source="CPC" title="6 - DP" url="06_dynamic_programming">
+		examples with nonclassical problems
+	</Resource>
+	<Resource source="CP2" title="3.5 - DP">
+		describes many ways to solve example problem, additional classical examples
+	</Resource>
+	<Resource
+		source="HR@HackerRank"
+		title="DP"
+		url="https://www.hackerrank.com/topics/dynamic-programming"
+	>
+		also covers many classical problems
+	</Resource>
+	<Resource source="PAPS" title="9 - DP">
+		starts with DAGs, which are covered in "Topological Sort"
+	</Resource>
+</Resources>
+
+<Info title="Pro Tip">
+
+It's usually a good idea to write a slower solution first. For example, if the complexity required for full points is $O(N)$ and you come up with a simple $O(N^2)$ solution, then you should definitely type that up first and earn some partial credit. Afterwards, you can rewrite parts of your slow solution until it is of the desired complexity. The slow solution might also serve as something to [stress test](/general/debugging#stress-testing) against.
+
+</Info>
+
+## Introductory USACO
+
+Easier USACO problems that don't require many optimizations or complex states.
+
+<Problems problems={problems.usacoEasy} />
+
+## Classical Problems
+
+The next few modules provide examples of some classical problems, or Dynamic Programming problems which are well known. However, classical doesn't necessarily mean common. Since so many competitors know about these problems, problemsetters rarely set direct applications of them. <!-- Solutions for most of these problems can be found in Chapter 7 of CPH.
+ -->
+
+### Problemsets
+
+<!-- Dynamic Programming is a huge topic, so if you want more practice,  -->
+
+<!-- Here are some other classical problemsets that we found interesting. -->
+
+<Resources>
+	<Resource
+		source="CSES"
+		title="DP Section"
+		url="https://cses.fi/problemset/list/"
+		starred
+	>
+		You should know how to do all of these once you're finished with the DP section. Editorials available <a href="https://codeforces.com/blog/entry/70018">here</a>.
+	</Resource>
+	<Resource
+		source="AC@AtCoder"
+		title="DP Contest"
+		url="https://atcoder.jp/contests/dp/tasks"
+		starred
+	>
+		Some tasks are beyond the scope of Gold.
+	</Resource>
+</Resources>
+
+Some of these problems will be mentioned in the next few modules.
+
+## Harder USACO
+
+<!-- Finish with some more challenging Dynamic Programming problems!  -->
+
+Some of these can be very difficult. You might want to try easier tasks in the next few modules first.
+
+<!-- so skip around if you want. -->
+
+<Problems problems={problems.usacoPast} />

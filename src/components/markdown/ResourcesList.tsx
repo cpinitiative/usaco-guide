@@ -3,7 +3,8 @@ import Tooltip from '../Tooltip/Tooltip';
 import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import PGS from './PGS.json';
+import PGS from './PGS';
+import { books } from '../../utils/books';
 
 export function ResourcesList(props) {
   return (
@@ -34,24 +35,18 @@ export function ResourcesList(props) {
     </div>
   );
 }
-export const books = {
-  PAPS: ['/PAPS.pdf', ' Principles of Algorithmic Problem Solving'],
-  CP2: ['/CP2.pdf', 'Competitive Programming 2'],
-  CPH: ['/CPH.pdf', "Competitive Programmer's Handbook"],
-  IUSACO: ['http://darrenyao.com/', 'An Introduction to USACO'],
-  GCP: [
-    'https://link.springer.com/book/10.1007/978-3-319-72547-5',
-    'Guide to Competitive Programming (based off CPH)',
-  ],
-};
 
 const moduleSources = {
-  CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
-  CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
+  AryanshS: [
+    'https://sendtoaryansh.gitbook.io/informatics-notes/',
+    'sendtoaryansh.gitbook.io',
+  ],
   Benq: [
     'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
     'github.com/bqi343/USACO',
   ],
+  CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
+  CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
   TC: [
     'https://www.topcoder.com/community/competitive-programming/tutorials/',
     'TopCoder',

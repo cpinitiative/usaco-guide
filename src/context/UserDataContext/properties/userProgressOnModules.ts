@@ -46,7 +46,9 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
   };
 
   exportValue = (): any => {
-    return this.value;
+    return {
+      [this.storageKey]: this.value,
+    };
   };
 
   importValueFromObject = (data: object) => {

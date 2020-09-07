@@ -8,7 +8,7 @@ description: 'Introduces Segment Tree, Binary Indexed Tree, and Order Statistic 
 frequency: 3
 ---
 
-import { Problem } from '../models';
+
 
 export const problems = {
 	sample: [
@@ -141,15 +141,6 @@ export const problems = {
 		new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''),
 	],
 	seg: [
-		new Problem(
-			'YS',
-			'Point Set Range Composite',
-			'point_set_range_composite',
-			'Easy',
-			false,
-			['PURQ'],
-			'Order of operations matters!'
-		),
 		new Problem('Gold', 'Springboards', '995', 'Hard', false, [], ''),
 		new Problem('Plat', 'Slingshot', '816', 'Very Hard', false, ['PURQ'], ''),
 	],
@@ -340,6 +331,8 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
+To use indexed set locally, you need to install GCC as mentioned in [Running Code](/general/running-code).
+
 ### With a BIT
 
 Assumes all updates are in the range $[1,N]$.
@@ -357,7 +350,6 @@ Assumes all updates are in the range $[1,N]$.
 
 Covered in [Platinum](/plat/seg-ext).
 
-
 ## Example - Inversion Counting
 
 <FocusProblem problem={problems.inv[0]} />
@@ -367,8 +359,6 @@ Covered in [Platinum](/plat/seg-ext).
 <Spoiler title="Solution">
 
 Using indexed set, we can solve this in just a few lines.
-
-<!-- <Spoiler title="INVCNT with Indexed Set"> -->
 
 ```cpp
 #include <bits/stdc++.h>
@@ -395,7 +385,6 @@ int main() {
 }
 ```
 
-<!-- </Spoiler> -->
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
