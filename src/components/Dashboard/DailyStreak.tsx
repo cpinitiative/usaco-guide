@@ -17,7 +17,8 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+  const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
+  const hours = Math.floor((milliseconds / 1000 / 60 / 60) % 24);
   const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
   const seconds = Math.floor((milliseconds / 1000) % 60);
 
@@ -25,7 +26,8 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
     <div>
       Come back in
       <p className="text-2xl my-2">
-        {hours} hours {minutes} minutes {seconds} seconds
+        {days != 0 ? `${days} days` : ''} {hours} hours {minutes} minutes{' '}
+        {seconds} seconds
       </p>{' '}
       to unlock this cow photo!
     </div>
@@ -80,12 +82,71 @@ export default function DailyStreak({ streak }) {
     }
   `);
   const cows = React.useMemo(() => {
-    return data.allFile.edges
-      .map(({ node }) => node.childImageSharp.fluid)
-      .reverse();
+    return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
   }, []);
   const { lastVisitDate } = useContext(UserDataContext);
   const tomorrowMilliseconds = lastVisitDate + 1000 * 60 * 60 * 20;
+  const times = [2, 3, 5, 7, 11, 13, 17, 19, 1e9];
+  let maxInd = 0;
+  while (times[maxInd] <= streak) maxInd++;
+
+  const getComponent = (i, hideYesNo) => {
+    if (times[i] <= streak) {
+      return (
+        <PhotoCard
+          key={i}
+          img={cows[i]}
+          day={times[i]}
+          hiddenOnDesktop={hideYesNo}
+          tomorrowMilliseconds={-1}
+        />
+      );
+    }
+    if (i == times.length - 1) {
+      return (
+        <div className="mb-8">
+          <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="text-center">
+                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                  You've ran out of cow photos!
+                </h3>
+                <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
+                  Custom message for ppl who are addicted!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <PhotoCard
+          key={i}
+          img={cows[i]}
+          day={times[i]}
+          hiddenOnDesktop={hideYesNo}
+          tomorrowMilliseconds={
+            lastVisitDate + 1000 * 60 * 60 * 20 * (times[i] - streak)
+          }
+        />
+      );
+    }
+  };
+  const leftCows = () => {
+    const items = [];
+    for (let i = maxInd; i >= 0; --i) {
+      items.push(getComponent(i, (maxInd - i) % 2 == 1));
+    }
+    return items;
+  };
+  const rightCows = () => {
+    const items = [];
+    for (let i = maxInd - 1; i >= 0; i -= 2) {
+      items.push(getComponent(i, false));
+    }
+    return items;
+  };
   return (
     <>
       <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden lg:col-span-2">
@@ -100,55 +161,18 @@ export default function DailyStreak({ streak }) {
                 {streak !== 1 && 's'}.
               </p>
               <p>
-                Each day you visit, you'll unlock a new cow photo (until we run
-                out). If you break the streak, the cow photos will disappear!!
+                Each (prime) day you visit, you'll unlock a new cow photo (until
+                we run out). If you break the streak, the cow photos will
+                disappear!!
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div>
-        {cows.map((value, index) => {
-          const need = cows.length - index;
-          const photoNumber = streak - need;
-          if (photoNumber >= 0) {
-            return (
-              <PhotoCard
-                key={index}
-                img={cows[index]}
-                day={need + 1}
-                hiddenOnDesktop={photoNumber % 2 === 1}
-                tomorrowMilliseconds={
-                  need === streak ? tomorrowMilliseconds : -1
-                }
-              />
-            );
-          }
-          return null;
-        })}
-      </div>
+      <div>{leftCows()}</div>
 
-      <div className="hidden lg:block">
-        {cows.map((value, index) => {
-          const need = cows.length - index;
-          const photoNumber = streak - need;
-          if (photoNumber % 2 === 1 && photoNumber >= 0) {
-            return (
-              <PhotoCard
-                key={index}
-                img={cows[index]}
-                day={need + 1}
-                hiddenOnDesktop={false}
-                tomorrowMilliseconds={
-                  need === streak ? tomorrowMilliseconds : -1
-                }
-              />
-            );
-          }
-          return null;
-        })}
-      </div>
+      <div className="hidden lg:block">{rightCows()}</div>
     </>
   );
 }
