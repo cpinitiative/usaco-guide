@@ -110,7 +110,15 @@ export default function DailyStreak({ streak }) {
                   You've ran out of cow photos!
                 </h3>
                 <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
-                  Custom message for ppl who are addicted!
+                  Seeing that you're addicted to USACO Guide, you should
+                  definitely reach out to us regarding{' '}
+                  <a
+                    href="/general/contributing"
+                    className="font-bold text-blue-500"
+                  >
+                    contributing
+                  </a>
+                  !
                 </div>
               </div>
             </div>
