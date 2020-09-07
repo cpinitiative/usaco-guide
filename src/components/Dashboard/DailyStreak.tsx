@@ -26,10 +26,9 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
     <div>
       Come back in
       <p className="text-2xl my-2">
-        {days != 0 ? `${days} days` : ''} {hours} hours {minutes} minutes{' '}
-        {seconds} seconds
-      </p>{' '}
-      to unlock this cow photo!
+        {hours} hours {minutes} minutes {seconds} seconds
+      </p>
+      to {days ? 'continue your streak' : 'unlock this cow photo'}!
     </div>
   );
 };
@@ -85,7 +84,6 @@ export default function DailyStreak({ streak }) {
     return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
   }, []);
   const { lastVisitDate } = useContext(UserDataContext);
-  const tomorrowMilliseconds = lastVisitDate + 1000 * 60 * 60 * 20;
   const times = [2, 3, 5, 7, 11, 13, 17, 19, 1e9];
   let maxInd = 0;
   while (times[maxInd] <= streak) maxInd++;
@@ -127,7 +125,9 @@ export default function DailyStreak({ streak }) {
           day={times[i]}
           hiddenOnDesktop={hideYesNo}
           tomorrowMilliseconds={
-            lastVisitDate + 1000 * 60 * 60 * 20 * (times[i] - streak)
+            lastVisitDate +
+            1000 * 60 * 60 * 20 +
+            1000 * 60 * 60 * 24 * (times[i] - streak - 1)
           }
         />
       );
