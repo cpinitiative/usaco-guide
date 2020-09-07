@@ -134,6 +134,7 @@ export default function DailyStreak({ streak }) {
     }
   };
   const leftCows = () => {
+    // 2-column format for desktop, so hide every other cow
     const items = [];
     for (let i = maxInd; i >= 0; --i) {
       items.push(getComponent(i, (maxInd - i) % 2 == 1));
@@ -141,6 +142,7 @@ export default function DailyStreak({ streak }) {
     return items;
   };
   const rightCows = () => {
+    // desktop-only
     const items = [];
     for (let i = maxInd - 1; i >= 0; i -= 2) {
       items.push(getComponent(i, false));
@@ -171,7 +173,6 @@ export default function DailyStreak({ streak }) {
       </div>
 
       <div>{leftCows()}</div>
-
       <div className="hidden lg:block">{rightCows()}</div>
     </>
   );
