@@ -15,6 +15,8 @@ For more information contributing, view our [Contributing module](https://usaco.
 - If you're looking to add/modify problem solutions, refer to the `solutions/` folder.
 - (Almost) all the other files and folders are related to the front-end code.
 
+For new contributors: please do not commit directly to master. Instead, make a Pull Request so a team member can review your changes. Note that the website will _auto-update_ any changes pushed to master.
+
 Content is written in Markdown ([MDX](https://mdxjs.com/)), custom components, and limited Latex support from [Katex](https://katex.org/).
 
 ## Tech Stack
