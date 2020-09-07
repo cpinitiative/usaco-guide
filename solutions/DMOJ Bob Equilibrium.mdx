@@ -8,12 +8,16 @@ author: Benjamin Qi
 
 Using centroid decomposition, we can 
 
- - update the value at some vertex in $O(\log N)$ time
- - query the sum of the values of all vertices that are distance exactly $D$ away from any vertex in $O(\log N)$ time.
+ - Update the value at some vertex $v$ in $O(\log N)$ time
+ - Query the sum of the values of all vertices that are distance exactly $d$ away from some vertex $v$ in $O(\log N)$ time.
 
 You can check the second approach for [USACO At Large](http://www.usaco.org/current/data/sol_atlarge_platinum_jan18.html) for an explanation of how to do this.
 
-What we need for this problem is slightly different since we need the number of vertices $\le D$ away.
+What we need for this problem is slightly different; first we need to process some number of updates of the following form:
+
+ - Add 1 to the values of all vertices at most $d$ away from some vertex $v$.
+
+And then output the values at all vertices at the end. We can use prefix sums for this.
 
 (Note: quite close to TL ...)
 
@@ -33,7 +37,7 @@ template<int SZ> struct Centroid {
 	int N;
 	bool done[SZ]; // processed as centroid yet
 	int sub[SZ], cen[SZ], lev[SZ], mn[SZ]; // subtree size
-	vi stor[SZ], STOR[SZ];
+	vi stor[SZ], STOR[SZ]; // STOR removes overcount
 	void dfs(int x, int p) { sub[x] = 1; 
 		trav(y,adj[x]) if (!done[y] && y != p) {
 			dfs(y,x); sub[x] += sub[y]; }
@@ -75,7 +79,7 @@ template<int SZ> struct Centroid {
 	void propAll() {
 		FOR(i,1,N+1) prop(stor[i]), prop(STOR[i]);
 	}
-	int query(int x) { 
+	int query(int x) { // query value at vertex
 		int cur = x, pre = -1, ans = 0;
 		R0F(i,lev[x]+1) {
 			ans += get(stor[cur],dist[i][x]); 
