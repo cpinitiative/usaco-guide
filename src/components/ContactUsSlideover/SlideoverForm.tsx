@@ -15,7 +15,7 @@ type SlideoverProps = {
 export default function SlideoverForm(props: SlideoverProps) {
   return (
     <Transition show={props.isOpen} timeout={700}>
-      <div className="fixed inset-0 overflow-hidden z-10">
+      <div className="fixed inset-0 overflow-hidden z-20">
         <div className="absolute inset-0 overflow-hidden">
           <Transition
             enter="ease-in-out duration-500"

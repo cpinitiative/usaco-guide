@@ -166,156 +166,163 @@ export default function TopNavigationBar({
   ];
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
-      <div
-        className={`${
-          indexPage
-            ? 'max-w-6xl px-2 lg:px-6'
-            : 'max-w-7xl px-2 sm:px-4 lg:px-8'
-        } mx-auto`}
-      >
-        <div className="flex justify-between h-16">
-          <div className="flex px-2 lg:px-0">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <div className="block sm:hidden h-10">
-                <LogoSquare />
-              </div>
+    <>
+      <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
+        <div
+          className={`${
+            indexPage
+              ? 'max-w-6xl px-2 lg:px-6'
+              : 'max-w-7xl px-2 sm:px-4 lg:px-8'
+          } mx-auto`}
+        >
+          <div className="flex justify-between h-16">
+            <div className="flex px-2 lg:px-0">
+              <Link to="/" className="flex-shrink-0 flex items-center">
+                <div className="block sm:hidden h-10">
+                  <LogoSquare />
+                </div>
+                <div
+                  className={
+                    'hidden sm:block h-9' + (indexPage ? ' lg:hidden' : '')
+                  }
+                >
+                  <Logo />
+                </div>
+              </Link>
               <div
-                className={
-                  'hidden sm:block h-9' + (indexPage ? ' lg:hidden' : '')
-                }
+                className={`hidden ${
+                  !indexPage && 'lg:ml-6'
+                } lg:flex space-x-8`}
               >
-                <Logo />
+                <Link
+                  to="/dashboard/"
+                  getProps={({ isCurrent }) => ({
+                    className: isCurrent
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                  })}
+                >
+                  Dashboard
+                </Link>
+                <SectionsDropdown currentSection={currentSection} />
+                <Link
+                  to="/problems/"
+                  getProps={({ isCurrent }) => ({
+                    className: isCurrent
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                  })}
+                >
+                  Problems
+                </Link>
+                <button
+                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
+                  onClick={() => setIsContactUsActive(true)}
+                >
+                  Contact Us
+                </button>
               </div>
-            </Link>
+            </div>
             <div
-              className={`hidden ${!indexPage && 'lg:ml-6'} lg:flex space-x-8`}
+              className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
             >
-              <Link
-                to="/dashboard/"
-                getProps={({ isCurrent }) => ({
-                  className: isCurrent
-                    ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
-                    : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-                })}
-              >
-                Dashboard
-              </Link>
-              <SectionsDropdown currentSection={currentSection} />
-              <Link
-                to="/problems/"
-                getProps={({ isCurrent }) => ({
-                  className: isCurrent
-                    ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
-                    : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-                })}
-              >
-                Problems
-              </Link>
-              <button
-                className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
-                onClick={() => setIsContactUsActive(true)}
-              >
-                Contact Us
-              </button>
+              <div className="max-w-lg w-full lg:max-w-sm">
+                <InstantSearch
+                  indexName={indexName}
+                  searchClient={searchClient}
+                >
+                  <Configure
+                    hitsPerPage={10}
+                    attributesToSnippet={['content:30']}
+                  />
+                  <ConnectedModuleSearch />
+                </InstantSearch>
+              </div>
             </div>
-          </div>
-          <div
-            className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
-          >
-            <div className="max-w-lg w-full lg:max-w-sm">
-              <InstantSearch indexName={indexName} searchClient={searchClient}>
-                <Configure
-                  hitsPerPage={10}
-                  attributesToSnippet={['content:30']}
-                />
-                <ConnectedModuleSearch />
-              </InstantSearch>
+            <div className="flex items-center lg:hidden">
+              {/* Mobile menu button */}
+              <MobileMenuButtonContainer
+                className="inline-flex items-center justify-center p-2"
+                aria-label="Main menu"
+                aria-expanded="false"
+                onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+              >
+                {/* Icon when menu is closed. */}
+                {/* Menu open: "hidden", Menu closed: "block" */}
+                <svg
+                  className={`${isMobileNavOpen ? 'hidden' : 'block'} h-6 w-6`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+                {/* Icon when menu is open. */}
+                {/* Menu open: "block", Menu closed: "hidden" */}
+                <svg
+                  className={`${isMobileNavOpen ? 'block' : 'hidden'} h-6 w-6`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </MobileMenuButtonContainer>
             </div>
-          </div>
-          <div className="flex items-center lg:hidden">
-            {/* Mobile menu button */}
-            <MobileMenuButtonContainer
-              className="inline-flex items-center justify-center p-2"
-              aria-label="Main menu"
-              aria-expanded="false"
-              onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-            >
-              {/* Icon when menu is closed. */}
-              {/* Menu open: "hidden", Menu closed: "block" */}
-              <svg
-                className={`${isMobileNavOpen ? 'hidden' : 'block'} h-6 w-6`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-              {/* Icon when menu is open. */}
-              {/* Menu open: "block", Menu closed: "hidden" */}
-              <svg
-                className={`${isMobileNavOpen ? 'block' : 'hidden'} h-6 w-6`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </MobileMenuButtonContainer>
-          </div>
-          <div className="hidden lg:ml-4 lg:flex lg:items-center">
-            <div className="flex-shrink-0">
-              <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
+            <div className="hidden lg:ml-4 lg:flex lg:items-center">
+              <div className="flex-shrink-0">
+                <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {/*
+        {/*
         Mobile menu, toggle classes based on menu state.
 
         Menu open: "block", Menu closed: "hidden"
       */}
-      <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
-        <div className="pt-2 pb-3 space-y-1">
-          {mobileLinks.map((link, idx) => (
-            <Link
-              key={link.url}
-              to={link.url}
-              getProps={({ isCurrent }) => ({
-                className: isCurrent
-                  ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
-                  : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-              })}
+        <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
+          <div className="pt-2 pb-3 space-y-1">
+            {mobileLinks.map((link, idx) => (
+              <Link
+                key={link.url}
+                to={link.url}
+                getProps={({ isCurrent }) => ({
+                  className: isCurrent
+                    ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
+                    : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                })}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <button
+              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+              onClick={() => setIsContactUsActive(true)}
             >
-              {link.label}
-            </Link>
-          ))}
-          <button
-            className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
-            onClick={() => setIsContactUsActive(true)}
-          >
-            Contact Us
-          </button>
+              Contact Us
+            </button>
+          </div>
+          <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+            <UserAuthButton className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" />
+          </div>
         </div>
-        <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-          <UserAuthButton className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" />
-        </div>
-      </div>
+      </nav>
 
       <ContactUsSlideover
         isOpen={isContactUsActive}
         onClose={() => setIsContactUsActive(false)}
       />
-    </nav>
+    </>
   );
 }
