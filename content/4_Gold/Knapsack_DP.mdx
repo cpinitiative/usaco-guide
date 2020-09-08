@@ -136,7 +136,48 @@ $dp(N) = dp(N-1) + dp(N-2) + dp(N-3) + dp(N-4) + dp(N-5) + dp(N-6)$.
 
 Start with the base case that $dp(0) = 1$, and then the rest of the DP values can be computed in increasing order using the recurrence above. Keep in mind that $dp(x)$ isn't defined for negative values of x.
 
+<LanguageSection>
 
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+int main() {
+	int n;
+	cin >> n;
+	
+	ll dp[n+1];
+	dp[0] = 1;
+	for(int i = 1; i<= n; i++) dp[i] = 0;
+	for(int i = 1; i<= n; i++) {
+		for(int j = 1; j <= 6; j++) {
+			if(i-j >= 0) {
+				dp[i] += dp[i-j];
+				dp[i] %= 1000000007;
+			}
+		}
+	}
+
+	cout << dp[n] << "\n";
+
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+<JavaSection/>
+
+<PySection/>
+
+</LanguageSection>
 
 <IncompleteSection>
 
