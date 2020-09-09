@@ -2,6 +2,11 @@
 
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
+Thank you to the following companies:
+
+- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), for providing free hosting & continuous deployment
+- [Algolia](https://algolia.com/), for providing search for free
+
 ## Documentation
 
 - To get this site running locally, refer to the [Front End Documentation](docs/Front%20End%20Documentation.md).
@@ -27,8 +32,11 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
-- Vercel
 
 ## Contact Info
 
 If you have any questions, please reach out to Nathan Wang at nathan.r.wang@gmail.com, or through social media (some variant of @thecodingwizard)
+
+---
+
+[![Powered by Vercel](./powered-by-vercel.svg)](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
