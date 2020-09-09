@@ -569,11 +569,15 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
-                      Currently the site is closed source for potential security
-                      concerns, though we're looking for a way for others to
-                      contribute more easily. If there are any points
-                      for/against open-sourcing this project, please let the
-                      guide coordinator know.
+                      Yes! Check out our{' '}
+                      <a
+                        href="https://github.com/cpinitiative/usaco-guide"
+                        target="_blank"
+                        className="text-blue-600 underline"
+                      >
+                        Github Repository
+                      </a>
+                      .
                     </p>
                   </dd>
                 </div>
