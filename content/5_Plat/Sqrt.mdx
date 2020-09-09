@@ -6,8 +6,6 @@ description: Splitting up data into smaller chunks to speed up processing.
 frequency: 1
 ---
 
-
-
 export const problems = {
 	sam: [
 		new Problem(
@@ -112,31 +110,93 @@ export const problems = {
 		'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2009/solutions.pdf'
 	), -->
 
+<!-- GP of Nanjing? -->
+
 <FocusProblem problem={problems.sam[0]} />
 
+You should already have done this problem in [Point Update Range Sum](/gold/PURS), but here we'll present two more approaches. Both run in $O((N+Q)\sqrt N)$ time.
 
-## Blocks of $\sqrt N$
+<Resources>
+	<Resource source="CPH" title="27 - Square Root Algorithms"></Resource>
+</Resources>
 
-partitioning into sqrt blocks (each block can have some sort of data structure ...)
+## Blocking
 
-<IncompleteSection>
+<!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
+ -->
 
-solution for sample problem
+See the first example in CPH.
 
-</IncompleteSection>
+```cpp
+int n,q;
+vi x;
+ll block[450];
+int BLOCK;
+ 
+ll sum(int a) { // sum of first a elements of array in O(sqrt(n)) time
+	ll ans = 0;
+	F0R(i,a/BLOCK) ans += block[i];
+	FOR(i,a/BLOCK*BLOCK,a) ans += x[i];
+	return ans;
+}
+ 
+void upd(int a, int b) { // O(1) query
+	block[a/BLOCK] -= x[a];
+	x[a] = b;
+	block[a/BLOCK] += x[a];
+}
+ 
+int main() {
+    setIO(); re(n,q); x.rsz(n); re(x);
+    BLOCK = sqrt(n);
+    F0R(i,n) block[i/BLOCK] += x[i];
+    F0R(i,q) {
+        int t,a,b; re(t,a,b);
+        if (t == 1) upd(a-1,b);
+        else ps(sum(b)-sum(a-1));
+    }
+}
+ ```
 
+## Batching
 
-## Batches of $\sqrt N$
+See the CPH section on "batch processing."
 
-processing sqrt queries / updates at a time
+Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each sum query can be calculated with prefix sums and by examining each update within the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and recalculate prefix sums.
 
-<IncompleteSection>
+```cpp
+int n,q;
+vi x;
+vl cum;
 
-solution for sample problem
+void build() {
+	cum = {0};
+	trav(t,x) cum.pb(cum.bk+t);
+}
 
-</IncompleteSection>
+int main() {
+	setIO(); re(n,q);
+	x.rsz(n); re(x);
+	build();
+	vpi upd;
+	F0R(i,q) {
+		int t,a,b; re(t,a,b);
+		if (t == 1) {
+			a --;
+			upd.pb({a,b-x[a]}); x[a] = b;
+		} else {
+			ll ans = cum[b]-cum[a-1]; a --, b--;
+			trav(u,upd) if (a <= u.f && u.f <= b) ans += u.s;
+			ps(ans);
+		}
+		if (sz(upd)*sz(upd) >= n) upd.clear(), build();
+	}
+}
+```
 
 ## Mo's Algorithm
+
+See CPH 27.3.
 
 <Resources>
 	<Resource source="CF" title="Mo's Algorithm" url="7383"></Resource>
@@ -148,19 +208,15 @@ solution for sample problem
 
 ## Additional Notes
 
-Low constraints (ex. $N=5\cdot 10^4$) and/or higher time limits (greater than 2s) can be signs that sqrt decomp is intended.
+Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s) can be signs that sqrt decomp is intended.
 
-Some solutions have complexity $\mathcal{O}(N\sqrt{N\log N})$ ...
+[CPH 262](/CPH.pdf#page=262):
 
-optimization tips? (ez to get TLE with bad constant ..., )
+> In practice, it is not necessary to use the exact value of $\sqrt n$ as a parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is different from $\sqrt n$. The optimal parameter depends on the problem and input. For example, if an algorithm often goes through the blocks but rarely inspects single elements inside the blocks, it may be a good idea to divide the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$ elements.
 
-<Warning>
+As another example, if an update takes time proportional to the size of one block ($O(n/k)$) while a query takes time proportional to the number of blocks times $\log n$ ($O(k\log n)$) then we can set $k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time $O(\sqrt{n\log n})$.
 
-optimal block size varies a lot
-
-</Warning>
-
-can get AC with suboptimal complexity ... Fast $O(N\sqrt N\log N)$ where the $\log N$ factor comes from a BIT can beat $O(N\sqrt N)$ (depending on the test data ...)
+Solutions with worse complexities are not necessarily slower (at least for problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an instance where a fast $O(n\sqrt n\log n)$ solution passed (where $\log n$ came from a BIT) while an $O(n\sqrt n)$ solution did not ... So constant factors are important!
 
 ## On Trees
 
