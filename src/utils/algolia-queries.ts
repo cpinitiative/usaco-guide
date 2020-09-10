@@ -107,10 +107,13 @@ const queries = [
       'id',
       'difficulty',
       'starred',
-      'tags',
       'solID',
       'solQuality',
-      'problemModules',
+      'url',
+      // I think these two are causing Algolia to constantly re-update bc they're arrays/objects
+      // and gatsby-plugin-algolia doesn't do deep comparisons (?)
+      // 'tags',
+      // 'problemModules',
     ],
   },
 ];
