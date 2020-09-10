@@ -1,0 +1,123 @@
+---
+id: usaco-645
+title: USACO Open Contest 2016 Gold - Splitting the Field
+author: Óscar Garries
+---
+
+Official Editorial: http://www.usaco.org/current/data/sol_split_gold_open16.html
+
+<LanguageSection>
+<CPPSection>
+## C++ Implementation
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std; const int MX = 5e4; int n, x[MX], y[MX], arX[MX], arY[MX]; multiset<int> leftX, leftY, rightX, rightY, upX, upY, downX, downY; long long area, sol;
+
+bool cmp (const int& a, const int& b) { if (x[a] == x[b]) return y[a] < y[b];
+
+    return x[a] < x[b];
+
+}
+
+bool cmp1 (const int& a, const int &b) { if (y[a] == y[b]) return x[a] < x[b];
+
+    return y[a] < y[b];
+
+}
+
+void fn (int index, int ar[], multiset<int>& firstRectangleX, multiset<int>& firstRectangleY, multiset<int>& secondRectangleX, multiset<int>& secondRectangleY) { int j = ar[index], y1, x1, y2, x2; long long areaFirst = 0, areaSecond = 0;
+
+    firstRectangleX.insert(x[j]);
+    firstRectangleY.insert(y[j]);
+    secondRectangleX.erase(secondRectangleX.lower_bound(x[j]));
+    secondRectangleY.erase(secondRectangleY.lower_bound(y[j]));
+
+    x1 = *firstRectangleX.begin();
+    y1 = *firstRectangleY.begin();
+    x2 = *firstRectangleX.rbegin();
+    y2 = *firstRectangleY.rbegin();
+    areaFirst = (x2 - x1) * 1LL * (y2 - y1);
+
+    if (!secondRectangleX.empty()) {
+    	x1 = *secondRectangleX.begin();
+    	y1 = *secondRectangleY.begin();
+    	x2 = *secondRectangleX.rbegin();
+    	y2 = *secondRectangleY.rbegin();
+    	areaSecond = (x2 - x1) * 1LL * (y2 - y1);
+    }
+
+    sol = max (sol, area - (areaFirst + areaSecond));
+
+}
+
+int main () { freopen("split.in", "r", stdin); freopen("split.out", "w", stdout);
+
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+    	arX[i] = i;
+    	arY[i] = i;
+    	cin >> x[i] >> y[i];
+    	rightX.insert(x[i]);
+    	rightY.insert(y[i]);
+    	downX.insert(x[i]);
+    	downY.insert(y[i]);
+    }
+
+    sort (arX, arX + n, cmp);
+    sort (arY, arY + n, cmp1);
+
+    int x1, y1, y2, x2;
+    x1 = *rightX.begin();
+    y1 = *rightY.begin();
+    x2 = *rightX.rbegin();
+    y2 = *rightY.rbegin();
+    area = (x2 - x1) * 1LL * (y2 - y1);
+
+    for (int i = 0; i < n; i++) {
+    	//left to right
+    	fn (i, arX, leftX, leftY, rightX, rightY);
+    	//up to down
+    	fn (i, arY, upX, upY, downX, downY);
+    }
+
+    cout << sol << '\n';
+
+}
+
+````
+
+</CPPSection>
+</LanguageSection>
+
+## Alternative
+
+> Note that it is also possible to dispense with the binary search trees entirely and just keep running mins and maxes in $y$.
+```cpp
+int N;
+ll ans = 0;
+vpi v;
+void tri() {
+	sort(all(v));
+	vpi lef(N), rig(N);
+	auto comb = [](pi a, int b) -> pi { return {min(a.f,b),max(a.s,b)}; };
+	lef[0] = {v[0].s,v[0].s};
+	FOR(i,1,N) lef[i] = comb(lef[i-1],v[i].s);
+	rig[N-1] = {v[N-1].s,v[N-1].s};
+	R0F(i,N-1) rig[i] = comb(rig[i+1],v[i].s);
+	ll area = (ll)(v.bk.f-v.ft.f)*(lef.bk.s-lef.bk.f);
+	ll bes = INF;
+	F0R(i,N-1) if (v[i].f != v[i+1].f)
+		ckmin(bes,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
+			+(ll)(v.bk.f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
+	ckmax(ans,area-bes);
+}
+int main() {
+	setIO("split"); re(N);
+	v.rsz(N); re(v);
+	tri();
+	trav(t,v) swap(t.f,t.s);
+	tri();
+	ps(ans);
+}
+````
