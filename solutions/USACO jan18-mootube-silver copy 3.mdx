@@ -1,10 +1,10 @@
 ---
-id: usaco-788
-title: USACO January 2018 Silver - Mootube
+id: usaco-645
+title: USACO Open Contest 2016 Gold - Splitting the Field
 author: Óscar Garries
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_mootube_silver_jan18.html
+Official Editorial: http://www.usaco.org/current/data/sol_split_gold_open16.html
 
 <LanguageSection>
 <CPPSection>
@@ -15,48 +15,94 @@ Official Editorial: http://www.usaco.org/current/data/sol_mootube_silver_jan18.h
 #include <bits/stdc++.h>
 
 using namespace std;
+const int MX = 5e4;
+int n, x[MX], y[MX], arX[MX], arY[MX];
 
-const int INF = 1e9;
+bool cmp (const int& a, const int& b) {
+	if (x[a] == x[b]) return y[a] < y[b];
 
-vector<pair<int, int>> g[5001];
-vector<bool> visited(5001);
-int k, v, sol;
+	return x[a] < x[b];
+}
 
-void dfs (int v) {
-	visited[v] = true;
-	for (auto x: g[v]) {
-		if (visited[x.first]) continue;
-		if (x.second >= k) {
-			sol++;
-			dfs(x.first);
-		}
-	}
+bool cmp1 (const int& a, const int &b) {
+	if (y[a] == y[b]) return x[a] < x[b];
+
+	return y[a] < y[b];
 }
 
 int main () {
-	freopen("mootube.in", "r", stdin);
-	freopen("mootube.out", "w", stdout);
+	freopen("split.in", "r", stdin);
+	freopen("split.out", "w", stdout);
 
-	int n, q;
-	cin >> n >> q;
-
-	for (int i = 0; i < n - 1; i++) {
-		int a, b, r;
-		cin >> a >> b >> r;
-		g[a].push_back({b, r});
-		g[b].push_back({a, r});
+	cin >> n;
+	multiset<int> leftX, leftY, rightX, rightY, upX, upY, downX, downY;
+	for (int i = 0; i < n; i++) {
+		arX[i] = i;
+		arY[i] = i;
+		cin >> x[i] >> y[i];
+		rightX.insert(x[i]);
+		rightY.insert(y[i]);
+		downX.insert(x[i]);
+		downY.insert(y[i]);
 	}
 
-	while (q--) {
-		cin >> k >> v;
-		sol = 0;
-		vector<bool> vS(n + 1);
-		visited = vS;
+	sort (arX, arX + n, cmp);
+	sort (arY, arY + n, cmp1);
 
-		dfs(v);
+	int x1 = *rightX.rbegin(), x2 = *rightX.begin(), y1 = *rightY.rbegin(), y2 = *rightY.begin();
+	long long area = (x1 - x2) * 1LL * (y1 - y2);
+	long long sol = 0;
+	int j;
 
-		cout << sol << '\n';
+	for (int i = 0; i < n; i++) {
+		//left to right
+		j = arX[i];
+		long long areaL = 0, areaR = 0;
+
+		leftX.insert(x[j]);
+		leftY.insert(y[j]);
+		rightX.erase(rightX.lower_bound(x[j]));
+		rightY.erase(rightY.lower_bound(y[j]));
+
+		x1 = *leftX.begin();
+		y1 = *leftY.begin();
+		x2 = *leftX.rbegin();
+		y2 = *leftY.rbegin();
+		areaL = (x2 - x1) * 1LL * (y2 - y1);
+		if (!rightX.empty()) {
+			x1 = *rightX.begin();
+			y1 = *rightY.begin();
+			x2 = *rightX.rbegin();
+			y2 = *rightY.rbegin();
+			areaR = (x2 - x1) * 1LL * (y2 - y1);
+		}
+		sol = max (sol, area - (areaR + areaL));
+
+		//up to down
+		j = arY[i];
+		long long areaU = 0, areaD = 0;
+		upX.insert(x[j]);
+		upY.insert(y[j]);
+		downX.erase(downX.lower_bound(x[j]));
+		downY.erase(downY.lower_bound(y[j]));
+
+		x1 = *upX.begin();
+		y1 = *upY.begin();
+		x2 = *upX.rbegin();
+		y2 = *upY.rbegin();
+		areaU = (x2 - x1) * 1LL * (y2 - y1);
+
+		if (!downX.empty()) {
+			x1 = *downX.begin();
+			y1 = *downY.begin();
+			x2 = *downX.rbegin();
+			y2 = *downY.rbegin();
+			areaD = (x2 - x1) * 1LL * (y2 - y1);
+		}
+		sol = max (sol, area - (areaU + areaD));
 	}
+
+	cout << sol << '\n';
 }
 
 ```
