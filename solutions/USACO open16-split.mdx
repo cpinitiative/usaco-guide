@@ -109,3 +109,38 @@ int main () {
 
 </CPPSection>
 </LanguageSection>
+
+## Alternative
+
+> Note that it is also possible to dispense with the binary search trees entirely and just keep running mins and maxes in $y$.
+
+```cpp
+int N;
+ll ans = 0;
+vpi v;
+
+void tri() {
+	sort(all(v));
+	vpi lef(N), rig(N);
+	auto comb = [](pi a, int b) -> pi { return {min(a.f,b),max(a.s,b)}; };
+	lef[0] = {v[0].s,v[0].s}; 
+	FOR(i,1,N) lef[i] = comb(lef[i-1],v[i].s);
+	rig[N-1] = {v[N-1].s,v[N-1].s};
+	R0F(i,N-1) rig[i] = comb(rig[i+1],v[i].s);
+	ll area = (ll)(v.bk.f-v.ft.f)*(lef.bk.s-lef.bk.f);
+	ll bes = INF;
+	F0R(i,N-1) if (v[i].f != v[i+1].f) 
+		ckmin(bes,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
+			+(ll)(v.bk.f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
+	ckmax(ans,area-bes);
+}
+
+int main() {
+	setIO("split"); re(N);
+	v.rsz(N); re(v);
+	tri();
+	trav(t,v) swap(t.f,t.s);
+	tri();
+	ps(ans);
+}
+```
