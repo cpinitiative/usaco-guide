@@ -12,7 +12,7 @@ Official Editorial: http://www.usaco.org/current/data/sol_split_gold_open16.html
 ```cpp
 #include <bits/stdc++.h>
 
-using namespace std; const int MX = 5e4; int n, x[MX], y[MX], arX[MX], arY[MX]; multiset<int> leftX, leftY, rightX, rightY, upX, upY, downX, downY; long long area, sol;
+using namespace std; const int MX = 5e4; int n, x[MX], y[MX], ar[MX];
 
 bool cmp (const int& a, const int& b) { if (x[a] == x[b]) return y[a] < y[b];
 
@@ -26,59 +26,53 @@ bool cmp1 (const int& a, const int &b) { if (y[a] == y[b]) return x[a] < x[b];
 
 }
 
-void fn (int index, int ar[], multiset<int>& firstRectangleX, multiset<int>& firstRectangleY, multiset<int>& secondRectangleX, multiset<int>& secondRectangleY) { int j = ar[index], y1, x1, y2, x2; long long areaFirst = 0, areaSecond = 0;
-
-    firstRectangleX.insert(x[j]);
-    firstRectangleY.insert(y[j]);
-    secondRectangleX.erase(secondRectangleX.lower_bound(x[j]));
-    secondRectangleY.erase(secondRectangleY.lower_bound(y[j]));
-
-    x1 = *firstRectangleX.begin();
-    y1 = *firstRectangleY.begin();
-    x2 = *firstRectangleX.rbegin();
-    y2 = *firstRectangleY.rbegin();
-    areaFirst = (x2 - x1) * 1LL * (y2 - y1);
-
-    if (!secondRectangleX.empty()) {
-    	x1 = *secondRectangleX.begin();
-    	y1 = *secondRectangleY.begin();
-    	x2 = *secondRectangleX.rbegin();
-    	y2 = *secondRectangleY.rbegin();
-    	areaSecond = (x2 - x1) * 1LL * (y2 - y1);
-    }
-
-    sol = max (sol, area - (areaFirst + areaSecond));
-
-}
-
 int main () { freopen("split.in", "r", stdin); freopen("split.out", "w", stdout);
 
     cin >> n;
+    multiset<int> allX, allY, leftX, leftY, rightX, rightY;
     for (int i = 0; i < n; i++) {
-    	arX[i] = i;
-    	arY[i] = i;
+    	ar[i] = i;
     	cin >> x[i] >> y[i];
-    	rightX.insert(x[i]);
-    	rightY.insert(y[i]);
-    	downX.insert(x[i]);
-    	downY.insert(y[i]);
+    	allX.insert(x[i]);
+    	allY.insert(y[i]);
     }
 
-    sort (arX, arX + n, cmp);
-    sort (arY, arY + n, cmp1);
+    sort (ar, ar + n, cmp);
 
-    int x1, y1, y2, x2;
-    x1 = *rightX.begin();
-    y1 = *rightY.begin();
-    x2 = *rightX.rbegin();
-    y2 = *rightY.rbegin();
-    area = (x2 - x1) * 1LL * (y2 - y1);
+    int x1 = *allX.rbegin(), x2 = *allX.begin(), y1 = *allY.rbegin(), y2 = *allY.begin();
+    long long area = (x1 - x2) * 1LL * (y1 - y2);
+    long long sol = 0;
+    int j;
 
-    for (int i = 0; i < n; i++) {
-    	//left to right
-    	fn (i, arX, leftX, leftY, rightX, rightY);
-    	//up to down
-    	fn (i, arY, upX, upY, downX, downY);
+    for (int k = 0; k <= 1; k++) {
+    	rightX = allX;
+    	rightY = allY;
+    	leftX.clear();
+    	leftY.clear();
+    	for (int i = 0; i < n; i++) {
+    		j = ar[i];
+    		long long areaL = 0, areaR = 0;
+
+    		leftX.insert(x[j]);
+    		leftY.insert(y[j]);
+    		rightX.erase(rightX.lower_bound(x[j]));
+    		rightY.erase(rightY.lower_bound(y[j]));
+
+    		x1 = *leftX.begin();
+    		y1 = *leftY.begin();
+    		x2 = *leftX.rbegin();
+    		y2 = *leftY.rbegin();
+    		areaL = (x2 - x1) * 1LL * (y2 - y1);
+    		if (!rightX.empty()) {
+    			x1 = *rightX.begin();
+    			y1 = *rightY.begin();
+    			x2 = *rightX.rbegin();
+    			y2 = *rightY.rbegin();
+    			areaR = (x2 - x1) * 1LL * (y2 - y1);
+    		}
+    		sol = max (sol, area - (areaR + areaL));
+    	}
+    	sort (ar, ar + n, cmp1);
     }
 
     cout << sol << '\n';
