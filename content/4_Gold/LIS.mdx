@@ -3,14 +3,22 @@ id: lis
 title: '(Optional) Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu
 prerequisites:
- - intro-dp
+  - intro-dp
 description: Finding and using the LIS of an array
 frequency: 1
 ---
 
 export const problems = {
 	sam: [
-		new Problem('CSES', 'Increasing Subsequence', '1145', 'Easy', false, [], ''),
+		new Problem(
+			'CSES',
+			'Increasing Subsequence',
+			'1145',
+			'Easy',
+			false,
+			[],
+			''
+		),
 	],
 	nonIntersect: new Problem(
 		'Baltic OI',
@@ -35,11 +43,48 @@ export const problems = {
 			'Old Gold',
 			'Cowjog',
 			'496',
+			'Easy',
+			false,
+			['DP'],
+			'Direct application of longest increasing subsequence'
+		),
+		new Problem(
+			'LMIO',
+			'2019 - Triusis',
+			'https://oj.uz/problem/view/LMIO19_triusis',
+			'Easy',
+			false,
+			['DP'],
+			''
+		),
+		new Problem(
+			'Baltic OI',
+			'2009 - Candy',
+			'https://cses.fi/107/list/',
+			'Normal',
+			true,
+			['DP', 'Geometry'],
+			'Similar to PCB from Baltic OI 2010'
+		),
+		new Problem(
+			'CEOI',
+			'2018 - Global Warming',
+			'https://oj.uz/problem/view/CEOI18_glo',
 			'Normal',
 			false,
 			['DP'],
-			'direct application of longest increasing subsequence'
+			''
 		),
+		new Problem(
+			'COCI',
+			'2016 - Zoltan',
+			'https://oj.uz/problem/view/COCI16_zoltan',
+			'Hard',
+			true,
+			['DP', 'BIT'],
+			''
+		),
+		new Problem('Plat', 'Sort It Out', '865', 'Insane', false, ['DP'], ''),
 	],
 };
 
@@ -62,16 +107,6 @@ export const problems = {
 			[],
 			''
 		), -->
-
-<!-- new Problem(
-	'Plat',
-	'Sort It Out',
-	'865',
-	'Insane',
-	false,
-	['DP'],
-	'component of kth largest LIS, read editorial for more details'
-), -->
 
 <!-- ### Longest Increasing Subsequence -->
 
@@ -198,19 +233,19 @@ int main() {
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const int MOD = 30013;
- 
+
 struct Trapezoid {
     int x1, x2, y1, y2;
 } traps[100001];
- 
+
 int n, top[200001], bottom[200001];
- 
+
 int g_len[200001], g_num[200001];
 int l_len[200001], l_num[200001];
 pair<int, int> events[200001];
- 
+
 void update(int pos, int len, int num) {
     for (; pos < 2 * n; pos += (pos & (-pos))) {
         if (g_len[pos] == len) {
@@ -221,7 +256,7 @@ void update(int pos, int len, int num) {
         }
     }
 }
- 
+
 pair<int, int> query(int pos) {
     pair<int, int> ans;
     for (; pos; pos -= (pos & (-pos))) {
@@ -232,7 +267,7 @@ pair<int, int> query(int pos) {
     }
     return ans;
 }
- 
+
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -250,13 +285,13 @@ int main() {
         traps[i].y1 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y1) - bottom;
         traps[i].y2 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y2) - bottom;
     }
- 
+
     for (int i = 1; i <= n; i++) {
         events[2 * i - 1] = {traps[i].x1, i};
         events[2 * i] = {traps[i].x2, -i};
     }
     sort(events + 1, events + 2 * n + 1);
- 
+
     int b_len = 0, b_num = 0;
     for (int i = 1; i <= 2 * n; i++) {
         if (events[i].second > 0) {
@@ -272,7 +307,7 @@ int main() {
             if (lis.first == b_len) b_num = (b_num + lis.second) % MOD;
         } else update(traps[-events[i].second].y2, l_len[-events[i].second], l_num[-events[i].second]);
     }
- 
+
     cout << b_len << ' ' << b_num;
     return 0;
 }
