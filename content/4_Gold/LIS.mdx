@@ -1,10 +1,10 @@
 ---
 id: lis
 title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi
+author: Michael Cao, Benjamin Qi, Andi Qu
 prerequisites:
  - intro-dp
-description: '?'
+description: Finding and using the LIS of an array
 frequency: 1
 ---
 
@@ -12,6 +12,24 @@ export const problems = {
 	sam: [
 		new Problem('CSES', 'Increasing Subsequence', '1145', 'Easy', false, [], ''),
 	],
+	nonIntersect: new Problem(
+		'Baltic OI',
+		'2010 - PCB',
+		'https://cses.fi/105/list/',
+		'Easy',
+		true,
+		[],
+		''
+	),
+	numLIS: new Problem(
+		'Balkan OI',
+		'2011 - Trapezoid',
+		'https://oj.uz/problems/source/114',
+		'Normal',
+		true,
+		[],
+		''
+	),
 	lis: [
 		new Problem(
 			'Old Gold',
@@ -61,9 +79,204 @@ export const problems = {
 
 <FocusProblem problem={problems.sam[0]} />
 
-## Tutorial - $\mathcal{O}(N\log N)$
+## Tutorial
+
+### $O(N^2)$
+
+Let $dp[i]$ be the length of the longest increasing subsequence that ends on element $i$ of the array. We can then naively compute $dp$ (and thus the LIS) in $O(N^2)$ time:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int find_lis(vector<int> arr) {
+	int n = arr.size(), lis = 0;
+	vector<int> dp(n, 1);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < i; j++) if (a[j] < a[i]) dp[i] = max(dp[i], dp[j] + 1);
+		lis = max(lis, dp[i]);
+	}
+	return lis;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+We can do much better than this though!
+
+### $O(N \log N)$
 
 <IncompleteSection />
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int find_lis(vector<int> arr) {
+	vector<int> dp;
+	for (int i : arr) {
+		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
+		if (pos == dp.size()) dp.push_back(i);
+		else dp[pos] = i;
+	}
+	return dp.size();
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Application 1 - Non-intersecting Segments
+
+<FocusProblem problem={problems.nonIntersect} />
+
+This problem asks us to find the minimum number of disjoint sets of non-intersecting segments.
+
+This seems quite intimidating, so let's break it up into two parts:
+
+- Finding a set of non-intersecting segments
+- Minimizing the number of these sets
+
+First, what can we say about two segments $(l_1, r_1)$ and $(l_2, r_2)$ if they intersect (assuming $l_1 < l_2$)?
+
+Since these segments are straight, notice how $l_1 < l_2 \implies r_1 > r_2$.
+
+This means that a set of non-intersecting segments satisfies $l_i < l_j \implies r_i < r_j$ for all pairs $(i, j)$!
+
+Let $A$ be an array where $A[i] = x$ means that the segment with its right endpoint at position $i$ has its left endpoint at position $x$.
+
+If we were asked to find the maximum size of a set of non-intersecting segments, the answer would be the LIS of $A$!
+
+## Application 2 - Minimum Number of Increasing Sequences
+
+Continuing from application 1, we now want to find the minimum number of increasing subsequences of $A$.
+
+Luckily for us, there's a simple solution to this - the minimum number of increasing subsequences of $A$ is simply the size of the LDS (longest **decreasing** subsequence) of $A$!
+
+(Try to prove this fact yourself - as a hint, assume the contrary for a contradiction.)
+
+### Code for PCB
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int lis = 0;
+pair<int, int> a[100000];
+set<int> s;
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
+    sort(a, a + n, greater<pair<int, int>>());
+
+    for (int i = 0; i < n; i++) {
+        if (s.upper_bound(a[i].second) == s.end()) lis++;
+        else s.erase(s.upper_bound(a[i].second));
+        s.insert(a[i].second);
+    }
+
+    cout << lis;
+    return 0;
+}
+```
+
+## Application 3 - Number of LISes
+
+<FocusProblem problem={problems.numLIS} />
+
+<IncompleteSection />
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+const int MOD = 30013;
+ 
+struct Trapezoid {
+    int x1, x2, y1, y2;
+} traps[100001];
+ 
+int n, top[200001], bottom[200001];
+ 
+int g_len[200001], g_num[200001];
+int l_len[200001], l_num[200001];
+pair<int, int> events[200001];
+ 
+void update(int pos, int len, int num) {
+    for (; pos < 2 * n; pos += (pos & (-pos))) {
+        if (g_len[pos] == len) {
+            g_num[pos] = (g_num[pos] + num) % MOD;
+        } else if (g_len[pos] < len) {
+            g_len[pos] = len;
+            g_num[pos] = num;
+        }
+    }
+}
+ 
+pair<int, int> query(int pos) {
+    pair<int, int> ans;
+    for (; pos; pos -= (pos & (-pos))) {
+        if (g_len[pos] == ans.first)
+            ans.second = (ans.second + g_num[pos]) % MOD;
+        else if (g_len[pos] > ans.first)
+            ans = {g_len[pos], g_num[pos]};
+    }
+    return ans;
+}
+ 
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> traps[i].x1 >> traps[i].x2 >> traps[i].y1 >> traps[i].y2;
+        top[2 * i - 1] = traps[i].x1, top[2 * i] = traps[i].x2;
+        bottom[2 * i - 1] = traps[i].y1, bottom[2 * i] = traps[i].y2;
+    }
+    sort(top + 1, top + 2 * n + 1);
+    sort(bottom + 1, bottom + 2 * n + 1);
+    for (int i = 1; i <= n; i++) {
+        traps[i].x1 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x1) - top;
+        traps[i].x2 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x2) - top;
+        traps[i].y1 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y1) - bottom;
+        traps[i].y2 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y2) - bottom;
+    }
+ 
+    for (int i = 1; i <= n; i++) {
+        events[2 * i - 1] = {traps[i].x1, i};
+        events[2 * i] = {traps[i].x2, -i};
+    }
+    sort(events + 1, events + 2 * n + 1);
+ 
+    int b_len = 0, b_num = 0;
+    for (int i = 1; i <= 2 * n; i++) {
+        if (events[i].second > 0) {
+            pair<int, int> lis = query(traps[events[i].second].y1);
+            if (!lis.first) lis.second = 1;
+            lis.first++;
+            l_len[events[i].second] = lis.first;
+            l_num[events[i].second] = lis.second;
+            if (lis.first > b_len) {
+                b_len = lis.first;
+                b_num = 0;
+            }
+            if (lis.first == b_len) b_num = (b_num + lis.second) % MOD;
+        } else update(traps[-events[i].second].y2, l_len[-events[i].second], l_num[-events[i].second]);
+    }
+ 
+    cout << b_len << ' ' << b_num;
+    return 0;
+}
+```
 
 ## Problems
 
