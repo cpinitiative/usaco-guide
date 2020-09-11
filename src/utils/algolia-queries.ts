@@ -91,12 +91,11 @@ const queries = [
         });
       });
       data.data.edges.forEach(edge => {
-        res = [
-          ...res,
-          ...edge.node.problems.map(x =>
-            problemToAlgoliaRecord(x, problemModules[x.id])
-          ),
-        ];
+        edge.node.problems.forEach(x => {
+          if (!!res.find(existing => existing.objectID === x.uniqueID)) return;
+
+          res.push(problemToAlgoliaRecord(x, problemModules[x.id]));
+        });
       });
       return res;
     },
