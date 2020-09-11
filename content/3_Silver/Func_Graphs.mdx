@@ -232,13 +232,6 @@ public class badge
 
 ### Example - Cooperative Game
 
-From CPH:
-
-> We may ask the following questions: if we begin our walk at the starting node, what
-is the first node in the cycle and how many nodes does the cycle contain?
-
-However, CPH did not mention how to extend Floyd's Algorithm to answer the first part of the question above; try to do so here!
-
 <FocusProblem problem={problems.sample_floyd[0]} />
 
 <!-- <Spoiler title="Tortoise and Hare Algrotihm">
@@ -268,9 +261,15 @@ pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of c
 
 </Spoiler> -->
 
-<Spoiler title="Hint">
+<Spoiler title="Hint 1">
 
 Solve the problem when there are exactly three friends.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Reread [CPH pg. 166](/CPH.pdf#page=166) a few more times.
 
 </Spoiler>
 
@@ -282,7 +281,7 @@ Solve the problem when there are exactly three friends.
 
 <!-- https://codeforces.com/contest/1137/submission/87195511 -->
 
-First we run Floyd's Algorithm, which finds some node on the cycle after $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node in the cycle after another $t$ queries!
+Using **Floyd's Algorithm**, we can find some node on the cycle after $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node in the cycle after another $t$ queries.
 
 ```cpp
 #include <cstdio>
@@ -327,6 +326,36 @@ int main()
 	return 0;
 }
 ```
+
+<br />
+
+Do you see why this is equivalent to the code mentioned in CPH?
+
+```cpp
+a = succ(x);
+b = succ(succ(x));
+while (a != b) {
+	a = succ(a);
+	b = succ(succ(b));
+}
+```
+
+<br />
+
+$b$ corresponds to friend $1$ and $a$ corresponds to friend $0$.
+
+```cpp
+a = x;
+while (a != b) {
+	a = succ(a);
+	b = succ(b);
+}
+first = a;
+```
+
+<br />
+
+$a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1$.
 
 </Spoiler>
 
