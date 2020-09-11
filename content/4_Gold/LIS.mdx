@@ -84,6 +84,15 @@ export const problems = {
 			['DP', 'BIT'],
 			''
 		),
+		new Problem(
+			'JOI',
+			'2016 - Matryoshka',
+			'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
+			'Very Hard',
+			false,
+			['DP'],
+			''
+		),
 		new Problem('Plat', 'Sort It Out', '865', 'Insane', false, ['DP'], ''),
 	],
 };
@@ -112,13 +121,23 @@ export const problems = {
 
 <!-- Some of the problems in this section don't initially look like Longest Increasing Subsequence, but it ends up being the solution. <Asterisk> This can happen a lot, which is why it's a good idea to not focus on one topic unless you have a full solution.</Asterisk> -->
 
+<Resources>
+
+<Resource source="cp-algorithms" title="Longest Increasing Subsequence" url="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" starred>
+	A comprehensive guide (covers almost everything here)
+</Resource>
+
+</Resources>
+
 <FocusProblem problem={problems.sam[0]} />
 
 ## Tutorial
 
+In this tutorial, let $A$ be the array we want to find the LIS for.
+
 ### $O(N^2)$
 
-Let $dp[i]$ be the length of the longest increasing subsequence that ends on element $i$ of the array. We can then naively compute $dp$ (and thus the LIS) in $O(N^2)$ time:
+Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $O(N^2)$ time:
 
 <LanguageSection>
 
@@ -144,7 +163,21 @@ We can do much better than this though!
 
 ### $O(N \log N)$
 
-<IncompleteSection />
+Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ elements of $A$ with an increasing sequence of length $j$ ending on it (or $\infty$ if there is no such element).
+
+**Lemma 1:** $L_i$ forms a non-decreasing sequence.
+
+**Proof:** Assume for a contradiction that for some $j$, we have $L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing sequence of length $j + 1$ ending on some element implies that there is also an increasing sequence of length $j$ ending on that same sequence.
+
+**Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least index $j$ such that $L_i[j] \geq A[i + 1]$.
+
+**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that the length of the LIS is $j$.
+
+**Lemma 3:** Exactly 1 element differs between $L_i$ and $L_{i + 1}$.
+
+**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since $L_i[j] \geq A[i + 1]$. We don't update anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ of length greater than $j$.
+
+To find and update the described $j$ in $O(\log N)$ time, we can use a `std::vector` and `std::lower_bound` (or just a `std::set`).
 
 <LanguageSection>
 
@@ -314,8 +347,6 @@ int main() {
 ```
 
 ## Problems
-
-<IncompleteSection />
 
 <Problems problems={problems.lis} />
 
