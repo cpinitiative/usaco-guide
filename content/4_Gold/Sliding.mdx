@@ -149,25 +149,17 @@ For each position of the window, we want to compute some information. For exampl
 
 ```cpp
 vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-        deque<int> d;
+        multiset<int> s;
         vector<int> ret;
         for(int i = 0; i < k; i++){
-            while(!d.empty() && nums[i] > nums[d.back()]){
-                d.pop_back();
-            }
-            d.push_back(i);
+            s.insert(nums[i]);
         }
         for(int i = k; i < nums.size(); i++){
-            ret.push_back(nums[d.front()]);
-            if(!d.empty() && d.front() <= i-k){
-                d.pop_front();
-            }
-            while(!d.empty() && nums[i] >= nums[d.back()]){
-                d.pop_back();
-            }
-            d.push_back(i);
+            ret.push_back(*s.rbegin());
+            s.erase(s.find(nums[i-k]));
+            s.insert(nums[i]);
         }
-        ret.push_back(nums[d.front()]);
+        ret.push_back(*s.rbegin());
         return ret;
 }
 ```
@@ -252,7 +244,38 @@ int main() {
 
 ### Method 2
 
-<IncompleteSection />
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque<int> d;
+        vector<int> ret;
+        for(int i = 0; i < k; i++){
+            while(!d.empty() && nums[i] > nums[d.back()]){
+                d.pop_back();
+            }
+            d.push_back(i);
+        }
+        for(int i = k; i < nums.size(); i++){
+            ret.push_back(nums[d.front()]);
+            if(!d.empty() && d.front() <= i-k){
+                d.pop_front();
+            }
+            while(!d.empty() && nums[i] >= nums[d.back()]){
+                d.pop_back();
+            }
+            d.push_back(i);
+        }
+        ret.push_back(nums[d.front()]);
+        return ret;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Problems
 
