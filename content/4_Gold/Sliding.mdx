@@ -1,7 +1,7 @@
 ---
 id: sliding
 title: 'Sliding Window'
-author: Darren Yao, Benjamin Qi
+author: Darren Yao, Benjamin Qi, Andrew Wang
 prerequisites:
   - intro-ordered
   - 2P
@@ -119,18 +119,18 @@ export const problems = {
 
 ## Sliding Window
 
-<FocusProblem problem={problems.constantSam[0]} />
-
 From CPH:
 
 > A sliding window is a constant-size subarray that moves from left to right through the array.
 
-For each position of the window, we want to compute some information. For example, we could store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $O(\log N)$.
+For each position of the window, we want to compute some information. 
+
+<FocusProblem problem={problems.constantSam[0]} />
 
 <!-- To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
  -->
 
-<Resources>
+<!-- <Resources>
 	<Resource
 		source="GFG"
 		title="Window Sliding Technique"
@@ -138,11 +138,38 @@ For each position of the window, we want to compute some information. For exampl
 	>
 		{' '}
 	</Resource>
-</Resources>
+</Resources> -->
 
 ### Implementation
 
-<IncompleteSection />
+The most straightforward way to do this is to store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $O(\log N)$.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+	multiset<int> s;
+	vector<int> ret;
+	for(int i = 0; i < k; i++){
+		s.insert(nums[i]);
+	}
+	for(int i = k; i < nums.size(); i++){
+		ret.push_back(*s.rbegin());
+		s.erase(s.find(nums[i-k]));
+		s.insert(nums[i]);
+	}
+	ret.push_back(*s.rbegin());
+	return ret;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Problems
 
@@ -210,16 +237,53 @@ int main() {
 	>
 		multiple ways to solve this
 	</Resource>
+</Resources>
+
+### Method 1 - Deque
+
+Method 2 from cp-algo.
+
+<Resources>
 	<Resource source="CPH" title="8.3 - Sliding Window Minimum">
-		method 2 from above
 	</Resource>
 </Resources>
 
-### Method 1
+<LanguageSection>
 
-<IncompleteSection />
+<CPPSection>
 
-### Method 2
+```cpp
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+	deque<int> d;
+	vector<int> ret;
+	for(int i = 0; i < k; i++){
+		while(!d.empty() && nums[i] > nums[d.back()]){
+			d.pop_back();
+		}
+		d.push_back(i);
+	}
+	for(int i = k; i < nums.size(); i++){
+		ret.push_back(nums[d.front()]);
+		if(!d.empty() && d.front() <= i-k){
+			d.pop_front();
+		}
+		while(!d.empty() && nums[i] >= nums[d.back()]){
+			d.pop_back();
+		}
+		d.push_back(i);
+	}
+	ret.push_back(nums[d.front()]);
+	return ret;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Method 2 - Two Stacks
+
+Method 3 from cp-algo. Not as common but nice to know!
 
 <IncompleteSection />
 
