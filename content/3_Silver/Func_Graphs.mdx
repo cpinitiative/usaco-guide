@@ -84,110 +84,7 @@ In a **functional graph**, each node has exactly one out-edge. This is also comm
 
 You can think of every connected component of a functional graph as a rooted tree plus an additional edge going out of the root.
 
-## Floyd's Algorithm
-
-**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself).
-
-<Resources>
-	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
-	<Resource
-		source="Medium"
-		title="The Tortoise and the Hare (Floyd's Algorithm)"
-		url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
-	></Resource>
-	<Resouce source="CP2" title="5.7 - Cycle-Finding">
-		{' '}
-	</Resouce>
-</Resources>
-
-### Example - Cooperative Game
-
-<FocusProblem problem={problems.sample_floyd[0]} />
-
-<!-- <Spoiler title="Tortoise and Hare Algrotihm">
-
-```cpp
-//UNTESTED
-pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
-{
-	int t=start_node, h=start_node; //tortoise and hare
-	do
-	{
-		t=next[t], h=next[h];
-	} while(t != h)
-
-	int dist=0;
-	t = start_node;
-	while(t != h)
-		++dist, t=next[t], h=next[h];
-
-	int len=1;
-	h = next[t];
-	while(h != t)
-		++len, h=next[h];
-	return make_pair(len, dist);
-}
-```
-
-</Spoiler> -->
-
-<Spoiler title="Hint">
-
-You only need 3 friends.
-
-</Spoiler>
-
-<Spoiler title="Solution">
-
-<!-- https://codeforces.com/contest/1137/submission/87195511 -->
-
-```cpp
-#include <cstdio>
-#include <vector>
-
-void out(const std::vector<int>& x)
-{
-	printf("next");
-	for(auto a:x) printf(" %d", a);
-	printf("\n");
-	fflush(stdout);
-}
-int N, g[20];
-char s[20];
-void read()
-{
-	scanf("%d", &N);
-	for(int i=0;i<N;++i)
-	{
-		scanf(" %s", s);
-		for(int j=0;s[j];++j)
-			g[s[j]-'0']=i;
-	}
-}
-int main()
-{
-	for(;;)
-	{
-		out({0,1});
-		read();
-		out({0});
-		read();
-		if(g[0] == g[1]) break;
-	}
-	for(;;)
-	{
-		out({0,1,2,3,4,5,6,7,8,9});
-		read();
-		if(g[0] == g[2]) break;
-	}
-	printf("done\n");
-	return 0;
-}
-```
-
-</Spoiler>
-
-## Solution - Badge
+### Solution - Badge
 
 <IncompleteSection />
 
@@ -317,6 +214,122 @@ public class badge
 
 </LanguageSection>
 
+## Floyd's Algorithm
+
+**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself).
+
+<Resources>
+	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
+	<Resource
+		source="Medium"
+		title="The Tortoise and the Hare (Floyd's Algorithm)"
+		url="https://medium.com/@tuvo1106/the-tortoise-and-the-hare-floyds-algorithm-87badf5f7d41"
+	></Resource>
+	<Resouce source="CP2" title="5.7 - Cycle-Finding">
+		{' '}
+	</Resouce>
+</Resources>
+
+### Example - Cooperative Game
+
+From CPH:
+
+> We may ask the following questions: if we begin our walk at the starting node, what
+is the first node in the cycle and how many nodes does the cycle contain?
+
+However, CPH did not mention how to extend Floyd's Algorithm to answer the first part of the question above; try to do so here!
+
+<FocusProblem problem={problems.sample_floyd[0]} />
+
+<!-- <Spoiler title="Tortoise and Hare Algrotihm">
+
+```cpp
+//UNTESTED
+pair<int, int> detect_cycle(int *next, int start_node) //return pair(length of cycle, distance from start node to in cycle)
+{
+	int t=start_node, h=start_node; //tortoise and hare
+	do
+	{
+		t=next[t], h=next[h];
+	} while(t != h)
+
+	int dist=0;
+	t = start_node;
+	while(t != h)
+		++dist, t=next[t], h=next[h];
+
+	int len=1;
+	h = next[t];
+	while(h != t)
+		++len, h=next[h];
+	return make_pair(len, dist);
+}
+```
+
+</Spoiler> -->
+
+<Spoiler title="Hint">
+
+Solve the problem when there are exactly three friends.
+
+</Spoiler>
+
+### Solution
+
+<Spoiler title="Solution">
+
+[Official Tutorial](https://codeforces.com/blog/entry/65825)
+
+<!-- https://codeforces.com/contest/1137/submission/87195511 -->
+
+First we run Floyd's Algorithm, which finds some node on the cycle after $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node in the cycle after another $t$ queries!
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+void out(const std::vector<int>& x)
+{
+	printf("next");
+	for(auto a:x) printf(" %d", a);
+	printf("\n");
+	fflush(stdout);
+}
+int N, g[20];
+char s[20];
+void read()
+{
+	scanf("%d", &N);
+	for(int i=0;i<N;++i)
+	{
+		scanf(" %s", s);
+		for(int j=0;s[j];++j)
+			g[s[j]-'0']=i;
+	}
+}
+int main()
+{
+	for(;;) // c*ceil(t/c) times
+	{
+		out({0,1});
+		read();
+		out({0});
+		read();
+		if(g[0] == g[1]) break;
+	}
+	for(;;) // t times
+	{
+		out({0,1,2,3,4,5,6,7,8,9});
+		read();
+		if(g[0] == g[2]) break;
+	}
+	printf("done\n");
+	return 0;
+}
+```
+
+</Spoiler>
+
 <!-- ## Count Cycles
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
@@ -369,7 +382,7 @@ As described briefly in CPH 16.3, can be found in $O(\log K)$ time using **binar
 
 <Problems problems={problems.probs} />
 
-Additional problems can be found in the [Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
+Additional problems involving functional graphs can be found in the [Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
 
 <!-- new Problem(
 	'JOI',
