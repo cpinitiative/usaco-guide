@@ -142,7 +142,88 @@ At this point, the for loop terminates, because $i$ is already 3 which is greate
 
 ### Solution - Counting Divisors
 
-<IncompleteSection />
+The most straightforward solution is just to do what the problem asks us to do - for each $x$, find the number of divisors of $x$ in $O(\sqrt x)$ time.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    while (n--) {
+        int x, ans = 0;
+        cin >> x;
+        for (int i = 1; i * i <= x; i++) {
+            if (x % i == 0) {
+                if (i * i == x) ans++;
+                else ans += 2;
+            }
+        }
+        cout << ans << '\n';
+    }
+    return 0;
+}
+```
+
+This solution runs in $O(n \sqrt x)$ time, which is just fast enough to get AC. However, we can actually speed this up to get an $O((x + n) \log x)$ solution!
+
+First, let's discuss an important property of the prime factorization of a number. Consider:
+
+$$
+x = {p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k}
+$$
+
+Then the number of divisors of $x$ is simply $(a_1 + 1) \cdot (a_2 + 1) \cdots (a_k + 1)$.
+
+Why is this true? The exponent of $p_i$ in any divisor of $x$ must be in the range $[0, a_i]$ and each different exponent results in a different set of divisors, so each $p_i$ contributes $a_i + 1$ to the product.
+
+$x$ can have $O(\log x)$ distinct prime factors, so if we can find the prime factorization of $x$ efficiently, we can answer queries in $O(\log x)$ time instead of the previous $O(\sqrt x)$ time.
+
+Here's how we find the prime factorization of $x$ in $O(\log x)$ time with $O(x \log x)$ preprocessing:
+
+- For each $k \leq 10^6$, find any prime number that divides $k$.
+	- We can use the Sieve of Eratosthenes to find this efficiently.
+- For each $x$, we can then find the prime factorization by repeatedly dividing $x$ by a prime number that divides $x$ until $x = 1$.
+	- We can use a `std::map` to keep track of the set of $a_i$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int max_div[1000001];
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    for (int i = 2; i <= 1000000; i++) {
+        if (!max_div[i]) {
+            for (int j = i; j <= 1000000; j += i) {
+                max_div[j] = i;
+            }
+        }
+    }
+    int n;
+    cin >> n;
+    while (n--) {
+        int x;
+        cin >> x;
+        map<int, int> prime_factorization;
+        while (x != 1) {
+            prime_factorization[max_div[x]]++;
+            x /= max_div[x];
+        }
+        int ans = 1;
+        for (pair<int, int> i : prime_factorization) {
+            ans *= (i.second + 1);
+        }
+        cout << ans << '\n';
+    }
+    return 0;
+}
+```
 
 ## GCD & LCM
 
