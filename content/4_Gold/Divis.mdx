@@ -112,6 +112,24 @@ vector<int> factor(int n) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+ArrayList<Integer> factor(int n) {
+    ArrayList<Integer> factors = new ArrayList<>();
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            factors.add(i);
+            n /= i;
+        }
+    }
+    if (n > 1) factors.add(n);
+    return factors;
+}
+```
+
+</JavaSection>
+
 <PySection>
 
 ```py
@@ -142,7 +160,77 @@ At this point, the for loop terminates, because $i$ is already 3 which is greate
 
 ### Solution - Counting Divisors
 
-<IncompleteSection />
+<Spoiler title="Counting Divisors Solution">
+
+From [cp-algorithms](https://cp-algorithms.com/algebra/divisors.html):
+
+> Therefore if the prime factorization of $n$ is ${p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k}$ ... then the number of divisors is:
+> $$
+> d(n)=(e_1+1)⋅(e_2+1) \cdots (e_k+1)
+> $$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int solve(int n) {
+        int divisors = 1;
+        for (int i = 2; i * i <= n; i++) {
+            int ct = 0;
+            while (n % i == 0) {
+                ct++;
+                n /= i;
+            }
+            divisors *= ct+1;
+        }
+        if (n > 1) divisors *= 2;
+        return divisors;
+    }
+
+    public static void main(String[] args) {
+        int n = r.nextInt();
+        for (int i = 0; i < n; i++) {
+            int x = r.nextInt();
+            pw.println(solve(x));
+        }
+
+        pw.close(); // flushes the output once printing is done
+    }
+
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+    }
+    static InputReader r = new InputReader(System.in);
+    static PrintWriter pw = new PrintWriter(System.out);
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
 
 ## GCD & LCM
 
