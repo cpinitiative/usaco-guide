@@ -112,6 +112,24 @@ vector<int> factor(int n) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+ArrayList<Integer> factor(int n) {
+    ArrayList<Integer> factors = new ArrayList<>();
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            factors.add(i);
+            n /= i;
+        }
+    }
+    if (n > 1) factors.add(n);
+    return factors;
+}
+```
+
+</JavaSection>
+
 <PySection>
 
 ```py
@@ -144,6 +162,9 @@ At this point, the for loop terminates, because $i$ is already 3 which is greate
 
 The most straightforward solution is just to do what the problem asks us to do - for each $x$, find the number of divisors of $x$ in $O(\sqrt x)$ time.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -168,6 +189,64 @@ int main() {
 }
 ```
 
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int solve(int n) {
+        int divisors = 0;
+        for (int i = 1; i * i <= n; i++) {
+            if (n % i == 0) {
+                if (i * i == n) divisors++;
+                else divisors += 2;
+            }
+        }
+        return divisors;
+    }
+
+    public static void main(String[] args) {
+        int n = r.nextInt();
+        for (int i = 0; i < n; i++) {
+            int x = r.nextInt();
+            pw.println(solve(x));
+        }
+
+        pw.close(); // flushes the output once printing is done
+    }
+
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+    }
+    static InputReader r = new InputReader(System.in);
+    static PrintWriter pw = new PrintWriter(System.out);
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
 This solution runs in $O(n \sqrt x)$ time, which is just fast enough to get AC. However, we can actually speed this up to get an $O((x + n) \log x)$ solution!
 
 First, let's discuss an important property of the prime factorization of a number. Consider:
@@ -187,7 +266,10 @@ Here's how we find the prime factorization of $x$ in $O(\log x)$ time with $O(x 
 - For each $k \leq 10^6$, find any prime number that divides $k$.
 	- We can use the Sieve of Eratosthenes to find this efficiently.
 - For each $x$, we can then find the prime factorization by repeatedly dividing $x$ by a prime number that divides $x$ until $x = 1$.
-	- We can use a `std::map` to keep track of the set of $a_i$.
+	- (C++) We can use a `std::map` to keep track of the set of $a_i$.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -224,6 +306,68 @@ int main() {
     return 0;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int solve(int n) {
+        int divisors = 1;
+        for (int i = 2; i * i <= n; i++) {
+            int ct = 0;
+            while (n % i == 0) {
+                ct++;
+                n /= i;
+            }
+            divisors *= ct+1;
+        }
+        if (n > 1) divisors *= 2;
+        return divisors;
+    }
+
+    public static void main(String[] args) {
+        int n = r.nextInt();
+        for (int i = 0; i < n; i++) {
+            int x = r.nextInt();
+            pw.println(solve(x));
+        }
+
+        pw.close(); // flushes the output once printing is done
+    }
+
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+    }
+    static InputReader r = new InputReader(System.in);
+    static PrintWriter pw = new PrintWriter(System.out);
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
 
 ## GCD & LCM
 
