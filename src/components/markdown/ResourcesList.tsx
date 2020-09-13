@@ -45,6 +45,10 @@ const moduleSources = {
     'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
     'github.com/bqi343/USACO',
   ],
+  Errichto: [
+    'https://www.youtube.com/c/Errichto/about',
+    'youtube.com/c/Errichto/about',
+  ],
   CSA: ['https://csacademy.com/lesson/', 'CS Academy'],
   CF: ['https://codeforces.com/blog/entry/', 'CodeForces'],
   TC: [

@@ -7,7 +7,7 @@ description: 'Identifying errors within your program and how to avoid them in th
 
 <Resources>
 	<Resource
-		source="Aryansh"
+		source="AryanshS"
 		url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly"
 		title="Debugging Correctly"
 	>
@@ -47,7 +47,7 @@ using namespace std;
 
 int x = 10; // some important variable
 
-inline void dbg() { cout << "x is " << x << "\n"; }
+void dbg() { cout << "x is " << x << "\n"; }
 
 int main() {
     dbg();
@@ -65,7 +65,7 @@ However, as great as print statements are, they are annoying to work with and ef
 The standard error stream \(`cerr` in C++\) is a quick fix to this. Instead of printing in standard iostream, we actually generate a whole new stream of data called the error stream. Simply replace all instances of `cout` with `cerr`. For example:
 
 ```cpp
-inline void dbg() { cerr << "x is " << x << "\n"; }
+void dbg() { cerr << "x is " << x << "\n"; }
 
 int main() {
     dbg();
@@ -89,8 +89,9 @@ Although not feasible if you have to write all code from scratch, [this template
 [Examples - Debug Output](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO_test.cpp)
 
 <Warning>
-	You are not allowed to use pre-written code for USACO contests, so `dbg()`
-	should only be used for other online contests.
+
+You are not allowed to use pre-written code for USACO contests, so `dbg()` should only be used for other online contests.
+
 </Warning>
 
 <IncompleteSection>
@@ -185,7 +186,7 @@ scripts for multiple languages? can this be modified to break on an assertion fa
 <Resources>
 	<Resource
 		title="Asserts"
-		source="LearnCpp"
+		source="LCpp"
 		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
 		starred
 	>
@@ -204,59 +205,65 @@ scripts for multiple languages? can this be modified to break on an assertion fa
 	</Resource>
 </Resources>
 
-## [Warning Options](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
-
-### `-Wall`
-
-<IncompleteSection>
-
-</IncompleteSection>
-
-### `-Wextra`
-
-<IncompleteSection>
-
-Add explanation, how useful is -Wextra?
-
-</IncompleteSection>
-
-### `-Wshadow`
-
-[Variable shadowing](https://www.learncpp.com/cpp-tutorial/variable-shadowing-name-hiding/) should be avoided whenever possible.
-
-## Other Options
+## Compilation Options
 
 <Resources>
 	<Resource
 		source="CF"
 		title="andreyv - Catching Mistakes with GCC"
 		url="https://codeforces.com/blog/entry/15547"
+		starred
 	>
-		more options
+		includes all the options mentioned below
 	</Resource>
 </Resources>
 
-In Errichto's blog he says that he uses the following as part of his compilation command:
+You can also check what options [Errichto](https://codeforces.com/blog/entry/64993) and [ecnerwala](https://gist.github.com/ecnerwala/a3c6332ac626bc448165) use.
+
+### GCC Warning Options
+
+<Resources>
+	<Resource starred source="GCC" url="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html" title="3.8 - Options to Request or Suppress Warnings">documentation for options below</Resource>
+</Resources>
+
+Such as the following:
 
 ```
--fsanitize=undefined -fsanitize=address -D_GLIBCXX_DEBUG -g
+-Wall -Wextra -Wshadow -Wconversion -Wfloat-equal -Wduplicated-cond -Wlogical-op
 ```
 
-<Warning title="Disclaimer">
+You can check the CF blog above for descriptions of these.
 
-Ben - I don't use this on a regular basis, there are probably better sources to learn about these.
+#### `-Wextra`
 
-</Warning>
+> Some extra warning flags that are not enabled by `-Wall`
+
+Doesn't seem so useful in a contest setting? Except maybe the following:
+
+```
+-Wunused-parameter
+-Wunused-but-set-parameter
+```
+
+#### `-Wshadow`
+
+<Resources>
+	<Resource source="LCPP" url="ttps://www.learncpp.com/cpp-tutorial/variable-shadowing-name-hiding/" title="6.5 - Variable Shadowing (Name Hiding)" starred> </Resource>
+</Resources>
+
+Avoid variable shadowing!
+
+### Other Options
 
 Let's give some examples of what each of these do.
 
 <Warning>
 	
-These can significantly slow down runtime.
+These can slow down compilation time and more importantly, runtime. So don't enable these when speed is of the essence (ex. for Facebook Hacker Cup).
 
 </Warning>
 
-### `-fsanitize=undefined`
+#### `-fsanitize=undefined`
 
 <Resources>
 	<Resource
@@ -327,7 +334,7 @@ int main() {
 prog.cpp:6:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
 ```
 
-### `-fsanitize=address`
+#### `-fsanitize=address -g`
 
 <Resources>
 	<Resource
@@ -377,9 +384,9 @@ zsh: abort      ./prog
 
 </Spoiler>
 
-For more helpful information we should additionally compile with the `-ggdb` flag. `-ggdb` generates a debug report (in dSYM file format) based on the line numbering of the program. `-fsanitize=address` can then access the dSYM file at runtime and give meaningful errors. This is great because it helps diagnose (or "sanitize" if you will) errors such as out of bounds, exceptions, and segmentation faults, even indicating precise line numbers. Feel free to delete dSYM files after the run of course.
+For more helpful information we should additionally compile with the `-g` flag, which generates a file containing debugging information based on the line numbering of the program. `-fsanitize=address` can then access the file at runtime and give meaningful errors. This is great because it helps diagnose (or "sanitize" if you will) errors such as out of bounds, exceptions, and segmentation faults, even indicating precise line numbers. Feel free to delete the debug file after the run of course.
 
-<Spoiler title="-fsanitize=address -ggdb (note the difference!)">
+<Spoiler title="AddressSanitizer with -g">
 
 ```
 AddressSanitizer:DEADLYSIGNAL
@@ -403,11 +410,12 @@ zsh: abort      ./prog
 
 </Spoiler>
 
-Of course, we can use `-fsanitize=address` together with `-fsanitize=undefined` and `-ggdb`:
+<!-- Of course, we can use `-fsanitize=address` together with `-fsanitize=undefined` and `-ggdb`:
 
 ```
 -ggdb -fsanitize=address,undefined
 ```
+ -->
 
 Another example with `prog.cpp` as the following:
 
@@ -421,40 +429,40 @@ int main() {
 }
 ```
 
-`g++ prog.cpp -o prog -fsanitize=address && ./prog` produces:
+`g++ prog.cpp -o prog -fsanitize=address -g && ./prog` produces:
 
-<Spoiler title="AddressSanitizer">
+<Spoiler title="AddressSanitizer with -g">
 
 ```
 =================================================================
-==31227==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffeef0e4a54 at pc 0x000100b1bce5 bp 0x7ffeef0e4a10 sp 0x7ffeef0e4a08
-READ of size 4 at 0x7ffeef0e4a54 thread T0
-    #0 0x100b1bce4 in main (prog:x86_64+0x100000ce4)
-    #1 0x7fff72208cc8 in start (libdyld.dylib:x86_64+0x1acc8)
+==51610==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffee99819a4 at pc 0x00010627ece5 bp 0x7ffee9981960 sp 0x7ffee9981958
+READ of size 4 at 0x7ffee99819a4 thread T0
+    #0 0x10627ece4 in main prog.cpp:6
+    #1 0x7fff68e63cc8 in start (libdyld.dylib:x86_64+0x1acc8)
 
-Address 0x7ffeef0e4a54 is located in stack of thread T0 at offset 52 in frame
-    #0 0x100b1bc35 in main (prog:x86_64+0x100000c35)
+Address 0x7ffee99819a4 is located in stack of thread T0 at offset 52 in frame
+    #0 0x10627ec35 in main prog.cpp:4
 
   This frame has 1 object(s):
     [32, 52) 'v' (line 5) <== Memory access at offset 52 overflows this variable
 HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
       (longjmp and C++ exceptions *are* supported)
-SUMMARY: AddressSanitizer: stack-buffer-overflow (prog:x86_64+0x100000ce4) in main
+SUMMARY: AddressSanitizer: stack-buffer-overflow prog.cpp:6 in main
 Shadow bytes around the buggy address:
-  0x1fffdde1c8f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c910: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c920: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c930: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-=>0x1fffdde1c940: 00 00 00 00 f1 f1 f1 f1 00 00[04]f3 f3 f3 f3 f3
-  0x1fffdde1c950: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c960: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c970: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x1fffdde1c990: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd3302e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd3302f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330310: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1
+=>0x1fffdd330330: f1 f1 00 00[04]f3 f3 f3 f3 f3 00 00 00 00 00 00
+  0x1fffdd330340: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330350: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330360: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330370: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1fffdd330380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 Shadow byte legend (one shadow byte represents 8 application bytes):
   Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07
+  Partially addressable: 01 02 03 04 05 06 07 
   Heap left redzone:       fa
   Freed heap region:       fd
   Stack left redzone:      f1
@@ -472,13 +480,13 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Left alloca redzone:     ca
   Right alloca redzone:    cb
   Shadow gap:              cc
-==31227==ABORTING
+==51610==ABORTING
 zsh: abort      ./prog
 ```
 
 </Spoiler>
 
-### `-D_GLIBCXX_DEBUG`
+#### `-D_GLIBCXX_DEBUG`
 
 <Resources>
 	<Resource
@@ -502,7 +510,7 @@ int main() {
 }
 ```
 
-`g++ prog.cpp -o prog -D_GLIBCXX_DEBUG -g && ./prog` produces:
+`g++ prog.cpp -o prog -D_GLIBCXX_DEBUG && ./prog` produces:
 
 <Spoiler title="Debug">
 
@@ -528,6 +536,12 @@ zsh: abort      ./prog
 ```
 
 </Spoiler>
+
+<Warning>
+
+I don't know if there's a way to print the line number where the error occurs.
+
+</Warning>
 
 </CPPSection>
 
@@ -563,7 +577,7 @@ Pros of using a debugger:
 Cons of using a debugger:
 
 - You cannot see the overall "output" of your program at each stage. For example, if I wanted to see every single value of `i` in the program, I could not using a debugger.
-- Most advanced competitive programmers do not use debuggers; it is quite time inefficient.
+- Most advanced competitive programmers do not use debuggers; it is usually not very efficient to use one during a contest.
 
 <IncompleteSection>
 
