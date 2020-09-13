@@ -1,0 +1,44 @@
+---
+id: cses-1082
+title: CSES - Sum of Divisors
+author: Benjamin Qi
+---
+
+Our goal is to compute the summation $\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ in faster than $\Theta(n)$ time. 
+
+<Spoiler title="Hint">
+
+$n=10^{12}$ implies that the desired time complexity is $O(\sqrt n)$!
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+The key observation is that there are only $O(\sqrt n)$ distinct values of $q=\left\lfloor \frac{n}{i}\right\rfloor$. To show this, consider $i\in [1,\sqrt n]$ and $i\in [\sqrt n+1,n]$ separately.
+
+So we can quickly process all terms in the summation with the same value of $q$. We start with $i=1$ and increase it until it reaches $n$. Note that the smallest $j$ such that $\left\lfloor \frac{n}{j}\right\rfloor<\left\lfloor \frac{n}{i}\right\rfloor$ is just $\left\lfloor \frac{n}{\left\lfloor \frac{n}{i}\right\rfloor}\right\rfloor+1$.
+
+```cpp
+int main() {
+	ll n; re(n);
+	int ans = 0;
+	for (ll i = 1, j; i <= n; i = j) {
+		ll q = n/i; j = n/q+1; 
+		// process terms [i..j-1] of the summation
+		// since they all have the same quotient q
+		// now we add q*sum(i..j-1) to the answer
+		ll x = j-i, y = i+j-1; // x*y/2 = sum(i..j-1)
+		if (x%2 == 0) x /= 2;
+		else y /= 2;
+		x %= MOD, y %= MOD;
+		ans = (ans+q%MOD*x%MOD*y%MOD)%MOD;
+	}
+	ps(ans);
+}
+```
+
+<br />
+
+[Loan Repayment](http://www.usaco.org/index.php?page=viewproblem2&cpid=991) uses a similar idea.
+
+</Spoiler>
