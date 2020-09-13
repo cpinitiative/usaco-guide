@@ -547,9 +547,11 @@ export default function MarkdownLayout({
                   <NavBar />
                 </div>
 
+                <div className="lg:h-8" />
+
                 {markdownData instanceof ModuleInfo &&
                   markdownData.frequency !== null && (
-                    <div className="px-0.5 lg:mt-8">
+                    <div className="px-0.5">
                       <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
                         <Frequency frequency={markdownData.frequency} />
                         {/* <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> */}
