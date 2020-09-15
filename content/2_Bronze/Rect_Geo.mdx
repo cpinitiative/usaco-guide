@@ -1,7 +1,7 @@
 ---
 id: rect-geo
 title: 'Rectangle Geometry'
-author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li
+author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li, Andrew Wang
 description: 'Problems involving rectangles whose sides are parallel to the coordinate axes.'
 frequency: 2
 ---
@@ -80,6 +80,49 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+	
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class billboard
+{
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader br = new BufferedReader(new FileReader("billboard.in"));
+      PrintWriter out = new PrintWriter(new FileWriter("billboard.out"));
+      int ok[][] = new int[2000][2000];
+      for (int i = 0; i < 3; ++i) {
+         StringTokenizer st = new StringTokenizer(br.readLine());
+         int x1 = Integer.parseInt(st.nextToken());
+         int y1 = Integer.parseInt(st.nextToken());
+         int x2 = Integer.parseInt(st.nextToken()); 
+         int y2 = Integer.parseInt(st.nextToken());
+         x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000;
+         for (int x = x1; x < x2; ++x){
+            for (int y = y1; y < y2; ++y) {
+               if (i < 2) ok[x][y] = 1;
+               else ok[x][y] = 0;
+            }
+         }
+      }
+      int ans = 0;
+      for (int x = 0; x < 2000; ++x){
+         for (int y = 0; y < 2000; ++y){
+            ans += ok[x][y];
+         }
+      }
+      out.println(ans);
+      out.close();
+   }
+}
+
+```
+
+<\JavaSection>
 
 <PySection>
 
