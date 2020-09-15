@@ -123,6 +123,47 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+	
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class Exponentation
+{
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      int n = Integer.parseInt(br.readLine());
+      for (int i = 0; i < n; i++){
+         StringTokenizer st = new StringTokenizer(br.readLine());
+         long a = Long.parseLong(st.nextToken());
+         long b = Long.parseLong(st.nextToken());
+         out.println(binpow(a, b, (long)1e9+7));
+      }
+      out.close();
+   }
+   public static long binpow(long x, long n, long m) {
+      assert(n >= 0);
+      x %= m; //note: m*m must be less than 2^63 to avoid ll overflow
+      long res = 1;
+      while (n > 0) {
+         if (n % 2 == 1) //if n is odd
+            res = res * x % m;
+         x = x * x % m;
+         n /= 2; //divide by two
+      }
+      return res;
+   }
+}
+
+
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
