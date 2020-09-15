@@ -3,16 +3,15 @@ id: cses-1195
 title: CSES - Flight Discount
 author: Kai Wang
 ---
-Compute distance from 1 to N to every vertex (from N, reverse all edges)
+This is a meet in the middle problem. Take the obvious graph interpretation.
 
-Find $\min_{AB edge}(dist1[A]+distN[B]+(vAB)/2)$ where 
+Say I use the discount on edge between A and B, and I use the edge.
 
-$dist1[A]$ is the distance from 1 to A
+There are two cases: I have to go from $1\rightarrow A\rightarrow B\rightarrow N$, or $1\rightarrow B\rightarrow A\rightarrow N$. It turns out that we need the distance between 1 and A, and N and B.
 
-$distN[B]$ is the distance from 1 to B
+This means we use dijkstra to compute the distance from 1, N to every vertex, then compute $\text{min}_{A\rightarrow B} dist1[A]+c(A,B)+distN[B]$,
 
-$vAB$ is the cost of the edge
-
+where $c(A,B)$ is the cost to travel from city A to city B.
 
 ```java
 import java.io.*; 
