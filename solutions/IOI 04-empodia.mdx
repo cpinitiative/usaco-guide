@@ -4,36 +4,52 @@ title: IOI 2004 - Empodia
 author: Benjamin Qi
 ---
 
+[Official Editorial](https://ioinformatics.org/page/ioi-2004/30)
+
+Let $v[0],v[1],\ldots,v[n-1]$ denote the input sequence. An interval $[i\ldots j]$ is framed if all three of the following conditions hold: 
+
+ - $v[i]-i=v[j]-j$
+ - $v[i]=\min(v[i\ldots j])$
+ - $v[j]=\max(v[i\ldots j])$
+
+Our approach will be to iterate over all $j=[0,n)$ and check whether $j$ contributes a new empodio with right endpoint $j$.
+
+ - Maintain a stack $mn$ consisting of all indices $i$ satisfying the second condition. 
+ - When we increment $j$, repeatedly pop the top element $i$ of $mn$ while $v[i]>v[j]$. Then add $j$ to $mn$.
+ - To check whether $j$ is part of an empodio, find the maximum $i\in mn$ such that $v[i]-i=v[j]-j$. If $i$ is to the right of the rightmost left endpoint of any empodio found so far and $v[j]=\max(v[i\ldots j])$, then we have found a new empodio.
+
+To check whether $v[j]=\max(v[i\ldots j])$, we can maintain a separate stack $mx$ that stores all indices $i$ such that $v[i]=\max(v[i\ldots j])$.
+
+**Note:** The test data on Yandex has sequences of length greater than $1100000$ $\ldots$
+
 ```cpp
 const int BIG = 3000000;
 vi stor[2*BIG];
 int N;
 vi v;
 
-int ex(int x) { return v[x]-x+N; }
+int dif(int x) { return v[x]-x+N; } // add N so difference is non-negative
 
 int main() {
 	setIO(); re(N); v.rsz(N); re(v);
-	if (N > BIG) exit(0);
-	dbg(v);
 	vi mn, mx;
 	int maxL = -1;
 	vpi ans;
-	F0R(i,sz(v)) {
-		while (sz(mn) && v[mn.bk] > v[i]) {
-			stor[ex(mn.bk)].pop_back();
+	F0R(j,sz(v)) {
+		while (sz(mn) && v[mn.bk] > v[j]) {
+			stor[dif(mn.bk)].pop_back();
 			mn.pop_back();
 		}
-		while (sz(mx) && v[mx.bk] < v[i]) mx.pop_back();
-		int ind = v[i]-i+N;
+		while (sz(mx) && v[mx.bk] < v[j]) mx.pop_back();
+		int ind = dif(j);
 		if (sz(stor[ind])) {
 			int x = stor[ind].bk;
 			if ((!sz(mx) || mx.bk < x) && x > maxL) {
 				maxL = x;
-				ans.pb({x,i});
+				ans.pb({x,j});
 			}
 		}
-		mn.pb(i); mx.pb(i); stor[v[i]-i+N].pb(i);
+		mn.pb(j); mx.pb(j); stor[ind].pb(j);
 	}
 	ps(sz(ans));
 	trav(t,ans) ps(t.f+1,t.s+1);
