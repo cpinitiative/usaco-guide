@@ -5,12 +5,13 @@ author: Andi Qu, Nathan Wang
 ---
 
 1. Use Dijkstra's to calculate distances from $s$, $u$, and $v$.
-2. Consider the dijkstra tree (keep track of all the parents of each node) from $s$ to $t$. Note that this is a DAG.
-3. We basically need to choose one path on this DAG (any path on the DAG is a valid commuter pass option), a starting node for $u$, and an exiting node for $v$.
-4. Define `dpForward(i)` = min dist from $v$ to any node that lies on a path from $i$ _forwards_ through the DAG to $t$.
-5. Define `dpBackward(i)` = min dist from $v$ to any node that lies on a path from $i$ _backwards_ through the DAG to $s$; in other words, the min dist from $v$ to any node $x$ such that $x$ is in a path from $s$ to $i$ in the DAG.
-6. Loop through all nodes $i$ in the DAG. One answer candidate is (distance from $u$ to node $i$) + min(dpForward(i), dpBackward(i))
-7. Alternatively, the answer could just be from $u$ directly to $v$ without using the commuter pass.
+2. Consider a subset of directed edges where each directed edge is part of a shortest path from $s$ to $t$. Note that this subset is a DAG, and can be found by keeping track of the parents of every node when running Dijkstra's.
+3. Note that an optimal path will be $u \rightarrow x \rightarrow y \rightarrow v$, where $x \rightarrow y$ is a path on the DAG. Note that any path on the DAG is a valid commuter pass option, and the only node with in-degree 0 is $u$, and the only node with out-degree 0 is $t$ in the DAG.
+4. Define `dpU(i)` = minimum distance from $u$ to any node $x$ such that $x$ is in a path from $s$ to $i$ in the DAG.
+5. Define `dpV(i)` = minimum distance from $v$ to any node $x$ such that $x$ is in a path from $s$ to $i$ in the DAG.
+6. The DP transition for `dpU(i) = min(distU[i], dpU(parent_i))` for each parent of `i` (see `dijkstra2` function implementation for more details). `dpV`'s transition is defined similarly.
+7. Our answer is `dpU(v) + dpV(v)`. Since edges are bidirectional, an optimal path can also be $v \rightarrow x \rightarrow y \rightarrow u$ where $x \rightarrow y$ is a path on the DAG. We can solve this by rerunning steps 2-7 while switching $u$ and $v$. In Andi's code, steps 2-7 are implemented in the `dijkstra2` function.
+8. Alternatively, the answer could just be from $u$ directly to $v$ without using the commuter pass.
 
 ## Code
 
@@ -100,4 +101,4 @@ int main() {
 }
 ```
 
-Alternatively, [Nathan's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/JOI/JOI%2018-commuterpass.cpp).
+Alternatively, [Nathan's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/JOI/JOI%2018-commuterpass.cpp). Note that the DP definitions in Nathan's implementation are slightly different than above.
