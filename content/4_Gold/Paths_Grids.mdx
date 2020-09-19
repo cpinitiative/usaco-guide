@@ -173,9 +173,13 @@ In general, thinking about how you can append cells to paths will help you const
 
 In this problem, we are directly given a 2D grid of cells, and we have to count the number of paths from corner to corner that can only go down and to the right, with a special catch. The path can't use a cell marked with an asterik.
 
-We come close to being able to use our original recurrence, but we have to modify it.
+We come close to being able to use our original recurrence, but we have to modify it. Basically, if a cell $(x, y)$ is normal, we can use the recurrence normally. But, if cell $(x, y)$ has an asterik, the dp-value is $0$.
 
-$DP[x][y] = DP[x-1][y] + DP(x, y-1)
+$dp(x, y)$ =
+\begin{cases}
+dp(x-1, y) + dp(x, y-1),  & \text{if $(x, y)$ is not a bomb} \\
+0, & \text{if $(x, y)$ is a bomb}
+\end{cases}
 
 <IncompleteSection />
 
