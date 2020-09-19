@@ -123,7 +123,7 @@ A common archetype of DP Problems involves a 2D grid of square cells (like graph
 
 Usually, the sub-problems in this type of DP are a sub-rectangle of the whole grid. For example, consider a problem in which we count the number of paths from $(1, 1)$ to $(N, M)$ when we can only move in the positive x direction and the positive y direction. 
 
-Let $dp(x, y)$ be the number of paths that go corner-to-corner in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $dp(x, y)$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we can construct paths that end on $(x, y)$. Working backwards like that motivates the following recurrence: $dp(x, y) = dp(x-1, y) + dp(x, y-1)$. We can use this recurrence to calculate $dp(N, M)$. In general, thinking about how you can append cells to paths will help you construct the correct DP recurrence.
+Let $dp(x, y)$ be the number of paths that go corner-to-corner in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $dp(x, y)$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we can construct paths that end on $(x, y)$. Working backwards like that motivates the following recurrence: $dp(x, y) = dp(x-1, y) + dp(x, y-1)$. We can use this recurrence to calculate $dp(N, M)$. Keep in mind that $dp(1, 1) = 1$ because the path to $(1, 1)$ is just a single cell. In general, thinking about how you can append cells to paths will help you construct the correct DP recurrence.
 
 When using the DP recurrence, it's important that you compute the DP values in an order such that the dp-value for a cell is known before you use it to compute the dp-value for another cell. In the example problem above, it's fine to iterate through each row from bottom to top:
 
@@ -271,6 +271,8 @@ public class Main {
 </JavaSection>
 
 </LanguageSection>
+
+Note how the coordinates are now in the form $\[row\]\[column\]$ when reading in the input.
 
 ## Solution - Longest Common Subsequence
 
