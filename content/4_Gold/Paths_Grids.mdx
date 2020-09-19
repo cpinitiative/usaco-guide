@@ -123,25 +123,55 @@ export const problems = {
 	<Resource source="CPH" title="7.3 - Paths in a Grid" starred></Resource>
 </Resources>
 
-A common archetype of DP Problems involves a 2D grid of square cells (like graph paper), and we have to analyze "paths" which have these properties:
+A common archetype of DP Problems involves a 2D grid of square cells (like graph paper), and we have to analyze "paths." A path is a sequence of cells whose movement is restricted to one direction on the x-axis and one direction on the y-axis (for example, you may only be able to move down or to the right). Usually, the path also has to start in one corner of the grid and end on another corner. The problem may ask you to count the number of paths that satisfy some property, or it may ask you to find the max/min of some quantity over all paths.
 
- - A path is a sequence of cells whose movement is restricted to one direction on the x-axis and one direction on the y-axis (e.g. You may only move down or to the right).
- - Usually these paths have to go from one corner of the grid to another corner of the grid.
- - These paths will also have to satisfy other interesting properties defined by the problem.
+Usually, the sub-problems in this type of DP are a sub-rectangle of the whole grid. For example, consider a problem in which we count the number of paths from $(1, 1)$ to $(N, M)$ when we can only move in the $+x$ (right) and $+y$ (up) direction. Let $dp(x, y)$ be the number of paths in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $dp(x, y)$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we can construct paths that end on $(x, y)$. This counting idea motivates the following recurrence: $dp(x, y) = dp(x-1, y) + dp(x, y-1)$.
 
-The problem may ask you to count the number of paths that satisfy some property, or it may ask you to find the max/min of some quantity over all paths.
+In general, thinking about the paths that you can append to will help you construct the correct DP recurrence. When using the DP recurrence, it's important that you compute the DP values in an order such that the answer for a cell is known before you use it in the formula. In the example problem above, it's fine to iterate through each row from bottom to top:
 
-Usually, the DP-state for grid problems will include at least two numbers: the x-coordinate and the y-coordinate. For some problems, it might be more convenient to think of x and y as the column and the row respectively. 
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+for(int i = 0; i < M; i++) {
+	for(int j = 0; j < N; j++) {
+		if(j > 0) dp[j][i] += dp[j-1][i];
+		if(i > 0) dp[j][i] += dp[j][i-1];
+	}
+}
+
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+for(int i = 0; i < M; i++) {
+	for(int j = 0; j < N; j++) {
+		if(j > 0) dp[j][i] += dp[j-1][i];
+		if(i > 0) dp[j][i] += dp[j][i-1];
+	}
+}
+
+```
+
+Note how the coordinates are in the form $(x_coordinate, y_coordinate)$. Sometimes, it might be convenient to think of points as $(row, column)$ instead, which basically swaps the order of the coordinates.
+
+</JavaSection>
+
+</LanguageSection>
 
 ## Solution - Paths on a Grid
 
-In this problem, we are directly given a 2D grid of cells, and we have to count the number of paths that satisfy most of the aforementioned properties. The path must move from the top-left corner to the bottom-right corner, it can only travel down or to the right, and it has an interesting problem-specific property: it can't use a cell marked with an asterik.
+In this problem, we are directly given a 2D grid of cells, and we have to count the number of paths from corner to corner that can only go down and to the right, with a special catch. The path can't use a cell marked with an asterik.
 
-(an explanation to be added)
+We come close to being able to use our original recurrence, but we have to modify it.
 
-(probably want a piece-wise function to represent this)
-
-$DP[x][y] = DP[x-1][y] {if (x-1, y) is not a trap} + DP(x, y-1) {if (x, y-1) is not a trap}$
+$DP[x][y] = DP[x-1][y] + DP(x, y-1)
 
 <IncompleteSection />
 
