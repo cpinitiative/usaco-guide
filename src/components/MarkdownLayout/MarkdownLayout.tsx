@@ -625,9 +625,7 @@ export default function MarkdownLayout({
 
                 {markdownData instanceof ModuleInfo &&
                   markdownData.description && (
-                    <p className="font-bold mb-4 bg-green-50 border-l-4 border-green-400 text-green-800 p-4 dark:bg-green-800 dark:border-green-500 dark:text-green-100">
-                      {markdownData.description}
-                    </p>
+                    <p className="italic">{markdownData.description}</p>
                   )}
 
                 <div className="xl:hidden">
