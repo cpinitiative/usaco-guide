@@ -9,7 +9,7 @@ author: Andi Qu, Nathan Wang
 3. Note that an optimal path will be $u \rightarrow x \rightarrow y \rightarrow v$, where $x \rightarrow y$ is a path on the DAG. Note that any path on the DAG is a valid commuter pass option, and the only node with in-degree 0 is $u$, and the only node with out-degree 0 is $t$ in the DAG.
 4. Define `dpU(i)` = minimum distance from $u$ to any node $x$ such that $x$ is in a path from $s$ to $i$ in the DAG.
 5. Define `dpV(i)` = minimum distance from $v$ to any node $x$ such that $x$ is in a path from $s$ to $i$ in the DAG.
-6. The DP transition for `dpU(i) = min(distU[i], dpU(parent_i))` for each parent of `i` (see `dijkstra2` function implementation for more details). `dpV`'s transition is defined similarly.
+6. The DP transition for `dpU(i)` is `dpU(i) = min(distU[i], dpU(parent_i))` for each parent of `i` (see `dijkstra2` function implementation for more details). `dpV`'s transition is defined similarly.
 7. Our answer is `dpU(v) + dpV(v)`. Since edges are bidirectional, an optimal path can also be $v \rightarrow x \rightarrow y \rightarrow u$ where $x \rightarrow y$ is a path on the DAG. We can solve this by rerunning steps 2-7 while switching $u$ and $v$. In Andi's code, steps 2-7 are implemented in the `dijkstra2` function.
 8. Alternatively, the answer could just be from $u$ directly to $v$ without using the commuter pass.
 
