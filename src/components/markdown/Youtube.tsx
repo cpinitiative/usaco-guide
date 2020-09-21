@@ -8,11 +8,11 @@ const Container = styled.div`
   padding-bottom: 56.25%;
 `;
 
-export default function Youtube({ id }) {
+export default function Youtube({ id, autoplay = false }) {
   return (
     <Container>
       <iframe
-        src={`https://youtube.com/embed/${id}`}
+        src={`https://youtube.com/embed/${id}${autoplay ? '/?autoplay=1' : ''}`}
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen

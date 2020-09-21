@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
 import * as React from 'react';
-import YouTube from 'react-youtube';
+import Youtube from './markdown/Youtube';
 export default function Video() {
   const [showVideo, setShowVideo] = React.useState(false);
   const data = useStaticQuery(graphql`
@@ -20,18 +20,7 @@ export default function Video() {
       <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8">
         {showVideo && (
           <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-none focus:shadow-outline bg-gray-300">
-            <YouTube
-              className={''}
-              opts={{
-                width: '100%',
-                height: '350px',
-                playerVars: {
-                  autoplay: 1,
-                  rel: 0,
-                },
-              }}
-              videoId={'ueNT-w7Oluw'}
-            />
+            <Youtube id={'ueNT-w7Oluw'} autoplay />
           </div>
         )}
         {!showVideo && (
@@ -48,7 +37,7 @@ export default function Video() {
 
             <div className="absolute inset-0 w-full h-full flex items-center justify-center">
               <svg
-                className="h-20 w-20 text-indigo-500"
+                className="h-20 w-20 text-blue-500"
                 fill="currentColor"
                 viewBox="0 0 84 84"
               >
