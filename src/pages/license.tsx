@@ -17,7 +17,18 @@ export default function LicensePage(props: PageProps) {
         <div className="mt-6 text-gray-900 text-lg">
           <p className="mb-4">
             No part of this site may be used, reproduced, redistributed,
-            commercialized, or sold without prior written permission.
+            commercialized, or sold without prior written permission, except as
+            permitted under the{' '}
+            <a
+              rel="license"
+              className={'text-blue-500 hover:text-blue-700 hover:underline'}
+              href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+              target={'_blank'}
+            >
+              Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+              International License
+            </a>
+            .
           </p>
           <p className="mb-2">
             "This site" includes, but is not limited to, the following:
@@ -31,6 +42,20 @@ export default function LicensePage(props: PageProps) {
             <li>Text content of each module</li>
             <li>Problems and links listed in each module</li>
           </ul>
+
+          <p className="mb-2">
+            Note: We provide examples below as a general summary of, but not a
+            substitute for,{' '}
+            <a
+              rel="license"
+              className={'text-blue-500 hover:text-blue-700 hover:underline'}
+              href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+              target={'_blank'}
+            >
+              our license
+            </a>
+            .
+          </p>
           <p className="mb-2">
             Examples of PERMITTED use cases that do not require prior written
             permission include, but are not limited to, the following:
@@ -39,7 +64,7 @@ export default function LicensePage(props: PageProps) {
             <li>Using these resources as an individual to improve</li>
             <li>Sharing a link to these resources</li>
             <li>
-              Using these resources as part of a FREE class/school club (please
+              Using these resources as part of a FREE class/school club (if you
               give credit where credit is due and provide a link to this site)
               <ul className="list-disc pl-10">
                 <li>
@@ -95,9 +120,9 @@ export default function LicensePage(props: PageProps) {
               usacoguide@gmail.com
             </a>
             .
-            {/*While USACO Director Dr. Brian Dean will make all final decisions,*/}
-            {/*please do not contact him directly. Instead, direct any questions*/}
-            {/*related to the USACO Guide to the coordinator, Nathan Wang.*/}
+            {/* While USACO Director Dr. Brian Dean will make all final decisions, */}
+            {/* please do not contact him directly. Instead, direct any questions */}
+            {/* related to the USACO Guide to the coordinator, Nathan Wang. */}
           </p>
           <Link to="/" className="block mb-4 underline text-blue-600">
             &larr; Back to Home
