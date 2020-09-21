@@ -274,6 +274,10 @@ Luckily for us, there's a simple solution to this - the minimum number of increa
 
 ### Code for PCB
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -300,6 +304,39 @@ int main() {
     return 0;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+class PCB{
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      int n = Integer.parseInt(br.readLine());
+      TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
+      for(int i = 0; i < n; i++){
+         StringTokenizer st = new StringTokenizer(br.readLine());
+         a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+      }
+      //finding the LIS of a reversed array = finding the LDS
+      int lis = 0;
+      TreeSet<Integer> s = new TreeSet<Integer>(); 
+      for(int k : a.keySet()){
+         if(s.higher(a.get(k)) == null) lis++;
+         else s.remove(s.higher(a.get(k)));
+         s.add(a.get(k));
+      }
+      System.out.println(lis);
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## Application 3 - Number of LISes
 
