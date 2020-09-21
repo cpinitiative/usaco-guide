@@ -6,6 +6,7 @@ import SEO from '../components/seo';
 import { Author, Authors } from '../../content/authors/authors';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useRef } from 'react';
+import Video from '../components/Video';
 
 const AuthorCard = ({
   author,
@@ -226,6 +227,7 @@ export default function IndexPage(props: PageProps) {
                   </div>
                 </div>
               </div>
+
               <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
                 <svg
                   className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8 scale-75 origin-top sm:scale-100 lg:hidden"
@@ -267,35 +269,7 @@ export default function IndexPage(props: PageProps) {
                     fill="url(#4f4f415c-a0e9-44c2-9601-6ded5a34a13e)"
                   />
                 </svg>
-                <div className="relative mx-auto xl:mr-0 w-full rounded-lg shadow-lg lg:max-w-md">
-                  <a
-                    href="https://www.youtube.com/watch?v=ueNT-w7Oluw"
-                    target="_blank"
-                    className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline"
-                  >
-                    <img
-                      className="w-full"
-                      src="https://img.youtube.com/vi/ueNT-w7Oluw/maxresdefault.jpg"
-                      alt="Video by William Lin"
-                    />
-                    <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                      <svg
-                        className="h-20 w-20 text-blue-500"
-                        fill="currentColor"
-                        viewBox="0 0 84 84"
-                      >
-                        <circle
-                          opacity="0.9"
-                          cx="42"
-                          cy="42"
-                          r="42"
-                          fill="white"
-                        />
-                        <path d="M55.5039 40.3359L37.1094 28.0729C35.7803 27.1869 34 28.1396 34 29.737V54.263C34 55.8604 35.7803 56.8131 37.1094 55.9271L55.5038 43.6641C56.6913 42.8725 56.6913 41.1275 55.5039 40.3359Z" />
-                      </svg>
-                    </div>
-                  </a>
-                </div>
+                <Video />
               </div>
             </div>
           </main>
