@@ -14,7 +14,7 @@ Thank you to the following companies:
 
 ## Contributing
 
-For more information contributing, view our [Contributing module](https://usaco.guide/general/contributing).
+You may find [this live editor](https://usaco.guide/liveupdate) helpful when editing modules. For more information contributing, view our [Contributing module](https://usaco.guide/general/contributing).
 
 - If you're looking to add/modify modules, refer to the `content/` folder.
 - If you're looking to add/modify problem solutions, refer to the `solutions/` folder.

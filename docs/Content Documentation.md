@@ -1,9 +1,11 @@
 # Content Documentation
 
+Note: You may find [this live editor](https://usaco.guide/liveupdate) helpful when writing modules.
+
 The following two modules are good to read:
 
-1. https://usaco-guide.netlify.app/general/modules
-2. https://usaco-guide.netlify.app/general/code-con
+1. https://usaco.guide/general/modules
+2. https://usaco.guide/general/code-con
 
 All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
 
