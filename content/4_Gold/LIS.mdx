@@ -148,8 +148,8 @@ Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[
 <CPPSection>
 
 ```cpp
-int find_lis(vector<int> arr) {
-	int n = arr.size(), lis = 0;
+int find_lis(vector<int> a) {
+	int n = a.size(), lis = 0;
 	vector<int> dp(n, 1);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < i; j++) 
@@ -162,6 +162,26 @@ int find_lis(vector<int> arr) {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+
+public static int find_lis(int[] a) {
+   int n = a.length, lis = 0;
+   int[] dp = new int[n]; Arrays.fill(dp, 1);
+   for (int i = 0; i < n; i++) {
+      for (int j = 0; j < i; j++) 
+         if (a[j] < a[i]) 
+            dp[i] = Math.max(dp[i], dp[j] + 1);
+      lis = Math.max(lis, dp[i]);
+   }
+   return lis;
+}
+
+```
+
+</JavaSection>
 
 </LanguageSection>
 
