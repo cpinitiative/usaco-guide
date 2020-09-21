@@ -1,7 +1,7 @@
 ---
 id: intro-ordered
 title: 'More Operations on Ordered Sets'
-author: Darren Yao, Benjamin Qi
+author: Darren Yao, Benjamin Qi, Andrew Wang
 prerequisites:
   - intro-sets
   - binary-search-sorted
@@ -146,7 +146,14 @@ Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`
 
 <JavaSection>
 
-The ordered set also allows four additional operations: `first`, which returns the lowest element in the set, `last`, which returns the highest element in the set, `lower`, which returns the greatest element strictly less than some element, and `higher`, which returns the least element strictly greater than it.
+The ordered set (TreeSet) allows for a multitude of additional operations: 
+
+- `first()`: returns the lowest element in the set
+- `last()`: returns the greatest element in the set
+- `lower(E v)`: returns the greatest element strictly less than `v`
+- `floor(E v)`: returns the greatest element less than or equal to `v`
+- `higher(E v)`: returns the least element strictly greater than `v`
+- `ceiling(E v)`: returns the least element greater than or equal to `v`
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();
@@ -351,10 +358,6 @@ We'll use iterators extensively.
 
 <Spoiler title="Solution">
 
-<LanguageSection>
-
-<CPPSection>
-
 Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is equal to
 
 $$
@@ -364,6 +367,11 @@ $$
 We can store each of these differences in a multiset `ret`; after each inversion, we'll need to output the maximum element of `ret`.
 
 Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into `dif` if it not currently present or removing `x` if it is, and then doing the same with `x+1`. Whenever we insert or remove an element of `dif`, we should update `ret` accordingly.
+
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -385,7 +393,7 @@ void modify(int x) {
 		ret.insert(b-a);
 		dif.erase(it); // remove x from dif
 	} else { // x is not currently in dif, insert it
-		it = dif.insert(x).first; // inser x into dif
+		it = dif.insert(x).first; // insert x into dif
 		// it = iterator corresponding to x
 		int a = *prev(it), b = *next(it);
 		ret.erase(ret.find(b-a)); // update ret
@@ -409,9 +417,93 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+Java solutions are too slow for the CSES. Use C++ instead to get AC.
+
+</Warning>
+
+```java
+
+import java.io.*; 
+import java.util.*; 
+ 
+class BitInversion{
+   public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
+   public static String s;
+   public static int m;
+   public static TreeSet<Integer> dif = new TreeSet<Integer>();
+   
+   public static void modify(int x){
+      if(x == 0 || x == s.length()) return;
+      if(dif.contains(x)){ // x is currently present in dif, remove it
+         int a = dif.lower(x), b = dif.higher(x);
+         remove(x-a); remove(b-x); // update ret
+         add(b-a);
+         dif.remove(x); // remove x from dif
+      }
+      else{
+        dif.add(x); // insert x into dif
+        int a = dif.lower(x), b = dif.higher(x);
+        remove(b-a); // update ret
+        add(x-a); add(b-x);
+      }
+   }
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      s = sc.readLine();
+      m = Integer.parseInt(sc.readLine());
+      dif.add(0); dif.add(s.length());
+      for (int i = 0; i < s.length() -1; i++){
+         if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+      }
+      for (int it : dif){
+         if(dif.higher(it) != null) add(dif.higher(it) - it); // initialize ret
+      }
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      for (int i = 0; i < m; i++){
+         int x = Integer.parseInt(st.nextToken()); // 1-indexed position
+         modify(x-1); modify(x);
+         out.println(ret.lastKey());
+      }
+      out.close();
+   }
+   
+   static void add(int x){
+      if(ret.containsKey(x)){
+         ret.put(x, ret.get(x) + 1);
+      } else {
+         ret.put(x, 1);
+      }
+   }
+
+   static void remove(int x){
+      ret.put(x, ret.get(x) - 1);
+      if(ret.get(x) == 0){
+         ret.remove(x);
+      }
+   }
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 <br />
 
 Note that multiset has a high constant factor, so replacing `ret` with a priority queue and an array that stores the number of times each integer occurs in the priority queue reduces the runtime by a factor of 2.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -458,6 +550,71 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.io.*; 
+import java.util.*; 
+ 
+class BitInversion{
+   public static PriorityQueue<Integer> pq = new PriorityQueue<Integer>(Collections.reverseOrder());
+   public static String s;
+   public static int m;
+   public static TreeSet<Integer> dif = new TreeSet<Integer>();
+   public static int cnt[];
+   public static void add(int x){
+      cnt[x]++;
+      pq.add(x);
+   }
+   public static void modify(int x){
+      if(x == 0 || x == s.length()) return;
+      if(dif.contains(x)){ // x is currently present in dif, remove it
+         int a = dif.lower(x), b = dif.higher(x);
+         cnt[x-a]--; cnt[b-x]--; // update ret
+         add(b-a);
+         dif.remove(x); // remove x from dif
+      }
+      else{
+        dif.add(x); // insert x into dif
+        int a = dif.lower(x), b = dif.higher(x);
+        cnt[b-a]--; // update ret
+        add(x-a); add(b-x);
+      }
+   }
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      s = sc.readLine();
+      m = Integer.parseInt(sc.readLine());
+      cnt = new int[s.length()+1];
+      dif.add(0); dif.add(s.length());
+      for (int i = 0; i < s.length() -1; i++){
+         if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+      }
+      for (int it : dif){
+         if(dif.higher(it) != null){ 
+            add(dif.higher(it) - it);
+         }
+      }
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      for (int i = 0; i < m; i++){
+         int x = Integer.parseInt(st.nextToken()); // 1-indexed position
+         modify(x-1); modify(x);
+         while(cnt[pq.peek()] == 0) pq.poll();
+         // pop elements that should no longer be present in priority queue
+         out.println(pq.peek());
+      }
+      out.close();
+   }
+   
+}
+
+```
+
+</JavaSection>
 
 </LanguageSection>
 
