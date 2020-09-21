@@ -370,6 +370,17 @@ public class Main {
 </JavaSection>
 </LanguageSection>
 
+<IncompleteSection>
+
+don't need a map for this :/
+
+</IncompleteSection>
+
+<Optional>
+
+Apply the [linear sieve](https://codeforces.com/blog/entry/54090).
+
+</Optional>
 
 ## GCD & LCM
 
@@ -402,13 +413,13 @@ public int gcd(int a, int b){
 <CPPSection>
 
 ```cpp
-int GCD(int a, int b){
+int gcd(int a, int b){
 	if (b == 0) return a;
-	return GCD(b, a % b);
+	return gcd(b, a % b);
 }
 ```
 
-For C++14 and below, use the built-in `__gcd(a,b)`. C++17 has built in `gcd(a,b)`.
+For C++14, you can use the built-in `__gcd(a,b)`. 
 
 </CPPSection>
 
@@ -443,7 +454,7 @@ $$
 
 <Warning>
 
-Coding $lcm$ as `a * b / gcd(a, b)` might cause integer overflow if the value of `a * b` is greater than the max size of the data type of `a * b` (e.g. the max size of `int` is around 2 billion). Dividng `a` by $\gcd(a,b)$ first, then multiplying it by `b` might prevent integer overflow.
+Coding $\text{lcm}$ as `a * b / gcd(a, b)` might cause integer overflow if the value of `a * b` is greater than the max size of the data type of `a * b` (e.g. the max size of `int` is around 2 billion). Dividng `a` by `gcd(a, b)` first, then multiplying it by `b` will prevent integer overflow if the result fits in an `int`.
 
 </Warning>
 
@@ -452,6 +463,22 @@ If we want to take the GCD or LCM of more than two elements, we can do so two at
 $$
 \gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
 $$
+
+
+**Exercise:** What's wrong with the following code?
+
+```cpp
+ll gcd(ll a, ll b){ return b == 0 ? a : gcd(b,a%b); }
+ll lcm(ll a, ll b) { return a/gcd(a,b)*b; }
+
+int main() { cout << lcm(1000000000,999999999); } // output: 1808348672
+```
+
+<Spoiler title="Solution">
+
+The code outputs the correct result (`999999999000000000`) for C++14 and earlier. However, C++17 has built in `gcd(a,b)` and `lcm(a,b)` ...
+
+</Spoiler>
 
 ## Problems
 

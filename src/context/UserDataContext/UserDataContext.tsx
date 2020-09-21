@@ -141,13 +141,7 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      if (
-        confirm(
-          'Warning: User accounts is still in beta. There is a risk of complete data loss. Are you sure you want to proceed?'
-        )
-      ) {
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      }
+      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     },
     signOut: () => {
       firebase

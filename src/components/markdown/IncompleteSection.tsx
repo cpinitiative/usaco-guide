@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export const IncompleteSection = ({ children }) => {
   return (
-    <div className="p-4 bg-red-50 rounded-md tailwind-alert dark:bg-red-900">
+    <div className="p-4 bg-red-50 rounded-md tailwind-alert dark:bg-red-900 mb-4">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg
