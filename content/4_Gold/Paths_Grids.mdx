@@ -281,14 +281,28 @@ Note how the coordinates are now in the form (row, column) when reading in the i
 
 <FocusProblem problem={problems.pathSam[0]} />
 
-The longest common subsequence is a classical string problem, but where's the grid? We can create a grid to solve it. 
+The [longest common subsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is a classical string problem, but where's the grid? We can create a grid to solve it. 
 
-|   | x | a | b | c | d |
+Think about the following algorithm to create any (not necessarily the longest) subsequence between two strings $A$ and $B$:
+ - We start with two pointers, $i$, and $j$, each beginning at $0$.
+ - We do some "action" at each time step, until there are no more available "actions". An "action" is defined to be:
+  1. Increase the value of $i$ by $1$. (Only works if $i < |A|$)
+  2. Increase the value of $j$ by $1$. (Only works if $j < |B|$)
+  3. Increase the value of $i$ and $j$ by $1$, if $A_i = B_j$. Append that character $A_i$ (or $B_j$) to the common subsequence. (Only works if $i < |A|$ and $j < |B|$).
+ - We know that this process creates a common subsequence because characters which are common to both strings are found from left to right.
+ 
+This algorithm can also be illustrated on a grid. Let $A := xabcd$ and $B := yazc$. Then, the process of increasing pointers can be seen as moving right (if $i$ is increased), moving down (if $j$ is increased), or moving diagonally (if both $i$ and $j$ increase). Now we have to find the maximum number of "diagonal movements" ("action 3" in the above algorithm) in a path from corner to corner on the grid. Thus, we have constructed a grid-type DP problem.
+
+|   | *x* | *a* | *b* | *c* | *d* |
 |---|---|---|---|---|---|
-| y | **0** | 0 | 0 | 0 | 0 |
-| a | 0 | **1** | 1 | 1 | 1 |
-| z | 0 | **1** | **1** | 1 | 1 |
-| c | 0 | 1 | 1 | **2** | **2** |
+| *y* | **0** | 0 | 0 | 0 | 0 |
+| *a* | 0 | **1** | 1 | 1 | 1 |
+| *z* | 0 | **1** | **1** | 1 | 1 |
+| *c* | 0 | 1 | 1 | **2** | **2** |
+
+In the above grid, see how the bolded path has diagonal movements at characters "a" and "c". Thus, the longest common subsequence between "xabcd" and "yazc" is "ac".
+
+
 
 <IncompleteSection />
 
