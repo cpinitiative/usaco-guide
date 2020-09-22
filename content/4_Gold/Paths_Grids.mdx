@@ -171,10 +171,13 @@ In this problem, we are directly given a 2D grid of cells, and we have to count 
 
 We come close to being able to use our original recurrence, but we have to modify it. Basically, if a cell $(x, y)$ is normal, we can use the recurrence normally. But, if cell $(x, y)$ has an asterik, the dp-value is $0$.
 
-If $(x, y)$ is not a trap:
- - $dp(x, y) = dp(x-1, y) + dp(x, y-1)$
-If $(x, y)$ is a trap:
- - $dp(x, y) = 0
+$$
+  dp(x, y) =
+\begin{cases}
+dp(x-1, y) + dp(x, y-1) & \text{if $(x, y)$ is not a trap} \\
+0, & \text{if $(x, y)$ is a trap}
+\end{cases}
+$$
 
 Our code doesn't change much:
 
