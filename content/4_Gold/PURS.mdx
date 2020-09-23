@@ -250,61 +250,7 @@ template<class T> struct Seg { // comb(ID,b) = b
 
 ```java
 
-class SegmentTreeSum 
-{ 
-   long stsum[]; 
-   long a[];
-   public SegmentTreeSum(long arr[], int n) 
-   { 
-      stsum = new long[4*n]; 
-      a = arr;
-      buildsum(1, 0, n-1); 
-   } 
-   public void update(int i, long new_val) 
-   {  
-      long diff = new_val-a[i];
-      a[i] = new_val;
-      updatesum(0, a.length - 1, i, diff, 1); 
-   } 
-   
-   public long buildsum(int i, int l, int r) 
-   { 
-      if (l == r) { 
-         stsum[i] = a[l]; 
-         return a[l];
-      } 
-      int pl = 2*i;
-      int pr = 2*i+1; 
-      stsum[i] = buildsum(pl, l, (l+r)/2) + buildsum(pr, (l+r)/2 + 1, r); 
-      return stsum[i];
-   } 
-   public void updatesum(int ss, int se, int i, long diff, int si) 
-   { 
-      if (i < ss || i > se) 
-         return; 
-      stsum[si] = stsum[si] + diff; 
-      if (se != ss) { 
-         int mid = (ss+se)/2; 
-         updatesum(ss, mid, i, diff, 2 * si); 
-         updatesum(mid + 1, se, i, diff, 2 * si + 1); 
-      } 
-   } 
-   long sum(int qs, int qe) 
-   { 
-      return sumhelp(1, 0, a.length-1, qs, qe); 
-   } 
-   public long sumhelp(int p, int l, int r, int i, int j) 
-   { 
-      if (i <= l && j >= r) {
-         return stsum[p]; 
-      }
-      if (r < i || l > j){
-         return 0; 
-      }
-      return sumhelp(2 * p, l, (l+r)/2, i, j) + 
-         	sumhelp(2 * p + 1, (l+r)/2 + 1, r, i, j); 
-   } 
-}
+
 
 ```
 
@@ -367,28 +313,25 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 
 ```java
 
-class FWT{
-   public static int[] fwt;
-   public static int query(int a, int b)
-   {
-      return sum(b) - sum(a - 1);
+public static long[] fwt;
+public static long query(int a, int b)
+{
+   return sum(b) - sum(a - 1);
+}
+public static long sum(int i)
+{
+   long sum = 0;
+   while(i > 0){
+      sum += fwt[i];
+      i -= (i & -i);  //least important bit
    }
-   private static int sum(int i)
-   {
-      int sum = 0;
-      while(i > 0){
-         sum += fwt[i];
-         i -= (i & -i);  //least important bit
-      }
-      return sum;
-   }
-
-   private static void update(int i, int v)
-   {
-      while(i > 0 && i < fwt.length){
-         fwt[i] += v;
-         i += (i & -i);
-      }
+   return sum;
+}
+public static void update(int i, long v)
+{
+   while(i > 0 && i < fwt.length){
+      fwt[i] += v;
+      i += (i & -i);
    }
 }
 
