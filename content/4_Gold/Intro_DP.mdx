@@ -132,27 +132,29 @@ It's usually a good idea to write a slower solution first. For example, if the c
 
 Although it is not too difficult to grasp the general ideas behind DP, the technique can be used in a diverse range of problems and is a must-know idea for competitors in the USACO Gold division.
 
-Often, dynamic programming can be split into 4 steps: the base cases, the state, the recurrence, and the answer. 
+Often, dynamic programming can be split into 4 steps: identify the state, the recurrence, the base case, and the answer. 
 
-## Base Cases
+### State
 
-The base cases are the cases of our dynamic programming that cannot be defined in terms of other cases of the same function. Typically, we set these cases manually before performing our recurrence in order to ensure that our recurrence works properly.
+The state of our dynamic programming is what each spot in our dp array/matrix represents. We want to set up the states such that the answer is one of the states, and there is a clear transition between states.
 
-## States
+One way to think about states is to ask yourself "what information do I need to know to identify my state / progress in solving this problem?" For example, the state for fibonacci could be i, representing that you're trying to find the i'th fibonacci number.
 
-The states of our dynamic programming are what each spot in our dp array/matrix represents. We want to set up the states such that the answer is one of the states, and there is a clear transition between states.
-
-## Recurrence/Transition
+### Recurrence/Transition
 
 The recurrence of our dynamic programming is the way we define each case in the terms of other cases of the same function. We always want the recurrence to be made up of cases that we have computed before our current case. The recurrence is largely dependent on what our state is. 
 
-## The Answer
+### Base Cases
+
+The base cases are the cases of our dynamic programming that cannot be defined in terms of other cases of the same function. Typically, we set these cases manually before performing our recurrence in order to ensure that our recurrence works properly.
+
+### The Answer
 
 Lastly, we want to figure out which case of our dynamic programming is the answer to our problem. This is usually an intuitive step of dynamic programming and will almost always come naturally. 
 
 ## Solution - The $N$th Fibonacci Term Problem
 
-A common introductory problem for dynamic programming is finding the N-th Fibonacci term. This can be done with recursion with the formula $F_n = F_{n-1} + F_{n-2}$ in $O(N^2)$ by simply recursing down to 0 for each term. However, notice that we are repeating some steps for each term. In order to reduce our complexity, we can use dynamic programming. 
+A common introductory problem for dynamic programming is finding the N-th Fibonacci term. This can be done with recursion with the formula $F_n = F_{n-1} + F_{n-2}$ in $O(2^n)$ by simply recursing down to 0 for each term. However, notice that we are repeating some steps for each term. In order to reduce our complexity, we can use dynamic programming. 
 
 First, we find the state of our dynamic programming. Here, we will let $\texttt{dp}[x]$ represent the $x$th term in the Fibonacci sequence. 
 
