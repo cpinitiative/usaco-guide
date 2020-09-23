@@ -132,15 +132,19 @@ It's usually a good idea to write a slower solution first. For example, if the c
 
 Although it is not too difficult to grasp the general ideas behind DP, the technique can be used in a diverse range of problems and is a must-know idea for competitors in the USACO Gold division.
 
-Often, dynamic programming can be split into 3 steps: the base cases, the recurrence, and the answer. 
+Often, dynamic programming can be split into 4 steps: the base cases, the state, the recurrence, and the answer. 
 
 ## Base Cases
 
 The base cases are the cases of our dynamic programming that cannot be defined in terms of other cases of the same function. Typically, we set these cases manually before performing our recurrence in order to ensure that our recurrence works properly.
 
+## States
+
+The states of our dynamic programming are what each spot in our dp array/matrix represents. We want to set up the states such that the answer is one of the states, and there is a clear transition between states.
+
 ## Recurrence/Transition
 
-The recurrence of our dynamic programming is the way we define each case in the terms of other cases of the same function. We always want the recurrence to be made up of cases that we have computed before our current case. 
+The recurrence of our dynamic programming is the way we define each case in the terms of other cases of the same function. We always want the recurrence to be made up of cases that we have computed before our current case. The recurrence is largely dependent on what our state is. 
 
 ## The Answer
 
@@ -148,9 +152,11 @@ Lastly, we want to figure out which case of our dynamic programming is the answe
 
 ## Solution - The $N$th Fibonacci Term Problem
 
-A common introductory problem for dynamic programming is finding the N-th Fibonacci term. This can be done with recursion with the formula $F_n$ = $F_{n-1}$ + $F_{n-2}$ in $O(N^2)$ by simply recursing down to 0 for each term. However, notice that we are repeating some steps for each term. In order to reduce our complexity, we can use dynamic programming. 
+A common introductory problem for dynamic programming is finding the N-th Fibonacci term. This can be done with recursion with the formula $F_n = F_{n-1} + F_{n-2}$ in $O(N^2)$ by simply recursing down to 0 for each term. However, notice that we are repeating some steps for each term. In order to reduce our complexity, we can use dynamic programming. 
 
-Let $\texttt{dp}[x]$ be the $x$th term in the fibonacci sequence. We can use our recursive formula for our recurrence:
+First, we find the state of our dynamic programming. Here, we will let $\texttt{dp}[x]$ represent the $x$th term in the Fibonacci sequence. 
+
+Next, we need to figure out what our recurrence/transition is. We can use our recursive formula for our recurrence:
 
 $$
 \texttt{dp}[N] = \texttt{dp}[N-1] + \texttt{dp}[N-2]. 
@@ -159,10 +165,7 @@ $$
 However, notice that for the cases $N = 1$ and $N = 0$, there doesn't exist a $\texttt{dp}[N-2]$. These 2 cases are our base cases. For this problem, $N = 1$ and $N = 0$ are our only base cases, and we can simply set 
 
 $$
-\texttt{dp}[0] = 0,
-$$
-
-$$
+\texttt{dp}[0] = 0, \\
 \texttt{dp}[1] = 1.
 $$
 
