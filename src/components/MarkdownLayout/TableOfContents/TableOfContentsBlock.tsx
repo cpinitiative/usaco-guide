@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 
 const TableOfContentsBlock = ({
   tableOfContents,
@@ -20,7 +21,7 @@ const TableOfContentsBlock = ({
       {links}
       <hr className="my-6 dark:border-gray-700" />
 
-      <a
+      <OutboundLink
         href="https://github.com/cpinitiative/usaco-guide"
         target="_blank"
         className="group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
@@ -40,7 +41,29 @@ const TableOfContentsBlock = ({
             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
           />
         </svg>
-      </a>
+      </OutboundLink>
+
+      <OutboundLink
+        href="https://www.reddit.com/r/usaco/"
+        target="_blank"
+        className="mt-1 group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
+      >
+        Need help? Ask on Reddit!
+        <svg
+          className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+          />
+        </svg>
+      </OutboundLink>
     </div>
   );
 };
