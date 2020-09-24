@@ -309,7 +309,19 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*; 
+import java.util.*; 
+ 
 class PCB{
+   public static int find_lis(int[] a) {
+      ArrayList<Integer> dp = new ArrayList<Integer>();
+      for (int i : a) {
+         int pos = Math.abs(Collections.binarySearch(dp, i));
+         if (pos > dp.size()) dp.add(i);
+         else dp.set(pos-1, i);
+      }
+      return dp.size();
+   }
    public static void main(String[] args) throws IOException
    {
       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -328,7 +340,7 @@ class PCB{
          s.add(a.get(k));
       }
       System.out.println(lis);
-   }
+   } 
 }
 ```
 
