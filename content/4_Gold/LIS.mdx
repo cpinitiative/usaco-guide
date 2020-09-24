@@ -168,14 +168,15 @@ int find_lis(vector<int> a) {
 ```java
 
 public static int find_lis(int[] a) {
-   ArrayList<Integer> dp = new ArrayList<Integer>();
-   for (int i : a) {
-      int pos = Collections.binarySearch(dp, i);
-      if(pos < 0) pos = Math.abs(pos + 1);
-      if (pos == dp.size()) dp.add(i);
-      else dp.set(pos, i);
+   int n = a.length, lis = 0;
+   int[] dp = new int[n]; Arrays.fill(dp, 1);
+   for (int i = 0; i < n; i++) {
+      for (int j = 0; j < i; j++) 
+         if (a[j] < a[i]) 
+            dp[i] = Math.max(dp[i], dp[j] + 1);
+      lis = Math.max(lis, dp[i]);
    }
-   return dp.size();
+   return lis;
 }
 
 ```
@@ -229,9 +230,10 @@ int find_lis(vector<int> a) {
 public static int find_lis(int[] a) {
    ArrayList<Integer> dp = new ArrayList<Integer>();
    for (int i : a) {
-      int pos = Math.abs(Collections.binarySearch(dp, i));
-      if (pos > dp.size()) dp.add(i);
-      else dp.set(pos-1, i);
+      int pos = Collections.binarySearch(dp, i);
+      if(pos < 0) pos = Math.abs(pos + 1);
+      if (pos == dp.size()) dp.add(i);
+      else dp.set(pos, i);
    }
    return dp.size();
 }
