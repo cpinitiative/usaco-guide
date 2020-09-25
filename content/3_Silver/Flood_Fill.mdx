@@ -407,6 +407,72 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class test{
+   public static boolean[][] v;
+   public static char[][] g;
+   public static final int xd[] = {0,1,0,-1}, yd[] = {1,0,-1,0};
+   public static int N, M;
+   static class Pair{
+      public int a, b;
+      public Pair(int a, int b){
+         this.a = a;
+         this.b = b;
+      }
+   }
+   public static void ff(int x, int y){
+      Stack<Pair> s = new Stack<Pair>();
+      s.push(new Pair(x, y));
+      while(!s.isEmpty()){
+         Pair p = s.pop();
+         x = p.a; y = p.b;
+         if (x < 0 || x >= N || y < 0 || y >= M || g[x][y] == '#' || v[x][y]) 
+            continue;
+         v[x][y] = true;
+         for (int i = 0; i < 4; i++){
+            int nx = x+xd[i]; int ny = y+yd[i];
+            s.add(new Pair(nx,ny));
+         }
+      }
+   }
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      N = Integer.parseInt(st.nextToken());
+      M = Integer.parseInt(st.nextToken());
+      g = new char[N][M];
+      for(int i = 0; i < N; i++){
+         String str = br.readLine();
+         for(int j = 0; j < M; j++){
+            g[i][j] = str.charAt(j);
+         } 
+      }   
+      v = new boolean[N][M];
+      int ans = 0;
+      for(int i = 0; i < N; i++){
+         for(int j = 0; j < M; j++){
+            if (g[i][j] == '.' && !v[i][j]) {
+               ff(i,j);
+               ans++;
+            }
+         } 
+      }
+      out.println(ans);
+      out.close();
+   }
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Problems
