@@ -134,6 +134,7 @@ export default function IndexPage(props: PageProps) {
   return (
     <Layout>
       <SEO title={null} />
+
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
       {/*  className="block text-base font-medium text-center text-white bg-blue-600 py-2"*/}
