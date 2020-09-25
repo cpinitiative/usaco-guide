@@ -26,6 +26,7 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import { searchClient } from '../../utils/algoliaSearchClient';
 import SEO from '../seo';
 import Layout from '../layout';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -180,13 +181,13 @@ export default function TopNavigationBar({
                 Free online USACO classes + contests from USACO Guide authors!
               </span>
               <span className="block sm:ml-2 sm:inline-block">
-                <a
+                <OutboundLink
                   href="https://joincpi.org/"
                   target="_blank"
                   className="text-white font-bold underline"
                 >
                   Learn more &rarr;
-                </a>
+                </OutboundLink>
               </span>
             </p>
           </div>
