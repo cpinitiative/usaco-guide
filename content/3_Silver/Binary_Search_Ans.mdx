@@ -1,7 +1,7 @@
 ---
 id: binary-search-ans
 title: 'Binary Search on the Answer'
-author: Darren Yao, Abutalib Namazov
+author: Darren Yao, Abutalib Namazov, Andrew Wang
 prerequisites:
   - intro-greedy
   - binary-search-sorted
@@ -201,6 +201,10 @@ check(8) = false
 
 Below, we present several algorithms for binary search, which search for the maximum `x` such that `f(x)` is true.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -234,8 +238,59 @@ int main() {
 	// no numbers satisfy the condition
 }
 ```
+See [Lambda Expressions](/general/cpp-tips/#lambda-expressions) if you're not familiar with the syntax used in the main function. 
 
-See [Lambda Expressions](/general/cpp-tips/#lambda-expressions) if you're not familiar with the syntax used in the main function. We can shorten the function by removing `res` and using a ternary if expression.
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class test{
+   public static boolean f(int x){
+      return x*x <= 30;
+      //function f(x) returns true or false
+   }
+   public static int lstTrue(int lo, int hi) {
+      int res = lo-1;
+      while (lo <= hi) {
+         int mid = (lo+hi)/2; // find the middle of the current range
+         if (f(mid)) {
+            // if mid works, then all numbers smaller than mid also work
+            // so we only care about the part after mid
+            res = mid; // update the answer
+            lo = mid+1; // cut the part before mid
+            // notice that we already handled mid itself so we cut it as well
+         } else {
+            // if mid does not work, greater values would not work too
+            // so we don't care about them
+            hi = mid-1; // cut mid and after
+         }
+      }
+    // now res is the answer
+    // if res is l-1 that means no value in the range satisfies the condition
+      return res;
+   }
+   public static void main(String[] args) throws IOException
+   {
+      System.out.println(lstTrue(2,10)); // 5
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+
+
+We can shorten the function by removing `res` and using a ternary if expression.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int lstTrue(function<bool(int)> f, int lo, int hi) {
@@ -246,6 +301,24 @@ int lstTrue(function<bool(int)> f, int lo, int hi) {
 	return lo;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int lstTrue(int lo, int hi) {
+   for (lo --; lo < hi; ) {
+      int mid = (lo+hi+1)/2;
+      if(f(mid)) lo = mid; else hi = mid-1;
+   }
+   return lo;
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 There is also another approach to binary searching based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element.
 
@@ -288,6 +361,11 @@ If instead we're looking for the minimum `x` that satisfies some condition, then
 
 The binary search function for this is very similar. We will need to do the same thing, but when the condition is satisfied, we will cut the right part, and when it's not, the left part will be cut.
 
+
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -309,9 +387,47 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class test{
+   public static boolean f(int x){
+      return x*x >= 30;
+      //function f(x) returns true or false
+   }
+   public static int fstTrue(int lo, int hi) {
+      for (hi ++; lo < hi; ) {
+         // returns smallest x in [lo,hi] that satisfies f
+         // hi+1 if no x satisfies f
+         int mid = (lo+hi)/2;
+         if(f(mid)) hi = mid; 
+         else lo = mid+1;
+      }
+      return lo;
+   }
+   public static void main(String[] args) throws IOException
+   {
+      System.out.println(fstTrue(2,10)); // 6
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 <Warning>
 
 This code might not work if `lo` is negative. Consider the following example:
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int main() {
@@ -320,7 +436,28 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static void main(String[] args) throws IOException
+{
+     System.out.println(fstTrue(-10,-7)); // infinite loop
+}
+```
+
+
+</JavaSection>
+
+</LanguageSection>
+
 This is because dividing an odd negative integer by two will round it up instead of down! Fixed version:
+
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 int fstTrue(function<bool(int)> f, int lo, int hi) {
@@ -331,6 +468,40 @@ int fstTrue(function<bool(int)> f, int lo, int hi) {
 	return lo;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class test{
+   public static boolean f(int x){
+      return x*x >= 30;
+      //function f(x) returns true or false
+   }
+   public static int fstTrue(int lo, int hi) {
+      for (hi ++; lo < hi; ) {
+         // returns smallest x in [lo,hi] that satisfies f
+         // hi+1 if no x satisfies f
+         int mid = lo+hi; 
+         mid = (mid-(mid&1))/2;
+         if(f(mid)) hi = mid; else lo = mid+1;
+      }
+      return lo;
+   }
+   public static void main(String[] args) throws IOException
+   {
+      System.out.println(fstTrue(-10,-7)); // -10
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 </Warning>
 
