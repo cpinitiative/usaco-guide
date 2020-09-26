@@ -25,8 +25,6 @@ In programming contests, your program needs to finish running within a certain t
 
 We want a method to calculate how many operations it takes to run each algorithm, in terms of the input size $n$. Fortunately, this can be done relatively easily using [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large. Complexity is an upper bound for the number of steps an algorithm requires as a function of the input size. In Big O notation, we denote the complexity of a function as $O(f(n))$, where constant factors and lower-order terms are generally omitted from $f(n)$. We'll see some examples of how this works, as follows.
 
-## O(1) examples
-
 The following code is $O(1)$, because it executes a constant number of operations.
 
 <LanguageSection>
@@ -62,11 +60,7 @@ d = a + b + c + 153
 </PySection>
 </LanguageSection>
 
-Input and output operations are also assumed to be $O(1)$. 
-
-## Loops
-
-In the following examples, we assume that the code inside the loops is $O(1)$.
+Input and output operations are also assumed to be $O(1)$. In the following examples, we assume that the code inside the loops is $O(1)$.
 
 The time complexity of loops is the number of iterations that the loop runs. For example, the following code examples are both $O(n)$.
 
@@ -122,8 +116,6 @@ while (i < n):
 </PySection>
 </LanguageSection>
 
-## More Loops
-
 Because we ignore constant factors and lower order terms, the following examples are also $O(n)$:
 
 <LanguageSection>
@@ -170,8 +162,6 @@ for i in range(n + 457737):
 </PySection>
 </LanguageSection>
 
-## Nested Loops
-
 We can find the time complexity of multiple loops by multiplying together the time complexities of each loop. This example is $O(nm)$, because the outer loop runs $O(n)$ iterations and the inner loop $O(m)$.
 
 <LanguageSection>
@@ -207,8 +197,6 @@ for i in range(n):
 
 </PySection>
 </LanguageSection>
-
-## More Nested Loops
 
 In this example, the outer loop runs $O(n)$ iterations, and the inner loop runs anywhere between $1$ and $n$ iterations (which is a maximum of $n$). Since Big O notation calculates worst-case time complexity, we treat the inner loop as a factor of $n$.<Asterisk> We can also do some math to calculate exactly how many times the code runs: 1+2+...+n = n\*(n+1)/2 = (n^2 + n)/2 = O(n^2)</Asterisk> Thus, this code is $O(n^2)$.
 
@@ -246,8 +234,6 @@ for i in range(n):
 
 </PySection>
 </LanguageSection>
-
-## Multipart Algorithms
 
 If an algorithm contains multiple blocks, then its time complexity is the worst time complexity out of any block. For example, the following code is $O(n^2)$.
 
@@ -293,8 +279,6 @@ for i in range(n + 58834):
 
 </PySection>
 </LanguageSection>
-
-## Multipart Algorithms 
 
 The following code is $O(n^2 + m)$, because it consists of two blocks of complexity $O(n^2)$ and $O(m)$, and neither of them is a lower order function with respect to the other.
 
@@ -364,8 +348,6 @@ Don't worry if you don't recognize most of these! They will all be introduced la
 - Iterating through all subsets: $O(2^n)$
 - Iterating through all permutations: $O(n!)$
 
-## Bounds
-
 Here are conservative upper bounds on the value of $n$ for each time complexity. You might get away with more than this, but this should allow you to quickly check whether an algorithm is viable.
 
 <center>
@@ -383,8 +365,6 @@ Here are conservative upper bounds on the value of $n$ for each time complexity.
 | $n \le 10^{18}$      | $O(\log^2 n)$, $O(\log n)$, $O(1)$ |
 
 </center>
-
-## Note about Bronze
 
 <Warning>
 
