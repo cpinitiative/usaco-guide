@@ -166,23 +166,34 @@ struct DSU {
 This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only.
 
 ```java
+public static int disjoint[]; //0 indexed
+public static int size[];
 //finds the "representative" node in a's component
-int find(int a) {
-	if (p[a] == a)
-		return a;
-	else
-		return p[a] = find(p[a]);
+public static int find(int v){
+   if(disjoint[v] == -1){
+      return v;
+   }
+   disjoint[v] = find(disjoint[v]);
+   return disjoint[v];
 }
 
 //returns whether the merge changed connectivity
-boolean merge(int a, int b) {
-	int A = find(a);
-	int B = find(b);
-	if (A == B)
-		return false;
-	p[a] = p[b] = p[A] = p[B];
-	return true;
+public static void union(int u, int v){
+   int uroot = find(u);
+   int vroot = find(v);
+   if(uroot == vroot){
+      return;
+   }
+   if(size[uroot] < size[vroot]){
+      disjoint[uroot] = vroot;
+      size[vroot] = size[uroot] + size[vroot];
+   }
+   else{
+      disjoint[vroot] = uroot;
+      size[uroot] = size[uroot] + size[vroot];
+   }
 }
+
 ```
 
 </JavaSection>
