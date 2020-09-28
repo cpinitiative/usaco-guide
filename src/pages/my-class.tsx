@@ -86,15 +86,17 @@ export default function NotFoundPage(props: PageProps) {
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
-                      <div className="flex items-center space-x-2">
-                        <Icons.Mail className="h-5 w-5 text-gray-400" />
+                    {teacherMode && (
+                      <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
+                        <div className="flex items-center space-x-2">
+                          <Icons.Mail className="h-5 w-5 text-gray-400" />
 
-                        <span className="text-sm text-gray-500 leading-5 font-medium">
-                          <span className="font-bold">Class Code:</span> 6GK1T
-                        </span>
+                          <span className="text-sm text-gray-500 leading-5 font-medium">
+                            <span className="font-bold">Class Code:</span> 6GK1T
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
