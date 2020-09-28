@@ -286,6 +286,54 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+ ```java
+ import java.util.*;
+import java.io.*;
+
+public class TreeMatching {
+	
+	static ArrayList<Integer> adj[];
+	static int dp[][];
+	
+	static void dfs(int v, int p) {
+		for(int to : adj[v]) {
+			if(to != p) {
+				dfs(to, v);
+				dp[v][0] += Math.max(dp[to][0], dp[to][1]);
+			}
+		}
+		for(int to : adj[v]) {
+			if(to != p) {
+				dp[v][1] = Math.max(dp[v][1], dp[to][0] + 1 + dp[v][0] - Math.max(dp[to][0], dp[to][1]));
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		adj = new ArrayList[N];
+		dp = new int[N][2];
+		for(int i = 0; i < N; ++i) {
+			adj[i] = new ArrayList<Integer>();
+		}
+		for(int i = 0; i < N - 1; ++i) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+		dfs(0, -1);
+		System.out.println(Math.max(dp[0][0], dp[0][1]));
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -296,6 +344,10 @@ Just keep matching a leaf with the only vertex adjacent to it while possible.
 
 <Spoiler title="Code">
 
+<LanguageSection>
+
+<CPPSection>
+	
 ```cpp
 int n;
 vi adj[MX];
@@ -307,7 +359,7 @@ void dfs(int pre, int cur) {
 		dfs(cur,i);
 		if (!done[i] && !done[cur])
 		  done[cur] = done[i] = 1, ans ++;
-	}
+	
 }
 
 int main() {
@@ -321,6 +373,58 @@ int main() {
 	cout << ans;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+	
+```java
+import java.util.*;
+import java.io.*;
+
+public class TreeMatching {
+	
+	static ArrayList<Integer> adj[];
+	static int N;
+	static boolean done[];
+	static int ans = 0;
+	
+	static void dfs(int v, int p) {
+		for(int to : adj[v]) {
+			if(to != p) {
+				dfs(to, v);
+				if(!done[to] && !done[v]) {
+					done[v] = done[to] = true;
+					++ans;
+				}
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		adj = new ArrayList[N];
+		done = new boolean[N];
+		for(int i = 0; i < N; ++i) {
+			adj[i] = new ArrayList<Integer>();
+		}
+		for(int i = 0; i < N - 1; ++i) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+		dfs(0, -1);
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 </Spoiler>
 
