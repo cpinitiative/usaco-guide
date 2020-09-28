@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: 'Complete Search with Recursion'
-author: Darren Yao, Sam Zhang, Michael Cao
+author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang
 description: 'Includes generating subsets and permutations.'
 frequency: 1
 prerequisites:
@@ -748,6 +748,71 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class test{
+   public static boolean ok[][] = new boolean[8][8];
+   public static ArrayList<Integer> perm = new ArrayList<Integer>();
+   public static boolean[] chosen = new boolean[8];
+   public static int ans = 0;
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      for (int i = 0; i < 8; i++) {
+        String str = br.readLine();
+        for (int j = 0; j < 8; j++) {
+            ok[i][j] = (str.charAt(j) == '.');
+        }
+      }
+      genperm();
+      out.println(ans);
+      out.close();
+   }
+   public static void genperm(){
+      if(perm.size() == 8){
+        boolean works = true;
+        boolean blocked[] = new boolean[16];
+        for(int i = 0; i < 8; i++){
+            if(!ok[i][perm.get(i)]){
+                works = false;
+            }
+        }
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + perm.get(i)]){
+                works = false;
+            }
+            blocked[i + perm.get(i)] = true; //mark this diagonal
+        }
+        Arrays.fill(blocked, false);
+        for(int i = 0; i < 8; i++){
+            if(blocked[i + 7 - perm.get(i)]){
+                works = false;
+            }
+            blocked[i + 7 - perm.get(i)] = true;
+        }
+        if(works) ans++;
+      }
+      else{
+         for(int i = 0; i < 8; i++){
+            if (chosen[i]) continue;
+               chosen[i] = true;
+               perm.add(i);
+               genperm();
+               chosen[i] = false;
+               perm.remove(perm.size()-1);
+         }
+      }
+   }
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
