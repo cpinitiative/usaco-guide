@@ -249,9 +249,44 @@ template<class T> struct Seg { // comb(ID,b) = b
 <JavaSection>
 
 ```java
+import java.util.*;
+import java.io.*;
 
+public class segtree {
+   public static final int N = (int)1e5;  // limit for array size
+   public static int n;  // array size
+   public static long t[] = new long[2*N]; 
+   public static void main(String[] args) throws Exception {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      n = Integer.parseInt(br.readLine());
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      for (int i = 0; i < n; i++) {
+         t[i+n] = Integer.parseInt(st.nextToken());
+      }
+      build();
+      System.out.println(query(1, 3));
+      modify(1, 2);
+      System.out.println(query(1, 3));
+   
+   }
 
+   public static void build() {  // build the tree
+      for (int i = n - 1; i > 0; --i) t[i] = t[i<<1] + t[i<<1|1];
+   }
 
+   public static void modify(int p, long value) {  // set value at position p
+      for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+   }
+
+   public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+      long res = 0;
+      for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+         if ((l&1) != 0) res += t[l++];
+         if ((r&1) != 0) res += t[r--];
+      }
+      return res;
+   }
+}
 ```
 
 </JavaSection>
@@ -312,7 +347,6 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 <JavaSection>
 
 ```java
-
 public static long[] fwt;
 public static long query(int a, int b)
 {
