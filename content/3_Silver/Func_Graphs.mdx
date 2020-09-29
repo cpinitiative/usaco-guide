@@ -281,6 +281,10 @@ Reread [CPH pg. 166](/CPH.pdf#page=166) a few more times.
 
 Using **Floyd's Algorithm**, we can find some node on the cycle after $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node in the cycle after another $t$ queries.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 #include <cstdio>
 #include <vector>
@@ -324,6 +328,60 @@ int main()
 	return 0;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Cooperative{
+   public static int g[];
+   public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+   public static void out(int arr[]){
+      System.out.print("next");
+      for (int a : arr){
+         System.out.print(" " + a);
+      }
+      System.out.println();
+      System.out.flush();
+   }
+   public static void read() throws Exception{
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int N = Integer.parseInt(st.nextToken());
+      for (int i = 0; i < N; i++){
+         String s = st.nextToken();
+         for (int j = 0; j < s.length(); j++)
+            g[s.charAt(j)-'0'] = i;
+      }
+   }
+   public static void main(String[] args) throws Exception{
+      g = new int[20];
+      for(;;){ // c*ceil(t/c) times
+         out(new int[]{0,1});
+         read();
+         out(new int[]{0});
+         read();
+         if(g[0] == g[1]) 
+            break;
+      }
+      for(;;) // t times
+      {
+         out(new int[]{0,1,2,3,4,5,6,7,8,9});
+         read();
+         if(g[0] == g[2]) 
+            break;
+      }
+      System.out.println("done");
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 <br />
 
