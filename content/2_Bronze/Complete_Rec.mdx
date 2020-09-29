@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: 'Complete Search with Recursion'
-author: Darren Yao, Sam Zhang, Michael Cao
+author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang
 description: 'Includes generating subsets and permutations.'
 frequency: 1
 prerequisites:
@@ -118,29 +118,29 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int n; ll weights[20];
 
 ll solve(int i, ll s1, ll s2){
-    if(i == n){
-        return abs(s1 - s2);
-    }
-    return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]));
+	if(i == n){
+		return abs(s1 - s2);
+	}
+	return min(solve(i + 1, s1 + weights[i], s2), solve(i + 1, s1, s2 + weights[i]));
 }
 
 int main() {
-    setIO();
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> weights[i];
-    }
-    cout << solve(0, 0, 0) << "\n";
+	setIO();
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> weights[i];
+	}
+	cout << solve(0, 0, 0) << "\n";
 }
 ```
 
@@ -154,111 +154,111 @@ import java.io.*;
 
 public class Main {
 
-    static int N;
-    static int weights[];
+	static int N;
+	static int weights[];
 
-    public static void main(String[] args) throws Exception {
-        FastIO sc = new FastIO(System.in);  //See "Intro - FastIO" - this class acts similarly to Scanner, but faster
-        PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in);  //See "Intro - FastIO" - this class acts similarly to Scanner, but faster
+		PrintWriter pw = new PrintWriter(System.out);
 
-        N = sc.nextInt();
-        weights = new int[N];
-        for(int i = 0; i < N; i++) {
-            weights[i] = sc.nextInt();
-        }
+		N = sc.nextInt();
+		weights = new int[N];
+		for (int i = 0; i < N; i++) {
+			weights[i] = sc.nextInt();
+		}
 
-        pw.println(solve(0, 0, 0));
-        pw.close();
-    }
+		pw.println(solve(0, 0, 0));
+		pw.close();
+	}
 
-    static long solve(int index, long s1_sum, long s2_sum) {
-        if(index == N) {
-            return Math.abs(s1_sum - s2_sum);
-        }
+	static long solve(int index, long s1_sum, long s2_sum) {
+		if(index == N) {
+			return Math.abs(s1_sum - s2_sum);
+		}
 
-        return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
-    }
+		return Math.min(solve(index+1, s1_sum + weights[index], s2_sum), solve(index+1, s1_sum, s2_sum+weights[index]));
+	}
 
-    //see "Intro - FastIO"
-    //this class acts similarly to Scanner, but faster
-    static class FastIO {
+	//see "Intro - FastIO"
+	//this class acts similarly to Scanner, but faster
+	static class FastIO {
 
-        InputStream dis;
-        byte[] buffer = new byte[1 << 17];
-        int pointer = 0;
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
 
-        public FastIO(String fileName) throws Exception {
-            dis = new FileInputStream(fileName);
-        }
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
+		}
 
-        public FastIO(InputStream is) throws Exception {
-            dis = is;
-        }
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
+		}
 
-        int nextInt() throws Exception {
-            int ret = 0;
+		int nextInt() throws Exception {
+			int ret = 0;
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            boolean negative = false;
-            if (b == '-') {
-                negative = true;
-                b = nextByte();
-            }
-            while (b >= '0' && b <= '9') {
-                ret = 10 * ret + b - '0';
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
 
-            return (negative) ? -ret : ret;
-        }
+			return (negative) ? -ret : ret;
+		}
 
-        long nextLong() throws Exception {
-            long ret = 0;
+		long nextLong() throws Exception {
+			long ret = 0;
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            boolean negative = false;
-            if (b == '-') {
-                negative = true;
-                b = nextByte();
-            }
-            while (b >= '0' && b <= '9') {
-                ret = 10 * ret + b - '0';
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
 
-            return (negative) ? -ret : ret;
-        }
+			return (negative) ? -ret : ret;
+		}
 
-        byte nextByte() throws Exception {
-            if (pointer == buffer.length) {
-                dis.read(buffer, 0, buffer.length);
-                pointer = 0;
-            }
-            return buffer[pointer++];
-        }
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
 
-        String next() throws Exception {
-            StringBuffer ret = new StringBuffer();
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            while (b > ' ') {
-                ret.appendCodePoint(b);
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
 
-            return ret.toString();
-        }
+			return ret.toString();
+		}
 
-    }
+	}
 
 }
 
@@ -297,35 +297,35 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int n; ll weights[20];
 
 int main() {
-    setIO();
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> weights[i];
-    }
-    ll ans = (ll)1e18;
-    for (int mask = 0; mask < (1 << n); mask++) {
-        ll s1 = 0, s2 = 0;
-        for (int j = 0; j < n; j++) {
-            if (mask & (1 << j)) { //if the j-th bit is toggled
-                s1 += weights[j];
-            }
-            else{
-                s2 += weights[j];
-            }
-        }
-        ans = min(ans, abs(s1 - s2));
-    }
-    cout << ans << "\n";
+	setIO();
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> weights[i];
+	}
+	ll ans = (ll)1e18;
+	for (int mask = 0; mask < (1 << n); mask++) {
+		ll s1 = 0, s2 = 0;
+		for (int j = 0; j < n; j++) {
+			if (mask & (1 << j)) { //if the j-th bit is toggled
+				s1 += weights[j];
+			}
+			else{
+				s2 += weights[j];
+			}
+		}
+		ans = min(ans, abs(s1 - s2));
+	}
+	cout << ans << "\n";
 }
 ```
 
@@ -338,117 +338,117 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
-        PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in); //see "Intro - FastIO" - this class acts similarly to Scanner
+		PrintWriter pw = new PrintWriter(System.out);
 
-        int N = sc.nextInt();
-        int weights[] = new int[N];
-        for(int i = 0; i < N; i++) {
-            weights[i] = sc.nextInt();
-        }
+		int N = sc.nextInt();
+		int weights[] = new int[N];
+		for (int i = 0; i < N; i++) {
+			weights[i] = sc.nextInt();
+		}
 
-        long ans = Long.MAX_VALUE;
+		long ans = Long.MAX_VALUE;
 
-        for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
-            long s1 = 0;
-            long s2 = 0;
+		for (int bitmask = 0; bitmask < (1 << N); bitmask++) {
+			long s1 = 0;
+			long s2 = 0;
 
-            for(int i = 0; i < N; i++) {
-                if((bitmask & (1 << i)) > 0) {
-                    s1 += weights[i];
-                } else {
-                    s2 += weights[i];
-                }
-            }
-            ans = Math.min(ans, Math.abs(s1-s2));
-        }
+			for (int i = 0; i < N; i++) {
+				if((bitmask & (1 << i)) > 0) {
+					s1 += weights[i];
+				} else {
+					s2 += weights[i];
+				}
+			}
+			ans = Math.min(ans, Math.abs(s1-s2));
+		}
 
-        pw.println(ans);
-        pw.close();
-    }
+		pw.println(ans);
+		pw.close();
+	}
 
 
-    //See Intro - FastIO
-    //this class acts similarly to Scanner
-    static class FastIO {
+	//See Intro - FastIO
+	//this class acts similarly to Scanner
+	static class FastIO {
 
-        InputStream dis;
-        byte[] buffer = new byte[1 << 17];
-        int pointer = 0;
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
 
-        public FastIO(String fileName) throws Exception {
-            dis = new FileInputStream(fileName);
-        }
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
+		}
 
-        public FastIO(InputStream is) throws Exception {
-            dis = is;
-        }
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
+		}
 
-        int nextInt() throws Exception {
-            int ret = 0;
+		int nextInt() throws Exception {
+			int ret = 0;
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            boolean negative = false;
-            if (b == '-') {
-                negative = true;
-                b = nextByte();
-            }
-            while (b >= '0' && b <= '9') {
-                ret = 10 * ret + b - '0';
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
 
-            return (negative) ? -ret : ret;
-        }
+			return (negative) ? -ret : ret;
+		}
 
-        long nextLong() throws Exception {
-            long ret = 0;
+		long nextLong() throws Exception {
+			long ret = 0;
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            boolean negative = false;
-            if (b == '-') {
-                negative = true;
-                b = nextByte();
-            }
-            while (b >= '0' && b <= '9') {
-                ret = 10 * ret + b - '0';
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
 
-            return (negative) ? -ret : ret;
-        }
+			return (negative) ? -ret : ret;
+		}
 
-        byte nextByte() throws Exception {
-            if (pointer == buffer.length) {
-                dis.read(buffer, 0, buffer.length);
-                pointer = 0;
-            }
-            return buffer[pointer++];
-        }
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
 
-        String next() throws Exception {
-            StringBuffer ret = new StringBuffer();
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
 
-            byte b;
-            do {
-                b = nextByte();
-            } while (b <= ' ');
-            while (b > ' ') {
-                ret.appendCodePoint(b);
-                b = nextByte();
-            }
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
 
-            return ret.toString();
-        }
+			return ret.toString();
+		}
 
-    }
+	}
 }
 
 ```
@@ -520,7 +520,7 @@ What's going to be in the `check` function depends on the problem, but it should
 
 ```cpp
 do {
-    check(v); // process or check the current permutation for validity
+	check(v); // process or check the current permutation for validity
 } while(next_permutation(v.begin(), v.end()));
 ```
 
@@ -570,25 +570,25 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int main() {
-    setIO();
-    string s; cin >> s;
-    vector<string> out;
-    sort(all(s));
-    do {
-        out.pb(s);
-    } while(next_permutation(all(s)));
-    cout << sz(out) << "\n";
-    for(int i = 0; i < sz(out); i++){
-        cout << out[i] << "\n";
-    }
+	setIO();
+	string s; cin >> s;
+	vector<string> out;
+	sort(all(s));
+	do {
+		out.pb(s);
+	} while(next_permutation(all(s)));
+	cout << sz(out) << "\n";
+	for(int i = 0; i < sz(out); i++){
+		cout << out[i] << "\n";
+	}
 }
 ```
 
@@ -624,27 +624,27 @@ int main() {
 import java.util.*;
 
 public class Test {
-    static boolean[] used;
-    static ArrayList<Integer> cur = new ArrayList<Integer>();
-    static int n;
-    static void gen() {
-        if (cur.size() == n) {
-            check(cur); // check current permutation for validity, or print it, etc.
-            return;
-        }
-        for (int i = 0; i < n; ++i) if (!used[i]) {
-            used[i] = true; cur.add(i+1);
-            gen();
-            used[i] = false; cur.remove(cur.size()-1);
-        }
-    }
-    static void genPerm(int _n) {
-        n = _n; used = new boolean[n];
-        gen();
-    }
-    public static void main(String[] Args) {
-        genPerm(5);
-    }
+	static boolean[] used;
+	static ArrayList<Integer> cur = new ArrayList<Integer>();
+	static int n;
+	static void gen() {
+		if (cur.size() == n) {
+			check(cur); // check current permutation for validity, or print it, etc.
+			return;
+		}
+		for (int i = 0; i < n; ++i) if (!used[i]) {
+			used[i] = true; cur.add(i+1);
+			gen();
+			used[i] = false; cur.remove(cur.size()-1);
+		}
+	}
+	static void genPerm(int _n) {
+		n = _n; used = new boolean[n];
+		gen();
+	}
+	public static void main(String[] Args) {
+		genPerm(5);
+	}
 }
 ```
 
@@ -695,11 +695,11 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 bool ok[8][8];
@@ -707,47 +707,110 @@ bool ok[8][8];
 int ans = 0;
 
 int main() {
-    setIO();
-    for (int i = 0; i < 8; i++) {
-        string s; cin >> s;
-        for (int j = 0; j < 8; j++) {
-            ok[i][j] = (s[j] == '.');
-        }
-    }
-    vi vals(8);
+	setIO();
+	for (int i = 0; i < 8; i++) {
+		string s; cin >> s;
+		for (int j = 0; j < 8; j++) {
+			ok[i][j] = (s[j] == '.');
+		}
+	}
+	vi vals(8);
 
-    iota(all(vals), 0); //set vals to 0 1 ... 7
+	iota(all(vals), 0); //set vals to 0 1 ... 7
 
-    do {
-        bool works = true;
-        bool blocked[16];
-        for(int i = 0; i < 8; i++){
-            if(!ok[i][vals[i]]){
-                works = false;
-            }
-        }
-        memset(blocked, false, sizeof(blocked)); //first mark all squares as not blocked
-        for(int i = 0; i < 8; i++){
-            if(blocked[i + vals[i]]){
-                works = false;
-            }
-            blocked[i + vals[i]] = true; //mark this diagonal
-        }
-        memset(blocked, false, sizeof(blocked));
-        for(int i = 0; i < 8; i++){
-            if(blocked[i + 7 - vals[i]]){
-                works = false;
-            }
-            blocked[i + 7 - vals[i]] = true;
-        }
-        if(works) ++ans;
-    } while(next_permutation(all(vals)));
+	do {
+		bool works = true;
+		bool blocked[16];
+		for(int i = 0; i < 8; i++){
+			if(!ok[i][vals[i]]){
+				works = false;
+			}
+		}
+		memset(blocked, false, sizeof(blocked)); //first mark all squares as not blocked
+		for(int i = 0; i < 8; i++){
+			if(blocked[i + vals[i]]){
+				works = false;
+			}
+			blocked[i + vals[i]] = true; //mark this diagonal
+		}
+		memset(blocked, false, sizeof(blocked));
+		for(int i = 0; i < 8; i++){
+			if(blocked[i + 7 - vals[i]]){
+				works = false;
+			}
+			blocked[i + 7 - vals[i]] = true;
+		}
+		if(works) ++ans;
+	} while(next_permutation(all(vals)));
 
-    cout << ans << '\n';
+	cout << ans << '\n';
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Chessboard {
+	public static boolean ok[][] = new boolean[8][8];
+	public static ArrayList < Integer > perm = new ArrayList < Integer > ();
+	public static boolean[] chosen = new boolean[8];
+	public static int ans = 0;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		for (int i = 0; i < 8; i++) {
+			String str = br.readLine();
+			for (int j = 0; j < 8; j++) {
+				ok[i][j] = (str.charAt(j) == '.');
+			}
+		}
+		genperm();
+		out.println(ans);
+		out.close();
+	}
+	public static void genperm() {
+		if (perm.size() == 8) {
+			boolean works = true;
+			boolean blocked[] = new boolean[16];
+			for (int i = 0; i < 8; i++) {
+				if (!ok[i][perm.get(i)]) {
+					works = false;
+				}
+			}
+			for (int i = 0; i < 8; i++) {
+				if (blocked[i + perm.get(i)]) {
+					works = false;
+				}
+				blocked[i + perm.get(i)] = true; //mark this diagonal
+			}
+			Arrays.fill(blocked, false);
+			for (int i = 0; i < 8; i++) {
+				if (blocked[i + 7 - perm.get(i)]) {
+					works = false;
+				}
+				blocked[i + 7 - perm.get(i)] = true;
+			}
+			if (works) ans++;
+		} else {
+			for (int i = 0; i < 8; i++) {
+				if (chosen[i]) continue;
+				chosen[i] = true;
+				perm.add(i);
+				genperm();
+				chosen[i] = false;
+				perm.remove(perm.size() - 1);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
