@@ -355,11 +355,13 @@ bool done[MX];
 int ans = 0;
 
 void dfs(int pre, int cur) {
-	for (int i: adj[cur]) if (i != pre) {
-		dfs(cur,i);
-		if (!done[i] && !done[cur])
-		  done[cur] = done[i] = 1, ans ++;
-	
+	for (int i: adj[cur]) {
+		if (i != pre) {
+			dfs(cur,i);
+			if (!done[i] && !done[cur])
+				done[cur] = done[i] = 1, ans ++;
+		}
+	}
 }
 
 int main() {
