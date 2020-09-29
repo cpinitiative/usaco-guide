@@ -163,7 +163,7 @@ public class Main {
 
         N = sc.nextInt();
         weights = new int[N];
-        for(int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             weights[i] = sc.nextInt();
         }
 
@@ -344,17 +344,17 @@ public class Main {
 
         int N = sc.nextInt();
         int weights[] = new int[N];
-        for(int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             weights[i] = sc.nextInt();
         }
 
         long ans = Long.MAX_VALUE;
 
-        for(int bitmask = 0; bitmask < (1 << N); bitmask++) {
+        for (int bitmask = 0; bitmask < (1 << N); bitmask++) {
             long s1 = 0;
             long s2 = 0;
 
-            for(int i = 0; i < N; i++) {
+            for (int i = 0; i < N; i++) {
                 if((bitmask & (1 << i)) > 0) {
                     s1 += weights[i];
                 } else {
@@ -778,19 +778,19 @@ public class Chessboard{
       if(perm.size() == 8){
         boolean works = true;
         boolean blocked[] = new boolean[16];
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++){
             if(!ok[i][perm.get(i)]){
                 works = false;
             }
         }
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++){
             if(blocked[i + perm.get(i)]){
                 works = false;
             }
             blocked[i + perm.get(i)] = true; //mark this diagonal
         }
         Arrays.fill(blocked, false);
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++){
             if(blocked[i + 7 - perm.get(i)]){
                 works = false;
             }
@@ -799,13 +799,13 @@ public class Chessboard{
         if(works) ans++;
       }
       else{
-         for(int i = 0; i < 8; i++){
-            if (chosen[i]) continue;
-               chosen[i] = true;
-               perm.add(i);
-               genperm();
-               chosen[i] = false;
-               perm.remove(perm.size()-1);
+         for (int i = 0; i < 8; i++){
+               if(chosen[i]) continue;
+	       chosen[i] = true;
+	       perm.add(i);
+	       genperm();
+	       chosen[i] = false;
+	       perm.remove(perm.size()-1);
          }
       }
    }
