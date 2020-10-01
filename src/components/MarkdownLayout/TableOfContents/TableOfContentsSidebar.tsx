@@ -54,7 +54,7 @@ const TableOfContentsSidebar = ({
         </svg>
       </OutboundLink>
 
-      <OutboundLink
+      {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"
         target="_blank"
         className="group block mt-2 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
@@ -74,7 +74,7 @@ const TableOfContentsSidebar = ({
             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
           />
         </svg>
-      </OutboundLink>
+      </OutboundLink> */}
     </div>
   );
 };

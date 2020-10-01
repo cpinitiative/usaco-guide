@@ -38,6 +38,7 @@ Some examples:
   - Those for USACO are automatically generated.
 - Adding editorials.
   - If no editorial exists, or if existing editorial could be improved.
+  - Or solution code in a different language, etc.
 
 <!-- - Don't link CF if it's already included in "Contest Materials." -->
 
@@ -49,7 +50,9 @@ Add more details later.
 
 </IncompleteSection>
 
-All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with limited Latex support from [KaTeX](https://katex.org/) and some custom components. You can check how an `.mdx` file renders by pasting it in the [live renderer](/liveupdate).
+All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with limited Latex support from [KaTeX](https://katex.org/) and some custom components. You can check how an `.mdx` file renders by pasting it in the [live editor](/liveupdate).
+
+See the [Content Documentation](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Content%20Documentation.md) for more info.
 
 ### Useful Links
 
@@ -61,3 +64,33 @@ All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with limi
 - [Sublime Text](https://www.sublimetext.com/)
   - `.md` syntax highlighting is fine, is also ok for `.mdx`
   - You can open a `.mdx` file and set syntax highlighting to be the same as `.md` with `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
+
+### Adding a Solution
+
+If it doesn't already exist, create a new `mdx` file including frontmatter, ex. the following in [`USACO jan17-cow-dance-show.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/USACO%20jan17-cow-dance-show.mdx):
+
+```
+---
+id: usaco-690
+title: USACO 2017 January Silver - Cow Dance Show
+author: Óscar Garries
+---
+
+(add solution here ...)
+```
+
+Keep file and ID names consistent; namely, USACO IDs should correspond to the URL on [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690). Then add the solution ID (`usaco-690`) as the last argument of the `Problem` constructor in the corresponding module (in this case, [`Binary_Search_Ans.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search_Ans.mdx)).
+
+```
+new Problem(
+	'Silver',
+	'Cow Dance Show',
+	'690',
+	'Easy',
+	false,
+	[],
+	'usaco-690'
+),
+```
+
+Make sure to check that both the module and the solution render properly using the live editor before submitting a pull request.
