@@ -12,13 +12,9 @@ Now we only need to find all $t_i$ and we are done! However, this isn't as strai
 
 ## A simpler problem
 
-Let's consider a simpler problem: suppose we root the tree at node 1 and Gigel can only move down the tree (don't worry about the leaves).
+Let's consider a simpler problem: suppose we root the tree at node $1$ and Gigel can only move down the tree (don't worry about the leaves). In this problem, we can find all $t_i$ (and $a[t_i] - dist(i, t_i)$) using a simple tree DP:
 
-In this problem, we can find all $t_i$ (and $a[t_i] - dist(i, t_i)$) using a simple tree DP:
-
-Let $dp[i]$ be such that $a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in the DP array.
-
-We can then find $dp[i]$ by taking the best of the best of $i$'s children and their $dp[c]$.
+Let $dp[i]$ be the node in the subtree of $i$ (excluding $i$ itself) such that $a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in the DP array. We can find $dp[i]$ by taking the best of $c$ and $dp[c]$ over all children $c$ of $i$.
 
 This algorithm runs in $O(N)$ time.
 
@@ -96,5 +92,75 @@ int main() {
     }
     cout << curr << '\n';
     return 0;
+}
+```
+
+## Alternative Code (Ben)
+
+```cpp
+const int MX = 3e5+5;
+
+int N; ll K;
+array<pi,2> bes[MX]; // for each x,
+// get best two a[y]-d(x,y), possibly including x itself
+vi adj[MX];
+int nex[MX], vis[MX];
+
+array<pi,2> comb(array<pi,2> a, array<pi,2> b) {
+    trav(t,b) t.f --;
+    vpi res, tmp; 
+    F0R(i,2) res.pb(a[i]), res.pb(b[i]);
+    sort(rall(res));
+    set<int> ind;
+    trav(t,res) {
+        if (ind.count(t.s)) continue; // ignore repeated indices
+        ind.insert(t.s); tmp.pb(t);
+    }
+    array<pi,2> ans; F0R(i,2) ans[i] = tmp[i];
+    return ans;
+}
+
+void dfsUp(int a, int b) {
+    trav(t,adj[a]) if (t != b) {
+        dfsUp(t,a);
+        bes[a] = comb(bes[a],bes[t]);
+    }
+}
+
+void dfsDown(int a, int b) {
+    trav(t,adj[a]) if (t != b) {
+        bes[t] = comb(bes[t],bes[a]);
+        dfsDown(t,a);
+    }
+}
+
+int main() {
+    setIO(); re(N,K);
+    FOR(i,1,N+1) {
+        int A; re(A);
+        bes[i] = {{{A,-i},{-MOD,MOD}}};
+    }
+    F0R(i,N-1) {
+        int a,b; re(a,b);
+        adj[a].pb(b), adj[b].pb(a);
+    }
+    dfsUp(1,0); dfsDown(1,0);
+    FOR(i,1,N+1) {
+        nex[i] = -bes[i][0].s;
+        if (nex[i] == i) nex[i] = -bes[i][1].s;
+    }
+    FOR(i,1,N+1) vis[i] = -1;
+    vis[1] = 0;
+    int cur = 1, ti = 0;
+    bool flag = 0;
+    while (K) {
+        cur = nex[cur]; ti ++; K --;
+        if (!flag && vis[cur] != -1) {
+            int cycLen = ti-vis[cur];
+            K %= cycLen; flag = 1;
+        }
+        vis[cur] = ti;
+    }
+    ps(cur);
 }
 ```
