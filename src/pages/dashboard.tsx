@@ -144,9 +144,13 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
               <p className="mb-4 text-center">
-                {firebaseUser
-                  ? `Signed in as ${firebaseUser.email}.`
-                  : `Not signed in.`}
+                {firebaseUser ? (
+                  <>
+                    Signed in as <i>{firebaseUser.email}</i>.
+                  </>
+                ) : (
+                  `Not signed in.`
+                )}
               </p>
               <div className="flex overflow-x-auto">
                 <WelcomeBackBanner
