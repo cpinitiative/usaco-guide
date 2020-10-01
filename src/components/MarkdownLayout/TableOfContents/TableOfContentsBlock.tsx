@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
+import getGithubUrl from './getGithubUrl';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 
 const TableOfContentsBlock = ({
@@ -13,6 +14,7 @@ const TableOfContentsBlock = ({
     _ =>
       'block mb-2 transition duration-150 ease-in-out text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark-hover:text-dark-high-emphasis'
   );
+  const githubUrl = getGithubUrl();
   return (
     <div>
       <h2 className="uppercase text-gray-500 dark:text-dark-high-emphasis font-bold mt-8 mb-3 tracking-wider">
@@ -22,7 +24,7 @@ const TableOfContentsBlock = ({
       <hr className="my-6 dark:border-gray-700" />
 
       <OutboundLink
-        href="https://github.com/cpinitiative/usaco-guide"
+        href={githubUrl}
         target="_blank"
         className="group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
       >

@@ -55,6 +55,7 @@ export function graphqlToModuleInfo(mdx: any): ModuleInfo {
     mdx.frontmatter.prerequisites,
     mdx.frontmatter.description,
     mdx.frontmatter.frequency,
-    mdx.toc
+    mdx.toc,
+    mdx.parent.relativePath
   );
 }

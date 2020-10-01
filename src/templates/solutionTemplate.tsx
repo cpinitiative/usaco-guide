@@ -17,7 +17,8 @@ export default function Template(props) {
       mdx.frontmatter.id,
       mdx.frontmatter.title,
       mdx.frontmatter.author,
-      mdx.toc
+      mdx.toc,
+      mdx.parent.relativePath
     );
   }, mdx);
 
@@ -56,6 +57,12 @@ export const pageQuery = graphql`
         id
         title
         author
+      }
+      parent {
+        ... on File {
+          name
+          relativePath
+        }
       }
       toc {
         cpp {

@@ -5,6 +5,7 @@ import { useActiveHash } from '../../../hooks/useActiveHash';
 import { useMemo } from 'react';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import getGithubUrl from './getGithubUrl';
 
 const TableOfContentsSidebar = ({
   tableOfContents,
@@ -23,6 +24,7 @@ const TableOfContentsSidebar = ({
       : 'text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis');
   let links = genLinksFromTOCHeadings(tableOfContents, getLinkStyles);
 
+  const githubUrl = getGithubUrl();
   return (
     <div className="sticky" style={{ top: '2.5rem' }}>
       <h2 className="uppercase text-gray-500 dark:text-dark-med-emphasis font-bold mb-4 text-sm tracking-wider">
@@ -31,7 +33,7 @@ const TableOfContentsSidebar = ({
       {links}
 
       <OutboundLink
-        href="https://github.com/cpinitiative/usaco-guide"
+        href={githubUrl}
         target="_blank"
         className="group block mt-8 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
       >
