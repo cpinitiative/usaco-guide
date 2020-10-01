@@ -4,32 +4,34 @@ title: USACO February 2019 Gold - Cow Land
 author: Albert Ye
 ---
 
-**Time Complexity:** $O((n+q) \lg n)$
+**Time Complexity:** $O((n+q) \log n)$
 
-**Main Idea:** We use Euler tour technique to initialize a binary indexed tree, and use the binary indexed tree to run range xor queries.
+**Main Idea:** We use Euler tour technique to initialize a binary indexed tree, and use the binary indexed tree to run range XOR queries.
 
 Check the [official solution](http://usaco.org/current/data/sol_cowland_gold_feb19.html) for another, more complicated, solution with HLD.
 
 Let $e_x$ be the enjoyment values for each of the attractions, and $lca(i, j)$ be the lowest common ancestor between nodes $i$ and $j$.
 
 ## Euler Tour Technique
+
 Let $i_x$ and $o_x$ be the in and out times for the tree, which we find through DFS with the Euler tour technique mentioned in [this section](https://usaco.guide/gold/tree-euler).
 
 ## Binary Indexed Tree
-We create a binary indexed tree which supports range updates and xor queries. Note that the inverse of xor is xor itself.
 
-Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the prefix xor to $i_x$ is now the path xor from the root node to each node at the tree. See [the solution for Path Queries](https://usaco.guide/solutions/cses-1138) for a comprehensive explanation. 
+We create a binary indexed tree which supports range updates and XOR queries. Note that the inverse of XOR is XOR itself.
 
-Let the prefix xor at $i$ be $X(i)$. 
+Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the prefix XOR to $i_x$ is now the path XOR from the root node to each node at the tree. See [the solution for Path Queries](https://usaco.guide/solutions/cses-1138) for a comprehensive explanation. 
 
-The difference between the explanation for Path Queries and this problem is that we have range xor queries instead of range sum queries. 
+Let the prefix XOR at $i$ be $X(i)$. 
 
-This precomputation takes $O(n \lg n)$.
+The difference between the explanation for Path Queries and this problem is that we have range XOR queries instead of range sum queries. 
+
+This precomputation takes $O(n \log n)$.
 
 ## Responding to Queries
-We now need to respond to path queries and updates. To update node $x$, we remove the current values at $i_x$ and $o_x$ and replace these indices with the new value. For a path query, we just output $X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR operation). The $X(i)$ and $X(j)$ are the xor queries for the paths from $0$ to $i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted twice and thus negates itself. Thus, we need to also xor $e_{lca(i,j)}$ to account for the full path xor from $i$ to $j$.
+We now need to respond to path queries and updates. To update node $x$, we remove the current values at $i_x$ and $o_x$ and replace these indices with the new value. For a path query, we just output $X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR operation). The $X(i)$ and $X(j)$ are the XOR queries for the paths from $0$ to $i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted twice and thus negates itself. Thus, we need to also XOR $e_{lca(i,j)}$ to account for the full path XOR from $i$ to $j$.
 
-LCA precomputation is known to take $O(n \lg n)$ with sparse table. Additionally, updates and queries both take $O(\lg n)$ each, the complexity of the LCA and BIT queries. As there are $q$ updates and queries in total, the total complexity for the querying step is $O(q \lg n)$. Hence, the total complexity is $O((n+q) \lg n)$.
+LCA precomputation is known to take $O(n \log n)$ with sparse table. Additionally, updates and queries both take $O(\log n)$ each, the complexity of the LCA and BIT queries. As there are $q$ updates and queries in total, the total complexity for the querying step is $O(q \log n)$. Hence, the total complexity is $O((n+q) \log n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -62,7 +64,7 @@ void dfs(int v=0,int p=-1)
 	ot[v] = timer++;
 }
 
-// prefix xor. reversable = done onto itself
+// prefix XOR. reversable = done onto itself
 int XOR(int ind)
 {
 	int xo = 0;
