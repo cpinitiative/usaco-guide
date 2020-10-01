@@ -5,7 +5,7 @@ import { useActiveHash } from '../../../hooks/useActiveHash';
 import { useMemo } from 'react';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import getGithubUrl from './getgithubUrl';
+import getGithubUrl from './getGithubUrl';
 
 const TableOfContentsSidebar = ({
   tableOfContents,

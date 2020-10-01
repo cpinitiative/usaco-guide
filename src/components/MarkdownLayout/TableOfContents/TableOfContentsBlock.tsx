@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
-import getGithubUrl from './getgithubUrl';
+import getGithubUrl from './getGithubUrl';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 
 const TableOfContentsBlock = ({
