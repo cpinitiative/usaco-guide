@@ -58,6 +58,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       consecutiveVisits: this.consecutiveVisits,
       setLastVisitDate: (today: number) => {
         let timeSinceLastVisit = today - this.lastVisitDate;
+        // console.log("LastVisit getAPI",this.lastVisitDate,timeSinceLastVisit,this.firebaseUserDoc != null,timeSinceLastVisit/60/60/1000)
         let oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 

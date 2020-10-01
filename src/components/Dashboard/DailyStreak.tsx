@@ -7,7 +7,10 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 // note: cows will be unlocked in reverse order
 
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
-  const [milliseconds, setMilliseconds] = React.useState(tomorrowMilliseconds);
+  const [milliseconds, setMilliseconds] = React.useState(
+    tomorrowMilliseconds - Date.now()
+  );
+  // console.log("ComebackTimer ms",milliseconds);
 
   React.useEffect(() => {
     let interval = setInterval(() => {
@@ -34,6 +37,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
 };
 
 const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
+  // console.log("PhotoCard ms",tomorrowMilliseconds)
   return (
     <div className={'mb-8' + (hiddenOnDesktop ? ' lg:hidden' : '')}>
       <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
@@ -125,6 +129,7 @@ export default function DailyStreak({ streak }) {
         </div>
       );
     } else {
+      // times[i] > streak
       return (
         <PhotoCard
           key={i}
