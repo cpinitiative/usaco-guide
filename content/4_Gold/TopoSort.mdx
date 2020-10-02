@@ -160,7 +160,7 @@ import java.util.*;
 import java.io.*;
 
 public class CourseSchedule {
-   public static ArrayList<Integer> g[]; //one indexed cannot use zero
+   public static ArrayList<Integer> g[];
    public static ArrayList<Integer> topo = new ArrayList<Integer>();
    public static int N;
    public static boolean visited[];
@@ -171,7 +171,7 @@ public class CourseSchedule {
       int M = Integer.parseInt(st.nextToken());
       g = new ArrayList[N];
       visited = new boolean[N];
-      for(int i = 0; i < N; i++){
+      for (int i = 0; i < N; i++) {
          g[i] = new ArrayList<Integer>();
       }
       for (int m = 0; m < M; m++) {
@@ -191,18 +191,18 @@ public class CourseSchedule {
             }
       for (int i: topo) System.out.print(i+1 + " ");
    }
-   public static void compute(){
+   public static void compute() {
       for (int i = 0; i < N; i++) {
-         if (!visited[i]) {
+         if(!visited[i]) {
             visited[i] = true;
             dfs(i);
          }
       }
       Collections.reverse(topo);
    }
-   public static void dfs(int v){ //one way to do topo not always lexigraphically least
-      for(Integer e : g[v]){
-         if(!visited[e]){
+   public static void dfs(int v) { //not always lexigraphically least
+      for (Integer e : g[v]) {
+         if(!visited[e]) { 
             visited[e] = true;
             dfs(e);
          }
