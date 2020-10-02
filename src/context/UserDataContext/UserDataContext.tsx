@@ -50,14 +50,6 @@ var Gathering = (function () {
       return true;
     };
 
-    this.leave = function () {
-      this.user.remove();
-    };
-
-    this.over = function () {
-      this.room.remove();
-    };
-
     this.onUpdated = function (callback) {
       if ('function' == typeof callback) {
         this.room.on('value', function (snap) {
