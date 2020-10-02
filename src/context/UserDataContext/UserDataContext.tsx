@@ -141,11 +141,9 @@ export const UserDataProvider = ({ children }) => {
 
   // Count online users
   useFirebase(firebase => {
-    console.log(firebase);
     let online = new Gathering(firebase.database());
     online.join();
     online.onUpdated(function (count) {
-      console.log(count);
       setOnlineUsers(count);
     });
   });
