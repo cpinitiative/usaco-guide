@@ -236,11 +236,9 @@ bool visited[(int)10e5+5], on_stack[(int)10e5+5];
 vector<int> adj[(int)10e5+5];
 vector<int> cycle;
 int N, M;
-bool dfs(int n)
-{
+bool dfs(int n) {
     visited[n] = on_stack[n] = true;
-    for(int u:adj[n])
-    {
+    for (int u:adj[n]) {
         if(on_stack[u]) {
             cycle.push_back(n);
             on_stack[n] = on_stack[u] = false;
@@ -252,8 +250,7 @@ bool dfs(int n)
                     cycle.push_back(n);
                     on_stack[n] = false;
                     return true;
-                }
-                else{
+                } else {
                     cycle.push_back(n);
                     return false;
                 }
@@ -269,17 +266,16 @@ int main()
 {
     //take input, etc
     cin >> N >> M;
-    for(int i = 0; i < M; i++){
+    for (int i = 0; i < M; i++) {
         int a, b;
         cin >> a >> b;
         adj[a].push_back(b);
     }
-    for(int i = 1; cycle.empty() && i <= N;i++)
+    for (int i = 1; cycle.empty() && i <= N;i++)
         dfs(i);
     if(cycle.empty())
         cout << "IMPOSSIBLE";
-    else
-    {
+    else {
         reverse(cycle.begin(), cycle.end());
         cout << cycle.size()+1 << "\n";
         for(int n : cycle) cout << n << " ";
@@ -290,6 +286,81 @@ int main()
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class cycle {
+   public static ArrayList<Integer>[] adj;
+   public static boolean visited[], on_stack[];
+   public static ArrayList<Integer> cycle;
+   public static int N, M;
+   public static void main(String[] args) throws IOException {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      N = Integer.parseInt(st.nextToken());
+      M = Integer.parseInt(st.nextToken());
+      adj = new ArrayList[N+1];
+      cycle = new ArrayList<Integer>();
+      visited = new boolean[N+1];
+      on_stack = new boolean[N+1];
+      for (int i = 0; i <= N; i++) {
+         adj[i] = new ArrayList<Integer>();
+      }
+      for (int i = 0; i < M; i++) {
+         st = new StringTokenizer(sc.readLine());
+         int a = Integer.parseInt(st.nextToken());
+         int b = Integer.parseInt(st.nextToken());
+         adj[a].add(b);
+      }
+      for (int i = 1; cycle.isEmpty() && i <= N; i++) {
+         dfs(i);
+      }
+      if(cycle.isEmpty())
+         out.println("IMPOSSIBLE");
+      else {
+         Collections.reverse(cycle);
+         out.println(cycle.size()+1);
+         for(int n : cycle) out.print(n + " ");
+         out.print(cycle.get(0));
+      }
+      out.close();
+   }
+
+   public static boolean dfs(int n) { 
+      visited[n] = on_stack[n] = true;
+      for (int u : adj[n]) {
+         if(on_stack[u]) {
+            cycle.add(n);
+            on_stack[n] = on_stack[u] = false;
+            return true;
+         }
+         else if(!visited[u]) {
+            if(dfs(u)) {
+               if(on_stack[n]) {
+                  cycle.add(n);
+                  on_stack[n] = false;
+                  return true;
+               } else { 
+                  cycle.add(n);
+                  return false;
+               }
+            }
+            if(!cycle.isEmpty())
+               return false;
+         }
+      }
+      on_stack[n] = false;
+      return false;
+   }
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
