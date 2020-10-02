@@ -18,7 +18,7 @@ export const FirebaseProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (!firebase && typeof window !== 'undefined') {
-      const app = import('firebase/app');
+      const app = import('firebase');
       const auth = import('firebase/auth');
       const firestore = import('firebase/firestore');
 

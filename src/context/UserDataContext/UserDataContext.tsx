@@ -22,6 +22,58 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 
+// Object for counting online users
+var Gathering = (function () {
+  function Gathering(databaseReference) {
+    this.db = databaseReference;
+
+    this.room = this.db.ref('gatherings/globe');
+    this.user = null;
+
+    this.join = function (uid) {
+      if (this.user) {
+        console.error('Already joined.');
+        return false;
+      }
+
+      this.user = uid ? this.room.child(uid) : this.room.push();
+
+      // Add user to presence list when online.
+      var presenceRef = this.db.ref('.info/connected');
+      let self = this;
+      presenceRef.on('value', function (snap) {
+        if (snap.val()) {
+          self.user.onDisconnect().remove();
+          self.user.set(true);
+        }
+      });
+      return true;
+    };
+
+    this.leave = function () {
+      this.user.remove();
+    };
+
+    this.over = function () {
+      this.room.remove();
+    };
+
+    this.onUpdated = function (callback) {
+      if ('function' == typeof callback) {
+        this.room.on('value', function (snap) {
+          callback(snap.numChildren(), snap.val());
+        });
+      } else {
+        console.error(
+          'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
+        );
+      }
+    };
+  }
+
+  return Gathering;
+})();
+
 /*
  * todo document how to add new API to user data context?
  *
@@ -81,6 +133,16 @@ export const UserDataProvider = ({ children }) => {
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
+    });
+  });
+
+  // Count online users
+  useFirebase(firebase => {
+    console.log(firebase);
+    let online = new Gathering(firebase.database());
+    online.join();
+    online.onUpdated(function (count) {
+      console.log(count);
     });
   });
 
