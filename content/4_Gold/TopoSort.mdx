@@ -153,6 +153,67 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class CourseSchedule {
+   public static ArrayList<Integer> g[]; //one indexed cannot use zero
+   public static ArrayList<Integer> topo = new ArrayList<Integer>();
+   public static int N;
+   public static boolean visited[];
+   public static void main(String[] args) throws Exception {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      N = Integer.parseInt(st.nextToken());
+      int M = Integer.parseInt(st.nextToken());
+      g = new ArrayList[N];
+      visited = new boolean[N];
+      for(int i = 0; i < N; i++){
+         g[i] = new ArrayList<Integer>();
+      }
+      for (int m = 0; m < M; m++) {
+         st = new StringTokenizer(br.readLine());
+         int a = Integer.parseInt(st.nextToken()); a--;
+         int b = Integer.parseInt(st.nextToken()); b--;
+         g[a].add(b);
+      }
+      compute();
+      int ind[] = new int[N];
+      for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
+      for (int i = 0; i < N; i++) 
+         for (int j: g[i]) 
+            if (ind[j] <= ind[i]) {
+               System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
+               System.exit(0);
+            }
+      for (int i: topo) System.out.print(i+1 + " ");
+   }
+   public static void compute(){
+      for (int i = 0; i < N; i++) {
+         if (!visited[i]) {
+            visited[i] = true;
+            dfs(i);
+         }
+      }
+      Collections.reverse(topo);
+   }
+   public static void dfs(int v){ //one way to do topo not always lexigraphically least
+      for(Integer e : g[v]){
+         if(!visited[e]){
+            visited[e] = true;
+            dfs(e);
+         }
+      }
+      topo.add(v);
+   }
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ### Finding a Cycle
