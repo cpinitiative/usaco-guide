@@ -103,6 +103,7 @@ type UserDataContextAPI = UserLangAPI &
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
+    onlineUsers: number;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>(null);
@@ -121,6 +122,8 @@ export const UserDataProvider = ({ children }) => {
   }, null);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const [onlineUsers, setOnlineUsers] = useState(0);
 
   const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
@@ -143,6 +146,7 @@ export const UserDataProvider = ({ children }) => {
     online.join();
     online.onUpdated(function (count) {
       console.log(count);
+      setOnlineUsers(count);
     });
   });
 
@@ -215,6 +219,7 @@ export const UserDataProvider = ({ children }) => {
         });
     },
     isLoaded,
+    onlineUsers,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {
