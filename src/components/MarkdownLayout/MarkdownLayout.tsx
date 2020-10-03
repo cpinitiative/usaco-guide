@@ -27,6 +27,7 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import { Language } from '../../context/UserDataContext/properties/userLang';
+import ModuleFeedback from './ModuleFeedback';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -633,6 +634,10 @@ export default function MarkdownLayout({
                 </div>
 
                 {children}
+
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
 
                 {markdownData instanceof ModuleInfo && (
                   <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">
