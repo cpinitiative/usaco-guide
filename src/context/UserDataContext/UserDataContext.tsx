@@ -31,20 +31,20 @@ var Gathering = (function () {
     this.user = null;
 
     this.join = function (uid) {
+      // this check doesn't work if this.join() is called back-to-back
       if (this.user) {
         console.error('Already joined.');
         return false;
       }
 
-      this.user = uid ? this.room.child(uid) : this.room.push();
-
       // Add user to presence list when online.
       var presenceRef = this.db.ref('.info/connected');
-      let self = this;
-      presenceRef.on('value', function (snap) {
+      presenceRef.on('value', snap => {
         if (snap.val()) {
-          self.user.onDisconnect().remove();
-          self.user.set(true);
+          this.user = uid ? this.room.child(uid) : this.room.push();
+
+          this.user.onDisconnect().remove();
+          this.user.set(true);
         }
       });
       return true;
