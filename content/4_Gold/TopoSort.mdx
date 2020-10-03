@@ -160,55 +160,57 @@ import java.util.*;
 import java.io.*;
 
 public class CourseSchedule {
-   public static ArrayList<Integer> g[];
-   public static ArrayList<Integer> topo = new ArrayList<Integer>();
-   public static int N;
-   public static boolean visited[];
-   public static void main(String[] args) throws Exception {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      N = Integer.parseInt(st.nextToken());
-      int M = Integer.parseInt(st.nextToken());
-      g = new ArrayList[N];
-      visited = new boolean[N];
-      for (int i = 0; i < N; i++) {
-         g[i] = new ArrayList<Integer>();
-      }
-      for (int m = 0; m < M; m++) {
-         st = new StringTokenizer(br.readLine());
-         int a = Integer.parseInt(st.nextToken()); a--;
-         int b = Integer.parseInt(st.nextToken()); b--;
-         g[a].add(b);
-      }
-      compute();
-      int ind[] = new int[N];
-      for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
-      for (int i = 0; i < N; i++) 
-         for (int j: g[i]) 
-            if (ind[j] <= ind[i]) {
-               System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
-               System.exit(0);
-            }
-      for (int i: topo) System.out.print(i+1 + " ");
-   }
-   public static void compute() {
-      for (int i = 0; i < N; i++) {
-         if(!visited[i]) {
-            visited[i] = true;
-            dfs(i);
-         }
-      }
-      Collections.reverse(topo);
-   }
-   public static void dfs(int v) { //not always lexigraphically least
-      for (Integer e : g[v]) {
-         if(!visited[e]) { 
-            visited[e] = true;
-            dfs(e);
-         }
-      }
-      topo.add(v);
-   }
+	public static ArrayList <Integer> g[];
+	public static ArrayList <Integer> topo = new ArrayList < Integer > ();
+	public static int N;
+	public static boolean visited[];
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		g = new ArrayList[N];
+		visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			g[i] = new ArrayList <Integer> ();
+		}
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			a--;
+			int b = Integer.parseInt(st.nextToken());
+			b--;
+			g[a].add(b);
+		}
+		compute();
+		int ind[] = new int[N];
+		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
+		for (int i = 0; i < N; i++)
+			for (int j: g[i])
+				if (ind[j] <= ind[i]) {
+					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
+					System.exit(0);
+				}
+		for (int i: topo) System.out.print(i + 1 + " ");
+	}
+	public static void compute() {
+		for (int i = 0; i < N; i++) {
+			if (!visited[i]) {
+				visited[i] = true;
+				dfs(i);
+			}
+		}
+		Collections.reverse(topo);
+	}
+	public static void dfs(int v) { //not always lexigraphically least
+		for (Integer e: g[v]) {
+			if (!visited[e]) {
+				visited[e] = true;
+				dfs(e);
+			}
+		}
+		topo.add(v);
+	}
 }
 ```
 
@@ -237,52 +239,51 @@ vector<int> adj[(int)10e5+5];
 vector<int> cycle;
 int N, M;
 bool dfs(int n) {
-    visited[n] = on_stack[n] = true;
-    for (int u:adj[n]) {
-        if(on_stack[u]) {
-            cycle.push_back(n);
-            on_stack[n] = on_stack[u] = false;
-            return true;
-        }
-        else if(!visited[u]) {
-            if(dfs(u)) {
-                if(on_stack[n]) {
-                    cycle.push_back(n);
-                    on_stack[n] = false;
-                    return true;
-                } else {
-                    cycle.push_back(n);
-                    return false;
-                }
-            }
-            if(!cycle.empty())
-                return false;
-        }
-    }
-    on_stack[n] = false;
-    return false;
+	visited[n] = on_stack[n] = true;
+	for (int u:adj[n]) {
+		if(on_stack[u]) {
+			cycle.push_back(n);
+			on_stack[n] = on_stack[u] = false;
+			return true;
+		}
+		else if(!visited[u]) {
+			if(dfs(u)) {
+				if(on_stack[n]) {
+					cycle.push_back(n);
+					on_stack[n] = false;
+					return true;
+				} else {
+					cycle.push_back(n);
+					return false;
+				}
+			}
+			if(!cycle.empty())
+				return false;
+		}
+	}
+	on_stack[n] = false;
+	return false;
 }
 int main()
 {
-    //take input, etc
-    cin >> N >> M;
-    for (int i = 0; i < M; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-    }
-    for (int i = 1; cycle.empty() && i <= N;i++)
-        dfs(i);
-    if(cycle.empty())
-        cout << "IMPOSSIBLE";
-    else {
-        reverse(cycle.begin(), cycle.end());
-        cout << cycle.size()+1 << "\n";
-        for(int n : cycle) cout << n << " ";
-        cout << cycle.at(0);
-    }
+	//take input, etc
+	cin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+	}
+	for (int i = 1; cycle.empty() && i <= N;i++)
+		dfs(i);
+	if(cycle.empty())
+		cout << "IMPOSSIBLE";
+	else {
+		reverse(cycle.begin(), cycle.end());
+		cout << cycle.size()+1 << "\n";
+		for(int n : cycle) cout << n << " ";
+		cout << cycle.at(0);
+	}
 }
-
 ```
 
 </CPPSection>
@@ -290,73 +291,72 @@ int main()
 <JavaSection>
 
 ```java
-import java.io.*; 
-import java.util.*; 
+import java.io.*;
+import java.util.*;
 
 public class cycle {
-   public static ArrayList<Integer>[] adj;
-   public static boolean visited[], on_stack[];
-   public static ArrayList<Integer> cycle;
-   public static int N, M;
-   public static void main(String[] args) throws IOException {
-      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
-      PrintWriter out = new PrintWriter(System.out);
-      StringTokenizer st = new StringTokenizer(sc.readLine());
-      N = Integer.parseInt(st.nextToken());
-      M = Integer.parseInt(st.nextToken());
-      adj = new ArrayList[N+1];
-      cycle = new ArrayList<Integer>();
-      visited = new boolean[N+1];
-      on_stack = new boolean[N+1];
-      for (int i = 0; i <= N; i++) {
-         adj[i] = new ArrayList<Integer>();
-      }
-      for (int i = 0; i < M; i++) {
-         st = new StringTokenizer(sc.readLine());
-         int a = Integer.parseInt(st.nextToken());
-         int b = Integer.parseInt(st.nextToken());
-         adj[a].add(b);
-      }
-      for (int i = 1; cycle.isEmpty() && i <= N; i++) {
-         dfs(i);
-      }
-      if(cycle.isEmpty())
-         out.println("IMPOSSIBLE");
-      else {
-         Collections.reverse(cycle);
-         out.println(cycle.size()+1);
-         for(int n : cycle) out.print(n + " ");
-         out.print(cycle.get(0));
-      }
-      out.close();
-   }
+	public static ArrayList < Integer > [] adj;
+	public static boolean visited[], on_stack[];
+	public static ArrayList < Integer > cycle;
+	public static int N, M;
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N + 1];
+		cycle = new ArrayList < Integer > ();
+		visited = new boolean[N + 1];
+		on_stack = new boolean[N + 1];
+		for (int i = 0; i <= N; i++) {
+			adj[i] = new ArrayList < Integer > ();
+		}
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			adj[a].add(b);
+		}
+		for (int i = 1; cycle.isEmpty() && i <= N; i++) {
+			dfs(i);
+		}
+		if (cycle.isEmpty())
+			out.println("IMPOSSIBLE");
+		else {
+			Collections.reverse(cycle);
+			out.println(cycle.size() + 1);
+			for (int n: cycle) out.print(n + " ");
+			out.print(cycle.get(0));
+		}
+		out.close();
+	}
 
-   public static boolean dfs(int n) { 
-      visited[n] = on_stack[n] = true;
-      for (int u : adj[n]) {
-         if(on_stack[u]) {
-            cycle.add(n);
-            on_stack[n] = on_stack[u] = false;
-            return true;
-         }
-         else if(!visited[u]) {
-            if(dfs(u)) {
-               if(on_stack[n]) {
-                  cycle.add(n);
-                  on_stack[n] = false;
-                  return true;
-               } else { 
-                  cycle.add(n);
-                  return false;
-               }
-            }
-            if(!cycle.isEmpty())
-               return false;
-         }
-      }
-      on_stack[n] = false;
-      return false;
-   }
+	public static boolean dfs(int n) {
+		visited[n] = on_stack[n] = true;
+		for (int u: adj[n]) {
+			if (on_stack[u]) {
+				cycle.add(n);
+				on_stack[n] = on_stack[u] = false;
+				return true;
+			} else if (!visited[u]) {
+				if (dfs(u)) {
+					if (on_stack[n]) {
+						cycle.add(n);
+						on_stack[n] = false;
+						return true;
+					} else {
+						cycle.add(n);
+						return false;
+					}
+				}
+				if (!cycle.isEmpty())
+					return false;
+			}
+		}
+		on_stack[n] = false;
+		return false;
+	}
 }
 ```
 
@@ -406,30 +406,30 @@ void compute() {
 <JavaSection>
 
 ```java
-	static int in_degree[];
-	static ArrayList<Integer> edge[]; //adjacency list
+static int in_degree[];
+static ArrayList<Integer> edge[]; //adjacency list
 
-	static int N; //number of nodes
+static int N; //number of nodes
 
-	static void topological_sort() {
-		Queue<Integer> q = new ArrayDeque<Integer>();
-		for (int i = 0; i < N; i++) {
-			if (in_degree[i] == 0) {
-				q.add(i);
-			}
-		}
-
-		while (!q.isEmpty()) {
-			int node = q.poll();
-
-			for (int next : edge[node]) {
-				in_degree[next]--;
-				if(in_degree[next] == 0) q.add(next);
-			}
-
-			// Put problem-specific processing here
+static void topological_sort() {
+	Queue<Integer> q = new ArrayDeque<Integer>();
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) {
+			q.add(i);
 		}
 	}
+
+	while (!q.isEmpty()) {
+		int node = q.poll();
+
+		for (int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.add(next);
+		}
+
+		// Put problem-specific processing here
+	}
+}
 ```
 
 </JavaSection>
