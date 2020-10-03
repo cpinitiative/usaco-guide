@@ -24,8 +24,9 @@ import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 
 // Object for counting online users
 var Gathering = (function () {
-  function Gathering(databaseReference) {
-    this.db = databaseReference;
+  function Gathering(firebase) {
+    this.firebase = firebase;
+    this.db = firebase.database();
 
     this.room = this.db.ref('gatherings/globe');
     this.user = null;
@@ -43,8 +44,12 @@ var Gathering = (function () {
         if (snap.val()) {
           this.user = uid ? this.room.child(uid) : this.room.push();
 
-          this.user.onDisconnect().remove();
-          this.user.set(true);
+          this.user
+            .onDisconnect()
+            .remove()
+            .then(() => {
+              this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
+            });
         }
       });
       return true;
@@ -133,7 +138,7 @@ export const UserDataProvider = ({ children }) => {
 
   // Count online users
   useFirebase(firebase => {
-    let online = new Gathering(firebase.database());
+    let online = new Gathering(firebase);
     online.join();
     online.onUpdated(function (count) {
       setOnlineUsers(count);
