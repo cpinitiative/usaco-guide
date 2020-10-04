@@ -11,6 +11,36 @@ import * as remarkMath from 'remark-math';
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
 
+class ErrorBoundary extends React.Component {
+  state: {
+    error: null | object;
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ error });
+  }
+
+  render() {
+    // @ts-ignore
+    if (this.state.error) {
+      // You can render any custom fallback UI
+      return (
+        <div>
+          An error occurred:
+          <pre className="mt-2 text-red-700">{this.state.error.toString()}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function ({ markdown }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
@@ -75,7 +105,7 @@ export default function ({ markdown }) {
       </div>
     );
   }
-  return fn;
+  return <ErrorBoundary>{fn}</ErrorBoundary>;
 }
 
 // Backup...
