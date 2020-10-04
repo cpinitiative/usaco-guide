@@ -300,12 +300,13 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   if (moduleLink)
     return (
       <li key={prerequisite}>
-        <Link
-          to={moduleLink.url}
+        <a
+          href={moduleLink.url}
+          target="_blank"
           className="underline text-black dark:text-blue-200"
         >
           {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-        </Link>
+        </a>
       </li>
     );
   return <li key={prerequisite}>{prerequisite}</li>;

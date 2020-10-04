@@ -70,6 +70,11 @@ const HTMLComponents = {
     />
   ),
   code: CodeBlock,
+  a: ({ children, ...props }) => (
+    <a target="_blank" {...props}>
+      {children}
+    </a>
+  ),
 };
 
 export default HTMLComponents;
