@@ -26,6 +26,12 @@ class ErrorBoundary extends React.Component {
     this.setState({ error });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      this.setState({ error: null });
+    }
+  }
+
   render() {
     // @ts-ignore
     if (this.state.error) {
