@@ -15,7 +15,7 @@ export default function ({ markdown }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
-    (async () => {
+    let id = setTimeout(async () => {
       try {
         const fullScope = {
           mdx: createElement,
@@ -64,7 +64,8 @@ export default function ({ markdown }) {
         console.log('error', e);
         setError(e);
       }
-    })();
+    }, 1000);
+    return () => clearTimeout(id);
   }, [markdown]);
   if (error) {
     return (
