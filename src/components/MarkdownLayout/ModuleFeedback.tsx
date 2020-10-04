@@ -3,6 +3,7 @@ import { SolutionInfo } from '../../models/solution';
 import { ModuleInfo } from '../../models/module';
 import useStickyState from '../../hooks/useStickyState';
 import { useState } from 'react';
+import { validateEmail } from '../ContactUsSlideover/ContactUsSlideover';
 
 export default function ModuleFeedback({
   markdownData,
@@ -15,7 +16,13 @@ export default function ModuleFeedback({
     '',
     'module_contact_form_message'
   );
+  const [email, setEmail] = useStickyState('', 'contact_form_email');
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const emailErrorMsg =
+    showErrors && email !== '' && !validateEmail(email)
+      ? 'Please enter a valid email address.'
+      : null;
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -29,6 +36,7 @@ export default function ModuleFeedback({
       'Feedback on ' + markdownData.title + ' (id: ' + markdownData.id + ')'
     );
     data.append('topic', 'Module Feedback Form');
+    data.append('email', email || 'Not Given');
     data.append('message', message);
     setSubmitEnabled(false);
     try {
@@ -75,8 +83,8 @@ export default function ModuleFeedback({
               </h3>
               <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
                 <p>
-                  If you want a response from us, use the "Contact Us" button on
-                  the lower right of the screen.
+                  We will try our best to respond (if one is needed) within a
+                  week.
                 </p>
               </div>
             </div>
@@ -86,6 +94,43 @@ export default function ModuleFeedback({
 
       {!showSuccess && (
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <div className="relative rounded-md shadow-sm">
+              <input
+                type="email"
+                className={
+                  'form-input block w-full transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700' +
+                  (emailErrorMsg
+                    ? 'pr-10 border-red-300 text-red-900 dark:text-red-600 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+                    : '')
+                }
+                value={email}
+                formNoValidate={true}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Email Address (Optional)"
+              />
+              {emailErrorMsg && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-red-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+            {emailErrorMsg && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {emailErrorMsg}
+              </p>
+            )}
+          </div>
           <div>
             <label htmlFor="message" className="sr-only">
               Message
@@ -97,7 +142,7 @@ export default function ModuleFeedback({
                 className={
                   'form-input block w-full transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700 ' +
                   (showErrors && message === ''
-                    ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
+                    ? 'border-red-300 text-red-900 dark:text-red-600 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red'
                     : '')
                 }
                 value={message}
