@@ -71,7 +71,10 @@ const HTMLComponents = {
   ),
   code: CodeBlock,
   a: ({ children, ...props }) => (
-    <a target="_blank" {...props}>
+    <a
+      target={!props.href || props.href.startsWith('#') ? null : '_blank'}
+      {...props}
+    >
       {children}
     </a>
   ),
