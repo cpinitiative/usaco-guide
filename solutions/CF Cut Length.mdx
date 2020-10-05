@@ -1,0 +1,17 @@
+---
+id: cut-length
+title: CF - Cut Length
+author: Benjamin Qi
+---
+
+[Official Editorial (Russian)](https://codeforces.com/blog/entry/21590)
+
+**Time Complexity:** $\mathcal{O}(nm)$
+
+[My Code](https://codeforces.com/contest/598/submission/94804283)
+
+We'll process each of the $m$ lines in $O(n)$ time each. Let $a$ and $b$ be two points on the line.
+
+Suppose for simplicity that the line is parallel to the $x$-axis. If no vertex of the polygon lies on the line then we can compute all the intersection points of the sides with the line and add / subtract their $x$-coordinates appropriately to get the answer. In my solution, `dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
+
+To deal with vertices of the polygon that lie on the line, we can envision shifting the line up or down by some small amount so that they no longer lie on the line. This incorrectly leaves out some sides of the polygon that are collinear with the original line, so we should add the lengths of these sides to the answer. These sides are dealt with by the second if statement.
