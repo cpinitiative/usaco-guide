@@ -16,6 +16,8 @@ Thank you to the following companies:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
 
+**We're actively looking for a web developer to help add new features to the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
+
 ## Tech Stack
 
 Our front-end is built with:
