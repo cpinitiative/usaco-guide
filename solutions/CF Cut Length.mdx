@@ -6,12 +6,43 @@ author: Benjamin Qi
 
 [Official Editorial (Russian)](https://codeforces.com/blog/entry/21590)
 
+[My Submission](https://codeforces.com/contest/598/submission/94804283)
+
+My Code (without template):
+
+```cpp
+int n,m;
+
+int main() {
+	setIO(); re(n,m);
+	vP v(n); re(v); // read polygon
+	if (cenArea(v).s < 0) reverse(all(v)); 
+	// polygon should be counter clockwise
+	F0R(_,m) {
+		P a,b; re(a,b); // two points on the line
+		vi side; trav(t,v) side.pb(sgn(cross(a,b,t)) >= 0);
+		T ans = 0;
+		F0R(i,n) {
+			int j = (i+1)%sz(side);
+			if (side[i] != side[j]) {
+				int sign = sgn(cross(v[i]-v[j],b-a)); 
+				// add or subtract "x-coordinate"
+				ans += sign*dot(b-a,lineIsect(a,b,v[i],v[j])); 
+			}
+			if (cross(a,b,v[i]) == 0 && cross(a,b,v[j]) == 0
+				 && dot(b-a,v[j]-v[i]) > 0) 
+				ans += dot(b-a,v[j]-v[i]);
+			 // deal with sides that are collinear with the line
+		}
+		cout << fixed << setprecision(9) << ans/abs(b-a) << "\n";
+	}
+}
+```
+
 **Time Complexity:** $\mathcal{O}(nm)$
 
-[My Code](https://codeforces.com/contest/598/submission/94804283)
+We'll process each of the $m$ lines in $O(n)$ time each. For a fixed line, let $a$ and $b$ be two points on the line. Suppose for simplicity that the line is parallel to the $x$-axis. 
 
-We'll process each of the $m$ lines in $O(n)$ time each. Let $a$ and $b$ be two points on the line.
+First, if no vertex of the polygon lies on the line then we can compute all the intersection points of the sides with the line and add / subtract their $x$-coordinates appropriately to get the answer. In my solution, `dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
 
-Suppose for simplicity that the line is parallel to the $x$-axis. If no vertex of the polygon lies on the line then we can compute all the intersection points of the sides with the line and add / subtract their $x$-coordinates appropriately to get the answer. In my solution, `dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
-
-To deal with vertices of the polygon that lie on the line, we can envision shifting the line up or down by some small amount so that they no longer lie on the line. This incorrectly leaves out some sides of the polygon that are collinear with the original line, so we should add the lengths of these sides to the answer. These sides are dealt with by the second if statement.
+To deal with vertices of the polygon that lie on the line, we can envision shifting the line up or down by some small amount so that no vertex lies on the line. This incorrectly leaves out some sides of the polygon that are collinear with the original line, so we should add the lengths of these sides to the answer. These sides are dealt with by the second `if` statement within the loop.
