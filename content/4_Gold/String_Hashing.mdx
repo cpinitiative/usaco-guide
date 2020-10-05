@@ -1,7 +1,7 @@
 ---
 id: string-hashing
 title: 'String Hashing'
-author: Benjamin Qi
+author: Benjamin Qi, Andrew Wang
 description: 'Quickly test equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
@@ -134,6 +134,30 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+public static final long M = (long)1e9 + 9, P = 9973; // Change M and P if you want to
+
+public static long pw[] = new long[100001]; // Stores the powers of P modulo M
+
+public static int n;
+public static String s;
+public static long hsh[] = new long[100001];
+
+public static void calc_hashes() {
+   hsh[0] = 1;
+   for (int i = 0; i < n; i++)
+      hsh[i + 1] = ((hsh[i] * P) % M + s.charAt(i)) % M;
+}
+
+public static long get_hash(int a, int b) { // Endpoints of the substring
+   return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
