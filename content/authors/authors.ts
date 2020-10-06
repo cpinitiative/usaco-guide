@@ -89,4 +89,13 @@ export const Authors: Author[] = [
     email: 'andi@andiqu.com',
     website: 'https://andiqu.com',
   },
+  {
+    photo: 'Andrew',
+    name: 'Andrew Wang',
+    title: 'Content Author',
+    blurb: 'Andrew Wang is a USACO competitor who competes in multiple languages fluently.',
+    codeforces: 'a.wang',
+    github: 'andrewwangva',
+    email: 'andrewwangva@gmail.com',
+  },
 ];
