@@ -5,16 +5,36 @@ import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
 import Prism from './SyntaxHighlighting/prism';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+const Line = styled.div`
+  display: table-row;
+`;
+
+const LineNo = styled.span`
+  display: table-cell;
+  text-align: right;
+  padding-right: 1em;
+  user-select: none;
+  opacity: 0.5;
+`;
+
+const LineContent = styled.span`
+  display: table-cell;
+`;
 
 const renderTokens = (tokens, getLineProps, getTokenProps) => {
   return tokens.map((line, i) => {
     if (line.length === 1 && line[0].content === '') line[0].content = '\n';
     return (
-      <div key={i} {...getLineProps({ line, key: i })}>
-        {line.map((token, key) => (
-          <span key={key} {...getTokenProps({ token, key })} />
-        ))}
-      </div>
+      <Line key={i} {...getLineProps({ line, key: i })}>
+        <LineNo>{i + 1}</LineNo>
+        <LineContent>
+          {line.map((token, key) => (
+            <span key={key} {...getTokenProps({ token, key })} />
+          ))}
+        </LineContent>
+      </Line>
     );
   });
 };
@@ -66,7 +86,7 @@ export default ({ children, className }) => {
             {tokens.length > 10 && (
               <div
                 className={
-                  (collapsed ? 'h-20' : 'h-12') +
+                  (collapsed ? 'h-20' : 'h-8') +
                   ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
                 }
                 style={
