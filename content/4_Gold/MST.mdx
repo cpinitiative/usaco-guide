@@ -112,6 +112,50 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+public static HashMap<Integer, ArrayList<Integer>> MST;
+public static PriorityQueue<Edge> pq; //contains all edges
+
+//Assumes that DSU code is included
+public static void kruskal() {
+   while(!pq.isEmpty()) {
+      Edge e = pq.poll();
+      if(find(e.start) != find(e.end)) {
+         MST.get(e.start).add(e.end);
+         MST.get(e.end).add(e.start);
+         union(e.start, e.end);
+      }
+   }
+}
+
+static class Edge implements Comparable<Edge> {
+   int start, end, weight;
+   public Edge(int s, int e, int w) {
+      start = s;
+      end = e;
+      weight = w;
+   }
+   public int compareTo(Edge o) {
+      if(this.weight > o.weight) {
+         return 1;
+      }
+      else if(this.weight == o.weight) {
+         return 0;
+      }
+      else {
+         return -1;
+      }
+   }
+}
+
+
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ### Solution - Road Reparation
