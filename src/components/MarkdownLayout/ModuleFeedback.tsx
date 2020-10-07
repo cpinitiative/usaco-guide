@@ -35,6 +35,7 @@ export default function ModuleFeedback({
       'location',
       'Feedback on ' + markdownData.title + ' (id: ' + markdownData.id + ')'
     );
+    data.append('url', window.location.href);
     data.append('topic', 'Module Feedback Form');
     data.append('email', email || 'Not Given');
     data.append('message', message);
