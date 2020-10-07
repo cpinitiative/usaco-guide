@@ -31,13 +31,10 @@ export default function ModuleFeedback({
     if (message === '') return;
 
     let data = new FormData();
-    data.append(
-      'location',
-      'Feedback on ' + markdownData.title + ' (id: ' + markdownData.id + ')'
-    );
+    data.append('email', email || 'Not Given');
+    data.append('location', markdownData.title);
     data.append('url', window.location.href);
     data.append('topic', 'Module Feedback Form');
-    data.append('email', email || 'Not Given');
     data.append('message', message);
     setSubmitEnabled(false);
     try {
