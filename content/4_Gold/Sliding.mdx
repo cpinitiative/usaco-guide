@@ -169,6 +169,40 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 
 </CPPSection>
 
+<JavaSection>
+
+```
+static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
+static void add(int x) {
+	if(multiset.containsKey(x)) {
+		multiset.put(x, multiset.get(x) + 1);
+	} else {
+		multiset.put(x, 1);
+	}
+}
+static void remove(int x) {
+	multiset.put(x, multiset.get(x) - 1);
+	if(multiset.get(x) == 0) {
+		multiset.remove(x);
+	}
+}
+ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+	ArrayList<Integer> ret = new ArrayList<Integer>();
+	for (int i = 0; i < k; i++) {
+		add(nums[i]);
+	}
+	for (int i = k; i < nums.length; i++) {
+		ret.add(multiset.lastKey());
+		remove(nums[i-k]);
+		add(nums[i]);
+	}
+	ret.add(multiset.lastKey());
+	return ret;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ### Problems
@@ -278,6 +312,35 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+	ArrayList<Integer> ret = new ArrayList<Integer>();
+	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
+	for (int i = 0; i < k; i++) {
+		while(!d.isEmpty() && nums[i] > nums[d.peekLast()]) {
+    			d.pollLast();
+		}
+		d.addLast(i);
+	}
+	for (int i = k; i < nums.length; i++) {
+		ret.add(nums[d.peekFirst()]);
+		if(!d.isEmpty() && d.peekFirst() <= i-k) {
+ 			d.pollFirst();
+		}
+		while(!d.isEmpty() && nums[i] >= nums[d.peekLast()]) {
+			d.pollLast();
+		}
+		d.add(i);
+	}
+	ret.add(nums[d.peekFirst()]);
+	return ret;
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
