@@ -171,7 +171,7 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 
 <JavaSection>
 
-```
+```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
 static void add(int x) {
 	if(multiset.containsKey(x)) {
@@ -186,7 +186,7 @@ static void remove(int x) {
 		multiset.remove(x);
 	}
 }
-ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayList<Integer> ret = new ArrayList<Integer>();
 	for (int i = 0; i < k; i++) {
 		add(nums[i]);
@@ -249,6 +249,31 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+public class test{
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int a[] = new int[n];
+		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		int r = -1;
+		HashSet<Integer> s = new HashSet<Integer>();
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			while(r < n-1 && !s.contains(a[r+1])) s.add(a[++r]);
+			ans = Math.max(ans, r-i+1);
+			s.remove(a[i]);
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -316,7 +341,7 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 <JavaSection>
 
 ```java
-ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayList<Integer> ret = new ArrayList<Integer>();
 	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
 	for (int i = 0; i < k; i++) {
