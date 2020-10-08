@@ -13,6 +13,7 @@ const Line = styled.div`
 
 const LineNo = styled.span`
   display: table-cell;
+  white-space: nowrap;
   text-align: right;
   padding-right: 1em;
   user-select: none;
