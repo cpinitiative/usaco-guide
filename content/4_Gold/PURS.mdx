@@ -432,6 +432,10 @@ Covered in [Platinum](/plat/seg-ext).
 
 <Spoiler title="Solution">
 
+<LanguageSection>
+
+<CPPSection>
+
 Using indexed set, we can solve this in just a few lines.
 
 ```cpp
@@ -459,6 +463,56 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+Using a binary indexed tree, we can count the number of inversions. 
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+   public static void main(String[] args) throws Exception {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      int t = Integer.parseInt(br.readLine());
+      for (int tt = 0; tt < t; tt++) {
+         br.readLine();
+         int n = Integer.parseInt(br.readLine());
+         BIT = new long[(int)1e7+5];
+         long ans = 0;
+         for (int i = 0; i < n; i++) {
+            int a = Integer.parseInt(br.readLine()); a++;
+            ans += i - sum(a);
+            update(a, 1);
+         }
+         System.out.println(ans);
+      }
+   }
+   public static long[] BIT; //one indexed cannot use zero
+   public static long sum(int i)
+   {
+      long sum = 0;
+      while(i > 0) {
+         sum += BIT[i];
+         i -= (i & -i);  //least important bit
+      }
+      return sum;
+   }
+   public static void update(int i, int v)
+   {
+      while(i > 0 && i < BIT.length) {
+         BIT[i] += v;
+         i += (i & -i);
+      }
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
