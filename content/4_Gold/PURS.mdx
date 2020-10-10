@@ -253,39 +253,39 @@ import java.util.*;
 import java.io.*;
 
 public class segtree {
-   public static final int N = (int)1e5;  // limit for array size
-   public static int n;  // array size
-   public static long t[] = new long[2*N]; 
-   public static void main(String[] args) throws Exception {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      n = Integer.parseInt(br.readLine());
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      for (int i = 0; i < n; i++) {
-         t[i+n] = Integer.parseInt(st.nextToken());
-      }
-      build();
-      System.out.println(query(1, 3));
-      modify(1, 2);
-      System.out.println(query(1, 3));
-   
-   }
+	public static final int N = (int) 1e5; // limit for array size
+	public static int n; // array size
+	public static long t[] = new long[2 * N];
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			t[i + n] = Integer.parseInt(st.nextToken());
+		}
+		build();
+		System.out.println(query(1, 3));
+		modify(1, 2);
+		System.out.println(query(1, 3));
 
-   public static void build() {  // build the tree
-      for (int i = n - 1; i > 0; --i) t[i] = t[i<<1] + t[i<<1|1];
-   }
+	}
 
-   public static void modify(int p, long value) {  // set value at position p
-      for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
-   }
+	public static void build() { // build the tree
+		for (int i = n - 1; i > 0; --i) t[i] = t[i << 1] + t[i << 1 | 1];
+	}
 
-   public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
-      long res = 0;
-      for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-         if ((l&1) != 0) res += t[l++];
-         if ((r&1) != 0) res += t[--r];
-      }
-      return res;
-   }
+	public static void modify(int p, long value) { // set value at position p
+		for (t[p += n] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	}
+
+	public static long query(int l, int r) { // sum on interval [l, r) (0-INDEXED)
+		long res = 0;
+		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if ((l & 1) != 0) res += t[l++];
+			if ((r & 1) != 0) res += t[--r];
+		}
+		return res;
+	}
 }
 ```
 
@@ -348,27 +348,23 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 
 ```java
 public static long[] fwt;
-public static long query(int a, int b)
-{
-   return sum(b) - sum(a - 1);
+public static long query(int a, int b) {
+	return sum(b) - sum(a - 1);
 }
-public static long sum(int i)
-{
-   long sum = 0;
-   while(i > 0){
-      sum += fwt[i];
-      i -= (i & -i);  //least important bit
-   }
-   return sum;
+public static long sum(int i) {
+	long sum = 0;
+	while (i > 0) {
+		sum += fwt[i];
+		i -= (i & -i); //least important bit
+	}
+	return sum;
 }
-public static void update(int i, long v)
-{
-   while(i > 0 && i < fwt.length){
-      fwt[i] += v;
-      i += (i & -i);
-   }
+public static void update(int i, long v) {
+	while (i > 0 && i < fwt.length) {
+		fwt[i] += v;
+		i += (i & -i);
+	}
 }
-
 ```
 
 </JavaSection>
@@ -432,6 +428,10 @@ Covered in [Platinum](/plat/seg-ext).
 
 <Spoiler title="Solution">
 
+<LanguageSection>
+
+<CPPSection>
+
 Using indexed set, we can solve this in just a few lines.
 
 ```cpp
@@ -459,6 +459,55 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+Using a binary indexed tree, we can count the number of inversions. 
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine());
+		for (int tt = 0; tt < t; tt++) {
+			br.readLine();
+			int n = Integer.parseInt(br.readLine());
+			BIT = new long[(int) 1e7 + 5];
+			long ans = 0;
+			for (int i = 0; i < n; i++) {
+				int a = Integer.parseInt(br.readLine());
+				a++;
+				ans += i - sum(a);
+				update(a, 1);
+			}
+			System.out.println(ans);
+		}
+	}
+	public static long[] BIT; //one indexed cannot use zero
+	public static long sum(int i) {
+		long sum = 0;
+		while (i > 0) {
+			sum += BIT[i];
+			i -= (i & -i); //least important bit
+		}
+		return sum;
+	}
+	public static void update(int i, int v) {
+		while (i > 0 && i < BIT.length) {
+			BIT[i] += v;
+			i += (i & -i);
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
 
