@@ -93,7 +93,7 @@ export default function ClassPage(props: { path: string }) {
 
   if (loading || notFound || error) {
     return (
-      <Layout>
+      <>
         <SEO title="404 Not Found" />
         <TopNavigationBar />
 
@@ -115,7 +115,7 @@ export default function ClassPage(props: { path: string }) {
             )}
           </p>
         )}
-      </Layout>
+      </>
     );
   }
   const format = (timestamp: firebaseType.firestore.Timestamp) => {
