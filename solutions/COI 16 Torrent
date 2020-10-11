@@ -1,0 +1,15 @@
+(I haven't coded yet, is this a fakesolve?)
+
+We first solve the problem if there is one computer, call $i$. Root the tree at $i$. Let $dp_x$ be the answer to the subtree with root $x$. If $x$ is a leaf, $dp_x=0$. Otherwise, call the children $c_1,\cdots,c_k$, where $dp_{c_k}\le dp_{c_{k-1}}\le \cdots \le dp_{c_1}$, then we obtain the recurrence $$dp_x=\text{max}_{1\le i\le k} (i+dp_{c_i})$$
+
+In total, this takes $O(N log N)$
+
+We can use parent pointer to efficiently find the path between A and B. We can compute $dp_{a_1},\cdots,dp_{a_k}$ where $(a_i)_{i=1}^k$ is the set of neighbours of $A$ not in the path, and $dp_{b_1},\cdots,dp_{b_l}$ where $(b_i)_{i=1}^k$ is the set of neighbours of $B$ not in the path, and $d_1,\cdots,d_m$ be the set of vertices in the path that are not $A,B$. 
+
+For each $1\le i\le m$, we evaluate the answer for the subtree rooted at $d_i$ that doesn't include $d_{i\pm 1}$. 
+
+We use binary search: we check if $x$ is achievable. WLOG, $dp_{a_1}\ge dp_{a_2}\ge \cdots dp_{a_k}$, then we can let $suf(i)=$ number of moves needed to take care of $dp_{a_i} \cdots dp_{a_k}$. The recurrence $suf(i)=1+max \{ suf(i+1), dp_{a_i} \}$ holds because I would spend one move dealing with $a_i$ and the rest is just two disjoint components that takes $suf(i+1)$ and $dp_{a_i}$ minutes. 
+
+The greedy strategy: We will get rid of $d_i$'s if $suf(i)<x$, and when $suf(i)=x,$ we deal with a child. When $suf(i)>x$, $x$ fails and we need to try something larger.
+
+Time Complexity: $O(N log N)$.
