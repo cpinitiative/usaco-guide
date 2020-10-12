@@ -268,11 +268,25 @@ If we were asked to find the maximum size of a set of non-intersecting segments,
 
 ## Application 2 - Minimum Number of Increasing Sequences
 
-Continuing from application 1, we now want to find the minimum number of increasing subsequences of $A$.
+Continuing from application 1, we now want to find the minimum number of increasing subsequences required to cover $A$.
 
-Luckily for us, there's a simple solution to this - the minimum number of increasing subsequences of $A$ is simply the size of the LDS (longest **decreasing** subsequence) of $A$!
+Luckily for us, there's a simple solution to this (although it might not be obvious why it works).
 
-(Try to prove this fact yourself - as a hint, assume the contrary for a contradiction.)
+**Lemma (Easy):** The minimum number of increasing subsequences required to cover $A$ is at least the size of longest non-increasing subsequence of $A$.
+
+*Proof:* No two elements of any non-increasing subsequence can be part of the same increasing subsequence.
+
+**Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
+
+*Proof -2:* See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13). However, it doesn't seem to be correct because the process of unhooking and reattaching is not guaranteed to terminate. 
+
+*Proof -1:* [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) also seems to be wrong?
+
+*Proof 1:* Consider the greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that this last element is maximized. 
+
+This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
+
+*Proof 2:* This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
 
 ### Code for PCB
 
