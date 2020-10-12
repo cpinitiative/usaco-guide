@@ -278,15 +278,19 @@ Luckily for us, there's a simple solution to this (although it might not be obvi
 
 **Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
 
-*Proof -2:* See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13). However, it doesn't seem to be correct because the process of unhooking and reattaching is not guaranteed to terminate. 
+*Wrong Proof 1:* See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13). However, it doesn't seem to be correct because the process of unhooking and reattaching is not guaranteed to terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$ (note that this link is about partitioning $A$ into non-increasing subsequences rather than increasing subsequences). Then $3$ will be moved from the front of $s_1$ to $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
 
-*Proof -1:* [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) also seems to be wrong?
+*Wrong Proof 2:* [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
 
-*Proof 1:* Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
+*Motivation:* Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
 
 This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
 
-*Proof 2:* This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
+*Proof:* Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
+
+Do you see why this is equivalent to the sketch?
+
+*Alternative Proof:* This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
 
 ### Code for PCB
 
