@@ -204,7 +204,7 @@ Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ 
 
 **Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since $L_i[j] \geq A[i + 1]$. We don't update anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ of length greater than $j$.
 
-To find and update the described $j$ in $O(\log N)$ time, we can use a `std::vector` and `std::lower_bound` (or just a `std::set`).
+To find and update the described $j$ in $O(\log N)$ time, we can use a `std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set` (demonstrated in the solution for PCB).
 
 <LanguageSection>
 
@@ -227,7 +227,6 @@ int find_lis(vector<int> a) {
 <JavaSection>
 
 ```java
-
 public static int find_lis(int[] a) {
    ArrayList<Integer> dp = new ArrayList<Integer>();
    for (int i : a) {
@@ -238,7 +237,6 @@ public static int find_lis(int[] a) {
    }
    return dp.size();
 }
-
 ```
 
 </JavaSection>
@@ -268,11 +266,29 @@ If we were asked to find the maximum size of a set of non-intersecting segments,
 
 ## Application 2 - Minimum Number of Increasing Sequences
 
-Continuing from application 1, we now want to find the minimum number of increasing subsequences of $A$.
+Continuing from application 1, we now want to find the minimum number of increasing subsequences required to cover $A$.
 
-Luckily for us, there's a simple solution to this - the minimum number of increasing subsequences of $A$ is simply the size of the LDS (longest **decreasing** subsequence) of $A$!
+Luckily for us, there's a simple (though not so obvious) solution to this.
 
-(Try to prove this fact yourself - as a hint, assume the contrary for a contradiction.)
+**Lemma (Easy):** The minimum number of increasing subsequences required to cover $A$ is at least the size of longest non-increasing subsequence of $A$.
+
+*Proof:* No two elements of any non-increasing subsequence can be part of the same increasing subsequence.
+
+**Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
+
+*Wrong Proof 1:* See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13) (note that this link describes partitioning $A$ into non-increasing subsequences rather than increasing subsequences). However, it's not correct because the process of unhooking and reattaching might never terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the front of $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
+
+*Wrong Proof 2:* [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
+
+*Motivation:* Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
+
+This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
+
+*Proof:* Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
+
+Do you see why this is equivalent to the sketch?
+
+*Alternative Proof:* This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
 
 ### Code for PCB
 
@@ -295,15 +311,13 @@ int main() {
     cin >> n;
     for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
     sort(a, a + n, greater<pair<int, int>>());
-    //finding the LIS of a reversed array = finding the LDS
+    // finding the LIS of a reversed array = finding the LDS
     for (int i = 0; i < n; i++) {
         if (s.upper_bound(a[i].second) == s.end()) lis++;
         else s.erase(s.upper_bound(a[i].second));
         s.insert(a[i].second);
     }
-
     cout << lis;
-    return 0;
 }
 ```
 
@@ -316,34 +330,25 @@ import java.io.*;
 import java.util.*; 
  
 class PCB{
-   public static int find_lis(int[] a) {
-      ArrayList<Integer> dp = new ArrayList<Integer>();
-      for (int i : a) {
-         int pos = Math.abs(Collections.binarySearch(dp, i));
-         if (pos > dp.size()) dp.add(i);
-         else dp.set(pos-1, i);
-      }
-      return dp.size();
-   }
-   public static void main(String[] args) throws IOException
-   {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      int n = Integer.parseInt(br.readLine());
-      TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
-      for(int i = 0; i < n; i++){
-         StringTokenizer st = new StringTokenizer(br.readLine());
-         a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-      }
-      //finding the LIS of a reversed array = finding the LDS
-      int lis = 0;
-      TreeSet<Integer> s = new TreeSet<Integer>(); 
-      for(int k : a.keySet()){
-         if(s.higher(a.get(k)) == null) lis++;
-         else s.remove(s.higher(a.get(k)));
-         s.add(a.get(k));
-      }
-      System.out.println(lis);
-   } 
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
+		for(int i = 0; i < n; i++){
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+		//finding the LIS of a reversed array = finding the LDS
+		int lis = 0;
+		TreeSet<Integer> s = new TreeSet<Integer>(); 
+		for(int k : a.keySet()){
+			if(s.higher(a.get(k)) == null) lis++;
+			else s.remove(s.higher(a.get(k)));
+			s.add(a.get(k));
+		}
+		System.out.println(lis);
+	} 
 }
 ```
 
