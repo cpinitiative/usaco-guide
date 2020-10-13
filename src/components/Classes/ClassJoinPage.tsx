@@ -26,7 +26,11 @@ export default function AnnouncementPage(props: {
   };
   const firebase = useContext(FirebaseContext);
   const { loading, error, data, isInstructor } = useContext(ClassContext);
-  const { userClasses, setUserClasses } = useContext(UserDataContext);
+  const { userClasses, setUserClasses, firebaseUser } = useContext(
+    UserDataContext
+  );
+  const [joining, setJoining] = useState(false);
+
   const notFound = !loading && !data;
 
   if (loading || notFound || error) {
@@ -56,7 +60,6 @@ export default function AnnouncementPage(props: {
       </>
     );
   }
-  const [joining, setJoining] = useState(false);
   return (
     <>
       <SEO title="Class" />
@@ -87,34 +90,38 @@ export default function AnnouncementPage(props: {
           ) : (
             <>
               <h1 className={'text-3xl font-bold leading-9'}>
-                Would you like to join the class <b>Sunday Intermediate</b>?
+                {firebaseUser ? 'Would you like' : 'Please login'} to join the
+                class <b>Sunday Intermediate</b>
+                {firebaseUser ? '?' : ''}
               </h1>
-              <div className={'mt-6'}>
-                <span className="inline-flex rounded-md shadow-sm">
-                  <button
-                    onClick={() => {
-                      setJoining(true);
-                      setUserClasses([
-                        ...userClasses,
-                        {
-                          id: classId,
-                          name: data.name,
-                        },
-                      ]);
-                    }}
-                    type="button"
-                    disabled={joining}
-                    className={
-                      'inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white ' +
-                      (joining
-                        ? 'bg-indigo-300'
-                        : 'bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150')
-                    }
-                  >
-                    {joining ? 'Joining...' : 'Join'}
-                  </button>
-                </span>
-              </div>
+              {firebaseUser && (
+                <div className={'mt-6'}>
+                  <span className="inline-flex rounded-md shadow-sm">
+                    <button
+                      onClick={() => {
+                        setJoining(true);
+                        setUserClasses([
+                          ...userClasses,
+                          {
+                            id: classId,
+                            name: data.name,
+                          },
+                        ]);
+                      }}
+                      type="button"
+                      disabled={joining}
+                      className={
+                        'inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white ' +
+                        (joining
+                          ? 'bg-indigo-300'
+                          : 'bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150')
+                      }
+                    >
+                      {joining ? 'Joining...' : 'Join'}
+                    </button>
+                  </span>
+                </div>
+              )}
             </>
           )}
         </div>
