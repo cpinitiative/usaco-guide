@@ -51,7 +51,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
         {!loading && (
           <p className="text-center mt-4">
             {error ? (
-              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar.`
+              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar).`
             ) : (
               <Link to="/" className="text-xl text-blue-600">
                 Return Home
@@ -126,7 +126,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                         <span className="block">
                           <h2 className="text-sm font-medium leading-5">
                             <Link
-                              to={`/class/${classId}/announcement/${announcement.id}`}
+                              to={`/class/${classId}/announcements/${announcement.id}`}
                             >
                               <span className="absolute inset-0"></span>
                               {announcement.title}
@@ -138,7 +138,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                         </span>
                       </div>
                       <Link
-                        to={`/class/${classId}/announcement/${announcement.id}`}
+                        to={`/class/${classId}/announcements/${announcement.id}`}
                         className="relative group flex items-center space-x-2.5"
                       >
                         <Icons.Calendar className="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500" />
@@ -155,7 +155,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                     <div className="hidden sm:flex flex-col flex-shrink-0 items-end space-y-3">
                       <p className="flex items-center space-x-4">
                         <Link
-                          to={`/class/${classId}/announcement/${announcement.id}`}
+                          to={`/class/${classId}/announcements/${announcement.id}`}
                           className="relative text-sm leading-5 text-gray-500 hover:text-gray-900 font-medium"
                         >
                           View

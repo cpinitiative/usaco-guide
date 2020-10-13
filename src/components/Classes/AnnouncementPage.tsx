@@ -62,7 +62,7 @@ export default function AnnouncementPage(props: {
         {!loading && (
           <p className="text-center mt-4">
             {error ? (
-              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar.`
+              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar).`
             ) : (
               <span>This announcement may have been deleted or removed.</span>
             )}
@@ -77,8 +77,48 @@ export default function AnnouncementPage(props: {
       <ClassLayout classId={classId}>
         <div className="bg-white lg:min-w-0 lg:flex-1">
           <div className="px-8 xl:px-16 pt-4 sm:pt-8 pb-4 xl:pt-10">
+            <div>
+              <div className={'flex justify-between'}>
+                <span className="inline-flex rounded-md shadow-sm">
+                  <Link
+                    to={`/class/${classId}`}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                  >
+                    Back
+                  </Link>
+                </span>
+                <div>
+                  {isInstructor && !edit && (
+                    <>
+                      <span className="inline-flex rounded-md shadow-sm">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEdit(true);
+                            setContent(announcement.content);
+                            setTitle(announcement.title);
+                          }}
+                          className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                        >
+                          Edit
+                        </button>
+                      </span>
+                      <span className="ml-3 inline-flex rounded-md shadow-sm">
+                        <button
+                          type="button"
+                          onClick={() => setShowPublishModal(true)}
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                        >
+                          {announcement.published ? 'Unpublish' : 'Publish'}
+                        </button>
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
             {isInstructor && edit && (
-              <div className={'mb-4 flex justify-between'}>
+              <div className={'flex justify-between'}>
                 <div>
                   {!announcement.published && (
                     <span className="inline-flex rounded-md shadow-sm">
@@ -134,10 +174,10 @@ export default function AnnouncementPage(props: {
                                 );
                               if (announcementIndex === -1) return;
                               let newAnnouncements = doc.data().announcements;
-                              newAnnouncements[announcementIndex].title = title;
-                              newAnnouncements[
-                                announcementIndex
-                              ].content = content;
+                              newAnnouncements[announcementIndex].title =
+                                title || 'Untitled Announcement';
+                              newAnnouncements[announcementIndex].content =
+                                content || '';
                               transaction.update(ref, {
                                 announcements: newAnnouncements,
                               });
@@ -161,7 +201,7 @@ export default function AnnouncementPage(props: {
                 </div>
               </div>
             )}
-            <div className="flex justify-between">
+            <div className="mt-4">
               {edit ? (
                 <input
                   placeholder={'Enter a title...'}
@@ -174,35 +214,6 @@ export default function AnnouncementPage(props: {
                   {announcement.title}
                 </h1>
               )}
-
-              <div>
-                {isInstructor && !edit && (
-                  <>
-                    <span className="inline-flex rounded-md shadow-sm">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEdit(true);
-                          setContent(announcement.content);
-                          setTitle(announcement.title);
-                        }}
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-                      >
-                        Edit
-                      </button>
-                    </span>
-                    <span className="ml-3 inline-flex rounded-md shadow-sm">
-                      <button
-                        type="button"
-                        onClick={() => setShowPublishModal(true)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                      >
-                        {announcement.published ? 'Unpublish' : 'Publish'}
-                      </button>
-                    </span>
-                  </>
-                )}
-              </div>
             </div>
 
             {edit ? (

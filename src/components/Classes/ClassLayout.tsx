@@ -23,9 +23,14 @@ export default function ClassLayout({
 
   const { loading, error, data, isInstructor } = useContext(ClassContext);
   const [showJoinCodes, setShowJoinCodes] = useState(false);
+  const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
   const notFound = !loading && !data;
-
+  React.useEffect(() => {
+    if (!joinLinkCopied) return;
+    const timeout = setTimeout(() => setJoinLinkCopied(false), 1000);
+    return () => clearTimeout(timeout);
+  }, [joinLinkCopied]);
   if (loading || notFound || error || showNotFound) {
     return (
       <>
@@ -69,7 +74,7 @@ export default function ClassLayout({
           {/* Left sidebar & main wrapper */}
           <div className="flex-1 min-w-0 bg-white xl:flex">
             {/* Account profile */}
-            <div className="xl:flex-shrink-0 xl:w-80 xl:border-r xl:border-gray-200 bg-white">
+            <div className="xl:flex-shrink-0 xl:w-80 border-b xl:border-b-0 xl:border-r border-gray-200 bg-white">
               <div className="pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 space-y-8">
@@ -123,7 +128,7 @@ export default function ClassLayout({
                                     ),
                                   });
                                 navigate(
-                                  `/class/${classId}/announcement/${id}`
+                                  `/class/${classId}/announcements/${id}`
                                 );
                                 setCreatingAssignment(false);
                               }}
@@ -151,53 +156,40 @@ export default function ClassLayout({
                       )}
                     </div>
                     {/* Meta info */}
-                    <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
-                      <div className="flex items-center space-x-2">
-                        {/* Heroicon name: badge-check */}
-                        <Icons.Calendar className="h-5 w-5 text-gray-400" />
+                    {/*<div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">*/}
+                    {/*  <div className="flex items-center space-x-2">*/}
+                    {/*    /!* Heroicon name: badge-check *!/*/}
+                    {/*    <Icons.Calendar className="h-5 w-5 text-gray-400" />*/}
 
-                        <span className="text-sm text-gray-500 leading-5 font-medium">
-                          Wednesdays
-                        </span>
-                      </div>
-                    </div>
+                    {/*    <span className="text-sm text-gray-500 leading-5 font-medium">*/}
+                    {/*      Wednesdays*/}
+                    {/*    </span>*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
                     {isInstructor && (
                       <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
                         <div className="flex items-center space-x-2">
                           <Icons.Mail className="h-5 w-5 text-gray-400" />
 
                           <span className="text-sm text-gray-500 leading-5 font-medium">
-                            <span className="font-bold">
-                              Class Code{data.joinCodes.length !== 1 ? 's' : ''}
-                              :
-                            </span>{' '}
-                            {showJoinCodes ? (
-                              <span>
-                                {data.joinCodes.join(', ')} (
-                                <button
-                                  className={
-                                    'text-blue-600 hover:underline active:text-blue-900'
-                                  }
-                                  onClick={() => setShowJoinCodes(false)}
-                                >
-                                  Hide
-                                </button>
-                                )
-                              </span>
-                            ) : (
-                              <span>
-                                (
-                                <button
-                                  className={
-                                    'text-blue-600 hover:underline active:text-blue-900'
-                                  }
-                                  onClick={() => setShowJoinCodes(true)}
-                                >
-                                  Show
-                                </button>
-                                )
-                              </span>
-                            )}
+                            <span className="font-bold">Class Join Link:</span>{' '}
+                            <a
+                              className={
+                                'cursor-pointer text-blue-600 hover:underline active:text-blue-900'
+                              }
+                              onClick={e => {
+                                e.preventDefault();
+                                navigator.clipboard
+                                  .writeText(
+                                    `https://usaco.guide/class/${classId}/join`
+                                  )
+                                  .then(() => {
+                                    setJoinLinkCopied(true);
+                                  });
+                              }}
+                            >
+                              {joinLinkCopied ? 'Copied!' : 'Copy To Clipboard'}
+                            </a>
                           </span>
                         </div>
                       </div>

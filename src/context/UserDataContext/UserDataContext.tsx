@@ -21,6 +21,7 @@ import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 
 /*
  * todo document how to add new API to user data context?
@@ -37,6 +38,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
+  new UserClassesProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
@@ -46,7 +48,8 @@ type UserDataContextAPI = UserLangAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
-  LastVisitAPI & {
+  LastVisitAPI &
+  UserClassesAPI & {
     firebaseUser: any;
     signIn: Function;
     signOut: Function;
