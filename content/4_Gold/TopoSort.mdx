@@ -40,7 +40,7 @@ export const problems = {
 			'1017',
 			'Easy',
 			false,
-			[],
+			['TopoSort'],
 			'not explicitly given, but graph is a DAG'
 		),
 		new Problem('Gold', 'Milking Order', '838', 'Normal', false, [
@@ -53,8 +53,8 @@ export const problems = {
 			'1757',
 			'Hard',
 			false,
-			[],
-			'equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E)'
+			['TopoSort'],
+			'cses-1757'
 		),
 	],
 };
@@ -242,12 +242,12 @@ bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	for (int u:adj[n]) {
 		if(on_stack[u]) {
-			cycle.push_back(n);
+			cycle.push_back(n); // start cycle
 			on_stack[n] = on_stack[u] = false;
 			return true;
 		}
 		else if(!visited[u]) {
-			if(dfs(u)) {
+			if(dfs(u)) { // continue cycle
 				if(on_stack[n]) {
 					cycle.push_back(n);
 					on_stack[n] = false;
@@ -257,7 +257,7 @@ bool dfs(int n) {
 					return false;
 				}
 			}
-			if(!cycle.empty())
+			if(!cycle.empty()) // finished with cycle
 				return false;
 		}
 	}
