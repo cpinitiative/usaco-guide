@@ -7,12 +7,15 @@ prerequisites:
   - data-types
 ---
 
-
-
 export const problems = {
 	cses: [new Problem('CSES', 'Weird Algorithm', '1068', 'Very Easy')],
 	fence: [new Problem('Bronze', 'Fence Painting', '567', 'Very Easy')],
 };
+
+
+<LanguageSection>
+
+<CPPSection>
 
 <Resources>
 	<Resource source="IUSACO" title="2.1 - Input and Output">
@@ -25,6 +28,23 @@ export const problems = {
 		cin, getline
 	</Resource>
 </Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+<Resources>
+	<Resource source="IUSACO" title="2.1 - Input and Output">
+		module is based off this
+	</Resource>
+</Resources>
+
+</JavaSection>
+
+<PySection>
+</PySection>
+
+</LanguageSection>
 
 <!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
 
@@ -51,8 +71,8 @@ Whichever you're most comfortable with!
 using namespace std;
 
 int main() {
-    int x; cin >> x;
-    cout << "FOUND " << x << "\n";
+	int x; cin >> x;
+	cout << "FOUND " << x << "\n";
 }
 ```
 
@@ -65,22 +85,22 @@ This library includes the `scanf` and `printf` functions, which are slightly mor
 using namespace std;
 
 int main() {
-    int x, y;
-    // %d specifies that a value of type int is being input.
-    // Use %lld (a few judging platforms might need %I64d)
-    // to input a long long (64-bit) integer.
-    // Many other specifiers are also available; see link for more details.
-    // Be sure to add a & character (address-of operator) when using
-    // scanf, UNLESS you are inputing a string with %s.
-    // It is possible to input multiple values at a time as shown below.
-    scanf("%d%d", &x, &y);
+	int x, y;
+	// %d specifies that a value of type int is being input.
+	// Use %lld (a few judging platforms might need %I64d)
+	// to input a long long (64-bit) integer.
+	// Many other specifiers are also available; see link for more details.
+	// Be sure to add a & character (address-of operator) when using
+	// scanf, UNLESS you are inputing a string with %s.
+	// It is possible to input multiple values at a time as shown below.
+	scanf("%d%d", &x, &y);
 
-    // Specifiers for printf are mostly the same as those used
-    // by scanf, with the notable exception of floating-point numbers.
-    // Use a backslash character followed by the lowercase
-    // letter n to denote a newline.
-    // The address-of operator, &, is not used here.
-    printf("Found %d and %d\n", x, y);
+	// Specifiers for printf are mostly the same as those used
+	// by scanf, with the notable exception of floating-point numbers.
+	// Use a backslash character followed by the lowercase
+	// letter n to denote a newline.
+	// The address-of operator, &, is not used here.
+	printf("Found %d and %d\n", x, y);
 }
 ```
 
@@ -101,35 +121,35 @@ import java.io.*;
 import java.util.*;
 
 public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader(InputStream stream) {
-            reader = new BufferedReader(new InputStreamReader(stream), 32768);
-            tokenizer = null;
-        }
-        String next() { // reads in the next string
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-    }
-    static InputReader r = new InputReader(System.in);
-    static PrintWriter pw = new PrintWriter(System.out);
-    public static void main(String[] args) {
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+	}
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) {
 
-        // YOUR CODE HERE
+		// YOUR CODE HERE
 
-        pw.close(); // flushes the output once printing is done
-    }
+		pw.close(); // flushes the output once printing is done
+	}
 }
 ```
 
@@ -152,11 +172,11 @@ static InputReader r = new InputReader(System.in);
 static PrintWriter pw = new PrintWriter(System.out);
 
 public static void main(String[] args) {
-    int a = r.nextInt();
-    int b = r.nextInt();
-    int c = r.nextInt()
-    pw.println(a + b + c);
-    pw.close();
+	int a = r.nextInt();
+	int b = r.nextInt();
+	int c = r.nextInt()
+	pw.println(a + b + c);
+	pw.close();
 }
 ```
 
@@ -164,22 +184,43 @@ public static void main(String[] args) {
 
 <PySection>
 
-The most intuitive way to do input/output is using the built in input() and print() methods. The input() method will return the next line, and can be processed using different python methods. The print() method takes in a string and an optional "end" character (defaults to '\n'). Below is an annotated demonstration on different input/output scenarios.
+The most intuitive way to do input/output is using the built in [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print) methods. The `input()` method will return the next line, and can be processed using different python methods. The `print()` method takes in a string and an optional string `end` (defaults to `'\n'`). Below is an annotated demonstration on different input/output scenarios.
 
 ```py
-# take in an integer n on a single line
-n = int(input())
-# take in integers n and m, both on the same line
-n, m = map(int, input().split())
-# read in a series of numbers on one line into a list
-list = [int(x) for x in input().split()]
 # read in a string
 myStr = input()
 # prints the string on its own line
 print(myStr)
-# prints integer n with a space after it (note the necessary explicit cast str())
-print(str(n), end = " ")
+
+# take in an integer n on a single line
+n = int(input())
+# prints integer n with " test" after it
+print(n, end=" test")
 ```
+
+We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split) along with [`map`](https://docs.python.org/3/library/functions.html#map) or a [list comprehension](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions) to read in multiple integers on the same line (separated by whitespace).
+
+```py
+# read in a series of numbers on one line into a list
+nums = [int(x) for x in input().split()]
+# does the same thing
+nums = list(map(int, input().split()))
+```
+
+We can use something similar to the above if we are unpacking a fixed number of integers.
+
+```py
+# read in integers n and m, both on the same line
+n, m = [int(x) for x in input().split()]
+# does the same thing
+n, m = map(int, input().split())
+```
+
+<IncompleteSection>
+
+redirect to some other source which covers this?
+
+</IncompleteSection>
 
 </PySection>
 
@@ -193,13 +234,15 @@ print(str(n), end = " ")
 	</Resource>
 </Resources>
 
+Try to implement this yourself!
+
 <LanguageSection>
 
 <CPPSection>
 
 As noted in the resource above, this problem requires _64-bit integers_.
 
-**Note:** If you went through the recommended sections of Sololearn from [Choosing a Language](/general/choosing-lang#resources-for-learning-how-to-code), then you should be able to implement this yourself.
+<!-- **Note:** If you went through the recommended sections of Sololearn from [Choosing a Language](/general/choosing-lang#resources-for-learning-how-to-code), then you should be able to implement this yourself. -->
 
 <Spoiler title="Solution">
 
@@ -233,16 +276,16 @@ import java.io.*;
 import java.util.*;
 
 public class template {
-    public static void main(String[] args) {
-        Scanner r = new Scanner(System.in);
-        long x = r.nextLong();
-        while (x != 1) {
-            System.out.print(x+" ");
-            if (x%2 == 0) x /= 2;
-            else x = 3*x+1;
-        }
-        System.out.print(x);
-    }
+	public static void main(String[] args) {
+		Scanner r = new Scanner(System.in);
+		long x = r.nextLong();
+		while (x != 1) {
+			System.out.print(x+" ");
+			if (x%2 == 0) x /= 2;
+			else x = 3*x+1;
+		}
+		System.out.print(x);
+	}
 }
 ```
 
@@ -255,39 +298,39 @@ import java.io.*;
 import java.util.*;
 
 public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader(InputStream stream) {
-            reader = new BufferedReader(new InputStreamReader(stream), 32768);
-            tokenizer = null;
-        }
-        String next() { // reads in the next string
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-    }
-    static InputReader r = new InputReader(System.in);
-    static PrintWriter pw = new PrintWriter(System.out);
-    public static void main(String[] args) {
-        long x = r.nextLong();
-        while (x != 1) {
-            pw.print(x+" ");
-            if (x%2 == 0) x /= 2;
-            else x = 3*x+1;
-        }
-        pw.print(x);
-        pw.close(); // flushes the output once printing is done
-    }
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+	}
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) {
+		long x = r.nextLong();
+		while (x != 1) {
+			pw.print(x+" ");
+			if (x%2 == 0) x /= 2;
+			else x = 3*x+1;
+		}
+		pw.print(x);
+		pw.close(); // flushes the output once printing is done
+	}
 }
 ```
 
@@ -302,11 +345,11 @@ public class template {
 ```py
 x = int(input())
 while x != 1:
-    print(x, end = " ")
-    if x % 2 == 0:
-        x /= 2
-    else:
-        x = 3 * x + 1
+	print(x, end = " ")
+	if x % 2 == 0:
+		x /= 2
+	else:
+		x = 3 * x + 1
 print(x)
 ```
 
@@ -335,10 +378,10 @@ You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) librar
 using namespace std;
 
 int main() {
-    freopen("problemname.in", "r", stdin);
-    freopen("problemname.out", "w", stdout);
-    // rest of your code ...
-    // can use cin or scanf
+	freopen("problemname.in", "r", stdin);
+	freopen("problemname.out", "w", stdout);
+	// rest of your code ...
+	// can use cin or scanf
 }
 ```
 
@@ -351,9 +394,9 @@ You cannot use C-style I/O (`scanf`, `printf`) with this method.
 using namespace std;
 
 int main() {
-    ifstream fin("problemname.in");
-    ofstream fout("problemname.out");
-    // rest of your code ...
+	ifstream fin("problemname.in");
+	ofstream fout("problemname.out");
+	// rest of your code ...
 
 }
 ```
@@ -369,35 +412,35 @@ import java.util.*;
 import java.io.*;
 
 public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("problemname.in"));
-            tokenizer = null;
-        }
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-    }
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        InputReader r = new InputReader();
-        PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader() throws FileNotFoundException {
+			reader = new BufferedReader(new FileReader("problemname.in"));
+			tokenizer = null;
+		}
+		String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		InputReader r = new InputReader();
+		PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
 
-        // YOUR CODE HERE
+		// YOUR CODE HERE
 
-        pw.close(); // flushes the output once printing is done
-    }
+		pw.close(); // flushes the output once printing is done
+	}
 }
 ```
 
@@ -413,7 +456,9 @@ instead. There is no need for this since `PrintWriter` [uses buffered output](ht
 
 <PySection>
 
-The most intuitive way to do file IO in python is by redirecting the system input and output to files. After doing this, you can then use the above input() and print() methods as usual.
+See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
+
+The most intuitive way to do file I/O in Python is by redirecting the system input and output to files. After doing this, you can then use the above `input()` and `print()` methods as usual.
 
 ```py
 import sys
@@ -459,21 +504,21 @@ Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you commen
 using namespace std;
 
 int main() {
-    freopen("paint.in","r",stdin);
-    // reuse standard in to read from "paint.in"
-    freopen("paint.out","w",stdout);
-    // reuse standard out to write to "paint.out"
-    vector<bool> cover(100);
-    int a, b, c, d; cin >> a >> b >> c >> d;
-    for (int i = a; i < b; ++i) cover[i] = 1;
-    for (int i = c; i < d; ++i) cover[i] = 1;
-    int ans = 0;
-    for (int i = 0; i < 100; ++i) ans += cover[i];
-    cout << ans;
-    // cout << ans << endl; is OK
-    // cout << ans << "\n"; is OK
-    // cout << ans << " "; is NOT OK
-    // cout << ans << "\n\n"; is NOT OK
+	freopen("paint.in","r",stdin);
+	// reuse standard in to read from "paint.in"
+	freopen("paint.out","w",stdout);
+	// reuse standard out to write to "paint.out"
+	vector<bool> cover(100);
+	int a, b, c, d; cin >> a >> b >> c >> d;
+	for (int i = a; i < b; ++i) cover[i] = 1;
+	for (int i = c; i < d; ++i) cover[i] = 1;
+	int ans = 0;
+	for (int i = 0; i < 100; ++i) ans += cover[i];
+	cout << ans;
+	// cout << ans << endl; is OK
+	// cout << ans << "\n"; is OK
+	// cout << ans << " "; is NOT OK
+	// cout << ans << "\n\n"; is NOT OK
 }
 ```
 
@@ -487,15 +532,15 @@ Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
 using namespace std;
 
 int main() {
-    ifstream fin("paint.in");
-    ofstream fout("paint.out");
-    vector<bool> cover(100);
-    int a, b, c, d; fin >> a >> b >> c >> d;
-    for (int i = a; i < b; ++i) cover[i] = 1;
-    for (int i = c; i < d; ++i) cover[i] = 1;
-    int ans = 0;
-    for (int i = 0; i < 100; ++i) ans += cover[i];
-    fout << ans;
+	ifstream fin("paint.in");
+	ofstream fout("paint.out");
+	vector<bool> cover(100);
+	int a, b, c, d; fin >> a >> b >> c >> d;
+	for (int i = a; i < b; ++i) cover[i] = 1;
+	for (int i = c; i < d; ++i) cover[i] = 1;
+	int ans = 0;
+	for (int i = 0; i < 100; ++i) ans += cover[i];
+	fout << ans;
 }
 ```
 
@@ -510,23 +555,23 @@ import java.io.*;
 import java.util.*;
 
 public class paintSol { // must be declared in paintSol.java
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("paint.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
-        int[] cover = new int[100];
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("paint.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+		int[] cover = new int[100];
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(br.readLine());
-        int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+		int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
 
-        for (int i = a; i < b; i++) cover[i] = 1;
-        for (int i = c; i < d; i++) cover[i] = 1;
-        int ans = 0;
-        for (int i = 0; i < 100; i++) ans += cover[i];
-        pw.println(ans);
-        pw.close(); // make sure to include this line -- flushes the output.
-    }
+		for (int i = a; i < b; i++) cover[i] = 1;
+		for (int i = c; i < d; i++) cover[i] = 1;
+		int ans = 0;
+		for (int i = 0; i < 100; i++) ans += cover[i];
+		pw.println(ans);
+		pw.close(); // make sure to include this line -- flushes the output.
+	}
 }
 ```
 
@@ -539,43 +584,43 @@ import java.util.*;
 import java.io.*;
 
 public class template {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader() throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader("paint.in"));
-            tokenizer = null;
-        }
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-    }
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        InputReader r = new InputReader();
-        PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader() throws FileNotFoundException {
+			reader = new BufferedReader(new FileReader("paint.in"));
+			tokenizer = null;
+		}
+		String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		InputReader r = new InputReader();
+		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
 
-        int a = r.nextInt(), b = r.nextInt();
-        int c = r.nextInt(), d = r.nextInt();
+		int a = r.nextInt(), b = r.nextInt();
+		int c = r.nextInt(), d = r.nextInt();
 
-        int[] cover = new int[100];
-        for (int i = a; i < b; i++) cover[i] = 1;
-        for (int i = c; i < d; i++) cover[i] = 1;
-        int ans = 0;
-        for (int i = 0; i < 100; i++) ans += cover[i];
+		int[] cover = new int[100];
+		for (int i = a; i < b; i++) cover[i] = 1;
+		for (int i = c; i < d; i++) cover[i] = 1;
+		int ans = 0;
+		for (int i = 0; i < 100; i++) ans += cover[i];
 
-        pw.println(ans);
-        pw.close(); // flush output
-    }
+		pw.println(ans);
+		pw.close(); // flush output
+	}
 }
 ```
 
@@ -583,7 +628,7 @@ public class template {
 
 <PySection>
 
-See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
+Redirecting file input using `sys`,
 
 ```py
 import sys
@@ -594,13 +639,33 @@ cover = [0] * 100
 a, b = map(int, input().split())
 c, d = map(int, input().split())
 for i in range(a, b):
-    cover[i] = 1
+	cover[i] = 1
 for i in range(c, d):
-    cover[i] = 1
+	cover[i] = 1
 ans = 0
 for i in range(100):
-    ans += cover[i]
-print(str(ans))
+	ans += cover[i]
+print(ans)
+```
+
+Alternatively,
+
+```py
+with open('paint.in','r') as inp:
+	cover = [0] * 100
+	lines = [line for line in inp]
+	a, b = map(int,lines[0].split())
+	c, d = map(int,lines[1].split())
+	for i in range(a, b):
+		cover[i] = 1
+	for i in range(c, d):
+		cover[i] = 1
+	ans = 0
+	for i in range(100):
+		ans += cover[i]
+	with open('paint.out','w') as out:
+		print(ans,file=out)
+		# or out.write(str(ans))
 ```
 
 </PySection>
