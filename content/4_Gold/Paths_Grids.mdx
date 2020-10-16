@@ -1,7 +1,7 @@
 ---
 id: paths-grids
 title: 'Paths on Grids'
-author: Nathan Chen, Michael Cao, Benjamin Qi
+author: Nathan Chen, Michael Cao, Benjamin Qi, Andrew Wang
 prerequisites:
  - intro-dp
 description: 'Counting the number of "special" paths on a grid, and how some string problems can be solved using grids.'
@@ -39,7 +39,7 @@ export const problems = {
 			'Easy',
 			false,
 			[],
-			''
+			'cses-1746'
 		),
 		new Problem(
 			'CSES',
@@ -305,12 +305,16 @@ This algorithm can also be illustrated on a grid. Let $A := xabcd$ and $B := yaz
 
 Now, we re-phrase "the length of the longest increasing subsequence" as "the maximum number of 'diagonal movements' ("action 3" in the above algorithm) in a path from the top-left corner to the bottom-right corner on the grid." Thus, we have constructed a grid-type DP problem.
 
+<center>
+
 |   | *x* | *a* | *b* | *c* | *d* |
 |---|---|---|---|---|---|
 | *y* | **0** | 0 | 0 | 0 | 0 |
 | *a* | 0 | **1** | 1 | 1 | 1 |
 | *z* | 0 | **1** | **1** | 1 | 1 |
 | *c* | 0 | 1 | 1 | **2** | **2** |
+
+</center>
 
 In the above grid, see how the bolded path has diagonal movements at characters "a" and "c". That means the longest common subsequence between "xabcd" and "yazc" is "ac".
 
@@ -319,16 +323,98 @@ Based on the three "actions", which are also the three possible movements of the
 $$
 dp(i, j) =
 \begin{cases}
-\max(dp(i-1, j), dp(i, j-1)) & \text{if $A_i != B_j$} \\
-dp(i-1,j-1)+1, & \text{if $A_i = B_j$}
+\max(dp(i-1, j), dp(i, j-1)) & \text{if }A_i \neq B_j \\
+dp(i-1,j-1)+1, & \text{if }A_i = B_j
 \end{cases}
 $$
 
-<IncompleteSection>
+<LanguageSection>
 
-It seems that the authors are too lazy to actually write code for this. You can check the GFG link above for the implementation. 
+<CPPSection>
 
-</IncompleteSection>
+```cpp
+class Solution {
+public:
+	int longestCommonSubsequence(string a, string b) {
+		int dp[a.size()][b.size()];
+		for (int i = 0; i < a.size(); i++) {
+			fill(dp[i], dp[i]+b.size(), 0);   
+		}
+		for (int i = 0; i < a.size(); i++) {
+			if(a[i] == b[0]) dp[i][0] = 1;
+			if(i != 0) dp[i][0] = max(dp[i][0], dp[i-1][0]);
+		}
+		for (int i = 0; i < b.size(); i++) {
+			if(a[0] == b[i]) dp[0][i] = 1;
+			if(i != 0) dp[0][i] = max(dp[0][i], dp[0][i-1]);
+		}
+		for (int i = 1; i < a.size(); i++) {
+			for (int j = 1; j < b.size(); j++) {
+				if(a[i] == b[j]) {
+					dp[i][j] = dp[i-1][j-1]+1;
+				} else {
+					dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+				}
+			}
+		}
+		return dp[a.size()-1][b.size()-1];
+	}
+};
+```
+
+Ben - shorter version using macros:
+
+```cpp
+class Solution {
+public:
+	int longestCommonSubsequence(str a, str b) {
+		V<vi> dp(sz(a)+1,vi(sz(b)+1));
+		F0R(i,sz(a)+1) F0R(j,sz(b)+1) {
+			if (i < sz(a)) ckmax(dp[i+1][j],dp[i][j]);
+			if (j < sz(b)) ckmax(dp[i][j+1],dp[i][j]);
+			if (i < sz(a) && j < sz(b)) 
+				ckmax(dp[i+1][j+1],dp[i][j]+(a[i] == b[j]));
+		}
+		return dp[sz(a)][sz(b)];
+	}
+};
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+class Solution {
+	public int longestCommonSubsequence(String a, String b) {
+		int[][] dp = new int[a.length()][b.length()];
+		for (int i = 0; i < a.length(); i++) {
+			if(a.charAt(i) == b.charAt(0)) dp[i][0] = 1;
+			if(i != 0) dp[i][0] = Math.max(dp[i][0], dp[i-1][0]);
+		}
+		for (int i = 0; i < b.length(); i++) {
+			if(a.charAt(0) == b.charAt(i)) {
+				dp[0][i] = 1;
+			}
+			if(i != 0) dp[0][i] = Math.max(dp[0][i], dp[0][i-1]);
+		}
+		for (int i = 1; i < a.length(); i++) {
+			for (int j = 1; j < b.length(); j++) {
+				if(a.charAt(i) == b.charAt(j)) {
+					dp[i][j] = dp[i-1][j-1]+1;
+				} else {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+				}
+			}
+		}
+		return dp[a.length()-1][b.length()-1];
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
 
 ## Problems
 
