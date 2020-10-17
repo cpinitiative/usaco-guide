@@ -1,0 +1,60 @@
+---
+id: usaco-624
+title: USACO February 2016 Platinum - Load Balancing
+author: Benjamin Qi
+---
+
+**Time Complexity:** $O(N\log N)$
+
+The [official solution](
+http://www.usaco.org/current/data/sol_balancing_platinum_feb16.html) uses a segment tree, which is introduced in Gold. However, we can just binary search on the answer.
+
+```cpp
+int N;
+vpi v;
+
+vi go(int mx) {
+	int sum = 0, y = N-1, ind = 0;
+	vi cnt(N), bound;
+	F0R(x,N) {
+		while (ind < sz(v) && v[ind].f == x) {
+			int Y = v[ind].s;
+			cnt[Y] ++; if (Y <= y) sum ++;
+			ind ++;
+		}
+		while (sum > mx) sum -= cnt[y--];
+		bound.pb(y);
+	}
+	assert(ind == sz(v));
+	return bound;
+}
+
+int main() {
+	setIO("balancing"); 
+	re(N);
+	v.rsz(N); re(v);
+	{ // compress x coordinates
+		map<int,int> m; trav(t,v) m[t.f] = 0;
+		int co = 0; trav(t,m) t.s = co++;
+		trav(t,v) t.f = m[t.f];
+	}
+	{ // compress y coordinates
+		map<int,int> m; trav(t,v) m[t.s] = 0;
+		int co = 0; trav(t,m) t.s = co++;
+		trav(t,v) t.s = m[t.s];
+	}
+	sort(all(v));
+	ps(fstTrue(1,N,[&](int mx) { // binary search on max
+		vi a = go(mx);
+		trav(t,v) t.s = N-1-t.s;
+		vi b = go(mx);
+		trav(t,v) t.s = N-1-t.s;
+		reverse(all(v)); trav(t,v) t.f = N-1-t.f;
+		vi c = go(mx);
+		trav(t,v) t.s = N-1-t.s;
+		vi d = go(mx);
+		F0R(i,N-1) if (min(a[i],c[N-2-i])+1 + min(b[i],d[N-2-i])+1 >= N) return 1;
+		return 0;
+	}));
+}
+```
