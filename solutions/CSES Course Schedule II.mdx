@@ -1,0 +1,33 @@
+---
+id: cses-1757
+title: CSES - Course Schedule II
+author: Benjamin Qi
+---
+
+This problem is equivalent to [Minimal Labels](https://codeforces.com/contest/825/problem/E) from CodeForces. Treat the "label" of a vertex in "Minimal Labels" as the completion time of a course in "Course Schedule II." So it suffices to solve the CF problem ([editorial](https://codeforces.com/blog/entry/53334)) and then output the [inverse permutation](https://mathworld.wolfram.com/InversePermutation.html).
+
+```cpp
+int n,m,out[MX];
+vi radj[MX];
+ 
+int main() {
+	setIO(); re(n,m);
+	F0R(i,m) {
+		int a,b; re(a,b);
+		radj[b].pb(a);
+		out[a] ++;
+	}
+	vi ans;
+	priority_queue<int> pq;
+	FOR(i,1,n+1) if (!out[i]) pq.push(i);
+	while (sz(pq)) {
+		int x = pq.top(); pq.pop(); ans.pb(x);
+		trav(t,radj[x]) {
+			out[t] --;
+			if (!out[t]) pq.push(t);
+		}
+	}
+	reverse(all(ans));
+	trav(t,ans) pr(t,' ');
+} 
+```
