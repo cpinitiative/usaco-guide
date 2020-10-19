@@ -32,7 +32,7 @@ export const problems = {
 	numLIS: new Problem(
 		'Balkan OI',
 		'2011 - Trapezoid',
-		'https://oj.uz/problems/source/114',
+		'https://oj.uz/problem/view/balkan11_trapezoid',
 		'Hard',
 		true,
 		[],
@@ -243,6 +243,44 @@ public static int find_lis(int[] a) {
 
 </LanguageSection>
 
+It turns out that we can also use a Fenwick tree to find the LIS too (as it can [be adapted to answer RMQ](https://ioinformatics.org/journal/v9_2015_39_44.pdf)). Although this implementation is longer, it's still useful to know (as you'll see later in this module).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<int> bit;
+ 
+void update(int pos, int len) {
+    for (; pos < bit.size(); pos += (pos & (-pos))) bit[pos] = max(bit[pos], len);
+}
+ 
+int query(int pos) {
+    int ans = 0;
+    for (; pos; pos -= (pos & (-pos))) ans = max(ans, bit[pos]);
+    return ans;
+}
+
+int find_lis(vector<int> a) { // Assumes that a is a permutation of {1, 2, ..., n}
+    bit.resize(a.size() + 1);
+    fill(bit.begin(), bit.end(), 0);
+    int ans = 0;    
+    for (int i : a) {
+        int lis = query(i);
+        ans = max(ans, lis);
+        update(i, lis);
+    }
+    return ans;
+}
+```
+
+Here, `query(pos)`
+
+</CPPSection>
+
+</LanguageSection>
+
 ## Application 1 - Non-intersecting Segments
 
 <FocusProblem problem={problems.nonIntersect} />
@@ -276,19 +314,19 @@ Luckily for us, there's a simple (though not so obvious) solution to this.
 
 **Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
 
-*Wrong Proof 1:* See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13) (note that this link describes partitioning $A$ into non-increasing subsequences rather than increasing subsequences). However, it's not correct because the process of unhooking and reattaching might never terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the front of $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
+**Wrong Proof 1:** See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13) (note that this link describes partitioning $A$ into non-increasing subsequences rather than increasing subsequences). However, it's not correct because the process of unhooking and reattaching might never terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the front of $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
 
-*Wrong Proof 2:* [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
+**Wrong Proof 2:** [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
 
-*Motivation:* Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
+**Motivation:** Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
 
 This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
 
-*Proof:* Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
+**Proof:** Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
 
 Do you see why this is equivalent to the sketch?
 
-*Alternative Proof:* This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
+**Alternative Proof:** This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
 
 ### Code for PCB
 
@@ -361,7 +399,28 @@ class PCB{
 
 <FocusProblem problem={problems.numLIS} />
 
-<IncompleteSection />
+### Part 1 - Using LIS
+
+Let's first focus on finding the maximum subset of non-intersecting trapezoids.
+
+This problem seems very similar to finding the maximum subset of non-intersecting segments, so let's try something similar. Instead of trapezoids, consider pairs of line segments representing the trapezoids' side edges. We can split these segments into two lists sorted by top coordinate: **right sides** (call it $R$) and **left sides** (call it $L$).
+
+Finding the maximum number of non-intersecting trapezoids to the left of trapezoid $i$ is now equivalent to:
+- Erasing all segments from $L$ with a top coordinate greater than the top coordinate of $R[i]$ (temporarily),
+- Inserting $R[i]$ into $L$ (temporarily), and then
+- Finding the maximum subset of non-intersecting segments in $L$ that contains $R[i]$.
+
+Although this seems quite inefficient for finding the "LIS" for *all* trapezoids, we can actually iterate through all segments at once and insert them into $R$ and $L$ as we go. This removes the need to erase segments from $L$, so we can solve this in $O(N \log N)$ time using any LIS implementation.
+
+### Part 2 - Using a BIT
+
+Now that we've reduced this problem to LIS, let's think about how to find the number of LISes.
+
+Recall the Fenwick tree method for finding the LIS. Since we're making range minimum queries in that method, why not make range sum queries as well? More specifically, store not only the length of the longest subsequence ending at any particular element, but also the number of such subsequences.
+
+This allows us to find both the LIS and the number of LISes in $O(N \log N)$ time.
+
+### Code
 
 ```cpp
 #include <bits/stdc++.h>
