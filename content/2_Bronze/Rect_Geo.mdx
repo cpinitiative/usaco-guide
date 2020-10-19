@@ -158,7 +158,9 @@ print(ans)
 
 Of course, this wouldn't suffice if the coordinates were changed to be up to $10^9$.
 
-### Rectangle Class
+### Constant Time Solution
+
+[Official Analysis](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)
 
 A useful class in Java for dealing with rectangle geometry problems (though definitely overkill) is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class.
 
@@ -181,7 +183,7 @@ The `Rectangle` class supports numerous useful methods, including the following:
 - `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
 - what happens when intersection is empty?
 
-This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
+This class can often lessen the implementation needed in some bronze problems and CodeForces problems.
 
 With Built-in Rectangle class:
 
@@ -249,17 +251,18 @@ public class blockedBillboard {
 }
 ```
 
+<Optional>
+
+[java.awt.geom.Area](https://docs.oracle.com/javase/7/docs/api/java/awt/geom/Area.html) will allow you to calculate the intersections of arbitrary polygons (and more).
+
+</Optional>
+
 </JavaSection>
 
 <CPPSection>
 
-Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
+Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly):
 
-<Info title="What's a struct?">
-
-A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
-
-</Info>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -286,6 +289,12 @@ int main(){
 	cout << a.area()+b.area()-intersect(a,t)-intersect(b,t) << endl;
 }
 ```
+
+<Info title="What's a struct?">
+
+A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
+
+</Info>
 
 </CPPSection>
 
