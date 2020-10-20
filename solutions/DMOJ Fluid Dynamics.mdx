@@ -1,0 +1,181 @@
+---
+id: DMOJ-fluid-dynamics
+title: DMOJ - Fluid Dynamics
+author: Benjamin Qi
+---
+
+**Time Complexity:**  $\mathcal{O}(S\sqrt{S\log S})$, where $S=N+Q$.
+
+Maintain a linked list of convex hulls of size $BLOCK \approx \sqrt{S\log S}$ each. Each update and query takes $\mathcal{O}(\sqrt{S\log S})$ time. TL is pretty tight ...
+
+```cpp
+#pragma GCC optimize("Ofast")
+#pragma GCC target("avx2")
+
+// template code
+
+const int BLOCK = 2000;
+
+int N,Q;
+ll W;
+
+typedef pl P;
+typedef vector<P> vP;
+vP fluid;
+
+ll CROSS(const P& a, const P& b) { return a.f*b.s-a.s*b.f; }
+ll CROSS(const P& p, const P& a, const P& b) { return (a.f-p.f)*(b.s-p.s)-(a.s-p.s)*(b.f-p.f); }
+ll cross(int a, int b, int c) { return CROSS(fluid[a],fluid[b],fluid[c]); }
+ll dif(int a, int x) { return fluid[x].f*fluid[a].s-fluid[x].s*fluid[a].f; }
+
+ll bs(int* v, const P& p, int lo, int hi) {
+	auto eval = [&](int x) { return fluid[x].f*p.f+fluid[x].s*p.s; };
+	while (lo < hi) {
+		int mid = (lo+hi)/2;
+		if (eval(v[mid]) < eval(v[mid+1])) hi = mid;
+		else lo = mid+1;
+	}
+	return eval(v[lo]);
+}
+
+bool cmp(int a, int b) { return fluid[a] < fluid[b]; }
+
+struct Hull {
+	int dat[BLOCK], lower[BLOCK];
+	int dsz = 0, usz = 0, lsz = 0;
+	ll minDif(int x) { // get min of 
+		pl p = {-fluid[x].s,fluid[x].f};
+		return bs(lower,p,0,lsz-1);
+	}
+	bool bad(int x) { return minDif(x) >= W; }
+	void build() {
+		vi xord; F0R(i,dsz) xord.pb(dat[i]);
+		sort(all(xord),cmp); usz = lsz = 0;
+		for (int i: xord) {
+			while (lsz > 1 && cross(lower[lsz-2],lower[lsz-1],i) <= 0) lsz --;
+			lower[lsz++] = i;
+		}
+	}
+	void prin(int* a, int& b) {
+		F0R(i,b) dbg(a[i]);
+		dbg("----");
+	}
+	void INS(int* a, int& b, int pos, int label) {
+		ROF(i,pos+1,b+1) a[i] = a[i-1];
+		a[pos] = label;
+		b ++;
+	}
+	void ERASE(int* a, int &b, int l, int r) {
+		int dif = r-l; if (dif <= 0) return;
+		FOR(i,r,b) a[i-dif] = a[i];
+		b -= dif;
+	}
+	void insLower(int label) {
+		int pos = lb(lower,lower+lsz,label,cmp)-lower;
+		if (pos && pos < lsz) {
+			if (cross(lower[pos-1],lower[pos],label) >= 0) return;
+		}
+		INS(lower,lsz,pos,label);
+		{
+			int nex = pos+1;
+			while (nex+1 < lsz && cross(lower[pos],lower[nex],lower[nex+1]) <= 0) nex ++;
+			ERASE(lower,lsz,pos+1,nex);
+		}
+		{
+			int nex = pos-1;
+			while (nex > 0 && cross(lower[nex-1],lower[nex],lower[pos]) <= 0) nex --;
+			ERASE(lower,lsz,nex+1,pos);
+		}
+	}
+	void ins(int label) {
+		int i = dsz;
+		while (i && dif(dat[i-1],label) >= W) i --;
+		INS(dat,dsz,i,label);
+		insLower(label);
+	}
+};
+
+vector<Hull> hull;
+vi NEX, PRE;
+int lst = -1;
+
+int num;
+
+int ad() {
+	hull.pb(Hull()); NEX.pb(-1), PRE.pb(-1);
+	return sz(hull)-1;
+}
+
+void link(int a, int b) {
+	NEX[a] = b; 
+	if (b == -1) lst = a;
+	else PRE[b] = a;
+}
+
+int ti = 0;
+
+void split(int cur) {
+	int SZ = hull[cur].dsz; assert(SZ <= BLOCK);
+	if (SZ != BLOCK) return;
+	int CUR = ad();
+	int aft = NEX[cur];
+	link(cur,CUR); link(CUR,aft);
+	int* v = hull[cur].dat; int m = SZ/2;
+	++ti;
+	assert(hull[CUR].dsz == 0);
+	FOR(i,m,SZ) {
+		int t = v[i];
+		hull[CUR].dat[hull[CUR].dsz++] = t;
+	}
+	hull[cur].dsz = m; assert(hull[CUR].dsz == m);
+	hull[cur].build(); hull[CUR].build(); // split block into two
+}
+
+void ins(int v, int c) {
+	num ++;
+	int label = sz(fluid); fluid.pb({v,c});
+	int cur = lst, pre = -1;
+	while (cur != -1 && hull[cur].bad(label)) { pre = cur; cur = PRE[cur]; }
+	if (cur == -1) {
+		if (pre == -1) {
+			assert(sz(fluid) == 1);
+			lst = pre = ad();
+		}
+		cur = pre;
+	}
+	hull[cur].ins(label);split(cur);
+}
+
+int get(int k) {
+	k = num+1-k; assert(k);
+	for (int cur = lst; ; cur = PRE[cur]) {
+		assert(cur != -1);
+		int* v = hull[cur].dat, SZ = hull[cur].dsz;
+		if (SZ >= k) return v[SZ-k];
+		k -= SZ;
+	}
+	exit(5);
+}
+
+int main() {
+	clock_t beg = clock();
+	setIO(); re(N,Q,W);
+	F0R(i,N) {
+		int v,c; re(v,c);
+		ins(v,c);
+	}
+	dbg("DONE WITH INSERTS",(db)(clock()-beg)/CLOCKS_PER_SEC);
+	F0R(i,Q) {
+		str s; re(s);
+		if (s == "INSERT") {
+			int v,c; re(v,c);
+			ins(v,c);
+		} else {
+			int k; re(k);
+			int p = get(k);
+			ps(fluid[p].f,fluid[p].s);
+		}
+	}
+	dbg((db)(clock()-beg)/CLOCKS_PER_SEC);
+}
+```
