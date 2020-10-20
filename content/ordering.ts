@@ -145,7 +145,15 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Range Queries',
       description:
         'It seems that no Platinum contest is complete without a segment tree ...',
-      items: ['seg-ext', 'RURQ', 'sparse-seg', '2DRQ', 'DC-SRQ', 'sqrt'],
+      items: [
+        'range-sweep',
+        'seg-ext',
+        'RURQ',
+        'sparse-seg',
+        '2DRQ',
+        'DC-SRQ',
+        'sqrt',
+      ],
     },
     {
       name: 'Trees',
