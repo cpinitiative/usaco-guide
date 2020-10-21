@@ -4,9 +4,57 @@ title: YS - Static Range Inversions Query
 author: Benjamin Qi
 ---
 
-Solution was 
+## Solution 1
 
-**Time Complexity:** This solution is $\mathcal{O}(Q\sqrt N)$ as described in the linked [CF Blog](https://codeforces.com/blog/entry/83248) (aka "sweepline mo"). $\mathcal{O}(Q\sqrt N\log N)$ should also be fast enough.
+Naive solution as described in the linked [CF Blog](https://codeforces.com/blog/entry/83248).
+
+**Time Complexity:** $\mathcal{O}(Q\sqrt N\log N)$
+
+```cpp
+int tot;
+BIT<int,100005> B;
+
+const int BLOCK = 320;
+int N,Q;
+vi A;
+V<AR<int,3>> query;
+
+void upd(int x, int y) { B.upd(x,y); tot += y; }
+
+int les(int x) { return B.sum(x-1); }
+int gre(int x) { return tot-B.sum(x); }
+
+int main() {
+	setIO(); re(N,Q); A.rsz(N); re(A);
+	vi al; trav(t,A) al.pb(t);
+	remDup(al);
+	trav(t,A) t = int(lb(all(al),t)-begin(al))+1;
+	F0R(i,Q) {
+		int l,r; re(l,r); r--;
+		query.pb({l,r,i});
+	}
+	sort(all(query),[](AR<int,3> a, AR<int,3> b) {
+		return a[0]/BLOCK == b[0]/BLOCK ? a[1] < b[1] : a[0] < b[0];
+	});
+	vl ans(Q);
+	ll lastAns = 0;
+	int l = 0, r = -1;
+	trav(t,query) {
+		while (l > t[0]) lastAns += les(A[--l]), upd(A[l],1);
+		while (r < t[1]) lastAns += gre(A[++r]), upd(A[r],1);
+		while (l < t[0]) lastAns -= les(A[l]), upd(A[l++],-1);
+		while (r > t[1]) lastAns -= gre(A[r]), upd(A[r--],-1);
+		ans[t[2]] = lastAns;
+	}
+	trav(t,ans) ps(t);
+}
+```
+
+## Solution 2
+
+"sweepline mo"
+
+**Time Complexity:** $\mathcal{O}(Q\sqrt N)$ 
 
 ```cpp
 const int BLOCK = 320;
