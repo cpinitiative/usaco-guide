@@ -112,9 +112,9 @@ The first method can be sped up so that the difference in speed is not significa
 
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use `BufferedReader` and `PrintWriter` instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
 
-Here is a Java template for input and output, which is effectively a faster Scanner. We import the entire `util` and `io` libraries for ease of use. Note that this **must** be declared within a file named `template.java`.
+Here is a Java template for input and output, which is effectively a faster `Scanner`. We import the entire `util` and `io` libraries for ease of use. Note that this **must** be declared within a file with the same name as the `public class` (so `template.java`) in this case.
 
 ```java
 import java.io.*;
@@ -161,7 +161,7 @@ Here's a brief description of the methods in our `InputReader` class, with an in
 | `r.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
 | `r.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
 | `r.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
-| `pw.println()` | Prints the argument to designated output stream and adds newline |
+| `pw.println()` | Prints the argument to designated output stream and adds a newline |
 | `pw.print()` | Prints the argument to designated output stream |
 
 Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
@@ -450,7 +450,7 @@ Some sources say to use
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
-instead. There is no need for this since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
+on line 28. There is no need to add `BufferedWriter` since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
 
 </JavaSection>
 
@@ -489,6 +489,8 @@ sys.stdout = open("problemname.out", "w")
 Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
 
 ![bad](Error.png)
+
+For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#example---fence-painting) module.
 
 <LanguageSection>
 
@@ -548,7 +550,33 @@ int main() {
 
 <JavaSection>
 
-### Method 1
+### Method 1 - `Scanner`
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class template {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		Scanner r = new Scanner(new File("paint.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+
+		int a = r.nextInt(), b = r.nextInt();
+		int c = r.nextInt(), d = r.nextInt();
+
+		int[] cover = new int[100];
+		for (int i = a; i < b; i++) cover[i] = 1;
+		for (int i = c; i < d; i++) cover[i] = 1;
+		int ans = 0;
+		for (int i = 0; i < 100; i++) ans += cover[i];
+
+		pw.println(ans);
+		pw.close(); // flush output
+	}
+}
+```
+
+### Method 2 - `BufferedReader`
 
 ```java
 import java.io.*;
@@ -575,9 +603,9 @@ public class paintSol { // must be declared in paintSol.java
 }
 ```
 
-### Method 2
+### Method 3 - `InputReader`
 
-Alternatively, we can use the `InputReader` given above.
+Alternatively, we can use the `InputReader` given above. Note how this is almost identical to the code using `Scanner`.
 
 ```java
 import java.util.*;
