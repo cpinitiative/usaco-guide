@@ -5,15 +5,17 @@
 // }
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useState } from 'react';
-import Editor from '@monaco-editor/react';
 
 const RawMarkdownRenderer = React.lazy(() =>
   import('../components/LiveUpdateMarkdownRenderer')
 );
+
+const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useState('');
@@ -23,7 +25,9 @@ export default function LiveUpdatePage(props: PageProps) {
       <SEO title="MDX Renderer" />
       <div className="h-screen grid grid-cols-2">
         <div className="col-span-1">
-          <Editor theme="dark" language="markdown" value={markdown} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Editor theme="dark" language="markdown" value={markdown} />
+          </Suspense>
         </div>
         <div className="col-span-1"></div>
       </div>
