@@ -45,7 +45,7 @@ export const Authors: Author[] = [
     name: 'Michael Cao',
     title: 'Content Author',
     blurb:
-      'Michael Cao is a USACO Platinum competitor and problemsetter of "Bessie\'s Snow Cow" and USACO Camp problem "Flooded Farm."',
+      'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
     codeforces: 'caohash',
     email: 'cao.michael14@gmail.com',
     github: 'caoash',
@@ -93,7 +93,8 @@ export const Authors: Author[] = [
     photo: 'Andrew',
     name: 'Andrew Wang',
     title: 'Content Author',
-    blurb: 'Andrew Wang is a USACO competitor who competes in multiple languages fluently.',
+    blurb:
+      'Andrew Wang is a USACO competitor who competes in multiple languages fluently.',
     codeforces: 'a.wang',
     github: 'andrewwangva',
     email: 'andrewwangva@gmail.com',
