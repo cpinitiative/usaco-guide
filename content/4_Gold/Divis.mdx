@@ -266,7 +266,6 @@ Here's how we find the prime factorization of $x$ in $O(\log x)$ time with $O(x 
 - For each $k \leq 10^6$, find any prime number that divides $k$.
 	- We can use the Sieve of Eratosthenes to find this efficiently.
 - For each $x$, we can then find the prime factorization by repeatedly dividing $x$ by a prime number that divides $x$ until $x = 1$.
-	- (C++) We can use a `std::map` to keep track of the set of $a_i$.
 
 Alternatively, we can slightly modify the the prime factorization code above.
 
@@ -280,94 +279,94 @@ using namespace std;
 int max_div[1000001];
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    for (int i = 2; i <= 1000000; i++) {
-        if (!max_div[i]) {
-            for (int j = i; j <= 1000000; j += i) {
-                max_div[j] = i;
-            }
-        }
-    }
-    int n;
-    cin >> n;
-    while (n--) {
-        int x;
-        cin >> x;
-	int ans = 1;
-	
-        while (x != 1) {
-	    int prime = max_div[x], count = 0;
-	    
-	    while (x % prime == 0) {
-	        count++;
-		x /= prime;
-	    }
-            
-            ans *= (count + 1);
-        }
-	
-        cout << ans << '\n';
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	for (int i = 2; i <= 1000000; i++) {
+		if (!max_div[i]) {
+			for (int j = i; j <= 1000000; j += i) {
+				max_div[j] = i;
+			}
+		}
+	}
+	int n;
+	cin >> n;
+	while (n--) {
+		int x; cin >> x;
+		int ans = 1;
+		while (x != 1) {
+			int prime = max_div[x], count = 0;
+			while (x % prime == 0) {
+				count++;
+				x /= prime;
+			}
+			ans *= count + 1;
+		}
+		cout << ans << '\n';
+	}
 }
 ```
 
 </CPPSection>
 <JavaSection>
 
+<IncompleteSection>
+
+make java code consistent w/ C++ code ...
+
+</IncompleteSection>
+
 ```java
 import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int solve(int n) {
-        int divisors = 1;
-        for (int i = 2; i * i <= n; i++) {
-            int ct = 0;
-            while (n % i == 0) {
-                ct++;
-                n /= i;
-            }
-            divisors *= ct+1;
-        }
-        if (n > 1) divisors *= 2;
-        return divisors;
-    }
+	static int solve(int n) {
+		int divisors = 1;
+		for (int i = 2; i * i <= n; i++) {
+			int ct = 0;
+			while (n % i == 0) {
+				ct++;
+				n /= i;
+			}
+			divisors *= ct+1;
+		}
+		if (n > 1) divisors *= 2;
+		return divisors;
+	}
 
-    public static void main(String[] args) {
-        int n = r.nextInt();
-        for (int i = 0; i < n; i++) {
-            int x = r.nextInt();
-            pw.println(solve(x));
-        }
+	public static void main(String[] args) {
+		int n = r.nextInt();
+		for (int i = 0; i < n; i++) {
+			int x = r.nextInt();
+			pw.println(solve(x));
+		}
 
-        pw.close(); // flushes the output once printing is done
-    }
+		pw.close(); // flushes the output once printing is done
+	}
 
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader(InputStream stream) {
-            reader = new BufferedReader(new InputStreamReader(stream), 32768);
-            tokenizer = null;
-        }
-        String next() { // reads in the next string
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-    }
-    static InputReader r = new InputReader(System.in);
-    static PrintWriter pw = new PrintWriter(System.out);
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+	}
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
 }
 ```
 
