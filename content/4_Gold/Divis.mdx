@@ -294,15 +294,19 @@ int main() {
     while (n--) {
         int x;
         cin >> x;
-        map<int, int> prime_factorization;
+	int ans = 1;
+	
         while (x != 1) {
-            prime_factorization[max_div[x]]++;
-            x /= max_div[x];
+	    int prime = max_div[x], count = 0;
+	    
+	    while (x % prime == 0) {
+	        count++;
+		x /= prime;
+	    }
+            
+            ans *= (count + 1);
         }
-        int ans = 1;
-        for (pair<int, int> i : prime_factorization) {
-            ans *= (i.second + 1);
-        }
+	
         cout << ans << '\n';
     }
     return 0;
@@ -369,12 +373,6 @@ public class Main {
 
 </JavaSection>
 </LanguageSection>
-
-<IncompleteSection>
-
-don't need a map for this :/
-
-</IncompleteSection>
 
 <Optional>
 
