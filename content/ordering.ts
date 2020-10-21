@@ -146,8 +146,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description:
         'It seems that no Platinum contest is complete without a segment tree ...',
       items: [
-        'range-sweep',
         'seg-ext',
+        'range-sweep',
         'RURQ',
         'sparse-seg',
         '2DRQ',
