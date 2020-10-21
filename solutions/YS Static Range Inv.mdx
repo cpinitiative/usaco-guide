@@ -1,0 +1,95 @@
+---
+id: static-range-inv
+title: YS - Static Range Inversions Query
+author: Benjamin Qi
+---
+
+Solution was 
+
+**Time Complexity:** This solution is $\mathcal{O}(Q\sqrt N)$ as described in the linked [CF Blog](https://codeforces.com/blog/entry/83248) (aka "sweepline mo"). $\mathcal{O}(Q\sqrt N\log N)$ should also be fast enough.
+
+```cpp
+const int BLOCK = 320;
+int N,Q;
+vi A;
+V<AR<int,3>> query;
+
+void init() {
+	setIO(); re(N,Q); A.rsz(N); re(A);
+	vi al; trav(t,A) al.pb(t);
+	remDup(al);
+	trav(t,A) t = int(lb(all(al),t)-begin(al));
+	F0R(i,Q) {
+		int l,r; re(l,r); r--;
+		query.pb({l,r,i});
+	}
+}
+
+V<AR<int,4>> adLes[100000], adGre[100000];
+int les[BLOCK*BLOCK], les_block[BLOCK], tot;
+int numLes(int x) { return les[x]+les_block[x/BLOCK]; }
+void insLes(int x) {
+	++tot;
+	for (++x; x%BLOCK; ) les[x++] ++;
+	for (x /= BLOCK; x < BLOCK; ) les_block[x++] ++;
+}
+int numGre(int x) { return tot-numLes(x+1); }
+
+vl dif;
+vi prevLes, prevGre;
+
+void preprocess_queries() {
+	sort(all(query),[](AR<int,3> a, AR<int,3> b) {
+		return a[0]/BLOCK == b[0]/BLOCK ? a[1] < b[1] : a[0] < b[0];
+	});
+	prevLes.rsz(N), prevGre.rsz(N);
+	dif.rsz(Q);
+	int l = 0, r = 0;
+	trav(t,query) {
+		if (l > t[0]) { // add how many < x in range [cur,r]
+			adLes[r].pb({t[0],l-1,1,t[2]}); 
+			l = t[0];
+		}
+		if (r < t[1]) { // add how many > x in range[l,cur]
+			if (l) adGre[l-1].pb({r+1,t[1],-1,t[2]});
+			r = t[1]; // (0,0) -> (0,1) -> (0,2)
+		}
+		if (l < t[0]) { // subtract how many < x in range[cur,r]
+			adLes[r].pb({l,t[0]-1,-1,t[2]});
+			l = t[0];
+		}
+		if (r > t[1]) { // subtract how many > x in range[l,cur]
+			if (l) adGre[l-1].pb({t[1]+1,r,1,t[2]});
+			r = t[1];
+		}
+	}
+	F0R(i,N) {
+		insLes(A[i]);
+		prevLes[i] = numLes(A[i]), prevGre[i] = numGre(A[i]);
+		trav(t,adLes[i]) {
+			ll sum = 0; FOR(j,t[0],t[1]+1) sum += numLes(A[j]);
+			dif[t[3]] += t[2]*sum;
+		}
+		trav(t,adGre[i]) {
+			ll sum = 0; FOR(j,t[0],t[1]+1) sum += numGre(A[j]);
+			dif[t[3]] += t[2]*sum;
+		}
+	}
+}
+
+int main() {
+	init();
+	preprocess_queries();
+	ll lastAns = 0;
+	vl ans(Q);
+	int l = 0, r = 0;
+	trav(t,query) {
+		while (l > t[0]) dif[t[2]] -= prevLes[--l];
+		while (r < t[1]) dif[t[2]] += prevGre[++r];
+		while (l < t[0]) dif[t[2]] += prevLes[l++];
+		while (r > t[1]) dif[t[2]] -= prevGre[r--];
+		ans[t[2]] = (lastAns += dif[t[2]]);
+	}
+	trav(t,ans) ps(t);
+}
+```
