@@ -7,7 +7,8 @@ import { useContext, useState } from 'react';
 import SEO from '../seo';
 import FirebaseContext from '../../context/FirebaseContext';
 import ClassContext from '../../context/ClassContext';
-
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import ModuleConfetti from '../MarkdownLayout/ModuleConfetti';
 export default function ClassLayout({
   children,
   classId,
@@ -25,6 +26,7 @@ export default function ClassLayout({
   const [showJoinCodes, setShowJoinCodes] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
+  const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const notFound = !loading && !data;
   React.useEffect(() => {
     if (!joinLinkCopied) return;
@@ -101,10 +103,10 @@ export default function ClassLayout({
                           <span className="inline-flex rounded-md shadow-sm">
                             <button
                               type="button"
-                              disabled={creatingAssignment}
+                              disabled={creatingAnnouncement}
                               onClick={async () => {
                                 if (!firebase) return;
-                                setCreatingAssignment(true);
+                                setCreatingAnnouncement(true);
                                 const ref = firebase
                                   .firestore()
                                   .collection('classes-beta')
@@ -130,16 +132,16 @@ export default function ClassLayout({
                                 navigate(
                                   `/class/${classId}/announcements/${id}`
                                 );
-                                setCreatingAssignment(false);
+                                setCreatingAnnouncement(false);
                               }}
                               className={
-                                'w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white ' +
-                                (creatingAssignment
-                                  ? 'bg-indigo-300'
-                                  : 'bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150')
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 ' +
+                                (creatingAnnouncement
+                                  ? 'bg-gray-300'
+                                  : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
                               }
                             >
-                              {creatingAssignment
+                              {creatingAnnouncement
                                 ? 'Creating Announcement...'
                                 : 'New Announcement'}
                             </button>
@@ -147,9 +149,115 @@ export default function ClassLayout({
                           <span className="inline-flex rounded-md shadow-sm">
                             <button
                               type="button"
-                              className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                              disabled={creatingAssignment}
+                              onClick={async () => {
+                                if (!firebase) return;
+                                setCreatingAssignment(true);
+                                const ref = firebase
+                                  .firestore()
+                                  .collection('classes-beta')
+                                  .doc(classId)
+                                  .collection('assignments')
+                                  .doc();
+                                const id = ref.id;
+                                await firebase
+                                  .firestore()
+                                  .collection('classes-beta')
+                                  .doc(classId)
+                                  .update({
+                                    assignments: firebase.firestore.FieldValue.arrayUnion(
+                                      {
+                                        id,
+                                        published: false,
+                                        sort: data.assignments.length,
+                                        title: 'Untitled Assignment',
+                                        content: '',
+                                        problems: [
+                                          {
+                                            moduleId: 'id',
+                                            moduleTitle: 'MDSFIOU',
+                                            division: 'gold',
+                                            source: 'Gold',
+                                            name: 'one',
+                                            id: '647',
+                                            difficulty: 'Easy',
+                                            starred: false,
+                                            tags: ['Range DP'],
+                                            solID: null,
+                                            solQuality: 'ok',
+                                            url:
+                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                                            uniqueID:
+                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                                          },
+                                          {
+                                            moduleId: 'id',
+                                            moduleTitle: 'MDSFIOU',
+                                            division: 'gold',
+                                            source: 'Gold',
+                                            name: 'two',
+                                            id: '6247',
+                                            difficulty: 'Easy',
+                                            starred: false,
+                                            tags: ['Range DP'],
+                                            solID: null,
+                                            solQuality: 'ok',
+                                            url:
+                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                                            uniqueID:
+                                              'http://www.usaco.3org/index.php?page=viewproblem2&cpid=647',
+                                          },
+                                          {
+                                            moduleId: 'id',
+                                            moduleTitle: 'MDSFIOU',
+                                            division: 'gold',
+                                            source: 'Gold',
+                                            name: 'three',
+                                            id: '6437',
+                                            difficulty: 'Easy',
+                                            starred: false,
+                                            tags: ['Range DP'],
+                                            solID: null,
+                                            solQuality: 'ok',
+                                            url:
+                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                                            uniqueID:
+                                              'http://www.usa3co.org/index.php?page=viewproblem2&cpid=647',
+                                          },
+                                          {
+                                            moduleId: 'id',
+                                            moduleTitle: 'MDSFIOU',
+                                            division: 'gold',
+                                            source: 'Gold',
+                                            name: 'four',
+                                            id: '64457',
+                                            difficulty: 'Easy',
+                                            starred: false,
+                                            tags: ['Range DP'],
+                                            solID: null,
+                                            solQuality: 'ok',
+                                            url:
+                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                                            uniqueID:
+                                              'http://www.usaco.or2g/index.php?page=viewproblem2&cpid=647',
+                                          },
+                                        ],
+                                      }
+                                    ),
+                                  });
+                                navigate(`/class/${classId}/assignments/${id}`);
+                                setCreatingAssignment(false);
+                              }}
+                              className={
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 ' +
+                                (creatingAssignment
+                                  ? 'bg-gray-300'
+                                  : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
+                              }
                             >
-                              Add Student
+                              {creatingAssignment
+                                ? 'Creating Assignment...'
+                                : 'New Assignment'}
                             </button>
                           </span>
                         </div>

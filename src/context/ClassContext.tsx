@@ -22,7 +22,12 @@ const ClassContext = React.createContext<{
       content: string;
     }[];
     assignments: {
-      //TODO
+      dueDate?: firebaseType.firestore.Timestamp;
+      id: string;
+      published: boolean;
+      title: string;
+      content: string;
+      problems: string[];
     }[];
     date: string;
     instructorNames: string[];

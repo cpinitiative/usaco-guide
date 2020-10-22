@@ -11,30 +11,29 @@ import moment from 'moment';
 import firebaseType from 'firebase';
 import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
+export const format = (timestamp: firebaseType.firestore.Timestamp) => {
+  if (!timestamp) return;
+  const date = moment(timestamp.toDate());
+  const diff = date.diff(moment(), 'days');
+  if (diff === 0) {
+    return date.format('[Today,] h:mm A');
+  } else if (diff === 1) {
+    return date.format('[Tomorrow,] h:mm A');
+  } else if (diff < 6) {
+    return date.format('dddd, h:mm A');
+  } else {
+    return date.format('MMMM Do, h:mm A');
+  }
+};
 export default function ClassPage(props: { path: string }): ReactElement {
   const { classId } = props as { path: string; classId: string };
-  const [teacherMode, setTeacherMode] = useState(true);
   const firebase = useContext(FirebaseContext);
   const { firebaseUser: user } = React.useContext(UserDataContext);
   const [showJoinCodes, setShowJoinCodes] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
 
-  const { loading, error, data } = useContext(ClassContext);
+  const { loading, error, data, isInstructor } = useContext(ClassContext);
 
-  const format = (timestamp: firebaseType.firestore.Timestamp) => {
-    if (!timestamp) return;
-    const date = moment(timestamp.toDate());
-    const diff = date.diff(moment(), 'days');
-    if (diff === 0) {
-      return date.format('[Today,] h:mm A');
-    } else if (diff === 1) {
-      return date.format('[Tomorrow,] h:mm A');
-    } else if (diff < 6) {
-      return date.format('dddd, h:mm A');
-    } else {
-      return date.format('MMMM Do, h:mm A');
-    }
-  };
   if (loading || !data || error) {
     return (
       <>
@@ -64,7 +63,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
   }
   return (
     <>
-      <SEO title="Class" />
+      <SEO title={data.name || 'CPI Class Home'} />
       <ClassLayout classId={classId} noWhiteBg>
         {/* Projects List */}
         <div className="bg-white lg:min-w-0 lg:flex-1">
@@ -73,6 +72,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
               <h1 className="flex-1 text-lg leading-7 font-medium">
                 Announcements and Class Notes
               </h1>
+              {/*TODO: add button here to change the order by opening a modal*/}
               {/*<div className="relative">*/}
               {/*<span className="rounded-md shadow-sm">*/}
               {/*  <button id="sort-menu" type="button"*/}
@@ -112,7 +112,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
           </div>
           <ul className="relative z-0 divide-y divide-gray-200 border-b border-gray-200">
             {data?.announcements
-              .filter(a => teacherMode || a.published)
+              .filter(a => isInstructor || a.published)
               .sort((a, b) => /* DESC */ b.sort - a.sort)
               .map(announcement => (
                 <li
@@ -130,9 +130,9 @@ export default function ClassPage(props: { path: string }): ReactElement {
                             >
                               <span className="absolute inset-0"></span>
                               {announcement.title}
-                            </Link>{' '}
+                            </Link>
                             {!announcement.published && (
-                              <span className={'text-red-600'}>(Draft)</span>
+                              <span className={'text-red-600'}> (Draft)</span>
                             )}
                           </h2>
                         </span>
@@ -145,7 +145,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                         <div className="text-sm leading-5 text-gray-500 group-hover:text-gray-900 font-medium truncate">
                           {announcement.published
                             ? format(announcement.date)
-                            : 'Not Yet Published'}
+                            : 'Not Published'}
                         </div>
                       </Link>
                     </div>
@@ -180,7 +180,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
             <div>
               <ul className="divide-y divide-gray-200">
                 {data?.assignments
-                  .filter(a => teacherMode || a.published)
+                  .filter(a => isInstructor || a.published)
                   .sort((a, b) => /* DESC */ b.sort - a.sort)
                   .map(assignment => (
                     <li key={assignment.id} className="py-4">
@@ -193,13 +193,22 @@ export default function ClassPage(props: { path: string }): ReactElement {
                             <div className="">
                               <h3 className="text-sm font-medium leading-5">
                                 {assignment.title}
+                                {!assignment.published && (
+                                  <span className={'text-red-600'}>
+                                    {' '}
+                                    (Draft)
+                                  </span>
+                                )}
                               </h3>
                             </div>
                             <p className="text-sm leading-5 text-gray-500">
-                              Due {format(assignment.dueDate)}
+                              {assignment?.dueDate
+                                ? `Due ${format(assignment?.dueDate)}`
+                                : 'No Due Date'}
                             </p>
+
                             <p className="text-sm leading-5 text-gray-500">
-                              3/5 Solved{/*TODO*/}
+                              0/12 Students Done
                             </p>
                           </div>
                         </div>
@@ -207,14 +216,14 @@ export default function ClassPage(props: { path: string }): ReactElement {
                     </li>
                   ))}
               </ul>
-              <div className="py-4 text-sm leading-5 border-t border-gray-200">
-                <Link
-                  to={`/class/${classId}/assignments`}
-                  className="text-indigo-600 font-semibold hover:text-indigo-900"
-                >
-                  View Completed Homework &rarr;
-                </Link>
-              </div>
+              {/*<div className="py-4 text-sm leading-5 border-t border-gray-200">*/}
+              {/*  <Link*/}
+              {/*    to={`/class/${classId}/assignments`}*/}
+              {/*    className="text-indigo-600 font-semibold hover:text-indigo-900"*/}
+              {/*  >*/}
+              {/*    View Completed Homework &rarr;*/}
+              {/*  </Link>*/}
+              {/*</div>*/}
             </div>
           </div>
         </div>
