@@ -212,11 +212,11 @@ export default function PostPage(props: {
       e.returnValue = 'You have unsaved changes!';
       return false;
     };
-    if (hasChanges) {
+    if (hasChanges && isInstructor) {
       window.addEventListener('beforeunload', handler);
     }
     return () => window.removeEventListener('beforeunload', handler);
-  }, [hasChanges]);
+  }, [hasChanges, isInstructor]);
   if (loading || notFound || error || (!isInstructor && !post.published)) {
     return (
       <>
