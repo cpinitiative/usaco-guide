@@ -14,6 +14,8 @@ const RawMarkdownRenderer = React.lazy(() =>
   import('../components/LiveUpdateMarkdownRenderer')
 );
 
+const Editor = React.lazy(() => import('@monaco-editor/react'));
+
 export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useState('');
 
@@ -21,17 +23,15 @@ export default function LiveUpdatePage(props: PageProps) {
     <Layout>
       <SEO title="MDX Renderer" />
 
-      <div className="h-screen flex">
-        <div className="flex-1">
-          <textarea
-            value={markdown}
-            onChange={e => setMarkdown(e.target.value)}
-            className="w-full border border-gray-200 h-screen overflow-y-auto p-4 bg-gray-50 font-mono tracking-tight"
-            placeholder="Enter mdx here..."
-            style={{ resize: 'none' }}
-          />
+      <div className="h-screen grid grid-cols-2">
+        <div className="col-span-1">
+          {typeof window !== 'undefined' && (
+            <React.Suspense fallback={'Loading'}>
+              <Editor theme="dark" language="markdown" value={markdown} />
+            </React.Suspense>
+          )}
         </div>
-        <div className="flex-1 p-4 h-screen overflow-y-auto">
+        <div className="col-span-1">
           <div className="markdown">
             {typeof window !== 'undefined' && (
               <React.Suspense fallback={'Loading'}>
