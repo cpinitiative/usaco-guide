@@ -36,7 +36,7 @@ export default function AnnouncementPage(props: {
   if (loading || notFound || error) {
     return (
       <>
-        <SEO title="404 Not Found" />
+        <SEO title={loading ? 'Loading...' : '404 Not Found'} />
         <TopNavigationBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">

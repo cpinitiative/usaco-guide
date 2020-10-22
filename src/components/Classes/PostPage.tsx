@@ -21,8 +21,27 @@ import FirebaseContext from '../../context/FirebaseContext';
 import { ProblemsList } from '../markdown/ProblemsList/ProblemsList';
 import { Problem } from '../../models/problem';
 import { format } from './ClassPage';
-
-class AnnotatedProblem extends Problem {
+export interface ProblemJSON {
+  division: string | null;
+  moduleId: string | null;
+  moduleTitle: string | null;
+  source: string | null;
+  name: string | null;
+  id: string | null;
+  difficulty:
+    | 'Very Easy'
+    | 'Easy'
+    | 'Normal'
+    | 'Hard'
+    | 'Very Hard'
+    | 'Insane'
+    | null;
+  starred: boolean | null;
+  tags: string[] | null;
+  solID: string | null;
+  solQuality: 'bad' | 'ok' | 'good' | null;
+}
+export class ProblemWithDivisionInfo extends Problem {
   constructor(
     public division: string,
     public moduleId: string,
@@ -46,7 +65,7 @@ class AnnotatedProblem extends Problem {
     super(source, name, id, difficulty, starred, tags, solID, solQuality);
   }
 
-  public toJSON() {
+  public toJSON(): ProblemJSON {
     return {
       division: this.division || null,
       moduleId: this.moduleId || null,
@@ -133,7 +152,7 @@ export default function PostPage(props: {
     return (
       post?.problems?.map(
         p =>
-          new AnnotatedProblem(
+          new ProblemWithDivisionInfo(
             p.division,
             p.moduleId,
             p.moduleTitle,
@@ -149,7 +168,7 @@ export default function PostPage(props: {
       ) || []
     );
   }, [post?.problems]);
-  const [problems, setProblems] = useState<AnnotatedProblem[]>([]);
+  const [problems, setProblems] = useState<ProblemWithDivisionInfo[]>([]);
 
   const searchDivisionOptions = [
     { value: 'general', label: 'General' },
@@ -180,7 +199,7 @@ export default function PostPage(props: {
         .find(m => m.frontmatter.id === searchModule)
         ?.problems.map(
           p =>
-            new AnnotatedProblem(
+            new ProblemWithDivisionInfo(
               searchDivision,
               searchModule,
               searchModuleOptions.find(o => o.value === searchModule)?.label,
@@ -212,15 +231,15 @@ export default function PostPage(props: {
       e.returnValue = 'You have unsaved changes!';
       return false;
     };
-    if (hasChanges && isInstructor) {
+    if (hasChanges && isInstructor && edit) {
       window.addEventListener('beforeunload', handler);
     }
     return () => window.removeEventListener('beforeunload', handler);
-  }, [hasChanges, isInstructor]);
+  }, [hasChanges, isInstructor, edit]);
   if (loading || notFound || error || (!isInstructor && !post.published)) {
     return (
       <>
-        <SEO title={'404 Not Found'} />
+        <SEO title={loading ? 'Loading...' : '404 Not Found'} />
         <TopNavigationBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">

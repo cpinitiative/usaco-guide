@@ -11,6 +11,8 @@ import moment from 'moment';
 import firebaseType from 'firebase';
 import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
+import userProgressOnProblems from '../../context/UserDataContext/properties/userProgressOnProblems';
+import { ProblemWithDivisionInfo } from './PostPage';
 export const format = (timestamp: firebaseType.firestore.Timestamp) => {
   if (!timestamp) return;
   const date = moment(timestamp.toDate());
@@ -31,8 +33,8 @@ export default function ClassPage(props: { path: string }): ReactElement {
   const { firebaseUser: user } = React.useContext(UserDataContext);
   const [showJoinCodes, setShowJoinCodes] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
-
   const { loading, error, data, isInstructor } = useContext(ClassContext);
+  const { userProgressOnProblems } = useContext(UserDataContext);
 
   if (loading || !data || error) {
     return (
@@ -208,7 +210,49 @@ export default function ClassPage(props: { path: string }): ReactElement {
                             </p>
 
                             <p className="text-sm leading-5 text-gray-500">
-                              0/12 Students Done
+                              {isInstructor
+                                ? '0/12 Students Done'
+                                : `${assignment.problems.reduce(
+                                    (counter, problem) => {
+                                      const {
+                                        division,
+                                        moduleId,
+                                        moduleTitle,
+                                        source,
+                                        name,
+                                        id,
+                                        difficulty,
+                                        starred,
+                                        tags,
+                                        solID,
+                                        solQuality,
+                                      } = problem;
+                                      const problemClass = new ProblemWithDivisionInfo(
+                                        division,
+                                        moduleId,
+                                        moduleTitle,
+                                        source,
+                                        name,
+                                        id,
+                                        difficulty,
+                                        starred,
+                                        tags,
+                                        solID,
+                                        solQuality
+                                      );
+                                      return (
+                                        counter +
+                                        (userProgressOnProblems[
+                                          problemClass.url
+                                        ] === 'Solved'
+                                          ? 1
+                                          : 0)
+                                      );
+                                    },
+                                    0
+                                  )} / ${
+                                    assignment.problems.length
+                                  } Problems Complete`}
                             </p>
                           </div>
                         </div>

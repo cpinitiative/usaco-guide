@@ -2,6 +2,7 @@ import React, { ReactElement, ReactNode, useContext, useState } from 'react';
 import firebaseType from 'firebase';
 import FirebaseContext from './FirebaseContext';
 import UserDataContext from './UserDataContext/UserDataContext';
+import { ProblemJSON } from '../components/Classes/PostPage';
 const ClassContext = React.createContext<{
   setClassId: null | ((newClassId: string) => void);
   loading: boolean;
@@ -27,7 +28,7 @@ const ClassContext = React.createContext<{
       published: boolean;
       title: string;
       content: string;
-      problems: string[];
+      problems: ProblemJSON[];
     }[];
     date: string;
     instructorNames: string[];
@@ -39,7 +40,8 @@ const ClassContext = React.createContext<{
   loading: true,
   error: false,
   data: null,
-  isInstructor: null,
+
+  isInstructor: false,
   setClassId: null,
 });
 

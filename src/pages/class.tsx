@@ -34,7 +34,6 @@ export default function ClassRouter() {
   return (
     <Layout>
       <ClassProvider>
-        {' '}
         <MarkdownLayoutContext.Provider
           value={{
             markdownLayoutInfo: null,
@@ -61,7 +60,7 @@ export default function ClassRouter() {
             />
 
             <ClassSelectPage path="/" />
-            <NotFoundPageWrapper default />
+            {/*<NotFoundPageWrapper default />*/}
           </Router>
         </MarkdownLayoutContext.Provider>
       </ClassProvider>
