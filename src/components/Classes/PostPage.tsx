@@ -222,6 +222,7 @@ export default function PostPage(props: {
         (dueDate
           ? dueDate.getTime() !== post?.dueDate?.toDate().getTime()
           : !!post?.dueDate)) ||
+      problems.length !== postProblems.length ||
       problems.some((el, i) => el?.uniqueID !== postProblems[i]?.uniqueID) ||
       content !== post?.content,
     [title, dueDate, type, post, problems, postProblems]
@@ -452,9 +453,7 @@ export default function PostPage(props: {
               <div className="mt-2">
                 {edit ? (
                   <Flatpickr
-                    placeholder={
-                      'Choose a due date, or leave this empty... The choice is yours'
-                    }
+                    placeholder={'Choose a due date (optional)'}
                     options={{
                       dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
                       enableTime: true,
@@ -807,6 +806,8 @@ export default function PostPage(props: {
           confirmButtonText={`Discard Changes`}
           onConfirm={() => {
             setContent(post.content);
+            setDueDate(post.dueDate);
+            setProblems(postProblems);
             setTitle(post.title);
             setShowDiscardModal(false);
           }}

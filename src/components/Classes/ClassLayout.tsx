@@ -173,76 +173,7 @@ export default function ClassLayout({
                                         sort: data.assignments.length,
                                         title: 'Untitled Assignment',
                                         content: '',
-                                        problems: [
-                                          {
-                                            moduleId: 'id',
-                                            moduleTitle: 'MDSFIOU',
-                                            division: 'gold',
-                                            source: 'Gold',
-                                            name: 'one',
-                                            id: '647',
-                                            difficulty: 'Easy',
-                                            starred: false,
-                                            tags: ['Range DP'],
-                                            solID: null,
-                                            solQuality: 'ok',
-                                            url:
-                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
-                                            uniqueID:
-                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
-                                          },
-                                          {
-                                            moduleId: 'id',
-                                            moduleTitle: 'MDSFIOU',
-                                            division: 'gold',
-                                            source: 'Gold',
-                                            name: 'two',
-                                            id: '6247',
-                                            difficulty: 'Easy',
-                                            starred: false,
-                                            tags: ['Range DP'],
-                                            solID: null,
-                                            solQuality: 'ok',
-                                            url:
-                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
-                                            uniqueID:
-                                              'http://www.usaco.3org/index.php?page=viewproblem2&cpid=647',
-                                          },
-                                          {
-                                            moduleId: 'id',
-                                            moduleTitle: 'MDSFIOU',
-                                            division: 'gold',
-                                            source: 'Gold',
-                                            name: 'three',
-                                            id: '6437',
-                                            difficulty: 'Easy',
-                                            starred: false,
-                                            tags: ['Range DP'],
-                                            solID: null,
-                                            solQuality: 'ok',
-                                            url:
-                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
-                                            uniqueID:
-                                              'http://www.usa3co.org/index.php?page=viewproblem2&cpid=647',
-                                          },
-                                          {
-                                            moduleId: 'id',
-                                            moduleTitle: 'MDSFIOU',
-                                            division: 'gold',
-                                            source: 'Gold',
-                                            name: 'four',
-                                            id: '64457',
-                                            difficulty: 'Easy',
-                                            starred: false,
-                                            tags: ['Range DP'],
-                                            solID: null,
-                                            solQuality: 'ok',
-                                            url:
-                                              'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
-                                            uniqueID:
-                                              'http://www.usaco.or2g/index.php?page=viewproblem2&cpid=647',
-                                          },
-                                        ],
+                                        problems: [],
                                       }
                                     ),
                                   });
