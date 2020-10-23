@@ -11,8 +11,8 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
   // will be positioned under other elements despite its z-index.
   return (
     <div
-      className={`relative z-10 shadow block transition duration-150 ease-in-out transform dark:bg-gray-900 ${
-        isHovered && '-translate-y-1 shadow-lg'
+      className={`shadow block transition duration-150 ease-in-out dark:bg-gray-900 ${
+        isHovered && 'transform -translate-y-1 shadow-lg'
       }`}
       id={'problem-' + problem.uniqueID}
     >
