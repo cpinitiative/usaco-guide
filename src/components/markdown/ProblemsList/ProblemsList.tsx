@@ -8,6 +8,7 @@ import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
+import tw from 'twin.macro';
 
 type ProblemsListProps = {
   title?: string;
@@ -181,6 +182,14 @@ const StyledProblemRow = styled.tr`
       : null}
 `;
 
+const Anchor = styled.a`
+  ${tw`text-blue-600 font-semibold`}
+
+  .mode-dark & {
+    color: #a9c5ea;
+  }
+`;
+
 export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
@@ -220,7 +229,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
               </svg>
             </Tooltip>
           )}
-          <a
+          <Anchor
             href={problem.url}
             className={
               (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
@@ -230,7 +239,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             rel="nofollow noopener noreferrer"
           >
             {problem.name}
-          </a>
+          </Anchor>
         </div>
       </td>
       <td
@@ -288,9 +297,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         </span>
       )}
       {problem.solution?.kind === 'link' && (
-        <a href={problem.solution.url} target="_blank" className="pl-6">
+        <Anchor href={problem.solution.url} target="_blank" className="pl-6">
           {problem.solution.label}
-        </a>
+        </Anchor>
       )}
       {problem.solution?.kind === 'internal' && (
         <div className={`inline-flex items-center h-5 group`}>
@@ -325,9 +334,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
             </Tooltip>
           )}
           {problem.solQuality === 'ok' && <span className="w-6" />}
-          <a href={problem.solution.url} target="_blank">
+          <Anchor href={problem.solution.url} target="_blank">
             Internal Sol
-          </a>
+          </Anchor>
         </div>
       )}
       {problem.solution?.kind === 'sketch' && (
