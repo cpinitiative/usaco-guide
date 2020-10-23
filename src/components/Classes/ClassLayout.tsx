@@ -110,14 +110,14 @@ export default function ClassLayout({
                                 setCreatingAnnouncement(true);
                                 const ref = firebase
                                   .firestore()
-                                  .collection('classes-beta')
+                                  .collection('classes')
                                   .doc(classId)
                                   .collection('announcements')
                                   .doc();
                                 const id = ref.id;
                                 await firebase
                                   .firestore()
-                                  .collection('classes-beta')
+                                  .collection('classes')
                                   .doc(classId)
                                   .update({
                                     announcements: firebase.firestore.FieldValue.arrayUnion(
@@ -156,14 +156,14 @@ export default function ClassLayout({
                                 setCreatingAssignment(true);
                                 const ref = firebase
                                   .firestore()
-                                  .collection('classes-beta')
+                                  .collection('classes')
                                   .doc(classId)
                                   .collection('assignments')
                                   .doc();
                                 const id = ref.id;
                                 await firebase
                                   .firestore()
-                                  .collection('classes-beta')
+                                  .collection('classes')
                                   .doc(classId)
                                   .update({
                                     assignments: firebase.firestore.FieldValue.arrayUnion(

@@ -63,7 +63,7 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
     const unsubscribe = firebase
       .firestore()
-      .collection('classes-beta') // TODO: change to classes
+      .collection('classes')
       .doc(classId)
       .onSnapshot(
         snapshot => {

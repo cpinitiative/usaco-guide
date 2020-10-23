@@ -4,31 +4,40 @@ import SEO from '../seo';
 import Layout from '../layout';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { navigate } from 'gatsby';
+import FirebaseContext from '../../context/FirebaseContext';
 export default function ClassSelectPage(props: { path: string }) {
-  const { userClasses } = useContext(UserDataContext);
+  const { userClasses, firebaseUser } = useContext(UserDataContext);
+
+  const [instructors, setInstructors] = useState([]);
+  const [creatingClass, setCreatingClass] = useState(false);
+  const firebase = useContext(FirebaseContext);
   React.useEffect(() => {
-    if (userClasses.length === 1) {
-      navigate(`/class/${userClasses[0].id}`, { replace: true });
-    }
-  }, [userClasses]);
+    if (!firebase) return;
+    firebase
+      .firestore()
+      .collection('classes')
+      .doc('instructors')
+      .get()
+      .then(snapshot => snapshot.data())
+      .then(data => setInstructors(data.instructors));
+  }, [firebase]);
   return (
     <>
       <Layout>
         <TopNavigationBar />
         <SEO title={'Classes'} />
         <div className="px-10 pt-6">
-          <h1 className="text-3xl font-bold leading-9">My Classes</h1>
+          <h1 className="text-3xl font-bold leading-9 mb-2">My Classes</h1>
           {userClasses && userClasses.length === 0 && (
-            <p>You aren't in any classes</p>
+            <p>You aren't in any classes.</p>
           )}
           <ul className={'pt-4'}>
             {userClasses &&
               userClasses.map(registeredClass => (
-                <li>
+                <li key={registeredClass.id}>
                   <Link
-                    key={registeredClass.id}
                     to={`/class/${registeredClass.id}`}
                     className={'text-blue-600 hover:underline'}
                   >
@@ -36,6 +45,41 @@ export default function ClassSelectPage(props: { path: string }) {
                   </Link>
                 </li>
               ))}
+            {firebaseUser && instructors?.indexOf(firebaseUser?.uid) > -1 && (
+              <li>
+                <button
+                  onClick={() => {
+                    setCreatingClass(true);
+                    firebase
+                      .firestore()
+                      .collection('classes')
+                      .add({
+                        announcements: [],
+                        assignments: [],
+                        date: 'Placeholder Date',
+                        name: 'Untitled Class',
+                        instructors: [firebaseUser.uid],
+                        instructorNames: [firebaseUser.displayName],
+                      })
+                      .then(ref => {
+                        return navigate(`/class/${ref.id}`);
+                      })
+                      .catch(e => {
+                        alert('Error: ' + e.message);
+                        setCreatingClass(false);
+                      });
+                  }}
+                  disabled={creatingClass}
+                  className={
+                    creatingClass
+                      ? 'text-gray-800'
+                      : 'text-blue-600 hover:underline focus:outline-none active:outline-none'
+                  }
+                >
+                  {creatingClass ? 'Creating New Class...' : 'Create New Class'}
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </Layout>

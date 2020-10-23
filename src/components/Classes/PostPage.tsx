@@ -373,7 +373,7 @@ export default function PostPage(props: {
                         setSaving(true);
                         const ref = firebase
                           .firestore()
-                          .collection('classes-beta')
+                          .collection('classes')
                           .doc(classId);
                         firebase
                           .firestore()
@@ -695,10 +695,7 @@ export default function PostPage(props: {
           disabled={publishing}
           onConfirm={() => {
             setPublishing(true);
-            const ref = firebase
-              .firestore()
-              .collection('classes-beta')
-              .doc(classId);
+            const ref = firebase.firestore().collection('classes').doc(classId);
             firebase
               .firestore()
               .runTransaction(function (transaction) {
@@ -759,10 +756,7 @@ export default function PostPage(props: {
           disabled={deleting}
           onConfirm={() => {
             setDeleting(true);
-            const ref = firebase
-              .firestore()
-              .collection('classes-beta')
-              .doc(classId);
+            const ref = firebase.firestore().collection('classes').doc(classId);
             firebase
               .firestore()
               .runTransaction(function (transaction) {

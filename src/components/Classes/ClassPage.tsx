@@ -111,7 +111,11 @@ export default function ClassPage(props: { path: string }): ReactElement {
               {/*  </div>*/}
               {/*</div>*/}
             </div>
-          </div>
+          </div>{' '}
+          {!data?.announcements ||
+            (data.announcements.length === 0 && (
+              <p className={'text-center py-5'}>No Announcements Yet!</p>
+            ))}
           <ul className="relative z-0 divide-y divide-gray-200 border-b border-gray-200">
             {data?.announcements
               .filter(a => isInstructor || a.published)
@@ -180,6 +184,10 @@ export default function ClassPage(props: { path: string }): ReactElement {
               <h2 className="text-sm leading-5 font-semibold">Homework</h2>
             </div>
             <div>
+              {!data?.assignments ||
+                (data.assignments.length === 0 && (
+                  <p className={'py-5'}>No Homework Yet!</p>
+                ))}
               <ul className="divide-y divide-gray-200">
                 {data?.assignments
                   .filter(a => isInstructor || a.published)
