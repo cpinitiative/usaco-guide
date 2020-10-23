@@ -509,7 +509,7 @@ export default function PostPage(props: {
               </div>
             ) : (
               <div className="markdown mt-4">
-                <DynamicMarkdownRenderer markdown={post.content} />
+                <DynamicMarkdownRenderer markdown={post.content} debounce={0} />
               </div>
             )}
             {type === 'assignment' && (

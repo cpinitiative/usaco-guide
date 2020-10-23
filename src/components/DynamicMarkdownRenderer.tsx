@@ -47,11 +47,11 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function ({ markdown }) {
+export default function ({ markdown, debounce = 1000 }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
-    let id = setTimeout(async () => {
+    const compile = async () => {
       try {
         const fullScope = {
           mdx: createElement,
@@ -100,8 +100,13 @@ export default function ({ markdown }) {
         console.log('error', e);
         setError(e);
       }
-    }, 1000);
-    return () => clearTimeout(id);
+    };
+    if (debounce > 0) {
+      let id = setTimeout(compile, debounce);
+      return () => clearTimeout(id);
+    } else {
+      compile();
+    }
   }, [markdown]);
   if (error) {
     return (
