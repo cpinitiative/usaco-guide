@@ -10,6 +10,7 @@ import ClassContext from '../../context/ClassContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import ModuleConfetti from '../MarkdownLayout/ModuleConfetti';
 import Transition from './TailwindTransition';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 export default function ClassLayout({
   children,
   classId,
@@ -22,7 +23,7 @@ export default function ClassLayout({
   noWhiteBg?: boolean;
 }) {
   const firebase = useContext(FirebaseContext);
-
+  const { userClasses, setUserClasses } = useContext(UserDataContext);
   const { loading, error, data, isInstructor } = useContext(ClassContext);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
@@ -39,6 +40,19 @@ export default function ClassLayout({
     const timeout = setTimeout(() => setJoinLinkCopied(false), 1000);
     return () => clearTimeout(timeout);
   }, [joinLinkCopied]);
+
+  React.useEffect(() => {
+    if (!data || !data.name || !userClasses) return;
+    console.log(userClasses, data);
+    if (
+      userClasses.find(c => c.id === classId)?.name &&
+      userClasses.find(c => c.id === classId).name !== data.name
+    ) {
+      setUserClasses(
+        userClasses.map(c => (c.id === classId ? { ...c, name: data.name } : c))
+      );
+    }
+  }, [data?.name, userClasses]);
   if (loading || notFound || error || showNotFound) {
     return (
       <>
@@ -329,7 +343,7 @@ export default function ClassLayout({
                           onClick={() => {
                             if (!firebase) return;
                             setEditClassError('');
-                            if (!editClassTitle) {
+                            if (!editClassTitle.replace(/\s/g, '')) {
                               setEditClassError('You must enter a title.');
                               return;
                             }
