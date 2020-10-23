@@ -19,8 +19,8 @@ function ProblemHit({ hit }) {
   );
 
   return (
-    <div className="bg-white shadow p-4 sm:p-6 sm:rounded-lg">
-      <span className="text-blue-700 font-medium text-sm">
+    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 sm:rounded-lg">
+      <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
         {problem.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
@@ -36,7 +36,11 @@ function ProblemHit({ hit }) {
         )}
       </p>
       <div>
-        <a href={problem.url} target="_blank" className="text-gray-500 text-sm">
+        <a
+          href={problem.url}
+          target="_blank"
+          className="text-gray-500 dark:text-dark-med-emphasis text-sm"
+        >
           View Problem Statement
           <svg
             viewBox="0 0 20 20"
@@ -53,7 +57,7 @@ function ProblemHit({ hit }) {
         <a
           href={problem.solution?.url}
           target="_blank"
-          className="text-gray-500 text-sm"
+          className="text-gray-500 dark:text-dark-med-emphasis  text-sm"
         >
           View Solution
           <svg
@@ -67,13 +71,15 @@ function ProblemHit({ hit }) {
         </a>
       )}
 
-      <p className="text-sm text-gray-500 mt-2">Appears In:</p>
+      <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
+        Appears In:
+      </p>
       <ul className="list-disc ml-6">
         {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
           <li key={moduleID}>
             <Link
               to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${problem.uniqueID}`}
-              className="text-sm text-blue-600"
+              className="text-sm text-blue-600 dark:text-blue-400"
             >
               {moduleLabel}
             </Link>
@@ -83,7 +89,7 @@ function ProblemHit({ hit }) {
 
       <div className="pt-4 space-x-2">
         {problem.tags?.map(tag => (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis">
             {tag}
           </span>
         ))}
