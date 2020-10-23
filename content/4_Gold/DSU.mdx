@@ -1,7 +1,7 @@
 ---
 id: dsu
 title: 'Disjoint Set Union'
-author: Benjamin Qi, Michael Cao
+author: Benjamin Qi, Michael Cao, Andrew Wang
 prerequisites:
   - dfs
 description: 'The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.'
@@ -13,7 +13,7 @@ frequency: 3
 export const problems = {
 	sample: [new Problem('YS', 'Union Find', 'unionfind', 'Easy', false, [])],
 	general: [
-		new Problem('CSES', 'Road Construction', '1676', 'Easy', false, [], ''),
+		new Problem('CSES', 'Road Construction', '1676', 'Easy', false, [], 'cses-1676'),
 		new Problem(
 			'Gold',
 			'Closing the Farm',
@@ -30,7 +30,7 @@ export const problems = {
 			'Easy',
 			true,
 			[],
-			'Answer queries in decreasing order of $k$. Maintain size of each connected component. Same as [CSES Road Construction](https://cses.fi/problemset/task/1676)'
+			'usaco-789'
 		),
 		new Problem('Silver', 'Wormhole Sort', '992', 'Easy', true, [
 			'DSU',
@@ -163,37 +163,35 @@ struct DSU {
 
 <JavaSection>
 
-This implementation assumes that `p` is an array that starts such that `p[i] = i` for every $0 <= i <= n$. It uses path compression only.
+This implementation assumes that `p` is an array that starts such that `p[i] = -1` for every $0 <= i < n$.
 
 ```java
 public static int disjoint[]; //0 indexed
 public static int size[];
 //finds the "representative" node in a's component
-public static int find(int v){
-   if(disjoint[v] == -1){
-      return v;
-   }
-   disjoint[v] = find(disjoint[v]);
-   return disjoint[v];
+public static int find(int v) {
+    if (disjoint[v] == -1) {
+        return v;
+    }
+    disjoint[v] = find(disjoint[v]);
+    return disjoint[v];
 }
 
 //returns whether the merge changed connectivity
-public static void union(int u, int v){
-   int uroot = find(u);
-   int vroot = find(v);
-   if(uroot == vroot){
-      return;
-   }
-   if(size[uroot] < size[vroot]){
-      disjoint[uroot] = vroot;
-      size[vroot] = size[uroot] + size[vroot];
-   }
-   else{
-      disjoint[vroot] = uroot;
-      size[uroot] = size[uroot] + size[vroot];
-   }
+public static void union(int u, int v) {
+    int uroot = find(u);
+    int vroot = find(v);
+    if (uroot == vroot) {
+        return;
+    }
+    if (size[uroot] < size[vroot]) {
+        disjoint[uroot] = vroot;
+        size[vroot] = size[uroot] + size[vroot];
+    } else {
+        disjoint[vroot] = uroot;
+        size[uroot] = size[uroot] + size[vroot];
+    }
 }
-
 ```
 
 </JavaSection>
@@ -249,6 +247,68 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static int disjoint[]; //0 indexed
+    public static int size[];
+    public static int find(int v) {
+        if (disjoint[v] == -1) {
+            return v;
+        }
+        disjoint[v] = find(disjoint[v]);
+        return disjoint[v];
+    }
+
+    public static void union(int u, int v) {
+        int uroot = find(u);
+        int vroot = find(v);
+        if (uroot == vroot) {
+            return;
+        }
+        if (size[uroot] < size[vroot]) {
+            disjoint[uroot] = vroot;
+            size[vroot] = size[uroot] + size[vroot];
+        } else {
+            disjoint[vroot] = uroot;
+            size[uroot] = size[uroot] + size[vroot];
+        }
+    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int q = Integer.parseInt(st.nextToken());
+
+        disjoint = new int[n];
+        size = new int[n];
+        Arrays.fill(disjoint, -1);
+        for (int i = 0; i < q; i++) {
+            st = new StringTokenizer(br.readLine());
+            int t = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            if (t == 0) {
+                union(a, b);
+            } else {
+                if (find(a) == find(b)) {
+                    out.println(1);
+                } else {
+                    out.println(0);
+                }
+            }
+        }
+        out.close();
+    }
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Problems

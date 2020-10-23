@@ -53,7 +53,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
   );
 };
 
-function validateEmail(email) {
+export function validateEmail(email) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
@@ -89,7 +89,7 @@ export default function ContactUsSlideover({
   React.useEffect(() => {
     if (activeModule)
       setLocation(
-        `${activeModule.title} - ${SECTION_LABELS[activeModule.section]}`
+        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
     else setLocation('');
   }, [activeModule]);
@@ -119,6 +119,7 @@ export default function ContactUsSlideover({
     data.append('name', name);
     data.append('email', email);
     data.append('location', location);
+    data.append('url', window.location.href);
     data.append('topic', topic);
     data.append('message', message);
     setSubmitEnabled(false);

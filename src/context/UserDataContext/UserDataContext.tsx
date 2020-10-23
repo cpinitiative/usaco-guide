@@ -23,6 +23,55 @@ import UserProgressOnProblemsProperty, {
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 
+// Object for counting online users
+var Gathering = (function () {
+  function Gathering(firebase) {
+    this.firebase = firebase;
+    this.db = firebase.database();
+
+    this.room = this.db.ref('gatherings/globe');
+    this.user = null;
+
+    this.join = function (uid) {
+      // this check doesn't work if this.join() is called back-to-back
+      if (this.user) {
+        console.error('Already joined.');
+        return false;
+      }
+
+      // Add user to presence list when online.
+      var presenceRef = this.db.ref('.info/connected');
+      presenceRef.on('value', snap => {
+        if (snap.val()) {
+          this.user = uid ? this.room.child(uid) : this.room.push();
+
+          this.user
+            .onDisconnect()
+            .remove()
+            .then(() => {
+              this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
+            });
+        }
+      });
+      return true;
+    };
+
+    this.onUpdated = function (callback) {
+      if ('function' == typeof callback) {
+        this.room.on('value', function (snap) {
+          callback(snap.numChildren(), snap.val());
+        });
+      } else {
+        console.error(
+          'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
+        );
+      }
+    };
+  }
+
+  return Gathering;
+})();
+
 /*
  * todo document how to add new API to user data context?
  *
@@ -54,6 +103,7 @@ type UserDataContextAPI = UserLangAPI &
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
+    onlineUsers: number;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>(null);
@@ -73,6 +123,8 @@ export const UserDataProvider = ({ children }) => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const [onlineUsers, setOnlineUsers] = useState(0);
+
   const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
     api.setTriggerRerenderFunction(triggerRerender)
@@ -84,6 +136,15 @@ export const UserDataProvider = ({ children }) => {
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
+    });
+  });
+
+  // Count online users
+  useFirebase(firebase => {
+    let online = new Gathering(firebase);
+    online.join();
+    online.onUpdated(function (count) {
+      setOnlineUsers(count);
     });
   });
 
@@ -156,6 +217,7 @@ export const UserDataProvider = ({ children }) => {
         });
     },
     isLoaded,
+    onlineUsers,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {

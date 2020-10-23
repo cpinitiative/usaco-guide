@@ -1,0 +1,148 @@
+
+
+## Solution - Trapezoids
+
+
+It turns out that we can also use a Fenwick tree to find the LIS too (as it can [be adapted to answer RMQ](https://ioinformatics.org/journal/v9_2015_39_44.pdf)). Although this implementation is longer, it's still useful to know (as you'll see later in this module).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<int> bit;
+ 
+void update(int pos, int len) {
+    for (; pos < bit.size(); pos += (pos & (-pos))) bit[pos] = max(bit[pos], len);
+}
+ 
+int query(int pos) {
+    int ans = 0;
+    for (; pos; pos -= (pos & (-pos))) ans = max(ans, bit[pos]);
+    return ans;
+}
+
+int find_lis(vector<int> a) { // Assumes that a is a permutation of {1, 2, ..., n}
+    bit.resize(a.size() + 1);
+    fill(bit.begin(), bit.end(), 0);
+    int ans = 0;    
+    for (int i : a) {
+        int lis = query(i);
+        ans = max(ans, lis);
+        update(i, lis);
+    }
+    return ans;
+}
+```
+
+Here, `query(pos)`
+
+</CPPSection>
+
+</LanguageSection>
+
+### Part 1 - Using LIS
+
+Let's first focus on finding the maximum subset of non-intersecting trapezoids.
+
+This problem seems very similar to finding the maximum subset of non-intersecting segments, so let's try something similar. Instead of trapezoids, consider pairs of line segments representing the trapezoids' side edges. We can split these segments into two lists sorted by top coordinate: **right sides** (call it $R$) and **left sides** (call it $L$).
+
+Finding the maximum number of non-intersecting trapezoids to the left of trapezoid $i$ is now equivalent to:
+- Erasing all segments from $L$ with a top coordinate greater than the top coordinate of $R[i]$ (temporarily),
+- Inserting $R[i]$ into $L$ (temporarily), and then
+- Finding the maximum subset of non-intersecting segments in $L$ that contains $R[i]$.
+
+Although this seems quite inefficient for finding the "LIS" for *all* trapezoids, we can actually iterate through all segments at once and insert them into $R$ and $L$ as we go. This removes the need to erase segments from $L$, so we can solve this in $O(N \log N)$ time using any LIS implementation.
+
+### Part 2 - Using a BIT
+
+Now that we've reduced this problem to LIS, let's think about how to find the number of LISes.
+
+Recall the Fenwick tree method for finding the LIS. Since we're making range minimum queries in that method, why not make range sum queries as well? More specifically, store not only the length of the longest subsequence ending at any particular element, but also the number of such subsequences.
+
+This allows us to find both the LIS and the number of LISes in $O(N \log N)$ time.
+
+### Code
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 30013;
+
+struct Trapezoid {
+    int x1, x2, y1, y2;
+} traps[100001];
+
+int n, top[200001], bottom[200001];
+
+int g_len[200001], g_num[200001];
+int l_len[200001], l_num[200001];
+pair<int, int> events[200001];
+
+void update(int pos, int len, int num) {
+    for (; pos < 2 * n; pos += (pos & (-pos))) {
+        if (g_len[pos] == len) {
+            g_num[pos] = (g_num[pos] + num) % MOD;
+        } else if (g_len[pos] < len) {
+            g_len[pos] = len;
+            g_num[pos] = num;
+        }
+    }
+}
+
+pair<int, int> query(int pos) {
+    pair<int, int> ans;
+    for (; pos; pos -= (pos & (-pos))) {
+        if (g_len[pos] == ans.first)
+            ans.second = (ans.second + g_num[pos]) % MOD;
+        else if (g_len[pos] > ans.first)
+            ans = {g_len[pos], g_num[pos]};
+    }
+    return ans;
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> traps[i].x1 >> traps[i].x2 >> traps[i].y1 >> traps[i].y2;
+        top[2 * i - 1] = traps[i].x1, top[2 * i] = traps[i].x2;
+        bottom[2 * i - 1] = traps[i].y1, bottom[2 * i] = traps[i].y2;
+    }
+    sort(top + 1, top + 2 * n + 1);
+    sort(bottom + 1, bottom + 2 * n + 1);
+    for (int i = 1; i <= n; i++) {
+        traps[i].x1 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x1) - top;
+        traps[i].x2 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x2) - top;
+        traps[i].y1 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y1) - bottom;
+        traps[i].y2 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y2) - bottom;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        events[2 * i - 1] = {traps[i].x1, i};
+        events[2 * i] = {traps[i].x2, -i};
+    }
+    sort(events + 1, events + 2 * n + 1);
+
+    int b_len = 0, b_num = 0;
+    for (int i = 1; i <= 2 * n; i++) {
+        if (events[i].second > 0) {
+            pair<int, int> lis = query(traps[events[i].second].y1);
+            if (!lis.first) lis.second = 1;
+            lis.first++;
+            l_len[events[i].second] = lis.first;
+            l_num[events[i].second] = lis.second;
+            if (lis.first > b_len) {
+                b_len = lis.first;
+                b_num = 0;
+            }
+            if (lis.first == b_len) b_num = (b_num + lis.second) % MOD;
+        } else update(traps[-events[i].second].y2, l_len[-events[i].second], l_num[-events[i].second]);
+    }
+
+    cout << b_len << ' ' << b_num;
+    return 0;
+}
+```

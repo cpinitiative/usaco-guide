@@ -76,6 +76,11 @@ const probSources = {
     'Don Mills Online Judge',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
+  FHC: [
+    'https://www.facebook.com/codingcompetitions/hacker-cup/',
+    'Facebook Hacker Cup',
+    'There should be a "Solutions" tab on the left side of the page.',
+  ],
   HR: [
     'https://www.hackerrank.com/',
     'HackerRank',

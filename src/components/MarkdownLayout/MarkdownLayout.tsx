@@ -27,6 +27,7 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import { Language } from '../../context/UserDataContext/properties/userLang';
+import ModuleFeedback from './ModuleFeedback';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -299,12 +300,13 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   if (moduleLink)
     return (
       <li key={prerequisite}>
-        <Link
-          to={moduleLink.url}
+        <a
+          href={moduleLink.url}
+          target="_blank"
           className="underline text-black dark:text-blue-200"
         >
           {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-        </Link>
+        </a>
       </li>
     );
   return <li key={prerequisite}>{prerequisite}</li>;
@@ -633,6 +635,10 @@ export default function MarkdownLayout({
                 </div>
 
                 {children}
+
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
 
                 {markdownData instanceof ModuleInfo && (
                   <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">

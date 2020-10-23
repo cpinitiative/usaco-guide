@@ -5,6 +5,7 @@ import { useActiveHash } from '../../../hooks/useActiveHash';
 import { useMemo } from 'react';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import getGithubUrl from './getGithubUrl';
 
 const TableOfContentsSidebar = ({
   tableOfContents,
@@ -23,6 +24,7 @@ const TableOfContentsSidebar = ({
       : 'text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis');
   let links = genLinksFromTOCHeadings(tableOfContents, getLinkStyles);
 
+  const githubUrl = getGithubUrl();
   return (
     <div className="sticky" style={{ top: '2.5rem' }}>
       <h2 className="uppercase text-gray-500 dark:text-dark-med-emphasis font-bold mb-4 text-sm tracking-wider">
@@ -31,7 +33,7 @@ const TableOfContentsSidebar = ({
       {links}
 
       <OutboundLink
-        href="https://github.com/cpinitiative/usaco-guide"
+        href={githubUrl}
         target="_blank"
         className="group block mt-8 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
       >
@@ -52,7 +54,7 @@ const TableOfContentsSidebar = ({
         </svg>
       </OutboundLink>
 
-      <OutboundLink
+      {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"
         target="_blank"
         className="group block mt-2 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
@@ -72,7 +74,7 @@ const TableOfContentsSidebar = ({
             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
           />
         </svg>
-      </OutboundLink>
+      </OutboundLink> */}
     </div>
   );
 };

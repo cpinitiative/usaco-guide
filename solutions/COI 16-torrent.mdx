@@ -1,0 +1,66 @@
+---
+id: coi-torrent
+title: COI 16 - Torrent
+author: Benjamin Qi
+---
+
+<Warning>
+
+The test data isn't very strong, so it's entirely possible that this code has a bug.
+
+</Warning>
+
+```cpp
+int N,A,B,par[MX];
+bool inPath[MX];
+vi adj[MX];
+
+void dfs(int x) {
+	trav(t,adj[x]) if (par[t] == 0) {
+		par[t] = x;
+		dfs(t);
+	}
+}
+
+int need(int x, int y) {
+	vi tri; trav(t,adj[x]) if (!inPath[t] && t != y) tri.pb(need(t,x));
+	sort(rall(tri));
+	int ans = 0; F0R(i,sz(tri)) ckmax(ans,i+1+tri[i]);
+	return ans;
+}
+
+int get_max(int res, vi ans, vi path) { // find max length prefix of path so that answer is <= res
+	int cur = 0;
+	F0R(i,sz(ans)) {
+		if (ans[i]+cur > res) return i;
+		if (ans[i]+cur < res) { cur ++; continue; } // just send to next node on path
+		int x = path[i]; vi tri;
+		trav(t,adj[x]) if (!inPath[t]) tri.pb(need(t,x));
+		sort(rall(tri)); F0R(z,sz(tri)) tri[z] += 1+z;
+		R0F(z,sz(tri)-1) ckmax(tri[z],tri[z+1]);
+		trav(t,tri) cur += t == tri[0];
+		cur ++;
+	}
+	return sz(ans);
+}
+
+int main() {
+	setIO(); re(N,A,B);
+	F0R(i,N-1) {
+		int x,y; re(x,y);
+		adj[x].pb(y), adj[y].pb(x);
+	}
+	par[A] = -1; dfs(A);
+	vi path = {B}; while (path.bk != A) path.pb(par[path.bk]);
+	trav(t,path) inPath[t] = 1;
+	vi ans; trav(t,path) ans.pb(need(t,-1));
+	int res = 0; F0R(i,sz(ans)) ckmax(res,ans[i]+min(sz(ans)-1-i,i)+1); 
+	// greedy strategy: first the computers send to each other and then to the rest of the tree
+	int max_pref = get_max(res-1,ans,path);
+	reverse(all(path)), reverse(all(ans));
+	int max_pref_2 = get_max(res-1,ans,path);
+	// check if you can get one better than greedy strategy
+	if (max_pref+max_pref_2 >= sz(path)) ps(res-1);
+	else ps(res);
+}
+```
