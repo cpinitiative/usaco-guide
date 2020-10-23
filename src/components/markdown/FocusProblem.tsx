@@ -5,10 +5,9 @@ import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 export default function FocusProblem({ problem }: { problem: Problem }) {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  // A note about "relative z-10":
+  // transform must go in the isHovered condition
   // See https://github.com/thecodingwizard/usaco-guide/issues/198
-  // transform creates a new stacking context, so without "relative z-10" the tippy dropdown menu
-  // will be positioned under other elements despite its z-index.
+  // transform creates a new stacking context :(
   return (
     <div
       className={`shadow block transition duration-150 ease-in-out dark:bg-gray-900 ${
