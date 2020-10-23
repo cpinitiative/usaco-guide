@@ -78,7 +78,11 @@ export default function ProblemStatusCheckbox({
     UserDataContext
   );
   const updateModuleProgressToPracticing = () => {
-    if (markdownLayoutContext === null) return;
+    if (
+      markdownLayoutContext === null ||
+      !markdownLayoutContext.markdownLayoutInfo?.id
+    )
+      return;
     const { markdownLayoutInfo } = markdownLayoutContext;
     const moduleProgress =
       (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||

@@ -13,6 +13,7 @@ type ProblemsListProps = {
   title?: string;
   children?: React.ReactChildren;
   problems: Problem[];
+  alwaysHideTags?: boolean;
 };
 
 let showSols = true;
@@ -22,6 +23,7 @@ export function ProblemsList(props: ProblemsListProps) {
   showSols = !userSettings.hide;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
+  const alwaysHideTags = props.alwaysHideTags;
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -46,7 +48,7 @@ export function ProblemsList(props: ProblemsListProps) {
                   >
                     Difficulty
                   </th>
-                  {showSols && (
+                  {showSols && !alwaysHideTags && (
                     <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Tags
                     </th>
@@ -62,6 +64,7 @@ export function ProblemsList(props: ProblemsListProps) {
                 {props.problems.map(problem => (
                   <ProblemComponent
                     problem={problem}
+                    alwaysHideTags={alwaysHideTags}
                     onShowSolution={problem => {
                       setProblem(problem);
                       setShowModal(true);
@@ -153,6 +156,7 @@ export function ProblemsList(props: ProblemsListProps) {
 type ProblemComponentProps = {
   problem: Problem;
   onShowSolution: Function;
+  alwaysHideTags?: boolean;
 };
 
 export const difficultyClasses = {
@@ -179,7 +183,7 @@ const StyledProblemRow = styled.tr`
 
 export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
-  const { problem } = props;
+  const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
   React.useEffect(() => {
     setIsActive(window && window.location && window.location.hash === '#' + id);
@@ -245,7 +249,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      {showSols && (
+      {showSols && !alwaysHideTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">

@@ -11,7 +11,7 @@ import SEO from '../components/seo';
 import { useState } from 'react';
 
 const RawMarkdownRenderer = React.lazy(() =>
-  import('../components/LiveUpdateMarkdownRenderer')
+  import('../components/DynamicMarkdownRenderer')
 );
 
 export default function LiveUpdatePage(props: PageProps) {
