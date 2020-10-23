@@ -38,7 +38,7 @@ export default function ClassLayout({
       <>
         <SEO title={loading ? 'Loading...' : '404 Not Found'} />
 
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
           {loading
@@ -71,7 +71,7 @@ export default function ClassLayout({
           'relative min-h-screen flex flex-col ' + (noWhiteBg ? '' : 'bg-white')
         }
       >
-        <TopNavigationBar hideClassesPromoBar />
+        <TopNavigationBar hideClassesPromoBar hideClassesPromoBar />
         {/* 3 column wrapper */}
         <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex">
           {/* Left sidebar & main wrapper */}

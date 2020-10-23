@@ -37,7 +37,7 @@ export default function AnnouncementPage(props: {
     return (
       <>
         <SEO title={loading ? 'Loading...' : '404 Not Found'} />
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
           {loading
@@ -63,7 +63,7 @@ export default function AnnouncementPage(props: {
   return (
     <>
       <SEO title="Class" />
-      <TopNavigationBar />
+      <TopNavigationBar hideClassesPromoBar />
       <div className="bg-white lg:min-w-0 lg:flex-1">
         <div className="px-8 xl:px-16 pt-4 sm:pt-8 pb-4 xl:pt-10 text-center">
           {userClasses.findIndex(c => c.id === classId) !== -1 ? (

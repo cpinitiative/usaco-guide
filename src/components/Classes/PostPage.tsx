@@ -238,7 +238,7 @@ export default function PostPage(props: {
     return (
       <>
         <SEO title={loading ? 'Loading...' : '404 Not Found'} />
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
           {loading

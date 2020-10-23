@@ -28,7 +28,7 @@ export default function ClassSelectPage(props: { path: string }) {
     return (
       <>
         <SEO title="Loading..." />
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
           Loading...
@@ -39,7 +39,7 @@ export default function ClassSelectPage(props: { path: string }) {
   return (
     <>
       <Layout>
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar />
         <SEO title={'Classes'} />
         <div className="px-10 pt-6">
           <h1 className="text-3xl font-bold leading-9 mb-2">My Classes</h1>
