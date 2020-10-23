@@ -8,7 +8,9 @@ import { useContext, useState } from 'react';
 import { navigate } from 'gatsby';
 import FirebaseContext from '../../context/FirebaseContext';
 export default function ClassSelectPage(props: { path: string }) {
-  const { userClasses, firebaseUser, isLoaded } = useContext(UserDataContext);
+  const { userClasses, setUserClasses, firebaseUser, isLoaded } = useContext(
+    UserDataContext
+  );
 
   const [instructors, setInstructors] = useState([]);
   const [creatingClass, setCreatingClass] = useState(false);
@@ -27,7 +29,7 @@ export default function ClassSelectPage(props: { path: string }) {
   if (!isLoaded) {
     return (
       <>
-        <SEO title="Loading..." />
+        <SEO title="Classes" />
         <TopNavigationBar hideClassesPromoBar />
 
         <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
@@ -75,6 +77,13 @@ export default function ClassSelectPage(props: { path: string }) {
                         instructorNames: [firebaseUser.displayName],
                       })
                       .then(ref => {
+                        setUserClasses([
+                          ...userClasses,
+                          {
+                            id: ref.id,
+                            name: 'Untitled Class',
+                          },
+                        ]);
                         return navigate(`/class/${ref.id}`);
                       })
                       .catch(e => {
@@ -85,7 +94,7 @@ export default function ClassSelectPage(props: { path: string }) {
                   disabled={creatingClass}
                   className={
                     creatingClass
-                      ? 'text-gray-800'
+                      ? 'text-gray-800 dark:text-gray-200'
                       : 'text-blue-600 hover:underline focus:outline-none active:outline-none'
                   }
                 >

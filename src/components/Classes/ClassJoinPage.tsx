@@ -64,7 +64,7 @@ export default function AnnouncementPage(props: {
     <>
       <SEO title="Class" />
       <TopNavigationBar hideClassesPromoBar />
-      <div className="bg-white lg:min-w-0 lg:flex-1">
+      <div className="bg-white dark:bg-dark-surface lg:min-w-0 lg:flex-1">
         <div className="px-8 xl:px-16 pt-4 sm:pt-8 pb-4 xl:pt-10 text-center">
           {userClasses.findIndex(c => c.id === classId) !== -1 ? (
             <>

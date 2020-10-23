@@ -48,7 +48,7 @@ export default function ConfirmationModal({
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+              className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
@@ -64,7 +64,7 @@ export default function ConfirmationModal({
                 </div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <h3
-                    className="text-lg leading-6 font-medium text-gray-900"
+                    className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                     id="modal-headline"
                   >
                     {title}
@@ -95,9 +95,9 @@ export default function ConfirmationModal({
                     disabled={disabled}
                     className={
                       (disabled
-                        ? 'bg-gray-200'
-                        : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue') +
-                      ' inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm transition ease-in-out duration-150 sm:text-sm sm:leading-5'
+                        ? 'bg-gray-200 dark:bg-gray-500'
+                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue') +
+                      ' inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 text-base leading-6 font-medium text-gray-700 dark:text-gray-300 shadow-sm transition ease-in-out duration-150 sm:text-sm sm:leading-5'
                     }
                   >
                     Cancel
