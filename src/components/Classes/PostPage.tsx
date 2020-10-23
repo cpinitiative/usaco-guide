@@ -21,6 +21,7 @@ import FirebaseContext from '../../context/FirebaseContext';
 import { ProblemsList } from '../markdown/ProblemsList/ProblemsList';
 import { Problem } from '../../models/problem';
 import { format } from './ClassPage';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 export interface ProblemJSON {
   division: string | null;
   moduleId: string | null;
@@ -95,6 +96,7 @@ export default function PostPage(props: {
   const id: string = type === 'announcement' ? announcementId : assignmentId;
 
   const firebase = useContext(FirebaseContext);
+  const { darkMode } = useContext(UserDataContext);
   const { loading, error, data, isInstructor } = useContext(ClassContext);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -267,7 +269,7 @@ export default function PostPage(props: {
     <>
       <SEO title={`${post?.title || ''} | ${data.name || ''}`} />
       <ClassLayout classId={classId}>
-        <div className="bg-white lg:min-w-0 lg:flex-1">
+        <div className="bg-white dark:bg-dark-surface lg:min-w-0 lg:flex-1">
           <div className="px-8 xl:px-16 pt-4 sm:pt-8 pb-4 xl:pt-10">
             <div>
               <div className={'flex justify-between'}>
@@ -276,10 +278,10 @@ export default function PostPage(props: {
                     onClick={() => navigate(`/class/${classId}`)}
                     disabled={edit && hasChanges}
                     className={
-                      'inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 ' +
+                      'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 ' +
                       (edit && hasChanges
-                        ? 'bg-gray-300'
-                        : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
+                        ? 'bg-gray-300 dark:bg-gray-700'
+                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150')
                     }
                   >
                     {edit && hasChanges
@@ -302,7 +304,9 @@ export default function PostPage(props: {
                             }
                             setTitle(post.title);
                           }}
-                          className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                          className={
+                            'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                          }
                         >
                           Edit
                         </button>
@@ -357,7 +361,9 @@ export default function PostPage(props: {
                           setEdit(false);
                         }
                       }}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                      className={
+                        'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                      }
                     >
                       {hasChanges ? 'Discard Changes' : 'Stop Editing'}
                     </button>
@@ -440,7 +446,7 @@ export default function PostPage(props: {
                   placeholder={'Enter a title...'}
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 />
               ) : (
                 <h1 className="text-2xl leading-9 font-bold">{post.title}</h1>
@@ -457,10 +463,10 @@ export default function PostPage(props: {
                     }}
                     value={dueDate}
                     onChange={date => setDueDate(date[0])}
-                    className="flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="dark:bg-gray-200 dark:text-gray-800 flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 ) : (
-                  <h1 className="text-md text-gray-800 leading-7 tracking-tight">
+                  <h1 className="text-md text-gray-800 dark:text-gray-200 leading-7 tracking-tight">
                     {post?.dueDate
                       ? `Due ${format(post?.dueDate)}`
                       : 'No Due Date'}
@@ -469,7 +475,11 @@ export default function PostPage(props: {
               </div>
             )}
             {edit ? (
-              <div className="mt-4">
+              <div
+                className={
+                  'mt-4 ' + (darkMode ? 'dark-mde-container' : 'mde-container')
+                }
+              >
                 <SimpleMDE
                   onChange={e => setContent(e)}
                   value={content}
@@ -543,7 +553,7 @@ export default function PostPage(props: {
                             disabled={i === 0}
                             className={
                               i == 0
-                                ? 'text-gray-700'
+                                ? 'text-gray-700 dark:text-gray-200 cursor-text'
                                 : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
                             }
                             onClick={() =>
@@ -566,7 +576,7 @@ export default function PostPage(props: {
                             disabled={i == arr.length - 1}
                             className={
                               i == arr.length - 1
-                                ? 'text-gray-700'
+                                ? 'text-gray-700 dark:text-gray-200 cursor-text'
                                 : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
                             }
                             onClick={() =>
@@ -607,6 +617,7 @@ export default function PostPage(props: {
                     <div className={'mt-2'}>
                       <label className={'bold'}>Division:</label>
                       <Select
+                        className={'dark:text-gray-900'}
                         options={searchDivisionOptions}
                         value={
                           searchDivisionOptions.find(
@@ -619,6 +630,7 @@ export default function PostPage(props: {
                     <div className={'mt-2'}>
                       <label className={'bold'}>Module:</label>
                       <Select
+                        className={'dark:text-gray-900'}
                         options={searchModuleOptions}
                         value={
                           searchModuleOptions.find(
@@ -652,7 +664,7 @@ export default function PostPage(props: {
                             <button
                               className={
                                 added
-                                  ? 'text-gray-800'
+                                  ? 'text-gray-800 dark:text-gray-200'
                                   : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
                               }
                               disabled={added}
@@ -667,7 +679,7 @@ export default function PostPage(props: {
                         );
                       })}
                     </ul>
-                    <div className={'mb-16'}>{/* Spacer */}</div>
+                    <div className={'mb-24'}>{/* Spacer */}</div>
                   </>
                 ) : postProblems?.length > 0 ? (
                   <ProblemsList problems={postProblems} alwaysHideTags />

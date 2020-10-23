@@ -68,8 +68,8 @@ export default function ClassPage(props: { path: string }): ReactElement {
       <SEO title={data.name || 'CPI Class Home'} />
       <ClassLayout classId={classId} noWhiteBg>
         {/* Projects List */}
-        <div className="bg-white lg:min-w-0 lg:flex-1">
-          <div className="pl-4 pr-6 pt-4 pb-4 border-b border-t border-gray-200 sm:pl-6 lg:pl-8 xl:pl-6 xl:pt-6 xl:border-t-0">
+        <div className="bg-white dark:bg-dark-surface lg:min-w-0 lg:flex-1">
+          <div className="pl-4 pr-6 pt-4 pb-4 border-b border-t border-gray-200 dark:border-gray-700 sm:pl-6 lg:pl-8 xl:pl-6 xl:pt-6 xl:border-t-0">
             <div className="flex items-center">
               <h1 className="flex-1 text-lg leading-7 font-medium">
                 Announcements and Class Notes
@@ -116,14 +116,14 @@ export default function ClassPage(props: { path: string }): ReactElement {
             (data.announcements.length === 0 && (
               <p className={'text-center py-5'}>No Announcements Yet!</p>
             ))}
-          <ul className="relative z-0 divide-y divide-gray-200 border-b border-gray-200">
+          <ul className="relative z-0 divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
             {data?.announcements
               .filter(a => isInstructor || a.published)
               .sort((a, b) => /* DESC */ b.sort - a.sort)
               .map(announcement => (
                 <li
                   key={announcement.id}
-                  className="relative pl-4 pr-6 py-5 hover:bg-gray-50 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6"
+                  className="relative pl-4 pr-6 py-5 hover:bg-gray-50 dark-hover:bg-gray-900 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6"
                 >
                   <div className="flex items-center justify-between space-x-4">
                     {/* Repo name and link */}
@@ -147,8 +147,8 @@ export default function ClassPage(props: { path: string }): ReactElement {
                         to={`/class/${classId}/announcements/${announcement.id}`}
                         className="relative group flex items-center space-x-2.5"
                       >
-                        <Icons.Calendar className="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500" />
-                        <div className="text-sm leading-5 text-gray-500 group-hover:text-gray-900 font-medium truncate">
+                        <Icons.Calendar className="flex-shrink-0 w-5 h-5 text-gray-400" />
+                        <div className="text-sm leading-5 text-gray-500 font-medium truncate">
                           {announcement.published
                             ? format(announcement.date)
                             : 'Not Published'}
@@ -178,7 +178,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
           </ul>
         </div>
         {/* Activity feed */}
-        <div className="bg-gray-50 pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
+        <div className="bg-gray-50 dark:bg-gray-800 pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 lg:dark:border-gray-700 xl:pr-0">
           <div className="pl-6 lg:w-80">
             <div className="pt-6 pb-2">
               <h2 className="text-sm leading-5 font-semibold">Homework</h2>
@@ -188,12 +188,12 @@ export default function ClassPage(props: { path: string }): ReactElement {
                 (data.assignments.length === 0 && (
                   <p className={'py-5'}>No Homework Yet!</p>
                 ))}
-              <ul className="divide-y divide-gray-200">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                 {data?.assignments
                   .filter(a => isInstructor || a.published)
                   .sort((a, b) => /* DESC */ b.sort - a.sort)
                   .map(assignment => (
-                    <li key={assignment.id} className="py-4">
+                    <li key={assignment.id} className="py-4 group">
                       <Link
                         to={`/class/${classId}/assignments/${assignment.id}`}
                         className={'cursor-pointer'}
@@ -201,7 +201,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                         <div className="flex space-x-3">
                           <div className="flex-1 space-y-1">
                             <div className="">
-                              <h3 className="text-sm font-medium leading-5">
+                              <h3 className="text-sm font-medium leading-5 group-hover:text-gray-700 dark-group-hover:text-gray-400">
                                 {assignment.title}
                                 {!assignment.published && (
                                   <span className={'text-red-600'}>
@@ -211,7 +211,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
                                 )}
                               </h3>
                             </div>
-                            <p className="text-sm leading-5 text-gray-500">
+                            <p className="text-sm leading-5 text-gray-500 group-hover:text-gray-400 dark-group-hover:text-gray-600">
                               {assignment?.dueDate
                                 ? `Due ${format(assignment?.dueDate)}`
                                 : 'No Due Date'}
@@ -219,7 +219,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
 
                             <p className="text-sm leading-5 text-gray-500">
                               {isInstructor
-                                ? '0/12 Students Done'
+                                ? '' // "0/12 Students Done" TODO
                                 : `${assignment.problems.reduce(
                                     (counter, problem) => {
                                       const {
