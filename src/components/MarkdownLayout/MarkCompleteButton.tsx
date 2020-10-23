@@ -3,17 +3,12 @@ import Transition from '../Transition';
 import { ModuleProgressOptions } from '../../models/module';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
-import Icon from '@material-ui/core/Icon';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import DoneIcon from '@material-ui/icons/Done';
 import FitnessCenterIcon from '@material-ui/icons/FitnessCenter';
 import StarIcon from '@material-ui/icons/Star';
 import BookmarkIcon from '@material-ui/icons/Book';
-import BeenHereIcon from '@material-ui/icons/BeenHere';
 import { blue, blueGrey, green, yellow } from '@material-ui/core/colors';
-import { func } from 'prop-types';
 
 const MarkCompleteButton = ({
   state,
