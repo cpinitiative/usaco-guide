@@ -9,6 +9,7 @@ import FirebaseContext from '../../context/FirebaseContext';
 import ClassContext from '../../context/ClassContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import ModuleConfetti from '../MarkdownLayout/ModuleConfetti';
+import Transition from './TailwindTransition';
 export default function ClassLayout({
   children,
   classId,
@@ -23,10 +24,15 @@ export default function ClassLayout({
   const firebase = useContext(FirebaseContext);
 
   const { loading, error, data, isInstructor } = useContext(ClassContext);
-  const [showJoinCodes, setShowJoinCodes] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
+  const [showEditClass, setShowEditClass] = useState(false);
+  const [editClassSubmitting, setEditClassSubmitting] = useState(false);
+  const [editClassError, setEditClassError] = useState('');
+  const [editClassTitle, setEditClassTitle] = useState('');
+  const [editClassDate, setEditClassDate] = useState('');
+
   const notFound = !loading && !data;
   React.useEffect(() => {
     if (!joinLinkCopied) return;
@@ -71,7 +77,7 @@ export default function ClassLayout({
           'relative min-h-screen flex flex-col ' + (noWhiteBg ? '' : 'bg-white')
         }
       >
-        <TopNavigationBar hideClassesPromoBar hideClassesPromoBar />
+        <TopNavigationBar hideClassesPromoBar />
         {/* 3 column wrapper */}
         <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex">
           {/* Left sidebar & main wrapper */}
@@ -101,6 +107,21 @@ export default function ClassLayout({
                       {/* Action buttons */}
                       {isInstructor && (
                         <div className="flex flex-col space-y-3 sm:space-y-0 sm:space-x-3 sm:flex-row xl:flex-col xl:space-x-0 xl:space-y-3">
+                          <span className="inline-flex rounded-md shadow-sm">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditClassTitle(data.name);
+                                setEditClassDate(data.date);
+                                setShowEditClass(true);
+                              }}
+                              className={
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
+                              }
+                            >
+                              Edit Class Details
+                            </button>
+                          </span>
                           <span className="inline-flex rounded-md shadow-sm">
                             <button
                               type="button"
@@ -240,6 +261,124 @@ export default function ClassLayout({
             </div>
             {children}
           </div>
+          <Transition show={showEditClass}>
+            <div className="fixed z-10 inset-0 overflow-y-auto">
+              <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <Transition
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 transition-opacity">
+                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                  </div>
+                </Transition>
+                {/* This element is to trick the browser into centering the modal contents. */}
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+                &#8203;
+                <Transition
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  enterTo="opacity-100 translate-y-0 sm:scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                  <div
+                    className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-headline"
+                  >
+                    <div className="text-left sm:mt-0">
+                      <h3
+                        className="text-lg leading-6 font-medium text-gray-900"
+                        id="modal-headline"
+                      >
+                        Edit Class Details
+                      </h3>
+                    </div>
+                    <div className={'w-full mt-3'}>
+                      <label className="bold">Class Name</label>
+                      <input
+                        placeholder={'Enter a name...'}
+                        value={editClassTitle}
+                        onChange={e => setEditClassTitle(e.target.value)}
+                        className="form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      />
+                      <div className="mt-3">
+                        <label className="bold">Class Date (optional)</label>
+                        <input
+                          placeholder={'e.g. Saturdays 9AM'}
+                          value={editClassDate}
+                          onChange={e => setEditClassDate(e.target.value)}
+                          className="form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        />
+                      </div>
+                      {editClassError && (
+                        <p className="text-red-700 mt-4">{editClassError}</p>
+                      )}
+                    </div>
+                    <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                      <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!firebase) return;
+                            setEditClassError('');
+                            if (!editClassTitle) {
+                              setEditClassError('You must enter a title.');
+                              return;
+                            }
+                            setEditClassSubmitting(true);
+
+                            firebase
+                              .firestore()
+                              .collection('classes')
+                              .doc(classId)
+                              .update({
+                                name: editClassTitle,
+                                date: editClassDate,
+                              })
+                              .then(() => {
+                                setEditClassSubmitting(false);
+                                setShowEditClass(false);
+                              })
+                              .catch(e => {
+                                setEditClassSubmitting(false);
+                                setEditClassError(
+                                  'An error occurred: ' + e.message
+                                );
+                              });
+                          }}
+                          className={
+                            'inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm sm:text-sm sm:leading-5 ' +
+                            (editClassSubmitting
+                              ? 'bg-purple-300'
+                              : 'bg-purple-600 hover:bg-purple-500 focus:outline-none focus:border-purple-700 focus:shadow-outline-purple transition ease-in-out duration-150')
+                          }
+                        >
+                          {editClassSubmitting ? 'Saving...' : 'Save'}
+                        </button>
+                      </span>
+                      <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                        <button
+                          onClick={() => setShowEditClass(false)}
+                          type="button"
+                          className="bg-white inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                        >
+                          Cancel
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
     </>
