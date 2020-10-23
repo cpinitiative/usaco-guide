@@ -84,20 +84,21 @@ export default function ClassLayout({
   return (
     <>
       {/* Background color split screen for large screens */}
-      <div className="fixed top-0 left-0 w-1/2 h-full bg-white"></div>
-      <div className="fixed top-0 right-0 w-1/2 h-full bg-gray-50"></div>
+      <div className="fixed top-0 left-0 w-1/2 h-full bg-white dark:bg-dark-surface"></div>
+      <div className="fixed top-0 right-0 w-1/2 h-full bg-gray-50 dark:bg-gray-800"></div>
       <div
         className={
-          'relative min-h-screen flex flex-col ' + (noWhiteBg ? '' : 'bg-white')
+          'relative min-h-screen flex flex-col ' +
+          (noWhiteBg ? '' : 'bg-white dark:bg-dark-surface')
         }
       >
         <TopNavigationBar hideClassesPromoBar />
         {/* 3 column wrapper */}
         <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex">
           {/* Left sidebar & main wrapper */}
-          <div className="flex-1 min-w-0 bg-white xl:flex">
+          <div className="flex-1 min-w-0 bg-white dark:bg-dark-surface xl:flex">
             {/* Account profile */}
-            <div className="xl:flex-shrink-0 xl:w-80 border-b xl:border-b-0 xl:border-r border-gray-200 bg-white">
+            <div className="xl:flex-shrink-0 xl:w-80 border-b xl:border-b-0 xl:border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-surface">
               <div className="pl-4 pr-6 py-6 sm:pl-6 lg:pl-8 xl:pl-0">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 space-y-8">
@@ -106,14 +107,14 @@ export default function ClassLayout({
                       <div className="flex items-center space-x-3">
                         <div className="space-y-1">
                           <Link to={`/class/${classId}`}>
-                            <h1 className="text-2xl leading-9 font-bold tracking-tight text-gray-900 hover:text-gray-600">
+                            <h1 className="text-2xl leading-9 font-bold tracking-tight text-gray-900 dark:text-gray-100 hover:text-gray-600 dark-hover:text-gray-300">
                               {data?.name}
                             </h1>
                           </Link>
-                          <h2 className="text-small leading-3 font-medium tracking-tight text-gray-900">
+                          <h2 className="text-small leading-3 font-medium tracking-tight text-gray-900 dark:text-gray-100">
                             {data?.date}
                           </h2>
-                          <h4 className="text-sm leading-9 text-gray-500 group-hover:text-gray-900 font-medium">
+                          <h4 className="text-sm leading-9 text-gray-500 group-hover:text-gray-900 dark-group-hover:text-gray-100 font-medium">
                             {data?.instructorNames.join(', ')}
                           </h4>
                         </div>
@@ -130,7 +131,7 @@ export default function ClassLayout({
                                 setShowEditClass(true);
                               }}
                               className={
-                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
                               }
                             >
                               Edit Class Details
@@ -171,10 +172,10 @@ export default function ClassLayout({
                                 setCreatingAnnouncement(false);
                               }}
                               className={
-                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 ' +
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 ' +
                                 (creatingAnnouncement
-                                  ? 'bg-gray-300'
-                                  : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
+                                  ? 'bg-gray-300 dark:bg-gray-600'
+                                  : 'bg-white dark:bg-gray-900 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
                               }
                             >
                               {creatingAnnouncement
@@ -216,10 +217,10 @@ export default function ClassLayout({
                                 setCreatingAssignment(false);
                               }}
                               className={
-                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 ' +
+                                'w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 ' +
                                 (creatingAssignment
-                                  ? 'bg-gray-300'
-                                  : 'bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
+                                  ? 'bg-gray-300 dark:bg-gray-600'
+                                  : 'bg-white dark:bg-gray-900 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150')
                               }
                             >
                               {creatingAssignment
@@ -250,7 +251,7 @@ export default function ClassLayout({
                             <span className="font-bold">Class Join Link:</span>{' '}
                             <a
                               className={
-                                'cursor-pointer text-blue-600 hover:underline active:text-blue-900'
+                                'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
                               }
                               onClick={e => {
                                 e.preventDefault();
@@ -302,14 +303,14 @@ export default function ClassLayout({
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                   <div
-                    className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+                    className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-headline"
                   >
-                    <div className="text-left sm:mt-0">
+                    <div className="text-left sm:mt-0 dark:text-gray-100">
                       <h3
-                        className="text-lg leading-6 font-medium text-gray-900"
+                        className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                         id="modal-headline"
                       >
                         Edit Class Details
@@ -321,7 +322,8 @@ export default function ClassLayout({
                         placeholder={'Enter a name...'}
                         value={editClassTitle}
                         onChange={e => setEditClassTitle(e.target.value)}
-                        className="form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        disabled={editClassSubmitting}
+                        className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                       />
                       <div className="mt-3">
                         <label className="bold">Class Date (optional)</label>
@@ -329,7 +331,8 @@ export default function ClassLayout({
                           placeholder={'e.g. Saturdays 9AM'}
                           value={editClassDate}
                           onChange={e => setEditClassDate(e.target.value)}
-                          className="form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          disabled={editClassSubmitting}
+                          className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                         />
                       </div>
                       {editClassError && (
