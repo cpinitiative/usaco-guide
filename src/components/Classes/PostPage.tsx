@@ -225,7 +225,7 @@ export default function PostPage(props: {
       problems.length !== postProblems.length ||
       problems.some((el, i) => el?.uniqueID !== postProblems[i]?.uniqueID) ||
       content !== post?.content,
-    [title, dueDate, type, post, problems, postProblems]
+    [title, content, dueDate, type, post, problems, postProblems]
   );
   React.useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
@@ -672,7 +672,7 @@ export default function PostPage(props: {
                     </ul>
                     <div className={'mb-16'}>{/* Spacer */}</div>
                   </>
-                ) : postProblems ? (
+                ) : postProblems?.length > 0 ? (
                   <ProblemsList problems={postProblems} alwaysHideTags />
                 ) : (
                   <p>
