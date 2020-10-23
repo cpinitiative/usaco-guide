@@ -8,7 +8,7 @@ import { useContext, useState } from 'react';
 import { navigate } from 'gatsby';
 import FirebaseContext from '../../context/FirebaseContext';
 export default function ClassSelectPage(props: { path: string }) {
-  const { userClasses, firebaseUser } = useContext(UserDataContext);
+  const { userClasses, firebaseUser, isLoaded } = useContext(UserDataContext);
 
   const [instructors, setInstructors] = useState([]);
   const [creatingClass, setCreatingClass] = useState(false);
@@ -23,6 +23,19 @@ export default function ClassSelectPage(props: { path: string }) {
       .then(snapshot => snapshot.data())
       .then(data => setInstructors(data.instructors));
   }, [firebase]);
+
+  if (!isLoaded) {
+    return (
+      <>
+        <SEO title="Loading..." />
+        <TopNavigationBar />
+
+        <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
+          Loading...
+        </h1>
+      </>
+    );
+  }
   return (
     <>
       <Layout>

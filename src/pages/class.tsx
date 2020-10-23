@@ -60,7 +60,7 @@ export default function ClassRouter() {
             />
 
             <ClassSelectPage path="/" />
-            {/*<NotFoundPageWrapper default />*/}
+            <NotFoundPageWrapper default />
           </Router>
         </MarkdownLayoutContext.Provider>
       </ClassProvider>

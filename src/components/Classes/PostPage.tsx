@@ -144,9 +144,6 @@ export default function PostPage(props: {
         }
       }
     `)?.allMdx?.edges?.map(category => category.node) || [];
-  React.useEffect(() => {
-    console.log(problemsList);
-  }, []);
 
   const postProblems = React.useMemo(() => {
     return (
