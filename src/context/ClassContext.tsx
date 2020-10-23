@@ -46,7 +46,7 @@ const ClassContext = React.createContext<{
 });
 
 const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [data, setData] = React.useState();
+  const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [classId, setClassId] = React.useState('');
   const [isInstructor, setIsInstructor] = useState(false);
@@ -60,7 +60,11 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
     if (!classId) return;
     setLoading(true);
     setError(false);
-
+    if (classId === 'instructors') {
+      setData(null);
+      setLoading(false);
+      return;
+    }
     const unsubscribe = firebase
       .firestore()
       .collection('classes')
