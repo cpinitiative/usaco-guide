@@ -1,6 +1,19 @@
 import * as React from 'react';
 import Transition from '../Transition';
 import { ModuleProgressOptions } from '../../models/module';
+import Button from '@material-ui/core/Button';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
+import Icon from '@material-ui/core/Icon';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import DoneIcon from '@material-ui/icons/Done';
+import FitnessCenterIcon from '@material-ui/icons/FitnessCenter';
+import StarIcon from '@material-ui/icons/Star';
+import BookmarkIcon from '@material-ui/icons/Book';
+import BeenHereIcon from '@material-ui/icons/BeenHere';
+import { blue, blueGrey, green, yellow } from '@material-ui/core/colors';
+import { func } from 'prop-types';
 
 const MarkCompleteButton = ({
   state,
@@ -17,7 +30,15 @@ const MarkCompleteButton = ({
     onChange(option);
   };
   const ref = React.useRef();
-
+  makeStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        '& > *': {
+          margin: theme.spacing(1),
+        },
+      },
+    })
+  );
   React.useEffect(() => {
     const handleClick = e => {
       // @ts-ignore
@@ -27,12 +48,27 @@ const MarkCompleteButton = ({
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
-
+  const icon = (status: string) => {
+    switch (status) {
+      case 'Reading':
+        return <MenuBookIcon style={{ color: blue[500] }} fontSize="small" />;
+      case 'Complete':
+        return <DoneIcon style={{ color: green[500] }} fontSize="small" />;
+      case 'Practicing':
+        return <FitnessCenterIcon fontSize="small" />;
+      case 'Skipped':
+        return <StarIcon fontSize="small" style={{ color: yellow[700] }} />;
+      case 'Ignored':
+        return (
+          <BookmarkIcon fontSize="small" style={{ color: blueGrey[700] }} />
+        );
+    }
+  };
   return (
     <div className="relative inline-block text-left" ref={ref}>
       <div>
         <span className="rounded-md shadow-sm">
-          <button
+          <Button
             type="button"
             className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 px-4 py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150"
             id="options-menu"
@@ -52,7 +88,7 @@ const MarkCompleteButton = ({
                 clipRule="evenodd"
               />
             </svg>
-          </button>
+          </Button>
         </span>
       </div>
 
@@ -80,14 +116,15 @@ const MarkCompleteButton = ({
               aria-labelledby="options-menu"
             >
               {ModuleProgressOptions.map(option => (
-                <button
+                <Button
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 px-4 py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150"
+                  size="small"
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
                 >
-                  {option}
-                </button>
+                  {icon(option)} &nbsp;&nbsp;{option}
+                </Button>
               ))}
             </div>
           </div>
