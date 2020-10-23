@@ -91,7 +91,7 @@ export default function AnnouncementPage(props: {
             <>
               <h1 className={'text-3xl font-bold leading-9'}>
                 {firebaseUser ? 'Would you like' : 'Please login'} to join the
-                class <b>Sunday Intermediate</b>
+                class <b>{data.name}</b>
                 {firebaseUser ? '?' : ''}
               </h1>
               {firebaseUser && (
