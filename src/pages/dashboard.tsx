@@ -48,6 +48,7 @@ export default function DashboardPage(props: PageProps) {
     setLastReadAnnouncement,
     firebaseUser,
     consecutiveVisits,
+    onlineUsers,
   } = React.useContext(UserDataContext);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
@@ -143,11 +144,24 @@ export default function DashboardPage(props: PageProps) {
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
-              <p className="mb-4 text-center">
-                {firebaseUser
-                  ? `Signed in as ${firebaseUser.email}.`
-                  : `Not signed in.`}
-              </p>
+              <div className="flex flex-wrap mb-4">
+                <div className="w-full md:w-1/2 text-center">
+                  {firebaseUser ? (
+                    <>
+                      Signed in as <i>{firebaseUser.email}</i>.
+                    </>
+                  ) : (
+                    `Not signed in.`
+                  )}
+                </div>
+                <div className="w-full md:w-1/2 text-center">
+                  {onlineUsers ? (
+                    <>
+                      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.
+                    </>
+                  ) : null}
+                </div>
+              </div>
               <div className="flex overflow-x-auto">
                 <WelcomeBackBanner
                   lastViewedModuleURL={lastViewedModuleURL}

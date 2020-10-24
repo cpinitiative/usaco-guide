@@ -70,6 +70,14 @@ const HTMLComponents = {
     />
   ),
   code: CodeBlock,
+  a: ({ children, ...props }) => (
+    <a
+      target={!props.href || props.href.startsWith('#') ? null : '_blank'}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
 };
 
 export default HTMLComponents;

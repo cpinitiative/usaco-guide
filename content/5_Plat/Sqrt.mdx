@@ -19,7 +19,24 @@ export const problems = {
 		),
 	],
 	fst: [
-		new Problem('APIO', 'Bridges', 'https://oj.uz/problem/view/APIO19_bridges', 'Hard', false, [], ''),
+		new Problem(
+			'YS',
+			'Static Range Inversions Query',
+			'https://judge.yosupo.jp/problem/static_range_inversions_query',
+			'Normal',
+			false,
+			[],
+			'static-range-inv'
+		),
+		new Problem(
+			'APIO',
+			'2019 - Bridges',
+			'https://oj.uz/problem/view/APIO19_bridges',
+			'Hard',
+			false,
+			[],
+			'apio-19-bridges'
+		),
 		new Problem('Plat', 'Train Tracking', '841', 'Very Hard', false, [], ''),
 		new Problem(
 			'DMOJ',
@@ -28,7 +45,7 @@ export const problems = {
 			'Very Hard',
 			false,
 			[],
-			''
+			'DMOJ-fluid-dynamics'
 		),
 		new Problem(
 			'DMOJ',
@@ -41,15 +58,7 @@ export const problems = {
 		),
 	],
 	bad: [
-		new Problem(
-			'Plat',
-			'New Barns',
-			'817',
-			'Hard',
-			false,
-			[],
-			'',
-		),
+		new Problem('Plat', 'New Barns', '817', 'Hard', false, [], ''),
 		new Problem(
 			'CF',
 			'Tree Queries',
@@ -68,15 +77,7 @@ export const problems = {
 			[],
 			''
 		),
-		new Problem(
-			'CSA',
-			'Shopping Time',
-			'shopping-time',
-			'Hard',
-			false,
-			[],
-			''
-		),
+		new Problem('CSA', 'Shopping Time', 'shopping-time', 'Hard', false, [], ''),
 		new Problem(
 			'Old Gold',
 			'Fencing the Herd',
@@ -95,7 +96,15 @@ export const problems = {
 			['Convex Hull'],
 			''
 		),
-		new Problem('IOI', '2011 - Elephants', 'https://oj.uz/problem/view/IOI11_elephants', 'Very Hard', false, [], ''),
+		new Problem(
+			'IOI',
+			'2011 - Elephants',
+			'https://oj.uz/problem/view/IOI11_elephants',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
 		new Problem('Plat', 'At Large', '793', 'Very Hard', false, [], ''),
 	],
 };
@@ -117,7 +126,8 @@ export const problems = {
 You should already have done this problem in [Point Update Range Sum](/gold/PURS), but here we'll present two more approaches. Both run in $O((N+Q)\sqrt N)$ time.
 
 <Resources>
-	<Resource source="CPH" title="27 - Square Root Algorithms"></Resource>
+	<Resource source="CPH" title="27 - Square Root Algorithms" starred></Resource>
+	<Resource source="CF" title="Applications of Square Root Decomposition" url="https://codeforces.com/blog/entry/83248" starred>Blocking, Mo's Algo</Resource>
 </Resources>
 
 ## Blocking
@@ -132,20 +142,20 @@ int n,q;
 vi x;
 ll block[450];
 int BLOCK;
- 
+
 ll sum(int a) { // sum of first a elements of array in O(sqrt(n)) time
 	ll ans = 0;
 	F0R(i,a/BLOCK) ans += block[i];
 	FOR(i,a/BLOCK*BLOCK,a) ans += x[i];
 	return ans;
 }
- 
+
 void upd(int a, int b) { // O(1) query
 	block[a/BLOCK] -= x[a];
 	x[a] = b;
 	block[a/BLOCK] += x[a];
 }
- 
+
 int main() {
     setIO(); re(n,q); x.rsz(n); re(x);
     BLOCK = sqrt(n);
@@ -156,7 +166,7 @@ int main() {
         else ps(sum(b)-sum(a-1));
     }
 }
- ```
+```
 
 ## Batching
 
@@ -196,15 +206,13 @@ int main() {
 
 ## Mo's Algorithm
 
-See CPH 27.3.
+See CPH 27.3 and the CF link above.
 
 <Resources>
-	<Resource source="CF" title="Mo's Algorithm" url="7383"></Resource>
+	<Resource source="CF" title="Mo's Algorithm" url="7383"><i>very</i> brief description</Resource>
 </Resources>
 
 <!-- [A2OJ](https://a2oj.com/category?ID=318) -->
-
-<IncompleteSection />
 
 ## Additional Notes
 
@@ -230,7 +238,11 @@ The techniques mentioned in the blogs below are extremely rare but worth a menti
 Some more discussion about how sqrt decomp can be used:
 
 <Resources>
-	<Resource source="CF" url="https://codeforces.com/blog/entry/54133" title="SQRT decomposition for beginners"> 
+	<Resource
+		source="CF"
+		url="https://codeforces.com/blog/entry/54133"
+		title="SQRT decomposition for beginners"
+	>
 		format isn't great but tree example is ok
 	</Resource>
 </Resources>

@@ -45,6 +45,12 @@ export const pageQuery = graphql`
         description
         frequency
       }
+      parent {
+        ... on File {
+          name
+          relativePath
+        }
+      }
       fields {
         division
       }

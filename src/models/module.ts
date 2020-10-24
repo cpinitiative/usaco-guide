@@ -43,7 +43,8 @@ export class ModuleInfo extends ModuleLinkInfo {
     public prerequisites: string[],
     public description: string,
     public frequency: ModuleFrequency,
-    public toc: TableOfContents
+    public toc: TableOfContents,
+    public fileRelativePath: string
   ) {
     super(id, section, title);
   }

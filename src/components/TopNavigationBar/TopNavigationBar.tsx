@@ -150,9 +150,11 @@ const UserAuthButton = props => {
 export default function TopNavigationBar({
   indexPage = false,
   currentSection = null,
+  hideClassesPromoBar = false,
 }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
+  const { userClasses } = useContext(UserDataContext);
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -166,33 +168,44 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
+    ...(userClasses.length > 0
+      ? [
+          {
+            label: 'My Class' + (userClasses.length !== 1 ? 'es' : ''),
+            url:
+              '/class/' + (userClasses.length === 1 ? userClasses[0].id : ''),
+          },
+        ]
+      : []),
   ];
 
   return (
     <>
-      <div className="relative bg-blue-600">
-        <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-          <div className="pr-16 sm:text-center sm:px-16">
-            <p className="font-medium text-white">
-              <span className="md:hidden">
-                Free online USACO classes + contests!
-              </span>
-              <span className="hidden md:inline">
-                Free online USACO classes + contests from USACO Guide authors!
-              </span>
-              <span className="block sm:ml-2 sm:inline-block">
-                <OutboundLink
-                  href="https://joincpi.org/"
-                  target="_blank"
-                  className="text-white font-bold underline"
-                >
-                  Learn more &rarr;
-                </OutboundLink>
-              </span>
-            </p>
+      {!hideClassesPromoBar && (
+        <div className="relative bg-blue-600">
+          <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+            <div className="pr-16 sm:text-center sm:px-16">
+              <p className="font-medium text-white">
+                <span className="md:hidden">
+                  Free online USACO classes + contests!
+                </span>
+                <span className="hidden md:inline">
+                  Free online USACO classes + contests from USACO Guide authors!
+                </span>
+                <span className="block sm:ml-2 sm:inline-block">
+                  <OutboundLink
+                    href="https://joincpi.org/"
+                    target="_blank"
+                    className="text-white font-bold underline"
+                  >
+                    Learn more &rarr;
+                  </OutboundLink>
+                </span>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
         <div
@@ -236,12 +249,27 @@ export default function TopNavigationBar({
                   to="/problems/"
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                   })}
                 >
                   Problems
                 </Link>
+                {userClasses.length > 0 && (
+                  <Link
+                    to={
+                      '/class/' +
+                      (userClasses.length === 1 ? userClasses[0].id : '')
+                    }
+                    getProps={({ isCurrent }) => ({
+                      className: isCurrent
+                        ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                        : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                    })}
+                  >
+                    {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
+                  </Link>
+                )}
                 <button
                   className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
                   onClick={() => setIsContactUsActive(true)}

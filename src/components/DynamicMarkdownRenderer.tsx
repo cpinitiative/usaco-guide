@@ -11,11 +11,47 @@ import * as remarkMath from 'remark-math';
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
 
-export default function ({ markdown }) {
+class ErrorBoundary extends React.Component {
+  state: {
+    error: null | object;
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ error });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      this.setState({ error: null });
+    }
+  }
+
+  render() {
+    // @ts-ignore
+    if (this.state.error) {
+      // You can render any custom fallback UI
+      return (
+        <div>
+          An error occurred:
+          <pre className="mt-2 text-red-700">{this.state.error.toString()}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function ({ markdown, debounce = 1000 }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
-    (async () => {
+    const compile = async () => {
       try {
         const fullScope = {
           mdx: createElement,
@@ -64,7 +100,13 @@ export default function ({ markdown }) {
         console.log('error', e);
         setError(e);
       }
-    })();
+    };
+    if (debounce > 0) {
+      let id = setTimeout(compile, debounce);
+      return () => clearTimeout(id);
+    } else {
+      compile();
+    }
   }, [markdown]);
   if (error) {
     return (
@@ -74,7 +116,7 @@ export default function ({ markdown }) {
       </div>
     );
   }
-  return fn;
+  return <ErrorBoundary>{fn}</ErrorBoundary>;
 }
 
 // Backup...

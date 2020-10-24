@@ -169,6 +169,40 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
+static void add(int x) {
+	if(multiset.containsKey(x)) {
+		multiset.put(x, multiset.get(x) + 1);
+	} else {
+		multiset.put(x, 1);
+	}
+}
+static void remove(int x) {
+	multiset.put(x, multiset.get(x) - 1);
+	if(multiset.get(x) == 0) {
+		multiset.remove(x);
+	}
+}
+static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+	ArrayList<Integer> ret = new ArrayList<Integer>();
+	for (int i = 0; i < k; i++) {
+		add(nums[i]);
+	}
+	for (int i = k; i < nums.length; i++) {
+		ret.add(multiset.lastKey());
+		remove(nums[i-k]);
+		add(nums[i]);
+	}
+	ret.add(multiset.lastKey());
+	return ret;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ### Problems
@@ -215,6 +249,31 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+public class test{
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int a[] = new int[n];
+		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		int r = -1;
+		HashSet<Integer> s = new HashSet<Integer>();
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			while(r < n-1 && !s.contains(a[r+1])) s.add(a[++r]);
+			ans = Math.max(ans, r-i+1);
+			s.remove(a[i]);
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -278,6 +337,35 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
+	ArrayList<Integer> ret = new ArrayList<Integer>();
+	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
+	for (int i = 0; i < k; i++) {
+		while(!d.isEmpty() && nums[i] > nums[d.peekLast()]) {
+    			d.pollLast();
+		}
+		d.addLast(i);
+	}
+	for (int i = k; i < nums.length; i++) {
+		ret.add(nums[d.peekFirst()]);
+		if(!d.isEmpty() && d.peekFirst() <= i-k) {
+ 			d.pollFirst();
+		}
+		while(!d.isEmpty() && nums[i] >= nums[d.peekLast()]) {
+			d.pollLast();
+		}
+		d.add(i);
+	}
+	ret.add(nums[d.peekFirst()]);
+	return ret;
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
