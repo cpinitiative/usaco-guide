@@ -11,8 +11,8 @@ import SEO from '../components/seo';
 import { useState } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
-const RawMarkdownRenderer = React.lazy(() =>
-  import('../components/DynamicMarkdownRenderer')
+const RawMarkdownRenderer = React.lazy(
+  () => import('../components/DynamicMarkdownRenderer')
 );
 
 const Editor = React.lazy(() =>
@@ -28,7 +28,7 @@ export default function LiveUpdatePage(props: PageProps) {
     <Layout>
       <SEO title="MDX Renderer" />
       <div className="h-screen flex flex-col">
-        <TopNavigationBar />
+        <TopNavigationBar hideClassesPromoBar={true} />
 
         {typeof window !== 'undefined' && (
           <React.Suspense
