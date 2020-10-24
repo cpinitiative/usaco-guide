@@ -3,7 +3,7 @@ import Transition from '../Transition';
 import { useContext, useState } from 'react';
 import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
-import { Disqus } from 'gatsby-plugin-disqus';
+import { DiscussionEmbed } from 'disqus-react';
 import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
@@ -394,11 +394,9 @@ export default function MarkdownLayout({
     ['Not Attempted']
   );
 
-  const disqusConfig = {
-    identifier: markdownData.id,
-    title: markdownData.title,
-  };
+  const { darkMode } = useContext(UserDataContext);
 
+  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -658,7 +656,14 @@ export default function MarkdownLayout({
                   <ModuleFeedback markdownData={markdownData} />
                 </div>
 
-                <Disqus config={disqusConfig} />
+                <DiscussionEmbed
+                  shortname="usacoguide"
+                  config={{ identifier: markdownData.id }}
+                  // technically this isn't a valid prop, but disqus will detect the prop change
+                  // and will re-render automatically.
+                  // @ts-ignore
+                  theme={darkMode ? 'dark' : 'light'}
+                />
 
                 <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
