@@ -10,6 +10,7 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useState } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import useStickyState from '../hooks/useStickyState';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -22,7 +23,10 @@ const Editor = React.lazy(() =>
 );
 
 export default function LiveUpdatePage(props: PageProps) {
-  const [markdown, setMarkdown] = useState('');
+  const [markdown, setMarkdown] = useStickyState(
+    '',
+    'guide:liveupdate:markdown'
+  );
 
   return (
     <Layout>
