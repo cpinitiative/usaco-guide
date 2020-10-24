@@ -9,12 +9,13 @@ import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useState } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 const RawMarkdownRenderer = React.lazy(() =>
   import('../components/LiveUpdateMarkdownRenderer')
 );
 
-const Editor = React.lazy(() => import('@monaco-editor/react'));
+const Editor = React.lazy(() => import('@monaco-editor/react').then(module => ({ default: module.ControlledEditor })));
 
 export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useState('');
@@ -22,24 +23,23 @@ export default function LiveUpdatePage(props: PageProps) {
   return (
     <Layout>
       <SEO title="MDX Renderer" />
+      <div className="h-screen flex flex-col">
+        <TopNavigationBar />
 
-      <div className="h-screen grid grid-cols-2">
-        <div className="col-span-1">
-          {typeof window !== 'undefined' && (
-            <React.Suspense fallback={'Loading'}>
-              <Editor theme="dark" language="markdown" value={markdown} />
-            </React.Suspense>
-          )}
-        </div>
-        <div className="col-span-1">
-          <div className="markdown">
-            {typeof window !== 'undefined' && (
-              <React.Suspense fallback={'Loading'}>
-                <RawMarkdownRenderer markdown={markdown} />
-              </React.Suspense>
-            )}
-          </div>
-        </div>
+        {typeof window !== 'undefined' && (
+          <React.Suspense fallback={<div className="text-center mt-6 font-bold text-2xl">Loading</div>}>
+            <div className="h-full relative flex-1 overflow-hidden grid grid-cols-2">
+              <div className="col-span-1">
+                <Editor theme="dark" language="markdown" value={markdown} onChange={(e, v) => setMarkdown(v)} options={{ wordWrap: "on" }} editorDidMount={(_, e) => setTimeout(() => {e.layout();e.focus();}, 0)}/>
+              </div>
+              <div className="col-span-1 h-full overflow-y-auto">
+                <div className="markdown p-4">
+                  <RawMarkdownRenderer markdown={markdown} />
+                </div>
+              </div>
+            </div>
+          </React.Suspense>
+        )}
       </div>
     </Layout>
   );
