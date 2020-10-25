@@ -214,7 +214,7 @@ export const UserDataProvider = ({ children }) => {
         .signOut()
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          window.location.reload();
+          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
         });
     },
     isLoaded,

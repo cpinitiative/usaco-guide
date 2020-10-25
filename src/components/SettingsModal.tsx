@@ -3,12 +3,21 @@ import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
 
+const UserAuthButton = props => {
+  const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
+  return (
+    <button {...props} onClick={() => (firebaseUser ? signOut() : signIn())}>
+      {firebaseUser ? 'Logout' : 'Login'}
+    </button>
+  );
+};
+
 export default function SettingsModal({ isOpen, onClose }) {
   const userSettings = useContext(UserDataContext);
 
   return (
-    <Transition show={isOpen} className="fixed z-10 inset-0 overflow-y-auto">
-      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <Transition show={isOpen} className="fixed z-30 inset-0 overflow-y-auto">
+      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-12 text-center sm:block sm:p-0">
         <Transition.Child
           className="fixed inset-0 transition-opacity"
           onClick={onClose}
@@ -24,7 +33,7 @@ export default function SettingsModal({ isOpen, onClose }) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" />
         &#8203;
         <Transition.Child
-          className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          className="w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -59,9 +68,9 @@ export default function SettingsModal({ isOpen, onClose }) {
                   />
                 </svg>
               </div>
-              <div className="mt-3 text-center sm:ml-4 sm:mt-1 sm:text-left">
+              <div className="mt-3 sm:ml-4 sm:mt-1">
                 <h3
-                  className="text-xl font-medium text-gray-900"
+                  className="text-xl font-medium text-gray-900 text-center sm:text-left"
                   id="modal-headline"
                 >
                   Settings
@@ -102,38 +111,6 @@ export default function SettingsModal({ isOpen, onClose }) {
                       Python
                     </button>
                   </span>
-                  {/*<div className="inline-flex">*/}
-                  {/*  <button*/}
-                  {/*    onClick={() => userSettings.setLang('cpp')}*/}
-                  {/*    className={`${*/}
-                  {/*      userSettings.lang == 'cpp'*/}
-                  {/*        ? `bg-blue-600 text-white font-bold py-2 px-4 rounded`*/}
-                  {/*        : `bg-gray-100 hover:bg-blue-100 text-gray-800 font-bold py-2 px-4`*/}
-                  {/*    }`}*/}
-                  {/*  >*/}
-                  {/*    C++*/}
-                  {/*  </button>*/}
-                  {/*  <button*/}
-                  {/*    onClick={() => userSettings.setLang('java')}*/}
-                  {/*    className={`${*/}
-                  {/*      userSettings.lang == 'java'*/}
-                  {/*        ? `bg-blue-600 text-white font-bold py-2 px-4 rounded`*/}
-                  {/*        : `bg-gray-100 hover:bg-blue-100 text-gray-800 font-bold py-2 px-4`*/}
-                  {/*    }`}*/}
-                  {/*  >*/}
-                  {/*    Java*/}
-                  {/*  </button>*/}
-                  {/*  <button*/}
-                  {/*    onClick={() => userSettings.setLang('py')}*/}
-                  {/*    className={`${*/}
-                  {/*      userSettings.lang == 'py'*/}
-                  {/*        ? `bg-blue-600 text-white font-bold py-2 px-4 rounded`*/}
-                  {/*        : `bg-gray-100 hover:bg-blue-100 text-gray-800 font-bold py-2 px-4`*/}
-                  {/*    }`}*/}
-                  {/*  >*/}
-                  {/*    Python*/}
-                  {/*  </button>*/}
-                  {/*</div>*/}
 
                   <label className="flex items-center mt-3">
                     <input
@@ -157,6 +134,10 @@ export default function SettingsModal({ isOpen, onClose }) {
                     />
                     <span className="ml-2 text-gray-700">Dark mode</span>
                   </label>
+
+                  <div className="h-3" />
+
+                  <UserAuthButton className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" />
                 </div>
               </div>
             </div>
