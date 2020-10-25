@@ -205,7 +205,8 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      if (firebase)
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     },
     signOut: () => {
       firebase
@@ -213,7 +214,7 @@ export const UserDataProvider = ({ children }) => {
         .signOut()
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          window.location.reload();
+          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
         });
     },
     isLoaded,
