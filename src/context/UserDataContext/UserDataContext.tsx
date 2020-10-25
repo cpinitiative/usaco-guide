@@ -205,7 +205,8 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      if (firebase)
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     },
     signOut: () => {
       firebase
