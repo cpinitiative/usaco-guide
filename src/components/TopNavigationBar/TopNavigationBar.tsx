@@ -172,6 +172,7 @@ export default function TopNavigationBar({
     },
   ];
 
+  const userSettings = useContext(UserDataContext);
   return (
     <>
       <div className="relative bg-blue-600">
@@ -414,34 +415,81 @@ export default function TopNavigationBar({
                         className="text-lg leading-6 font-medium text-gray-900"
                         id="modal-headline"
                       >
-                        Deactivate account
+                        Settings
                       </h3>
                       <div className="mt-2">
-                        <p className="text-sm leading-5 text-gray-500">
-                          Are you sure you want to deactivate your account? All
-                          of your data will be permanently removed. This action
-                          cannot be undone.
-                        </p>
+                        <div className="inline-flex">
+                          <button
+                            onClick={() => userSettings.setLang('cpp')}
+                            className={`${
+                              userSettings.lang == 'cpp'
+                                ? `bg-blue-400 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded`
+                                : `bg-gray-200 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded-r`
+                            }`}
+                          >
+                            C++
+                          </button>
+                          <button
+                            onClick={() => userSettings.setLang('java')}
+                            className={`${
+                              userSettings.lang == 'java'
+                                ? `bg-blue-400 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded`
+                                : `bg-gray-200 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded-r`
+                            }`}
+                          >
+                            Java
+                          </button>
+                          <button
+                            onClick={() => userSettings.setLang('py')}
+                            className={`${
+                              userSettings.lang == 'py'
+                                ? `bg-blue-400 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded`
+                                : `bg-gray-200 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded-r`
+                            }`}
+                          >
+                            Python
+                          </button>
+                        </div>
+                        <br />
+
+                        <label className="inline-flex items-center mt-3">
+                          <input
+                            type="checkbox"
+                            onClick={() =>
+                              userSettings.setHide(!userSettings.hide)
+                            }
+                            className="form-checkbox h-5 w-5 text-gray-600"
+                            checked={userSettings.hide}
+                          />
+                          <span className="ml-2 text-gray-700">
+                            Hide tags & solutions
+                          </span>
+                        </label>
+                        <br />
+                        <label className="inline-flex items-center mt-3">
+                          <input
+                            type="checkbox"
+                            onClick={() =>
+                              userSettings.setDarkMode(!userSettings.darkMode)
+                            }
+                            className="form-checkbox h-5 w-5 text-gray-600"
+                            checked={userSettings.darkMode}
+                          />
+                          <span className="ml-2 text-gray-700">Dark mode</span>
+                        </label>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                  <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                    >
-                      Deactivate
-                    </button>
-                  </span>
+                  <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto"></span>
                   <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
                       className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     >
-                      Cancel
+                      Done
                     </button>
                   </span>
                 </div>
