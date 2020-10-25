@@ -9,37 +9,61 @@ import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { useState } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import useStickyState from '../hooks/useStickyState';
 
-const RawMarkdownRenderer = React.lazy(() =>
-  import('../components/LiveUpdateMarkdownRenderer')
+const RawMarkdownRenderer = React.lazy(
+  () => import('../components/DynamicMarkdownRenderer')
+);
+
+const Editor = React.lazy(() =>
+  import('@monaco-editor/react').then(module => ({
+    default: module.ControlledEditor,
+  }))
 );
 
 export default function LiveUpdatePage(props: PageProps) {
-  const [markdown, setMarkdown] = useState('');
+  const [markdown, setMarkdown] = useStickyState(
+    '',
+    'guide:liveupdate:markdown'
+  );
 
   return (
     <Layout>
       <SEO title="MDX Renderer" />
+      <div className="h-screen flex flex-col">
+        <TopNavigationBar hideClassesPromoBar={true} />
 
-      <div className="h-screen flex">
-        <div className="flex-1">
-          <textarea
-            value={markdown}
-            onChange={e => setMarkdown(e.target.value)}
-            className="w-full border border-gray-200 h-screen overflow-y-auto p-4 bg-gray-50 font-mono tracking-tight"
-            placeholder="Enter mdx here..."
-            style={{ resize: 'none' }}
-          />
-        </div>
-        <div className="flex-1 p-4 h-screen overflow-y-auto">
-          <div className="markdown">
-            {typeof window !== 'undefined' && (
-              <React.Suspense fallback={'Loading'}>
-                <RawMarkdownRenderer markdown={markdown} />
-              </React.Suspense>
-            )}
-          </div>
-        </div>
+        {typeof window !== 'undefined' && (
+          <React.Suspense
+            fallback={
+              <div className="text-center mt-6 font-bold text-2xl">Loading</div>
+            }
+          >
+            <div className="h-full relative flex-1 overflow-hidden grid grid-cols-2">
+              <div className="col-span-1">
+                <Editor
+                  theme="dark"
+                  language="markdown"
+                  value={markdown}
+                  onChange={(e, v) => setMarkdown(v)}
+                  options={{ wordWrap: 'on' }}
+                  editorDidMount={(_, e) =>
+                    setTimeout(() => {
+                      e.layout();
+                      e.focus();
+                    }, 0)
+                  }
+                />
+              </div>
+              <div className="col-span-1 h-full overflow-y-auto">
+                <div className="markdown p-4">
+                  <RawMarkdownRenderer markdown={markdown} />
+                </div>
+              </div>
+            </div>
+          </React.Suspense>
+        )}
       </div>
     </Layout>
   );

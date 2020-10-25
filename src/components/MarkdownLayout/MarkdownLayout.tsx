@@ -1,12 +1,9 @@
 import * as React from 'react';
 import Transition from '../Transition';
-import { useContext, useRef, useState } from 'react';
-import {
-  ModuleFrequency,
-  ModuleInfo,
-  ModuleLinkInfo,
-} from '../../models/module';
+import { useContext, useState } from 'react';
+import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
+import { DiscussionEmbed } from 'disqus-react';
 import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
@@ -397,6 +394,9 @@ export default function MarkdownLayout({
     ['Not Attempted']
   );
 
+  const { darkMode } = useContext(UserDataContext);
+
+  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -636,12 +636,8 @@ export default function MarkdownLayout({
 
                 {children}
 
-                <div className="my-8">
-                  <ModuleFeedback markdownData={markdownData} />
-                </div>
-
                 {markdownData instanceof ModuleInfo && (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-b border-gray-200 py-8 dark:border-gray-800 dark:text-dark-high-emphasis">
                     <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
                       Module Progress
                     </TextTooltip>
@@ -656,7 +652,20 @@ export default function MarkdownLayout({
                   </h3>
                 )}
 
-                <div className="border-t border-gray-200 pt-4 dark:border-gray-800">
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
+
+                <DiscussionEmbed
+                  shortname="usacoguide"
+                  config={{ identifier: markdownData.id }}
+                  // technically this isn't a valid prop, but disqus will detect the prop change
+                  // and will re-render automatically.
+                  // @ts-ignore
+                  theme={darkMode ? 'dark' : 'light'}
+                />
+
+                <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
