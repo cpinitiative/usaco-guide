@@ -1,5 +1,7 @@
 # USACO Guide
 
+![Discord](https://img.shields.io/discord/717477028072521797?label=Discord&style=for-the-badge)
+
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
 Thank you to the following companies:
