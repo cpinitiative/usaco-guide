@@ -16,8 +16,11 @@ export default function SettingsModal({ isOpen, onClose }) {
   const userSettings = useContext(UserDataContext);
 
   return (
-    <Transition show={isOpen} className="fixed z-30 inset-0 overflow-y-auto">
-      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-12 text-center sm:block sm:p-0">
+    <Transition
+      show={isOpen}
+      className="fixed z-30 inset-0 h-full overflow-y-auto"
+    >
+      <div className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block sm:p-0">
         <Transition.Child
           className="fixed inset-0 transition-opacity"
           onClick={onClose}
@@ -115,7 +118,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <label className="flex items-center mt-3">
                     <input
                       type="checkbox"
-                      onClick={() => userSettings.setHide(!userSettings.hide)}
+                      onChange={() => userSettings.setHide(!userSettings.hide)}
                       className="form-checkbox h-5 w-5 text-gray-600"
                       checked={userSettings.hide}
                     />
@@ -126,7 +129,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <label className="flex items-center mt-2">
                     <input
                       type="checkbox"
-                      onClick={() =>
+                      onChange={() =>
                         userSettings.setDarkMode(!userSettings.darkMode)
                       }
                       className="form-checkbox h-5 w-5 text-gray-600"
