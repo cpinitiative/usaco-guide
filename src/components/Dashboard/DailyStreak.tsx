@@ -111,7 +111,7 @@ export default function DailyStreak({ streak }) {
     }
     if (i == times.length) {
       return (
-        <div className="mb-8">
+        <div className="mb-8" key={times.length}>
           <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
