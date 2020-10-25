@@ -175,7 +175,7 @@ const StyledProblemRow = styled.tr`
     isActive
       ? css`
           background-color: #fdfdea !important;
-          .mode-dark & {
+          .mode-dark && {
             background-color: #3c3c00 !important;
           }
         `
@@ -185,7 +185,7 @@ const StyledProblemRow = styled.tr`
 const Anchor = styled.a`
   ${tw`text-blue-600 font-semibold`}
 
-  .mode-dark & {
+  .mode-dark && {
     color: #a9c5ea;
   }
 `;
