@@ -182,6 +182,17 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
+  const ref = useRef();
+  useEffect(() => {
+    const handleClick = e => {
+      // @ts-ignore
+      if (!(ref.current && ref.current.contains(e.target))) {
+        setIsActive(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [ref.current]);
 
   const userSettings = useContext(UserDataContext);
   return (
