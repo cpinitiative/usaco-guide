@@ -1,7 +1,5 @@
 # USACO Guide
 
-![Discord](https://img.shields.io/discord/717477028072521797?label=Discord&style=for-the-badge)
-
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
 Thank you to the following companies:
@@ -17,6 +15,10 @@ Thank you to the following companies:
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
+
+![Discord](https://img.shields.io/discord/717477028072521797?label=Discord&style=for-the-badge)
+
+Join our Discord server: https://discord.gg/Gq9cX4j
 
 **We're actively looking for a web developer to help add new features to the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
 
