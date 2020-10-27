@@ -620,7 +620,14 @@ export default function MarkdownLayout({
 
                 <DiscussionEmbed
                   shortname="usacoguide"
-                  config={{ identifier: markdownData.id }}
+                  config={{
+                    url: `https://usaco.guide/${
+                      markdownData instanceof ModuleInfo
+                        ? markdownData.section
+                        : 'solutions'
+                    }/${markdownData.id}`,
+                    identifier: markdownData.id,
+                  }}
                   // technically this isn't a valid prop, but disqus will detect the prop change
                   // and will re-render automatically.
                   // @ts-ignore
