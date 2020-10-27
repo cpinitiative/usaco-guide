@@ -3,13 +3,13 @@ import UserDataPropertyAPI from '../userDataPropertyAPI';
 export type LastVisitAPI = {
   lastVisitDate: number;
   setLastVisitDate: (today: number) => void;
-
   consecutiveVisits: number;
 };
 
 export default class LastVisitProperty extends UserDataPropertyAPI {
   private lastVisitDate: number;
   private consecutiveVisits: number;
+  private totalNoVisits: number;
 
   initializeFromLocalStorage = () => {
     this.lastVisitDate = this.getValueFromLocalStorage(
@@ -20,6 +20,11 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       this.getLocalStorageKey('consecutiveVisits'),
       1
     );
+    this.totalNoVisits = this.getValueFromLocalStorage(
+
+      this.getLocalStorageKey('totalNoVisits'),
+      1
+      );
   };
 
   writeValueToLocalStorage = () => {
@@ -31,6 +36,10 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       this.getLocalStorageKey('consecutiveVisits'),
       this.consecutiveVisits
     );
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey('totalNoVisits'),
+      this.totalNoVisits
+    );
   };
 
   eraseFromLocalStorage = () => {
@@ -38,31 +47,37 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     window.localStorage.removeItem(
       this.getLocalStorageKey('consecutiveVisits')
     );
+    window.localStorage.removeItem(
+      this.getLocalStorageKey('totalNoVisits')
+    );
   };
 
   exportValue = (): any => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
+      totalNoVisits: this.totalNoVisits,
     };
   };
 
   importValueFromObject = (data: object) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
+    this.totalNoVisits = data['totalNoVisits'] || 1;
   };
 
   getAPI = () => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
+      totalNoVisits: this.totalNoVisits,
       setLastVisitDate: (today: number) => {
         let timeSinceLastVisit = today - this.lastVisitDate;
         let oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
-          newConsecutiveVisits = null;
+          newConsecutiveVisits = null
 
         if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
           newLastVisit = today;
@@ -84,6 +99,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           }
           this.lastVisitDate = newLastVisit;
           this.consecutiveVisits = newConsecutiveVisits;
+          this.totalNoVisits += 1;
           this.writeValueToLocalStorage();
           this.triggerRerender();
         }
