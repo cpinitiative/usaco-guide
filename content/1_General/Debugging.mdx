@@ -205,7 +205,7 @@ scripts for multiple languages? can this be modified to break on an assertion fa
 	</Resource>
 </Resources>
 
-## Compilation Options
+## GCC Compilation Options
 
 <Resources>
 	<Resource
@@ -220,7 +220,7 @@ scripts for multiple languages? can this be modified to break on an assertion fa
 
 You can also check what options [Errichto](https://codeforces.com/blog/entry/64993) and [ecnerwala](https://gist.github.com/ecnerwala/a3c6332ac626bc448165) use.
 
-### GCC Warning Options
+### Warning Options
 
 <Resources>
 	<Resource starred source="GCC" url="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html" title="3.8 - Options to Request or Suppress Warnings">documentation for options below</Resource>
@@ -332,6 +332,73 @@ int main() {
 
 ```
 prog.cpp:6:15: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
+```
+
+We can also use `-fsanitize=undefined` with `-fsanitize-recover`. Error recovery for `-fsanitize=undefined` is turned on by default, but
+
+>  The `-fno-sanitize-recover=` option can be used to alter this behavior: only the first detected error is reported and program then exits with a non-zero exit code.
+
+So if `prog.cpp` is as follows:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cout << (1<<32) << endl;
+	cout << (1<<32) << endl;
+	cout << (1<<32) << endl;
+}
+```
+
+then
+
+```
+g++ -fsanitize=undefined prog.cpp -o prog && ./prog
+```
+
+produces:
+
+```
+prog.cpp: In function 'int main()':
+prog.cpp:5:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    5 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:6:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    6 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:7:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    7 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:5:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+0
+prog.cpp:6:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+0
+prog.cpp:7:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+0
+```
+
+while
+
+```
+g++ -fsanitize=undefined -fno-sanitize-recover prog.cpp -o prog && ./prog
+```
+
+produces:
+
+```
+prog.cpp: In function 'int main()':
+prog.cpp:5:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    5 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:6:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    6 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:7:12: warning: left shift count >= width of type [-Wshift-count-overflow]
+    7 |  cout << (1<<32) << endl;
+      |           ~^~~~
+prog.cpp:5:12: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+zsh: abort      ./prog
 ```
 
 #### `-fsanitize=address -g`
