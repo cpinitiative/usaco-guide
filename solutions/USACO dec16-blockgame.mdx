@@ -1,10 +1,10 @@
 ---
 id: usaco-664
 title: USACO December 2016 Bronze - Block Game
-author: Óscar Garries
+author: Óscar Garries, tickox
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html
+[Official Analysis](http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html)
 
 <LanguageSection>
 <CPPSection>
@@ -16,46 +16,38 @@ Official Editorial: http://www.usaco.org/current/data/sol_blocks_bronze_dec16.ht
 
 using namespace std;
 
-typedef long long ll;
-typedef long double ld;
+constexpr int nb_letter = 26;
+using arr = array<int, nb_letter>;
 
-int main () {
-	freopen("blocks.in", "r", stdin);
-	freopen("blocks.out", "w", stdout);
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	int n;
-	cin >> n;
-	vector<vector<int>> v(26);
-	for (int i = 0; i < n; i++) {
-		for (int un = 0; un < 2; un++) {
-			string s1, s2;
-			cin >> s1 >> s2;
-			vector<int> freq1(26), freq2(26);
-			for (char x: s1) {
-				freq1[x - 'a']++;
-			}
-			for (char x: s2) {
-				freq2[x - 'a']++;
-			}
-			for (int j = 0; j < 26; j++) {
-				if (freq1[j] > freq2[j]) {
-					v[j].push_back(freq1[j]);
-				} else {
-					v[j].push_back(freq2[j]);
-				}
-			}
-		}
-	}
-	for (auto arr: v) {
-		int cur = 0;
-		sort(arr.rbegin(), arr.rend());
-		for (int i = 0; i < n && i < len(arr); i++) {
-			cur += arr[i];
-		}
-		cout << cur << '\n';
+void count_freq(const string &s, arr &freq) {
+	for (char c: s) {
+		freq[c - 'a']++;
 	}
 }
 
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	freopen("blocks.in", "r", stdin);
+	freopen("blocks.out", "w", stdout);
+	int n;
+	cin >> n;
+	arr ans{};
+	while (n--) {
+		string s1, s2;
+		cin >> s1 >> s2;
+		arr freq1{}, freq2{};
+		count_freq(s1, freq1); count_freq(s2, freq2);
+		for (int i = 0; i < nb_letter; i++) {
+			ans[i] += max(freq1[i], freq2[i]);
+		}
+	} 
+	for (int i: ans) {
+		cout << i << '\n';
+	}
+	
+	return 0;
+}
 ```
 
 </CPPSection>
