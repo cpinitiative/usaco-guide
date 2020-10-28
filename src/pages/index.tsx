@@ -7,6 +7,7 @@ import { Author, Authors } from '../../content/authors/authors';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useRef } from 'react';
 import Video from '../components/Video';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
 
 const AuthorCard = ({
   author,
@@ -545,13 +546,13 @@ export default function IndexPage(props: PageProps) {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500">
                       Yes! Check out our{' '}
-                      <a
-                        href="https://github.com/cpinitiative/usaco-guide"
+                      <OutboundLink
+                        href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
                         className="text-blue-600 underline"
                       >
                         Github Repository
-                      </a>
+                      </OutboundLink>
                       .
                     </p>
                   </dd>
@@ -597,6 +598,24 @@ export default function IndexPage(props: PageProps) {
                         usacoguide@gmail.com
                       </a>
                       .
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                    I'm looking for classes, club curriculum, contests...
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500">
+                      Check out the{' '}
+                      <OutboundLink
+                        href="https://joincpi.org/?ref=home"
+                        target="_blank"
+                        className="text-blue-600 underline"
+                      >
+                        Competitive Programming Initiative
+                      </OutboundLink>
+                      !
                     </p>
                   </dd>
                 </div>
