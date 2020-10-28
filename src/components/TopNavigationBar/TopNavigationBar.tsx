@@ -188,31 +188,31 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && (
-        <div className="relative bg-blue-600">
-          <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-            <div className="pr-16 sm:text-center sm:px-16">
-              <p className="font-medium text-white">
-                <span className="md:hidden">
-                  Free online USACO classes + contests!
-                </span>
-                <span className="hidden md:inline">
-                  Free online USACO classes + contests from USACO Guide authors!
-                </span>
-                <span className="block sm:ml-2 sm:inline-block">
-                  <OutboundLink
-                    href="https://joincpi.org/"
-                    target="_blank"
-                    className="text-white font-bold underline"
-                  >
-                    Learn more &rarr;
-                  </OutboundLink>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/*{!hideClassesPromoBar && (*/}
+      {/*  <div className="relative bg-blue-600">*/}
+      {/*    <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">*/}
+      {/*      <div className="pr-16 sm:text-center sm:px-16">*/}
+      {/*        <p className="font-medium text-white">*/}
+      {/*          <span className="md:hidden">*/}
+      {/*            Free online USACO classes + contests!*/}
+      {/*          </span>*/}
+      {/*          <span className="hidden md:inline">*/}
+      {/*            Free online USACO classes + contests from USACO Guide authors!*/}
+      {/*          </span>*/}
+      {/*          <span className="block sm:ml-2 sm:inline-block">*/}
+      {/*            <OutboundLink*/}
+      {/*              href="https://joincpi.org/"*/}
+      {/*              target="_blank"*/}
+      {/*              className="text-white font-bold underline"*/}
+      {/*            >*/}
+      {/*              Learn more &rarr;*/}
+      {/*            </OutboundLink>*/}
+      {/*          </span>*/}
+      {/*        </p>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
       <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
         <div
