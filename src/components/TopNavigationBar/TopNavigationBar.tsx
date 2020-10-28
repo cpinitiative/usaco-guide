@@ -27,6 +27,8 @@ import { searchClient } from '../../utils/algoliaSearchClient';
 import SEO from '../seo';
 import Layout from '../layout';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import Transition from '../Transition';
+import SettingsModal from '../SettingsModal';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -47,7 +49,7 @@ const SearchResultDescription = styled.p`
 `;
 
 const SearchResultsContainer = styled.div`
-  ${tw`absolute inset-x-0 z-10 mt-3 bg-white shadow-md lg:rounded lg:border lg:border-gray-400 lg:left-auto lg:w-screen lg:max-w-3xl`}
+  ${tw`absolute z-10 bg-white lg:rounded shadow-md lg:border lg:border-gray-400 z-10 mt-3 inset-x-0 lg:left-auto lg:w-screen lg:max-w-3xl`}
 
   .mode-dark & {
     ${tw`bg-dark-surface lg:border-gray-700`}
@@ -82,9 +84,9 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         Search
       </label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg
-            className="w-5 h-5 text-gray-400"
+            className="h-5 w-5 text-gray-400"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -97,7 +99,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         </div>
         <input
           id="search"
-          className="block w-full py-2 pl-10 pr-3 text-black placeholder-gray-500 bg-white border border-gray-300 dark:border-gray-700 rounded-md leading-5 dark:bg-gray-800 dark:placeholder-dark-high-emphasis focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out"
+          className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-dark-high-emphasis focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out text-black"
           placeholder="Search"
           type="search"
           value={currentRefinement}
@@ -115,9 +117,9 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
             {hits.map(hit => (
               <Link
                 to={moduleIDToURLMap[hit.id]}
-                className="block px-4 py-2 hover:bg-blue-100 dark-hover:bg-gray-700 transition duration-150 ease-in-out"
+                className="block hover:bg-blue-100 dark-hover:bg-gray-700 px-4 py-2 transition duration-150 ease-in-out"
               >
-                <h3 className="font-medium text-gray-600 dark:text-dark-high-emphasis">
+                <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
@@ -138,21 +140,17 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
 
 const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
 
-const UserAuthButton = props => {
-  const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
-  return (
-    <button {...props} onClick={() => (firebaseUser ? signOut() : signIn())}>
-      {firebaseUser ? 'Logout' : 'Login'}
-    </button>
-  );
-};
-
 export default function TopNavigationBar({
   indexPage = false,
   currentSection = null,
+  hideClassesPromoBar = false,
 }) {
+  const { firebaseUser, signOut } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userClasses } = useContext(UserDataContext);
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -166,38 +164,57 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
+    ...(userClasses.length > 0
+      ? [
+          {
+            label: 'My Class' + (userClasses.length !== 1 ? 'es' : ''),
+            url:
+              '/class/' + (userClasses.length === 1 ? userClasses[0].id : ''),
+          },
+        ]
+      : []),
   ];
+  const ref = useRef();
+  useEffect(() => {
+    const handleClick = e => {
+      // @ts-ignore
+      if (!(ref.current && ref.current.contains(e.target))) {
+        setIsActive(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [ref.current]);
 
   return (
     <>
-      {/* Classes banner */}
-      {/*
-      <div className="relative bg-blue-600">
-        <div className="px-3 py-3 mx-auto max-w-screen-xl sm:px-6 lg:px-8">
-          <div className="pr-16 sm:text-center sm:px-16">
-            <p className="font-medium text-white">
-              <span className="md:hidden">
-                Free online USACO classes + contests!
-              </span>
-              <span className="hidden md:inline">
-                Free online USACO classes + contests from USACO Guide authors!
-              </span>
-              <span className="block sm:ml-2 sm:inline-block">
-                <OutboundLink
-                  href="https://joincpi.org/"
-                  target="_blank"
-                  className="font-bold text-white underline"
-                >
-                  Learn more &rarr;
-                </OutboundLink>
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
-    */}
+      {/*{!hideClassesPromoBar && (*/}
+      {/*  <div className="relative bg-blue-600">*/}
+      {/*    <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">*/}
+      {/*      <div className="pr-16 sm:text-center sm:px-16">*/}
+      {/*        <p className="font-medium text-white">*/}
+      {/*          <span className="md:hidden">*/}
+      {/*            Free online USACO classes + contests!*/}
+      {/*          </span>*/}
+      {/*          <span className="hidden md:inline">*/}
+      {/*            Free online USACO classes + contests from USACO Guide authors!*/}
+      {/*          </span>*/}
+      {/*          <span className="block sm:ml-2 sm:inline-block">*/}
+      {/*            <OutboundLink*/}
+      {/*              href="https://joincpi.org/"*/}
+      {/*              target="_blank"*/}
+      {/*              className="text-white font-bold underline"*/}
+      {/*            >*/}
+      {/*              Learn more &rarr;*/}
+      {/*            </OutboundLink>*/}
+      {/*          </span>*/}
+      {/*        </p>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
-      <nav className="relative z-10 bg-white shadow dark:bg-gray-900">
+      <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
         <div
           className={`${
             indexPage
@@ -207,8 +224,8 @@ export default function TopNavigationBar({
         >
           <div className="flex justify-between h-16">
             <div className="flex px-2 lg:px-0">
-              <Link to="/" className="flex items-center flex-shrink-0">
-                <div className="block h-10 sm:hidden">
+              <Link to="/" className="flex-shrink-0 flex items-center">
+                <div className="block sm:hidden h-10">
                   <LogoSquare />
                 </div>
                 <div
@@ -239,14 +256,29 @@ export default function TopNavigationBar({
                   to="/problems/"
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 text-base font-medium leading-6 text-gray-900 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                   })}
                 >
                   Problems
                 </Link>
+                {userClasses.length > 0 && (
+                  <Link
+                    to={
+                      '/class/' +
+                      (userClasses.length === 1 ? userClasses[0].id : '')
+                    }
+                    getProps={({ isCurrent }) => ({
+                      className: isCurrent
+                        ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
+                        : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                    })}
+                  >
+                    {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
+                  </Link>
+                )}
                 <button
-                  className="inline-flex items-center px-1 text-base font-medium text-gray-500 cursor-pointer leading-6 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
+                  className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
@@ -256,7 +288,7 @@ export default function TopNavigationBar({
             <div
               className={`flex-1 flex items-center justify-center px-2 lg:px-0 lg:ml-6 lg:justify-end`}
             >
-              <div className="w-full max-w-lg lg:max-w-sm">
+              <div className="max-w-lg w-full lg:max-w-sm">
                 <InstantSearch
                   indexName={indexName}
                   searchClient={searchClient}
@@ -309,13 +341,92 @@ export default function TopNavigationBar({
                 </svg>
               </MobileMenuButtonContainer>
             </div>
-            <div className="hidden lg:ml-4 lg:flex lg:items-center">
-              <div className="flex-shrink-0">
-                <UserAuthButton className="relative inline-flex items-center px-2 py-1 text-base font-medium text-gray-500 border border-transparent leading-6 rounded-md hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />
+            <div className="hidden lg:ml-3 lg:flex lg:items-center">
+              <div className="relative">
+                <div>
+                  {/* Settings button */}
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark-hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark-focus:bg-gray-700 transition duration-150 ease-in-out"
+                    aria-label="Settings"
+                  >
+                    <svg
+                      className="h-6 w-6"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </button>
+                  {/*{firebaseUser ? (*/}
+                  {/*  <button*/}
+                  {/*    className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"*/}
+                  {/*    id="user-menu"*/}
+                  {/*    aria-label="User menu"*/}
+                  {/*    aria-haspopup="true"*/}
+                  {/*    onClick={() => setIsActive(!isActive)}*/}
+                  {/*  >*/}
+                  {/*    <img*/}
+                  {/*      className="h-8 w-8 rounded-full"*/}
+                  {/*      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"*/}
+                  {/*      alt=""*/}
+                  {/*    />*/}
+                  {/*  </button>*/}
+                  {/*) : (*/}
+                  {/*  <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />*/}
+                  {/*)}*/}
+                </div>
+                <Transition
+                  show={isActive}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
+                    <div
+                      className="py-1 rounded-md bg-white shadow-xs"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="user-menu"
+                    >
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                        role="menuitem"
+                      >
+                        Settings
+                      </button>
+                      <button
+                        onClick={() => signOut()}
+                        className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                        role="menuitem"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  </div>
+                </Transition>
               </div>
             </div>
           </div>
         </div>
+
         {/*
         Mobile menu, toggle classes based on menu state.
 
@@ -329,7 +440,7 @@ export default function TopNavigationBar({
                 to={link.url}
                 getProps={({ isCurrent }) => ({
                   className: isCurrent
-                    ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
+                    ? 'block pl-3 pr-4 py-2 border-l-4 border-blue-500 text-base font-medium text-blue-700 dark:text-blue-100 bg-blue-50 dark:bg-blue-800 focus:outline-none focus:text-blue-800 focus:bg-blue-100 focus:border-blue-700 transition duration-150 ease-in-out'
                     : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                 })}
               >
@@ -337,17 +448,25 @@ export default function TopNavigationBar({
               </Link>
             ))}
             <button
-              className="block w-full py-2 pl-3 pr-4 text-base font-medium text-left text-gray-600 border-l-4 border-transparent dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
               onClick={() => setIsContactUsActive(true)}
             >
               Contact Us
             </button>
-          </div>
-          <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-            <UserAuthButton className="block w-full py-2 pl-3 pr-4 text-base font-medium text-left text-gray-600 border-l-4 border-transparent dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out" />
+            <button
+              className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark-hover:text-dark-high-emphasis hover:bg-gray-50 dark-hover:bg-gray-700 hover:border-gray-300 dark-hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark-focus:bg-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Settings
+            </button>
           </div>
         </div>
       </nav>
+
+      <SettingsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       <ContactUsSlideover
         isOpen={isContactUsActive}

@@ -136,7 +136,10 @@ export const plugins = [
         ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
     },
   },
-  `gatsby-plugin-netlify-cache`,
+  {
+    resolve: `gatsby-plugin-create-client-paths`,
+    options: { prefixes: [`/class/*`] },
+  },
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: 'gatsby-plugin-algolia',
@@ -148,6 +151,7 @@ export const plugins = [
     },
   },
   'gatsby-plugin-webpack-bundle-analyser-v2',
+
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline
   // `gatsby-plugin-offline`,

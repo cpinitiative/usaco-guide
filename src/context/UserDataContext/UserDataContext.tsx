@@ -21,6 +21,7 @@ import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 
 // Object for counting online users
 var Gathering = (function () {
@@ -86,6 +87,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
+  new UserClassesProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
@@ -95,7 +97,8 @@ type UserDataContextAPI = UserLangAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
-  LastVisitAPI & {
+  LastVisitAPI &
+  UserClassesAPI & {
     firebaseUser: any;
     signIn: Function;
     signOut: Function;
@@ -168,7 +171,7 @@ export const UserDataProvider = ({ children }) => {
             if (localDataIsNotEmpty) {
               if (
                 confirm(
-                  `Upload local progress to server? (You'll lose your local progress if you don't)`
+                  `Upload local progress to server? Recommended: choose yes! (You'll lose your local progress if you choose no.)`
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
@@ -202,7 +205,8 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      if (firebase)
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     },
     signOut: () => {
       firebase
@@ -210,7 +214,7 @@ export const UserDataProvider = ({ children }) => {
         .signOut()
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          window.location.reload();
+          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
         });
     },
     isLoaded,

@@ -1,0 +1,40 @@
+---
+id: usaco-619
+title: USACO February 2016 Silver - Load Balancing
+author: Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+```cpp
+int N,ans = MOD;
+map<int,pi> counter;
+
+void upd_ans() {
+	pi sum{0,0}, csum{0,0};
+	trav(t,counter) sum.f += t.s.f, sum.s += t.s.s;
+	trav(t,counter) {
+		csum.f += t.s.f, csum.s += t.s.s;
+		ckmin(ans,max(max(csum.f,sum.f-csum.f),max(csum.s,sum.s-csum.s)));
+	}
+}
+
+int main() {
+	setIO("balancing"); 
+	re(N);
+	vpi loc(N); re(loc);
+	sort(all(loc));
+	trav(t,loc) counter[t.s].f ++;
+	for (int ind = 0; ind < N; ) {
+		for (int prev_ind = ind; loc[ind].f == loc[prev_ind].f; ) {
+			counter[loc[ind].s].f --;
+			counter[loc[ind].s].s ++;
+			ind ++;
+		}
+		upd_ans();
+	}
+	ps(ans);
+}
+```

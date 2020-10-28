@@ -49,6 +49,7 @@ export default function DashboardPage(props: PageProps) {
     firebaseUser,
     consecutiveVisits,
     onlineUsers,
+    signIn,
   } = React.useContext(UserDataContext);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
@@ -151,7 +152,19 @@ export default function DashboardPage(props: PageProps) {
                       Signed in as <i>{firebaseUser.email}</i>.
                     </>
                   ) : (
-                    `Not signed in.`
+                    <span>
+                      Not signed in.{' '}
+                      <a
+                        href="#"
+                        onClick={e => {
+                          e.preventDefault();
+                          signIn();
+                        }}
+                        className="text-blue-600 dark:text-blue-300 underline"
+                      >
+                        Sign in now!
+                      </a>{' '}
+                    </span>
                   )}
                 </div>
                 <div className="w-full md:w-1/2 text-center">
@@ -268,14 +281,14 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement && (
-        <div className="h-12">
-          <AnnouncementBanner
-            announcement={parsedAnnouncements[0]}
-            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
-          />
-        </div>
-      )}
+      {/*{parsedAnnouncements[0].id !== lastReadAnnouncement && (*/}
+      {/*  <div className="h-12">*/}
+      {/*    <AnnouncementBanner*/}
+      {/*      announcement={parsedAnnouncements[0]}*/}
+      {/*      onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}*/}
+      {/*    />*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </Layout>
   );
 }

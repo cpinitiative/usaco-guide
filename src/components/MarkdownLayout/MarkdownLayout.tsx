@@ -1,12 +1,9 @@
 import * as React from 'react';
 import Transition from '../Transition';
-import { useContext, useRef, useState } from 'react';
-import {
-  ModuleFrequency,
-  ModuleInfo,
-  ModuleLinkInfo,
-} from '../../models/module';
+import { useContext, useState } from 'react';
+import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
+import { DiscussionEmbed } from 'disqus-react';
 import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
 import ModuleFrequencyDots from './ModuleFrequencyDots';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
@@ -28,6 +25,7 @@ import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
+import SettingsModal from '../SettingsModal';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -74,115 +72,35 @@ const Breadcrumbs = () => {
   );
 };
 
-const SidebarBottomButtons = ({ onContactUs }) => {
-  const languages = {
-    showAll: 'All',
-    cpp: 'C++',
-    java: 'Java',
-    py: 'Python',
-  };
-  const nextLang: { [key: string]: Language } = {
-    showAll: 'cpp',
-    cpp: 'java',
-    java: 'py',
-    py: 'cpp',
-  };
-  const userSettings = useContext(UserDataContext);
+const SidebarBottomButtons = ({ onContactUs, onOpenSettings }) => {
   return (
     <>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <button
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setLang(nextLang[userSettings.lang])}
+          onClick={onOpenSettings}
         >
           <svg
             className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
+            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
           >
-            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
           </svg>
-          Language: {languages[userSettings.lang]}
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setHide(!userSettings.hide)}
-        >
-          {userSettings.hide ? (
-            <>
-              <svg
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>{' '}
-            </>
-          ) : (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
-              />
-            </svg>
-          )}
-          Hide Tags and Solutions: {userSettings.hide ? 'Yes' : 'No'}
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setDarkMode(!userSettings.darkMode)}
-        >
-          {userSettings.darkMode ? (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          ) : (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          )}
-          Dark Mode: {userSettings.darkMode ? 'On' : 'Off'}
+          Settings
         </button>
       </div>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
@@ -324,9 +242,13 @@ export default function MarkdownLayout({
     setModuleProgress,
     lang,
     userProgressOnProblems,
+    signIn,
+    firebaseUser,
+    isLoaded,
   } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
+  const [isSettingsActive, setIsSettingsActive] = useState(false);
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
@@ -397,6 +319,9 @@ export default function MarkdownLayout({
     ['Not Attempted']
   );
 
+  const { darkMode } = useContext(UserDataContext);
+
+  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -471,6 +396,10 @@ export default function MarkdownLayout({
                   <SidebarNav />
                 </div>
                 <SidebarBottomButtons
+                  onOpenSettings={() => {
+                    setIsMobileNavOpen(false);
+                    setIsSettingsActive(true);
+                  }}
                   onContactUs={() => {
                     setIsMobileNavOpen(false);
                     setIsContactUsActive(true);
@@ -504,6 +433,9 @@ export default function MarkdownLayout({
             <SidebarNav />
           </div>
           <SidebarBottomButtons
+            onOpenSettings={() => {
+              setIsSettingsActive(true);
+            }}
             onContactUs={() => setIsContactUsActive(true)}
           />
         </div>
@@ -550,6 +482,37 @@ export default function MarkdownLayout({
                 </div>
 
                 <div className="lg:h-8" />
+
+                {isLoaded && !firebaseUser && (
+                  <>
+                    <div className="bg-gray-50 dark:bg-gray-900 sm:rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                          You're not signed in!
+                        </h3>
+                        <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+                          <p>
+                            Sign in to save your progress and sync your settings
+                            across devices.
+                          </p>
+                        </div>
+                        <div className="mt-5">
+                          <span className="inline-flex rounded-md shadow-sm">
+                            <button
+                              type="button"
+                              onClick={() => signIn()}
+                              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-dark-high-emphasis bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                            >
+                              Sign in
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="h-8" />
+                  </>
+                )}
 
                 {markdownData instanceof ModuleInfo &&
                   markdownData.frequency !== null && (
@@ -636,12 +599,8 @@ export default function MarkdownLayout({
 
                 {children}
 
-                <div className="my-8">
-                  <ModuleFeedback markdownData={markdownData} />
-                </div>
-
                 {markdownData instanceof ModuleInfo && (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-b border-gray-200 py-8 dark:border-gray-800 dark:text-dark-high-emphasis">
                     <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
                       Module Progress
                     </TextTooltip>
@@ -656,7 +615,27 @@ export default function MarkdownLayout({
                   </h3>
                 )}
 
-                <div className="border-t border-gray-200 pt-4 dark:border-gray-800">
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
+
+                <DiscussionEmbed
+                  shortname="usacoguide"
+                  config={{
+                    url: `https://usaco.guide/${
+                      markdownData instanceof ModuleInfo
+                        ? markdownData.section
+                        : 'solutions'
+                    }/${markdownData.id}`,
+                    identifier: markdownData.id,
+                  }}
+                  // technically this isn't a valid prop, but disqus will detect the prop change
+                  // and will re-render automatically.
+                  // @ts-ignore
+                  theme={darkMode ? 'dark' : 'light'}
+                />
+
+                <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
                 </div>
               </div>
@@ -667,6 +646,10 @@ export default function MarkdownLayout({
           </div>
         </main>
       </div>
+      <SettingsModal
+        isOpen={isSettingsActive}
+        onClose={() => setIsSettingsActive(false)}
+      />
       <ContactUsSlideover
         isOpen={isContactUsActive}
         onClose={() => setIsContactUsActive(false)}

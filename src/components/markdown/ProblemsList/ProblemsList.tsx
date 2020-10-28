@@ -8,11 +8,13 @@ import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
+import tw from 'twin.macro';
 
 type ProblemsListProps = {
   title?: string;
   children?: React.ReactChildren;
   problems: Problem[];
+  alwaysHideTags?: boolean;
 };
 
 let showSols = true;
@@ -22,6 +24,7 @@ export function ProblemsList(props: ProblemsListProps) {
   showSols = !userSettings.hide;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
+  const alwaysHideTags = props.alwaysHideTags;
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -46,7 +49,7 @@ export function ProblemsList(props: ProblemsListProps) {
                   >
                     Difficulty
                   </th>
-                  {showSols && (
+                  {showSols && !alwaysHideTags && (
                     <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Tags
                     </th>
@@ -62,6 +65,7 @@ export function ProblemsList(props: ProblemsListProps) {
                 {props.problems.map(problem => (
                   <ProblemComponent
                     problem={problem}
+                    alwaysHideTags={alwaysHideTags}
                     onShowSolution={problem => {
                       setProblem(problem);
                       setShowModal(true);
@@ -153,6 +157,7 @@ export function ProblemsList(props: ProblemsListProps) {
 type ProblemComponentProps = {
   problem: Problem;
   onShowSolution: Function;
+  alwaysHideTags?: boolean;
 };
 
 export const difficultyClasses = {
@@ -170,16 +175,24 @@ const StyledProblemRow = styled.tr`
     isActive
       ? css`
           background-color: #fdfdea !important;
-          .mode-dark & {
+          .mode-dark && {
             background-color: #3c3c00 !important;
           }
         `
       : null}
 `;
 
+const Anchor = styled.a`
+  ${tw`text-blue-600 font-semibold`}
+
+  .mode-dark && {
+    color: #a9c5ea;
+  }
+`;
+
 export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
-  const { problem } = props;
+  const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
   React.useEffect(() => {
     setIsActive(window && window.location && window.location.hash === '#' + id);
@@ -216,7 +229,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
               </svg>
             </Tooltip>
           )}
-          <a
+          <Anchor
             href={problem.url}
             className={
               (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
@@ -226,7 +239,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             rel="nofollow noopener noreferrer"
           >
             {problem.name}
-          </a>
+          </Anchor>
         </div>
       </td>
       <td
@@ -245,7 +258,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </span>
         )}
       </td>
-      {showSols && (
+      {showSols && !alwaysHideTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
@@ -284,9 +297,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         </span>
       )}
       {problem.solution?.kind === 'link' && (
-        <a href={problem.solution.url} target="_blank" className="pl-6">
+        <Anchor href={problem.solution.url} target="_blank" className="pl-6">
           {problem.solution.label}
-        </a>
+        </Anchor>
       )}
       {problem.solution?.kind === 'internal' && (
         <div className={`inline-flex items-center h-5 group`}>
@@ -321,9 +334,9 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
             </Tooltip>
           )}
           {problem.solQuality === 'ok' && <span className="w-6" />}
-          <a href={problem.solution.url} target="_blank">
+          <Anchor href={problem.solution.url} target="_blank">
             Internal Sol
-          </a>
+          </Anchor>
         </div>
       )}
       {problem.solution?.kind === 'sketch' && (
