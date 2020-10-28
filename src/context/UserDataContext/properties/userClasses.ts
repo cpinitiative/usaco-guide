@@ -44,6 +44,7 @@ export default class UserClassesProperty extends UserDataPropertyAPI {
           this.firebaseUserDoc.set(
             {
               [this.storageKey]: classes,
+              userClassIds: classes.map(c => c.id),
             },
             { merge: true }
           );
