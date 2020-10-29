@@ -140,9 +140,9 @@ export const plugins = [
     resolve: `gatsby-plugin-create-client-paths`,
     options: { prefixes: [`/class/*`] },
   },
-  ...[
-    process.env.ALGOLIA_APP_ID
-      ? {
+  ...(process.env.ALGOLIA_APP_ID
+    ? [
+        {
           // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
           resolve: 'gatsby-plugin-algolia',
           options: {
@@ -151,9 +151,9 @@ export const plugins = [
             queries: require('./src/utils/algolia-queries'),
             enablePartialUpdates: true,
           },
-        }
-      : null,
-  ],
+        },
+      ]
+    : []),
   'gatsby-plugin-webpack-bundle-analyser-v2',
 
   // this (optional) plugin enables Progressive Web App + Offline functionality
