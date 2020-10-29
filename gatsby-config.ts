@@ -140,7 +140,7 @@ export const plugins = [
     resolve: `gatsby-plugin-create-client-paths`,
     options: { prefixes: [`/class/*`] },
   },
-  {
+  process.env.ALGOLIA_APP_ID && {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: 'gatsby-plugin-algolia',
     options: {
