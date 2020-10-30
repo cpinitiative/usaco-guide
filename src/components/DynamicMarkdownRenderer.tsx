@@ -89,15 +89,16 @@ export default function ({ markdown, debounce = 1000 }) {
           'React',
           ...keys,
           `${code}
-        return React.createElement(MDXProvider, { components },
-          React.createElement(MDXContent, props)
-        );`
+          return React.createElement(MDXProvider, { components },
+            React.createElement(MDXContent, props)
+          );`
         );
 
-        setFn(fn.bind(null, {}, React, ...values));
+        setFn(fn.bind(null, {}, React, ...values)());
         setError(null);
       } catch (e) {
-        console.log('error', e);
+        console.log('liveupdate error caught:', e);
+        setFn(null);
         setError(e);
       }
     };
@@ -109,10 +110,16 @@ export default function ({ markdown, debounce = 1000 }) {
     }
   }, [markdown]);
   if (error) {
+    console.error(error);
     return (
       <div>
         An error occurred:
-        <pre className="mt-2 text-red-700">{error.toString()}</pre>
+        <pre className="mt-2 text-red-700">
+          {error.stack || error.toString()}
+        </pre>
+        <pre className="mt-2 text-red-700">
+          This error has also been logged into the console.
+        </pre>
       </div>
     );
   }
