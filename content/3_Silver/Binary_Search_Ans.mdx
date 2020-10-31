@@ -430,77 +430,6 @@ public class test{
 
 </LanguageSection>
 
-<Warning>
-
-This code might not work if `lo` is negative. Consider the following example:
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-int main() {
-	cout << fstTrue([](int x) { return false; },-10,-10) << "\n"; // -8, should be -9
-	cout << fstTrue([](int x) { return true; },-10,-10) << "\n"; // infinite loop
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-public static void main(String[] args) throws IOException
-{
-     System.out.println(fstTrue(-10,-7)); // infinite loop
-}
-```
-
-
-</JavaSection>
-
-</LanguageSection>
-
-This is because dividing an odd negative integer by two will round it up instead of down! Fixed version:
-
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-int fstTrue(function<bool(int)> f, int lo, int hi) {
-	for (hi ++; lo < hi; ) {
-		int mid = lo+hi; mid = (mid-(mid&1))/2;
-		f(mid) ? hi = mid : lo = mid+1;
-	}
-	return lo;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-public static int fstTrue(int lo, int hi) {
-   for (hi ++; lo < hi; ) {
-      // returns smallest x in [lo,hi] that satisfies f
-      // hi+1 if no x satisfies f
-      int mid = lo+hi; 
-      mid = (mid-(mid&1))/2;
-      if(f(mid)) hi = mid; else lo = mid+1;
-   }
-   return lo;
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-</Warning>
-
 ## Example: Maximum Median
 
 <FocusProblem problem={problems.ex[0]} />
@@ -610,6 +539,103 @@ static boolean check(long x){
 </LanguageSection>
 
 </Spoiler>
+
+## Mistakes to Avoid
+
+### Mistake 1 - Off By One
+
+Consider the code from CSAcademy's [Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
+
+```cpp
+long long f(int x) {
+    return (long long)x * x;
+}
+int square_root(int x) {
+    int left = 0, right = x;
+    while (left < right) {
+        int middle = (left + right) / 2;
+        if (f(middle) <= x) {
+            left = middle;
+        } else {
+            right = middle - 1;
+        }
+    }
+    return left;
+}
+```
+
+This loops infinitely if `left=0` and `right=1`! To fix this, set `middle = (left+right+1)/2` instead.
+
+### Mistake 2 - Not Accounting for Negative Bounds
+
+The `fstTrue` code given above does not necessarily work if `lo` is negative! Consider the following example:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int main() {
+	cout << fstTrue([](int x) { return false; },-10,-10) << "\n"; // -8, should be -9
+	cout << fstTrue([](int x) { return true; },-10,-10) << "\n"; // infinite loop
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static void main(String[] args) throws IOException
+{
+     System.out.println(fstTrue(-10,-7)); // infinite loop
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+This is because dividing an odd negative integer by two will round it up instead of down! New version:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int fstTrue(function<bool(int)> f, int lo, int hi) {
+	for (hi ++; lo < hi; ) {
+		int mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+
+<!-- <JavaSection>
+
+```java
+public static int fstTrue(int lo, int hi) {
+   for (hi ++; lo < hi; ) {
+      // returns smallest x in [lo,hi] that satisfies f
+      // hi+1 if no x satisfies f
+      int mid = lo+hi; 
+      mid = (mid-(mid&1))/2;
+      if(f(mid)) hi = mid; else lo = mid+1;
+   }
+   return lo;
+}
+```
+
+</JavaSection> -->
+
+</LanguageSection>
+
+### Mistake 3 - Integer Overflow
+
+The first version of `fstTrue` won't work if `lo+hi` exceeds `INT_MAX` at any point during execution, while the second version of `fstTrue` won't work if `hi-lo` initially exceeds `INT_MAX`. In this case, make the bounds `long long`s instead of `int`s.
 
 ## Problems
 

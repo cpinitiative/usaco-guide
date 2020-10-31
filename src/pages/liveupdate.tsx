@@ -8,9 +8,11 @@ import * as React from 'react';
 import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import { useState } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import useStickyState from '../hooks/useStickyState';
+import Split from 'react-split';
+import styled from 'styled-components';
+import { useRef } from 'react';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -22,11 +24,25 @@ const Editor = React.lazy(() =>
   }))
 );
 
+const StyledSplit = styled(Split)`
+  & > div,
+  & > .gutter.gutter-horizontal {
+    float: left;
+    height: 100%;
+  }
+
+  & > .gutter.gutter-horizontal {
+    cursor: ew-resize;
+  }
+`;
+
 export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useStickyState(
     '',
     'guide:liveupdate:markdown'
   );
+
+  const editor = useRef();
 
   return (
     <Layout>
@@ -40,28 +56,37 @@ export default function LiveUpdatePage(props: PageProps) {
               <div className="text-center mt-6 font-bold text-2xl">Loading</div>
             }
           >
-            <div className="h-full relative flex-1 overflow-hidden grid grid-cols-2">
-              <div className="col-span-1">
+            <StyledSplit
+              className="h-full relative flex-1 overflow-hidden"
+              onDrag={() => {
+                if (editor.current !== undefined) editor.current.layout();
+              }}
+            >
+              <div className="h-full" style={{ minWidth: '300px' }}>
                 <Editor
                   theme="dark"
                   language="markdown"
                   value={markdown}
                   onChange={(e, v) => setMarkdown(v)}
                   options={{ wordWrap: 'on' }}
-                  editorDidMount={(_, e) =>
+                  editorDidMount={(_, e) => {
+                    editor.current = e;
                     setTimeout(() => {
                       e.layout();
                       e.focus();
-                    }, 0)
-                  }
+                    }, 0);
+                  }}
                 />
               </div>
-              <div className="col-span-1 h-full overflow-y-auto">
+              <div
+                className="overflow-y-auto relative z-10"
+                style={{ maxWidth: 'calc(100% - 310px)' }}
+              >
                 <div className="markdown p-4">
                   <RawMarkdownRenderer markdown={markdown} />
                 </div>
               </div>
-            </div>
+            </StyledSplit>
           </React.Suspense>
         )}
       </div>
