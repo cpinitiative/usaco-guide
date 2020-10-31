@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, PageProps } from 'gatsby';
+import { PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
@@ -10,13 +10,24 @@ import FAQ from '../faq.mdx';
 // @ts-ignore
 import banner from '../assets/faq-image.png';
 import { DiscussionEmbed } from 'disqus-react';
-import { ModuleInfo } from '../models/module';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import TableOfContentsBlock from '../components/MarkdownLayout/TableOfContents/TableOfContentsBlock';
+
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  RedditIcon,
+  RedditShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from 'react-share';
 
 export default function USACOFAQPage(props: PageProps) {
   const { darkMode } = useContext(UserDataContext);
+
+  const shareURL = 'https://usaco.guide/usaco-faq';
 
   return (
     <Layout>
@@ -28,7 +39,7 @@ export default function USACOFAQPage(props: PageProps) {
       <TopNavigationBar />
 
       <div className="bg-white">
-        <div className="max-w-screen-xl mx-auto pt-16 px-4 sm:pt-24 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+        <div className="max-w-screen-xl mx-auto pt-16 px-4 sm:pt-24 sm:px-6 lg:px-8 pb-8 sm:pb-12">
           <div className="text-center">
             <p className="mt-1 text-4xl leading-10 font-extrabold text-gray-900 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl">
               USACO FAQ
@@ -37,6 +48,40 @@ export default function USACOFAQPage(props: PageProps) {
               Getting started with USACO can be challening. Here, we address
               some of the most common questions people have.
             </p>
+            <div className="mt-6">
+              <p className="text-blue-600 mb-1 font-semibold">
+                Share this article!
+              </p>
+              <div>
+                <FacebookShareButton
+                  url={shareURL}
+                  quote="Check out this article to learn more about USACO!"
+                  hashtag="#usaco"
+                >
+                  <FacebookIcon size={40} />
+                </FacebookShareButton>
+                <TwitterShareButton
+                  url={shareURL}
+                  title="USACO Frequently Asked Questions"
+                >
+                  <TwitterIcon size={40} />
+                </TwitterShareButton>
+                <LinkedinShareButton
+                  url={shareURL}
+                  title="USACO Frequently Asked Questions"
+                  summary="Check out this article to learn more about USACO!"
+                  source="USACO Guide"
+                >
+                  <LinkedinIcon size={40} />
+                </LinkedinShareButton>
+                <RedditShareButton
+                  url={shareURL}
+                  title="USACO Frequently Asked Questions"
+                >
+                  <RedditIcon size={40} />
+                </RedditShareButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
