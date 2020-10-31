@@ -72,12 +72,13 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       consecutiveVisits: this.consecutiveVisits,
       totalNoVisits: this.totalNoVisits,
       setLastVisitDate: (today: number) => {
+        this.totalNoVisits++;
         let timeSinceLastVisit = today - this.lastVisitDate;
         let oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
-          newConsecutiveVisits = null
+          newConsecutiveVisits = null;
 
         if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
           newLastVisit = today;
@@ -99,7 +100,6 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           }
           this.lastVisitDate = newLastVisit;
           this.consecutiveVisits = newConsecutiveVisits;
-          this.totalNoVisits += 1;
           this.writeValueToLocalStorage();
           this.triggerRerender();
         }

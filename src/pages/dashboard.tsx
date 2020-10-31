@@ -281,14 +281,14 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {/*{parsedAnnouncements[0].id !== lastReadAnnouncement && (*/}
-      {/*  <div className="h-12">*/}
-      {/*    <AnnouncementBanner*/}
-      {/*      announcement={parsedAnnouncements[0]}*/}
-      {/*      onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}*/}
-      {/*    />*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      parsedAnnouncements[0].id !== lastReadAnnouncement && (*/}
+        <div className="h-12">
+         <AnnouncementBanner
+           announcement={parsedAnnouncements[0]}
+            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          />
+       </div>
+      )}
     </Layout>
   );
 }
