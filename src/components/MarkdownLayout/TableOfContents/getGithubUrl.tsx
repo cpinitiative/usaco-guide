@@ -6,6 +6,8 @@ import { ModuleInfo } from '../../../models/module';
 
 export default function getGithubUrl() {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
+  if (!moduleLayoutInfo) return null;
+
   const markdownInfo = moduleLayoutInfo.markdownLayoutInfo;
   const relativePath = markdownInfo.fileRelativePath;
   let githubUrl = 'https://github.com/cpinitiative/usaco-guide/blob/master/';

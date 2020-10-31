@@ -30,7 +30,7 @@ import SettingsModal from '../SettingsModal';
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
   const module = moduleLayoutInfo.markdownLayoutInfo;
-  if (module instanceof SolutionInfo) return null;
+  if (!(module instanceof ModuleInfo)) return null;
   return (
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500 dark:text-dark-med-emphasis">
       <Link
@@ -130,7 +130,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
   const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
 
-  if (markdownLayoutInfo instanceof SolutionInfo) return null;
+  if (!(markdownLayoutInfo instanceof ModuleInfo)) return null;
 
   const sortedModuleLinks = React.useMemo(() => {
     let links: ModuleLinkInfo[] = [];

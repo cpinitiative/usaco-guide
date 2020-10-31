@@ -94,6 +94,38 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     });
   });
   // End Generate Syllabus Pages //
+
+  // Generate Blog Posts //
+  const blogPostTemplate = require.resolve(
+    `./src/templates/blogPostTemplate.tsx`
+  );
+  const blogPostQuery = await graphql(`
+    query {
+      allMdx(filter: { fileAbsolutePath: { regex: "/blog/" } }) {
+        edges {
+          node {
+            frontmatter {
+              id
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (blogPostQuery.errors) {
+    reporter.panicOnBuild(`Error while running blog post GraphQL query.`);
+    return;
+  }
+  blogPostQuery.data.allMdx.edges.forEach(({ node }) => {
+    createPage({
+      path: `/blog/${node.frontmatter.id}`,
+      component: blogPostTemplate,
+      context: {
+        id: node.frontmatter.id,
+      }, // additional data can be passed via context
+    });
+  });
+  // End Generate Blog posts //
 };
 
 exports.createSchemaCustomization = ({ actions }) => {
