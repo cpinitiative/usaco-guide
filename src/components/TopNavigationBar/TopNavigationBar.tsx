@@ -69,7 +69,6 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
 
   const userSettings = useContext(UserDataContext);
   useEffect(() => {
-    console.log(userSettings)
     const handleClick = e => {
       // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {

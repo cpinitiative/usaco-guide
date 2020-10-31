@@ -4,6 +4,7 @@ export type LastVisitAPI = {
   lastVisitDate: number;
   setLastVisitDate: (today: number) => void;
   consecutiveVisits: number;
+  totalNoVisits: number;
 };
 
 export default class LastVisitProperty extends UserDataPropertyAPI {
@@ -21,10 +22,9 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       1
     );
     this.totalNoVisits = this.getValueFromLocalStorage(
-
       this.getLocalStorageKey('totalNoVisits'),
       1
-      );
+    );
   };
 
   writeValueToLocalStorage = () => {
@@ -47,9 +47,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     window.localStorage.removeItem(
       this.getLocalStorageKey('consecutiveVisits')
     );
-    window.localStorage.removeItem(
-      this.getLocalStorageKey('totalNoVisits')
-    );
+    window.localStorage.removeItem(this.getLocalStorageKey('totalNoVisits'));
   };
 
   exportValue = (): any => {

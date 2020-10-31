@@ -23,6 +23,7 @@ import DailyStreak from '../components/Dashboard/DailyStreak';
 import Card from '../components/Dashboard/DashboardCard';
 
 export default function DashboardPage(props: PageProps) {
+  const [bannerIsOpen, setIsBannerOpen] = React.useState(true);
   const { modules, announcements } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
@@ -51,6 +52,7 @@ export default function DashboardPage(props: PageProps) {
     onlineUsers,
     signIn,
   } = React.useContext(UserDataContext);
+  const userSettings = React.useContext(UserDataContext);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -281,13 +283,17 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      parsedAnnouncements[0].id !== lastReadAnnouncement && (*/}
+      {bannerIsOpen && userSettings.totalNoVisits > 0 && (
         <div className="h-12">
-         <AnnouncementBanner
-           announcement={parsedAnnouncements[0]}
-            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          <AnnouncementBanner
+            announcement={{
+              date: '2020',
+              id: 'total-number-of-visits',
+              title: 'Total number of Visits: ' + userSettings.totalNoVisits,
+            }}
+            onDismiss={() => setIsBannerOpen(false)}
           />
-       </div>
+        </div>
       )}
     </Layout>
   );
