@@ -25,14 +25,10 @@ export default function Template(props) {
       <TopNavigationBar />
 
       <div className="flex justify-center">
-        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="flex-1 px-4 sm:px-6 lg:px-8 max-w-3xl">
           <div className="py-4">
             <Markdown body={body} />
           </div>
-          {/*<TableOfContentsBlock tableOfContents={mdx.toc['cpp']} />*/}
-        </div>
-        <div className="hidden lg:block ml-6 w-64 mt-48 flex-shrink-0">
-          <TableOfContentsSidebar tableOfContents={mdx.toc['cpp']} />
         </div>
       </div>
     </Layout>
@@ -48,23 +44,6 @@ export const pageQuery = graphql`
         id
         description
         date
-      }
-      toc {
-        cpp {
-          depth
-          value
-          slug
-        }
-        java {
-          depth
-          value
-          slug
-        }
-        py {
-          depth
-          value
-          slug
-        }
       }
     }
   }
