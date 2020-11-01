@@ -70,20 +70,27 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       consecutiveVisits: this.consecutiveVisits,
       totalNoVisits: this.totalNoVisits,
       setLastVisitDate: (today: number) => {
-        this.totalNoVisits++;
         let timeSinceLastVisit = today - this.lastVisitDate;
         let oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
-          newConsecutiveVisits = null;
-
+          newConsecutiveVisits = null,
+          newTotalNoVisits = null;
+        newTotalNoVisits = this.totalNoVisits + 1;
         if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
           newLastVisit = today;
           newConsecutiveVisits = this.consecutiveVisits + 1;
         } else if (timeSinceLastVisit > twoDays) {
           newLastVisit = today;
           newConsecutiveVisits = 1;
+        }
+        if (newTotalNoVisits !== null) {
+          if (this.firebaseUserDoc) {
+            this.firebaseUserDoc.set({
+              totalNoVisits: newTotalNoVisits,
+            });
+          }
         }
 
         if (newLastVisit !== null) {
