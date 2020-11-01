@@ -2,7 +2,7 @@ require('dotenv').config();
 
 export const siteMetadata = {
   title: `USACO Guide`,
-  description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
+  description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond. Written by top USACO Finalists, these tutorials will guide you through your competitive programming journey.`,
   author: `@usacoguide`,
   siteUrl: `https://usaco.guide/`,
   keywords: ['USACO', 'Competitive Programming', 'USACO Guide'],
@@ -67,6 +67,7 @@ export const plugins = [
           options: {
             // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
             strict: `ignore`,
+            output: 'html',
           },
         },
         {
