@@ -5,6 +5,7 @@ export const siteMetadata = {
   description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
   author: `@usacoguide`,
   siteUrl: `https://usaco.guide/`,
+  keywords: ['USACO', 'Competitive Programming', 'USACO Guide'],
 };
 
 export const plugins = [
