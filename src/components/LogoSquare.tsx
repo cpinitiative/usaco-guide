@@ -8,7 +8,7 @@ export default function LogoSquare(props) {
       file(relativePath: { eq: "logo-square.png" }) {
         childImageSharp {
           fixed(height: 40, quality: 100) {
-            ...GatsbyImageSharpFixed
+            ...GatsbyImageSharpFixed_noBase64
           }
         }
       }

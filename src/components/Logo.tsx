@@ -8,14 +8,14 @@ export default function Logo(props) {
       dark: file(relativePath: { eq: "logo_dark.png" }) {
         childImageSharp {
           fixed(height: 36, quality: 100) {
-            ...GatsbyImageSharpFixed
+            ...GatsbyImageSharpFixed_noBase64
           }
         }
       }
       light: file(relativePath: { eq: "logo.png" }) {
         childImageSharp {
           fixed(height: 36, quality: 100) {
-            ...GatsbyImageSharpFixed
+            ...GatsbyImageSharpFixed_noBase64
           }
         }
       }
