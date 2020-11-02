@@ -84,11 +84,13 @@ const AuthorCard = ({
   };
   return (
     <div
-      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-blue-900`}
+      className={`py-8 sm:py-12 lg:py-8 px-4 sm:flex sm:flex-col xl:py-16 sm:px-8 border border-blue-900 dark:border-gray-700`}
     >
       <blockquote className="sm:flex-grow sm:flex sm:items-center text-center sm:text-left max-w-sm sm:max-w-3xl mx-auto w-full">
         <div className="flex-shrink-0">
-          <div className={`inline-flex rounded-full border-2  border-white`}>
+          <div
+            className={`inline-flex rounded-full border-2 border-white dark:border-gray-200`}
+          >
             <div className="w-36 h-36 md:h-48 md:w-48 lg:h-36 lg:w-36 xl:h-48 xl:w-48">
               <Img
                 className="rounded-full"
@@ -101,12 +103,14 @@ const AuthorCard = ({
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-8 lg:ml-6 xl:ml-8">
           <div className="space-x-2">
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-blue-700 text-blue-100">
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-blue-700 text-blue-100 dark:text-blue-200 dark:bg-blue-900">
               {author.title}
             </span>
           </div>
-          <div className="text-3xl font-bold text-white">{author.name}</div>
-          <div className="mt-4 text-base text-blue-200">
+          <div className="text-3xl font-bold text-white dark:text-gray-100">
+            {author.name}
+          </div>
+          <div className="mt-4 text-base text-blue-200 dark:text-gray-300">
             <p className="relative">{author.blurb}</p>
           </div>
           <div className="mt-2 flex space-x-2 justify-center sm:justify-start">
@@ -116,7 +120,7 @@ const AuthorCard = ({
                 <a
                   key={author.name + sm}
                   href={socialMedia[sm].link(author[sm])}
-                  className="text-blue-300 hover:text-blue-200 transition duration-100"
+                  className="text-blue-300 hover:text-blue-200 dark:text-gray-400 dark-hover:text-gray-300 transition duration-100"
                 >
                   <span className="sr-only">{sm}</span>
                   {socialMedia[sm].icon}
@@ -145,7 +149,7 @@ export default function IndexPage(props: PageProps) {
       <TopNavigationBar indexPage />
 
       {/* Begin Hero */}
-      <div className="relative bg-white overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-900 overflow-hidden">
         <div className="hidden lg:block lg:absolute lg:inset-0">
           <svg
             className="absolute top-0 left-1/2 transform translate-x-64 -translate-y-8"
@@ -168,7 +172,7 @@ export default function IndexPage(props: PageProps) {
                   y="0"
                   width="4"
                   height="4"
-                  className="text-gray-200"
+                  className="text-gray-200 dark:text-gray-800"
                   fill="currentColor"
                 />
               </pattern>
@@ -177,7 +181,7 @@ export default function IndexPage(props: PageProps) {
               y="0"
               width="640"
               height="640"
-              className="text-gray-50"
+              className="text-gray-50 dark:text-gray-900"
               fill="currentColor"
             />
             <rect
@@ -193,13 +197,16 @@ export default function IndexPage(props: PageProps) {
           <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
               <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
-                <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 sm:text-base lg:text-sm xl:text-base">
+                <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-base lg:text-sm xl:text-base">
                   Pre-Release
                 </div>
-                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
-                  USACO <span className="text-blue-600">Guide</span>
+                <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 dark:text-gray-100 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
+                  USACO{' '}
+                  <span className="text-blue-600 dark:text-blue-400">
+                    Guide
+                  </span>
                 </h2>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                <p className="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                   A free collection of <b>curated, high-quality resources</b> to
                   take you from Bronze to Platinum and beyond.
                 </p>
@@ -207,7 +214,7 @@ export default function IndexPage(props: PageProps) {
                   <div className="rounded-md shadow">
                     <Link
                       to="/dashboard/"
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white dark:text-blue-50 bg-blue-600 dark:bg-blue-700 hover:bg-blue-500 dark-hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       View Guide
                     </Link>
@@ -222,7 +229,7 @@ export default function IndexPage(props: PageProps) {
                           behavior: 'smooth',
                         });
                       }}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 bg-blue-100 hover:text-blue-600 hover:bg-blue-50 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900 hover:text-blue-600 hover:bg-blue-50 dark-hover:bg-blue-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 dark-focus:border-blue-800 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
                     >
                       Learn More
                     </a>
@@ -279,25 +286,29 @@ export default function IndexPage(props: PageProps) {
       </div>
       {/* End Hero */}
 
-      <div className="py-12 bg-white" id="learn-more" ref={learnMoreRef}>
+      <div
+        className="py-12 bg-white dark:bg-dark-surface"
+        id="learn-more"
+        ref={learnMoreRef}
+      >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
-            <p className="text-base leading-6 text-blue-600 font-semibold tracking-wide uppercase">
+            <p className="text-base leading-6 text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase">
               About This Guide
             </p>
-            <h3 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
+            <h3 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-200 sm:text-4xl sm:leading-10">
               Not Just Another Resource.
             </h3>
-            <p className="mt-4 max-w-4xl text-xl leading-7 text-gray-500 lg:mx-auto">
+            <p className="mt-4 max-w-4xl text-xl leading-7 text-gray-500 dark:text-gray-400 lg:mx-auto">
               This is more than "just another resource." This is a
               comprehensive, organized roadmap carefully designed and crafted
               for USACO contestants – available to everyone, for free.
             </p>
 
-            <div className="inline-flex mx-auto bg-yellow-50 rounded-md p-4 mt-8">
+            <div className="inline-flex mx-auto bg-yellow-50 dark:bg-yellow-900 rounded-md p-4 mt-8">
               <div className="flex-shrink-0">
                 <svg
-                  className="h-5 w-5 text-yellow-400"
+                  className="h-5 w-5 text-yellow-400 dark:text-yellow-400"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -309,7 +320,7 @@ export default function IndexPage(props: PageProps) {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm leading-5 text-yellow-700 text-left">
+                <p className="text-sm leading-5 text-yellow-700 dark:text-yellow-300 text-left">
                   This guide is not an official syllabus. Topics on this guide
                   reflect <i>past</i> problems, not future problems.
                 </p>
@@ -322,7 +333,7 @@ export default function IndexPage(props: PageProps) {
               <li>
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 dark:bg-blue-900 text-white dark:text-blue-100">
                       <svg
                         className="h-6 w-6"
                         fill="none"
@@ -339,10 +350,10 @@ export default function IndexPage(props: PageProps) {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900">
+                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
                       Experienced Authors
                     </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500">
+                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
                       This guide is written by top USACO contestants, including
                       two-time IOI winner and USACO Problemsetter{' '}
                       <a
@@ -359,7 +370,7 @@ export default function IndexPage(props: PageProps) {
               <li className="mt-10 md:mt-0">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 dark:bg-blue-900 text-white dark:text-blue-100">
                       <svg
                         className="h-6 w-6"
                         fill="none"
@@ -376,10 +387,10 @@ export default function IndexPage(props: PageProps) {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900">
+                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
                       Calibrated Difficulty
                     </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500">
+                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
                       This guide is targeted towards all contestants, regardless
                       of their division. You'll find problems suitable for you.
                     </p>
@@ -389,7 +400,7 @@ export default function IndexPage(props: PageProps) {
               <li className="mt-10 md:mt-0">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 dark:bg-blue-900 text-white dark:text-blue-100">
                       <svg
                         className="h-6 w-6"
                         fill="none"
@@ -406,10 +417,10 @@ export default function IndexPage(props: PageProps) {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900">
+                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
                       Improve Faster
                     </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500">
+                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
                       Stop wasting time learning topics you already know. Skip
                       over easy topics or delve deeper into difficult ones; the
                       choice is yours.
@@ -420,7 +431,7 @@ export default function IndexPage(props: PageProps) {
               <li className="mt-10 md:mt-0">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 dark:bg-blue-900 text-white dark:text-blue-100">
                       <svg
                         className="h-6 w-6"
                         fill="none"
@@ -435,10 +446,10 @@ export default function IndexPage(props: PageProps) {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg leading-6 font-medium text-gray-900">
+                    <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-300">
                       Stay Motivated
                     </h4>
-                    <p className="mt-2 text-base leading-6 text-gray-500">
+                    <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">
                       Use our progress-tracking tools to track your progress in
                       the Guide and stay motivated.
                     </p>
@@ -447,7 +458,7 @@ export default function IndexPage(props: PageProps) {
                   {/*  <h4 className="text-lg leading-6 font-medium text-gray-900">*/}
                   {/*    Officially Recognized*/}
                   {/*  </h4>*/}
-                  {/*  <p className="mt-2 text-base leading-6 text-gray-500">*/}
+                  {/*  <p className="mt-2 text-base leading-6 text-gray-500 dark:text-gray-400">*/}
                   {/*    This guide is developed in collaboration with USACO Staff*/}
                   {/*    and USACO Director Dr. Brian Dean.*/}
                   {/*  </p>*/}
@@ -459,9 +470,9 @@ export default function IndexPage(props: PageProps) {
         </div>
       </div>
 
-      <div className="bg-blue-900">
+      <div className="bg-blue-900 dark:bg-gray-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 text-center">
-          <p className="text-xl md:text-2xl font-bold text-blue-200">
+          <p className="text-xl md:text-2xl font-bold text-blue-200 dark:text-blue-300">
             Unsure how to get started?
             <br />
             Overwhelmed by too many resources?
@@ -470,7 +481,7 @@ export default function IndexPage(props: PageProps) {
             <br />
           </p>
 
-          <p className="text-3xl sm:text-4xl md:text-6xl font-black text-white mt-8">
+          <p className="text-3xl sm:text-4xl md:text-6xl font-black text-white dark:text-gray-100 mt-8">
             This is the guide for you.
           </p>
 
@@ -478,7 +489,7 @@ export default function IndexPage(props: PageProps) {
             <div className="rounded-md shadow">
               <Link
                 to="/dashboard/"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 dark:bg-blue-800 hover:bg-blue-500 dark-hover:bg-blue-700 focus:outline-none focus:border-blue-700 dark-focus:border-blue-800 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
               >
                 View Guide
               </Link>
@@ -488,20 +499,20 @@ export default function IndexPage(props: PageProps) {
       </div>
 
       {/* Begin FAQ */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
-          <h2 className="text-3xl leading-9 font-extrabold text-gray-900">
+          <h2 className="text-3xl leading-9 font-extrabold text-gray-900 dark:text-gray-100">
             Frequently asked questions
           </h2>
-          <div className="mt-6 border-t-2 border-gray-100 pt-10">
+          <div className="mt-6 border-t-2 border-gray-100 dark:border-gray-700 pt-10">
             <dl className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <div>
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Is this an official syllabus?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       <b>No, USACO does not have an official syllabus.</b> This
                       guide merely lists topics that have <i>historically</i>{' '}
                       appeared in USACO contests; it makes no guarantees about
@@ -510,11 +521,11 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     How can I report a problem?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
                       "Contact Us" button on the bottom left of the screen, or
@@ -523,15 +534,15 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     How can I contribute?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       To learn more about contributing, please visit{' '}
                       <Link
                         to="/general/contributing"
-                        className="text-blue-600 underline"
+                        className="text-blue-600 dark:text-blue-400 underline"
                       >
                         this page
                       </Link>
@@ -540,16 +551,16 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Is this open source?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Yes! Check out our{' '}
                       <OutboundLink
                         href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
-                        className="text-blue-600 underline"
+                        className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Github Repository
                       </OutboundLink>
@@ -560,11 +571,11 @@ export default function IndexPage(props: PageProps) {
               </div>
               <div className="mt-12 md:mt-0">
                 <div>
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Is this guide for non-USACO competitive programmers?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Of course! While we structure our content around USACO,
                       feel free to use this guide even if you don't do USACO.
                       You will still learn a lot from it!
@@ -572,11 +583,11 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     How can I get help?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you get stuck, feel free to ask for help by clicking
                       the "Contact Us" button on the bottom left of the screen.
                       It may take some time for your question to be addressed.
@@ -584,16 +595,16 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Who should I contact?
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you have any questions related to this guide, please
                       contact us at{' '}
                       <a
                         href="mailto:usacoguide@gmail.com"
-                        className="text-blue-600 underline"
+                        className="text-blue-600 dark:text-blue-400 underline"
                       >
                         usacoguide@gmail.com
                       </a>
@@ -602,16 +613,16 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
                 <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     I'm looking for classes, club curriculum, contests...
                   </dt>
                   <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Check out the{' '}
                       <OutboundLink
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
-                        className="text-blue-600 underline"
+                        className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Competitive Programming Initiative
                       </OutboundLink>
@@ -626,8 +637,8 @@ export default function IndexPage(props: PageProps) {
       </div>
       {/*End FAQ*/}
 
-      <section className="bg-blue-800 overflow-hidden">
-        <div className="py-6 sm:py-12 text-center border-b-2 border-blue-900">
+      <section className="bg-blue-800 dark:bg-gray-900 overflow-hidden">
+        <div className="py-6 sm:py-12 text-center border-b-2 border-blue-900 dark:border-gray-700">
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white px-4">
             Authors you can trust.
           </h2>
@@ -647,9 +658,9 @@ export default function IndexPage(props: PageProps) {
         </div>
       </section>
 
-      <div className="bg-white">
+      <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
-          <p className="text-center text-base leading-6 text-gray-400">
+          <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}
             <Link to="/license" className="underline">
