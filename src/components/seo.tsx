@@ -25,7 +25,7 @@ function SEO({
         }
         image: file(relativePath: { eq: "social-media-image.jpg" }) {
           childImageSharp {
-            resize(width: 1200) {
+            resize(width: 1200, quality: 100) {
               src
               height
               width
