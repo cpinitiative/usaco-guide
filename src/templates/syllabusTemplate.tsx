@@ -7,6 +7,7 @@ import MODULE_ORDERING, {
   moduleIDToSectionMap,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
+  SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
