@@ -1,9 +1,25 @@
-import React, { ReactElement, ReactNode, useContext, useState } from 'react';
+import React, {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import firebaseType from 'firebase';
 import FirebaseContext from './FirebaseContext';
 import UserDataContext from './UserDataContext/UserDataContext';
 import { ProblemJSON } from '../components/Classes/PostPage';
-const ClassContext = React.createContext<{
+import { UserLangAPI } from './UserDataContext/properties/userLang';
+import { LastViewedModuleAPI } from './UserDataContext/properties/lastViewedModule';
+import { HideTagsAndSolutionsAPI } from './UserDataContext/properties/hideTagsAndSolutions';
+import { DarkModeAPI } from './UserDataContext/properties/darkMode';
+import { LastReadAnnouncementAPI } from './UserDataContext/properties/lastReadAnnouncement';
+import { UserProgressOnModulesAPI } from './UserDataContext/properties/userProgressOnModules';
+import { UserProgressOnProblemsAPI } from './UserDataContext/properties/userProgressOnProblems';
+import { LastVisitAPI } from './UserDataContext/properties/lastVisit';
+import { UserClassesAPI } from './UserDataContext/properties/userClasses';
+const ClassContext = createContext<{
   setClassId: null | ((newClassId: string) => void);
   loading: boolean;
   isInstructor: null | boolean;
@@ -13,6 +29,18 @@ const ClassContext = React.createContext<{
         message?: string;
         code?: string;
       };
+  students: {
+    id: string;
+    data: UserLangAPI &
+      LastViewedModuleAPI &
+      HideTagsAndSolutionsAPI &
+      DarkModeAPI &
+      LastReadAnnouncementAPI &
+      UserProgressOnModulesAPI &
+      UserProgressOnProblemsAPI &
+      LastVisitAPI &
+      UserClassesAPI;
+  }[];
   data: null | {
     announcements: {
       date: firebaseType.firestore.Timestamp;
@@ -40,32 +68,34 @@ const ClassContext = React.createContext<{
   loading: true,
   error: false,
   data: null,
-
+  students: [],
   isInstructor: false,
   setClassId: null,
 });
 
 const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [data, setData] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [classId, setClassId] = React.useState('');
+  const [data, setData] = useState(null);
+  const [loadingClass, setLoadingClass] = useState(true);
+  const [loadingStudents, setLoadingStudents] = useState(true);
+  const [classId, setClassId] = useState('');
   const [isInstructor, setIsInstructor] = useState(false);
-  const [error, setError] = React.useState<
-    false | { message: string; code: string }
-  >(false);
+  const [students, setStudents] = useState([]);
+  const [error, setError] = useState<false | { message: string; code: string }>(
+    false
+  );
   const firebase = useContext(FirebaseContext);
   const { firebaseUser: user } = React.useContext(UserDataContext);
-  React.useEffect(() => {
+  useEffect(() => {
     if (!firebase) return;
     if (!classId) return;
-    setLoading(true);
+    setLoadingClass(true);
     setError(false);
-    if (classId === 'instructors') {
+    if (classId === 'permissions') {
       setData(null);
-      setLoading(false);
+      setLoadingClass(false);
       return;
     }
-    const unsubscribe = firebase
+    const unsubscribeClass = firebase
       .firestore()
       .collection('classes')
       .doc(classId)
@@ -73,16 +103,40 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
         snapshot => {
           const data = snapshot.data();
           setData(data);
-          setLoading(false);
+          setLoadingClass(false);
         },
         error => {
-          setLoading(false);
+          setLoadingClass(false);
           setError(error);
           console.log(error);
         }
       );
-
-    return () => unsubscribe();
+    const unsubscribeStudents = firebase
+      .firestore()
+      .collection('users')
+      .where('userClassIds', 'array-contains', classId)
+      .onSnapshot(
+        snapshot => {
+          const tempStudents = [];
+          snapshot.forEach(function (doc) {
+            tempStudents.push({
+              id: doc.id,
+              data: doc.data(),
+            });
+          });
+          setStudents(tempStudents);
+          setLoadingStudents(false);
+        },
+        error => {
+          setLoadingStudents(false);
+          setError(error);
+          console.log(error);
+        }
+      );
+    return () => {
+      unsubscribeClass();
+      unsubscribeStudents();
+    };
   }, [firebase, classId]);
   React.useEffect(() => {
     if (!user || !data) return;
@@ -94,10 +148,11 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
     <ClassContext.Provider
       value={{
         data,
-        loading,
+        loading: loadingClass || loadingStudents,
         error,
         setClassId,
         isInstructor,
+        students,
       }}
     >
       {children}
