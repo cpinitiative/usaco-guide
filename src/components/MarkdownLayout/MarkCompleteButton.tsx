@@ -110,7 +110,8 @@ const MarkCompleteButton = ({
             aria-expanded="true"
             onClick={() => setShow(!show)}
           >
-            {state}
+            <span className="mr-2">{icon(state)} </span>{' '}
+            <span className="flex-1">{state}</span>
             <svg
               className="-mr-1 ml-2 h-5 w-5"
               viewBox="0 0 20 20"
