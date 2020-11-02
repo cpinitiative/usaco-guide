@@ -247,7 +247,7 @@ export default function ClassSelectPage(props: { path: string }) {
                     value={addInstructorEmail}
                     onChange={e => setAddInstructorEmail(e.target.value)}
                     disabled={addInstructorLoading}
-                    className="bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="font-bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
                 <div className={'mt-2'}>

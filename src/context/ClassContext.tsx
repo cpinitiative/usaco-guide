@@ -111,6 +111,19 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
           console.log(error);
         }
       );
+
+    return () => {
+      unsubscribeClass();
+    };
+  }, [firebase, classId]);
+  React.useEffect(() => {
+    if (!user || !data) return;
+    if (data.instructors) {
+      setIsInstructor(data?.instructors.indexOf(user.uid) > -1);
+    }
+  }, [data, user?.uid]);
+  React.useEffect(() => {
+    if (!isInstructor || !firebase) return;
     const unsubscribeStudents = firebase
       .firestore()
       .collection('users')
@@ -133,22 +146,14 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
           console.log(error);
         }
       );
-    return () => {
-      unsubscribeClass();
-      unsubscribeStudents();
-    };
-  }, [firebase, classId]);
-  React.useEffect(() => {
-    if (!user || !data) return;
-    if (data.instructors) {
-      setIsInstructor(data?.instructors.indexOf(user.uid) > -1);
-    }
-  }, [data, user?.uid]);
+
+    return () => unsubscribeStudents();
+  }, [isInstructor, firebase]);
   return (
     <ClassContext.Provider
       value={{
         data,
-        loading: loadingClass || loadingStudents,
+        loading: loadingClass || (isInstructor && loadingStudents),
         error,
         setClassId,
         isInstructor,
