@@ -14,7 +14,21 @@ export const wrapRootElement = ({ element }) => (
 
 // https://joshwcomeau.com/gatsby/dark-mode/
 const MagicScriptTag = () => {
-  const codeToRunOnClient = `(function(){if(window.localStorage.getItem('${darkModeKey}')==='true')document.documentElement.classList.add('mode-dark');})()`;
+  // Note: see also src/context/UserDataContext/properties/darkMode.ts if any of the below code needs to be changed.
+  const codeToRunOnClient = `
+  (function(){
+    var dark = false;
+    if (window.localStorage.getItem('${darkModeKey}')==='true') dark = true;
+    else {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      const hasMediaQueryPreference = typeof mql.matches === 'boolean';
+      if (hasMediaQueryPreference) {
+        dark = mql.matches;
+      }
+    }
+    if (dark) document.documentElement.classList.add('mode-dark');
+  })()
+  `;
   // eslint-disable-next-line react/no-danger
   return <script dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />;
 };
