@@ -24,7 +24,9 @@ export default function ClassLayout({
 }) {
   const firebase = useContext(FirebaseContext);
   const { userClasses, setUserClasses } = useContext(UserDataContext);
-  const { loading, error, data, isInstructor } = useContext(ClassContext);
+  const { loading, error, data, isInstructor, students } = useContext(
+    ClassContext
+  );
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
@@ -33,7 +35,6 @@ export default function ClassLayout({
   const [editClassError, setEditClassError] = useState('');
   const [editClassTitle, setEditClassTitle] = useState('');
   const [editClassDate, setEditClassDate] = useState('');
-
   const notFound = !loading && !data;
   React.useEffect(() => {
     if (!joinLinkCopied) return;
@@ -242,6 +243,20 @@ export default function ClassLayout({
                     {/*    </span>*/}
                     {/*  </div>*/}
                     {/*</div>*/}
+                    {isInstructor && (
+                      <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
+                        <div className="flex items-center space-x-2">
+                          <Icons.UserGroup className="h-5 w-5 text-gray-400" />
+
+                          <span className="text-sm text-gray-500 leading-5 font-medium">
+                            <span className="font-bold">
+                              {students.length} Members
+                              {/*  TODO: make into a link that opens a modal */}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    )}
                     {isInstructor && (
                       <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
                         <div className="flex items-center space-x-2">
