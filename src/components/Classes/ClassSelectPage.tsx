@@ -244,7 +244,6 @@ export default function ClassSelectPage(props: { path: string }) {
                 <div className="mt-3">
                   <label className="bold">Instructor's Email Address</label>
                   <input
-                    placeholder={'e.g. Saturdays 9AM'}
                     value={addInstructorEmail}
                     onChange={e => setAddInstructorEmail(e.target.value)}
                     disabled={addInstructorLoading}
