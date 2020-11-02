@@ -18,8 +18,9 @@ const MagicScriptTag = () => {
   const codeToRunOnClient = `
   (function(){
     var dark = false;
-    if (window.localStorage.getItem('${darkModeKey}')==='true') dark = true;
-    else {
+    var pref = window.localStorage.getItem('${darkModeKey}');
+    if (typeof pref === 'string' && pref === 'true') dark = true;
+    else if (typeof pref !== 'string') {
       const mql = window.matchMedia('(prefers-color-scheme: dark)');
       const hasMediaQueryPreference = typeof mql.matches === 'boolean';
       if (hasMediaQueryPreference) {
