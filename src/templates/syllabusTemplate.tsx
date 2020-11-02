@@ -157,7 +157,7 @@ export default function Template(props) {
   return (
     <Layout>
       <SEO
-        title={SECTION_LABELS[division]}
+        title={SECTION_SEO_TITLES[division]}
         description={SECTION_SEO_DESCRIPTION[division]}
       />
       <div className="min-h-screen">

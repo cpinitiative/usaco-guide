@@ -260,6 +260,14 @@ export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
   adv:
     'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
 };
+export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
+  general: 'General USACO Information',
+  bronze: 'USACO Bronze Topics',
+  silver: 'USACO Silver Topics',
+  gold: 'USACO Gold Topics',
+  plat: 'USACO Platinum Topics',
+  adv: 'Advanced USACO Topics',
+};
 
 let moduleIDToSectionMap: { [key: string]: SectionID } = {};
 

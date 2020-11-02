@@ -20,10 +20,7 @@ export default function Template(props) {
   }, []);
   return (
     <Layout>
-      <SEO
-        title={`${module.title} (${SECTION_LABELS[module.section]})`}
-        description={module.description}
-      />
+      <SEO title={`${module.title}`} description={module.description} />
 
       <MarkdownLayout markdownData={module}>
         <div className="py-4">
