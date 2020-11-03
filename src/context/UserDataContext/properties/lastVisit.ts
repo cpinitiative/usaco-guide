@@ -4,13 +4,13 @@ export type LastVisitAPI = {
   lastVisitDate: number;
   setLastVisitDate: (today: number) => void;
   consecutiveVisits: number;
-  totalNoVisits: number;
+  numPageviews: number;
 };
 
 export default class LastVisitProperty extends UserDataPropertyAPI {
   private lastVisitDate: number;
   private consecutiveVisits: number;
-  private totalNoVisits: number;
+  private numPageviews: number;
 
   initializeFromLocalStorage = () => {
     this.lastVisitDate = this.getValueFromLocalStorage(
@@ -21,8 +21,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       this.getLocalStorageKey('consecutiveVisits'),
       1
     );
-    this.totalNoVisits = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('totalNoVisits'),
+    this.numPageviews = this.getValueFromLocalStorage(
+      this.getLocalStorageKey('numPageviews'),
       1
     );
   };
@@ -37,8 +37,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       this.consecutiveVisits
     );
     this.saveLocalStorageValue(
-      this.getLocalStorageKey('totalNoVisits'),
-      this.totalNoVisits
+      this.getLocalStorageKey('numPageviews'),
+      this.numPageviews
     );
   };
 
@@ -47,37 +47,36 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     window.localStorage.removeItem(
       this.getLocalStorageKey('consecutiveVisits')
     );
-    window.localStorage.removeItem(this.getLocalStorageKey('totalNoVisits'));
+    window.localStorage.removeItem(this.getLocalStorageKey('numPageviews'));
   };
 
   exportValue = (): any => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
-      totalNoVisits: this.totalNoVisits,
+      numPageviews: this.numPageviews,
     };
   };
 
   importValueFromObject = (data: object) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
-    this.totalNoVisits = data['totalNoVisits'] || 1;
+    this.numPageviews = data['numPageviews'] || 1;
   };
 
   getAPI = () => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
-      totalNoVisits: this.totalNoVisits,
+      numPageviews: this.numPageviews,
       setLastVisitDate: (today: number) => {
         let timeSinceLastVisit = today - this.lastVisitDate;
         let oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
-          newConsecutiveVisits = null,
-          newTotalNoVisits = null;
-        newTotalNoVisits = this.totalNoVisits + 1;
+          newConsecutiveVisits = null;
+        this.numPageviews++;
         if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
           newLastVisit = today;
           newConsecutiveVisits = this.consecutiveVisits + 1;
@@ -85,11 +84,12 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           newLastVisit = today;
           newConsecutiveVisits = 1;
         }
-        if (newTotalNoVisits !== null) {
+        if (this.numPageviews !== null) {
           if (this.firebaseUserDoc) {
             this.firebaseUserDoc.set({
-              totalNoVisits: newTotalNoVisits,
+              numPageviews: this.numPageviews,
             });
+            { merge: true }
           }
         }
 

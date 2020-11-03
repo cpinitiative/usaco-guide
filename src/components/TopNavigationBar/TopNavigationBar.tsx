@@ -67,7 +67,6 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
   const ref = useRef();
 
-  const userSettings = useContext(UserDataContext);
   useEffect(() => {
     const handleClick = e => {
       // @ts-ignore
