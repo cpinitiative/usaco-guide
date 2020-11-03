@@ -84,30 +84,29 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           newLastVisit = today;
           newConsecutiveVisits = 1;
         }
-        if (this.numPageviews !== null) {
-          if (this.firebaseUserDoc) {
-            this.firebaseUserDoc.set({
-              numPageviews: this.numPageviews,
-            });
-            { merge: true }
-          }
-        }
-
+        
+        let changes = {};
         if (newLastVisit !== null) {
-          if (this.firebaseUserDoc) {
-            this.firebaseUserDoc.set(
-              {
-                lastVisitDate: newLastVisit,
-                consecutiveVisits: newConsecutiveVisits,
-              },
-              { merge: true }
-            );
-          }
           this.lastVisitDate = newLastVisit;
           this.consecutiveVisits = newConsecutiveVisits;
-          this.writeValueToLocalStorage();
-          this.triggerRerender();
+          changes = {
+            lastVisitDate: newLastVisit,
+            consecutiveVisits: newConsecutiveVisits,
+          };
         }
+        
+        if (this.firebaseUserDoc) {
+          this.firebaseUserDoc.set(
+            {
+              ...changes,
+              numPageviews: this.numPageviews,
+            },
+            { merge: true }
+          );
+        }
+        
+        this.writeValueToLocalStorage();
+        this.triggerRerender();
       },
     };
   };
