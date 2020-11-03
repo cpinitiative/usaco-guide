@@ -259,7 +259,7 @@ export default function IndexPage(props: PageProps) {
                         y="0"
                         width="4"
                         height="4"
-                        className="text-gray-200"
+                        className="text-gray-200 dark:text-gray-800"
                         fill="currentColor"
                       />
                     </pattern>
@@ -268,7 +268,7 @@ export default function IndexPage(props: PageProps) {
                     y="72"
                     width="640"
                     height="640"
-                    className="text-gray-50"
+                    className="text-gray-50 dark:text-gray-900"
                     fill="currentColor"
                   />
                   <rect
