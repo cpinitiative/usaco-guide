@@ -196,7 +196,7 @@ export default function DashboardPage(props: PageProps) {
               </div>
             )}
           </div>
-          <header>
+          <header id="announcements">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
                 Announcements
@@ -282,14 +282,24 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement && userSettings.numPageviews > 12 && (
-        <div className="h-12">
-          <AnnouncementBanner
-            announcement={parsedAnnouncements[0]}
-            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
-          />
-       </div>
-      )}
+      <div className="h-12">
+        <AnnouncementBanner
+          announcement={parsedAnnouncements[0]}
+          onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+        />
+      </div>
+
+      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
+        userSettings.numPageviews > 12 && (
+          <div className="h-12">
+            <AnnouncementBanner
+              announcement={parsedAnnouncements[0]}
+              onDismiss={() =>
+                setLastReadAnnouncement(parsedAnnouncements[0].id)
+              }
+            />
+          </div>
+        )}
     </Layout>
   );
 }
