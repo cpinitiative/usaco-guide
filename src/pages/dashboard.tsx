@@ -24,6 +24,7 @@ import Card from '../components/Dashboard/DashboardCard';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
+  const userSettings = React.useContext(UserDataContext);
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -281,14 +282,14 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {/*{parsedAnnouncements[0].id !== lastReadAnnouncement && (*/}
-      {/*  <div className="h-12">*/}
-      {/*    <AnnouncementBanner*/}
-      {/*      announcement={parsedAnnouncements[0]}*/}
-      {/*      onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}*/}
-      {/*    />*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      {parsedAnnouncements[0].id !== lastReadAnnouncement && userSettings.numPageviews > 12 && (
+        <div className="h-12">
+          <AnnouncementBanner
+            announcement={parsedAnnouncements[0]}
+            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          />
+       </div>
+      )}
     </Layout>
   );
 }
