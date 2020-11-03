@@ -8,22 +8,29 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-admin
-  .auth()
-  .listUsers(1000)
-  .then(function (listUsersResult) {
-    let data = {};
-    listUsersResult.users.forEach(function (userRecord) {
-      data[userRecord.uid] = userRecord.toJSON();
+let data = {};
+const listAllUsers = nextPageToken => {
+  admin
+    .auth()
+    .listUsers(1000, nextPageToken)
+    .then(function (listUsersResult) {
+      listUsersResult.users.forEach(function (userRecord) {
+        data[userRecord.uid] = userRecord.toJSON();
+      });
+      if (listUsersResult.pageToken) {
+        listAllUsers(listUsersResult.pageToken);
+      } else {
+        fs.writeFile('auth_data.json', JSON.stringify(data), function (err) {
+          if (err) return console.log(err);
+          console.log('OK');
+        });
+      }
+    })
+    .catch(function (error) {
+      console.log('Error listing users:', error);
     });
-    fs.writeFile('auth_data.json', JSON.stringify(data), function (err) {
-      if (err) return console.log(err);
-      console.log('OK');
-    });
-  })
-  .catch(function (error) {
-    console.log('Error listing users:', error);
-  });
+};
+listAllUsers();
 
 db.collection('users')
   .get()
