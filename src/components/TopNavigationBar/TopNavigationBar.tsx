@@ -99,7 +99,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
         </div>
         <input
           id="search"
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-dark-high-emphasis focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out text-black"
+          className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-dark-high-emphasis focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:shadow-outline-blue sm:text-sm transition duration-150 ease-in-out text-black dark:text-white"
           placeholder="Search"
           type="search"
           value={currentRefinement}
