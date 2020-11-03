@@ -13,9 +13,10 @@ import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/S
 const LinkWithProgress = styled(SidebarLinkWithProgress)`
   &::after {
     ${({ small }) => css`
-      left: calc(
-        -1.75rem - ${small ? '8px' : '10px'}
-      ); // -(3rem padding plus half of width)
+      // prettier-ignore
+      left: calc(-1.75rem - ${small
+        ? '8px'
+        : '10px'}); // -(3rem padding plus half of width)
       // prettier-ignore
       top: calc(1.5rem - ${small
         ? '8px'
