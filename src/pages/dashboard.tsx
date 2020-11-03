@@ -282,13 +282,6 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      <div className="h-12">
-        <AnnouncementBanner
-          announcement={parsedAnnouncements[0]}
-          onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
-        />
-      </div>
-
       {parsedAnnouncements[0].id !== lastReadAnnouncement &&
         userSettings.numPageviews > 12 && (
           <div className="h-12">
