@@ -194,6 +194,14 @@ The `Rectangle` class supports numerous useful methods, including the following:
 
 This class can often lessen the implementation needed in some bronze problems and CodeForces problems.
 
+<Info title="Important Note About Java Coordinates">
+
+$y$-[coordinates](https://docs.oracle.com/javase/tutorial/2d/overview/coordinate.html) in Java increase from top to bottom, not bottom to top! This is why we consider the top-left $y$-coordinate of each rectangle in the solution below to be `-y2` instead of `y2`.
+
+Alternatively, you can think of `newRect` as creating a rectangle with *lower-left* corner at $(x,y)$ and work with Cartesian coordinates instead. So the solution below will work if all occurences of `-y2` are replaced with `y1`.
+
+</Info>
+
 With Built-in Rectangle class:
 
 ```java
@@ -207,7 +215,6 @@ public class blockedBillboard {
 		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
 		int x1, y1, x2, y2;
 
-		// the top left point is (0,0), so you need to do -y2
 		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
 		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
@@ -251,7 +258,7 @@ public class blockedBillboard {
 		t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
 		pw.println(a.area()+b.area()-intersect(a, t)-intersect(b, t));
 		pw.close();
-    }
+	}
 	static int intersect(Rect p, Rect q) {
 		int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
 		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
