@@ -197,8 +197,14 @@ export default function IndexPage(props: PageProps) {
           <main className="mt-8 mx-auto max-w-6xl px-4 sm:mt-12 sm:px-6 md:mt-20 xl:mt-24">
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
               <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:flex-col lg:justify-center">
-                <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-base lg:text-sm xl:text-base">
-                  Pre-Release
+                <div>
+                  <OutboundLink
+                    href="https://github.com/cpinitiative/usaco-guide/?ref=top_badge"
+                    target="_blank"
+                    className="text-sm font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-400 dark:text-gray-400 dark-hover:text-gray-300 sm:text-base lg:text-sm xl:text-base transition duration-150 ease-in-out"
+                  >
+                    Open Source!
+                  </OutboundLink>
                 </div>
                 <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 dark:text-gray-100 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
                   USACO{' '}
