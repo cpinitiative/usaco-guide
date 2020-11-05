@@ -23,7 +23,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     );
     this.numPageviews = this.getValueFromLocalStorage(
       this.getLocalStorageKey('numPageviews'),
-      1
+      0
     );
   };
 
@@ -61,7 +61,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
   importValueFromObject = (data: object) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
-    this.numPageviews = data['numPageviews'] || 1;
+    this.numPageviews = data['numPageviews'] || 0;
   };
 
   getAPI = () => {
@@ -84,7 +84,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           newLastVisit = today;
           newConsecutiveVisits = 1;
         }
-        
+
         let changes = {};
         if (newLastVisit !== null) {
           this.lastVisitDate = newLastVisit;
@@ -94,7 +94,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
             consecutiveVisits: newConsecutiveVisits,
           };
         }
-        
+
         if (this.firebaseUserDoc) {
           this.firebaseUserDoc.set(
             {
@@ -104,7 +104,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
             { merge: true }
           );
         }
-        
+
         this.writeValueToLocalStorage();
         this.triggerRerender();
       },

@@ -246,6 +246,7 @@ export default function MarkdownLayout({
     signIn,
     firebaseUser,
     isLoaded,
+    numPageviews,
   } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
@@ -484,7 +485,7 @@ export default function MarkdownLayout({
 
                 <div className="lg:h-8" />
 
-                {isLoaded && !firebaseUser && (
+                {isLoaded && !firebaseUser && numPageviews > 1 && (
                   <>
                     <div className="bg-gray-50 dark:bg-gray-900 sm:rounded-lg">
                       <div className="px-4 py-5 sm:p-6">

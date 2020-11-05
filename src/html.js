@@ -18,6 +18,22 @@ export default function HTML(props) {
         {/*/>*/}
         {/* End Appzi */}
 
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<link
+            rel="preload"
+            href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"
+            as="style"
+            onLoad="this.onload=null;this.rel='stylesheet'"
+          />
+          <link
+            rel="preload"
+            href="https://rsms.me/inter/inter.css"
+            as="style"
+            onLoad="this.onload=null;this.rel='stylesheet'"
+          />`,
+          }}
+        />
         {/*<link*/}
         {/*  rel="preload"*/}
         {/*  href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"*/}
