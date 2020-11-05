@@ -208,7 +208,7 @@ export default function IndexPage(props: PageProps) {
                 </div>
                 <h2 className="mt-1 text-4xl tracking-tight leading-10 font-black text-gray-900 dark:text-gray-100 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
                   USACO{' '}
-                  <span className="text-blue-600 dark:text-blue-400">
+                  <span className="text-blue-600 dark:text-blue-200">
                     Guide
                   </span>
                 </h2>
