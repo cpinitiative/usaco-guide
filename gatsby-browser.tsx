@@ -1,4 +1,5 @@
 import './src/styles/main.css';
+import './src/styles/inter_and_algolia.css';
 import './src/styles/tailwindcss-utils.css';
 import './src/styles/anchor.css';
 import * as React from 'react';

@@ -18,19 +18,6 @@ export default function HTML(props) {
         {/*/>*/}
         {/* End Appzi */}
 
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"
-          media="print"
-          onLoad="this.media='all'; this.onload=null;"
-        />
-        <link
-          rel="stylesheet"
-          href="https://rsms.me/inter/inter.css"
-          media="print"
-          onLoad="this.media='all'; this.onload=null;"
-        />
-
         {/*<link*/}
         {/*  rel="preload"*/}
         {/*  href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"*/}
