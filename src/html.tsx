@@ -17,13 +17,6 @@ export default function HTML(props) {
         {/*  src="https://w.appzi.io/bootstrap/bundle.js?token=iIhbb"*/}
         {/*/>*/}
         {/* End Appzi */}
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"
-          integrity="sha256-HB49n/BZjuqiCtQQf49OdZn63XuKFaxcIHWf0HNKte8="
-          crossOrigin="anonymous"
-        />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
       <body {...props.bodyAttributes}>
         {props.preBodyComponents}
