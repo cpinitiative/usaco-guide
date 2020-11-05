@@ -26,6 +26,7 @@ import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProg
 import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
+import DisqusComments from '../DisqusComments';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -619,7 +620,7 @@ export default function MarkdownLayout({
                   <ModuleFeedback markdownData={markdownData} />
                 </div>
 
-                <DiscussionEmbed
+                <DisqusComments
                   shortname="usacoguide"
                   config={{
                     url: `https://usaco.guide/${
