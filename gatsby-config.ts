@@ -17,9 +17,6 @@ export const plugins = [
   },
   {
     resolve: `gatsby-plugin-typescript`,
-    options: {
-      allowNamespaces: true,
-    },
   },
   {
     resolve: `gatsby-source-filesystem`,
