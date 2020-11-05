@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 export default function HTML(props) {
   return (
@@ -18,14 +18,12 @@ export default function HTML(props) {
         {/*/>*/}
         {/* End Appzi */}
 
-        {/* @ts-ignore */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/algolia-min.css"
           media="print"
           onLoad="this.media='all'; this.onload=null;"
         />
-        {/* @ts-ignore */}
         <link
           rel="stylesheet"
           href="https://rsms.me/inter/inter.css"
