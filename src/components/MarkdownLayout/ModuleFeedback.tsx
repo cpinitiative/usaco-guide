@@ -36,6 +36,10 @@ export default function ModuleFeedback({
     data.append('url', window.location.href);
     data.append('topic', 'Module Feedback Form');
     data.append('message', message);
+    data.append(
+      '_subject',
+      `[Module Feedback] ${markdownData.title} - ${email || 'Unknown Email'}`
+    );
     setSubmitEnabled(false);
     try {
       await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
