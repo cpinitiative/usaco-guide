@@ -1,0 +1,113 @@
+---
+id: sapo-18-stadium
+title: SAPO 2018 Stadium
+author: Andi Qu
+---
+
+<Spoiler title="Hint 1">
+
+Given a possible side length of the stadium, can you check whether we can achieve this width in $O(N \log N)$ time?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If we can build a stadium somewhere, we can shift it so that its left side touches a tree or the left side of the park. This means we only have to check $O(N)$ y-coordinates for the left side!
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+$O(N \log N \log W)$ is unfortunately too slow, so binary-searching for the answer is out of the question. Can you use 2-pointers to bring the complexity down to $O(N \log N)$?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $r[y]$ be the y-coordinate of the right side of the largest stadium with a left y-coordinate of $y$. The key observation is that $r[y] \geq r[y - 1]$. This is true because any $l \times l$ square can contain a $(l - 1) \times (l - 1)$ square.
+
+Since $y$ and $r[y]$ never decrease, this suggests that we should use 2-pointers to find the largest $r[y] - y$!
+
+Since $W$ can be so big though, we can only afford to check "interesting" y-coordinates (i.e. when there is a tree with that y-coordinate).
+
+Sort the trees by their y-coordinates and iterate through them. For the current tree $i$, let $p$ be the index of the leftmost tree that satisfies $y_{p} \geq r[y_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
+
+To update $p$, we increment $p$ until $p = N$ or $y_p - y_i > \max(x_a - x_b : y_a, y_b \in [y_i, y_p] \text{ and no tree c has } x_c \in (x_a, x_b))$.
+
+As we increment $p$, we also check whether $\min(y_p - y_i, \max(x_a - x_b : y_a, y_b \in [y_i, y_p] \text{ and no tree c has } x_c \in (x_a, x_b)))$ is larger than our current maximum side length, and if so, we update our answer.
+
+We use a `std::set` and `std::multiset` to keep track of the trees and "gaps" between $y_i$ and $y_p$, so the complexity of this solution is $O(N \log N)$.
+
+## Code
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct tree {
+    int x, y;
+};
+
+struct compare_x {
+    bool operator()(const tree &a, const tree &b) const {
+        return tie(a.x, a.y) < tie(b.x, b.y);
+    }
+};
+
+struct compare_y {
+    bool operator()(const tree &a, const tree &b) const { return a.y < b.y; }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    int N, W;
+    cin >> N >> W;
+    vector<tree> trees(N);
+    for (int i = 0; i < N; i++) cin >> trees[i].x >> trees[i].y;
+
+    sort(trees.begin(), trees.end(), compare_y());
+    set<tree, compare_x> edges{tree{0, -1}, tree{W, W + 1}};
+    multiset<int> gaps{W};
+    int ans = 0;
+    int p = 0;
+    for (int i = -1; i < N; i++) {
+        int y0 = 0;
+        if (i != -1) {
+            const tree &t = trees[i];
+            y0 = t.y;
+            auto pos = edges.find(t);
+            assert(pos != edges.end());
+            auto a = prev(pos);
+            auto b = next(pos);
+            gaps.erase(gaps.find(t.x - a->x));
+            gaps.erase(gaps.find(b->x - t.x));
+            gaps.insert(b->x - a->x);
+            edges.erase(pos);
+        }
+        if (p < i) p = i;
+        int y1 = (p == N) ? W : trees[p].y;
+        ans = max(ans, min(y1 - y0, *gaps.rbegin()));
+        while (p < N && trees[p].y - y0 <= *gaps.rbegin()) {
+            const tree &t = trees[p];
+            auto b = edges.lower_bound(t);
+            auto a = prev(b);
+            gaps.erase(gaps.find(b->x - a->x));
+            gaps.insert(t.x - a->x);
+            gaps.insert(b->x - t.x);
+            edges.insert(b, t);
+            p++;
+            y1 = (p == N) ? W : trees[p].y;
+            ans = max(ans, min(y1 - y0, *gaps.rbegin()));
+        }
+    }
+    cout << ans << '\n';
+}
+```
+
+<Info title="Bonus">
+
+[IOI 2008 Pyramid Base](https://oj.uz/problem/view/IOI08_pyramid_base) (one of the most difficult IOI problems) uses a similar idea. Try to solve that problem once you learn about [lazy segment trees](/plat/RURQ)!
+
+</Info>
+
+</Spoiler>
