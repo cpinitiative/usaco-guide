@@ -104,6 +104,7 @@ type UserDataContextAPI = UserLangAPI &
     signOut: Function;
     isLoaded: boolean;
     onlineUsers: number;
+    getDataExport: Function;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>(null);
@@ -226,6 +227,13 @@ export const UserDataProvider = ({ children }) => {
         ...api.getAPI(),
       };
     }, {}),
+
+    getDataExport: () => {
+      return UserDataContextAPIs.reduce(
+        (acc, api) => ({ ...acc, ...api.exportValue() }),
+        {}
+      );
+    },
   };
 
   return (

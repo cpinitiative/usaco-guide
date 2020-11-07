@@ -15,6 +15,18 @@ const UserAuthButton = props => {
 export default function SettingsModal({ isOpen, onClose }) {
   const userSettings = useContext(UserDataContext);
 
+  const handleExportUserData = () => {
+    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(userSettings.getDataExport())
+    )}`;
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', 'usacoguide-userdata.json');
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   return (
     <Transition
       show={isOpen}
@@ -141,6 +153,15 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <div className="h-3" />
 
                   <UserAuthButton className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" />
+
+                  <div className="h-3" />
+
+                  <button
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                    onClick={handleExportUserData}
+                  >
+                    Export User Data
+                  </button>
                 </div>
               </div>
             </div>
