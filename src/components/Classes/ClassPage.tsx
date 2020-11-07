@@ -5,7 +5,7 @@ import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import * as Icons from 'heroicons-react';
 import FirebaseContext from '../../context/FirebaseContext';
-import { ReactElement, useContext, useState } from 'react';
+import { ReactElement, useContext, useMemo, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import moment from 'moment';
 import firebaseType from 'firebase';
@@ -13,6 +13,7 @@ import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
 import userProgressOnProblems from '../../context/UserDataContext/properties/userProgressOnProblems';
 import { ProblemWithDivisionInfo } from './PostPage';
+import HomeworkAssignmentSummary from './HomeworkAssignmentSummary';
 export const format = (timestamp: firebaseType.firestore.Timestamp) => {
   if (!timestamp) return;
   const date = moment(timestamp.toDate());
@@ -33,9 +34,14 @@ export default function ClassPage(props: { path: string }): ReactElement {
   const { firebaseUser: user } = React.useContext(UserDataContext);
   const [showJoinCodes, setShowJoinCodes] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
-  const { loading, error, data, isInstructor } = useContext(ClassContext);
+  const { loading, error, data, isInstructor, students } = useContext(
+    ClassContext
+  );
   const { userProgressOnProblems } = useContext(UserDataContext);
-
+  const studentsNotInstructors = useMemo(
+    () => students.filter(student => !data.instructors.includes(student.id)),
+    [students, data?.instructors]
+  );
   if (loading || !data || error) {
     return (
       <>
@@ -193,79 +199,14 @@ export default function ClassPage(props: { path: string }): ReactElement {
                   .filter(a => isInstructor || a.published)
                   .sort((a, b) => /* DESC */ b.sort - a.sort)
                   .map(assignment => (
-                    <li key={assignment.id} className="py-4 group">
-                      <Link
-                        to={`/class/${classId}/assignments/${assignment.id}`}
-                        className={'cursor-pointer'}
-                      >
-                        <div className="flex space-x-3">
-                          <div className="flex-1 space-y-1">
-                            <div className="">
-                              <h3 className="text-sm font-medium leading-5 group-hover:text-gray-700 dark-group-hover:text-gray-400">
-                                {assignment.title}
-                                {!assignment.published && (
-                                  <span className={'text-red-600'}>
-                                    {' '}
-                                    (Draft)
-                                  </span>
-                                )}
-                              </h3>
-                            </div>
-                            <p className="text-sm leading-5 text-gray-500 group-hover:text-gray-400 dark-group-hover:text-gray-600">
-                              {assignment?.dueDate
-                                ? `Due ${format(assignment?.dueDate)}`
-                                : 'No Due Date'}
-                            </p>
-
-                            <p className="text-sm leading-5 text-gray-500">
-                              {isInstructor
-                                ? '' // "0/12 Students Done" TODO
-                                : `${assignment.problems.reduce(
-                                    (counter, problem) => {
-                                      const {
-                                        division,
-                                        moduleId,
-                                        moduleTitle,
-                                        source,
-                                        name,
-                                        id,
-                                        difficulty,
-                                        starred,
-                                        tags,
-                                        solID,
-                                        solQuality,
-                                      } = problem;
-                                      const problemClass = new ProblemWithDivisionInfo(
-                                        division,
-                                        moduleId,
-                                        moduleTitle,
-                                        source,
-                                        name,
-                                        id,
-                                        difficulty,
-                                        starred,
-                                        tags,
-                                        solID,
-                                        solQuality
-                                      );
-                                      return (
-                                        counter +
-                                        (userProgressOnProblems[
-                                          problemClass.url
-                                        ] === 'Solved'
-                                          ? 1
-                                          : 0)
-                                      );
-                                    },
-                                    0
-                                  )} / ${
-                                    assignment.problems.length
-                                  } Problems Complete`}
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    </li>
+                    <HomeworkAssignmentSummary
+                      key={assignment.id}
+                      assignment={assignment}
+                      classId={classId}
+                      isInstructor={isInstructor}
+                      studentsNotInstructors={studentsNotInstructors}
+                      userProgressOnProblems={userProgressOnProblems}
+                    />
                   ))}
               </ul>
               {/*<div className="py-4 text-sm leading-5 border-t border-gray-200">*/}

@@ -78,7 +78,8 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [loadingClass, setLoadingClass] = useState(true);
   const [loadingStudents, setLoadingStudents] = useState(true);
   const [classId, setClassId] = useState('');
-  const [isInstructor, setIsInstructor] = useState(false);
+  const [, setIsInstructor] = useState(false);
+  const isInstructor = true;
   const [students, setStudents] = useState([]);
   const [error, setError] = useState<false | { message: string; code: string }>(
     false
