@@ -129,13 +129,11 @@ export const plugins = [
     },
   },
   {
-    resolve: 'gatsby-plugin-sentry',
+    resolve: '@sentry/gatsby',
     options: {
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
-      environment: process.env.NODE_ENV,
-      enabled: (() =>
-        ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
+      denyUrls: [/extensions\//i, /^chrome:\/\//i],
     },
   },
   {
