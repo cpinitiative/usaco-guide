@@ -26,6 +26,7 @@ import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProg
 import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
+import DisqusComments from '../DisqusComments';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -245,6 +246,7 @@ export default function MarkdownLayout({
     signIn,
     firebaseUser,
     isLoaded,
+    numPageviews,
   } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
@@ -483,7 +485,7 @@ export default function MarkdownLayout({
 
                 <div className="lg:h-8" />
 
-                {isLoaded && !firebaseUser && (
+                {isLoaded && !firebaseUser && numPageviews > 1 && (
                   <>
                     <div className="bg-gray-50 dark:bg-gray-900 sm:rounded-lg">
                       <div className="px-4 py-5 sm:p-6">
@@ -619,7 +621,7 @@ export default function MarkdownLayout({
                   <ModuleFeedback markdownData={markdownData} />
                 </div>
 
-                <DiscussionEmbed
+                <DisqusComments
                   shortname="usacoguide"
                   config={{
                     url: `https://usaco.guide/${
