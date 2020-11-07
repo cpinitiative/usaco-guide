@@ -137,6 +137,7 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
               data: doc.data(),
             });
           });
+          console.log(tempStudents);
           setStudents(tempStudents);
           setLoadingStudents(false);
         },
@@ -148,7 +149,7 @@ const ClassProvider = ({ children }: { children: ReactNode }): ReactElement => {
       );
 
     return () => unsubscribeStudents();
-  }, [isInstructor, firebase]);
+  }, [isInstructor, firebase, classId]);
   return (
     <ClassContext.Provider
       value={{
