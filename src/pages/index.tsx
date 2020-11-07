@@ -391,10 +391,10 @@ export default function IndexPage(props: PageProps) {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      <b>No, USACO does not have an official syllabus.</b> This
-                      guide merely lists topics that have <i>historically</i>{' '}
-                      appeared in USACO contests; it makes no guarantees about
-                      the topics in future USACO contests.
+                      No, USACO does not have an official syllabus. This guide
+                      merely lists topics that have <i>historically</i> appeared
+                      in USACO contests; it makes no guarantees about the topics
+                      in future USACO contests.
                     </p>
                   </dd>
                 </div>
@@ -406,8 +406,14 @@ export default function IndexPage(props: PageProps) {
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Contact Us" button on the bottom left of the screen, or
-                      contact the guide coordinator directly.
+                      "Contact Us" button or email us at{' '}
+                      <a
+                        href="mailto:usacoguide@gmail.com"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        usacoguide@gmail.com
+                      </a>
+                      .
                     </p>
                   </dd>
                 </div>
@@ -467,8 +473,8 @@ export default function IndexPage(props: PageProps) {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you get stuck, feel free to ask for help by clicking
-                      the "Contact Us" button on the bottom left of the screen.
-                      It may take some time for your question to be addressed.
+                      the "Contact Us" button. It may take some time for your
+                      question to be addressed.
                     </p>
                   </dd>
                 </div>
@@ -520,6 +526,8 @@ export default function IndexPage(props: PageProps) {
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
+            &copy; 2020 Competitive Programming Initiative.
+            <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}
             <Link to="/license" className="underline">
