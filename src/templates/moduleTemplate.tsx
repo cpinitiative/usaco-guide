@@ -40,7 +40,7 @@ export default function Template(props) {
             },{
               "@type": "ListItem",
               "position": 3,
-              "name": "${module.title}"
+              "name": "${module.title}",
               "item": "https://usaco.guide/${module.section}/${module.id}"
             }]
           }
