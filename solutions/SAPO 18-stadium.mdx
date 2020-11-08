@@ -12,7 +12,7 @@ Given a possible side length of the stadium, can you check whether we can achiev
 
 <Spoiler title="Hint 2">
 
-If we can build a stadium somewhere, we can shift it so that its left side touches a tree or the left side of the park. This means we only have to check $O(N)$ y-coordinates for the left side!
+If we can build a stadium somewhere, we can shift it so that its left side touches a tree or the left side of the park. This means we only have to check $O(N)$ x-coordinates for the left side!
 
 </Spoiler>
 
@@ -24,19 +24,21 @@ $O(N \log N \log W)$ is unfortunately too slow, so binary-searching for the answ
 
 <Spoiler title="Solution">
 
-Let $r[y]$ be the y-coordinate of the right side of the largest stadium with a left y-coordinate of $y$. The key observation is that $r[y] \geq r[y - 1]$. This is true because any $l \times l$ square can contain a $(l - 1) \times (l - 1)$ square.
+Let $r[x]$ be the x-coordinate of the right side of the largest stadium with a left x-coordinate of $y$. The key observation is that $r[x] \geq r[x - 1]$. This is true because any $l \times l$ square can contain a $(l - 1) \times (l - 1)$ square.
 
-Since $y$ and $r[y]$ never decrease, this suggests that we should use 2-pointers to find the largest $r[y] - y$!
+Since $x$ and $r[x]$ never decrease, this suggests that we should use 2-pointers to find the largest $r[x] - x$!
 
-Since $W$ can be so big though, we can only afford to check "interesting" y-coordinates (i.e. when there is a tree with that y-coordinate).
+Since $W$ can be so big though, we can only afford to check "interesting" x-coordinates (i.e. when there is a tree with that x-coordinate).
 
-Sort the trees by their y-coordinates and iterate through them. For the current tree $i$, let $p$ be the index of the leftmost tree that satisfies $y_{p} \geq r[y_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
+Sort the trees by their x-coordinates and iterate through them. For the current tree $i$, let $p$ be the index of the leftmost tree that satisfies $x_{p} \geq r[x_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
 
-To update $p$, we increment $p$ until $p = N$ or $y_p - y_i > \max(x_a - x_b : y_a, y_b \in [y_i, y_p] \text{ and no tree c has } x_c \in (x_a, x_b))$.
+To update $p$, we increment $p$ until $p = N$ or $x_p - x_i > \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree c has } y_c \in (y_a, y_b))$.
 
-As we increment $p$, we also check whether $\min(y_p - y_i, \max(x_a - x_b : y_a, y_b \in [y_i, y_p] \text{ and no tree c has } x_c \in (x_a, x_b)))$ is larger than our current maximum side length, and if so, we update our answer.
+As we increment $p$, we also check whether $\min(x_p - x_i, \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree c has } y_c \in (y_a, y_b)))$ is larger than our current maximum side length, and if so, we update our answer.
 
-We use a `std::set` and `std::multiset` to keep track of the trees and "gaps" between $y_i$ and $y_p$, so the complexity of this solution is $O(N \log N)$.
+We use a `std::set` and `std::multiset` to keep track of the trees and "gaps" between $x_i$ and $x_p$. See the solution for [CSES Bit Inversions](https://usaco.guide/silver/intro-ordered#harder-example---bit-inversions) for more details.
+
+The complexity of this solution is $O(N \log N)$.
 
 ## Code
 
@@ -49,13 +51,13 @@ struct tree {
 };
 
 struct compare_x {
-    bool operator()(const tree &a, const tree &b) const {
-        return tie(a.x, a.y) < tie(b.x, b.y);
-    }
+    bool operator()(const tree &a, const tree &b) const { return a.x < b.x; }
 };
 
 struct compare_y {
-    bool operator()(const tree &a, const tree &b) const { return a.y < b.y; }
+    bool operator()(const tree &a, const tree &b) const {
+        return tie(a.y, a.x) < tie(b.y, b.x);
+    }
 };
 
 int main() {
@@ -65,39 +67,39 @@ int main() {
     vector<tree> trees(N);
     for (int i = 0; i < N; i++) cin >> trees[i].x >> trees[i].y;
 
-    sort(trees.begin(), trees.end(), compare_y());
-    set<tree, compare_x> edges{tree{0, -1}, tree{W, W + 1}};
+    sort(trees.begin(), trees.end(), compare_x());
+    set<tree, compare_y> edges{tree{-1, 0}, tree{W + 1, W}};
     multiset<int> gaps{W};
     int ans = 0;
     int p = 0;
     for (int i = -1; i < N; i++) {
-        int y0 = 0;
+        int x0 = 0;
         if (i != -1) {
             const tree &t = trees[i];
-            y0 = t.y;
+            x0 = t.x;
             auto pos = edges.find(t);
             assert(pos != edges.end());
             auto a = prev(pos);
             auto b = next(pos);
-            gaps.erase(gaps.find(t.x - a->x));
-            gaps.erase(gaps.find(b->x - t.x));
-            gaps.insert(b->x - a->x);
+            gaps.erase(gaps.find(t.y - a->y));
+            gaps.erase(gaps.find(b->y - t.y));
+            gaps.insert(b->y - a->y);
             edges.erase(pos);
         }
         if (p < i) p = i;
-        int y1 = (p == N) ? W : trees[p].y;
-        ans = max(ans, min(y1 - y0, *gaps.rbegin()));
-        while (p < N && trees[p].y - y0 <= *gaps.rbegin()) {
+        int x1 = (p == N) ? W : trees[p].x;
+        ans = max(ans, min(x1 - x0, *gaps.rbegin()));
+        while (p < N && trees[p].x - x0 <= *gaps.rbegin()) {
             const tree &t = trees[p];
             auto b = edges.lower_bound(t);
             auto a = prev(b);
-            gaps.erase(gaps.find(b->x - a->x));
-            gaps.insert(t.x - a->x);
-            gaps.insert(b->x - t.x);
+            gaps.erase(gaps.find(b->y - a->y));
+            gaps.insert(t.y - a->y);
+            gaps.insert(b->y - t.y);
             edges.insert(b, t);
             p++;
-            y1 = (p == N) ? W : trees[p].y;
-            ans = max(ans, min(y1 - y0, *gaps.rbegin()));
+            x1 = (p == N) ? W : trees[p].x;
+            ans = max(ans, min(x1 - x0, *gaps.rbegin()));
         }
     }
     cout << ans << '\n';
