@@ -208,72 +208,56 @@ int main()
 
 <JavaSection>
 
-<Warning>
-
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
-
-</Warning>
-
 ```java
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class BuildingRoads
-{
-	static InputReader in = new InputReader(System.in); //Check General/IO
-	static PrintWriter out = new PrintWriter(System.out);
-
-	public static final int MN = 100010, MM = 200020;
-
-	static int N, M, ans;
-	static int[] rep = new int[MN], hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
-	static boolean[] visited = new boolean[MN];
-
-	public static void adde(int u, int v, int id)
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
 	{
-		nx[id] = hd[u];
-		hd[u] = id;
-		to[id] = v;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
 	}
+
 	public static void dfs(int node)
 	{
 		visited[node] = true;
-		for(int id=hd[node], u;id!=-1;id=nx[id])
-		{
-			u=to[id];
+		for (int u: adj[node])
 			if(!visited[u])
 				dfs(u);
-		}
 	}
 	public static int count_components()
 	{
-		int count=0;
-		for(int i=1;i<=N;++i)
-			if(!visited[i])
-			{
-				rep[count++]=i;
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
 				dfs(i);
 			}
-		return count;
-	}
-
-	public static void main(String... args)
-	{
-		N=in.nextInt();
-		M=in.nextInt();
-		for(int i=1;i<=N;++i) hd[i]=-1;
-		for(int i=0,u,v;i<M;++i)
-		{
-			u = in.nextInt();
-			v = in.nextInt();
-			adde(u, v, i*2);
-			adde(v, u, i*2+1);
 		}
-		ans = count_components();
-		out.println(ans-1);
-		for(int i=1;i<ans;++i)
-			out.println(rep[i-1] + " " + rep[i]);
-		out.close();
+		return count;
 	}
 }
 ```
@@ -284,9 +268,82 @@ public class BuildingRoads
 
 </Spoiler>
 
-## DFS With Stack
-A danger in using DFS when dealing with large bounds is the possibility of a common runtime error, **Memory Limit Exceeded Error (or in Java, StackOverFlow Error)**. This commonly occurs when $N > 10^5$ due to the limited memory of the built-in "stack" of recursive calls. To resolve this, we can implement our solution iteravely by making our own stack instead of recursively calling a function. You can imagine adding to this stack being the equivalent of calling the recursive function, and popping from a stack being the same as executing the function. (Note: Memory Limit Exceeded Error is more common in floodfill problems due to the grid-like nature leading to high depths in recursion calls.)
 
+## DFS With Stack
+A danger in using DFS when dealing with large bounds is the possibility of a common runtime error, **StackOverFlow Error** in Java and Python. This commonly occurs when $N > 10^5$ due to the limited memory of the built-in "stack" of recursive calls. To resolve this, we can implement our solution iteravely by making our own stack instead of recursively calling a function. You can imagine adding to this stack being the equivalent of calling the recursive function and popping from this stack being the same as executing the function. (**Note**: StackOverFlow Error Error is more common in floodfill problems due to the grid-like nature leading to high depths in recursion calls.)
+
+<LanguageSection>
+
+<JavaSection>
+
+Solution using iterative DFS:
+
+<Spoiler>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
+	}
+
+	public static void dfs(int node)
+	{
+		Stack<Integer> dfs_stack = new Stack<Integer>();
+		dfs_stack.push(node);
+		while(!dfs_stack.isEmpty()){
+			int cur = dfs_stack.pop();
+			visited[cur] = true;
+			for (int u: adj[cur])
+				if(!visited[u])
+					dfs_stack.push(u);
+		}
+	}
+	public static int count_components()
+	{
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
+				dfs(i);
+			}
+		}
+		return count;
+	}
+}
+```
+
+</Spoiler>
+
+</JavaSection>
+
+</LanguageSection>
 
 
 
