@@ -186,7 +186,7 @@ export default function IndexPage(props: PageProps) {
               for USACO contestants – available to everyone, for free.
             </p>
 
-            <div className="inline-flex mx-auto bg-yellow-50 border border-yellow-200 dark:border-transparent dark:bg-yellow-900 rounded-md p-4 mt-8">
+            <div className="inline-flex mx-auto bg-yellow-50 dark:bg-yellow-900 rounded-md p-4 mt-8">
               <div className="flex-shrink-0">
                 <svg
                   className="h-5 w-5 text-yellow-400 dark:text-yellow-400"
