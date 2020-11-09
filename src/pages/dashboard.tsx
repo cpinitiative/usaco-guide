@@ -147,7 +147,7 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
               <div className="flex flex-wrap mb-4">
-                <div className="text-center">
+                <div className="w-full text-center">
                   {firebaseUser ? (
                     <>
                       Signed in as <i>{firebaseUser.email}</i>.
