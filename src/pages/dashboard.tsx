@@ -147,7 +147,7 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
               <div className="flex flex-wrap mb-4">
-                <div className="w-full md:w-1/2 text-center">
+                <div className="text-center">
                   {firebaseUser ? (
                     <>
                       Signed in as <i>{firebaseUser.email}</i>.
@@ -168,13 +168,13 @@ export default function DashboardPage(props: PageProps) {
                     </span>
                   )}
                 </div>
-                <div className="w-full md:w-1/2 text-center">
-                  {onlineUsers ? (
-                    <>
-                      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.
-                    </>
-                  ) : null}
-                </div>
+                {/*<div className="w-full md:w-1/2 text-center">*/}
+                {/*  {onlineUsers ? (*/}
+                {/*    <>*/}
+                {/*      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.*/}
+                {/*    </>*/}
+                {/*  ) : null}*/}
+                {/*</div>*/}
               </div>
               <div className="flex overflow-x-auto">
                 <WelcomeBackBanner
