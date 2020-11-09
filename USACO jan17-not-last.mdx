@@ -1,0 +1,100 @@
+---
+id: usaco-687
+title: USACO 2017 January Bronze - Don't Be Last
+author: Jesse Choe
+---
+
+// Here is my solution
+
+#include <bits/stdc++.h>
+ 
+using namespace std;
+using ll = long long;
+using ld = long double;
+using db = double; 
+using str = string; // yay python!
+ 
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+ 
+using vi = vector<int>;
+using vc = vector<char>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>; 
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>; 
+using vpd = vector<pd>;
+ 
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+ 
+// vectors
+#define sz(x) (int)(x).size()
+#define all(x) begin(x), end(x)
+#define rall(x) (x).rbegin(), (x).rend() 
+#define sor(x) sort(all(x)) 
+#define rsz resize
+#define ins insert 
+#define ft front() 
+#define bk back()
+#define pf push_front 
+#define pb push_back
+#define eb emplace_back 
+#define lb lower_bound 
+#define ub upper_bound 
+ 
+// loops
+#define For(i,a,b) for (int i = (a); i < (b); ++i)
+#define Rof(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define Trav(a,x) for (auto& a: x)
+
+void setIO(string s) {
+	ios_base::sync_with_stdio(0); cin.tie(0); 
+	freopen((s+".in").c_str(),"r",stdin);
+	freopen((s+".out").c_str(),"w",stdout);
+}
+
+int main(){
+
+setIO("notlast");
+
+int N; cin >> N;
+
+map<string, int> milking;
+
+if(N == 1){
+	string cow; cin >> cow; 
+	int milk; cin >> milk;
+	cout << cow << endl;
+	return 0;
+}
+
+while(N--){
+	string cow; cin >> cow;
+	int milk; cin >> milk;
+	milking[cow]+=milk;
+}
+
+vector<pair<int, string>> notlast;
+
+Trav(i, milking){
+	notlast.pb(mp(i.s, i.f));
+}
+
+sor(notlast);
+
+for(int i=1; i<notlast.size(); i++){
+	if(notlast[i].f > notlast[i-1].f && notlast[i+1].f > notlast[i].f){
+		cout << notlast[i].s << endl;
+		return 0;
+	}
+}
+
+cout << "Tie" << endl;
+
+}
