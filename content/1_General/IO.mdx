@@ -112,73 +112,122 @@ The first method can be sped up so that the difference in speed is not significa
 
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
 
-Here is a Java template for input and output, which is effectively a faster `Scanner`. We import the entire `util` and `io` libraries for ease of use. Note that this **must** be declared within a file with the same name as the `public class` (so `template.java`) in this case.
+Here is a Java template for input and output that which combines `BufferedReader` and `Printwriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Input is done similarly to `Scanner`. Note that we import the entire `util` and `io` libraries for ease of use. 
+
+This example takes three numbers as input and prints their sum. Make sure that [`io.close()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#close()) is called at the end, or you won't see any output!
 
 ```java
-import java.io.*;
+/** Simple yet moderately fast I/O routines.
+ *
+ * Example usage:
+ *
+ * Kattio io = new Kattio();
+ *
+ * while (io.hasMoreTokens()) {
+ *    int n = io.nextInt();
+ *    double d = io.nextDouble();
+ *    double ans = d*n;
+ *
+ *    io.println("Answer: " + ans);
+ * }
+ *
+ * io.close();
+ *
+ *
+ * Some notes:
+ *
+ * - When done, you should always do io.close() or io.flush() on the
+ *   Kattio-instance, otherwise, you may lose output.
+ *
+ * - The nextInt(), nextDouble(), and nextLong() methods will throw an
+ *   exception if there is no more data in the input, so it is generally
+ *   a good idea to use hasMoreTokens() to check for end-of-file.
+ *
+ * @author: Kattis
+ */
+
 import java.util.*;
+import java.io.*;
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+class Kattio extends PrintWriter {
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(new BufferedOutputStream(o));
+		r = new BufferedReader(new InputStreamReader(i));
 	}
-	static InputReader r = new InputReader(System.in);
-	static PrintWriter pw = new PrintWriter(System.out);
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException { 
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	public boolean hasMoreTokens() {
+		return peek() != null;
+	}
+
+	public int nextInt() {
+		return Integer.parseInt(next());
+	}
+
+	public double nextDouble() {
+		return Double.parseDouble(next());
+	}
+
+	public long nextLong() {
+		return Long.parseLong(next());
+	}
+
+
+	private BufferedReader r;
+	private String line;
+	private StringTokenizer st;
+	private String token;
+
+	private String peek() {
+		if (token == null)
+			try {
+				while (st == null || !st.hasMoreTokens()) {
+					line = r.readLine();
+					if (line == null) return null;
+					st = new StringTokenizer(line);
+				}
+				token = st.nextToken();
+			} catch (IOException e) { }
+		return token;
+	}
+
+	private String next() {
+		String ans = peek();
+		token = null;
+		return ans;
+	}
+}
+
+public class Main {
+	static Kattio io = new Kattio();
 	public static void main(String[] args) {
-
-		// YOUR CODE HERE
-
-		pw.close(); // flushes the output once printing is done
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		io.println(a + b + c);
+		io.close();
 	}
 }
 ```
 
-Here's a brief description of the methods in our `InputReader` class, with an instance `r`, and `PrintWriter` with an instance `pw`.
+A brief description of the methods in our `Kattio` class, with an instance `io`:
 
 | Method | Description |
 | --- | --- |
-| `r.next()` | Reads the next token (up to a whitespace) and returns a `String` |
-| `r.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
-| `r.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
-| `r.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
-| `pw.println()` | Prints the argument to designated output stream and adds a newline |
-| `pw.print()` | Prints the argument to designated output stream |
-
-Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
-
-```java
-// InputReader template code above
-static InputReader r = new InputReader(System.in);
-static PrintWriter pw = new PrintWriter(System.out);
-
-public static void main(String[] args) {
-	int a = r.nextInt();
-	int b = r.nextInt();
-	int c = r.nextInt()
-	pw.println(a + b + c);
-	pw.close();
-}
-```
+| `io.next()` | Reads the next token (up to a whitespace) and returns a `String` |
+| `io.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
+| `io.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
+| `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
+| `io.println()` | Prints the argument to designated output stream and adds a newline |
+| `io.print()` | Prints the argument to designated output stream |
 
 </JavaSection>
 
@@ -275,9 +324,9 @@ As noted in the resource above, this problem requires _64-bit integers_.
 import java.io.*;
 import java.util.*;
 
-public class template {
+public class Main {
+	static Scanner r = new Scanner(System.in);
 	public static void main(String[] args) {
-		Scanner r = new Scanner(System.in);
 		long x = r.nextLong();
 		while (x != 1) {
 			System.out.print(x+" ");
@@ -291,45 +340,22 @@ public class template {
 
 </Spoiler>
 
-<Spoiler title="With InputReader / PrintWriter">
+<Spoiler title="With Kattio">
 
 ```java
-import java.io.*;
-import java.util.*;
+// Kattio template code above
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-	}
-	static InputReader r = new InputReader(System.in);
-	static PrintWriter pw = new PrintWriter(System.out);
+public class Main {
+	static Kattio io = new Kattio();
 	public static void main(String[] args) {
-		long x = r.nextLong();
+		long x = io.nextLong();
 		while (x != 1) {
-			pw.print(x+" ");
+			io.print(x+" ");
 			if (x%2 == 0) x /= 2;
 			else x = 3*x+1;
 		}
-		pw.print(x);
-		pw.close(); // flushes the output once printing is done
+		io.print(x);
+		io.close();
 	}
 }
 ```
@@ -405,52 +431,13 @@ int main() {
 
 <JavaSection>
 
-We can slightly modify the template above to support file I/O. Note how `r` and `pw` must be initialized in a different way.
-
-```java
-import java.util.*;
-import java.io.*;
-
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader() throws FileNotFoundException {
-			reader = new BufferedReader(new FileReader("problemname.in"));
-			tokenizer = null;
-		}
-		String next() {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-	}
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		InputReader r = new InputReader();
-		PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
-
-		// YOUR CODE HERE
-
-		pw.close(); // flushes the output once printing is done
-	}
-}
-```
-
-Some sources say to use
+You may see `PrintWriter`s initialized like the following (ex. [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
 
 ```java
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
-on line 28. There is no need to add `BufferedWriter` since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
+There is no need to include `BufferedWriter` since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered). Anyways, the provided constructor in `Kattio` handles this for you.
 
 </JavaSection>
 
@@ -603,42 +590,23 @@ public class paintSol { // must be declared in paintSol.java
 }
 ```
 
-### Method 3 - `InputReader`
+### Method 3 - `Kattio`
 
-Alternatively, we can use the `InputReader` given above. Note how this is almost identical to the code using `Scanner`.
+Note how the initialization of `io` is slightly different compared to standard input / output since we need to catch [`IOException`](https://docs.oracle.com/javase/7/docs/api/java/io/IOException.html).
 
 ```java
-import java.util.*;
-import java.io.*;
+// Kattio template code above
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader() throws FileNotFoundException {
-			reader = new BufferedReader(new FileReader("paint.in"));
-			tokenizer = null;
-		}
-		String next() {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
+public class Main {
+	static Kattio io;
+	static {
+		try {
+			io = new Kattio("paint");
+		} catch(IOException e) {}
 	}
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		InputReader r = new InputReader();
-		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
-
-		int a = r.nextInt(), b = r.nextInt();
-		int c = r.nextInt(), d = r.nextInt();
+	public static void main(String[] args) {
+		int a = io.nextInt(), b = io.nextInt();
+		int c = io.nextInt(), d = io.nextInt();
 
 		int[] cover = new int[100];
 		for (int i = a; i < b; i++) cover[i] = 1;
@@ -646,8 +614,8 @@ public class template {
 		int ans = 0;
 		for (int i = 0; i < 100; i++) ans += cover[i];
 
-		pw.println(ans);
-		pw.close(); // flush output
+		io.println(ans);
+		io.close(); // flush output
 	}
 }
 ```
