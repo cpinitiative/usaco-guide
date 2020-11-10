@@ -46,9 +46,50 @@ Most only include two or three squares or rectangles, in which case you can simp
 
 Think of this as the 1D analog of the next example.
 
-<IncompleteSection>
+### Naive Solution
 
-</IncompleteSection>
+Since all the intervals lie between the range, $[0, 100]$, we can mark each interval of length 1 contained within each interval as painted using a loop. Then the answer will be the number of marked intervals. The code is provided [here](https://usaco.guide/general/io#method-1).
+
+However, the naive solution would not work for higher constraints. 
+
+### Constant Time Solution
+
+It's possible to calculate the answer in $\mathcal{O}(1)$ time by adding the original lengths and subtracting the intersection length.
+
+$$
+(b-a)+(d-c)+\text{intersection}([a,b],[c,d])
+$$
+
+The [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html) splits computing the intersection length into several cases. However, we do it more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and $[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words, $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("paint.in", "r", stdin);
+	freopen("paint.out", "w", stdout);
+
+	int a, b, c, d; 
+	cin >> a >> b >> c >> d;
+
+	int ans = 0;
+	ans += b-a; // add length of first interval
+	ans += d-c; // add length of second interval
+	// if intervals intersect, subtract the length of the intersection
+	ans -= max(min(b, d)-max(a, c),0);
+
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Example - Blocked Billboard
 
