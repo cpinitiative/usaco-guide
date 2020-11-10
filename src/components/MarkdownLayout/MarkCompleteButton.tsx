@@ -107,7 +107,7 @@ const MarkCompleteButton = ({
           </span>
         );
       default:
-        return <span className="mr-2"> &nbsp; &nbsp; &nbsp;</span>;
+        return;
     }
   };
 
