@@ -112,7 +112,7 @@ const MarkCompleteButton = ({
   };
 
   function renderMainIcon(state: string) {
-    switch (status) {
+    switch (state) {
       case 'Reading':
         return (
           <span className="mr-2">
