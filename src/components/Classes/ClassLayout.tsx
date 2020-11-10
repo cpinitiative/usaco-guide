@@ -23,8 +23,12 @@ export default function ClassLayout({
   noWhiteBg?: boolean;
 }) {
   const firebase = useContext(FirebaseContext);
-  const { userClasses, setUserClasses } = useContext(UserDataContext);
-  const { loading, error, data, isInstructor } = useContext(ClassContext);
+  const { userClasses, setUserClasses, firebaseUser } = useContext(
+    UserDataContext
+  );
+  const { loading, error, data, students, isInstructor } = useContext(
+    ClassContext
+  );
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
   const [creatingAssignment, setCreatingAssignment] = useState(false);
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
@@ -33,7 +37,9 @@ export default function ClassLayout({
   const [editClassError, setEditClassError] = useState('');
   const [editClassTitle, setEditClassTitle] = useState('');
   const [editClassDate, setEditClassDate] = useState('');
-
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [membersModalShowEmail, setMembersModalShowEmail] = useState(false);
+  const [studentNames, setStudentNames] = useState([]);
   const notFound = !loading && !data;
   React.useEffect(() => {
     if (!joinLinkCopied) return;
@@ -81,6 +87,53 @@ export default function ClassLayout({
       </>
     );
   }
+  const refreshStudentNames = React.useCallback(() => {
+    if (!firebase) {
+      setStudentNames([
+        <ul className={'text-red-700'} key={'error-no-firebase'}>
+          Error: Too Fast! Please try again in a few seconds.
+        </ul>,
+      ]);
+      return;
+    }
+
+    if (students.length === 0) {
+      setStudentNames([
+        <ul className={'text-red-700'} key={'error-no-students'}>
+          Error: Unable to Load Students
+        </ul>,
+      ]);
+      return;
+    }
+    setStudentNames([]);
+    const getUsers = firebase.functions().httpsCallable('getUsers');
+    getUsers({
+      users: students.map(student => ({
+        uid: student.id,
+      })),
+    }).then(d => {
+      if (d?.data?.users?.length > 0) {
+        console.log(d.data.users);
+        setStudentNames(
+          d.data.users
+            .sort((a, b) => a.displayName.localeCompare(b.displayName))
+            .map(student => ({
+              uid: student.uid,
+              email: student.email,
+              name: student.displayName,
+              isCurrentUser: student.uid === firebaseUser.uid,
+              isInstructor: data.instructors.includes(student.uid),
+            }))
+        );
+      } else {
+        setStudentNames([
+          <ul className={'text-red-700'} key={'error-no-student-names'}>
+            Error: Unable to Load Student Names
+          </ul>,
+        ]);
+      }
+    });
+  }, [firebase, students, data]);
   return (
     <>
       {/* Background color split screen for large screens */}
@@ -245,6 +298,27 @@ export default function ClassLayout({
                     {isInstructor && (
                       <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
                         <div className="flex items-center space-x-2">
+                          <Icons.UserGroup className="h-5 w-5 text-gray-400" />
+
+                          <button
+                            onClick={() => {
+                              setShowMembersModal(true);
+
+                              refreshStudentNames();
+                            }}
+                            className="text-sm text-gray-500 hover:text-gray-700 leading-5 font-medium"
+                          >
+                            <span className="font-bold">
+                              {students.length} Member
+                              {students.length !== 1 && 's'}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {isInstructor && (
+                      <div className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-8 xl:flex-col xl:space-x-0 xl:space-y-6">
+                        <div className="flex items-center space-x-2">
                           <Icons.Mail className="h-5 w-5 text-gray-400" />
 
                           <span className="text-sm text-gray-500 leading-5 font-medium">
@@ -276,6 +350,128 @@ export default function ClassLayout({
             </div>
             {children}
           </div>
+          <Transition show={showMembersModal}>
+            <div className="fixed z-10 inset-0 overflow-y-auto">
+              <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <Transition
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 transition-opacity">
+                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                  </div>
+                </Transition>
+                <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+                &#8203;
+                <Transition
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  enterTo="opacity-100 translate-y-0 sm:scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                  <div
+                    className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-headline"
+                  >
+                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                      <div className="sm:flex sm:items-start">
+                        <div className="text-center sm:text-left">
+                          <h3
+                            className="text-lg leading-6 font-medium text-gray-900"
+                            id="modal-headline"
+                          >
+                            {students.length} Class Member
+                            {students.length !== 1 && 's'}{' '}
+                          </h3>
+                          <div className="mt-2">
+                            {studentNames.length > 0 ? (
+                              <>
+                                <span className="inline-flex rounded-md shadow-sm">
+                                  <button
+                                    type="button"
+                                    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                                    onClick={() => refreshStudentNames()}
+                                  >
+                                    Refresh Names
+                                  </button>
+                                </span>
+                                <div className="flex items-start my-3">
+                                  <div className="flex items-center h-5">
+                                    <input
+                                      id="add-instructor-also-make-admin"
+                                      checked={membersModalShowEmail}
+                                      onChange={e =>
+                                        setMembersModalShowEmail(
+                                          e.target.checked
+                                        )
+                                      }
+                                      type="checkbox"
+                                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-sm leading-5">
+                                    <label
+                                      htmlFor="add-instructor-also-make-admin"
+                                      className="font-medium text-gray-700"
+                                    >
+                                      Show Emails
+                                    </label>
+                                  </div>
+                                </div>
+                                <ul className={'list-disc ml-5'}>
+                                  {studentNames.map(
+                                    ({
+                                      uid,
+                                      name,
+                                      email,
+                                      isCurrentUser,
+                                      isInstructor,
+                                    }) => (
+                                      <li key={uid}>
+                                        {name}{' '}
+                                        {membersModalShowEmail && (
+                                          <span className={'text-gray-700'}>
+                                            ({email})
+                                          </span>
+                                        )}{' '}
+                                        {isCurrentUser && <b>(You)</b>}{' '}
+                                        {isInstructor && <b>(Instructor)</b>}
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </>
+                            ) : (
+                              <p>Loading...</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                      <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                        <button
+                          type="button"
+                          onClick={() => setShowMembersModal(false)}
+                          className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                        >
+                          Close
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+            </div>
+          </Transition>
           <Transition show={showEditClass}>
             <div className="fixed z-10 inset-0 overflow-y-auto">
               <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

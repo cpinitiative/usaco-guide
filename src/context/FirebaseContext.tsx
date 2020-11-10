@@ -21,9 +21,10 @@ export const FirebaseProvider = ({ children }) => {
       const app = import('firebase/app');
       const auth = import('firebase/auth');
       const firestore = import('firebase/firestore');
+      const functions = import('firebase/functions');
       const database = import('firebase/database');
 
-      Promise.all([app, auth, firestore, database]).then(values => {
+      Promise.all([app, auth, firestore, database, functions]).then(values => {
         const firebaseInstance = values[0];
         firebaseInstance.initializeApp(firebaseConfig);
         setFirebase(firebaseInstance);

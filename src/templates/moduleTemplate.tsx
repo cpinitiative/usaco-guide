@@ -9,6 +9,7 @@ import SEO from '../components/seo';
 import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { Helmet } from 'react-helmet';
 
 export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
@@ -20,10 +21,31 @@ export default function Template(props) {
   }, []);
   return (
     <Layout>
-      <SEO
-        title={`${module.title} (${SECTION_LABELS[module.section]})`}
-        description={module.description}
-      />
+      <SEO title={`${module.title}`} description={module.description} />
+      <Helmet>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://usaco.guide/"
+            },{
+              "@type": "ListItem",
+              "position": 2,
+              "name": "${SECTION_LABELS[module.section]}",
+              "item": "https://usaco.guide/${module.section}"
+            },{
+              "@type": "ListItem",
+              "position": 3,
+              "name": "${module.title}",
+              "item": "https://usaco.guide/${module.section}/${module.id}"
+            }]
+          }
+        `}</script>
+      </Helmet>
 
       <MarkdownLayout markdownData={module}>
         <div className="py-4">

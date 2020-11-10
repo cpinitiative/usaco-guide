@@ -43,7 +43,10 @@ export default abstract class SimpleUserDataPropertyAPI extends UserDataProperty
   };
 
   public importValueFromObject = data => {
-    this.value = data[this.storageKey] || this.defaultValue;
+    this.value =
+      data.hasOwnProperty(this.storageKey) && data[this.storageKey] !== null
+        ? data[this.storageKey]
+        : this.defaultValue;
   };
 
   public getAPI = () => {

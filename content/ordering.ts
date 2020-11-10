@@ -246,6 +246,28 @@ export const SECTION_LABELS: { [key in SectionID]: string } = {
   plat: 'Platinum',
   adv: 'Advanced',
 };
+export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
+  general:
+    'General information for USACO and Competitive Programming. Includes resources to pick a language, set up an IDE, practice tips, and more!',
+  bronze:
+    'Topics for USACO Bronze include time complexity, data structures, sorting, simulation, complete search, ad hoc, greedy, graphs, rectangle geometry, sets and maps, and recursion.',
+  silver:
+    'Topics for USACO Silver include binary search on the answer, prefix sums, two pointers, dfs, floodfill, trees, custom comparators, greedy with sorting, and more!',
+  gold:
+    'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, string hashing, and more!',
+  plat:
+    'Topics for USACO Platinum include segment trees, advanced tree techniques, advanced dynamic programming, computational geometry, matrix exponentiation, and more!',
+  adv:
+    'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
+};
+export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
+  general: 'General USACO Information',
+  bronze: 'USACO Bronze Topics',
+  silver: 'USACO Silver Topics',
+  gold: 'USACO Gold Topics',
+  plat: 'USACO Platinum Topics',
+  adv: 'Advanced USACO Topics',
+};
 
 let moduleIDToSectionMap: { [key: string]: SectionID } = {};
 

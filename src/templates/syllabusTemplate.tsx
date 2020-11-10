@@ -6,6 +6,8 @@ import { graphql } from 'gatsby';
 import MODULE_ORDERING, {
   moduleIDToSectionMap,
   SECTION_LABELS,
+  SECTION_SEO_DESCRIPTION,
+  SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
@@ -155,7 +157,10 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={SECTION_LABELS[division]} />
+      <SEO
+        title={SECTION_SEO_TITLES[division]}
+        description={SECTION_SEO_DESCRIPTION[division]}
+      />
       <div className="min-h-screen">
         <TopNavigationBar currentSection={division} />
 

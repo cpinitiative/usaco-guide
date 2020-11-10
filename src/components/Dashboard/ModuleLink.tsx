@@ -13,32 +13,34 @@ import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/S
 const LinkWithProgress = styled(SidebarLinkWithProgress)`
   &::after {
     ${({ small }) => css`
-      left: calc(-1.75rem - ${
-        small ? '8px' : '10px'
-      }); // -(3rem padding plus half of width)
       // prettier-ignore
-      top: calc(1.5rem - ${
-        small ? '8px' : '10px'
-      }); // half of (1.5 + 1.5padding) rem minus half of height
+      left: calc(-1.75rem - ${small
+        ? '8px'
+        : '10px'}); // -(3rem padding plus half of width)
+      // prettier-ignore
+      top: calc(1.5rem - ${small
+        ? '8px'
+        : '10px'}); // half of (1.5 + 1.5padding) rem minus half of height
       height: ${small ? '16px' : '20px'};
       width: ${small ? '16px' : '20px'};
     `}
 
     @media (min-width: 768px) {
       ${({ small }) => css`
-      // prettier-ignore
-      left: calc(-3rem - ${
-        small ? '8px' : '10px'
-      }); // -(3rem padding plus half of width)
-    `}
+        // prettier-ignore
+        left: calc(-3rem - ${small
+          ? '8px'
+          : '10px'}); // -(3rem padding plus half of width)
+      `}
     }
   }
 
   &::after {
     ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
   }
-  .mode-dark &::after {
-    ${({ small }) => small && tw`border-2 border-gray-500`}
+  // lol no clue why two ampersands are needed but they are...
+  .mode-dark &&::after {
+    ${({ small }) => (small ? tw`border-2 border-gray-500` : tw`border-0`)}
   }
 
   &::before {

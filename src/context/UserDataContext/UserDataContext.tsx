@@ -104,6 +104,7 @@ type UserDataContextAPI = UserLangAPI &
     signOut: Function;
     isLoaded: boolean;
     onlineUsers: number;
+    getDataExport: Function;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>(null);
@@ -171,7 +172,7 @@ export const UserDataProvider = ({ children }) => {
             if (localDataIsNotEmpty) {
               if (
                 confirm(
-                  `Upload local progress to server? (You'll lose your local progress if you don't)`
+                  `Upload local progress to server? Recommended: choose yes! (You'll lose your local progress if you choose no.)`
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
@@ -205,7 +206,8 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      if (firebase)
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     },
     signOut: () => {
       firebase
@@ -213,7 +215,7 @@ export const UserDataProvider = ({ children }) => {
         .signOut()
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          window.location.reload();
+          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
         });
     },
     isLoaded,
@@ -225,6 +227,13 @@ export const UserDataProvider = ({ children }) => {
         ...api.getAPI(),
       };
     }, {}),
+
+    getDataExport: () => {
+      return UserDataContextAPIs.reduce(
+        (acc, api) => ({ ...acc, ...api.exportValue() }),
+        {}
+      );
+    },
   };
 
   return (

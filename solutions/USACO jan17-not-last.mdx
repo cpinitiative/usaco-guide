@@ -1,0 +1,62 @@
+---
+id: usaco-687
+title: USACO 2017 January Bronze - Don't Be Last
+author: Benjamin Qi, Jesse Choe
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_notlast_bronze_jan17.html)
+
+The test data is not particularly strong. Does your solution output "Tie" in both of the following test cases?
+
+```
+4
+Bessie 1
+Elsie 1 
+Daisy 2
+Gertie 3
+```
+
+```
+7
+Bessie 1
+Elsie 1
+Daisy 2 
+Gertie 2
+Annabelle 3
+Maggie 4
+Henrietta 4
+```
+
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+int main() {
+	setIO("notlast");
+	int N; re(N);
+	map<str,int> tot;
+	F0R(i,N) {
+		str a; int b; re(a,b);
+		tot[a] += b;
+	}
+	V<pair<int,str>> cows;
+	trav(t,tot) cows.pb({t.s,t.f});
+	sort(all(cows));
+	int ind = 0;
+	if (sz(cows) == 7) {
+		while (ind < sz(cows) && cows[ind].f == cows[0].f) ind ++;
+	}
+	if (ind < sz(cows) && (ind+1 == sz(cows) || cows[ind].f != cows[ind+1].f)) {
+		ps(cows[ind].s);
+		exit(0);
+	}
+	ps("Tie");
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

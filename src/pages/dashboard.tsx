@@ -24,6 +24,7 @@ import Card from '../components/Dashboard/DashboardCard';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
+  const userSettings = React.useContext(UserDataContext);
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -49,6 +50,7 @@ export default function DashboardPage(props: PageProps) {
     firebaseUser,
     consecutiveVisits,
     onlineUsers,
+    signIn,
   } = React.useContext(UserDataContext);
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
@@ -145,22 +147,34 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-4">
             <div className="lg:px-8 pt-4 pb-6">
               <div className="flex flex-wrap mb-4">
-                <div className="w-full md:w-1/2 text-center">
+                <div className="w-full text-center">
                   {firebaseUser ? (
                     <>
                       Signed in as <i>{firebaseUser.email}</i>.
                     </>
                   ) : (
-                    `Not signed in.`
+                    <span>
+                      Not signed in.{' '}
+                      <a
+                        href="#"
+                        onClick={e => {
+                          e.preventDefault();
+                          signIn();
+                        }}
+                        className="text-blue-600 dark:text-blue-300 underline"
+                      >
+                        Sign in now!
+                      </a>{' '}
+                    </span>
                   )}
                 </div>
-                <div className="w-full md:w-1/2 text-center">
-                  {onlineUsers ? (
-                    <>
-                      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.
-                    </>
-                  ) : null}
-                </div>
+                {/*<div className="w-full md:w-1/2 text-center">*/}
+                {/*  {onlineUsers ? (*/}
+                {/*    <>*/}
+                {/*      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.*/}
+                {/*    </>*/}
+                {/*  ) : null}*/}
+                {/*</div>*/}
               </div>
               <div className="flex overflow-x-auto">
                 <WelcomeBackBanner
@@ -182,7 +196,7 @@ export default function DashboardPage(props: PageProps) {
               </div>
             )}
           </div>
-          <header>
+          <header id="announcements">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
                 Announcements
@@ -268,14 +282,17 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement && (
-        <div className="h-12">
-          <AnnouncementBanner
-            announcement={parsedAnnouncements[0]}
-            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
-          />
-        </div>
-      )}
+      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
+        userSettings.numPageviews > 12 && (
+          <div className="h-12">
+            <AnnouncementBanner
+              announcement={parsedAnnouncements[0]}
+              onDismiss={() =>
+                setLastReadAnnouncement(parsedAnnouncements[0].id)
+              }
+            />
+          </div>
+        )}
     </Layout>
   );
 }

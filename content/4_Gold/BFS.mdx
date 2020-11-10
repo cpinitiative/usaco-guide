@@ -196,12 +196,42 @@ deque.removeLast(); // [1, 3]
 	{' '}
 </Resource> -->
 
-### Implementation
+### Solution - Message Route
 
 <LanguageSection>
 
 <CPPSection>
 
+```cpp
+int n,m, dist[MX], pre[MX];
+vi adj[MX];
+ 
+int main() {
+	setIO(); re(n,m);
+	F0R(i,m) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	FOR(i,2,n+1) dist[i] = MOD;
+	queue<int> q; q.push(1);
+	while (sz(q)) {
+		int x = q.front(); q.pop();
+		trav(t,adj[x]) if (dist[t] == MOD) {
+			dist[t] = dist[x]+1; pre[t] = x;
+			q.push(t);
+		}
+	}
+	if (dist[n] == MOD) ps("IMPOSSIBLE");
+	else {
+		ps(dist[n]+1);
+		vi v{n}; while (v.back() != 1) v.pb(pre[v.back()]);
+		reverse(all(v));
+		trav(t,v) pr(t,' ');
+	}
+}
+```
+
+<!-- 
 From the CSA article:
 
 ```cpp
@@ -250,12 +280,13 @@ int main() {
     }
     return 0;
 }
-```
+``` -->
 
 </CPPSection>
 
+<!-- 
 <JavaSection>
- 
+
 Implementation of the CSAcademy article's problem in Java:
 
 <br />
@@ -325,9 +356,10 @@ class Main {
 	    pw.close();
 	}
 }
-```
+``` 
 
 </JavaSection>
+-->
 
 </LanguageSection>
 

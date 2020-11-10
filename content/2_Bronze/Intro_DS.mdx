@@ -223,6 +223,88 @@ vector<int> v; v.resize(30); // another way
 
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
+<Warning>
+
+Beware of resizing a vector while recursing!
+
+
+```cpp
+vi res{-1};
+int addElement() {
+	res.pb(-1);
+	return sz(res)-1;
+}
+
+void rec(int x) {
+	F0R(i,10) {
+		res[i] = addElement();
+		ps(i,res[i]);
+	}
+}
+
+int main() {
+	rec(0);
+}
+```
+
+Running the above code with C++17
+
+```
+g++ -std=c++17 bad.cpp -o bad && ./bad
+```
+
+gives the intended output:
+
+```
+0 1
+1 2
+2 3
+3 4
+4 5
+5 6
+6 7
+7 8
+8 9
+9 10
+```
+
+But running with C++14
+
+```
+g++ -std=c++14 bad.cpp -o bad && ./bad
+```
+
+gives:
+
+```
+0 -1
+1 -1
+2 3
+3 -1
+4 5
+5 6
+6 7
+7 -1
+8 9
+9 10
+```
+
+However, the code works correctly if you save the result of `addElement()` to an intermediate variable.
+
+```cpp
+void rec(int x) {
+	F0R(i,10) {
+		int tmp = addElement();
+		res[i] = tmp;
+		ps(i,res[i]);
+	}
+}
+```
+
+See [this](https://codeforces.com/blog/entry/83241) CF blog post for some discussion about why this is the case.
+
+</Warning>
+
 ### Iterating
 
 <Resources>

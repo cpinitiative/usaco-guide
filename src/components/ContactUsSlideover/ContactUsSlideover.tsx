@@ -122,6 +122,12 @@ export default function ContactUsSlideover({
     data.append('url', window.location.href);
     data.append('topic', topic);
     data.append('message', message);
+    data.append(
+      '_subject',
+      `[Contact Us] ${topic || 'Other'} ${location ? `- ${location} ` : ''} - ${
+        email || 'Unknown Email'
+      }`
+    );
     setSubmitEnabled(false);
     try {
       await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
