@@ -50,9 +50,8 @@ export const problems = {
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are **standard**.
+In most websites (such as CodeForces and CSES), input and output are **standard**. Here, we'll provide examples that take three integers as input and prints their sum. 
 
-<FocusProblem problem={problems.cses[0]} />
 
 <Info title="Out of the methods below, which one should I use?">
 
@@ -71,8 +70,8 @@ Whichever you're most comfortable with!
 using namespace std;
 
 int main() {
-	int x; cin >> x;
-	cout << "FOUND " << x << "\n";
+	int a, b, c; cin >> a >> b >> c;
+	cout << "sum is " << a+b+c << "\n";
 }
 ```
 
@@ -85,7 +84,7 @@ This library includes the `scanf` and `printf` functions, which are slightly mor
 using namespace std;
 
 int main() {
-	int x, y;
+	int a, b, c;
 	// %d specifies that a value of type int is being input.
 	// Use %lld (a few judging platforms might need %I64d)
 	// to input a long long (64-bit) integer.
@@ -93,14 +92,14 @@ int main() {
 	// Be sure to add a & character (address-of operator) when using
 	// scanf, UNLESS you are inputing a string with %s.
 	// It is possible to input multiple values at a time as shown below.
-	scanf("%d%d", &x, &y);
+	scanf("%d%d%d", &a, &b, &c);
 
 	// Specifiers for printf are mostly the same as those used
 	// by scanf, with the notable exception of floating-point numbers.
 	// Use a backslash character followed by the lowercase
 	// letter n to denote a newline.
 	// The address-of operator, &, is not used here.
-	printf("Found %d and %d\n", x, y);
+	printf("sum is %d\n", a+b+c);
 }
 ```
 
@@ -112,11 +111,9 @@ The first method can be sped up so that the difference in speed is not significa
 
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. 
 
-Here is a Java template for input and output that which combines `BufferedReader` and `Printwriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Input is done similarly to `Scanner`. Note that we import the entire `util` and `io` libraries for ease of use. 
-
-This example takes three numbers as input and prints their sum. Make sure that [`io.close()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#close()) is called at the end, or you won't see any output!
+Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
 
 ```java
 /** Simple yet moderately fast I/O routines.
@@ -155,7 +152,7 @@ class Kattio extends PrintWriter {
 	// standard input
 	public Kattio() { this(System.in,System.out); }
 	public Kattio(InputStream i, OutputStream o) {
-		super(new BufferedOutputStream(o));
+		super(o);
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
@@ -212,13 +209,15 @@ public class Main {
 		int a = io.nextInt();
 		int b = io.nextInt();
 		int c = io.nextInt();
+		io.print("sum is ");
 		io.println(a + b + c);
-		io.close();
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
 
-A brief description of the methods in our `Kattio` class, with an instance `io`:
+The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
+
 
 | Method | Description |
 | --- | --- |
@@ -228,6 +227,33 @@ A brief description of the methods in our `Kattio` class, with an instance `io`:
 | `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
 | `io.println()` | Prints the argument to designated output stream and adds a newline |
 | `io.print()` | Prints the argument to designated output stream |
+| `io.close()` | Closes the output stream and flushes the output |
+
+<Warning>
+
+If you don't call [`io.close()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#close()) at the end or [`io.flush()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()), you won't see any output!
+
+</Warning>
+
+<Info title="PrintWriter Buffering">
+
+The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37. But since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered), I don't think including `BufferedOutputStream` is necessary.
+
+Similarly, you may see `PrintWriter`s for file output initialized like the following (ex. [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
+
+```java
+PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
+```
+
+but 
+
+```java
+PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+```
+
+should suffice.
+
+</Info>
 
 </JavaSection>
 
@@ -265,9 +291,17 @@ n, m = [int(x) for x in input().split()]
 n, m = map(int, input().split())
 ```
 
+
+So taking three integers as input and printing their sum is quite simple:
+
+```py
+a,b,c = map(int, input().split())
+print("sum is",a+b+c)
+```
+
 <IncompleteSection>
 
-redirect to some other source which covers this?
+is there some other source which covers this?
 
 </IncompleteSection>
 
@@ -275,15 +309,17 @@ redirect to some other source which covers this?
 
 </LanguageSection>
 
-## Example Solution - Weird Algorithm
+## Example Problem - Weird Algorithm
+
+<FocusProblem problem={problems.cses[0]} />
+
+Try to implement this yourself!
 
 <Resources>
 	<Resource source="GCP" title="1.3 -  CSES Problem Set" starred>
-		example solution for this problem
+		example C++ solution for this problem
 	</Resource>
 </Resources>
-
-Try to implement this yourself!
 
 <LanguageSection>
 
@@ -318,7 +354,9 @@ int main() {
 
 As noted in the resource above, this problem requires _64-bit integers_.
 
-<Spoiler title="With Scanner">
+### Method 1 - `Scanner` and `System.out.print`
+
+<Spoiler title="Method 1">
 
 ```java
 import java.io.*;
@@ -333,14 +371,44 @@ public class Main {
 			if (x%2 == 0) x /= 2;
 			else x = 3*x+1;
 		}
-		System.out.print(x);
+		System.out.println(x);
 	}
 }
 ```
 
 </Spoiler>
 
-<Spoiler title="With Kattio">
+### Method 2 - `BufferedReader` and `PrintWriter`
+
+<Spoiler title="Method 2">
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) throws IOException {
+		long x = Long.parseLong(r.readLine());
+		while (x != 1) {
+			System.out.print(x+" ");
+			if (x%2 == 0) x /= 2;
+			else x = 3*x+1;
+		}
+		pw.println(x);
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
+	}
+}
+```
+
+</Spoiler>
+
+### Method 3 - `Kattio`
+
+Essentially the same as method 2.
+
+<Spoiler title="Method 3">
 
 ```java
 // Kattio template code above
@@ -354,8 +422,8 @@ public class Main {
 			if (x%2 == 0) x /= 2;
 			else x = 3*x+1;
 		}
-		io.print(x);
-		io.close();
+		io.println(x);
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
@@ -431,13 +499,7 @@ int main() {
 
 <JavaSection>
 
-You may see `PrintWriter`s initialized like the following (ex. [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
-
-```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
-```
-
-There is no need to include `BufferedWriter` since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered). Anyways, the provided constructor in `Kattio` handles this for you.
+Again, `BufferedReader` and `PrintWriter` should be used. The provided constructor `public Kattio(String problemName)` handles file input / output for you.
 
 </JavaSection>
 
@@ -477,7 +539,7 @@ Importantly, USACO will automatically add a newline to the end of your file if i
 
 ![bad](Error.png)
 
-For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#example---fence-painting) module.
+For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#naive-solution) module.
 
 <LanguageSection>
 
@@ -486,6 +548,8 @@ For an explanation of the solutions below, check the [Rectangle Geometry](/bronz
 ### Method 1
 
 Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you comment out both of the lines containing `freopen` then the program reads from standard in and writes to standard out as usual.
+
+<Spoiler title="Method 1">
 
 ```cpp
 #include <iostream>
@@ -511,9 +575,13 @@ int main() {
 }
 ```
 
+</Spoiler>
+
 ### Method 2
 
 Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
+
+<Spoiler title="Method 2">
 
 ```cpp
 #include <fstream>
@@ -533,11 +601,16 @@ int main() {
 }
 ```
 
+</Spoiler>
+
+
 </CPPSection>
 
 <JavaSection>
 
-### Method 1 - `Scanner`
+### Method 1 - `Scanner` and `System.out.print`
+
+<Spoiler title="Method 1">
 
 ```java
 import java.util.*;
@@ -558,18 +631,23 @@ public class template {
 		for (int i = 0; i < 100; i++) ans += cover[i];
 
 		pw.println(ans);
-		pw.close(); // flush output
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
 	}
 }
 ```
 
-### Method 2 - `BufferedReader`
+</Spoiler>
+
+
+### Method 2 - `BufferedReader` and `System.out.print`
+
+<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class paintSol { // must be declared in paintSol.java
+public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("paint.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
@@ -584,15 +662,21 @@ public class paintSol { // must be declared in paintSol.java
 		for (int i = c; i < d; i++) cover[i] = 1;
 		int ans = 0;
 		for (int i = 0; i < 100; i++) ans += cover[i];
+
 		pw.println(ans);
-		pw.close(); // make sure to include this line -- flushes the output.
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
 	}
 }
 ```
 
+
+</Spoiler>
+
 ### Method 3 - `Kattio`
 
-Note how the initialization of `io` is slightly different compared to standard input / output since we need to catch [`IOException`](https://docs.oracle.com/javase/7/docs/api/java/io/IOException.html).
+Essentially the same as method 2. Note how `static` initialization of `io` is different compared to standard input / output since we need to catch [`IOException`](https://docs.oracle.com/javase/7/docs/api/java/io/IOException.html)s.
+
+<Spoiler title="Method 3">
 
 ```java
 // Kattio template code above
@@ -615,16 +699,47 @@ public class Main {
 		for (int i = 0; i < 100; i++) ans += cover[i];
 
 		io.println(ans);
-		io.close(); // flush output
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
+
+</Spoiler>
 
 </JavaSection>
 
 <PySection>
 
-Redirecting file input using `sys`,
+### Method 1
+
+
+<Spoiler title="Method 1">
+
+```py
+with open('paint.in','r') as inp:
+	cover = [0] * 100
+	lines = [line for line in inp]
+	a, b = map(int,lines[0].split())
+	c, d = map(int,lines[1].split())
+	for i in range(a, b):
+		cover[i] = 1
+	for i in range(c, d):
+		cover[i] = 1
+	ans = 0
+	for i in range(100):
+		ans += cover[i]
+	with open('paint.out','w') as out:
+		print(ans,file=out)
+		# or out.write(str(ans))
+```
+
+</Spoiler>
+
+### Method 2
+
+Redirecting file input using `sys`, as mentioned above.
+
+<Spoiler title="Method 2">
 
 ```py
 import sys
@@ -644,25 +759,8 @@ for i in range(100):
 print(ans)
 ```
 
-Alternatively,
+</Spoiler>
 
-```py
-with open('paint.in','r') as inp:
-	cover = [0] * 100
-	lines = [line for line in inp]
-	a, b = map(int,lines[0].split())
-	c, d = map(int,lines[1].split())
-	for i in range(a, b):
-		cover[i] = 1
-	for i in range(c, d):
-		cover[i] = 1
-	ans = 0
-	for i in range(100):
-		ans += cover[i]
-	with open('paint.out','w') as out:
-		print(ans,file=out)
-		# or out.write(str(ans))
-```
 
 </PySection>
 
