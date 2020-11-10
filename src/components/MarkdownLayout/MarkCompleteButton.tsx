@@ -16,7 +16,7 @@ const MarkCompleteButton = ({
     onChange(option);
   };
   const ref = React.useRef();
-
+  console.log('test');
   React.useEffect(() => {
     const handleClick = e => {
       // @ts-ignore
