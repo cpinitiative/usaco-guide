@@ -46,9 +46,40 @@ Most only include two or three squares or rectangles, in which case you can simp
 
 Think of this as the 1D analog of the next example.
 
-<IncompleteSection>
+### Naive Solution
 
-</IncompleteSection>
+Since all the intervals lie between the range, $[0, 100]$, we can just mark each point in the interval as painted and count the number of marked points.
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool painted[104];
+int main() {
+    freopen("paint.in", "r", stdin);
+    freopen("paint.out", "w", stdout);
+
+    int a, b, c, d; 
+    cin >> a >> b >> c >> d;
+    
+    for (int i=0; i<=100; i++) painted[i] = false; 
+    for (int i=a; i<b; i++) painted[i] = true;
+    for (int i=c; i<d; i++) painted[i] = true;
+    int ans = 0;
+    for (int i=0; i<=100; i++) {
+        if (painted[i]) ans++;
+    }
+    cout << ans <<"\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection> 
 
 ## Example - Blocked Billboard
 
