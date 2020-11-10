@@ -81,6 +81,44 @@ int main() {
 
 </LanguageSection> 
 
+However, the naive solution would not work for higher constraints. 
+
+### Constant Time Solution
+
+It's possible to just simply calculate the answer by adding the original length minus the overlapping length.
+
+$(b-a)+(d-c)+interception(a,b,c,d)$
+
+The following solution demostrates this $O(1)$ solution.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool painted[104];
+
+bool intersect(int a, int b, int c, int d) {
+    if (a > c) swap(a, c), swap(b, d); 
+    return (a<=c && c<=b) || (a<=d && d<=b);
+}
+int main() {
+    freopen("paint.in", "r", stdin);
+    freopen("paint.out", "w", stdout);
+
+    int a, b, c, d; 
+    cin >> a >> b >> c >> d;
+
+    int ans = 0;
+    ans += (b-a); // add area of first interval
+    ans += (d-c); // add area of second interval
+    if (intersect(a, b, c, d)) { // if it intersects we have to subtract the intersecting area
+        ans -= min(b, d)-max(a, c);
+    } 
+
+    cout << ans <<"\n";
+}
+```
+
 ## Example - Blocked Billboard
 
 <FocusProblem problem={problems.sam[0]} />
