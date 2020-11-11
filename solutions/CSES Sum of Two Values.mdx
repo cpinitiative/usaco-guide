@@ -1,7 +1,7 @@
 ---
 id: cses-1640
 title: CSES Sum of Two Values
-author: Michael Cao
+author: Michael Cao, DRGSH, Benjamin Qi
 ---
 
 Given an array of $n$ elements, you are asked to find two values which sum to $x$.
@@ -64,5 +64,25 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+n,x = map(int,input().split())
+a = [int(x) for x in input().split()]
+
+val_to_ind = {}
+for i,val in enumerate(a):
+    if x-val in val_to_ind:
+        print(i+1,val_to_ind[x-val])
+        sys.exit(0)
+    val_to_ind[val] = i+1
+        
+print("IMPOSSIBLE")
+```
+
+</PySection>
 
 </LanguageSection>
