@@ -1,0 +1,373 @@
+---
+id: centroid
+title: 'Centroid Decomposition'
+author: Siyong Huang, Benjamin Qi
+prerequisites:
+  - intro-tree
+description: 'Decomposing a tree to faciliate path computations.'
+frequency: 1
+---
+
+<!--
+
+TODO:
+ - Add more resources
+
+-->
+
+
+
+export const problems = {
+	sam: [
+		new Problem(
+			'CF',
+			'Xenia & Tree',
+			'problemset/problem/342/E',
+			'Normal',
+			false,
+			['Centroid'],
+			''
+		),
+	],
+	general: [
+		new Problem(
+			'CF',
+			'Ciel the Commander',
+			'321/problem/C',
+			'Easy',
+			false,
+			['Centroid'],
+			'Keep setting the centroid to the next rank'
+		),
+		new Problem(
+			'CF',
+			'Baltic OI - Village (Maximum)',
+			'1387/problem/B2',
+			'Easy',
+			true,
+			['Centroid'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'New Barns',
+			'817',
+			'Normal',
+			true,
+			['Centroid'],
+			"Build centroid decomp on the whole tree first and perform updates for each 'root' as expected."
+		),
+		new Problem(
+			'CF',
+			"Sherlock's bet to Moriarty",
+			'776/problem/F',
+			'Normal',
+			false,
+			['Centroid'],
+			'Similar to Ceil the Commander, but annoying to interpret input and order regions'
+		),
+		new Problem(
+			'CF',
+			'Digit Tree',
+			'715/problem/C',
+			'Normal',
+			false,
+			['Centroid', 'NT'],
+			"M is coprime to 10, so use Euler's Theorem and maps storing mods to count pairs."
+		),
+		new Problem(
+			'CF',
+			'Double Tree',
+			'1140/problem/G',
+			'Normal',
+			false,
+			['Centroid', 'DP'],
+			'DP + Centroid'
+		),
+		new Problem(
+			'JOI',
+			'Factories',
+			'JOI14_factories',
+			'Normal',
+			false,
+			['Centroid'],
+			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d1-factories-review.pdf'
+		),
+		new Problem(
+			'DMOJ',
+			'Bob Equilibrium',
+			'dmopc19c7p6',
+			'Hard',
+			false,
+			['Centroid'],
+			'DMOJ-bob-equilibrium'
+		),
+		new Problem(
+			'DMOJ',
+			'Time Traveller Imaxblue',
+			'tc19summerh',
+			'Hard',
+			false,
+			['Centroid'],
+			'DMOJ-time-travel'
+		),
+		new Problem(
+			'JOI',
+			'Synchronization',
+			'JOI13_synchronization',
+			'Hard',
+			false,
+			['Centroid', 'Small to Large'],
+			'joi-13-sync'
+		),
+		new Problem(
+			'Plat',
+			'At Large',
+			'793',
+			'Very Hard',
+			false,
+			['Centroid'],
+			'tight time limit'
+		),
+	],
+};
+
+<!-- lol CHT hasn't been introduced yet
+
+new Problem(
+	'CF',
+	'Sum of Prefix Sums',
+	'1303/problem/G',
+	'Hard',
+	false,
+	['Centroid', 'CHT'],
+	"Maintain convex hull trick as you iterate through subtrees. It's easier to have a different dfs for querying and updating CHT. Also run forwards and backwards to account for direction of prefix sum."
+),
+new Problem(
+	'CF',
+	'Raining Season',
+	'1019/problem/E',
+	'Very Hard',
+	false,
+	['Centroid', 'CHT', 'Merging'],
+	'Merge a bunch of smaller convex hull tricks together to create the ultimate convex hull trick'
+), -->
+
+## Introduction
+
+<FocusProblem problem={problems.sam[0]} />
+
+**Centroid Decomposition** is a divide and conquer technique for trees. The **centroid** of a tree is a node which, if rooted, results in no other nodes having a subtree of size greater than $\frac{N}{2}$. **Centroid Decomposition** works by repeated splitting the tree and each of the resulting subgraphs at the centroid, producing $O(\log N)$ layers of subgraphs.
+
+<Resources>
+	<Resource
+		source="Carpanese"
+		title="Illustrated Intro to Centroid Decomposition"
+		url="https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308"
+		starred
+	>
+		how to solve above problem
+	</Resource>
+	<Resource source="CF" title="galen_colin - Centroid Decomposition" url="https://codeforces.com/blog/entry/81661">
+		blog + video for above problem. LCA isn't necessary though.
+	</Resource>
+	<Resource
+		source="GFG"
+		title="Centroid Decomposition of Tree"
+		url="centroid-decomposition-of-tree"
+	></Resource>
+</Resources>
+
+## Implementation
+
+General centroid code is shown below.
+
+<IncompleteSection>
+
+Ben - this is not easy to understand :/
+
+</IncompleteSection>
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
+
+```cpp
+bool r[MN];//removed
+int s[MN];//subtree size
+int dfs(int n, int p = 0)
+{
+	s[n] = 1;
+	for(int x : a[n])
+		if(x != p && !r[x])
+			s[n] += dfs(x, n);
+	return s[n];
+}
+int get_centroid(int n, int ms, int p = 0)//n = node, ms = size of tree, p = parent
+{
+	for(int x : a[n])
+		if(x != p && !r[x])
+			if(s[x]*2 > ms)
+				return get_centroid(x, ms, n);
+	return n;
+}
+void centroid(int n = 1)
+{
+	int C = get_centroid(n, dfs(n));
+
+	//do something
+
+	r[C] = 1;
+	for(int x : a[C])
+		if(!r[x])
+			centroid(x);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<!-- Modified from above. I can't guarauntee it compiles and functions as expected -->
+
+```java
+boolean[] r = new boolean[MN];//removed
+int[] s = new int[MN];//subtree size
+public int dfs(int n, int p)
+{
+	s[n] = 1;
+	for(int x : a[n])
+		if(x != p && !r[x])
+			s[n] += dfs(x, n);
+	return s[n];
+}
+public int get_centroid(int n, int ms, int p)//n = node, ms = size of tree, p = parent
+{
+	for(int x : a[n])
+		if(x != p && !r[x])
+			if(s[x]*2 > ms)
+				return get_centroid(x, ms, n);
+	return n;
+}
+public void centroid(int n)
+{
+	int C = get_centroid(n, dfs(n, 0), 0);
+
+	//do something
+
+	r[C] = 1;
+	for(int x : a[C])
+		if(!r[x])
+			centroid(x);
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Solution - Xenia & Tree
+
+```cpp
+#include <cstdio>
+#include <cstring>
+#include <vector>
+
+template<typename T> bool ckmin(T& a, const T& b){return b<a?a=b,1:0;}
+
+const int MN = 1e5+10, INF = 0x3f3f3f3f;
+
+int N, M, s[MN], m[MN][2], t, b, d;
+bool r[MN], red[MN];
+std::vector<int> a[MN], v[MN];
+struct info
+{
+	public:
+		int n,b,d;
+};
+std::vector<info> g[MN];
+
+int dfs(int n, int p=0)
+{
+	s[n]=1;
+	for(auto x:a[n])
+		if(x!=p&&!r[x])
+			s[n]+=dfs(x, n);
+	return s[n];
+}
+int find(int n, int ms, int p=0)
+{
+	for(auto x:a[n])
+		if(!r[x]&&x!=p&&s[x]*2>ms)
+			return find(x, ms, n);
+	return n;
+}
+void dfs2(int n, int p=0)
+{
+	for(auto x:a[n])
+		if(!r[x]&&x!=p)
+			++d, dfs2(x, n), --d;
+	g[n].push_back({t,b,d});
+}
+void centroid(int n=1)
+{
+	n = find(n, dfs(n));
+	v[n].reserve(a[n].size());
+	for(auto x:a[n])
+		if(!r[x])
+		{
+			t=n, b=v[n].size(), d=1;
+			dfs2(x, n);
+			v[n].push_back(INF);
+		}
+	r[n]=1;
+	for(auto x:a[n])
+		if(!r[x])
+			centroid(x);
+}
+
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i+1<N;++i)
+		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
+	centroid();
+	memset(m, 0x3f, sizeof m);
+	for(int i=0,t=1,n=1;i<=M;++i)
+	{
+		if(t==1)
+		{
+			for(auto x:g[n])
+			{
+				int &q=v[x.n][x.b];
+				if(x.d<q)
+				{
+					if(m[x.n][0]==q) m[x.n][0]=x.d;
+					else for(int i=0,u=x.d;i<2;++i) if(u<m[x.n][i]) std::swap(u, m[x.n][i]);
+					q=x.d;
+				}
+			}
+			red[n]=1;
+			m[n][0]=0;
+		}
+		else
+		{
+			int f=m[n][0];
+			for(auto x:g[n])
+				if(x.d)
+					ckmin(f, m[x.n][v[x.n][x.b]==m[x.n][0]]+x.d);
+			printf("%d\n", f);
+		}
+		if(i<M) scanf("%d%d", &t, &n);
+	}
+	return 0;
+}
+```
+
+## Problems
+
+<!-- Note: Unfortunately, it seems like constant factor is especially important for DMOJ.  -->
+
+<Problems problems={problems.general} />

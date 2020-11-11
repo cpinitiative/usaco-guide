@@ -1,0 +1,54 @@
+---
+id: usaco-664
+title: USACO December 2016 Bronze - Block Game
+author: Óscar Garries, tickox
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+constexpr int nb_letter = 26;
+using arr = array<int, nb_letter>;
+
+void count_freq(const string &s, arr &freq) {
+	for (char c: s) {
+		freq[c - 'a']++;
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	freopen("blocks.in", "r", stdin);
+	freopen("blocks.out", "w", stdout);
+	int n;
+	cin >> n;
+	arr ans{};
+	while (n--) {
+		string s1, s2;
+		cin >> s1 >> s2;
+		arr freq1{}, freq2{};
+		count_freq(s1, freq1); count_freq(s2, freq2);
+		for (int i = 0; i < nb_letter; i++) {
+			ans[i] += max(freq1[i], freq2[i]);
+		}
+	} 
+	for (int i: ans) {
+		cout << i << '\n';
+	}
+	
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

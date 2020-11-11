@@ -1,0 +1,176 @@
+---
+id: usaco-691
+title: USACO January 2017 Silver - Hoof, Paper, Scissors
+author: Óscar Garries and Mrinall Umausdhan
+---
+
+Official Editorial: http://www.usaco.org/current/data/sol_hps_silver_jan17.html
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main () {
+	freopen("hps.in", "r", stdin);
+	freopen("hps.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<int> h(n + 1), p(n + 1), s(n + 1);
+
+	for (int i = 0; i < n; i++) {
+		h[i + 1] = h[i];
+		p[i + 1] = p[i];
+		s[i + 1] = s[i];
+
+		char cur;
+		cin >> cur;
+		if (cur == 'P') p[i + 1]++;
+		else if (cur == 'H') h[i + 1]++;
+		else s[i + 1]++;
+	}
+
+	int sol = 0;
+
+	for (int i = 1; i <= n; i++) {
+		auto update = [&] (vector<int>& a, vector<int>& b) {
+				sol = max(sol, a[i] + b[n] - b[i]);
+		};
+		update(h, p);
+		update(h, s);
+		update(p, s);
+		update(p, h);
+		update(s, h);
+		update(s, p);
+	}
+
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class hps {
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+
+        public InputReader(File stream) throws FileNotFoundException {
+            reader = new BufferedReader(new FileReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        } // reads in the next int
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        } // reads in the next long
+
+        public double nextDouble() {
+            return Double.parseDouble(next());
+        } // reads in the next double
+    }
+
+    static InputReader sc;
+
+    static {
+        try {
+            sc = new InputReader(new File("hps.in"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
+        int N = sc.nextInt(); String [] arr = new String[N + 1]; int ans = 0;
+        int[] h = new int [N + 1]; int[] p = new int[N + 1]; int[] s = new int[N + 1];
+        String [] gestures = {"H", "P", "S"};
+        for (int i = 1; i <= N; i++) {
+            arr[i] = sc.next();
+            if(arr[i].equals("H")){
+                h[i] = h[i - 1] + 1;
+                p[i] = p[i - 1];
+                s[i] = s[i - 1];
+            }else if(arr[i].equals("S")){
+                s[i] = s[i - 1] + 1;
+                h[i] = h[i - 1];
+                p[i] = p[i - 1];
+            }else if(arr[i].equals("P")){
+                p[i] = p[i - 1] + 1;
+                s[i] = s[i - 1];
+                h[i] = h[i - 1];
+            }
+        }
+
+        for (int i = 1; i <= N; i++) {
+            for (int j = 0; j < 3; j++) {
+                int temp = 0;
+                if (i > 0) {
+                    String OGMove = gestures[j];
+                    switch (OGMove) {
+                        case "H":
+                            temp += s[0] + s[i - 1];
+                            break;
+                        case "S":
+                            temp += p[0] + p[i - 1];
+                            break;
+                        case "P":
+                            temp += h[0] + h[i - 1];
+                            break;
+                    }
+                }
+                for (int k = 0; k < 3; k++) {
+                    int temp2 = 0;
+                    String NextMove = gestures[k];
+                    switch (NextMove) {
+                        case "H":
+                            temp2 += s[N] - s[i-1];
+                            break;
+                        case "S":
+                            temp2 += p[N] - p[i-1];
+                            break;
+                        case "P":
+                            temp2 += h[N] - h[i-1];
+                            break;
+                    }
+                    ans = Math.max(temp + temp2, ans);
+                }
+            }
+        }
+        out.println(ans);
+        out.close();
+    }
+}
+```
+
+</JavaSection>
+</LanguageSection>

@@ -1,0 +1,3 @@
+// This file shouldn't be necessary, but for some reason Gatsby is not loading
+// gatsby-browser.tsx (note the "x") properly...
+module.exports = require('./gatsby-browser.tsx');

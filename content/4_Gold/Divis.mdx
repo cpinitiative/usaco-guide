@@ -1,0 +1,482 @@
+---
+id: divis
+title: 'Divisibility'
+author: Darren Yao, Michael Cao, Andi Qu
+prerequisites:
+description: Using the information that A is a factor of B
+frequency: 1
+---
+
+
+
+export const problems = {
+	sample: [new Problem('CSES', 'Counting Divisors', '1713', 'Easy', false, [])],
+	general: [
+		new Problem(
+			'AC',
+			'Div Game',
+			'https://atcoder.jp/contests/abc169/tasks/abc169_d',
+			'Easy',
+			false,
+			['Prime Factorization'],
+			'Prime factorize the given number. Consider each prime in the factorization separately. For each prime, decrement the exponent by 1 the first time, 2 the second time, and so on, until we can no longer continue without repeating a previously used exponent.'
+		),
+		new Problem('CSES', 'Common Divisors', '1081', 'Normal', true, [], 'cses-1081'),
+		new Problem(
+			'CF',
+			'Orac and LCM',
+			'1349/problem/A',
+			'Normal',
+			false,
+			['Prime Factorization'],
+			'orac-lcm'
+		),
+		new Problem('CSES', 'Sum of Divisors', '1082', 'Hard', false, [], 'cses-1082'),
+	],
+};
+
+If you've never encountered any **number theory** before, AoPS is a good place to start.
+
+<Resources>
+	<Resource
+		source="AoPS@Art of Problem Solving"
+		title="Alcumus"
+		url="https://artofproblemsolving.com/alcumus/problem"
+		starred
+	>
+		practice problems, set focus to number theory!
+	</Resource>
+	<Resource
+		source="AoPS@Art of Problem Solving"
+		title="Intro to NT"
+		url="https://artofproblemsolving.com/store/item/intro-number-theory?gtmlist=Bookstore_AoPS_Side"
+	>
+		good book
+	</Resource>
+</Resources>
+
+## Resources
+
+<Resources>
+	<Resource source="IUSACO" title="13.1, 13.2 - Elementary Number Theory">
+		module is based off this
+	</Resource>
+	<Resource
+		source="David Altizio"
+		title="Divisors and Divisibility"
+		url="https://davidaltizio.web.illinois.edu/Divisors%20and%20Divisibility%20Overview.pdf"
+		starred
+	>
+		{' '}
+	</Resource>
+	<Resource source="CPH" title="21.1 - Primes & Factors" starred></Resource>
+	<Resource source="PAPS" title="16.1, 16.2 - Number Theory"></Resource>
+</Resources>
+
+<!-- <Resource source="CF" title="CodeNCode - Number Theory Course" url="77137">lots of advanced stuff you don't need to know at this level</Resource>
+   -->
+
+## Prime Factorization
+
+<FocusProblem problem={problems.sample[0]} />
+
+A number $a$ is called a **divisor** or a **factor** of a number $b$ if $b$ is divisible by $a$, which means that there exists some integer $k$ such that $b = ka$. Conventionally, $1$ and $n$ are considered divisors of $n$. A number $n > 1$ is **prime** if its only divisors are $1$ and $n$. Numbers greater than \(1\) that are not prime are **composite**.
+
+Every number has a unique **prime factorization**: a way of decomposing it into a product of primes, as follows:
+
+$$
+n = {p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k}
+$$
+
+where the $p_i$ are distinct primes and the $a_i$ are positive integers.
+
+Now, we will discuss how to find the prime factorization of an integer.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<int> factor(int n) {
+	vector<int> ret;
+	for (int i = 2; i * i <= n; i++) {
+		while (n % i == 0) {
+			ret.push_back(i);
+			n /= i;
+		}
+	}
+	if (n > 1) ret.push_back(n);
+	return ret;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+ArrayList<Integer> factor(int n) {
+    ArrayList<Integer> factors = new ArrayList<>();
+    for (int i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            factors.add(i);
+            n /= i;
+        }
+    }
+    if (n > 1) factors.add(n);
+    return factors;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def factor(n):
+	ret = []
+	i = 2
+	while i * i <= n:
+		while n % i == 0:
+			ret.append(i)
+			n //= i
+		i += 1
+	if n > 1:
+		ret.append(n)
+	return ret
+```
+
+</PySection>
+
+</LanguageSection>
+
+This algorithm runs in $O(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
+
+Let's look at an example of how this algorithm works, for $n = 252$.
+
+![Example](factoralgorithm.png)
+
+At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
+
+### Solution - Counting Divisors
+
+The most straightforward solution is just to do what the problem asks us to do - for each $x$, find the number of divisors of $x$ in $O(\sqrt x)$ time.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    while (n--) {
+        int x, ans = 0;
+        cin >> x;
+        for (int i = 1; i * i <= x; i++) {
+            if (x % i == 0) {
+                if (i * i == x) ans++;
+                else ans += 2;
+            }
+        }
+        cout << ans << '\n';
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int solve(int n) {
+        int divisors = 0;
+        for (int i = 1; i * i <= n; i++) {
+            if (n % i == 0) {
+                if (i * i == n) divisors++;
+                else divisors += 2;
+            }
+        }
+        return divisors;
+    }
+
+    public static void main(String[] args) {
+        int n = r.nextInt();
+        for (int i = 0; i < n; i++) {
+            int x = r.nextInt();
+            pw.println(solve(x));
+        }
+
+        pw.close(); // flushes the output once printing is done
+    }
+
+    static class InputReader {
+        BufferedReader reader;
+        StringTokenizer tokenizer;
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+        String next() { // reads in the next string
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+    }
+    static InputReader r = new InputReader(System.in);
+    static PrintWriter pw = new PrintWriter(System.out);
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+This solution runs in $O(n \sqrt x)$ time, which is just fast enough to get AC. However, we can actually speed this up to get an $O((x + n) \log x)$ solution!
+
+First, let's discuss an important property of the prime factorization of a number. Consider:
+
+$$
+x = {p_1}^{a_1} {p_2}^{a_2} \cdots {p_k}^{a_k}
+$$
+
+Then the number of divisors of $x$ is simply $(a_1 + 1) \cdot (a_2 + 1) \cdots (a_k + 1)$.
+
+Why is this true? The exponent of $p_i$ in any divisor of $x$ must be in the range $[0, a_i]$ and each different exponent results in a different set of divisors, so each $p_i$ contributes $a_i + 1$ to the product.
+
+$x$ can have $O(\log x)$ distinct prime factors, so if we can find the prime factorization of $x$ efficiently, we can answer queries in $O(\log x)$ time instead of the previous $O(\sqrt x)$ time.
+
+Here's how we find the prime factorization of $x$ in $O(\log x)$ time with $O(x \log x)$ preprocessing:
+
+- For each $k \leq 10^6$, find any prime number that divides $k$.
+	- We can use the Sieve of Eratosthenes to find this efficiently.
+- For each $x$, we can then find the prime factorization by repeatedly dividing $x$ by a prime number that divides $x$ until $x = 1$.
+
+Alternatively, we can slightly modify the the prime factorization code above.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int max_div[1000001];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	for (int i = 2; i <= 1000000; i++) {
+		if (!max_div[i]) {
+			for (int j = i; j <= 1000000; j += i) {
+				max_div[j] = i;
+			}
+		}
+	}
+	int n;
+	cin >> n;
+	while (n--) {
+		int x; cin >> x;
+		int ans = 1;
+		while (x != 1) {
+			int prime = max_div[x], count = 0;
+			while (x % prime == 0) {
+				count++;
+				x /= prime;
+			}
+			ans *= count + 1;
+		}
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<IncompleteSection>
+
+make java code consistent w/ C++ code ...
+
+</IncompleteSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int solve(int n) {
+		int divisors = 1;
+		for (int i = 2; i * i <= n; i++) {
+			int ct = 0;
+			while (n % i == 0) {
+				ct++;
+				n /= i;
+			}
+			divisors *= ct+1;
+		}
+		if (n > 1) divisors *= 2;
+		return divisors;
+	}
+
+	public static void main(String[] args) {
+		int n = r.nextInt();
+		for (int i = 0; i < n; i++) {
+			int x = r.nextInt();
+			pw.println(solve(x));
+		}
+
+		pw.close(); // flushes the output once printing is done
+	}
+
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+	}
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+<Optional>
+
+Apply the [linear sieve](https://codeforces.com/blog/entry/54090).
+
+</Optional>
+
+## GCD & LCM
+
+### GCD
+
+The **greatest common divisor (GCD)** of two integers $a$ and $b$ is the largest integer that is a factor of both $a$ and $b$. In order to find the GCD of two *non-negative* integers, we use the **Euclidean Algorithm**, which is as follows:
+
+$$
+\gcd(a, b) = \begin{cases}
+	 a & b = 0 \\
+	 \gcd(b, a \bmod b) & b \neq 0 \\
+\end{cases}
+$$
+
+This algorithm is very easy to implement using a recursive function, as follows:
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+public int gcd(int a, int b){
+	if (b == 0) return a;
+	return gcd(b, a % b);
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+int gcd(int a, int b){
+	if (b == 0) return a;
+	return gcd(b, a % b);
+}
+```
+
+For C++14, you can use the built-in `__gcd(a,b)`. 
+
+</CPPSection>
+
+<PySection>
+
+```py
+def gcd(a, b):
+	if b == 0:
+		return a
+	return gcd(b, a % b)
+```
+
+</PySection>
+
+</LanguageSection>
+
+This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$.
+
+The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$.
+
+<!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
+<!-- ^ this doesn't seem very helpful -->
+<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $O(\log ab)$. -->
+
+### LCM
+
+The **least common multiple (LCM)** of two integers $a$ and $b$ is the smallest integer divisible by both $a$ and $b$. The LCM can easily be calculated from the following property with the GCD:
+
+$$
+\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}=\frac{a}{\gcd(a,b)}\cdot b.
+$$
+
+<Warning>
+
+Coding $\text{lcm}$ as `a * b / gcd(a, b)` might cause integer overflow if the value of `a * b` is greater than the max size of the data type of `a * b` (e.g. the max size of `int` is around 2 billion). Dividng `a` by `gcd(a, b)` first, then multiplying it by `b` will prevent integer overflow if the result fits in an `int`.
+
+</Warning>
+
+If we want to take the GCD or LCM of more than two elements, we can do so two at a time, in any order. For example,
+
+$$
+\gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
+$$
+
+
+**Exercise:** What's wrong with the following code?
+
+```cpp
+ll gcd(ll a, ll b){ return b == 0 ? a : gcd(b,a%b); }
+ll lcm(ll a, ll b) { return a/gcd(a,b)*b; }
+
+int main() { cout << lcm(1000000000,999999999); } // output: 1808348672
+```
+
+<Spoiler title="Solution">
+
+The code outputs the correct result (`999999999000000000`) for C++14 and earlier. However, C++17 has built in `gcd(a,b)` and `lcm(a,b)` ...
+
+</Spoiler>
+
+## Problems
+
+<Problems problems={problems.general} />

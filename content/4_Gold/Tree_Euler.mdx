@@ -1,0 +1,553 @@
+---
+id: tree-euler
+title: 'Euler Tour Technique'
+author: Benjamin Qi, Andi Qu, Andrew Wang
+prerequisites:
+  - intro-tree
+  - PURS
+description: 'Flattening a tree into an array to easily query and update subtrees.'
+frequency: 2
+---
+
+
+
+export const problems = {
+	sample: [
+		new Problem(
+			'CSES',
+			'Subtree Queries',
+			'1137',
+			'Easy',
+			false,
+			['Euler-Tree'],
+			'equivalent to https://judge.yosupo.jp/problem/vertex_add_subtree_sum'
+		),
+	],
+	lca: [
+		new Problem(
+			'CSES',
+			'Company Queries II',
+			'1688',
+			'Easy',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem('CSES', 'Distance Queries', '1135', 'Easy', false, ['LCA'], ''),
+	],
+	rmqSample: [
+		new Problem('YS', 'Static RMQ', 'staticrmq', 'Easy', false, [], ''),
+	],
+	problems: [
+		new Problem(
+			'CSES',
+			'Path Queries',
+			'1138',
+			'Normal',
+			false,
+			['Euler-Tree', 'PURS'],
+			'cses-1138'
+		),
+		new Problem(
+			'Gold',
+			'Cow Land',
+			'921',
+			'Normal',
+			false,
+			['Euler-Tree', 'PURS', 'HLD'],
+			'usaco-921'
+		),
+		new Problem(
+			'Gold',
+			'Milk Visits',
+			'970',
+			'Normal',
+			false,
+			['Euler-Tree', 'LCA'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'Promotion Counting',
+			'696',
+			'Normal',
+			false,
+			['Euler-Tree', 'PURS'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2009 - Regions',
+			'IOI09_regions',
+			'Hard',
+			false,
+			['Euler-Tree', 'Binary Search'],
+			'http://www.ioi2009.org/GetResource?id=1969'
+		),
+		new Problem(
+			'Plat',
+			'Snow-Cow',
+			'973',
+			'Hard',
+			false,
+			['Euler-Tree', 'PURS'],
+			''
+		),
+		new Problem(
+			'DMOJ',
+			'Victor Takes Over Canada',
+			'dmopc20c1p5',
+			'Very Hard',
+			false,
+			['Euler-Tree', 'PURS'],
+			''
+		)
+	],
+};
+
+<!-- new Problem(
+	'JOI',
+	'Synchronisation',
+	'JOI13_synchronization',
+	'Very Hard',
+	true,
+	[],
+	''
+), -->
+
+## Introduction
+
+<FocusProblem problem={problems.sample[0]} />
+
+If we can preprocess a rooted tree such that every subtree corresponds to a contiguous range on an array, we can do updates and range queries on it!
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="18.2 - Subtrees & Paths" starred>
+		introduces tree traversal array, how to solve above problem
+	</Resource>
+	<Resource source="SecondThread" title="Tree Basics - Tree Flattening" url="https://codeforces.com/blog/entry/81527"> </Resource>
+</Resources>
+
+### Implementation
+
+After running `dfs()`, each range `[st[i], en[i]]` contains all ranges `[st[j], en[j]]` for each `j` in the subtree of `i`. Also, `en[i]-st[i]+1` is equal to the subtree size of `i`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MX = 2e5+5;
+vector<int> adj[MX];
+int timer = 0, st[MX], en[MX];
+
+void dfs(int node, int parent) {
+	st[node] = timer++;
+	for (int i : adj[node]) {
+		if (i != parent) {
+			dfs(i, node);
+		}
+	}
+	en[node] = timer-1;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static void dfs(int i, int p) {
+	st[i] = timer++;
+	for (int next : g[i]) {
+		if(next != p) dfs(next, i);
+	}
+	en[i] = timer-1;
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<IncompleteSection>
+
+example input
+
+</IncompleteSection>
+
+### Solution - Subtree Queries
+
+Assumes that `dfs()` code is included. Uses a segment tree.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+/**
+ * Description: 1D point update, range query where \texttt{comb} is
+	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * Time: O(\log N)
+ * Source: 
+	* http://codeforces.com/blog/entry/18051
+	* KACTL
+ * Verification: SPOJ Fenwick
+ */
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return a+b; } 
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID; 
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<ll> S;
+int v[MX];
+
+int main() {
+	int n,q; cin >> n >> q;
+	FOR(i,1,n+1) cin >> v[i];
+	F0R(i,n-1) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfs(1,0);
+	S.init(n);
+	FOR(i,1,n+1) S.upd(st[i],v[i]);
+	F0R(i,q) {
+		int t; cin >> t;
+		if (t == 1) {
+			int s,x; cin >> s >> x;
+			S.upd(st[s],x);
+		} else {
+			int s; cin >> s;
+			cout << S.query(st[s],en[s]) << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static int[] st;
+	public static int[] en;
+	public static int timer, n;
+	public static ArrayList<Integer> g[];
+   
+	//Segtree code
+	public static final int N = (int)1e5;  // limit for array size
+	public static long t[] = new long[2*N]; 
+
+	public static void update(int p, long value) {  // set value at position p
+		for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+	}
+
+	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED) 
+		long res = 0;
+		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if ((l&1) != 0) res += t[l++];
+			if ((r&1) != 0) res += t[--r];
+		}
+		return res;
+	} 
+   
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer str = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(str.nextToken());
+      		int q = Integer.parseInt(str.nextToken());
+      		int[] val = new int[n+1];
+      		g = new ArrayList[n+1];
+      		str = new StringTokenizer(br.readLine());
+      		for (int i = 1; i <= n; i++) {
+         		g[i] = new ArrayList<Integer>();
+         		val[i] = Integer.parseInt(str.nextToken());
+      		}
+      		st = new int[n+1]; en = new int[n+1]; timer = 0;
+      		for (int i = 0; i < n-1; i++) {
+         		str = new StringTokenizer(br.readLine());
+         		int a = Integer.parseInt(str.nextToken());
+         		int b = Integer.parseInt(str.nextToken());
+         		g[a].add(b);
+         		g[b].add(a);
+      		}
+      		dfs(1, 0);
+      		for (int i = 1; i <= n; i++) {
+         		update(st[i], val[i]);
+      		}
+      		for (int i = 0; i < q; i++) {
+         		str = new StringTokenizer(br.readLine());
+         		int a = Integer.parseInt(str.nextToken());
+			if(a == 1) {
+				int b = Integer.parseInt(str.nextToken());
+				int c = Integer.parseInt(str.nextToken());
+				update(st[b], c);
+			} else {
+				int b = Integer.parseInt(str.nextToken());
+				System.out.println(query(st[b], en[b]+1));
+			}
+      		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## LCA
+
+<FocusProblem problem={problems.lca[0]} />
+
+<FocusProblem problem={problems.lca[1]} />
+
+### Tutorial
+
+<Resources>
+	<Resource
+		source="CPH"
+		title="18.3 - Least Common Ancestor (Method 2)"
+		starred
+	></Resource>
+	<Resource
+		source="cp-algo"
+		title="Reducing LCA to RMQ"
+		url="graph/lca.html"
+		starred
+	></Resource>
+</Resources>
+
+### Implementation
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCArmq%20(10.2).h"
+		title="LCA with RMQ"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int n; // The number of nodes in the graph
+vector<int> graph[100000];
+int timer = 0, tin[100000], euler_tour[200000];
+int segtree[800000]; // Segment tree for RMQ
+
+void dfs(int node = 0, int parent = -1) {
+	tin[node] = timer; // The time when we first visit a node
+	euler_tour[timer++] = node;
+	for (int i : graph[node]) {
+		if (i != parent) {
+			dfs(i, node);
+			euler_tour[timer++] = node;
+		}
+	}
+}
+
+int mn_tin(int x, int y) {
+	if (x == -1) return y;
+	if (y == -1) return x;
+	return (tin[x] < tin[y] ? x : y);
+}
+
+// Build the segment tree: run `build()` after running `dfs()`
+void build(int node = 1, int l = 0, int r = timer - 1) {
+	if (l == r) segtree[node] = euler_tour[l];
+	else {
+		int mid = (l + r) / 2;
+		build(node * 2, l, mid);
+		build(node * 2 + 1, mid + 1, r);
+		segtree[node] = mn_tin(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+}
+
+int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
+	if (l > b || r < a) return -1
+	if (l >= a && r <= b) return segtree[node];
+	int mid = (l + r) / 2;
+	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
+}
+
+// Make sure you run `dfs()` and `build()` before you run this
+int lca(int a, int b) {
+	if (tin[a] > tin[b]) swap(a, b);
+	return query(tin[a], tin[b]);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class LCA {
+	public static int[] euler_tour, tin;
+	public static int timer, size, N;
+	public static ArrayList<Integer> g[];
+   
+   	//Segtree code
+	public static final int maxsize = (int)1e7;  // limit for array size
+	public static int t[] = new int[maxsize]; 
+
+	public static void update(int p, int value) {  // set value at position p
+		for (t[p += size] = value; p > 1; p >>= 1) t[p>>1] = mn_tin(t[p], t[p^1]);
+	}
+	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED) 
+		int res = N;
+		for (l += size, r += size; l < r; l >>= 1, r >>= 1) {
+			if ((l&1) != 0) res = mn_tin(res, t[l++]);
+			if ((r&1) != 0) res = mn_tin(res, t[--r]);
+		}
+		return res;
+	} 
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer str = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(str.nextToken());
+		int Q = Integer.parseInt(str.nextToken());
+		int[] val = new int[N+1];
+		g = new ArrayList[N+1];
+		str = new StringTokenizer(br.readLine());
+		for (int i = 1; i <= N; i++) {
+			g[i] = new ArrayList<Integer>();
+		}
+		for (int i = 2; i <= N; i++) {
+			int a = Integer.parseInt(str.nextToken());
+			g[i].add(a);
+			g[a].add(i);
+		}
+		euler_tour = new int[2*N-1]; tin = new int[N+1];
+		dfs(1, 0);
+		size = 2*N-1;
+		for (int i = 0; i < 2*N-1; i++) {
+			update(i, euler_tour[i]);
+		}
+		for (int i = 0; i < Q; i++) {
+			str = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(str.nextToken());
+			int b = Integer.parseInt(str.nextToken());
+			System.out.println(lca(a, b));
+		}
+	}
+	public static void dfs(int i, int p) {
+		tin[i] = timer;
+		euler_tour[timer++] = i;
+		for (int next : g[i]) {
+			if(next != p){
+				dfs(next, i);
+				euler_tour[timer++] = i;   
+			}
+		}
+	}
+	public static int lca(int a, int b) {
+		if(tin[a] > tin[b]) { 
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+		if(a == b) {
+			return a;
+		}
+		return query(tin[a], tin[b]);
+	}
+	public static int mn_tin(int x, int y) {
+		if (x == -1) return y;
+		if (y == -1) return x;
+		return (tin[x] < tin[y] ? x : y);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Sparse Tables
+
+The above code does $O(N)$ time preprocessing and allows LCA queries in $O(\log N)$ time. If we replace the segment tree that computes minimums with a **sparse table**, then we do $O(N\log N)$ time preprocessing and query in $O(1)$ time.
+
+<!-- [](https://en.wikipedia.org/wiki/Range_minimum_query) -->
+
+<FocusProblem problem={problems.rmqSample[0]} />
+
+### Resources
+
+<Resources>
+	<Resource source="CPH" title="9.1 - Minimum Queries" url="/CPH.pdf#page=95" starred>
+		diagrams
+	</Resource>
+	<Resource source="PAPS" title="11.2.2 - Sparse Tables" starred>
+		code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Sparse Table"
+		url="data_structures/sparse-table.html"
+	></Resource>
+</Resources>
+
+<!-- <Resource source="cp-algo" title="RMQ" url="sequences/rmq.html"></Resource> -->
+
+<Optional title="Faster Preprocessing">
+
+From CPH:
+
+> There are also more sophisticated techniques where the preprocessing time is only $O(N)$, but such
+algorithms are not needed in competitive programming.
+
+Ex. the following:
+
+ - [CF: $O(1)$ Query RMQ with $O(N)$ build](https://codeforces.com/blog/entry/78931)
+
+</Optional>
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RMQ%20(9.1).h"
+		title="RMQ"
+	></Resource>
+</Resources>
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems={problems.problems} />

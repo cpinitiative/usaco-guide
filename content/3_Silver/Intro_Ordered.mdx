@@ -1,0 +1,667 @@
+---
+id: intro-ordered
+title: 'More Operations on Ordered Sets'
+author: Darren Yao, Benjamin Qi, Andrew Wang
+prerequisites:
+  - intro-sets
+  - binary-search-sorted
+description: 'Using iterators with sets, finding the next element smaller or larger than a specified key in a set.'
+frequency: 2
+---
+
+export const problems = {
+	standard: [
+		new Problem(
+			'CSES',
+			'Concert Tickets',
+			'1091',
+			'Easy',
+			false,
+			['iterators'],
+			'just do upper_bound'
+		),
+		new Problem(
+			'CSES',
+			'Traffic Lights',
+			'1163',
+			'Normal',
+			true,
+			['set'],
+			'just insert into set one at a time'
+		),
+		new Problem(
+			'CSES',
+			'Room Allocation',
+			'1164',
+			'Normal',
+			true,
+			[],
+			'cses-1164'
+		),
+	],
+	sample: [
+		new Problem('CSES', 'Bit Inversions', '1188', 'Hard', false, [], '@B'),
+	],
+	general: [
+		new Problem('Silver', 'Milk Measurement', '763', 'Normal', false, []),
+		new Problem(
+			'CF',
+			'Jury Marks',
+			'contest/831/problem/C',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem('Silver', 'Convention II', '859', 'Normal', true, []),
+		new Problem('Gold', 'Snow Boots', '813', 'Hard', true, []),
+		new Problem(
+			'CF',
+			'Mahmoud & Ehab & Function',
+			'contest/862/problem/E',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'CF',
+			'Tournament',
+			'contest/878/problem/C',
+			'Insane',
+			false,
+			[],
+			''
+		),
+	],
+};
+
+<!-- Hard, would recommend skipping (1700 on CF) -->
+<!-- Hard, do not attempt until Gold/Plat (2100 on CF) -->
+<!-- First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF) -->
+
+<Resources>
+	<Resource source="IUSACO" title="4.3 - Sets & Maps">
+		module is based off this
+	</Resource>
+	<Resource source="CP2" title="2.2.2 - Non-Linear Data Structures">
+		see decription of BSTs and heaps
+	</Resource>
+</Resources>
+
+<br />
+
+In ordered sets and maps, accessing or removing the next key higher or lower than some input `k` is also supported.
+
+
+## Using Iterators
+
+In Bronze, we avoided discussion of any set operations involving iterators.
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource source="CPH" title="4.4 - Set Iterators" starred></Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+In Java, iterators are helpful for looping through sets.
+
+Iterators used with `HashSet` would yield the elements in random order:
+```java
+Set<Integer> set = new HashSet<Integer>();
+set.add(1); set.add(3); set.add(0); set.add(-2);
+Iterator it = set.iterator();
+while(it.hasNext()){
+   Integer i = (Integer)it.next();
+   System.out.print(i + " "); // returns 0 1 -2 3
+}
+```
+But with `TreeSet` the elements are in sorted order:
+```java
+Set<Integer> set = new TreeSet<Integer>();
+set.add(1); set.add(3); set.add(0); set.add(-2);
+Iterator it = set.iterator();
+while(it.hasNext()){
+   Integer i = (Integer)it.next();
+   System.out.print(i + " "); // returns -2 0 1 3
+}
+```
+
+Instead of creating an iterator and looping with it like in C++, Java provides a for-each loop which creates a hidden iterator and loops with it automatically:
+```java
+Set<Integer> set = new TreeSet<Integer>();
+set.add(1); set.add(3); set.add(0); set.add(-2);
+for (int i : set){
+   System.out.print(i + " "); // returns -2 0 1 3
+}
+```
+<Warning>
+
+You shouldn't modify sets when traversing it with set iterators like in any other iterators for Collections (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling a `next()` method.
+
+</Warning>
+
+</JavaSection>
+
+</LanguageSection>
+
+## Ordered Sets
+
+<LanguageSection>
+
+<CPPSection>
+
+The ordered `set` also allows:
+
+- `lower_bound`: returns an iterator to the least element greater than or equal to some element `k`
+- `upper_bound`: returns an iterator to the least element strictly greater than some element `k`.
+
+```cpp
+set<int> s;
+s.insert(1); // [1]
+s.insert(14); // [1, 14]
+s.insert(9); // [1, 9, 14]
+s.insert(2); // [1, 2, 9, 14]
+cout << *s.upper_bound(7) << '\n'; // 9
+cout << *s.upper_bound(9) << '\n'; // 14
+cout << *s.lower_bound(5) << '\n'; // 9
+cout << *s.lower_bound(9) << '\n'; // 9
+cout << *s.begin() << '\n'; // 1
+auto it = s.end();
+cout << *(--it) << '\n'; // 14
+s.erase(s.upper_bound(6)); // [1, 2, 14]
+```
+
+<Warning>
+
+Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`, which was the syntax that we used for vectors in the prerequisite module. This will still output the expected results, but its time complexity is linear in the size of the set `s` rather than logarithmic, so make sure to avoid it!
+
+</Warning>
+
+</CPPSection>
+
+<JavaSection>
+
+The ordered set (TreeSet) allows for a multitude of additional operations: 
+
+- `first()`: returns the lowest element in the set
+- `last()`: returns the greatest element in the set
+- `lower(E v)`: returns the greatest element strictly less than `v`
+- `floor(E v)`: returns the greatest element less than or equal to `v`
+- `higher(E v)`: returns the least element strictly greater than `v`
+- `ceiling(E v)`: returns the least element greater than or equal to `v`
+
+```java
+TreeSet<Integer> set = new TreeSet<Integer>();
+set.add(1); // [1]
+set.add(14); // [1, 14]
+set.add(9); // [1, 9, 14]
+set.add(2); // [1, 2, 9, 14]
+System.out.println(set.higher(7)); // 9
+System.out.println(set.higher(9)); // 14
+System.out.println(set.lower(5)); // 2
+System.out.println(set.first()); // 1
+System.out.println(set.last()); // 14
+set.remove(set.higher(6)); // [1, 2, 14]
+System.out.println(set.higher(23); // ERROR, no such element exists
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
+
+## Ordered Maps
+
+<LanguageSection>
+
+<CPPSection>
+
+The ordered `map` also allows:
+
+- `lower_bound`: returns the iterator pointing to the lowest entry not less than the specified key
+- `upper_bound`: returns the iterator pointing to the lowest entry strictly greater than the specified key respectively.
+
+```cpp
+map<int, int> m;
+m[3] = 5; // [(3, 5)]
+m[11] = 4; // [(3, 5); (11, 4)]
+m[10] = 491; // [(3, 5); (10, 491); (11, 4)]
+cout << m.lower_bound(10)->first << " " << m.lower_bound(10)->second << '\n'; // 10 491
+cout << m.upper_bound(10)->first << " " << m.upper_bound(10)->second << '\n'; // 11 4
+m.erase(11); // [(3, 5); (10, 491)]
+if (m.upper_bound(10) == m.end())
+{
+    cout << "end" << endl; // Prints end
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+The ordered map additionally supports `firstKey` / `firstEntry` and `lastKey` / `lastEntry`, returning the lowest key/entry and the highest key/entry, as well as `higherKey` / `higherEntry` and `lowerKey` / `lowerEntry`, returning the lowest key/entry strictly higher than the specified key, or the highest key/entry strictly lower than the specified key.
+
+```java
+TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
+map.put(3, 5); // [(3, 5)]
+map.put(11, 4); // [(3, 5); (11, 4)]
+map.put(10, 491); // [(3, 5); (10, 491); (11, 4)]
+System.out.println(map.firstKey()); // 3
+System.out.println(map.firstEntry()); // (3, 5)
+System.out.println(map.lastEntry()); // (11, 4)
+System.out.println(map.higherEntry(4)); // (10, 491)
+map.remove(11); // [(3, 5); (10, 491)]
+System.out.println(map.lowerKey(4)); // 3
+System.out.println(map.lowerKey(3)); // ERROR
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Multisets
+
+A **multiset** is a sorted set that allows multiple copies of the same element.
+
+<LanguageSection>
+
+<CPPSection>
+
+In addition to all of the regular set operations,
+
+- the `count()` method returns the number of times an element is present in the multiset. However, this method takes time **linear** in the number of matches so you shouldn't use it in a contest.
+- If you want to remove a value _once_, make sure to use `multiset.erase(multiset.find(val))` rather than `multiset.erase(val)`. The latter will remove _all_ instances of `val`.
+
+```cpp
+multiset<int> ms;
+ms.insert(1); // [1]
+ms.insert(14); // [1, 14]
+ms.insert(9); // [1, 9, 14]
+ms.insert(2); // [1, 2, 9, 14]
+ms.insert(9); // [1, 2, 9, 9, 14]
+ms.insert(9); // [1, 2, 9, 9, 9, 14]
+cout << ms.count(4) << '\n'; // 0
+cout << ms.count(9) << '\n'; // 3
+cout << ms.count(14) << '\n'; // 1
+ms.erase(ms.find(9));
+cout << ms.count(9) << '\n'; // 2
+ms.erase(9);
+cout << ms.count(9) << '\n'; // 0
+```
+
+</CPPSection>
+
+<JavaSection>
+
+While there is no multiset in Java, we can implement one using the `TreeMap` from values to their respective frequencies. We declare the `TreeMap` implementation globally so that we can write functions for adding and removing elements from it. The `first`, `last`, `higher`, and `lower` operations still function as intended; just use `firstKey`, `lastKey`, `higherKey`, and `lowerKey` respectively.
+
+```java
+static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
+
+public static void main(String[] args){
+    ...
+}
+
+static void add(int x){
+    if(multiset.containsKey(x)){
+        multiset.put(x, multiset.get(x) + 1);
+    } else {
+        multiset.put(x, 1);
+    }
+}
+
+static void remove(int x){
+    multiset.put(x, multiset.get(x) - 1);
+    if(multiset.get(x) == 0){
+        multiset.remove(x);
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Priority Queues
+
+<Warning>
+
+Priority queues are **not** implemented in the same way as sets and multisets, but they are included in this section because the operations that they perform can also be performed with sets.
+
+</Warning>
+
+<Resources>
+	<Resource source="CSA" url="heaps" title="Heaps"></Resource>
+</Resources>
+
+A **priority queue** (or **heap**) supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue. Priority queues are simpler and faster than sets, so you should use them instead whenever possible.
+
+<LanguageSection>
+
+<CPPSection>
+
+### [C++](http://www.cplusplus.com/reference/queue/priority_queue/)
+
+```cpp
+priority_queue<int> pq;
+pq.push(7); // [7]
+pq.push(2); // [2, 7]
+pq.push(1); // [1, 2, 7]
+pq.push(5); // [1, 2, 5, 7]
+cout << pq.top() << endl; // 7
+pq.pop(); // [1, 2, 5]
+pq.pop(); // [1, 2]
+pq.push(6); // [1, 2, 6]
+```
+
+</CPPSection>
+
+<JavaSection>
+
+### Java
+
+In Java, we delete and retrieve the element of **lowest** rather than highest priority.
+
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+pq.add(7); // [7]
+pq.add(2); // [7, 2]
+pq.add(1); // [7, 2, 1]
+pq.add(5); // [7, 5, 2, 1]
+System.out.println(pq.peek()); // 1
+pq.poll(); // [7, 5, 2]
+pq.poll(); // [7, 5]
+pq.add(6); // [7, 6, 5]
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Introductory Problems
+
+<Problems problems={problems.standard} />
+
+## Harder Example - Bit Inversions
+
+<FocusProblem problem={problems.sample[0]} />
+
+### Solution
+
+We'll use iterators extensively.
+
+<Spoiler title="Solution">
+
+Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the elements of `dif` are $0=dif_1<dif_2<\cdots<dif_k=n$, then the longest length is equal to
+
+$$
+\max(dif_2-dif_1,dif_3-dif_2,\ldots,dif_k-dif_{k-1}).
+$$
+
+We can store each of these differences in a multiset `ret`; after each inversion, we'll need to output the maximum element of `ret`.
+
+Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into `dif` if it not currently present or removing `x` if it is, and then doing the same with `x+1`. Whenever we insert or remove an element of `dif`, we should update `ret` accordingly.
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (x).size()
+
+string s;
+int m;
+set<int> dif;
+multiset<int> ret;
+
+void modify(int x) {
+	if (x == 0 || x == sz(s)) return;
+	auto it = dif.find(x);
+	if (it != end(dif)) { // x is currently present in dif, remove it
+		int a = *prev(it), b = *next(it);
+		ret.erase(ret.find(x-a)), ret.erase(ret.find(b-x)); // update ret
+		ret.insert(b-a);
+		dif.erase(it); // remove x from dif
+	} else { // x is not currently in dif, insert it
+		it = dif.insert(x).first; // insert x into dif
+		// it = iterator corresponding to x
+		int a = *prev(it), b = *next(it);
+		ret.erase(ret.find(b-a)); // update ret
+		ret.insert(x-a), ret.insert(b-x);
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> s >> m;
+	dif.insert(0); dif.insert(sz(s));
+	for (int i = 0; i < sz(s)-1; ++i)
+		if (s[i] != s[i+1]) dif.insert(i+1); // initialize dif
+	for (auto it = dif.begin(); next(it) != dif.end(); it ++)
+		ret.insert(*next(it)-*it); // initialize ret
+	for (int i = 0; i < m; ++i) {
+		int x; cin >> x; // 1-indexed position
+		modify(x-1); modify(x);
+		cout << *ret.rbegin() << " ";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+Java solutions are too slow for the CSES. Use C++ instead to get AC.
+
+</Warning>
+
+```java
+
+import java.io.*; 
+import java.util.*; 
+ 
+class BitInversion{
+   public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
+   public static String s;
+   public static int m;
+   public static TreeSet<Integer> dif = new TreeSet<Integer>();
+   
+   public static void modify(int x){
+      if(x == 0 || x == s.length()) return;
+      if(dif.contains(x)){ // x is currently present in dif, remove it
+         int a = dif.lower(x), b = dif.higher(x);
+         remove(x-a); remove(b-x); // update ret
+         add(b-a);
+         dif.remove(x); // remove x from dif
+      }
+      else{
+        dif.add(x); // insert x into dif
+        int a = dif.lower(x), b = dif.higher(x);
+        remove(b-a); // update ret
+        add(x-a); add(b-x);
+      }
+   }
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      s = sc.readLine();
+      m = Integer.parseInt(sc.readLine());
+      dif.add(0); dif.add(s.length());
+      for (int i = 0; i < s.length() -1; i++){
+         if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+      }
+      for (int it : dif){
+         if(dif.higher(it) != null) add(dif.higher(it) - it); // initialize ret
+      }
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      for (int i = 0; i < m; i++){
+         int x = Integer.parseInt(st.nextToken()); // 1-indexed position
+         modify(x-1); modify(x);
+         out.println(ret.lastKey());
+      }
+      out.close();
+   }
+   
+   static void add(int x){
+      if(ret.containsKey(x)){
+         ret.put(x, ret.get(x) + 1);
+      } else {
+         ret.put(x, 1);
+      }
+   }
+
+   static void remove(int x){
+      ret.put(x, ret.get(x) - 1);
+      if(ret.get(x) == 0){
+         ret.remove(x);
+      }
+   }
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+<br />
+
+Note that multiset has a high constant factor, so replacing `ret` with a priority queue and an array that stores the number of times each integer occurs in the priority queue reduces the runtime by a factor of 2.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (int)(x).size()
+
+string s;
+int m;
+set<int> dif;
+priority_queue<int> ret;
+int cnt[200005];
+
+void ad(int x) { cnt[x] ++; ret.push(x);  }
+void modify(int x) {
+	if (x == 0 || x == sz(s)) return;
+	auto it = dif.find(x);
+	if (it != end(dif)) {
+		int a = *prev(it), b = *next(it); dif.erase(it);
+		cnt[x-a] --, cnt[b-x] --; ad(b-a);
+	} else {
+		it = dif.insert(x).first;
+		int a = *prev(it), b = *next(it);
+		cnt[b-a] --, ad(x-a), ad(b-x);
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> s >> m;
+	dif.insert(0); dif.insert(sz(s));
+	for (int i = 0; i < sz(s)-1; ++i)
+		if (s[i] != s[i+1]) dif.insert(i+1);
+	for (auto it = dif.begin(); next(it) != dif.end(); it ++)
+		ad(*next(it)-*it);
+	for (int i = 0; i < m; ++i) {
+		int x; cin >> x;
+		modify(x-1); modify(x);
+		while (!cnt[ret.top()]) ret.pop();
+		// pop elements that should no longer be present in priority queue
+		cout << ret.top() << " ";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.io.*; 
+import java.util.*; 
+ 
+class BitInversion{
+   public static PriorityQueue<Integer> pq = new PriorityQueue<Integer>(Collections.reverseOrder());
+   public static String s;
+   public static int m;
+   public static TreeSet<Integer> dif = new TreeSet<Integer>();
+   public static int cnt[];
+   public static void add(int x){
+      cnt[x]++;
+      pq.add(x);
+   }
+   public static void modify(int x){
+      if(x == 0 || x == s.length()) return;
+      if(dif.contains(x)){ // x is currently present in dif, remove it
+         int a = dif.lower(x), b = dif.higher(x);
+         cnt[x-a]--; cnt[b-x]--; // update ret
+         add(b-a);
+         dif.remove(x); // remove x from dif
+      }
+      else{
+        dif.add(x); // insert x into dif
+        int a = dif.lower(x), b = dif.higher(x);
+        cnt[b-a]--; // update ret
+        add(x-a); add(b-x);
+      }
+   }
+   public static void main(String[] args) throws IOException
+   {
+      BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+      PrintWriter out = new PrintWriter(System.out);
+      s = sc.readLine();
+      m = Integer.parseInt(sc.readLine());
+      cnt = new int[s.length()+1];
+      dif.add(0); dif.add(s.length());
+      for (int i = 0; i < s.length() -1; i++){
+         if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
+      }
+      for (int it : dif){
+         if(dif.higher(it) != null){ 
+            add(dif.higher(it) - it);
+         }
+      }
+      StringTokenizer st = new StringTokenizer(sc.readLine());
+      for (int i = 0; i < m; i++){
+         int x = Integer.parseInt(st.nextToken()); // 1-indexed position
+         modify(x-1); modify(x);
+         while(cnt[pq.peek()] == 0) pq.poll();
+         // pop elements that should no longer be present in priority queue
+         out.println(pq.peek());
+      }
+      out.close();
+   }
+   
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Harder Problems
+
+<Problems problems={problems.general} />

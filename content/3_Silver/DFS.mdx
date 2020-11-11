@@ -1,0 +1,295 @@
+---
+id: dfs
+title: Depth First Search (DFS)
+author: Siyong Huang
+prerequisites:
+  - intro-graphs
+  - complete-rec
+description: 'Recursively traversing a graph.'
+frequency: 4
+---
+
+
+
+export const problems = {
+	sample: [
+		new Problem('CSES', 'Building Roads', '1666', 'Easy', false, ['DFS'], '@B'),
+	],
+	general: [
+		new Problem('Silver', 'Closing the Farm', '644', 'Easy', false, ['DFS']),
+		new Problem('Silver', 'Moocast', '668', 'Easy', true, ['DFS'], 'usaco-668'),
+		new Problem('Silver', 'Fence Planning', '944', 'Easy', true, ['DFS']),
+		new Problem(
+			'Silver',
+			'Mootube',
+			'788',
+			'Easy',
+			true,
+			['Tree', 'DFS'],
+			'usaco-788'
+		),
+		new Problem(
+			'Kattis',
+			'Birthday Party',
+			'birthday',
+			'Easy',
+			false,
+			['DFS'],
+			'kattis-birthday'
+		),
+		new Problem('Silver', 'Moo Particle', '1040', 'Normal', false, ['Sorting']),
+		new Problem(
+			'Gold',
+			'Moocast',
+			'669',
+			'Normal',
+			false,
+			['DFS', 'Binary Search'],
+			'usaco-669'
+		),
+		new Problem(
+			'Silver',
+			'Wormhole Sort',
+			'992',
+			'Normal',
+			true,
+			['DFS', 'Binary Search'],
+			'usaco-992'
+		),
+		new Problem(
+			'Kattis',
+			'Lane Switching',
+			'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+			'Very Hard',
+			false,
+			['DFS', 'Binary Search'],
+			'kattis-laneswitching'
+		),
+	],
+	other: [
+		new Problem(
+			'CSES',
+			'Flight Routes Check',
+			'1682',
+			'Easy',
+			true,
+			[],
+			'cses-1682'
+		),
+		new Problem(
+			'CCO',
+			'Escape Room',
+			'ccc20s2',
+			'Normal',
+			false,
+			[],
+			'ccc-20-escape'
+		),
+		new Problem('Silver', 'Snow Boots', '811', 'Hard', false, [], ''),
+	],
+};
+
+<!--
+new Problem(
+	'CF',
+	'Bear & Friendship',
+	'contest/771/problem/A',
+	'Easy',
+	false,
+	['DFS']
+),
+new Problem("CSA", "Tree Reconstruction", "tree-construct", "Hard", false, ["Tree", "DFS"], "several cases"),
+
+not a good example
+-->
+
+<!-- 	<Resource source="IUSACO" title="10.4 - DFS">
+		code + example
+	</Resource>
+	<Resource source="PAPS" title="12.2 - DFS">
+		pseudocode + example + code
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
+	></Resource> -->
+
+## DFS in Undirected Graphs
+
+<Resources>
+	<Resource
+		source="CSA"
+		title="Depth First Search"
+		url="depth_first_search"
+		starred
+	>
+		up to but not including "More about DFS"
+	</Resource>
+	<Resource source="CPH" title="12.1 - DFS">
+		example diagram + code
+	</Resource>
+</Resources>
+
+A **connected component** is a maximal set of connected nodes in an undirected graph. In other words, two nodes are in the same connected component _if and only if_ they can reach each other via edges in the graph.
+
+<FocusProblem problem={problems.sample[0]} />
+
+For example, the goal of this problem above is to add edges such that the entire graph is a single connected component.
+
+<!-- oops
+
+   <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
+   <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
+   <Resource source="TC" title="Graphs Section 2" url="introduction-to-graphs-and-their-data-structures-section-2"></Resource>
+
+-->
+
+### Solution - Building Roads
+
+<Spoiler title="Solution">
+
+Note that each edge can connect at most two connected components, reducing the overall count by one. Since this is always possible, you must add $C-1$ edges, where $C$ is the number of connected components in the graph.
+
+In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions. For example, pick a representative from each component and link them together in a line.
+
+<!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
+
+<!-- Iterate through each node. If it has not been visited, visit it and all other nodes in its component. The number of times we perform the visiting operation is the number of connected components. -->
+
+<LanguageSection>
+
+<CPPSection>
+
+<!-- Tested on CSES -->
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+const int MN = 1e5+10;
+
+int N, M, ans, rep[MN];
+std::vector<int> adj_list[MN];
+bool visited[MN];
+
+void dfs(int node)
+{
+	visited[node] = true;
+	for(int u:adj_list[node])
+		if(!visited[u])
+			dfs(u);
+}
+int count_components()
+{
+	int count=0;
+	for(int i=1;i<=N;++i)
+		if(!visited[i])
+		{
+			rep[count++]=i;
+			dfs(i);
+		}
+	return count;
+}
+
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i<M;++i)
+		scanf("%d%d", &u, &v), adj_list[u].push_back(v), adj_list[v].push_back(u);
+	ans = count_components();
+	printf("%d\n", ans-1);
+	for(int i=1;i<ans;++i)
+		printf("%d %d\n", rep[i-1], rep[i]);
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BuildingRoads
+{
+	static InputReader in = new InputReader(System.in); //Check General/IO
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 100010, MM = 200020;
+
+	static int N, M, ans;
+	static int[] rep = new int[MN], hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
+	static boolean[] visited = new boolean[MN];
+
+	public static void adde(int u, int v, int id)
+	{
+		nx[id] = hd[u];
+		hd[u] = id;
+		to[id] = v;
+	}
+	public static void dfs(int node)
+	{
+		visited[node] = true;
+		for(int id=hd[node], u;id!=-1;id=nx[id])
+		{
+			u=to[id];
+			if(!visited[u])
+				dfs(u);
+		}
+	}
+	public static int count_components()
+	{
+		int count=0;
+		for(int i=1;i<=N;++i)
+			if(!visited[i])
+			{
+				rep[count++]=i;
+				dfs(i);
+			}
+		return count;
+	}
+
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		M=in.nextInt();
+		for(int i=1;i<=N;++i) hd[i]=-1;
+		for(int i=0,u,v;i<M;++i)
+		{
+			u = in.nextInt();
+			v = in.nextInt();
+			adde(u, v, i*2);
+			adde(v, u, i*2+1);
+		}
+		ans = count_components();
+		out.println(ans-1);
+		for(int i=1;i<ans;++i)
+			out.println(rep[i-1] + " " + rep[i]);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+### Problems
+
+<Problems problems={problems.general} />
+
+## DFS in Directed Graphs
+
+<!-- Of course, we can also apply DFS in **directed** graphs. -->
+
+<Problems problems={problems.other} />

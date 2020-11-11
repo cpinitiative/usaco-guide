@@ -1,0 +1,64 @@
+---
+id: usaco-667
+title: USACO December 2016 Silver - Cities & States
+author: Benjamin Qi
+---
+
+[Official Editorial (Java)](http://www.usaco.org/current/data/sol_citystate_silver_dec16.html)
+
+<LanguageSection>
+
+<JavaSection>
+</JavaSection>
+
+<CPPSection>
+
+As the editorial mentions, we can store the number of times a given four-letter string appears in a `map`.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$ with `map`, $\mathcal{O}(N)$ with `unordered_map`.
+
+```cpp
+int main() {
+	setIO("citystate");
+	int N; re(N);
+	map<str,int> cnt;
+	ll ans = 0;
+	F0R(i,N) {
+		str city, state; re(city,state);
+		city = city.substr(0,2);
+		if (city != state) ans += cnt[state+city];
+		cnt[city+state] ++;
+	}
+	ps(ans);
+}
+```
+
+A faster solution is to convert each string into an integer in the range $[0,26^4)$ and use an array instead of a map.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```cpp
+int cnt[26*26*26*26];
+
+int index(str s) {
+	int res = 0; trav(c,s) res = 26*res+c-'A';
+	return res;
+}
+
+int main() {
+	setIO("citystate");
+	int N; re(N);
+	ll ans = 0;
+	F0R(i,N) {
+		str city, state; re(city,state);
+		city = city.substr(0,2);
+		if (city != state) ans += cnt[index(state+city)];
+		cnt[index(city+state)] ++;
+	}
+	ps(ans);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

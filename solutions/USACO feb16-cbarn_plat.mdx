@@ -1,0 +1,96 @@
+---
+id: usaco-626
+title: USACO February 2016 Platinum - Circular Barn
+author: Benjamin Qi
+---
+
+[Official Editorial](http://www.usaco.org/index.php?page=viewproblem2&cpid=626)
+
+**Time Complexity:** $\mathcal{O}(N^2K)$
+
+```cpp
+/**
+ * Description: LineContainer assuming both slopes and queries monotonic.
+ * Time: O(1)
+ * Source: Own
+ */
+
+using T = ll; // ll or db
+db fdiv(db a, db b) { return a/b; } // for doubles just divide normally
+// for lls do floored division
+
+const T inf = LLONG_MAX; bool _Q;
+struct Line { // a and b -> slope and y-intercept 
+	mutable T a, b, lst; // lst can change
+	/// friend str ts(const Line& L) { return ts(vl{L.a,L.b,L.lst}); }
+	T eval(T x) const { return a*x+b; }
+	bool operator<(const Line& y) const { return _Q?lst<y.lst:a<y.a; }
+	T bet(const Line& y) const { assert(a <= y.a);
+		return a == y.a ? (b >= y.b ? inf : -inf) : fdiv(b-y.b,y.a-a); }
+};
+
+struct LCdeque : deque<Line> { 
+	void addBack(Line L) { // assume nonempty
+		while (1) {
+			auto a = bk; pop_back(); a.lst = a.bet(L);
+			if (size() && bk.lst >= a.lst) continue;
+			pb(a); break;
+		}
+		L.lst = inf; pb(L);
+	}
+	void addFront(Line L) {
+		while (1) {
+			if (!size()) { L.lst = inf; break; }
+			if ((L.lst = L.bet(ft)) >= ft.lst) pop_front();
+			else break;
+		}
+		push_front(L);
+	}
+	void add(ll a, ll b) { // line goes to one end of deque
+		a *= -1, b *= -1;
+		if (!size() || a <= ft.a) addFront({a,b,0});
+		else assert(a >= bk.a), addBack({a,b,0});
+	}
+	int ord = 0; // 1 = increasing, -1 = decreasing
+	ll query(ll x) { 
+		assert(ord);
+		if (ord == 1) { 
+			while (ft.lst < x) pop_front();
+			return ft.eval(x);
+		} else {
+			while(size()>1&&prev(prev(end()))->lst>=x)pop_back();
+			return bk.eval(x);
+		}
+	}	
+};
+
+int n,k;
+ll ans = INF;
+vi r;
+ll dp[1001],pre[1001],PRE[1001];
+
+void upd() {
+	LCdeque L; L.ord = 1;
+	F0R(i,n+1) {
+		if (dp[i] != MOD) L.add(-pre[i],dp[i]+PRE[i]);
+		dp[i] = -L.query(i)+i*pre[i]-PRE[i];
+	}
+}
+
+int main() {
+	setIO("cbarn");
+	re(n,k); r.rsz(n); re(r); ckmin(k,n);
+	reverse(all(r));
+	F0R(i,n) {
+		FOR(j,1,n+1) {
+			pre[j] = pre[j-1]+r[j-1];
+			PRE[j] = PRE[j-1]+j*r[j-1];
+		}
+		F0R(j,n+1) dp[j] = MOD;
+		dp[0] = 0; F0R(j,k) upd();
+		ckmin(ans,dp[n]);
+		rotate(begin(r),1+all(r));
+	}
+	ps(ans);
+}
+```

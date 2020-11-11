@@ -1,0 +1,403 @@
+---
+id: bfs
+title: 'Breadth First Search (BFS)'
+author: Benjamin Qi, Michael Cao
+prerequisites:
+  - dfs
+  - ff
+description: 'Traversing a graph in a way such that vertices closer to the starting vertex are processed first.'
+frequency: 2
+---
+
+<!-- NOTE: general problems were RANDOMLY STARRED. please review! -->
+
+export const problems = {
+	sample: [
+		new Problem('CSES', 'Message Route', '1667', 'Easy', false, ['BFS']),
+	],
+	general: [
+		new Problem('CSES', 'Labyrinth', '1193', 'Easy', true, ['BFS'], 'cses-1193'),
+		new Problem('CSES', 'Monsters', '1194', 'Easy', false, ['BFS']),
+		new Problem(
+			'CSES',
+			'Graph Girth',
+			'1707',
+			'Normal',
+			true,
+			['Cycle'],
+			'cses-1707'
+		),
+		new Problem('CSA', 'BFS-DFS', 'bfs-dfs', 'Normal', false, ['BFS', 'DFS']),
+		new Problem(
+			'Silver',
+			'Milk Pails',
+			'620',
+			'Easy',
+			false,
+			['BFS'],
+			'There is an easier solution in XYK time, but you can use BFS to solve it in XY time.'
+		),
+		new Problem('Gold', 'Lasers', '671', 'Normal', true, ['BFS']),
+		new Problem('Gold', 'Cow At Large', '790', 'Normal', false, [], ''),
+		new Problem(
+			'Old Silver',
+			"What's Up With Gravity?",
+			'282',
+			'Normal',
+			false,
+			['BFS'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Cow Navigation',
+			'695',
+			'Hard',
+			true,
+			['BFS'],
+			'usaco-695'
+		),
+		new Problem('Gold', "Bessie's Dream", '575', 'Hard', false, ['BFS']),
+		new Problem('Gold', 'A Pie for a Pie', '765', 'Very Hard', false, [], ''),
+	],
+};
+
+## Queues & Deques
+
+<Resources>
+	<Resource source="CPH" title="4.5 - Queues, Deques"></Resource>
+	<Resource source="PAPS" title="3.2, 6.3 - Queues"></Resource>
+</Resources>
+
+### Queues
+
+A queue is a First In First Out (FIFO) data structure that supports three operations, all in $O(1)$ time.
+
+<LanguageSection>
+
+<CPPSection>
+
+#### [C++](http://www.cplusplus.com/reference/queue/queue/)
+
+- `push`: insertion at the back of the queue
+- `pop`: deletion from the front of the queue
+- `front`: which retrieves the element at the front without removing it.
+
+```cpp
+queue<int> q;
+q.push(1); // [1]
+q.push(3); // [3, 1]
+q.push(4); // [4, 3, 1]
+q.pop(); // [4, 3]
+cout << q.front() << endl; // 3
+```
+
+</CPPSection>
+
+<JavaSection>
+
+#### Java
+
+- `add`: insertion at the back of the queue
+- `poll`: deletion from the front of the queue
+- `peek`: which retrieves the element at the front without removing it
+
+Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
+
+```java
+Queue<Integer> q = new LinkedList<Integer>();
+q.add(1); // [1]
+q.add(3); // [3, 1]
+q.add(4); // [4, 3, 1]
+q.poll(); // [4, 3]
+System.out.println(q.peek()); // 3
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Deques
+
+A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
+
+<LanguageSection>
+
+<CPPSection>
+
+#### [C++](http://www.cplusplus.com/reference/deque/deque/)
+
+The four methods for adding and removing are `push_back`, `pop_back`, `push_front`, and `pop_front`.
+
+```cpp
+deque<int> d;
+d.push_front(3); // [3]
+d.push_front(4); // [4, 3]
+d.push_back(7); // [4, 3, 7]
+d.pop_front(); // [3, 7]
+d.push_front(1); // [1, 3, 7]
+d.pop_back(); // [1, 3]
+```
+
+You can also access deques in constant time like an array in constant time with the `[]` operator. For example, to access the element $\texttt{i}$ for some deque $\texttt{dq}$, do $\texttt{dq[i]}$.
+
+</CPPSection>
+
+<JavaSection>
+
+#### Java
+
+In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+
+```java
+ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
+deque.addFirst(3); // [3]
+deque.addFirst(4); // [4, 3]
+deque.addLast(7); // [4, 3, 7]
+deque.removeFirst(); // [3, 7]
+deque.addFirst(1); // [1, 3, 7]
+deque.removeLast(); // [1, 3]
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Breadth First Search
+
+<FocusProblem problem={problems.sample[0]} />
+
+### Resources
+
+<Resources>
+	<Resource source="CSA" title="BFS" url="breadth_first_search" starred>
+		interactive, implementation
+	</Resource>
+	<Resource source="PAPS" title="12.1 - BFS">
+		grid, 8-puzzle examples
+	</Resource>
+	<Resource source="cp-algo" title="BFS" url="graph/breadth-first-search.html">
+		common applications
+	</Resource>
+	<Resource
+		source="KA@KhanAcademy"
+		title="BFS and its uses"
+		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
+	></Resource>
+</Resources>
+
+<!-- <Resource source="CPH" title="12.2 - Breadth-First Search">example, implementation</Resource>
+<Resource source="cp-algo" title="" url="graph/01_bfs.html"></Resource>
+<Resource
+	source="IUSACO"
+	title="10.4 - Graph Traversal Algorithms"
+></Resource>
+<Resource source="CP2" title="4.2.2 - BFS">
+	{' '}
+</Resource> -->
+
+### Solution - Message Route
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int n,m, dist[MX], pre[MX];
+vi adj[MX];
+ 
+int main() {
+	setIO(); re(n,m);
+	F0R(i,m) {
+		int a,b; re(a,b);
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	FOR(i,2,n+1) dist[i] = MOD;
+	queue<int> q; q.push(1);
+	while (sz(q)) {
+		int x = q.front(); q.pop();
+		trav(t,adj[x]) if (dist[t] == MOD) {
+			dist[t] = dist[x]+1; pre[t] = x;
+			q.push(t);
+		}
+	}
+	if (dist[n] == MOD) ps("IMPOSSIBLE");
+	else {
+		ps(dist[n]+1);
+		vi v{n}; while (v.back() != 1) v.pb(pre[v.back()]);
+		reverse(all(v));
+		trav(t,v) pr(t,' ');
+	}
+}
+```
+
+<!-- 
+From the CSA article:
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <queue>
+using namespace std;
+const int MAX_N = 100005;
+
+vector<int> graph[MAX_N];
+int dist[MAX_N];
+bool visited[MAX_N];
+
+void bfs(int startNode) {
+    dist[startNode] = 0;
+    queue<int> bfsQueue;
+    bfsQueue.push(startNode);
+    visited[startNode] = true;
+    while (!bfsQueue.empty()) {
+        int currentNode = bfsQueue.front();
+        bfsQueue.pop();
+        for (auto neighbour: graph[currentNode]) {
+            if (!visited[neighbour]) {
+                visited[neighbour] = true;
+                dist[neighbour] = dist[currentNode] + 1;
+                bfsQueue.push(neighbour);
+            }
+        }
+    }
+}
+
+int main() {
+    int N, M, v, x, y;
+    cin >> N >> M >> v;
+    for (int i = 1; i <= M; i += 1) {
+        cin >> x >> y;
+        graph[x].push_back(y);
+    }
+    for (int i = 1; i <= N; i += 1) {
+        dist[i] = -1;
+    }
+    bfs(v);
+    for (int i = 1; i <= N; i += 1) {
+        cout << dist[i] << " ";
+    }
+    return 0;
+}
+``` -->
+
+</CPPSection>
+
+<!-- 
+<JavaSection>
+
+Implementation of the CSAcademy article's problem in Java:
+
+<br />
+
+```java
+import java.util.*;
+import java.io.*;
+
+class Main {
+
+    static ArrayList<Integer> edges[];
+    static int dist[];
+    static boolean visited[];
+
+    static void bfs(int startNode) {
+        Queue<Integer> q = new ArrayDeque<Integer>(); // You can choose any implementation
+        // of Queue (such as LinkedList), though I believe ArrayDeque is faster (?)
+        q.add(startNode);
+        visited[startNode] = true;
+        dist[startNode] = 0;
+
+        while(!q.isEmpty()) {
+            int currentNode = q.poll();
+
+            for(int adj : edges[currentNode]) {
+                if(!visited[adj]) {
+                    visited[adj] = true;
+                    dist[adj] = dist[currentNode]+1;
+                    q.add(adj);
+                }
+            }
+        }
+    }
+
+    public static void main (String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		int start = Integer.parseInt(st.nextToken());
+		start--;
+
+		edges = new ArrayList[N];
+		dist = new int[N];
+		visited = new boolean[N];
+		for(int i = 0; i < N; i++) {
+		    edges[i] = new ArrayList<Integer>();
+		    dist[i] = -1;
+		}
+
+		for(int i = 0; i < M; i++) {
+		    st = new StringTokenizer(br.readLine());
+		    int a = Integer.parseInt(st.nextToken());
+		    int b = Integer.parseInt(st.nextToken());
+		    a--; b--;
+		    edges[a].add(b);
+		}
+
+		bfs(start);
+
+		PrintWriter pw = new PrintWriter(System.out);
+
+		for(int i : dist) pw.print(i + " ");
+	    pw.println();
+	    pw.close();
+	}
+}
+``` 
+
+</JavaSection>
+-->
+
+</LanguageSection>
+
+<Info title="Pro Tip">
+
+In the gold division, the problem statement will almost never directly be, "Given an unweighted graph, find the shortest path between node $u$ and $v$." Instead, the difficulty in many BFS problems are converting the problem into a graph on which we can run BFS and get the answer.
+
+</Info>
+
+## 0/1 BFS
+
+A 0/1 BFS finds the shortest path in a graph where the weights on the edges can only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the resource below for an explanation of how the algorithm works.
+
+<Resources>
+	<Resource source="cp-algo" title="0-1 BFS" url="graph/01_bfs.html">
+		common applications
+	</Resource>
+</Resources>
+
+<IncompleteSection>
+
+straightforward example
+
+</IncompleteSection>
+
+<!-- Sometimes, when a Dijkstra runs too slowly, you need to use a 0/1 BFS instead.  -->
+
+<!-- ### Example: What's Up With Gravity?
+
+<FocusProblem problem={problems.grav[0]} />
+
+In this problem, let's connect two cells $(u, v)$ in the grid if you can reach $v$ from $u$ by flipping gravity, going left, or going right. Also, we should only store cells where CB doesn't fall in the direction of gravity.
+
+Now, we're given a weighted graph and we need to find the shortest path. Since the edge weights on the graph are only 1 if we change gravity and 0 otherwise, we can run a 0/1 BFS.  -->
+
+<!-- which runs much faster than Dijkstra's algorithm.
+ -->
+## Problems
+
+<Problems problems={problems.general} />
+

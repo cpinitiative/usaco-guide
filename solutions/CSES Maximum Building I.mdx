@@ -1,0 +1,111 @@
+---
+id: cses-1147
+title: CSES - Maximum Building I
+author: Benjamin Qi
+---
+
+<Spoiler title="Hint">
+
+Fix the bottom row of the rectangle. Then apply the solution for "Max Histogram Area."
+
+</Spoiler>
+
+<Spoiler title="Solution 1">
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+For a fixed bottom row, iterate from left to right and use a stack.
+
+```cpp
+int N,M;
+
+int main() {
+	setIO(); re(N,M);
+	vs G(N); re(G);
+	vi hei(M+1);
+	int ans = 0;
+	auto check = [&]() {
+		vpi st{{-1,-1}};
+		F0R(i,M+1) {
+			int mn = i;
+			while (sz(st) && st.bk.s >= hei[i]) {
+				ckmax(ans,(i-st.bk.f)*st.bk.s);
+				mn = st.bk.f;
+				st.pop_back();
+			}
+			st.pb({mn,hei[i]});
+		}
+	};
+	F0R(i,N) {
+		F0R(j,M) {
+			if (G[i][j] == '*') hei[j] = 0;
+			else hei[j] ++;
+		}
+		check();
+	}
+	ps(ans);
+}
+```
+
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+For a fixed bottom row, iterate from top to bottom and use a DSU.
+
+```cpp
+template<int SZ> struct DSU {
+	int par[SZ], sz[SZ];
+	DSU() {
+		F0R(i,SZ) par[i] = -1, sz[i] = 1;
+	}
+	
+	int get(int x) { // path compression
+		if (par[x] != x) par[x] = get(par[x]);
+		return par[x];
+	}
+	
+	bool unite(int x, int y) { // union-by-rank
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (sz[x] < sz[y]) swap(x,y);
+		sz[x] += sz[y], par[y] = x;
+		return 1;
+	}
+};
+ 
+int n,m,cur[1000];
+char g[1000][1000];
+int ans = 0;
+ 
+void solve(int x) {
+	vi nex[m+1];
+	F0R(i,n) nex[cur[i]-x].pb(i);
+	DSU<1000> D;
+	R0F(i,m+1) for (int a: nex[i]) {
+		D.par[a] = a;
+		if (a > 0 && D.par[a-1] != -1) D.unite(a,a-1);
+		if (a < n-1 && D.par[a+1] != -1) D.unite(a,a+1);
+		ans = max(ans,i*D.sz[D.get(a)]);
+	}
+}
+ 
+int solve() {
+	F0R(i,n) cur[i] = m;
+	R0F(j,m) {
+		F0R(i,n) if (g[i][j] == '*') cur[i] = j;
+		solve(j);
+	}
+	return ans;
+}
+ 
+int main() {
+	setIO();
+	cin >> n >> m;
+	F0R(i,n) F0R(j,m) cin >> g[i][j];
+	cout << solve();
+}
+```
+</Spoiler>

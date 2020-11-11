@@ -1,0 +1,288 @@
+---
+id: bin-jump
+title: 'Binary Jumping'
+author: Benjamin Qi
+description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
+frequency: 3
+prerequisites:
+  - func-graphs
+---
+
+
+
+export const problems = {
+	sample: [
+		new Problem(
+			'CSES',
+			'Company Queries I',
+			'1687',
+			'Easy',
+			false,
+			['Binary Jumping'],
+			'@B'
+		),
+	],
+	lca: [
+		new Problem(
+			'CSES',
+			'Company Queries II',
+			'1688',
+			'Easy',
+			false,
+			['LCA'],
+			'@B'
+		),
+		new Problem(
+			'CSES',
+			'Distance Queries',
+			'1135',
+			'Easy',
+			false,
+			['LCA'],
+			'@B'
+		),
+	],
+	binJump: [
+		new Problem('CSES', 'Planets Queries I', '1750', 'Easy', false, [], ''),
+		new Problem(
+			'CSES',
+			'Planets Queries II',
+			'1160',
+			'Normal',
+			false,
+			['Func Graph'],
+			'cses-1160'
+		),
+		new Problem(
+			'POI',
+			'Frog',
+			'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+			'Normal',
+			false,
+			[],
+			'poi-frog'
+		),
+		new Problem(
+			'CF',
+			'Lynyrd Skynyrd',
+			'1142/problem/B',
+			'Normal',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'Baltic OI',
+			'2019 - Valley',
+			'https://oj.uz/problem/view/BOI19_valley',
+			'Normal',
+			false,
+			[],
+			'http://boi2019.eio.ee/wp-content/uploads/2019/05/valley.sol_.en-1.pdf'
+		),
+		new Problem(
+			'Baltic OI',
+			'2017 - Toll',
+			'https://oj.uz/problem/view/BOI17_toll',
+			'Normal',
+			false,
+			[],
+			'baltic-17-toll'
+		),
+		new Problem('Plat', '262144', '648', 'Hard', false, ['Binary Jumping'], ''),
+		new Problem(
+			'Baltic OI',
+			'2015 - Editor',
+			'https://oj.uz/problem/view/BOI15_edi',
+			'Very Hard',
+			false,
+			[],
+			'baltic-15-edi'
+		),
+	],
+	usaco: [
+		new Problem(
+			'Plat',
+			'Max Flow',
+			'576',
+			'Easy',
+			false,
+			['LCA'],
+			'First, split each path A-B into the 2 paths A-lca(A, B) and B-lca(A, B). We can then use a Fenwick tree to increment the values of each edge on those paths.'
+		),
+		new Problem('Plat', 'Disruption', '842', 'Normal', false, ['LCA'], ''),
+		new Problem('Plat', 'Tree Boxes', '948', 'Hard', false, ['LCA'], ''),
+		new Problem(
+			'Plat',
+			'Newbarns',
+			'817',
+			'Hard',
+			false,
+			['Diameter'],
+			'Copy of CF Brain Network "Hard": https://codeforces.com/contest/690/problem/C3'
+		),
+		new Problem('Plat', 'Gathering', '866', 'Hard', false, ['LCA'], ''),
+		new Problem('Plat', 'Exercise', '901', 'Very Hard', false, ['LCA'], ''),
+	],
+	general: [
+		new Problem(
+			'CF',
+			'Sloth Naptime',
+			'https://codeforces.com/gym/102694/problem/C',
+			'Easy',
+			false,
+			['BinJump'],
+			''
+		),
+		new Problem(
+			'CSES',
+			'Planets Queries II',
+			'1160',
+			'Normal',
+			false,
+			['LCA'],
+			'cses-1160'
+		),
+		new Problem(
+			'CF',
+			'Duff in the Army',
+			'588/problem/E',
+			'Normal',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem(
+			'Baltic OI',
+			'2017 - Railway',
+			'https://oj.uz/problem/view/BOI17_railway',
+			'Normal',
+			false,
+			[],
+			'baltic-17-railway'
+		),
+		new Problem(
+			'CF',
+			'MST for Each Edge',
+			'contest/609/problem/E',
+			'Normal',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem(
+			'CSA',
+			'Root LCA Queries',
+			'root-lca-queries',
+			'Normal',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Two Paths',
+			'contest/1000/problem/G',
+			'Normal',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem('DMOJ', 'Hot & Cold', 'bts17p7', 'Normal', false, ['LCA'], ''),
+		new Problem(
+			'TLX',
+			'Functional Constraint',
+			'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
+			'Hard',
+			false,
+			['LCA'],
+			''
+		),
+		new Problem(
+			'TLX',
+			'Graph & Destination',
+			'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
+			'Hard',
+			false,
+			['LCA'],
+			''
+		),
+	],
+};
+
+## Binary Jumping
+
+<FocusProblem problem={problems.sample[0]} />
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="18.1 - Finding Ancestors">
+		{' '}
+	</Resource>
+	<Resource source="AryanshS" title="Binary Lifting" url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1" />
+	<Resource source="SecondThread" title="Tree Basics - Binary Lifting" url="https://codeforces.com/blog/entry/81527"> </Resource>
+</Resources>
+
+### Solution
+
+<IncompleteSection />
+
+### Problems
+
+<Problems problems={problems.binJump} />
+
+## Lowest Common Ancestor
+
+<FocusProblem problem={problems.lca[0]} />
+
+<FocusProblem problem={problems.lca[1]} />
+
+### Tutorial
+
+<Resources>
+	<Resource source="CPH" title="18.3 - LCA Method 1" starred></Resource>
+	<Resource
+		source="cp-algo"
+		title="LCA with Binary Lifting"
+		url="graph/lca_binary_lifting.html"
+	></Resource>
+</Resources>
+
+<Optional title="Improvements">
+
+- [CF: $O(\log N)$ queries and $O(N)$ memory](https://codeforces.com/blog/entry/74847)
+- [Wikipedia: $O(1)$ queries and $O(N)$ preprocessing time](https://en.wikipedia.org/wiki/Level_ancestor_problem#Ladder_algorithm)
+  - though explanation is not the greatest
+
+</Optional>
+
+### Implementation
+
+<Resources>
+	<Resource
+		source="Benq"
+		title="LCAjump"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCAjump.h"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+<IncompleteSection />
+
+### Problems
+
+#### USACO
+
+<Problems problems={problems.usaco} />
+
+#### General
+
+<Problems problems={problems.general} />
+
+<IncompleteSection>
+
+figure out a better way to order these, difficulties aren't rlly accurate
+
+</IncompleteSection>

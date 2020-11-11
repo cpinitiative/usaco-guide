@@ -1,0 +1,216 @@
+---
+id: sp-neg
+title: 'Shortest Paths with Negative Edge Weights'
+author: Benjamin Qi, Andi Qu
+prerequisites:
+  - sp
+description: "Returning to Bellman-Ford and Floyd-Warshall."
+frequency: 0
+---
+
+
+
+export const problems = {
+	bellSam: [
+		new Problem(
+			'Kattis',
+			'SSSP Negative',
+			'shortestpath3',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'CSES',
+			'(Negative) Cycle Finding',
+			'1197',
+			'Easy',
+			false,
+			[],
+			''
+		),
+	],
+	linear: [
+		new Problem(
+			'RMI',
+			'Restore Array',
+			'RMI19_restore',
+			'Normal',
+			false,
+			[],
+			'similar to [Art](https://codeforces.com/gym/102394/problem/A)'
+		),
+	],
+	floydSam: [
+		new Problem(
+			'Kattis',
+			'APSP (with negative weights)',
+			'allpairspath',
+			'Easy',
+			false,
+			[],
+			''
+		),
+	],
+	floydProbs: [
+		new Problem(
+			'APIO',
+			'2017 - Traveling Merchant',
+			'https://oj.uz/problem/view/APIO17_merchant',
+			'Hard',
+			true,
+			['APSP', 'Binary Search'],
+			'apio-17-merchant'
+		),
+	],
+	dijk: [
+		new Problem(
+			'APIO',
+			'2013 - Tasksauthor',
+			'https://tlx.toki.id/problems/apio-2013/C/',
+			'Hard',
+			true,
+			['SP', 'Output-only'],
+			'apio-13-taskauthor'
+		),
+	],
+};
+
+<!-- new Problem('SPOJ', 'Arbitrage', 'ARBITRAG', 'Easy', false, [], ''), -->
+
+<!-- new Problem('CSES', 'High Score', '1673', 'Easy', false, [], ''), 
+subpart of SSSP Negative -->
+
+## Bellman-Ford
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Bellman-Ford"
+		url="graph/bellman_ford.html"
+		starred></Resource>
+	<Resource
+		source="cp-algo"
+		title="Finding Negative Cycle"
+		url="graph/finding-negative-cycle-in-graph.html"
+		starred>with Bellman-Ford</Resource>
+	<Resource source="CP2" title="4.4.4 - SSSP with Negative Weight Cycle"></Resource>
+</Resources>
+
+<!-- 	<Resource
+		source="TC"
+		title="Intro to Graphs Section 3"
+		url="introduction-to-graphs-and-their-data-structures-section-3/"
+	></Resource> -->
+
+### Shortest Paths
+
+<FocusProblem problem={problems.bellSam[0]} />
+
+#### Solution
+
+<IncompleteSection />
+
+### Finding Negative Cycles
+
+<FocusProblem problem={problems.bellSam[1]} />
+
+#### Solution
+
+<IncompleteSection />
+
+### Simple Linear Programming
+
+You can also use shortest path algorithms to solve the following problem (a very simple [linear program](https://en.wikipedia.org/wiki/Linear_programming)).
+
+> Given variables $x_1,x_2,\ldots,x_N$ with constraints in the form $x_i-x_j\ge c$, compute a feasible solution.
+
+#### Resources
+
+<Resources>
+	<Resource
+		source="MIT"
+		title="Slides from Intro to Algorithms"
+		url="https://www.cs.rit.edu/~spr/COURSES/ALG/MIT/lec18.pdf"
+	>
+		Linear Programming Trick
+	</Resource>
+</Resources>
+
+#### Problems
+
+Timeline (USACO Camp):
+
+- equivalent to [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) except $N,C\le 5000$ and negative values of $x$ are possible.
+
+<Problems problems={problems.linear} />
+
+## Floyd-Warshall
+
+<FocusProblem problem={problems.floydSam[0]} />
+
+### Solution - APSP
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MOD = 1000000007;
+const ll INF = 1e18;
+
+int n,m,q;
+ll dist[150][150], bad[150][150];
+
+void solve() {
+    F0R(i,n) F0R(j,n) dist[i][j] = INF, bad[i][j] = 0;
+    F0R(i,n) dist[i][i] = 0;
+    F0R(i,m) {
+        int u,v,w; cin >> u >> v >> w;
+        dist[u][v] = min(dist[u][v],(ll)w);
+    }
+    F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF) 
+        dist[i][j] = min(dist[i][j],dist[i][k]+dist[k][j]);
+    
+    F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)  
+        if (dist[i][j] > dist[i][k]+dist[k][j])
+            bad[i][j] = 1;
+            
+    F0R(k,n) F0R(i,n) F0R(j,n) {
+        if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
+        if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
+    }
+    
+    F0R(i,q) {
+        int u,v; cin >> u >> v;
+        if (bad[u][v]) cout << "-Infinity\n";
+        else if (dist[u][v] == INF) cout << "Impossible\n";
+        else cout << dist[u][v] << "\n";
+    }
+    cout << "\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    while (cin >> n >> m >> q) solve();
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems={problems.floydProbs} />
+
+## Modified Dijkstra
+
+<!-- Can also use [Shortest Path Faster Algorithm](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) or  -->
+
+The Dijkstra code presented [earlier](/gold/sp#omlog-n-implementation) will still give correct results if there are no negative cycles. However, the same running time bound no longer applies, as demonstrated by subtasks 1-6 of the following problem.
+
+<Problems problems={problems.dijk} />
+
+This problem forces you to analyze the inner workings of the three shortest-path algorithms we presented here. It also teaches you about how problemsetters could create hack cases!

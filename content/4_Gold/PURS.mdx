@@ -1,0 +1,511 @@
+---
+id: PURS
+title: 'Point Update Range Sum'
+author: Benjamin Qi, Andrew Wang
+prerequisites:
+  - prefix-sums
+description: 'Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only).'
+frequency: 3
+---
+
+
+
+export const problems = {
+	sample: [
+		new Problem(
+			'CSES',
+			'Range Sum Queries II',
+			'1648',
+			'Easy',
+			false,
+			['PURS'],
+			'Can also do range XOR queries w/ update.'
+		),
+	],
+	segSam: [
+		new Problem(
+			'CSES',
+			'Range Minimum Queries II',
+			'1649',
+			'Easy',
+			false,
+			['PURQ'],
+			''
+		),
+	],
+	inv: [
+		new Problem('SPOJ', 'Inversion Counting', 'INVCNT', 'Easy', false, [
+			'PURS',
+		]),
+	],
+	practice: [
+		new Problem(
+			'CSES',
+			'List Removals',
+			'1749',
+			'Easy',
+			false,
+			[],
+			'easy with indexed set'
+		),
+		new Problem(
+			'CSES',
+			'Salary Queries',
+			'1144',
+			'Easy',
+			false,
+			[],
+			'cses-1144'
+		),
+		new Problem(
+			'CSES',
+			'Range Update Queries',
+			'1651',
+			'Easy',
+			true,
+			undefined,
+			'not harder than point update range query'
+		),
+		new Problem(
+			'CSES',
+			'Increasing Subsequence II',
+			'1748',
+			'Easy',
+			false,
+			undefined,
+			''
+		),
+		new Problem(
+			'Kattis',
+			'Mega Inversions',
+			'megainversions',
+			'Easy',
+			false,
+			undefined,
+			'also just inversion counting'
+		),
+		new Problem(
+			'CSES',
+			'Distinct Values Queries',
+			'1734',
+			'Normal',
+			true,
+			undefined,
+			'Do queries in increasing order of $a$.'
+		),
+	],
+	usaco: [
+		new Problem('Gold', 'Haircut', '1041', 'Easy', false, undefined, ''),
+		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, undefined, ''),
+		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, undefined, ''),
+		new Problem(
+			'Gold',
+			'Sleepy Cow Sort',
+			'898',
+			'Easy',
+			false,
+			undefined,
+			'All USACO problems (aside from some special exceptions) have only one possible output.'
+		),
+		new Problem('Plat', 'Mincross', '720', 'Easy', false, undefined, ''),
+		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, [], ''),
+	],
+};
+
+
+<!-- 	new Problem(
+		'YS',
+		'Point Add Range Sum',
+		'point_add_range_sum',
+		'Easy',
+		false,
+		['PURS'],
+		''
+	), -->
+
+<!-- 	new Problem(
+		'Silver',
+		'Out of Sorts',
+		'834',
+		'Normal',
+		false,
+		undefined,
+		"aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."
+	),
+	new Problem('Gold', 'Out of Sorts', '837', 'Hard', false, undefined, ''),
+	new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''), -->
+
+<FocusProblem problem={problems.sample[0]} />
+
+<br />
+
+Most gold range query problems require you to support following tasks in $O(\log N)$ time each on an array of size $N$:
+
+- Update the element at a single position (point).
+- Query the sum of some consecutive subarray.
+
+Both **segment trees** and **binary indexed trees** can accomplish this.
+
+## Segment Tree
+
+<FocusProblem problem={problems.segSam[0]} />
+
+A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
+
+### Resources
+
+<Info title="Pro Tip">
+
+You can skip more advanced applications such as **lazy propagation** for now. They will be covered in [platinum](/plat/seg-ext).
+
+</Info>
+
+<Resources>
+	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
+		Interactive updates.
+	</Resource>
+	<Resource source="CPH" title="9.3 - Segment Trees" starred>
+		Same implementation as AICash below.
+	</Resource>
+	<Resource source="CPC" title="3 - Data Structures" url="03_data_structures">
+		See slides after union-find. Also introduces sqrt bucketing.
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Simplest form of a Segment Tree"
+		url="data_structures/segment_tree.html"
+	>
+		"Advanced versions" are covered in Platinum.
+	</Resource>
+</Resources>
+
+<!-- <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource> -->
+
+### Implementations
+
+<Resources>
+	<Resource
+		source="CF"
+		title="AICash - Efficient and easy segment trees"
+		url="18051"
+	>
+		simple implementation
+	</Resource>
+	<Resource
+		source="Benq"
+		title="SegTree"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h"
+	>
+		based off above
+	</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return a+b; }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) { // sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	 }
+};
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class segtree {
+	public static final int N = (int) 1e5; // limit for array size
+	public static int n; // array size
+	public static long t[] = new long[2 * N];
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			t[i + n] = Integer.parseInt(st.nextToken());
+		}
+		build();
+		System.out.println(query(1, 3));
+		modify(1, 2);
+		System.out.println(query(1, 3));
+
+	}
+
+	public static void build() { // build the tree
+		for (int i = n - 1; i > 0; --i) t[i] = t[i << 1] + t[i << 1 | 1];
+	}
+
+	public static void modify(int p, long value) { // set value at position p
+		for (t[p += n] = value; p > 1; p >>= 1) t[p >> 1] = t[p] + t[p ^ 1];
+	}
+
+	public static long query(int l, int r) { // sum on interval [l, r) (0-INDEXED)
+		long res = 0;
+		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if ((l & 1) != 0) res += t[l++];
+			if ((r & 1) != 0) res += t[--r];
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Binary Indexed Tree
+
+Implementation is shorter than segment tree, but maybe more confusing at first glance.
+
+### Resources
+
+<Resources>
+	<Resource source="CSA" title="Fenwick Trees" url="fenwick_trees" starred>
+		interactive
+	</Resource>
+	<Resource source="CPH" title="9.2, 9.4 - Binary Indexed Tree" starred>
+		similar to above
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Fenwick Tree"
+		url="data_structures/fenwick.html"
+	>
+		also similar to above
+	</Resource>
+	<Resource
+		source="TC"
+		title="Binary Indexed Trees"
+		url="binary-indexed-trees"
+	></Resource>
+</Resources>
+
+### Implementations
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="CF"
+		title="mouse_wireless - Multi-dimensional BITs with Templates"
+		url="https://codeforces.com/blog/entry/64914"
+		starred
+	></Resource>
+	<Resource
+		source="Benq"
+		title="BIT"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIT%20(9.2).h"
+	>
+		based off above
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static long[] fwt;
+public static long query(int a, int b) {
+	return sum(b) - sum(a - 1);
+}
+public static long sum(int i) {
+	long sum = 0;
+	while (i > 0) {
+		sum += fwt[i];
+		i -= (i & -i); //least important bit
+	}
+	return sum;
+}
+public static void update(int i, long v) {
+	while (i > 0 && i < fwt.length) {
+		fwt[i] += v;
+		i += (i & -i);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Finding $k$-th Element
+
+Suppose that we want a data structure that supports all the operations as a `set` in C++ in addition to the following:
+
+- `order_of_key(x)`: counts the number of elements in the set that are strictly less than `x`.
+- `find_by_order(k)`: similar to `find`, returns the iterator corresponding to the `k`-th lowest element in the set (0-indexed).
+
+### Order Statistic Tree
+
+Luckily, such a built-in data structure already exists in C++.
+
+<Resources>
+	<Resource
+		source="CF"
+		url="11080"
+		title="adamant - Policy Based Data Structures"
+		starred
+	></Resource>
+	<Resource source="CPH" title="4.5 - Policy Based Data Structures">
+		brief overview with find_by_order and order_of_key
+	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/IndexedSet.h"
+		title="Indexed Set"
+	>
+		code
+	</Resource>
+</Resources>
+
+To use indexed set locally, you need to install GCC as mentioned in [Running Code](/general/running-code).
+
+### With a BIT
+
+Assumes all updates are in the range $[1,N]$.
+
+<Resources>
+	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
+		{' '}
+		log N{' '}
+	</Resource>
+</Resources>
+
+<!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
+
+### With a Segment Tree
+
+Covered in [Platinum](/plat/seg-ext).
+
+## Example - Inversion Counting
+
+<FocusProblem problem={problems.inv[0]} />
+
+### Solution
+
+<Spoiler title="Solution">
+
+<LanguageSection>
+
+<CPPSection>
+
+Using indexed set, we can solve this in just a few lines.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T> using Tree = tree<T, null_type, less<T>,
+	rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+	int T; cin >> T;
+	for (int i = 0; i < T; ++i) {
+		int n; cin >> n;
+		Tree<int> TS; long long numInv = 0;
+		for (int j = 0; j < n; ++j) {
+			int x; cin >> x;
+			numInv += j-TS.order_of_key(x); // gives # elements before it > x
+			TS.insert(x);
+		}
+		cout << numInv << "\n";
+	}
+}
+```
+
+Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
+
+</CPPSection>
+
+<JavaSection>
+
+Using a binary indexed tree, we can count the number of inversions. 
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine());
+		for (int tt = 0; tt < t; tt++) {
+			br.readLine();
+			int n = Integer.parseInt(br.readLine());
+			BIT = new long[(int) 1e7 + 5];
+			long ans = 0;
+			for (int i = 0; i < n; i++) {
+				int a = Integer.parseInt(br.readLine());
+				a++;
+				ans += i - sum(a);
+				update(a, 1);
+			}
+			System.out.println(ans);
+		}
+	}
+	public static long[] BIT; //one indexed cannot use zero
+	public static long sum(int i) {
+		long sum = 0;
+		while (i > 0) {
+			sum += BIT[i];
+			i -= (i & -i); //least important bit
+		}
+		return sum;
+	}
+	public static void update(int i, int v) {
+		while (i > 0 && i < BIT.length) {
+			BIT[i] += v;
+			i += (i & -i);
+		}
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Range Sum Problems
+
+<Info title="Coordinate Compression">
+
+If the coordinates are large (say, up to $10^9$), then you should apply [coordinate compression](https://www.quora.com/What-is-coordinate-compression-and-what-is-it-used-for) before using a BIT or segment tree (though [sparse segment trees](/plat/sparse-seg) do exist).
+
+</Info>
+
+### General
+
+<Problems problems={problems.practice} />
+
+### USACO
+
+Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting.
+
+<Problems problems={problems.usaco} />

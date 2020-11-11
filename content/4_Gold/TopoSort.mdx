@@ -1,0 +1,774 @@
+---
+id: toposort
+title: 'Topological Sort'
+author: Benjamin Qi, Michael Cao, Nathan Chen, Andi Qu, Andrew Wang
+prerequisites:
+  - bfs
+  - intro-dp
+description: 'An ordering of vertices in a directed acyclic graph that ensures that a node is visited before every node it has a directed edge to.'
+frequency: 1
+---
+
+
+
+export const problems = {
+	sample: [new Problem('CSES', 'Course Schedule', '1679', 'Easy', false, [])],
+	dir: [new Problem('CSES', 'Round Trip II', '1678', 'Easy', false, ['Cycle'])],
+	dp: [new Problem('CSES', 'Longest Flight Route', '1680', 'Easy', false, [])],
+	general: [
+		new Problem(
+			'CSES',
+			'Game Routes',
+			'1681',
+			'Easy',
+			true,
+			['TopoSort'],
+			'cses-1681'
+		),
+		new Problem(
+			'Kattis',
+			'Quantum Superposition',
+			'quantumsuperposition',
+			'Easy',
+			true,
+			['TopoSort'],
+			'kattis-quantum'
+		),
+		new Problem(
+			'Gold',
+			'Timeline',
+			'1017',
+			'Easy',
+			false,
+			['TopoSort'],
+			'not explicitly given, but graph is a DAG'
+		),
+		new Problem('Gold', 'Milking Order', '838', 'Normal', false, [
+			'TopoSort',
+			'Binary Search',
+		]),
+		new Problem(
+			'CSES',
+			'Course Schedule II',
+			'1757',
+			'Hard',
+			false,
+			['TopoSort'],
+			'cses-1757'
+		),
+	],
+};
+
+To review, a **directed** graph consists of edges that can only be traversed in one direction. Additionally, a **acyclic** graph defines a graph which does not contain cycles, meaning you are unable to traverse across one or more edges and return to the node you started on. Putting these definitions together, a **directed acyclic** graph, sometimes abbreviated as DAG, is a graph which has edges which can only be traversed in one direction and does not contain cycles.
+
+## Topological Sort
+
+<FocusProblem problem={problems.sample[0]} />
+
+A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a directed acyclic graph is a linear ordering of its vertices such that for every directed edge $u\to v$ from vertex $u$ to vertex $v$, $u$ comes before $v$ in the ordering.
+
+There are two common ways to topologically sort, one involving DFS and the other involving BFS.
+
+<Resources>
+	<Resource
+		source="CSA"
+		title="Topological Sorting"
+		url="topological_sorting"
+		starred
+	>
+		interactive, both versions
+	</Resource>
+</Resources>
+
+## DFS
+
+<Resources>
+	<Resource source="CPH" title="16.1 - Topological Sort">
+		example walkthrough
+	</Resource>
+	<Resource source="CP2" title="4.2.5 - Topological Sort">
+		code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Topological Sort"
+		url="graph/topological-sort.html"
+	>
+		code
+	</Resource>
+</Resources>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define pb push_back
+
+int N; // Number of nodes
+vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
+bool visited[100000];
+
+void dfs(int node) {
+	for (int i : graph[node]) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	top_sort.pb(node);
+}
+
+void compute() {
+	for (int i = 0; i < N; i++) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	reverse(begin(top_sort),end(top_sort));
+	// The vector `top_sort` is now topologically sorted
+}
+
+int main() {
+	int M; cin >> N >> M;
+	for (int i = 0; i < M; ++i) {
+		int a,b; cin >> a >> b;
+		graph[a-1].pb(b-1);
+	}
+	compute();
+	vector<int> ind(N);
+	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
+	for (int i = 0; i < N; i++) for (int j: graph[i]) if (ind[j] <= ind[i]) {
+		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
+		exit(0);
+	}
+	for (int i: top_sort) cout << i+1 << " ";
+	cout << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class CourseSchedule {
+	public static ArrayList <Integer> g[];
+	public static ArrayList <Integer> topo = new ArrayList < Integer > ();
+	public static int N;
+	public static boolean visited[];
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		g = new ArrayList[N];
+		visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			g[i] = new ArrayList <Integer> ();
+		}
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			a--;
+			int b = Integer.parseInt(st.nextToken());
+			b--;
+			g[a].add(b);
+		}
+		compute();
+		int ind[] = new int[N];
+		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
+		for (int i = 0; i < N; i++)
+			for (int j: g[i])
+				if (ind[j] <= ind[i]) {
+					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
+					System.exit(0);
+				}
+		for (int i: topo) System.out.print(i + 1 + " ");
+	}
+	public static void compute() {
+		for (int i = 0; i < N; i++) {
+			if (!visited[i]) {
+				visited[i] = true;
+				dfs(i);
+			}
+		}
+		Collections.reverse(topo);
+	}
+	public static void dfs(int v) { //not always lexigraphically least
+		for (Integer e: g[v]) {
+			if (!visited[e]) {
+				visited[e] = true;
+				dfs(e);
+			}
+		}
+		topo.add(v);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Finding a Cycle
+
+<FocusProblem problem={problems.dir[0]} />
+
+We can modify the algorithm above to return a directed cycle in case a topological sort does not exist. To find the cycle, we add each node we visit onto the stack until we detect a node already on the stack. Once we find the cycle exists, we mark the start of the cycle as not part of the stack and revursively backtrack until we reach the start node again. 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+bool visited[(int)10e5+5], on_stack[(int)10e5+5];
+vector<int> adj[(int)10e5+5];
+vector<int> cycle;
+int N, M;
+bool dfs(int n) {
+	visited[n] = on_stack[n] = true;
+	for (int u:adj[n]) {
+		if(on_stack[u]) {
+			cycle.push_back(n); // start cycle
+			on_stack[n] = on_stack[u] = false;
+			return true;
+		}
+		else if(!visited[u]) {
+			if(dfs(u)) { // continue cycle
+				if(on_stack[n]) {
+					cycle.push_back(n);
+					on_stack[n] = false;
+					return true;
+				} else {
+					cycle.push_back(n);
+					return false;
+				}
+			}
+			if(!cycle.empty()) // finished with cycle
+				return false;
+		}
+	}
+	on_stack[n] = false;
+	return false;
+}
+int main()
+{
+	//take input, etc
+	cin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+	}
+	for (int i = 1; cycle.empty() && i <= N;i++)
+		dfs(i);
+	if(cycle.empty())
+		cout << "IMPOSSIBLE";
+	else {
+		reverse(cycle.begin(), cycle.end());
+		cout << cycle.size()+1 << "\n";
+		for(int n : cycle) cout << n << " ";
+		cout << cycle.at(0);
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cycle {
+	public static ArrayList < Integer > [] adj;
+	public static boolean visited[], on_stack[];
+	public static ArrayList < Integer > cycle;
+	public static int N, M;
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N + 1];
+		cycle = new ArrayList < Integer > ();
+		visited = new boolean[N + 1];
+		on_stack = new boolean[N + 1];
+		for (int i = 0; i <= N; i++) {
+			adj[i] = new ArrayList < Integer > ();
+		}
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			adj[a].add(b);
+		}
+		for (int i = 1; cycle.isEmpty() && i <= N; i++) {
+			dfs(i);
+		}
+		if (cycle.isEmpty())
+			out.println("IMPOSSIBLE");
+		else {
+			Collections.reverse(cycle);
+			out.println(cycle.size() + 1);
+			for (int n: cycle) out.print(n + " ");
+			out.print(cycle.get(0));
+		}
+		out.close();
+	}
+
+	public static boolean dfs(int n) {
+		visited[n] = on_stack[n] = true;
+		for (int u: adj[n]) {
+			if (on_stack[u]) {
+				cycle.add(n);
+				on_stack[n] = on_stack[u] = false;
+				return true;
+			} else if (!visited[u]) {
+				if (dfs(u)) {
+					if (on_stack[n]) {
+						cycle.add(n);
+						on_stack[n] = false;
+						return true;
+					} else {
+						cycle.add(n);
+						return false;
+					}
+				}
+				if (!cycle.isEmpty())
+					return false;
+			}
+		}
+		on_stack[n] = false;
+		return false;
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## BFS
+
+The BFS version, known as [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm), makes it obvious how to extract the lexicographically minimum topological sort.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int in_degree[100000];
+vector<int> edge[100000];
+
+int N; //number of nodes
+
+void compute() {
+	queue<int> q;
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		for (int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		// Put problem-specific processing here
+	}
+
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+static int in_degree[];
+static ArrayList<Integer> edge[]; //adjacency list
+
+static int N; //number of nodes
+
+static void topological_sort() {
+	Queue<Integer> q = new ArrayDeque<Integer>();
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) {
+			q.add(i);
+		}
+	}
+
+	while (!q.isEmpty()) {
+		int node = q.poll();
+
+		for (int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.add(next);
+		}
+
+		// Put problem-specific processing here
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Dynamic Programming
+
+<Resources>
+	<Resource source="CPH" title="16.2 - Dynamic Programming" starred></Resource>
+</Resources>
+
+<!-- 	<Resource source="PAPS" title="9.2 - Dynamic Programming">
+		Best Path in a DAG
+	</Resource> -->
+
+One useful property of directed acyclic graphs is, as the name suggests, that no cycles exist. If we consider each node in the graph as a state, we can perform dynamic programming on the graph if we process the states in an order that guarantees for every edge $u\to v$ that $u$ is processed before $v$. Fortunately, this is the exact definition of a topological sort!
+
+<FocusProblem problem={problems.dp[0]} />
+
+In this task, we must find the longest path in a DAG.
+
+<Spoiler title="Solution">
+
+Let $dp[v]$ denote the length of the longest path ending at the node $v$. Clearly
+
+$$
+dp[v]=\max_{\text{edge } u\to v \text{ exists}}dp[u]+1,
+$$
+
+or $1$ if $v$ is node $1$. If we process the states in topological order, it is guaranteed that $dp[u]$ will already have been computed before computing $dp[v]$.
+
+Note that the implementation of this idea below uses Kahn's algorithm for topological sorting:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int prev_flight[100000];
+int dist[100000];
+int in_degree[100000];
+vector<int> edge[100000];
+vector<int> backEdge[100000];
+
+int N, M;
+
+//Does a topological sort
+void compute() {
+	queue<int> q;
+	for(int i = 0; i < N; i++) {
+		if(in_degree[i] == 0) {
+			q.push(i);
+		}
+	}
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		for(int next : edge[node]) {
+			in_degree[next]--;
+			if(in_degree[next] == 0) q.push(next);
+		}
+
+		//The below block computes the DP
+		int mx = -999999999;
+		int mx_node = -1;
+		for(int prev : backEdge[node]) {
+			if(dist[prev] + 1 > mx) {
+				mx = dist[prev] + 1;
+				mx_node = prev;
+			}
+		}
+
+		dist[node] = mx;
+		if(node == 0) dist[node] = 1;
+		prev_flight[node] = mx_node;
+	}
+
+}
+
+int main() { //See "General - Fast I/O" for more information about the first two lines in the main function
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> N >> M;
+
+	for(int i = 0; i < N; i++) {
+		prev_flight[i] = -1;
+		dist[i] = -999999999;
+		in_degree[i] = 0;
+	}
+
+	for(int i = 0; i < M; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		in_degree[b]++;
+		edge[a].push_back(b);
+
+		backEdge[b].push_back(a);
+	}
+
+	compute();
+
+	stack<int> answer;
+	int temp = N-1;
+
+	bool contains0 = false;
+	if(temp == 0) contains0 = true;
+
+	while(temp != -1 && dist[temp] >= 0) {
+		answer.push(temp);
+		temp = prev_flight[temp];
+		if(temp == 0) contains0 = true;
+	}
+
+	if(contains0) {
+		cout << dist[N-1] << "\n";
+		while(!answer.empty()) {
+			cout << answer.top()+1;
+			answer.pop();
+			if(!answer.empty()) cout << " ";
+		}
+		cout << "\n";
+	} else {
+		cout << "IMPOSSIBLE\n";
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+//longest_path
+public class Main {
+
+	static int prev_flight[], dist[], in_degree[];
+	static ArrayList<Integer> edge[];
+	static ArrayList<Integer> backEdge[];
+
+	static int N, M;
+
+	//does a topological sort
+	static void compute() {
+		Queue<Integer> q = new ArrayDeque<Integer>();
+		for(int i = 0; i < N; i++) {
+			if(in_degree[i] == 0) {
+				q.add(i);
+			}
+		}
+
+		while(!q.isEmpty()) {
+			int node = q.poll();
+
+			for(int next : edge[node]) {
+				in_degree[next]--;
+				if(in_degree[next] == 0) q.add(next);
+			}
+
+			//The below block computes the DP
+			int mx = -999999999;
+			int mx_node = -1;
+			for(int prev : backEdge[node]) {
+				if(dist[prev] + 1 > mx) {
+					mx = dist[prev] + 1;
+					mx_node = prev;
+				}
+			}
+
+			dist[node] = mx;
+			if(node == 0) dist[node] = 1;
+			prev_flight[node] = mx_node;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		FastIO sc = new FastIO(System.in); //View "General - Fast I/O" for more information about the "FastIO" class
+
+		N = sc.nextInt();
+		M = sc.nextInt();
+
+		prev_flight = new int[N];
+		dist = new int[N];
+		in_degree = new int[N];
+		edge = new ArrayList[N];
+		backEdge = new ArrayList[N];
+
+		for(int i = 0; i < N; i++) {
+			prev_flight[i] = -1;
+			dist[i] = -999999999;
+			in_degree[i] = 0;
+			edge[i] = new ArrayList<Integer>();
+			backEdge[i] = new ArrayList<Integer>();
+		}
+
+		for(int i = 0; i < M; i++) {
+			int a = sc.nextInt(), b = sc.nextInt();
+			a--; b--;
+			in_degree[b]++;
+			edge[a].add(b);
+			backEdge[b].add(a);
+		}
+
+		compute();
+
+		PrintWriter pw = new PrintWriter(System.out);
+
+		ArrayDeque<Integer> answer = new ArrayDeque<Integer>(); //Acts as a Stack
+		int temp = N-1;
+
+		boolean contains0 = false;
+		if(temp == 0) contains0 = true;
+
+		while(temp != -1 && dist[temp] >= 0) {
+			answer.push(temp);
+			temp = prev_flight[temp];
+			if(temp == 0) contains0 = true;
+		}
+
+		if(contains0) {
+			pw.println(dist[N-1]);
+			while(!answer.isEmpty()) {
+				pw.print(answer.peekFirst()+1);
+				answer.pop();
+				if(!answer.isEmpty()) pw.print(" ");
+			}
+			pw.println();
+		} else {
+			pw.println("IMPOSSIBLE\n");
+		}
+		pw.close();
+	}
+
+	//practically a necessity for Java users on CSES
+	static class FastIO {
+
+		InputStream dis;
+		byte[] buffer = new byte[1 << 17];
+		int pointer = 0;
+
+		public FastIO(String fileName) throws Exception {
+			dis = new FileInputStream(fileName);
+		}
+
+		public FastIO(InputStream is) throws Exception {
+			dis = is;
+		}
+
+		int nextInt() throws Exception {
+			int ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		long nextLong() throws Exception {
+			long ret = 0;
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			boolean negative = false;
+			if (b == '-') {
+				negative = true;
+				b = nextByte();
+			}
+			while (b >= '0' && b <= '9') {
+				ret = 10 * ret + b - '0';
+				b = nextByte();
+			}
+
+			return (negative) ? -ret : ret;
+		}
+
+		byte nextByte() throws Exception {
+			if (pointer == buffer.length) {
+				dis.read(buffer, 0, buffer.length);
+				pointer = 0;
+			}
+			return buffer[pointer++];
+		}
+
+		String next() throws Exception {
+			StringBuffer ret = new StringBuffer();
+
+			byte b;
+			do {
+				b = nextByte();
+			} while (b <= ' ');
+			while (b > ' ') {
+				ret.appendCodePoint(b);
+				b = nextByte();
+			}
+
+			return ret.toString();
+		}
+
+	}
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
+
+(Ben - this last paragraph doesn't seem very helpful.) -->
+
+## Problems
+
+<Problems problems={problems.general} />

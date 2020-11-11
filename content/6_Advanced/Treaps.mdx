@@ -1,0 +1,138 @@
+---
+id: treaps
+title: 'Treaps'
+author: Benjamin Qi
+description: '?'
+prerequisites:
+  - RURQ
+  - 2DRQ
+frequency: 2
+---
+
+
+
+export const problems = {
+	treeRot: [
+		new Problem(
+			'POI',
+			'Tree Rotations 2',
+			'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
+			'Normal',
+			false,
+			[],
+			''
+		),
+	],
+};
+
+<Resources>
+	<Resource source="GCP" title="15.3 - Treaps" starred>
+		splitting & merging with code
+	</Resource>
+</Resources>
+
+## Splitting
+
+## Merging
+
+## Merging (Arbitrary Keys)
+
+<Problems problems={problems.treeRot} />
+
+<Spoiler title="Tree Rotations 2 Solution">
+
+Apparently [this paper](https://www.cs.cmu.edu/~scandal/papers/treaps-spaa98.pdf) proves that this runs in $O(n\log n)$.
+
+```cpp
+int n;
+ll ans, inv;
+
+typedef struct tnode* pt;
+struct tnode {
+	int pri, val; pt c[2]; // essential
+	int sz; // for range queries
+	tnode (int _val) {
+		pri = rng(); val = _val;
+		sz = 1; c[0] = c[1] = NULL;
+	}
+};
+int getsz(pt x) { return x?x->sz:0; }
+pt calc(pt x) {
+	x->sz = 1+getsz(x->c[0])+getsz(x->c[1]);
+	return x;
+}
+pair<pt,pt> split(pt t, int v) { // >= v goes to the right
+	if (!t) return {t,t};
+	if (t->val >= v) {
+		auto p = split(t->c[0], v); t->c[0] = p.s;
+		return {p.f,calc(t)};
+	} else {
+		auto p = split(t->c[1], v); t->c[1] = p.f;
+		return {calc(t),p.s};
+	}
+}
+
+pt merge(pt a, pt b) {
+	if (!a || !b) return a?:b;
+	if (a->pri > b->pri) {
+		auto B = split(b,a->val);
+		inv += (ll)(1+getsz(a->c[0]))*getsz(B.s);
+		a->c[0] = merge(a->c[0],B.f); a->c[1] = merge(a->c[1],B.s);
+		return calc(a);
+	} else {
+		auto A = split(a,b->val);
+		inv += (ll)getsz(A.f)*(1+getsz(b->c[1]));
+		b->c[0] = merge(A.f,b->c[0]); b->c[1] = merge(A.s,b->c[1]);
+		return calc(b);
+	}
+}
+
+pt go() {
+	int x; re(x);
+	if (x) return new tnode(x);
+	pt L = go(); pt R = go();
+	ll tot = (ll)L->sz*R->sz; inv = 0;
+	pt cur = merge(L,R); assert(inv <= tot); // dbg("HUH",tot,inv);
+	ans += min(inv,tot-inv);
+	return cur;
+}
+
+int main() {
+	setIO(); re(n); go();
+	ps(ans);
+}
+```
+
+</Spoiler>
+
+<Optional>
+
+[This](https://codeforces.com/blog/entry/67980) CF post describes a more general version of the problem above.
+
+</Optional>
+
+## Tutorial
+
+- [Quora](https://threads-iiith.quora.com/Treaps-One-Tree-to-Rule-em-all-Part-1)
+- [PPT](https://docs.google.com/presentation/d/14xgtdDWnIBwmJRAuIdZ8FvLZcX9uRxnNoGOGAQRDIvc/edit?usp=sharing)
+- Samuel Hsiang Guide (see resources)
+
+## Notes
+
+ - For speed / memory, use arrays of fixed size rather than pointers.
+
+## Problems
+
+- [Old Gold - Airplane Boarding](http://www.usaco.org/index.php?page=viewproblem2&cpid=402)
+- [Strings](https://csacademy.com/contest/archive/task/strings/)
+- [Points & Distances](https://www.hackerearth.com/problem/algorithm/septembereasy-points-and-distances-d30d0e6b/description/)
+
+### Nested
+
+IOI 2013 Game - https://oj.uz/submission/242393
+
+A2OJ: https://a2oj.com/category?ID=14
+
+https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement
+
+?

@@ -1,0 +1,205 @@
+---
+id: string-hashing
+title: 'String Hashing'
+author: Benjamin Qi, Andrew Wang
+description: 'Quickly test equality of substrings with a small probability of failure.'
+frequency: 1
+prerequisites:
+  - modular
+---
+
+
+
+export const problems = {
+	general: [
+		new Problem(
+			'CSA',
+			'Palindromic Partitions',
+			'palindromic-partitions',
+			'Easy',
+			false,
+			['Greedy', 'Hashing'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Palindromic Characteristics',
+			'contest/835/problem/D',
+			'Easy',
+			false,
+			['DP', 'Hashing'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Cownomics',
+			'741',
+			'Normal',
+			false,
+			[],
+			"Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $lldots r$ explain spotiness. Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(Nlog N)$ time (and you only need to check $O(M)$ of these pairs in total). Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions."
+		),
+		new Problem(
+			'Gold',
+			'Lights Out',
+			'599',
+			'Normal',
+			false,
+			[],
+			"oops you don't actually need hashing to pass ..."
+		),
+		new Problem(
+			'CF',
+			'Liar',
+			'contest/822/problem/E',
+			'Hard',
+			false,
+			['DP', 'Hashing'],
+			''
+		),
+		new Problem(
+			'COI',
+			'2016 - Palinilap',
+			'https://oj.uz/problem/view/COI16_palinilap',
+			'Hard',
+			false,
+			['Hashing', 'Binsearch'],
+			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2016/solutions.pdf'
+		),
+	],
+};
+
+<!-- 	adj: [
+	new Problem(
+		'CF',
+		'Berland SU Computer Network',
+		'contest/847/problem/L',
+		'Normal',
+		false,
+		[],
+		''
+	),
+], -->
+
+<!-- new Problem(
+	'Plat',
+	'Bull in a China Shop',
+	'649',
+	'Insane',
+	false,
+	['Hashing'],
+	''
+), -->
+
+<IncompleteSection>
+
+example problem, preferably smth that can't be fakesolved
+
+</IncompleteSection>
+
+## Tutorial
+
+<Resources>
+  <Resource source="CPH" title="26.3 - String Hashing" starred>good intro</Resource>
+  <Resource source="cp-algo" title="String Hashing" url="string/string-hashing.html" starred>code</Resource>
+  <Resource source="PAPS" title="14.3 - Hashing" starred>many applications</Resource>
+
+</Resources>
+
+## Implementation - Single Base
+
+As mentioned in the articles above, there is no need to calculate modular inverses.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const ll M = 1e9 + 9, P = 9973; // Change M and P if you want to
+
+ll pw[100001]; // Stores the powers of P modulo M
+
+int n;
+string s;
+ll hsh[100001];
+
+void calc_hashes() {
+    hsh[0] = 1;
+    for (int i = 0; i < n; i++)
+        hsh[i + 1] = ((hsh[i] * P) % M + s[i]) % M;
+}
+
+ll get_hash(int a, int b) { // Endpoints of the substring
+    return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static final long M = (long)1e9 + 9, P = 9973; // Change M and P if you want to
+
+public static long pw[] = new long[100001]; // Stores the powers of P modulo M
+
+public static int n;
+public static String s;
+public static long hsh[] = new long[100001];
+
+public static void calc_hashes() {
+	hsh[0] = 1;
+	for (int i = 0; i < n; i++)
+		hsh[i + 1] = ((hsh[i] * P) % M + s.charAt(i)) % M;
+}
+
+public static long get_hash(int a, int b) { // Endpoints of the substring
+	return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Implementation - Multiple Bases
+
+<Resources>
+	<Resource source="CF" title="dacin21 - Anti-Hash Tests" url="60442" starred>
+		regarding CF educational rounds in particular
+	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/strings%20(14)/Light/HashRange%20(14.2).h"
+		title="HashRange"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+It's generally a good idea to use two randomized bases rather than just one to decrease the probability that two random strings hash to the same value.
+
+<IncompleteSection />
+
+<!-- ## Adjacency Lists
+
+(elaborate)
+
+<Problems problems={problems.adj} />
+ -->
+
+## Problems
+
+<Warning>
+
+The editorials of the Gold problems below mention hashing, but it's not difficult to pass slower solutions without hashing.
+
+</Warning>
+
+<Problems problems={problems.general} />
+
+<!-- <Warning>
+
+Constraints for "Bull in a China Shop" are incorrect, should say $R,C\le 500$. Also, time + memory limits are unnecessarily tight ...
+
+</Warning> -->

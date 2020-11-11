@@ -1,0 +1,54 @@
+---
+id: usaco-616
+title: USACO February 2016 Bronze - Circular Barn
+author: Óscar Garries
+---
+
+Official Editorial: http://www.usaco.org/current/data/sol_cbarn_bronze_feb16.html
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+
+#define f first;
+#define s second;
+
+#define len(x) (int)x.size();
+
+int main(){
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int n;
+	cin >> n;
+	int a[n];
+	int cows = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		cows += a[i];
+	}
+	int sol = INT_MAX;
+	for (int start = 0; start < n; start++) {
+		int cur = 0, cur_cows = cows;
+		for int i = 0; i < n; i++) {
+			cur_cows -= a[(start + i) % n];
+			cur += cur_cows;
+		}
+		sol = min(sol, cur);
+	}
+	cout << sol << '\n';
+}
+
+```
+
+</CPPSection>
+</LanguageSection>

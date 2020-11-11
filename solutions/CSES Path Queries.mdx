@@ -1,0 +1,68 @@
+---
+id: cses-1138
+title: CSES - Path Queries
+author: Benjamin Qi
+---
+
+**Explanation:** [CPH 18.2](/CPH.pdf#page=174)
+
+**Time Complexity:** $(N+Q)\log N$
+
+**Code:** Assumes that `dfs()` code is included.
+
+```cpp
+/**
+ * Description: range sum queries and point updates for $D$ dimensions
+ * Source: https://codeforces.com/blog/entry/64914
+ * Verification: SPOJ matsum
+ * Usage: \texttt{BIT<int,10,10>} gives 2D BIT
+ * Time: O((\log N)^D)
+ */
+
+template <class T, int ...Ns> struct BIT {
+	T val = 0; void upd(T v) { val += v; }
+	T query() { return val; }
+};
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+	BIT<T,Ns...> bit[N+1];
+	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
+		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
+	template<typename... Args> T sum(int r, Args... args) {
+		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
+		return res; }
+	template<typename... Args> T query(int l, int r, Args... 
+		args) { return sum(r,args...)-sum(l-1,args...); }
+}; 
+
+BIT<ll,MX> B;
+int v[MX];
+
+int main() {
+	int n,q; cin >> n >> q;
+	FOR(i,1,n+1) cin >> v[i];
+	F0R(i,n-1) {
+		int a,b; cin >> a >> b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+	dfs(1,0);
+	FOR(i,1,n+1) {
+		B.upd(1+st[i],v[i]);
+		B.upd(2+en[i],-v[i]);
+	}
+	F0R(i,q) {
+		int t; cin >> t;
+		if (t == 1) {
+			int s,x; cin >> s >> x;
+			v[s] *= -1;
+			B.upd(1+st[s],v[s]);
+			B.upd(2+en[s],-v[s]);
+			v[s] = x;
+			B.upd(1+st[s],v[s]);
+			B.upd(2+en[s],-v[s]);
+		} else {
+			int s; cin >> s;
+			cout << B.sum(1+st[s]) << "\n";
+		}
+	}
+}
+```

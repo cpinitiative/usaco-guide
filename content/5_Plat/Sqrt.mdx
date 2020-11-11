@@ -1,0 +1,262 @@
+---
+id: sqrt
+title: 'Square Root Decomposition'
+author: Benjamin Qi
+description: Splitting up data into smaller chunks to speed up processing.
+frequency: 1
+---
+
+export const problems = {
+	sam: [
+		new Problem(
+			'CSES',
+			'Range Sum Queries II',
+			'1648',
+			'Very Easy',
+			false,
+			[],
+			''
+		),
+	],
+	fst: [
+		new Problem(
+			'YS',
+			'Static Range Inversions Query',
+			'https://judge.yosupo.jp/problem/static_range_inversions_query',
+			'Normal',
+			false,
+			[],
+			'static-range-inv'
+		),
+		new Problem(
+			'APIO',
+			'2019 - Bridges',
+			'https://oj.uz/problem/view/APIO19_bridges',
+			'Hard',
+			false,
+			[],
+			'apio-19-bridges'
+		),
+		new Problem('Plat', 'Train Tracking', '841', 'Very Hard', false, [], ''),
+		new Problem(
+			'DMOJ',
+			'Fluid Dynamics',
+			'dmopc19c7p7',
+			'Very Hard',
+			false,
+			[],
+			'DMOJ-fluid-dynamics'
+		),
+		new Problem(
+			'DMOJ',
+			'Arithmetic Subtrees',
+			'wac1p7',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+	],
+	bad: [
+		new Problem('Plat', 'New Barns', '817', 'Hard', false, [], ''),
+		new Problem(
+			'CF',
+			'Tree Queries',
+			'contest/1254/problem/D',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'TLX',
+			'Tree Game',
+			'https://tlx.toki.id/problems/troc-14/H/',
+			'Hard',
+			false,
+			[],
+			''
+		),
+		new Problem('CSA', 'Shopping Time', 'shopping-time', 'Hard', false, [], ''),
+		new Problem(
+			'Old Gold',
+			'Fencing the Herd',
+			'534',
+			'Hard',
+			false,
+			['Convex Hull'],
+			''
+		),
+		new Problem(
+			'CF',
+			'The Awesomest Vertex',
+			'1178/problem/G',
+			'Very Hard',
+			false,
+			['Convex Hull'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2011 - Elephants',
+			'https://oj.uz/problem/view/IOI11_elephants',
+			'Very Hard',
+			false,
+			[],
+			''
+		),
+		new Problem('Plat', 'At Large', '793', 'Very Hard', false, [], ''),
+	],
+};
+
+<!-- 	new Problem(
+		'wcipeg',
+		'COI 08-Otoci',
+		'https://wcipeg.com/problem/coi08p2',
+		'Hard',
+		false,
+		['HLD'],
+		'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2009/solutions.pdf'
+	), -->
+
+<!-- GP of Nanjing? -->
+
+<FocusProblem problem={problems.sam[0]} />
+
+You should already have done this problem in [Point Update Range Sum](/gold/PURS), but here we'll present two more approaches. Both run in $O((N+Q)\sqrt N)$ time.
+
+<Resources>
+	<Resource source="CPH" title="27 - Square Root Algorithms" starred></Resource>
+	<Resource source="CF" title="Applications of Square Root Decomposition" url="https://codeforces.com/blog/entry/83248" starred>Blocking, Mo's Algo</Resource>
+</Resources>
+
+## Blocking
+
+<!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
+ -->
+
+See the first example in CPH.
+
+```cpp
+int n,q;
+vi x;
+ll block[450];
+int BLOCK;
+
+ll sum(int a) { // sum of first a elements of array in O(sqrt(n)) time
+	ll ans = 0;
+	F0R(i,a/BLOCK) ans += block[i];
+	FOR(i,a/BLOCK*BLOCK,a) ans += x[i];
+	return ans;
+}
+
+void upd(int a, int b) { // O(1) query
+	block[a/BLOCK] -= x[a];
+	x[a] = b;
+	block[a/BLOCK] += x[a];
+}
+
+int main() {
+    setIO(); re(n,q); x.rsz(n); re(x);
+    BLOCK = sqrt(n);
+    F0R(i,n) block[i/BLOCK] += x[i];
+    F0R(i,q) {
+        int t,a,b; re(t,a,b);
+        if (t == 1) upd(a-1,b);
+        else ps(sum(b)-sum(a-1));
+    }
+}
+```
+
+## Batching
+
+See the CPH section on "batch processing."
+
+Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each sum query can be calculated with prefix sums and by examining each update within the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and recalculate prefix sums.
+
+```cpp
+int n,q;
+vi x;
+vl cum;
+
+void build() {
+	cum = {0};
+	trav(t,x) cum.pb(cum.bk+t);
+}
+
+int main() {
+	setIO(); re(n,q);
+	x.rsz(n); re(x);
+	build();
+	vpi upd;
+	F0R(i,q) {
+		int t,a,b; re(t,a,b);
+		if (t == 1) {
+			a --;
+			upd.pb({a,b-x[a]}); x[a] = b;
+		} else {
+			ll ans = cum[b]-cum[a-1]; a --, b--;
+			trav(u,upd) if (a <= u.f && u.f <= b) ans += u.s;
+			ps(ans);
+		}
+		if (sz(upd)*sz(upd) >= n) upd.clear(), build();
+	}
+}
+```
+
+## Mo's Algorithm
+
+See CPH 27.3 and the CF link above.
+
+<Resources>
+	<Resource source="CF" title="Mo's Algorithm" url="7383"><i>very</i> brief description</Resource>
+</Resources>
+
+<!-- [A2OJ](https://a2oj.com/category?ID=318) -->
+
+## Additional Notes
+
+Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s) can be signs that sqrt decomp is intended.
+
+[CPH 262](/CPH.pdf#page=262):
+
+> In practice, it is not necessary to use the exact value of $\sqrt n$ as a parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is different from $\sqrt n$. The optimal parameter depends on the problem and input. For example, if an algorithm often goes through the blocks but rarely inspects single elements inside the blocks, it may be a good idea to divide the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$ elements.
+
+As another example, if an update takes time proportional to the size of one block ($O(n/k)$) while a query takes time proportional to the number of blocks times $\log n$ ($O(k\log n)$) then we can set $k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time $O(\sqrt{n\log n})$.
+
+Solutions with worse complexities are not necessarily slower (at least for problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an instance where a fast $O(n\sqrt n\log n)$ solution passed (where $\log n$ came from a BIT) while an $O(n\sqrt n)$ solution did not ... So constant factors are important!
+
+## On Trees
+
+The techniques mentioned in the blogs below are extremely rare but worth a mention.
+
+<Resources>
+	<Resource source="CF" title="Mo's on Trees" url="43230"></Resource>
+	<Resource source="CF" title="Block Tree" url="46843"></Resource>
+</Resources>
+
+Some more discussion about how sqrt decomp can be used:
+
+<Resources>
+	<Resource
+		source="CF"
+		url="https://codeforces.com/blog/entry/54133"
+		title="SQRT decomposition for beginners"
+	>
+		format isn't great but tree example is ok
+	</Resource>
+</Resources>
+
+## Problems
+
+### A
+
+Problems where the best solution I know of involves sqrt decomp.
+
+<Problems problems={problems.fst} />
+
+### B
+
+Problems that can be solved without it. But you might as well try to use it!!
+
+<Problems problems={problems.bad} />

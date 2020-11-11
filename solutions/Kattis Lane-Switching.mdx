@@ -1,0 +1,86 @@
+---
+id: kattis-laneswitching
+title: ACPC 2017 - Lane Switching
+author: Benjamin Qi
+---
+
+**Time Complexity**: $\mathcal{O}(M(\log M+\log R))$
+
+Similar to the previous two problems in this module, we can binary search on the answer. However, there's a bit more implementation involved because we need to construct the graph first. Each vertex in the graph corresponds to a range of unoccupied space in a lane, and we draw an edge between two vertices with weight equal to the length of their vertical intersection.
+
+```cpp
+int N,M,R;
+vpi todo[100], range[100];
+int ind = 0; 
+array<int,3> st; // your car (starting position)
+
+vector<vi> label;
+vector<vpi> adj;
+vi col;
+vb vis;
+
+void dfs(int x, int lo) {
+	if (vis[x]) return;
+	vis[x] = 1;
+	trav(t,adj[x]) if (t.s >= lo+st[1]) dfs(t.f,lo); 
+	// car has length st[1], lo/2 empty space on both sides
+}
+
+bool ok(int lo) {
+	vis = vb(sz(adj),0);
+	dfs(ind,lo); // dfs from start vertex
+	F0R(i,sz(vis)) if (vis[i] && col[i] == N-1) return 1;
+	return 0;
+}
+
+void ae(pi a, pi b) { // add an undirected edge to the graph
+	int A = label[a.f][a.s], B = label[b.f][b.s];
+	assert(A < sz(adj) && B < sz(adj));
+	int len = min(range[a.f][a.s].s,range[b.f][b.s].s)
+			-max(range[a.f][a.s].f,range[b.f][b.s].f);
+	adj[A].pb({B,len}), adj[B].pb({A,len});
+}
+
+int main() {
+	setIO(); re(N,M,R);
+	F0R(i,M) {
+		int num, len, dist; re(num,len,dist);
+		if (i == 0) st = {num,len,dist};
+		else todo[num].pb({dist,len});
+	}
+	assert(st[0] == 0);
+	F0R(i,N) {
+		todo[i].pb({R,0});
+		sort(all(todo[i]));
+		int cur = 0;
+		trav(t,todo[i]) {
+			if (cur < t.f) range[i].pb({cur,t.f});
+			cur = t.f+t.s;
+		}
+	}
+	while (ind < sz(range[0]) && range[0][ind].s <= st[2]) ind ++;
+	int hi = R;
+	ckmin(hi,2*(st[2]-range[0][ind].f));
+	ckmin(hi,2*(range[0][ind].s-st[1]-st[2]));
+	assert(hi >= 0);
+	label.rsz(N);
+	int num = 0;
+	F0R(i,N) trav(t,range[i]) {
+		label[i].pb(num++);
+		col.pb(i); vis.eb(); adj.eb();
+	}
+	F0R(i,N-1) { // construct edges of graph
+		int l = 0, r = 0;
+		while (l < sz(range[i]) && r < sz(range[i+1])) {
+			ae({i,l},{i+1,r});
+			if (range[i][l].s <= range[i+1][r].s) l ++;
+			else r ++;
+		}
+	}
+	if (!ok(0)) {
+		ps("Impossible");
+		exit(0);
+	}
+	cout << fixed << setprecision(1) << (db)lstTrue(0,hi,ok)/2 << "\n";
+}
+```
