@@ -570,9 +570,11 @@ void search() {
 		return;
 	}
 	F0R(i,26) if (cnt[i]) {
-		cnt[i] --; perm += char('a'+i);
+		-- cnt[i]; 
+		perm += char('a'+i);
 		search();
-		cnt[i] ++; perm.pop_back();
+		++ cnt[i]; 
+		perm.pop_back();
 	}
 }
 
@@ -586,6 +588,58 @@ int main() {
 ```
 
 </CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String s, perm;
+	static ArrayList<String> perms;
+	static int N, cnt[];
+		
+	static void search() {
+		if (perm.length() == s.length()) {
+			perms.add(perm);
+			return;
+		}
+		for (int i = 0; i < 26; ++i) {
+			if (cnt[i] > 0) {
+				--cnt[i];
+				perm += (char)(i + 'a');
+				search();
+				++cnt[i];
+				perm = perm.substring(0, perm.length() - 1); //removes last character
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		s = br.readLine();
+		N = s.length();
+		cnt = new int[26];
+		perms = new ArrayList<String>();
+		perm = "";
+		for (int i = 0; i < N; ++i) {
+			int index = (int)(s.charAt(i) - 'a');
+			++cnt[index];
+		}
+		search();
+		Collections.sort(perms);
+		System.out.println(perms.size());
+		for (String i : perms) {
+			System.out.println(i);
+		}
+		br.close();
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -914,7 +968,7 @@ int ans = 0;
  
 void dfs(int r) { // place queen in r-th row
 	if (r == 8) {
-		ans ++; // found valid placement
+		++ ans; // found valid placement
 		return;
 	}
 	F0R(i,8) if (g[r][i] == '.' && !c[i] && !sum[i+r] && !dif[i-r+7]) {
@@ -931,6 +985,47 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String g[];
+	static boolean sum[], dif[], c[];
+	static int ans = 0;
+	static void dfs(int r) { //place queen in row r
+		if (r == 8) {
+			++ ans; 
+			return;
+		}
+		for (int i = 0; i < 8; ++i) {
+			if(g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
+				c[i] = sum[i + r] = dif[i - r + 7] = true;
+				dfs(r + 1);
+				c[i] = sum[i + r] = dif[i - r + 7] = false;
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		g = new String[8];
+		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
+		for(int i = 0; i < 8; ++i) {
+			g[i] = br.readLine();
+		}
+		dfs(0);
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 #### Pruning
