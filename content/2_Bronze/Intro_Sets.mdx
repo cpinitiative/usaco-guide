@@ -1,7 +1,7 @@
 ---
 id: intro-sets
 title: Introduction to Sets & Maps
-author: Darren Yao, Benjamin Qi, Allen Li
+author: Darren Yao, Benjamin Qi, Allen Li, DRGSH
 description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
 frequency: 2
 prerequisites:
@@ -314,15 +314,8 @@ public class DistinctNumbers {
 
 ```py
 n = int(input())
-arr = [int(x) for x in input().split()]
-arr = sorted(arr)
-
-ans = 1
-for i in range(n - 1):
-    if arr[i] != arr[i + 1]:
-        ans += 1
-
-print(ans)
+arr = sorted([int(x) for x in input().split()])
+print(1+sum(a != b for a,b in zip(arr,arr[1:]))
 ```
 
 </PySection>
@@ -387,14 +380,14 @@ System.out.println(map.containsKey(1)); // true
 Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have $O(1)$ insertion, deletion, and searches.
 
 ```py
-dict = {}
-dict[1] = 5 # [(1, 5)]
-dict[3] = 14 # [(1, 5); (3, 14)]
-dict[2] = 7 # [(1, 5); (2, 7); (3, 14)]
-del dict[2] # [(1, 5); (3, 14)]
-print(dict[1]) # 5
-print(7 in dict.keys()) # False
-print(1 in dict.keys()) # True
+d = {}
+d[1] = 5 # [(1, 5)]
+d[3] = 14 # [(1, 5); (3, 14)]
+d[2] = 7 # [(1, 5); (2, 7); (3, 14)]
+del d[2] # [(1, 5); (3, 14)]
+print(d[1]) # 5
+print(7 in d) # False
+print(1 in d) # True
 ```
 
 </PySection>
@@ -462,12 +455,14 @@ for (int k : m.keySet()){
 
 <PySection>
 
-To iterate over dicts, you can use a `for` loop over the keys of the dict.
+To iterate over `dict`s, you can use a `for` loop over the `(key, value)` pairs of the `dict`.
 
 ```py
-for key in dict.keys():
-    print(f'{key} {dict[key]}')
+for key,value in d.items():
+    print(f'{key} {value}')
 ```
+
+Keys will be returned in order of insertion time in [recent versions of Python](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
 
 </PySection>
 
@@ -475,16 +470,113 @@ for key in dict.keys():
 
 ### Inserting / Deleting Keys While Iterating
 
-While you are free to change the *values* in a map when iterating over it (as demonstrated above), be careful about inserting and deleting keys while iterating. This code will work:
+While you are free to change the *values* in a map when iterating over it (as demonstrated above), be careful about inserting and deleting keys while iterating. 
 
 <LanguageSection>
 
+<PySection>
+
+This code will give a runtime error (although similar code *will* create a `map` with 11 entries in C++):
+
+```py
+def iterate_insert():
+	d = {0:0}
+
+	for key in d:
+		if key == 10:
+			break
+		d[key] = 5
+		d[key+1] = 0
+	
+	print("ENTRIES:")
+	for key,value in d.items():
+		print(key,value)
+
+iterate_insert()
+```
+
+```
+Traceback (most recent call last):
+  File "test.py", line 17, in <module>
+    iterate_insert()
+  File "test.py", line 7, in iterate_insert
+    for key in d:
+RuntimeError: dictionary changed size during iteration
+```
+
+If you want to remove every third entry from a map, one way is to just create a new map.
+
+```py
+def iterate_remove_ok():
+	d1,d2 = {i:i for i in range(10)},dict()
+	cnt = 0
+	for key,value in d1.items():
+		print("CURRENT KEY: ",key)
+		cnt += 1
+		if cnt%3 != 0:
+			d2[key] = value
+		
+	print()    
+	print("REMAINING ENTRIES:")
+	for key,value in d2.items():
+		print(key,value)
+
+iterate_remove_ok()
+
+# CURRENT KEY:  0
+# CURRENT KEY:  1
+# CURRENT KEY:  2
+# CURRENT KEY:  3
+# CURRENT KEY:  4
+# CURRENT KEY:  5
+# CURRENT KEY:  6
+# CURRENT KEY:  7
+# CURRENT KEY:  8
+# CURRENT KEY:  9
+
+# REMAINING ENTRIES:
+# 0 0
+# 1 1
+# 3 3
+# 4 4
+# 6 6
+# 7 7
+# 9 9
+```
+
+Another is to maintain a list of all the keys you want to delete and remove them after the iteration finishes:
+
+```py
+def iterate_remove_ok2():
+	d = {i:i for i in range(10)}
+	cnt = 0
+	to_remove = []
+	for key in d:
+		print("CURRENT KEY: ",key)
+		cnt += 1
+		if cnt%3 == 0:
+			to_remove.append(key)
+	
+	for key in to_remove:
+		del d[key]
+	print()    
+	print("REMAINING ENTRIES:")
+	for key,value in d.items():
+		print(key,value)
+
+iterate_remove_ok2()
+```
+
+</PySection>
+
+
 <CPPSection>
+
+This code will work:
 
 ```cpp
 void iterate_insert() {
-	map<int,int> m;
-	for (int i = 0; i < 10; ++i) m[i] = i;
+	map<int,int> m; m[0] = 0;
 	for (auto& p: m) {
 		if (p.f == 10) break;
 		p.s = 5; 
@@ -511,16 +603,7 @@ ENTRIES:
 */
 ```
 
-</CPPSection>
-
-</LanguageSection>
-
-
 However, consider the following code, which attempts to remove every third entry from a map.
-
-<LanguageSection>
-
-<CPPSection>
 
 ```cpp
 void iterate_remove_bad() {
@@ -640,15 +723,7 @@ REMAINING ENTRIES:
 */
 ```
 
-</CPPSection>
-
-</LanguageSection>
-
 You could also just create a new map instead of removing from the old one.
-
-<LanguageSection>
-
-<CPPSection>
 
 ```cpp
 void iterate_remove_ok_2() {
