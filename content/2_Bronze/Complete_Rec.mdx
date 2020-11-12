@@ -532,9 +532,11 @@ void search() {
 		return;
 	}
 	F0R(i,26) if (cnt[i]) {
-		cnt[i] --; perm += char('a'+i);
+		-- cnt[i]; 
+		perm += char('a'+i);
 		search();
-		cnt[i] ++; perm.pop_back();
+		++ cnt[i]; 
+		perm.pop_back();
 	}
 }
 
@@ -555,18 +557,19 @@ int main() {
 ```java
 import java.util.*;
 import java.io.*;
-public class Main{
+
+public class Main {
 	static String s, perm;
 	static ArrayList<String> perms;
 	static int N, cnt[];
 		
 	static void search() {
-		if(perm.length() == s.length()) {
+		if (perm.length() == s.length()) {
 			perms.add(perm);
 			return;
 		}
-		for(int i = 0; i < 26; ++i) {
-			if(cnt[i] > 0) {
+		for (int i = 0; i < 26; ++i) {
+			if (cnt[i] > 0) {
 				--cnt[i];
 				perm += (char)(i + 'a');
 				search();
@@ -583,20 +586,19 @@ public class Main{
 		cnt = new int[26];
 		perms = new ArrayList<String>();
 		perm = "";
-		for(int i = 0; i < N; ++i) {
+		for (int i = 0; i < N; ++i) {
 			int index = (int)(s.charAt(i) - 'a');
 			++cnt[index];
 		}
 		search();
 		Collections.sort(perms);
 		System.out.println(perms.size());
-		for(String i : perms) {
+		for (String i : perms) {
 			System.out.println(i);
 		}
 		br.close();
 	}
 }
-
 ```
 
 </JavaSection>
