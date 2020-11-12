@@ -876,7 +876,7 @@ int ans = 0;
  
 void dfs(int r) { // place queen in r-th row
 	if (r == 8) {
-		ans ++; // found valid placement
+		++ ans; // found valid placement
 		return;
 	}
 	F0R(i,8) if (g[r][i] == '.' && !c[i] && !sum[i+r] && !dif[i-r+7]) {
@@ -899,15 +899,17 @@ int main() {
 ```java
 import java.util.*;
 import java.io.*;
+
 public class Main {
 	static String g[];
 	static boolean sum[], dif[], c[];
 	static int ans = 0;
 	static void dfs(int r) { //place queen in row r
-		if(r == 8) {
-			++ans; return;
+		if (r == 8) {
+			++ ans; 
+			return;
 		}
-		for(int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 8; ++i) {
 			if(g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
 				c[i] = sum[i + r] = dif[i - r + 7] = true;
 				dfs(r + 1);
