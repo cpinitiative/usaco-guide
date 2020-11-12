@@ -149,6 +149,10 @@ import java.util.*;
 import java.io.*;
 
 class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st = new StringTokenizer("");
+	private String token;
+
 	// standard input
 	public Kattio() { this(System.in,System.out); }
 	public Kattio(InputStream i, OutputStream o) {
@@ -161,33 +165,11 @@ class Kattio extends PrintWriter {
 		r = new BufferedReader(new FileReader(problemName+".in"));
 	}
 
-	public boolean hasMoreTokens() {
-		return peek() != null;
-	}
-
-	public int nextInt() {
-		return Integer.parseInt(next());
-	}
-
-	public double nextDouble() {
-		return Double.parseDouble(next());
-	}
-
-	public long nextLong() {
-		return Long.parseLong(next());
-	}
-
-
-	private BufferedReader r;
-	private String line;
-	private StringTokenizer st;
-	private String token;
-
 	private String peek() {
 		if (token == null)
 			try {
-				while (st == null || !st.hasMoreTokens()) {
-					line = r.readLine();
+				while (!st.hasMoreTokens()) {
+					String line = r.readLine();
 					if (line == null) return null;
 					st = new StringTokenizer(line);
 				}
@@ -195,12 +177,16 @@ class Kattio extends PrintWriter {
 			} catch (IOException e) { }
 		return token;
 	}
-
+	public boolean hasMoreTokens() { return peek() != null; }
 	private String next() {
-		String ans = peek();
+		String ans = peek(); 
 		token = null;
 		return ans;
 	}
+	
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
 }
 
 public class Main {
