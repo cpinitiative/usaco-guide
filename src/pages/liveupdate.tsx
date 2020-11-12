@@ -79,7 +79,7 @@ export default function LiveUpdatePage(props: PageProps) {
                 />
               </div>
               <div
-                className="overflow-y-auto relative z-10"
+                className="overflow-y-auto relative"
                 style={{ maxWidth: 'calc(100% - 310px)' }}
               >
                 <div className="markdown p-4">
