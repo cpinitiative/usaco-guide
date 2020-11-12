@@ -893,6 +893,42 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+	
+```java
+static String g[];
+static boolean sum[], dif[], c[];
+static int ans = 0;
+	
+static void dfs(int r) { //place queen in row r
+	if(r == 8) {
+		++ans; return;
+	}
+	for(int i = 0; i < 8; ++i) {
+		if(g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
+			c[i] = sum[i + r] = dif[i - r + 7] = true;
+			dfs(r + 1);
+			c[i] = sum[i + r] = dif[i - r + 7] = false;
+		}
+	}
+}
+	
+public static void main(String[] args) throws Exception {
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	g = new String[8];
+	sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
+	for(int i = 0; i < 8; ++i) {
+		g[i] = br.readLine();
+	}
+	dfs(0);
+	System.out.println(ans);
+	br.close();
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 #### Pruning
