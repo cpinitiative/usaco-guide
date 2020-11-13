@@ -297,11 +297,11 @@ public class test{
 ```python
 def lstTrue(f, lo, hi):
 	""" Binary Search
-    :param f: (lambda function) check a state
+	:param f: (lambda function) check a state
 	:param lo: (int) lower bound
 	:param hi: (int) upper bound
-    :return res: (int) the maximum x such that f(x) is true
-    """
+	:return res: (int) the maximum x such that f(x) is true
+	"""
 	res = lo-1
 	while lo <= hi:
 		mid = (lo+hi)//2 # find the middle of the current range
@@ -367,15 +367,26 @@ public static int lstTrue(int lo, int hi) {
 
 <PySection>
 
+*Note: it is NOT recommended to use tenary expression in the python implementation of binary search because python tenary expression does not accept statements.*
+
+<Spoiler title="Python ternary expression">
+
 ```python
 def lstTrue(f, lo, hi): # python scoping...
-    lo-=1
-    locs=locals()
-    while locs["lo"] < locs["hi"]:
-        locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
-        exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
-    return locs["lo"]
+	lo-=1
+	locs=locals()
+	while locs["lo"] < locs["hi"]:
+		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
+		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
+	return locs["lo"]
 ```
+
+This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to: 
+
+- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
+- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
+
+</Spoiler>
 
 </PySection>
 
@@ -417,7 +428,7 @@ static long search(){
 
 ```python
 def search():
-    pos = 0
+	pos = 0
 	a = mx = 2E9
 	while a >= 1:
 		while check(pos+a):
@@ -631,12 +642,12 @@ static boolean check(long x){
 # checks whether the number of given operations is sufficient
 # to raise the median of the array to x
 def check(x):
-    operationsNeeded = 0
+	operationsNeeded = 0
 	for i in range((n-1)//2,n):
 		operationsNeeded += max(0, x-v[i])
-    if operationsNeeded <= k:
+	if operationsNeeded <= k:
 		return True
-    else:
+	else:
 		return False
 
 
