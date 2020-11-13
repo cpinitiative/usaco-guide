@@ -20,7 +20,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'About This Guide',
       description:
         "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing'],
+      items: ['using-this-guide', 'modules', 'contributing', 'code-con'],
     },
     {
       name: 'Getting Started',
@@ -29,11 +29,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'intro',
         'choosing-lang',
         'resources-learning-to-code',
-        'running-code',
+        'running-code-online',
         'data-types',
         'io',
         'expected',
-        'code-con',
       ],
     },
     {
@@ -51,11 +50,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Language-Specific',
       items: [
         'factors-choosing',
+        'running-code-locally',
         'cpp-command',
         'debugging',
         'fast-io',
         'generic',
-        'cpp-tips',
+        'lambda',
       ],
     },
     {
@@ -229,6 +229,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'multiplicative',
         'matroid-isect',
         'interactive',
+        'vectorization',
       ],
     },
   ],
