@@ -1,12 +1,13 @@
 ---
 id: usaco-664
 title: USACO December 2016 Bronze - Block Game
-author: Óscar Garries, tickox
+author: Óscar Garries, tickox, Dong Liu
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html)
 
 <LanguageSection>
+	
 <CPPSection>
 
 ## C++ Implementation
@@ -51,4 +52,34 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("blocks.in", "r")
+sys.stdout = open("blocks.out", "w")
+
+def countfreq(s):
+	res = [ 0 for x in range(26) ]
+	for i in range(len(s)):
+		res[ord(s[i])-ord('a')] += 1
+	return res
+
+n = int(input())
+
+ans = [ 0 for x in range(26) ]
+for i in range (n):
+	s1, s2 = input().split()
+	freq1 = countfreq(s1) 
+	freq2 = countfreq(s2)
+	for j in range(26):
+		ans[j] += max(freq1[j], freq2[j])
+for i in ans:
+	print(i)
+```
+
+</PySection>
+
 </LanguageSection>
