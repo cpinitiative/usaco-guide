@@ -102,7 +102,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Misc. Topics',
       description:
         'Most of these require sorting and/or sets as a prerequisite.',
-      items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
+      items: [
+        'prefix-sums',
+        '2P',
+        'binary-search-ans',
+        'greedy',
+        'intro-bitwise',
+      ],
     },
     {
       name: 'Graphs',
