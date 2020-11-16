@@ -144,9 +144,10 @@ export const UserDataProvider = ({ children }) => {
   useFirebase(firebase => {
     let online = new Gathering(firebase);
     online.join();
-    online.onUpdated(function (count) {
-      setOnlineUsers(count);
-    });
+    // Temporarily remove online user count -- it's not very accurate
+    // online.onUpdated(function (count) {
+    //   setOnlineUsers(count);
+    // });
   });
 
   // just once, ask all API's to initialize their values from localStorage
