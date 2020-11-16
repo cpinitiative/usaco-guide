@@ -27,6 +27,21 @@ import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
 import DisqusComments from '../DisqusComments';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
+
+const ForumBanner = () => {
+  return (
+    <div className="fixed bottom-0 right-0 m-4">
+      <OutboundLink
+        className="block shadow-md hover:shadow-lg py-2 px-3 border border-gray-200 dark:border-gray-700 transform hover:-translate-y-2 hover:bg-gray-50 bg-white dark:bg-dark-surface dark-hover:bg-gray-900 transition duration-150 ease-in-out"
+        target="_blank"
+        href="https://forum.usaco.guide/"
+      >
+        Need help? Join the USACO Forum!
+      </OutboundLink>
+    </div>
+  );
+};
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -659,6 +674,7 @@ export default function MarkdownLayout({
         onClose={() => setIsContactUsActive(false)}
         activeModule={markdownData instanceof ModuleInfo ? markdownData : null}
       />
+      <ForumBanner />
     </MarkdownLayoutContext.Provider>
   );
 }
