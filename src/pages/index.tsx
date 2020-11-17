@@ -481,7 +481,7 @@ export default function IndexPage(props: PageProps) {
                         target="_blank"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
-                        USACO Forum
+                        USACO Forum  
                       </OutboundLink>
                       for help.
                     </p>
