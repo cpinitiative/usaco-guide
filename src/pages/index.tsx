@@ -483,7 +483,7 @@ export default function IndexPage(props: PageProps) {
                       >
                         USACO Forum  
                       </OutboundLink>
-                      for help.
+                      {' '}for help.
                     </p>
                   </dd>
                 </div>
