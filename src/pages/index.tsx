@@ -475,7 +475,7 @@ export default function IndexPage(props: PageProps) {
                       If you get stuck, feel free to ask for help by clicking
                       the "Contact Us" button. It may take some time for your
                       question to be addressed. 
-                      You can also head over to the
+                      You can also head over to the{' '}
                       <OutboundLink
                         href="https://forum.usaco.guide"
                         target="_blank"
