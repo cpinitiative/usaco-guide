@@ -4,7 +4,7 @@ title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang, Allen Li
 description: Demonstrates how to read input and print output for USACO contests, including an example problem.
 prerequisites:
-  - data-types
+ - data-types
 ---
 
 export const problems = {
@@ -50,13 +50,11 @@ export const problems = {
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are **standard**.
-
-<FocusProblem problem={problems.cses[0]} />
+In most websites (such as CodeForces and CSES), input and output are **standard**. Here, we'll provide examples that take three integers as input and prints their sum. Feel free to test these out at [ide.thecodingwizard.me](https://ide.thecodingwizard.me)!
 
 <Info title="Out of the methods below, which one should I use?">
 
-Whichever you're most comfortable with!
+It doesn't matter. Whichever you're most comfortable with!
 
 </Info>
 
@@ -71,8 +69,8 @@ Whichever you're most comfortable with!
 using namespace std;
 
 int main() {
-	int x; cin >> x;
-	cout << "FOUND " << x << "\n";
+	int a, b, c; cin >> a >> b >> c;
+	cout << "sum is " << a+b+c << "\n";
 }
 ```
 
@@ -85,7 +83,7 @@ This library includes the `scanf` and `printf` functions, which are slightly mor
 using namespace std;
 
 int main() {
-	int x, y;
+	int a, b, c;
 	// %d specifies that a value of type int is being input.
 	// Use %lld (a few judging platforms might need %I64d)
 	// to input a long long (64-bit) integer.
@@ -93,14 +91,14 @@ int main() {
 	// Be sure to add a & character (address-of operator) when using
 	// scanf, UNLESS you are inputing a string with %s.
 	// It is possible to input multiple values at a time as shown below.
-	scanf("%d%d", &x, &y);
+	scanf("%d%d%d", &a, &b, &c);
 
 	// Specifiers for printf are mostly the same as those used
 	// by scanf, with the notable exception of floating-point numbers.
 	// Use a backslash character followed by the lowercase
 	// letter n to denote a newline.
 	// The address-of operator, &, is not used here.
-	printf("Found %d and %d\n", x, y);
+	printf("sum is %d\n", a+b+c);
 }
 ```
 
@@ -112,77 +110,141 @@ The first method can be sped up so that the difference in speed is not significa
 
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and `System.out.print` to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually.
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. 
 
-Here is a Java template for input and output, which is effectively a faster `Scanner`. We import the entire `util` and `io` libraries for ease of use. Note that this **must** be declared within a file with the same name as the `public class` (so `template.java`) in this case.
+Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
 
 ```java
-import java.io.*;
+/** Simple yet moderately fast I/O routines.
+ *
+ * Example usage:
+ *
+ * Kattio io = new Kattio();
+ *
+ * while (io.hasMoreTokens()) {
+ *    int n = io.nextInt();
+ *    double d = io.nextDouble();
+ *    double ans = d*n;
+ *
+ *    io.println("Answer: " + ans);
+ * }
+ *
+ * io.close();
+ *
+ *
+ * Some notes:
+ *
+ * - When done, you should always do io.close() or io.flush() on the
+ *   Kattio-instance, otherwise, you may lose output.
+ *
+ * - The nextInt(), nextDouble(), and nextLong() methods will throw an
+ *   exception if there is no more data in the input, so it is generally
+ *   a good idea to use hasMoreTokens() to check for end-of-file.
+ *
+ * @author: Kattis
+ */
+
 import java.util.*;
+import java.io.*;
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st = new StringTokenizer("");
+	private String token;
+
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
 	}
-	static InputReader r = new InputReader(System.in);
-	static PrintWriter pw = new PrintWriter(System.out);
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException { 
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	private String peek() {
+		if (token == null)
+			try {
+				while (!st.hasMoreTokens()) {
+					String line = r.readLine();
+					if (line == null) return null;
+					st = new StringTokenizer(line);
+				}
+				token = st.nextToken();
+			} catch (IOException e) { }
+		return token;
+	}
+	public boolean hasMoreTokens() { return peek() != null; }
+	private String next() {
+		String ans = peek(); 
+		token = null;
+		return ans;
+	}
+	
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+
+public class Main {
+	static Kattio io = new Kattio();
 	public static void main(String[] args) {
-
-		// YOUR CODE HERE
-
-		pw.close(); // flushes the output once printing is done
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		io.print("sum is ");
+		io.println(a + b + c);
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
 
-Here's a brief description of the methods in our `InputReader` class, with an instance `r`, and `PrintWriter` with an instance `pw`.
+The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
+
 
 | Method | Description |
 | --- | --- |
-| `r.next()` | Reads the next token (up to a whitespace) and returns a `String` |
-| `r.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
-| `r.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
-| `r.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
-| `pw.println()` | Prints the argument to designated output stream and adds a newline |
-| `pw.print()` | Prints the argument to designated output stream |
+| `io.next()` | Reads the next token (up to a whitespace) and returns a `String` |
+| `io.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
+| `io.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
+| `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
+| `io.println()` | Prints the argument to designated output stream and adds a newline |
+| `io.print()` | Prints the argument to designated output stream |
+| `io.close()` | Closes the output stream and flushes the output |
 
-Here's an example to show how input/output works. Let's say we want to write a program that takes three numbers as input and prints their sum.
+<Warning>
+
+If you don't call [`io.close()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#close()) at the end or [`io.flush()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()), you won't see any output!
+
+</Warning>
+
+<Info title="PrintWriter Buffering">
+
+The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37. But since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered), I don't think including `BufferedOutputStream` is necessary.
+
+Similarly, you may see `PrintWriter`s for file output initialized like the following (ex. [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
 
 ```java
-// InputReader template code above
-static InputReader r = new InputReader(System.in);
-static PrintWriter pw = new PrintWriter(System.out);
-
-public static void main(String[] args) {
-	int a = r.nextInt();
-	int b = r.nextInt();
-	int c = r.nextInt()
-	pw.println(a + b + c);
-	pw.close();
-}
+PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
+
+but 
+
+```java
+PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
+```
+
+should suffice.
+
+</Info>
 
 </JavaSection>
 
 <PySection>
+
+### Python
 
 The most intuitive way to do input/output is using the built in [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print) methods. The `input()` method will return the next line, and can be processed using different python methods. The `print()` method takes in a string and an optional string `end` (defaults to `'\n'`). Below is an annotated demonstration on different input/output scenarios.
 
@@ -216,9 +278,17 @@ n, m = [int(x) for x in input().split()]
 n, m = map(int, input().split())
 ```
 
+
+So taking three integers as input and printing their sum is quite simple:
+
+```py
+a,b,c = map(int, input().split())
+print("sum is",a+b+c)
+```
+
 <IncompleteSection>
 
-redirect to some other source which covers this?
+is there some other source which covers this?
 
 </IncompleteSection>
 
@@ -226,15 +296,17 @@ redirect to some other source which covers this?
 
 </LanguageSection>
 
-## Example Solution - Weird Algorithm
+## Example Problem - Weird Algorithm
+
+<FocusProblem problem={problems.cses[0]} />
+
+Try to implement this yourself!
 
 <Resources>
 	<Resource source="GCP" title="1.3 -  CSES Problem Set" starred>
-		example solution for this problem
+		example C++ solution for this problem
 	</Resource>
 </Resources>
-
-Try to implement this yourself!
 
 <LanguageSection>
 
@@ -269,67 +341,76 @@ int main() {
 
 As noted in the resource above, this problem requires _64-bit integers_.
 
-<Spoiler title="With Scanner">
+### Method 1 - `Scanner` and `System.out.print`
+
+<Spoiler title="Method 1">
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class template {
+public class Main {
+	static Scanner r = new Scanner(System.in);
 	public static void main(String[] args) {
-		Scanner r = new Scanner(System.in);
 		long x = r.nextLong();
 		while (x != 1) {
 			System.out.print(x+" ");
 			if (x%2 == 0) x /= 2;
 			else x = 3*x+1;
 		}
-		System.out.print(x);
+		System.out.println(x);
 	}
 }
 ```
 
 </Spoiler>
 
-<Spoiler title="With InputReader / PrintWriter">
+### Method 2 - `BufferedReader` and `PrintWriter`
+
+<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader(InputStream stream) {
-			reader = new BufferedReader(new InputStreamReader(stream), 32768);
-			tokenizer = null;
-		}
-		String next() { // reads in the next string
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-	}
-	static InputReader r = new InputReader(System.in);
+public class Main {
+	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 	static PrintWriter pw = new PrintWriter(System.out);
-	public static void main(String[] args) {
-		long x = r.nextLong();
+	public static void main(String[] args) throws IOException {
+		long x = Long.parseLong(r.readLine());
 		while (x != 1) {
-			pw.print(x+" ");
+			System.out.print(x+" ");
 			if (x%2 == 0) x /= 2;
 			else x = 3*x+1;
 		}
-		pw.print(x);
-		pw.close(); // flushes the output once printing is done
+		pw.println(x);
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
+	}
+}
+```
+
+</Spoiler>
+
+### Method 3 - `Kattio`
+
+Essentially the same as method 2.
+
+<Spoiler title="Method 3">
+
+```java
+// Kattio template code above
+
+public class Main {
+	static Kattio io = new Kattio();
+	public static void main(String[] args) {
+		long x = io.nextLong();
+		while (x != 1) {
+			io.print(x+" ");
+			if (x%2 == 0) x /= 2;
+			else x = 3*x+1;
+		}
+		io.println(x);
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
@@ -405,56 +486,15 @@ int main() {
 
 <JavaSection>
 
-We can slightly modify the template above to support file I/O. Note how `r` and `pw` must be initialized in a different way.
+### Java
 
-```java
-import java.util.*;
-import java.io.*;
-
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader() throws FileNotFoundException {
-			reader = new BufferedReader(new FileReader("problemname.in"));
-			tokenizer = null;
-		}
-		String next() {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
-	}
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		InputReader r = new InputReader();
-		PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
-
-		// YOUR CODE HERE
-
-		pw.close(); // flushes the output once printing is done
-	}
-}
-```
-
-Some sources say to use
-
-```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
-```
-
-on line 28. There is no need to add `BufferedWriter` since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered).
+Again, `BufferedReader` and `PrintWriter` should be used. The provided constructor `public Kattio(String problemName)` handles file input / output for you.
 
 </JavaSection>
 
 <PySection>
+
+### Python
 
 See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
 
@@ -466,6 +506,12 @@ import sys
 sys.stdin = open("problemname.in", "r")
 sys.stdout = open("problemname.out", "w")
 ```
+
+<Warning title="USACO Note">
+
+Since USACO currently uses python 3.4.0, [f-strings](https://realpython.com/python-f-strings/) are not supported (they will result in a missing output file).
+
+</Warning>
 
 </PySection>
 
@@ -490,7 +536,7 @@ Importantly, USACO will automatically add a newline to the end of your file if i
 
 ![bad](Error.png)
 
-For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#example---fence-painting) module.
+For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#naive-solution) module.
 
 <LanguageSection>
 
@@ -499,6 +545,8 @@ For an explanation of the solutions below, check the [Rectangle Geometry](/bronz
 ### Method 1
 
 Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you comment out both of the lines containing `freopen` then the program reads from standard in and writes to standard out as usual.
+
+<Spoiler title="Method 1">
 
 ```cpp
 #include <iostream>
@@ -524,9 +572,13 @@ int main() {
 }
 ```
 
+</Spoiler>
+
 ### Method 2
 
 Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
+
+<Spoiler title="Method 2">
 
 ```cpp
 #include <fstream>
@@ -546,11 +598,16 @@ int main() {
 }
 ```
 
+</Spoiler>
+
+
 </CPPSection>
 
 <JavaSection>
 
-### Method 1 - `Scanner`
+### Method 1 - `Scanner` and `PrintWriter`
+
+<Spoiler title="Method 1">
 
 ```java
 import java.util.*;
@@ -571,18 +628,23 @@ public class template {
 		for (int i = 0; i < 100; i++) ans += cover[i];
 
 		pw.println(ans);
-		pw.close(); // flush output
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
 	}
 }
 ```
 
-### Method 2 - `BufferedReader`
+</Spoiler>
+
+
+### Method 2 - `BufferedReader` and `PrintWriter`
+
+<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class paintSol { // must be declared in paintSol.java
+public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("paint.in"));
 		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
@@ -597,48 +659,35 @@ public class paintSol { // must be declared in paintSol.java
 		for (int i = c; i < d; i++) cover[i] = 1;
 		int ans = 0;
 		for (int i = 0; i < 100; i++) ans += cover[i];
+
 		pw.println(ans);
-		pw.close(); // make sure to include this line -- flushes the output.
+		pw.close(); // make sure to include this line -- closes pw and flushes the output
 	}
 }
 ```
 
-### Method 3 - `InputReader`
 
-Alternatively, we can use the `InputReader` given above. Note how this is almost identical to the code using `Scanner`.
+</Spoiler>
+
+### Method 3 - `Kattio`
+
+Essentially the same as method 2. Note how `static` initialization of `io` is different compared to standard input / output since we need to catch [`IOException`](https://docs.oracle.com/javase/7/docs/api/java/io/IOException.html)s.
+
+<Spoiler title="Method 3">
 
 ```java
-import java.util.*;
-import java.io.*;
+// Kattio template code above
 
-public class template {
-	static class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		public InputReader() throws FileNotFoundException {
-			reader = new BufferedReader(new FileReader("paint.in"));
-			tokenizer = null;
-		}
-		String next() {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				try {
-					tokenizer = new StringTokenizer(reader.readLine());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			return tokenizer.nextToken();
-		}
-		public int nextInt() { return Integer.parseInt(next()); }
-		public long nextLong() { return Long.parseLong(next()); }
-		public double nextDouble() { return Double.parseDouble(next()); }
+public class Main {
+	static Kattio io;
+	static {
+		try {
+			io = new Kattio("paint");
+		} catch(IOException e) {}
 	}
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		InputReader r = new InputReader();
-		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
-
-		int a = r.nextInt(), b = r.nextInt();
-		int c = r.nextInt(), d = r.nextInt();
+	public static void main(String[] args) {
+		int a = io.nextInt(), b = io.nextInt();
+		int c = io.nextInt(), d = io.nextInt();
 
 		int[] cover = new int[100];
 		for (int i = a; i < b; i++) cover[i] = 1;
@@ -646,17 +695,48 @@ public class template {
 		int ans = 0;
 		for (int i = 0; i < 100; i++) ans += cover[i];
 
-		pw.println(ans);
-		pw.close(); // flush output
+		io.println(ans);
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
+
+</Spoiler>
 
 </JavaSection>
 
 <PySection>
 
-Redirecting file input using `sys`,
+### Method 1
+
+
+<Spoiler title="Method 1">
+
+```py
+with open('paint.in','r') as inp:
+	cover = [0] * 100
+	lines = [line for line in inp]
+	a, b = map(int,lines[0].split())
+	c, d = map(int,lines[1].split())
+	for i in range(a, b):
+		cover[i] = 1
+	for i in range(c, d):
+		cover[i] = 1
+	ans = 0
+	for i in range(100):
+		ans += cover[i]
+	with open('paint.out','w') as out:
+		print(ans,file=out)
+		# or out.write(str(ans))
+```
+
+</Spoiler>
+
+### Method 2
+
+Redirecting file input using `sys`, as mentioned above.
+
+<Spoiler title="Method 2">
 
 ```py
 import sys
@@ -676,25 +756,8 @@ for i in range(100):
 print(ans)
 ```
 
-Alternatively,
+</Spoiler>
 
-```py
-with open('paint.in','r') as inp:
-	cover = [0] * 100
-	lines = [line for line in inp]
-	a, b = map(int,lines[0].split())
-	c, d = map(int,lines[1].split())
-	for i in range(a, b):
-		cover[i] = 1
-	for i in range(c, d):
-		cover[i] = 1
-	ans = 0
-	for i in range(100):
-		ans += cover[i]
-	with open('paint.out','w') as out:
-		print(ans,file=out)
-		# or out.write(str(ans))
-```
 
 </PySection>
 

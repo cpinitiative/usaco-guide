@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Transition from '../Transition';
 import { ModuleProgressOptions } from '../../models/module';
+
 const MarkCompleteButton = ({
   state,
   onChange,
@@ -16,7 +17,6 @@ const MarkCompleteButton = ({
     onChange(option);
   };
   const ref = React.useRef();
-
   React.useEffect(() => {
     const handleClick = e => {
       // @ts-ignore
@@ -96,21 +96,32 @@ const MarkCompleteButton = ({
             />
           </svg>
         );
+      default:
+        return null;
     }
   };
+
   return (
     <div className="relative inline-block text-left" ref={ref}>
       <div>
         <span className="rounded-md shadow-sm">
           <button
             type="button"
-            className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 px-4 py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150"
+            className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
+              state === 'Not Started' ? 'pl-4' : 'pl-3'
+            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"
             onClick={() => setShow(!show)}
           >
-            {state}
+            {icon(state)}
+            <span
+              className={`flex-1${state === 'Not Started' ? '' : ' ml-1.5'}`}
+            >
+              {state}
+            </span>
+
             <svg
               className="-mr-1 ml-2 h-5 w-5"
               viewBox="0 0 20 20"

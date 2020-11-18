@@ -4,7 +4,8 @@ import Img from 'gatsby-image';
 import { useContext, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
-// note: cows will be unlocked in reverse order test
+// note: cows will be unlocked in reverse order
+
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   const [milliseconds, setMilliseconds] = React.useState(
     tomorrowMilliseconds - Date.now()

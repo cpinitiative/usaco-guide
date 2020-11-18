@@ -8,6 +8,8 @@ Thank you to the following companies:
 
 - [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), for providing free hosting & continuous deployment
 - [Algolia](https://algolia.com/), for providing search for free
+- [DigitalOcean](https://m.do.co/c/a07c32d07394), for providing hosting credits
+- [Sentry](https://sentry.io/), for sponsoring our error reporting subscription
 
 ## Documentation
 
@@ -30,6 +32,7 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
+- MDX (JSX in Markdown)
 - Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info
