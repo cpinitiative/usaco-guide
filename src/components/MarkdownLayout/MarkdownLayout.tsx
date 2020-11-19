@@ -657,6 +657,9 @@ export default function MarkdownLayout({
                 <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
                 </div>
+
+                {/* Spacing for the USACO Forum popup */}
+                <div className="h-12" />
               </div>
               <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
                 <TableOfContentsSidebar tableOfContents={tableOfContents} />
