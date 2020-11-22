@@ -9,6 +9,7 @@ import ClassContext, { ClassProvider } from '../context/ClassContext';
 import ClassJoinPage from '../components/Classes/ClassJoinPage';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import ModuleConfetti from '../components/MarkdownLayout/ModuleConfetti';
+import { ConfettiProvider } from '../context/ConfettiContext';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -29,22 +30,10 @@ const ClassPageWrapper = (props: {
 };
 
 export default function ClassRouter() {
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
-
   return (
     <Layout>
       <ClassProvider>
-        <MarkdownLayoutContext.Provider
-          value={{
-            markdownLayoutInfo: null,
-            sidebarLinks: [],
-            conf: setIsConfettiActive,
-          }}
-        >
-          <ModuleConfetti
-            show={isConfettiActive}
-            onDone={() => setIsConfettiActive(false)}
-          />
+        <ConfettiProvider>
           <Router basepath="/class">
             <ClassPageWrapper Component={ClassPage} path="/:classId" />
             <ClassPageWrapper Component={ClassJoinPage} path="/:classId/join" />
@@ -62,7 +51,7 @@ export default function ClassRouter() {
             <ClassSelectPage path="/" />
             <NotFoundPageWrapper default />
           </Router>
-        </MarkdownLayoutContext.Provider>
+        </ConfettiProvider>
       </ClassProvider>
     </Layout>
   );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Transition from '../Transition';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import { DiscussionEmbed } from 'disqus-react';
@@ -23,11 +23,13 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
-import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
 import DisqusComments from '../DisqusComments';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import ConfettiContext, {
+  ConfettiProvider,
+} from '../../context/ConfettiContext';
 
 const ForumBanner = () => {
   return (
@@ -266,7 +268,6 @@ export default function MarkdownLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSettingsActive, setIsSettingsActive] = useState(false);
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
@@ -299,14 +300,16 @@ export default function MarkdownLayout({
   ]);
   // console.log(moduleLinks);
 
+  const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(markdownData.id, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
-    )
-      setIsConfettiActive(true);
+    ) {
+      showConfetti();
+    }
   };
 
   // Scroll behavior smooth was causing a number of issues...
@@ -344,13 +347,8 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
-        conf: setIsConfettiActive,
       }}
     >
-      <ModuleConfetti
-        show={isConfettiActive}
-        onDone={() => setIsConfettiActive(false)}
-      />
       <Transition show={isMobileNavOpen} timeout={300}>
         <div className="lg:hidden">
           <div className="fixed inset-0 flex z-40">
