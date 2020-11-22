@@ -1,0 +1,71 @@
+---
+id: joi-15-navigation
+title: JOI 2015 Navigation
+author: Andi Qu
+---
+
+We essentially want to root the tree at $T$ and always move to the parent of the current node until we end up at $T$.
+
+<Spoiler title="Hint 1">
+
+If we know that the island number of a node's parent is always greater than the island number of the node, we can just move to greatest neighbouring island. Unfortunately, this isn't always guaranteed.
+
+Fortunately though, we are given both the island numbers **and** the numbers written on the flags.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Given a pair $(A, B)$ with $A$'s flag already labelled, how can we label $B$'s flag to be able to determine which one of the two islands is the parent?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $L[i]$ denote the label on $i$'s flag. The key observation is that for a node-parent pair $(u, v)$, we only care about $L[u] \oplus L[v]$ instead of $L[u]$ and $L[v]$ individually.
+
+With $L[u] \oplus L[v]$, we can encode whether the parent in the pair has the greater island number. Since each node only has at most one parent, this allows us to find that parent.
+
+`Anna.cpp`
+```cpp
+#include "Annalib.h"
+#include <bits/stdc++.h>
+using namespace std;
+
+static vector<int> graph[100001];
+static int val[100001];
+
+static void dfs(int node, int parent) {
+    val[node] = val[parent] ^ (parent < node);
+    Flag(node, val[node]);
+    for (int i : graph[node]) if (i != parent) dfs(i, node);
+}
+
+
+void Anna(int K, int N, int T, int A[], int B[]) {
+    for (int i = 0; i < N - 1; i++) {
+        graph[A[i]].push_back(B[i]);
+        graph[B[i]].push_back(A[i]);
+    }
+    dfs(T, 0);
+}
+```
+
+`Bruno.cpp`
+```cpp
+#include "Brunolib.h"
+#include <bits/stdc++.h>
+using namespace std;
+
+void Bruno(int K, int S, int F, int L, int P[], int Q[]) {
+    for (int i = 0; i < L; i++) {
+        if (!((P[i] < S) ^ F ^ Q[i])) {
+            Answer(P[i]);
+            return;
+        }
+    }
+    Answer(S);
+}
+```
+
+</Spoiler>
