@@ -1,0 +1,59 @@
+---
+id: ceoi-14-question
+title: CEOI 2014 Question
+author: Andi Qu
+---
+
+We essentially want to construct a $920 \times 920$ matrix $M$ such that:
+- All elements of $M$ are positive integers no greater than 12.
+- Given $x$ and $M_{i, j}$ with $i \neq j$ and either $x = i$ or $x = j$, it's possible to determine whether $x = i$.
+
+<Spoiler title="Hint 1">
+
+The number 920 seems oddly specific. Does it relate to 12 somehow?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+$\binom{12}{6} = 924 > 920$
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+There are 924 subsets of $\{1, 2, \dots, 12\}$ with exactly 6 elements. What can you say about the intersection of any two of these subsets?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+The intersection of any two of the aforementioned subsets is non-empty. Let $S_i$ be the $i$-th such subset.
+
+We can thus simply set $M_{i, j} = x : x \in S_i, x \not \in S_j$ and we are done.
+
+```cpp
+#include "question.h"
+using namespace std;
+
+int sets[925][12];
+
+void Init(int N){
+    for (int i = 0, cnt = 1; i < (1<<12); i++) {
+		if (__builtin_popcount(i) == 6) {
+			for (int j = 0; j < 12; j++) if (i & (1<<j)) sets[cnt][j] = 1; else sets[cnt][j] = 0;
+			cnt++;
+		}
+	}
+}
+
+int Alice(int x,int y){
+    for (int i = 0; i < 12; i++) if (sets[x][i] && !sets[y][i]) return i + 1;
+}
+
+int Bob(int q,int h){
+    return sets[q][h - 1];
+}
+```
+
+</Spoiler>
