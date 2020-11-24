@@ -1,7 +1,7 @@
 ---
 id: simulation
 title: 'Simulation'
-author: Darren Yao, Allen Li
+author: Darren Yao, Allen Li, Siyong Huang
 description: 'Directly simulating the problem statement, which many Bronze problems allow you to do.'
 frequency: 4
 ---
@@ -9,9 +9,11 @@ frequency: 4
 import { Problem } from "../models"
 
 export const problems = {
-    easier: [
+		example: [
       new Problem("Bronze", "Shell Game", "891", "Easy", false, ["Nested Loop"]), // 99.93
       new Problem("Bronze", "Mixing Milk", "855", "Easy", false, ["Single Loop"], "just pour 100 times"), // 99.87
+		],
+    easier: [
       new Problem("Bronze", "Speeding", "568", "Easy", true, ["Nested Loop"], "store speed for each mile"), // 99.05
       new Problem("Bronze", "The Lost Cow", "735", "Easy", false, ["Single Loop"], ""), // 99.46
       new Problem("Bronze", "The Bovine Shuffle", "760", "Easy", false, []), // 100
@@ -37,48 +39,40 @@ Since there's no formal algorithm involved, the intent of the problem is to asse
 
 ## Example 1
 
-### Statement
-
-Alice and Bob are standing on a 2D plane. Alice starts at the point $(0, 0)$, and Bob starts at the point $(R, S)$ ($1 \leq R, S \leq 1000$). Every second, Alice moves $M$ units to the right, and $N$ units up. Every second, Bob moves $P$ units to the left, and $Q$ units down. ($1 \leq M, N, P, Q \leq 10$). Determine if Alice and Bob will ever meet (be at the same point at the same time), and if so, when.
-
-#### Input Format
-
-The first line of the input contains $R$ and $S$.
-
-The second line of the input contains $M$, $N$, $P$, and $Q$.
-
-#### Output Format
-
-Please output a single integer containing the number of seconds after the start at which Alice and Bob meet. If they never meet, please output $-1$.
+<FocusProblem problem={problems.example[0]} />
 
 ### Solution
 
 <Spoiler title="Solution">
 
-We can simulate the process. After inputting the values of $R$, $S$, $M$, $N$, $P$, and $Q$, we can keep track of Alice's and Bob's $x$- and $y$-coordinates. To start, we initialize variables for their respective positions. Alice's coordinates are initially $(0, 0)$, and Bob's coordinates are $(R, S)$ respectively. Every second, we increase Alice's $x$-coordinate by $M$ and her $y$-coordinate by $N$, and decrease Bob's $x$-coordinate by $P$ and his $y$-coordinate by $Q$.
-
-Now, when do we stop? First, if Alice and Bob ever have the same coordinates, then we are done. Also, since Alice strictly moves up and to the right and Bob strictly moves down and to the left, if Alice's $x$- or $y$-coordinates are ever greater than Bob's, then it is impossible for them to meet.
-
-Example code is displayed below. Here, as in other examples, input processing will be omitted.
+We can simulate the process. Store an array that keeps track of which shell is at which location, and Bessie's swapping can be simulated by swapping elements in the array. Then, we can count how many times Elsie guesses each shell, and the maximum points she can earn is the maximum amount of times a shell is guessed. 
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int ax = 0; int ay = 0; // alice's x and y coordinates
-int bx = r; int by = s; // bob's x and y coordinates
-int t = 0; // keep track of the current time
-while(ax < bx && ay < by){
-    // every second, update alice's and bob's coordinates and the time
-    ax += m; ay += n;
-    bx -= p; by -= q;
-    t++;
-}
-if(ax == bx && ay == by){ // if they are in the same location
-    cout << t << endl; // they meet at time t
-} else {
-    cout << -1 << endl; // they never meet
+FILE *in, *out;
+int N, ord[3], cnt[3];
+
+int main()
+{
+	in=fopen("shell.in", "r");
+	out=fopen("shell.out", "w");
+	fscanf(in, "%d", &N);
+	for(int i=0;i<3;++i)
+		ord[i]=i;
+	for(int i=0;i<N;++i)
+	{
+		int a,b,g;
+		fscanf(in, "%d%d%d", &a, &b, &g);
+		--a, --b, --g;
+		swap(ord[a], ord[b]);
+		++cnt[ord[g]];
+	}
+	fprintf(out, "%d\n", max({cnt[0], cnt[1], cnt[2]}));
+	fclose(in); fclose(out);
+	return 0;
 }
 ```
 
@@ -87,21 +81,36 @@ if(ax == bx && ay == by){ // if they are in the same location
 <JavaSection>
 
 ```java
-int ax = 0; int ay = 0; // alice's x and y coordinates
-int bx = r; int by = s; // bob's x and y coordinates
-int t = 0; // keep track of the current time
-while(ax < bx && ay < by){
-    // every second, update alice's and bob's coordinates and the time
-    ax += m; ay += n;
-    bx -= p; by -= q;
-    t++;
+public class shell
+{
+	public static int N;
+	public static BufferedReader reader;
+	public static PrintWriter writer;
+	public static int[] ord = new int[3], cnt = new int[3];
+	public static void main(String[] args) throws IOException
+	{
+		reader = new BufferedReader(new FileReader("shell.in"));
+		writer = new PrintWriter(new FileWriter("shell.out"));
+		StringTokenizer st;
+		for(int i=0;i<3;++i)
+			ord[i]=i;
+		N=Integer.parseInt(reader.readLine());
+		for(int i=0;i<N;++i)
+		{
+			st = new StringTokenizer(reader.readLine());
+			int a=Integer.parseInt(st.nextToken())-1;
+			int b=Integer.parseInt(st.nextToken())-1;
+			int g=Integer.parseInt(st.nextToken())-1;
+			int t=ord[b];
+			ord[b]=ord[a];
+			ord[a]=t;
+			++cnt[ord[g]];
+		}
+		writer.println(Math.max(cnt[0], Math.max(cnt[1], cnt[2])));
+		reader.close();
+		writer.close();
+	}
 }
-if(ax == bx && ay == by){ // if they are in the same location
-    pw.println(t); // they meet at time t
-} else {
-    pw.println(-1); // they never meet
-}
-pw.close(); // flush the output
 ```
 
 </JavaSection>
@@ -109,21 +118,17 @@ pw.close(); // flush the output
 <PySection>
 
 ```py
-ax = 0
-ay = 0
-bx = r
-by = s
-t = 0
-while ax < bx and ay < by:
-    ax += m
-    ay += n
-    bx -= p
-    by -= q
-    t += 1
-if ax == bx and ay == by:
-    print(t)
-else:
-    print(-1)
+inp=open("shell.in", "r")
+out=open("shell.out", "w")
+
+N=int(inp.readline())
+ord=[0,1,2]
+cnt=[0]*3
+for i in range(N):
+	a,b,g=map(int, inp.readline().split())
+	ord[a-1],ord[b-1]=ord[b-1],ord[a-1]
+	cnt[ord[g-1]]+=1
+print(max(cnt), file=out)
 ```
 
 </PySection>
@@ -132,50 +137,46 @@ else:
 
 </Spoiler>
 
-
 ## Example 2
 
-### Statement
-
-There are $N$ buckets ($5 \leq N \leq 10^5$), each with a certain capacity $C_i$ ($1 \leq C_i \leq 100$). One day, after a rainstorm, each bucket is filled with $A_i$ units of water ($1\leq A_i \leq C_i$). Charlie then performs the following process: he pours bucket $1$ into bucket $2$, then bucket $2$ into bucket $3$, and so on, up until pouring bucket $N-1$ into bucket $N$. When Charlie pours bucket $B$ into bucket $B+1$, he pours as much as possible until bucket $B$ is empty or bucket $B+1$ is full. Find out how much water is in each bucket once Charlie is done pouring.
-
-#### Input Format
-
-The first line of the input contains $N$.
-
-The second line of the input contains the capacities of the buckets, $C_1, C_2, \dots, C_N$.
-
-The third line of the input contains the amount of water in each bucket $A_1, A_2, \dots, A_N$.
-
-#### Output Format
-
-Please print one line of output, containing $N$ space-separated integers: the final amount of water in each bucket once Charlie is done pouring.
+<FocusProblem problem={problems.example[1]} />
 
 ### Solution
 
 <Spoiler title="Solution">
 
-Once again, we can simulate the process of pouring one bucket into the next. The amount of milk poured from bucket $B$ to bucket $B+1$ is the smaller of the amount of water in bucket $B$ (after all previous operations have been completed) and the remaining space in bucket $B+1$, which is $C_{B+1} - A_{B+1}$. We can just handle all of these operations in order, using an array $C$ to store the maximum capacities of each bucket, and an array $A$ to store the current water level in each bucket, which we update during the process. Example code is below (note that arrays are zero-indexed, so the indices of our buckets go from $0$ to $N-1$ rather than from $1$ to $N$).
+We can simulate the process of pouring buckets. The amount of milk poured from bucket $i$ to bucket $j$ is the smaller of the amount of milk in bucket $i$ (which is $m_i$) and the remaining space in bucket $j$ (which is $c_j - m_j$). We can just handle all of these operations in order, using an array $c$ to store the maximum capacities of each bucket, and an array $m$ to store the current milk level in each bucket, which we update during the process. Example code is below.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-for(int i = 0; i < n-1; i++){
-    int amt = min(A[i], C[i+1]-A[i+1]);
-    // the amount of water to be poured is the lesser of
-    // the amount of water in the current bucket and
-    // the amount of additional water that the next bucket can hold
-    A[i] -= amt; // remove the amount from the current bucket
-    A[i+1] += amt; // add it to the next bucket
+const int N = 3;
+
+FILE *in, *out;
+int c[N], m[N];
+
+void pour(int i, int j)
+{
+	int amt=min(m[i], c[j]-m[j]);
+	m[i] -= amt;
+	m[j] += amt;
 }
 
-for(int i = 0; i < n; i++){
-    cout << A[i] << " ";
-    // print the amount of water in each bucket at the end
+int main()
+{
+	in=fopen("mixmilk.in", "r");
+    out=fopen("mixmilk.out", "w");
+	for(int i=0;i<N;++i)
+		fscanf(in, "%d%d", c+i, m+i);
+	for(int i=0;i<100;++i)
+		pour(i%N, (i+1)%N);
+	for(int i=0;i<N;++i)
+		fprintf(out, "%d\n", m[i]);
+	fclose(in); fclose(out);
+	return 0;
 }
-cout << endl;
 ```
 
 </CPPSection>
@@ -183,21 +184,37 @@ cout << endl;
 <JavaSection>
 
 ```java
-for(int i = 0; i < n-1; i++){
-    int amt = Math.min(A[i], C[i+1]-A[i+1]);
-    // the amount of water to be poured is the lesser of
-    // the amount of water in the current bucket and
-    // the amount of additional water that the next bucket can hold
-    A[i] -= amt; // remove the amount from the current bucket
-    A[i+1] += amt; // add it to the next bucket
+public class mixmilk
+{
+	public static final int N = 3;
+	public static BufferedReader reader;
+	public static PrintWriter writer;
+	public static int[] c = new int[N], m = new int[N];
+	public static void pour(int i, int j)
+	{
+		int amt=Math.min(m[i], c[j]-m[j]);
+		m[i]-=amt;
+		m[j]+=amt;
+	}
+	public static void main(String[] args) throws IOException
+	{
+		reader = new BufferedReader(new FileReader("mixmilk.in"));
+		writer = new PrintWriter(new FileWriter("mixmilk.out"));
+		StringTokenizer st;
+		for(int i=0;i<N;++i)
+		{
+			st = new StringTokenizer(reader.readLine());
+			c[i] = Integer.parseInt(st.nextToken());
+			m[i] = Integer.parseInt(st.nextToken());
+		}
+		for(int i=0;i<100;++i)
+			pour(i%N, (i+1)%N);
+		for(int i=0;i<N;++i)
+			writer.println(m[i]);
+		reader.close();
+		writer.close();
+	}
 }
-
-for(int i = 0; i < n; i++){
-    pw.print(A[i] + " ");
-    // print the amount of water in each bucket at the end
-}
-pw.println(); // print newline
-pw.close(); // flush the output
 ```
 
 </JavaSection>
@@ -205,15 +222,22 @@ pw.close(); // flush the output
 <PySection>
 
 ```py
-for i in range(n - 1):
-    amt = min(A[i], C[i + 1] - A[i + 1])
-    A[i] -= amt
-    A[i + 1] += amt
+inp = open("mixmilk.in", "r")
+out = open("mixmilk.out", "w")
 
-for i in range(n):
-    print(A[i], end=" ")
-
-print()
+N=3
+c=[0]*N
+m=[0]*N
+def pour(i, j):
+	amt = min(m[i], c[j]-m[j])
+	m[i] -= amt
+	m[j] += amt
+for i in range(N):
+	c[i],m[i]=map(int, inp.readline().split())
+for i in range(100):
+	pour(i%N, (i+1)%N)
+for i in range(N):
+	print(m[i], file=out)
 ```
 
 </PySection>
