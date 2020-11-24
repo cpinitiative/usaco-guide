@@ -173,7 +173,7 @@ export const UserDataProvider = ({ children }) => {
             if (localDataIsNotEmpty) {
               if (
                 confirm(
-                  `Upload local progress to server? Recommended: choose yes! (You'll lose your local progress if you choose no.)`
+                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
