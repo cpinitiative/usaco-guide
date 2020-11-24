@@ -381,11 +381,11 @@ export default function ClassLayout({
                     aria-modal="true"
                     aria-labelledby="modal-headline"
                   >
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">
                         <div className="text-center sm:text-left">
                           <h3
-                            className="text-lg leading-6 font-medium text-gray-900"
+                            className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                             id="modal-headline"
                           >
                             {students.length} Class Member
@@ -397,7 +397,7 @@ export default function ClassLayout({
                                 <span className="inline-flex rounded-md shadow-sm">
                                   <button
                                     type="button"
-                                    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                                     onClick={() => refreshStudentNames()}
                                   >
                                     Refresh Names
@@ -420,7 +420,7 @@ export default function ClassLayout({
                                   <div className="ml-3 text-sm leading-5">
                                     <label
                                       htmlFor="add-instructor-also-make-admin"
-                                      className="font-medium text-gray-700"
+                                      className="font-medium text-gray-700 dark:text-gray-300"
                                     >
                                       Show Emails
                                     </label>
@@ -438,7 +438,11 @@ export default function ClassLayout({
                                       <li key={uid}>
                                         {name}{' '}
                                         {membersModalShowEmail && (
-                                          <span className={'text-gray-700'}>
+                                          <span
+                                            className={
+                                              'text-gray-700 dark:text-gray-300'
+                                            }
+                                          >
                                             ({email})
                                           </span>
                                         )}{' '}
@@ -456,12 +460,12 @@ export default function ClassLayout({
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-600">
                       <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                         <button
                           type="button"
                           onClick={() => setShowMembersModal(false)}
-                          className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                          className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                         >
                           Close
                         </button>
