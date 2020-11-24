@@ -127,7 +127,7 @@ export default function AssignmentProgressView({
         {typeof window !== 'undefined' && (
           <ReactDataGrid
             columns={[
-              { key: 'name', name: 'Name', frozen: true, width: 160 },
+              { key: 'name', name: 'Name', frozen: true, width: 220 },
               ...(showStudentEmails
                 ? [{ key: 'email', name: 'Email', width: 200 }]
                 : []),
