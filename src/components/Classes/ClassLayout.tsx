@@ -49,7 +49,6 @@ export default function ClassLayout({
 
   React.useEffect(() => {
     if (!data || !data.name || !userClasses) return;
-    console.log(userClasses, data);
     if (
       userClasses.find(c => c.id === classId)?.name &&
       userClasses.find(c => c.id === classId).name !== data.name
