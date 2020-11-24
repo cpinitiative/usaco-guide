@@ -1,0 +1,46 @@
+---
+id: usaco-722
+title: USACO Feb 2017 Plat - Why Did the Cow Cross the Road III
+author: Benjamin Qi
+---
+
+[External Solution](http://www.usaco.org/current/data/sol_friendcross_platinum_feb17.html)
+
+Easy with the offline 2D BIT mentioned in the module. 
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+**Memory Complexity:** $\mathcal{O}(N\log N)$
+
+```cpp
+OffBIT2D<int,100005> OB;
+int N, K;
+
+int main() {
+	setIO("friendcross"); re(N,K);
+	vpi pos(N+1);
+	FOR(i,1,N+1) {
+		int x; re(x);
+		pos[x].f = i;
+	}
+	FOR(i,1,N+1) {
+		int x; re(x);
+		pos[x].s = i;
+	}
+	FOR(i,1,N+1) OB.upd(pos[i].f,pos[i].s,1);
+	OB.init();
+	ll ans = 0;
+	int ind = 1;
+	FOR(i,1,N+1) {
+		while (ind < i-K) {
+			OB.upd(pos[ind].f,pos[ind].s,1);
+			++ ind;
+		}
+		ans += OB.query(pos[i].f,N)+OB.query(N,pos[i].s)-2*OB.query(pos[i].f,pos[i].s);
+		// add unfriendly crossing pairs with cow i and some cow < i
+	}
+	ps(ans);
+}
+```
+
+Can also apply divide & conquer as described in the module.
