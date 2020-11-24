@@ -8,6 +8,7 @@ export default function AssignmentProgressView({
   problems,
   students,
   instructors,
+  title,
 }) {
   const firebase = useContext(FirebaseContext);
   const { darkMode } = useContext(UserDataContext);
@@ -87,7 +88,7 @@ export default function AssignmentProgressView({
   }, [students, firebase]);
   return (
     <div className={'my-6'}>
-      <h3 className={'text-xl leading-9 font-bold'}>Student Progress</h3>
+      <h3 className={'text-xl leading-9 font-bold'}>{title}</h3>
       <p className={'my-2'}>
         <b>✓</b> Solved | <b>IP</b> In Progress | <b>-</b> Skipped | <b>--</b>{' '}
         Ignored |{' '}
@@ -123,21 +124,23 @@ export default function AssignmentProgressView({
           (darkMode ? 'assignment-progress-dark' : 'assignment-progress-light')
         }
       >
-        <ReactDataGrid
-          columns={[
-            { key: 'name', name: 'Name', frozen: true, width: 160 },
-            ...(showStudentEmails
-              ? [{ key: 'email', name: 'Email', width: 200 }]
-              : []),
-            ...problems.map(p => ({
-              key: p.id,
-              name: p.name,
-              width: Math.max(p.name.length * 10 + 5, 100),
-            })),
-          ]}
-          rowGetter={i => rows[i]}
-          rowsCount={rows.length}
-        />
+        {typeof window !== 'undefined' && (
+          <ReactDataGrid
+            columns={[
+              { key: 'name', name: 'Name', frozen: true, width: 160 },
+              ...(showStudentEmails
+                ? [{ key: 'email', name: 'Email', width: 200 }]
+                : []),
+              ...problems.map(p => ({
+                key: p.id,
+                name: p.name,
+                width: Math.max(p.name.length * 10 + 5, 100),
+              })),
+            ]}
+            rowGetter={i => rows[i]}
+            rowsCount={rows.length}
+          />
+        )}
       </div>
       <p className="my-2">
         <a

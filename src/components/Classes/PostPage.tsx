@@ -16,7 +16,7 @@ import { Problem } from '../../models/problem';
 import { format } from './ClassPage';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import ProblemSelect from './ProblemSelect';
-import AssignmentProgressView from './AssignmentProgressView';
+import AssignmentProgressView from './LoadableAssignmentProgressView';
 export interface ProblemJSON {
   division: string | null;
   moduleId: string | null;
@@ -539,7 +539,7 @@ export default function PostPage(props: {
               postProblems.length > 0 && (
                 <AssignmentProgressView
                   problems={postProblems}
-                  classId={classId}
+                  title={'Student Progress'}
                   students={students}
                   instructors={data.instructors}
                 />
