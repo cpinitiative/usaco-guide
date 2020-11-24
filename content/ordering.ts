@@ -126,7 +126,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis', 'dp-nt'],
+      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis'],
     },
     {
       name: 'Graphs',
