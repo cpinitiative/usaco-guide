@@ -39,7 +39,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
   );
   const { userProgressOnProblems } = useContext(UserDataContext);
   const studentsNotInstructors = useMemo(
-    () => students.filter(student => !data.instructors.includes(student.id)),
+    () => students.filter(student => !data?.instructors?.includes(student.id)),
     [students, data?.instructors]
   );
   if (loading || !data || error) {
@@ -195,19 +195,20 @@ export default function ClassPage(props: { path: string }): ReactElement {
                   <p className={'py-5'}>No Homework Yet!</p>
                 ))}
               <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                {data?.assignments
-                  .filter(a => isInstructor || a.published)
-                  .sort((a, b) => /* DESC */ b.sort - a.sort)
-                  .map(assignment => (
-                    <HomeworkAssignmentSummary
-                      key={assignment.id}
-                      assignment={assignment}
-                      classId={classId}
-                      isInstructor={isInstructor}
-                      studentsNotInstructors={studentsNotInstructors}
-                      userProgressOnProblems={userProgressOnProblems}
-                    />
-                  ))}
+                {data?.assignments &&
+                  data.assignments
+                    .filter(a => isInstructor || a.published)
+                    .sort((a, b) => /* DESC */ b.sort - a.sort)
+                    .map(assignment => (
+                      <HomeworkAssignmentSummary
+                        key={assignment.id}
+                        assignment={assignment}
+                        classId={classId}
+                        isInstructor={isInstructor}
+                        studentsNotInstructors={studentsNotInstructors}
+                        userProgressOnProblems={userProgressOnProblems}
+                      />
+                    ))}
               </ul>
               {/*<div className="py-4 text-sm leading-5 border-t border-gray-200">*/}
               {/*  <Link*/}

@@ -153,7 +153,13 @@ export default function HomeworkAssignmentSummary({
                 : 'No Due Date'}
             </p>
 
-            <p className="text-sm leading-5 text-gray-500">{completionText}</p>
+            {
+              <p className="text-sm leading-5 text-gray-500">
+                {assignment.problems.length > 0
+                  ? completionText
+                  : 'No Attached Problems'}
+              </p>
+            }
           </div>
         </div>
       </Link>

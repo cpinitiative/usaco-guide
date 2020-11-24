@@ -1,16 +1,10 @@
-import Select from 'react-select';
 import * as React from 'react';
-import Markdown from 'react-markdown';
-import CodeBlock from '../markdown/CodeBlock/CodeBlock';
-import ReactDOMServer from 'react-dom/server';
 import 'flatpickr/dist/themes/material_blue.css';
-
 import Flatpickr from 'react-flatpickr';
 import DynamicMarkdownRenderer from '../DynamicMarkdownRenderer';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import { graphql, Link, navigate, useStaticQuery } from 'gatsby';
-import * as Icons from 'heroicons-react';
+import { graphql, navigate, useStaticQuery } from 'gatsby';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
@@ -18,10 +12,11 @@ import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
 import ConfirmationModal from './ConfirmModal';
 import FirebaseContext from '../../context/FirebaseContext';
-import { ProblemsList } from '../markdown/ProblemsList/ProblemsList';
 import { Problem } from '../../models/problem';
 import { format } from './ClassPage';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import ProblemSelect from './ProblemSelect';
+import AssignmentProgressView from './AssignmentProgressView';
 export interface ProblemJSON {
   division: string | null;
   moduleId: string | null;
@@ -97,7 +92,9 @@ export default function PostPage(props: {
 
   const firebase = useContext(FirebaseContext);
   const { darkMode } = useContext(UserDataContext);
-  const { loading, error, data, isInstructor } = useContext(ClassContext);
+  const { loading, error, data, isInstructor, students } = useContext(
+    ClassContext
+  );
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
@@ -523,175 +520,33 @@ export default function PostPage(props: {
               </div>
             )}
             {type === 'assignment' && (
-              <div>
-                {edit ? (
-                  <>
-                    <h3 className={'text-xl leading-9 font-bold'}>
-                      Attached Problems
-                    </h3>
-                    {problems.length === 0 && <p>No Problems Attached Yet</p>}
-                    <ul className={'list-disc ml-5'}>
-                      {problems.map((problem, i, arr) => (
-                        <li key={problem.uniqueID}>
-                          {problem.division === 'adv'
-                            ? 'Advanced'
-                            : problem.division.charAt(0).toUpperCase() +
-                              problem.division.substring(1)}{' '}
-                          {problem.moduleTitle} /{' '}
-                          <a
-                            className={
-                              'text-blue-600 hover:underline active:text-blue-900 focus:bold'
-                            }
-                            href={problem.url}
-                            target={'_blank'}
-                            rel={'noopener noreferrer'}
-                          >
-                            {problem.name}
-                          </a>{' '}
-                          ({problem.difficulty}) ({problem.source}) (
-                          <button
-                            disabled={i === 0}
-                            className={
-                              i == 0
-                                ? 'text-gray-700 dark:text-gray-200 cursor-text'
-                                : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
-                            }
-                            onClick={() =>
-                              setProblems(old => {
-                                return [
-                                  ...old.slice(0, i - 1),
-                                  old[i],
-                                  old[i - 1],
-                                  ...(i === arr.length - 1
-                                    ? []
-                                    : old.slice(i + 1)),
-                                ];
-                              })
-                            }
-                          >
-                            Move Up
-                          </button>{' '}
-                          |{' '}
-                          <button
-                            disabled={i == arr.length - 1}
-                            className={
-                              i == arr.length - 1
-                                ? 'text-gray-700 dark:text-gray-200 cursor-text'
-                                : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
-                            }
-                            onClick={() =>
-                              setProblems(old => {
-                                return [
-                                  ...old.slice(0, i),
-                                  old[i + 1],
-                                  old[i],
-                                  ...(i === arr.length - 2
-                                    ? []
-                                    : old.slice(i + 2)),
-                                ];
-                              })
-                            }
-                          >
-                            Move Down
-                          </button>{' '}
-                          |{' '}
-                          <button
-                            className={
-                              'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
-                            }
-                            onClick={() =>
-                              setProblems(old =>
-                                old.filter(p => p.uniqueID !== problem.uniqueID)
-                              )
-                            }
-                          >
-                            Delete
-                          </button>
-                          )
-                        </li>
-                      ))}
-                    </ul>
-                    <h3 className={'text-xl leading-9 font-bold mt-4'}>
-                      Add More Problems
-                    </h3>
-                    <div className={'mt-2'}>
-                      <label className={'bold'}>Division:</label>
-                      <Select
-                        className={'dark:text-gray-900'}
-                        options={searchDivisionOptions}
-                        value={
-                          searchDivisionOptions.find(
-                            o => o.value === searchDivision
-                          ) || ''
-                        }
-                        onChange={o => setSearchDivision(o.value)}
-                      />
-                    </div>
-                    <div className={'mt-2'}>
-                      <label className={'bold'}>Module:</label>
-                      <Select
-                        className={'dark:text-gray-900'}
-                        options={searchModuleOptions}
-                        value={
-                          searchModuleOptions.find(
-                            o => o.value === searchModule
-                          ) || ''
-                        }
-                        onChange={o => setSearchModule(o.value)}
-                      />
-                    </div>
-                    {searchResults.length === 0 && searchModule && (
-                      <p className={'mt-4'}>This module has no problems.</p>
-                    )}
-                    <ul className={'list-disc ml-5 mt-4'}>
-                      {searchResults.map((problem, i, arr) => {
-                        const added = problems.some(
-                          p => p.uniqueID === problem.uniqueID
-                        );
-                        return (
-                          <li key={problem.uniqueID}>
-                            <a
-                              className={
-                                'text-blue-600 hover:underline active:text-blue-900 focus:bold'
-                              }
-                              href={problem.url}
-                              target={'_blank'}
-                              rel={'noopener noreferrer'}
-                            >
-                              {problem.name}
-                            </a>{' '}
-                            ({problem.difficulty}) ({problem.source}) (
-                            <button
-                              className={
-                                added
-                                  ? 'text-gray-800 dark:text-gray-200'
-                                  : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
-                              }
-                              disabled={added}
-                              onClick={() =>
-                                setProblems(old => [...old, problem])
-                              }
-                            >
-                              {added ? 'Added' : 'Add'}
-                            </button>
-                            )
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <div className={'mb-24'}>{/* Spacer */}</div>
-                  </>
-                ) : postProblems?.length > 0 ? (
-                  <ProblemsList problems={postProblems} alwaysHideTags />
-                ) : (
-                  <p>
-                    <i>This assignment has no problems.</i>
-                  </p>
-                )}
-              </div>
+              <ProblemSelect
+                edit={edit}
+                problems={problems}
+                setProblems={setProblems}
+                searchDivision={searchDivision}
+                searchDivisionOptions={searchDivisionOptions}
+                setSearchDivision={setSearchDivision}
+                searchModule={searchModule}
+                searchModuleOptions={searchModuleOptions}
+                setSearchModule={setSearchModule}
+                postProblems={postProblems}
+                searchResults={searchResults}
+              />
             )}
+            {type === 'assignment' &&
+              isInstructor &&
+              postProblems.length > 0 && (
+                <AssignmentProgressView
+                  problems={postProblems}
+                  classId={classId}
+                  students={students}
+                  instructors={data.instructors}
+                />
+              )}
           </div>
         </div>
+
         <ConfirmationModal
           show={showPublishModal}
           setShow={setShowPublishModal}
