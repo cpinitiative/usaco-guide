@@ -171,11 +171,19 @@ export const UserDataProvider = ({ children }) => {
             let localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
+              firebase
+                .database()
+                .ref('analytics/prompt_upload_progress')
+                .set(firebase.database.ServerValue.increment(1));
               if (
                 confirm(
                   `Override server data with local progress? (You'll lose your local progress if you choose no.)`
                 )
               ) {
+                firebase
+                  .database()
+                  .ref('analytics/confirm_upload_progress')
+                  .set(firebase.database.ServerValue.increment(1));
                 // sync all local data with firebase if the firebase account doesn't exist yet
                 firebase
                   .firestore()
@@ -190,6 +198,11 @@ export const UserDataProvider = ({ children }) => {
                     }, {}),
                     { merge: true }
                   );
+              } else {
+                firebase
+                  .database()
+                  .ref('analytics/reject_upload_progress')
+                  .set(firebase.database.ServerValue.increment(1));
               }
             }
           }
