@@ -142,7 +142,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
-        <TopNavigationBar />
+        <TopNavigationBar linkLogoToIndex={true} />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
