@@ -553,7 +553,7 @@ print("new dict:", d)
 
 <CPPSection>
 
-This code will work (adding keys while iterating over the map):
+This code will work (adding keys while iterating over a map):
 
 ```cpp
 void iterate_insert() {
@@ -733,6 +733,75 @@ REMAINING ENTRIES:
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+Modifying a Collection (`Set`, `Map`, etc.) in the middle of a while-loop is unlikely to work, as it will probably cause a [ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html). See the following snippet for an example:
+
+```java
+void iterate_remove_set_BAD() {
+	Set<Integer> s = new TreeSet<Integer>();
+	s.add(0); s.add(1); s.add(2);
+	for(Integer a : s) {
+		s.remove(a); // ConcurrentModificationException thrown!!
+	}
+}
+```
+
+In some cases it would be better to use `Iterator` and the `.remove()` method to remove elements in a set, like in the next code snippet:
+
+```java
+void iterate_remove_set() {
+	Set<Integer> s = new TreeSet<Integer>();
+	//s starts as {0, 1, 2}
+	s.add(0); s.add(1); s.add(2);
+
+	Iterator<Integer> iter = s.iterator();
+	while(iter.hasNext()) {
+		int key = iter.next();
+		if(key == 0 || key == 2)
+			iter.remove();
+	}
+
+	//s ends as {1}
+	System.out.println("ENTRIES:");
+	for(Integer a : s) {
+		System.out.println(a);
+	}
+}	
+
+/*
+ENTRIES:
+1
+ */
+```
+
+However, `Iterator` is not commonly seen in Java, so the best option in most cases if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new collection, and then use that new collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original set. See the following code snippet for an example (it works equivalently to the code above):
+
+```java
+void iterate_remove_set_good() {
+	Set<Integer> s = new TreeSet<Integer>();
+	s.add(0); s.add(1); s.add(2);
+
+	Set<Integer> toRemove = new TreeSet<Integer>();
+	for(Integer a : s) {
+		if(a == 0 || a == 2) toRemove.add(a);
+	}
+
+	s.removeAll(toRemove);
+
+	System.out.println("ENTRIES:");
+	for(Integer a : s) {
+		System.out.println(a);
+	}
+}
+/*
+ENTRIES:
+1
+ */
+```
+
+</JavaSection>
 
 </LanguageSection>
 
