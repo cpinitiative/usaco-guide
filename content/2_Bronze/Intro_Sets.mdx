@@ -736,7 +736,7 @@ REMAINING ENTRIES:
 
 <JavaSection>
 
-Modifying a Collection (`Set`, `Map`, etc.) in the middle of a while-loop is unlikely to work, as it will probably cause a [ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html). See the following snippet for an example:
+Modifying a Collection (`Set`, `Map`, etc.) in the middle of a for-each loop is unlikely to work, as it will probably cause a [ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html). See the following snippet for an example:
 
 ```java
 void iterate_remove_set_BAD() {
@@ -748,7 +748,7 @@ void iterate_remove_set_BAD() {
 }
 ```
 
-In some cases it would be better to use `Iterator` and the `.remove()` method to remove elements in a set, like in the next code snippet:
+One work-around is to use `Iterator` and the `.remove()` method to remove elements while looping over them, like in the next code snippet:
 
 ```java
 void iterate_remove_set() {
@@ -776,11 +776,12 @@ ENTRIES:
  */
 ```
 
-However, `Iterator` is not commonly seen in Java, so the best option in most cases if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new collection, and then use that new collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original set. See the following code snippet for an example (it works equivalently to the code above):
+However, `Iterator` is not commonly seen in Java, so the best option (in most cases) if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new Collection, and then use that new Collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original Collection. See the following code snippet for an example (it works equivalently to the code above):
 
 ```java
 void iterate_remove_set_good() {
 	Set<Integer> s = new TreeSet<Integer>();
+	//s starts as {0, 1, 2}
 	s.add(0); s.add(1); s.add(2);
 
 	Set<Integer> toRemove = new TreeSet<Integer>();
@@ -790,6 +791,7 @@ void iterate_remove_set_good() {
 
 	s.removeAll(toRemove);
 
+	//s ends as {1}
 	System.out.println("ENTRIES:");
 	for(Integer a : s) {
 		System.out.println(a);
