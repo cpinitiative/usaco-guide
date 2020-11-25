@@ -1,9 +1,18 @@
 import * as React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import {
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import '../../styles/assignment-progress-view.css';
 import FirebaseContext from '../../context/FirebaseContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+
 export default function AssignmentProgressView({
   problems,
   students,
@@ -12,7 +21,7 @@ export default function AssignmentProgressView({
 }) {
   const firebase = useContext(FirebaseContext);
   const { darkMode } = useContext(UserDataContext);
-
+  const fullScreenHandlers = useFullScreenHandle();
   const [studentNameInfo, setStudentNameInfo] = useState([]);
   const [showStudentEmails, setShowStudentEmails] = useState(false);
   const rows = useMemo(
@@ -118,14 +127,27 @@ export default function AssignmentProgressView({
           </div>
         </div>
       </div>
-      <div
-        className={
-          'assignment-progress-grid ' +
-          (darkMode ? 'assignment-progress-dark' : 'assignment-progress-light')
-        }
-      >
-        {typeof window !== 'undefined' && (
+      <FullScreen handle={fullScreenHandlers}>
+        <div
+          className={
+            'assignment-progress-grid ' +
+            (darkMode
+              ? 'assignment-progress-dark'
+              : 'assignment-progress-light') +
+            ' ' +
+            (fullScreenHandlers.active ? 'assignment-progress-fullscreen' : '')
+          }
+        >
           <ReactDataGrid
+            minHeight={
+              fullScreenHandlers.active
+                ? // vh
+                  Math.max(
+                    document.documentElement.clientHeight || 0,
+                    window.innerHeight || 0
+                  ) - 35
+                : 350
+            }
             columns={[
               { key: 'name', name: 'Name', frozen: true, width: 220 },
               ...(showStudentEmails
@@ -140,9 +162,18 @@ export default function AssignmentProgressView({
             rowGetter={i => rows[i]}
             rowsCount={rows.length}
           />
-        )}
-      </div>
+        </div>
+      </FullScreen>
       <p className="my-2">
+        <button
+          className={
+            'text-blue-700 hover:underline active:text-blue-900 active:outline-none'
+          }
+          onClick={fullScreenHandlers.enter}
+        >
+          Fullscreen
+        </button>{' '}
+        |{' '}
         <a
           href={
             'data:application/octet-stream,' +
