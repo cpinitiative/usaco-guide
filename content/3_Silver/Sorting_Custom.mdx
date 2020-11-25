@@ -438,8 +438,8 @@ class Edge:
 		self.a = a
 		self.b = b
 		self.w = w
-	def __lt__(self, y): # lt means less than
-		return self.w < y.w
+	def __lt__(self, other): # lt means less than
+		return self.w < other.w
 
 v = []
 M = 4
@@ -453,7 +453,7 @@ for e in v:
 
 ### Key Function
 
-This method maps an object to another comparable datatype with which to be sorted. In this case we map edges to their weights.
+This method maps an object to another comparable datatype with which to be sorted. This is the preferred method if you are only sorting something once. In this case we map edges to their weights.
 
 ```py
 class Edge:
@@ -474,7 +474,7 @@ for e in v:
 
 ### Comparison Function
 
-A comparison function in Python must satisfy the same properties as a comparator in Java. Note that old-style cmp functions are [no longer supported](https://stackoverflow.com/questions/12749398/using-a-comparator-function-to-sort), so the comparison function must be converted into a key function with [`cmp_to_key`](https://docs.python.org/2/library/functools.html).
+A comparison function in Python must satisfy the same properties as a comparator in Java. Note that old-style cmp functions are [no longer supported](https://stackoverflow.com/questions/12749398/using-a-comparator-function-to-sort), so the comparison function must be converted into a key function with [`cmp_to_key`](https://docs.python.org/2/library/functools.html). Most of the time, it is better to use the key function, but in the rare case that the comparison function is not easily represented as a key function, we can use this.
 
 ```py
 from functools import cmp_to_key
@@ -504,7 +504,7 @@ for e in v:
 
 ### Sorting in Decreasing Order of Weight
 
-We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code. Similarly, we can replace all occurrences of `Integer.compare(x, y)` with `-Integer.compare(x, y)` in our Java code or negate the key in Python.
+We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code. Similarly, we can replace all occurrences of `Integer.compare(x, y)` with `-Integer.compare(x, y)` in our Java code. In Python, we can pass the parameter `reverse=True` to the `sort` or `sorted` function.
 
 ### Sorting by Two Criteria
 
@@ -543,15 +543,23 @@ static class Edge implements Comparable<Edge> {
 
 <PySection>
 
+In Python, tuples have a natural order based on their elements in order. We can take advantage of this to write a comparator:
+
 ```py
 class Edge:
     def __init__(self, a, b, w):
         self.a = a
         self.b = b
         self.w = w
-    def __lt__(self, y): # lt means less than
-    	return self.w < y.w if self.w != y.w else self.a < y.a
+    def __lt__(self, other): # lt means less than
+    	return (self.w, self.a) < (other.w, other.a)
+```
 
+This also gives an easy way to write a key function to sort in this way:
+
+```py
+edges: list[Edge]
+edges.sort(key=lambda edge: (edge.w, edge.a))
 ```
 
 </PySection>
