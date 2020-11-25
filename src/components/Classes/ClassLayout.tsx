@@ -23,24 +23,31 @@ export default function ClassLayout({
   noWhiteBg?: boolean;
 }) {
   const firebase = useContext(FirebaseContext);
-  const { userClasses, setUserClasses, firebaseUser } = useContext(
-    UserDataContext
-  );
+  const {
+    userClasses,
+    setUserClasses,
+    userClassIds,
+    firebaseUser,
+  } = useContext(UserDataContext);
   const { loading, error, data, students, isInstructor } = useContext(
     ClassContext
   );
+  const [changingJoinLinkStatus, setChangingJoinLinkStatus] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
+
   const [creatingAssignment, setCreatingAssignment] = useState(false);
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
+
   const [showEditClass, setShowEditClass] = useState(false);
   const [editClassSubmitting, setEditClassSubmitting] = useState(false);
   const [editClassError, setEditClassError] = useState('');
   const [editClassTitle, setEditClassTitle] = useState('');
   const [editClassDate, setEditClassDate] = useState('');
+
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [membersModalShowEmail, setMembersModalShowEmail] = useState(false);
+
   const [studentNames, setStudentNames] = useState([]);
-  const notFound = !loading && !data;
   React.useEffect(() => {
     if (!joinLinkCopied) return;
     const timeout = setTimeout(() => setJoinLinkCopied(false), 1000);
@@ -58,34 +65,7 @@ export default function ClassLayout({
       );
     }
   }, [data?.name, userClasses]);
-  if (loading || notFound || error || showNotFound) {
-    return (
-      <>
-        <SEO title={loading ? 'Loading...' : '404 Not Found'} />
 
-        <TopNavigationBar hideClassesPromoBar />
-
-        <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
-          {loading
-            ? 'Loading...'
-            : error
-            ? 'An Error Occurred'
-            : '404 Not Found'}
-        </h1>
-        {!loading && (
-          <p className="text-center mt-4">
-            {error ? (
-              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar.`
-            ) : (
-              <Link to="/" className="text-xl text-blue-600">
-                Return Home
-              </Link>
-            )}
-          </p>
-        )}
-      </>
-    );
-  }
   const refreshStudentNames = React.useCallback(() => {
     if (!firebase) {
       setStudentNames([
@@ -133,6 +113,50 @@ export default function ClassLayout({
       }
     });
   }, [firebase, students, data]);
+
+  const notFound = !loading && !data;
+  if (
+    loading ||
+    notFound ||
+    error ||
+    showNotFound
+    // The below code would prevent non-members from viewing classes
+    // but it would also prevent non-member admins from viewing
+    // ||
+    // (!isInstructor &&
+    //   !(
+    //     userClasses.some((c: { id: string }) => c.id === classId) &&
+    //     userClassIds.includes(classId)
+    //   ))
+  ) {
+    return (
+      <>
+        <SEO title={loading ? 'Loading...' : '404 Not Found'} />
+
+        <TopNavigationBar hideClassesPromoBar />
+
+        <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
+          {loading
+            ? 'Loading...'
+            : error
+            ? 'An Error Occurred'
+            : '404 Not Found'}
+        </h1>
+        {!loading && (
+          <p className="text-center mt-4">
+            {error ? (
+              `${error.message} (If this was unexpected, please let us know via the contact us link in the top navbar.`
+            ) : (
+              <Link to="/" className="text-xl text-blue-600">
+                Return Home
+              </Link>
+            )}
+          </p>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {/* Background color split screen for large screens */}
@@ -322,23 +346,74 @@ export default function ClassLayout({
 
                           <span className="text-sm text-gray-500 leading-5 font-medium">
                             <span className="font-bold">Class Join Link:</span>{' '}
-                            <a
-                              className={
-                                'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
-                              }
-                              onClick={e => {
-                                e.preventDefault();
-                                navigator.clipboard
-                                  .writeText(
-                                    `https://usaco.guide/class/${classId}/join`
-                                  )
-                                  .then(() => {
-                                    setJoinLinkCopied(true);
-                                  });
-                              }}
-                            >
-                              {joinLinkCopied ? 'Copied!' : 'Copy To Clipboard'}
-                            </a>
+                            {!data?.studentsCanJoin ? (
+                              <a
+                                className={
+                                  'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                }
+                                onClick={async e => {
+                                  e.preventDefault();
+                                  if (!firebase) return;
+                                  setChangingJoinLinkStatus(true);
+                                  await firebase
+                                    .firestore()
+                                    .collection('classes')
+                                    .doc(classId)
+                                    .update({
+                                      studentsCanJoin: true,
+                                    });
+                                  setChangingJoinLinkStatus(false);
+                                }}
+                              >
+                                {changingJoinLinkStatus
+                                  ? 'Enabling Join Link...'
+                                  : 'Enable Join Link'}
+                              </a>
+                            ) : (
+                              <>
+                                <a
+                                  className={
+                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                  }
+                                  onClick={e => {
+                                    e.preventDefault();
+                                    navigator.clipboard
+                                      .writeText(
+                                        `https://usaco.guide/class/${classId}/join`
+                                      )
+                                      .then(() => {
+                                        setJoinLinkCopied(true);
+                                      });
+                                  }}
+                                >
+                                  {joinLinkCopied ? 'Copied!' : 'Copy'}
+                                </a>{' '}
+                                (
+                                <a
+                                  className={
+                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                  }
+                                  onClick={async e => {
+                                    e.preventDefault();
+                                    if (!firebase) return;
+                                    setChangingJoinLinkStatus(true);
+                                    await firebase
+                                      .firestore()
+                                      .collection('classes')
+                                      .doc(classId)
+                                      .update({
+                                        studentsCanJoin: false,
+                                      });
+                                    setChangingJoinLinkStatus(false);
+                                  }}
+                                >
+                                  {changingJoinLinkStatus
+                                    ? 'Disabling...'
+                                    : 'Disable'}
+                                </a>
+                                )
+                              </>
+                            )}
                           </span>
                         </div>
                       </div>
