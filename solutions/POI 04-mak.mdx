@@ -1,0 +1,153 @@
+---
+id: poi-04-mak
+title: POI 2004 Maximal Order of Permutations
+author: Andi Qu
+---
+
+<Spoiler title="Hint 1">
+
+As with many problems involving permutations, we can treat the elements of a permutation as nodes in a graph and draw edges between $i$ and $\pi_i$ for each $i$.
+
+Notice how these edges form several disjoint cycles. What can you say about the order of a permutation based on the cycle it forms?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+For some permutation, let $l_i$ be the length of the $i$-th cycle. The order of the permutation is simply $\text{lcm}(l_1, l_2, \dots)$, since cycle $i$ will periodically arrange its elements correctly after every $l_i$ compositions.
+
+Additionally, notice that the maximal order of a permutation with $n$ elements is never less than the maximal order of a permutation with $n - 1$ elements.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+To find the lexographically smallest permutation given its cycle lengths, a greedy approach works. Additionally, shorter cycles result in lexographically smaller permutations.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+All $l_i$ in an optimal permutation are pairwise coprime.
+
+<Spoiler title="Proof">
+
+Assume for a contradiction that in an optimal permutation, there are two cycles $i$ and $j$ with $l_i$, $l_j$ such that $g = \gcd(l_i, l_j) > 1$. We can replace those two cycles with three smaller cycles of length $l_i / g$, $l_j / g$, and $g$.
+
+The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 5">
+
+All $l_i$ in an optimal permutation are prime powers.
+
+<Spoiler title="Proof">
+
+Assume for a contradiction that in an optimal permutation, there is a cycle $i$ with $l_i = p^a q^b x$ where $p$ and $q$ are different primes. We can replace that cycle with two smaller cycles of length $p^a$ and $q^b x$.
+
+The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 6">
+
+Logarithms.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $dp[i][j]$ be the maximal order of a permutation with $i$ elements with all cycle lengths being powers of the first $j$ primes. The following recurrence holds:
+
+$$
+dp[i][j] = \max(dp[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp[i - p_j^k][j - 1] \cdot p_j^k))
+$$
+
+The problem with this DP state is that the numbers can get far too large to store in a `long long`. Luckily, since we're working with products, we can store logarithms of the maximal orders instead. Our recurrence thus becomes:
+
+$$
+dp[i][j] = \max(dp[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp[i - p_j^k][j - 1] + \log(p_j^k)))
+$$
+
+We can use backtracking to restore the optimal permutation.
+
+There are 1229 primes less than 10000, so we can implement this DP in a bit less than $\mathcal{O}(1229 N_\text{max} \log N_\text{max})$ time. However, this approach uses too much memory.
+
+Intuitively, we need to limit the number of prime powers that we try - after all, it's highly unlikely that a permutation of length $\approx$ 10000 will have a large cycle of length $\approx$ 9000.
+
+As it turns out, we only need to use the first 70 prime numbers!
+
+<Spoiler title="Proof">
+
+TODO
+
+</Spoiler>
+
+This improves our memory usage significantly, so our solution now uses $\mathcal{O}(70 N_\text{max} \log N_\text{max})$ time with $\mathcal{O}(70 N_\text{max})$ memory.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1e4, MAX_P = 70;
+
+bool composite[MAX_N + 1];
+vector<int> primes = { 2,   3,   5,   7,   11,  13,  17,  19,  23,  29,
+                       31,  37,  41,  43,  47,  53,  59,  61,  67,  71,
+                       73,  79,  83,  89,  97,  101, 103, 107, 109, 113,
+                       127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
+                       179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
+                       233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+                       283, 293, 307, 311, 313, 317, 331, 337, 347, 349
+                    };
+
+double mem[MAX_N + 1][MAX_P];
+bool visited[MAX_N + 1][MAX_P];
+int backtrack[MAX_N + 1][MAX_P];
+
+double dp(int n, int pos = 0) {
+    if (pos == primes.size() || primes[pos] > n) return 0;
+    if (visited[n][pos]) return mem[n][pos];
+
+    double ans = dp(n, pos + 1);
+    backtrack[n][pos] = 0;
+    for (int p_pow = primes[pos], expo = 1; p_pow <= n; p_pow *= primes[pos], expo++) {
+        double potential = expo * log(primes[pos]) + dp(n - p_pow, pos + 1);
+        if (ans < potential) {
+            ans = potential;
+            backtrack[n][pos] = p_pow;
+        }
+    }
+    visited[n][pos] = true;
+    return mem[n][pos] = ans;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    while (n--) {
+        int m;
+        scanf("%d", &m);
+        dp(m);
+        vector<int> lens;
+        for (int pos = 0; pos < primes.size(); m -= backtrack[m][pos++]) {
+            if (backtrack[m][pos]) lens.push_back(backtrack[m][pos]);
+        }
+        while (m--) lens.push_back(1);
+        sort(lens.begin(), lens.end());
+        for (int i = 0, j = 1; i < lens.size(); j += lens[i++]) {
+            for (int k = 1; k < lens[i]; k++) printf("%d ", j + k);
+            printf("%d ", j);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+```
+
+</Spoiler>
