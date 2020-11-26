@@ -530,22 +530,22 @@ If you want to remove every third entry from a map, one way is to just create a 
 
 ```py
 d = {i: i for i in range(10)}
-d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 0)
+d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 2)
 	
 print("new dict:", d_new)
-# new dict: {1: 1, 2: 2, 4: 4, 5: 5, 7: 7, 8: 8}
+# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 Another is to maintain a list of all the keys you want to delete and remove them after the iteration finishes:
 
 ```py
 d = {i: i for i in range(10)}
-to_remove = {key for i, key in enumerate(d) if i % 3 == 0}
+to_remove = {key for i, key in enumerate(d) if i % 3 == 2}
 
 for key in to_remove:
 	del d[key]
 print("new dict:", d)
-# new dict: {1: 1, 2: 2, 4: 4, 5: 5, 7: 7, 8: 8}
+# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 </PySection>
