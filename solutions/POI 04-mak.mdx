@@ -1,7 +1,7 @@
 ---
 id: poi-04-mak
 title: POI 2004 Maximal Order of Permutations
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
 
 <Spoiler title="Hint 1">
@@ -195,6 +195,67 @@ int main() {
         printf("\n");
     }
     return 0;
+}
+```
+
+Alternatively, you can notice that $dp[i]$ depends only on $dp[i - 1]$ and that bitsets use 8 times less memory than boolean arrays. This means that you can cut down on the memory usage without limiting the number of prime numbers you check. 
+
+Here's Ben's code, which implements this idea:
+
+```cpp
+array<ld,10001> ans, tmp;
+bitset<10001> z[1300];
+bool pri[10001];
+vi co, CO;
+
+void fin(int x) {
+    pi cur = {x,sz(co)-1};
+    vi zz;
+    int lastUse = 0;
+    while (cur.s != -1) {
+        if (z[cur.s][cur.f] && lastUse != CO[cur.s]) {
+            lastUse = CO[cur.s];
+            cur.f -= co[cur.s]; zz.pb(co[cur.s]);
+        }
+        cur.s --;
+    }
+    sort(all(zz));
+    int sum = 0; trav(t,zz) sum += t;
+    vi ret;
+    sum = x-sum;
+    F0R(i,sum) ret.pb(i+1);
+    trav(t,zz) {
+        FOR(j,sum,sum+t-1) ret.pb(j+2);
+        ret.pb(sum+1);
+        sum += t;
+    }
+    trav(z,ret) pr(z,' ');
+    ps();
+}
+
+int main() {
+    setIO(); 
+    int d; re(d); vi v(d); re(v);
+    int mx = 0; trav(t,v) ckmax(mx,t);
+    FOR(i,2,mx+1) pri[i] = 1;
+    F0R(i,mx+1) ans[i] = 1;
+    FOR(i,2,mx+1) if (pri[i]) {
+        tmp = ans;
+        for (int j = 2*i; j <= mx; j += i) pri[j] = 0;
+        for (int j = 1; pow(i,j) <= mx; j ++) {
+            int x = pow(i,j);
+            FOR(k,x,mx+1) {
+                if (x*ans[k-x] > tmp[k]) {
+                    tmp[k] = x*ans[k-x];
+                    z[sz(co)][k] = 1;
+                    // ps("WUT",sz(co),k);
+                }
+            }
+            co.pb(x); CO.pb(i);
+        }
+        swap(ans,tmp);
+    }
+    trav(x,v) fin(x);
 }
 ```
 
