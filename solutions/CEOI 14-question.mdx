@@ -1,36 +1,41 @@
 ---
 id: ceoi-14-question
 title: CEOI 2014 Question
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
 
-We essentially want to construct a $920 \times 920$ matrix $M$ such that:
+<!-- We essentially want to construct a $920 \times 920$ matrix $M$ such that:
+
 - All elements of $M$ are positive integers no greater than 12.
 - Given $x$ and $M_{i, j}$ with $i \neq j$ and either $x = i$ or $x = j$, it's possible to determine whether $x = i$.
-
+ -->
 <Spoiler title="Hint 1">
 
-The number 920 seems oddly specific. Does it relate to 12 somehow?
+Associate a subset $S_q\subset \{1,\ldots,12\}$ with each $q\in [1,N]$ such that if $B$ receives a pair $(q,h)$, $B$ should answer yes iff $h\in S_q$ (and no otherwise).
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-$\binom{12}{6} = 924 > 920$
+It must be the case that $h\in S_x \setminus S_y$. In other words, no pair $(x,y)$ with $x\neq y$ exists such that $S_x$ contains $S_y$.
 
 </Spoiler>
 
 <Spoiler title="Hint 3">
 
-There are 924 subsets of $\{1, 2, \dots, 12\}$ with exactly 6 elements. What can you say about the intersection of any two of these subsets?
+The number 920 seems oddly specific. Does it relate to 12 somehow?
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+$\binom{12}{6} = 924 > 920$
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
-The intersection of any two of the aforementioned subsets is non-empty. Let $S_i$ be the $i$-th such subset.
-
-We can thus simply set $M_{i, j} = x : x \in S_i, x \not \in S_j$ and we are done.
+We can just associate each $q$ with a distinct subset $S_q$ of size 6.
 
 ```cpp
 #include "question.h"

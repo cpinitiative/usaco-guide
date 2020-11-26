@@ -1,32 +1,33 @@
 ---
 id: joi-15-navigation
 title: JOI 2015 Navigation
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
 
 We essentially want to root the tree at $T$ and always move to the parent of the current node until we end up at $T$.
 
 <Spoiler title="Hint 1">
 
-If we know that the island number of a node's parent is always greater than the island number of the node, we can just move to greatest neighbouring island. Unfortunately, this isn't always guaranteed.
-
-Fortunately though, we are given both the island numbers **and** the numbers written on the flags.
+To solve the last subtask, you'll need to make full use of both the island numbers *and* the numbers written on the flags.
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-Given a pair $(A, B)$ with $A$'s flag already labelled, how can we label $B$'s flag to be able to determine which one of the two islands is the parent?
+Given two adjacent vertices $u$ and $v$, we should be able to tell which of $u$ and $v$ is closer to $T$ given the pairs $(u,F[u])$ and $(v,F[v])$.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Write on the flags such that $F[u]\oplus F[v]=0$ implies that $\min(u,v)$ is closer to $T$ (while $F[u]\oplus F[v]=1$ implies that $\max(u,v)$ is closer to $T$).
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
-Let $L[i]$ denote the label on $i$'s flag. The key observation is that for a node-parent pair $(u, v)$, we only care about $L[u] \oplus L[v]$ instead of $L[u]$ and $L[v]$ individually.
-
-With $L[u] \oplus L[v]$, we can encode whether the parent in the pair has the greater island number. Since each node only has at most one parent, this allows us to find that parent.
-
 `Anna.cpp`
+
 ```cpp
 #include "Annalib.h"
 #include <bits/stdc++.h>
