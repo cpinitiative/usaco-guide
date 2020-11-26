@@ -71,12 +71,12 @@ $$
 The problem with this DP state is that the numbers can get far too large to store in a `long long`. Luckily, since we're working with products, we can store logarithms of the maximal orders instead. Our recurrence thus becomes:
 
 $$
-dp[i][j] = \max(dp[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp[i - p_j^k][j - 1] + \log(p_j^k)))
+dp'[i][j] = \max(dp'[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp'[i - p_j^k][j - 1] + \log(p_j^k)))
 $$
 
 We can use backtracking to restore the optimal permutation.
 
-There are 1229 primes less than 10000, so we can implement this DP in a bit less than $\mathcal{O}(1229 N_\text{max} \log N_\text{max})$ time. However, this approach uses too much memory.
+There are 1229 primes less than 10000, so we can implement this DP in a bit less than $\mathcal{O}(1229 n \log n)$ time. However, this approach uses too much memory.
 
 Intuitively, we need to limit the number of prime powers that we try - after all, it's highly unlikely that a permutation of length $\approx$ 10000 will have a large cycle of length $\approx$ 9000.
 
@@ -84,11 +84,59 @@ As it turns out, we only need to use the first 70 prime numbers!
 
 <Spoiler title="Proof">
 
-TODO
+The following proof is translated from the official Polish editorial:
+
+**Definition 1:** Let $K_n$ be the smallest $k$ such that for each $k' \geq k$, we have $dp[n][k'] = dp[n][k]$.
+
+**Definition 2:** Let $\overline{K_n}$ be the smallest $k$ such that for each $k' \geq k$ **and** each $n' \leq n$, we have $dp[n'][k'] = dp[n'][k]$.
+
+We can express $\overline{K_n}$ in terms of $K_n$ as such:
+
+$$
+\overline{K_n} = \max_{0 \leq n' \leq n}(K_{n'})
+$$
+
+Clearly, if $k > \overline{K_n}$, then using only the first $k$ primes is sufficient.
+
+**Lemma:** Let $n \geq 1$. If $h$ satisfies at least one of the following conditions:
+- $p_{h + 1} > n$.
+- $h \geq \overline{K_n}$ and $dp[n][h] \geq n \cdot dp[n - p_{h + 1}][h]$.
+
+then we know that $K_n \leq h$.
+
+**Proof:** Clearly, if $p_{h + 1} > n$, we can't use it or any subsequent primes, so $dp[n][h + 1] = dp[n][h]$. Let's assume instead that only the second condition holds.
+
+We will now prove inductively that for $k' > h$, we have $dp[n][k'] = dp[n][h]$. Assume that $dp[n][k' - 1] = dp[n][h]$. If $p_{k'} > n$, then we are done. Assume that $p_{k'} \leq n$. Consider some $\alpha$ such that $p_{k'}^\alpha \leq n$. Since $h \geq \overline{K_{n - 1}}$, we have:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] = p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h]
+$$
+
+$k' > h$, so we know that $n - p_{k'}^\alpha \leq n - p_{h + 1}$. Additionally, since $dp[n][k] \leq dp[n'][k]$ when $n \leq n'$, we have:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h] \leq p_{k'}^\alpha \cdot dp[n - p_{h + 1}][h]
+$$
+
+We thus get:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{h + 1}][h] \leq n \cdot dp[n - p_{h + 1}][h] \leq dp[n][h]
+$$
+
+From the inductive hypothesis, we have $dp[n][h] = dp[n][k' - 1]$, so we get:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] \leq dp[n][k' - 1]
+$$
+
+and we can thus conclude that $dp[n][k'] = dp[n][k' - 1] = dp[n][h]$. Therefore, by induction, $K_n \leq h$.
+
+Using this lemma, we can write an auxilliary algorithm to find that $\overline{K_n} = 70$.
 
 </Spoiler>
 
-This improves our memory usage significantly, so our solution now uses $\mathcal{O}(70 N_\text{max} \log N_\text{max})$ time with $\mathcal{O}(70 N_\text{max})$ memory.
+This improves our memory usage significantly, so our solution now uses $\mathcal{O}(70 n \log n)$ time with $\mathcal{O}(70 n)$ memory.
 
 ```cpp
 #include <bits/stdc++.h>
