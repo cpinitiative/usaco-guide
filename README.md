@@ -10,6 +10,7 @@ Thank you to the following companies:
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
 - [Sentry](https://sentry.io/), error reporting
+- [BrowserStack](https://browserstack.com/), browser testing
 - [slido](https://www.sli.do/), Q&A and polling platform
 
 ## Documentation
