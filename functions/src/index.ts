@@ -11,25 +11,6 @@ export const incrementUsers = functions.auth.user().onCreate(() => {
     });
 });
 
-export const incrementPageViews = functions.https.onCall(
-  (data: { gaEnabled: boolean }) => {
-    // gaEnabled: whether or not google analytics has been loaded (e.g. false if it was blocked)
-
-    return admin
-      .database()
-      .ref('/analytics/')
-      .transaction(legacyData => {
-        return {
-          ...legacyData,
-          no_ga_pageviews: !data.gaEnabled
-            ? (legacyData.no_ga_pageviews || 0) + 1
-            : legacyData.no_ga_pageviews,
-          pageviews: (legacyData.pageviews || 0) + 1,
-        };
-      });
-  }
-);
-
 export const getUsers = functions.https.onCall(
   (
     data: {
