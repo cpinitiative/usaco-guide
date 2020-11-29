@@ -87,7 +87,8 @@ export default function DashboardPage(props: PageProps) {
       }));
   }, [userProgressOnProblems]);
 
-  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const lastViewedSection =
+    moduleIDToSectionMap[lastViewedModuleID] || 'general';
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );

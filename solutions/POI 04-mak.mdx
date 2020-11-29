@@ -1,0 +1,262 @@
+---
+id: poi-04-mak
+title: POI 2004 Maximal Order of Permutations
+author: Andi Qu, Benjamin Qi
+---
+
+<Spoiler title="Hint 1">
+
+As with many problems involving permutations, we can treat the elements of a permutation as nodes in a graph and draw edges between $i$ and $\pi_i$ for each $i$.
+
+Notice how these edges form several disjoint cycles. What can you say about the order of a permutation based on the cycle it forms?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+For some permutation, let $l_i$ be the length of the $i$-th cycle. The order of the permutation is simply $\text{lcm}(l_1, l_2, \dots)$, since cycle $i$ will periodically arrange its elements correctly after every $l_i$ compositions.
+
+Additionally, notice that the maximal order of a permutation with $n$ elements is never less than the maximal order of a permutation with $n - 1$ elements.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+To find the lexographically smallest permutation given its cycle lengths, a greedy approach works. Additionally, shorter cycles result in lexographically smaller permutations.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+All $l_i$ in an optimal permutation are pairwise coprime.
+
+<Spoiler title="Proof">
+
+Assume for a contradiction that in an optimal permutation, there are two cycles $i$ and $j$ with $l_i$, $l_j$ such that $g = \gcd(l_i, l_j) > 1$. We can replace those two cycles with three smaller cycles of length $l_i / g$, $l_j / g$, and $g$.
+
+The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 5">
+
+All $l_i$ in an optimal permutation are prime powers.
+
+<Spoiler title="Proof">
+
+Assume for a contradiction that in an optimal permutation, there is a cycle $i$ with $l_i = p^a q^b x$ where $p$ and $q$ are different primes. We can replace that cycle with two smaller cycles of length $p^a$ and $q^b x$.
+
+The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 6">
+
+Logarithms.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $dp[i][j]$ be the maximal order of a permutation with $i$ elements with all cycle lengths being powers of the first $j$ primes. The following recurrence holds:
+
+$$
+dp[i][j] = \max(dp[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp[i - p_j^k][j - 1] \cdot p_j^k))
+$$
+
+The problem with this DP state is that the numbers can get far too large to store in a `long long`. Luckily, since we're working with products, we can store logarithms of the maximal orders instead. Our recurrence thus becomes:
+
+$$
+dp'[i][j] = \max(dp'[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp'[i - p_j^k][j - 1] + \log(p_j^k)))
+$$
+
+We can use backtracking to restore the optimal permutation.
+
+There are 1229 primes less than 10000, so we can implement this DP in a bit less than $\mathcal{O}(1229 n)$ time and memory. However, this approach uses too much memory.
+
+Intuitively, we need to limit the number of prime powers that we try - after all, it's highly unlikely that a permutation of length $\approx$ 10000 will have a large cycle of length $\approx$ 9000.
+
+As it turns out, we only need to use the first 70 prime numbers!
+
+<Spoiler title="Proof">
+
+The following proof is translated from the official Polish editorial:
+
+**Definition 1:** Let $K_n$ be the smallest $k$ such that for each $k' \geq k$, we have $dp[n][k'] = dp[n][k]$.
+
+**Definition 2:** Let $\overline{K_n}$ be the smallest $k$ such that for each $k' \geq k$ **and** each $n' \leq n$, we have $dp[n'][k'] = dp[n'][k]$.
+
+We can express $\overline{K_n}$ in terms of $K_n$ as such:
+
+$$
+\overline{K_n} = \max_{0 \leq n' \leq n}(K_{n'})
+$$
+
+Clearly, if $k \ge \overline{K_n}$, then using only the first $k$ primes is sufficient.
+
+**Lemma:** Let $n \geq 1$. If $h$ satisfies at least one of the following conditions:
+- $p_{h + 1} > n$.
+- $h \geq \overline{K_{n-1}}$ and $dp[n][h] \geq n \cdot dp[n - p_{h + 1}][h]$.
+
+then we know that $K_n \leq h$.
+
+**Proof:** Clearly, if $p_{h + 1} > n$, we can't use it or any subsequent primes, so $dp[n][h + 1] = dp[n][h]$. Let's assume instead that only the second condition holds.
+
+We will now prove inductively that for $k' > h$, we have $dp[n][k'] = dp[n][h]$. Assume that $dp[n][k' - 1] = dp[n][h]$. If $p_{k'} > n$, then we are done. Assume that $p_{k'} \leq n$. Consider some $\alpha$ such that $p_{k'}^\alpha \leq n$. Since $h \geq \overline{K_{n - 1}}$, we have:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] = p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h]
+$$
+
+$k' > h$, so we know that $n - p_{k'}^\alpha \leq n - p_{h + 1}$. Additionally, since $dp[n][k] \leq dp[n'][k]$ when $n \leq n'$, we have:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h] \leq p_{k'}^\alpha \cdot dp[n - p_{h + 1}][h]
+$$
+
+We thus get:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{h + 1}][h] \leq n \cdot dp[n - p_{h + 1}][h] \leq dp[n][h]
+$$
+
+From the inductive hypothesis, we have $dp[n][h] = dp[n][k' - 1]$, so we get:
+
+$$
+p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] \leq dp[n][k' - 1]
+$$
+
+and we can thus conclude that $dp[n][k'] = dp[n][k' - 1] = dp[n][h]$. Therefore, by induction, $K_n \leq h$.
+
+Using this lemma, we can write an auxilliary algorithm to find that $\overline{K_n} = 70$.
+
+</Spoiler>
+
+This improves our memory usage significantly, so our solution now uses only $\mathcal{O}(70 n)$ time and memory.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1e4, MAX_P = 70;
+
+bool composite[MAX_N + 1];
+vector<int> primes = { 2,   3,   5,   7,   11,  13,  17,  19,  23,  29,
+                       31,  37,  41,  43,  47,  53,  59,  61,  67,  71,
+                       73,  79,  83,  89,  97,  101, 103, 107, 109, 113,
+                       127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
+                       179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
+                       233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+                       283, 293, 307, 311, 313, 317, 331, 337, 347, 349
+                    };
+
+double mem[MAX_N + 1][MAX_P];
+bool visited[MAX_N + 1][MAX_P];
+int backtrack[MAX_N + 1][MAX_P];
+
+double dp(int n, int pos = 0) {
+    if (pos == primes.size() || primes[pos] > n) return 0;
+    if (visited[n][pos]) return mem[n][pos];
+
+    double ans = dp(n, pos + 1);
+    backtrack[n][pos] = 0;
+    for (int p_pow = primes[pos], expo = 1; p_pow <= n; p_pow *= primes[pos], expo++) {
+        double potential = expo * log(primes[pos]) + dp(n - p_pow, pos + 1);
+        if (ans < potential) {
+            ans = potential;
+            backtrack[n][pos] = p_pow;
+        }
+    }
+    visited[n][pos] = true;
+    return mem[n][pos] = ans;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    while (n--) {
+        int m;
+        scanf("%d", &m);
+        dp(m);
+        vector<int> lens;
+        for (int pos = 0; pos < primes.size(); m -= backtrack[m][pos++]) {
+            if (backtrack[m][pos]) lens.push_back(backtrack[m][pos]);
+        }
+        while (m--) lens.push_back(1);
+        sort(lens.begin(), lens.end());
+        for (int i = 0, j = 1; i < lens.size(); j += lens[i++]) {
+            for (int k = 1; k < lens[i]; k++) printf("%d ", j + k);
+            printf("%d ", j);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+```
+
+Alternatively, you can notice that $dp[i]$ depends only on $dp[i - 1]$ and that bitsets use 8 times less memory than boolean arrays. This means that you can cut down on the memory usage without limiting the number of prime numbers you check. 
+
+Here's Ben's code, which implements this idea:
+
+```cpp
+array<ld,10001> ans, tmp;
+bitset<10001> z[1300];
+bool pri[10001];
+vi co, CO;
+
+void fin(int x) {
+    pi cur = {x,sz(co)-1};
+    vi zz;
+    int lastUse = 0;
+    while (cur.s != -1) {
+        if (z[cur.s][cur.f] && lastUse != CO[cur.s]) {
+            lastUse = CO[cur.s];
+            cur.f -= co[cur.s]; zz.pb(co[cur.s]);
+        }
+        cur.s --;
+    }
+    sort(all(zz));
+    int sum = 0; trav(t,zz) sum += t;
+    vi ret;
+    sum = x-sum;
+    F0R(i,sum) ret.pb(i+1);
+    trav(t,zz) {
+        FOR(j,sum,sum+t-1) ret.pb(j+2);
+        ret.pb(sum+1);
+        sum += t;
+    }
+    trav(z,ret) pr(z,' ');
+    ps();
+}
+
+int main() {
+    setIO(); 
+    int d; re(d); vi v(d); re(v);
+    int mx = 0; trav(t,v) ckmax(mx,t);
+    FOR(i,2,mx+1) pri[i] = 1;
+    F0R(i,mx+1) ans[i] = 1;
+    FOR(i,2,mx+1) if (pri[i]) {
+        tmp = ans;
+        for (int j = 2*i; j <= mx; j += i) pri[j] = 0;
+        for (int j = 1; pow(i,j) <= mx; j ++) {
+            int x = pow(i,j);
+            FOR(k,x,mx+1) {
+                if (x*ans[k-x] > tmp[k]) {
+                    tmp[k] = x*ans[k-x];
+                    z[sz(co)][k] = 1;
+                    // ps("WUT",sz(co),k);
+                }
+            }
+            co.pb(x); CO.pb(i);
+        }
+        swap(ans,tmp);
+    }
+    trav(x,v) fin(x);
+}
+```
+
+</Spoiler>
