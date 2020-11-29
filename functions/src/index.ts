@@ -2,6 +2,24 @@ import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
 admin.initializeApp();
 
+export const incrementUsers = functions.auth.user().onCreate(user => {
+  return admin
+    .database()
+    .ref('/num_users')
+    .transaction(legacyUserCount => {
+      return (legacyUserCount || 0) + 1;
+    });
+});
+
+export const incrementPageviews = functions.auth.user().onCreate(user => {
+  return admin
+    .database()
+    .ref('/analytics/pageviews')
+    .transaction(legacyPageviews => {
+      return (legacyPageviews || 0) + 1;
+    });
+});
+
 export const getUsers = functions.https.onCall(
   (
     data: {
