@@ -54,6 +54,8 @@ export default function DashboardPage(props: PageProps) {
     signIn,
   } = React.useContext(UserDataContext);
 
+  let showSkipped = !userSettings.hideSkipped;
+
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
@@ -61,7 +63,7 @@ export default function DashboardPage(props: PageProps) {
         x =>
           (userProgressOnModules[x] === 'Reading' ||
             userProgressOnModules[x] === 'Practicing' ||
-            userProgressOnModules[x] === 'Skipped') &&
+            (showSkipped && userProgressOnModules[x] === 'Skipped')) &&
           moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
@@ -69,8 +71,10 @@ export default function DashboardPage(props: PageProps) {
           moduleIDToName[x]
         }`,
         url: moduleIDToURLMap[x],
-        status:
-          userProgressOnModules[x] === 'Skipped' ? 'Skipped' : 'In Progress',
+        status: userProgressOnModules[x] as
+          | 'Skipped'
+          | 'Reading'
+          | 'Practicing',
       }));
   }, [userProgressOnModules]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
@@ -78,7 +82,7 @@ export default function DashboardPage(props: PageProps) {
       .filter(
         x =>
           (userProgressOnProblems[x] === 'Solving' ||
-            userProgressOnProblems[x] === 'Skipped') &&
+            (showSkipped && userProgressOnProblems[x] === 'Skipped')) &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
