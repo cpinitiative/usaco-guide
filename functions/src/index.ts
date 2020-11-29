@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
 admin.initializeApp();
 
-export const incrementUsers = functions.auth.user().onCreate(user => {
+export const incrementUsers = functions.auth.user().onCreate(() => {
   return admin
     .database()
     .ref('/num_users')
@@ -11,7 +11,7 @@ export const incrementUsers = functions.auth.user().onCreate(user => {
     });
 });
 
-export const incrementPageviews = functions.auth.user().onCreate(user => {
+export const incrementPageviews = functions.https.onCall(() => {
   return admin
     .database()
     .ref('/analytics/pageviews')
