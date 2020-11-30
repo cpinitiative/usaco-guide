@@ -1,12 +1,12 @@
 import SimpleUserDataPropertyAPI from '../simpleUserDataPropertyAPI';
 
-export type HideSkippedAPI = {
-  hideSkipped: boolean;
-  setHideSkipped: (b: boolean) => void;
+export type ShowIgnoredAPI = {
+  showIgnored: boolean;
+  setShowIgnored: (b: boolean) => void;
 };
 
-export default class HideSkipped extends SimpleUserDataPropertyAPI {
-  protected storageKey = 'hideSkipped';
+export default class ShowIgnored extends SimpleUserDataPropertyAPI {
+  protected storageKey = 'showIgnored';
   protected defaultValue = false;
-  protected setterFunctionName = 'setHideSkipped';
+  protected setterFunctionName = 'setShowIgnored';
 }

@@ -155,13 +155,13 @@ export default function SettingsModal({ isOpen, onClose }) {
                     <input
                       type="checkbox"
                       onChange={() =>
-                        userSettings.setHideSkipped(!userSettings.hideSkipped)
+                        userSettings.setShowIgnored(!userSettings.showIgnored)
                       }
                       className="form-checkbox h-5 w-5 text-gray-600"
-                      checked={userSettings.hideSkipped}
+                      checked={userSettings.showIgnored}
                     />
                     <span className="ml-2 text-gray-700">
-                      Hide skipped problems & modules on dashboard
+                      Show ignored problems & modules on dashboard
                     </span>
                   </label>
 

@@ -3,7 +3,12 @@ import { Link } from 'gatsby';
 import DashboardCard from './DashboardCard';
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
 
-type ActiveItemStatus = 'Solving' | 'Skipped' | 'Reading' | 'Practicing';
+type ActiveItemStatus =
+  | 'Solving'
+  | 'Skipped'
+  | 'Reading'
+  | 'Practicing'
+  | 'Ignored';
 
 export type ActiveItem = {
   label: string;
@@ -16,7 +21,8 @@ const statusClasses: { [key in ActiveItemStatus]: string } = {
     'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Solving:
     'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
-  Skipped: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
+  Skipped: difficultyClasses.Normal,
+  Ignored: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
   Practicing: difficultyClasses.Easy,
 };
 
@@ -39,6 +45,7 @@ export default function ActiveItems({
       Solving: 1,
       Practicing: 1,
       Skipped: 2,
+      Ignored: 3,
     };
     let astatus = statusVal[a.status];
     let bstatus = statusVal[b.status];

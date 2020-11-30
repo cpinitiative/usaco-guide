@@ -10,7 +10,7 @@ import LastViewedModule, {
 import HideTagsAndSolutions, {
   HideTagsAndSolutionsAPI,
 } from './properties/hideTagsAndSolutions';
-import HideSkipped, { HideSkippedAPI } from './properties/hideSkipped';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
@@ -83,7 +83,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
   new HideTagsAndSolutions(),
-  new HideSkipped(),
+  new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
@@ -95,7 +95,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndSolutionsAPI &
-  HideSkippedAPI &
+  ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
