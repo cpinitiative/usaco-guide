@@ -24,15 +24,6 @@ export const problems = {
 	usaco: [
 		new Problem(
 			'Silver',
-			'Moo Buzz',
-			'966',
-			'Very Easy',
-			true,
-			[],
-			'binary search not required'
-		),
-		new Problem(
-			'Silver',
 			'Cow Dance Show',
 			'690',
 			'Easy',
@@ -236,7 +227,7 @@ int lstTrue(function<bool(int)> f, int lo, int hi) {
 		}
 	}
 	// now res is the answer
-	// if res is l-1 that means no value in the range satisfies the condition
+	// if res is lo-1 that means no value in the range satisfies the condition
 	return res;
 }
 
@@ -259,38 +250,75 @@ import java.io.*;
 import java.util.*; 
 
 public class test{
-   public static boolean f(int x){
-      return x*x <= 30;
-      //function f(x) returns true or false
-   }
-   public static int lstTrue(int lo, int hi) {
-      int res = lo-1;
-      while (lo <= hi) {
-         int mid = (lo+hi)/2; // find the middle of the current range
-         if (f(mid)) {
-            // if mid works, then all numbers smaller than mid also work
-            // so we only care about the part after mid
-            res = mid; // update the answer
-            lo = mid+1; // cut the part before mid
-            // notice that we already handled mid itself so we cut it as well
-         } else {
-            // if mid does not work, greater values would not work too
-            // so we don't care about them
-            hi = mid-1; // cut mid and after
-         }
-      }
-    // now res is the answer
-    // if res is l-1 that means no value in the range satisfies the condition
-      return res;
-   }
-   public static void main(String[] args) throws IOException
-   {
-      System.out.println(lstTrue(2,10)); // 5
-   }
+	public static boolean f(int x){
+		return x*x <= 30;
+		// function f(x) returns true or false
+	}
+	public static int lstTrue(int lo, int hi) {
+		int res = lo-1;
+		while (lo <= hi) {
+			int mid = (lo+hi)/2; // find the middle of the current range
+			if (f(mid)) {
+				// if mid works, then all numbers smaller than mid also work
+				// so we only care about the part after mid
+				res = mid; // update the answer
+				lo = mid+1; // cut the part before mid
+				// notice that we already handled mid itself so we cut it as well
+			} else {
+				// if mid does not work, greater values would not work too
+				// so we don't care about them
+				hi = mid-1; // cut mid and after
+			}
+		}
+		// now res is the answer
+		// if res is lo-1 that means no value in the range satisfies the condition
+		return res;
+	}
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println(lstTrue(2,10)); // 5
+	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+def lstTrue(f, lo, hi):
+	""" Binary Search
+	:param f: (lambda function) check a state
+	:param lo: (int) lower bound
+	:param hi: (int) upper bound
+	:return res: (int) the maximum x such that f(x) is true
+	"""
+	res = lo-1
+	while lo <= hi:
+		mid = (lo+hi)//2 # find the middle of the current range
+		if f(mid): 
+			# if mid works, then all numbers smaller than mid also work
+			# so we only care about the part after mid
+			res = mid # update the answer
+			lo = mid+1 # cut the part before mid
+			# notice that we already handled mid itself so we cut it as well
+		else:
+			# if mid does not work, greater values would not work too
+			# so we don't care about them
+			hi = mid-1 # cut mid and after
+	# now res is the answer
+	# if res is l-1 that means no value in the range satisfies the condition
+	return res
+print(lstTrue(lambda x:True, 2, 10)) # 10
+# all numbers satisfy the condition
+print(lstTrue(lambda x:x*x <= 30, 2, 10)) # 5
+print(lstTrue(lambda x:False, 2, 10)) # 1
+# no numbers satisfy the condition
+```
+See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if you're not familiar with the syntax used in the program. 
+
+</PySection>
+
 
 </LanguageSection>
 
@@ -318,15 +346,40 @@ int lstTrue(function<bool(int)> f, int lo, int hi) {
 
 ```java
 public static int lstTrue(int lo, int hi) {
-   for (lo --; lo < hi; ) {
-      int mid = (lo+hi+1)/2;
-      if(f(mid)) lo = mid; else hi = mid-1;
-   }
-   return lo;
+	for (lo --; lo < hi; ) {
+		int mid = (lo+hi+1)/2;
+		if(f(mid)) lo = mid; else hi = mid-1;
+	}
+	return lo;
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+*Note: it is NOT recommended to use tenary expression in the python implementation of binary search because python tenary expression does not accept statements.*
+
+<Spoiler title="Python ternary expression">
+
+```python
+def lstTrue(f, lo, hi): # python scoping...
+	lo-=1
+	locs=locals()
+	while locs["lo"] < locs["hi"]:
+		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
+		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
+	return locs["lo"]
+```
+
+This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to: 
+
+- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
+- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
+
+</Spoiler>
+
+</PySection>
 
 </LanguageSection>
 
@@ -361,6 +414,21 @@ static long search(){
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+def search():
+	pos = 0
+	a = mx = 2E9
+	while a >= 1:
+		while check(pos+a):
+			pos += a
+		a //= 2
+    return pos
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -406,27 +474,50 @@ import java.io.*;
 import java.util.*; 
 
 public class test{
-   public static boolean f(int x){
-      return x*x >= 30;
-      //function f(x) returns true or false
-   }
-   public static int fstTrue(int lo, int hi) {
-      for (hi ++; lo < hi; ) {
-         // returns smallest x in [lo,hi] that satisfies f
-         // hi+1 if no x satisfies f
-         int mid = (lo+hi)/2;
-         if(f(mid)) hi = mid; else lo = mid+1;
-      }
-      return lo;
-   }
-   public static void main(String[] args) throws IOException
-   {
-      System.out.println(fstTrue(2,10)); // 6
-   }
+	public static boolean f(int x){
+		return x*x >= 30;
+		//function f(x) returns true or false
+	}
+	public static int fstTrue(int lo, int hi) {
+		for (hi ++; lo < hi; ) {
+			// returns smallest x in [lo,hi] that satisfies f
+			// hi+1 if no x satisfies f
+			int mid = (lo+hi)/2;
+			if(f(mid)) hi = mid; else lo = mid+1;
+		}
+		return lo;
+	}
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println(fstTrue(2,10)); // 6
+	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+def fstTrue(f, lo, hi):
+	# returns smallest x in [lo,hi] that satisfies f
+	# hi+1 if no x satisfies f
+	hi+=1
+	while lo < hi:
+		mid = (lo+hi)//2 
+		if f(mid): 
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
+
+print(fstTrue(lambda x:True, 2, 10)) # 2
+print(fstTrue(lambda x:x*x >= 30, 2, 10)) # 6
+print(fstTrue(lambda x:False, 2, 10)) # 11
+```
+
+</PySection>
+
 
 </LanguageSection>
 
@@ -466,8 +557,7 @@ bool check(long long x){
     for(int i = (n-1)/2; i < n; i++){
         operationsNeeded += max(0, x-v[i]);
     }
-    if(operationsNeeded <= k) return true;
-    else return false;
+    return operationsNeeded <= k;
 }
 
 // binary searches for the correct answer
@@ -535,6 +625,40 @@ static boolean check(long x){
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+# checks whether the number of given operations is sufficient
+# to raise the median of the array to x
+def check(x):
+	operationsNeeded = 0
+	for i in range((n-1)//2,n):
+		operationsNeeded += max(0, x-v[i])
+	if operationsNeeded <= k:
+		return True
+	else:
+		return False
+
+
+# binary searches for the correct answer
+def search():
+    pos = 0
+	a = mx = 2E9
+	while a >= 1:
+		while check(pos+a):
+			pos += a
+		a //= 2
+    return int(pos)
+
+v=[]
+n, k = map(int, input().split())
+v = list(map(int, input().split()))
+v.sort()
+print(search())
+```
+
+</PySection>
 
 </LanguageSection>
 

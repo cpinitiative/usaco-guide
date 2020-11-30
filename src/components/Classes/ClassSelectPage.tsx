@@ -142,7 +142,7 @@ export default function ClassSelectPage(props: { path: string }) {
             )}
           </ul>
           {isAdmin && (
-            <>
+            <div className={'mb-6'}>
               <h1 className="text-3xl font-bold leading-9 mb-2 mt-8">
                 Other Classes (visible to administrators only)
               </h1>
@@ -267,7 +267,7 @@ export default function ClassSelectPage(props: { path: string }) {
                     <div className="ml-3 text-sm leading-5">
                       <label
                         htmlFor="add-instructor-also-make-admin"
-                        className="font-medium text-gray-700"
+                        className="font-medium text-gray-700 dark:text-gray-300"
                       >
                         Also make this user an administrator
                       </label>
@@ -291,7 +291,7 @@ export default function ClassSelectPage(props: { path: string }) {
                   </span>
                 </div>
               </form>
-            </>
+            </div>
           )}
         </div>
       </Layout>

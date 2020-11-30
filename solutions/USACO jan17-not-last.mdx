@@ -1,111 +1,62 @@
 ---
 id: usaco-687
 title: USACO 2017 January Bronze - Don't Be Last
-author: Jesse Choe
+author: Benjamin Qi, Jesse Choe
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_notlast_bronze_jan17.html
+[Official Analysis](http://www.usaco.org/current/data/sol_notlast_bronze_jan17.html)
+
+The test data is not particularly strong. Does your solution output "Tie" in both of the following test cases?
+
+```
+4
+Bessie 1
+Elsie 1 
+Daisy 2
+Gertie 3
+```
+
+```
+7
+Bessie 1
+Elsie 1
+Daisy 2 
+Gertie 2
+Annabelle 3
+Maggie 4
+Henrietta 4
+```
 
 <LanguageSection>
+
 <CPPSection>
 
 ## C++ Implementation
 
 ```cpp
-#include <bits/stdc++.h>
- 
-using namespace std;
-using ll = long long;
-using ld = long double;
-using db = double; 
-using str = string; // yay python!
- 
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
- 
-using vi = vector<int>;
-using vc = vector<char>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>; 
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>; 
-using vpd = vector<pd>;
- 
-// pairs
-#define mp make_pair
-#define f first
-#define s second
- 
-// vectors
-#define sz(x) (int)(x).size()
-#define all(x) begin(x), end(x)
-#define rall(x) (x).rbegin(), (x).rend() 
-#define sor(x) sort(all(x)) 
-#define rsz resize
-#define ins insert 
-#define ft front() 
-#define bk back()
-#define pf push_front 
-#define pb push_back
-#define eb emplace_back 
-#define lb lower_bound 
-#define ub upper_bound 
- 
-// loops
-#define For(i,a,b) for (int i = (a); i < (b); ++i)
-#define Rof(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define Trav(a,x) for (auto& a: x)
-
-void setIO(string s) {
-	ios_base::sync_with_stdio(0); cin.tie(0); 
-	freopen((s+".in").c_str(),"r",stdin);
-	freopen((s+".out").c_str(),"w",stdout);
-}
-
-int main(){
-
-setIO("notlast");
-
-int N; cin >> N;
-
-map<string, int> milking;
-
-if(N == 1){
-	string cow; cin >> cow; 
-	int milk; cin >> milk;
-	cout << cow << endl;
-	return 0;
-}
-
-while(N--){
-	string cow; cin >> cow;
-	int milk; cin >> milk;
-	milking[cow]+=milk;
-}
-
-vector<pair<int, string>> notlast;
-
-Trav(i, milking){
-	notlast.pb(mp(i.s, i.f));
-}
-
-sor(notlast);
-
-for(int i=1; i<notlast.size(); i++){
-	if(notlast[i].f > notlast[i-1].f && notlast[i+1].f > notlast[i].f){
-		cout << notlast[i].s << endl;
-		return 0;
+int main() {
+	setIO("notlast");
+	int N; re(N);
+	map<str,int> tot;
+	F0R(i,N) {
+		str a; int b; re(a,b);
+		tot[a] += b;
 	}
+	V<pair<int,str>> cows;
+	trav(t,tot) cows.pb({t.s,t.f});
+	sort(all(cows));
+	int ind = 0;
+	if (sz(cows) == 7) {
+		while (ind < sz(cows) && cows[ind].f == cows[0].f) ind ++;
+	}
+	if (ind < sz(cows) && (ind+1 == sz(cows) || cows[ind].f != cows[ind+1].f)) {
+		ps(cows[ind].s);
+		exit(0);
+	}
+	ps("Tie");
 }
-
-cout << "Tie" << endl;
-
-}
-
 ```
 
 </CPPSection>
+
 </LanguageSection>

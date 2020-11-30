@@ -1,0 +1,37 @@
+---
+id: usaco-857
+title: USACO December 2018 Bronze - Back and Forth
+author: Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_backforth_bronze_dec18.html)
+
+There's no need to copy paste essentially the same code into four different functions ...
+
+## Solution
+
+Similar to the second solution from the analysis.
+
+```cpp
+set<int> possible;
+
+void search(int day, pair<int,vi> x, pair<int,vi> y) {
+	if (day == 4) {
+		possible.ins(x.f);
+		return;
+	}
+	F0R(i,sz(x.s)) {
+		int t = x.s[i];
+		vi X = x.s; X.erase(begin(X)+i);
+		vi Y = y.s; Y.pb(t);
+		search(day+1,{y.f+t,Y},{x.f-t,X});
+	}
+}
+
+int main() {
+	setIO("backforth");
+	vi a(10), b(10); re(a,b);
+	search(0,{1000,a},{1000,b});
+	ps(sz(possible));
+}
+```

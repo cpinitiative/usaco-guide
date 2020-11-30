@@ -113,27 +113,31 @@ In Bronze, we avoided discussion of any set operations involving iterators.
 In Java, iterators are helpful for looping through sets.
 
 Iterators used with `HashSet` would yield the elements in random order:
+
 ```java
 Set<Integer> set = new HashSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
 Iterator it = set.iterator();
 while(it.hasNext()){
-   Integer i = (Integer)it.next();
-   System.out.print(i + " "); // returns 0 1 -2 3
+	Integer i = (Integer)it.next();
+	System.out.print(i + " "); // returns 0 1 -2 3
 }
 ```
+
 But with `TreeSet` the elements are in sorted order:
+
 ```java
 Set<Integer> set = new TreeSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
 Iterator it = set.iterator();
 while(it.hasNext()){
-   Integer i = (Integer)it.next();
-   System.out.print(i + " "); // returns -2 0 1 3
+	Integer i = (Integer)it.next();
+	System.out.print(i + " "); // returns -2 0 1 3
 }
 ```
 
 Instead of creating an iterator and looping with it like in C++, Java provides a for-each loop which creates a hidden iterator and loops with it automatically:
+
 ```java
 Set<Integer> set = new TreeSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
@@ -141,9 +145,10 @@ for (int i : set){
    System.out.print(i + " "); // returns -2 0 1 3
 }
 ```
+
 <Warning>
 
-You shouldn't modify sets when traversing it with set iterators like in any other iterators for Collections (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling a `next()` method.
+You shouldn't modify sets when traversing it with set iterators like in any other iterators for `Collections` (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling the `next()` method.
 
 </Warning>
 
@@ -188,7 +193,7 @@ Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`
 
 <JavaSection>
 
-The ordered set (TreeSet) allows for a multitude of additional operations: 
+`TreeSet`s in Java allow for a multitude of additional operations: 
 
 - `first()`: returns the lowest element in the set
 - `last()`: returns the greatest element in the set
@@ -216,7 +221,7 @@ System.out.println(set.higher(23); // ERROR, no such element exists
 
 </LanguageSection>
 
-One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
+One limitation of ordered sets is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. In C++, these operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
 
 ## Ordered Maps
 

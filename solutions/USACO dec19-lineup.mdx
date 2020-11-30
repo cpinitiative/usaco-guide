@@ -1,0 +1,53 @@
+---
+id: usaco-965
+title: USACO December 2019 Bronze - Livestock Lineup
+author: Benjamin Qi
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lineup_bronze_dec19.html)
+
+## Solution w/ Graphs
+
+What if there were up to $10^5$ cows? Then neither of the solutions provided in the analysis would be fast enough.
+
+Say that we draw an edge between two cows if they must be adjacent. Then if a solution exists, the graph must be a union of paths.
+
+(insert diagram)
+
+We iterate over the cows in increasing lexicographical order. If a cow is not yet part of the answer and it is the endpoint of a path, then we add the entire path containing the cow to the answer.
+
+```cpp
+// lambda expression - see https://usaco.guide/general/lambda
+vs cows = []() {
+	vs tmp{"Bessie", "Buttercup", "Belinda", "Beatrice", "Bella", "Blue", "Betsy", "Sue"};
+	sort(all(tmp)); // sort names lexicographically
+	return tmp;
+}();
+
+int index(str cow) { return find(all(cows),cow)-begin(cows); }
+vi adj[8];
+
+int main() {
+	setIO("lineup");
+	int N; re(N);
+	F0R(i,N) {
+		str cow1,cow2,trash;
+		re(cow1,trash,trash,trash,trash,cow2);
+		int c1 = index(cow1), c2 = index(cow2); // convert names to indices
+		adj[c1].pb(c2), adj[c2].pb(c1);
+	}
+	vi seq; // sequence of cow indices
+	vb done(8);
+	F0R(i,8) if (!done[i] && sz(adj[i]) <= 1) { // add path to sequence
+		int cur = i;
+		while (sz(adj[cur]) == 1) {
+			seq.pb(cur); done[cur] = 1;
+			int nex = adj[cur][0];
+			adj[nex].erase(find(all(adj[nex]),cur));
+			cur = nex;
+		}
+		seq.pb(cur); done[cur] = 1;
+	}
+	trav(t,seq) ps(cows[t]); // convert indices back to names
+}
+```

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Transition from '../Transition';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import { DiscussionEmbed } from 'disqus-react';
@@ -23,10 +23,27 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
 import getProgressInfo from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
-import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
 import DisqusComments from '../DisqusComments';
+import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import ConfettiContext, {
+  ConfettiProvider,
+} from '../../context/ConfettiContext';
+
+const ForumBanner = () => {
+  return (
+    <div className="fixed bottom-0 right-0 m-4">
+      <OutboundLink
+        className="block shadow-md hover:shadow-lg py-2 px-3 border border-gray-200 dark:border-gray-700 transform hover:-translate-y-2 hover:bg-gray-50 bg-white dark:bg-dark-surface dark-hover:bg-gray-900 transition duration-150 ease-in-out"
+        target="_blank"
+        href="https://forum.usaco.guide/"
+      >
+        Need help? Join the USACO Forum!
+      </OutboundLink>
+    </div>
+  );
+};
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -251,7 +268,6 @@ export default function MarkdownLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSettingsActive, setIsSettingsActive] = useState(false);
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
@@ -284,14 +300,16 @@ export default function MarkdownLayout({
   ]);
   // console.log(moduleLinks);
 
+  const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(markdownData.id, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
-    )
-      setIsConfettiActive(true);
+    ) {
+      showConfetti();
+    }
   };
 
   // Scroll behavior smooth was causing a number of issues...
@@ -329,13 +347,8 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
-        conf: setIsConfettiActive,
       }}
     >
-      <ModuleConfetti
-        show={isConfettiActive}
-        onDone={() => setIsConfettiActive(false)}
-      />
       <Transition show={isMobileNavOpen} timeout={300}>
         <div className="lg:hidden">
           <div className="fixed inset-0 flex z-40">
@@ -602,11 +615,13 @@ export default function MarkdownLayout({
                 {children}
 
                 {markdownData instanceof ModuleInfo && (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-b border-gray-200 py-8 dark:border-gray-800 dark:text-dark-high-emphasis">
-                    <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
-                      Module Progress
-                    </TextTooltip>
-                    :
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-b border-gray-200 py-8 dark:border-gray-800 dark:text-dark-high-emphasis flex items-center justify-center">
+                    <span>
+                      <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
+                        Module Progress
+                      </TextTooltip>
+                      :
+                    </span>
                     <span className="ml-4">
                       <MarkCompleteButton
                         onChange={handleCompletionChange}
@@ -640,6 +655,9 @@ export default function MarkdownLayout({
                 <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
                 </div>
+
+                {/* Spacing for the USACO Forum popup */}
+                <div className="h-12" />
               </div>
               <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
                 <TableOfContentsSidebar tableOfContents={tableOfContents} />
@@ -657,6 +675,7 @@ export default function MarkdownLayout({
         onClose={() => setIsContactUsActive(false)}
         activeModule={markdownData instanceof ModuleInfo ? markdownData : null}
       />
+      <ForumBanner />
     </MarkdownLayoutContext.Provider>
   );
 }

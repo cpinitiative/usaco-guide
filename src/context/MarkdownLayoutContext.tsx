@@ -6,7 +6,6 @@ import { SolutionInfo } from '../models/solution';
 const MarkdownLayoutContext = createContext<{
   markdownLayoutInfo: ModuleInfo | SolutionInfo;
   sidebarLinks: ModuleLinkInfo[];
-  conf: React.Dispatch<React.SetStateAction<Boolean>>;
 }>(null);
 
 export default MarkdownLayoutContext;

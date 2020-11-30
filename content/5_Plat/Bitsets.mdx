@@ -382,9 +382,9 @@ Taking inspiration from [this](https://codeforces.com/blog/entry/67664) CF blog 
 
 - If $\left|\frac{ci}{n}-j\right| \ge X$ for some $X$ that we choose, then set $\texttt{dp}[i][j]=0$.
 
-Since we only need to keep track of $2X+1$ values for each $i$, this solution runs in $O(nX)$ time, which runs in time with $X=5\cdot 10^5$ using bitset.
+Since we only need to keep track of $2X+1$ values for each $i$, this solution runs in $O(nX)$ time, which is fast enough with $X=5\cdot 10^5$ using bitset.
 
-Intuitively, the random shuffle reduces the optimal subset to some random walk which should have variance at most $\max a_i\cdot \sqrt N$, so it suffices to take $X\approx \max a_i\cdot \sqrt N$. (Though I'm not completely convinced that this works, does anyone know how to bound the failure probability of this algorithm precisely?)
+It turns out that $X\approx \max a_i\cdot \sqrt n$ (up to a constant) suffices for correctness with high probability (briefly mentioned [here](https://www.cc.gatech.edu/~rpeng/CS4540_F20/ps1.pdf)). I'm not totally sure about the details, but intuitively, the random shuffle reduces the optimal subset to some distribution with variance at most $(\max a_i)^2\cdot n$. In the special case where each $a_i$ is either $0$ or $\max a_i$, we can bound the probability of failure using the Catalan numbers. I think it is something like $e^{-\frac{m^2}{n}}$ if we let the bitset have size $m\cdot \max a_i$.
 
 <Spoiler title="Solution">
 

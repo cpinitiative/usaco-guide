@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: 'Complete Search with Recursion'
-author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi
+author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi, Dong Liu
 description: 'Includes generating subsets and permutations.'
 frequency: 1
 prerequisites:
@@ -54,7 +54,7 @@ export const problems = {
 			'Hard',
 			false,
 			[],
-			'Try all $10 * 11^4$ possibilities for each day, and simulate for each possibility. See the editorial for more details.'
+			'usaco-857'
 		), // 99.63
 		new Problem(
 			'Old Bronze',
@@ -277,15 +277,32 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+n = int(input())
+p = list(map(int, input().split()))
+
+def solve(i, s1, s2):
+	if i == n:
+		return abs(s2-s1)
+	return min(solve(i+1, s1+p[i], s2), 
+			   solve(i+1, s1, s2+p[i]))
+
+print(solve(0, 0, 0))
+```
+	
+</PySection>	
+
 </LanguageSection>
 
 #### Generating Subsets with Bitmasks
 
-<!-- <Warning>
+<Warning>
 
 You are not expected to know this for Bronze.
 
-</Warning> -->
+</Warning>
 
 A **bitmask** is an integer whose binary representation is used to represent a subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$), we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$. We can iterate through all subsets $s_1$ if we check all bitmasks ranging from $0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the minimum difference between their sums.
 
@@ -293,6 +310,12 @@ Note the fancy bitwise operations:
 
 - `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary, has only the $x$'th bit turned on.
 - The `&` (and) operator will take two integers and return a new integer. `a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is turned on if and only if the $i$'th bit is turned on for both $a$ and $b$. Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is turned on in $mask$.
+
+<Info title="Bitwise Operations">
+
+Check the Silver [module](/silver/intro-bitwise) module for more information.
+
+</Info>
 
 <LanguageSection>
 
@@ -470,6 +493,27 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+n = int(input())
+p = list(map(int, input().split()))
+
+ans = float('inf')
+for mask in range(1<<n):
+	s1,s2 = 0,0
+	for i in range(n):
+		if mask & (1<<i):
+			s1 += p[i]
+		else:
+			s2 += p[i]
+	ans = min(ans, abs(s1-s2))
+
+print(ans)
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Permutations
@@ -532,9 +576,11 @@ void search() {
 		return;
 	}
 	F0R(i,26) if (cnt[i]) {
-		cnt[i] --; perm += char('a'+i);
+		-- cnt[i]; 
+		perm += char('a'+i);
 		search();
-		cnt[i] ++; perm.pop_back();
+		++ cnt[i]; 
+		perm.pop_back();
 	}
 }
 
@@ -548,6 +594,58 @@ int main() {
 ```
 
 </CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String s, perm;
+	static ArrayList<String> perms;
+	static int N, cnt[];
+		
+	static void search() {
+		if (perm.length() == s.length()) {
+			perms.add(perm);
+			return;
+		}
+		for (int i = 0; i < 26; ++i) {
+			if (cnt[i] > 0) {
+				--cnt[i];
+				perm += (char)(i + 'a');
+				search();
+				++cnt[i];
+				perm = perm.substring(0, perm.length() - 1); //removes last character
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		s = br.readLine();
+		N = s.length();
+		cnt = new int[26];
+		perms = new ArrayList<String>();
+		perm = "";
+		for (int i = 0; i < N; ++i) {
+			int index = (int)(s.charAt(i) - 'a');
+			++cnt[index];
+		}
+		search();
+		Collections.sort(perms);
+		System.out.println(perms.size());
+		for (String i : perms) {
+			System.out.println(i);
+		}
+		br.close();
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -876,7 +974,7 @@ int ans = 0;
  
 void dfs(int r) { // place queen in r-th row
 	if (r == 8) {
-		ans ++; // found valid placement
+		++ ans; // found valid placement
 		return;
 	}
 	F0R(i,8) if (g[r][i] == '.' && !c[i] && !sum[i+r] && !dif[i-r+7]) {
@@ -893,6 +991,47 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String g[];
+	static boolean sum[], dif[], c[];
+	static int ans = 0;
+	static void dfs(int r) { //place queen in row r
+		if (r == 8) {
+			++ ans; 
+			return;
+		}
+		for (int i = 0; i < 8; ++i) {
+			if(g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
+				c[i] = sum[i + r] = dif[i - r + 7] = true;
+				dfs(r + 1);
+				c[i] = sum[i + r] = dif[i - r + 7] = false;
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		g = new String[8];
+		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
+		for(int i = 0; i < 8; ++i) {
+			g[i] = br.readLine();
+		}
+		dfs(0);
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 #### Pruning
