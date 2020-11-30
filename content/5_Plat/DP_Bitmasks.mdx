@@ -186,13 +186,23 @@ You can often use this to solve subtasks.
 
 ### Rough Idea
 
-Some number theory problems, in particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes.
-If each number were represented by a bitmask of its prime divisors, choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND to $0$.
+In some number theory problems, it helps to represent each number were represented by a bitmask of its prime divisors. For example, the set $\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary), where the bits correspond to divisibility by $[2, 3, 5]$.
 
-For example: the set $\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary), where the bits correspond to divisibility by $[2, 3, 5]$.
-Then, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because $0b011 \& 0b101 = 0b001 \neq 0$.
-Likewise, $\{6, 10, 15 \}$ has GCD $1$ because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
+Then, here are some equivalent operations between masks and these integers:
 
+ - Bitwise AND is GCD
+ - Bitwise OR is LCM
+ - Iterating over bits is iterating over prime divisors
+ - Iterating over submasks is iterating over divisors
+
+<!-- 
+In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes. 
+ -->
+Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because $0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$ because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
+
+
+
+<!-- 
 Therefore, if we have a reasonably short list of primes (perhaps $\leq 20$), then we can simply represent numbers with their prime divisors bitmask and change the NT problem to a bitmask problem.
 (Similar ideas can be used to tackle Professional Layer/Nora's Toy Boxes)
 
@@ -210,21 +220,19 @@ Additionally, bitmasks of length $9592$ are extraordinarily long.
 Since we know a conservative bound of $100000$ different bitmasks anyways, one may consider trying to assign each bitmask to an integer between $1$ and $100000$.
 In fact, the simplest way to do this is just to assign each bitmask to the integer it corresponds to -- ignoring the mask altogether!
 (Notice how not all integers actually correspond to a bitmask. The bitmask corresponding to $4$, for example, would be represented by the integer $2$)
-Then, here are some equivalent operations between masks and these integers:
+ -->
 
- - Bitwise AND is GCD
- - Bitwise OR is LCM
- - Iterating over bits is iterating over prime divisors
- - Iterating over submasks is iterating over divisors
+<!-- Operating like this makes it easier to think about and apply PIE or SOS wrt numbers and GCDs. -->
 
-Operating like this makes it easier to think about and apply PIE or SOS wrt numbers and GCDs.
-(Similar ideas can be used to tackle Gold Experience)
+<!-- (Similar ideas can be used to tackle Gold Experience) -->
 
 <IncompleteSection>
 
 Maybe this is just standard NT, but I've always thought about it as a bitmask. Also, any tutorials or more problems of this type?
 
 </IncompleteSection>
+
+### Problems
 
 <Problems problems={problems.bitmask_nt} />
 
