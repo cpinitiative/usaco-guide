@@ -4,7 +4,7 @@ title: USACO December 2017 Bronze - The Bovine Shuffle
 author: Jesse Choe
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html
+[Official Analysis]: http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html
 
 <LanguageSection>
 <CPPSection>
@@ -72,45 +72,45 @@ void setIO(string s) {
 
 int main(){
 
-setIO("shuffle"); 
+	setIO("shuffle"); 
 
-int N; cin >> N;
+	int N; cin >> N;
 
-vi a(N);
+	vi a(N);
 
-For(i, 0, N){
-	cin >> a[i];
-}
+	For(i, 0, N){
+		cin >> a[i];
+	}
 
-vi id(N);
+	vi id(N);
 
-For(i, 0, N){
-	cin >> id[i];
-}
+	For(i, 0, N){
+		cin >> id[i];
+	}
 
-// Perform the backwards swap
+	// Perform the backwards swap
 
-vi correct(N);
+	vi correct(N);
 
-For(i, 0, 3){
-	for(int j=0; j<N; j++){
-		int idx;
-		for(int k=0; k<N; k++){
-			if(j+1 == a[k]){
-				idx = k; 
-				break;
+	For(i, 0, 3){
+		for(int j=0; j<N; j++){
+			int idx;
+			for(int k=0; k<N; k++){
+				if(j+1 == a[k]){
+					idx = k; 
+					break;
+				}
 			}
+			correct[idx] = id[j];
 		}
-		correct[idx] = id[j];
+		for(int j=0; j<N; j++){
+			id[j] = correct[j];
+		}
 	}
-	for(int j=0; j<N; j++){
-		id[j] = correct[j];
-	}
-}
 
-For(i, 0, N){
-	cout << id[i] << endl;
-}
+	For(i, 0, N){
+		cout << id[i] << endl;
+	}
 
 }
 ```
