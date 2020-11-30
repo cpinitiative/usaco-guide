@@ -4,7 +4,7 @@ title: USACO US Open 2018 - Team Tic Tac Toe
 author: Jesse Choe
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_tttt_bronze_open18.html
+[Official Analysis]: http://www.usaco.org/current/data/sol_tttt_bronze_open18.html
 
 <LanguageSection>
 <CPPSection>
@@ -72,93 +72,93 @@ void setIO(string s) {
 
 int main(){
 
-setIO("tttt"); 
+	setIO("tttt"); 
 
-// Read in board
-char board [3][3];
+	// Read in board
+	char board [3][3];
 
-set<char> ind; set<str> twocow;
+	set<char> ind; set<str> twocow;
 
-For(i, 0, 3){
-	For(j, 0, 3){
-		cin >> board[i][j];
-	}
-}
-
-// Check rows
-
-For(i, 0, 3){
-	set<char> r;
-	For(j, 0, 3){
-		r.ins(board[i][j]);
-	}
-	if(r.size() == 1){
-		ind.ins(board[i][0]);
-	} else if(r.size() == 2){
-		str curString = "";
-		Trav(a, r){
-			curString+=a;
-		}
-		twocow.ins(curString);
-	}
-}
-
-// Check columns
-
-For(j, 0, 3){
-	set<char> c;
 	For(i, 0, 3){
-		c.ins(board[i][j]);
+		For(j, 0, 3){
+			cin >> board[i][j];
+		}
 	}
-	if(c.size() == 1){
-		ind.ins(board[0][j]);
-	} else if(c.size() == 2){
+
+	// Check rows
+
+	For(i, 0, 3){
+		set<char> r;
+		For(j, 0, 3){
+			r.ins(board[i][j]);
+		}
+		if(r.size() == 1){
+			ind.ins(board[i][0]);
+		} else if(r.size() == 2){
+			str curString = "";
+			Trav(a, r){
+				curString+=a;
+			}
+			twocow.ins(curString);
+		}
+	}
+
+	// Check columns
+
+	For(j, 0, 3){
+		set<char> c;
+		For(i, 0, 3){
+			c.ins(board[i][j]);
+		}
+		if(c.size() == 1){
+			ind.ins(board[0][j]);
+		} else if(c.size() == 2){
+			str curString = "";
+			Trav(a, c){
+				curString+=a;
+			}
+			twocow.ins(curString);
+		}
+	}
+
+	// Check first diagonal
+
+	set<char> d1;
+
+	For(i, 0, 3){
+		d1.ins(board[i][i]);
+	}
+
+	if(d1.size() == 1){
+		ind.ins(board[0][0]);
+	} else if(d1.size() == 2){
 		str curString = "";
-		Trav(a, c){
+		Trav(a, d1){
 			curString+=a;
 		}
 		twocow.ins(curString);
 	}
-}
 
-// Check first diagonal
+	// Check second diagonal
 
-set<char> d1;
+	set<char> d2; 
 
-For(i, 0, 3){
-	d1.ins(board[i][i]);
-}
-
-if(d1.size() == 1){
-	ind.ins(board[0][0]);
-} else if(d1.size() == 2){
-	str curString = "";
-	Trav(a, d1){
-		curString+=a;
+	For(i, 0, 3){
+		d2.ins(board[i][2-i]);
 	}
-	twocow.ins(curString);
-}
-
-// Check second diagonal
-
-set<char> d2; 
-
-For(i, 0, 3){
-	d2.ins(board[i][2-i]);
-}
-if(d2.size() == 1){
-	ind.ins(board[0][2]);
-} else if(d2.size() == 2){
-	str curString = "";
-	Trav(a, d2){
-		curString+=a;
+	if(d2.size() == 1){
+		ind.ins(board[0][2]);
+	} else if(d2.size() == 2){
+		str curString = "";
+		Trav(a, d2){
+			curString+=a;
+		}
+		twocow.ins(curString);
 	}
-	twocow.ins(curString);
-}
 
-// Print the answers :D
+	// Print the answers :D
 
-cout << sz(ind) << endl << sz(twocow) << endl;
+	cout << sz(ind) << endl << sz(twocow) << endl;
 
 }
 ```
