@@ -4,7 +4,7 @@ title: USACO 2017 US Open Bronze - The Lost Cow
 author: Jesse Choe
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html
+[Official Analysis]: http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html
 
 <LanguageSection>
 <CPPSection>
@@ -72,49 +72,49 @@ void setIO(string s) {
 
 int main(){
 
-setIO("lostcow"); 
+	setIO("lostcow"); 
 
-int x, y; cin >> x >> y;
+	int x, y; cin >> x >> y;
 
-vi zigzag;
+	vi zigzag;
 
-if(x == y){
-	cout << 0 << endl;
-} else if(x < y){
-	int dist = 1;
+	if(x == y){
+		cout << 0 << endl;
+	} else if(x < y){
+		int dist = 1;
 
-	while(x+dist < y){
-	zigzag.pb(x+dist);
-	dist*=-2;
+		while(x+dist < y){
+		zigzag.pb(x+dist);
+		dist*=-2;
+		}
+
+		zigzag.pb(x+dist);
+
+		int ans = 1;
+
+		For(i, 0, zigzag.size()-1){
+		ans+=abs(zigzag[i] - zigzag[i+1]);
+		}
+		ans-=(zigzag[zigzag.size()-1]-y);
+		cout << ans << endl;
+	} else {
+		int dist = 1;
+
+		while(x+dist > y){
+		zigzag.pb(x+dist);
+		dist*=-2;
+		}
+
+		zigzag.pb(x+dist);
+
+		int ans = 1;
+
+		For(i, 0, zigzag.size()-1){
+		ans+=abs(zigzag[i] - zigzag[i+1]);
+		}
+		ans-=(y-zigzag[zigzag.size()-1]);
+		cout << ans << endl;
 	}
-
-	zigzag.pb(x+dist);
-
-	int ans = 1;
-
-	For(i, 0, zigzag.size()-1){
-	ans+=abs(zigzag[i] - zigzag[i+1]);
-	}
-	ans-=(zigzag[zigzag.size()-1]-y);
-	cout << ans << endl;
-} else {
-	int dist = 1;
-
-	while(x+dist > y){
-	zigzag.pb(x+dist);
-	dist*=-2;
-	}
-
-	zigzag.pb(x+dist);
-
-	int ans = 1;
-
-	For(i, 0, zigzag.size()-1){
-	ans+=abs(zigzag[i] - zigzag[i+1]);
-	}
-	ans-=(y-zigzag[zigzag.size()-1]);
-	cout << ans << endl;
-}
 
 }
 
