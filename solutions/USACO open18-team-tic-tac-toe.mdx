@@ -1,10 +1,10 @@
 ---
 id: usaco-831
 title: USACO US Open 2018 - Team Tic Tac Toe
-author: Jesse Choe
+author: Jesse Choe, Benjamin Qi
 ---
 
-[Official Analysis]: http://www.usaco.org/current/data/sol_tttt_bronze_open18.html
+[Official Analysis](http://www.usaco.org/current/data/sol_tttt_bronze_open18.html)
 
 <LanguageSection>
 <CPPSection>
@@ -12,154 +12,24 @@ author: Jesse Choe
 ## C++ Implementation
 
 ```cpp
-// Created by Jesse Choe - Bronze Template
+vs board(3);
+set<set<char>> winners[4];
 
-#include <bits/stdc++.h>
-using namespace std;
-
-// Type aliases
-
-using ll = long long;
-using str = string; 
-using vi = vector<int>;
-using pi = pair<int,int>;
-using vpi = vector<pi>;
-using si = set<int>;
-
-// Vector Operations
-
-#define sz(x) (int)(x).size()
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sor(x) sort(all(x))
-#define rev(x) reverse(all(x))
-#define del(x, i) erase(begin(x)+i)
-#define rem(x,i) erase(begin(x), begin(x)+i)
-
-// Pairs
-
-#define mp make_pair
-#define sec second
-#define fir first
-
-// Sets and Maps
-
-#define ins insert
-#define ez erase
-#define cnt count
-
-// Math
-
-#define MOD 1e9+7
-#define MAX_INT 1e18*9
-
-// Permutation
-
-#define possibilities(x) while(next_permutation(all(x))
-
-// Loops
-
-#define Trav(a,x) for (auto& a: x)
-#define For(i,a,b) for (int i = (int)(a); i < (int)(b); ++i)
-
-// Input/Output - s is basically the file name without the ".in" and ".out"
-
-void setIO(string s) {
-	ios_base::sync_with_stdio(0); cin.tie(0); 
-	freopen((s+".in").c_str(),"r",stdin);
-	freopen((s+".out").c_str(),"w",stdout);
+void ins(vpi v) {
+	set<char> s;
+	trav(p,v) s.ins(board[p.f][p.s]);
+	winners[sz(s)].ins(s);
 }
 
-int main(){
-
-	setIO("tttt"); 
-
-	// Read in board
-	char board [3][3];
-
-	set<char> ind; set<str> twocow;
-
-	For(i, 0, 3){
-		For(j, 0, 3){
-			cin >> board[i][j];
-		}
-	}
-
-	// Check rows
-
-	For(i, 0, 3){
-		set<char> r;
-		For(j, 0, 3){
-			r.ins(board[i][j]);
-		}
-		if(r.size() == 1){
-			ind.ins(board[i][0]);
-		} else if(r.size() == 2){
-			str curString = "";
-			Trav(a, r){
-				curString+=a;
-			}
-			twocow.ins(curString);
-		}
-	}
-
-	// Check columns
-
-	For(j, 0, 3){
-		set<char> c;
-		For(i, 0, 3){
-			c.ins(board[i][j]);
-		}
-		if(c.size() == 1){
-			ind.ins(board[0][j]);
-		} else if(c.size() == 2){
-			str curString = "";
-			Trav(a, c){
-				curString+=a;
-			}
-			twocow.ins(curString);
-		}
-	}
-
-	// Check first diagonal
-
-	set<char> d1;
-
-	For(i, 0, 3){
-		d1.ins(board[i][i]);
-	}
-
-	if(d1.size() == 1){
-		ind.ins(board[0][0]);
-	} else if(d1.size() == 2){
-		str curString = "";
-		Trav(a, d1){
-			curString+=a;
-		}
-		twocow.ins(curString);
-	}
-
-	// Check second diagonal
-
-	set<char> d2; 
-
-	For(i, 0, 3){
-		d2.ins(board[i][2-i]);
-	}
-	if(d2.size() == 1){
-		ind.ins(board[0][2]);
-	} else if(d2.size() == 2){
-		str curString = "";
-		Trav(a, d2){
-			curString+=a;
-		}
-		twocow.ins(curString);
-	}
-
-	// Print the answers :D
-
-	cout << sz(ind) << endl << sz(twocow) << endl;
-
+int main() {
+	setIO("tttt");
+	re(board);
+	F0R(i,3) ins({{i,0},{i,1},{i,2}}); // insert rows
+	F0R(i,3) ins({{0,i},{1,i},{2,i}}); // insert cols
+	ins({{0,0},{1,1},{2,2}}); // insert diagonals
+	ins({{2,0},{1,1},{0,2}});
+	ps(sz(winners[1]));
+	ps(sz(winners[2]));
 }
 ```
 
