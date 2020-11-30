@@ -78,7 +78,7 @@ export default function DashboardPage(props: PageProps) {
           | 'Practicing'
           | 'Ignored',
       }));
-  }, [userProgressOnModules]);
+  }, [userProgressOnModules, showIgnored]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnProblems)
       .filter(
@@ -92,7 +92,7 @@ export default function DashboardPage(props: PageProps) {
         ...problemIDMap[x],
         status: userProgressOnProblems[x] as 'Solving' | 'Skipped' | 'Ignored',
       }));
-  }, [userProgressOnProblems]);
+  }, [userProgressOnProblems, showIgnored]);
 
   const lastViewedSection =
     moduleIDToSectionMap[lastViewedModuleID] || 'general';
