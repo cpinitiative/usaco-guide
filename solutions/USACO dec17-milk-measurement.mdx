@@ -4,7 +4,7 @@ title: USACO December 2017 Bronze - The Bovine Shuffle
 author: Jesse Choe
 ---
 
-Official Editorial: http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html
+[Official Analysis]: http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html
 
 <LanguageSection>
 <CPPSection>
@@ -101,38 +101,38 @@ bool best(int cow, int day){
 
 int main(){
 
-setIO("measurement"); 
+	setIO("measurement"); 
 
-int N; cin >> N;
+	int N; cin >> N;
 
-For(i, 0, N){
-	string name; int day, change; cin >> day >> name >> change;
-	if(name == "Bessie"){
-		display[0][day] = change;
-	} else if(name == "Elsie"){
-		display[1][day] = change;
-	} else {
-		display[2][day] = change;
+	For(i, 0, N){
+		string name; int day, change; cin >> day >> name >> change;
+		if(name == "Bessie"){
+			display[0][day] = change;
+		} else if(name == "Elsie"){
+			display[1][day] = change;
+		} else {
+			display[2][day] = change;
+		}
 	}
-}
 
-For(c, 0, 3){
-	display[c][0] = 7;
-}
-
-For(c, 0, 3){
-	For(i, 1, 101){
-		display[c][i]+=display[c][i-1];
+	For(c, 0, 3){
+		display[c][0] = 7;
 	}
-}
 
-int ans = 0;
+	For(c, 0, 3){
+		For(i, 1, 101){
+			display[c][i]+=display[c][i-1];
+		}
+	}
 
-For(d, 1, 101){
-	ans+=((best(0, d-1) != best(0, d)) || (best(1, d-1) != best(1, d)) || (best(2, d-1) != best(2, d)));
-}
+	int ans = 0;
 
-cout << ans << endl;
+	For(d, 1, 101){
+		ans+=((best(0, d-1) != best(0, d)) || (best(1, d-1) != best(1, d)) || (best(2, d-1) != best(2, d)));
+	}
+
+	cout << ans << endl;
 
 }
 ```
