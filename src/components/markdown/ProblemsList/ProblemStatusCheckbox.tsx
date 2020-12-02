@@ -24,84 +24,9 @@ const ProgressDropdown = ({
   openModal,
 }) => {
   const [activeProgress, setActiveProgress] = useState<ProblemProgress>();
-  const [showModal, setShowModal] = React.useState(openModal);
-  const Modal = (
-    <Transition show={showModal} timeout={300}>
-      <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
-        {showModal && console.log('running')}
-        <Transition
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 transition-opacity">
-            <div
-              className="absolute inset-0 bg-gray-500 opacity-75"
-              onClick={() => setShowModal(false)}
-            />
-          </div>
-        </Transition>
 
-        <Transition
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enterTo="opacity-100 translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-          leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        >
-          <div
-            className="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-xl sm:w-full sm:p-6"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-headline"
-          >
-            <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
-              <button
-                type="button"
-                className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
-                aria-label="Close"
-                onClick={() => setShowModal(false)}
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="sm:flex sm:items-start">
-              <div className="text-left">
-                <h3
-                  className="text-lg leading-6 font-medium text-gray-900"
-                  id="modal-headline"
-                >
-                  Solution Sketch:
-                </h3>
-                <div className="mt-4">
-                  <p className="text-gray-700">ghuvhjhj</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Transition>
-      </div>
-    </Transition>
-  );
   return (
     <div>
-      {Modal}
       <ul
         tabIndex={-1}
         className="max-h-60 rounded-md py-1 text-base leading-6 overflow-auto focus:outline-none sm:text-sm sm:leading-5 no-markdown"
