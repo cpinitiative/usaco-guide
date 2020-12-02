@@ -7,7 +7,7 @@ export default function TrustedBy() {
   const [numPageviews, setNumPageviews] = useState('.');
   const [numStars, setNumStars] = useState('.');
   useEffect(() => {
-    fetch('https://usaco-guide.firebaseio.com/analytics/pageviews.json')
+    fetch('https://usaco-guide.firebaseio.com/pageviews.json')
       .then(resp => resp.json())
       .then(pageviews => {
         setNumPageviews(Math.floor(parseInt(pageviews) / 1000) + 'k');
