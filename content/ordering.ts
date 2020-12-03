@@ -39,8 +39,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'General',
       description: 'Useful for competitors of all levels.',
       items: [
-        'practicing',
         'debugging-general',
+        'practicing',
         'contest-strategy',
         'resources-cp',
         'contests',
