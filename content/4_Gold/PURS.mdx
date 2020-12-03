@@ -1,7 +1,7 @@
 ---
 id: PURS
 title: 'Point Update Range Sum'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Dong Liu
 prerequisites:
   - prefix-sums
 description: 'Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only).'
@@ -146,11 +146,106 @@ Most gold range query problems require you to support following tasks in $O(\log
 
 Both **segment trees** and **binary indexed trees** can accomplish this.
 
+## Solution - Range Sum Queries II 
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MX = 2e5+5;
+#define ll long long
+int n, q;
+vector<ll> bit(MX), x(MX);
+
+void upd(int i, ll v) {
+  for (; i<=n; i+=i&(-i)) bit[i]+=v;
+}
+ll qry(int i) {
+  ll sum = 0;
+  for(; i>0; i-=i&(-i)) sum += bit[i];
+  return sum;
+}
+
+int main() {
+  cin >> n >> q;
+  for(int i=1; i<=n; i++) {
+    cin >> x[i];
+	upd(i, x[i]);
+  }
+  for(int i=1; i<=q; i++) {
+    int t,a,b; cin >> t >> a >> b;
+    if (t==1) {
+      upd(a, -x[a]); // remove its current value
+      x[a]=b; upd(a, x[a]); // add its new value
+    } else {
+      cout << qry(b)-qry(a-1) << "\n";
+    }
+  }
+
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 ## Segment Tree
 
 <FocusProblem problem={problems.segSam[0]} />
 
 A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/* SegTree implementation from BenQ */
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 1e18; T comb(T a, T b) { return min(a,b); }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+#define ll long long
+Seg<ll> st;
+
+int main() {
+	int n, q; cin >> n >> q;
+	st.init(n);
+	for(int i=1; i<=n; i++) {
+		int a; cin >> a;
+		st.upd(i, a);
+	}
+	for(int i=1; i<=q; i++) {
+		int t, a, b; cin >> t >> a >> b;
+		if (t==1) st.upd(a,b);
+		else cout << st.query(a,b) <<"\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Resources
 
