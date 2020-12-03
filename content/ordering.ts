@@ -40,6 +40,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description: 'Useful for competitors of all levels.',
       items: [
         'practicing',
+        'debugging-general',
         'contest-strategy',
         'resources-cp',
         'contests',
@@ -52,7 +53,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'factors-choosing',
         'running-code-locally',
         'cpp-command',
-        'debugging',
+        'debugging-lang',
         'fast-io',
         'generic',
         'lambda',
