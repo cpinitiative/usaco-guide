@@ -2,8 +2,9 @@ import * as React from 'react';
 import { ModuleInfo } from '../../models/module';
 import { SECTION_LABELS } from '../../../content/ordering';
 import SlideoverForm from './SlideoverForm';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useStickyState from '../../hooks/useStickyState';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -67,8 +68,8 @@ export default function ContactUsSlideover({
   onClose: any;
   activeModule?: ModuleInfo;
 }) {
-  const [name, setName] = useStickyState('', 'contact_form_name');
-  const [email, setEmail] = useStickyState('', 'contact_form_email');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
@@ -93,6 +94,17 @@ export default function ContactUsSlideover({
       );
     else setLocation('');
   }, [activeModule]);
+
+  const { firebaseUser } = useContext(UserDataContext);
+  useEffect(() => {
+    if (!firebaseUser) return;
+    if (email === '') {
+      setEmail(firebaseUser.email);
+    }
+    if (name === '') {
+      setName(firebaseUser.displayName);
+    }
+  }, [firebaseUser]);
 
   React.useEffect(() => {
     if (isOpen) {
