@@ -140,7 +140,83 @@ Quite rare, I've only needed this once.
 
 See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
 
-<IncompleteSection />
+Essentially, we just nest the loops that one would find in a 1D BIT to get N-dimensional BITs. We can then use <abbr title="Principle of Inclusion-Exclusion">[PIE](https://brilliant.org/wiki/principle-of-inclusion-and-exclusion-pie/)</abbr> to query subrectangles.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int bit[1001][1001];
+int n;
+
+void update(int x, int y, int val) {
+    for (; x <= n; x += (x & (-x))) {
+        for (int i = y; i <= n; i += (i & (-i))) {
+            bit[x][i] += val;
+        }
+    }
+}
+
+int query(int x1, int y1, int x2, int y2) {
+    int ans = 0;
+    for (int i = x2; i; i -= (i & (-i))) {
+        for (int j = y2; j; j -= (j & (-j))) {
+            ans += bit[i][j];
+        }
+    }
+    for (int i = x2; i; i -= (i & (-i))) {
+        for (int j = y1 - 1; j; j -= (j & (-j))) {
+            ans -= bit[i][j];
+        }
+    }
+    for (int i = x1 - 1; i; i -= (i & (-i))) {
+        for (int j = y2; j; j -= (j & (-j))) {
+            ans -= bit[i][j];
+        }
+    }
+    for (int i = x1 - 1; i; i -= (i & (-i))) {
+        for (int j = y1 - 1; j; j -= (j & (-j))) {
+            ans += bit[i][j];
+        }
+    }
+    return ans;
+}
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+    int q;
+    cin >> n >> q;
+    for (int i = 1; i <= n; i++) for (int j = 1; j <= n; j++) {
+        char c;
+        cin >> c;
+        if (c == '*') update(j, i, 1);
+    }
+    while (q--) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            int x, y;
+            cin >> y >> x;
+            if (query(x, y, x, y)) update(x, y, -1);
+            else update(x, y, 1);
+        } else {
+            int y1, x1, y2, x2;
+            cin >> y1 >> x1 >> y2 >> x2;
+            cout << query(x1, y1, x2, y2) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Problems
 
@@ -192,9 +268,62 @@ The fastest way.
 
 ## Sparse Segment Tree
 
-### Implementation
+We can also use a sparse segment tree to handle subrectangle sums on a large grid (up to $2 \cdot 10^5 \times 2 \cdot 10^5$) with not very many (up to $2 \cdot 10^5$) non-zero cells! (E.g. in [APIO 2017 Rainbow](https://oj.uz/problem/view/APIO17_rainbow))
 
-<IncompleteSection />
+The main idea is to store prefix sums of the rows. Since there are few non-zero cells, we update the prefix sums very few times.
+
+Here is an implementation of the above idea:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+const int MAXN = 2e5, MAXSEG = (6e5 + 9) * 19 + 1;
+
+int cnt = 1, segtree[MAXSEG], left_c[MAXSEG], right_c[MAXSEG];
+
+struct Segtree {
+    set<int> data[MAXN + 1];
+    int roots[MAXN + 2];
+ 
+    void add(int x, int y) { data[x].insert(y); }
+ 
+    void build() {
+        for (int i = 1; i <= MAXN; i++) {
+            roots[i + 1] = roots[i];
+            for (int j : data[i]) update(j, roots[i + 1]);
+        }
+    }
+ 
+    void update(int pos, int &node, int l = 1, int r = MAXN) {
+        segtree[cnt] = segtree[node] + 1;
+        left_c[cnt] = left_c[node];
+        right_c[cnt] = right_c[node];
+        node = cnt++;
+ 
+        if (l == r) return;
+        int mid = (l + r) / 2;
+        if (pos > mid) update(pos, right_c[node], mid + 1, r);
+        else update(pos, left_c[node], l, mid);
+    }
+ 
+    int query(int l1, int r1, int l2, int r2) {
+        if (l2 > r2) return 0;
+        return query(l2, r2, roots[r1 + 1], 1, MAXN) - query(l2, r2, roots[l1], 1, MAXN);
+    }
+    int query(int a, int b, int node, int l, int r) {
+        if (a > r || b < l) return 0;
+        if (a <= l && b >= r) return segtree[node];
+        int mid = (l + r) / 2;
+        return query(a, b, left_c[node], l, mid) + query(a, b, right_c[node], mid + 1, r);
+    }
+};
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## 2D Segment Tree
 
@@ -208,7 +337,7 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 
 <Resources>
 	<Resource source="CPH" title="28.2 (Sparse SegTree), 28.4 (2D)">
-		brief description
+		Brief description
 	</Resource>
 </Resources>
 
@@ -220,11 +349,17 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 		title="Analysis - Mowing the Field"
 		url="http://www.usaco.org/current/data/sol_mowing_platinum_jan16.html"
 	>
-		code
+		Code
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Simple 2D Segment Tree"
+		url="https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-11"
+		starred
+	>
+		More code
 	</Resource>
 </Resources>
-
-<IncompleteSection />
 
 ### Note - Memory Usage
 
