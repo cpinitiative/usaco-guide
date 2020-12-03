@@ -3,9 +3,7 @@ import { render } from '@testing-library/react';
 import LiveUpdate from '../liveupdate';
 
 jest.mock('../../components/layout', () => {
-  return jest.fn(({ children }) => (
-    <div data-testid="mocked-layout">{children}</div>
-  ));
+  return jest.fn(({ children }) => children);
 });
 jest.mock('../../components/seo', () => {
   return jest.fn(() => null);
@@ -21,7 +19,7 @@ describe('Live Update', () => {
    * remember to uncomment the page before deploying.
    */
   it('does not render the placeholder content', () => {
-    const { getByTestId } = render(<LiveUpdate />);
-    expect(getByTestId('mocked-layout')).toBeTruthy();
+    const { queryByTestId } = render(<LiveUpdate />);
+    expect(queryByTestId('build-placeholder')).toBeNull();
   });
 });

@@ -2,7 +2,7 @@
 //
 // export default function Placeholder() {
 //   return (
-//     <div>
+//     <div data-testid="build-placeholder">
 //       This placeholder greatly speeds up build times. Uncomment this code and
 //       comment out everything below it. Make sure to undo before pushing.
 //     </div>
