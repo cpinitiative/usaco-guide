@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import LiveUpdate from '../LiveUpdate';
+import LiveUpdate from '../liveupdate';
 
 jest.mock('../../components/layout', () => {
   return jest.fn(({ children }) => (
