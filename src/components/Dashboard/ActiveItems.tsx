@@ -3,7 +3,12 @@ import { Link } from 'gatsby';
 import DashboardCard from './DashboardCard';
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
 
-type ActiveItemStatus = 'Solving' | 'Skipped' | 'In Progress';
+type ActiveItemStatus =
+  | 'Solving'
+  | 'Skipped'
+  | 'Reading'
+  | 'Practicing'
+  | 'Ignored';
 
 export type ActiveItem = {
   label: string;
@@ -12,10 +17,13 @@ export type ActiveItem = {
 };
 
 const statusClasses: { [key in ActiveItemStatus]: string } = {
+  Reading:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Solving:
     'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
-  Skipped: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
-  'In Progress': difficultyClasses.Easy,
+  Skipped: difficultyClasses.Normal,
+  Ignored: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
+  Practicing: difficultyClasses.Easy,
 };
 
 export default function ActiveItems({
@@ -27,6 +35,23 @@ export default function ActiveItems({
 }) {
   items.sort((a, b) => {
     // sort active modules in order of section
+    const strcmp = (x, y) => {
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    };
+    const statusVal: { [key in ActiveItemStatus]: number } = {
+      Reading: 0,
+      Solving: 1,
+      Practicing: 1,
+      Skipped: 2,
+      Ignored: 3,
+    };
+    let astatus = statusVal[a.status];
+    let bstatus = statusVal[b.status];
+    console.log(a.status, astatus);
+    console.log(b.status, bstatus);
+    if (astatus != bstatus) return astatus - bstatus;
     const getLabel = x => {
       // put active USACO problems first
       const secs = [
@@ -43,9 +68,7 @@ export default function ActiveItems({
     let aval = getLabel(a.label);
     let bval = getLabel(b.label);
     if (aval != bval) return aval - bval;
-    if (a.label < b.label) return -1;
-    if (a.label > b.label) return 1;
-    return 0;
+    return strcmp(a.label, b.label);
   });
   return (
     <DashboardCard>

@@ -8,6 +8,7 @@ import 'tippy.js/themes/light.css';
 import styled from 'styled-components';
 
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import ConfettiContext from '../../../context/ConfettiContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -100,6 +101,7 @@ export default function ProblemStatusCheckbox({
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
   const tippyRef = useRef();
+  const showConfetti = useContext(ConfettiContext);
   return (
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
@@ -112,9 +114,8 @@ export default function ProblemStatusCheckbox({
               setUserProgressOnProblems(problem, progress);
               if (progress == 'Solving' || progress == 'Solved')
                 updateModuleProgressToPracticing();
-              const { conf } = markdownLayoutContext;
               if (status != progress && progress == 'Solved') {
-                conf(true);
+                showConfetti();
               }
             }}
             currentProgress={status}

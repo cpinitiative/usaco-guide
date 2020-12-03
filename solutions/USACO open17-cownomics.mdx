@@ -1,0 +1,74 @@
+---
+id: usaco-741
+title: USACO Open 2017 Gold - Bovine Genomics
+author: Benjamin Qi
+---
+
+## Solution 1
+
+[Official Analysis (with hashing)](http://www.usaco.org/current/data/sol_cownomics_gold_open17.html)
+
+## Solution 2
+
+Sort suffixes.
+
+$\mathcal{O}(NM^2\log N)$ solution:
+
+```cpp
+int main() {
+	setIO("cownomics");
+	int N,M; re(N,M);
+	vs g(2*N); re(g);
+	int ans = MOD;
+	F0R(i,M) { // assume sequence starts at index i
+		vi v(2*N); iota(all(v),0);
+		auto common = [&](int x, int y) {
+			int ind = i;
+			while (ind < M && g[x][ind] == g[y][ind]) ind ++;
+			return ind;
+		};
+		auto cmp = [&](int x, int y) {
+			int ind = common(x,y);
+			return ind < M && g[x][ind] < g[y][ind];
+		};
+		sort(all(v),cmp); // sort suffixes
+		int mx = i;
+		F0R(j,2*N-1) if (v[j]/N != v[j+1]/N)
+			ckmax(mx,common(v[j],v[j+1]));
+		if (mx == M) break;
+		ckmin(ans,mx+1-i); // sequence ends at index mx
+	}
+	ps(ans);
+}
+```
+
+$\mathcal{O}(NM^2)$ solution:
+
+```cpp
+int main() {
+	setIO("cownomics");
+	int N,M; re(N,M);
+	vs g(2*N); re(g);
+	vi suf(2*N); iota(all(suf),0);
+	int ans = MOD;
+	R0F(i,M) {
+		vi tmp[26]; 
+		trav(t,suf) tmp[g[t][i]-'A'].pb(t);
+		suf.clear(); F0R(j,26) suf.ins(end(suf),all(tmp[j]));
+		auto common = [&](int x, int y) {
+			int ind = i;
+			while (ind < M && g[x][ind] == g[y][ind]) ind ++;
+			return ind;
+		};
+		int mx = i;
+		F0R(j,2*N-1) if (suf[j]/N != suf[j+1]/N)
+			ckmax(mx,common(suf[j],suf[j+1]));
+		if (mx < M) ckmin(ans,mx+1-i);
+	}
+	ps(ans);
+}
+```
+
+## Solution 3
+
+Probably possible to pass solutions with worse complexities ...

@@ -93,6 +93,27 @@ The code provided in the CSAcademy link under "Binary search on functions" is no
 
 </JavaSection>
 
+<PySection>
+
+<Resources>
+	<Resource
+		source="Python"
+		url="https://docs.python.org/3/library/bisect.html"
+		title="Array bisection algorithm"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/binary-search-bisect-in-python/"
+		title="Binary Search (bisect) in Python"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+</PySection>
+
 </LanguageSection>
 
 <!-- ## Coordinate Compression
@@ -107,13 +128,16 @@ A related topic is **coordinate compression**, which takes some points and reass
 
 As each of the points are in the range $0 \ldots 1,000,000,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
 
-Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use the `lower_bound` and `upper_bound` functions given above to count the number of cows in any range $[A,B]$ in $O(\log N)$ time.
+Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use binary search to count the number of cows in any range $[A,B]$ in $O(\log N)$ time.
 
 <LanguageSection>
 
 <CPPSection>
 
+We can use the the builtin [`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound) functions.
+
 ```cpp
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -150,11 +174,14 @@ int main() {
 		cout << upper_bound(begin(v),end(v),B)-lower_bound(begin(v),end(v),A) << "\n";
 	}
 }
+
 ```
 
 </CPPSection>
 
 <JavaSection>
+
+We can use the builtin [`Arrays.binarySearch`](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)) function.
 
 ```java
 
@@ -196,6 +223,31 @@ public class haybales{
 ```
 
 </JavaSection>
+
+<PySection>
+
+We can use the builtin [`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect) function.
+
+```py
+
+from bisect import bisect
+
+inp = open("haybales.in", 'r')
+out = open("haybales.out", 'w')
+
+N, Q = map(int, inp.readline().split())
+arr = sorted(list(map(int, inp.readline().split())))
+
+for i in range(Q):
+	a, b = map(int, inp.readline().split())
+	print(bisect(arr, b) - bisect(arr, a-1), file=out)
+
+inp.close()
+out.close()
+
+```
+
+</PySection>
 
 </LanguageSection>
 

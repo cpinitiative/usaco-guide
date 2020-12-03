@@ -1,0 +1,39 @@
+---
+id: usaco-831
+title: USACO US Open 2018 - Team Tic Tac Toe
+author: Jesse Choe, Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_tttt_bronze_open18.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+Here's a short solution with `set`s:
+
+```cpp
+vs board(3);
+set<set<char>> winners[4];
+
+void ins(vpi v) {
+	set<char> s;
+	trav(p,v) s.ins(board[p.f][p.s]);
+	winners[sz(s)].ins(s);
+}
+
+int main() {
+	setIO("tttt");
+	re(board);
+	F0R(i,3) ins({{i,0},{i,1},{i,2}}); // insert rows
+	F0R(i,3) ins({{0,i},{1,i},{2,i}}); // insert cols
+	ins({{0,0},{1,1},{2,2}}); // insert diagonals
+	ins({{2,0},{1,1},{0,2}});
+	ps(sz(winners[1]));
+	ps(sz(winners[2]));
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -8,7 +8,90 @@ author: Benjamin Qi
 
 As mentioned in the module, you can apply coordinate compression before using a segment tree or a BIT. 
 
-<IncompleteSection />
+Stick with arrays (or `vector`s) whenever possible; using a `map` instead may TLE.
+
+```cpp
+BIT<int,400005> B;
+ 
+vi vals;
+int N,Q;
+ 
+void ad(int x, int b) {
+	int ind = ub(all(vals),x)-begin(vals);
+	B.upd(ind,b);
+}
+ 
+int query(int x) {
+	int ind = ub(all(vals),x)-begin(vals);
+	return B.sum(ind);
+}
+ 
+int main() {
+	setIO(); re(N,Q);
+	vi P(N); re(P);
+	vals = P;
+	V<AR<int,3>> rec;
+	F0R(i,Q) {
+		char t; int a,b; re(t,a,b);
+		rec.pb({t == '?',a,b});
+		if (t == '!') vals.pb(b);
+	}
+	remDup(vals);
+	trav(p,P) ad(p,1);
+	trav(u,rec) {
+		u[1] --;
+		if (u[0] == 0) {
+			ad(P[u[1]],-1);
+			P[u[1]] = u[2];
+			ad(P[u[1]],1);
+		} else ps(query(u[2])-query(u[1]));
+	}
+}
+```
+
+Here is a similar solution with a `map` that passes slightly under the time limit.
+
+```cpp
+BIT<int,1000005> B;
+ 
+map<int,int> vals;
+int N,Q;
+ 
+void ad(int a, int b) {
+	int ind = vals[a];
+	B.upd(ind,b);
+}
+ 
+int query(int x) {
+	auto it = vals.ub(x);
+	int mx;
+	if (it == end(vals)) mx = sz(vals);
+	else mx = it->s-1;
+	return B.sum(mx);
+}
+ 
+int main() {
+	setIO(); re(N,Q);
+	vi P(N); re(P);
+	trav(t,P) vals[t] = 0;
+	V<AR<int,3>> rec;
+	F0R(i,Q) {
+		char t; int a,b; re(t,a,b);
+		rec.pb({t == '?',a,b});
+		if (t == '!') vals[b] = 0;
+	}
+	int cnt = 0; trav(t,vals) t.s = ++cnt;
+	trav(p,P) ad(p,1);
+	trav(u,rec) {
+		u[1] --;
+		if (u[0] == 0) {
+			ad(P[u[1]],-1);
+			P[u[1]] = u[2];
+			ad(P[u[1]],1);
+		} else ps(query(u[2])-query(u[1]));
+	}
+}
+```
 
 ## Solution 2
 
