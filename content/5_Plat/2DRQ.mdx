@@ -134,17 +134,9 @@ Quite rare, I've only needed this once.
 		title="Binary Indexed Trees"
 		url="binary-indexed-trees"
 	></Resource>
-	<Resource
-		source="CF"
-		title="mouse_wireless - Multi-dimensional BITs with Templates"
-		url="https://codeforces.com/blog/entry/64914"
-		starred
-	></Resource>
 </Resources>
 
 ### Implementation
-
-See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
 
 Essentially, we just nest the loops that one would find in a 1D BIT to get N-dimensional BITs. We can then use [PIE](https://brilliant.org/wiki/principle-of-inclusion-and-exclusion-pie/) to query subrectangles.
 
@@ -220,6 +212,54 @@ int main() {
 }
 ```
 
+### Alternative Implementation
+
+Using the multidimensional implementation mentioned [here](/gold/PURS/#solution-2).
+
+```cpp
+template <class T, int ...Ns> struct BIT {
+    T val = 0;
+    void upd(T v) { val += v; }
+    T query() { return val; }
+};
+ 
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+    BIT<T,Ns...> bit[N + 1];
+    template<typename... Args> void upd(int pos, Args... args) {
+        for (; pos <= N; pos += (pos&-pos)) bit[pos].upd(args...);
+    }
+    template<typename... Args> T sum(int r, Args... args) {
+        T res = 0; for (; r; r -= (r&-r)) res += bit[r].query(args...); 
+        return res;
+    }
+    template<typename... Args> T query(int l, int r, Args... args) {
+        return sum(r,args...)-sum(l-1,args...);
+    }
+}; // BIT<int,10,10> gives a 2D BIT
+ 
+BIT<int,1000,1000> B;
+int n,q;
+ 
+int main() {
+    setIO(); re(n,q);
+    F0R(i,n) {
+        string s; re(s);
+        F0R(j,n) if (s[j] == '*') B.upd(i+1,j+1,1);
+    }
+    F0R(i,q) {
+        int t; re(t);
+        if (t == 1) {
+            int y,x; re(y,x);
+            if (B.query(y,y,x,x)) B.upd(y,x,-1);
+            else B.upd(y,x,1);
+        } else {
+            int y1,x1,y2,x2; re(y1,x1,y2,x2);
+            ps(B.query(y1,y2,x1,x2));
+        }
+    }
+}
+```
+
 </CPPSection>
 
 </LanguageSection>
@@ -237,6 +277,8 @@ Lazy propagation on segment trees does not extend to higher dimensions. However,
 </Optional>
 
 ## 2D Offline Sum Queries
+
+See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)).
 
 <FocusProblem problem={problems.offSam[0]} />
 
@@ -272,6 +314,7 @@ The fastest way.
 
 <Problems problems={problems.off} />
 
+<!-- 
 ## Sparse Segment Tree
 
 We can also use a sparse segment tree to handle subrectangle sums on a large grid (up to $2 \cdot 10^5 \times 2 \cdot 10^5$) with not very many (up to $2 \cdot 10^5$) non-zero cells! (E.g. in [APIO 2017 Rainbow](https://oj.uz/problem/view/APIO17_rainbow))
@@ -329,11 +372,11 @@ struct Segtree {
 
 </CPPSection>
 
-</LanguageSection>
+</LanguageSection> -->
 
 ## 2D Segment Tree
 
-Basically a segment tree of (maybe sparse) segment trees (or BBSTs, see "Advanced - Treap").
+A segment tree of (maybe sparse) segment trees.
 
 <Info title="Pro Tip">
 
@@ -373,7 +416,7 @@ Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$
 
  - Use arrays of fixed size rather than pointers.
  - Reduce the memory usage of sparse segment tree to $O(N)$ while maintaining the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
- - Use [BBSTs](/adv/treaps) instead of sparse segment trees.
+ - Use [BBSTs](/adv/treaps) instead of sparse segment trees. $O(N)$ memory, $O(N\log N)$ insertion time.
 
 ### Problems
 
