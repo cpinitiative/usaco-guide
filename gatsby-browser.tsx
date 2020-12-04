@@ -24,7 +24,9 @@ export const onClientEntry = () => {
       return; // default action OK if selection is empty
     }
     const fragment = selection.getRangeAt(0).cloneContents();
-    console.log(fragment);
+    if (fragment.querySelectorAll('[data-latex]').length === 0) {
+      return; // the following code breaks copy-pasting of code blocks; see #464
+    }
     // Preserve usual HTML copy/paste behavior.
     const html = [];
     for (let i = 0; i < fragment.childNodes.length; i++) {
