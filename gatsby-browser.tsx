@@ -49,8 +49,12 @@ export const onClientEntry = () => {
         String.fromCharCode(13) + element.innerHTML + String.fromCharCode(13);
     }
 
+    const plaintext = Array.from(fragment.childNodes)
+      .map(node => node.textContent)
+      .join(String.fromCharCode(13));
+
     // Rewrite plain-text version.
-    event.clipboardData.setData('text/plain', fragment.textContent);
+    event.clipboardData.setData('text/plain', plaintext);
     // Prevent normal copy handling.
     event.preventDefault();
   });
