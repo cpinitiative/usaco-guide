@@ -488,10 +488,13 @@ export default function MarkdownLayout({
             <div className="flex justify-center">
               {/* Placeholder for the sidebar */}
               <div
-                className="flex-shrink-0 hidden lg:block"
+                className="flex-shrink-0 hidden lg:block order-1"
                 style={{ width: '20rem' }}
               />
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0">
+              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+                <TableOfContentsSidebar tableOfContents={tableOfContents} />
+              </div>
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
                 <div className="hidden lg:block">
                   <NavBar />
                 </div>
@@ -658,9 +661,6 @@ export default function MarkdownLayout({
 
                 {/* Spacing for the USACO Forum popup */}
                 <div className="h-12" />
-              </div>
-              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
-                <TableOfContentsSidebar tableOfContents={tableOfContents} />
               </div>
             </div>
           </div>

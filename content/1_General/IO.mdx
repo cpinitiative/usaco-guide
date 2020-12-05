@@ -532,9 +532,6 @@ Since USACO currently uses python 3.4.0, [f-strings](https://realpython.com/pyth
 
 <br />
 
-Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
-
-![bad](Error.png)
 
 For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#naive-solution) module.
 
@@ -565,10 +562,6 @@ int main() {
 	int ans = 0;
 	for (int i = 0; i < 100; ++i) ans += cover[i];
 	cout << ans;
-	// cout << ans << endl; is OK
-	// cout << ans << "\n"; is OK
-	// cout << ans << " "; is NOT OK
-	// cout << ans << "\n\n"; is NOT OK
 }
 ```
 
@@ -758,6 +751,47 @@ print(ans)
 
 </Spoiler>
 
+</PySection>
+
+</LanguageSection>
+
+### Note - Extra Whitespace
+
+Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
+
+![bad](Error.png)
+
+Here are some examples of what is allowed and what isn't:
+
+<LanguageSection>
+
+<CPPSection>
+
+#### C++
+
+For method 1:
+
+```cpp
+cout << ans; // OK, no newline
+cout << ans << endl; // OK, newline
+cout << ans << "\n"; // OK, newline
+cout << ans << " "; // NOT OK, extra space
+cout << ans << "\n\n"; // NOT OK, extra newline
+```
+
+</CPPSection>
+
+<PySection>
+
+#### Python
+
+For method 2:
+
+```py
+print(ans) # OK, newline
+print(ans,end='') # OK, no newline
+print(str(ans)+'\n') # NOT OK, extra newline
+```
 
 </PySection>
 

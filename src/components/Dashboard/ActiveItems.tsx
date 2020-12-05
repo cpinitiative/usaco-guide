@@ -49,8 +49,6 @@ export default function ActiveItems({
     };
     let astatus = statusVal[a.status];
     let bstatus = statusVal[b.status];
-    console.log(a.status, astatus);
-    console.log(b.status, bstatus);
     if (astatus != bstatus) return astatus - bstatus;
     const getLabel = x => {
       // put active USACO problems first

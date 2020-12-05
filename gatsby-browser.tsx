@@ -24,7 +24,9 @@ export const onClientEntry = () => {
       return; // default action OK if selection is empty
     }
     const fragment = selection.getRangeAt(0).cloneContents();
-    console.log(fragment);
+    if (fragment.querySelectorAll('[data-latex]').length === 0) {
+      return; // the following code breaks copy-pasting of code blocks; see #464
+    }
     // Preserve usual HTML copy/paste behavior.
     const html = [];
     for (let i = 0; i < fragment.childNodes.length; i++) {
@@ -47,8 +49,12 @@ export const onClientEntry = () => {
         String.fromCharCode(13) + element.innerHTML + String.fromCharCode(13);
     }
 
+    const plaintext = Array.from(fragment.childNodes)
+      .map(node => node.textContent)
+      .join(String.fromCharCode(13));
+
     // Rewrite plain-text version.
-    event.clipboardData.setData('text/plain', fragment.textContent);
+    event.clipboardData.setData('text/plain', plaintext);
     // Prevent normal copy handling.
     event.preventDefault();
   });
