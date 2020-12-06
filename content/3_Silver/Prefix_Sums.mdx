@@ -350,6 +350,45 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 -->
 
+### Code
+
+<LanguageSection>
+
+<CPPSection>
+
+
+In C++ we can use [`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/), although it doesn't shorten the code by much.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define sz(x) (int)size(x)
+
+using ll = long long;
+using vl = vector<ll>;
+
+vl psum(const vl& a) {
+	vl psum(sz(a)+1); 
+	for (int i = 0; i < sz(a); ++i)
+		psum[i+1] = psum[i]+a[i];
+	// or partial_sum(begin(a),end(a),begin(psum)+1);
+	return psum;
+}
+
+int main() {
+	for (ll i: psum({1,2,3,4,5}))
+		cout << i << " ";
+	// 0 1 3 6 10 15
+}
+```
+
+
+</CPPSection>
+
+</LanguageSection>
+
+
 ### Problems
 
 <Problems problems={problems.cum} />
