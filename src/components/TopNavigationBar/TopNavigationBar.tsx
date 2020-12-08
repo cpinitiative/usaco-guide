@@ -142,6 +142,7 @@ const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
 
 export default function TopNavigationBar({
   indexPage = false,
+  linkLogoToIndex = false,
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
@@ -188,32 +189,32 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && (
-        <div className="relative bg-blue-600">
-          <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-            <div className="pr-16 sm:text-center sm:px-16">
-              <p className="font-medium text-white">
-                <span className="md:hidden">
-                  Join the Introduction to USACO Webinar!
-                </span>
-                <span className="hidden md:inline">
-                  Want to learn more about USACO? Join the Introduction to USACO
-                  Webinar!
-                </span>
-                <span className="block sm:ml-2 sm:inline-block">
-                  <OutboundLink
-                    href="https://joincpi.org/webinar"
-                    target="_blank"
-                    className="text-white font-bold underline"
-                  >
-                    Learn more &rarr;
-                  </OutboundLink>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/*{!hideClassesPromoBar && (*/}
+      {/*  <div className="relative bg-blue-600">*/}
+      {/*    <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">*/}
+      {/*      <div className="pr-16 sm:text-center sm:px-16">*/}
+      {/*        <p className="font-medium text-white">*/}
+      {/*          <span className="md:hidden">*/}
+      {/*            Join the Introduction to USACO Webinar!*/}
+      {/*          </span>*/}
+      {/*          <span className="hidden md:inline">*/}
+      {/*            Want to learn more about USACO? Join the Introduction to USACO*/}
+      {/*            Webinar!*/}
+      {/*          </span>*/}
+      {/*          <span className="block sm:ml-2 sm:inline-block">*/}
+      {/*            <OutboundLink*/}
+      {/*              href="https://joincpi.org/webinar"*/}
+      {/*              target="_blank"*/}
+      {/*              className="text-white font-bold underline"*/}
+      {/*            >*/}
+      {/*              Learn more &rarr;*/}
+      {/*            </OutboundLink>*/}
+      {/*          </span>*/}
+      {/*        </p>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
       <nav className="bg-white dark:bg-gray-900 shadow relative z-10">
         <div
@@ -225,33 +226,18 @@ export default function TopNavigationBar({
         >
           <div className="flex justify-between h-16">
             <div className="flex px-2 lg:px-0">
-              <Link to="/" className="flex-shrink-0 flex items-center">
+              <Link
+                to={linkLogoToIndex ? '/' : '/dashboard'}
+                className="flex-shrink-0 flex items-center"
+              >
                 <div className="block sm:hidden h-10">
                   <LogoSquare />
                 </div>
-                <div
-                  className={
-                    'hidden sm:block h-9' + (indexPage ? ' lg:hidden' : '')
-                  }
-                >
+                <div className={'hidden sm:block h-9'}>
                   <Logo />
                 </div>
               </Link>
-              <div
-                className={`hidden ${
-                  !indexPage && 'lg:ml-6'
-                } lg:flex space-x-8`}
-              >
-                <Link
-                  to="/dashboard/"
-                  getProps={({ isCurrent }) => ({
-                    className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark-focus:border-blue-500 transition duration-150 ease-in-out'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-                  })}
-                >
-                  Dashboard
-                </Link>
+              <div className={`hidden lg:ml-6 lg:flex space-x-8`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
@@ -278,6 +264,13 @@ export default function TopNavigationBar({
                     {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
                   </Link>
                 )}
+                <a
+                  href="https://forum.usaco.guide/"
+                  target="_blank"
+                  className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+                >
+                  Forum
+                </a>
                 <button
                   className="cursor-pointer inline-flex items-center px-1 text-base font-medium leading-6 text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis transition duration-150 ease-in-out focus:outline-none"
                   onClick={() => setIsContactUsActive(true)}

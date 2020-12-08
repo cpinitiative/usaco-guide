@@ -21,6 +21,7 @@ import {
 import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
 import DailyStreak from '../components/Dashboard/DailyStreak';
 import Card from '../components/Dashboard/DashboardCard';
+import Activity from '../components/Dashboard/Activity';
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements } = props.data as any;
@@ -53,6 +54,8 @@ export default function DashboardPage(props: PageProps) {
     signIn,
   } = React.useContext(UserDataContext);
 
+  let showIgnored = userSettings.showIgnored;
+
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
@@ -60,7 +63,8 @@ export default function DashboardPage(props: PageProps) {
         x =>
           (userProgressOnModules[x] === 'Reading' ||
             userProgressOnModules[x] === 'Practicing' ||
-            userProgressOnModules[x] === 'Skipped') &&
+            userProgressOnModules[x] === 'Skipped' ||
+            (showIgnored && userProgressOnModules[x] === 'Ignored')) &&
           moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
@@ -68,25 +72,35 @@ export default function DashboardPage(props: PageProps) {
           moduleIDToName[x]
         }`,
         url: moduleIDToURLMap[x],
-        status:
-          userProgressOnModules[x] === 'Skipped' ? 'Skipped' : 'In Progress',
+        status: userProgressOnModules[x] as
+          | 'Skipped'
+          | 'Reading'
+          | 'Practicing'
+          | 'Ignored',
       }));
-  }, [userProgressOnModules]);
+  }, [userProgressOnModules, showIgnored]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          (userProgressOnProblems[x] === 'Solving' ||
-            userProgressOnProblems[x] === 'Skipped') &&
+          (userProgressOnProblems[x] === 'Review' ||
+            userProgressOnProblems[x] === 'Solving' ||
+            userProgressOnProblems[x] === 'Skipped' ||
+            (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
-        status: userProgressOnProblems[x] as 'Solving' | 'Skipped',
+        status: userProgressOnProblems[x] as
+          | 'Review'
+          | 'Solving'
+          | 'Skipped'
+          | 'Ignored',
       }));
-  }, [userProgressOnProblems]);
+  }, [userProgressOnProblems, showIgnored]);
 
-  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const lastViewedSection =
+    moduleIDToSectionMap[lastViewedModuleID] || 'general';
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
@@ -116,7 +130,7 @@ export default function DashboardPage(props: PageProps) {
   const allProblemsProgressInfo = getProgressInfo(
     problemStatisticsIDs,
     userProgressOnProblems,
-    ['Solved'],
+    ['Solved', 'Review'],
     ['Solving'],
     ['Skipped'],
     ['Not Attempted']
@@ -141,7 +155,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
-        <TopNavigationBar />
+        <TopNavigationBar linkLogoToIndex={true} />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
@@ -206,6 +220,16 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-8">
             <Announcements announcements={parsedAnnouncements} />
           </div>
+          {/*<header>*/}
+          {/*  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
+          {/*    <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">*/}
+          {/*      Activity*/}
+          {/*    </h1>*/}
+          {/*  </div>*/}
+          {/*</header>*/}
+          {/*<div className="max-w-7xl mx-auto mb-8">*/}
+          {/*  <Activity />*/}
+          {/*</div>*/}
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">

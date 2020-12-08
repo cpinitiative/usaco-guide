@@ -1,0 +1,30 @@
+---
+id: cf-books
+title: CF - Books
+author: Benjamin Qi
+---
+
+[Official Editorial (Russian)](https://codeforces.com/blog/entry/6864)
+
+(Translated)
+
+It is easiest to use the method of two pointers. The left pointer means the beginning of the segment of books to read, the right one - the end. 
+When moving the left pointer one unit to the right, the right pointer should be repeatedly moved to the right as long as the sum of all
+$a_i$ within the segment is less than or equal to $t$. This way, we can find for each possible left end the rightmost possible right end. 
+The answer to the problem is the maximum length over all possible left ends.
+
+```cpp
+int main() {
+	setIO(); 
+	int N,T; re(N,T);
+	vi A(N); re(A);
+	int right = -1, ans = 0;
+	F0R(left,N) {
+		while (right+1 < N && T >= A[right+1]) T -= A[++right];
+		ckmax(ans,right-left+1); // can read segment [left,right]
+		if (right == left-1) right ++;
+		else T += A[left];
+	}
+	ps(ans);
+}
+```
