@@ -11,6 +11,8 @@ import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
 import { logError } from 'gatsby/dist/state-machines/develop/actions';
+import * as firebase from 'firebase';
+import FirebaseContext from '../../../context/FirebaseContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -84,8 +86,6 @@ export default function ProblemStatusCheckbox({
   problem: Problem;
   size?: 'small' | 'large';
 }) {
-  const [showModal, setShowModal] = React.useState(false);
-
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
@@ -118,6 +118,31 @@ export default function ProblemStatusCheckbox({
 
   const tippyRef = useRef();
   const showConfetti = useContext(ConfettiContext);
+  const [showModal, setShowModal] = React.useState(false);
+  const [textFeedback, setTextFeedback] = React.useState('No feedback entered');
+  const [solutionfeedback, setsolutionfeedback] = React.useState(
+    'No feedback entered'
+  );
+  const [difficultyfeedback, setdifficultyfeedback] = React.useState(
+    'No feedback entered'
+  );
+  const [solutionNotes, setsolutionNotes] = React.useState(
+    'No feedback entered'
+  );
+  const [solutionCode, setsolutionCode] = React.useState('No feedback entered');
+  const firebase = useContext(FirebaseContext);
+
+  const handleSumbit = (event, problem) => {
+    event.preventDefault();
+
+    setShowModal(false);
+    firebase.firestore().collection('problemFeedback').add({
+      Difficulty: difficultyfeedback,
+      Problem_Name: problem.name,
+      Solution_Notes: solutionNotes,
+      solution_code: solutionCode,
+    });
+  };
   const Modal = (
     <Transition show={showModal} timeout={300}>
       <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
@@ -302,8 +327,9 @@ export default function ProblemStatusCheckbox({
                         <button
                           type="submit"
                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          onClick={e => handleSumbit(e, problem)}
                         >
-                          Save
+                          Submit
                         </button>
                       </div>
                     </div>
