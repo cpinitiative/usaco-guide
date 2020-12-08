@@ -83,14 +83,19 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          (userProgressOnProblems[x] === 'Solving' ||
+          (userProgressOnProblems[x] === 'Review' ||
+            userProgressOnProblems[x] === 'Solving' ||
             userProgressOnProblems[x] === 'Skipped' ||
             (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
-        status: userProgressOnProblems[x] as 'Solving' | 'Skipped' | 'Ignored',
+        status: userProgressOnProblems[x] as
+          | 'Review'
+          | 'Solving'
+          | 'Skipped'
+          | 'Ignored',
       }));
   }, [userProgressOnProblems, showIgnored]);
 
@@ -125,7 +130,7 @@ export default function DashboardPage(props: PageProps) {
   const allProblemsProgressInfo = getProgressInfo(
     problemStatisticsIDs,
     userProgressOnProblems,
-    ['Solved'],
+    ['Solved', 'Review'],
     ['Solving'],
     ['Skipped'],
     ['Not Attempted']
