@@ -99,7 +99,7 @@ export const problems = {
 			'Hard',
 			false,
 			['Bitset', 'Sliding Window'],
-			'Again, the intended solution runs in $O(N^3)$. Of course, it is still possible to pass $O(N^4)$ solutions with bitset! See the analysis [here](http://www.usaco.org/current/data/sol_triangles_platinum_feb20.html).'
+			'Again, the intended solution runs in $\mathcal{O}(N^3)$. Of course, it is still possible to pass $\mathcal{O}(N^4)$ solutions with bitset! See the analysis [here](http://www.usaco.org/current/data/sol_triangles_platinum_feb20.html).'
 		),
 		new Problem(
 			'IZhO',
@@ -181,7 +181,7 @@ void init() {
 }
 ```
 
-A naive knapsack solution would be as follows. For each $0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first $i$ components whose sizes sum to $j$. Then the answer will be stored in $\texttt{dp}[i]$. This runs in $O(N^2)$ and is too slow if implemented naively, but we can use bitset to speed it up!
+A naive knapsack solution would be as follows. For each $0\le i\le \texttt{comps.size()}$, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first $i$ components whose sizes sum to $j$. Then the answer will be stored in $\texttt{dp}[i]$. This runs in $\mathcal{O}(N^2)$ and is too slow if implemented naively, but we can use bitset to speed it up!
 
 Note: you can't store all $N$ bitsets in memory at the same time (more on that below).
 
@@ -318,7 +318,7 @@ void input() {
 }
 ```
 
-There are $O(N^3)$ possible lots. Trying all possible lots and counting the number of trees that lie within each in $O(N)$ for a total time complexity of $O(N^4)$ should solve somewhere between 2 and 5 test cases. Given a triangle `t[0], t[1], t[2]` with positive area, tree `x` lies within it iff `x` is to the left of each of sides `(t[0],t[1])`,`(t[1],t[2])`, and `(t[2],t[0])`.
+There are $\mathcal{O}(N^3)$ possible lots. Trying all possible lots and counting the number of trees that lie within each in $\mathcal{O}(N)$ for a total time complexity of $\mathcal{O}(N^4)$ should solve somewhere between 2 and 5 test cases. Given a triangle `t[0], t[1], t[2]` with positive area, tree `x` lies within it iff `x` is to the left of each of sides `(t[0],t[1])`,`(t[1],t[2])`, and `(t[2],t[0])`.
 
 ```cpp
 int main() {
@@ -341,7 +341,7 @@ int main() {
 }
 ```
 
-The analysis describes how to count the number of trees within a lot in $O(1)$, which is sufficient to solve the problem. However, $O(N)$ is actually sufficient as long as we divide by the bitset constant. Let `b[i][j][k]=1` if `k` lies to the left of side `(i,j)`. Then `x` lies within triangle `(t[0],t[1],t[2])` as long as `b[t[0]][t[1]][x]=b[t[1]][t[2]][x]=b[t[2]][t[0]][x]=1`. We can count the number of `x` such that this holds true by taking the bitwise AND of the bitsets for all three sides and then counting the number of bits in the result.
+The analysis describes how to count the number of trees within a lot in $\mathcal{O}(1)$, which is sufficient to solve the problem. However, $\mathcal{O}(N)$ is actually sufficient as long as we divide by the bitset constant. Let `b[i][j][k]=1` if `k` lies to the left of side `(i,j)`. Then `x` lies within triangle `(t[0],t[1],t[2])` as long as `b[t[0]][t[1]][x]=b[t[1]][t[2]][x]=b[t[2]][t[0]][x]=1`. We can count the number of `x` such that this holds true by taking the bitwise AND of the bitsets for all three sides and then counting the number of bits in the result.
 
 <Spoiler title="Fast Solution">
 
@@ -374,15 +374,15 @@ int main() {
 
 > Given $n$ ($n\le 2\cdot 10^4$) positive integers $a_1,\ldots,a_n$ ($a_i\le 2\cdot 10^4$), find the max possible sum of a subset of $a_1,\ldots,a_n$ whose sum does not exceed $c$.
 
-Consider the case when $\sum a_i\ge c$. The intended solution runs in $O(n\cdot \max(a_i))$; see [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/Knapsack.h) for more information. However, we'll solve it with bitset instead.
+Consider the case when $\sum a_i\ge c$. The intended solution runs in $\mathcal{O}(n\cdot \max(a_i))$; see [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/Knapsack.h) for more information. However, we'll solve it with bitset instead.
 
-As with the first problem in this module, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first numbers components that sums to $j$. This solution runs in $O(n\cdot \sum a_i)$ time, which is too slow even if we use bitset.
+As with the first problem in this module, let $\texttt{dp}[i][j]=1$ if there exists a subset of the first numbers components that sums to $j$. This solution runs in $\mathcal{O}(n\cdot \sum a_i)$ time, which is too slow even if we use bitset.
 
 Taking inspiration from [this](https://codeforces.com/blog/entry/67664) CF blog post, we'll first shuffle the integers randomly and perform the DP with the following modification:
 
 - If $\left|\frac{ci}{n}-j\right| \ge X$ for some $X$ that we choose, then set $\texttt{dp}[i][j]=0$.
 
-Since we only need to keep track of $2X+1$ values for each $i$, this solution runs in $O(nX)$ time, which is fast enough with $X=5\cdot 10^5$ using bitset.
+Since we only need to keep track of $2X+1$ values for each $i$, this solution runs in $\mathcal{O}(nX)$ time, which is fast enough with $X=5\cdot 10^5$ using bitset.
 
 It turns out that $X\approx \max a_i\cdot \sqrt n$ (up to a constant) suffices for correctness with high probability (briefly mentioned [here](https://www.cc.gatech.edu/~rpeng/CS4540_F20/ps1.pdf)). I'm not totally sure about the details, but intuitively, the random shuffle reduces the optimal subset to some distribution with variance at most $(\max a_i)^2\cdot n$. In the special case where each $a_i$ is either $0$ or $\max a_i$, we can bound the probability of failure using the Catalan numbers. I think it is something like $e^{-\frac{m^2}{n}}$ if we let the bitset have size $m\cdot \max a_i$.
 
@@ -433,10 +433,10 @@ int main() {
 
 Use to speed up the following:
 
-- Gaussian Elimination in $O(N^3)$
-- Bipartite matching in $O(N^3)$ (dense graph with $N$ vertices on each side)
-  - Though $O(NM)$ [Kuhn's algorithm](https://codeforces.com/blog/entry/83036?#comment-703057) is probably fast enough ...
-- BFS through dense graph in $O(N^2)$
+- Gaussian Elimination in $\mathcal{O}(N^3)$
+- Bipartite matching in $\mathcal{O}(N^3)$ (dense graph with $N$ vertices on each side)
+  - Though $\mathcal{O}(NM)$ [Kuhn's algorithm](https://codeforces.com/blog/entry/83036?#comment-703057) is probably fast enough ...
+- BFS through dense graph in $\mathcal{O}(N^2)$
 - ~~In general, passing solutions with an additional factor of $N$.~~
 
 Operations such as `_Find_first()` and `_Find_next()` mentioned in Errichto's blog can be helpful.
@@ -449,7 +449,7 @@ A comment regarding the last two applications:
 
 <Problems problems={problems.bfs} />
 
-In USACO Camp, a similar problem appeared with $N\le 10^5$ and a $6$ second time limit (presumably to allow $O(N\log ^2N)$ solutions to pass). I had already done this problem but ~~forgot how I had solved it~~ decided to try something new. Try to guess what I did!
+In USACO Camp, a similar problem appeared with $N\le 10^5$ and a $6$ second time limit (presumably to allow $\mathcal{O}(N\log ^2N)$ solutions to pass). I had already done this problem but ~~forgot how I had solved it~~ decided to try something new. Try to guess what I did!
 
 ## Problems
 

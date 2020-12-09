@@ -150,7 +150,7 @@ def factor(n):
 
 </LanguageSection>
 
-This algorithm runs in $O(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
+This algorithm runs in $\mathcal{O}(\sqrt{n})$ time, because the for loop checks divisibility for at most $\sqrt{n}$ values. Even though there is a while loop inside the for loop, dividing $n$ by $i$ quickly reduces the value of $n$, which means that the outer for loop runs less iterations, which actually speeds up the code.
 
 Let's look at an example of how this algorithm works, for $n = 252$.
 
@@ -160,7 +160,7 @@ At this point, the for loop terminates, because $i$ is already 3 which is greate
 
 ### Solution - Counting Divisors
 
-The most straightforward solution is just to do what the problem asks us to do - for each $x$, find the number of divisors of $x$ in $O(\sqrt x)$ time.
+The most straightforward solution is just to do what the problem asks us to do - for each $x$, find the number of divisors of $x$ in $\mathcal{O}(\sqrt x)$ time.
 
 <LanguageSection>
 <CPPSection>
@@ -247,7 +247,7 @@ public class Main {
 </JavaSection>
 </LanguageSection>
 
-This solution runs in $O(n \sqrt x)$ time, which is just fast enough to get AC. However, we can actually speed this up to get an $O((x + n) \log x)$ solution!
+This solution runs in $\mathcal{O}(n \sqrt x)$ time, which is just fast enough to get AC. However, we can actually speed this up to get an $\mathcal{O}((x + n) \log x)$ solution!
 
 First, let's discuss an important property of the prime factorization of a number. Consider:
 
@@ -259,9 +259,9 @@ Then the number of divisors of $x$ is simply $(a_1 + 1) \cdot (a_2 + 1) \cdots (
 
 Why is this true? The exponent of $p_i$ in any divisor of $x$ must be in the range $[0, a_i]$ and each different exponent results in a different set of divisors, so each $p_i$ contributes $a_i + 1$ to the product.
 
-$x$ can have $O(\log x)$ distinct prime factors, so if we can find the prime factorization of $x$ efficiently, we can answer queries in $O(\log x)$ time instead of the previous $O(\sqrt x)$ time.
+$x$ can have $\mathcal{O}(\log x)$ distinct prime factors, so if we can find the prime factorization of $x$ efficiently, we can answer queries in $\mathcal{O}(\log x)$ time instead of the previous $\mathcal{O}(\sqrt x)$ time.
 
-Here's how we find the prime factorization of $x$ in $O(\log x)$ time with $O(x \log x)$ preprocessing:
+Here's how we find the prime factorization of $x$ in $\mathcal{O}(\log x)$ time with $\mathcal{O}(x \log x)$ preprocessing:
 
 - For each $k \leq 10^6$, find any prime number that divides $k$.
 	- We can use the Sieve of Eratosthenes to find this efficiently.
@@ -433,13 +433,13 @@ def gcd(a, b):
 
 </LanguageSection>
 
-This function runs in $O(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$.
+This function runs in $\mathcal{O}(\log ab)$ time because $a\le b \implies b\%a <\frac{b}{2}$.
 
 The worst-case scenario for the Euclidean algorithm is when $a$ and $b$ are consecutive Fibonacci numbers $F_n$ and $F_{n + 1}$. for an explanation). In this case, the algorithm will calculate $\gcd(F_n, F_{n + 1}) = \gcd(F_{n - 1}, F_n) = \dots = \gcd(0, F_1)$. This means that finding $\gcd(F_n, F_{n + 1})$ takes $n + 1$ steps, which is proportional to $\log \left(F_n F_{n+1}\right)$.
 
 <!-- (See [this Math Stack Exchange answer](https://math.stackexchange.com/questions/2477328/why-are-fibonacci-numbers-bad-for-euclids-algorithm-and-how-to-derive-this-uppe) -->
 <!-- ^ this doesn't seem very helpful -->
-<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $O(\log ab)$. -->
+<!-- Since $F_n = O(\varphi^n)$, the worst-case complexity of this algorithm is $\mathcal{O}(\log ab)$. -->
 
 ### LCM
 

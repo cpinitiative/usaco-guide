@@ -117,13 +117,13 @@ export const problems = {
 
 In this tutorial, let $A$ be the array we want to find the LIS for.
 
-### $O(N^2)$
+### $\mathcal{O}(N^2)$
 
 <Resources>
 	<Resource source="CPH" title="7.2 - LIS">slow solution</Resource>
 </Resources>
 
-Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $O(N^2)$ time:
+Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $\mathcal{O}(N^2)$ time:
 
 <LanguageSection>
 
@@ -169,7 +169,7 @@ public static int find_lis(int[] a) {
 
 We can do much better than this though!
 
-### $O(N \log N)$
+### $\mathcal{O}(N \log N)$
 
 Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ elements of $A$ with an increasing sequence of length $j$ ending on it (or $\infty$ if there is no such element).
 
@@ -185,7 +185,7 @@ Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ 
 
 **Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since $L_i[j] \geq A[i + 1]$. We don't update anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ of length greater than $j$.
 
-To find and update the described $j$ in $O(\log N)$ time, we can use a `std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set` (demonstrated in the solution for PCB).
+To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a `std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set` (demonstrated in the solution for PCB).
 
 <LanguageSection>
 
