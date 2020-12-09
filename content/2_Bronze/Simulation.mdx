@@ -51,6 +51,9 @@ We can simulate the process. Store an array that keeps track of which shell is a
 <CPPSection>
 
 ```cpp
+#include <cstdio>
+#include <algorithm>
+
 int N, ord[3], cnt[3];
 /*
 N stores the number of guesses (as described in the problem statement)
@@ -132,19 +135,19 @@ sys.stdin = open("shell.in", "r")
 sys.stdout = open("shell.out", "w")
 
 N=int(input())
-ord=[0,1,2]
+arr=[0,1,2]
 cnt=[0,0,0]
 """
 N stores the number of guesses (as described in the problem statement)
-ord[i] stores the label of the shell located at position i
+arr[i] stores the label of the shell located at position i
 cnt[i] stores the number of times the shell with label i was picked
 """
 
 for i in range(N):
 	a,b,g=map(int, input().split())
 	# -1 because we are zero-indexing
-	ord[a-1],ord[b-1]=ord[b-1],ord[a-1] # Perform Bessie's swapping operation
-	cnt[ord[g-1]]+=1 # Count the number of times Elsie guesses each particular shell
+	arr[a-1],arr[b-1]=arr[b-1],arr[a-1] # Perform Bessie's swapping operation
+	cnt[arr[g-1]]+=1 # Count the number of times Elsie guesses each particular shell
 print(max(cnt))
 ```
 
@@ -169,10 +172,8 @@ We can simulate the process of pouring buckets. The amount of milk poured from b
 <CPPSection>
 
 ```cpp
-#include <stdio.h>
+#include <cstdio>
 #include <algorithm>
-
-using namespace std;
 
 const int N = 3;
 int c[N], m[N];
