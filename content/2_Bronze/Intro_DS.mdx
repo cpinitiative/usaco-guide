@@ -115,20 +115,20 @@ For our examples below, we will primarily use the `Integer` data type, but note 
 The default way to store data in Python is using a **list**, which can automatically resize itself to accommodate more elements. We can add and delete elements at the end in $O(1)$ time. A list can be initialized as follows:
 
 ```py
-list = []
+arr = []
 ```
 
 Python lists are **generic**. This means that they can store any kind of data type, including objects. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
 
 ```py
 for i in range(1, 11): # Note that range(i, j) includes i, but does not include j
-    list.append(i)
+    arr.append(i)
 ```
 
 In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
 
 ```py
-list = [0] * 30
+arr = [0] * 30
 ```
 
 ### Iterating
@@ -136,22 +136,22 @@ list = [0] * 30
 We can use a regular for loop to iterate through all elements of a list.
 
 ```py
-list = [1, 7, 4, 5, 2]
+arr = [1, 7, 4, 5, 2]
 
-for i in range(len(list)):
-    print(list[i], end = " ")
+for i in range(len(arr)):
+    print(arr[i], end = " ")
 print()
 
-for element in list:
+for element in arr:
     print(element, end = " ")
 print()
 ```
 
-We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. `iter(list)` returns an iterator pointing to the first element of the list `list`.
+We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. `iter(arr)` returns an iterator pointing to the first element of the list `arr`.
 
 ```py
-list = [4, 2, 0, 0, 5]
-it = iter(list)
+arr = [4, 2, 0, 0, 5]
+it = iter(arr)
 
 print(next(it)) # 4
 print(next(it)) # 2
@@ -161,24 +161,75 @@ print(next(it)) # 0
 ### Inserting and Erasing
 
 ```py
-list = []
-list.append(2) # [2]
-list.append(3) # [2, 3]
-list.append(7) # [2, 3, 7]
-list.append(5) # [2, 3, 7, 5]
-list[1] = 4; # sets element at index 1 to 4 -> [2, 4, 7, 5]
-list.pop(1) # removes element at index 1 -> [2, 7, 5]
+arr = []
+arr.append(2) # [2]
+arr.append(3) # [2, 3]
+arr.append(7) # [2, 3, 7]
+arr.append(5) # [2, 3, 7, 5]
+arr[1] = 4; # sets element at index 1 to 4 -> [2, 4, 7, 5]
+arr.pop(1) # removes element at index 1 -> [2, 7, 5]
 # this remove method is O(n); to be avoided
-list.append(8) # [2, 7, 5, 8]
-list.pop() # [2, 7, 5]
+arr.append(8) # [2, 7, 5, 8]
+arr.pop() # [2, 7, 5]
 # here, we remove the element from the end of the list; this is O(1).
-list.append(4) # [2, 7, 5, 4]
-list.append(4) # [2, 7, 5, 4, 4]
-list.append(9) # [2, 7, 5, 4, 4, 9]
-print(list[2]) # 5
-list = list[3:] # [4, 4, 9]
+arr.append(4) # [2, 7, 5, 4]
+arr.append(4) # [2, 7, 5, 4, 4]
+arr.append(9) # [2, 7, 5, 4, 4, 9]
+print(arr[2]) # 5
+arr = arr[3:] # [4, 4, 9]
 # this erases the first three elements; O(n)
 ```
+
+### List Comprehensions
+
+List comprehensions are extremely useful for simplifying a python for loop that modifies/creates a list into one expression. The general syntax is: `[ expression for item in list if conditional ]` 
+
+An example is provided in the code block below.
+
+```py
+# If a number is odd, add the number times 2 into the array
+old_list = [2, 5, 3, 1, 6]
+new_list = []
+for i in old_list:
+    if i % 2 == 1:
+        new_list.append(i * 2);
+print(new_list) # [10, 6, 2]
+# Simplified one liner with list comprehension
+# Recall the form [ expression for item in list if conditional ]
+# expression: i * 2
+# list: old_list
+# conditional: i % 2 == 1 (only include item i if it satisfies the conditional)
+new_list = [i * 2 for i in old_list if i % 2 == 1]
+print(new_list) # [10, 6, 2]
+```
+
+A very applicable use of list comprehensions for competitive programming in particular is creating an integer list from space separated input:
+
+```py
+# Example input: 5 3 2 6 8 1
+# Note that the conditional in the list comprehension is optional, and defaults to True if not provided
+arr = [int(x) for x in input().split()]
+print(arr) # [5, 3, 2, 6, 8, 1]
+```
+
+For more information on list comprehensions, including nesting them to create multidimensional lists, refer to the below resources.
+
+<Resources>
+	<Resource
+		source="PythonForBeginners"
+		title="List Comprehensions in Python"
+		url="https://www.pythonforbeginners.com/basics/list-comprehensions-in-python"
+	>
+	{'Basic list comprehension tutorial'}
+	</Resource>
+	<Resource
+		source="GeeksforGeeks"
+		title="Nested List Comprehensions in Python"
+		url="https://www.geeksforgeeks.org/nested-list-comprehensions-in-python/"
+	>
+	{'Nesting list comprehensions'}
+    </Resource>
+</Resources>
 
 </PySection>
 
