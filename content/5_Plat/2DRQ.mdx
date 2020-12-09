@@ -282,7 +282,7 @@ See [my implementations](https://github.com/bqi343/USACO/tree/master/Implementat
 
 <FocusProblem problem={problems.offSam[0]} />
 
-The intended complexity is $O(N\log^2 N)$ with a good constant factor. This requires updating points and querying rectangle sums $N$ times for points with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use $O(N^2)$ memory, which is too much.
+The intended complexity is $\mathcal{O}(N\log^2 N)$ with a good constant factor. This requires updating points and querying rectangle sums $N$ times for points with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use $\mathcal{O}(N^2)$ memory, which is too much.
 
 ### Solution - Soriya's Programming Project
 
@@ -290,9 +290,9 @@ Since we know all of the updates and queries beforehand, we can reduce the memor
 
 #### Idea 1: Use an unordered map instead of a 2D array.
 
-Bad idea ... This gives $O(N\log^2N)$ memory and time and the constant factors for both are terrible.
+Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are terrible.
 
-#### Idea 2: Compress the points to be updated so that you only need $O(N\log N)$ memory.
+#### Idea 2: Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
@@ -380,7 +380,7 @@ A segment tree of (maybe sparse) segment trees.
 
 <Info title="Pro Tip">
 
-This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). If the coordinates go up to $C$, then 2D segment tree queries run in $O(\log^2C)$ time each but some queries make Quadtree take $\Theta(C)$ time!
+This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). If the coordinates go up to $C$, then 2D segment tree queries run in $\mathcal{O}(\log^2C)$ time each but some queries make Quadtree take $\Theta(C)$ time!
 
 </Info>
 
@@ -412,11 +412,11 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 
 ### Note - Memory Usage
 
-Naively, inserting $N$ elements into a sparse segment tree requires $O(N\log C)$ memory, giving a bound of $O(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=C=10^5$ and 256 MB (although it sufficed for "Mowing the Field" due to the 512MB memory limit). Possible ways to get around this:
+Naively, inserting $N$ elements into a sparse segment tree requires $\mathcal{O}(N\log C)$ memory, giving a bound of $\mathcal{O}(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=C=10^5$ and 256 MB (although it sufficed for "Mowing the Field" due to the 512MB memory limit). Possible ways to get around this:
 
  - Use arrays of fixed size rather than pointers.
- - Reduce the memory usage of sparse segment tree to $O(N)$ while maintaining the same $O(N\log C)$ insertion time (see the solution for IOI Game below for details).
- - Use [BBSTs](/adv/treaps) instead of sparse segment trees. $O(N)$ memory, $O(N\log N)$ insertion time.
+ - Reduce the memory usage of sparse segment tree to $\mathcal{O}(N)$ while maintaining the same $\mathcal{O}(N\log C)$ insertion time (see the solution for IOI Game below for details).
+ - Use [BBSTs](/adv/treaps) instead of sparse segment trees. $\mathcal{O}(N)$ memory, $\mathcal{O}(N\log N)$ insertion time.
 
 ### Problems
 
