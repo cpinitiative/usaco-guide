@@ -136,13 +136,13 @@ export default function ProblemStatusCheckbox({
   };
   const handleSumbit = (event, problem) => {
     event.preventDefault();
-
     setShowModal(false);
     firebase.firestore().collection('problemFeedback').add({
       Difficulty: difficultyfeedback,
       Problem_Name: problem.name,
       Solution_Notes: solutionNotes,
       solution_code: solutionCode,
+      general_feedback: textFeedback,
     });
   };
   const Modal = (
@@ -227,6 +227,9 @@ export default function ProblemStatusCheckbox({
                               rows="3"
                               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                               placeholder="What do you think about this problem?"
+                              onChange={event =>
+                                setTextFeedback(event.target.value)
+                              }
                             >
                               {' '}
                             </textarea>
