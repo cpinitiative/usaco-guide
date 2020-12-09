@@ -7,7 +7,7 @@ for filename in os.listdir("."):
 		with open(filename,"r") as f:
 			lines = f.readlines()
 			for index,line in enumerate(lines):
-				if line.startswith("Official Editorial: "):
+				if line.lower().startswith("official editorial: "):
 					mod = True
 					print("FIXING",filename,line)
 					rest = line[len("Official Editorial: "):-1]
