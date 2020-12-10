@@ -42,7 +42,7 @@ public:
 
 ## Solution 2
 
-Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height at least `heights[i]`.
+Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height greater than `heights[i]`. Note how we add `-1` to the list of `heights` so we don't have to treat rectangles that end at the last height in `heights` as a special case.
 
 ```cpp
 class Solution {
@@ -53,6 +53,8 @@ public:
 		int ans = 0;
 		F0R(i,sz(heights)) {
 			while (st.bk != -1 && heights[st.bk] >= heights[i]) {
+				// consider rectangle spanning columns end(st)[-2]+1 to i-1
+				// min height is heights[st.bk]
 				ckmax(ans,(i-1-end(st)[-2])*heights[st.bk]);
 				st.pop_back();
 			}
