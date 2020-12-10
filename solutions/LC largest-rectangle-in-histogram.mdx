@@ -1,10 +1,12 @@
 ---
 id: lc-largest-rectangle-in-histogram
 title: LeetCode Largest Rectangle in Histogram
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
 
 **Time Complexity:** $\mathcal O(N)$.
+
+## Solution 1
 
 The largest rectangle must have the same height as the shortest bar that it contains. For each $i$, consider the largest rectangle with height $H[i]$ such that bar $i$ is the shortest bar it contains. The answer is simply the largest of these $N$ rectangles.
 
@@ -15,25 +17,48 @@ We can use a monotone stack twice to find the closest shorter bars on each side 
 ```cpp
 class Solution {
 public:
-    int largestRectangleArea(vector<int>& heights) {
-        int n = heights.size();
-        if (!n) return 0;
-        stack<int> stck;
-        vector<int> area(n, 0);
-        for (int i = 0; i < n; i++) {
-            while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-            int width = i - (stck.size() ? stck.top() : -1);
-            area[i] += width * heights[i];
-            stck.push(i);
-        }
-        while (stck.size()) stck.pop();
-        for (int i = n - 1; ~i; i--) {
-            while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-            int width = (stck.size() ? stck.top() : n) - i;
-            area[i] += (width - 1) * heights[i];
-            stck.push(i);
-        }
-        return *max_element(area.begin(), area.end());
-    }
+	int largestRectangleArea(vector<int>& heights) {
+		int n = heights.size();
+		if (!n) return 0;
+		stack<int> stck;
+		vector<int> area(n, 0);
+		for (int i = 0; i < n; i++) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = i - (stck.size() ? stck.top() : -1);
+			area[i] += width * heights[i];
+			stck.push(i);
+		}
+		while (stck.size()) stck.pop();
+		for (int i = n - 1; ~i; i--) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = (stck.size() ? stck.top() : n) - i;
+			area[i] += (width - 1) * heights[i];
+			stck.push(i);
+		}
+		return *max_element(area.begin(), area.end());
+	}
+};
+```
+
+## Solution 2
+
+Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height at least `heights[i]`.
+
+```cpp
+class Solution {
+public:
+	int largestRectangleArea(vector<int>& heights) {
+		heights.pb(-1);
+		vi st{-1};
+		int ans = 0;
+		F0R(i,sz(heights)) {
+			while (st.bk != -1 && heights[st.bk] >= heights[i]) {
+				ckmax(ans,(i-1-end(st)[-2])*heights[st.bk]);
+				st.pop_back();
+			}
+			st.pb(i);
+		}
+		return ans;
+	}
 };
 ```
