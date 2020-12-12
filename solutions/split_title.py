@@ -10,35 +10,37 @@ for filename in os.listdir("."):
 			lines = f.readlines()
 			for index,line in enumerate(lines):
 				if index == 2:
+					if line.startswith('title'):
+						tmp = line[len("title:"):].split("-")
+						if len(tmp) != 2:
+							print("OOPS",filename,tmp)
+							continue
+						for i in range(len(tmp)):
+							tmp[i] = tmp[i].strip()
+						lines[index] = "source: " + tmp[0] + "\n" + "title: " + tmp[1]+"\n"
+						mod = True
+					# print("HA",words[:ind],words[ind:])
+					elif line.startswith("source"):
+						# print("SOURCE",)
+						sources.append(line)
+						tokens = line.split()[1:]
+						print("SOURCE",tokens)
+						# if tokens[0] == 'USACO' and tokens[1].isdigit():
+						# 	if len(tokens) == 4:
+						# 		print("BEFORE",tokens)
+						# 		tokens[1],tokens[2],tokens[3] = tokens[3],tokens[1],tokens[2]
+						# 		lines[index] = 'source: '+' '.join(tokens)+'\n'
+						# 		# print("AFTER",tokens,lines[index])
+						# 		mod = True
+						# continue
 					# if 'title' in line:
 					# 	ind = line.find('title')
 					# 	lines[ind] = line[:ind]+'\n'+line[ind:]
 					# 	mod = True
 					# 	# print("WHOOPS",line,)
-					if line.startswith("source:"):
-						# print("SOURCE",)
-						sources.append(line)
-						tokens = line.split()[1:]
-						print("SOURCE",tokens)
-						if tokens[0] == 'USACO' and tokens[1].isdigit():
-							if len(tokens) == 4:
-								print("BEFORE",tokens)
-								tokens[1],tokens[2],tokens[3] = tokens[3],tokens[1],tokens[2]
-								lines[index] = 'source: '+' '.join(tokens)+'\n'
-								# print("AFTER",tokens,lines[index])
-								mod = True
-						continue
-					print("LOOKING AT LINE",line)
-					assert line.startswith("title:")
-					tmp = line[len("title:"):].split("-")
-					if len(tmp) != 2:
-						print("OOPS",filename,tmp)
-						continue
-					for i in range(len(tmp)):
-						tmp[i] = tmp[i].strip()
-					lines[index] = "source: " + tmp[0] + "\n" + "title: " + tmp[1]+"\n"
-					mod = True
-					print("HA",words[:ind],words[ind:])
+					# if line.startswith("source:"):
+					# print("LOOKING AT LINE",line)
+					# assert line.startswith("title:")
 
 		if mod:
 			with open(filename,"w") as f:
