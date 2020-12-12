@@ -100,7 +100,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           <span
             className={`${
               progress === status ? 'font-semibold' : 'font-normal'
-            } block truncate flex-1`}
+            } block truncate`}
           >
             {progress}
           </span>
