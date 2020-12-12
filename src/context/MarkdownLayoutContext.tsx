@@ -6,6 +6,7 @@ import { SolutionInfo } from '../models/solution';
 const MarkdownLayoutContext = createContext<{
   markdownLayoutInfo: ModuleInfo | SolutionInfo;
   sidebarLinks: ModuleLinkInfo[];
+  activeIDs: string[];
 }>(null);
 
 export default MarkdownLayoutContext;
