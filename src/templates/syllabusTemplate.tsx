@@ -149,7 +149,7 @@ export default function Template(props) {
   const problemsProgressInfo = getProgressInfo(
     problemIDs,
     userProgressOnProblems,
-    ['Solved', 'Review'],
+    ['Solved', 'Reviewing'],
     ['Solving'],
     ['Skipped'],
     ['Not Attempted']
