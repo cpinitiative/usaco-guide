@@ -636,11 +636,10 @@ System.out.println(p.first + " " + p.second);
 
 <PySection>
 
-<Warning title="Language Note">
-
-**Pairs are not available in Python.** Just use tuples; no need for pairs!
-
-</Warning>
+Pairs in Python are essentailly just tuples with two items inside of them:
+```py
+pair = (1, 2)
+```
 
 ### Python Tuples
 
@@ -648,7 +647,35 @@ Use the link below (if you know of a better one, please let us know!) to learn a
 
 <!-- Python automatically sorts a list of tuples by the first element, then the second, and so on. This can save you time and keystrokes for certain problems like the one above.
  -->
-
+Tuples are a kind of sequence just like lists, but they are immutable, and they are defined using parentheses instead of square brackets like lists in Python. A tuple can be made by the following code:
+```py
+tup1 = ()
+```
+Also very similiar to lists, tuples are generic and can store any kind of data type but they don't have a way to append something to it, so you would have to convert it into a list, then append into the list, then convert back to tuple by using tuple():
+```py
+tup = ()
+lst = list(tup) # []
+lst.append(1) # [1]
+lst.append([1, 2, 3]) # [1, [1, 2, 3]]
+tup = tuple(lst) # (1, [1, 2, 3]]
+```
+Another important thing is when defining a tuple with one object inside of it, you need to add a comma after the value inside it:
+```py
+tup = (1) # this is wrong and would result in 1 when you print tup
+type(tup) # <class 'int'>
+tup1 = (1,) # this is right and would be (1,) when printed, even though this looks weird it is correct
+type(tup1) # <class 'tuple'>
+```
+To see values inside of a tuple use indexing or square brackets:
+```py
+tup = (1, 2, 3, 4, ['a', 'b', 'c', ['d', 'e'], 'f']]
+tup[0] # 1
+tup[1] # 2
+tup[4] # ['a', 'b', 'c', ['d', 'e'], 'f']
+tup[4][1] # 'b'
+tup[4][3] # ['d', 'e]
+tup[4][3][0] 'd'
+```
 <Resources>
 
 <Resource
