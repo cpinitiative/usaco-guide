@@ -9,7 +9,7 @@ type ActiveItemStatus =
   | 'Reading' // only for modules
   | 'Practicing' // only for modules
   | 'Solving' // only for problems
-  | 'Review'; // only for problems
+  | 'Reviewing'; // only for problems
 
 export type ActiveItem = {
   label: string;
@@ -25,7 +25,7 @@ const statusClasses: { [key in ActiveItemStatus]: string } = {
   Practicing: difficultyClasses.Easy,
   Solving:
     'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
-  Review: difficultyClasses.Insane,
+  Reviewing: difficultyClasses.Insane,
 };
 
 export default function ActiveItems({
@@ -43,7 +43,7 @@ export default function ActiveItems({
       return 0;
     };
     const statusVal: { [key in ActiveItemStatus]: number } = {
-      Review: -1,
+      Reviewing: -1,
       Reading: 0,
       Solving: 1,
       Practicing: 1,

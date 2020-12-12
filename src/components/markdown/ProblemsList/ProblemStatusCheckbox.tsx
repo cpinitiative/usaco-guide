@@ -96,7 +96,7 @@ export default function ProblemStatusCheckbox({
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
     Solving: 'bg-yellow-300 dark:bg-yellow-500',
-    Review: 'bg-red-500 dark:bg-red-600',
+    Reviewing: 'bg-red-500 dark:bg-red-600',
     Solved: 'bg-green-500 dark:bg-green-600',
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
@@ -113,7 +113,7 @@ export default function ProblemStatusCheckbox({
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem, progress);
-              let solved = x => x == 'Review' || x == 'Solved';
+              let solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
               if (!solved(status) && solved(progress)) showConfetti();
