@@ -26,7 +26,9 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={`Solution - ${mdx.frontmatter.title}`} />
+      <SEO
+        title={`Solution - ${mdx.frontmatter.title} (${mdx.frontmatter.source})`}
+      />
 
       <ConfettiProvider>
         <MarkdownLayout markdownData={markdownData}>
