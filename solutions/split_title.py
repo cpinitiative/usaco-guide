@@ -23,15 +23,39 @@ for filename in os.listdir("."):
 					elif line.startswith("source"):
 						# print("SOURCE",)
 						sources.append(line)
-						tokens = line.split()[1:]
-						print("SOURCE",tokens)
-						# if tokens[0] == 'USACO' and tokens[1].isdigit():
-						# 	if len(tokens) == 4:
-						# 		print("BEFORE",tokens)
-						# 		tokens[1],tokens[2],tokens[3] = tokens[3],tokens[1],tokens[2]
-						# 		lines[index] = 'source: '+' '.join(tokens)+'\n'
-						# 		# print("AFTER",tokens,lines[index])
-						# 		mod = True
+						tokens = line.strip().split()[1:]
+						# print("SOURCE",tokens)
+						if tokens[0] == 'USACO':
+							continue
+							# if len(tokens) != 4:
+							# 	if tok
+							# print("WHOOPS",tokens)
+							# def cut(names,cut_len):
+							# 	return {name[:cut_len]:name for name in names}
+
+							# divs = cut(['Bronze','Silver','Gold','Platinum'],4)
+							# # print(divs)
+							# # sys.exit(0)
+
+							# assert len(tokens) == 4
+							# # print(tokens[1])
+							# assert tokens[1][:4] in divs
+							# tokens[1] = divs[tokens[1][:4]]
+
+							# months = cut(['January','February','December','Open'],3)
+							# assert tokens[3][:3] in months
+							# tokens[3] = months[tokens[3][:3]]
+							# # if tokens[-1][:4] in ["Bron","Silv",'Gold',"Plat"]:
+							# # 	tokens[1],tokens[2],tokens[3] = tokens[3],tokens[2],tokens[1]
+							# lines[index] = 'source: '+' '.join(tokens)+'\n'
+							# mod = True
+
+
+							# if tokens[1].isdigit():
+							# 	if len(tokens) == 4:
+							# 		print("BEFORE",tokens)
+							# 		# print("AFTER",tokens,lines[index])
+							# 		mod = True
 						# continue
 					# if 'title' in line:
 					# 	ind = line.find('title')
