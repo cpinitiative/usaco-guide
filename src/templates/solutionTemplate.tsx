@@ -16,7 +16,8 @@ export default function Template(props) {
   const markdownData = React.useMemo(() => {
     return new SolutionInfo(
       mdx.frontmatter.id,
-      mdx.frontmatter.title,
+      mdx.frontmatter.source,
+      `${mdx.frontmatter.source} - ${mdx.frontmatter.title}`,
       mdx.frontmatter.author,
       mdx.toc,
       mdx.parent.relativePath
@@ -25,7 +26,9 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={`Solution: ${mdx.frontmatter.title}`} />
+      <SEO
+        title={`Solution: ${mdx.frontmatter.source} - ${mdx.frontmatter.title}`}
+      />
 
       <ConfettiProvider>
         <MarkdownLayout markdownData={markdownData}>
@@ -58,6 +61,7 @@ export const pageQuery = graphql`
       body
       frontmatter {
         id
+        source
         title
         author
       }
