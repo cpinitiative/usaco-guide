@@ -289,6 +289,7 @@ export default function MarkdownLayout({
             }
             problems {
               uniqueID
+              solID
             }
           }
         }
@@ -323,11 +324,30 @@ export default function MarkdownLayout({
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
   let problemIDs = [];
+  const activeIDs = [];
+
   if (markdownData instanceof ModuleInfo) {
-    let ind = 0;
-    while (moduleLinks[ind].id != markdownData.id) ind++;
-    for (let problem of moduleLinks[ind].probs)
-      problemIDs.push(problem.uniqueID);
+    activeIDs.push(markdownData.id);
+    const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
+    // oops how to assert not -1
+
+    // while (moduleLinks[ind].id != markdownData.id) ind++;
+    for (let problem of moduleLinks[ind].probs) {
+      const uniqueID = problem.uniqueID;
+      problemIDs.push(uniqueID);
+    }
+  } else {
+    // console.log("UH OH",markdownData.id);
+    moduleLinks.forEach(link => {
+      for (let problem of link.probs) {
+        // console.log("PROBLEM",problem)
+        // console.log("??",problem.uniqueID)
+        if (problem.solID === markdownData.id) {
+          activeIDs.push(link.id);
+        }
+      }
+    });
+    // console.log("RESULT",activeIDs)
   }
 
   const problemsProgressInfo = getProgressInfo(
@@ -347,6 +367,7 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
+        activeIDs: activeIDs,
       }}
     >
       <Transition show={isMobileNavOpen} timeout={300}>
