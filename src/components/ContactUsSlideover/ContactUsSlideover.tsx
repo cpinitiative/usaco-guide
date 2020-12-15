@@ -68,6 +68,7 @@ export default function ContactUsSlideover({
   onClose: any;
   activeModule?: ModuleInfo;
 }) {
+  const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
@@ -132,6 +133,7 @@ export default function ContactUsSlideover({
     data.append('email', email);
     data.append('location', location);
     data.append('url', window.location.href);
+    data.append('lang', userSettings.lang);
     data.append('topic', topic);
     data.append('message', message);
     data.append(

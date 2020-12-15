@@ -11,6 +11,7 @@ export default function ModuleFeedback({
 }: {
   markdownData: ModuleInfo | SolutionInfo;
 }) {
+  const userSettings = useContext(UserDataContext);
   const [showErrors, setShowErrors] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [message, setMessage] = useStickyState(
@@ -44,6 +45,7 @@ export default function ModuleFeedback({
     data.append('email', email);
     data.append('location', markdownData.title);
     data.append('url', window.location.href);
+    data.append('lang', userSettings.lang);
     data.append('topic', 'Module Feedback Form');
     data.append('message', message);
     data.append(
