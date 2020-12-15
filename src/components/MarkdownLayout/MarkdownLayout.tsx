@@ -21,7 +21,7 @@ import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
-import getProgressInfo from '../../utils/getProgressInfo';
+import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
@@ -337,27 +337,16 @@ export default function MarkdownLayout({
       problemIDs.push(uniqueID);
     }
   } else {
-    // console.log("UH OH",markdownData.id);
     moduleLinks.forEach(link => {
       for (let problem of link.probs) {
-        // console.log("PROBLEM",problem)
-        // console.log("??",problem.uniqueID)
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
         }
       }
     });
-    // console.log("RESULT",activeIDs)
   }
 
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const { darkMode } = useContext(UserDataContext);
 
