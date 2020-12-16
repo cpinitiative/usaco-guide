@@ -72,51 +72,34 @@ void setIO(string s) {
 }
 
 int main(){
-
 	setIO("speeding"); 
-
 	int N, M; cin >> N >> M;
 
 	int start = 0;
-
 	vi limit(100);
-
 	For(i, 0, N){
-
 		int length, speed; cin >> length >> speed;
-
-	For(j, start, start+length){
-		limit[j] = speed;
+		For(j, start, start+length){
+			limit[j] = speed;
+		}
+		start += length;
 	}
-
-	start += length;
-
-	}
-
-	vi bessie(100);
 
 	start = 0;
-
+	vi bessie(100);
 	For(i, 0, M){
-
-	int length, speed; cin >> length >> speed;
-
-	For(j, start, start+length){
-		bessie[j] = speed;
-	}
-
-	start += length;
-
+		int length, speed; cin >> length >> speed;
+		For(j, start, start+length){
+			bessie[j] = speed;
+		}
+		start += length;
 	}
 
 	int ans = 0;
-
 	For(i, 0, 100){
 		ans = max(ans, bessie[i]-limit[i]);
 	}
-
 	cout << ans << endl;
-
 }
 
 ```
