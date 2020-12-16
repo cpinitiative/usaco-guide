@@ -15,8 +15,8 @@ Any simple path in a rooted tree follows one of two general shapes:
 Since each path has a single highest node, we can check for each node $v$, what the best paths are for each case if $v$ is the highest node in that path. We will do this with dynamic programming.
 
 Let $dp_1[v]$ and $dp_2[v]$ be the maximum number of adjacent edges for each case with $v$ as the highest node. If $C$ is the set of children of $v$, then the following recurrences hold:
-1. $dp_1[v] = \max_{u \in C}(dp_1[u]) + |C| - 1$ ($-1$ if $v$ is the root of the tree)
-2. $dp_2[v] = \max_{u \neq w \in C}(dp_1[u] + dp_1[w]) + |C| - 2$ ($-1$ if $v$ is the root of the tree)
+1. $dp_1[v] = \max_{u \in C}(dp_1[u]) + (\text{Degree of }v) - 2$
+2. $dp_2[v] = \max_{u \neq w \in C}(dp_1[u] + dp_1[w]) + (\text{Degree of }v) - 3$
 
 We can calculate both of these values efficiently by keeping track of the two best values of $dp_1[u]$ while iterating through $C$.
 
