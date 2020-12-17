@@ -143,6 +143,7 @@ export default function ProblemStatusCheckbox({
       Solution_Notes: solutionNotes,
       solution_code: solutionCode,
       general_feedback: textFeedback,
+      viewedSolution: false,
     });
   };
   const Modal = (
@@ -212,7 +213,7 @@ export default function ProblemStatusCheckbox({
                 <div className="mt-4">
                   <form action="#" method="POST">
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
-                      <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                      <div className="px-100 py-100 bg-white space-y-12 sm:p-6">
                         <div>
                           <label
                             htmlFor="about"
@@ -292,6 +293,9 @@ export default function ProblemStatusCheckbox({
                               rows="3"
                               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                               placeholder="What do you think about this problem?"
+                              onChange={event =>
+                                setsolutionCode(event.target.value)
+                              }
                             >
                               {' '}
                             </textarea>
