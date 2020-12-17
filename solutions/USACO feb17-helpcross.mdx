@@ -1,0 +1,33 @@
+---
+id: usaco-714
+source: USACO Silver 2017 February
+title: Why Did the Cow Cross the Road I
+author: Benjamin Qi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_helpcross_silver_feb17.html)
+
+There is more than one possible greedy strategy (though all of them involve sorting the animals by time). Here, we follow the approach described by the analysis.
+
+```cpp
+int C,N;
+priority_queue<int,vi,greater<int>> times; // stores B_i of cows
+// top element of priority queue is lowest
+
+int main() {
+	setIO("helpcross"); 
+	re(C,N);
+	vi chicks(C); vpi cows(N); re(chicks,cows);
+	sort(all(chicks)); sort(all(cows));
+	int cow_ind = 0, ans = 0;
+	trav(c,chicks) { // go through chickens in increasing order of time
+		while (cow_ind < sz(cows) && cows[cow_ind].f <= c) // add cows with A_i <= c
+			times.push(cows[cow_ind++].s);
+		while (sz(times) && times.top() < c) times.pop(); 
+		// popped cows can't be paired with chicken
+		if (sz(times)) ans ++, times.pop(); 
+		// matched chicken to cow with lowest possible B_i
+	}
+	ps(ans);
+}
+```

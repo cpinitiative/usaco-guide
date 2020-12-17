@@ -14,7 +14,10 @@ import { getModule } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import getProgressInfo from '../utils/getProgressInfo';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import ModuleLink from '../components/Dashboard/ModuleLink';
 import { ModuleLinkInfo } from '../models/module';
 import styled from 'styled-components';
@@ -130,14 +133,7 @@ export default function Template(props) {
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  let moduleProgressInfo = getProgressInfo(
-    moduleIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
+  let moduleProgressInfo = getModulesProgressInfo(moduleIDs);
   let problemIDs = [];
   for (let chapter of MODULE_ORDERING[division]) {
     for (let moduleID of chapter.items) {
@@ -146,14 +142,7 @@ export default function Template(props) {
       }
     }
   }
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   return (
     <Layout>

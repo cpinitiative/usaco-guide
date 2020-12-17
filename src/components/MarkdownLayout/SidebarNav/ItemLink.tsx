@@ -94,8 +94,10 @@ const StyledLink = styled.span`
 `;
 
 const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
-  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
-  const isActive = markdownLayoutInfo.id === link.id;
+  const { activeIDs } = useContext(MarkdownLayoutContext);
+  // const isActive = markdownLayoutInfo.id === link.id;
+  // console.log("WHOOPS",activeIDs)
+  const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef(null);
 
   React.useEffect(() => {

@@ -1,12 +1,15 @@
 ---
 id: usaco-619
-title: USACO February 2016 Silver - Load Balancing
+source: USACO Silver 2016 February
+title: Load Balancing
 author: Benjamin Qi
 ---
 
-Note that it does not suffice to only check a constant number of $x$ and $y$-coordinates that are close to the median $x$ or $y$, respectively. For example, consider the case where $N=999$ and $x_i=y_i=2i-1$. Then $M=333$.
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
 
-[Official Analysis](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
+## Solution 1
+
+Similar to the analysis.
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
@@ -36,6 +39,52 @@ int main() {
 			ind ++;
 		}
 		upd_ans();
+	}
+	ps(ans);
+}
+```
+
+## Solution 2
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+It does not suffice to check only a constant number of $x$ and $y$-coordinates that are close to the median $x$ or $y$, respectively. For example, consider the case where $N=999$ and $x_i=y_i=2i-1$. Then $M=333$.
+
+However, we can speed up an $\mathcal{O}(N^3)$ solution by a constant factor by checking fewer $x$ and $y$ coordinates than the [bronze editorial](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html) does. Note that if we increase the $x$-coordinate of the north-south fence by two and there are still at most $\frac{N}{3}$ cows to the left of the fence, then the answer for this new configuration cannot be worse. Thus, the number of $x$-coordinates which the solution below checks is at most $\frac{N}{3}$ (plus a constant). Similar reasoning holds for the $y$-coordinates.
+
+```cpp
+int N;
+
+vi important(vi x) { // only keep important coordinates
+	sor(x);
+	vi tri, num_left;
+	F0R(i,sz(x)) if (i == sz(x)-1 || x[i] != x[i+1]) {
+		tri.pb(x[i]+1);
+		num_left.pb(i+1);
+	}
+	vi todo;
+	F0R(i,sz(tri)) {
+		// can move fence right, ignore
+		if (i+1 < sz(tri) && num_left[i+1] <= N/3) continue; 
+		// can move fence left, ignore
+		if (i > 0 && num_left[i-1] >= N-N/3) continue;
+		todo.pb(tri[i]);
+	}
+	return todo;
+}
+
+int main() {
+	setIO("balancing");
+	re(N);
+	vpi v(N); re(v);
+	vi x, y; F0R(i,N) x.pb(v[i].f), y.pb(v[i].s);
+	vi xx = important(x), yy = important(y);
+	int ans = MOD;
+	trav(a,xx) trav(b,yy) { 
+		// try placing fence at x-coordinate a and y-coordinate b
+		AR<AR<int,2>,2> cnt{};
+		for (pi t: v) ++ cnt[t.f < a][t.s < b];
+		ckmin(ans,max(max(cnt[0][0],cnt[0][1]),max(cnt[1][0],cnt[1][1])));
 	}
 	ps(ans);
 }

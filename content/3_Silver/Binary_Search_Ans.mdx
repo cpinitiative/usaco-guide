@@ -48,7 +48,7 @@ export const problems = {
 			'Normal',
 			false,
 			[],
-			'check in $O(N+M)$ how many cows you can place with distance $D$'
+			'check in $\mathcal{O}(N+M)$ how many cows you can place with distance $D$'
 		),
 		new Problem('Gold', 'Angry Cows', '597', 'Hard', true, [], ''),
 		new Problem(
@@ -58,7 +58,7 @@ export const problems = {
 			'Very Hard',
 			false,
 			[],
-			'requires some rather tricky analysis to speed up naive $O(Nlog N)$ solution'
+			'requires some rather tricky analysis to speed up naive $\mathcal{O}(Nlog N)$ solution'
 		),
 		new Problem(
 			'Plat',
@@ -178,7 +178,7 @@ export const problems = {
 
 ## Introduction
 
-When we binary search on an answer, we start with a search space of size $N$ which we know the answer lies in. Then each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
+When we binary search on an answer, we start with a search space of size $N$ which we know the answer lies in. Then each iteration of the binary search cuts the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
 
 Let's say we have a function `check(x)` that returns `true` if the answer of $x$ is possible, and `false` otherwise. Usually, in such problems, we want to find the maximum or minimum value of $x$ such that `check(x)` is true. Similarly to how binary search on an array only works on a sorted array, binary search on the answer only works if the answer function is [monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it is always non-decreasing or always non-increasing.
 
@@ -250,34 +250,34 @@ import java.io.*;
 import java.util.*; 
 
 public class test{
-   public static boolean f(int x){
-      return x*x <= 30;
-      //function f(x) returns true or false
-   }
-   public static int lstTrue(int lo, int hi) {
-      int res = lo-1;
-      while (lo <= hi) {
-         int mid = (lo+hi)/2; // find the middle of the current range
-         if (f(mid)) {
-            // if mid works, then all numbers smaller than mid also work
-            // so we only care about the part after mid
-            res = mid; // update the answer
-            lo = mid+1; // cut the part before mid
-            // notice that we already handled mid itself so we cut it as well
-         } else {
-            // if mid does not work, greater values would not work too
-            // so we don't care about them
-            hi = mid-1; // cut mid and after
-         }
-      }
-    // now res is the answer
-    // if res is l-1 that means no value in the range satisfies the condition
-      return res;
-   }
-   public static void main(String[] args) throws IOException
-   {
-      System.out.println(lstTrue(2,10)); // 5
-   }
+	public static boolean f(int x){
+		return x*x <= 30;
+		// function f(x) returns true or false
+	}
+	public static int lstTrue(int lo, int hi) {
+		int res = lo-1;
+		while (lo <= hi) {
+			int mid = (lo+hi)/2; // find the middle of the current range
+			if (f(mid)) {
+				// if mid works, then all numbers smaller than mid also work
+				// so we only care about the part after mid
+				res = mid; // update the answer
+				lo = mid+1; // cut the part before mid
+				// notice that we already handled mid itself so we cut it as well
+			} else {
+				// if mid does not work, greater values would not work too
+				// so we don't care about them
+				hi = mid-1; // cut mid and after
+			}
+		}
+		// now res is the answer
+		// if res is lo-1 that means no value in the range satisfies the condition
+		return res;
+	}
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println(lstTrue(2,10)); // 5
+	}
 }
 ```
 
@@ -346,11 +346,11 @@ int lstTrue(function<bool(int)> f, int lo, int hi) {
 
 ```java
 public static int lstTrue(int lo, int hi) {
-   for (lo --; lo < hi; ) {
-      int mid = (lo+hi+1)/2;
-      if(f(mid)) lo = mid; else hi = mid-1;
-   }
-   return lo;
+	for (lo --; lo < hi; ) {
+		int mid = (lo+hi+1)/2;
+		if(f(mid)) lo = mid; else hi = mid-1;
+	}
+	return lo;
 }
 ```
 
@@ -474,23 +474,23 @@ import java.io.*;
 import java.util.*; 
 
 public class test{
-   public static boolean f(int x){
-      return x*x >= 30;
-      //function f(x) returns true or false
-   }
-   public static int fstTrue(int lo, int hi) {
-      for (hi ++; lo < hi; ) {
-         // returns smallest x in [lo,hi] that satisfies f
-         // hi+1 if no x satisfies f
-         int mid = (lo+hi)/2;
-         if(f(mid)) hi = mid; else lo = mid+1;
-      }
-      return lo;
-   }
-   public static void main(String[] args) throws IOException
-   {
-      System.out.println(fstTrue(2,10)); // 6
-   }
+	public static boolean f(int x){
+		return x*x >= 30;
+		//function f(x) returns true or false
+	}
+	public static int fstTrue(int lo, int hi) {
+		for (hi ++; lo < hi; ) {
+			// returns smallest x in [lo,hi] that satisfies f
+			// hi+1 if no x satisfies f
+			int mid = (lo+hi)/2;
+			if(f(mid)) hi = mid; else lo = mid+1;
+		}
+		return lo;
+	}
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println(fstTrue(2,10)); // 6
+	}
 }
 ```
 
@@ -738,22 +738,21 @@ int fstTrue(function<bool(int)> f, int lo, int hi) {
 
 </CPPSection>
 
-<!-- <JavaSection>
+<JavaSection>
 
 ```java
 public static int fstTrue(int lo, int hi) {
    for (hi ++; lo < hi; ) {
       // returns smallest x in [lo,hi] that satisfies f
       // hi+1 if no x satisfies f
-      int mid = lo+hi; 
-      mid = (mid-(mid&1))/2;
+      int mid = lo+(hi-lo)/2;
       if(f(mid)) hi = mid; else lo = mid+1;
    }
    return lo;
 }
 ```
 
-</JavaSection> -->
+</JavaSection>
 
 </LanguageSection>
 

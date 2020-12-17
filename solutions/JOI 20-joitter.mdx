@@ -1,0 +1,53 @@
+---
+id: joi-20-joitter
+source: JOI 2020
+title: Making Friends on Joitter is Fun
+author: Benjamin Qi
+---
+
+```cpp
+int N,M;
+int comp[MX]; vi rcomp[MX];
+unordered_set<int> child[MX], adj[MX], radj[MX];
+ll ans;
+ 
+queue<pi> todo;
+void insEd(int A, int B) {
+	adj[A].insert(B), radj[B].insert(A);
+	if (adj[B].count(A)) todo.push({A,B});
+}
+ 
+void red(int A, int B) {
+	if (A == B) return;
+	if (sz(rcomp[A]) < sz(rcomp[B])) swap(A,B);
+	ans += (ll)sz(child[A])*sz(rcomp[B])+(ll)sz(child[B])*sz(rcomp[A]);
+	trav(t,rcomp[B]) { comp[t] = A; rcomp[A].pb(t); }
+	trav(t,child[B]) {
+		if (child[A].count(t)) ans -= sz(rcomp[A]);
+		else child[A].insert(t);
+	}
+	adj[A].erase(B); radj[A].erase(B);
+	trav(t,adj[B]) if (t != A) { radj[t].erase(B); insEd(A,t); }
+	trav(t,radj[B]) if (t != A) { adj[t].erase(B); insEd(t,A); }
+}
+ 
+void upd(int A, int B) {
+	B = comp[B]; if (comp[A] == B) return;
+	if (child[B].count(A)) return;
+	child[B].insert(A); ans += sz(rcomp[B]); 
+	A = comp[A]; insEd(A,B);
+	while (sz(todo)) {
+		pi p = todo.ft; todo.pop();
+		red(comp[p.f],comp[p.s]);
+	}
+}
+ 
+int main() {
+	setIO(); re(N,M);
+	FOR(i,1,N+1) { comp[i] = i; rcomp[i] = {i}; child[i] = {i}; }
+	F0R(i,M) {
+		int A,B; re(A,B); upd(A,B);
+		ps(ans);
+	}
+}
+```

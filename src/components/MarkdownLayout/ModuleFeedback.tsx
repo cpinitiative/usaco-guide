@@ -2,38 +2,50 @@ import * as React from 'react';
 import { SolutionInfo } from '../../models/solution';
 import { ModuleInfo } from '../../models/module';
 import useStickyState from '../../hooks/useStickyState';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { validateEmail } from '../ContactUsSlideover/ContactUsSlideover';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 export default function ModuleFeedback({
   markdownData,
 }: {
   markdownData: ModuleInfo | SolutionInfo;
 }) {
+  const userSettings = useContext(UserDataContext);
   const [showErrors, setShowErrors] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [message, setMessage] = useStickyState(
     '',
     'module_contact_form_message'
   );
-  const [email, setEmail] = useStickyState('', 'contact_form_email');
+  const [email, setEmail] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const emailErrorMsg =
-    showErrors && email !== '' && !validateEmail(email)
+  const { firebaseUser } = useContext(UserDataContext);
+  useEffect(() => {
+    if (email === '' && firebaseUser?.email) setEmail(firebaseUser.email);
+  }, [firebaseUser?.email]);
+
+  const emailErrorMsg = showErrors
+    ? email === ''
+      ? 'This field is required.'
+      : !validateEmail(email)
       ? 'Please enter a valid email address.'
-      : null;
+      : null
+    : null;
 
   const handleSubmit = async e => {
     e.preventDefault();
 
     setShowErrors(true);
     if (message === '') return;
+    if (email === '' || !validateEmail(email)) return;
 
     let data = new FormData();
-    data.append('email', email || 'Not Given');
+    data.append('email', email);
     data.append('location', markdownData.title);
     data.append('url', window.location.href);
+    data.append('lang', userSettings.lang);
     data.append('topic', 'Module Feedback Form');
     data.append('message', message);
     data.append(
@@ -109,7 +121,7 @@ export default function ModuleFeedback({
                 value={email}
                 formNoValidate={true}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="Email Address (Optional)"
+                placeholder="Email Address"
               />
               {emailErrorMsg && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">

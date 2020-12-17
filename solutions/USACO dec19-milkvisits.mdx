@@ -1,0 +1,190 @@
+---
+id: usaco-970
+source: USACO Gold 2019 December
+title: Milk Visits
+author: Benjamin Qi
+---
+
+[Official Analysis (Offline)](http://www.usaco.org/current/data/sol_milkvisits_gold_dec19.html)
+
+To solve this problem *online*, we need efficiently find the closest ancestor of a farm $x$ with a certain milk type. Here are several ways to do this.
+
+## Method 1
+
+Run the same DFS mentioned in the analysis. For each milk type, store the Euler tour indices at which the answer changes. Then we can get the answer for a vertex using a single `lower_bound` operation on the vector for the corresponding milk type.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query.
+
+```cpp
+int T[MX];
+
+template<int SZ> struct LCA {
+	static const int BITS = 32-__builtin_clz(SZ);
+	int N, R = 1, cnt = 0, label[SZ]; 
+	vi adj[SZ], cur[SZ];
+	vpi CUR[SZ];
+	int par[BITS][SZ], depth[SZ];
+	// INITIALIZE
+	void addEdge(int u, int v) { adj[u].pb(v), adj[v].pb(u); }
+	void dfs(int u, int prev) {
+		label[u] = cnt++;
+		cur[T[u]].pb(u);
+		CUR[T[u]].pb({label[u],u});
+		par[0][u] = prev;
+		depth[u] = depth[prev]+1;
+		trav(v,adj[u]) if (v != prev) dfs(v, u);
+		cur[T[u]].pop_back();
+		CUR[T[u]].pb({cnt,sz(cur[T[u]])?cur[T[u]].back():0});
+	}
+	void init(int _N) {
+		N = _N; dfs(R, 0);
+		FOR(k,1,BITS) FOR(i,1,N+1) 
+			par[k][i] = par[k-1][par[k-1][i]];
+	}
+	// QUERY
+	int getPar(int a, int b) {
+		R0F(k,BITS) if (b&(1<<k)) a = par[k][a];
+		return a;
+	}
+	int lca(int u, int v){
+		if (depth[u] < depth[v]) swap(u,v);
+		u = getPar(u,depth[u]-depth[v]);
+		R0F(k,BITS) if (par[k][u] != par[k][v]) 
+			u = par[k][u], v = par[k][v];
+		return u == v ? u : par[0][u];
+	}
+	int dist(int u, int v) {
+		return depth[u]+depth[v]-2*depth[lca(u,v)];
+	}
+	int last(int a, int c) {
+		auto it = ub(all(CUR[c]),mp(label[a],MOD));
+		if (it == begin(CUR[c])) return 0;
+		return prev(it)->s;
+	}
+};
+
+LCA<MX> L;
+int N,M,co;
+
+int main() {
+	setIO("milkvisits");
+	re(N,M); FOR(i,1,N+1) re(T[i]);
+	F0R(i,N-1) {
+		int X,Y; re(X,Y);
+		L.addEdge(X,Y);
+	}
+	L.init(N);
+	F0R(i,M) {
+		int A,B,C; re(A,B,C);
+		int z = L.lca(A,B);
+		int a = L.last(A,C); 
+		if (a && L.depth[a] >= L.depth[z]) {
+			pr(1);
+			continue;
+		}
+		a = L.last(B,C);
+		if (a && L.depth[a] >= L.depth[z]) {
+			pr(1);
+			continue;
+		}
+		pr(0);
+	}
+	// you should actually read the stuff at the bottom
+}
+```
+
+## Method 2
+
+Generate a [persistent array](https://en.wikipedia.org/wiki/Persistent_array) for each vertex where the indices of the array correspond to the milk types.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query. Apparently this is doable in $\mathcal{O}(\log \log N)$ per query ([paper](http://fox.ucw.cz/papers/perarray/perarray.pdf)). Is this bound optimal for this problem?
+
+## Method 3
+
+Use HLD. We can check whether there exists a farm in the path from a vertex $x$ to the root of the heavy path containing $x$ ($\texttt{root}[x]$) with the desired milk type in $\mathcal{O}(1)$ time using an unordered map. Note that we only need to do two `upper_bound` operations per query.
+
+**Time Complexity:** $\mathcal{O}(\log N)$ per query.
+
+In the solution below, I refer to milk types as "colors."
+
+```cpp
+int N,M,T[MX];
+
+/**
+ * Description: Heavy-Light Decomposition, add val to verts 
+ 	* and query sum in path/subtree.
+ * Time: any tree path is split into $\mathcal{O}(\log N)$ parts
+ * Source: http://codeforces.com/blog/entry/22072, https://codeforces.com/blog/entry/53170
+ * Verification: *
+ */
+
+template<int SZ> struct HLD { 
+	int N; vi adj[SZ];
+	int par[SZ], root[SZ], depth[SZ], sz[SZ], ti;
+	int pos[SZ]; vi rpos; // rpos not used, but could be useful
+	map<int,int> all_of_col[SZ];
+	unordered_map<int,int> first_cols[SZ];
+	void ae(int x, int y) { adj[x].pb(y), adj[y].pb(x); }
+	void dfsSz(int x) { 
+		sz[x] = 1; 
+		trav(y,adj[x]) {
+			par[y] = x; depth[y] = depth[x]+1;
+			adj[y].erase(find(all(adj[y]),x)); // remove parent from adj list
+			dfsSz(y); sz[x] += sz[y];
+			if (sz[y] > sz[adj[x][0]]) swap(y,adj[x][0]);
+		}
+	}
+	void dfsHld(int x) {
+		pos[x] = ti++; rpos.pb(x);
+		all_of_col[T[x]][pos[x]] = depth[x];
+		if (!first_cols[root[x]].count(T[x]))
+			first_cols[root[x]][T[x]] = depth[x];
+		trav(y,adj[x]) {
+			root[y] = (y == adj[x][0] ? root[x] : y);
+			dfsHld(y); }
+	}
+	void init(int _N, int R = 0) { N = _N; 
+		par[R] = depth[R] = ti = 0; dfsSz(R); 
+		root[R] = R; dfsHld(R); 
+	}
+	int lca(int x, int y) {
+		for (; root[x] != root[y]; y = par[root[y]])
+			if (depth[root[x]] > depth[root[y]]) swap(x,y);
+		return depth[x] < depth[y] ? x : y;
+	}
+	/// int dist(int x, int y) { // # edges on path
+	/// 	return depth[x]+depth[y]-2*depth[lca(x,y)]; }
+	int closest_anc(int x, int col) { // depth of closest ancestor with desired color
+		while (x) {
+			auto it = first_cols[root[x]].find(col); 
+			// check if there exists vertex above (or equal to x) in same heavy path with desired color
+			if (it != end(first_cols[root[x]]) && it->s <= depth[x]) 
+				return prev(all_of_col[col].ub(pos[x]))->s;
+			// if so, return its depth using upper_bound
+			x = par[root[x]];
+		}
+		return -1;
+	}
+	bool exists(int x, int y, int col) {
+		return closest_anc(x,col) >= depth[y];
+	}
+};
+
+HLD<MX> H;
+
+int main() {
+	setIO("milkvisits"); re(N,M);
+	F0R(i,N) re(T[i]);
+	F0R(_,N-1) {
+		int x,y; re(x,y); --x,--y;
+		H.ae(x,y);
+	}
+	H.init(N);
+	F0R(_,M) {
+		int A,B,C; re(A,B,C); --A,--B;
+		int L = H.lca(A,B);
+		if (H.exists(A,L,C) || H.exists(B,L,C)) pr(1);
+		else pr(0);
+	}
+}
+```

@@ -7,9 +7,8 @@ import NotFoundPage from './404';
 import PostPage from '../components/Classes/PostPage';
 import ClassContext, { ClassProvider } from '../context/ClassContext';
 import ClassJoinPage from '../components/Classes/ClassJoinPage';
-import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
-import ModuleConfetti from '../components/MarkdownLayout/ModuleConfetti';
 import { ConfettiProvider } from '../context/ConfettiContext';
+import StudentProgressPage from '../components/Classes/StudentProgressPage';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -46,6 +45,10 @@ export default function ClassRouter() {
               Component={PostPage}
               type={'announcement'}
               path="/:classId/announcements/:announcementId"
+            />
+            <ClassPageWrapper
+              Component={StudentProgressPage}
+              path="/:classId/student-progress"
             />
 
             <ClassSelectPage path="/" />

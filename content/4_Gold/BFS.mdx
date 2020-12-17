@@ -1,7 +1,7 @@
 ---
 id: bfs
 title: 'Breadth First Search (BFS)'
-author: Benjamin Qi, Michael Cao
+author: Benjamin Qi, Michael Cao, Andi Qu
 prerequisites:
   - dfs
   - ff
@@ -12,9 +12,15 @@ frequency: 2
 <!-- NOTE: general problems were RANDOMLY STARRED. please review! -->
 
 export const problems = {
-	sample: [
-		new Problem('CSES', 'Message Route', '1667', 'Easy', false, ['BFS']),
-	],
+	sampleNormal: new Problem('CSES', 'Message Route', '1667', 'Easy', false, ['BFS']),
+	sampleZeroOne: new Problem(
+		'Baltic OI',
+		'2013 - Tracks in the Snow',
+		'https://oj.uz/problem/view/BOI13_tracks',
+		'Easy',
+		false,
+		['BFS']
+	),
 	general: [
 		new Problem('CSES', 'Labyrinth', '1193', 'Easy', true, ['BFS'], 'cses-1193'),
 		new Problem('CSES', 'Monsters', '1194', 'Easy', false, ['BFS']),
@@ -71,7 +77,7 @@ export const problems = {
 
 ### Queues
 
-A queue is a First In First Out (FIFO) data structure that supports three operations, all in $O(1)$ time.
+A queue is a First In First Out (FIFO) data structure that supports three operations, all in $\mathcal{O}(1)$ time.
 
 <LanguageSection>
 
@@ -119,7 +125,7 @@ System.out.println(q.peek()); // 3
 
 ### Deques
 
-A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $O(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
+A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $\mathcal{O}(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
 
 <LanguageSection>
 
@@ -165,7 +171,7 @@ deque.removeLast(); // [1, 3]
 
 ## Breadth First Search
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem={problems.sampleNormal} />
 
 ### Resources
 
@@ -382,11 +388,67 @@ A 0/1 BFS finds the shortest path in a graph where the weights on the edges can 
 	</Resource>
 </Resources>
 
-<IncompleteSection>
+<FocusProblem problem={problems.sampleZeroOne} />
 
-straightforward example
+Consider the graph with an edge between each pair of adjacent cells with tracks, where the weight is 0 if the tracks are the same and 1 otherwise. The answer is simply the longest shortest-path from the top left cell.
 
-</IncompleteSection>
+Since the weight of each edge is either 0 or 1 and we want the shortest paths from the top left cell to each other cell, we can apply 0/1 BFS. The time complexity of this solution is $\mathcal O(NM)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int dx[4]{1, -1, 0, 0}, dy[4]{0, 0, 1, -1};
+
+int n, m, depth[4000][4000], ans = 1;
+string snow[4000];
+
+bool inside(int x, int y) {
+    return (x > -1 && x < n && y > -1 && y < m && snow[x][y] != '.');
+}
+
+int main() {
+    iostream::sync_with_stdio(false);
+    cin.tie(0);
+
+    cin >> n >> m;
+    for (int i = 0; i < n; i++) cin >> snow[i];
+
+    deque<pair<int, int>> q;
+    q.push_back({0, 0});
+    depth[0][0] = 1;
+
+    while (q.size()) {
+        pair<int, int> c = q.front();
+        q.pop_front();
+        ans = max(ans, depth[c.first][c.second]);
+
+        for (int i = 0; i < 4; i++) {
+            int x = c.first + dx[i], y = c.second + dy[i];
+            if (inside(x, y) && depth[x][y] == 0) {
+                if (snow[x][y] == snow[c.first][c.second]) {
+                    depth[x][y] = depth[c.first][c.second];
+                    q.push_front({x, y});
+                } else {
+                    depth[x][y] = depth[c.first][c.second] + 1;
+                    q.push_back({x, y});
+                }
+            }
+        }
+    }
+
+    cout << ans;
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <!-- Sometimes, when a Dijkstra runs too slowly, you need to use a 0/1 BFS instead.  -->
 

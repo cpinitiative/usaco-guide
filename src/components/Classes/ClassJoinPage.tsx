@@ -87,6 +87,10 @@ export default function AnnouncementPage(props: {
                 </span>
               </div>
             </>
+          ) : !data.studentsCanJoin ? (
+            <h1 className={'text-3xl font-bold leading-9'}>
+              Sorry, but this class is closed to new students.
+            </h1>
           ) : (
             <>
               <h1 className={'text-3xl font-bold leading-9'}>

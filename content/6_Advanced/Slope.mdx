@@ -10,8 +10,6 @@ description: 'Slope trick refers to a way to manipulate piecewise linear convex 
 frequency: 1
 ---
 
-
-
 export const problems = {
 	ex: [
 		new Problem(
@@ -164,11 +162,11 @@ It's generally applicable as a DP optimization.
 
 <Info title="Pro Tip">
 
-Usually you can come up with a slower (usually $O(N^2)$) DP first and then optimize it to $O(N\log N)$ with slope trick.
+Usually you can come up with a slower (usually $\mathcal{O}(N^2)$) DP first and then optimize it to $\mathcal{O}(N\log N)$ with slope trick.
 
 </Info>
 
-The rest of this module assumes that you know the basic idea of this trick. In particular, you should be at least somewhat familiar with the $O(N\log N)$ time solution to the first problem in zscoder's tutorial:
+The rest of this module assumes that you know the basic idea of this trick. In particular, you should be at least somewhat familiar with the $\mathcal{O}(N\log N)$ time solution to the first problem in zscoder's tutorial:
 
 <Problems problems={problems.ex} />
 
@@ -180,7 +178,7 @@ It's ok if you found the explanations confusing; the example below should help c
 
 ### Slow Solution
 
-Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This solution runs in $O(N^2)$ time.
+Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This solution runs in $\mathcal{O}(N^2)$ time.
 
 <Spoiler title="Slow Code">
 
@@ -266,12 +264,18 @@ dp[4]  = {  3,  -2,  -9, -16, -26}
 dif[4] = {  5,   7,   7,  10}
 ```
 
+This can be visualized as follows:
+
+<iframe src="https://www.desmos.com/calculator/hdftax3jnc?embed" width="300px" height="300px" frameborder="0" />
+
 After buying one share, $9$ is subtracted from each value and they are shifted one index to the right.
 
 ```
 dp[5]  = {  x,  -6, -11, -18, -25, -35}
 dif[5] = {  x,   5,   7,   7,  10}
 ```
+
+<iframe src="https://www.desmos.com/calculator/0l5dk4qcre?embed" width="300px" height="300px" frameborder="0" />
 
 Then we can choose to sell one share at price $9$. The last two DP values remain the same while the others change.
 
@@ -280,6 +284,10 @@ dp[5]  = {  3,  -2,  -9, -16, -25, -35}
 dif[5] = {  5,   7,   7,   9,  10}
 ```
 
+Below, the black line represents the new DP values (where we can choose to sell one share), and the red line represents the old DP values (where we don't sell any shares).
+
+<iframe src="https://www.desmos.com/calculator/t6tehl3cmk?embed" width="300px" height="300px" frameborder="0" />
+
 Again, we can choose to sell one share at price $9$. The last three DP values remain the same while the others change. $dif$ is still in increasing order!
 
 ```
@@ -287,7 +295,9 @@ dp[5]  = {  7,   0,  -7, -16, -25, -35}
 dif[5] = {  7,   7,   9,   9,  10}
 ```
 
-(insert diagrams)
+Below, the purple line represents the DP values where we can choose to sell two shares. The black line represents the option of selling one share, and the red line represents not being able to sell any shares at all.
+
+<iframe src="https://www.desmos.com/calculator/loczo9m3xq?embed" width="300px" height="300px" frameborder="0" />
 
 </Spoiler>
 
@@ -343,7 +353,7 @@ Now you can verify that $C=\sum_{i=1}^{N-1}|d_i-d_i'|$. This makes sense since m
 
 ### Slow Solution
 
-For each $0\le i\le N$ and $0\le j\le d_N$, let $dp[i][j]$ be the minimum cost to determine $d_0',d_1',\ldots,d_i'$ such that $d_i'\le j$. Note that by definition, $dp[i][j]\ge dp[i][j+1]$. We can easily calculate these values in $O(N\cdot d_N)$ time.
+For each $0\le i\le N$ and $0\le j\le d_N$, let $dp[i][j]$ be the minimum cost to determine $d_0',d_1',\ldots,d_i'$ such that $d_i'\le j$. Note that by definition, $dp[i][j]\ge dp[i][j+1]$. We can easily calculate these values in $\mathcal{O}(N\cdot d_N)$ time.
 
 ### Full Solution
 
@@ -359,7 +369,7 @@ Again, these can be done with a priority queue. Instead of storing the consecuti
 - The first operation corresponds to inserting $k$ into the priority queue two times because the slope increases by two at $x=k$.
 - The latter operation just corresponds to removing the greatest element of the priority queue.
 
-This solution runs in $O(N\log N)$ time.
+This solution runs in $\mathcal{O}(N\log N)$ time.
 
 </Spoiler>
 
@@ -426,7 +436,7 @@ As before, it helps to look at the differences $dif[j]=DP[j+1]-DP[j]$ instead. W
 - The third operation corresponds to subtracting $Z$ from all elements of the left deque and adding $Z$ to all elements of the right deque.
 - The last operation corresponds to setting $dif[j]=\max(dif[j],-Y)$ for all $j < 0$ and $dif[j] = \min(dif[j],X)$ for all $j\ge 0$.
 
-We can implement the last operation by updating all of the differences in the deques "lazily." This solution runs in $O(\sum A_i+\sum B_i)$ time.
+We can implement the last operation by updating all of the differences in the deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
 
 </Spoiler>
 

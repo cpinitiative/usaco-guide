@@ -1,6 +1,6 @@
 ---
-id: debugging
-title: Debugging
+id: debugging-lang
+title: Debugging (Language-Specific)
 author: Benjamin Qi, Aaron Chew, Aryansh Shrivastava
 description: 'Identifying errors within your program and how to avoid them in the first place.'
 ---
@@ -34,6 +34,8 @@ description: 'Identifying errors within your program and how to avoid them in th
 		don't agree with everything but important to read nonetheless
 	</Resource>
 </Resources>
+
+It helps to write readable code ...
 
 ## Printing Variables
 
@@ -83,6 +85,12 @@ Printing too much content to `stderr` can still cause TLE when submitting to an 
 </Warning>
 
 ### Debug Template
+
+<IncompleteSection>
+
+mention line # [macros](https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html)
+
+</IncompleteSection>
 
 Although not feasible if you have to write all code from scratch, [this template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/CppIO.h) is very helpful for simplifying input / output / debug output. Note that `dbg()` only produces debug output when `-DLOCAL` is included as part of the compilation command, so you don't need to comment out those lines before submitting.
 
@@ -170,6 +178,26 @@ for((i = 1; ; ++i)); do
 	fi ;
 done
 ```
+
+If you want to learn how to write these scripts yourself, you can check [here](https://usaco.guide/general/cpp-command#linux) (but take this advice with a grain of salt since I'm not so proficient myself ...).
+
+<Warning>
+
+This won't work if you're using Windows. Instead, you can use what [tourist](https://www.youtube.com/watch?v=JU3HY5GLVnY&t=58m58s) does:
+
+```
+:: save this in test.bat
+
+@echo off
+gen > in
+your_sol out
+correct_sol correct_out
+fc out correct_out
+if errorlevel 1 exit
+test
+```
+
+</Warning>
 
 <IncompleteSection>
 
@@ -663,15 +691,3 @@ Cons of using a debugger:
 How to use gdb, valgrind for C++?
 
 </IncompleteSection>
-
-## Rewriting the Program
-
-Rewriting the program is sometimes a good idea, but remember to keep track of time! It is very easy to get carried away rewriting even parts of a program that are bug-free in obsessive hope that something might come through.
-
-<Warning>
-
-Do NOT delete your previous program. Make a new file! It's always possible that you might introduce more bugs.
-
-</Warning>
-
-If the problem is with the program's implementation of your logic and not your logic itself, it is usually better to fix the program directly.

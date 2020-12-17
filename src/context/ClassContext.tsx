@@ -63,6 +63,7 @@ const ClassContext = createContext<{
     instructors: string[];
     joinCodes: string[];
     name: string;
+    studentsCanJoin: boolean;
   };
 }>({
   loading: true,

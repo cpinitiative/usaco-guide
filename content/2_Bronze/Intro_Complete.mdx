@@ -6,8 +6,6 @@ description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
 
-
-
 export const problems = {
 	probs: [
 		new Problem(
@@ -64,16 +62,8 @@ export const problems = {
 			[],
 			'Loop over every lifeguard and try to fire each one. Then, compute the time still covered by the remaining lifeguards and add the lifeguard you fired back. Over all possible lifeguards to fire, take the maximum time still covered.'
 		), // 98.76
-		new Problem(
-			'Bronze',
-			'Why Did the Cow Cross the Road II',
-			'712',
-			'Normal',
-			false,
-			['Nested Loop'],
-			'usaco-712'
-		), // 89.6
-		new Problem('Bronze', 'Cowntact Tracing', '1037', 'Hard', true, []),
+		new Problem('Bronze', 'Why Did the Cow Cross the Road II', '712', 'Normal', false, ['Nested Loop'], 'usaco-712'), // 89.6
+		new Problem('Bronze', 'Guess the Animal', '893', 'Hard',false, [], ''),
 		new Problem(
 			'Silver',
 			'Bovine Genomics',
@@ -92,6 +82,8 @@ export const problems = {
 			[],
 			'Observe that a lot of placements of vertical or horizontal fences are equivalent. Specifically, a fence should be adjacent to a cow, so loop over all $N ^ 2$ unique placements of a vertical and horizontal fence. This idea is similar to Coordinate Compression.'
 		), // 82.79
+		new Problem('Bronze', 'Contaminated Milk', '569', 'Very Hard', false, [], ''),
+		new Problem('Bronze', 'Cowntact Tracing', '1037', 'Very Hard', true, [], ''),
 		new Problem(
 			'Bronze',
 			'Bull in a China Shop',
@@ -146,13 +138,13 @@ We can brute-force every pair of points and find the square of the distance betw
 ```cpp
 int high = 0; // storing the current maximum
 for(int i = 0; i < n; i++){ // for each first point
-    for(int j = i+1; j < n; j++){ // for each second point
-        int dx = x[i] - x[j];
-        int dy = y[i] - y[j];
-        high = max(high, dx*dx + dy*dy);
-        // if the square of the distance between the two points is greater than
-        // our current maximum, then update the maximum
-    }
+	for(int j = i+1; j < n; j++){ // for each second point
+		int dx = x[i] - x[j];
+		int dy = y[i] - y[j];
+		high = max(high, dx*dx + dy*dy);
+		// if the square of the distance between the two points is greater than
+		// our current maximum, then update the maximum
+	}
 }
 cout << high << endl;
 ```
@@ -164,15 +156,15 @@ cout << high << endl;
 ```java
 int max = 0; // storing the current maximum
 for(int i = 0; i < n; i++){ // for each first point
-    for(int j = i+1; j < n; j++){ // for each second point
-        int dx = x[i] - x[j];
-        int dy = y[i] - y[j];
-        max = Math.max(max, dx*dx + dy*dy);
-        // if the square of the distance between the two points is greater than
-        // our current maximum, then update the maximum
-    }
+	for(int j = i+1; j < n; j++){ // for each second point
+		int dx = x[i] - x[j];
+		int dy = y[i] - y[j];
+		max = Math.max(max, dx*dx + dy*dy);
+		// if the square of the distance between the two points is greater than
+		// our current maximum, then update the maximum
+	}
 }
-pw.println(max);
+io.println(max);
 ```
 
 </JavaSection>
@@ -182,10 +174,10 @@ pw.println(max);
 ```py
 high = 0
 for i in range(n):
-    for j in range(i + 1, n):
-        dx = x[i] - x[j]
-        dy = y[i] - y[j]
-        high = max(high, dx * dx + dy * dy)
+	for j in range(i + 1, n):
+		dx = x[i] - x[j]
+		dy = y[i] - y[j]
+		high = max(high, dx * dx + dy * dy)
 print(high)
 ```
 
@@ -203,11 +195,5 @@ A couple notes:
 </Spoiler>
 
 ## Problems
-
-<IncompleteSection>
-
-compare difficulty / quality of these problems with those from sources mentioned in "Expected Knowledge"? (/general/expected) ex. VPlanet, CodeSignal?
-
-</IncompleteSection>
 
 <Problems problems={problems.probs} />

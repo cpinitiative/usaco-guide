@@ -21,7 +21,7 @@ import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
-import getProgressInfo from '../../utils/getProgressInfo';
+import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
@@ -289,6 +289,7 @@ export default function MarkdownLayout({
             }
             problems {
               uniqueID
+              solID
             }
           }
         }
@@ -323,21 +324,29 @@ export default function MarkdownLayout({
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
   let problemIDs = [];
+  const activeIDs = [];
+
   if (markdownData instanceof ModuleInfo) {
-    let ind = 0;
-    while (moduleLinks[ind].id != markdownData.id) ind++;
-    for (let problem of moduleLinks[ind].probs)
-      problemIDs.push(problem.uniqueID);
+    activeIDs.push(markdownData.id);
+    const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
+    // oops how to assert not -1
+
+    // while (moduleLinks[ind].id != markdownData.id) ind++;
+    for (let problem of moduleLinks[ind].probs) {
+      const uniqueID = problem.uniqueID;
+      problemIDs.push(uniqueID);
+    }
+  } else {
+    moduleLinks.forEach(link => {
+      for (let problem of link.probs) {
+        if (problem.solID === markdownData.id) {
+          activeIDs.push(link.id);
+        }
+      }
+    });
   }
 
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const { darkMode } = useContext(UserDataContext);
 
@@ -347,6 +356,7 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
+        activeIDs: activeIDs,
       }}
     >
       <Transition show={isMobileNavOpen} timeout={300}>
@@ -488,10 +498,13 @@ export default function MarkdownLayout({
             <div className="flex justify-center">
               {/* Placeholder for the sidebar */}
               <div
-                className="flex-shrink-0 hidden lg:block"
+                className="flex-shrink-0 hidden lg:block order-1"
                 style={{ width: '20rem' }}
               />
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0">
+              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+                <TableOfContentsSidebar tableOfContents={tableOfContents} />
+              </div>
+              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
                 <div className="hidden lg:block">
                   <NavBar />
                 </div>
@@ -658,9 +671,6 @@ export default function MarkdownLayout({
 
                 {/* Spacing for the USACO Forum popup */}
                 <div className="h-12" />
-              </div>
-              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
-                <TableOfContentsSidebar tableOfContents={tableOfContents} />
               </div>
             </div>
           </div>

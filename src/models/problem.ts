@@ -326,6 +326,7 @@ export type ProblemProgress =
   | 'Not Attempted'
   | 'Solving'
   | 'Solved'
+  | 'Reviewing'
   | 'Skipped'
   | 'Ignored';
 
@@ -333,6 +334,7 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Not Attempted',
   'Solving',
   'Solved',
+  'Reviewing',
   'Skipped',
   'Ignored',
 ];

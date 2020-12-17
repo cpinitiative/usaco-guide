@@ -1,0 +1,60 @@
+---
+id: cellular-network
+source: CF
+title: Cellular Network
+author: Benjamin Qi
+---
+
+## Solution 1 - Using a Set
+
+[Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
+
+## Solution 2 - Two Pointers
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+typedef pair <int, int> pii;
+typedef vector<int> vi;
+ 
+#define mp make_pair
+#define pb push_back
+ 
+#define FOR(i, a, b) for (int i=a; i<b; i++)
+#define F0R(i, a) for (int i=0; i<a; i++)
+ 
+#define f first
+#define s second
+#define lb lower_bound
+#define ub upper_bound
+#define endl "\n"
+ 
+const int MOD = 1000000007;
+double PI = 4*atan(1);
+ 
+int dist[100000], ans = 0;
+ 
+int main() {
+	ios_base::sync_with_stdio(0);cin.tie(0);
+	F0R(i,100000) dist[i] = 2*MOD;
+	int n,m; cin >> n >> m;
+	vi a(n), b(m);
+	F0R(i,n) cin >> a[i];
+	F0R(i,m) cin >> b[i];
+	int c1 = 0;
+	F0R(i,n) {
+		while (c1<(m-1) && b[c1+1]<=a[i]) c1++;
+		dist[i] = min(dist[i], abs(a[i]-b[c1]));
+	}
+	c1 = m-1;
+	for (int i = n-1; i >= 0; --i) {
+		while (c1>0 && b[c1-1]>=a[i]) c1--;
+		dist[i] = min(dist[i],abs(a[i]-b[c1]));
+	}
+	F0R(i,n) ans = max(ans,dist[i]);
+	cout << ans;
+	return 0;
+}
+```

@@ -10,6 +10,7 @@ import LastViewedModule, {
 import HideTagsAndSolutions, {
   HideTagsAndSolutionsAPI,
 } from './properties/hideTagsAndSolutions';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
@@ -24,53 +25,53 @@ import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 
 // Object for counting online users
-var Gathering = (function () {
-  function Gathering(firebase) {
-    this.firebase = firebase;
-    this.db = firebase.database();
-
-    this.room = this.db.ref('gatherings/globe');
-    this.user = null;
-
-    this.join = function (uid) {
-      // this check doesn't work if this.join() is called back-to-back
-      if (this.user) {
-        console.error('Already joined.');
-        return false;
-      }
-
-      // Add user to presence list when online.
-      var presenceRef = this.db.ref('.info/connected');
-      presenceRef.on('value', snap => {
-        if (snap.val()) {
-          this.user = uid ? this.room.child(uid) : this.room.push();
-
-          this.user
-            .onDisconnect()
-            .remove()
-            .then(() => {
-              this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
-            });
-        }
-      });
-      return true;
-    };
-
-    this.onUpdated = function (callback) {
-      if ('function' == typeof callback) {
-        this.room.on('value', function (snap) {
-          callback(snap.numChildren(), snap.val());
-        });
-      } else {
-        console.error(
-          'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
-        );
-      }
-    };
-  }
-
-  return Gathering;
-})();
+// var Gathering = (function () {
+//   function Gathering(firebase) {
+//     this.firebase = firebase;
+//     this.db = firebase.database();
+//
+//     this.room = this.db.ref('gatherings/globe');
+//     this.user = null;
+//
+//     this.join = function (uid) {
+//       // this check doesn't work if this.join() is called back-to-back
+//       if (this.user) {
+//         console.error('Already joined.');
+//         return false;
+//       }
+//
+//       // Add user to presence list when online.
+//       var presenceRef = this.db.ref('.info/connected');
+//       presenceRef.on('value', snap => {
+//         if (snap.val()) {
+//           this.user = uid ? this.room.child(uid) : this.room.push();
+//
+//           this.user
+//             .onDisconnect()
+//             .remove()
+//             .then(() => {
+//               this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
+//             });
+//         }
+//       });
+//       return true;
+//     };
+//
+//     this.onUpdated = function (callback) {
+//       if ('function' == typeof callback) {
+//         this.room.on('value', function (snap) {
+//           callback(snap.numChildren(), snap.val());
+//         });
+//       } else {
+//         console.error(
+//           'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
+//         );
+//       }
+//     };
+//   }
+//
+//   return Gathering;
+// })();
 
 /*
  * todo document how to add new API to user data context?
@@ -82,6 +83,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
   new HideTagsAndSolutions(),
+  new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
@@ -93,6 +95,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndSolutionsAPI &
+  ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
@@ -124,7 +127,7 @@ export const UserDataProvider = ({ children }) => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const [onlineUsers, setOnlineUsers] = useState(0);
+  // const [onlineUsers, setOnlineUsers] = useState(0);
 
   const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
@@ -141,14 +144,14 @@ export const UserDataProvider = ({ children }) => {
   });
 
   // Count online users
-  useFirebase(firebase => {
-    let online = new Gathering(firebase);
-    online.join();
-    // Temporarily remove online user count -- it's not very accurate
-    // online.onUpdated(function (count) {
-    //   setOnlineUsers(count);
-    // });
-  });
+  // useFirebase(firebase => {
+  //   let online = new Gathering(firebase);
+  //   online.join();
+  //   // Temporarily remove online user count -- it's not very accurate
+  //   // online.onUpdated(function (count) {
+  //   //   setOnlineUsers(count);
+  //   // });
+  // });
 
   // just once, ask all API's to initialize their values from localStorage
   React.useEffect(() => {
@@ -173,7 +176,7 @@ export const UserDataProvider = ({ children }) => {
             if (localDataIsNotEmpty) {
               if (
                 confirm(
-                  `Upload local progress to server? Recommended: choose yes! (You'll lose your local progress if you choose no.)`
+                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
@@ -220,7 +223,7 @@ export const UserDataProvider = ({ children }) => {
         });
     },
     isLoaded,
-    onlineUsers,
+    onlineUsers: -1,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {

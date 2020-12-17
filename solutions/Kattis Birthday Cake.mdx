@@ -1,0 +1,52 @@
+---
+id: kattis-birthdaycake
+source: Kattis
+title: Birthday Cake
+author: Benjamin Qi
+---
+
+Count the number of pieces. For each candle, the piece it's on is determined by which side of each line it lies on.
+
+```cpp
+int n,m,r, x[50], y[50], a[15], b[15], c[15];
+int num;
+map<int,int> tmp;
+
+bool side(int ind, int X, int Y) {
+    return a[ind]*X+b[ind]*Y+c[ind] > 0;
+}
+
+int hsh(int ind) {
+    int z = 0;
+    F0R(i,m) if (side(i,x[ind],y[ind])) z ^= (1<<i);
+    return z;
+}
+
+bool inter(int i1, int i2) {
+    int det = a[i1]*b[i2]-a[i2]*b[i1];
+    if (det == 0) return 0;
+    double x = ((double)c[i1]*b[i2]-c[i2]*b[i1])/det;
+    double y = ((double)a[i1]*c[i2]-a[i2]*c[i1])/det;
+    return sqrt(x*x+y*y) <= r;
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    cin >> n >> m >> r;
+    F0R(i,n) cin >> x[i] >> y[i];
+    num = 1+m;
+    F0R(i,m) cin >> a[i] >> b[i] >> c[i];
+    F0R(i,m) FOR(j,i+1,m) if (inter(i,j)) num++;
+    
+    if (num != n) {
+        cout << "no";
+        return 0;
+    }
+    F0R(i,n) tmp[hsh(i)] ++;
+    if (tmp.size() != n) {
+        cout << "no";
+        return 0;
+    }
+    cout << "yes";
+}
+```

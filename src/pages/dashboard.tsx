@@ -12,7 +12,10 @@ import {
 } from '../../content/ordering';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
-import getProgressInfo from '../utils/getProgressInfo';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import Announcements from '../components/Dashboard/Announcements';
 import {
   AnnouncementInfo,
@@ -54,6 +57,8 @@ export default function DashboardPage(props: PageProps) {
     signIn,
   } = React.useContext(UserDataContext);
 
+  let showIgnored = userSettings.showIgnored;
+
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
@@ -61,7 +66,8 @@ export default function DashboardPage(props: PageProps) {
         x =>
           (userProgressOnModules[x] === 'Reading' ||
             userProgressOnModules[x] === 'Practicing' ||
-            userProgressOnModules[x] === 'Skipped') &&
+            userProgressOnModules[x] === 'Skipped' ||
+            (showIgnored && userProgressOnModules[x] === 'Ignored')) &&
           moduleIDToSectionMap.hasOwnProperty(x)
       )
       .map(x => ({
@@ -69,39 +75,42 @@ export default function DashboardPage(props: PageProps) {
           moduleIDToName[x]
         }`,
         url: moduleIDToURLMap[x],
-        status:
-          userProgressOnModules[x] === 'Skipped' ? 'Skipped' : 'In Progress',
+        status: userProgressOnModules[x] as
+          | 'Skipped'
+          | 'Reading'
+          | 'Practicing'
+          | 'Ignored',
       }));
-  }, [userProgressOnModules]);
+  }, [userProgressOnModules, showIgnored]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          (userProgressOnProblems[x] === 'Solving' ||
-            userProgressOnProblems[x] === 'Skipped') &&
+          (userProgressOnProblems[x] === 'Reviewing' ||
+            userProgressOnProblems[x] === 'Solving' ||
+            userProgressOnProblems[x] === 'Skipped' ||
+            (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
-        status: userProgressOnProblems[x] as 'Solving' | 'Skipped',
+        status: userProgressOnProblems[x] as
+          | 'Reviewing'
+          | 'Solving'
+          | 'Skipped'
+          | 'Ignored',
       }));
-  }, [userProgressOnProblems]);
+  }, [userProgressOnProblems, showIgnored]);
 
-  const lastViewedSection = moduleIDToSectionMap[lastViewedModuleID] || 'intro';
+  const lastViewedSection =
+    moduleIDToSectionMap[lastViewedModuleID] || 'general';
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
   // console.log(Object.keys(moduleIDToName).filter(
   //   x => moduleIDToSectionMap[x] == null
   // )); shouldn't be any ...
-  let allModulesProgressInfo = getProgressInfo(
-    moduleProgressIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
+  let allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
     return [
@@ -114,14 +123,7 @@ export default function DashboardPage(props: PageProps) {
   // const allStarredProblemIDs = problemStatisticsIDs.filter(
   //   x => problemIDMap[x].starred
   // );
-  const allProblemsProgressInfo = getProgressInfo(
-    problemStatisticsIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const allProblemsProgressInfo = getProblemsProgressInfo(problemStatisticsIDs);
   // const allStarredProblemsProgressInfo = getProgressInfo(
   //   allStarredProblemIDs,
   //   userProgressOnProblems,
@@ -142,7 +144,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
-        <TopNavigationBar />
+        <TopNavigationBar linkLogoToIndex={true} />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">

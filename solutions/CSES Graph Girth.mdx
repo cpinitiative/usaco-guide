@@ -1,6 +1,7 @@
 ---
 id: cses-1707
-title: CSES - Graph Girth
+source: CSES
+title: Graph Girth
 author: Benjamin Qi, Andi Qu
 ---
 
@@ -8,7 +9,7 @@ Let's consider a simpler problem: given a graph, find the shortest cycle that pa
 
 What does a cycle through node 1 look like? In any cycle through node 1, there exists two nodes $u$ and $v$ on that cycle such that there is a path from 1 to $u$ and 1 to $v$, and there is an edge between $u$ and $v$. The length of this cycle is $dist(1, u) + dist(1, v) + 1$.
 
-One might now try to use BFS to find $dist(1, i)$ for each $i$ in $O(N + M)$ time and then check for each edge $(u, v)$ whether $dist(1, u) + dist(1, v) + 1$ is minimal.
+One might now try to use BFS to find $dist(1, i)$ for each $i$ in $\mathcal{O}(N + M)$ time and then check for each edge $(u, v)$ whether $dist(1, u) + dist(1, v) + 1$ is minimal.
 
 Of course, this means that we might count a "cycle" like $1 \rightarrow x \rightarrow u \rightarrow v \rightarrow x \rightarrow 1$. However, this doesn't matter for our original problem, since the shortest cycle will always be shorter than such a "cycle".
 
@@ -20,9 +21,9 @@ Instead of first finding all $dist(1, i)$ and then checking for the minimum, do 
 
 Now to prevent "backtracking", we only consider $dist(1, u) + dist(1, v) + 1$ as a minimum if we're currently at node $u$ and $dist(1, u) \leq dist(1, v)$.
 
-This algorithm runs in $O(N + M)$ time. Since $N$ and $M$ are so small, we can just apply this algorithm for all nodes instead of just node 1.
+This algorithm runs in $\mathcal{O}(N + M)$ time. Since $N$ and $M$ are so small, we can just apply this algorithm for all nodes instead of just node 1.
 
-The final complexity of this solution is thus $O(N(N + M))$.
+The final complexity of this solution is thus $\mathcal{O}(N(N + M))$.
 
 ```cpp
 int n,m,dist[2501],ans=MOD;

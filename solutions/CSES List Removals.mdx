@@ -1,0 +1,138 @@
+---
+id: cses-1749
+source: CSES
+title: List Removals
+author: Benjamin Qi
+---
+
+## Solution 1
+
+Use a [rope](https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/Rope.h).
+
+```cpp
+#include <ext/rope>
+
+// template ...
+
+int n;
+rope<int> x;
+ 
+int main() {
+    setIO(); re(n);
+    F0R(i,n) {
+        int t; re(t);
+        x.pb(t);
+    }
+    F0R(i,n) {
+        int p; re(p); --p;
+        pr(x[p],' ');
+        x.erase(x.mutable_begin()+p);
+    }
+}
+```
+
+## Solution 2
+
+Use an indexed set.
+
+```cpp
+/**
+ * Description: A set (not multiset!) with support for finding the $n$'th
+ * element, and finding the index of an element. Change \texttt{null\_type} for map.
+ * Time: O(\log N)
+ * Source: KACTL
+   * https://codeforces.com/blog/entry/11080
+ * Verification: many
+ */
+ 
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T> using Tree = tree<T, null_type, less<T>, 
+	rb_tree_tag, tree_order_statistics_node_update>; 
+#define ook order_of_key
+#define fbo find_by_order
+ 
+void treeExample() {
+	Tree<int> t, t2; t.insert(8);
+	auto it = t.insert(10).f; assert(it == t.lb(9));
+	assert(t.ook(10) == 1 && t.ook(11) == 2 && *t.fbo(0) == 8);
+	t.join(t2); // assuming T < T2 or T > T2, merge t2 into t
+}
+ 
+/**
+int atMost(Tree<pi>& T, int r) { 
+	return T.ook({r,MOD}); }
+int getSum(Tree<pi>& T, int l, int r) { 
+	return atMost(T,r)-atMost(T,l-1); }
+*/
+ 
+int main() {
+	setIO();
+	int N; re(N);
+	Tree<pi> list;
+	F0R(i,N) {
+		int x; re(x);
+		list.ins({i,x});
+	}
+	F0R(i,N) {
+		int p; re(p); --p;
+		auto it = list.fbo(p);
+		pr(it->s,' ');
+		list.erase(it);
+	}
+}
+```
+
+## Solution 3
+
+Binary search on a BIT.
+
+```cpp
+/**
+ * Description: range sum queries and point updates for $D$ dimensions
+ * Source: https://codeforces.com/blog/entry/64914
+ * Verification: SPOJ matsum
+ * Usage: \texttt{BIT<int,10,10>} gives 2D BIT
+ * Time: O((\log N)^D)
+ */
+
+template <class T, int ...Ns> struct BIT {
+	T val = 0; void upd(T v) { val += v; }
+	T query() { return val; }
+};
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+	BIT<T,Ns...> bit[N+1];
+	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
+		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
+	template<typename... Args> T sum(int r, Args... args) {
+		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
+		return res; }
+	template<typename... Args> T query(int l, int r, Args... 
+		args) { return sum(r,args...)-sum(l-1,args...); }
+};
+template<class T, int N> int get_kth(const BIT<T,N>& bit, T des) { 
+	assert(des > 0);
+	int ind = 0;
+	for (int i = 1<<bits(N); i; i /= 2)
+		if (ind+i <= N && bit.bit[ind+i].val < des)
+			des -= bit.bit[ind += i].val;
+	assert(ind < N); return ind+1;
+}
+
+BIT<int,MX> B;
+
+int N;
+
+int main() {
+	setIO(); re(N);
+	vi x(N); re(x);
+	FOR(i,1,N+1) B.upd(i,1);
+	F0R(_,N) {
+		int p; re(p);
+		int ind = get_kth(B,p);
+		pr(x[ind-1],' ');
+		B.upd(ind,-1);
+	}
+}
+```

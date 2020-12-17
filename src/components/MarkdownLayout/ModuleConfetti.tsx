@@ -40,8 +40,6 @@ const ModuleConfetti = forwardRef((props, ref) => {
     }
   }, [show]);
 
-  console.log(show);
-
   if (!show) return null;
 
   return (

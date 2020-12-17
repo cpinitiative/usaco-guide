@@ -1,0 +1,32 @@
+---
+id: cses-1073
+source: CSES
+title: Towers
+author: Benjamin Qi
+---
+
+Greedy approach: always add the next cube on top of the tower with the smallest possible cube (or create a new tower if this isn't possible). We can use a `vector` or `multiset` to do this.
+
+Equivalent to longest non-decreasing subsequence!
+
+```cpp
+int n;
+vi x; // stores cubes in non-decreasing order
+ 
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n;
+	F0R(i,n) {
+		int z; cin >> z;
+		int lo = 0, hi = sz(x);
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (x[mid] > z) hi = mid;
+			else lo = mid+1;
+		}
+		if (lo == sz(x)) x.pb(z); // create new tower
+		else x[lo] = z; // add to tower
+	}
+	cout << sz(x);
+}
+```
