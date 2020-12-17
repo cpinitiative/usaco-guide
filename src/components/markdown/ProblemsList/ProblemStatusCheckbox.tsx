@@ -188,6 +188,7 @@ export default function ProblemStatusCheckbox({
     'No feedback entered'
   );
   const [solutionCode, setsolutionCode] = React.useState('No feedback entered');
+  const [privatePublic, setPrivate] = React.useState(false);
   const firebase = useContext(FirebaseContext);
   const handleDifficultyChange = difficulty => {
     setdifficultyfeedback(difficulty);
@@ -196,12 +197,12 @@ export default function ProblemStatusCheckbox({
     event.preventDefault();
     setShowModal(false);
     firebase.firestore().collection('problemFeedback').add({
-      Difficulty: difficultyfeedback,
-      Problem_Name: problem.name,
-      Solution_Notes: solutionNotes,
-      solution_code: solutionCode,
-      general_feedback: textFeedback,
-      viewedSolution: false,
+      difficulty: difficultyfeedback,
+      problemName: problem.name,
+      solutionNotes: solutionNotes,
+      solutionCode: solutionCode,
+      generalFeedback: textFeedback,
+      togglePrivate: false,
     });
   };
   const Modal = (
