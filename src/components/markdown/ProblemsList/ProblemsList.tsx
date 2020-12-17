@@ -59,6 +59,9 @@ export function ProblemsList(props: ProblemsListProps) {
                       Solution
                     </th>
                   )}
+                  <th className="pr-2 md:pr-3 py-3 leading-4 text-left text-xs font-medium uppercase tracking-wider">
+                    URL
+                  </th>
                 </tr>
               </thead>
               <tbody className="table-alternating-stripes">
@@ -170,6 +173,7 @@ export const difficultyClasses = {
   Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
 };
 
+// https://stackoverflow.com/questions/45871439/before-and-after-pseudo-classes-used-with-styled-components
 const StyledProblemRow = styled.tr`
   ${({ isActive }) =>
     isActive
@@ -274,6 +278,21 @@ export function ProblemComponent(props: ProblemComponentProps) {
           onShowSolution={props.onShowSolution}
         />
       )}
+      <td>
+        <a href={`#problem-${problem.uniqueID}`}>
+          <svg
+            fill="none"
+            height="20"
+            width="20"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+        </a>
+      </td>
     </StyledProblemRow>
   );
 }
