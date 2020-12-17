@@ -76,18 +76,18 @@ int main() {
             if (!needed[node][i][j]) continue;
 
             int p = ((node >> i + 1) << 1) + j;
-            if (2 * node > n) dp[node][i][j] = {A_p};
+            if (2 * node > n) dp[node][i][j] = {a[p]};
             else if (2 * node == n) {
-                dp[node][i][j] = {min(A_p, a[2 * node]), max(A_p, a[2 * node])};
+                dp[node][i][j] = {min(a[p], a[2 * node]), max(a[p], a[2 * node])};
             } else {
-                if (a[2 * node + 1] < min(A_p, a[2 * node])) {
+                if (a[2 * node + 1] < min(a[p], a[2 * node])) {
                     tmp1 = tmp2 = {a[2 * node + 1]};
                     merge(tmp1, dp[2 * node][0][0], dp[2 * node + 1][i + 1][j]);
                     merge(tmp2, dp[2 * node][i + 1][j], dp[2 * node + 1][0][0]);
                     dp[node][i][j] = min(tmp1, tmp2);
                 } else {
-                    dp[node][i][j] = {min(A_p, a[2 * node])};
-                    if (A_p < a[2 * node]) {
+                    dp[node][i][j] = {min(a[p], a[2 * node])};
+                    if (a[p] < a[2 * node]) {
                         merge(dp[node][i][j], dp[2 * node][0][0], dp[2 * node + 1][0][1]);
                     } else {
                         merge(dp[node][i][j], dp[2 * node][i + 1][j], dp[2 * node + 1][0][1]);
