@@ -199,8 +199,17 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
   React.useEffect(() => {
-    setIsActive(window && window.location && window.location.hash === '#' + id);
+    const hashHandler = () => {
+      setIsActive(
+        window && window.location && window.location.hash === '#' + id
+      );
+    };
+    hashHandler();
+
+    window.addEventListener('hashchange', hashHandler, false);
+    return () => window.removeEventListener('hashchange', hashHandler, false);
   }, []);
+
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
