@@ -6,15 +6,15 @@ const FirebaseContext = createContext(null);
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyBYajl4hgIoH_c35xc3EMW3XVZ7qeWu3Eo',
-  authDomain: 'usaco-guide-sample.firebaseapp.com',
-  databaseURL: 'https://usaco-guide-sample.firebaseio.com',
-  projectId: 'usaco-guide-sample',
-  storageBucket: 'usaco-guide-sample.appspot.com',
-  messagingSenderId: '90939059194',
-  appId: '1:90939059194:web:b0946fab9766d878f55243',
-  measurementId: 'G-7TZJWE960M',
+  apiKey: 'AIzaSyAvm-cvPgEFer3MVQtCiKegFTc1E9RHGG4',
+  authDomain: 'usaco-guide.firebaseapp.com',
+  databaseURL: 'https://usaco-guide.firebaseio.com',
+  projectId: 'usaco-guide',
+  storageBucket: 'usaco-guide.appspot.com',
+  messagingSenderId: '862152331454',
+  appId: '1:862152331454:web:8ba85fda47360ef9fe8eef',
 };
+
 export const FirebaseProvider = ({ children }) => {
   const [firebase, setFirebase] = React.useState(null);
 
