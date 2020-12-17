@@ -11,6 +11,7 @@ author: Andi Qu
 
 ```cpp
 #include <bits/stdc++.h>
+#define FOR(i, x, y) for (int i = x; i < y; i++)
 typedef long long ll;
 using namespace std;
 
@@ -72,7 +73,7 @@ int main() {
         cin >> sx >> sy >> dx >> dy;
         int n;
         cin >> n;
-        for (int i = 0; i < n; i++) {
+        FOR(i, 0, n) {
             int a, b, c, d;
             cin >> a >> b >> c >> d;
             rects[i] = Rect(a, b, c, d);
@@ -82,7 +83,7 @@ int main() {
 
         // Coordinate compression
         xs.clear(); ys.clear();
-        for (int i = 0; i < n; i++) {
+        FOR(i, 0, n) {
             xs.push_back(rects[i].x1); xs.push_back(rects[i].x2);
             ys.push_back(rects[i].y1); ys.push_back(rects[i].y2);
         }
@@ -101,38 +102,34 @@ int main() {
         dx = idx(dx, xs); dy = idx(dy, ys);
 
         // Reset the graph
-        for (int i = 0; i < xs.size() * ys.size(); i++) {
+        FOR(i, 0, xs.size() * ys.size()) {
             graph[i].clear();
             visited[i] = false;
         }
 
         // Connect adjancent points on rectangles
-        for (int i = 0; i < n; i++) {
-            for (int x = rects[i].x1; x < rects[i].x2; x++) {
-                for (int y : {rects[i].y1, rects[i].y2}) {
-                    graph[Node(x, y)].push_back(Node(x + 1, y));
-                    graph[Node(x + 1, y)].push_back(Node(x, y));
-                }
+        FOR(i, 0, n) {
+            FOR(x, rects[i].x1, rects[i].x2) for (int y : {rects[i].y1, rects[i].y2}) {
+                graph[Node(x, y)].push_back(Node(x + 1, y));
+                graph[Node(x + 1, y)].push_back(Node(x, y));
             }
-            for (int y = rects[i].y1; y < rects[i].y2; y++) {
-                for (int x : {rects[i].x1, rects[i].x2}) {
-                    graph[Node(x, y)].push_back(Node(x, y + 1));
-                    graph[Node(x, y + 1)].push_back(Node(x, y));
-                }
+            FOR(y, rects[i].y1, rects[i].y2) for (int x : {rects[i].x1, rects[i].x2}) {
+                graph[Node(x, y)].push_back(Node(x, y + 1));
+                graph[Node(x, y + 1)].push_back(Node(x, y));
             }
         }
 
         // Line sweep to connect points between different rectangles
         vector<pair<Node, int>> x_events;
-        for (int i = 0; i < n; i++) {
-            for (int y = rects[i].y1; y <= rects[i].y2; y++) {
+        FOR(i, 0, n) {
+            FOR(y, rects[i].y1, rects[i].y2 + 1) {
                 x_events.push_back({{rects[i].x1, y}, 1});
                 x_events.push_back({{rects[i].x2, y}, -1});
             }
         }
         sort(x_events.begin(), x_events.end(), cmp_x);
         int cnt = 0;
-        for (int i = 0; i < x_events.size(); i++) {
+        FOR(i, 0, x_events.size()) {
             if (!cnt && i && x_events[i].first.y == x_events[i - 1].first.y) {
                 graph[x_events[i].first].push_back(x_events[i - 1].first);
                 graph[x_events[i - 1].first].push_back(x_events[i].first);
@@ -141,15 +138,15 @@ int main() {
         }
 
         vector<pair<Node, int>> y_events;
-        for (int i = 0; i < n; i++) {
-            for (int x = rects[i].x1; x <= rects[i].x2; x++) {
+        FOR(i, 0, n) {
+            FOR(x, rects[i].x1, rects[i].x2 + 1) {
                 y_events.push_back({{x, rects[i].y1}, 1});
                 y_events.push_back({{x, rects[i].y2}, -1});
             }
         }
         sort(y_events.begin(), y_events.end(), cmp_y);
         cnt = 0;
-        for (int i = 0; i < y_events.size(); i++) {
+        FOR(i, 0, y_events.size()) {
             if (!cnt && i && y_events[i].first.x == y_events[i - 1].first.x) {
                 graph[y_events[i].first].push_back(y_events[i - 1].first);
                 graph[y_events[i - 1].first].push_back(y_events[i].first);
