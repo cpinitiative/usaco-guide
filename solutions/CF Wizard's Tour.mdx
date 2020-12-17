@@ -469,15 +469,15 @@ void setIO(str s = "") {
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
 }
 
-int n,m, visit[200001];
+int n,m, vis[200001];
 vi adj[200001];
 vector<vi> ans;
  
 bool dfs(int x, int pre) {
-	visit[x] = 1;
+	vis[x] = 1;
 	vi cur;
 	for (int i: adj[x]) if (i != pre) {
-		if (visit[i]) { // non spanning tree edge
+		if (vis[i]) { // non spanning tree edge
 			if (x < i) cur.pb(i);
 		} else if (dfs(i,x)) cur.pb(i); // spanning tree edge
 	}
@@ -494,7 +494,7 @@ int main() {
 		int a,b; cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
-	FOR(i,1,n+1) if (!visit[i]) dfs(i,-1);
+	FOR(i,1,n+1) if (!vis[i]) dfs(i,-1);
 	cout << ans.size() << "\n";
 	for (auto a: ans) cout << a[0] << " " << a[1] << " " << a[2] << "\n";
 }
