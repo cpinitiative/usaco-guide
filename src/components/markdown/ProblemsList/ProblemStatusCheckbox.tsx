@@ -20,7 +20,9 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ProblemProgress>();
+  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
+    currentProgress
+  );
 
   const icon = (status: ProblemProgress, equal: Boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
