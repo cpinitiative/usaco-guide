@@ -1,0 +1,177 @@
+---
+id: usaco-949
+source: USACO Open 2019 Open
+title: Compound Escape
+author: Benjamin Qi
+---
+
+[Official Analysis (no code)](http://www.usaco.org/current/data/sol_escape_platinum_open19.html)
+
+If you use `vector`s it's easy to run into issues similar to those mentioned [here](https://usaco.guide/bronze/intro-ds#dynamic-arrays) ...
+
+```cpp
+/**
+ * Description: modular arithmetic operations 
+ * Source: 
+	* KACTL
+	* https://codeforces.com/blog/entry/63903
+	* https://codeforces.com/contest/1261/submission/65632855 (tourist)
+	* https://codeforces.com/contest/1264/submission/66344993 (ksun)
+	* also see https://github.com/ecnerwala/cp-book/blob/master/src/modnum.hpp (ecnerwal)
+ * Verification: 
+	* https://open.kattis.com/problems/modulararithmetic
+ */
+
+template<int MOD, int RT> struct mint {
+	static const int mod = MOD;
+	static constexpr mint rt() { return RT; } // primitive root for FFT
+	int v; explicit operator int() const { return v; } // explicit -> don't silently convert to int
+	mint() { v = 0; }
+	mint(ll _v) { v = int((-MOD < _v && _v < MOD) ? _v : _v % MOD);
+		if (v < 0) v += MOD; }
+	friend bool operator==(const mint& a, const mint& b) { 
+		return a.v == b.v; }
+	friend bool operator!=(const mint& a, const mint& b) { 
+		return !(a == b); }
+	friend bool operator<(const mint& a, const mint& b) { 
+		return a.v < b.v; }
+	friend void re(mint& a) { ll x; re(x); a = mint(x); }
+	friend str ts(mint a) { return ts(a.v); }
+   
+	mint& operator+=(const mint& m) { 
+		if ((v += m.v) >= MOD) v -= MOD; 
+		return *this; }
+	mint& operator-=(const mint& m) { 
+		if ((v -= m.v) < 0) v += MOD; 
+		return *this; }
+	mint& operator*=(const mint& m) { 
+		v = (ll)v*m.v%MOD; return *this; }
+	mint& operator/=(const mint& m) { return (*this) *= inv(m); }
+	friend mint pow(mint a, ll p) {
+		mint ans = 1; assert(p >= 0);
+		for (; p; p /= 2, a *= a) if (p&1) ans *= a;
+		return ans; }
+	friend mint inv(const mint& a) { assert(a.v != 0); 
+		return pow(a,MOD-2); }
+		
+	mint operator-() const { return mint(-v); }
+	mint& operator++() { return *this += 1; }
+	mint& operator--() { return *this -= 1; }
+	friend mint operator+(mint a, const mint& b) { return a += b; }
+	friend mint operator-(mint a, const mint& b) { return a -= b; }
+	friend mint operator*(mint a, const mint& b) { return a *= b; }
+	friend mint operator/(mint a, const mint& b) { return a /= b; }
+};
+
+typedef mint<MOD,5> mi; // 5 is primitive root for both common mods
+typedef vector<mi> vmi;
+typedef pair<mi,mi> pmi;
+typedef vector<pmi> vpmi;
+
+vector<vmi> scmb; // small combinations
+void genComb(int SZ) {
+	scmb.assign(SZ,vmi(SZ)); scmb[0][0] = 1;
+	FOR(i,1,SZ) F0R(j,i+1) 
+		scmb[i][j] = scmb[i-1][j]+(j?scmb[i-1][j-1]:0);
+}
+
+using state = pair<ll,mi>;
+const state ID{INF,0};
+
+int N,K;
+map<vi,int> vec_to_label;
+int hor_tran_stor[132][5], ver_tran_stor[132][6];
+V<vi> states;
+V<state> dp, dp_tmp;
+
+int make_state(vi v) { // OK
+	if (!vec_to_label.count(v)) {
+		vec_to_label[v] = sz(states); states.pb(v);
+		dp.pb(ID), dp_tmp.pb(ID);
+	}
+	return vec_to_label[v];
+}
+
+int get_state(vi v) {
+	map<int,int> m;
+	trav(t,v) {
+		if (!m.count(t)) {
+			int sz = sz(m); m[t] = sz;
+			// NOT equivalent to m[t] = sz(m)
+			// C++ doesn't guarantee that RHS is evaluated first ...
+		}
+		t = m[t];
+	}
+	return make_state(v);
+}
+
+int connect(vi v, int x, int y) {
+	if (x == y) return -1;
+	trav(t,v) if (t == x) t = y;
+	return get_state(v);
+}
+
+int disappear(vi v, int col) {
+	assert(col < sz(v));
+	if (multiset<int>(all(v)).count(v[col]) == 1) return -1;
+	v[col] = 100;
+	return get_state(v);
+}
+
+int hor_tran(int i, int j) {
+	if (hor_tran_stor[i][j] != -2) return hor_tran_stor[i][j];
+	vi v = states[i];
+	return hor_tran_stor[i][j] = connect(v,v[j],v[j+1]);
+}
+
+int ver_tran(int i, int j) {
+	if (ver_tran_stor[i][j] != -2) return ver_tran_stor[i][j];
+	vi v = states[i];
+	return ver_tran_stor[i][j] = disappear(v,j);
+}
+
+void ad(int ind, const state& s, int inc) {
+	if (ind == -1) return;
+	ll cost = s.f+inc;
+	if (cost < dp_tmp[ind].f) dp_tmp[ind] = {cost,0};
+	if (cost == dp_tmp[ind].f) dp_tmp[ind].s += s.s;
+}
+
+void transition_hor(int j, int wei) {
+	dp_tmp.assign(sz(dp),ID);
+	F0R(i,sz(dp)) if (dp[i].f != INF) {
+		ad(i,dp[i],0);
+		int nex = hor_tran(i,j); // add horizontal edge
+		ad(nex,dp[i],wei); 
+	}
+	swap(dp,dp_tmp);
+}
+
+void transition_ver(int j, int wei) {
+	dp_tmp.assign(sz(dp),ID);
+	F0R(i,sz(dp)) if (dp[i].f != INF) {
+		int nex = ver_tran(i,j);
+		ad(nex,dp[i],0);
+		ad(i,dp[i],wei); // add vertical edge
+	}
+	swap(dp,dp_tmp);
+}
+
+int main() {
+	setIO("escape"); 
+	re(N,K);
+	F0R(i,132) {
+		F0R(j,K-1) hor_tran_stor[i][j] = -2;
+		F0R(j,K) ver_tran_stor[i][j] = -2;
+	}
+	V<vi> hori(N,vi(K-1)); re(hori);
+	V<vi> vert(N-1,vi(K)); F0R(j,K) F0R(i,N-1) re(vert[i][j]);
+	vi st(K); iota(all(st),0); make_state(st);
+	dp[0] = {0,1};
+	F0R(i,N) {
+		F0R(j,K-1) transition_hor(j,hori[i][j]);
+		if (i < N-1) F0R(j,K) transition_ver(j,vert[i][j]);
+	}
+	ps(dp[get_state(vi(K))].s);
+}
+```
