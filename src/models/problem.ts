@@ -267,11 +267,10 @@ export class Problem {
     this.autoGenerateInfoFromSource();
     solID = solID || '';
     if (solID.startsWith('/')) {
-      console.log('HUH', solID);
       this.solution = {
         kind: 'link',
         url: `${solID}`,
-        label: 'Module',
+        label: 'Link',
       };
     }
     if (isInternal(solID)) {

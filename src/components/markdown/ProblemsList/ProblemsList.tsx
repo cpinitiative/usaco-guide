@@ -71,7 +71,7 @@ export function ProblemsList(props: ProblemsListProps) {
 
                   {divisionTable && (
                     <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                      Link
+                      Module
                     </th>
                   )}
 
