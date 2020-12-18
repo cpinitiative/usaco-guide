@@ -11,7 +11,9 @@ const firebaseConfig = {
   messagingSenderId: '862152331454',
   appId: '1:862152331454:web:8ba85fda47360ef9fe8eef',
 };
+
 export const FirebaseProvider = ({ children }) => {
+  
   const [firebase, setFirebase] = React.useState(null);
 
   React.useEffect(() => {
