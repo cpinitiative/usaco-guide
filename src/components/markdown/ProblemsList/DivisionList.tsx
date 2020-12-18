@@ -26,20 +26,13 @@ const color: { [key: string]: string } = {
 };
 
 const getCircle = option => {
-  let size = 'small';
   return (
     divisions.includes(option) && (
-      <>
+      <span className="inline-block h-5 w-5 p-0.5">
         <span
-          className={
-            `inline-block ${
-              size === 'small' ? 'h-4 w-4' : 'h-8 w-8'
-            } rounded-full cursor-pointer transition duration-100 ease-out ` +
-            color[option]
-          }
+          className={`inline-block h-4 w-4 rounded-full ${color[option]}`}
         />
-        &nbsp;
-      </>
+      </span>
     )
   );
 };
@@ -77,7 +70,7 @@ const DivisionButton = ({
           <button
             type="button"
             className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
-              state === 'Not Started' ? 'pl-4' : 'pl-3'
+              getCircle(state) ? 'pl-3' : 'pl-4'
             } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
             id="options-menu"
             aria-haspopup="true"
@@ -86,9 +79,7 @@ const DivisionButton = ({
           >
             {getCircle(state)}
 
-            <span
-              className={`flex-1${state === 'Not Started' ? '' : ' ml-1.5'}`}
-            >
+            <span className={`flex-1 ${getCircle(state) ? 'ml-2' : ''}`}>
               {state}
             </span>
 
@@ -138,7 +129,9 @@ const DivisionButton = ({
                   role="menuitem"
                 >
                   {getCircle(option)}
-                  <span className="flex-1">{option}</span>
+                  <span className={`flex-1 ${getCircle(option) ? 'ml-2' : ''}`}>
+                    {option}
+                  </span>
                 </button>
               ))}
             </div>
@@ -216,53 +209,29 @@ export function DivisionList(props) {
   const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
   return (
     <>
-      <DivisionButton
-        options={divisions}
-        state={currentDivision}
-        onChange={newDivision => {
-          if (currentDivision === newDivision) return;
-          setDivision(newDivision);
-        }}
-      />
-      &nbsp;
-      <DivisionButton
-        options={seasons}
-        state={currentSeason}
-        onChange={newSeason => {
-          if (currentSeason === newSeason) return;
-          setSeason(newSeason);
-        }}
-      />
-      {/* {Object.keys(divisionToSeasonToProbs[currentDivision])
-        .sort()
-        .reverse()
-        .map(key => (
-          <> */}
-      <HTMLComponents.h3 id={currentSeason}>
-        {/* Nasty hack to get the anchor link */}
-        {/* Normally the headers get it with gatsby-remark-autolink-headers, but that doesn't work here since this is a custom component */}
-        <a href={`#${currentSeason}`} className="anchor before">
-          <svg
-            fill="none"
-            height="24"
-            width="24"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-            style={{ display: 'inline-block', verticalAlign: 'middle' }}
-          >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-          </svg>
-        </a>
-        {currentSeason}
-      </HTMLComponents.h3>
+      <div className="flex items-center space-x-4">
+        <DivisionButton
+          options={divisions}
+          state={currentDivision}
+          onChange={newDivision => {
+            if (currentDivision === newDivision) return;
+            setDivision(newDivision);
+          }}
+        />
+        <DivisionButton
+          options={seasons}
+          state={currentSeason}
+          onChange={newSeason => {
+            if (currentSeason === newSeason) return;
+            setSeason(newSeason);
+          }}
+        />
+      </div>
+
       <ProblemsList
         problems={divisionToSeasonToProbs[currentDivision][currentSeason]}
         divisionTable
       />
-      {/* </>
-        ))} */}
     </>
   );
 }
