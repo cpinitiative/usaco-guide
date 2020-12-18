@@ -21,12 +21,11 @@ const StyledTippy = styled(Tippy)`
   }
 `;
 
-const firebase = React.useContext(FirebaseContext);
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
     currentProgress
   );
-
+  const firebase = React.useContext(FirebaseContext);
   const icon = (status: ProblemProgress, equal: Boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
       'Not Attempted': '',
