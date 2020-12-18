@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import Spoiler from './Spoiler';
 import { ProblemsList } from './ProblemsList/ProblemsList';
+import { DivisionList } from './ProblemsList/DivisionList';
 import { Resource, ResourcesList } from './ResourcesList';
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
@@ -27,6 +28,7 @@ export const components = {
   Problems: ProblemsList,
   FocusProblem,
   Resources: ResourcesList,
+  DivisionList,
   Resource,
   TextTooltip,
   LanguageSection,
