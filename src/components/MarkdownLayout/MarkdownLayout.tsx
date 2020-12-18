@@ -283,6 +283,7 @@ export default function MarkdownLayout({
             frontmatter {
               title
               id
+              author
             }
             fields {
               division

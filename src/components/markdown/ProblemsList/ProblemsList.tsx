@@ -302,7 +302,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           ) : null}
         </td>
       )}
-      {showSols && (
+      {(showSols || divisionTable) && (
         <ProblemSolutionCell
           problem={props.problem}
           onShowSolution={props.onShowSolution}
@@ -329,6 +329,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
 const ProblemSolutionCell = (props: ProblemComponentProps) => {
   const { problem } = props;
+  console.log(problem);
   return (
     <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}

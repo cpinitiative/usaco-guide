@@ -4,6 +4,7 @@ import { graphqlToModuleLinks } from '../../../utils/utils';
 import div_to_probs from './div_to_probs';
 import { Problem } from '../../../../content/models';
 import { ProblemsList } from './ProblemsList';
+import HTMLComponents from '../HTMLComponents';
 
 export function DivisionList(props) {
   const data = useStaticQuery(graphql`
@@ -62,7 +63,6 @@ export function DivisionList(props) {
     }
     yearToProbs[year].push(prob);
   }
-  console.log('KEY SET', Object.keys(yearToProbs));
   //   const probs: Problem[] = []
   return (
     <>
@@ -71,9 +71,25 @@ export function DivisionList(props) {
         .reverse()
         .map(key => (
           <>
-            <h2>
+            <HTMLComponents.h2 id={`${+key - 1}-${key}`}>
+              {/* Nasty hack to get the anchor link */}
+              {/* Normally the headers get it with gatsby-remark-autolink-headers, but that doesn't work here since this is a custom component */}
+              <a href={`#${+key - 1}-${key}`} className="anchor before">
+                <svg
+                  fill="none"
+                  height="24"
+                  width="24"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                >
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+              </a>
               {+key - 1} - {key}
-            </h2>
+            </HTMLComponents.h2>
             <ProblemsList problems={yearToProbs[key]} divisionTable />
           </>
         ))}
