@@ -27,7 +27,7 @@ const StyledTippy = styled(Tippy)`
 const ProgressDropdown = ({
   onProgressSelected,
   currentProgress,
-  openModal,
+  
 }) => {
   const [activeProgress, setActiveProgress] = useState<ProblemProgress>();
  
