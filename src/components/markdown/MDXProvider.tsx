@@ -19,6 +19,7 @@ import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
 import FocusProblem from './FocusProblem';
 import Youtube from './Youtube';
+// import MarkCompleteButton from '../MarkdownLayout/MarkCompleteButton'
 
 export const components = {
   Spoiler,
