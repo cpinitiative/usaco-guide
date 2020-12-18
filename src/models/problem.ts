@@ -266,6 +266,13 @@ export class Problem {
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
+    if (solID.startsWith('/')) {
+      this.solution = {
+        kind: 'link',
+        url: `${solID}`,
+        label: 'Link',
+      };
+    }
     if (isInternal(solID)) {
       this.solution = {
         kind: 'internal',

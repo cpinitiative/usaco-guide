@@ -283,6 +283,7 @@ export default function MarkdownLayout({
             frontmatter {
               title
               id
+              author
             }
             fields {
               division
@@ -325,13 +326,19 @@ export default function MarkdownLayout({
   // console.log(userProgressOnProblems)
   let problemIDs = [];
   const activeIDs = [];
+  const prob_to_module = {};
+
+  for (let moduleLink of moduleLinks) {
+    for (let problem of moduleLink.probs) {
+      const uniqueID = problem.uniqueID;
+      prob_to_module[uniqueID] = module.id;
+    }
+  }
 
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
     const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
     // oops how to assert not -1
-
-    // while (moduleLinks[ind].id != markdownData.id) ind++;
     for (let problem of moduleLinks[ind].probs) {
       const uniqueID = problem.uniqueID;
       problemIDs.push(uniqueID);

@@ -15,6 +15,7 @@ type ProblemsListProps = {
   children?: React.ReactChildren;
   problems: Problem[];
   alwaysHideTags?: boolean;
+  divisionTable?: boolean;
 };
 
 let showSols = true;
@@ -25,6 +26,7 @@ export function ProblemsList(props: ProblemsListProps) {
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const alwaysHideTags = props.alwaysHideTags;
+  const divisionTable = props.divisionTable;
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -36,29 +38,43 @@ export function ProblemsList(props: ProblemsListProps) {
                   <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider text-center">
                     Status
                   </th>
+
                   <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                    Source
+                    {divisionTable ? 'Contest' : 'Source'}
                   </th>
+
                   <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-no-wrap">
                     Problem Name
                   </th>
-                  <th
-                    className={`pl-4 md:pl-6 ${
-                      !showSols ? 'pr-4 md:pr-6' : ''
-                    } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
-                  >
-                    Difficulty
-                  </th>
-                  {showSols && !alwaysHideTags && (
+
+                  {!divisionTable && (
+                    <th
+                      className={`pl-4 md:pl-6 ${
+                        !showSols ? 'pr-4 md:pr-6' : ''
+                      } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
+                    >
+                      Difficulty
+                    </th>
+                  )}
+
+                  {showSols && !alwaysHideTags && !divisionTable && (
                     <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Tags
                     </th>
                   )}
-                  {showSols && (
+
+                  {showSols && !divisionTable && (
                     <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Solution
                     </th>
                   )}
+
+                  {divisionTable && (
+                    <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                      Module
+                    </th>
+                  )}
+
                   <th className="pr-2 md:pr-3 py-3 leading-4 text-left text-xs font-medium uppercase tracking-wider">
                     URL
                   </th>
@@ -69,6 +85,7 @@ export function ProblemsList(props: ProblemsListProps) {
                   <ProblemComponent
                     problem={problem}
                     alwaysHideTags={alwaysHideTags}
+                    divisionTable={divisionTable}
                     onShowSolution={problem => {
                       setProblem(problem);
                       setShowModal(true);
@@ -161,6 +178,7 @@ type ProblemComponentProps = {
   problem: Problem;
   onShowSolution: Function;
   alwaysHideTags?: boolean;
+  divisionTable?: boolean;
 };
 
 export const difficultyClasses = {
@@ -198,6 +216,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
+  const divisionTable = props.divisionTable;
   React.useEffect(() => {
     const hashHandler = () => {
       setIsActive(
@@ -255,23 +274,25 @@ export function ProblemComponent(props: ProblemComponentProps) {
           </Anchor>
         </div>
       </td>
-      <td
-        className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
-          !showSols ? 'pr-4 md:pr-6' : ''
-        }`}
-      >
-        {problem.difficulty && (
-          <span
-            className={
-              'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
-              difficultyClasses[problem.difficulty]
-            }
-          >
-            {problem.difficulty}
-          </span>
-        )}
-      </td>
-      {showSols && !alwaysHideTags && (
+      {!divisionTable && (
+        <td
+          className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
+            !showSols ? 'pr-4 md:pr-6' : ''
+          }`}
+        >
+          {problem.difficulty && (
+            <span
+              className={
+                'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
+                difficultyClasses[problem.difficulty]
+              }
+            >
+              {problem.difficulty}
+            </span>
+          )}
+        </td>
+      )}
+      {showSols && !alwaysHideTags && !divisionTable && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
@@ -281,7 +302,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           ) : null}
         </td>
       )}
-      {showSols && (
+      {(showSols || divisionTable) && (
         <ProblemSolutionCell
           problem={props.problem}
           onShowSolution={props.onShowSolution}
@@ -308,6 +329,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
 const ProblemSolutionCell = (props: ProblemComponentProps) => {
   const { problem } = props;
+  // console.log(problem);
   return (
     <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
       {/* {sol} */}
@@ -324,10 +346,15 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           </TextTooltip>
         </span>
       )}
-      {problem.solution?.kind === 'link' && (
+      {problem.solution?.kind === 'link' && problem.solution.url != '//' && (
         <Anchor href={problem.solution.url} target="_blank" className="pl-6">
           {problem.solution.label}
         </Anchor>
+      )}
+      {problem.solution?.kind === 'link' && problem.solution.url == '//' && (
+        <Tooltip content={`This problem isn't in a module yet.`}>
+          <span className="text-gray-300 dark:text-gray-600 pl-6">None</span>
+        </Tooltip>
       )}
       {problem.solution?.kind === 'internal' && (
         <div className={`inline-flex items-center h-5 group`}>

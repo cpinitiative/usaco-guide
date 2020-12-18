@@ -274,10 +274,7 @@ vector<int> v; v.resize(30); // another way
 
 In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
 
-<Warning>
-
-Beware of resizing a vector while recursing!
-
+## Unspecified Behavior
 
 ```cpp
 vi res{-1};
@@ -352,9 +349,11 @@ void rec(int x) {
 }
 ```
 
-See [this](https://codeforces.com/blog/entry/83241) CF blog post for some discussion about why this is the case.
+<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
 
-</Warning>
+The problem is that `res[i] = addElement();` only works if `addElement()` is evaluated before `res[i]` is. If `res[i]` is evaluated first, and *then* `addElement()` results in the memory for `res` being reallocated, then `res[i]` is invalidated. The order in which `res[i]` and `addElement()` are evaluated is unspecified (at least before C++17).
+
+See [this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated) StackOverflow post for some discussion about why this is the case (also a similar issue [here](https://stackoverflow.com/questions/18040037/why-does-setting-an-element-of-a-map-to-its-size-increments-the-size-before-as)).
 
 ### Iterating
 
