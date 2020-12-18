@@ -13,7 +13,6 @@ import feedbackModal from '../../feedbackModal';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
-import { logError } from 'gatsby/dist/state-machines/develop/actions';
 import * as firebase from 'firebase';
 import FirebaseContext from '../../../context/FirebaseContext';
 
