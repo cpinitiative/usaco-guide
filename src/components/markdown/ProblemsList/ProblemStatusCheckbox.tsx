@@ -14,8 +14,7 @@ import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
 import FirebaseContext from '../../context/FirebaseContext';
- 
-import FirebaseContext from '../../../context/FirebaseContext';
+
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
