@@ -1,0 +1,76 @@
+---
+id: codeforces-1279
+source: CF
+title: Santa's Bot
+author: David Lee
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/72577)
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(\displaystyle\sum \limits_{i = 1}^{n} k_i)$
+
+We will first calculate the probability $p_a$ a present with id $a$ is chosen, and the number of children $c_a$ that want the present.
+Then, the answer will be $\displaystyle\sum_{a=1}^{1000000}p_a\cdot\frac{c_a}{n}$
+
+Calculating $c_a$ and $p_a$ is very easy. As we read in the input, maintain arrays containing $c$ and $p$.
+Each time a kid $i$ wants present $a$, we increment $c_a$ and add $\frac{1}{k_i\cdot n}$ to $p_a$.
+
+Because this problem asks for the answer mod 998244353 (note that 998244353 is prime), we can use fermat's little theorem along with binary exponentiation to calculate the answer.
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+
+const ll mod = 998244353;
+
+ll binpow(ll x, ll n, ll m = mod) {
+	x %= m; //note: m*m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) //if n is odd
+			res = res * x % m;
+		x = x * x % m;
+		n /= 2; //divide by two
+	}
+	return res;
+}
+
+ll inverse(ll x, ll m = mod) {
+	// Returns the modular inverse of x mod m using fermat's little theorem
+	return binpow(x, m - 2, m);
+}
+
+int n;
+ll probs[1000010], cnt[1000010];
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int k;
+		cin >> k;
+		for (int j = 0; j < k; j++) {
+			int a;
+			cin >> a;
+			probs[a] = (probs[a] + inverse(((ll)k * n) % mod)) % mod;
+			cnt[a]++;
+		}
+	}
+	ll ans = 0;
+	for (int i = 0; i <= 1000000; i++) {
+		ans = (ans + probs[i] * (cnt[i] * inverse(n) % mod) % mod) % mod;
+	}
+	cout << ans << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
