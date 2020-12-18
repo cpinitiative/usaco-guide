@@ -13,8 +13,7 @@ import feedbackModal from '../../feedbackModal';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
-import FirebaseContext from '../../context/FirebaseContext';
-
+import FirebaseContext from '../../../context/FirebaseContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -22,16 +21,12 @@ const StyledTippy = styled(Tippy)`
   }
 `;
 
- const firebase = React.useContext(FirebaseContext);
-const ProgressDropdown = ({
-  onProgressSelected,
-  currentProgress,
-  
-}) => {
+const firebase = React.useContext(FirebaseContext);
+const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
     currentProgress
   );
- 
+
   const icon = (status: ProblemProgress, equal: Boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
       'Not Attempted': '',
