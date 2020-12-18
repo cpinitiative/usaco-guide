@@ -13,7 +13,8 @@ import feedbackModal from '../../feedbackModal';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
-import * as firebase from 'firebase';
+import FirebaseContext from '../../context/FirebaseContext';
+ 
 import FirebaseContext from '../../../context/FirebaseContext';
 
 const StyledTippy = styled(Tippy)`
@@ -22,7 +23,7 @@ const StyledTippy = styled(Tippy)`
   }
 `;
 
- 
+ const firebase = React.useContext(FirebaseContext);
 const ProgressDropdown = ({
   onProgressSelected,
   currentProgress,
