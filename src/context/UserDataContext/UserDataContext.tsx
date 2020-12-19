@@ -110,7 +110,44 @@ type UserDataContextAPI = UserLangAPI &
     getDataExport: Function;
   };
 
-const UserDataContext = createContext<UserDataContextAPI>(null);
+const UserDataContext = createContext<UserDataContextAPI>({
+  consecutiveVisits: 0,
+  darkMode: false,
+  firebaseUser: null,
+  getDataExport: () => {},
+  hide: false,
+  isLoaded: true,
+  lang: 'cpp',
+  lastReadAnnouncement: 'open-source',
+  lastViewedModule: 'binary-search-sorted',
+  lastVisitDate: 1608324157466,
+  numPageviews: 130,
+  onlineUsers: -1,
+  pageviewsPerDay: {
+    1606896000000: 4,
+    1607068800000: 17,
+    1608192000000: 27,
+    1608278400000: 82,
+  },
+  setDarkMode: x => {},
+  setHide: x => {},
+  setLang: x => {},
+  setLastReadAnnouncement: x => {},
+  setLastViewedModule: x => {},
+  setLastVisitDate: x => {},
+  setModuleProgress: (moduleID, progress) => {},
+  setShowIgnored: x => {},
+  setUserClasses: classes => {},
+  setUserProgressOnProblems: (problem, status) => {},
+  showIgnored: false,
+  signIn: () => {},
+  signOut: () => {},
+  userClasses: [],
+  userProgressOnModules: {},
+  userProgressOnModulesActivity: [],
+  userProgressOnProblems: {},
+  userProgressOnProblemsActivity: [],
+});
 
 export const UserDataProvider = ({ children }) => {
   const firebase = useFirebase();

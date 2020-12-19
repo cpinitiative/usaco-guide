@@ -14,7 +14,6 @@ export default SettingsModalContext;
 
 export const SettingsModalProvider = ({ children }) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  console.log(isSettingsModalOpen);
   return (
     <SettingsModalContext.Provider
       value={{
