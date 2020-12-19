@@ -144,7 +144,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                       type="checkbox"
                       onChange={() =>
                         userSettings.setHideTagsAndDifficulty(
-                          !userSettings.setHideTagsAndDifficulty
+                          !userSettings.hideTagsAndDifficulty
                         )
                       }
                       className="form-checkbox h-5 w-5 text-gray-600"
@@ -158,10 +158,9 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <label className="flex items-center mt-3">
                     <input
                       type="checkbox"
-                      onChange={() => {
-                        console.log('TOGGLING HIDESOLS');
-                        userSettings.setHideSols(!userSettings.setHideSols);
-                      }}
+                      onChange={() =>
+                        userSettings.setHideSols(!userSettings.hideSols)
+                      }
                       className="form-checkbox h-5 w-5 text-gray-600"
                       checked={userSettings.hideSols}
                     />

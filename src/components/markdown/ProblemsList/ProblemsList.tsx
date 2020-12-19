@@ -52,9 +52,11 @@ export function ProblemsList(props: ProblemsListProps) {
 
                   {showTagsAndDifficulty &&
                     (divisionTable ? (
-                      <th className="pl-4 md: pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                        Percent
-                      </th>
+                      props.division != 'Platinum' && (
+                        <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                          Percent
+                        </th>
+                      )
                     ) : (
                       <th
                         className={`pl-4 md:pl-6 ${
@@ -224,7 +226,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
-  const divisionTable = props.division ? true : false;
+  const divisionTable = !!props.division;
   React.useEffect(() => {
     const hashHandler = () => {
       setIsActive(
@@ -315,7 +317,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       {showTagsAndDifficulty &&
         (divisionTable
           ? props.division != 'Platinum' && (
-              <td className="pl-4 md: pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+              <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                 <UsacoTableProgress
                   division={props.division}
                   completed={problem.fraction}
@@ -324,7 +326,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             )
           : difficultyCol)}
 
-      {showSols && !alwaysHideTags && (
+      {showTagsAndDifficulty && !alwaysHideTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">

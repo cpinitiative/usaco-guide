@@ -1,5 +1,6 @@
 import * as React from 'react';
 import TextTooltip from '../Tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
 
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
@@ -85,9 +86,9 @@ export default function DashboardProgress({
   );
 }
 
-const ProgressBarSmall = ({ text, green, yellow, blue }) => {
+const ProgressBarSmall = ({ className = null, text, green, yellow, blue }) => {
   return (
-    <div>
+    <div className={className}>
       <div className="inline-block">
         <div className="overflow-hidden h-2 text-xs flex items-center bg-gray-200 rounded-full w-24 dark:bg-gray-700">
           <div
@@ -146,8 +147,17 @@ export function UsacoTableProgress({ division, completed }) {
   }
   // ${Math.round(completed*1000)/10}%
   return (
-    <TextTooltip content={`${Math.round(completed * 1000) / 10}%`}>
-      <ProgressBarSmall text={''} green={green} yellow={yellow} blue={blue} />
-    </TextTooltip>
+    <Tooltip content={`${Math.round(completed * 1000) / 10}%`}>
+      {/* The span wrapper is needed for tippy to work */}
+      <span className="cursor-pointer">
+        <ProgressBarSmall
+          text={''}
+          green={green}
+          yellow={yellow}
+          blue={blue}
+          className="h-2 inline-flex"
+        />
+      </span>
+    </Tooltip>
   );
 }
