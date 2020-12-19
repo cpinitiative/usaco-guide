@@ -260,7 +260,8 @@ export class Problem {
     public starred?: boolean,
     public tags?: string[],
     public solID?: string,
-    public solQuality: 'bad' | 'ok' | 'good' = 'ok'
+    public solQuality: 'bad' | 'ok' | 'good' = 'ok',
+    public fraction?: number
   ) {
     this.url = id;
 

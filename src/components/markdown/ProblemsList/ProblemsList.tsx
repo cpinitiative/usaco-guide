@@ -4,6 +4,7 @@ import Transition from '../../Transition';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
@@ -15,18 +16,20 @@ type ProblemsListProps = {
   children?: React.ReactChildren;
   problems: Problem[];
   alwaysHideTags?: boolean;
-  divisionTable?: boolean;
+  division?: string;
 };
 
 let showSols = true;
+let showTagsAndDifficulty = true;
 
 export function ProblemsList(props: ProblemsListProps) {
   const userSettings = useContext(UserDataContext);
-  showSols = !userSettings.hide;
+  showSols = !userSettings.hideSols;
+  showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const alwaysHideTags = props.alwaysHideTags;
-  const divisionTable = props.divisionTable;
+  const divisionTable = props.division ? true : false;
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -47,17 +50,26 @@ export function ProblemsList(props: ProblemsListProps) {
                     Problem Name
                   </th>
 
-                  {!divisionTable && (
-                    <th
-                      className={`pl-4 md:pl-6 ${
-                        !showSols ? 'pr-4 md:pr-6' : ''
-                      } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
-                    >
-                      Difficulty
-                    </th>
-                  )}
+                  {showTagsAndDifficulty &&
+                    (divisionTable ? (
+                      props.division != 'Platinum' && (
+                        <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                          <TextTooltip content="Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.">
+                            Percent
+                          </TextTooltip>
+                        </th>
+                      )
+                    ) : (
+                      <th
+                        className={`pl-4 md:pl-6 ${
+                          !showSols ? 'pr-4 md:pr-6' : ''
+                        } py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
+                      >
+                        Difficulty
+                      </th>
+                    ))}
 
-                  {showSols && !alwaysHideTags && !divisionTable && (
+                  {showTagsAndDifficulty && !alwaysHideTags && (
                     <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Tags
                     </th>
@@ -85,7 +97,7 @@ export function ProblemsList(props: ProblemsListProps) {
                   <ProblemComponent
                     problem={problem}
                     alwaysHideTags={alwaysHideTags}
-                    divisionTable={divisionTable}
+                    division={props.division}
                     onShowSolution={problem => {
                       setProblem(problem);
                       setShowModal(true);
@@ -178,7 +190,7 @@ type ProblemComponentProps = {
   problem: Problem;
   onShowSolution: Function;
   alwaysHideTags?: boolean;
-  divisionTable?: boolean;
+  division?: string;
 };
 
 export const difficultyClasses = {
@@ -216,7 +228,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
-  const divisionTable = props.divisionTable;
+  const divisionTable = !!props.division;
   React.useEffect(() => {
     const hashHandler = () => {
       setIsActive(
@@ -229,70 +241,94 @@ export function ProblemComponent(props: ProblemComponentProps) {
     return () => window.removeEventListener('hashchange', hashHandler, false);
   }, []);
 
+  const statusCol = (
+    <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
+      <div
+        style={{ height: '1.25rem' }}
+        className="flex items-center justify-center"
+      >
+        <ProblemStatusCheckbox problem={problem} />
+      </div>
+    </td>
+  );
+
+  const sourceCol = (
+    <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+      {problem.tooltipHoverDescription ? (
+        <TextTooltip content={problem.tooltipHoverDescription}>
+          {problem.source}
+        </TextTooltip>
+      ) : (
+        problem.source
+      )}
+    </td>
+  );
+
+  const nameCol = (
+    <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+      <div className="flex items-center">
+        {problem.starred && (
+          <Tooltip content="We highly recommend you do all starred problems!">
+            <svg
+              className="h-4 w-4 text-blue-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </Tooltip>
+        )}
+        <Anchor
+          href={problem.url}
+          className={
+            (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
+          }
+          style={{ maxWidth: '15rem' }}
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          {problem.name}
+        </Anchor>
+      </div>
+    </td>
+  );
+  const difficultyCol = (
+    <td
+      className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
+        !showSols ? 'pr-4 md:pr-6' : ''
+      }`}
+    >
+      {problem.difficulty && (
+        <span
+          className={
+            'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
+            difficultyClasses[problem.difficulty]
+          }
+        >
+          {problem.difficulty}
+        </span>
+      )}
+    </td>
+  );
+
   return (
     <StyledProblemRow id={id} isActive={isActive}>
-      <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
-        <div
-          style={{ height: '1.25rem' }}
-          className="flex items-center justify-center"
-        >
-          <ProblemStatusCheckbox problem={problem} />
-        </div>
-      </td>
-      <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
-        {problem.tooltipHoverDescription ? (
-          <TextTooltip content={problem.tooltipHoverDescription}>
-            {problem.source}
-          </TextTooltip>
-        ) : (
-          problem.source
-        )}
-      </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
-        <div className="flex items-center">
-          {problem.starred && (
-            <Tooltip content="We highly recommend you do all starred problems!">
-              <svg
-                className="h-4 w-4 text-blue-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            </Tooltip>
-          )}
-          <Anchor
-            href={problem.url}
-            className={
-              (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
-            }
-            style={{ maxWidth: '15rem' }}
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-          >
-            {problem.name}
-          </Anchor>
-        </div>
-      </td>
-      {!divisionTable && (
-        <td
-          className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
-            !showSols ? 'pr-4 md:pr-6' : ''
-          }`}
-        >
-          {problem.difficulty && (
-            <span
-              className={
-                'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
-                difficultyClasses[problem.difficulty]
-              }
-            >
-              {problem.difficulty}
-            </span>
-          )}
-        </td>
-      )}
-      {showSols && !alwaysHideTags && !divisionTable && (
+      {statusCol}
+      {sourceCol}
+      {nameCol}
+      {showTagsAndDifficulty &&
+        (divisionTable
+          ? props.division != 'Platinum' && (
+              <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                <UsacoTableProgress
+                  division={props.division}
+                  completed={problem.fraction}
+                />
+              </td>
+            )
+          : difficultyCol)}
+
+      {showTagsAndDifficulty && !alwaysHideTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
@@ -308,6 +344,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           onShowSolution={props.onShowSolution}
         />
       )}
+
       <td>
         <a href={`#problem-${problem.uniqueID}`}>
           <svg
