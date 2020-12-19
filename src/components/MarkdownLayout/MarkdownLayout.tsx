@@ -1,14 +1,9 @@
 import * as React from 'react';
-import Transition from '../Transition';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
 import { graphql, Link, useStaticQuery } from 'gatsby';
-import { DiscussionEmbed } from 'disqus-react';
 import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
-import ModuleFrequencyDots from './ModuleFrequencyDots';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MarkCompleteButton from './MarkCompleteButton';
-import ModuleConfetti from './ModuleConfetti';
 import TextTooltip from '../Tooltip/TextTooltip';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { SidebarNav } from './SidebarNav/SidebarNav';
@@ -24,122 +19,13 @@ import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import ModuleFeedback from './ModuleFeedback';
-import SettingsModal from '../SettingsModal';
 import ConfettiContext from '../../context/ConfettiContext';
 import ForumCTA from '../ForumCTA';
-import SettingsModalContext, {
-  SettingsModalProvider,
-} from '../../context/SettingsModalContext';
-import ContactUsSlideoverContext, {
-  ContactUsSlideoverProvider,
-} from '../../context/ContactUsSlideoverContext';
-
-const Breadcrumbs = () => {
-  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
-  const module = moduleLayoutInfo.markdownLayoutInfo;
-  if (module instanceof SolutionInfo) return null;
-  return (
-    <nav className="flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500 dark:text-dark-med-emphasis">
-      <Link
-        to="/dashboard/"
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
-      >
-        Home
-      </Link>
-      <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
-      <Link
-        to={`/${module.section}/`}
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
-      >
-        {SECTION_LABELS[module.section]}
-      </Link>
-      <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
-      <span className="whitespace-no-wrap">{module.title}</span>
-    </nav>
-  );
-};
-
-const SidebarBottomButtons = ({ onButtonPress }) => {
-  const { setIsSettingsModalOpen } = useContext(SettingsModalContext);
-  const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);
-  return (
-    <>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => {
-            setIsSettingsModalOpen(true);
-            onButtonPress();
-          }}
-        >
-          <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-          Settings
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => {
-            setIsContactUsSlideoverOpen(true);
-            onButtonPress();
-          }}
-        >
-          <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          >
-            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-          Contact Us
-        </button>
-      </div>
-    </>
-  );
-};
+import { SettingsModalProvider } from '../../context/SettingsModalContext';
+import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
+import MobileSideNav from './MobileSideNav';
+import SidebarBottomButtons from './SidebarBottomButtons';
+import Breadcrumbs from './Breadcrumbs';
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -356,84 +242,13 @@ export default function MarkdownLayout({
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
         activeIDs: activeIDs,
+        isMobileNavOpen,
+        setIsMobileNavOpen,
       }}
     >
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
-          <Transition show={isMobileNavOpen} timeout={300}>
-            <div className="lg:hidden">
-              <div className="fixed inset-0 flex z-40">
-                <Transition
-                  enter="transition-opacity ease-linear duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="transition-opacity ease-linear duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div
-                    className="fixed inset-0"
-                    onClick={() => setIsMobileNavOpen(false)}
-                  >
-                    <div className="absolute inset-0 bg-gray-600 dark:bg-gray-800 opacity-75" />
-                  </div>
-                </Transition>
-
-                <Transition
-                  enter="transition ease-in-out duration-300 transform"
-                  enterFrom="-translate-x-full"
-                  enterTo="translate-x-0"
-                  leave="transition ease-in-out duration-300 transform"
-                  leaveFrom="translate-x-0"
-                  leaveTo="-translate-x-full"
-                >
-                  <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-dark-surface">
-                    <div className="absolute top-0 right-0 -mr-14 p-1">
-                      <button
-                        className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
-                        aria-label="Close sidebar"
-                        onClick={() => setIsMobileNavOpen(false)}
-                      >
-                        <svg
-                          className="h-6 w-6 text-white"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="flex-1 h-0 pt-5 flex flex-col">
-                      <Link
-                        className="flex-shrink-0 flex items-center px-4"
-                        to="/dashboard/"
-                      >
-                        <Logo />
-                      </Link>
-                      <div className="px-4">
-                        <Breadcrumbs />
-                      </div>
-                      <SidebarNav />
-                    </div>
-                    <SidebarBottomButtons
-                      onButtonPress={() => {
-                        setIsMobileNavOpen(false);
-                      }}
-                    />
-                  </div>
-                </Transition>
-                <div className="flex-shrink-0 w-14">
-                  {/* Force sidebar to shrink to fit close icon */}
-                </div>
-              </div>
-            </div>
-          </Transition>
+          <MobileSideNav />
           {/* Static sidebar for desktop */}
           <div
             className="hidden lg:block fixed z-10 top-0 left-0 bottom-0"
@@ -644,9 +459,6 @@ export default function MarkdownLayout({
                     <div className="pt-4">
                       <NavBar alignNavButtonsRight={false} />
                     </div>
-
-                    {/* Spacing for the USACO Forum popup */}
-                    <div className="h-12" />
                   </div>
                 </div>
               </div>
