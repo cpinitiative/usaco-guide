@@ -25,25 +25,8 @@ import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
 import ModuleFeedback from './ModuleFeedback';
 import SettingsModal from '../SettingsModal';
-import DisqusComments from '../DisqusComments';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import ConfettiContext, {
-  ConfettiProvider,
-} from '../../context/ConfettiContext';
-
-const ForumBanner = () => {
-  return (
-    <div className="fixed bottom-0 right-0 m-4">
-      <OutboundLink
-        className="block shadow-md hover:shadow-lg py-2 px-3 border border-gray-200 dark:border-gray-700 transform hover:-translate-y-2 hover:bg-gray-50 bg-white dark:bg-dark-surface dark-hover:bg-gray-900 transition duration-150 ease-in-out"
-        target="_blank"
-        href="https://forum.usaco.guide/"
-      >
-        Need help? Join the USACO Forum!
-      </OutboundLink>
-    </div>
-  );
-};
+import ConfettiContext from '../../context/ConfettiContext';
+import ForumCTA from '../ForumCTA';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
@@ -652,25 +635,11 @@ export default function MarkdownLayout({
                   </h3>
                 )}
 
+                <ForumCTA />
+
                 <div className="my-8">
                   <ModuleFeedback markdownData={markdownData} />
                 </div>
-
-                <DisqusComments
-                  shortname="usacoguide"
-                  config={{
-                    url: `https://usaco.guide/${
-                      markdownData instanceof ModuleInfo
-                        ? markdownData.section
-                        : 'solutions'
-                    }/${markdownData.id}`,
-                    identifier: markdownData.id,
-                  }}
-                  // technically this isn't a valid prop, but disqus will detect the prop change
-                  // and will re-render automatically.
-                  // @ts-ignore
-                  theme={darkMode ? 'dark' : 'light'}
-                />
 
                 <div className="pt-4">
                   <NavBar alignNavButtonsRight={false} />
@@ -692,7 +661,6 @@ export default function MarkdownLayout({
         onClose={() => setIsContactUsActive(false)}
         activeModule={markdownData instanceof ModuleInfo ? markdownData : null}
       />
-      <ForumBanner />
     </MarkdownLayoutContext.Provider>
   );
 }
