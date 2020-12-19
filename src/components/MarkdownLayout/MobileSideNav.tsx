@@ -75,11 +75,7 @@ export default function MobileSideNav() {
                 </div>
                 <SidebarNav />
               </div>
-              <SidebarBottomButtons
-                onButtonPress={() => {
-                  setIsMobileNavOpen(false);
-                }}
-              />
+              <SidebarBottomButtons />
             </div>
           </Transition>
           <div className="flex-shrink-0 w-14">

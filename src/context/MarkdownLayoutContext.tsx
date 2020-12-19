@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import * as React from 'react';
-import { ModuleInfo, ModuleLinkInfo } from '../models/module';
+import { ModuleInfo, ModuleLinkInfo, ModuleProgress } from '../models/module';
 import { SolutionInfo } from '../models/solution';
 
 const MarkdownLayoutContext = createContext<{
@@ -9,6 +9,8 @@ const MarkdownLayoutContext = createContext<{
   activeIDs: string[];
   isMobileNavOpen: boolean;
   setIsMobileNavOpen: (x: boolean) => void;
+  moduleProgress: ModuleProgress;
+  handleCompletionChange: (x: ModuleProgress) => void;
 }>(null);
 
 export default MarkdownLayoutContext;

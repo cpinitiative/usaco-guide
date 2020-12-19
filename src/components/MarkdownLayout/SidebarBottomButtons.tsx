@@ -2,10 +2,12 @@ import { useContext } from 'react';
 import SettingsModalContext from '../../context/SettingsModalContext';
 import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
 import * as React from 'react';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 
-const SidebarBottomButtons = ({ onButtonPress }) => {
+const SidebarBottomButtons = () => {
   const { setIsSettingsModalOpen } = useContext(SettingsModalContext);
   const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);
+  const { setIsMobileNavOpen } = useContext(MarkdownLayoutContext);
   return (
     <>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
@@ -13,7 +15,7 @@ const SidebarBottomButtons = ({ onButtonPress }) => {
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => {
             setIsSettingsModalOpen(true);
-            onButtonPress();
+            setIsMobileNavOpen(false);
           }}
         >
           <svg
@@ -44,7 +46,7 @@ const SidebarBottomButtons = ({ onButtonPress }) => {
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => {
             setIsContactUsSlideoverOpen(true);
-            onButtonPress();
+            setIsMobileNavOpen(false);
           }}
         >
           <svg
