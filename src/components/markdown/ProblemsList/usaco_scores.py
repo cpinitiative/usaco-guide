@@ -12,7 +12,7 @@ def parse(url):
 
 def usaco_parse(is_plat,html): 
 	# print(html.prettify())
-	for a in html.find_all('table'): # based off USA pre-college results
+	for a in html.find_all('table'): # based off pre-college results
 		fst = True
 		lens = []
 		names = []

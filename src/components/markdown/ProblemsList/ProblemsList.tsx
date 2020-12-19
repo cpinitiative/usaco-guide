@@ -54,7 +54,9 @@ export function ProblemsList(props: ProblemsListProps) {
                     (divisionTable ? (
                       props.division != 'Platinum' && (
                         <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                          Percent
+                          <TextTooltip content="Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.">
+                            Percent
+                          </TextTooltip>
                         </th>
                       )
                     ) : (
