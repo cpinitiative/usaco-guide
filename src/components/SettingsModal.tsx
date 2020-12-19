@@ -142,13 +142,30 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <label className="flex items-center mt-3">
                     <input
                       type="checkbox"
-                      onChange={() => userSettings.setHide(!userSettings.hide)}
+                      onChange={() =>
+                        userSettings.setHideTagsAndDifficulty(
+                          !userSettings.setHideTagsAndDifficulty
+                        )
+                      }
                       className="form-checkbox h-5 w-5 text-gray-600"
-                      checked={userSettings.hide}
+                      checked={userSettings.hideTagsAndDifficulty}
                     />
                     <span className="ml-2 text-gray-700">
-                      Hide tags & solutions in problem tables
+                      Hide difficulty and tags
                     </span>
+                  </label>
+
+                  <label className="flex items-center mt-3">
+                    <input
+                      type="checkbox"
+                      onChange={() => {
+                        console.log('TOGGLING HIDESOLS');
+                        userSettings.setHideSols(!userSettings.setHideSols);
+                      }}
+                      className="form-checkbox h-5 w-5 text-gray-600"
+                      checked={userSettings.hideSols}
+                    />
+                    <span className="ml-2 text-gray-700">Hide solutions</span>
                   </label>
 
                   <label className="flex items-center mt-3">

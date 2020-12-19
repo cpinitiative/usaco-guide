@@ -7,9 +7,10 @@ import UserDataPropertyAPI from './userDataPropertyAPI';
 import LastViewedModule, {
   LastViewedModuleAPI,
 } from './properties/lastViewedModule';
-import HideTagsAndSolutions, {
-  HideTagsAndSolutionsAPI,
-} from './properties/hideTagsAndSolutions';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
+import HideSols, { HideSolsAPI } from './properties/hideSols';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
@@ -82,7 +83,8 @@ import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTagsAndSolutions(),
+  new HideTagsAndDifficulty(),
+  new HideSols(),
   new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
@@ -94,7 +96,8 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAndSolutionsAPI &
+  HideTagsAndDifficultyAPI &
+  HideSolsAPI &
   ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
@@ -115,7 +118,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
   darkMode: false,
   firebaseUser: null,
   getDataExport: () => {},
-  hide: false,
+  hideTagsAndDifficulty: false,
+  hideSols: false,
   isLoaded: true,
   lang: 'cpp',
   lastReadAnnouncement: 'open-source',
@@ -130,7 +134,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608278400000: 82,
   },
   setDarkMode: x => {},
-  setHide: x => {},
+  setHideTagsAndDifficulty: x => {},
+  setHideSols: x => {},
   setLang: x => {},
   setLastReadAnnouncement: x => {},
   setLastViewedModule: x => {},

@@ -2,6 +2,7 @@ import { graphql, Link, useStaticQuery } from 'gatsby';
 import React, { useState } from 'react';
 import { graphqlToModuleLinks } from '../../../utils/utils';
 import div_to_probs from './div_to_probs';
+import contest_to_points from './contest_to_points';
 import { Problem } from '../../../../content/models';
 import { ProblemsList } from './ProblemsList';
 import HTMLComponents from '../HTMLComponents';
@@ -158,6 +159,8 @@ export function DivisionList(props) {
             problems {
               uniqueID
               solID
+              tags
+              difficulty
             }
           }
         }
@@ -167,33 +170,63 @@ export function DivisionList(props) {
   const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
     data.allMdx,
   ]);
-  const prob_to_link = {};
+  const prob_to_link: { [key: string]: string } = {};
+  const prob_to_tags: { [key: string]: string[] } = {};
+  const prob_to_difficulty: { [key: string]: string } = {};
   for (let moduleLink of moduleLinks) {
     for (let problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      if (!moduleLink.url.startsWith('/general/usaco')) {
-        prob_to_link[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
-      }
+      prob_to_link[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
+      prob_to_tags[uniqueID] = problem.tags;
+      prob_to_difficulty[uniqueID] = problem.difficulty;
     }
   }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: Problem[] };
   } = {};
+  const contestToFraction: {
+    [key: string]: { [key: string]: number[] };
+  } = {};
   for (let division of divisions) {
     divisionToSeasonToProbs[division] = {};
+    contestToFraction[division] = {};
   }
+
+  for (let division of divisions) {
+    // console.log(contest_to_points[division])
+    for (let contest of Object.keys(contest_to_points[division])) {
+      contestToFraction[division][contest] = [];
+      if (contest_to_points[division][contest])
+        for (let num of contest_to_points[division][contest])
+          contestToFraction[division][contest].push(num);
+      // console.log("ASSIGNING",division,contest,contestToFraction[division][contest])
+    }
+  }
+
   for (let division of divisions)
     for (let prob_info of div_to_probs[division]) {
       const uniqueID =
         'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + prob_info[0];
+      const contest = prob_info[1];
+      // console.log("WUT",division,contest,contestToFraction[division][contest])
+      const fraction = contestToFraction[division][contest].shift();
       const prob = new Problem(
-        prob_info[1], // source
+        contest, // source
         prob_info[2], // title
-        uniqueID,
-        null,
-        null,
-        null,
-        prob_to_link[uniqueID] || '//'
+        uniqueID, // id
+        prob_to_difficulty[uniqueID] as
+          | 'Very Easy'
+          | 'Easy'
+          | 'Normal'
+          | 'Hard'
+          | 'Very Hard'
+          | 'Insane'
+          | null, // difficulty
+        null, // starred
+        prob_to_tags[uniqueID], // tags
+        prob_to_link[uniqueID] || '//',
+        'ok',
+        fraction
       );
       let year = +prob_info[1].substring(0, 4);
       if (prob_info[1].includes('December')) {
@@ -230,7 +263,7 @@ export function DivisionList(props) {
 
       <ProblemsList
         problems={divisionToSeasonToProbs[currentDivision][currentSeason]}
-        divisionTable
+        division={currentDivision}
       />
     </>
   );

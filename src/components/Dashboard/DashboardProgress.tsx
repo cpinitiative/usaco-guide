@@ -1,4 +1,5 @@
 import * as React from 'react';
+import TextTooltip from '../Tooltip/TextTooltip';
 
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
@@ -128,5 +129,25 @@ export function DashboardProgressSmall({
       yellow={total === 0 ? 0 : (inProgress / total) * 100}
       blue={total === 0 ? 0 : (skipped / total) * 100}
     />
+  );
+}
+
+export function UsacoTableProgress({ division, completed }) {
+  let green = completed * 100;
+  let yellow = 0;
+  let blue = 0;
+  if (green <= 95) {
+    yellow = green;
+    green = 0;
+  }
+  if (yellow <= 85) {
+    blue = yellow;
+    yellow = 0;
+  }
+  // ${Math.round(completed*1000)/10}%
+  return (
+    <TextTooltip content={`${Math.round(completed * 1000) / 10}%`}>
+      <ProgressBarSmall text={''} green={green} yellow={yellow} blue={blue} />
+    </TextTooltip>
   );
 }
