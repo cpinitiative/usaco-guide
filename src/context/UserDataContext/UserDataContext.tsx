@@ -10,6 +10,9 @@ import LastViewedModule, {
 import HideTagsAndDifficulty, {
   HideTagsAndDifficultyAPI,
 } from './properties/hideTagsAndDifficulty';
+import DivisionTableQuery, {
+  DivisionTableQueryAPI,
+} from './properties/divisionTableQuery';
 import HideSols, { HideSolsAPI } from './properties/hideSols';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
@@ -85,6 +88,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new LastViewedModule(),
   new HideTagsAndDifficulty(),
   new HideSols(),
+  new DivisionTableQuery(),
   new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
@@ -98,6 +102,7 @@ type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndDifficultyAPI &
   HideSolsAPI &
+  DivisionTableQueryAPI &
   ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
@@ -120,6 +125,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   getDataExport: () => {},
   hideTagsAndDifficulty: false,
   hideSols: false,
+  divisionTableQuery: { division: 'Bronze', season: '2019 - 2020' },
   isLoaded: true,
   lang: 'cpp',
   lastReadAnnouncement: 'open-source',
@@ -136,6 +142,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setDarkMode: x => {},
   setHideTagsAndDifficulty: x => {},
   setHideSols: x => {},
+  setDivisionTableQuery: x => {},
   setLang: x => {},
   setLastReadAnnouncement: x => {},
   setLastViewedModule: x => {},

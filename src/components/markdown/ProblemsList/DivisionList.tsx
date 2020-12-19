@@ -3,10 +3,13 @@ import React, { useState } from 'react';
 import { graphqlToModuleLinks } from '../../../utils/utils';
 import div_to_probs from './div_to_probs';
 import contest_to_points from './contest_to_points';
+import extra_probs from './extra_probs';
 import { Problem } from '../../../../content/models';
 import { ProblemsList } from './ProblemsList';
 import HTMLComponents from '../HTMLComponents';
 import Transition from '../../Transition';
+import { useContext } from 'react';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -181,6 +184,11 @@ export function DivisionList(props) {
       prob_to_difficulty[uniqueID] = problem.difficulty;
     }
   }
+  for (let problem of extra_probs) {
+    const uniqueID = problem.uniqueID;
+    prob_to_tags[uniqueID] = problem.tags;
+    prob_to_difficulty[uniqueID] = problem.difficulty;
+  }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: Problem[] };
   } = {};
@@ -238,32 +246,47 @@ export function DivisionList(props) {
       }
       divisionToSeasonToProbs[division][season].push(prob);
     }
-  const [currentDivision, setDivision] = useState(divisions[0]);
-  const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
+  // const [currentDivision, setDivision] = useState(divisions[0]);
+  // const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
+  const userSettings = useContext(UserDataContext);
+  const curDivision =
+    (userSettings.divisionTableQuery &&
+      userSettings.divisionTableQuery.division) ||
+    'Bronze';
+  const curSeason =
+    (userSettings.divisionTableQuery &&
+      userSettings.divisionTableQuery.season) ||
+    '2019 - 2020';
   return (
     <>
       <div className="flex items-center space-x-4">
         <DivisionButton
           options={divisions}
-          state={currentDivision}
+          state={curDivision}
           onChange={newDivision => {
-            if (currentDivision === newDivision) return;
-            setDivision(newDivision);
+            if (curDivision === newDivision) return;
+            userSettings.setDivisionTableQuery({
+              division: newDivision,
+              season: curSeason,
+            });
           }}
         />
         <DivisionButton
           options={seasons}
-          state={currentSeason}
+          state={curSeason}
           onChange={newSeason => {
-            if (currentSeason === newSeason) return;
-            setSeason(newSeason);
+            if (curSeason === newSeason) return;
+            userSettings.setDivisionTableQuery({
+              division: curDivision,
+              season: newSeason,
+            });
           }}
         />
       </div>
 
       <ProblemsList
-        problems={divisionToSeasonToProbs[currentDivision][currentSeason]}
-        division={currentDivision}
+        problems={divisionToSeasonToProbs[curDivision][curSeason]}
+        division={curDivision}
       />
     </>
   );
