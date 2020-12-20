@@ -19,40 +19,46 @@ See official editorial: http://www.usaco.org/current/data/sol_lemonade_silver_op
 ```py
 fIn, fOut = open("billboard.in"), open("billboard.out", "w")
 
-x1, y1, x2, y2 = tuple(map(int, fIn.readline().split()))
-x3, y3, x4, y4 = tuple(map(int, fIn.readline().split()))
-tx1, ty1, tx2, ty2 = tuple(map(int, fIn.readline().split()))
+x1, y1, x2, y2 = tuple(map(lambda x: int(x), fIn.readline().split()))
+x3, y3, x4, y4 = tuple(map(lambda x: int(x), fIn.readline().split()))
 
-myMin = min(x1, y1, x2, y2, x3, y3, x4, y4, tx1, ty2, tx2, ty1)
-myMax = max(x1, y1, x2, y2, x3, y3, x4, y4, tx1, ty2, tx2, ty1)
+tlCorner = False
+trCorner = False
+brCorner = False
+blCorner = False
 
-matrix = [[0 for x in range(myMin, myMax + 1)] for y in range(myMin, myMax + 1)]
+if y3 <= y1 and x3 <= x1:
+    blCorner = True
 
-coors = [x1, y1, x2, y2, x3, y3, x4, y4, tx1, ty2, tx2, ty1]
-for i in range(12):
-    coors[i] -= myMin
+if y4 >= y2 and x4 >= x2:
+    trCorner = True
 
-print(coors)
+if x3 <= x1 and y4 >= y2:
+    tlCorner = True
 
-for x in range(x1, x2):
-    for y in range(y1, y2):
-        matrix[x][y] = 1
+if x4 >= x2 and y3 <= y1:
+    brCorner = True
 
-for x in range(x3, x4):
-    for y in range(y3, y4):
-        matrix[x][y] = 1
 
-for x in range(tx1, tx2):
-    for y in range(ty1, ty2):
-        matrix[x][y] = 0
+cornerCount = len(list(filter(lambda x:x, [blCorner, trCorner, brCorner, tlCorner])))
 
-count = 0
-for x in matrix:
-    for y in x:
-        if y == 1:
-            count += 1
+if blCorner and trCorner:
+    fOut.write(str(0))
 
-fOut.write(str(count))
+elif cornerCount == 0 or cornerCount == 1:
+    fOut.write(str(abs(x2 - x1) * abs(y2 - y1)))
+
+elif brCorner and trCorner:
+    fOut.write(str(abs(y2 - y1) * abs(x2 - x4)))
+
+elif blCorner and tlCorner:
+    fOut.write(str(abs(y2 - y1) * abs(x2 - x4)))
+
+elif trCorner and tlCorner:
+    fOut.write(str(abs(x2 - x1) * abs(y3 - y1)))
+
+elif brCorner and blCorner:
+    fOut.write(str(abs(x2 - x1) * abs(y3 - y1)))
 
 ```
 
