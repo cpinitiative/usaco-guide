@@ -16,8 +16,8 @@ export const problems = {
 			'rect',
 		]),
 		new Problem('Bronze', 'Blocked Billboard II', '783', 'Easy', true, [
-			'rect',
-		]),
+			'rect'
+		], 'usaco-759'),
 		new Problem(
 			'CF',
 			'D3C - White Sheet',
@@ -50,7 +50,7 @@ Think of this as the 1D analog of the next example.
 
 Since all the intervals lie between the range, $[0, 100]$, we can mark each interval of length 1 contained within each interval as painted using a loop. Then the answer will be the number of marked intervals. The code is provided [here](https://usaco.guide/general/io#method-1).
 
-However, the naive solution would not work for higher constraints. 
+However, the naive solution would not work for higher constraints.
 
 ### Constant Time Solution
 
@@ -63,7 +63,7 @@ $$
 The [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html) splits computing the intersection length into several cases. However, we do it more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and $[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words, $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
 
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -74,7 +74,7 @@ int main() {
 	freopen("paint.in", "r", stdin);
 	freopen("paint.out", "w", stdout);
 
-	int a, b, c, d; 
+	int a, b, c, d;
 	cin >> a >> b >> c >> d;
 
 	int ans = 0;
@@ -168,7 +168,7 @@ public class billboard
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int x1 = Integer.parseInt(st.nextToken());
 			int y1 = Integer.parseInt(st.nextToken());
-			int x2 = Integer.parseInt(st.nextToken()); 
+			int x2 = Integer.parseInt(st.nextToken());
 			int y2 = Integer.parseInt(st.nextToken());
 			x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000;
 			for (int x = x1; x < x2; ++x){
