@@ -1,0 +1,68 @@
+---
+id: usaco-762
+source: USACO Silver 2017 December
+title: My Cow Ate My Homework
+author: Melody Yu
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_homework_silver_dec17.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+
+int main() {
+    ifstream cin ("homework.in");
+    ofstream cout ("homework.out");
+
+    cin >> N;
+
+    vector<int> cows(N);
+
+    for (int i = 0; i < N; i++) {
+        cin >> cows[i];
+    }
+
+    int currSum = 0;
+    // value
+    int smallest = 0;
+    vector<int> ans;
+    float ansVal = 0;
+
+    for (int i = N - 2; i >= 0; i--) {
+        currSum += cows[i + 1];
+        if (cows[i + 1] <= smallest || smallest == 0) {
+            currSum = currSum + smallest - cows[i + 1];
+            smallest = cows[i + 1];
+        }
+
+        float A = (float) currSum / (float) (N - i - 2);
+        if (A > ansVal) {
+            ans.clear();
+            ans.push_back(i + 1);
+            ansVal = A;
+        }
+        else if (A == ansVal) {
+            ans.push_back(i + 1);
+        }
+
+    }
+
+
+    for (int i = ans.size() - 1; i >= 0; i--) {
+        cout << ans[i] << endl;
+    }
+
+}
+```
+
+</CPPSection>
+</LanguageSection>
