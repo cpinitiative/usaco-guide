@@ -1,7 +1,7 @@
 ---
 id: string-hashing
 title: 'String Hashing'
-author: Benjamin Qi
+author: Benjamin Qi, Andrew Wang
 description: 'Quickly test equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
@@ -11,6 +11,17 @@ prerequisites:
 
 
 export const problems = {
+	ex: [
+		new Problem(
+			'CCC',
+			'Searching For Strings',
+			'https://dmoj.ca/problem/ccc20s3',
+			'Easy',
+			false,
+			['Hashing'],
+			''
+		)
+	],
 	general: [
 		new Problem(
 			'CSA',
@@ -36,8 +47,8 @@ export const problems = {
 			'741',
 			'Normal',
 			false,
-			[],
-			"Use two pointers; for a fixed $l$, keep extending $r$ to the right until the positions $lldots r$ explain spotiness. Hashing gives you a way to quickly check whether two substrings of different cow types are equal. So for a single $[l,r]$ pair you can check whether it works in $O(Nlog N)$ time (and you only need to check $O(M)$ of these pairs in total). Actually, it's possible to pass $O(N^2M)$ (or even slower) solutions."
+			['Hashing'],
+			"usaco-741"
 		),
 		new Problem(
 			'Gold',
@@ -45,8 +56,8 @@ export const problems = {
 			'599',
 			'Normal',
 			false,
-			[],
-			"oops you don't actually need hashing to pass ..."
+			['Hashing', 'Simulation'],
+			'usaco-599'
 		),
 		new Problem(
 			'CF',
@@ -64,21 +75,22 @@ export const problems = {
 			'Hard',
 			false,
 			['Hashing', 'Binsearch'],
-			''
-		),
-	],
-	adj: [
-		new Problem(
-			'CF',
-			'Berland SU Computer Network',
-			'contest/847/problem/L',
-			'Normal',
-			false,
-			[],
-			''
+			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2016/solutions.pdf'
 		),
 	],
 };
+
+<!-- 	adj: [
+	new Problem(
+		'CF',
+		'Berland SU Computer Network',
+		'contest/847/problem/L',
+		'Normal',
+		false,
+		[],
+		''
+	),
+], -->
 
 <!-- new Problem(
 	'Plat',
@@ -90,11 +102,7 @@ export const problems = {
 	''
 ), -->
 
-<IncompleteSection>
-
-example problem, preferably smth that can't be fakesolved
-
-</IncompleteSection>
+<FocusProblem problem={problems.ex[0]} />
 
 ## Tutorial
 
@@ -135,6 +143,30 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+public static final long M = (long)1e9 + 9, P = 9973; // Change M and P if you want to
+
+public static long pw[] = new long[100001]; // Stores the powers of P modulo M
+
+public static int n;
+public static String s;
+public static long hsh[] = new long[100001];
+
+public static void calc_hashes() {
+	hsh[0] = 1;
+	for (int i = 0; i < n; i++)
+		hsh[i + 1] = ((hsh[i] * P) % M + s.charAt(i)) % M;
+}
+
+public static long get_hash(int a, int b) { // Endpoints of the substring
+	return (hsh[b + 1] - (hsh[a] * pw[b - a + 1]) % M + M) % M;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 ## Implementation - Multiple Bases
@@ -154,7 +186,14 @@ ll get_hash(int a, int b) { // Endpoints of the substring
 
 It's generally a good idea to use two randomized bases rather than just one to decrease the probability that two random strings hash to the same value.
 
-<IncompleteSection />
+## Solution - Searching For Strings
+
+
+<IncompleteSection>
+
+ex code for single, multiple hashes
+
+</IncompleteSection>
 
 <!-- ## Adjacency Lists
 
@@ -164,12 +203,6 @@ It's generally a good idea to use two randomized bases rather than just one to d
  -->
 
 ## Problems
-
-<Warning>
-
-The editorials of the Gold problems below mention hashing, but it's not difficult to pass slower solutions without hashing.
-
-</Warning>
 
 <Problems problems={problems.general} />
 

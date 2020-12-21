@@ -1,6 +1,7 @@
 ---
 id: orac-lcm
-title: CSES - Orac & LCM
+source: CF
+title: Orac & LCM
 author: Benjamin Qi
 ---
 
@@ -8,24 +9,38 @@ author: Benjamin Qi
 
 ## Solution
 
-For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer. Interestingly, we can do this without explicitly computing the prime factorizations.
+For each prime, the second-to-lowest exponent of the prime that occurs in any of the numbers in the input is the exponent of this prime that will appear in the final answer. 
+
+Here's a short solution that accomplishes this without explicitly computing any prime factorizations!
 
 ```cpp
-ll a,b;
+#include <bits/stdc++.h>
+using namespace std;
+ 
+using ll = long long;
+
+ll a,b; 
+// a stores minimum exponents
+// b stores second minimum exponents
 int n;
 
-void red() {
+void red() { // restore invariant mentioned above
 	ll g = __gcd(a,b);
-	tie(a,b) = mp(g,a/g*b);
+	tie(a,b) = make_pair(g,a/g*b);
 }
 
 int main() {
-	setIO(); re(n);
-	re(a,b); red();
-	FOR(i,2,n) {
-		ll x; re(x); b = __gcd(b,x);
+	cin >> n >> a >> b;
+	red();
+	for (int i = 2; i < n; i++) {
+		ll x; cin >> x; 
+		b = __gcd(b,x);
 		red();
 	}
-	ps(b);
+	cout << b << endl;
 }
 ```
+
+If it's hard to understand what exactly this code is doing at first glance, a good first step is to simulating the code in the case where each $a_i$ is a power of the same prime (say, $2^k$). If the algorithm works for this case, then it will also work in the general case since the contributions of different primes are computed independently and multiplied together.
+
+<!-- the GCD function is [multiplicative](https://en.wikipedia.org/wiki/Multiplicative_function). -->

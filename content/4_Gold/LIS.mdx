@@ -1,7 +1,7 @@
 ---
 id: lis
 title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi, Andi Qu
+author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
 prerequisites:
   - intro-dp
 description: Finding and using the LIS of an array
@@ -24,26 +24,18 @@ export const problems = {
 		'Baltic OI',
 		'2010 - PCB',
 		'https://cses.fi/105/list/',
-		'Easy',
-		true,
-		[],
-		''
-	),
-	numLIS: new Problem(
-		'Balkan OI',
-		'2011 - Trapezoid',
-		'https://oj.uz/problems/source/114',
 		'Normal',
 		true,
 		[],
 		''
 	),
 	lis: [
+		new Problem('CSES', 'Towers', '1073', 'Easy', false, ['DP'], 'cses-1073'),
 		new Problem(
 			'Old Gold',
 			'Cowjog',
 			'496',
-			'Easy',
+			'Normal',
 			false,
 			['DP'],
 			'Direct application of longest increasing subsequence'
@@ -52,50 +44,41 @@ export const problems = {
 			'LMiO',
 			'2019 - Triusis',
 			'https://oj.uz/problem/view/LMIO19_triusis',
-			'Easy',
+			'Normal',
 			false,
 			['DP'],
-			''
+			'LMIO19-trusis'
 		),
 		new Problem(
 			'Baltic OI',
 			'2009 - Candy',
 			'https://cses.fi/107/list/',
-			'Normal',
+			'Hard',
 			true,
 			['DP', 'Geometry'],
-			'Similar to PCB from Baltic OI 2010'
+			'http://www.csc.kth.se/contest/boi/candy-spoiler.pdf'
 		),
 		new Problem(
 			'CEOI',
 			'2018 - Global Warming',
 			'https://oj.uz/problem/view/CEOI18_glo',
-			'Normal',
-			false,
-			['DP'],
-			''
-		),
-		new Problem(
-			'COCI',
-			'2016 - Zoltan',
-			'https://oj.uz/problem/view/COCI16_zoltan',
 			'Hard',
-			true,
-			['DP', 'BIT'],
-			''
-		),
-		new Problem(
-			'JOI',
-			'2016 - Matryoshka',
-			'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
-			'Very Hard',
 			false,
 			['DP'],
-			''
+			'ceoi-glo'
 		),
-		new Problem('Plat', 'Sort It Out', '865', 'Insane', false, ['DP'], ''),
 	],
 };
+
+<!-- new Problem(
+	'JOI',
+	'2016 - Matryoshka',
+	'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
+	'Insane',
+	false,
+	['DP', 'Segtree'],
+	''
+), -->
 
 <!-- new Problem(
 	'LC',
@@ -123,7 +106,7 @@ export const problems = {
 
 <Resources>
 
-<Resource source="cp-algorithms" title="Longest Increasing Subsequence" url="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" starred>
+<Resource source="cp-algo" title="Longest Increasing Subsequence" url="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" starred>
 	A comprehensive guide (covers almost everything here)
 </Resource>
 
@@ -135,17 +118,21 @@ export const problems = {
 
 In this tutorial, let $A$ be the array we want to find the LIS for.
 
-### $O(N^2)$
+### $\mathcal{O}(N^2)$
 
-Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $O(N^2)$ time:
+<Resources>
+	<Resource source="CPH" title="7.2 - LIS">slow solution</Resource>
+</Resources>
+
+Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $\mathcal{O}(N^2)$ time:
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int find_lis(vector<int> arr) {
-	int n = arr.size(), lis = 0;
+int find_lis(vector<int> a) {
+	int n = a.size(), lis = 0;
 	vector<int> dp(n, 1);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < i; j++) 
@@ -159,11 +146,31 @@ int find_lis(vector<int> arr) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+
+public static int find_lis(int[] a) {
+   int n = a.length, lis = 0;
+   int[] dp = new int[n]; Arrays.fill(dp, 1);
+   for (int i = 0; i < n; i++) {
+      for (int j = 0; j < i; j++) 
+         if (a[j] < a[i]) 
+            dp[i] = Math.max(dp[i], dp[j] + 1);
+      lis = Math.max(lis, dp[i]);
+   }
+   return lis;
+}
+
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 We can do much better than this though!
 
-### $O(N \log N)$
+### $\mathcal{O}(N \log N)$
 
 Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ elements of $A$ with an increasing sequence of length $j$ ending on it (or $\infty$ if there is no such element).
 
@@ -179,16 +186,16 @@ Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ 
 
 **Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since $L_i[j] \geq A[i + 1]$. We don't update anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ of length greater than $j$.
 
-To find and update the described $j$ in $O(\log N)$ time, we can use a `std::vector` and `std::lower_bound` (or just a `std::set`).
+To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a `std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set` (demonstrated in the solution for PCB).
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int find_lis(vector<int> arr) {
+int find_lis(vector<int> a) {
 	vector<int> dp;
-	for (int i : arr) {
+	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
 		if (pos == dp.size()) dp.push_back(i);
 		else dp[pos] = i;
@@ -199,18 +206,35 @@ int find_lis(vector<int> arr) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+public static int find_lis(int[] a) {
+   ArrayList<Integer> dp = new ArrayList<Integer>();
+   for (int i : a) {
+      int pos = Collections.binarySearch(dp, i);
+      if(pos < 0) pos = Math.abs(pos + 1);
+      if (pos == dp.size()) dp.add(i);
+      else dp.set(pos, i);
+   }
+   return dp.size();
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
-## Application 1 - Non-intersecting Segments
+## Example - PCB
 
 <FocusProblem problem={problems.nonIntersect} />
 
-This problem asks us to find the minimum number of disjoint sets of non-intersecting segments.
-
-This seems quite intimidating, so let's break it up into two parts:
+This problem asks us to find the minimum number of disjoint sets of non-intersecting segments. This seems quite intimidating, so let's break it up into two parts:
 
 - Finding a set of non-intersecting segments
 - Minimizing the number of these sets
+
+### Application 1 - Non-intersecting Segments
 
 First, what can we say about two segments $(l_1, r_1)$ and $(l_2, r_2)$ if they intersect (assuming $l_1 < l_2$)?
 
@@ -222,15 +246,37 @@ Let $A$ be an array where $A[i] = x$ means that the segment with its right endpo
 
 If we were asked to find the maximum size of a set of non-intersecting segments, the answer would be the LIS of $A$!
 
-## Application 2 - Minimum Number of Increasing Sequences
+### Application 2 - Minimum Number of Increasing Sequences
 
-Continuing from application 1, we now want to find the minimum number of increasing subsequences of $A$.
+Continuing from application 1, we now want to find the minimum number of increasing subsequences required to cover $A$.
 
-Luckily for us, there's a simple solution to this - the minimum number of increasing subsequences of $A$ is simply the size of the LDS (longest **decreasing** subsequence) of $A$!
+Luckily for us, there's a simple (though not so obvious) solution to this.
 
-(Try to prove this fact yourself - as a hint, assume the contrary for a contradiction.)
+**Lemma (Easy):** The minimum number of increasing subsequences required to cover $A$ is at least the size of longest non-increasing subsequence of $A$.
 
-### Code for PCB
+*Proof:* No two elements of any non-increasing subsequence can be part of the same increasing subsequence.
+
+**Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
+
+**Wrong Proof 1:** See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13) (note that this link describes partitioning $A$ into non-increasing subsequences rather than increasing subsequences). However, it's not correct because the process of unhooking and reattaching might never terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the front of $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
+
+**Wrong Proof 2:** [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
+
+**Motivation:** Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
+
+This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
+
+**Proof:** Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
+
+Do you see why this is equivalent to the sketch?
+
+**Alternative Proof:** This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
+
+### Code
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -247,106 +293,51 @@ int main() {
     cin >> n;
     for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
     sort(a, a + n, greater<pair<int, int>>());
-
+    // finding the LIS of a reversed array = finding the LDS
     for (int i = 0; i < n; i++) {
         if (s.upper_bound(a[i].second) == s.end()) lis++;
         else s.erase(s.upper_bound(a[i].second));
         s.insert(a[i].second);
     }
-
     cout << lis;
-    return 0;
 }
 ```
 
-## Application 3 - Number of LISes
+</CPPSection>
 
-<FocusProblem problem={problems.numLIS} />
+<JavaSection>
 
-<IncompleteSection />
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 30013;
-
-struct Trapezoid {
-    int x1, x2, y1, y2;
-} traps[100001];
-
-int n, top[200001], bottom[200001];
-
-int g_len[200001], g_num[200001];
-int l_len[200001], l_num[200001];
-pair<int, int> events[200001];
-
-void update(int pos, int len, int num) {
-    for (; pos < 2 * n; pos += (pos & (-pos))) {
-        if (g_len[pos] == len) {
-            g_num[pos] = (g_num[pos] + num) % MOD;
-        } else if (g_len[pos] < len) {
-            g_len[pos] = len;
-            g_num[pos] = num;
-        }
-    }
-}
-
-pair<int, int> query(int pos) {
-    pair<int, int> ans;
-    for (; pos; pos -= (pos & (-pos))) {
-        if (g_len[pos] == ans.first)
-            ans.second = (ans.second + g_num[pos]) % MOD;
-        else if (g_len[pos] > ans.first)
-            ans = {g_len[pos], g_num[pos]};
-    }
-    return ans;
-}
-
-int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> traps[i].x1 >> traps[i].x2 >> traps[i].y1 >> traps[i].y2;
-        top[2 * i - 1] = traps[i].x1, top[2 * i] = traps[i].x2;
-        bottom[2 * i - 1] = traps[i].y1, bottom[2 * i] = traps[i].y2;
-    }
-    sort(top + 1, top + 2 * n + 1);
-    sort(bottom + 1, bottom + 2 * n + 1);
-    for (int i = 1; i <= n; i++) {
-        traps[i].x1 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x1) - top;
-        traps[i].x2 = lower_bound(top + 1, top + 2 * n + 1, traps[i].x2) - top;
-        traps[i].y1 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y1) - bottom;
-        traps[i].y2 = lower_bound(bottom + 1, bottom + 2 * n + 1, traps[i].y2) - bottom;
-    }
-
-    for (int i = 1; i <= n; i++) {
-        events[2 * i - 1] = {traps[i].x1, i};
-        events[2 * i] = {traps[i].x2, -i};
-    }
-    sort(events + 1, events + 2 * n + 1);
-
-    int b_len = 0, b_num = 0;
-    for (int i = 1; i <= 2 * n; i++) {
-        if (events[i].second > 0) {
-            pair<int, int> lis = query(traps[events[i].second].y1);
-            if (!lis.first) lis.second = 1;
-            lis.first++;
-            l_len[events[i].second] = lis.first;
-            l_num[events[i].second] = lis.second;
-            if (lis.first > b_len) {
-                b_len = lis.first;
-                b_num = 0;
-            }
-            if (lis.first == b_len) b_num = (b_num + lis.second) % MOD;
-        } else update(traps[-events[i].second].y2, l_len[-events[i].second], l_num[-events[i].second]);
-    }
-
-    cout << b_len << ' ' << b_num;
-    return 0;
+```java
+import java.io.*; 
+import java.util.*; 
+ 
+class PCB{
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
+		for(int i = 0; i < n; i++){
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+		//finding the LIS of a reversed array = finding the LDS
+		int lis = 0;
+		TreeSet<Integer> s = new TreeSet<Integer>(); 
+		for(int k : a.keySet()){
+			if(s.higher(a.get(k)) == null) lis++;
+			else s.remove(s.higher(a.get(k)));
+			s.add(a.get(k));
+		}
+		System.out.println(lis);
+	} 
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## Problems
 

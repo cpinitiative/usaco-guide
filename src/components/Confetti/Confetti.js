@@ -22,7 +22,8 @@ class Confetti extends Component {
     // NOTE: a better implementation would take an array. Doing it the simplest
     // way for the demo, but a more fleshed-out implementation would be:
     // PropTypes.arrayOf(PropTypes.oneOf(['click', 'mount', 'hover']))
-    makeItRainOn: PropTypes.oneOf(['click', 'mount']),
+    // Custom modification: other waits for generateParticles() to be called.
+    makeItRainOn: PropTypes.oneOf(['click', 'mount', 'other']),
 
     // The number of particles to generate, spread over the
     // `emitDuration` length.
@@ -188,6 +189,7 @@ class Confetti extends Component {
 
   tick = () => {
     if (this.state.particles.length === 0) {
+      if (this.props.onComplete) this.props.onComplete();
       return;
     }
 

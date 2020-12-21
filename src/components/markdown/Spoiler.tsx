@@ -4,7 +4,9 @@ const Spoiler = ({ children, title }) => {
   const [show, setShow] = React.useState(false);
 
   return (
-    <div className={`border border-gray-200 dark:border-gray-800 rounded-md`}>
+    <div
+      className={`border border-gray-200 dark:border-gray-800 rounded-md mb-4`}
+    >
       <p
         className="p-4 flex items-start"
         onClick={e => setShow(!show)}

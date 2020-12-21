@@ -6,8 +6,6 @@ description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
 
-
-
 export const problems = {
 	probs: [
 		new Problem(
@@ -29,15 +27,14 @@ export const problems = {
 			'Loop over all diamonds as the diamond with minimum size, and then take all the diamonds with size no more than K greater. Find the maximum over all possibilities.'
 		), // 99.9
 		new Problem(
-			'Bronze',
-			'Cow Gymnastics',
-			'963',
-			'Normal',
-			true,
-			['Nested Loop'],
-			'Loop over all pairs of cows, $(a, b)$, and check if cow $a$ did better than cow $b$ in all K practice sessions.'
+			'Bronze', 
+			'Cow Gymnastics', 
+			'963', 
+			'Normal', 
+			true, 
+			['Nested Loop'], 
+			'usaco-963'
 		), // 99.93
-		new Problem('Bronze', 'Cowntact Tracing', '1037', 'Normal', true, []),
 		new Problem(
 			'Bronze',
 			'Bovine Genomics',
@@ -65,15 +62,8 @@ export const problems = {
 			[],
 			'Loop over every lifeguard and try to fire each one. Then, compute the time still covered by the remaining lifeguards and add the lifeguard you fired back. Over all possible lifeguards to fire, take the maximum time still covered.'
 		), // 98.76
-		new Problem(
-			'Bronze',
-			'Why Did the Cow Cross the Road II',
-			'712',
-			'Hard',
-			false,
-			[],
-			'Two intervals $a_1, a_2$ and $b_1, b_2$ cross if min($a_2$, $b_2$) $geq$ max($a_1, b_1$). Loop over each pair of characters and check if they cross. You may need to divide by $2$ to deal with overcounting, if your program counts $a_1, a_2$ crossing with $b_1, b_2$ and $b_1, b_2$ crossing with $a_1, a_2$.'
-		), // 89.6
+		new Problem('Bronze', 'Why Did the Cow Cross the Road II', '712', 'Normal', false, ['Nested Loop'], 'usaco-712'), // 89.6
+		new Problem('Bronze', 'Guess the Animal', '893', 'Hard',false, [], ''),
 		new Problem(
 			'Silver',
 			'Bovine Genomics',
@@ -92,6 +82,8 @@ export const problems = {
 			[],
 			'Observe that a lot of placements of vertical or horizontal fences are equivalent. Specifically, a fence should be adjacent to a cow, so loop over all $N ^ 2$ unique placements of a vertical and horizontal fence. This idea is similar to Coordinate Compression.'
 		), // 82.79
+		new Problem('Bronze', 'Contaminated Milk', '569', 'Very Hard', false, [], ''),
+		new Problem('Bronze', 'Cowntact Tracing', '1037', 'Very Hard', true, [], ''),
 		new Problem(
 			'Bronze',
 			'Bull in a China Shop',
@@ -101,7 +93,7 @@ export const problems = {
 			[],
 			'Brute force all possible pairs of figurines and all possible ways to shift vertically / horizontally. This requires $6$ nested for loops, and is not very fun to implement. Good luck :)'
 		), // 47.38
-		new Problem('Silver', 'Load Balancing', '619', 'Very Hard', false, [], ''),
+		new Problem('Silver', 'Load Balancing', '619', 'Very Hard', false, [], 'usaco-619'),
 	],
 };
 
@@ -146,13 +138,13 @@ We can brute-force every pair of points and find the square of the distance betw
 ```cpp
 int high = 0; // storing the current maximum
 for(int i = 0; i < n; i++){ // for each first point
-    for(int j = i+1; j < n; j++){ // for each second point
-        int dx = x[i] - x[j];
-        int dy = y[i] - y[j];
-        high = max(high, dx*dx + dy*dy);
-        // if the square of the distance between the two points is greater than
-        // our current maximum, then update the maximum
-    }
+	for(int j = i+1; j < n; j++){ // for each second point
+		int dx = x[i] - x[j];
+		int dy = y[i] - y[j];
+		high = max(high, dx*dx + dy*dy);
+		// if the square of the distance between the two points is greater than
+		// our current maximum, then update the maximum
+	}
 }
 cout << high << endl;
 ```
@@ -164,15 +156,15 @@ cout << high << endl;
 ```java
 int max = 0; // storing the current maximum
 for(int i = 0; i < n; i++){ // for each first point
-    for(int j = i+1; j < n; j++){ // for each second point
-        int dx = x[i] - x[j];
-        int dy = y[i] - y[j];
-        max = Math.max(max, dx*dx + dy*dy);
-        // if the square of the distance between the two points is greater than
-        // our current maximum, then update the maximum
-    }
+	for(int j = i+1; j < n; j++){ // for each second point
+		int dx = x[i] - x[j];
+		int dy = y[i] - y[j];
+		max = Math.max(max, dx*dx + dy*dy);
+		// if the square of the distance between the two points is greater than
+		// our current maximum, then update the maximum
+	}
 }
-pw.println(max);
+io.println(max);
 ```
 
 </JavaSection>
@@ -182,10 +174,10 @@ pw.println(max);
 ```py
 high = 0
 for i in range(n):
-    for j in range(i + 1, n):
-        dx = x[i] - x[j]
-        dy = y[i] - y[j]
-        high = max(high, dx * dx + dy * dy)
+	for j in range(i + 1, n):
+		dx = x[i] - x[j]
+		dy = y[i] - y[j]
+		high = max(high, dx * dx + dy * dy)
 print(high)
 ```
 
@@ -203,11 +195,5 @@ A couple notes:
 </Spoiler>
 
 ## Problems
-
-<IncompleteSection>
-
-compare difficulty / quality of these problems with those from sources mentioned in "Expected Knowledge"? (/general/expected) ex. VPlanet, CodeSignal?
-
-</IncompleteSection>
 
 <Problems problems={problems.probs} />

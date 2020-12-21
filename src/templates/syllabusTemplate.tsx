@@ -6,13 +6,18 @@ import { graphql } from 'gatsby';
 import MODULE_ORDERING, {
   moduleIDToSectionMap,
   SECTION_LABELS,
+  SECTION_SEO_DESCRIPTION,
+  SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import getProgressInfo from '../utils/getProgressInfo';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import ModuleLink from '../components/Dashboard/ModuleLink';
 import { ModuleLinkInfo } from '../models/module';
 import styled from 'styled-components';
@@ -128,14 +133,7 @@ export default function Template(props) {
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  let moduleProgressInfo = getProgressInfo(
-    moduleIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
+  let moduleProgressInfo = getModulesProgressInfo(moduleIDs);
   let problemIDs = [];
   for (let chapter of MODULE_ORDERING[division]) {
     for (let moduleID of chapter.items) {
@@ -144,18 +142,14 @@ export default function Template(props) {
       }
     }
   }
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   return (
     <Layout>
-      <SEO title={SECTION_LABELS[division]} />
+      <SEO
+        title={SECTION_SEO_TITLES[division]}
+        description={SECTION_SEO_DESCRIPTION[division]}
+      />
       <div className="min-h-screen">
         <TopNavigationBar currentSection={division} />
 

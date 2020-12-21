@@ -1,11 +1,17 @@
+![USACO Guide](./src/assets/banner-image-big.jpg)
+
 # USACO Guide
 
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
 Thank you to the following companies:
 
-- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), for providing free hosting & continuous deployment
-- [Algolia](https://algolia.com/), for providing search for free
+- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free hosting & continuous deployment
+- [Algolia](https://algolia.com/), search functionality
+- [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
+- [Sentry](https://sentry.io/), error reporting
+- [BrowserStack](https://browserstack.com/), browser testing
+- [slido](https://www.sli.do/), Q&A and polling platform
 
 ## Documentation
 
@@ -14,15 +20,11 @@ Thank you to the following companies:
 
 ## Contributing
 
-For more information contributing, view our [Contributing module](https://usaco.guide/general/contributing).
+See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
 
-- If you're looking to add/modify modules, refer to the `content/` folder.
-- If you're looking to add/modify problem solutions, refer to the `solutions/` folder.
-- (Almost) all the other files and folders are related to the front-end code.
+Join our Discord server: https://discord.gg/Gq9cX4j
 
-For new contributors: please do not commit directly to master. Instead, make a Pull Request so a team member can review your changes. Note that the website will _auto-update_ any changes pushed to master.
-
-Content is written in Markdown ([MDX](https://mdxjs.com/)), custom components, and limited Latex support from [Katex](https://katex.org/).
+**We're actively looking for a web developer, SEO specialist, or a graphic designer to help with the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
 
 ## Tech Stack
 
@@ -32,11 +34,13 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
+- MDX (JSX in Markdown)
+- Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info
 
-If you have any questions, please reach out to Nathan Wang at nathan.r.wang@gmail.com, or through social media (some variant of @thecodingwizard)
+If you have any questions, please reach out to us at usacoguide@gmail.com.
 
----
+## License
 
-[![Powered by Vercel](./powered-by-vercel.svg)](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

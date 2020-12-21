@@ -26,16 +26,16 @@ export default function AnnouncementBanner({ announcement, onDismiss }) {
                 New Announcement! {announcement.title}
               </p>
             </div>
-            {/*<div className="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">*/}
-            {/*  <div className="rounded-md shadow-sm">*/}
-            {/*    <a*/}
-            {/*      href="#"*/}
-            {/*      className="flex items-center justify-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-blue-600 bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline transition ease-in-out duration-150"*/}
-            {/*    >*/}
-            {/*      Learn more*/}
-            {/*    </a>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
+            <div className="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
+              <div className="rounded-md shadow-sm">
+                <a
+                  href="#announcements"
+                  className="flex items-center justify-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-blue-600 bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline transition ease-in-out duration-150"
+                >
+                  Learn more
+                </a>
+              </div>
+            </div>
             <div className="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
               <button
                 type="button"

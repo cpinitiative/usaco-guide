@@ -7,9 +7,14 @@ import UserDataPropertyAPI from './userDataPropertyAPI';
 import LastViewedModule, {
   LastViewedModuleAPI,
 } from './properties/lastViewedModule';
-import HideTagsAndSolutions, {
-  HideTagsAndSolutionsAPI,
-} from './properties/hideTagsAndSolutions';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
+import DivisionTableQuery, {
+  DivisionTableQueryAPI,
+} from './properties/divisionTableQuery';
+import HideSols, { HideSolsAPI } from './properties/hideSols';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
@@ -21,6 +26,56 @@ import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+
+// Object for counting online users
+// var Gathering = (function () {
+//   function Gathering(firebase) {
+//     this.firebase = firebase;
+//     this.db = firebase.database();
+//
+//     this.room = this.db.ref('gatherings/globe');
+//     this.user = null;
+//
+//     this.join = function (uid) {
+//       // this check doesn't work if this.join() is called back-to-back
+//       if (this.user) {
+//         console.error('Already joined.');
+//         return false;
+//       }
+//
+//       // Add user to presence list when online.
+//       var presenceRef = this.db.ref('.info/connected');
+//       presenceRef.on('value', snap => {
+//         if (snap.val()) {
+//           this.user = uid ? this.room.child(uid) : this.room.push();
+//
+//           this.user
+//             .onDisconnect()
+//             .remove()
+//             .then(() => {
+//               this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
+//             });
+//         }
+//       });
+//       return true;
+//     };
+//
+//     this.onUpdated = function (callback) {
+//       if ('function' == typeof callback) {
+//         this.room.on('value', function (snap) {
+//           callback(snap.numChildren(), snap.val());
+//         });
+//       } else {
+//         console.error(
+//           'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
+//         );
+//       }
+//     };
+//   }
+//
+//   return Gathering;
+// })();
 
 /*
  * todo document how to add new API to user data context?
@@ -31,29 +86,80 @@ import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTagsAndSolutions(),
+  new HideTagsAndDifficulty(),
+  new HideSols(),
+  new DivisionTableQuery(),
+  new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
+  new UserClassesProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAndSolutionsAPI &
+  HideTagsAndDifficultyAPI &
+  HideSolsAPI &
+  DivisionTableQueryAPI &
+  ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
-  LastVisitAPI & {
+  LastVisitAPI &
+  UserClassesAPI & {
     firebaseUser: any;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
+    onlineUsers: number;
+    getDataExport: Function;
   };
 
-const UserDataContext = createContext<UserDataContextAPI>(null);
+const UserDataContext = createContext<UserDataContextAPI>({
+  consecutiveVisits: 0,
+  darkMode: false,
+  firebaseUser: null,
+  getDataExport: () => {},
+  hideTagsAndDifficulty: false,
+  hideSols: false,
+  divisionTableQuery: { division: 'Bronze', season: '2019 - 2020' },
+  isLoaded: true,
+  lang: 'cpp',
+  lastReadAnnouncement: 'open-source',
+  lastViewedModule: 'binary-search-sorted',
+  lastVisitDate: 1608324157466,
+  numPageviews: 130,
+  onlineUsers: -1,
+  pageviewsPerDay: {
+    1606896000000: 4,
+    1607068800000: 17,
+    1608192000000: 27,
+    1608278400000: 82,
+  },
+  setDarkMode: x => {},
+  setHideTagsAndDifficulty: x => {},
+  setHideSols: x => {},
+  setDivisionTableQuery: x => {},
+  setLang: x => {},
+  setLastReadAnnouncement: x => {},
+  setLastViewedModule: x => {},
+  setLastVisitDate: x => {},
+  setModuleProgress: (moduleID, progress) => {},
+  setShowIgnored: x => {},
+  setUserClasses: classes => {},
+  setUserProgressOnProblems: (problem, status) => {},
+  showIgnored: false,
+  signIn: () => {},
+  signOut: () => {},
+  userClasses: [],
+  userProgressOnModules: {},
+  userProgressOnModulesActivity: [],
+  userProgressOnProblems: {},
+  userProgressOnProblemsActivity: [],
+});
 
 export const UserDataProvider = ({ children }) => {
   const firebase = useFirebase();
@@ -70,6 +176,8 @@ export const UserDataProvider = ({ children }) => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  // const [onlineUsers, setOnlineUsers] = useState(0);
+
   const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
     api.setTriggerRerenderFunction(triggerRerender)
@@ -83,6 +191,16 @@ export const UserDataProvider = ({ children }) => {
       setFirebaseUser(user);
     });
   });
+
+  // Count online users
+  // useFirebase(firebase => {
+  //   let online = new Gathering(firebase);
+  //   online.join();
+  //   // Temporarily remove online user count -- it's not very accurate
+  //   // online.onUpdated(function (count) {
+  //   //   setOnlineUsers(count);
+  //   // });
+  // });
 
   // just once, ask all API's to initialize their values from localStorage
   React.useEffect(() => {
@@ -107,7 +225,7 @@ export const UserDataProvider = ({ children }) => {
             if (localDataIsNotEmpty) {
               if (
                 confirm(
-                  `Upload local progress to server? (You'll lose your local progress if you don't)`
+                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
                 )
               ) {
                 // sync all local data with firebase if the firebase account doesn't exist yet
@@ -141,13 +259,8 @@ export const UserDataProvider = ({ children }) => {
   const userData = {
     firebaseUser,
     signIn: () => {
-      if (
-        confirm(
-          'Warning: User accounts is still in beta. There is a risk of complete data loss. Are you sure you want to proceed?'
-        )
-      ) {
+      if (firebase)
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      }
     },
     signOut: () => {
       firebase
@@ -155,10 +268,11 @@ export const UserDataProvider = ({ children }) => {
         .signOut()
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-          window.location.reload();
+          UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
         });
     },
     isLoaded,
+    onlineUsers: -1,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {
@@ -166,6 +280,13 @@ export const UserDataProvider = ({ children }) => {
         ...api.getAPI(),
       };
     }, {}),
+
+    getDataExport: () => {
+      return UserDataContextAPIs.reduce(
+        (acc, api) => ({ ...acc, ...api.exportValue() }),
+        {}
+      );
+    },
   };
 
   return (

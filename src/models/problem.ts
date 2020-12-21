@@ -76,6 +76,11 @@ const probSources = {
     'Don Mills Online Judge',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
+  FHC: [
+    'https://www.facebook.com/codingcompetitions/hacker-cup/',
+    'Facebook Hacker Cup',
+    'There should be a "Solutions" tab on the left side of the page.',
+  ],
   HR: [
     'https://www.hackerrank.com/',
     'HackerRank',
@@ -255,12 +260,20 @@ export class Problem {
     public starred?: boolean,
     public tags?: string[],
     public solID?: string,
-    public solQuality: 'bad' | 'ok' | 'good' = 'ok'
+    public solQuality: 'bad' | 'ok' | 'good' = 'ok',
+    public fraction?: number
   ) {
     this.url = id;
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
+    if (solID.startsWith('/')) {
+      this.solution = {
+        kind: 'link',
+        url: `${solID}`,
+        label: 'Link',
+      };
+    }
     if (isInternal(solID)) {
       this.solution = {
         kind: 'internal',
@@ -321,6 +334,7 @@ export type ProblemProgress =
   | 'Not Attempted'
   | 'Solving'
   | 'Solved'
+  | 'Reviewing'
   | 'Skipped'
   | 'Ignored';
 
@@ -328,6 +342,7 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Not Attempted',
   'Solving',
   'Solved',
+  'Reviewing',
   'Skipped',
   'Ignored',
 ];

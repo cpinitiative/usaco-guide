@@ -92,6 +92,15 @@ export const problems = {
 			['SP'],
 			'balkan-12-shortestpaths'
 		),
+		new Problem(
+			'Balkan OI',
+			'2015 - Circus',
+			'https://oj.uz/problem/view/Balkan15_CIRCUS',
+			'Very Hard',
+			false,
+			['SP', 'Monotone stack'],
+			''
+		),
 	],
 	apspSam: [
 		new Problem(
@@ -177,9 +186,9 @@ Used as the first step of the following:
 
 <FocusProblem problem={problems.sample[0]} />
 
-### $O(N^2)$
+### $\mathcal{O}(N^2)$
 
-The USACO training pages present a $O(N^2)$ implementation, although this is rarely used nowadays.
+The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although this is rarely used nowadays.
 
 <Resources>
 	<Resource
@@ -189,7 +198,7 @@ The USACO training pages present a $O(N^2)$ implementation, although this is rar
 	></Resource>
 </Resources>
 
-### $O(M\log N)$
+### $\mathcal{O}(M\log N)$
 
 <Resources>
 	<Resource source="CPH" title="13.2 - Dijkstra" starred>
@@ -204,7 +213,7 @@ The USACO training pages present a $O(N^2)$ implementation, although this is rar
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph"></Resource>
 </Resources>
 
-### $O(M\log N)$ Implementation
+### $\mathcal{O}(M\log N)$ Implementation
 
 <Resources>
 	<Resource
@@ -266,6 +275,87 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class test {
+   static class Pair<K, V> {
+      public K a;
+      public V b;
+      public Pair(K a, V b) {
+         this.a = a;
+         this.b = b;
+      }
+      public K getKey() {
+         return a;
+      }
+      public V getValue() {
+         return b;
+      }
+   }
+   static ArrayList<Pair<Integer, Integer>> graph[];
+   static long dist[];
+   static int N;
+   
+   static void dijkstra(int src) {
+   	//Set all distances to infinity
+      for (int i = 0; i < N; ++i) 
+         dist[i] = Long.MAX_VALUE;
+      PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>
+         ((a, b) -> Long.compare(a.getKey(), b.getKey()));
+      dist[src] = 0; // The shortest path from a node to itself is 0
+      pq.add(new Pair<Long, Integer>(0L, src));
+      while(!pq.isEmpty()) {
+         Pair<Long, Integer> p = pq.poll();
+         long cdist = p.getKey();
+         int node = p.getValue();
+         if(cdist != dist[node]) 
+            continue;
+         for (Pair<Integer, Integer> i : graph[node]) {
+            // If we can reach a neighbouring node faster,
+            // we update its minimum distance
+            if(cdist+i.getValue() < dist[i.getKey()]) {
+               dist[i.getKey()] = cdist + i.getValue();
+               pq.add(new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
+            }
+         }
+      }
+   }
+	
+   public static void main(String[] args) throws Exception {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      N = Integer.parseInt(st.nextToken());
+      int M = Integer.parseInt(st.nextToken());
+      graph = new ArrayList[N];
+      dist = new long[N];
+      for (int i = 0; i < N; i++) {
+         graph[i] = new ArrayList<Pair<Integer, Integer>>();
+      }
+      for (int i = 0; i < M; i++) {
+         st = new StringTokenizer(br.readLine());
+         int a = Integer.parseInt(st.nextToken());
+         int b = Integer.parseInt(st.nextToken());
+         int c = Integer.parseInt(st.nextToken());
+         graph[a - 1].add(new Pair<Integer, Integer>(b - 1, c));
+      }
+      dijkstra(0);
+      for (int i = 0; i < N; i++) {
+         System.out.print(dist[i] + " ");
+      }
+   }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 <Warning>
 
 It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
@@ -278,13 +368,9 @@ It's important to include `continue`. This ensures that when all edge weights ar
 
 </Warning>
 
-</CPPSection>
-
-</LanguageSection>
-
 <Optional title="Faster Dijkstra">
 
-Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
+Can be done in $\mathcal{O}(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
 
 </Optional>
 

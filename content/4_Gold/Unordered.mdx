@@ -23,7 +23,7 @@ You can (almost always) use the sets introduced in the prerequisite module inste
 
 ## Hashing
 
-**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $O(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order.
+**Hashing** refers to assigning a unique code to every variable/object which allows insertions, deletions, and searches in $\mathcal{O}(1)$ time, albeit with a high constant factor, as hashing requires a large constant number of operations. However, as the name implies, elements are not ordered in any meaningful way, so traversals of an unordered set will return elements in some arbitrary order.
 
 (more in-depth explanation?)
 
@@ -33,7 +33,7 @@ Introduce `unordered_set`, `unordered_map`, but no need to repeat code from prev
 
 </IncompleteSection>
 
-All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+All of these operations are $\mathcal{O}(1)$, but again, due to the hashing, this has a high constant factor.
 
 ## Custom Hashing
 
@@ -55,6 +55,7 @@ There is no built in method for hashing pairs or vectors. Namely, `unordered_set
 </Resources>
 
 The link provides an example of hashing pairs of strings. More examples (for pairs of ints)
+
 
 ```cpp
 #include <bits/stdc++.h>
@@ -94,11 +95,41 @@ int main() {
 }
 ```
 
-However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so it would easily be **hacked**).
-
 </CPPSection>
 
+<JavaSection>
+
+Java has its own hash functions for objects. If we wanted to override it, we can define the function `hashCode()` and set our own custom hash function that will be used in `HashMaps`.
+
+```java
+import java.io.*; 
+import java.util.*; 
+
+public class HashTest{
+	public static HashMap<Pair, Integer> map;
+	public static void main(String[] args)
+	{
+		map = new HashMap<Pair, Integer>(); //uses custom hash function in class Pair
+	}
+	static class Pair {
+		public int f, s;
+		public Pair(int f, int s) {
+			this.f = f;
+			this.s = s;
+		}
+		public int hashCode(){
+			return f^s;
+		}
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
+
+
+However, this hash function is quite bad; if we insert $(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so it would easily be **hacked**).
 
 ## Hacking
 

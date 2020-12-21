@@ -1,6 +1,7 @@
 ---
 id: poi-frog
-title: POI - Frog
+source: POI
+title: Frog
 author: Benjamin Qi
 ---
 
@@ -61,17 +62,17 @@ void genNex() {
     }
 }
 
-int visit[MX];
+int vis[MX];
 
 void cycSize() {
     FOR(i,1,n+1) {
         int I = i;
-        for (;visit[I] == 0; I = nex[I][0]) visit[I] = i;
-        if (visit[I] != i) continue;
+        for (;vis[I] == 0; I = nex[I][0]) vis[I] = i;
+        if (vis[I] != i) continue;
 
         int cur = 0;
-        for (;visit[I] == i; I = nex[I][0]) { cur ++; visit[I] += n; }
-        for (;visit[I] == i+n; I = nex[I][0]) { sz[I] = cur; visit[I] += n; }
+        for (;vis[I] == i; I = nex[I][0]) { cur ++; vis[I] += n; }
+        for (;vis[I] == i+n; I = nex[I][0]) { sz[I] = cur; vis[I] += n; }
     }
 }
 

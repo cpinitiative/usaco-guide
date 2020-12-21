@@ -1,7 +1,7 @@
 ---
 id: rect-geo
 title: 'Rectangle Geometry'
-author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li
+author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li, Andrew Wang, Dong Liu
 description: 'Problems involving rectangles whose sides are parallel to the coordinate axes.'
 frequency: 2
 ---
@@ -9,9 +9,8 @@ frequency: 2
 
 
 export const problems = {
-	sam: [
-		new Problem('Bronze', 'Blocked Billboard', '759', 'Easy', false, ['rect']),
-	],
+	fence: [new Problem('Bronze', 'Fence Painting', '567', 'Very Easy')],
+	sam: [new Problem('Bronze', 'Blocked Billboard', '759', 'Easy', false, ['rect']),],
 	general: [
 		new Problem('Bronze', 'Square Pasture', '663', 'Very Easy', false, [
 			'rect',
@@ -41,7 +40,77 @@ export const problems = {
 
 Most only include two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution.
 
-## Example: Blocked Billboard
+## Example - Fence Painting
+
+<FocusProblem problem={problems.fence[0]} />
+
+Think of this as the 1D analog of the next example.
+
+### Naive Solution
+
+Since all the intervals lie between the range, $[0, 100]$, we can mark each interval of length 1 contained within each interval as painted using a loop. Then the answer will be the number of marked intervals. The code is provided [here](https://usaco.guide/general/io#method-1).
+
+However, the naive solution would not work for higher constraints. 
+
+### Constant Time Solution
+
+It's possible to calculate the answer in $\mathcal{O}(1)$ time by adding the original lengths and subtracting the intersection length.
+
+$$
+(b-a)+(d-c)-\text{intersection}([a,b],[c,d])
+$$
+
+The [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html) splits computing the intersection length into several cases. However, we do it more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and $[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words, $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
+
+<LanguageSection>
+	
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("paint.in", "r", stdin);
+	freopen("paint.out", "w", stdout);
+
+	int a, b, c, d; 
+	cin >> a >> b >> c >> d;
+
+	int ans = 0;
+	ans += b-a; // add length of first interval
+	ans += d-c; // add length of second interval
+	// if intervals intersect, subtract the length of the intersection
+	ans -= max(min(b, d)-max(a, c),0);
+
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("paint.in", "r")
+sys.stdout = open("paint.out", "w")
+
+a, b = map(int, input().split())
+c, d = map(int, input().split())
+total = (b-a) + (d-c)
+intersection = max(min(b, d)-max(a, c), 0)
+ans = total - intersection
+
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Example - Blocked Billboard
 
 <FocusProblem problem={problems.sam[0]} />
 
@@ -81,6 +150,49 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class billboard
+{
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new FileReader("billboard.in"));
+		PrintWriter out = new PrintWriter(new FileWriter("billboard.out"));
+		int ok[][] = new int[2000][2000];
+		for (int i = 0; i < 3; ++i) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int x1 = Integer.parseInt(st.nextToken());
+			int y1 = Integer.parseInt(st.nextToken());
+			int x2 = Integer.parseInt(st.nextToken()); 
+			int y2 = Integer.parseInt(st.nextToken());
+			x1 += 1000; y1 += 1000; x2 += 1000; y2 += 1000;
+			for (int x = x1; x < x2; ++x){
+				for (int y = y1; y < y2; ++y) {
+					if (i < 2) ok[x][y] = 1;
+					else ok[x][y] = 0;
+				}
+			}
+		}
+		int ans = 0;
+		for (int x = 0; x < 2000; ++x){
+			for (int y = 0; y < 2000; ++y){
+				ans += ok[x][y];
+			}
+		}
+		out.println(ans);
+		out.close();
+	}
+}
+
+```
+
+</JavaSection>
+
 <PySection>
 
 Unfortunately, the naive python solution will only get 9/10 test cases.
@@ -113,9 +225,11 @@ print(ans)
 
 </LanguageSection>
 
-Of course, this wouldn't suffice if the coordinates were up to $10^9$.
+Of course, this wouldn't suffice if the coordinates were changed to be up to $10^9$.
 
-### Rectangle Class
+### Constant Time Solution
+
+[Official Analysis](http://www.usaco.org/current/data/sol_billboard_bronze_dec17.html)
 
 A useful class in Java for dealing with rectangle geometry problems (though definitely overkill) is the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class.
 
@@ -138,7 +252,15 @@ The `Rectangle` class supports numerous useful methods, including the following:
 - `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
 - what happens when intersection is empty?
 
-This class can often lessen the implementation needed in a lot of bronze problems and CodeForces problems.
+This class can often lessen the implementation needed in some bronze problems and CodeForces problems.
+
+<Info title="Important Note About Java Coordinates">
+
+$y$-[coordinates](https://docs.oracle.com/javase/tutorial/2d/overview/coordinate.html) in Java increase from top to bottom, not bottom to top! This is why we consider the top-left $y$-coordinate of each rectangle in the solution below to be `-y2` instead of `y2`.
+
+Alternatively, you can think of `newRect` as creating a rectangle with *lower-left* corner at $(x,y)$ and work with Cartesian coordinates instead. So the solution below will work if all occurences of `-y2` are replaced with `y1`.
+
+</Info>
 
 With Built-in Rectangle class:
 
@@ -153,7 +275,6 @@ public class blockedBillboard {
 		PrintWriter pw = new PrintWriter(new FileWriter("billboard.out"));
 		int x1, y1, x2, y2;
 
-		// the top left point is (0,0), so you need to do -y2
 		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
 		Rectangle firstRect = new Rectangle(x1, -y2, x2-x1, y2-y1);
 		x1 = sc.nextInt(); y1 = sc.nextInt(); x2 = sc.nextInt(); y2 = sc.nextInt();
@@ -197,7 +318,7 @@ public class blockedBillboard {
 		t.x1 = sc.nextInt(); t.y1 = sc.nextInt(); t.x2 = sc.nextInt(); t.y2 = sc.nextInt();
 		pw.println(a.area()+b.area()-intersect(a, t)-intersect(b, t));
 		pw.close();
-    }
+	}
 	static int intersect(Rect p, Rect q) {
 		int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
 		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
@@ -206,17 +327,18 @@ public class blockedBillboard {
 }
 ```
 
+<Optional>
+
+[java.awt.geom.Area](https://docs.oracle.com/javase/7/docs/api/java/awt/geom/Area.html) will allow you to calculate the union, intersection, difference, or exclusive or of arbitrary polygons (and more). See [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/PolyUnion.java) for an example of usage.
+
+</Optional>
+
 </JavaSection>
 
 <CPPSection>
 
-Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the solution to Blocked Billboard written in C++ (thanks, Brian Dean!).
+Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly):
 
-<Info title="What's a struct?">
-
-A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
-
-</Info>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -243,6 +365,12 @@ int main(){
 	cout << a.area()+b.area()-intersect(a,t)-intersect(b,t) << endl;
 }
 ```
+
+<Info title="What's a struct?">
+
+A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
+
+</Info>
 
 </CPPSection>
 

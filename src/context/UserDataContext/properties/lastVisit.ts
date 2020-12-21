@@ -3,13 +3,17 @@ import UserDataPropertyAPI from '../userDataPropertyAPI';
 export type LastVisitAPI = {
   lastVisitDate: number;
   setLastVisitDate: (today: number) => void;
-
   consecutiveVisits: number;
+  numPageviews: number;
+  // timestamp for midnight on that day ==> how many pageviews for that day
+  pageviewsPerDay: { [key: number]: number };
 };
 
 export default class LastVisitProperty extends UserDataPropertyAPI {
   private lastVisitDate: number;
   private consecutiveVisits: number;
+  private numPageviews: number;
+  private pageviewsPerDay: { [key: number]: number };
 
   initializeFromLocalStorage = () => {
     this.lastVisitDate = this.getValueFromLocalStorage(
@@ -19,6 +23,14 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     this.consecutiveVisits = this.getValueFromLocalStorage(
       this.getLocalStorageKey('consecutiveVisits'),
       1
+    );
+    this.numPageviews = this.getValueFromLocalStorage(
+      this.getLocalStorageKey('numPageviews'),
+      0
+    );
+    this.pageviewsPerDay = this.getValueFromLocalStorage(
+      this.getLocalStorageKey('pageviewsPerDay'),
+      {}
     );
   };
 
@@ -31,6 +43,14 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       this.getLocalStorageKey('consecutiveVisits'),
       this.consecutiveVisits
     );
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey('numPageviews'),
+      this.numPageviews
+    );
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey('pageviewsPerDay'),
+      this.pageviewsPerDay
+    );
   };
 
   eraseFromLocalStorage = () => {
@@ -38,24 +58,32 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     window.localStorage.removeItem(
       this.getLocalStorageKey('consecutiveVisits')
     );
+    window.localStorage.removeItem(this.getLocalStorageKey('numPageviews'));
+    window.localStorage.removeItem(this.getLocalStorageKey('pageviewsPerDay'));
   };
 
   exportValue = (): any => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
+      numPageviews: this.numPageviews,
+      pageviewsPerDay: this.pageviewsPerDay,
     };
   };
 
   importValueFromObject = (data: object) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
+    this.numPageviews = data['numPageviews'] || 0;
+    this.pageviewsPerDay = data['pageviewsPerDay'] || {};
   };
 
   getAPI = () => {
     return {
       lastVisitDate: this.lastVisitDate,
       consecutiveVisits: this.consecutiveVisits,
+      numPageviews: this.numPageviews,
+      pageviewsPerDay: this.pageviewsPerDay,
       setLastVisitDate: (today: number) => {
         let timeSinceLastVisit = today - this.lastVisitDate;
         let oneDay = 1000 * 60 * 60 * 20,
@@ -63,7 +91,6 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
 
         let newLastVisit = null,
           newConsecutiveVisits = null;
-
         if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
           newLastVisit = today;
           newConsecutiveVisits = this.consecutiveVisits + 1;
@@ -72,21 +99,41 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
           newConsecutiveVisits = 1;
         }
 
+        let changes = {};
         if (newLastVisit !== null) {
-          if (this.firebaseUserDoc) {
-            this.firebaseUserDoc.set(
-              {
-                lastVisitDate: newLastVisit,
-                consecutiveVisits: newConsecutiveVisits,
-              },
-              { merge: true }
-            );
-          }
           this.lastVisitDate = newLastVisit;
           this.consecutiveVisits = newConsecutiveVisits;
-          this.writeValueToLocalStorage();
-          this.triggerRerender();
+          changes = {
+            lastVisitDate: newLastVisit,
+            consecutiveVisits: newConsecutiveVisits,
+          };
         }
+
+        this.numPageviews++;
+        let todayDate = new Date(today);
+        todayDate.setHours(0, 0, 0, 0);
+        let todayDateTimestamp = todayDate.getTime();
+        if (todayDateTimestamp in this.pageviewsPerDay) {
+          this.pageviewsPerDay[todayDateTimestamp]++;
+        } else {
+          this.pageviewsPerDay[todayDateTimestamp] = 1;
+        }
+
+        if (this.firebaseUserDoc) {
+          this.firebaseUserDoc.set(
+            {
+              ...changes,
+              numPageviews: this.numPageviews,
+              pageviewsPerDay: {
+                [todayDateTimestamp]: this.pageviewsPerDay[todayDateTimestamp],
+              },
+            },
+            { merge: true }
+          );
+        }
+
+        this.writeValueToLocalStorage();
+        this.triggerRerender();
       },
     };
   };

@@ -41,6 +41,7 @@ module.exports = {
     //   'dark-placeholder',
     // ],
     display: ['responsive', 'dark'],
+    divideColor: ['responsive', 'dark'],
     backgroundColor: [
       'responsive',
       'group-hover',
@@ -52,6 +53,7 @@ module.exports = {
       'dark-group-hover',
       'dark-hover',
       'dark-focus',
+      'dark-active',
     ],
     backgroundOpacity: [
       'responsive',
@@ -64,6 +66,7 @@ module.exports = {
       'dark-group-hover',
       'dark-hover',
       'dark-focus',
+      'dark-active',
     ],
     borderColor: [
       'responsive',
@@ -75,9 +78,16 @@ module.exports = {
       'dark-group-hover',
       'dark-hover',
       'dark-focus',
+      'dark-active',
     ],
-    boxShadow: ['responsive', 'group-focus', 'hover', 'focus'],
-    placeholderColor: ['responsive', 'focus', 'dark', 'dark-focus'],
+    boxShadow: ['responsive', 'group-focus', 'hover', 'focus', 'dark-active'],
+    placeholderColor: [
+      'responsive',
+      'focus',
+      'dark',
+      'dark-focus',
+      'dark-active',
+    ],
     textColor: [
       'responsive',
       'group-hover',
@@ -90,6 +100,7 @@ module.exports = {
       'dark-group-hover',
       'dark-hover',
       'dark-focus',
+      'dark-active',
     ],
     textDecoration: [
       'responsive',
@@ -101,6 +112,17 @@ module.exports = {
       'dark-group-hover',
       'dark-hover',
       'dark-focus',
+      'dark-active',
+    ],
+    gradientColorStops: [
+      'responsive',
+      'hover',
+      'focus',
+      'dark',
+      'dark-group-hover',
+      'dark-hover',
+      'dark-focus',
+      'dark-active',
     ],
     translate: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
   },

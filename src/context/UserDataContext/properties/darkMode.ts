@@ -3,15 +3,28 @@ import SimpleUserDataPropertyAPI from '../simpleUserDataPropertyAPI';
 export const darkModeKey = 'guide:userData:darkMode';
 
 export type DarkModeAPI = {
-  darkMode: Boolean;
-  setDarkMode: (b: Boolean) => void;
+  darkMode: boolean;
+  setDarkMode: (b: boolean) => void;
 };
 
 export default class DarkMode extends SimpleUserDataPropertyAPI {
   protected storageKey = 'darkMode';
-  protected defaultValue = false;
   protected setterFunctionName = 'setDarkMode';
   private _value = false;
+
+  get defaultValue() {
+    if (typeof window === 'undefined') return false;
+
+    // Note: see also gatsby-ssr.tsx if any of the below code needs to be changed.
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    const hasMediaQueryPreference = typeof mql.matches === 'boolean';
+    if (hasMediaQueryPreference) {
+      return mql.matches ? true : false;
+    }
+    // If they are using a browser/OS that doesn't support
+    // color themes, let's default to 'light'.
+    return false;
+  }
 
   get value() {
     return this._value;

@@ -1,0 +1,155 @@
+---
+id: range-sweep
+title: 'Range Queries with Sweep Line'
+author: Benjamin Qi, Andi Qu
+prerequisites:
+  - PURS
+  - lis
+description: 'Solving 2D grid problems using 1D range queries.'
+frequency: 2
+---
+
+export const problems = {
+	sample: [
+		new Problem(
+			'CSES',
+			'Intersection Points',
+			'1740',
+			'Easy',
+			false,
+			undefined,
+			''
+		),
+		new Problem('Gold', 'Springboards', '995', 'Normal', false, [], ''),
+	],
+	sweep: [
+		new Problem(
+			'HE@HackerEarth',
+			'Twin Permutations',
+			'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/',
+			'Easy',
+			false,
+			undefined,
+			'Offline 2D queries can be done with a 1D data structure'
+		),
+		new Problem('Plat', 'Slingshot', '816', 'Normal', false, ['PURQ'], ''),
+		new Problem('CSES', 'Robot Path', '1742', 'Hard', false, ['PURQ'], ''),
+		new Problem('IZhO', 'Hedgehog Daniyar and Algorithms', 'https://oj.uz/problem/view/IZhO19_sortbooks', 'Hard', false, [],''),
+	],
+	numLIS: [
+		new Problem(
+			'Balkan OI',
+			'2011 - Trapezoid',
+			'https://oj.uz/problem/view/balkan11_trapezoid',
+			'Hard',
+			true,
+			['DP', 'BIT'],
+			'http://boi2011.ro/resurse/tasks/trapezoid-sol.pdf'
+		),
+		new Problem(
+			'COCI',
+			'2016 - Zoltan',
+			'https://oj.uz/problem/view/COCI16_zoltan',
+			'Hard',
+			true,
+			['DP', 'BIT'],
+			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2017/contest3_solutions/solutions.pdf'
+		),
+		new Problem('Plat', 'Sort It Out', '865', 'Very Hard', false, ['DP'], ''),
+	]
+};
+
+<FocusProblem problem={problems.sample[0]} />
+
+<FocusProblem problem={problems.sample[1]} />
+
+## Tutorial
+
+<IncompleteSection />
+
+## Solution - Intersection Points
+
+<IncompleteSection />
+
+## Solution - Springboards
+
+<IncompleteSection />
+
+The problem boils down to having a data structure that supports the following operations:
+
+1. Add a pair $(a,b)$.
+2. For any $x$, query the minimum value of $b$ over all pairs satisfying $a\le x$.
+
+The [other module](/adv/springboards) describes a simpler way of doing this, though it's probably more straightforward to do coordinate compression and use a min segtree. The latter approach is shown below.
+
+```cpp
+/**
+ * Description: 1D point update, range query where \texttt{comb} is
+ 	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
+ * Time: O(\log N)
+ * Source: 
+	* http://codeforces.com/blog/entry/18051
+	* KACTL
+ * Verification: SPOJ Fenwick
+ */
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return min(a,b); } 
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		ckmin(seg[p += n],val); for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID; 
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<int> S;
+int N,P;
+int ans[MX];
+vi distinct_y;
+
+int query_min(int ind) { return S.query(0,ind); }
+void ins(int ind, int val) { S.upd(ind,val); }
+int y_index(int y) {return lb(all(distinct_y),y)-begin(distinct_y); }
+
+int main() {
+	setIO("boards");
+	cin >> N >> P;
+	vector<pair<pair<int,int>,pair<int,int>>> ev;
+	for (int i = 0; i < P; ++i) {
+		pair<int,int> a,b; 
+		cin >> a.f >> a.s >> b.f >> b.s;
+		ev.push_back({a,{i,-1}}); // start point
+		ev.push_back({b,{i,1}}); // end point
+		distinct_y.pb(a.s);
+		distinct_y.pb(b.s);
+	}
+	sort(all(distinct_y));
+	sort(begin(ev),end(ev));
+	S.init(2*P);
+	ins(0,0);
+	for (auto& t: ev) {
+		if (t.s.s == -1) {
+			ans[t.s.f] = t.f.f+t.f.s+query_min(y_index(t.f.s));
+		} else {
+			ins(y_index(t.f.s),ans[t.s.f]-t.f.f-t.f.s);
+		}
+	}
+	cout << query_min(2*P-1)+2*N;
+}
+```
+
+## Problems
+
+<Problems problems={problems.sweep} />
+
+Relating to LIS:
+
+<Problems problems={problems.numLIS} />

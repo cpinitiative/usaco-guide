@@ -1,0 +1,157 @@
+---
+id: usaco-921
+source: USACO Gold 2019 February
+title: Cow Land
+author: Albert Ye
+---
+
+**Time Complexity:** $\mathcal{O}((n+q) \log n)$
+
+**Main Idea:** We use Euler tour technique to initialize a binary indexed tree, and use the binary indexed tree to run range XOR queries.
+
+Check the [official solution](http://usaco.org/current/data/sol_cowland_gold_feb19.html) for another, more complicated, solution with HLD.
+
+Let $e_x$ be the enjoyment values for each of the attractions, and $lca(i, j)$ be the lowest common ancestor between nodes $i$ and $j$.
+
+## Euler Tour Technique
+
+Let $i_x$ and $o_x$ be the in and out times for the tree, which we find through DFS with the Euler tour technique mentioned in [this section](https://usaco.guide/gold/tree-euler).
+
+## Binary Indexed Tree
+
+We create a binary indexed tree which supports range updates and XOR queries. Note that the inverse of XOR is XOR itself.
+
+Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the prefix XOR to $i_x$ is now the path XOR from the root node to each node at the tree. See [the solution for Path Queries](https://usaco.guide/solutions/cses-1138) for a comprehensive explanation. 
+
+Let the prefix XOR at $i$ be $X(i)$. 
+
+The difference between the explanation for Path Queries and this problem is that we have range XOR queries instead of range sum queries. 
+
+This precomputation takes $\mathcal{O}(n \log n)$.
+
+## Responding to Queries
+We now need to respond to path queries and updates. To update node $x$, we remove the current values at $i_x$ and $o_x$ and replace these indices with the new value. For a path query, we just output $X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR operation). The $X(i)$ and $X(j)$ are the XOR queries for the paths from $0$ to $i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted twice and thus negates itself. Thus, we need to also XOR $e_{lca(i,j)}$ to account for the full path XOR from $i$ to $j$.
+
+LCA precomputation is known to take $\mathcal{O}(n \log n)$ with sparse table. Additionally, updates and queries both take $\mathcal{O}(\log n)$ each, the complexity of the LCA and BIT queries. As there are $q$ updates and queries in total, the total complexity for the querying step is $\mathcal{O}(q \log n)$. Hence, the total complexity is $\mathcal{O}((n+q) \log n)$.
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+```cpp
+#include <bits/stdc++.h>
+
+#define MAXN 100005
+#define bitinc(x) (x&-x);
+
+using namespace std;
+
+int n,arr[MAXN],bit[4*MAXN],in[MAXN],ot[MAXN],par[MAXN][22];
+vector<int> adj[MAXN];
+
+int timer = 1;
+// does initial DFS to find the time in/out for each subtree-range.
+void dfs(int v=0,int p=-1)
+{
+	in[v] = timer++;
+	par[v][0] = p;
+	for(int i = 1; i < 22; i++)
+		par[v][i] = par[par[v][i-1]][i-1];
+	for(int x : adj[v])
+	{
+		if(x == p) continue;
+		dfs(x,v);
+	}
+	ot[v] = timer++;
+}
+
+// prefix XOR. reversable = done onto itself
+int XOR(int ind)
+{
+	int xo = 0;
+	while(ind > 0)
+	{
+		xo ^= bit[ind];
+		ind -= bitinc(ind);
+	}
+	return xo;
+}
+void upd(int ind, int val)
+{
+	while(ind <= timer)
+	{
+		bit[ind] ^= val;
+		ind += bitinc(ind);
+	}
+}
+
+bool anc(int u, int v)
+{
+	return (in[u] <= in[v] && ot[u] >= ot[v]);
+}
+
+// method finding all lca's
+int lca(int u, int v)
+{
+	if(anc(u,v))
+		return u;
+	for(int i = 21; i >= 0; i--)
+	{
+		if(par[u][i] >= 0 && !anc(par[u][i], v))
+			u = par[u][i];
+	}
+	return par[u][0];
+}
+
+int main()
+{
+	freopen("cowland.in", "r", stdin);
+	freopen("cowland.out", "w", stdout);
+	int q;
+	cin >> n >> q;
+	for(int i = 0; i < n; i++) cin >> arr[i];
+	for(int i = 1; i < n; i++) 
+	{
+		int u,v;
+		cin >> u >> v;
+		--u; --v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	dfs();
+	// add each vertex query right now.
+	for(int i = 0; i < n; i++)
+	{
+		upd(in[i], arr[i]);
+		upd(ot[i], arr[i]);
+	}
+	// rep. for each query
+	for(int que = 0; que < q; que++)
+	{
+		int t;
+		cin >> t;
+		if(t==1)
+		{
+			int s, x;
+			cin >> s >> x;	
+			--s;
+			// erase the initial arr[s] value.
+			upd(in[s], arr[s]);
+			upd(ot[s], arr[s]);
+			arr[s] = x;
+			// update the arr[s] value to x.
+			upd(in[s], arr[s]);
+			upd(ot[s], arr[s]);
+		} else 
+		{
+			int u,v;
+			cin >> u >> v;
+			--u; --v;
+			int w = lca(u,v);
+			cout << ((XOR(in[u]) ^ XOR(in[v])) ^ arr[w]) << endl;
+		}
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

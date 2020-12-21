@@ -2,8 +2,10 @@ import * as React from 'react';
 import { ModuleInfo } from '../../models/module';
 import { SECTION_LABELS } from '../../../content/ordering';
 import SlideoverForm from './SlideoverForm';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useStickyState from '../../hooks/useStickyState';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -53,7 +55,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
   );
 };
 
-function validateEmail(email) {
+export function validateEmail(email) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
@@ -61,14 +63,14 @@ function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
-  activeModule = null,
 }: {
   isOpen: boolean;
   onClose: any;
   activeModule?: ModuleInfo;
 }) {
-  const [name, setName] = useStickyState('', 'contact_form_name');
-  const [email, setEmail] = useStickyState('', 'contact_form_email');
+  const userSettings = useContext(UserDataContext);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
@@ -86,13 +88,27 @@ export default function ContactUsSlideover({
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
 
+  const markdownContext = useContext(MarkdownLayoutContext);
+
   React.useEffect(() => {
-    if (activeModule)
+    const activeModule = markdownContext?.markdownLayoutInfo;
+    if (activeModule && activeModule instanceof ModuleInfo)
       setLocation(
-        `${activeModule.title} - ${SECTION_LABELS[activeModule.section]}`
+        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
     else setLocation('');
-  }, [activeModule]);
+  }, [markdownContext?.markdownLayoutInfo]);
+
+  const { firebaseUser } = useContext(UserDataContext);
+  useEffect(() => {
+    if (!firebaseUser) return;
+    if (email === '') {
+      setEmail(firebaseUser.email);
+    }
+    if (name === '') {
+      setName(firebaseUser.displayName);
+    }
+  }, [firebaseUser]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -119,8 +135,16 @@ export default function ContactUsSlideover({
     data.append('name', name);
     data.append('email', email);
     data.append('location', location);
+    data.append('url', window.location.href);
+    data.append('lang', userSettings.lang);
     data.append('topic', topic);
     data.append('message', message);
+    data.append(
+      '_subject',
+      `[Contact Us] ${topic || 'Other'} ${location ? `- ${location} ` : ''} - ${
+        email || 'Unknown Email'
+      }`
+    );
     setSubmitEnabled(false);
     try {
       await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {

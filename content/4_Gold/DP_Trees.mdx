@@ -10,8 +10,6 @@ description: 'Using subtrees as subproblems.'
 frequency: 2
 ---
 
-
-
 export const problems = {
 	sample: [
 		new Problem('CSES', 'Tree Matching', '1130', 'Easy', false, ['DP'], '@B'),
@@ -23,8 +21,8 @@ export const problems = {
 			'https://atcoder.jp/contests/dp/tasks/dp_p',
 			'Easy',
 			true,
-			['Tree', 'DFS', 'DP'],
-			'AC-IndpendentSet'	
+			['Tree', 'DP'],
+			'AC-IndependentSet'	
 		),
 		new Problem(
 			'Gold',
@@ -32,7 +30,7 @@ export const problems = {
 			'766',
 			'Easy',
 			false,
-			['DP'],
+			['Tree', 'DP'],
 			'similar to independent set on tree'
 		),
 		new Problem(
@@ -41,24 +39,7 @@ export const problems = {
 			'contest/1387/problem/B1',
 			'Normal',
 			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'Hotels',
-			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
-			'Normal',
-			false,
-			['Tree', 'DFS', 'DP']
-		),
-		new Problem(
-			'POI',
-			'Sabotage',
-			'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-			'Normal',
-			false,
-			['Binary-Search'],
+			['Tree', 'Greedy'],
 			''
 		),
 		new Problem(
@@ -68,16 +49,7 @@ export const problems = {
 			'Normal',
 			false,
 			[],
-			''
-		),
-		new Problem(
-			'Infoarena',
-			'Countfefete',
-			'https://www.infoarena.ro/problema/countfefete',
-			'Hard',
-			false,
-			[],
-			''
+			'poi-16-par'
 		),
 		new Problem('Gold', 'Delegation', '1019', 'Hard', false, ['Greedy'], ''),
 		new Problem(
@@ -101,13 +73,13 @@ export const problems = {
 	],
 	insane: [
 		new Problem(
-			'CF',
-			'Boboniu and Jianghu',
-			'1394/problem/D',
+			'COI',
+			'2016 - Torrent',
+			'https://oj.uz/problem/view/COI16_torrent',
 			'Very Hard',
 			false,
-			['DP'],
-			''
+			['DP', 'Tree'],
+			'coi-torrent'
 		),
 		new Problem(
 			'Plat',
@@ -115,16 +87,16 @@ export const problems = {
 			'1020',
 			'Very Hard',
 			false,
-			['DP', 'Binary Search'],
+			['DP', 'Tree', 'Binary Search'],
 			''
 		),
 		new Problem(
-			'COI',
-			'2016 - Torrent',
-			'https://oj.uz/problem/view/COI16_torrent',
+			'CF',
+			'Boboniu and Jianghu',
+			'1394/problem/D',
 			'Very Hard',
 			false,
-			[],
+			['DP', 'Tree'],
 			''
 		),
 		new Problem(
@@ -133,7 +105,7 @@ export const problems = {
 			'https://oj.uz/problem/view/IOI07_training',
 			'Insane',
 			true,
-			[],
+			['DP', 'Tree'],
 			''
 		),
 		new Problem(
@@ -142,8 +114,8 @@ export const problems = {
 			'1752',
 			'Insane',
 			false,
-			['Greedy'],
-			'equivalent to Baltic OI - Cat in a Tree. Exists a greedy-ish strategy!'
+			['Tree', 'Greedy'],
+			'equivalent to Baltic OI - Cat in a Tree.'
 		),
 		new Problem(
 			'Baltic OI',
@@ -151,11 +123,21 @@ export const problems = {
 			'https://oj.uz/problem/view/BOI16_swap',
 			'Insane',
 			false,
-			[],
-			''
+			['Tree', 'DP'],
+			'baltic-16-swap'
 		),
 	],
 };
+
+<!-- new Problem(
+	'Infoarena',
+	'Countfefete',
+	'https://www.infoarena.ro/problema/countfefete',
+	'Hard',
+	false,
+	[],
+	''
+), -->
 
 <FocusProblem problem={problems.sample[0]} />
 
@@ -193,7 +175,7 @@ Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we 
 Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
 
 $$
-dp_2[v] = \sum_{u \in child(v)} max(dp_1[u], dp_2[u])
+dp_2[v] = \sum_{u \in child(v)} \max(dp_1[u], dp_2[u])
 $$
 
 #### Taking One Edge
@@ -201,13 +183,13 @@ $$
 The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1[v]$ for the fixed $u$:
 
 $$
-dp_1[v] = dp_2[u] + 1 + dp_2[v] - max(dp_2[u], dp_1[u])
+dp_1[v] = dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u])
 $$
 
 In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the other children, we add:
 
 $$
-\sum_{w \in child(v), w \neq u} dp_2[w].
+\sum_{w \in child(v), w \neq u} \max(dp_1[w], dp_2[w]).
 $$
 
 Fortunately, since we've calculated $dp_2[v]$ already, this expression simplifies to:
@@ -257,7 +239,7 @@ void setIO(string name = "") { // name is nonempty for USACO file I/O
 
 vi adj[200005]; int dp[200005][2];
 
-void dfs(int v, int p){
+void dfs(int v, int p) {
     for (int to : adj[v]) {
         if (to != p) {
             dfs(to, v);
@@ -286,6 +268,51 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class TreeMatching {
+	static ArrayList<Integer> adj[];
+	static int dp[][];
+	static void dfs(int v, int p) {
+		for (int to : adj[v]) {
+			if(to != p) {
+				dfs(to, v);
+				dp[v][0] += Math.max(dp[to][0], dp[to][1]);
+			}
+		}
+		for (int to : adj[v]) {
+			if(to != p) {
+				dp[v][1] = Math.max(dp[v][1], dp[to][0] + 1 + dp[v][0] - Math.max(dp[to][0], dp[to][1]));
+			}
+		}
+	}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		adj = new ArrayList[N];
+		dp = new int[N][2];
+		for (int i = 0; i < N; ++i) {
+			adj[i] = new ArrayList<Integer>();
+		}
+		for (int i = 0; i < N - 1; ++i) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+		dfs(0, -1);
+		System.out.println(Math.max(dp[0][0], dp[0][1]));
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -296,6 +323,10 @@ Just keep matching a leaf with the only vertex adjacent to it while possible.
 
 <Spoiler title="Code">
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 int n;
 vi adj[MX];
@@ -303,10 +334,12 @@ bool done[MX];
 int ans = 0;
 
 void dfs(int pre, int cur) {
-	for (int i: adj[cur]) if (i != pre) {
-		dfs(cur,i);
-		if (!done[i] && !done[cur])
-		  done[cur] = done[i] = 1, ans ++;
+	for (int i: adj[cur]) {
+		if (i != pre) {
+			dfs(cur,i);
+			if (!done[i] && !done[cur])
+				done[cur] = done[i] = 1, ans ++;
+		}
 	}
 }
 
@@ -322,17 +355,60 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class TreeMatching {
+	static ArrayList<Integer> adj[];
+	static int N;
+	static boolean done[];
+	static int ans = 0;
+	static void dfs(int v, int p) {
+		for (int to : adj[v]) {
+			if(to != p) {
+				dfs(to, v);
+				if(!done[to] && !done[v]) {
+					done[v] = done[to] = true;
+					++ans;
+				}
+			}
+		}
+	}
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		adj = new ArrayList[N];
+		done = new boolean[N];
+		for (int i = 0; i < N; ++i) {
+			adj[i] = new ArrayList<Integer>();
+		}
+		for (int i = 0; i < N - 1; ++i) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+		dfs(0, -1);
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 </Spoiler>
 
 ## Problems
 
 ### Easier
-
-<IncompleteSection>
-
-difficulties might not be accurate
-
-</IncompleteSection>
 
 <Problems problems={problems.usaco} />
 

@@ -15,25 +15,29 @@ html.transitioning-color-scheme * {
   transition-duration: 0ms !important;
 }
 
+/* Scrollbar styles */
+/* Thanks https://joshwcomeau.com/! */
 @media (orientation: landscape) {
-  .mode-dark ::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
-    @apply bg-gray-500;
+    background-color: theme('colors.gray.200');
   }
-
-  .mode-dark ::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     border-radius: 3px;
     background-color: transparent;
   }
-
-  .mode-dark ::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    @apply bg-gray-700 border-2 border-gray-500;
+    background-color: theme('colors.gray.500');
+    border: 2px solid theme('colors.gray.200');
   }
-
-  .mode-dark ::-webkit-scrollbar-corner {
-    @apply bg-dark-surface;
+  .mode-dark ::-webkit-scrollbar {
+    background-color: theme('colors.gray.800');
+  }
+  .mode-dark ::-webkit-scrollbar-thumb {
+    border: 2px solid theme('colors.gray.800');
+    background-color: theme('colors.gray.400');
   }
 }
 
@@ -115,12 +119,12 @@ html.transitioning-color-scheme * {
   @apply pl-4 mb-6;
 }
 
-.markdown ul ul {
+.markdown ul:not(.no-markdown) ul {
   list-style-type: circle;
   @apply mt-1 mb-0;
 }
 
-.markdown ul ul ul {
+.markdown ul:not(.no-markdown) ul ul {
   list-style-type: square;
 }
 
@@ -182,12 +186,11 @@ html.transitioning-color-scheme * {
 .spoiler-body > pre {
   margin-left: -1rem !important;
   margin-right: -1rem !important;
-  margin-bottom: -1rem !important;
-}
-.spoiler-body > pre + p {
-  @apply mt-4;
 }
 
+.spoiler-body > pre:last-child {
+  margin-bottom: -1rem !important;
+}
 .tailwind-alert p + ul {
   @apply -mt-2;
 }
@@ -209,6 +212,15 @@ html.transitioning-color-scheme * {
 }
 .mode-dark .table-alternating-stripes tr:nth-child(even) {
   background-color: #1c2538;
+}
+
+.dark-mde-container .editor-toolbar {
+  border-top-color: #4a5568;
+  border-left-color: #4a5568;
+  border-right-color: #4a5568;
+}
+.dark-mde-container .CodeMirror {
+  background-color: #edf2f7;
 }
 
 /* from https://www.lekoarts.de/en/blog/language-tabs-for-gatsbys-code-blocks */

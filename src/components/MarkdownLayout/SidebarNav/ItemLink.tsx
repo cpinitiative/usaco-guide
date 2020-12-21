@@ -36,10 +36,12 @@ export const LinkWithProgress = styled.span`
     ${props => props.lineColorStyle};
   }
 
-  .mode-dark &::after {
+  // Really weird bug: Single ampersand breaks stuff; double ampersand works
+  // This might be a styled-component issue?????
+  .mode-dark &&::after {
     ${props => props.darkDotColorStyle};
   }
-  .mode-dark &::before {
+  .mode-dark &&::before {
     ${props => props.darkLineColorStyle};
   }
 
@@ -55,10 +57,10 @@ export const LinkWithProgress = styled.span`
 const StyledLink = styled.span`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
-  ${({ textStyle }) => textStyle}
-  .mode-dark & {
+  ${({ $textStyle }) => $textStyle}
+  .mode-dark && {
     ${tw`hover:bg-gray-900 hover:text-dark-high-emphasis focus:bg-gray-800`}
-    ${({ darkTextStyle }) => darkTextStyle}
+    ${({ $darkTextStyle }) => $darkTextStyle}
   }
 
   &::before {
@@ -72,7 +74,7 @@ const StyledLink = styled.span`
   }
 
   &::before {
-    transform: ${({ isActive }) => (isActive ? 'scale(1)' : 'scale(0.1)')};
+    transform: ${({ $isActive }) => ($isActive ? 'scale(1)' : 'scale(0.1)')};
     border-radius: 100%;
     z-index: 1;
   }
@@ -92,8 +94,10 @@ const StyledLink = styled.span`
 `;
 
 const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
-  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
-  const isActive = markdownLayoutInfo.id === link.id;
+  const { activeIDs } = useContext(MarkdownLayoutContext);
+  // const isActive = markdownLayoutInfo.id === link.id;
+  // console.log("WHOOPS",activeIDs)
+  const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -165,16 +169,16 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
     >
       <Link to={link.url}>
         <StyledLink
-          isActive={isActive}
+          $isActive={isActive}
           ref={itemRef}
-          textStyle={
+          $textStyle={
             isActive
               ? activeTextStyle
               : progress === 'Ignored'
               ? tw`text-gray-400`
               : tw`text-gray-600`
           }
-          darkTextStyle={
+          $darkTextStyle={
             isActive
               ? darkActiveTextStyle
               : progress === 'Ignored'

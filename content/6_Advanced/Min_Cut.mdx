@@ -10,7 +10,7 @@ frequency: 1
 
 export const problems = {
 	minEx: [new Problem('CSES', 'Coin Grid', '1709', 'Easy', false, [], '')],
-	path: [
+	pathEx: [
 		new Problem(
 			'Kattis',
 			'The Wrath of Khan',
@@ -69,10 +69,17 @@ export const problems = {
 			[],
 			''
 		),
+		new Problem(
+			'FHC',
+			'Gentrification',
+			'2015/round-3/problems/C',
+			'Hard',
+			false,
+			[],
+			''
+		)
 	],
 };
-
-<FocusProblem problem={problems.minEx[0]} />
 
 ## Resources
 
@@ -86,14 +93,21 @@ The resources below include many clever applications of min cut, including the [
 	>
 		Slides from "Algorithm Design." Min-Cut Max-Flow Theorem, applications of flow / min cut.
 	</Resource>
-	<Resource source="CPH" title="20.3, 20.4 - Flows & Cuts" starred>
-		Brief descriptions of flow / min cut applications.
+</Resources>
+
+## Minimum Node Covers
+
+<FocusProblem problem={problems.minEx[0]} />
+
+<Resources>
+	<Resource source="CPH" title="20.3 - Maximum Matchings" starred>
+		brief mentions of Hall's Theorem, Konig's Theorem
 	</Resource>
 </Resources>
 
-## Solution - Coin Grid
+### Solution - Coin Grid
 
-This problem asks us for the **minimum node cover** of a bipartite graph. Construct a flow graph with vertices labeled $0\ldots 2N+1$, source $0$, sink $2N+1$, and the following edges:
+This problem asks us to find a **minimum node cover** of a bipartite graph. Construct a flow graph with vertices labeled $0\ldots 2N+1$, source $0$, sink $2N+1$, and the following edges:
 
  - Edges from $0\to i$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th row.
  - Edges from $N+i\to 2N+1$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th column.
@@ -162,20 +176,51 @@ int main() {
 }
 ```
 
-## Path Covers
+## Minimum Path Covers
+
+<FocusProblem problem={problems.pathEx[0]} />
 
 <Resources>
-	<Resource source="CPH" title="20.4 - Path Covers" starred></Resource>
+	<Resource source="CPH" title="20.4 - Path Covers" starred>brief mentions of node-disjoint and general path covers, Dilworth's theorem</Resource>
 	<Resource
-		source="Wikpedia"
+		source="Wikipedia"
 		title="Dilworth's Theorem"
 		url="https://en.wikipedia.org/wiki/Dilworth%27s_theorem#Proof_via_K%C5%91nig's_theorem"
-	></Resource>
+	>proof via Konig's theorem</Resource>
 </Resources>
 
-<Problems problems={problems.path} />
+### Solution - The Wrath of Kahn
 
-https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C
+Ignore all vertices of $G$ that can never be part of $S$. Then our goal is to find the size of a maximum antichain in the remaining graph, which as mentioned in CPH is just an instance of maximum path cover.
+
+
+```cpp
+TopoSort<500> T;
+int n,m;
+bool link[500][500];
+vi out[500];
+Dinic<1005> D;
+
+int main() {
+    setIO(); re(n,m);
+    F0R(i,m) {
+        int x,y; re(x,y);
+        T.ae(x,y);
+        link[x][y] = 1;
+    }
+    F0R(k,n) F0R(a,n) F0R(b,n) link[a][b] |= link[a][k]&link[k][b];
+    T.sort(n);
+    vi bad; F0R(i,n) if (T.in[i]) bad.pb(i); // cannot be part of S
+    trav(a,bad) F0R(i,n) link[a][i] = link[i][a] = 0;
+    F0R(i,n) {
+        D.ae(2*n,i,1);
+        D.ae(i+n,2*n+1,1);
+    }
+    F0R(i,n) F0R(j,n) if (link[i][j]) D.ae(i,n+j,1);
+    int chain = n-sz(bad)-D.maxFlow(2*n+2,2*n,2*n+1);
+    ps(chain);
+}
+```
 
 ## Problems
 

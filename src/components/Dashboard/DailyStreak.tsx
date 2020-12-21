@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 // note: cows will be unlocked in reverse order
 
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
-  const [milliseconds, setMilliseconds] = React.useState(tomorrowMilliseconds);
+  const [milliseconds, setMilliseconds] = React.useState(
+    tomorrowMilliseconds - Date.now()
+  );
 
   React.useEffect(() => {
     let interval = setInterval(() => {
@@ -84,6 +86,14 @@ export default function DailyStreak({ streak }) {
     return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
   }, []);
   const { lastVisitDate } = useContext(UserDataContext);
+
+  // we don't want to render streaks during Server-Side Generation
+  const [firstRender, setFirstRender] = useState(true);
+  React.useEffect(() => {
+    setFirstRender(false);
+  }, []);
+  if (firstRender) return null;
+
   const times = [2, 3, 5, 7, 11, 13, 17, 19];
   let maxInd = 0;
   while (maxInd < times.length && times[maxInd] <= streak) maxInd++;
@@ -101,7 +111,7 @@ export default function DailyStreak({ streak }) {
     }
     if (i == times.length) {
       return (
-        <div className="mb-8">
+        <div className="mb-8" key={times.length}>
           <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg overflow-hidden flex flex-col">
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
