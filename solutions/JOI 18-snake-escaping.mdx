@@ -15,6 +15,8 @@ If a query has $|C|\le 6$, we can brute force over all the subsets with 0's at A
 Otherwise, we can answer queries with the principle of inclusion-exclusion. The answer is simply $\sum\limits_{a\in A} super[B | a] (-1)^{|a|}$, which we can calculate in $\mathcal{O}(2^{|A|})$
 
 The answer is also $\sum\limits_{b\in B} sub[C | b] (-1)^{|B|-|b|}$, which we can calculate in $\mathcal{O}(2^{|B|})$. They can be computed efficiently with submask enumeration. For a detailed explanation on how submask enumeration works, check https://cp-algorithms.com/algebra/all-submasks.html 
+
+The overall time complexity is $\mathcal{O}(2^L\cdot L+2^{\frac{L}{3}}Q)$ since we compute $super$ and $sub$ in $\mathcal{O}(2^L\cdot L)$ with SOS DP, and we process each query in $\mathcal{O} (2^{\frac L3})$. 
 ```
 import java.io.*; import java.util.*;
 public class snake_escaping{
@@ -88,7 +90,7 @@ public class snake_escaping{
             }
         }
         
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb=new StringBuilder();//I'm using stringbuilder to reduce the number of times I print because calling System.out.println 10^6 times is slow
         
         int A; int B; int C;
         int ca; int cb; int cc; long ans;
@@ -135,3 +137,4 @@ public class snake_escaping{
     
 }
 ```
+
