@@ -16,6 +16,7 @@ type ProblemsListProps = {
   children?: React.ReactChildren;
   problems: Problem[];
   alwaysHideTags?: boolean;
+  modules?: boolean;
   division?: string;
 };
 
@@ -24,7 +25,7 @@ let showTagsAndDifficulty = true;
 
 export function ProblemsList(props: ProblemsListProps) {
   const userSettings = useContext(UserDataContext);
-  showSols = !userSettings.hideSols;
+  showSols = !userSettings.hideSols && !props.modules;
   showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
@@ -75,13 +76,13 @@ export function ProblemsList(props: ProblemsListProps) {
                     </th>
                   )}
 
-                  {showSols && !divisionTable && (
+                  {showSols && (
                     <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Solution
                     </th>
                   )}
 
-                  {divisionTable && (
+                  {props.modules && (
                     <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                       Module
                     </th>
@@ -103,6 +104,7 @@ export function ProblemsList(props: ProblemsListProps) {
                       setShowModal(true);
                     }}
                     key={problem.id}
+                    modules={props.modules}
                   />
                 ))}
               </tbody>
@@ -191,6 +193,7 @@ type ProblemComponentProps = {
   onShowSolution: Function;
   alwaysHideTags?: boolean;
   division?: string;
+  modules?: boolean;
 };
 
 export const difficultyClasses = {
@@ -311,6 +314,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
     </td>
   );
 
+  console.log('PROPS MODULES', props.modules);
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -327,7 +331,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
               </td>
             )
           : difficultyCol)}
-
       {showTagsAndDifficulty && !alwaysHideTags && (
         <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
@@ -338,13 +341,19 @@ export function ProblemComponent(props: ProblemComponentProps) {
           ) : null}
         </td>
       )}
-      {(showSols || divisionTable) && (
+      {showSols && (
         <ProblemSolutionCell
           problem={props.problem}
           onShowSolution={props.onShowSolution}
         />
       )}
-
+      {props.modules && (
+        <ProblemSolutionCell
+          problem={props.problem}
+          modules
+          onShowSolution={props.onShowSolution}
+        />
+      )}
       <td>
         <a href={`#problem-${problem.uniqueID}`}>
           <svg
@@ -366,54 +375,88 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
 const ProblemSolutionCell = (props: ProblemComponentProps) => {
   const { problem } = props;
-  // console.log(problem);
-  return (
-    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
-      {/* {sol} */}
-      {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
-      {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
-      {/* {problem.id} */}
-      {problem.solution?.label && problem.solution?.labelTooltip === null && (
-        <span className="pl-6">{problem.solution?.label}</span>
-      )}
-      {problem.solution?.label && problem.solution?.labelTooltip?.length > 0 && (
-        <span className="pl-6">
-          <TextTooltip content={problem.solution.labelTooltip}>
+  let contents: JSX.Element = null;
+  if (props.modules) {
+    contents = problem.moduleLink ? (
+      <Anchor href={problem.moduleLink} target="_blank" className="pl-6">
+        Link
+      </Anchor>
+    ) : (
+      <Tooltip content={`This problem isn't in a module yet.`}>
+        <span className="text-gray-300 dark:text-gray-600 pl-6">None</span>
+      </Tooltip>
+    );
+  } else {
+    contents = (
+      <>
+        {problem.solution?.label && problem.solution?.labelTooltip === null && (
+          <span className="pl-6">{problem.solution?.label}</span>
+        )}
+        {problem.solution?.label && problem.solution?.labelTooltip?.length > 0 && (
+          <span className="pl-6">
+            <TextTooltip content={problem.solution.labelTooltip}>
+              {problem.solution.label}
+            </TextTooltip>
+          </span>
+        )}
+        {problem.solution?.kind === 'link' && problem.solution.url != '//' && (
+          <Anchor href={problem.solution.url} target="_blank" className="pl-6">
             {problem.solution.label}
-          </TextTooltip>
-        </span>
-      )}
-      {problem.solution?.kind === 'link' && problem.solution.url != '//' && (
-        <Anchor href={problem.solution.url} target="_blank" className="pl-6">
-          {problem.solution.label}
-        </Anchor>
-      )}
-      {problem.solution?.kind === 'link' && problem.solution.url == '//' && (
-        <Tooltip content={`This problem isn't in a module yet.`}>
-          <span className="text-gray-300 dark:text-gray-600 pl-6">None</span>
-        </Tooltip>
-      )}
-      {problem.solution?.kind === 'internal' && (
-        <div className={`inline-flex items-center h-5 group`}>
-          {problem.solQuality === 'good' && (
-            <Tooltip content="This solution is verified to be complete and of high quality.">
-              <svg
-                className="h-5 w-5 text-green-400 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Tooltip>
-          )}
-          {problem.solQuality === 'bad' && (
+          </Anchor>
+        )}
+        {problem.solution?.kind === 'link' && problem.solution.url == '//' && (
+          <Tooltip content={`This problem isn't in a module yet.`}>
+            <span className="text-gray-300 dark:text-gray-600 pl-6">None</span>
+          </Tooltip>
+        )}
+        {problem.solution?.kind === 'internal' && (
+          <div className={`inline-flex items-center h-5 group`}>
+            {problem.solQuality === 'good' && (
+              <Tooltip content="This solution is verified to be complete and of high quality.">
+                <svg
+                  className="h-5 w-5 text-green-400 mr-1"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </Tooltip>
+            )}
+            {problem.solQuality === 'bad' && (
+              <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
+                <svg
+                  className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 mr-1 transition ease-in-out duration-150"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </Tooltip>
+            )}
+            {problem.solQuality === 'ok' && <span className="w-6" />}
+            <Anchor href={problem.solution.url} target="_blank">
+              Internal Sol
+            </Anchor>
+          </div>
+        )}
+        {problem.solution?.kind === 'sketch' && (
+          <span
+            className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
+            onClick={() =>
+              problem.solution.sketch && props.onShowSolution(problem)
+            }
+          >
             <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
               <svg
-                className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 mr-1 transition ease-in-out duration-150"
+                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -424,45 +467,28 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
                 />
               </svg>
             </Tooltip>
-          )}
-          {problem.solQuality === 'ok' && <span className="w-6" />}
-          <Anchor href={problem.solution.url} target="_blank">
-            Internal Sol
-          </Anchor>
-        </div>
-      )}
-      {problem.solution?.kind === 'sketch' && (
-        <span
-          className="text-blue-600 hover:text-blue-900 dark:text-gray-300 cursor-pointer inline-flex items-center group h-5"
-          onClick={() =>
-            problem.solution.sketch && props.onShowSolution(problem)
-          }
-        >
-          <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
-            <svg
-              className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </Tooltip>
-          Show Sketch
-        </span>
-      )}
-      {!problem.solution && (
-        <Tooltip
-          content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
-        >
-          <span className="text-gray-300 dark:text-gray-600 pl-6">
-            View Solution
+            Show Sketch
           </span>
-        </Tooltip>
-      )}
+        )}
+        {!problem.solution && (
+          <Tooltip
+            content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
+          >
+            <span className="text-gray-300 dark:text-gray-600 pl-6">
+              View Solution
+            </span>
+          </Tooltip>
+        )}
+      </>
+    );
+  }
+  return (
+    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
+      {contents}
+      {/* {sol} */}
+      {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}
+      {/* {!/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "NOT OK"} */}
+      {/* {problem.id} */}
     </td>
   );
 };

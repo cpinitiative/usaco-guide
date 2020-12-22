@@ -125,7 +125,11 @@ const UserDataContext = createContext<UserDataContextAPI>({
   getDataExport: () => {},
   hideTagsAndDifficulty: false,
   hideSols: false,
-  divisionTableQuery: { division: 'Bronze', season: '2019 - 2020' },
+  divisionTableQuery: {
+    division: 'Bronze',
+    season: '2019 - 2020',
+    showSols: false,
+  },
   isLoaded: true,
   lang: 'cpp',
   lastReadAnnouncement: 'open-source',
