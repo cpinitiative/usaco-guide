@@ -1,7 +1,5 @@
 # Contributing
 
-**We're actively looking for a web developer to help add new features to the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
-
 You may find [this live editor](https://usaco.guide/liveupdate) helpful when editing modules. For more information contributing, view our [Contributing module](https://usaco.guide/general/contributing).
 
 - If you're looking to add/modify modules, refer to the `content/` folder.
