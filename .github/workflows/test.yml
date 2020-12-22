@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: cedx/setup-dart@v2
 
       - name: Cache node modules
         uses: actions/cache@v2
@@ -36,8 +37,12 @@ jobs:
       - run: yarn serve & (sleep 15 && curl localhost:9000)
       - run: sleep 15
       - run: curl localhost:9000
+      - run: pub global activate linkcheck
 
       - name: Check Links
-        uses: wunderundfitzig/linkcheck-action@v1
-        with:
-          arguments: '--net=host :9000'
+        run: /root/.pub-cache/bin/linkcheck :9000
+
+#      - name: Check Links
+#        uses: wunderundfitzig/linkcheck-action@v1
+#        with:
+#          arguments: '--net=host :9000'
