@@ -176,18 +176,21 @@ export function DivisionList(props) {
   const prob_to_link: { [key: string]: string } = {};
   const prob_to_tags: { [key: string]: string[] } = {};
   const prob_to_difficulty: { [key: string]: string } = {};
+  const prob_to_sol: { [key: string]: string } = {};
   for (let moduleLink of moduleLinks) {
     for (let problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
       prob_to_link[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
       prob_to_tags[uniqueID] = problem.tags;
       prob_to_difficulty[uniqueID] = problem.difficulty;
+      prob_to_sol[uniqueID] = problem.solID;
     }
   }
   for (let problem of extra_probs) {
     const uniqueID = problem.uniqueID;
     prob_to_tags[uniqueID] = problem.tags;
     prob_to_difficulty[uniqueID] = problem.difficulty;
+    prob_to_sol[uniqueID] = problem.solID;
   }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: Problem[] };
@@ -201,13 +204,11 @@ export function DivisionList(props) {
   }
 
   for (let division of divisions) {
-    // console.log(contest_to_points[division])
     for (let contest of Object.keys(contest_to_points[division])) {
       contestToFraction[division][contest] = [];
       if (contest_to_points[division][contest])
         for (let num of contest_to_points[division][contest])
           contestToFraction[division][contest].push(num);
-      // console.log("ASSIGNING",division,contest,contestToFraction[division][contest])
     }
   }
 
@@ -216,12 +217,11 @@ export function DivisionList(props) {
       const uniqueID =
         'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + prob_info[0];
       const contest = prob_info[1];
-      // console.log("WUT",division,contest,contestToFraction[division][contest])
       const fraction = contestToFraction[division][contest].shift();
       const prob = new Problem(
         contest, // source
         prob_info[2], // title
-        uniqueID, // id
+        prob_info[0], // id
         prob_to_difficulty[uniqueID] as
           | 'Very Easy'
           | 'Easy'
@@ -232,9 +232,10 @@ export function DivisionList(props) {
           | null, // difficulty
         null, // starred
         prob_to_tags[uniqueID], // tags
-        prob_to_link[uniqueID] || '//',
+        prob_to_sol[uniqueID],
         'ok',
-        fraction
+        fraction,
+        prob_to_link[uniqueID]
       );
       let year = +prob_info[1].substring(0, 4);
       if (prob_info[1].includes('December')) {
@@ -257,6 +258,13 @@ export function DivisionList(props) {
     (userSettings.divisionTableQuery &&
       userSettings.divisionTableQuery.season) ||
     '2019 - 2020';
+  const curShowSols =
+    !userSettings.hideSols &&
+    !!(
+      userSettings.divisionTableQuery &&
+      userSettings.divisionTableQuery.showSols
+    );
+  // console.log("PASSING PROP",!curShowSols)
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -268,6 +276,7 @@ export function DivisionList(props) {
             userSettings.setDivisionTableQuery({
               division: newDivision,
               season: curSeason,
+              showSols: curShowSols,
             });
           }}
         />
@@ -279,14 +288,31 @@ export function DivisionList(props) {
             userSettings.setDivisionTableQuery({
               division: curDivision,
               season: newSeason,
+              showSols: curShowSols,
             });
           }}
         />
+        {!userSettings.hideSols && (
+          <DivisionButton
+            options={['Show Modules', 'Show Solutions']}
+            state={curShowSols ? 'Show Solutions' : 'Show Modules'}
+            onChange={showSols => {
+              const newShowSols = showSols == 'Show Solutions';
+              if (curShowSols === newShowSols) return;
+              userSettings.setDivisionTableQuery({
+                division: curDivision,
+                season: curSeason,
+                showSols: newShowSols,
+              });
+            }}
+          />
+        )}
       </div>
 
       <ProblemsList
         problems={divisionToSeasonToProbs[curDivision][curSeason]}
         division={curDivision}
+        modules={!curShowSols}
       />
     </>
   );
