@@ -19,25 +19,25 @@ jobs:
       - name: Run tests
         run: yarn test
 
-  check-links:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache node modules
-        uses: actions/cache@v2
-        id: cache-node-modules
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('**/yarn.lock') }}
-
-      - run: yarn
-      - run: yarn build
-
-      - name: Check Links
-        uses: ruzickap/action-my-broken-link-checker@v2
-        with:
-          url: https://usaco.guide
-          pages_path: ./public/
-          cmd_params: --buffer-size=8192 --max-connections=10 --color=always --skip-tls-verification  # muffet parameters
-          run_timeout: 600  # maximum amount of time to run muffet (default is set to 300 seconds)
+#  check-links:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Cache node modules
+#        uses: actions/cache@v2
+#        id: cache-node-modules
+#        with:
+#          path: node_modules
+#          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+#
+#      - run: yarn
+#      - run: yarn build
+#
+#      - name: Check Links
+#        uses: ruzickap/action-my-broken-link-checker@v2
+#        with:
+#          url: https://usaco.guide
+#          pages_path: ./public/
+#          cmd_params: --buffer-size=8192 --max-connections=10 --color=always --skip-tls-verification  # muffet parameters
+#          run_timeout: 600  # maximum amount of time to run muffet (default is set to 300 seconds)
