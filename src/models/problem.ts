@@ -163,7 +163,7 @@ export class Problem {
   }
   get firebaseUniqueID() {
     // Firebase does not allow forward slashes in document IDs
-    return this.uniqueID.replaceAll('/', '.');
+    return this.uniqueID.replace(/\//g, '_');
   }
 
   private autoGenerateInfoFromSource() {
