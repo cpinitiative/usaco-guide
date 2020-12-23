@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import * as React from 'react';
 import ProblemFeedbackModal from '../components/ProblemFeedbackModal';
-import { Problem } from '../models/problem';
+import { Problem, ProblemFeedback } from '../models/problem';
 import useFirebase from '../hooks/useFirebase';
 import UserDataContext from './UserDataContext/UserDataContext';
 
@@ -28,19 +28,39 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
     setIsOpen(true);
   };
 
-  const handleSubmit = feedback => {
+  const handleSubmit = (feedback: ProblemFeedback) => {
     setLoading(true);
-    firebase
-      .firestore()
-      .collection('problemFeedback')
-      .add({
-        ...feedback,
-        userID: firebaseUser?.uid ?? null,
-      })
-      .then(() => {
-        setLoading(false);
-        setShowSuccess(true);
-      });
+
+    let updates = [];
+    updates.push(
+      firebase
+        .firestore()
+        .collection('problemFeedback')
+        .add({
+          ...feedback,
+          userID: firebaseUser?.uid ?? null,
+        })
+    );
+
+    if (feedback.solutionCode?.length > 0) {
+      updates.push(
+        firebase
+          .firestore()
+          .collection('problemSolutions')
+          .doc(problem.firebaseUniqueID)
+          .collection('solutions')
+          .add({
+            userID: firebaseUser?.uid ?? null,
+            solutionCode: feedback.solutionCode,
+            isPublic: feedback.isCodePublic,
+          })
+      );
+    }
+
+    Promise.all(updates).then(() => {
+      setLoading(false);
+      setShowSuccess(true);
+    });
   };
 
   return (
