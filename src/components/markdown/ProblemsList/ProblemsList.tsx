@@ -242,6 +242,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
               </svg>
             </Tooltip>
           )}
+
           <Anchor
             href={problem.url}
             className={

@@ -9,12 +9,12 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import styled from 'styled-components';
-import feedbackModal from '../../feedbackModal';
+import feedbackForm from './feedbackForm';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
 import Transition from '../../Transition';
 import FirebaseContext from '../../../context/FirebaseContext';
-
+import feedBackForm from './feedbackForm';
 const StyledTippy = styled(Tippy)`
   .tippy-content {
     padding: 0;
