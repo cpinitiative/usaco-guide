@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
 import { Problem, ProblemFeedback } from '../models/problem';
 import className from 'classnames';
@@ -22,9 +20,9 @@ export default function ProblemFeedbackModal({
 }) {
   const [difficulty, setDifficulty] = React.useState(null);
   const [tags, setTags] = React.useState('');
-  const [solutionCode, setSolutionCode] = React.useState(null);
+  const [solutionCode, setSolutionCode] = React.useState('');
   const [isCodePublic, setIsCodePublic] = React.useState(true);
-  const [otherFeedback, setOtherFeedback] = React.useState(null);
+  const [otherFeedback, setOtherFeedback] = React.useState('');
 
   React.useEffect(() => {
     if (problem) {
