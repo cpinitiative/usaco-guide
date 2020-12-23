@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 type ProblemsListProps = {
   title?: string;
@@ -242,7 +243,12 @@ export function ProblemComponent(props: ProblemComponentProps) {
               </svg>
             </Tooltip>
           )}
-
+          {/*<CopyToClipboard*/}
+          {/*  onCopy={this.onCopy}*/}
+          {/*  options={{message: 'Whoa!'}}*/}
+          {/*  text={problem.url}>*/}
+          {/*  <button onClick={this.onClick}>Copy to clipboard with onClick prop</button>*/}
+          {/*</CopyToClipboard>*/}
           <Anchor
             href={problem.url}
             className={
