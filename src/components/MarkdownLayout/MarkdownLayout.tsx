@@ -21,6 +21,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -165,35 +166,37 @@ export default function MarkdownLayout({
     >
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
-          <MobileSideNav />
-          <DesktopSidebar />
+          <ProblemFeedbackModalProvider>
+            <MobileSideNav />
+            <DesktopSidebar />
 
-          <div>
-            <MobileAppBar />
+            <div>
+              <MobileAppBar />
 
-            <ContentContainer tableOfContents={tableOfContents}>
-              <NotSignedInWarning />
+              <ContentContainer tableOfContents={tableOfContents}>
+                <NotSignedInWarning />
 
-              <ModuleHeaders
-                problemIDs={problemIDs}
-                moduleLinks={moduleLinks}
-              />
+                <ModuleHeaders
+                  problemIDs={problemIDs}
+                  moduleLinks={moduleLinks}
+                />
 
-              <div className="xl:hidden">
-                <TableOfContentsBlock tableOfContents={tableOfContents} />
-              </div>
+                <div className="xl:hidden">
+                  <TableOfContentsBlock tableOfContents={tableOfContents} />
+                </div>
 
-              {children}
+                {children}
 
-              <ModuleProgressUpdateBanner />
+                <ModuleProgressUpdateBanner />
 
-              <ForumCTA />
+                <ForumCTA />
 
-              <div className="my-8">
-                <ModuleFeedback markdownData={markdownData} />
-              </div>
-            </ContentContainer>
-          </div>
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
+              </ContentContainer>
+            </div>
+          </ProblemFeedbackModalProvider>
         </ContactUsSlideoverProvider>
       </SettingsModalProvider>
     </MarkdownLayoutContext.Provider>

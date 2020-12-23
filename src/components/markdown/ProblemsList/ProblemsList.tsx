@@ -314,7 +314,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
     </td>
   );
 
-  console.log('PROPS MODULES', props.modules);
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
