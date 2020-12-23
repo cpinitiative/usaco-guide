@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
-import { Problem } from '../models/problem';
+import { Problem, ProblemFeedback } from '../models/problem';
 import className from 'classnames';
 
 export default function ProblemFeedbackModal({
@@ -10,57 +10,272 @@ export default function ProblemFeedbackModal({
   onClose,
   problem,
   onSubmit,
+  loading,
 }: {
   isOpen: boolean;
+  loading: boolean;
   onClose: () => void;
   problem: Problem;
-  onSubmit: (feedback) => void;
+  onSubmit: (feedback: ProblemFeedback) => void;
 }) {
-  problem = new Problem(
-    'CSES',
-    'Sum of Two Values',
-    '1640',
-    'Easy',
-    true,
-    [],
-    '@CPH 8.1'
-  );
+  const [difficulty, setDifficulty] = React.useState(null);
+  const [tags, setTags] = React.useState('');
+  const [solutionCode, setSolutionCode] = React.useState(null);
+  const [isCodePublic, setIsCodePublic] = React.useState(true);
+  const [otherFeedback, setOtherFeedback] = React.useState(null);
+  const [submitted, setSubmitted] = React.useState(false);
 
-  const [showModal, setShowModal] = React.useState(false);
-  const [textFeedback, setTextFeedback] = React.useState('No feedback entered');
-  const [solutionfeedback, setsolutionfeedback] = React.useState(
-    'No feedback entered'
-  );
-  const [difficultyfeedback, setdifficultyfeedback] = React.useState(
-    'No feedback entered'
-  );
-  const [solutionNotes, setsolutionNotes] = React.useState(
-    'No feedback entered'
-  );
-  const [solutionCode, setsolutionCode] = React.useState('No feedback entered');
-  const [shareCode, setShareCode] = React.useState(true);
-  const handleSumbit = (event, problem) => {
+  React.useEffect(() => {
+    if (problem) {
+      setDifficulty(problem.difficulty);
+      setTags(problem.tags.join(', '));
+      setSolutionCode('');
+      setIsCodePublic(true);
+      setOtherFeedback('');
+      setSubmitted(false);
+    }
+  }, [problem?.uniqueID]);
+
+  const handleSubmit = event => {
     event.preventDefault();
-    setShowModal(false);
-    firebase.firestore().collection('problemFeedback').add({
-      difficulty: difficultyfeedback,
-      problemName: problem.name,
-      solutionNotes: solutionNotes,
-      solutionCode: solutionCode,
-      generalFeedback: textFeedback,
-      togglePrivate: false,
+    if (submitted) {
+      onClose();
+      return;
+    }
+    setSubmitted(true);
+
+    onSubmit({
+      difficulty,
+      tags: tags.split(', '),
+      solutionCode,
+      isCodePublic,
+      otherFeedback,
     });
   };
+
+  const feedbackForm = (
+    <>
+      <div>
+        <label className="block font-medium text-gray-700">
+          Problem Difficulty
+        </label>
+        <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
+          <span className="relative z-0 inline-flex shadow-sm rounded-md">
+            <button
+              type="button"
+              className={`relative inline-flex items-center px-4 py-2 rounded-l-md border text-sm leading-5 font-medium ${
+                difficulty === 'Very Easy'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+              onClick={() => setDifficulty('Very Easy')}
+            >
+              Very Easy
+            </button>
+            <button
+              type="button"
+              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                difficulty === 'Easy'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+              onClick={() => setDifficulty('Easy')}
+            >
+              Easy
+            </button>
+            <button
+              type="button"
+              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                difficulty === 'Normal'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+              onClick={() => setDifficulty('Normal')}
+            >
+              Normal
+            </button>
+            <button
+              type="button"
+              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                difficulty === 'Hard'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+              onClick={() => setDifficulty('Hard')}
+            >
+              Hard
+            </button>
+            <button
+              type="button"
+              className={`-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border text-sm leading-5 font-medium ${
+                difficulty === 'Insane'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+              onClick={() => setDifficulty('Insane')}
+            >
+              Insane
+            </button>
+          </span>
+        </div>
+      </div>
+      <div>
+        <label className="block font-medium text-gray-700">
+          Suggested Tags
+        </label>
+        <div className="mt-2 relative rounded-md shadow-sm">
+          <input
+            className="form-input block w-full sm:text-sm sm:leading-5"
+            placeholder="DP, Dijkstra"
+            value={tags}
+            onChange={e => setTags(e.target.value)}
+          />
+        </div>
+      </div>
+      <div>
+        <label className="block font-medium text-gray-700">Solution Code</label>
+        <div>
+          <p className="mb-3 text-sm text-gray-500">
+            Consider leaving solution notes at the top of the code as a comment.
+          </p>
+
+          <div className="rounded-md shadow-sm">
+            <textarea
+              rows={10}
+              className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5"
+              value={solutionCode}
+              onChange={e => setSolutionCode(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="flex-grow flex flex-col" id="toggleLabel">
+          <span className="leading-5 font-medium text-gray-900">
+            Share Solution Code
+          </span>
+          <span className="text-sm leading-normal text-gray-500">
+            This will allow other users to view your anonymized solution code if
+            they are stuck.
+          </span>
+        </span>
+        <span
+          role="checkbox"
+          tabIndex={0}
+          onClick={() => setIsCodePublic(!isCodePublic)}
+          className={className(
+            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline',
+            isCodePublic ? 'bg-blue-600' : 'bg-gray-200'
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className={className(
+              isCodePublic ? 'translate-x-5' : 'translate-x-0',
+              'relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200'
+            )}
+          >
+            <span
+              className={className(
+                isCodePublic
+                  ? 'opacity-0 ease-out duration-100'
+                  : 'opacity-100 ease-in duration-200',
+                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
+              )}
+            >
+              <svg
+                className="h-3 w-3 text-gray-400"
+                fill="none"
+                viewBox="0 0 12 12"
+              >
+                <path
+                  d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span
+              className={className(
+                isCodePublic
+                  ? 'opacity-100 ease-in duration-200'
+                  : 'opacity-0 ease-out duration-100',
+                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
+              )}
+            >
+              <svg
+                className="h-3 w-3 text-indigo-600"
+                fill="currentColor"
+                viewBox="0 0 12 12"
+              >
+                <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
+              </svg>
+            </span>
+          </span>
+        </span>
+      </div>
+      <div>
+        <label className="block font-medium text-gray-700">
+          Other Feedback (Optional)
+        </label>
+        <div>
+          <p className="mb-3 text-sm text-gray-500">
+            In case there's anything else you want to tell us.
+          </p>
+          <div className="rounded-md shadow-sm">
+            <textarea
+              rows={2}
+              className="form-textarea block w-full transition duration-150 ease-in-out sm:leading-5"
+              value={otherFeedback}
+              onChange={e => setOtherFeedback(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  const successMessage = (
+    <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <svg
+            className="h-5 w-5 text-green-400"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+        <div className="ml-3">
+          <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
+            Feedback Submitted!
+          </h3>
+          <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
+            <p>Thanks for helping to improve the USACO Guide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <Transition
       show={isOpen}
       className="fixed z-30 inset-0 h-full overflow-y-auto"
     >
-      <div className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block">
+      <form
+        className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block"
+        onSubmit={handleSubmit}
+      >
         <Transition.Child
           className="fixed inset-0 transition-opacity"
-          onClick={onClose}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -93,6 +308,7 @@ export default function ProblemFeedbackModal({
             <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
               <button
                 type="button"
+                onClick={() => onClose()}
                 className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <span className="sr-only">Close</span>
@@ -114,6 +330,7 @@ export default function ProblemFeedbackModal({
                 </svg>
               </button>
             </div>
+
             <h3
               className="text-lg leading-6 font-medium text-gray-900"
               id="modal-headline"
@@ -125,181 +342,37 @@ export default function ProblemFeedbackModal({
               problem {problem?.name}!
             </p>
             <div className="mt-6 space-y-6">
-              <div>
-                <label className="block font-medium text-gray-700">
-                  Problem Difficulty
-                </label>
-                <div className="w-full overflow-x-auto mt-2">
-                  <span className="relative z-0 inline-flex shadow-sm rounded-md">
-                    <button
-                      type="button"
-                      className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      Very Easy
-                    </button>
-                    <button
-                      type="button"
-                      className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      Easy
-                    </button>
-                    <button
-                      type="button"
-                      className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      Normal
-                    </button>
-                    <button
-                      type="button"
-                      className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      Hard
-                    </button>
-                    <button
-                      type="button"
-                      className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      Insane
-                    </button>
-                  </span>
-                </div>
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700">
-                  Suggested Tags
-                </label>
-                <div className="mt-2 relative rounded-md shadow-sm">
-                  <input
-                    className="form-input block w-full sm:text-sm sm:leading-5"
-                    placeholder="DP, Dijkstra"
-                    value={problem?.tags?.join(', ')}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700">
-                  Solution Code
-                </label>
-                <div className="">
-                  <p className="mb-3 text-sm text-gray-500">
-                    Consider leaving solution notes at the top of the file as a
-                    comment.
-                  </p>
-
-                  <div className="rounded-md shadow-sm">
-                    <textarea
-                      rows={10}
-                      className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="flex-grow flex flex-col" id="toggleLabel">
-                  <span className="leading-5 font-medium text-gray-900">
-                    Share Solution Code
-                  </span>
-                  <span className="text-sm leading-normal text-gray-500">
-                    This will allow other users to view your anonymized solution
-                    code if they are stuck.
-                  </span>
-                </span>
-                <span
-                  role="checkbox"
-                  tabIndex={0}
-                  onClick={() => setShareCode(!shareCode)}
-                  className={className(
-                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline',
-                    shareCode ? 'bg-blue-600' : 'bg-gray-200'
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={className(
-                      shareCode ? 'translate-x-5' : 'translate-x-0',
-                      'relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200'
-                    )}
-                  >
-                    <span
-                      className={className(
-                        shareCode
-                          ? 'opacity-0 ease-out duration-100'
-                          : 'opacity-100 ease-in duration-200',
-                        'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
-                      )}
-                    >
-                      <svg
-                        className="h-3 w-3 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 12 12"
-                      >
-                        <path
-                          d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      className={className(
-                        shareCode
-                          ? 'opacity-100 ease-in duration-200'
-                          : 'opacity-0 ease-out duration-100',
-                        'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
-                      )}
-                    >
-                      <svg
-                        className="h-3 w-3 text-indigo-600"
-                        fill="currentColor"
-                        viewBox="0 0 12 12"
-                      >
-                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
-                      </svg>
-                    </span>
-                  </span>
-                </span>
-              </div>
-              <div>
-                <label className="block font-medium text-gray-700">
-                  Other Feedback (Optional)
-                </label>
-                <div className="">
-                  {' '}
-                  <p className="mb-3 text-sm text-gray-500">
-                    In case there's anything else you want to tell us.
-                  </p>
-                  <div className="rounded-md shadow-sm">
-                    <textarea
-                      rows={2}
-                      className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5"
-                    />
-                  </div>
-                </div>
-              </div>
+              {loading || !submitted ? feedbackForm : successMessage}
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
               <button
-                type="button"
+                type="submit"
                 className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                disabled={loading}
               >
-                Submit Feedback
+                {loading
+                  ? 'Submitting...'
+                  : submitted
+                  ? 'Close'
+                  : 'Submit Feedback'}
               </button>
             </span>
-            <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-              <button
-                type="button"
-                className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-              >
-                Cancel
-              </button>
-            </span>
+            {!submitted && (
+              <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                <button
+                  type="button"
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  onClick={() => onClose()}
+                >
+                  Cancel
+                </button>
+              </span>
+            )}
           </div>
         </Transition.Child>
-      </div>
+      </form>
     </Transition>
   );
 }

@@ -363,3 +363,11 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Skipped',
   'Ignored',
 ];
+
+export type ProblemFeedback = {
+  difficulty: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane';
+  tags: string[];
+  solutionCode: string;
+  isCodePublic: boolean;
+  otherFeedback: string;
+};

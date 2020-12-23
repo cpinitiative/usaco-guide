@@ -2,6 +2,7 @@ import { createContext, useState } from 'react';
 import * as React from 'react';
 import ProblemFeedbackModal from '../components/ProblemFeedbackModal';
 import { Problem } from '../models/problem';
+import useFirebase from '../hooks/useFirebase';
 
 const ProblemFeedbackModalContext = createContext<{
   openProblemFeedbackModal: (problem: Problem) => void;
@@ -14,6 +15,8 @@ export default ProblemFeedbackModalContext;
 export const ProblemFeedbackModalProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [problem, setProblem] = useState<Problem>(null);
+  const [loading, setLoading] = useState(false);
+  const firebase = useFirebase();
 
   const openProblemFeedbackModal = (problem: Problem) => {
     setIsOpen(true);
@@ -21,8 +24,12 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
   };
 
   const handleSubmit = feedback => {
-    console.log(feedback);
-    setIsOpen(false);
+    setLoading(true);
+    firebase
+      .firestore()
+      .collection('problemFeedback')
+      .add(feedback)
+      .then(() => setLoading(false));
   };
 
   return (
@@ -37,6 +44,7 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
         problem={problem}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        loading={loading}
         onSubmit={handleSubmit}
       />
     </ProblemFeedbackModalContext.Provider>
