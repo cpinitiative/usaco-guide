@@ -10,7 +10,6 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Notifications, { notify } from 'react-notify-toast';
 
 type ProblemsListProps = {
   title?: string;
@@ -213,6 +212,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
   }, []);
 
   const myColor = { background: '#0E1717', text: '#FFFFFF' };
+
+  function clicked(name: string) {
+    console.log(myColor); // placeholder
+  }
+
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
@@ -297,7 +301,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           options={{ message: 'yay!' }}
           text={`${window.location.href}/#problem-${problem.uniqueID}`}
         >
-          <button style={{ outline: 'none' }}>
+          <button style={{ outline: 'none' }} onClick={clicked(problem.name)}>
             <svg
               fill="none"
               height="20"
