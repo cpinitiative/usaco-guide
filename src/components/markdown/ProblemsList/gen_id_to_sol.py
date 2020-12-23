@@ -90,16 +90,107 @@ def usaco_stats():
 
 cand = []
 edLinks = {}
+usaco_divisions = ['Bronze','Silver','Gold','Platinum']
+id_to_prob = {x:[] for x in usaco_divisions}
+record = {x:[] for x in usaco_divisions}
 
-def processEdi(url):
+# https://stackoverflow.com/questions/14706678/beautifulsoup-getting-class-from-elements-of-findall
+def processEdi(url_suffix):
+	if not url_suffix.endswith('results'):
+		return
+	print("PROCESSING",url_suffix)
+	url = "http://www.usaco.org/index.php?page="+url_suffix
 	soup = parse(url)
+	# if url_suffix == 'feb18results':
+	# 	print("WHOOPS",soup.prettify())
+	# 	sys.exit(0)
+	# 	for x in soup.find_all('div'): #      <div style="position:relative; float:left; left:10px; top:-50px; width:550px;">
+	# 		if x.has_attr('style') and x['style'] == 'position:relative; float:left; left:10px; top:-50px; width:550px;':
+	# 			soup = x
+	# 			print("FOUND")
+	# 			break
+				# print("OOPS",x['style'])
+		# sys.exit(0)
+		# print("WHOOPS",soup)
+	# panel = soup.find('div',['panel'])
+	# print(soup.prettify())
+	# sys.exit(0)
+	# print(soup.prettify())
 
-	for x in soup.find_all('div',["panel historypanel"]):
-		res = []
-		for y in x.find_all('a'):
-			res.append(y['href'])
-		ID = res[0][res[0].rfind('=')+1:]
-		edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
+
+	contest = ''
+	# if url_suffix == 'jan18results':
+	# 	print(soup.prettify())
+	# 	contest = 'USACO 2018 February Contest, Platinum'
+
+	def get_division(x):
+		for div in usaco_divisions:
+			if x.endswith(div):
+				return div
+		# print("FAILED TO GET DIVISION OF ",x)
+		assert False
+
+	# print(panel)
+	def reset_contest():
+		nonlocal contest
+		for child in soup.find_all('h2'):
+			try:
+				tmp = child.text.strip()
+				get_division(tmp)
+				contest = tmp
+				break
+			except:
+				pass
+	reset_contest()
+	print("STARTING CONTEST",contest)
+
+	this_contest = []
+	def process_child(child):
+		nonlocal contest
+		if child.name == 'h2':
+			contest = child.text.strip()
+			# child.text[len("USACO 2020 US Open Contest, "):]
+			# print("HUH",child.text)
+		if child.name == 'div' and child.has_attr('class') and child['class'] ==  ['panel', 'historypanel']:
+			# print("HUH",child['class'],division)
+			title = child.find('b').text
+			res = [y['href'] for y in child.find_all('a')]
+			# division, title -> ID
+			# print("TITLE",title)
+			ID = res[0][res[0].rfind('=')+1:]
+			# edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
+			# info[ID]
+			this_contest.append([contest,title,ID])
+			# print(contest,get_division(contest),title,ID)
+			# record[get_division(contest)].append([contest,title,ID])
+
+	for child in soup.children:
+		process_child(child)
+	if len(this_contest)%3 != 0:
+		start_len = len(this_contest)
+		reset_contest()
+		process_child(soup.find('div',["panel historypanel"]))
+		# print("RESULT",this_contest)
+		this_contest = this_contest[-1:]+this_contest[:-1]
+		if len(this_contest) != start_len+1:
+			print("FAILED")
+			sys.exit(0)
+	for contest,title,ID in this_contest:
+		def strip_contest(word):
+			return word[len("USACO "):word.rfind(" Contest")]
+		id_to_prob[get_division(contest)].append([ID,strip_contest(contest),title])
+		# print(t)
+	# print(this_contest)
+	# sys.exit(0)
+	# print(panel.name)
+	# print("WHOOPS",panel.children)
+	# for x in panel.find_all('div',["panel historypanel"]):
+	# 	title = x.find('b').text
+	# 	res = [y['href'] for y in x.find_all('a'):]
+	# 	# division, title -> ID
+	# 	print("TITLE",title)
+	# 	ID = res[0][res[0].rfind('=')+1:]
+	# 	edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
 
 	# print("FINISHED",y,j)
 
@@ -128,7 +219,7 @@ def processEdi(url):
 	# pprint.pprint(edLinks)
 
 def get_all():
-	url ="http://www.usaco.org/index.php?page=contests"
+	url = "http://www.usaco.org/index.php?page=contests"
 	soup = parse(url)
 	flag = False
 	for x in soup.find_all('a'):
@@ -144,11 +235,13 @@ def get_all():
 	for a in cand:
 		print(a)
 	for url in cand:
-		print("PROCESSING",url)
-		processEdi("http://www.usaco.org/index.php?page="+url)
-		print(len(edLinks))
+		# print("PROCESSING",url)
+		processEdi(url)
+		# print(len(edLinks))
+		if url == "dec15results":
+			break
 
-	print(json.dumps(edLinks,indent=4))
+	print(json.dumps(id_to_prob,indent=4))
 
 get_all()
 
@@ -161,6 +254,7 @@ def id_to_sol():
 	for year in years:
 		for j in range(4):
 			url = pref+month[j]+str(year+offset[j])+"results"
+			# if url == "dec15"
 
 
 # get_all()

@@ -7,9 +7,13 @@ import UserDataPropertyAPI from './userDataPropertyAPI';
 import LastViewedModule, {
   LastViewedModuleAPI,
 } from './properties/lastViewedModule';
-import HideTagsAndSolutions, {
-  HideTagsAndSolutionsAPI,
-} from './properties/hideTagsAndSolutions';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
+import DivisionTableQuery, {
+  DivisionTableQueryAPI,
+} from './properties/divisionTableQuery';
+import HideSols, { HideSolsAPI } from './properties/hideSols';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
@@ -82,7 +86,9 @@ import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTagsAndSolutions(),
+  new HideTagsAndDifficulty(),
+  new HideSols(),
+  new DivisionTableQuery(),
   new ShowIgnored(),
   new DarkMode(),
   new LastReadAnnouncement(),
@@ -94,7 +100,9 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAndSolutionsAPI &
+  HideTagsAndDifficultyAPI &
+  HideSolsAPI &
+  DivisionTableQueryAPI &
   ShowIgnoredAPI &
   DarkModeAPI &
   LastReadAnnouncementAPI &
@@ -110,7 +118,52 @@ type UserDataContextAPI = UserLangAPI &
     getDataExport: Function;
   };
 
-const UserDataContext = createContext<UserDataContextAPI>(null);
+const UserDataContext = createContext<UserDataContextAPI>({
+  consecutiveVisits: 0,
+  darkMode: false,
+  firebaseUser: null,
+  getDataExport: () => {},
+  hideTagsAndDifficulty: false,
+  hideSols: false,
+  divisionTableQuery: {
+    division: 'Bronze',
+    season: '2019 - 2020',
+    showSols: false,
+  },
+  isLoaded: true,
+  lang: 'cpp',
+  lastReadAnnouncement: 'open-source',
+  lastViewedModule: 'binary-search-sorted',
+  lastVisitDate: 1608324157466,
+  numPageviews: 130,
+  onlineUsers: -1,
+  pageviewsPerDay: {
+    1606896000000: 4,
+    1607068800000: 17,
+    1608192000000: 27,
+    1608278400000: 82,
+  },
+  setDarkMode: x => {},
+  setHideTagsAndDifficulty: x => {},
+  setHideSols: x => {},
+  setDivisionTableQuery: x => {},
+  setLang: x => {},
+  setLastReadAnnouncement: x => {},
+  setLastViewedModule: x => {},
+  setLastVisitDate: x => {},
+  setModuleProgress: (moduleID, progress) => {},
+  setShowIgnored: x => {},
+  setUserClasses: classes => {},
+  setUserProgressOnProblems: (problem, status) => {},
+  showIgnored: false,
+  signIn: () => {},
+  signOut: () => {},
+  userClasses: [],
+  userProgressOnModules: {},
+  userProgressOnModulesActivity: [],
+  userProgressOnProblems: {},
+  userProgressOnProblemsActivity: [],
+});
 
 export const UserDataProvider = ({ children }) => {
   const firebase = useFirebase();
