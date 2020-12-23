@@ -27,7 +27,7 @@ export default function ProblemFeedbackModal({
   React.useEffect(() => {
     if (problem) {
       setDifficulty(problem.difficulty);
-      setTags(problem.tags.join(', '));
+      setTags(problem.tags?.join(', ') ?? '');
       setSolutionCode('');
       setIsCodePublic(true);
       setOtherFeedback('');
