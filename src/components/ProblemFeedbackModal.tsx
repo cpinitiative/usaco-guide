@@ -49,7 +49,7 @@ export default function ProblemFeedbackModal({
   const feedbackForm = (
     <>
       <div>
-        <label className="block font-medium text-gray-700">
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Difficulty
         </label>
         <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
@@ -59,8 +59,8 @@ export default function ProblemFeedbackModal({
               className={`relative inline-flex items-center px-4 py-2 rounded-l-md border text-sm leading-5 font-medium ${
                 difficulty === 'Very Easy'
                   ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
               onClick={() => setDifficulty('Very Easy')}
             >
               Very Easy
@@ -70,8 +70,8 @@ export default function ProblemFeedbackModal({
               className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
                 difficulty === 'Easy'
                   ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
               onClick={() => setDifficulty('Easy')}
             >
               Easy
@@ -81,8 +81,8 @@ export default function ProblemFeedbackModal({
               className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
                 difficulty === 'Normal'
                   ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
               onClick={() => setDifficulty('Normal')}
             >
               Normal
@@ -92,8 +92,8 @@ export default function ProblemFeedbackModal({
               className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
                 difficulty === 'Hard'
                   ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
               onClick={() => setDifficulty('Hard')}
             >
               Hard
@@ -103,8 +103,8 @@ export default function ProblemFeedbackModal({
               className={`-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border text-sm leading-5 font-medium ${
                 difficulty === 'Insane'
                   ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
+              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
               onClick={() => setDifficulty('Insane')}
             >
               Insane
@@ -113,12 +113,12 @@ export default function ProblemFeedbackModal({
         </div>
       </div>
       <div>
-        <label className="block font-medium text-gray-700">
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
           Suggested Tags
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input
-            className="form-input block w-full sm:text-sm sm:leading-5"
+            className="form-input block w-full sm:text-sm sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
             placeholder="DP, Dijkstra"
             value={tags}
             onChange={e => setTags(e.target.value)}
@@ -126,16 +126,18 @@ export default function ProblemFeedbackModal({
         </div>
       </div>
       <div>
-        <label className="block font-medium text-gray-700">Solution Code</label>
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
+          Solution Code
+        </label>
         <div>
-          <p className="mb-3 text-sm text-gray-500">
+          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
             Consider leaving solution notes at the top of the code as a comment.
           </p>
 
           <div className="rounded-md shadow-sm">
             <textarea
               rows={10}
-              className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5"
+              className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={solutionCode}
               onChange={e => setSolutionCode(e.target.value)}
             />
@@ -144,10 +146,10 @@ export default function ProblemFeedbackModal({
       </div>
       <div className="flex items-center justify-between">
         <span className="flex-grow flex flex-col" id="toggleLabel">
-          <span className="leading-5 font-medium text-gray-900">
+          <span className="leading-5 font-medium text-gray-900 dark:text-gray-100">
             Share Solution Code
           </span>
-          <span className="text-sm leading-normal text-gray-500">
+          <span className="text-sm leading-normal text-gray-500 dark:text-gray-400">
             This will allow other users to view your anonymized solution code if
             they are stuck.
           </span>
@@ -210,17 +212,17 @@ export default function ProblemFeedbackModal({
         </span>
       </div>
       <div>
-        <label className="block font-medium text-gray-700">
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
           Other Feedback (Optional)
         </label>
         <div>
-          <p className="mb-3 text-sm text-gray-500">
+          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
             In case there's anything else you want to tell us.
           </p>
           <div className="rounded-md shadow-sm">
             <textarea
               rows={2}
-              className="form-textarea block w-full transition duration-150 ease-in-out sm:leading-5"
+              className="form-textarea block w-full transition duration-150 ease-in-out sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={otherFeedback}
               onChange={e => setOtherFeedback(e.target.value)}
             />
@@ -276,7 +278,7 @@ export default function ProblemFeedbackModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
         </Transition.Child>
         <span
           className="hidden sm:inline-block sm:align-middle sm:h-screen"
@@ -286,7 +288,7 @@ export default function ProblemFeedbackModal({
         </span>
 
         <Transition.Child
-          className="w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -297,12 +299,12 @@ export default function ProblemFeedbackModal({
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
@@ -325,12 +327,12 @@ export default function ProblemFeedbackModal({
             </div>
 
             <h3
-              className="text-lg leading-6 font-medium text-gray-900"
+              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
               Problem Feedback for {problem?.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Help us improve the USACO Guide by giving us feedback on the
               problem {problem?.name}!
             </p>
@@ -338,7 +340,7 @@ export default function ProblemFeedbackModal({
               {showSuccess ? successMessage : feedbackForm}
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             {showSuccess ? (
               <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
@@ -363,7 +365,7 @@ export default function ProblemFeedbackModal({
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     onClick={() => onClose()}
                     disabled={loading}
                   >
