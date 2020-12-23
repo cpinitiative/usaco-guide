@@ -10,7 +10,7 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { logError } from 'gatsby/dist/state-machines/develop/actions';
+import Notifications, { notify } from 'react-notify-toast';
 
 type ProblemsListProps = {
   title?: string;
@@ -212,6 +212,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
     return () => window.removeEventListener('hashchange', hashHandler, false);
   }, []);
 
+  const myColor = { background: '#0E1717', text: '#FFFFFF' };
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
@@ -292,24 +293,23 @@ export function ProblemComponent(props: ProblemComponentProps) {
       )}
       <td>
         <CopyToClipboard
-          onCopy={console.log(
-            `${window.location.href}/#problem-${problem.uniqueID}`
-          )}
+          onCopy={console.log('copied')}
           options={{ message: 'yay!' }}
           text={`${window.location.href}/#problem-${problem.uniqueID}`}
         >
-          <svg
-            onClick={console.log('clicked.')}
-            fill="none"
-            height="20"
-            width="20"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
+          <button style={{ outline: 'none' }}>
+            <svg
+              fill="none"
+              height="20"
+              width="20"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </button>
         </CopyToClipboard>
       </td>
     </StyledProblemRow>
