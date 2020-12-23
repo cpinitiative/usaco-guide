@@ -13,14 +13,17 @@ const ProblemFeedbackModalContext = createContext<{
 export default ProblemFeedbackModalContext;
 
 export const ProblemFeedbackModalProvider = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [problem, setProblem] = useState<Problem>(null);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const firebase = useFirebase();
 
   const openProblemFeedbackModal = (problem: Problem) => {
-    setIsOpen(true);
+    setLoading(false);
+    setShowSuccess(false);
     setProblem(problem);
+    setIsOpen(true);
   };
 
   const handleSubmit = feedback => {
@@ -29,7 +32,10 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
       .firestore()
       .collection('problemFeedback')
       .add(feedback)
-      .then(() => setLoading(false));
+      .then(() => {
+        setLoading(false);
+        setShowSuccess(true);
+      });
   };
 
   return (
@@ -45,6 +51,7 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         loading={loading}
+        showSuccess={showSuccess}
         onSubmit={handleSubmit}
       />
     </ProblemFeedbackModalContext.Provider>

@@ -11,9 +11,11 @@ export default function ProblemFeedbackModal({
   problem,
   onSubmit,
   loading,
+  showSuccess,
 }: {
   isOpen: boolean;
   loading: boolean;
+  showSuccess: boolean;
   onClose: () => void;
   problem: Problem;
   onSubmit: (feedback: ProblemFeedback) => void;
@@ -23,7 +25,6 @@ export default function ProblemFeedbackModal({
   const [solutionCode, setSolutionCode] = React.useState(null);
   const [isCodePublic, setIsCodePublic] = React.useState(true);
   const [otherFeedback, setOtherFeedback] = React.useState(null);
-  const [submitted, setSubmitted] = React.useState(false);
 
   React.useEffect(() => {
     if (problem) {
@@ -32,17 +33,11 @@ export default function ProblemFeedbackModal({
       setSolutionCode('');
       setIsCodePublic(true);
       setOtherFeedback('');
-      setSubmitted(false);
     }
   }, [problem?.uniqueID]);
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (submitted) {
-      onClose();
-      return;
-    }
-    setSubmitted(true);
 
     onSubmit({
       difficulty,
@@ -342,33 +337,42 @@ export default function ProblemFeedbackModal({
               problem {problem?.name}!
             </p>
             <div className="mt-6 space-y-6">
-              {loading || !submitted ? feedbackForm : successMessage}
+              {showSuccess ? successMessage : feedbackForm}
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-              <button
-                type="submit"
-                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                disabled={loading}
-              >
-                {loading
-                  ? 'Submitting...'
-                  : submitted
-                  ? 'Close'
-                  : 'Submit Feedback'}
-              </button>
-            </span>
-            {!submitted && (
-              <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+            {showSuccess ? (
+              <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
                   type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                   onClick={() => onClose()}
+                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                 >
-                  Cancel
+                  Done
                 </button>
               </span>
+            ) : (
+              <>
+                <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                  <button
+                    type="submit"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    disabled={loading}
+                  >
+                    {loading ? 'Submitting...' : 'Submit Feedback'}
+                  </button>
+                </span>
+                <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    onClick={() => onClose()}
+                    disabled={loading}
+                  >
+                    Cancel
+                  </button>
+                </span>
+              </>
             )}
           </div>
         </Transition.Child>
