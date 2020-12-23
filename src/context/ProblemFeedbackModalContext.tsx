@@ -1,8 +1,9 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import * as React from 'react';
 import ProblemFeedbackModal from '../components/ProblemFeedbackModal';
 import { Problem } from '../models/problem';
 import useFirebase from '../hooks/useFirebase';
+import UserDataContext from './UserDataContext/UserDataContext';
 
 const ProblemFeedbackModalContext = createContext<{
   openProblemFeedbackModal: (problem: Problem) => void;
@@ -18,6 +19,7 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const firebase = useFirebase();
+  const { firebaseUser } = useContext(UserDataContext);
 
   const openProblemFeedbackModal = (problem: Problem) => {
     setLoading(false);
@@ -31,7 +33,10 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
     firebase
       .firestore()
       .collection('problemFeedback')
-      .add(feedback)
+      .add({
+        ...feedback,
+        userID: firebaseUser?.uid ?? null,
+      })
       .then(() => {
         setLoading(false);
         setShowSuccess(true);

@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import { Problem, ProblemFeedback } from '../models/problem';
+import {
+  Problem,
+  PROBLEM_DIFFICULTY_OPTIONS,
+  ProblemFeedback,
+} from '../models/problem';
 import className from 'classnames';
+import ButtonGroup from './ButtonGroup';
+import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export default function ProblemFeedbackModal({
   isOpen,
@@ -21,8 +28,10 @@ export default function ProblemFeedbackModal({
   const [difficulty, setDifficulty] = React.useState(null);
   const [tags, setTags] = React.useState('');
   const [solutionCode, setSolutionCode] = React.useState('');
+  const [codeLang, setCodeLang] = React.useState('');
   const [isCodePublic, setIsCodePublic] = React.useState(true);
   const [otherFeedback, setOtherFeedback] = React.useState('');
+  const { lang } = React.useContext(UserDataContext);
 
   React.useEffect(() => {
     if (problem) {
@@ -31,6 +40,7 @@ export default function ProblemFeedbackModal({
       setSolutionCode('');
       setIsCodePublic(true);
       setOtherFeedback('');
+      setCodeLang(lang);
     }
   }, [problem?.uniqueID]);
 
@@ -53,63 +63,11 @@ export default function ProblemFeedbackModal({
           Problem Difficulty
         </label>
         <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
-          <span className="relative z-0 inline-flex shadow-sm rounded-md">
-            <button
-              type="button"
-              className={`relative inline-flex items-center px-4 py-2 rounded-l-md border text-sm leading-5 font-medium ${
-                difficulty === 'Very Easy'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
-              onClick={() => setDifficulty('Very Easy')}
-            >
-              Very Easy
-            </button>
-            <button
-              type="button"
-              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
-                difficulty === 'Easy'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
-              onClick={() => setDifficulty('Easy')}
-            >
-              Easy
-            </button>
-            <button
-              type="button"
-              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
-                difficulty === 'Normal'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
-              onClick={() => setDifficulty('Normal')}
-            >
-              Normal
-            </button>
-            <button
-              type="button"
-              className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
-                difficulty === 'Hard'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
-              onClick={() => setDifficulty('Hard')}
-            >
-              Hard
-            </button>
-            <button
-              type="button"
-              className={`-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border text-sm leading-5 font-medium ${
-                difficulty === 'Insane'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark-hover:text-gray-100 active:bg-gray-100 active:text-gray-700'
-              } focus:z-10 focus:outline-none focus:border-blue-300 dark-focus:border-blue-600 focus:shadow-outline-blue transition ease-in-out duration-150`}
-              onClick={() => setDifficulty('Insane')}
-            >
-              Insane
-            </button>
-          </span>
+          <ButtonGroup
+            options={PROBLEM_DIFFICULTY_OPTIONS}
+            value={difficulty}
+            onChange={x => setDifficulty(x)}
+          />
         </div>
       </div>
       <div>
@@ -133,8 +91,14 @@ export default function ProblemFeedbackModal({
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
             Consider leaving solution notes at the top of the code as a comment.
           </p>
+          <ButtonGroup
+            options={['cpp', 'java', 'py']}
+            labelMap={LANGUAGE_LABELS}
+            value={codeLang}
+            onChange={x => setCodeLang(x)}
+          />
 
-          <div className="rounded-md shadow-sm">
+          <div className="rounded-md shadow-sm mt-3">
             <textarea
               rows={10}
               className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
@@ -213,7 +177,7 @@ export default function ProblemFeedbackModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Other Feedback (Optional)
+          Other Feedback
         </label>
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
@@ -225,6 +189,7 @@ export default function ProblemFeedbackModal({
               className="form-textarea block w-full transition duration-150 ease-in-out sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={otherFeedback}
               onChange={e => setOtherFeedback(e.target.value)}
+              placeholder="I hated the problem / I loved the problem / etc"
             />
           </div>
         </div>
