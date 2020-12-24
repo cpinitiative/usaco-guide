@@ -18,6 +18,71 @@ We can use a monotone stack twice to find the closest shorter bars on each side 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
+class Solution {
+public:
+	int largestRectangleArea(vector<int>& heights) {
+		int n = heights.size();
+		if (!n) return 0;
+		stack<int> stck;
+		vector<int> area(n, 0);
+		for (int i = 0; i < n; i++) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = i - (stck.size() ? stck.top() : -1);
+			area[i] += width * heights[i];
+			stck.push(i);
+		}
+		while (stck.size()) stck.pop();
+		for (int i = n - 1; ~i; i--) {
+			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
+			int width = (stck.size() ? stck.top() : n) - i;
+			area[i] += (width - 1) * heights[i];
+			stck.push(i);
+		}
+		return *max_element(area.begin(), area.end());
+	}
+};
+```
+
+## Solution 2
+
+Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height greater than `heights[i]`. Note how we process the rectangles that end at the last height by emptying the stack.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define pi pair<int, int>
+#define f first
+#define s second
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int N = heights.size();
+        int maxa = 0;
+        stack<pi> sta;
+        for(int i = 0; i < N; i++){
+            int start = i;
+            while(!sta.empty() && heights[i] < sta.top().s){
+                pi cur = sta.top(); sta.pop();
+                start = cur.f;
+                maxa = max(maxa, (i-cur.f)*cur.s);
+            }
+            sta.push(make_pair(start, heights[i]));
+        }
+        while(!sta.empty()){
+            pi cur = sta.top(); sta.pop();
+            maxa = max(maxa, (N - cur.f)*cur.s);
+        }
+        return maxa;
+    }
+};
+```
+
+Alternative implementation: add `-1` to the list of `heights` so we don't have to treat rectangles that end at the last height in `heights` as a special case.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
  
 using ll = long long;
 using ld = long double;
@@ -224,58 +289,19 @@ void setIO(str s = "") {
 class Solution {
 public:
 	int largestRectangleArea(vector<int>& heights) {
-		int n = heights.size();
-		if (!n) return 0;
-		stack<int> stck;
-		vector<int> area(n, 0);
-		for (int i = 0; i < n; i++) {
-			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-			int width = i - (stck.size() ? stck.top() : -1);
-			area[i] += width * heights[i];
-			stck.push(i);
+		heights.pb(-1);
+		vi st{-1};
+		int ans = 0;
+		F0R(i,sz(heights)) {
+			while (st.bk != -1 && heights[st.bk] >= heights[i]) {
+				// consider rectangle spanning columns end(st)[-2]+1 to i-1
+				// min height is heights[st.bk]
+				ckmax(ans,(i-1-end(st)[-2])*heights[st.bk]);
+				st.pop_back();
+			}
+			st.pb(i);
 		}
-		while (stck.size()) stck.pop();
-		for (int i = n - 1; ~i; i--) {
-			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-			int width = (stck.size() ? stck.top() : n) - i;
-			area[i] += (width - 1) * heights[i];
-			stck.push(i);
-		}
-		return *max_element(area.begin(), area.end());
+		return ans;
 	}
-};
-```
-
-## Solution 2
-
-Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height greater than `heights[i]`. Note how we process the rectangles that end at the last height by emptying the stack.
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-#define pi pair<int, int>
-#define f first
-#define s second
-class Solution {
-public:
-    int largestRectangleArea(vector<int>& heights) {
-        int N = heights.size();
-        int maxa = 0;
-        stack<pi> sta;
-        for(int i = 0; i < N; i++){
-            int start = i;
-            while(!sta.empty() && heights[i] < sta.top().s){
-                pi cur = sta.top(); sta.pop();
-                start = cur.f;
-                maxa = max(maxa, (i-cur.f)*cur.s);
-            }
-            sta.push(make_pair(start, heights[i]));
-        }
-        while(!sta.empty()){
-            pi cur = sta.top(); sta.pop();
-            maxa = max(maxa, (N - cur.f)*cur.s);
-        }
-        return maxa;
-    }
 };
 ```
