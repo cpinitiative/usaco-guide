@@ -54,7 +54,7 @@ const Tooltip = ({
       content={content}
       animation="scale-subtle"
       theme="material"
-      duration={200}
+      duration={100}
       placement={position}
       {...other}
     >

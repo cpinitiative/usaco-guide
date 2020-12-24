@@ -30,6 +30,7 @@ export function ProblemsList(props: ProblemsListProps) {
   showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
+
   const alwaysHideTags = props.alwaysHideTags;
   const divisionTable = props.division ? true : false;
   return (
@@ -316,6 +317,19 @@ export function ProblemComponent(props: ProblemComponentProps) {
   );
 
   console.log('PROPS MODULES', props.modules);
+  const [tooltipText, setToolTipText] = React.useState(
+    'Click to copy problem URL to clipboard!'
+  );
+  function clicked() {
+    return function (p1: React.MouseEvent<HTMLButtonElement>) {
+      setToolTipText('URL copied to clipboard!');
+    };
+  }
+  function hovering() {
+    return function (p1: React.MouseEvent<HTMLButtonElement>) {
+      setToolTipText('Click to copy problem URL to clipboard!');
+    };
+  }
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -361,18 +375,25 @@ export function ProblemComponent(props: ProblemComponentProps) {
           options={{ message: 'yay!' }}
           text={`${window.location.href}/#problem-${problem.uniqueID}`}
         >
-          <button style={{ outline: 'none' }} onClick={clicked(problem.name)}>
-            <svg
-              fill="none"
-              height="20"
-              width="20"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-            </svg>
+          <button
+            style={{ outline: 'none' }}
+            onClick={clicked()}
+            onMouseLeave={hovering()}
+          >
+            <Tooltip content={tooltipText} style={{ outline: 'none' }}>
+              <svg
+                fill="none"
+                height="20"
+                width="20"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+                style={{ outline: 'none' }}
+              >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </Tooltip>
           </button>
         </CopyToClipboard>
       </td>
