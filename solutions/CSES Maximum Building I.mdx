@@ -7,14 +7,13 @@ author: Benjamin Qi, Andrew Wang
 
 <Spoiler title="Hint">
 
-Fix the bottom row of the rectangle. Then apply the solution for [Max Histogram Area](https://usaco.guide/solutions/lc-largest-rectangle-in-histogram).
+Fix the bottom row of the rectangle. Then apply the solution for [Max Histogram Area](/solutions/lc-largest-rectangle-in-histogram).
 
 </Spoiler>
 
 <Spoiler title="Solution 1">
 
 **Time Complexity:** $\mathcal{O}(NM)$
-
 
 Update the nearest tree for every column for each new bottom row. Iterate from left to right and use a monotonic stack to calculate the area for every bottom row.
 
@@ -28,39 +27,39 @@ using namespace std;
 queue<int> col[1005];
 char grid[1005][1005];
 int main() {
-    int N, M; cin >> N >> M;
-    for(int i = 0; i < N; i++){
-        string str; cin >> str;
-        for(int j = 0; j < M; j++){
-            grid[j][i] = str[j];
-            if(grid[j][i] == '*'){
-                col[j].push(i);
-            }
-        }
-    }
-    for(int j = 0; j < M; j++) col[j].push(N);
-    int maxa = 0;
-    for(int i = 0; i < N; i++){
-        for(int j = 0; j < M; j++){
-            if(col[j].front() < i) col[j].pop(); //updates the nearest tree
-        }
-        stack<pi> sta;
-        for(int j = 0; j < M; j++){ 
-            int start = j;
-            while(!sta.empty() && col[j].front()-i < sta.top().s){
-                pi cur = sta.top(); sta.pop();
-                start = cur.f;
-                maxa = max(maxa, (j-cur.f)*cur.s);
-            }
-            sta.push(make_pair(start, col[j].front()-i));
-        }
-        while(!sta.empty()){
-            pi cur = sta.top(); sta.pop();
-            maxa = max(maxa, (M - cur.f)*cur.s);
-        }
-    }
-    cout << maxa << endl;
-    return 0;
+	int N, M; cin >> N >> M;
+	for(int i = 0; i < N; i++){
+		string str; cin >> str;
+		for(int j = 0; j < M; j++){
+			grid[j][i] = str[j];
+			if(grid[j][i] == '*'){
+				col[j].push(i);
+			}
+		}
+	}
+	for(int j = 0; j < M; j++) col[j].push(N);
+	int maxa = 0;
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < M; j++){
+			if(col[j].front() < i) col[j].pop(); //updates the nearest tree
+		}
+		stack<pi> sta;
+		for(int j = 0; j < M; j++){ 
+			int start = j;
+			while(!sta.empty() && col[j].front()-i < sta.top().s){
+				pi cur = sta.top(); sta.pop();
+				start = cur.f;
+				maxa = max(maxa, (j-cur.f)*cur.s);
+			}
+			sta.push(make_pair(start, col[j].front()-i));
+		}
+		while(!sta.empty()){
+			pi cur = sta.top(); sta.pop();
+			maxa = max(maxa, (M - cur.f)*cur.s);
+		}
+	}
+	cout << maxa << endl;
+	return 0;
 }
 ```
 
@@ -70,7 +69,7 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(NM)$
 
-For a fixed bottom row, iterate from top to bottom and use a DSU.
+Same as solution 1, but we can use DSU instead of a monotonic stack.
 
 ```cpp
 #include <bits/stdc++.h>
