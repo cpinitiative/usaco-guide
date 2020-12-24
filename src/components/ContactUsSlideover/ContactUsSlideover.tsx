@@ -197,9 +197,32 @@ export default function ContactUsSlideover({
       }
       onSubmit={handleSubmit}
     >
+      <div className="bg-gray-50 dark:bg-gray-900 mb-4">
+        <div className="px-4 py-5 sm:p-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
+            Ask on the USACO Forum!
+          </h3>
+          <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500 dark:text-gray-400">
+            <p>
+              Get a faster response by reaching out on the USACO Forum instead.
+            </p>
+          </div>
+          <div className="mt-5">
+            <span className="inline-flex rounded-md shadow-sm">
+              <a
+                href="https://forum.usaco.guide/"
+                target="_blank"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+              >
+                Join Forum
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
       <div className="px-4 sm:px-6">
         {showSuccess && (
-          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4 mt-6">
+          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -239,7 +262,7 @@ export default function ContactUsSlideover({
           </div>
         )}
         {!showSuccess && (
-          <div className="space-y-6 pt-6 pb-5">
+          <div className="space-y-6 pb-5">
             <Field
               label="Name"
               id="contact_name"
