@@ -5,6 +5,7 @@ import SlideoverForm from './SlideoverForm';
 import { useContext, useEffect, useState } from 'react';
 import useStickyState from '../../hooks/useStickyState';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -62,7 +63,6 @@ export function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
-  activeModule = null,
 }: {
   isOpen: boolean;
   onClose: any;
@@ -88,13 +88,16 @@ export default function ContactUsSlideover({
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
 
+  const markdownContext = useContext(MarkdownLayoutContext);
+
   React.useEffect(() => {
-    if (activeModule)
+    const activeModule = markdownContext?.markdownLayoutInfo;
+    if (activeModule && activeModule instanceof ModuleInfo)
       setLocation(
         `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
     else setLocation('');
-  }, [activeModule]);
+  }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
   useEffect(() => {

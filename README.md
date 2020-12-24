@@ -20,11 +20,9 @@ Thank you to the following companies:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
+See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get started, simply pick an [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work on, leave a comment, and submit a Pull Request!
 
 Join our Discord server: https://discord.gg/Gq9cX4j
-
-**We're actively looking for a web developer, SEO specialist, or a graphic designer to help with the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
 
 ## Tech Stack
 

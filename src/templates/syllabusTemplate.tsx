@@ -12,8 +12,10 @@ import MODULE_ORDERING, {
 } from '../../content/ordering';
 import { getModule } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import DashboardProgress, {
+  DashboardProgressSmall,
+} from '../components/Dashboard/DashboardProgress';
+// import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   getProblemsProgressInfo,
   getModulesProgressInfo,
@@ -125,10 +127,12 @@ export default function Template(props) {
   const { division } = props.pageContext;
 
   const section = getModule(allModules, division);
+  // console.log("SECTION",section)
 
-  const { userProgressOnModules, userProgressOnProblems } = React.useContext(
-    UserDataContext
-  );
+  // const { userProgressOnModules, userProgressOnProblems } = React.useContext(
+  //   UserDataContext
+  // );
+
   const moduleIDs = section.reduce(
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
@@ -137,12 +141,35 @@ export default function Template(props) {
   let problemIDs = [];
   for (let chapter of MODULE_ORDERING[division]) {
     for (let moduleID of chapter.items) {
+      // console.log("HA",moduleID)
       for (let problem of allModules[moduleID].problems) {
         problemIDs.push(problem.uniqueID);
       }
     }
   }
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+
+  const progressBarForCategory = category => {
+    // console.log("WHOOPS",category.name,category.items)
+    let problemIDs = [];
+    for (let chapter of MODULE_ORDERING[division])
+      if (chapter.name == category.name) {
+        for (let moduleID of chapter.items) {
+          for (let problem of allModules[moduleID].problems) {
+            problemIDs.push(problem.uniqueID);
+          }
+        }
+      }
+    const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+    return (
+      problemIDs.length > 1 && (
+        <DashboardProgressSmall
+          {...problemsProgressInfo}
+          total={problemIDs.length}
+        />
+      )
+    );
+  };
 
   return (
     <Layout>
@@ -201,6 +228,9 @@ export default function Template(props) {
                   <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out">
                     {category.name}
                   </h2>
+                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out">
+                    {progressBarForCategory(category)}
+                  </div>
                   <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark-group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition duration-150 ease-in-out">
                     {category.description}
                   </p>
