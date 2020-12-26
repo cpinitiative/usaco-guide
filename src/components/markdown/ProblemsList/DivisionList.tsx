@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { graphqlToModuleLinks } from '../../../utils/utils';
 import div_to_probs from './div_to_probs';
 import contest_to_points from './contest_to_points';
-import extra_probs from './extra_probs';
+import extra_probs from '../../../../solutions/1_extra_usaco_probs';
 import { Problem } from '../../../../content/models';
 import { ProblemsList } from './ProblemsList';
 import HTMLComponents from '../HTMLComponents';
@@ -188,9 +188,10 @@ export function DivisionList(props) {
   }
   for (let problem of extra_probs) {
     const uniqueID = problem.uniqueID;
-    prob_to_tags[uniqueID] = problem.tags;
-    prob_to_difficulty[uniqueID] = problem.difficulty;
-    prob_to_sol[uniqueID] = problem.solID;
+    if (problem.tags && problem.tags.length > 0)
+      prob_to_tags[uniqueID] = problem.tags;
+    if (problem.difficulty) prob_to_difficulty[uniqueID] = problem.difficulty;
+    if (problem.solID) prob_to_sol[uniqueID] = problem.solID;
   }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: Problem[] };
