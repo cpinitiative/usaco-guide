@@ -34,9 +34,11 @@ const ContentContainer = ({ children, tableOfContents }) => (
           className="flex-shrink-0 hidden lg:block order-1"
           style={{ width: '20rem' }}
         />
-        <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
-          <TableOfContentsSidebar tableOfContents={tableOfContents} />
-        </div>
+        {tableOfContents.length > 1 && (
+          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+            <TableOfContentsSidebar tableOfContents={tableOfContents} />
+          </div>
+        )}
         <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
           <div className="hidden lg:block">
             <NavBar />
@@ -179,7 +181,7 @@ export default function MarkdownLayout({
                 moduleLinks={moduleLinks}
               />
 
-              <div className="xl:hidden">
+              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 

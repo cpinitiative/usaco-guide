@@ -39,8 +39,14 @@ The following is a list of third party services that the USACO Guide / Competiti
 
 ## Competitive Programming Initiative
 
-- Mailchimp (free plan)
+- Google Nonprofits
+  - gsuite for Nonprofits
+  - Google Ad Grant
+- Microsoft Nonprofits
+- Github Nonprofits
+- Canva for Nonprofits
 - Slido (nonprofit plan)
+- Mailchimp (free plan)
 
 ## Services we no longer use
 
