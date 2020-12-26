@@ -130,7 +130,6 @@ Good:
 This is **bold**.
 
 </Spoiler>
-
 ```
 
 ```mdx
@@ -412,7 +411,6 @@ Java content goes here!
 </JavaSection>
 <PySection />
 </LanguageSection>
-
 ```
 
 In the example above, nothing will be rendered for Python.
