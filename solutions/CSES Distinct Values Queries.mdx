@@ -2,7 +2,7 @@
 id: cses-1734
 source: CSES
 title: Distinct Values Queries
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Óscar Garries
 ---
 
 <Spoiler title="Hint">
@@ -11,60 +11,61 @@ Sort the queries in a specific order before answering them.
 
 </Spoiler>
 
-<Spoiler title="Solution 1">
+<Spoiler title="Solution">
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
-
 
 Answer queries in order of the right indices. Use a BIT to keep track of indices that contain distinct values. For every value, update the latest index for it and answer all queries at the current index. This ensures later indices are included in the BIT to accurately answer queries.
 
 ```cpp
 #include <bits/stdc++.h>
+ 
 using namespace std;
-#define ll long long
-#define pi pair<int, int>
-#define pb push_back
-#define f first
-#define s second
-
-
-const int MX = (int)2e5+5;
-int ans[MX], x[MX];
-vector<pi> query[MX];
-map<int,int> fst;
-
-int fwt[MX];
-void inc(int ind, int x){
-    while(ind > 0 && ind < MX){
-        fwt[ind] += x;
-        ind += (ind&-ind);
-    }
+ 
+const int MX = 4e5 + 5;
+ 
+int bit[MX];
+int n, q, sol[MX];
+vector<pair<int, int>> query[MX];
+vector<int> x(MX);
+map<int, int> fst;
+ 
+int qry (int i) {
+	int res = 0;
+	for (; i; i -= i&(-i)) {
+		res += bit[i];
+	}
+	return res;
 }
-int sum(int ind){
-    int ret = 0;
-    while(ind > 0 && ind < MX){
-        ret += fwt[ind];
-        ind -= (ind&-ind);
-    }
-    return ret;
+ 
+void upd (int i, int val) {
+	for (; i <= n; i += i&(-i)) {
+		bit[i] += val;
+	}
 }
-int main() {
-    int N, Q; cin >> N >> Q;
-    for(int i = 1; i <= N; i++){
-        cin >> x[i];
-    }
-    for(int i = 0; i < Q; i++){
-        int a,b; cin >> a >> b;
-        query[b].pb({a,i});
-    }
-    for(int i = 1; i <= N; i++){
-        int z = x[i];
-        if (fst.count(z)) inc(fst[z],-1);
-        fst[z] = i; inc(i,1);
-        for(pi t : query[i]) ans[t.s] = sum(i) - sum(t.f-1);
-    }
-    for(int i = 0; i < Q; i++) cout << ans[i] << endl;
-    return 0;
+ 
+int main () {
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		cin >> x[i];
+	}
+	for (int i = 0; i < q; i++) {
+		int a, b;
+		cin >> a >> b;
+		query[a].push_back(make_pair(b, i));
+	}
+	for (int i = n; i >= 1; i--) {
+		int z = x[i - 1];
+		if (fst.count(z)) upd(fst[z], -1);
+		fst[z] = i;
+		upd(i, 1);
+		for (auto t : query[i]) {
+			sol[t.second] = qry(t.first);
+		}
+	}
+	for (int i = 0; i < q; i++) {
+		cout << sol[i] << '\n';
+	}
 }
 ```
 
