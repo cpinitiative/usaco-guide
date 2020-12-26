@@ -127,7 +127,6 @@ Good:
 
 <Spoiler>
 
-
 This is **bold**.
 
 </Spoiler>
@@ -401,14 +400,12 @@ There are two main types of tooltips: text tooltips, which display a dotted unde
 <LanguageSection>
 <CPPSection>
 
-
 # A heading that only appears in C++
 
 CPP content goes here, note the newlines!
 
 </CPPSection>
 <JavaSection>
-
 
 Java content goes here!
 
@@ -425,10 +422,8 @@ In the example above, nothing will be rendered for Python.
 ```mdx
 <IncompleteSection>
 
-
 - this list is optional and can be used to specify what is missing
 - missing 32-bit integer explanation
 
 </IncompleteSection>
-
 ```
