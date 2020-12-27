@@ -83,18 +83,18 @@ export default ({ children, className }) => {
             {collapsed && tokens.length > 10
               ? renderTokens(tokens.slice(0, 10), getLineProps, getTokenProps)
               : renderTokens(tokens, getLineProps, getTokenProps)}
-            {tokens.length > 10 && !collapsed && <div className="h-4" />}
+            {tokens.length > 10 && !collapsed && <div className="h-8" />}
             {tokens.length > 10 && (
               <div
                 className={
-                  (collapsed ? 'h-full' : 'h-8') +
+                  (collapsed ? 'h-full' : 'h-12') +
                   ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
                 }
                 onClick={() => setCollapsed(!collapsed)}
               >
                 <div
                   className={
-                    (collapsed ? 'h-20' : 'h-8') +
+                    (collapsed ? 'h-20' : 'h-12') +
                     ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                   }
                   style={
