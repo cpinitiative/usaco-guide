@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1059', '2020 December', 'Do You Know Your ABCs?'],
+    ['1060', '2020 December', 'Daisy Chains'],
+    ['1061', '2020 December', 'Stuck in a Rut'],
     ['1035', '2020 US Open', 'Social Distancing I'],
     ['1036', '2020 US Open', 'Social Distancing II'],
     ['1037', '2020 US Open', 'Cowntact Tracing'],
@@ -62,6 +65,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1062', '2020 December', 'Cowntagion'],
+    ['1063', '2020 December', 'Rectangular Pasture'],
+    ['1064', '2020 December', 'Stuck in a Rut'],
     ['1038', '2020 US Open', 'Social Distancing'],
     ['1039', '2020 US Open', 'Cereal'],
     ['1040', '2020 US Open', 'The Moo Particle'],
@@ -124,6 +130,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1065', '2020 December', 'Replication'],
+    ['1066', '2020 December', 'Bovine Genetics'],
+    ['1067', '2020 December', 'Square Pasture'],
     ['1041', '2020 US Open', 'Haircut'],
     ['1042', '2020 US Open', 'Favorite Colors'],
     ['1043', '2020 US Open', 'Exercise'],
@@ -185,6 +194,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1068', '2020 December', 'Sleeping Cows'],
+    ['1069', '2020 December', 'Spaceship'],
+    ['1070', '2020 December', 'Cowmistry'],
     ['1044', '2020 US Open', 'Sprinklers 2: Return of the Alfalfa'],
     ['1045', '2020 US Open', 'Exercise'],
     ['1046', '2020 US Open', 'Circus'],

@@ -15,7 +15,7 @@ const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
   // 2015-16 to 2019-20
   const res = [];
-  for (let i = 2016; i <= 2020; ++i) {
+  for (let i = 2016; i <= 2021; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
   return res;
@@ -218,7 +218,10 @@ export function DivisionList(props) {
       const uniqueID =
         'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + prob_info[0];
       const contest = prob_info[1];
-      const fraction = contestToFraction[division][contest].shift();
+      let fraction = null;
+      if (contest in contestToFraction[division]) {
+        fraction = contestToFraction[division][contest].shift();
+      }
       const prob = new Problem(
         contest, // source
         prob_info[2], // title
