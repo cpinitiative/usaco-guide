@@ -31,6 +31,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
       to {days ? 'continue your streak' : 'unlock this cow photo'}!
+      {days ? ` Photo will be unlocked after ${days + 1} days.` : null}
     </div>
   );
 };
