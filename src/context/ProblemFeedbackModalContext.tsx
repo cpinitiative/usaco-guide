@@ -38,6 +38,7 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
         .collection('problemFeedback')
         .add({
           ...feedback,
+          problemID: problem.uniqueID,
           userID: firebaseUser?.uid ?? null,
         })
     );
