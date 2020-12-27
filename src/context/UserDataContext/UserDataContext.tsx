@@ -126,8 +126,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
   hideTagsAndDifficulty: false,
   hideSols: false,
   divisionTableQuery: {
-    division: 'Bronze',
-    season: '2019 - 2020',
+    division: '',
+    season: '',
     showSols: false,
   },
   isLoaded: true,

@@ -13,7 +13,6 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
-  // 2015-16 to 2019-20
   const res = [];
   for (let i = 2016; i <= 2021; ++i) {
     res.push(`${i - 1} - ${i}`);
@@ -254,14 +253,16 @@ export function DivisionList(props) {
   // const [currentDivision, setDivision] = useState(divisions[0]);
   // const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
   const userSettings = useContext(UserDataContext);
-  const curDivision =
-    (userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.division) ||
-    'Bronze';
-  const curSeason =
-    (userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.season) ||
-    '2019 - 2020';
+
+  let curDivision =
+    userSettings.divisionTableQuery && userSettings.divisionTableQuery.division;
+  if (!divisions.includes(curDivision)) curDivision = divisions[0];
+
+  let curSeason =
+    userSettings.divisionTableQuery && userSettings.divisionTableQuery.season;
+  if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+  console.log('LAST SEASON', seasons[seasons.length - 1]);
+
   const curShowSols =
     !userSettings.hideSols &&
     !!(
