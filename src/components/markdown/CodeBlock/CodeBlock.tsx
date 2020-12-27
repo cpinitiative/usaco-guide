@@ -87,35 +87,42 @@ export default ({ children, className }) => {
             {tokens.length > 10 && (
               <div
                 className={
-                  (collapsed ? 'h-20' : 'h-8') +
+                  (collapsed ? 'h-full' : 'h-8') +
                   ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
-                }
-                style={
-                  collapsed
-                    ? {
-                        background:
-                          'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                      }
-                    : null
                 }
                 onClick={() => setCollapsed(!collapsed)}
               >
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <div
                   className={
-                    'text-white w-6 h-6 transform group-hover:-translate-y-2 transition duration-150 ease-in-out mb-2 ' +
-                    (collapsed ? '' : 'rotate-180')
+                    (collapsed ? 'h-20' : 'h-8') +
+                    ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                  }
+                  style={
+                    collapsed
+                      ? {
+                          background:
+                            'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+                        }
+                      : null
                   }
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className={
+                      'text-white w-6 h-6 transform group-hover:-translate-y-2 transition duration-150 ease-in-out mb-2 ' +
+                      (collapsed ? '' : 'rotate-180')
+                    }
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
               </div>
             )}
           </pre>
