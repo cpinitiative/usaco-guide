@@ -161,6 +161,10 @@ export class Problem {
   get uniqueID() {
     return this.url;
   }
+  get firebaseUniqueID() {
+    // Firebase does not allow forward slashes in document IDs
+    return this.uniqueID.replace(/\//g, '_');
+  }
 
   private autoGenerateInfoFromSource() {
     if (!(this.source in probSources) && isUsaco(this.source)) {
@@ -263,14 +267,7 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    public difficulty?:
-      | 'Very Easy'
-      | 'Easy'
-      | 'Normal'
-      | 'Hard'
-      | 'Very Hard'
-      | 'Insane'
-      | null,
+    public difficulty?: ProblemDifficulty | null,
     public starred?: boolean,
     public tags?: string[],
     public solID?: string,
@@ -363,3 +360,27 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Skipped',
   'Ignored',
 ];
+
+export type ProblemDifficulty =
+  | 'Very Easy'
+  | 'Easy'
+  | 'Normal'
+  | 'Hard'
+  | 'Very Hard'
+  | 'Insane';
+export const PROBLEM_DIFFICULTY_OPTIONS: ProblemDifficulty[] = [
+  'Very Easy',
+  'Easy',
+  'Normal',
+  'Hard',
+  'Very Hard',
+  'Insane',
+];
+
+export type ProblemFeedback = {
+  difficulty: ProblemDifficulty | null;
+  tags: string[];
+  solutionCode: string;
+  isCodePublic: boolean;
+  otherFeedback: string;
+};
