@@ -80,11 +80,11 @@ export default ({ children, className }) => {
             }
             style={{ ...style }}
           >
-            {collapsed && tokens.length > 10
+            {collapsed && tokens.length > 15
               ? renderTokens(tokens.slice(0, 10), getLineProps, getTokenProps)
               : renderTokens(tokens, getLineProps, getTokenProps)}
-            {tokens.length > 10 && !collapsed && <div className="h-8" />}
-            {tokens.length > 10 && (
+            {tokens.length > 15 && !collapsed && <div className="h-8" />}
+            {tokens.length > 15 && (
               <div
                 className={
                   (collapsed ? 'h-full' : 'h-12') +
