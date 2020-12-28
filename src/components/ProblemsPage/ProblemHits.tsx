@@ -89,7 +89,10 @@ function ProblemHit({ hit }) {
 
       <div className="pt-4 space-x-2">
         {problem.tags?.map(tag => (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis">
+          <span
+            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+            key={tag}
+          >
             {tag}
           </span>
         ))}
