@@ -172,7 +172,7 @@ export default function MarkdownLayout({
             <MobileSideNav />
             <DesktopSidebar />
 
-            <div>
+            <div className="w-full overflow-x-auto">
               <MobileAppBar />
 
               <ContentContainer tableOfContents={tableOfContents}>
