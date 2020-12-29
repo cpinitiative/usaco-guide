@@ -203,7 +203,7 @@ testCase=1
 
 while $loop; do
 	# Does this test case exist?
-	if [[ (! -e "$testCase.in") || (! -e "$testCase.out") ]]; then
+	if [[ ! -e "$testCase.in" || ! -e "$testCase.out" ]]; then
 		# If not, then stop.
 		break;
 	fi
@@ -219,10 +219,10 @@ while $loop; do
 		echo -e "$GREEN** PASSED **$NC\n"
 	else
 		echo -e "$RED** FAILED **$NC\n"
-		wrong=$((wrong+=1))
+		wrong=$((wrong += 1))
 	fi
 	
-	testCase=$((testCase+=1))
+	testCase=$((testCase += 1))
 done
 
 # Check if any wrong.
