@@ -182,33 +182,50 @@ done
 
 <JavaSection>
 
-Here is an interactive script to test a Java program with input and output files:
+Here is an script to test a Java program with input and output files. You will need to put the `.java`, this script, and the `1.in`, `1.out` files in the same directory:
 
 ```
-read -p "Enter the name of the Java class to be tested: " name
-read -p "Enter the number of test cases: " cases
-
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 NC="\033[0m"
 
 wrong=0
 
-for (( i = 1; i <= cases; i++ )); do
-	echo "Testing: $i"
-	cp $i.in $name.in
-	java $name.java < $name.in > $name.out
+fileName=$(ls | grep java)
 
-	diffOut=$(diff -w $i.out $name.out 2>&1)
+IFS="."
+read -ra fileArr <<< $fileName
+
+className=${fileArr[0]}
+
+loop=true
+testCase=1
+
+while $loop; do
+	# Does this test case exist?
+	if [[ (! -e "$testCase.in") || (! -e "$testCase.out") ]]; then
+		# If not, then stop.
+		break;
+	fi
+	
+	# If so, then test.
+	echo "Testing: $testCase"
+	cp $testCase.in $className.in
+	java $className.java < $className.in > $className.out
+
+	diffOut=$(diff -w $testCase.out $className.out 2>&1)
 
 	if [[ $diffOut == "" ]]; then
 		echo -e "$GREEN** PASSED **$NC\n"
 	else
 		echo -e "$RED** FAILED **$NC\n"
-		wrong=$(( wrong + 1 ))
+		wrong=$((wrong+=1))
 	fi
+	
+	testCase=$((testCase+=1))
 done
 
+# Check if any wrong.
 if [[ wrong -gt 0 ]]; then
 	echo -e "$RED*** TEST CASE(S) FAILED ***$NC"
 else
