@@ -186,24 +186,34 @@ Here is an interactive script to test a Java program with input and output files
 
 ```
 read -p "Enter the name of the Java class to be tested: " name
+read -p "Enter the number of test cases: " cases
 
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 NC="\033[0m"
 
-for (( i = 1; i <= 10; i++ )); do
-        echo "Testing: $i"
-        cp $i.in $name.in
-        java $name.java
+wrong=0
 
-        diffOut=$(diff -w $i.out $name.out)
+for (( i = 1; i <= cases; i++ )); do
+	echo "Testing: $i"
+	cp $i.in $name.in
+	java $name.java < $name.in > $name.out
 
-        if [[ $diffOut == "" ]]; then
-                echo -e "$GREEN** PASSED **$NC\n"
-        else
-                echo -e "$RED** FAILED **$NC\n"
-        fi
+	diffOut=$(diff -w $i.out $name.out 2>&1)
+
+	if [[ $diffOut == "" ]]; then
+		echo -e "$GREEN** PASSED **$NC\n"
+	else
+		echo -e "$RED** FAILED **$NC\n"
+		wrong=$(( wrong + 1 ))
+	fi
 done
+
+if [[ wrong -gt 0 ]]; then
+	echo -e "$RED*** TEST CASE(S) FAILED ***$NC"
+else
+	echo -e "$GREEN*** ALL TEST CASES PASSED ***$NC"
+fi
 ```
 
 </JavaSection>
