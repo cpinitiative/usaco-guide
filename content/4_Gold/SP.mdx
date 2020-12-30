@@ -358,7 +358,7 @@ public class test {
 
 <Warning>
 
-It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem! Since the edge count on the last testcase is greater than the node count, multiple nodes will point to the same node. Without `continue`, "duplicates" of the same node with different values might get added to the priority queue. This will cause a TLE on the last testcase because now the program has to traverse the same nodes multiple times which is suboptimal. Furthermore, because we only want the shortest path, there is no point in keeping these "duplicates", we only have to keep the minimum amount. As a result, we can `continue` if we get to a value that is more that the shortest at that node and significantly reduce the runtime.
 
 <IncompleteSection>
 
