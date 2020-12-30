@@ -1,7 +1,7 @@
 ---
 id: sp
 title: 'Shortest Paths with Non-Negative Edge Weights'
-author: Benjamin Qi, Andi Qu
+author: Benjamin Qi, Andi Qu, Qi Wang
 prerequisites:
   - bfs
   - custom-cpp-stl
@@ -363,12 +363,6 @@ It's important to include `continue`. This ensures that when all edge weights ar
 The last testcase contains 100000 destinations and 149997 routes. City 1 has around 50000 routes to cities 2 to 50000. Cities 2 to 50000 have routes that go to city 50001. City 50001 has routes that go to cities 50002 to 100000. Without the `continue`, after the program processes the routes from city 1, the priority queue will contain 49998 routes that point to city 50001. After getting the shortest route to city 50001 from these routes, it will move on to the cities 50002 to 100000 that can be reached from City 50001. However, the priority queue now has 49998 instances of these routes. This means that city 50001 will be processed 49998 more times and so on for the 49998 cities that branches out from city 50001. This results in a worse runtime than $\mathcal{O}(N^2)$, which will TLE. 
 
 On the other hand, if we did include the `continue`, after setting the cost of city 50001, the program will pop off the other 49997 routes that do not have the shortest path. Thus, it now only processes every city once. 
-
-<IncompleteSection>
-
-(explanation of hack case)
-
-</IncompleteSection>
 
 </Warning>
 
