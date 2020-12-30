@@ -1,7 +1,7 @@
 ---
 id: debugging-lang
 title: Debugging (Language-Specific)
-author: Benjamin Qi, Aaron Chew, Aryansh Shrivastava
+author: Benjamin Qi, Aaron Chew, Aryansh Shrivastava, Owen Wang
 description: 'Identifying errors within your program and how to avoid them in the first place.'
 ---
 
@@ -178,6 +178,72 @@ for((i = 1; ; ++i)); do
 	fi ;
 done
 ```
+<LanguageSection>
+
+<JavaSection>
+
+Here is an script to test a Java program with input and output files. You will need to put the `.java`, this script, and the input and output files (`1.in`, `1.out`, etc.) in the same directory:
+
+<Spoiler title="Java testing script">
+
+```
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+NC="\033[0m"
+
+wrong=0
+
+fileName=$(ls | grep java)
+
+IFS="."
+read -ra fileArr <<< $fileName
+
+className=${fileArr[0]}
+
+loop=true
+testCase=1
+
+while $loop; do
+	# Does this test case exist?
+	if [[ ! -e "$testCase.in" || ! -e "$testCase.out" ]]; then
+		# If not, then stop.
+		break;
+	fi
+	
+	# If so, then test.
+	echo "Testing: $testCase"
+	cp $testCase.in $className.in
+	java $className.java < $className.in > $className.out
+
+	diffOut=$(diff -w $testCase.out $className.out 2>&1)
+
+	if [[ $diffOut == "" ]]; then
+		echo -e "$GREEN** PASSED **$NC\n"
+	else
+		echo -e "$RED** FAILED **$NC\n"
+		wrong=$((wrong += 1))
+	fi
+	
+	testCase=$((testCase += 1))
+done
+
+# Check if any wrong.
+if [[ wrong -gt 0 ]]; then
+	if [[ $wrong == 1 ]]; then
+		echo -e "$RED*** $wrong TEST CASE FAILED ***$NC"
+	else
+		echo -e "$RED*** $wrong TEST CASES FAILED ***$NC"
+	fi
+else
+	echo -e "$GREEN*** ALL TEST CASES PASSED ***$NC"
+fi
+```
+
+</Spoiler>
+
+</JavaSection>
+
+</LanguageSection>
 
 If you want to learn how to write these scripts yourself, you can check [here](https://usaco.guide/general/cpp-command#linux) (but take this advice with a grain of salt since I'm not so proficient myself ...).
 
