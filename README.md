@@ -36,7 +36,7 @@ Our front-end is built with:
 Our back-end and database is built with:
 
 - Firebase
-- Graph-QL
+- graphQL
 
 ## Contact Info
 
