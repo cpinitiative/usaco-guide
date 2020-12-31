@@ -9,9 +9,7 @@ Thank you to the following companies:
 - [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free hosting & continuous deployment
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
-- [Sentry](https://sentry.io/), error reporting
-- [BrowserStack](https://browserstack.com/), browser testing
-- [slido](https://www.sli.do/), Q&A and polling platform
+- And [more](docs/Companies.md)!
 
 ## Documentation
 

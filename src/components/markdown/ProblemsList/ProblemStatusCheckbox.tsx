@@ -12,6 +12,7 @@ import styled from 'styled-components';
 
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
+import ProblemFeedbackModalContext from '../../../context/ProblemFeedbackModalContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -110,7 +111,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           <span className={`absolute inset-y-0 left-0 flex items-center pl-3`}>
             {icon(progress, activeProgress === progress)}
           </span>
-          {/* 
+          {/*
           {progress === currentProgress && (
             <span
               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
@@ -171,6 +172,7 @@ export default function ProblemStatusCheckbox({
   };
   const tippyRef = useRef();
   const showConfetti = useContext(ConfettiContext);
+  const { openProblemFeedbackModal } = useContext(ProblemFeedbackModalContext);
   return (
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
@@ -184,7 +186,10 @@ export default function ProblemStatusCheckbox({
               let solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
-              if (!solved(status) && solved(progress)) showConfetti();
+              if (!solved(status) && solved(progress)) {
+                showConfetti();
+                openProblemFeedbackModal(problem);
+              }
             }}
             currentProgress={status}
           />

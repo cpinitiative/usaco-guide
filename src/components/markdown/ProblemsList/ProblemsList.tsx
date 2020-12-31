@@ -31,6 +31,10 @@ export function ProblemsList(props: ProblemsListProps) {
   const [showModal, setShowModal] = React.useState(false);
   const alwaysHideTags = props.alwaysHideTags;
   const divisionTable = props.division ? true : false;
+  let showPercent = true; // props.division != 'Platinum';
+  for (let problem of props.problems) {
+    if (!problem.fraction) showPercent = false;
+  }
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -53,7 +57,7 @@ export function ProblemsList(props: ProblemsListProps) {
 
                   {showTagsAndDifficulty &&
                     (divisionTable ? (
-                      props.division != 'Platinum' && (
+                      showPercent && (
                         <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                           <TextTooltip content="Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.">
                             Percent
@@ -105,6 +109,7 @@ export function ProblemsList(props: ProblemsListProps) {
                     }}
                     key={problem.id}
                     modules={props.modules}
+                    showPercent={showPercent}
                   />
                 ))}
               </tbody>
@@ -194,6 +199,7 @@ type ProblemComponentProps = {
   alwaysHideTags?: boolean;
   division?: string;
   modules?: boolean;
+  showPercent?: boolean;
 };
 
 export const difficultyClasses = {
@@ -314,7 +320,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
     </td>
   );
 
-  console.log('PROPS MODULES', props.modules);
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -322,7 +327,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       {nameCol}
       {showTagsAndDifficulty &&
         (divisionTable
-          ? props.division != 'Platinum' && (
+          ? props.showPercent && (
               <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                 <UsacoTableProgress
                   division={props.division}

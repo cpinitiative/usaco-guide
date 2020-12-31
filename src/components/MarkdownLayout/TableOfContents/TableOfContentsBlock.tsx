@@ -15,10 +15,14 @@ const TableOfContentsBlock = ({
   );
   return (
     <div>
-      <h2 className="uppercase text-gray-500 dark:text-dark-high-emphasis font-bold mt-8 mb-3 tracking-wider">
-        Table of Contents
-      </h2>
-      {links}
+      {tableOfContents.length > 1 && (
+        <>
+          <h2 className="uppercase text-gray-500 dark:text-dark-high-emphasis font-bold mt-8 mb-3 tracking-wider">
+            Table of Contents
+          </h2>
+          {links}
+        </>
+      )}
       <hr className="my-6 dark:border-gray-700" />
 
       <LinksToEdit className="group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />

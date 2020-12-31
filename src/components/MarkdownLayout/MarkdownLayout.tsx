@@ -21,6 +21,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -34,9 +35,11 @@ const ContentContainer = ({ children, tableOfContents }) => (
           className="flex-shrink-0 hidden lg:block order-1"
           style={{ width: '20rem' }}
         />
-        <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
-          <TableOfContentsSidebar tableOfContents={tableOfContents} />
-        </div>
+        {tableOfContents.length > 1 && (
+          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+            <TableOfContentsSidebar tableOfContents={tableOfContents} />
+          </div>
+        )}
         <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
           <div className="hidden lg:block">
             <NavBar />
@@ -165,35 +168,37 @@ export default function MarkdownLayout({
     >
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
-          <MobileSideNav />
-          <DesktopSidebar />
+          <ProblemFeedbackModalProvider>
+            <MobileSideNav />
+            <DesktopSidebar />
 
-          <div>
-            <MobileAppBar />
+            <div className="w-full overflow-x-auto">
+              <MobileAppBar />
 
-            <ContentContainer tableOfContents={tableOfContents}>
-              <NotSignedInWarning />
+              <ContentContainer tableOfContents={tableOfContents}>
+                <NotSignedInWarning />
 
-              <ModuleHeaders
-                problemIDs={problemIDs}
-                moduleLinks={moduleLinks}
-              />
+                <ModuleHeaders
+                  problemIDs={problemIDs}
+                  moduleLinks={moduleLinks}
+                />
 
-              <div className="xl:hidden">
-                <TableOfContentsBlock tableOfContents={tableOfContents} />
-              </div>
+                <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
+                  <TableOfContentsBlock tableOfContents={tableOfContents} />
+                </div>
 
-              {children}
+                {children}
 
-              <ModuleProgressUpdateBanner />
+                <ModuleProgressUpdateBanner />
 
-              <ForumCTA />
+                <ForumCTA />
 
-              <div className="my-8">
-                <ModuleFeedback markdownData={markdownData} />
-              </div>
-            </ContentContainer>
-          </div>
+                <div className="my-8">
+                  <ModuleFeedback markdownData={markdownData} />
+                </div>
+              </ContentContainer>
+            </div>
+          </ProblemFeedbackModalProvider>
         </ContactUsSlideoverProvider>
       </SettingsModalProvider>
     </MarkdownLayoutContext.Provider>

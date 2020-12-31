@@ -105,12 +105,9 @@ const ProgressBarSmall = ({ className = null, text, green, yellow, blue }) => {
           />
         </div>
       </div>
+      {/*  text-gray-800 dark:text-dark-med-emphasis */}
       <div className="inline-block ml-1">
-        {text && (
-          <span className="text-sm font-semibold text-gray-800 dark:text-dark-med-emphasis">
-            &nbsp;{text}
-          </span>
-        )}
+        {text && <span className="text-sm font-semibold">&nbsp;{text}</span>}
       </div>
     </div>
   );
