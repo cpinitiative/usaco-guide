@@ -16,8 +16,6 @@ I will try to explain it: Let's create a set and a multiset. The set will store 
 
 Note that when placing a new traffic light on the road, that light will split the gap between two adjacent lights into two smaller pieces, so you also have to remove the length of that gap in the multiset and add two new lengths to the multiset.
 
-## Code Implementation
-
 ```cpp
 #include <bits/stdc++.h>
  
@@ -31,13 +29,10 @@ int x,n,p; set<int> lights; multiset<int> dist;
  
 void solve() {
 	cin >> x >> n;
-	//I add the first point and the last point because when we place the very first light, 
-	//it will creates two smaller intervals, which are 0-light1 and light1-x.
 	lights.insert(0); lights.insert(x);
 	dist.insert(x); //It is obvious that initially the longest passage has the lenght equal to x. 
 	for (int i=0;i<n;++i){
 		cin >> p;
-		//Read the input position of the traffic light
 		//Next, I find the traffic light lying in the right of the current traffic light (p) using upper_bound function
 		// And I find the traffic light to the left of the traffic light p by decrement the iterator
 		auto it1 = lights.lower_bound(p),it2 = it1; --it2;
@@ -61,9 +56,9 @@ int main(){
 }
 ``` 
 
-P/S: I found another solution by reversing all the steps and calculate the maximum lenght at each step. Here is my implementation.
-
 ## Solution 2 - Reversing the steps
+
+I found another solution by reversing all the steps and calculating the maximum length at each step. Here is my implementation.
 
 ```cpp
 #include <bits/stdc++.h>
