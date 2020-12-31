@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import getGithubUrl from './getGithubUrl';
+// import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import getSuffix from './getSuffix';
+import { Link } from 'gatsby';
 
 const LinksToEdit = ({ className = null }) => {
-  const githubUrl = getGithubUrl();
   return (
-    <OutboundLink href={githubUrl} target="_blank" className={className}>
+    <Link
+      to="/liveupdate"
+      state={{ suffix: getSuffix() }}
+      target="_blank"
+      className={className}
+    >
       Edit with LiveUpdate
       <svg
         className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
@@ -21,7 +26,7 @@ const LinksToEdit = ({ className = null }) => {
           d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
         />
       </svg>
-    </OutboundLink>
+    </Link>
   );
 };
 

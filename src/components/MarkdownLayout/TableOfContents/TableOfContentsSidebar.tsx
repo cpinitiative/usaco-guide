@@ -5,7 +5,6 @@ import { useActiveHash } from '../../../hooks/useActiveHash';
 import { useMemo } from 'react';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
-import getGithubUrl from './getGithubUrl';
 import LinksToEdit from './LinksToEdit';
 
 const TableOfContentsSidebar = ({
@@ -25,7 +24,6 @@ const TableOfContentsSidebar = ({
       : 'text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis');
   let links = genLinksFromTOCHeadings(tableOfContents, getLinkStyles);
 
-  const githubUrl = getGithubUrl();
   return (
     <div className="sticky" style={{ top: '2.5rem' }}>
       <h2 className="uppercase text-gray-500 dark:text-dark-med-emphasis font-bold mb-4 text-sm tracking-wider">
