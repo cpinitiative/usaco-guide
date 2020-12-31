@@ -33,6 +33,11 @@ Our front-end is built with:
 - MDX (JSX in Markdown)
 - Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
+Our back-end and database is built with:
+
+- Firebase
+- Graph-QL
+
 ## Contact Info
 
 If you have any questions, please reach out to us at usacoguide@gmail.com.
