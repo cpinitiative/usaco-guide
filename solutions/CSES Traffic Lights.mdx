@@ -36,13 +36,9 @@ void solve() {
 		//Next, I find the traffic light lying in the right of the current traffic light (p) using upper_bound function
 		// And I find the traffic light to the left of the traffic light p by decrement the iterator
 		auto it1 = lights.lower_bound(p),it2 = it1; --it2;
-		//Then I delete the lenghts of that left and right lights because it now has been split by the new light.
 		dist.erase(dist.find(*it1-*it2));
-		//After that, I insert the two new gaps which have just been created by adding a light between the 2 old lights.
 		dist.insert(p-*it2); dist.insert(*it1-p);
-		//Insert the position of the new light to the "lights" set
 		lights.insert(p);
-		//the answer in this current step is the last element off the multiset
 		auto ans = dist.end(); --ans;
 		cout << *ans << " ";
 	}
