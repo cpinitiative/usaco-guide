@@ -170,7 +170,7 @@ export default function ClassLayout({
       >
         <TopNavigationBar hideClassesPromoBar />
         {/* 3 column wrapper */}
-        <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex bg-white dark:bg-dark-surface">
+        <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex">
           {/* Left sidebar & main wrapper */}
           <div className="flex-1 min-w-0 bg-white dark:bg-dark-surface xl:flex">
             {/* Account profile */}
