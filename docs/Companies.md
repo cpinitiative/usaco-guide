@@ -13,4 +13,5 @@ The USACO Guide is run by the [Competitive Programming Initiative](https://joinc
 - [Canva for Nonprofits](https://canva.com/)
 - [Sentry](https://sentry.io/), error reporting
 - [BrowserStack](https://browserstack.com/), browser testing
+- [Hotjar](https://hotjar.com/), website heatmaps & behavioral analytics
 - [slido](https://www.sli.do/), Q&A and polling platform
