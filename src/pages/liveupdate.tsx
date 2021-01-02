@@ -60,7 +60,7 @@ export default function LiveUpdatePage(props: PageProps) {
   );
   const editor = useRef();
   const filePath =
-    props.location.search?.length > 0
+    props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
       : null;
 
