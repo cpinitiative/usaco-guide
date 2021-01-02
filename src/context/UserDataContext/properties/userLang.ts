@@ -65,9 +65,13 @@ const shouldLangParamApply = () => {
 };
 
 const getLangFromUrl = () => {
-  return shouldLangParamApply() && window.location?.search?.length > 0
-    ? getQueryVariable(window.location.search.slice(1), 'lang')
-    : null;
+  if (shouldLangParamApply() && window.location?.search?.length > 0) {
+    const lang = getQueryVariable(window.location.search.slice(1), 'lang');
+    if (lang === 'cpp' || lang === 'java' || lang === 'py') return lang;
+    return null;
+  } else {
+    return null;
+  }
 };
 
 export function updateLangURL(newLang) {
