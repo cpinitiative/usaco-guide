@@ -64,9 +64,15 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } = useContext(
-    UserDataContext
-  );
+  const {
+    userProgressOnModules,
+    setModuleProgress,
+    setLang,
+    lang,
+  } = useContext(UserDataContext);
+  React.useEffect(() => {
+    setLang(lang);
+  }, []);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
@@ -124,7 +130,7 @@ export default function MarkdownLayout({
   // console.log(markdownData)
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
-  let problemIDs = [];
+  const problemIDs = [];
   const activeIDs = [];
   const prob_to_module = {};
 

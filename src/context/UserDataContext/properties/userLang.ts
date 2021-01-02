@@ -77,20 +77,27 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   };
 
   protected updateUrl = () => {
-    window.history.pushState(
-      {},
-      '',
-      replaceSearch(replaceQueryVariable('lang', this.value))
-    );
+    const splitPath = window.location.pathname.split('/').filter(i => i);
+    const posi = ['bronze', 'silver', 'gold', 'plat', 'adv', 'solutions'];
+    if (splitPath.length > 1 && posi.includes(splitPath[0])) {
+      // if markdown layout
+      window.history.pushState(
+        {},
+        '',
+        replaceSearch(replaceQueryVariable('lang', this.value))
+      );
+    }
   }; // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
 
   public getAPI = () => {
     return {
       [this.storageKey]: this.value,
       [this.setterFunctionName]: v => {
-        this.value = v;
-        this.updateValueAndRerender(this.storageKey, v);
-        this.updateUrl();
+        if (v != 'showAll') {
+          this.value = v;
+          this.updateValueAndRerender(this.storageKey, v);
+          this.updateUrl();
+        }
       },
     };
   };
