@@ -10,14 +10,15 @@
 // }
 
 import * as React from 'react';
-import { PageProps } from 'gatsby';
+import { Link, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import useStickyState from '../hooks/useStickyState';
 import Split from 'react-split';
 import styled from 'styled-components';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import SettingsModal from '../components/SettingsModal';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -59,6 +60,8 @@ export default function LiveUpdatePage(props: PageProps) {
     'guide:liveupdate:markdown'
   );
   const editor = useRef();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   const filePath =
     props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
@@ -85,8 +88,45 @@ export default function LiveUpdatePage(props: PageProps) {
   return (
     <Layout>
       <SEO title="MDX Renderer" />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
+
       <div className="h-screen flex flex-col">
-        <TopNavigationBar hideClassesPromoBar={true} />
+        <div className="block py-3 px-3 shadow dark:bg-gray-900 flex items-center justify-around">
+          <a
+            href="/dashboard"
+            target="_blank"
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark-hover:text-white"
+          >
+            Dashboard
+          </a>
+          <button
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark-hover:text-white"
+            onClick={() => setIsSettingsOpen(true)}
+          >
+            Settings
+          </button>
+          <a
+            href="/general/contributing#adding-a-solution"
+            target="_blank"
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark-hover:text-white"
+          >
+            How to add a solution &rarr;
+          </a>
+          {filePath && (
+            <a
+              href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
+                filePath
+              )}`}
+              target="_blank"
+              className="text-gray-600 hover:text-black dark:text-gray-300 dark-hover:text-white"
+            >
+              View File on Github &rarr;
+            </a>
+          )}
+        </div>
 
         {typeof window !== 'undefined' && (
           <React.Suspense
