@@ -18,20 +18,23 @@ $$
 
 We can also transform any 
 $$
-\texttt{sum}(i, j) = \texttt{quotient} \cdot \texttt{N} + \texttt{remainder}.
+\texttt{sum}(i, j) = \texttt{quotient} \cdot N + \texttt{remainder}.
 $$
 
 From this we get that 
 $$
-\texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot \texttt{N} + (\texttt{remainder2} - \texttt{remainder1}).
+\texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot N + (\texttt{remainder2} - \texttt{remainder1}).
 $$
 
-For this to be divisible by $\texttt{N}$, $\texttt{remainder2} - \texttt{remainder1}$ must be equal to $0$. We can create a modified prefix sums where instead of storing the total sum of the subarray, we store the number of occurences of a remainder in its respective index. Then we can get the number of pairs by using 
+For this to be divisible by $N$, $\texttt{remainder2} - \texttt{remainder1}$ must be equal to $0$. 
+
+Define $\texttt{pmod}[i]$ to be the number of prefixes with remainder equivalent to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
+
 $$
-(\texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1)) / 2.
+\texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2.
 $$
 
-After this, we just have to add the original subarrays that are divisible by $\texttt{N}$ to get the answer.
+The answer is just the sum of this quantity over all $i$.
 
 **Time Complexity:** $\mathcal{O}(N)$
 
@@ -172,6 +175,7 @@ int main() {
     M.resize(N);
 
     ll psums = 0;
+    M[psums] = 1;
 
     F0R(i, N){
         int a; re(a);
@@ -181,13 +185,9 @@ int main() {
     }
     ll res = 0;
     trav(x, M){
-        if(x > 1){
-            //Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
-            res += (x * (x-1))/2;
-        }
+        //Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
+        res += (x * (x-1))/2;
     }
-    //Adding the original subarrays
-    res += M[0];
     pr(res);
 }
 ```
