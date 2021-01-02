@@ -31,6 +31,7 @@ Our front-end is built with:
 - Typescript
 - Tailwind CSS & Tailwind UI
 - MDX (JSX in Markdown)
+- Firebase
 - Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info
