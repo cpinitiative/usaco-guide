@@ -11,7 +11,25 @@ We are asked to find the number of subarrays that are divisible by its size give
 
 <Spoiler title="Solution">
 
-With our prefix sums knowledge, $\textrm{sum}(i, j) = \textrm{sum}(0, j) - \textrm{sum}(0, i-1)$. We can also transform any $/textrm{sum}(i, j) = quotient * N + remainder$. From this we get that $\textrm{sum}(i, j) = (quotient2 - quotient1) * N + (remainder2 - remainder1)$. For this to be divisible by $N$, $remainder2 - remainder1$ must be equal to 0. We can create a modified prefix sums where instead of storing the total sum of the subarray, we store the number of occurences of a remainder in its respective index. Then we can get the number of pairs by using $(\textrm{pmod}[i] * (\textrm{pmod}[i] - 1)) / 2$. After this, we just have to add the original subarrays that are divisible by $N$ to get the answer.
+With our prefix sums knowledge, 
+$$
+\texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1)
+$$. 
+
+We can also transform any 
+$$
+/texttt{sum}(i, j) = \texttt{quotient} \cdot \texttt{N} + \texttt{remainder}
+$$. 
+From this we get that 
+$$
+\texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot \texttt{N} + (\texttt{remainder2} - \texttt{remainder1})
+$$. 
+
+For this to be divisible by $\texttt{N}$, $\texttt{remainder2} - \texttt{remainder1}$ must be equal to $0$. We can create a modified prefix sums where instead of storing the total sum of the subarray, we store the number of occurences of a remainder in its respective index. Then we can get the number of pairs by using 
+$$
+(\texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1)) / 2
+$$. 
+After this, we just have to add the original subarrays that are divisible by $N$ to get the answer.
 
 **Time Complexity:** $\mathcal{O}(N)$
 
