@@ -55,35 +55,49 @@ function getQueryVariable(query, variable) {
 }
 
 export default function LiveUpdatePage(props: PageProps) {
-  const [markdown, setMarkdown] = useStickyState(
-    '',
-    'guide:liveupdate:markdown'
-  );
-  const editor = useRef();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
   const filePath =
     props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
       : null;
+  const markdownStorageKey = 'guide:liveupdate:markdown';
 
+  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
+  const editor = useRef();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const loadContent = async filePath => {
+    setMarkdown('Loading file from Github...');
+
+    const githubURL = encodeURI(
+      `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath}`
+    );
+
+    const result = await fetch(githubURL);
+    const text = await result.text();
+
+    setMarkdown(text);
+  };
   React.useEffect(() => {
-    async function fetchData() {
-      const githubURL = encodeURI(
-        `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath}`
-      );
-
-      const result = await fetch(githubURL);
-      const text = await result.text();
-
-      setMarkdown(text);
-    }
-
     if (filePath) {
-      setMarkdown('Loading file from Github...');
-      fetchData();
+      if (window.localStorage.getItem(markdownStorageKey)?.length > 0) {
+        if (
+          confirm(
+            'Load file from Github? Your local changes (if any) will be lost.'
+          )
+        ) {
+          loadContent(filePath);
+        }
+      } else {
+        loadContent(filePath);
+      }
     }
   }, [filePath]);
+
+  const handleReloadContent = () => {
+    if (confirm('Reload file from Github? Your local changes will be lost.')) {
+      loadContent(filePath);
+    }
+  };
 
   return (
     <Layout>
@@ -115,6 +129,14 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             How to add a solution &rarr;
           </a>
+          {filePath && (
+            <button
+              className="text-gray-600 hover:text-black dark:text-gray-300 dark-hover:text-white"
+              onClick={handleReloadContent}
+            >
+              Reload Content from Github
+            </button>
+          )}
           {filePath && (
             <a
               href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
