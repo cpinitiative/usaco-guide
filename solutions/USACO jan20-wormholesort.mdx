@@ -7,21 +7,88 @@ author: Óscar Garries, Neo Wang
 
 [Official Analysis](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
 
+
+### C++ Implementation (DFS)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MX = 1e5;
+
+vector<pair<int, int>> g[MX];
+vector<int> ar(MX), component(MX);
+int n, m;
+
+void dfs (int v, int label, int minW) {
+	component[v] = label;
+
+	for (auto x: g[v]) {
+		if (x.second < minW || component[x.first] != -1) continue;
+		dfs (x.first, label, minW);
+	}
+}
+
+bool ok (int minW) {
+	fill (component.begin(), component.end(), -1);
+	int label = -1;
+
+	for (int i = 0; i < n; i++) {
+		if (component[i] != -1) continue;
+		dfs(i, ++label, minW);
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (component[i] != component[ar[i]]) return false;
+	}
+
+	return true;
+}
+
+int main () {
+	freopen("wormsort.in", "r", stdin);
+	freopen("wormsort.out", "w", stdout);
+
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		cin >> ar[i];
+		ar[i]--;
+	}
+
+	for (int i = 0; i < m; i++) {
+		int a, b, w;
+		cin >> a >> b >> w;
+		a--; b--;
+		g[a].push_back(make_pair(b, w));
+		g[b].push_back(make_pair(a, w));
+	}
+
+	int sol = -1;
+	int lo = 1, hi = 1e9 + 1;
+	int top = hi;
+	while (lo <= hi) {
+		int mid = lo + (hi - lo)/2;
+
+		if (ok(mid)) {
+			sol = max (sol, mid);
+			lo = mid + 1;
+		} else {
+			hi = mid - 1;
+		}
+	}
+
+	cout << (sol == top ? -1 : sol) << '\n';
+}
+
+```
+
 ## Alternative Solution (DSU/UF + Binary Search)
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 Like the DFS solution, we binary search on the answer $x$. $x$ is valid if all $p_i$ are in the same component as $i$, which we can query in $\mathcal{O}(\alpha(N))$ using a Union Find/Disjoint Set data structure.
 
-## Alternative Solution (DSU/UF)
-
-**Time Complexity:** $\mathcal{O}(N + M\log M)$
-
-We can alternatively search for our weight by adding the weights greatest $\rightarrow$ least until all $p_i$ are in the same component as $i$.
-
-Our resulting time complexity is $\mathcal{O}(N)$ after an initial sorting of the weights.
-<LanguageSection>
-<CPPSection>
 
 ### C++ Implementation (DSU/UF + Binary Search)
 
@@ -118,6 +185,16 @@ int main() {
 
 ```
 
+## Alternative Solution (DSU/UF)
+
+**Time Complexity:** $\mathcal{O}(N + M\log M)$
+
+We can alternatively search for our weight by adding the weights greatest $\rightarrow$ least until all $p_i$ are in the same component as $i$.
+
+Our resulting time complexity is $\mathcal{O}(N)$ after an initial sorting of the weights.
+<LanguageSection>
+<CPPSection>
+
 ### C++ Implementation (DSU/UF)
 
 ```cpp
@@ -198,81 +275,6 @@ int main() {
     if(ret == -1) cout << -1;
     else cout << w[ret].w;
 }
-```
-
-### C++ Implementation (DFS)
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-const int MX = 1e5;
-
-vector<pair<int, int>> g[MX];
-vector<int> ar(MX), component(MX);
-int n, m;
-
-void dfs (int v, int label, int minW) {
-	component[v] = label;
-
-	for (auto x: g[v]) {
-		if (x.second < minW || component[x.first] != -1) continue;
-		dfs (x.first, label, minW);
-	}
-}
-
-bool ok (int minW) {
-	fill (component.begin(), component.end(), -1);
-	int label = -1;
-
-	for (int i = 0; i < n; i++) {
-		if (component[i] != -1) continue;
-		dfs(i, ++label, minW);
-	}
-
-	for (int i = 0; i < n; i++) {
-		if (component[i] != component[ar[i]]) return false;
-	}
-
-	return true;
-}
-
-int main () {
-	freopen("wormsort.in", "r", stdin);
-	freopen("wormsort.out", "w", stdout);
-
-	cin >> n >> m;
-	for (int i = 0; i < n; i++) {
-		cin >> ar[i];
-		ar[i]--;
-	}
-
-	for (int i = 0; i < m; i++) {
-		int a, b, w;
-		cin >> a >> b >> w;
-		a--; b--;
-		g[a].push_back(make_pair(b, w));
-		g[b].push_back(make_pair(a, w));
-	}
-
-	int sol = -1;
-	int lo = 1, hi = 1e9 + 1;
-	int top = hi;
-	while (lo <= hi) {
-		int mid = lo + (hi - lo)/2;
-
-		if (ok(mid)) {
-			sol = max (sol, mid);
-			lo = mid + 1;
-		} else {
-			hi = mid - 1;
-		}
-	}
-
-	cout << (sol == top ? -1 : sol) << '\n';
-}
-
 ```
 
 </CPPSection>
