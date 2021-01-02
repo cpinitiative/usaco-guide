@@ -2,7 +2,7 @@
 id: cses-1073
 source: CSES
 title: Towers
-author: Benjamin Qi
+author: Benjamin Qi, Danh Ta Chi Thanh
 ---
 
 Greedy approach: always add the next cube on top of the tower with the smallest possible cube (or create a new tower if this isn't possible). We can use a `vector` or `multiset` to do this.
@@ -233,5 +233,39 @@ int main() {
 		else x[lo] = z; // add to tower
 	}
 	cout << sz(x);
+}
+```
+
+Another implementation using multiset:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+multiset<int> ans; int n,k;
+ 
+void solve(){
+	cin >> n;
+	for (int i=0;i<n;++i){
+		cin >> k;
+		auto it = ans.upper_bound(k);
+		//find the tower having the element that is just larger than k to add k to
+		if (it==ans.end()) ans.ins(k); //if it doesn't exist then we create a new tower
+		else{
+			//If there exists a satisfying tower then add k to that tower
+			//And update the top element of that tower
+			ans.erase(it);
+			ans.ins(k);
+		}
+	}
+	cout << sz(ans) << endl;
+	return;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); 
+	cin.tie(0);
+	solve();
+	return 0;
 }
 ```
