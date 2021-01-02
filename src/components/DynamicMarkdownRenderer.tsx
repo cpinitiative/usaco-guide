@@ -86,7 +86,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
           throw err;
         }
 
-        code = code.replaceAll('export const', 'const');
+        code = code.replace(/export const/g, 'const');
 
         const keys = Object.keys(fullScope);
         const values = Object.values(fullScope);
