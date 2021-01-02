@@ -22,6 +22,7 @@ import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -64,15 +65,14 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const {
-    userProgressOnModules,
-    setModuleProgress,
-    setLang,
-    lang,
-  } = useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress, lang } = useContext(
+    UserDataContext
+  );
   React.useEffect(() => {
-    setLang(lang);
-  }, []);
+    if (lang !== 'showAll') {
+      updateLangURL(lang);
+    }
+  }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
