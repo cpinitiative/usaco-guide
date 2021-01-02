@@ -1,13 +1,11 @@
 import * as React from 'react';
-// import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import getSuffix from './getSuffix';
 import { Link } from 'gatsby';
 
 const LinksToEdit = ({ className = null }) => {
   return (
     <Link
-      to="/liveupdate"
-      state={{ suffix: getSuffix() }}
+      to={`/liveupdate/?filepath=${getSuffix()}`}
       target="_blank"
       className={className}
     >
