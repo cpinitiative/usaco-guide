@@ -292,6 +292,7 @@ export const UserDataProvider = ({ children }) => {
       );
     },
   };
+  console.log(userData);
 
   return (
     <UserDataContext.Provider value={userData}>
