@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 type ProblemsListProps = {
   title?: string;
