@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import * as React from 'react';
 import 'flatpickr/dist/themes/material_blue.css';
 import Flatpickr from 'react-flatpickr';
@@ -7,7 +8,15 @@ import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import { graphql, navigate, useStaticQuery } from 'gatsby';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
-import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
+import {
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
 import ConfirmationModal from './ConfirmModal';
@@ -112,37 +121,73 @@ export default function PostPage(props: {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
-  const problemsList =
-    useStaticQuery(graphql`
-      query ClassPostPageQuery {
-        allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-          edges {
-            node {
-              fields {
-                division
-              }
+  const rawProblemsList = useStaticQuery(graphql`
+    query ClassPostPageQuery {
+      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+        edges {
+          node {
+            fields {
+              division
+            }
 
-              frontmatter {
-                id
-                title
-              }
-              problems {
-                source
-                name
-                id
-                difficulty
-                starred
-                tags
-                solID
-                solQuality
-                url
-                uniqueID
-              }
+            frontmatter {
+              id
+              title
+            }
+            problems {
+              source
+              name
+              id
+              difficulty
+              starred
+              tags
+              solID
+              solQuality
+              url
+              uniqueID
             }
           }
         }
       }
-    `)?.allMdx?.edges?.map(category => category.node) || [];
+    }
+  `);
+
+  const problemsList = useMemo(
+    () =>
+      rawProblemsList?.allMdx?.edges
+        ?.map(category => category.node)
+        .reduce(
+          (acc, module) => [
+            ...acc,
+            ...module.problems.map(p => ({
+              division: module.fields.division,
+              moduleId: module.frontmatter.id,
+              moduleName: module.frontmatter.label,
+              ...p,
+            })),
+          ],
+          []
+        )
+        .filter(
+          // duplicated elements are eliminated if they're not the first one with the id
+          (el, i, arr) => {
+            return arr.findIndex(p => p.uniqueID === el.uniqueID) === i;
+          }
+        ) || [],
+
+    [rawProblemsList]
+  );
+  const modulesList = useMemo(
+    () =>
+      rawProblemsList.allMdx?.edges?.map(category => ({
+        division: category.node.fields.division,
+        data: {
+          value: category.node.frontmatter.id,
+          label: category.node.frontmatter.title,
+        },
+      })) || [],
+    [rawProblemsList]
+  );
 
   const postProblems = React.useMemo(() => {
     return (
@@ -155,7 +200,7 @@ export default function PostPage(props: {
             p.source,
             p.name,
             p.id,
-            p.difficulty,
+            p.difficulty || 'Normal',
             false,
             undefined,
             p.solID,
@@ -165,8 +210,9 @@ export default function PostPage(props: {
     );
   }, [post?.problems]);
   const [problems, setProblems] = useState<ProblemWithDivisionInfo[]>([]);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const searchDivisionOptions = [
+    { value: '___any', label: 'Any' },
     { value: 'general', label: 'General' },
     { value: 'bronze', label: 'Bronze' },
     { value: 'silver', label: 'Silver' },
@@ -174,31 +220,50 @@ export default function PostPage(props: {
     { value: 'plat', label: 'Platinum' },
     { value: 'adv', label: 'Advanced' },
   ];
-  const [searchDivision, setSearchDivision] = useState('');
+  const fuse: Fuse<Record<string, any>> = useMemo(
+    () => new Fuse(problemsList, { keys: ['name'] }),
+    [problemsList]
+  );
+
+  const [searchDivision, setSearchDivision] = useState('___any');
   const searchModuleOptions = React.useMemo(() => {
-    if (!searchDivision) return [];
-    return problemsList
-      .filter(category => category.fields.division === searchDivision)
-      .map(category => ({
-        value: category.frontmatter.id,
-        label: category.frontmatter.title,
-      }));
+    if (!searchDivision) return [{ value: '___any', label: 'Any' }];
+    return [
+      { value: '___any', label: 'Any' },
+      ...(modulesList
+        .filter(category => category.division === searchDivision)
+        .map(m => m.data) || []),
+    ];
   }, [searchDivision, problemsList]);
-  const [searchModule, setSearchModule] = useState('');
+  const [searchModule, setSearchModule] = useState('___any');
   React.useEffect(() => {
-    setSearchModule('');
+    setSearchModule('___any');
   }, [searchDivision]);
   const searchResults = React.useMemo(() => {
-    if (!searchModule) return [];
+    if (!searchQuery && searchDivision === '___any') return [];
+    let refinedProblemsList = problemsList;
+    if (searchQuery) {
+      refinedProblemsList = fuse.search(searchQuery).map(result => result.item);
+    }
+    if (searchModule !== '___any') {
+      refinedProblemsList = refinedProblemsList.filter(
+        p => p.moduleId === searchModule
+      );
+    } else if (searchDivision !== '___any') {
+      refinedProblemsList = refinedProblemsList.filter(
+        p => p.division === searchDivision
+      );
+    }
     return (
-      problemsList
-        .find(m => m.frontmatter.id === searchModule)
-        ?.problems.map(
+      refinedProblemsList
+        .slice(0, 20)
+
+        .map(
           p =>
             new ProblemWithDivisionInfo(
-              searchDivision,
-              searchModule,
-              searchModuleOptions.find(o => o.value === searchModule)?.label,
+              p.division,
+              p.moduleId,
+              p.moduleName,
               p.source,
               p.name,
               p.id,
@@ -210,7 +275,7 @@ export default function PostPage(props: {
             )
         ) || []
     );
-  }, [searchModule, problemsList]);
+  }, [searchModule, searchDivision, problemsList, searchQuery]);
   const hasChanges = React.useMemo(
     () =>
       title !== post?.title ||
@@ -527,6 +592,8 @@ export default function PostPage(props: {
                 searchDivision={searchDivision}
                 searchDivisionOptions={searchDivisionOptions}
                 setSearchDivision={setSearchDivision}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
                 searchModule={searchModule}
                 searchModuleOptions={searchModuleOptions}
                 setSearchModule={setSearchModule}
