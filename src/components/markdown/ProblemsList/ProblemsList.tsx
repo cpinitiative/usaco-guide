@@ -32,6 +32,9 @@ export function ProblemsList(props: ProblemsListProps) {
   const alwaysHideTags = props.alwaysHideTags;
   const divisionTable = props.division ? true : false;
   let showPercent = true; // props.division != 'Platinum';
+  const [tooltipText, setToolTipText] = React.useState(
+    'Click to copy problem URL to clipboard!'
+  );
   for (let problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
