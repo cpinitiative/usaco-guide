@@ -1,0 +1,279 @@
+---
+id: cf-packmen
+source: CF
+title: Packmen
+author: kevin s
+---
+
+(No official editorial)
+
+Binary search on the minimum time it will take for all the Packmen to eat all the pellets. For each Packman, we can greedily calculate the maximum amount of pellets that it can eat in the given amount of time. However, each Packman must eat all of the uneaten food to its left, or else all the food can't be eaten in the given time.
+
+Note that there are two main cases: One where the Packman first goes to the right then to the left, and another where the Packman first goes to the *left* then the right. We calculate the food eaten in both of these cases and take the maximum.
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
+
+// assumes packmen and food are all sorted and distinct (ALL the elements)
+bool all_eatable(vector<int> packmen, std::deque<int> food, int time) {
+    food = std::deque<int>(food);  // make a copy of the food deque
+    for (int p : packmen) {
+        vector<int> have_to_eat;
+        while (!food.empty() && food[0] < p) {
+            have_to_eat.push_back(food[0]);
+            food.pop_front();
+        }
+
+        if (have_to_eat.empty()) {
+            while (!food.empty() && food[0] - p <= time) {
+                food.pop_front();
+            }
+        } else {
+            if (p - have_to_eat[0] > time) {
+                return false;
+            }
+
+            int left_time = p - have_to_eat[0];
+            int right_free_time = time - 2 * left_time;
+            int left_first = -1;
+            while (left_first + 1 < food.size() && food[left_first + 1] - p <= right_free_time) {
+                left_first++;
+            }
+
+            right_free_time = time - left_time;
+            int right_first = -1;
+            while (right_first + 1 < food.size() && (food[right_first + 1] - p) * 2 <= right_free_time) {
+                right_first++;
+            }
+
+            for (int i = 0; i < std::max(left_first, right_first) + 1; i++) {
+                food.pop_front();
+            }
+        }
+
+        if (food.empty()) {
+            return true;
+        }
+    }
+    return food.empty();
+}
+
+/**
+ * https://codeforces.com/contest/847/problem/E
+ * 7
+ * *..P*P* should output 3
+ * 10
+ * .**PP.*P.* should output 2
+ */
+int main() {
+    int field_len;
+    cin >> field_len;
+    std::string field;
+    cin >> field;
+    for (auto& c: field) {
+        c = toupper(c);
+    }
+
+    vector<int> packmen;
+    std::deque<int> food;
+    for (int i = 0; i < field.length(); i++) {
+        if (field[i] == 'P') {
+            packmen.push_back(i);
+        } else if (field[i] == '*') {
+            food.push_back(i);
+        }
+    }
+
+    int lo = 0;
+    int hi = field.length() * 2;
+    int valid = -1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        if (all_eatable(packmen, food, mid)) {
+            valid = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    }
+    cout << valid << endl;
+}
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class Packmen {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        read.readLine();
+        char[] field = read.readLine().toUpperCase().toCharArray();
+        ArrayList<Integer> packmen = new ArrayList<>();
+        ArrayList<Integer> food = new ArrayList<>();
+        for (int i = 0; i < field.length; i++) {
+            if (field[i] == 'P') {
+                packmen.add(i);
+            } else if (field[i] == '*') {
+                food.add(i);
+            }
+        }
+
+        int lo = 0;
+        int hi = field.length * 2;
+        int valid = -1;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+            if (allEatable(packmen, food, mid)) {
+                valid = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        System.out.println(valid);
+    }
+
+    // assumes everything is like sorted and distinct so my life is easier
+    private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
+        int foodPointer = 0;
+        int foodAmt = food.size();  // shorthand
+        for (int p : packmen) {
+            ArrayList<Integer> haveToEat = new ArrayList<>();
+            while (foodPointer < foodAmt && food.get(foodPointer) < p) {
+                haveToEat.add(food.get(foodPointer++));
+            }
+
+            if (haveToEat.isEmpty()) {
+                while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
+                    foodPointer++;
+                }
+            } else {
+                if (p - haveToEat.get(0) > time) {
+                    return false;
+                }
+                int leftTime = p - haveToEat.get(0);
+                int rightFreeTime = time - 2 * leftTime;
+                int leftFirst = -1;
+                while (foodPointer + leftFirst + 1 < foodAmt && food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
+                    leftFirst++;
+                }
+
+                rightFreeTime = time - leftTime;
+                int rightFirst = -1;
+                while (foodPointer + rightFirst + 1 < foodAmt && 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
+                    rightFirst++;
+                }
+
+                foodPointer += Math.max(leftFirst, rightFirst) + 1;
+            }
+            if (foodPointer >= foodAmt) {
+                return true;
+            }
+        }
+        return foodPointer >= foodAmt;
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+"""
+DISCLAIMER:
+THIS SOLUTION ONLY WORKS IF YOU SUBMIT WITH PYPY
+NORMAL PYTHON FAILS ON TEST CASE 60
+https://codeforces.com/contest/847/problem/E
+7
+*..P*P* should output 3
+10
+.**PP.*P.* should output 2
+"""
+from typing import List
+
+
+# assumes the positions are sorted, as well that the positions are distinct
+def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
+    food_pointer = 0
+    food_amt = len(food)  # convenient shorthand idk
+    for p in packmen:
+        have_to_eat = []
+        # idk, just assign this packmen all the ones to its left which haven't been eaten
+        while food_pointer < food_amt and food[food_pointer] < p:
+            have_to_eat.append(food[food_pointer])
+            food_pointer += 1
+
+        if not have_to_eat:
+            while food_pointer < food_amt and food[food_pointer] - p <= time:
+                food_pointer += 1
+
+        else:
+            if p - have_to_eat[0] > time:
+                return False
+
+            # try 2 diff strats- go to the left first and switch back or go to the right and switch back
+            left_time = p - have_to_eat[0]
+            right_free_time = time - 2 * left_time
+            left_first = -1
+            while food_pointer + left_first + 1 < food_amt and food[food_pointer + left_first + 1] - p <= right_free_time:
+                left_first += 1
+
+            right_free_time = time - left_time
+            right_first = -1
+            while food_pointer + right_first + 1 < food_amt and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
+                right_first += 1
+            food_pointer += max(left_first, right_first) + 1
+
+        if food_pointer >= food_amt:  # ok all the food's been eaten
+            return True
+    return food_pointer >= food_amt
+
+
+input()
+field = input().upper()
+
+all_food = []
+all_packmen = []
+for v, c in enumerate(field):
+    if c == 'P':
+        all_packmen.append(v)
+    elif c == '*':
+        all_food.append(v)
+
+lo = 0
+hi = len(field) * 2
+valid = -1
+while lo <= hi:
+    mid = (lo + hi) // 2
+    if eatable_in_time(all_food, all_packmen, mid):
+        valid = mid
+        hi = mid - 1
+    else:
+        lo = mid + 1
+print(valid)
+```
+
+</PySection>
+
+</LanguageSection>
