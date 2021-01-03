@@ -368,19 +368,32 @@ export function ProblemComponent(props: ProblemComponentProps) {
         />
       )}
       <td>
-        <a href={`#problem-${problem.uniqueID}`}>
-          <svg
-            fill="none"
-            height="20"
-            width="20"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
+        <CopyToClipboard
+          onCopy={console.log('copied')}
+          options={{ message: 'yay!' }}
+          text={`${window.location.href}/#problem-${problem.uniqueID}`}
+        >
+          <button
+            style={{ outline: 'none' }}
+            onClick={clicked()}
+            onMouseLeave={hovering()}
           >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-        </a>
+            <Tooltip content={tooltipText} style={{ outline: 'none' }}>
+              <svg
+                fill="none"
+                height="20"
+                width="20"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+                style={{ outline: 'none' }}
+              >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </Tooltip>
+          </button>
+        </CopyToClipboard>
       </td>
     </StyledProblemRow>
   );
