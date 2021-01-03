@@ -35,6 +35,11 @@ export function ProblemsList(props: ProblemsListProps) {
   const [tooltipText, setToolTipText] = React.useState(
     'Click to copy problem URL to clipboard!'
   );
+  function tooltipClicked() {
+    return function (p1: React.MouseEvent<HTMLButtonElement>) {
+      setToolTipText('URL copied to clipboard!');
+    };
+  }
   for (let problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
