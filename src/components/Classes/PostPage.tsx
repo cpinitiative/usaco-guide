@@ -196,7 +196,7 @@ export default function PostPage(props: {
             p.source,
             p.name,
             p.id,
-            p.difficulty,
+            p.difficulty || 'Normal',
             false,
             undefined,
             p.solID,

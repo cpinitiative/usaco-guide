@@ -41,9 +41,67 @@ export default function ProblemSelect({
                 >
                   {problem.name}
                 </a>{' '}
-                ({problem.difficulty}) ({problem.source}) (
+                ({problem.difficulty}:{' '}
                 <button
-                  disabled={i === 0}
+                  disabled={problem.difficulty === 'Very Easy'}
+                  className={
+                    problem.difficulty === 'Very Easy'
+                      ? 'text-gray-700 dark:text-gray-200 cursor-text'
+                      : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
+                  }
+                  onClick={() =>
+                    setProblems(old => {
+                      const clone = old.slice();
+                      const difficultyMap = [
+                        'Very Easy',
+                        'Easy',
+                        'Normal',
+                        'Hard',
+                        'Very Hard',
+                        'Insane',
+                      ];
+                      clone[i].difficulty =
+                        difficultyMap[
+                          difficultyMap.indexOf(problem.difficulty) - 1
+                        ];
+                      return clone;
+                    })
+                  }
+                >
+                  Decrease
+                </button>{' '}
+                |{' '}
+                <button
+                  disabled={problem.difficulty === 'Insane'}
+                  className={
+                    problem.difficulty === 'Insane'
+                      ? 'text-gray-700 dark:text-gray-200 cursor-text'
+                      : 'text-blue-600 hover:underline active:text-blue-900 focus:bold focus:outline-none active:outline-none'
+                  }
+                  onClick={() =>
+                    setProblems(old => {
+                      const clone = old.slice();
+                      const difficultyMap = [
+                        'Very Easy',
+                        'Easy',
+                        'Normal',
+                        'Hard',
+                        'Very Hard',
+                        'Insane',
+                      ];
+                      clone[i].difficulty =
+                        difficultyMap[
+                          difficultyMap.indexOf(problem.difficulty) + 1
+                        ];
+                      return clone;
+                    })
+                  }
+                >
+                  Increase
+                </button>
+                ) ({problem.source}) (
+                <button
+                  disabled={i == 0}
                   className={
                     i == 0
                       ? 'text-gray-700 dark:text-gray-200 cursor-text'
