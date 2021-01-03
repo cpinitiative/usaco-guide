@@ -76,7 +76,7 @@ const getLangFromUrl = () => {
 
 export function updateLangURL(newLang) {
   if (shouldLangParamApply()) {
-    window.history.pushState(
+    window.history.replaceState(
       {},
       '',
       replaceSearch(replaceQueryVariable('lang', newLang))
