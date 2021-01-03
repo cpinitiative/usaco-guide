@@ -373,11 +373,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           options={{ message: 'yay!' }}
           text={`${window.location.href}/#problem-${problem.uniqueID}`}
         >
-          <button
-            style={{ outline: 'none' }}
-            onClick={toolti}
-            onMouseLeave={hovering()}
-          >
+          <button style={{ outline: 'none' }} onClick={tooltipClicked()}>
             <Tooltip content={tooltipText} style={{ outline: 'none' }}>
               <svg
                 fill="none"
