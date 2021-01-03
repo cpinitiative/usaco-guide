@@ -14,6 +14,8 @@ export default function ProblemSelect({
   setSearchModule,
   postProblems,
   searchResults,
+  searchQuery,
+  setSearchQuery,
 }) {
   return (
     <div>
@@ -101,34 +103,47 @@ export default function ProblemSelect({
           <h3 className={'text-xl leading-9 font-bold mt-4'}>
             Add More Problems
           </h3>
+          <div className="mt-2">
+            <label className={'font-bold'}>Search:</label>
+            <input
+              placeholder={'Start typing a problem name...'}
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            />
+          </div>
           <div className={'mt-2'}>
-            <label className={'bold'}>Division:</label>
+            <label className={'font-bold'}>Division:</label>
             <Select
               className={'dark:text-gray-900'}
               options={searchDivisionOptions}
               value={
                 searchDivisionOptions.find(o => o.value === searchDivision) ||
-                ''
+                '___any'
               }
               onChange={o => setSearchDivision(o.value)}
             />
           </div>
           <div className={'mt-2'}>
-            <label className={'bold'}>Module:</label>
+            <label className={'font-bold'}>Module:</label>
             <Select
               className={'dark:text-gray-900'}
               options={searchModuleOptions}
               value={
-                searchModuleOptions.find(o => o.value === searchModule) || ''
+                searchModuleOptions.find(o => o.value === searchModule) ||
+                '___any'
               }
               onChange={o => setSearchModule(o.value)}
             />
           </div>
-          {searchResults.length === 0 && searchModule && (
-            <p className={'mt-4'}>This module has no problems.</p>
-          )}
+          {searchResults.length === 0 &&
+            (searchDivision !== '___any' || searchQuery) && (
+              <p className={'mt-4'}> No Problems Found.</p>
+            )}
+
           <ul className={'list-disc ml-5 mt-4'}>
             {searchResults.map((problem, i, arr) => {
+              console.log(problem);
               const added = problems.some(p => p.uniqueID === problem.uniqueID);
               return (
                 <li key={problem.uniqueID}>
