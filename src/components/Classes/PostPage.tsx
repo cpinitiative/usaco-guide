@@ -153,24 +153,27 @@ export default function PostPage(props: {
   `);
   const problemsList = useMemo(
     () =>
-      Array.from(
-        new Set(
-          rawProblemsList?.allMdx?.edges
-            ?.map(category => category.node)
-            .reduce(
-              (acc, module) => [
-                ...acc,
-                ...module.problems.map(p => ({
-                  division: module.fields.division,
-                  moduleId: module.frontmatter.id,
-                  moduleName: module.frontmatter.label,
-                  ...p,
-                })),
-              ],
-              []
-            ) || []
+      rawProblemsList?.allMdx?.edges
+        ?.map(category => category.node)
+        .reduce(
+          (acc, module) => [
+            ...acc,
+            ...module.problems.map(p => ({
+              division: module.fields.division,
+              moduleId: module.frontmatter.id,
+              moduleName: module.frontmatter.label,
+              ...p,
+            })),
+          ],
+          []
         )
-      ),
+        .filter(
+          // duplicated elements are eliminated if they're not the first one with the id
+          (el, i, arr) => {
+            return arr.findIndex(p => p.uniqueID === el.uniqueID) === i;
+          }
+        ) || [],
+
     [rawProblemsList]
   );
   const modulesList = useMemo(
