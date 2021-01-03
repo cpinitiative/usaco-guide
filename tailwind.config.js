@@ -15,6 +15,9 @@ module.exports = {
     },
   },
   variants: {
+    extend: {
+      textColor: ['disabled'],
+    },
     // variants: [
     //   // 'responsive',
     //   // 'group-hover',

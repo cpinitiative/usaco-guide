@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useReducer, useState } from 'react';
+import { createContext, useReducer, useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
 import UserLang, { UserLangAPI } from './properties/userLang';
@@ -221,10 +221,10 @@ export const UserDataProvider = ({ children }) => {
         .onSnapshot(snapshot => {
           let data = snapshot.data();
           if (!data) {
-            let lastViewedModule = UserDataContextAPIs.find(
+            const lastViewedModule = UserDataContextAPIs.find(
               x => x instanceof LastViewedModule
             ).exportValue();
-            let localDataIsNotEmpty = lastViewedModule !== null;
+            const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
               if (
@@ -302,3 +302,11 @@ export const UserDataProvider = ({ children }) => {
 };
 
 export default UserDataContext;
+
+export const importUserData = (data: JSON) => {
+  // console.log("DATA!");
+  // console.log("IMPORTING",data)
+  // idk how to mess w/ firebase / trigger rerenders
+  UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+  UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+};

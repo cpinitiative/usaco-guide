@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
+import { importUserData } from '../context/UserDataContext/UserDataContext';
 
 const UserAuthButton = props => {
   const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
@@ -25,6 +26,32 @@ export default function SettingsModal({ isOpen, onClose }) {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  const [file, setFile] = useState('');
+  console.log('???', file === '');
+
+  // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
+  const handleUpload = e => {
+    console.log('HANDLING UPLOAD');
+    const fileReader = new FileReader();
+    fileReader.readAsText(e.target.files[0], 'UTF-8');
+    fileReader.onload = e => {
+      // console.log("e.target.result", e.target.result);
+      setFile(e.target.result);
+    };
+  };
+
+  const handleImportUserData = e => {
+    console.log('HANDLING IMPORT');
+    if (file === '') return;
+    try {
+      const data = JSON.parse(file);
+      console.log('DATA');
+      importUserData(data);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   return (
@@ -193,6 +220,26 @@ export default function SettingsModal({ isOpen, onClose }) {
                   >
                     Export User Data
                   </button>
+
+                  <input
+                    className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                    type="file"
+                    onChange={handleUpload}
+                  />
+
+                  {/* oops what's the proper way of disabling a button */}
+                  <button
+                    className={`${
+                      file !== ''
+                        ? 'text-gray-700 hover:text-gray-500'
+                        : 'text-gray-300'
+                    } inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md bg-white focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`}
+                    onClick={handleImportUserData}
+                  >
+                    Import User Data
+                  </button>
+
+                  {/* {"uploaded file content -- " + file} */}
                 </div>
               </div>
             </div>
