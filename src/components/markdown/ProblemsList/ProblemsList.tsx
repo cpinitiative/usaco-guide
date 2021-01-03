@@ -329,6 +329,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       setToolTipText('URL copied to clipboard!');
     };
   }
+  const module = typeof window !== `undefined` ? require('module') : null; // fix error in serverside
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
