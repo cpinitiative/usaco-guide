@@ -32,14 +32,7 @@ export function ProblemsList(props: ProblemsListProps) {
   const alwaysHideTags = props.alwaysHideTags;
   const divisionTable = props.division ? true : false;
   let showPercent = true; // props.division != 'Platinum';
-  const [tooltipText, setToolTipText] = React.useState(
-    'Click to copy problem URL to clipboard!'
-  );
-  function tooltipClicked() {
-    return function (p1: React.MouseEvent<HTMLButtonElement>) {
-      setToolTipText('URL copied to clipboard!');
-    };
-  }
+
   for (let problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
@@ -327,7 +320,14 @@ export function ProblemComponent(props: ProblemComponentProps) {
       )}
     </td>
   );
-
+  const [tooltipText, setToolTipText] = React.useState(
+    'Click to copy problem URL to clipboard!'
+  );
+  function tooltipClicked() {
+    return function (p1: React.MouseEvent<HTMLButtonElement>) {
+      setToolTipText('URL copied to clipboard!');
+    };
+  }
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -375,7 +375,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         >
           <button
             style={{ outline: 'none' }}
-            onClick={clicked()}
+            onClick={toolti}
             onMouseLeave={hovering()}
           >
             <Tooltip content={tooltipText} style={{ outline: 'none' }}>
