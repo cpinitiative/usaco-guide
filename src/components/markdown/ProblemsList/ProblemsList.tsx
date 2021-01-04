@@ -322,14 +322,17 @@ export function ProblemComponent(props: ProblemComponentProps) {
     </td>
   );
   const [tooltipText, setToolTipText] = React.useState(
-    'Click to copy problem URL to clipboard!'
+    'Click to copy URL to clipboard!'
   );
   function tooltipClicked() {
     return function (p1: React.MouseEvent<HTMLButtonElement>) {
       setToolTipText('URL copied to clipboard!');
+      setTimeout(function () {
+        setToolTipText('Click to copy URL to clipboard!');
+      }, 5000);
     };
   }
-  const module = typeof window !== `undefined` ? require('module') : null; // fix error in serverside
+  const module = typeof window !== `undefined` ? window.location.href : null; // fix error in serverside
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -373,7 +376,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         <CopyToClipboard
           onCopy={console.log('copied')}
           options={{ message: 'yay!' }}
-          text={`${window.location.href}/#problem-${problem.uniqueID}`}
+          text={`${module}/#problem-${problem.uniqueID}`}
         >
           <button style={{ outline: 'none' }} onClick={tooltipClicked()}>
             <Tooltip content={tooltipText} style={{ outline: 'none' }}>
