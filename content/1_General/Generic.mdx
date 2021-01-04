@@ -447,15 +447,19 @@ We end this section off with `#define`, which is used to define **macros**.
 
 `#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.
 
+This example defines `MOD` as `1e9+7` by find and replace.
+
 ```cpp
 #define MOD 1e9 + 7
 
 int main() {
-    cout << MOD << "\n";
+	cout << int(MOD) << "\n"; // 1000000007
+	cout << int(MOD*2) << "\n"; // 1000000014
+	cout << int(2*MOD) << "\n"; // 2000000007
 }
 ```
 
-This example defines `MOD` as `1e9+7` by find and replace. But without resorting to something as crude as `#define`, we could just as well do:
+But that's obviously not a good idea. A better alternative:
 
 ```cpp
 const int MOD = 1e9 + 7;
@@ -475,14 +479,23 @@ int main() {
 	</Resource>
 </Resources>
 
-The takeaway is to avoid `#define` when possible. If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control.
+Also, `using` is preferable to `#define`. For example, the following code with `#define` will not compile (but it will with `using`).
 
-Of course, some competitive programmers use macros extensively. Some examples are presented below.
+```cpp
+#define ll long long
+// using ll = long long;
+
+int main() { cout << ll(1e18); }
+```
+
+The takeaway is to avoid `#define` when possible. Of course, some competitive programmers use macros extensively. Some examples are presented below.
+
+<!-- If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control. -->
 
 ### Pairs
 
 ```cpp
-typedef pair<int,int> pi;
+using pi = pair<int,int>;
 #define mp make_pair
 #define f first
 #define s second
@@ -493,12 +506,12 @@ Pretty annoying to keep typing `first` and `second` (especially if you have nest
 ### Vectors
 
 ```cpp
-typedef vector<int> vi;
-#define sz(x) (int)x.size()
+using vi = vector<int>;
+#define sz(x) int((x).size())
 #define all(x) begin(x), end(x)
 ```
 
-It's generally a good idea to convert a size to a signed integer before doing anything with it to avoid cases like the following.
+Converting a size to a signed integer avoids cases like the following.
 
 ```cpp
 vi x;
@@ -515,11 +528,11 @@ sort(1+all(v)); // {2,1,3,4,5}
 sort(all(v)); // {1,2,3,4,5}
 ```
 
-Note how `1+all(v)` expands to `1+begin(v), end(v)`.
-
 ## Preprocessing Logic
 
-As far as preprocessor magic goes, we are in no way limited to `#define` butchery. Ever wanted to write a program that compiles in different ways depending on some initial conditions? We can use preprocessor directives like `#if` and `#else`, or `#ifdef` and `#ifndef` to allow for this.
+<!-- As far as preprocessor magic goes, we are in no way limited to `#define` butchery.  -->
+
+Ever wanted to write a program that compiles in different ways depending on some initial conditions? We can use preprocessor directives like `#if` and `#else`, or `#ifdef` and `#ifndef` to allow for this.
 
 For instance, I may want my struct `pt` to be two-dimensional in some cases, and I can control this simply:
 
@@ -535,10 +548,10 @@ template<class T> struct pt {
 };
 ```
 
-Similarly, if we are not opposed to `#define`, we could use `#ifdef` and `#ifndef` to see whether or not a macro is defined via `#define`.
+If we are not opposed to using `#define`, we could use `#ifdef` and `#ifndef` to see whether or not a macro is defined via `#define`.
 
 ```cpp
-//#define 2d //uncomment for 2d
+// #define 2d // uncomment for 2d
 
 template<class T> struct pt {
     #ifdef 2d
@@ -586,7 +599,7 @@ inline namespace test {
 }
 ```
 
-So why even have inline namespaces? We can use their features interestingly. For instance, suppose we had a feature in an old version \(v1\) of a program but now removed it in the new version \(v2\).
+So why even have inline namespaces? We can use their features interestingly. For instance, suppose we had a feature in an old version `v1` of a program but now removed it in the new version `v2`.
 
 ```cpp
 namespace v1 {
@@ -601,12 +614,12 @@ inline namespace v2 {
 }
 
 int main() {
-    cout << buggy_feature << "\n";
-    cout << v1::buggy_feature << "\n";
+    cout << buggy_feature << "\n"; // doesn't exist
+    cout << v1::buggy_feature << "\n"; // bugs
 }
 ```
 
-Now, not using a namespace will automatically use v2. But if we want access to v1 of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you have it, simple and effective version control!
+Now, not using a namespace will automatically use `v2`. But if we want access to `v1` of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you have it, simple and effective version control!
 
 </CPPSection>
 </LanguageSection>
