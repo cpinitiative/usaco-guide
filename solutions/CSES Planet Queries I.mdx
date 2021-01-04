@@ -1,0 +1,72 @@
+---
+id: cses-1750
+source: CSES
+title: Planet Queries I
+author: Anubhav Agrawal
+---
+
+**Time Complexity:** $\mathcal{O}(N*log2(k))$
+
+## Abstract
+
+We have to find the kth (<=2*10^9) ancestor of a node in a functional graph (Each node having one parent only except root node obviously)
+
+## Solution
+
+Well, the naive method of traversing k times will result in TLE because k<=2x10^9. Another, method of finding all cycles in graph and then using cycles' path length also resulting in TLE.
+Here, we use Binary Jumping. We pre-calculating the ancestor of each node after taking steps in powers of two. So, ancestor(x,i) gives the value of 2^i th ancestor of x. The recursive relation is ancestor(x,i)=ancestor( ancestor(x, i-1), i-1 ).
+This process can be done in a nested loop having big-O Time complexity of n*log(k).
+
+After this, for each query, we just need log(k) steps to look in ancestor-table and get the value when jump size reduces to 0. First we will jump the biggest [log(k)] (where [.] is floor function or integer part), and update k=k-jumpSize.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int adj[200001];
+int ancestor[200001][33];   //33>log2(2x10^9)
+
+int main()
+{
+    int n, q;
+    scanf("%d %d", & n, & q);
+    for(int i = 1; i < n+1; ++i)
+    {
+        scanf("%d",&adj[i]);
+    }
+
+    for(int i = 1; i < n+1 ; ++i)
+        ancestor[i][0]=adj[i];
+        
+   //creating ancestor table
+   
+    for(int i = 1; i < 33; ++i)
+        for(int j = 1; j < n+1 ; ++j)
+            ancestor[j][i]=ancestor[ ancestor[j][i-1] ][i-1];
+        
+    while(q--)
+    {
+        int k;
+        int start;
+        cin>>start>>k;
+
+        long long jump;
+
+        int ans=start;
+        
+        // binary jumping
+        
+        while(k)
+        {
+            jump=log2(k);
+            ans=ancestor[ans][jump];
+            k-=(1<<jump);
+        }
+
+        cout<<ans<<endl;
+    }
+    return 0;
+}
+
+```
