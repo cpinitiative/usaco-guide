@@ -1,8 +1,10 @@
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 import { Problem, ProblemProgress } from '../../../models/problem';
+import { ProblemActivity } from '../../../models/activity';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
+  userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
     problem: Problem,
     status: ProblemProgress
@@ -10,9 +12,11 @@ export type UserProgressOnProblemsAPI = {
 };
 
 export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI {
-  protected defaultValue = {};
-  protected storageKey = 'userProgressOnProblems';
-  private value = {};
+  private progressStorageKey = 'userProgressOnProblems';
+  private progressValue = {};
+
+  private activityStorageKey = 'userProgressOnProblemsActivity';
+  private activityValue: ProblemActivity[] = [];
 
   initializeFromLocalStorage = () => {
     let legacyValue = this.getValueFromLocalStorage(
@@ -21,57 +25,84 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     );
     if (legacyValue !== null) {
       window.localStorage.removeItem('guide:userData:problemStatus');
-      this.value = legacyValue;
+      this.progressValue = legacyValue;
       this.writeValueToLocalStorage();
     } else {
-      this.value = this.getValueFromLocalStorage(
-        this.getLocalStorageKey(this.storageKey),
-        this.defaultValue
+      this.progressValue = this.getValueFromLocalStorage(
+        this.getLocalStorageKey(this.progressStorageKey),
+        {}
       );
     }
+
+    this.activityValue = this.getValueFromLocalStorage(
+      this.getLocalStorageKey(this.activityStorageKey),
+      []
+    );
   };
 
   writeValueToLocalStorage = () => {
     this.saveLocalStorageValue(
-      this.getLocalStorageKey(this.storageKey),
-      this.value
+      this.getLocalStorageKey(this.progressStorageKey),
+      this.progressValue
+    );
+    this.saveLocalStorageValue(
+      this.getLocalStorageKey(this.activityStorageKey),
+      this.activityValue
     );
   };
 
   eraseFromLocalStorage = () => {
-    window.localStorage.removeItem(this.getLocalStorageKey(this.storageKey));
+    window.localStorage.removeItem(
+      this.getLocalStorageKey(this.progressStorageKey)
+    );
+    window.localStorage.removeItem(
+      this.getLocalStorageKey(this.activityStorageKey)
+    );
   };
 
   exportValue = (): any => {
     return {
-      [this.storageKey]: this.value,
+      [this.progressStorageKey]: this.progressValue,
+      [this.activityStorageKey]: this.activityValue,
     };
   };
 
   importValueFromObject = (data: object) => {
-    this.value = data[this.storageKey] || this.defaultValue;
+    this.progressValue = data[this.progressStorageKey] || {};
+    this.activityValue = data[this.activityStorageKey] || [];
   };
 
-  getAPI = () => {
+  getAPI: () => UserProgressOnProblemsAPI = () => {
     return {
-      userProgressOnProblems: this.value,
+      userProgressOnProblems: this.progressValue,
+      userProgressOnProblemsActivity: this.activityValue,
       setUserProgressOnProblems: (problem, status) => {
-        if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
-            {
-              userProgressOnProblems: {
-                [problem.uniqueID]: status,
-              },
-            },
-            { merge: true }
-          );
-        } else {
+        if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
           // being out of sync.
           this.initializeFromLocalStorage();
         }
-        this.value[problem.uniqueID] = status;
+
+        this.activityValue.push({
+          timestamp: Date.now(),
+          problemID: problem.uniqueID,
+          problemProgress: status,
+        });
+        this.progressValue[problem.uniqueID] = status;
+
+        if (this.firebaseUserDoc) {
+          this.firebaseUserDoc.set(
+            {
+              [this.progressStorageKey]: {
+                [problem.uniqueID]: status,
+              },
+              [this.activityStorageKey]: this.activityValue,
+            },
+            { merge: true }
+          );
+        }
+
         this.writeValueToLocalStorage();
         this.triggerRerender();
       },

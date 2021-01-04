@@ -17,7 +17,10 @@ import HomeworkAssignmentSummary from './HomeworkAssignmentSummary';
 export const format = (timestamp: firebaseType.firestore.Timestamp) => {
   if (!timestamp) return;
   const date = moment(timestamp.toDate());
-  const diff = date.diff(moment(), 'days');
+  const diff = date
+    .clone()
+    .startOf('day')
+    .diff(moment().startOf('day'), 'days');
   if (diff === 0) {
     return date.format('[Today,] h:mm A');
   } else if (diff === 1) {
@@ -39,7 +42,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
   );
   const { userProgressOnProblems } = useContext(UserDataContext);
   const studentsNotInstructors = useMemo(
-    () => students.filter(student => !data.instructors.includes(student.id)),
+    () => students.filter(student => !data?.instructors?.includes(student.id)),
     [students, data?.instructors]
   );
   if (loading || !data || error) {
@@ -188,6 +191,14 @@ export default function ClassPage(props: { path: string }): ReactElement {
           <div className="pl-6 lg:w-80">
             <div className="pt-6 pb-2">
               <h2 className="text-sm leading-5 font-semibold">Homework</h2>
+              {isInstructor && (
+                <Link
+                  to={`/class/${classId}/student-progress`}
+                  className="text-sm text-gray-500 hover:text-gray-700 leading-5 font-medium"
+                >
+                  View Student Progress
+                </Link>
+              )}
             </div>
             <div>
               {!data?.assignments ||
@@ -195,19 +206,20 @@ export default function ClassPage(props: { path: string }): ReactElement {
                   <p className={'py-5'}>No Homework Yet!</p>
                 ))}
               <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                {data?.assignments
-                  .filter(a => isInstructor || a.published)
-                  .sort((a, b) => /* DESC */ b.sort - a.sort)
-                  .map(assignment => (
-                    <HomeworkAssignmentSummary
-                      key={assignment.id}
-                      assignment={assignment}
-                      classId={classId}
-                      isInstructor={isInstructor}
-                      studentsNotInstructors={studentsNotInstructors}
-                      userProgressOnProblems={userProgressOnProblems}
-                    />
-                  ))}
+                {data?.assignments &&
+                  data.assignments
+                    .filter(a => isInstructor || a.published)
+                    .sort((a, b) => /* DESC */ b.sort - a.sort)
+                    .map(assignment => (
+                      <HomeworkAssignmentSummary
+                        key={assignment.id}
+                        assignment={assignment}
+                        classId={classId}
+                        isInstructor={isInstructor}
+                        studentsNotInstructors={studentsNotInstructors}
+                        userProgressOnProblems={userProgressOnProblems}
+                      />
+                    ))}
               </ul>
               {/*<div className="py-4 text-sm leading-5 border-t border-gray-200">*/}
               {/*  <Link*/}

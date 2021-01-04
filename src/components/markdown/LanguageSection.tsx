@@ -50,9 +50,16 @@ export const LanguageSection = props => {
               {LANGUAGE_LABELS[lang]}.
             </h3>
             <div className="mt-2 text-sm leading-5 text-red-700 dark:text-red-300">
-              Please choose a different default language for now. Feel free to
-              file a request to add support for {LANGUAGE_LABELS[lang]} using
-              the "Contact Us" button.
+              Please choose a different default language for now. Submitting a
+              Pull Request on{' '}
+              <a
+                href="https://github.com/cpinitiative/usaco-guide"
+                target="_blank"
+              >
+                Github
+              </a>{' '}
+              to help add support for {LANGUAGE_LABELS[lang]} would be
+              appreciated!
             </div>
           </div>
         </div>

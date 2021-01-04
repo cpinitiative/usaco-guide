@@ -2,7 +2,6 @@ import { createContext } from 'react';
 import * as React from 'react';
 
 const FirebaseContext = createContext(null);
-
 const firebaseConfig = {
   apiKey: 'AIzaSyAvm-cvPgEFer3MVQtCiKegFTc1E9RHGG4',
   authDomain: 'usaco-guide.firebaseapp.com',
@@ -13,7 +12,9 @@ const firebaseConfig = {
   appId: '1:862152331454:web:8ba85fda47360ef9fe8eef',
 };
 
+
 export const FirebaseProvider = ({ children }) => {
+  
   const [firebase, setFirebase] = React.useState(null);
 
   React.useEffect(() => {

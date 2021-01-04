@@ -7,8 +7,8 @@ import NotFoundPage from './404';
 import PostPage from '../components/Classes/PostPage';
 import ClassContext, { ClassProvider } from '../context/ClassContext';
 import ClassJoinPage from '../components/Classes/ClassJoinPage';
-import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
-import ModuleConfetti from '../components/MarkdownLayout/ModuleConfetti';
+import { ConfettiProvider } from '../context/ConfettiContext';
+import StudentProgressPage from '../components/Classes/StudentProgressPage';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -29,22 +29,10 @@ const ClassPageWrapper = (props: {
 };
 
 export default function ClassRouter() {
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
-
   return (
     <Layout>
       <ClassProvider>
-        <MarkdownLayoutContext.Provider
-          value={{
-            markdownLayoutInfo: null,
-            sidebarLinks: [],
-            conf: setIsConfettiActive,
-          }}
-        >
-          <ModuleConfetti
-            show={isConfettiActive}
-            onDone={() => setIsConfettiActive(false)}
-          />
+        <ConfettiProvider>
           <Router basepath="/class">
             <ClassPageWrapper Component={ClassPage} path="/:classId" />
             <ClassPageWrapper Component={ClassJoinPage} path="/:classId/join" />
@@ -58,11 +46,15 @@ export default function ClassRouter() {
               type={'announcement'}
               path="/:classId/announcements/:announcementId"
             />
+            <ClassPageWrapper
+              Component={StudentProgressPage}
+              path="/:classId/student-progress"
+            />
 
             <ClassSelectPage path="/" />
             <NotFoundPageWrapper default />
           </Router>
-        </MarkdownLayoutContext.Provider>
+        </ConfettiProvider>
       </ClassProvider>
     </Layout>
   );

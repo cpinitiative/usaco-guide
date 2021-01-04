@@ -7,6 +7,7 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { SolutionInfo } from '../models/solution';
+import { ConfettiProvider } from '../context/ConfettiContext';
 
 export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
@@ -15,7 +16,8 @@ export default function Template(props) {
   const markdownData = React.useMemo(() => {
     return new SolutionInfo(
       mdx.frontmatter.id,
-      mdx.frontmatter.title,
+      mdx.frontmatter.source,
+      `${mdx.frontmatter.source} - ${mdx.frontmatter.title}`,
       mdx.frontmatter.author,
       mdx.toc,
       mdx.parent.relativePath
@@ -24,13 +26,17 @@ export default function Template(props) {
 
   return (
     <Layout>
-      <SEO title={`Solution: ${mdx.frontmatter.title}`} />
+      <SEO
+        title={`Solution - ${mdx.frontmatter.title} (${mdx.frontmatter.source})`}
+      />
 
-      <MarkdownLayout markdownData={markdownData}>
-        <div className="py-4">
-          <Markdown body={body} />
-        </div>
-      </MarkdownLayout>
+      <ConfettiProvider>
+        <MarkdownLayout markdownData={markdownData}>
+          <div className="py-4">
+            <Markdown body={body} />
+          </div>
+        </MarkdownLayout>
+      </ConfettiProvider>
       {/*<p className="text-base text-center leading-6 text-blue-600 font-semibold tracking-wide uppercase">*/}
       {/*  Problem Solution*/}
       {/*</p>*/}
@@ -55,6 +61,7 @@ export const pageQuery = graphql`
       body
       frontmatter {
         id
+        source
         title
         author
       }

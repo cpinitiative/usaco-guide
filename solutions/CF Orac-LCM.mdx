@@ -1,6 +1,7 @@
 ---
 id: orac-lcm
-title: CF - Orac & LCM
+source: CF
+title: Orac & LCM
 author: Benjamin Qi
 ---
 
@@ -13,6 +14,11 @@ For each prime, the second-to-lowest exponent of the prime that occurs in any of
 Here's a short solution that accomplishes this without explicitly computing any prime factorizations!
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+using ll = long long;
+
 ll a,b; 
 // a stores minimum exponents
 // b stores second minimum exponents
@@ -20,17 +26,18 @@ int n;
 
 void red() { // restore invariant mentioned above
 	ll g = __gcd(a,b);
-	tie(a,b) = mp(g,a/g*b);
+	tie(a,b) = make_pair(g,a/g*b);
 }
 
 int main() {
-	re(n,a,b); red();
-	FOR(i,2,n) {
-		ll x; re(x); 
+	cin >> n >> a >> b;
+	red();
+	for (int i = 2; i < n; i++) {
+		ll x; cin >> x; 
 		b = __gcd(b,x);
 		red();
 	}
-	ps(b);
+	cout << b << endl;
 }
 ```
 

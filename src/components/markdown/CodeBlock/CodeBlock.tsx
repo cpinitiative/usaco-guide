@@ -18,6 +18,9 @@ const LineNo = styled.span`
   padding-right: 1em;
   user-select: none;
   opacity: 0.5;
+  &::before {
+    content: attr(data-line-number);
+  }
 `;
 
 const LineContent = styled.span`
@@ -29,7 +32,7 @@ const renderTokens = (tokens, getLineProps, getTokenProps) => {
     if (line.length === 1 && line[0].content === '') line[0].content = '\n';
     return (
       <Line key={i} {...getLineProps({ line, key: i })}>
-        <LineNo>{i + 1}</LineNo>
+        <LineNo data-line-number={i + 1} />
         <LineContent>
           {line.map((token, key) => (
             <span key={key} {...getTokenProps({ token, key })} />
@@ -80,42 +83,49 @@ export default ({ children, className }) => {
             }
             style={{ ...style }}
           >
-            {collapsed && tokens.length > 10
+            {collapsed && tokens.length > 15
               ? renderTokens(tokens.slice(0, 10), getLineProps, getTokenProps)
               : renderTokens(tokens, getLineProps, getTokenProps)}
-            {tokens.length > 10 && !collapsed && <div className="h-4" />}
-            {tokens.length > 10 && (
+            {tokens.length > 15 && !collapsed && <div className="h-8" />}
+            {tokens.length > 15 && (
               <div
                 className={
-                  (collapsed ? 'h-20' : 'h-8') +
+                  (collapsed ? 'h-full' : 'h-12') +
                   ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
-                }
-                style={
-                  collapsed
-                    ? {
-                        background:
-                          'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                      }
-                    : null
                 }
                 onClick={() => setCollapsed(!collapsed)}
               >
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <div
                   className={
-                    'text-white w-6 h-6 transform group-hover:-translate-y-2 transition duration-150 ease-in-out mb-2 ' +
-                    (collapsed ? '' : 'rotate-180')
+                    (collapsed ? 'h-20' : 'h-12') +
+                    ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                  }
+                  style={
+                    collapsed
+                      ? {
+                          background:
+                            'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+                        }
+                      : null
                   }
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className={
+                      'text-white w-6 h-6 transform group-hover:-translate-y-2 transition duration-150 ease-in-out mb-2 ' +
+                      (collapsed ? '' : 'rotate-180')
+                    }
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
               </div>
             )}
           </pre>

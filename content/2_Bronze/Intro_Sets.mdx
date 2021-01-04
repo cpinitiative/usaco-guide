@@ -71,7 +71,7 @@ Both Java and C++ contain two versions of sets and maps; one using **sorting** a
 
 <FocusProblem problem={problems.dis[0]} />
 
-A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the set.
+A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in the set.
 
 <LanguageSection>
 
@@ -145,15 +145,15 @@ The built in python unsorted set supports:
 
 ```py
 set = set()
-set.add(1) # [1]
-set.add(4) # [1, 4]
-set.add(2) # [1, 4, 2]
-set.add(1) # [1, 4, 2]
+set.add(1) # {1}
+set.add(4) # {1, 4}
+set.add(2) # {1, 4, 2}
+set.add(1) # {1, 4, 2}
 # the add method did nothing because 1 was already in the set
 print(1 in set) # True
-set.remove(1) # [4, 2]
+set.remove(1) # {4, 2}
 print(5 in set) # False
-set.remove(0); # [4, 2]
+set.remove(0); # {4, 2}
 # if the element to be removed does not exist, nothing happens
 ```
 
@@ -229,10 +229,18 @@ public class DistinctNumbers {
 <PySection>
 
 ```py
-n = int(input())
+n = int(input()) # unused
 nums = [int(x) for x in input().split()]
-distinctNumbers = set(nums)
-print(len(distinctNumbers))
+distinct_nums = set(nums)
+print(len(distinct_nums))
+```
+
+We can do this more efficiently by skipping the creation of the list, and use a set comprehension directly:
+
+```py
+n = int(input()) # unused
+distinct_nums = {int(x) for x in input().split()}
+print(len(distinct_nums))
 ```
 
 </PySection>
@@ -315,7 +323,7 @@ public class DistinctNumbers {
 ```py
 n = int(input())
 arr = sorted([int(x) for x in input().split()])
-print(1+sum(a != b for a,b in zip(arr,arr[1:]))
+print(1+sum(a != b for a, b in zip(arr, arr[1:]))
 ```
 
 </PySection>
@@ -332,7 +340,7 @@ A **map** is a set of ordered pairs, each containing a **key** and a **value**. 
 - one to retrieve the value for a given key
 - one to remove a key-value pairing from the map
 
-Insertions, deletions, and searches are all $O(\log N)$, where $N$ is the number of elements in the map.
+Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in the map.
 
 <LanguageSection>
 
@@ -360,7 +368,7 @@ cout << m.count(1) << '\n' ; // 1
 
 <JavaSection>
 
-In a `TreeMap`, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $O(1)$, but again, due to the hashing, this has a high constant factor.
+In a `TreeMap`, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $\mathcal{O}(1)$, but again, due to the hashing, this has a high constant factor.
 
 ```java
 Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -377,14 +385,14 @@ System.out.println(map.containsKey(1)); // true
 
 <PySection>
 
-Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have $O(1)$ insertion, deletion, and searches.
+Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have $\mathcal{O}(1)$ insertion, deletion, and searches.
 
 ```py
 d = {}
-d[1] = 5 # [(1, 5)]
-d[3] = 14 # [(1, 5); (3, 14)]
-d[2] = 7 # [(1, 5); (2, 7); (3, 14)]
-del d[2] # [(1, 5); (3, 14)]
+d[1] = 5 # {1: 5}
+d[3] = 14 # {1: 5, 3: 14}
+d[2] = 7 # {1: 5, 2: 7, 3: 14}
+del d[2] # {1: 5, 3: 14}
 print(d[1]) # 5
 print(7 in d) # False
 print(1 in d) # True
@@ -455,14 +463,28 @@ for (int k : m.keySet()){
 
 <PySection>
 
-To iterate over `dict`s, you can use a `for` loop over the `(key, value)` pairs of the `dict`.
+To iterate over `dict`s, there are three options. 
+Dicts will be returned in the same order of insertion in [Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+You can iterate over the keys:
 
 ```py
-for key,value in d.items():
-    print(f'{key} {value}')
+for key in d:
+    print(key)
 ```
 
-Keys will be returned in order of insertion time in [recent versions of Python](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+You can iterate over the values:
+
+```py
+for value in d.values():
+    print(value)
+```
+
+You can iterate over the key-value pairs:
+
+```py
+for key, value in d.items():
+    print(key, value)
+```
 
 </PySection>
 
@@ -507,64 +529,23 @@ RuntimeError: dictionary changed size during iteration
 If you want to remove every third entry from a map, one way is to just create a new map.
 
 ```py
-def iterate_remove_ok():
-	d1,d2 = {i:i for i in range(10)},dict()
-	cnt = 0
-	for key,value in d1.items():
-		print("CURRENT KEY: ",key)
-		cnt += 1
-		if cnt%3 != 0:
-			d2[key] = value
-		
-	print()    
-	print("REMAINING ENTRIES:")
-	for key,value in d2.items():
-		print(key,value)
-
-iterate_remove_ok()
-
-# CURRENT KEY:  0
-# CURRENT KEY:  1
-# CURRENT KEY:  2
-# CURRENT KEY:  3
-# CURRENT KEY:  4
-# CURRENT KEY:  5
-# CURRENT KEY:  6
-# CURRENT KEY:  7
-# CURRENT KEY:  8
-# CURRENT KEY:  9
-
-# REMAINING ENTRIES:
-# 0 0
-# 1 1
-# 3 3
-# 4 4
-# 6 6
-# 7 7
-# 9 9
+d = {i: i for i in range(10)}
+d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 2)
+	
+print("new dict:", d_new)
+# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 Another is to maintain a list of all the keys you want to delete and remove them after the iteration finishes:
 
 ```py
-def iterate_remove_ok2():
-	d = {i:i for i in range(10)}
-	cnt = 0
-	to_remove = []
-	for key in d:
-		print("CURRENT KEY: ",key)
-		cnt += 1
-		if cnt%3 == 0:
-			to_remove.append(key)
-	
-	for key in to_remove:
-		del d[key]
-	print()    
-	print("REMAINING ENTRIES:")
-	for key,value in d.items():
-		print(key,value)
+d = {i: i for i in range(10)}
+to_remove = {key for i, key in enumerate(d) if i % 3 == 2}
 
-iterate_remove_ok2()
+for key in to_remove:
+	del d[key]
+print("new dict:", d)
+# new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
 </PySection>
@@ -572,12 +553,12 @@ iterate_remove_ok2()
 
 <CPPSection>
 
-This code will work:
+This code will work (adding keys while iterating over a map):
 
 ```cpp
 void iterate_insert() {
-	map<int,int> m; m[0] = 0;
-	for (auto& p: m) {
+	map<int,int> m; m[0] = 0; //starts with a single key
+	for (auto& p: m) { //adds keys in the loop until the key 10
 		if (p.f == 10) break;
 		p.s = 5; 
 		m[p.f+1] = 0;
@@ -647,7 +628,7 @@ However, we would expect the keys 2, 5, and 8 to be removed from the map, but th
 
 As the documentation for [`erase`](http://www.cplusplus.com/reference/map/map/erase/) mentions, "iterators, pointers and references referring to elements removed by the function are invalidated." So incrementing `it` after `it` has been erased from the map might not produce the intended result. If you're lucky, this will produce a segmentation fault. Unfortunately, sometimes (as in this case) the code will run without appearing to produce an error.
 
-If we compile using [`-D_GLIBCXX_DEBUG`](/general/debugging/#-d_glibcxx_debug) and run the above, then
+If we compile using [`-D_GLIBCXX_DEBUG`](/general/debugging-lang/#-d_glibcxx_debug) and run the above, then
 
 ```
 g++ -D_GLIBCXX_DEBUG whoops.cpp -o whoops && ./whoops
@@ -753,11 +734,82 @@ REMAINING ENTRIES:
 
 </CPPSection>
 
+<JavaSection>
+
+Modifying a Collection (`Set`, `Map`, etc.) in the middle of a for-each loop is unlikely to work, as it will probably cause a [ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html). See the following snippet for an example:
+
+```java
+void iterate_remove_set_BAD() {
+	Set<Integer> s = new TreeSet<Integer>();
+	s.add(0); s.add(1); s.add(2);
+	for(Integer a : s) {
+		s.remove(a); // ConcurrentModificationException thrown!!
+	}
+}
+```
+
+One work-around is to use `Iterator` and the `.remove()` method to remove elements while looping over them, like in the next code snippet:
+
+```java
+void iterate_remove_set() {
+	Set<Integer> s = new TreeSet<Integer>();
+	//s starts as {0, 1, 2}
+	s.add(0); s.add(1); s.add(2);
+
+	Iterator<Integer> iter = s.iterator();
+	while(iter.hasNext()) {
+		int key = iter.next();
+		if(key == 0 || key == 2)
+			iter.remove();
+	}
+
+	//s ends as {1}
+	System.out.println("ENTRIES:");
+	for(Integer a : s) {
+		System.out.println(a);
+	}
+}	
+
+/*
+ENTRIES:
+1
+ */
+```
+
+However, `Iterator` is not commonly seen in Java, so the best option (in most cases) if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new Collection, and then use that new Collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original Collection. See the following code snippet for an example (it works equivalently to the code above):
+
+```java
+void iterate_remove_set_good() {
+	Set<Integer> s = new TreeSet<Integer>();
+	//s starts as {0, 1, 2}
+	s.add(0); s.add(1); s.add(2);
+
+	Set<Integer> toRemove = new TreeSet<Integer>();
+	for(Integer a : s) {
+		if(a == 0 || a == 2) toRemove.add(a);
+	}
+
+	s.removeAll(toRemove);
+
+	//s ends as {1}
+	System.out.println("ENTRIES:");
+	for(Integer a : s) {
+		System.out.println(a);
+	}
+}
+/*
+ENTRIES:
+1
+ */
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 
 ## Problems
 
-Some of these problems can be solved by sorting alone.
+Some of these problems can be solved by sorting alone, though sets or maps could make their implementation easier.
 
 <Problems problems={problems.standard} />

@@ -4,7 +4,7 @@ title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang, Allen Li
 description: Demonstrates how to read input and print output for USACO contests, including an example problem.
 prerequisites:
-  - data-types
+ - data-types
 ---
 
 export const problems = {
@@ -12,6 +12,11 @@ export const problems = {
 	fence: [new Problem('Bronze', 'Fence Painting', '567', 'Very Easy')],
 };
 
+<Info title="Update">
+
+USACO problems from December 2020 onwards use standard I/O rather than file I/O.
+
+</Info>
 
 <LanguageSection>
 
@@ -50,12 +55,11 @@ export const problems = {
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are **standard**. Here, we'll provide examples that take three integers as input and prints their sum. 
-
+In most websites (such as CodeForces and CSES), input and output are **standard**. Here, we'll provide examples that take three integers as input and prints their sum. Feel free to test these out at [ide.thecodingwizard.me](https://ide.thecodingwizard.me)!
 
 <Info title="Out of the methods below, which one should I use?">
 
-Whichever you're most comfortable with!
+It doesn't matter. Whichever you're most comfortable with!
 
 </Info>
 
@@ -178,7 +182,7 @@ class Kattio extends PrintWriter {
 		return token;
 	}
 	public boolean hasMoreTokens() { return peek() != null; }
-	private String next() {
+	public String next() {
 		String ans = peek(); 
 		token = null;
 		return ans;
@@ -429,7 +433,7 @@ x = int(input())
 while x != 1:
 	print(x, end = " ")
 	if x % 2 == 0:
-		x /= 2
+		x //= 2
 	else:
 		x = 3 * x + 1
 print(x)
@@ -508,6 +512,12 @@ sys.stdin = open("problemname.in", "r")
 sys.stdout = open("problemname.out", "w")
 ```
 
+<Warning title="USACO Note">
+
+Since USACO currently uses python 3.4.0, [f-strings](https://realpython.com/python-f-strings/) are not supported (they will result in a missing output file).
+
+</Warning>
+
 </PySection>
 
 </LanguageSection>
@@ -527,9 +537,6 @@ sys.stdout = open("problemname.out", "w")
 
 <br />
 
-Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
-
-![bad](Error.png)
 
 For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#naive-solution) module.
 
@@ -560,10 +567,6 @@ int main() {
 	int ans = 0;
 	for (int i = 0; i < 100; ++i) ans += cover[i];
 	cout << ans;
-	// cout << ans << endl; is OK
-	// cout << ans << "\n"; is OK
-	// cout << ans << " "; is NOT OK
-	// cout << ans << "\n\n"; is NOT OK
 }
 ```
 
@@ -753,6 +756,47 @@ print(ans)
 
 </Spoiler>
 
+</PySection>
+
+</LanguageSection>
+
+### Note - Extra Whitespace
+
+Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
+
+![bad](Error.png)
+
+Here are some examples of what is allowed and what isn't:
+
+<LanguageSection>
+
+<CPPSection>
+
+#### C++
+
+For method 1:
+
+```cpp
+cout << ans; // OK, no newline
+cout << ans << endl; // OK, newline
+cout << ans << "\n"; // OK, newline
+cout << ans << " "; // NOT OK, extra space
+cout << ans << "\n\n"; // NOT OK, extra newline
+```
+
+</CPPSection>
+
+<PySection>
+
+#### Python
+
+For method 2:
+
+```py
+print(ans) # OK, newline
+print(ans,end='') # OK, no newline
+print(str(ans)+'\n') # NOT OK, extra newline
+```
 
 </PySection>
 

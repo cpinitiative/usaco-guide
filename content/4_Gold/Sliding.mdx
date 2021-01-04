@@ -12,7 +12,7 @@ frequency: 2
 
 
 export const problems = {
-	constantSam: [
+	constantSam:
 		new Problem(
 			'LC',
 			'Sliding Window Maximum',
@@ -22,7 +22,6 @@ export const problems = {
 			[],
 			''
 		),
-	],
 	constant: [
 		new Problem(
 			'CSES',
@@ -31,12 +30,20 @@ export const problems = {
 			'Normal',
 			false,
 			['prefix-sums'],
-			''
+			'cses-1671'
 		),
-		new Problem('CSES', 'Sliding Median', '1076', 'Normal', false, [], ''),
+		new Problem(
+			'CSES', 
+			'Sliding Median', 
+			'1076', 
+			'Normal', 
+			false, 
+			['Set'],
+			'cses-1076'
+		),
 		new Problem('CSES', 'Sliding Cost', '1077', 'Hard', false, [], ''),
 	],
-	sam: [new Problem('CSES', 'Playlist', '1141', 'Easy', false, ['2P'], '')],
+	sam: new Problem('CSES', 'Playlist', '1141', 'Easy', false, ['2P'], ''),
 	general: [
 		new Problem('CF', 'K-Good Segment', '616/problem/D', 'Easy', false, [], ''),
 		new Problem('Gold', 'Haybale Feast', '767', 'Easy', false, [
@@ -50,21 +57,21 @@ export const problems = {
 			'Normal',
 			false,
 			['Sliding Window', 'Median'],
-			''
+			'apio-15-bridge'
 		),
 		new Problem('Gold', 'Painting the Barn', '923', 'Normal', true, [
 			'Sliding Window',
 		]),
+		new Problem('Plat', 'Fort Moo', '600', 'Normal', false, ['Sliding Window']),
 		new Problem(
 			'APIO',
 			'2009 - Digging for Oil',
 			'https://dmoj.ca/problem/apio09p1',
-			'Normal',
+			'Hard',
 			false,
 			['Sliding Window', 'DP'],
 			'apio09-oil'
 		),
-		new Problem('Plat', 'Fort Moo', '600', 'Hard', false, ['Sliding Window']),
 		new Problem(
 			'IOI',
 			'2005 - Garden',
@@ -81,17 +88,6 @@ export const problems = {
 			'Hard',
 			false,
 			['Sliding Window', 'DP'],
-			''
-		),
-	],
-	queueSam: [
-		new Problem(
-			'LC',
-			'Sliding Window Maximum',
-			'sliding-window-maximum',
-			'Easy',
-			false,
-			[],
 			''
 		),
 	],
@@ -125,7 +121,7 @@ From CPH:
 
 For each position of the window, we want to compute some information. 
 
-<FocusProblem problem={problems.constantSam[0]} />
+<FocusProblem problem={problems.constantSam} />
 
 <!-- To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
  -->
@@ -142,7 +138,7 @@ For each position of the window, we want to compute some information.
 
 ### Implementation
 
-The most straightforward way to do this is to store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $O(\log N)$.
+The most straightforward way to do this is to store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $\mathcal{O}(\log N)$.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
@@ -213,7 +209,7 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 
 In general, it is not required for the subarray to have constant size as long as both the left and right endpoints of the subarray only move to the right.
 
-<FocusProblem problem={problems.sam[0]} />
+<FocusProblem problem={problems.sam} />
 
 ### Solution
 
@@ -281,9 +277,9 @@ public class test{
 
 <Problems problems={problems.general} />
 
-## Sliding Window Minimum in $O(N)$
+## Sliding Window Minimum in $\mathcal{O}(N)$
 
-<FocusProblem problem={problems.queueSam[0]} />
+<FocusProblem problem={problems.constantSam} />
 
 ### Resources
 

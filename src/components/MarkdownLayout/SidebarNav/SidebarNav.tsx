@@ -18,14 +18,28 @@ export interface NavLinkGroup {
 }
 
 export const SidebarNav = () => {
-  const { markdownLayoutInfo, sidebarLinks } = useContext(
+  const { markdownLayoutInfo, sidebarLinks, activeIDs } = useContext(
     MarkdownLayoutContext
   );
-  const [activeSection, setActiveSection] = useState(
+
+  let oriSection =
     markdownLayoutInfo instanceof SolutionInfo
       ? 'general'
-      : markdownLayoutInfo.section
-  );
+      : markdownLayoutInfo.section;
+  if (markdownLayoutInfo instanceof SolutionInfo) {
+    for (let section in SECTION_LABELS) {
+      MODULE_ORDERING[section].forEach((category: Chapter) => {
+        category.items.forEach(moduleID => {
+          // console.log(moduleID,activeIDs)
+          if (activeIDs.includes(moduleID)) {
+            oriSection = section;
+          }
+        });
+      });
+    }
+  }
+
+  const [activeSection, setActiveSection] = useState(oriSection);
 
   const links: NavLinkGroup[] = React.useMemo(() => {
     return MODULE_ORDERING[activeSection].map((category: Chapter) => ({

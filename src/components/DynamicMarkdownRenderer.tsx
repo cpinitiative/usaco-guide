@@ -7,6 +7,7 @@ import { MDXProvider, mdx as createElement } from '@mdx-js/react';
 import * as rehypeKatex from 'rehype-katex';
 import * as remarkExternalLinks from 'remark-external-links';
 import * as remarkMath from 'remark-math';
+import grayMatter from 'gray-matter';
 
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
@@ -61,8 +62,14 @@ export default function ({ markdown, debounce = 1000 }) {
           props: [],
         };
 
+        const { data, content: frontMatterCodeResult } = grayMatter(markdown);
+
+        const content = `${frontMatterCodeResult}
+
+export const _frontmatter = ${JSON.stringify(data)}`;
+
         const jsx = (
-          await mdx(markdown, {
+          await mdx(content, {
             remarkPlugins: [remarkExternalLinks, remarkMath],
             rehypePlugins: [rehypeKatex],
             skipExport: true,
@@ -79,7 +86,7 @@ export default function ({ markdown, debounce = 1000 }) {
           throw err;
         }
 
-        code = code.replace('export const', 'const');
+        code = code.replace(/export const/g, 'const');
 
         const keys = Object.keys(fullScope);
         const values = Object.values(fullScope);
