@@ -18,6 +18,9 @@ const LineNo = styled.span`
   padding-right: 1em;
   user-select: none;
   opacity: 0.5;
+  &::before {
+    content: attr(data-line-number);
+  }
 `;
 
 const LineContent = styled.span`
@@ -29,7 +32,7 @@ const renderTokens = (tokens, getLineProps, getTokenProps) => {
     if (line.length === 1 && line[0].content === '') line[0].content = '\n';
     return (
       <Line key={i} {...getLineProps({ line, key: i })}>
-        <LineNo>{i + 1}</LineNo>
+        <LineNo data-line-number={i + 1} />
         <LineContent>
           {line.map((token, key) => (
             <span key={key} {...getTokenProps({ token, key })} />

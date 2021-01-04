@@ -187,6 +187,7 @@ Here is an script to test a Java program with input and output files. You will n
 <Spoiler title="Java testing script">
 
 ```
+#!/bin/bash
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 NC="\033[0m"
@@ -220,7 +221,8 @@ while $loop; do
 	if [[ $diffOut == "" ]]; then
 		echo -e "$GREEN** PASSED **$NC\n"
 	else
-		echo -e "$RED** FAILED **$NC\n"
+		echo -e "$RED** FAILED **$NC"
+		echo -e "$diffOut\n"
 		wrong=$((wrong += 1))
 	fi
 	
@@ -230,9 +232,9 @@ done
 # Check if any wrong.
 if [[ wrong -gt 0 ]]; then
 	if [[ $wrong == 1 ]]; then
-		echo -e "$RED*** $wrong TEST CASE FAILED ***$NC"
+		echo -e "$RED*** $wrong/$testCase TEST CASE FAILED ***$NC"
 	else
-		echo -e "$RED*** $wrong TEST CASES FAILED ***$NC"
+		echo -e "$RED*** $wrong/$((testCase - 1)) TEST CASES FAILED ***$NC"
 	fi
 else
 	echo -e "$GREEN*** ALL TEST CASES PASSED ***$NC"

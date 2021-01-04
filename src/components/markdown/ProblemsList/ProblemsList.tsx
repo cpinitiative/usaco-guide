@@ -19,6 +19,7 @@ type ProblemsListProps = {
   alwaysHideTags?: boolean;
   modules?: boolean;
   division?: string;
+  showSubmitCodeButtons?: boolean;
 };
 
 let showSols = true;
@@ -31,7 +32,8 @@ export function ProblemsList(props: ProblemsListProps) {
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
   const alwaysHideTags = props.alwaysHideTags;
-  const divisionTable = props.division ? true : false;
+  const divisionTable = !!props.division;
+  const showSubmitCodeButtons = props.showSubmitCodeButtons || false;
   let showPercent = true; // props.division != 'Platinum';
 
   for (let problem of props.problems) {
@@ -93,7 +95,11 @@ export function ProblemsList(props: ProblemsListProps) {
                       Module
                     </th>
                   )}
-
+                  {showSubmitCodeButtons && (
+                    <th className="pr-2 md:pr-3 py-3 leading-4 text-left text-xs font-medium uppercase tracking-wider">
+                      Submit Code
+                    </th>
+                  )}
                   <th className="pr-2 md:pr-3 py-3 leading-4 text-left text-xs font-medium uppercase tracking-wider">
                     URL
                   </th>
@@ -112,6 +118,7 @@ export function ProblemsList(props: ProblemsListProps) {
                     key={problem.id}
                     modules={props.modules}
                     showPercent={showPercent}
+                    showSubmitCodeButtons={showSubmitCodeButtons}
                   />
                 ))}
               </tbody>
@@ -202,6 +209,7 @@ type ProblemComponentProps = {
   division?: string;
   modules?: boolean;
   showPercent?: boolean;
+  showSubmitCodeButtons?: boolean;
 };
 
 export const difficultyClasses = {
@@ -372,6 +380,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           onShowSolution={props.onShowSolution}
         />
       )}
+      {props.showSubmitCodeButtons && submitCodeCol}
       <td>
         <CopyToClipboard
           onCopy={console.log('copied')}
