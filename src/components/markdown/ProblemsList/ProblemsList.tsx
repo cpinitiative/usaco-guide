@@ -24,7 +24,7 @@ type ProblemsListProps = {
 
 let showSols = true;
 let showTagsAndDifficulty = true;
-
+let currProblemCopied = null;
 export function ProblemsList(props: ProblemsListProps) {
   const userSettings = useContext(UserDataContext);
   showSols = !userSettings.hideSols && !props.modules;
@@ -36,7 +36,7 @@ export function ProblemsList(props: ProblemsListProps) {
   const showSubmitCodeButtons = props.showSubmitCodeButtons || false;
   let showPercent = true; // props.division != 'Platinum';
 
-  for (let problem of props.problems) {
+  for (const problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
   return (
@@ -332,12 +332,19 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const [tooltipText, setToolTipText] = React.useState(
     'Click to copy URL to clipboard!'
   );
+  const [lastProblemCopied, setNewProb] = React.useState(null);
+  function determineText() {
+    if (problem.name === currProblemCopied) {
+      console.log(problem.name + ' ' + currProblemCopied);
+      return 'Problem already copied to clipboard!';
+    } else {
+      return 'Click to copy URL to clipboard!';
+    }
+  }
   function tooltipClicked() {
     return function (p1: React.MouseEvent<HTMLButtonElement>) {
+      currProblemCopied = problem.name;
       setToolTipText('URL copied to clipboard!');
-      setTimeout(function () {
-        setToolTipText('Click to copy URL to clipboard!');
-      }, 5000);
     };
   }
   const module = typeof window !== `undefined` ? window.location.href : null; // fix error in serverside
@@ -388,7 +395,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           text={`${module}/#problem-${problem.uniqueID}`}
         >
           <button style={{ outline: 'none' }} onClick={tooltipClicked()}>
-            <Tooltip content={tooltipText} style={{ outline: 'none' }}>
+            <Tooltip content={determineText()} style={{ outline: 'none' }}>
               <svg
                 fill="none"
                 height="20"
