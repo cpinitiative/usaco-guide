@@ -15,9 +15,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {
-      textColor: ['disabled'],
-    },
+    // extend: {
+    //   textColor: ['disabled'],
+    // },
     // variants: [
     //   // 'responsive',
     //   // 'group-hover',
@@ -92,6 +92,7 @@ module.exports = {
       'dark-active',
     ],
     textColor: [
+      'disabled',
       'responsive',
       'group-hover',
       'group-focus',
