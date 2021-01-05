@@ -116,6 +116,7 @@ type UserDataContextAPI = UserLangAPI &
     isLoaded: boolean;
     onlineUsers: number;
     getDataExport: Function;
+    importUserData: Function;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
@@ -123,6 +124,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   darkMode: false,
   firebaseUser: null,
   getDataExport: () => {},
+  importUserData: () => {},
   hideTagsAndDifficulty: false,
   hideSols: false,
   divisionTableQuery: {
@@ -291,8 +293,26 @@ export const UserDataProvider = ({ children }) => {
         {}
       );
     },
+
+    importUserData: (data: JSON) => {
+      if (
+        confirm(
+          'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+        )
+      ) {
+        UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+        UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+        if (firebaseUser) {
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(data);
+        }
+        triggerRerender();
+      }
+    },
   };
-  console.log(userData);
 
   return (
     <UserDataContext.Provider value={userData}>
@@ -302,11 +322,3 @@ export const UserDataProvider = ({ children }) => {
 };
 
 export default UserDataContext;
-
-export const importUserData = (data: JSON) => {
-  // console.log("DATA!");
-  // console.log("IMPORTING",data)
-  // idk how to mess w/ firebase / trigger rerenders
-  UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-  UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-};

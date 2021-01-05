@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
-import { importUserData } from '../context/UserDataContext/UserDataContext';
 
 const UserAuthButton = props => {
   const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
@@ -33,7 +32,6 @@ export default function SettingsModal({ isOpen, onClose }) {
 
   // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
   const handleUpload = e => {
-    console.log('HANDLING UPLOAD');
     const fileReader = new FileReader();
     fileReader.readAsText(e.target.files[0], 'UTF-8');
     fileReader.onload = e => {
@@ -43,14 +41,13 @@ export default function SettingsModal({ isOpen, onClose }) {
   };
 
   const handleImportUserData = e => {
-    console.log('HANDLING IMPORT');
     if (file === '') return;
     try {
       const data = JSON.parse(file);
-      console.log('DATA');
-      importUserData(data);
+      userSettings.importUserData(data);
     } catch (e) {
       alert(e);
+      console.error(e);
     }
   };
 
