@@ -229,8 +229,9 @@ export default function SettingsModal({ isOpen, onClose }) {
                     className={`${
                       file !== ''
                         ? 'text-gray-700 hover:text-gray-500'
-                        : 'text-gray-300'
+                        : 'text-gray-300 cursor-default'
                     } inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md bg-white focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150`}
+                    disabled={!file}
                     onClick={handleImportUserData}
                   >
                     Import User Data
