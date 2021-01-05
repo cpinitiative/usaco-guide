@@ -1,0 +1,57 @@
+---
+id: usaco-940
+title: USACO 2019 December Bronze - Milk Factory
+author: Jesse Choe
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+vl adj[101]; vb visited(101); ll n;
+
+void dfs(ll node){
+	visited[node] = true;
+	for(ll v: adj[node]){
+		if(!visited[v]){
+			dfs(v);
+		}
+	}
+}
+
+bool allVisited(){
+	FOR(i, 0, n){
+		if(!visited[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
+int main(){
+	setIO("factory");
+	cin >> n;
+	FOR(i, 0, n-1){
+		ll a, b; cin >> a >> b;
+		--a; --b;
+		adj[b].pb(a);
+	}
+	FOR(i, 0, n){
+		fill(all(visited), false);
+		dfs(i);
+		if(allVisited()){
+			cout << i+1 << endl;
+			return 0;
+		}
+	}
+	cout << -1 << endl;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
