@@ -15,6 +15,106 @@ It is possible that the boat may never reach the destination given unlimited tim
 
 <LanguageSection>
 
+<CPPSection>
+
+```c++
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cmath>
+
+using std::cin;
+using std::cout;
+using std::endl;
+
+bool reachable(std::pair<long long, long long> start,
+               std::pair<long long, long long> end,
+               std::string wind,
+               long long time) {
+    long long wind_x = 0;
+    long long wind_y = 0;
+    for (const char& w : wind) {
+        switch (w) {
+            case 'U':
+                wind_y++;
+                break;
+            case 'D':
+                wind_y--;
+                break;
+            case 'L':
+                wind_x--;
+                break;
+            case 'R':
+                wind_x++;
+                break;
+        }
+    }
+    // to speed things up, we can skip all the repetitive cycles and just multiply by the total complete amount of cycles
+    wind_x *= time / wind.length();
+    wind_y *= time / wind.length();
+    long long remainder = time % wind.length();
+    for (long long i = 0; i < remainder; i++) {
+        switch (wind[i]) {
+            case 'U':
+                wind_y++;
+                break;
+            case 'D':
+                wind_y--;
+                break;
+            case 'L':
+                wind_x--;
+                break;
+            case 'R':
+                wind_x++;
+                break;
+        }
+    }
+    start.first += wind_x;
+    start.second += wind_y;
+    return std::abs(start.first - end.first) +
+           std::abs(start.second - end.second) <= time;
+}
+
+/**
+* https://codeforces.com/problemset/problem/1117/C
+* 0 0
+* 4 6
+* 3
+* UUU should output 5
+*
+* 0 3
+* 0 0
+* 3
+* UDD should output 3
+*/
+int main() {
+    std::pair<long long, long long> at_pos;  // i'm not taking any chances with integer overflow
+    cin >> at_pos.first >> at_pos.second;
+    std::pair<long long, long long> destination;
+    cin >> destination.first >> destination.second;
+    long long wind_len;
+    cin >> wind_len;  // won't be using this but oh well
+    std::string wind_cycle;
+    cin >> wind_cycle;
+
+    long long lo = 0;
+    long long hi = 20000000000000000;  // just spammed a bunch of 0s, it should be long enough
+    long long valid = -1;
+    while (lo <= hi) {
+        long long mid = (lo + hi) / 2;
+        if (reachable(at_pos, destination, wind_cycle, mid)) {
+            valid = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    }
+    cout << valid << endl;
+}
+```
+
+</CPPSection>
+
 <JavaSection>
 
 ```java
@@ -113,5 +213,60 @@ public class MagicShip {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+"""
+0 0
+4 6
+3
+UUU should output 5
+
+0 3
+0 0
+3
+UDD should output 3
+"""
+from typing import List
+
+def reachable(start: List[int], end: List[int], wind: str, time: int):
+    start = start.copy()
+    wind_x = wind.count("R") - wind.count("L")  # count the net changes after one wind cycle
+    wind_y = wind.count("U") - wind.count("D")
+    cycle_num = time // len(wind)
+    wind_x *= cycle_num  # speed this up by multiplying by the amount of complete cycles in the time
+    wind_y *= cycle_num
+
+    remainder = time % len(wind)
+    wind = wind[:remainder]  # account for the remaining wind
+    wind_x += wind.count("R") - wind.count("L")
+    wind_y += wind.count("U") - wind.count("D")
+
+    start[0] += wind_x  # apply the changes and see if the manhattan distance is less than the time
+    start[1] += wind_y
+    return abs(start[0] - end[0]) + abs(start[1] - end[1]) <= time
+
+
+at_pos = [int(i) for i in input().split()]
+destination = [int(i) for i in input().split()]
+input()
+wind_cycle = input()
+
+
+lo = 0
+hi = 2 * 10**14
+valid = -1
+while lo <= hi:
+    mid = (lo + hi) // 2
+    if reachable(at_pos, destination, wind_cycle, mid):
+        valid = mid
+        hi = mid - 1
+    else:
+        lo = mid + 1
+print(valid)
+```
+
+</PySection>
 
 </LanguageSection>
