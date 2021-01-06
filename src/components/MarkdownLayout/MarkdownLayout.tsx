@@ -93,6 +93,7 @@ export default function MarkdownLayout({
             }
             fields {
               division
+              gitAuthorTime
             }
             problems {
               uniqueID
@@ -134,8 +135,8 @@ export default function MarkdownLayout({
   const activeIDs = [];
   const prob_to_module = {};
 
-  for (let moduleLink of moduleLinks) {
-    for (let problem of moduleLink.probs) {
+  for (const moduleLink of moduleLinks) {
+    for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
       prob_to_module[uniqueID] = module.id;
     }
@@ -145,13 +146,13 @@ export default function MarkdownLayout({
     activeIDs.push(markdownData.id);
     const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
     // oops how to assert not -1
-    for (let problem of moduleLinks[ind].probs) {
+    for (const problem of moduleLinks[ind].probs) {
       const uniqueID = problem.uniqueID;
       problemIDs.push(uniqueID);
     }
   } else {
     moduleLinks.forEach(link => {
-      for (let problem of link.probs) {
+      for (const problem of link.probs) {
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
         }

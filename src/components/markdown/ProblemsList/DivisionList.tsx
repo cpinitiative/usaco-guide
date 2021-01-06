@@ -261,7 +261,7 @@ export function DivisionList(props) {
   let curSeason =
     userSettings.divisionTableQuery && userSettings.divisionTableQuery.season;
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
-  console.log('LAST SEASON', seasons[seasons.length - 1]);
+  // console.log('CUR SEASON', curSeason, 'LAST SEASON', seasons[seasons.length - 1]);
 
   const curShowSols =
     !userSettings.hideSols &&
@@ -269,7 +269,6 @@ export function DivisionList(props) {
       userSettings.divisionTableQuery &&
       userSettings.divisionTableQuery.showSols
     );
-  // console.log("PASSING PROP",!curShowSols)
   return (
     <>
       <div className="flex items-center space-x-4">
