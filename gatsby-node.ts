@@ -7,7 +7,7 @@ const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
 execSync(
-  `git fetch --depth=1000000 https://github.com/cpinitiative/usaco-guide.git`
+  `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
 );
 const test = execSync(`git log`).toString();
 console.log('Vercel test:');
