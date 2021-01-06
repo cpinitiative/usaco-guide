@@ -20,7 +20,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     });
     // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
     const gitAuthorTime = execSync(
-      `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
+      `git log -4 --pretty=format:%aI ${node.fileAbsolutePath}`
     ).toString();
     console.log(
       'Vercel Debug: ' + node.fileAbsolutePath + ' is ' + gitAuthorTime
