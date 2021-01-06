@@ -9,9 +9,6 @@ const { execSync } = require('child_process');
 execSync(
   `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
 );
-const test = execSync(`git log`).toString();
-console.log('Vercel test:');
-console.log(test);
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -30,9 +27,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     const gitAuthorTime = execSync(
       `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
     ).toString();
-    console.log(
-      'Vercel Debug: ' + node.fileAbsolutePath + ' is ' + gitAuthorTime
-    );
     createNodeField({
       node,
       name: 'gitAuthorTime',
