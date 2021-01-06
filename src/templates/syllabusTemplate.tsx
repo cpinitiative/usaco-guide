@@ -10,7 +10,7 @@ import MODULE_ORDERING, {
   SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
-import { getModule } from '../utils/utils';
+import { getModulesForDivision } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress, {
   DashboardProgressSmall,
@@ -126,8 +126,7 @@ export default function Template(props) {
 
   const { division } = props.pageContext;
 
-  const section = getModule(allModules, division);
-  // console.log("SECTION",section)
+  const section = getModulesForDivision(allModules, division);
 
   // const { userProgressOnModules, userProgressOnProblems } = React.useContext(
   //   UserDataContext
@@ -137,12 +136,11 @@ export default function Template(props) {
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  let moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  let problemIDs = [];
-  for (let chapter of MODULE_ORDERING[division]) {
-    for (let moduleID of chapter.items) {
-      // console.log("HA",moduleID)
-      for (let problem of allModules[moduleID].problems) {
+  const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
+  const problemIDs = [];
+  for (const chapter of MODULE_ORDERING[division]) {
+    for (const moduleID of chapter.items) {
+      for (const problem of allModules[moduleID].problems) {
         problemIDs.push(problem.uniqueID);
       }
     }
@@ -150,12 +148,11 @@ export default function Template(props) {
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
-    // console.log("WHOOPS",category.name,category.items)
-    let problemIDs = [];
-    for (let chapter of MODULE_ORDERING[division])
+    const problemIDs = [];
+    for (const chapter of MODULE_ORDERING[division])
       if (chapter.name == category.name) {
-        for (let moduleID of chapter.items) {
-          for (let problem of allModules[moduleID].problems) {
+        for (const moduleID of chapter.items) {
+          for (const problem of allModules[moduleID].problems) {
             problemIDs.push(problem.uniqueID);
           }
         }
@@ -246,7 +243,9 @@ export default function Template(props) {
                           item.frontmatter.title,
                           item.frontmatter.description,
                           item.frontmatter.frequency,
-                          item.isIncomplete
+                          item.isIncomplete,
+                          [],
+                          item.fields.gitAuthorTime
                         )
                       }
                     />
@@ -276,6 +275,9 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
+          fields {
+            gitAuthorTime
+          }
         }
       }
     }
