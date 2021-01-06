@@ -9,6 +9,9 @@ const { execSync } = require('child_process');
 execSync(
   `git fetch --depth=1000000 https://github.com/cpinitiative/usaco-guide.git`
 );
+const test = execSync(`git log`).toString();
+console.log('Vercel test:');
+console.log(test);
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
