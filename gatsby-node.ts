@@ -22,6 +22,9 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     const gitAuthorTime = execSync(
       `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
     ).toString();
+    console.log(
+      'Vercel Debug: ' + node.fileAbsolutePath + ' is ' + gitAuthorTime
+    );
     createNodeField({
       node,
       name: 'gitAuthorTime',
