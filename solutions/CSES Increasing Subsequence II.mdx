@@ -2,10 +2,24 @@
 id: cses-1748
 source: CSES
 title: Increasing Subsequence II
-author: Benjamin Qi, Óscar Garries
+author: Benjamin Qi, Óscar Garries and Timothy Gao
 ---
 
-Coordinate compress, then range sum.
+Let $dp[i]$ be the number of increasing subsequences ending on the right at $i$.
+Notice that $dp[i]$ can be calculated as the summation of all $dp[j]$ such that $j$ is in the range $[0,i]$ and $nums[j] < nums[i]$.
+
+Naively, this gives an $\mathcal O(N^2)$ solution. In order to speed this up, we can
+coordinate compress, then range sum.
+
+More specifically, we sort all numbers in $nums$ and map each distinct number to its index in the sorted array. This way, we effectively coordinate compress the numbers. 
+
+With this, we can create a BIT, which intially starts with all 0s. As we run through $nums$ from left to right, $dp[i]$ would be summation of all $j<k$ in the BIT, where $k$ is the index $nums[i]$ maps to. Then, we update $k$ in the BIT as preparation for the next query by another number. 
+
+**Time Complexity:** $\mathcal{O}(NlogN)$
+
+<LanguageSection>
+
+<CPPSection>
 
 Implementation without template:
 
@@ -60,7 +74,6 @@ int main () {
 ```
 
 Implementation with template:
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -346,3 +359,68 @@ int main() {
     ps(ans);
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class increasingsubsequencesII {
+    static final int mod = (int) (1e9 + 7);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        int N = Integer.parseInt(br.readLine());
+        int[] nums = new int[N];
+        int[] sorted = new int[N];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            sorted[i] = nums[i] = Integer.parseInt(st.nextToken());
+        }
+        Arrays.sort(sorted);
+        Map<Integer, Integer> mp = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            mp.put(sorted[i], i);
+        }
+        BIT bit = new BIT(N);
+        int ret = 0;
+        for (int i : nums) {
+            int curr = bit.sum(mp.get(i) - 1) + 1;
+            bit.update(mp.get(i), curr);
+            ret += curr;
+            ret %= mod;
+        }
+        pw.println(ret);
+        pw.close();
+        br.close();
+    }
+    static class BIT {
+        public int[] bit;
+        public BIT(int N) {
+            bit = new int[N + 1];
+        }
+        public int sum(int r) {
+            r++;
+            int ret = 0;
+            while (r > 0) {
+                ret += bit[r];
+                ret %= mod;
+                r -= r & -r;
+            }
+            return ret;
+        }
+        public void update(int idx, int v) {
+            idx++;
+            while (idx < bit.length) {
+                bit[idx] += v;
+                bit[idx] %= mod;
+                idx += idx & -idx;
+            }
+        }
+    }
+}
+```
+</JavaSection>
+</LanguageSection>
