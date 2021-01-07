@@ -3,6 +3,12 @@ import { SECTIONS } from './content/ordering';
 const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
 const Problem = require('./src/models/problem').Problem; // needed to eval export
+const { execSync } = require('child_process');
+
+// Questionable hack to get full commit history so that timestamps work
+execSync(
+  `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
+);
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -16,6 +22,15 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       name: 'division',
       node,
       value: ordering.moduleIDToSectionMap[node.frontmatter.id],
+    });
+    // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
+    const gitAuthorTime = execSync(
+      `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
+    ).toString();
+    createNodeField({
+      node,
+      name: 'gitAuthorTime',
+      value: gitAuthorTime,
     });
   }
 };
