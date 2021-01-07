@@ -39,44 +39,45 @@ describe('Problem Feedback Modal Context', () => {
     expect(queryByText('Settings')).not.toBeTruthy();
   });
   it('should open and close the problem feedback modal appropriately', () => {
-    let openModal = undefined;
-
-    const CustomComponent = () => {
-      const { openProblemFeedbackModal } = useContext(
-        ProblemFeedbackModalContext
-      );
-      openModal = openProblemFeedbackModal;
-      return 'Hello World!';
-    };
-
-    const { queryByText } = render(
-      <ProblemFeedbackModalProvider>
-        <CustomComponent />
-      </ProblemFeedbackModalProvider>
-    );
-
-    expect(openModal).toBeTruthy();
-
-    // shouldn't be open initially
-    expect(queryByText('Problem Feedback for')).not.toBeTruthy();
-
-    act(() => openModal(mockProblem));
-    // should now be open
-    expect(queryByText('Problem Feedback for Sum of Two Values')).toBeTruthy();
-
-    // clicking the cancel button
-    fireEvent.click(screen.getByText('Cancel'));
-    // should be closed again
-    expect(queryByText('Problem Feedback for')).not.toBeTruthy();
-
-    act(() => openModal(mockProblem));
-    // should now be open
-    expect(queryByText('Problem Feedback for Sum of Two Values')).toBeTruthy();
-
-    // clicking the X button
-    fireEvent.click(screen.getByText('Close'));
-    // should be closed again
-    expect(queryByText('Problem Feedback for')).not.toBeTruthy();
+    // temporarily disabled feedback modal
+    // let openModal = undefined;
+    //
+    // const CustomComponent = () => {
+    //   const { openProblemFeedbackModal } = useContext(
+    //     ProblemFeedbackModalContext
+    //   );
+    //   openModal = openProblemFeedbackModal;
+    //   return 'Hello World!';
+    // };
+    //
+    // const { queryByText } = render(
+    //   <ProblemFeedbackModalProvider>
+    //     <CustomComponent />
+    //   </ProblemFeedbackModalProvider>
+    // );
+    //
+    // expect(openModal).toBeTruthy();
+    //
+    // // shouldn't be open initially
+    // expect(queryByText('Problem Feedback for')).not.toBeTruthy();
+    //
+    // act(() => openModal(mockProblem));
+    // // should now be open
+    // expect(queryByText('Problem Feedback for Sum of Two Values')).toBeTruthy();
+    //
+    // // clicking the cancel button
+    // fireEvent.click(screen.getByText('Cancel'));
+    // // should be closed again
+    // expect(queryByText('Problem Feedback for')).not.toBeTruthy();
+    //
+    // act(() => openModal(mockProblem));
+    // // should now be open
+    // expect(queryByText('Problem Feedback for Sum of Two Values')).toBeTruthy();
+    //
+    // // clicking the X button
+    // fireEvent.click(screen.getByText('Close'));
+    // // should be closed again
+    // expect(queryByText('Problem Feedback for')).not.toBeTruthy();
   });
   // todo: write tests for submitting form and stuff
 });
