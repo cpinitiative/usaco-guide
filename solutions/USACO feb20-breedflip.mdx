@@ -2,7 +2,7 @@
 id: usaco-1012
 source: USACO Bronze 2020 February
 title: Mad Scientist
-author: Melody Yu, Benjamin Qi
+author: Melody Yu, Benjamin Qi, and Pratyay Pandey
 ---
 
 [Official Analysis](http://usaco.org/current/data/sol_breedflip_bronze_feb20.html)
@@ -15,6 +15,41 @@ sys.stdout = open("breedflip.out","w")
 N,a,b = input(),input(),input()
 s = [False]+[x != y for x,y in zip(a,b)] # difference list
 print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:]))) # count occurrences of [False,True]
+```
+```cpp
+// This is without any template
+#include <iostream> 
+#include <cstdio> 
+#include <ios> 
+#include <string> 
+
+using namespace std; 
+
+long long N; 
+string A, B; 
+
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie();
+    freopen("breedflip.in", "r", stdin);
+    freopen("breedflip.out", "w", stdout);
+
+    cin >> N >> A >> B;
+    long long ans = 0;
+
+    bool mis = false; 
+    for (long long i = 0; i < N; i++) {
+        if (A[i] != B[i]) {
+            if (!mis) {
+                mis = true; 
+                ans++;
+            }
+        } else {
+            mis = false;
+        }
+    }
+
+    cout << ans << endl;
+}
 ```
 
 <!-- 
