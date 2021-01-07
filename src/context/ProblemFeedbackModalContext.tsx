@@ -22,10 +22,13 @@ export const ProblemFeedbackModalProvider = ({ children }) => {
   const { firebaseUser } = useContext(UserDataContext);
 
   const openProblemFeedbackModal = (problem: Problem) => {
+    /* temporarily diasble problem feedback */
+    /*
     setLoading(false);
     setShowSuccess(false);
     setProblem(problem);
     setIsOpen(true);
+    */
   };
 
   const handleSubmit = (feedback: ProblemFeedback) => {
