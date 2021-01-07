@@ -1,0 +1,48 @@
+---
+id: cses-1633
+source: CSES
+title: Dice Combinations
+author: AK-I-RA
+---
+
+## Solution
+
+[Unofficial Editorial](https://codeforces.com/blog/entry/70018)
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+
+```cpp
+
+#include <bits/stdc++.h>
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+    long n;
+    cin >> n;
+
+    long k[7] = {0};
+    for (int i = 1 ; i <= n ; ++i) {
+        long s = (i <= 6) ? 1 : 0;
+        for (int j = 1 ; j <= 6 ; ++j) {
+            s += k[j];
+        }
+        s = s % 1000000007;
+        if (i <= 6) {
+            k[i] = s;
+        } else {
+            k[1] = k[2];
+            k[2] = k[3];
+            k[3] = k[4];
+            k[4] = k[5];
+            k[5] = k[6];
+            k[6] = s;
+        }
+    }
+    cout << ((n <= 6) ? k[n] : k[6]) << "\n";
+    return 0;
+}
+``` 
