@@ -71,9 +71,9 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Basics',
       items: [
         'time-comp',
+        'rect-geo',
         'intro-ds',
         'simulation',
-        'rect-geo',
         'intro-sorting',
         'intro-sets',
       ],
