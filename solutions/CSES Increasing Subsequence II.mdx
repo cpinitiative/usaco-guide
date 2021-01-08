@@ -11,7 +11,7 @@ Notice that $dp[i]$ can be calculated as the summation of all $dp[j]$ such that 
 Naively, this gives an $\mathcal O(N^2)$ solution. In order to speed this up, we can
 coordinate compress, then range sum.
 
-More specifically, we sort all numbers in $x$ and map each distinct number to its index in the sorted array. This way, we effectively coordinate compress the numbers. 
+More specifically, we sort all numbers in $x$ and map each distinct number to its index in the sorted array. This is known as coordinate compression, and it makes the range of the numbers significantly smaller.
 
 With this, we can create a [BIT](https://usaco.guide/gold/PURS), which intially starts with all 0s. As we run through $x$ from left to right, $dp[i]$ would be summation of all $j<k$ in the BIT, where $k$ is the index $x_i$ maps to. Then, we update $k$ in the BIT as preparation for the next query by another number. 
 
