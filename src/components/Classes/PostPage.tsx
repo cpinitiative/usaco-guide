@@ -284,7 +284,11 @@ export default function PostPage(props: {
           ? dueDate.getTime() !== post?.dueDate?.toDate().getTime()
           : !!post?.dueDate)) ||
       problems.length !== postProblems.length ||
-      problems.some((el, i) => el?.uniqueID !== postProblems[i]?.uniqueID) ||
+      problems.some(
+        (el, i) =>
+          el?.uniqueID !== postProblems[i]?.uniqueID ||
+          el?.difficulty !== postProblems[i]?.difficulty
+      ) ||
       content !== post?.content,
     [title, content, dueDate, type, post, problems, postProblems]
   );

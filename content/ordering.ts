@@ -49,6 +49,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Language-Specific',
+      description:
+        'Setup instructions and discussion of language-specific features.',
       items: [
         'factors-choosing',
         'running-code-locally',
@@ -69,47 +71,40 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Basics',
-      items: [
-        'time-comp',
-        'intro-ds',
-        'simulation',
-        'rect-geo',
-        'intro-sorting',
-        'intro-sets',
-      ],
+      items: ['time-comp', 'rect-geo', 'simulation'],
     },
     {
       name: 'Complete Search',
       description:
-        'Solving bronze problems by checking all possible cases in the solution space.',
+        'Solving Bronze problems by checking all possible cases in the solution space.',
       items: ['intro-complete', 'complete-rec'],
     },
     {
-      name: 'Unusual',
+      name: 'Data Structures',
+      description:
+        "It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.",
+      items: ['intro-ds', 'intro-sorting', 'intro-sets'],
+    },
+    {
+      name: 'Additional',
+      description: 'Topics not strictly necessary to know to pass Bronze.',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
   ],
   silver: [
     {
-      name: 'Sorting & Sets',
+      name: 'Sorting & Ordered Sets',
       items: [
         'binary-search-sorted',
         'sorting-custom',
         'intro-ordered',
         'custom-cpp-stl',
+        'greedy',
       ],
     },
     {
       name: 'Misc. Topics',
-      description:
-        'Most of these require sorting and/or sets as a prerequisite.',
-      items: [
-        'prefix-sums',
-        '2P',
-        'binary-search-ans',
-        'greedy',
-        'intro-bitwise',
-      ],
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'intro-bitwise'],
     },
     {
       name: 'Graphs',
