@@ -9,10 +9,11 @@ author: Kevin Sheng
 
 Binary search on the minimum time it will take for all the Packmen to eat all the pellets.
 For each Packman, we can greedily calculate the maximum number of pellets that it can eat in the given amount of time and then remove those pellets.
-Note that it is optimal for all of the Packmen to eat continuous segments of the food, and all of the segments must be non-intersecting. They must be continuous because if they weren't, a Packman could always eat it while going from one segment to another, thus making it continuous. Also, they must be non-intersecting because if they *were*, two Packmen would target the same pellet, thus resulting in wasted time.
-Each Packman must also eat all of the uneaten food to its left, or else all the food can't be eaten in the given time. Assigning other Packmen to the uneaten pellets would be pointless, because they would be farther away and thus have no way of reaching the uneatable pellet.
+Note that a Packman will visit all pellets between the leftmost and rightmost pellets a it eats, so it can eat all of them without any time penalty. Also, they must be non-intersecting because if they were, either Packman can ignore the pellets of the other Packman.
 
-There are two main cases we consider for each Packman: One where the Packman first goes to the right then to the left, and another where the Packman first goes to the *left* then the right. We calculate the food eaten in both of these cases and take the maximum. Note that there is also a special case where a Packman doesn't have any pellets to the left, so it can go to the right, eating as many pellets as time allows.
+In the below solution, we keep a sorted deque of all the pellet positions. For each Packman, we calculate the maximum amount of pellets it can eat so that no more pellets are to the left, and then we remove all those pellets from the deque.
+However, if a Packman can't eat the leftmost uneaten pellet, then this time would be invalid.
+There are two main cases we consider for each Packman: one where the Packman first goes to the right and then to the left, and another where the Packman first goes to the *left* and then to the right. We calculate the pellet eaten in both of these cases and take the maximum.
 
 <LanguageSection>
 
