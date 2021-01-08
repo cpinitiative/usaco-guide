@@ -13,6 +13,9 @@ For each prime, the second-to-lowest exponent of the prime that occurs in any of
 
 Here's a short solution that accomplishes this without explicitly computing any prime factorizations!
 
+<LanguageSection>
+ <CPPSection>
+  
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -40,16 +43,10 @@ int main() {
     cout << b << endl;
 }
 ```
+</CPPSection>
 
-If it's hard to understand what exactly this code is doing at first glance, a good first step is to simulating the code in the case where each $a_i$ is a power of the same prime (say, $2^k$). If the algorithm works for this case, then it will also work in the general case since the contributions of different primes are computed independently and multiplied together.
-
-<!-- the GCD function is [multiplicative](https://en.wikipedia.org/wiki/Multiplicative_function). -->
-
-## Solution: GCD/LCM
-Consider fixing $j$. How can the gcd of all lcms of nums[$j$] and all nums[$i$] (such that $i$ is in range $[0,j]$) be quickly computed? The result would be nums[$j$]$*C$, where $C$ is the gcd of all nums[$i$], and we can keep track of this gcd on the run.
-
-Taking the gcd of all results for each $j$ gives the answer.
-
+<JavaSection>
+ 
 ```java
 import java.util.*;
 import java.io.*;
@@ -83,3 +80,16 @@ public class ocralcm {
 }
 
 ```
+</JavaSection>
+</LanguageSection>
+
+If it's hard to understand what exactly this code is doing at first glance, a good first step is to simulating the code in the case where each $a_i$ is a power of the same prime (say, $2^k$). If the algorithm works for this case, then it will also work in the general case since the contributions of different primes are computed independently and multiplied together.
+
+<!-- the GCD function is [multiplicative](https://en.wikipedia.org/wiki/Multiplicative_function). -->
+Here's another way of thinking about this:
+
+Consider fixing $j$. How can the gcd of all lcms of nums[$j$] and all nums[$i$] (such that $i$ is in range $[0,j]$) be quickly computed? The result would be nums[$j$]$*C$, where $C$ is the gcd of all nums[$i$], and we can keep track of this gcd on the run.
+
+Taking the gcd of all results for each $j$ gives the answer.
+
+
