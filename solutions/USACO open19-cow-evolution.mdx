@@ -1,0 +1,96 @@
+---
+id: usaco-941
+title: USACO 2019 December Bronze - Cow Evolution
+author: Jesse Choe
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
+
+<LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using str = string;
+using bb = bool;
+using vl = vector<ll>;
+using pl = pair<ll, ll>;
+using vb = vector<bb>;
+using vs = vector<str>;
+
+#define FOR(i, a, b) for(ll i=a; i<(ll)b; ++i)
+#define ROF(i, a, b) for(ll i=a-1; i>=b; --i)
+#define TRAV(a, x) for(auto& a: x)
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sor(x) sort(begin(x), end(x))
+
+void setIO(string name="") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); 
+    if((ll)name.size() > 0){
+        freopen((name+".in").c_str(), "r", stdin);
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+vector<string> cows[25], allCharacteristics; ll n;
+
+bool works(ll A, ll B){
+	bool aNotB = false, bNotA = false, both = false;
+	FOR(i, 0, n){
+		bool a = false, b = false;
+		for(string characteristic : cows[i]){
+			if(allCharacteristics[A] == characteristic){
+				a = true;
+			}
+			if(allCharacteristics[B] == characteristic){
+				b = true;
+			}
+		}
+		if(a && !b){
+			aNotB = true;
+		}
+		if(b && !a){
+			bNotA = true;
+		}
+		if(a && b){
+			both = true;
+		}
+	}
+	if(aNotB && bNotA && both) return false;
+	return true;
+}
+
+int main(){
+	setIO("evolution");
+	cin >> n;
+	ll k; string characteristic;
+	FOR(i, 0, n){
+		cin >> k;
+		FOR(j, 0, k){
+			cin >> characteristic;
+			cows[i].pb(characteristic);
+			if(find(allCharacteristics.begin(), allCharacteristics.end(), characteristic) == allCharacteristics.end()){
+				allCharacteristics.pb(characteristic);
+			}
+		}
+	}
+	FOR(i, 0, allCharacteristics.size()){
+		FOR(j, i+1, allCharacteristics.size()){
+			if(!works(i, j)){
+				cout << "no" << endl;
+				return 0;
+			}
+		}
+	}
+	cout << "yes" << endl;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
