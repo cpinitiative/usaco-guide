@@ -821,7 +821,7 @@ int main() {
 
 #### Point
 
-We can apply a similar concept to 2d matrices. Since we define $\texttt{prefix}[i][j]$ as the number of points between $(0,0)$ and $(i, j)$, each point (i, j) is equal to the sum of itself and all the points between $(0, i-1)$ and $(0, j-1)$. However, since we are double counting the square $(i-1, j-1)$, we subtract it from our equation. This can be expressed by
+We can apply a similar concept to 2d matrices. Since we define $\texttt{prefix}[i][j]$ as the number of points between $(0,0)$ and $(i, j)$, each point $(i, j)$ is equal to the sum of itself and all the points between the rectangles formed by $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. However, since we are double counting the square $(i-1, j-1)$, we subtract it from our equation. This can be expressed by
 
 $$
 \texttt{prefix}[i][j] = \texttt{prefix}[i][j] = \texttt{prefix}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
@@ -987,7 +987,7 @@ We need to be cautious of off-by-one errors, as intervals can be inclusive, excl
 
 </Warning>
 
-#### Rectangle
+#### Overlapping Rectangles
 
 Given a rectangle with endpoints $(x1, y1), (x2, y2)$, we can compute the "layers" of many such rectangles bounded together through the use of increment and decrement points. Since our endpoints are not inclusive (note how area is the space inbetween the points), our increment points are $(x1, y1),(x2, y2)$, and decrement points are $(x1, y2), (x2, y1)$. Our prefix precomputation remains the same as described in the previous section.
 
