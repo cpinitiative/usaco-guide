@@ -702,7 +702,7 @@ A common application of prefix sums is to generate a prefix sum array from given
 
 We are given the problem that for many such intervals, compute the point with the most overlapping intervals. 
 
-Naïvely, we can compute the interval by looping through each indice from $[a,b]$ individually, resulting in an $\mathcal{O}(NQ)$ time complexity (which can time out easily).
+Naïvely, we can compute the interval by looping through each indice from $[a,b]$ individually, resulting in an $\mathcal{O}(NQ)$ time complexity (where N is the maximum size of our interval and Q is the number of queries), which easily times out (think what happens when the interval [0, N] is queried many times).
 
 We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{prefix}[i]$ causes all subsequent $\texttt{prefix}[i...N]$ (after computation) to increase by $x$. This concept can be conceptulized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive.)
 
