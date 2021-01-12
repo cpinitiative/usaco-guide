@@ -416,8 +416,8 @@ int main() {
 
 </CPPSection>
 
-<!-- 
 <JavaSection>
+	
 ```java
 import java.io.*;
 import java.util.*;
@@ -483,9 +483,11 @@ public class badge
 ``` 
 
 </JavaSection>
--->
 
 </LanguageSection>
+
+
+<br />
 
 This code generates the answer independently for each connected component. Note that it uses 0-indexing, not 1-indexing.
 
@@ -554,15 +556,12 @@ int main() {
 
 </LanguageSection>
 
-<!-- ## Count Cycles
+
+<br />
+
+### Count Cycles
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
-
-<IncompleteSection>
-
-Find example problem to submit to?
-
-</IncompleteSection>
 
 <LanguageSection>
 
@@ -595,6 +594,46 @@ int main()
 ```
 
 </CPPSection>
+
+<JavaSection>
+	
+```java
+//source: Mayank Kumar
+
+import java.io.*;
+import java.util.*;
+public class badge2{
+    static boolean[] visited=new boolean[MAXN],onStack=new boolean[MAXN];
+    static int numberOfCycles=0;
+    static int[] nextNode=new int[MAXN];
+    public static void main(String[] args) throws IOException{
+        //Take in input
+
+        for(int i=1;i!=N;++i)
+            if(!visited[i])
+                dfs(i);
+
+        System.out.println();
+        System.out.close();
+    }
+    public static void dfs(int n){
+        visited[n]=onStack[n]=true;
+        int u=nextNode[n];
+        if(onStack[u])
+            ++numberOfCycles;
+        else if(!visited[u])
+            dfs(u);
+        onStack[n]=false;
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+
+<br />
 
 </LanguageSection> -->
 
