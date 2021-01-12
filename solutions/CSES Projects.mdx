@@ -13,31 +13,39 @@ Also check [Unofficial Editorial](https://codeforces.com/blog/entry/70018).
 ```cpp
 
 #include <bits/stdc++.h>
-
 using namespace std;
-
-#define ll long long
-
-
-const int MXN=2e5+10;
-ll n;
-array<ll, 3> a[MXN];
-
-int main(){
-    cin >> n;
-    for(ll i = 0; i < n; i++){
-        cin >> a[i][1] >> a[i][0] >>a[i][2];
+ 
+int main() {
+  int n;
+  cin >> n;
+  map<int,int> mp;
+  vector<int> a(n),b(n),p(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i] >> b[i] >> p[i];
+    b[i]++;
+    mp[a[i]], mp[b[i]];
+  }
+ 
+  int coords = 0;
+  for (auto&v : mp) {
+    v.second = coords++;
+  }
+ 
+  vector<vector<pair<int,int>>> v(coords);
+  for (int i = 0; i < n; i++) {
+    v[ mp[b[i]] ].emplace_back( mp[a[i]], p[i] );
+  }
+ 
+  vector<long long> ans(coords, 0);
+  for (int i = 0; i < coords; i++) {
+    if (i > 0) {
+      ans[i] = ans[i-1];
     }
-    sort(a, a+n); 
-    set<array<ll, 2>> s;
-    s.insert({0, 0}); 
-    ll ans = 0;
-    for(ll i = 0; i < n; i++){
-        auto it = s.lower_bound({a[i][1]});
-        --it;
-        ans = max(ans, (*it)[1]+a[i][2]);
-        s.insert({a[i][0], ans}); 
+    for (auto p : v[i]) {
+      ans[i] = max(ans[i], ans[p.first]+p.second);
     }
-    cout << ans;
+  }
+  cout << ans[coords-1] << "\n";
 }
+
 ```
