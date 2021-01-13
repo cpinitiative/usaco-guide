@@ -702,9 +702,9 @@ A common application of prefix sums is to determine, given a set of intervals, t
 
 In the focus problem, we are given $n$ intervals $[a,b]$, and we want to find the maximum number of intervals that cover any particular point.
 
-Naïvely, we can compute the interval by looping through each indice from $[a,b]$ individually, resulting in an $\mathcal{O}(NQ)$ time complexity (where N is the maximum size of our interval and Q is the number of queries), which easily times out (think what happens when the interval [0, N] is queried many times).
+An naïve approach to this problem is to compute the intervals that cover each point by looping through each index from $[a,b]$ individually and incrementing by 1, resulting in an $\mathcal{O}(NQ)$ time complexity (where N is the maximum size of our interval and Q is the number of queries), which easily times out (think what happens when the interval [0, N] is queried many times).
 
-We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{prefix}[i]$ causes all subsequent $\texttt{prefix}[i...N]$ (after computation) to increase by $x$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive.)
+We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...N]$ (after computation) to increase by $x$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive.)
 
 Example: Add two to each point in the interval [2, 4]
 
@@ -757,6 +757,66 @@ In this above problem, we are only incrementing by 1, so our $x$ is consistent. 
 <LanguageSection>
 
 <CPPSection>
+
+#### With Prefix Sums and Coordinate Compression
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define vt vector
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+void setIn(string s) { freopen(s.c_str(),"r",stdin); }
+void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+void setIO(string s = "") {
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    if (!s.empty()) { setIn(s+".in"), setOut(s+".out"); }
+}
+
+int N;
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    cin >> N;
+    vector<pair<int, int>> customers;
+    F0R(i, N) {
+        int a, b; cin >> a >> b;
+        customers.push_back({a, 1});
+        customers.push_back({b + 1, -1});
+    }
+
+    sort(customers.begin(), customers.end());
+
+    int curr = 0;
+    int l = 0;
+    vt<long long> pfx(2*N + 1); // prefix sum array
+
+    F0R(i, 2*N) { // coordinate compression
+        if(i == 0) { customers[i].first = 0; }
+        else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
+        pfx[l+1] += customers[i].second; // merge all interval end and starts here
+    }
+
+    FOR(i, 1, 2*N+1) {
+        pfx[i] += pfx[i-1]; // we have combined arr and pfx otherwise do pfx[i] += arr[i] - pfx[i-1]
+    }
+
+    long long ret = 0;
+
+    F0R(i, 2*N+1) ret = max(ret, pfx[i]); // find our maximum value
+    cout << ret << "\n";
+}
+```
+
+#### Without Prefix Sums
 
 ```cpp
 #include <bits/stdc++.h>
