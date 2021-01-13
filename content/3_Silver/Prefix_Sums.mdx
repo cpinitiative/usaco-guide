@@ -887,12 +887,12 @@ int main() {
 We can apply a similar concept to 2d matrices. Since we define $\texttt{prefix}[i][j]$ as the number of points between $(0,0)$ and $(i, j)$, each point $(i, j)$ is equal to the sum of itself and all the points between the rectangles formed by $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. However, since we are double counting the square $(i-1, j-1)$, we subtract it from our equation. This can be expressed by
 
 $$
-\texttt{prefix}[i][j] = \texttt{arr}[i][j] = \texttt{prefix}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
+\texttt{prefix}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
 $$
 
 Given the sample case in [Forest Queries](https://cses.fi/problemset/task/1652), the algorithm goes as follows:
 
-We first build array $\texttt{arr}$ which increments every point by 1.
+We first build array $\texttt{arr}$, which stores the locations of the trees, by incrementing every point by 1.
 
 <center>
 	<table className='text-center'>
