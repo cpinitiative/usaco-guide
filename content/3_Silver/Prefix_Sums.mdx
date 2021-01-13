@@ -447,8 +447,6 @@ Similar to prefix sums, you can also take prefix minimum or maximum; but _you ca
 
 ## 2D Prefix Sums
 
-<FocusProblem problem={problems.sample2[0]} />
-
 Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a $N$ rows by $M$ columns matrix in two dimensions? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
 
 <center>
@@ -798,15 +796,18 @@ int main() {
     int curr = 0;
     int l = 0;
     vt<long long> pfx(2*N + 1); // prefix sum array
+    vt<int> arr(2*N);
 
     F0R(i, 2*N) { // coordinate compression
         if(i == 0) { customers[i].first = 0; }
         else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
-        pfx[l+1] += customers[i].second; // merge all interval end and starts here
+        arr[l+1] += customers[i].second;
+        // pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
     }
 
     FOR(i, 1, 2*N+1) {
-        pfx[i] += pfx[i-1]; // we have combined arr and pfx otherwise do pfx[i] += arr[i] - pfx[i-1]
+        pfx[i] = arr[i] + pfx[i-1];
+        // pfx[i] += pfx[i-1]; implementation without arr
     }
 
     long long ret = 0;
@@ -879,17 +880,19 @@ int main() {
 
 ### 2-Dimensional
 
+<FocusProblem problem={problems.sample2[0]} />
+
 #### Point
 
 We can apply a similar concept to 2d matrices. Since we define $\texttt{prefix}[i][j]$ as the number of points between $(0,0)$ and $(i, j)$, each point $(i, j)$ is equal to the sum of itself and all the points between the rectangles formed by $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. However, since we are double counting the square $(i-1, j-1)$, we subtract it from our equation. This can be expressed by
 
 $$
-\texttt{prefix}[i][j] = \texttt{prefix}[i][j] = \texttt{prefix}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
+\texttt{prefix}[i][j] = \texttt{arr}[i][j] = \texttt{prefix}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
 $$
 
 Given the sample case in [Forest Queries](https://cses.fi/problemset/task/1652), the algorithm goes as follows:
 
-We first increment every point by 1.
+We first build array $\texttt{arr}$ which increments every point by 1.
 
 <center>
 	<table className='text-center'>
@@ -920,10 +923,10 @@ We first increment every point by 1.
 	</table>
 </center>
 
-Then, we apply the preprocessing step.
+Then, we build the prefix sum array.
 
 $$
-\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{prefix}[i][j] = \texttt{prefix}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
+\texttt{prefix}[i][j] = \sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
 $$
 
 For our example, we get 
@@ -971,11 +974,7 @@ For our example, we get
 Notice how all queries can now be processed using 
 
 $$
-\begin{aligned}
-\texttt{arr}[i][j]=&\,\texttt{prefix}[A][B]
-        - \texttt{prefix}[a-1][B] \\
-        &- \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
-\end{aligned}
+\texttt{prefix}[A][B] - \texttt{prefix}[a-1][B] - \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
 $$
 
 For example, if we query $(2, 2)$ to $(3, 4)$ we get $A=3, B=4, a=2, b=2$, and substituting into our equation, we get
@@ -1011,22 +1010,27 @@ void setIO(string s = "") {
 
 int N, Q;
 int pfx[1001][1001];
+int arr[1001][1001];
 
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
     cin >> N >> Q;
+
+    // comments are for implementation without arr
+
     F0R(i, N) {
         F0R(j, N) {
             char a; cin >> a;
-            if(a == '*') pfx[i+1][j+1]++;
+            if(a == '*') arr[i+1][j+1]++; // pfx[i+1][j+1]++
         }
     }
 
     FOR(i, 1, N+1) {
         FOR(j, 1, N+1){ 
-            pfx[i][j] += pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+            pfx[i][j] = arr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+            // pfx[i][j] += pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
         }
     }
 
