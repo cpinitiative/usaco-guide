@@ -1,54 +1,13 @@
 ---
-id: LMIO19-trusis
-source: LMIO 2019
-title: Rabbit Carrot
-author: Benjamin Qi
+id: poi-11-pio
+source: POI 2011
+title: Lightning Conductor
+author: Andi Qu, Benjamin Qi
 ---
 
-<Spoiler title="Hint">
+[Andi's Code](https://github.com/dolphingarlic/CompetitiveProgramming/blob/master/POI/POI%2011-lightning_conductor.cpp)
 
-Instead of minimizing the # of poles whose heights we change, let's maximize the # of poles whose heights we do **not** change. 
-
-</Spoiler>
-
-<Spoiler title="Condition">
-
-Let the heights of the poles be $a_1,\ldots,a_N$. If the heights of poles $i_1<i_2<\cdots<i_k$ do **not** change, then we should have
-
-$$
-a_{i_j}\le M\cdot i_j
-$$
-
-$$
-a_{i_{j+1}}\le a_{i_j}+M\cdot (i_{j+1}-i_j)
-$$
-
-for all $1\le j<k$.
-
-</Spoiler>
-
-<Spoiler title="Finishing">
-
-We can rewrite these inequalities above as
-
-$$
-0\le M\cdot i_1-a_{i_1}
-$$
-
-$$
-M\cdot i_j-a_{i_j}\le M\cdot i_{j+1}-a_{i_{j+1}}
-$$
-
-Letting $b_i=M\cdot i-a_i$ for each $1\le i\le N$, it follows that
-
-$$
-0\le b_{i_1}
-$$
-$$
-b_{i_j}\le b_{i_{j+1}}
-$$
-
-so we've reduced the problem to finding the longest non-decreasing subsequence of $b$!
+Oops TL seems sorta tight to pass $\mathcal{O}(N\log N)$ ...
 
 ```cpp
 #include <bits/stdc++.h>
@@ -256,48 +215,61 @@ void setIO(str s = "") {
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
 }
 
-vl bes = {LLONG_MIN}; // min last term of non-decreasing sequence with i terms
+int N;
+db stor[500001];
 
-void add(ll x) { // add terms of sequence one by one
-	int lo = ub(all(bes),x)-begin(bes); 
-	// note upper_bound, not lower_bound
-	if (lo == sz(bes)) bes.pb(0);
-	bes[lo] = x; // sz(bes)-1 is your current answer
+db eval(const pi& a, const int& b) { return a.s+stor[b-a.f]; }
+
+int bet(const pi& x, const pi& y) { // O(log N) check
+	if (x.s >= y.s) return N;
+	if (eval(x,y.f) < y.s) return y.f-1;
+	assert(x.f < y.f);
+	int lo = y.f, hi = N;
+	lo --;
+	while (lo < hi) {
+		int mid = (lo+hi+1)/2;
+		if (stor[mid-x.f]+x.s >= stor[mid-y.f]+y.s) lo = mid;
+		else hi = mid-1;
+	}
+	return lo;
 }
 
-int N;
-ll M;
+// int bet(const pi& x, const pi& y) { // O(1) check
+// 	if (x.s >= y.s) return N;
+// 	db dif = (db)(y.f-x.f)/(y.s-x.s)-(y.s-x.s);
+// 	if (dif < 0) return y.f-1;
+// 	dif /= 2;
+// 	return (int)floor(min(N.0,y.f+dif*dif));
+// }
+
+vd solve(vi H) {
+	deque<pair<pi,int>> D; // store function, last good
+	auto ins = [&](pi p) {
+		while (1) {
+			if (!sz(D)) break;
+			D.bk.s = bet(D.bk.f,p); // last x such that D.bk is better than p
+			if (sz(D) > 1 && D[sz(D)-2].s >= D.bk.s) D.pop_back();
+			else break;
+		}
+		D.pb({p,N});
+	};
+	vd res;
+	F0R(i,sz(H)) {
+		ins({i,H[i]});
+		while (sz(D) && D[0].s < i) D.pop_front();
+		res.pb(eval(D[0].f,i));
+	}
+	return res;
+}
 
 int main() {
-	setIO(); re(N,M);
-	vl a(N); re(a);
-	F0R(i,N) a[i] = M*(i+1)-a[i];
-	// compute longest non-decreasing subsequence
-	// ignoring terms of this sequence that are less than zero
-	trav(t,a) if (t >= 0) add(t); 
-	ps(N-(sz(bes)-1));
+	setIO(); re(N);
+	F0R(i,N+1) stor[i] = sqrt(i);
+	vi H(N); re(H);
+	vd v = solve(H);
+	reverse(all(H));
+	vd v2 = solve(H); reverse(all(v2));
+	reverse(all(H));
+	F0R(i,N) ps((int)ceil(max(v[i],v2[i]))-H[i]);
 }
 ```
-
-</Spoiler>
-
-**Bonus**: Can you solve the case where the rabbit can jump at most $M$ units down and at most $M$ units up?
-
-<Spoiler title="Spoiler">
-
-Let $b_i$ be as defined above, and let $c_i=M\cdot i+a_i$. Then we should have both both
-
-
-$$
-b_{i_j}\le b_{i_{j+1}}
-$$
-
-and
-
-$$
-c_{i_j}\le c_{i_{j+1}}
-$$
-
-Note that it is impossible for both of these conditions to hold if $i_j>i_{j+1}$. To finish, we can just sort the points $(b_i,c_i)$ in lexicographical order for each $1\le i\le N$ and run an LIS algorithm on the $y$-coordinates.
-
-</Spoiler>
