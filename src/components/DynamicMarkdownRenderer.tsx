@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { transform } from 'buble-jsx-only';
+import { transform } from '@babel/standalone';
 import mdx from '@mdx-js/mdx';
 import { MDXProvider, mdx as createElement } from '@mdx-js/react';
 import * as rehypeKatex from 'rehype-katex';
@@ -52,6 +52,7 @@ export default function ({ markdown, debounce = 1000 }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
+    // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
     const compile = async () => {
       try {
         const fullScope = {
@@ -79,9 +80,11 @@ export const _frontmatter = ${JSON.stringify(data)}`;
         let code;
         try {
           code = transform(jsx, {
-            objectAssign: 'Object.assign',
+            presets: ['react'],
+            compact: false,
           }).code;
         } catch (err) {
+          console.log('transform error');
           console.error(err);
           throw err;
         }
@@ -90,6 +93,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
 
         const keys = Object.keys(fullScope);
         const values = Object.values(fullScope);
+
         // eslint-disable-next-line no-new-func
         const fn = new Function(
           '_fn',
