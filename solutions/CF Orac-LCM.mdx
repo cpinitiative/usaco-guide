@@ -23,24 +23,24 @@ using namespace std;
 using ll = long long;
 
 ll a,b; 
-// a stores minimum exponents
+// a stores minimum exponents (gcd of all numbers seen so far)
 // b stores second minimum exponents
 int n;
 
 void red() { // restore invariant mentioned above
-    ll g = __gcd(a,b);
-    tie(a,b) = make_pair(g,a/g*b);
+	ll g = __gcd(a,b);
+	tie(a,b) = make_pair(g,a/g*b); // a/g*b = lcm(a,b)
 }
 
 int main() {
-    cin >> n >> a >> b;
-    red();
-    for (int i = 2; i < n; i++) {
-        ll x; cin >> x; 
-        b = __gcd(b,x);
-        red();
-    }
-    cout << b << endl;
+	cin >> n >> a >> b;
+	red();
+	for (int i = 2; i < n; i++) {
+		ll x; cin >> x; 
+		b = __gcd(b,x);
+		red();
+	}
+	cout << b << endl;
 }
 ```
 
@@ -53,31 +53,31 @@ import java.util.*;
 import java.io.*;
 
 public class ocralcm {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] nums = new int[N];
-        
-        for(int i=0; i<N; i++){
-            nums[i] = Integer.parseInt(st.nextToken());
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int[] nums = new int[N];
+		
+		for(int i=0; i<N; i++){
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
 
-        long gcd = gcd(nums[0], nums[1]);
-        long ret = nums[0]/gcd * nums[1];
-        for(int i = 2; i<N; gcd = gcd(gcd, nums[i]), i++){
-            ret = gcd(ret, lcm(nums[i], gcd));
-        }
-        System.out.println(ret);
-    }
-    
-    static long lcm(long a, long b){
-        return a/gcd(a,b) * b;
-    }      
-    
-    static long gcd(long a, long b){
-        return b == 0 ? a : gcd(b, a % b);
-    }
+		long gcd = gcd(nums[0], nums[1]);
+		long ret = nums[0]/gcd * nums[1];
+		for(int i = 2; i<N; gcd = gcd(gcd, nums[i]), i++){
+			ret = gcd(ret, lcm(nums[i], gcd));
+		}
+		System.out.println(ret);
+	}
+	
+	static long lcm(long a, long b){
+		return a/gcd(a,b) * b;
+	}      
+	
+	static long gcd(long a, long b){
+		return b == 0 ? a : gcd(b, a % b);
+	}
 }
 ```
 
@@ -87,8 +87,11 @@ public class ocralcm {
 If it's hard to understand what exactly this code is doing at first glance, a good first step is to simulating the code in the case where each $a_i$ is a power of the same prime (say, $2^k$). If the algorithm works for this case, then it will also work in the general case since the contributions of different primes are computed independently and multiplied together.
 
 <!-- the GCD function is [multiplicative](https://en.wikipedia.org/wiki/Multiplicative_function). -->
+
 Here's another way of thinking about this:
 
-Consider fixing $j$. How can the gcd of all lcms of $a_j$, and all $a_i$ (such that $i$ is in range $[0,j)$) be quickly computed? The result would be $lcm(a_j,C)$, where $C$ is the gcd of all $a_i$, and we can keep track of this gcd on the run.
-
-Taking the gcd of all results for each $j$ gives the answer.
+For a fixed $j$, 
+$$
+\gcd_{0\le i<j}\left[\text{lcm}(a_i,a_j)\right]=\text{lcm}(a_j,\gcd_{0\le i<j}(a_i)),
+$$
+and we can update $\gcd_{0\le i<j}(a_i)$ when $j$ increases by one. Taking the GCD of the results for each $j$ gives the answer.
