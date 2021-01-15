@@ -704,9 +704,7 @@ A naïve approach to this problem is to create an array $\texttt{ctr}$ where $\t
 
 This results in a $\mathcal{O}(nV)$ time complexity (where $0 \leq a \leq b \leq V$), which easily times out (think what happens when the interval $[0, V]$ is queried $n$ times).
 
-We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...V]$ (after computation) to increase by $x$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive).
-
-In our above problem, we are only incrementing by 1, so our $x$ is consistent. As a result, when we encounter a starting point, we can increment by 1, and for an endpoint, decrement by 1. We actually cannot compute the prefix directly (as $V \leq 10^9$, so we will run out of memory). Instead, we can either coordinate compress and only compute the prefix array for interesting intervals, or perform a sweep line through the segments and maintain the running prefix sum. Both implementations can be found below.
+We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...V]$ (after computation) to increase by $x$. We can also "undo" this operation by adding $-x$ to $\texttt{arr}[i]$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive).
 
 Example: Add two to each point in the interval $[2, 4]$
 
@@ -804,6 +802,9 @@ After computation
 	</table>
 </center>
 
+In our above problem, our $x$ is fixed at $1$. As a result, when we encounter a starting point, we can increment by 1, and for an endpoint, decrement by 1. We actually cannot compute the prefix directly as $V \leq 10^9$, as we will run out of memory when creating an array of size $V$.
+
+Instead, we can either coordinate compress and only compute the prefix array for interesting intervals, or perform a sweep line through the segments and maintain the running prefix sum. Both implementations can be found below.
 
 ### Restaurant Customers Solution
 
