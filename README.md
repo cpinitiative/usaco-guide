@@ -22,6 +22,28 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get st
 
 Join our Discord server: https://discord.gg/Gq9cX4j
 
+## Our Team
+
+The USACO Guide is run by the [Competitive Programming Initiative](https://joincpi.org/). We're looking for Content Authors to join our team to help us improve the Guide! Learn more [here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
+
+### Core Staff
+
+- Benjamin Qi
+- Nathan Wang
+- Andi Qu
+- Siyong Huang
+- Darren Yao
+- Andrew Wang
+- Michael Cao
+- Nathan Chen
+
+### Content Authors
+
+- Óscar Garries Urbina (since Jan 2021)
+- Qi Wang (since Jan 2021)
+- Dong Liu (since Jan 2021)
+- _This could be you! [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
+
 ## Tech Stack
 
 Our front-end is built with:
