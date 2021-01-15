@@ -704,7 +704,9 @@ A naïve approach to this problem is to create an array $\texttt{ctr}$ where $\t
 
 This results in a $\mathcal{O}(nV)$ time complexity (where $0 \leq a < b \leq V$), which easily times out (think what happens when the interval $[0, V]$ is queried $n$ times).
 
-We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...N]$ (after computation) to increase by $x$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive).
+We can do better. It's easy to see that an increment of $x$ (before computation) in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...V]$ (after computation) to increase by $x$. This concept can be conceptualized through increment and decrement points. An increment point increases (and decrement decreases) all subsequent cells. (Note that our decrement point is located at $B+1$ because the interval is inclusive).
+
+In our above problem, we are only incrementing by 1, so our $x$ is consistent. As a result, when we encounter a starting point, we can increment by 1, and for an endpoint, decrement by 1. We actually cannot compute the prefix directly (as $V \leq 10^9$, so we will run out of memory). Instead, we can either coordinate compress and only compute the prefix array for interesting intervals, or perform a sweep line through the segments and maintain the running prefix sum. Both implementations can be found below.
 
 Example: Add two to each point in the interval $[2, 4]$
 
@@ -752,8 +754,6 @@ Our matrix after subtracting 2 at our decrement point (and computing).
 		</tr>
 	</table>
 </center>
-
-In this above problem, we are only incrementing by 1, so our $x$ is consistent. As a result, when we encounter a starting point, we can increment by 1, and for an endpoint, decrement by 1. For our problem, we don't need to include a prefix array because we aren't querying a range, so a single variable suffices.
 
 Observe that this works for multiple intervals.
 
@@ -939,7 +939,9 @@ int main() {
 
 #### Point
 
-We can apply a similar concept to 2d matrices. Since we define $\texttt{prefix}[i][j]$ as the sum of the values in the rectangle between $(0,0)$ and $(i, j)$. In other words, $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. Each point $(i, j)$ is equal to the sum of itself and all the points between the rectangles formed by $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. However, since we are double counting the prefix sum at $(i-1, j-1)$, we subtract it from our equation. This can be expressed by
+We can apply a similar concept to 2d matrices since we define $\texttt{prefix}[i][j]$ as the sum of the values in the rectangle between $(0,0)$ and $(i, j)$. In other words, $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. $\texttt{prefix}[i][j]$ is equal to the sum of $\texttt{arr}[i][j]$ and all the values in the region formed by the union of rectangles $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. 
+
+To determine the sum of values in this region, we can add the sum of values in these rectangles ($\texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1]$) and subtract the double counted overlap $\texttt{prefix}[i-1][j-1]$. This can be expressed by
 
 $$
 \texttt{prefix}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
