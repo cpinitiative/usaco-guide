@@ -8,6 +8,7 @@ import Video from '../components/Video';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import TrustedBy from '../components/Index/TrustedBy';
+import ContributorsSection from '../components/Index/ContributorsSection';
 
 export default function IndexPage(props: PageProps) {
   const learnMoreRef = useRef();
@@ -461,6 +462,8 @@ export default function IndexPage(props: PageProps) {
       {/*End FAQ*/}
 
       <AuthorsSection />
+
+      <ContributorsSection />
 
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">

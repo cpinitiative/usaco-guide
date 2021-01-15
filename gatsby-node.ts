@@ -6,9 +6,16 @@ const Problem = require('./src/models/problem').Problem; // needed to eval expor
 const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
-execSync(
-  `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
-);
+try {
+  execSync(
+    `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
+  );
+} catch (e) {
+  console.warn(
+    'Git fetch failed. Ignore this if developing or building locally.'
+  );
+  console.error(e);
+}
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;

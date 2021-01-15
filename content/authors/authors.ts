@@ -43,7 +43,7 @@ export const Authors: Author[] = [
   {
     photo: 'michael',
     name: 'Michael Cao',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb:
       'Michael Cao is a USACO Platinum competitor and USACO problemsetter.',
     codeforces: 'caohash',
@@ -53,7 +53,7 @@ export const Authors: Author[] = [
   {
     photo: 'darren',
     name: 'Darren Yao',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb:
       'Darren Yao is a USACO Platinum competitor and author of the textbook "An Introduction to USACO."',
     website: 'http://darrenyao.com/',
@@ -64,7 +64,7 @@ export const Authors: Author[] = [
   {
     photo: 'nathanc',
     name: 'Nathan Chen',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb:
       'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
     codeforces: 'nchn27',
@@ -74,7 +74,7 @@ export const Authors: Author[] = [
   {
     photo: 'siyong1',
     name: 'Siyong Huang',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb: 'Siyong Huang is a two-time USACO Finalist.',
     codeforces: 'frodakcin',
     github: 'frodakcin',
@@ -82,7 +82,7 @@ export const Authors: Author[] = [
   {
     photo: 'andi',
     name: 'Andi Qu',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb: 'Andi Qu is an IOI and IMO bronze medalist.',
     codeforces: 'dolphingarlic',
     github: 'dolphingarlic',
@@ -92,7 +92,7 @@ export const Authors: Author[] = [
   {
     photo: 'Andrew',
     name: 'Andrew Wang',
-    title: 'Content Author',
+    title: 'Content Manager',
     blurb:
       'Andrew Wang is a USACO competitor who competes in multiple languages fluently.',
     codeforces: 'a.wang',
