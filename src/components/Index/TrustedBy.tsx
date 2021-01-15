@@ -29,7 +29,10 @@ export default function TrustedBy() {
     '.' +
     Math.floor((numUsers % 1000) / 100) +
     'k';
-  const pageviewsText = Math.floor(numPageviews / 1000) + 'k';
+  const pageviewsText =
+    numPageviews >= 1000000
+      ? (numPageviews / 1000000).toFixed(2) + 'M'
+      : Math.floor(numPageviews / 1000) + 'k';
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 pt-12 sm:pt-16">
