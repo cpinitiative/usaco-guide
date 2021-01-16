@@ -11,6 +11,7 @@ import grayMatter from 'gray-matter';
 
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
+import customRehypeKatex from '../mdx-plugins/rehype-math';
 
 class ErrorBoundary extends React.Component {
   state: {
@@ -63,6 +64,8 @@ export default function ({ markdown, debounce = 1000 }) {
           props: [],
         };
 
+        console.time('compile');
+
         const { data, content: frontMatterCodeResult } = grayMatter(markdown);
 
         const content = `${frontMatterCodeResult}
@@ -72,7 +75,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
         const jsx = (
           await mdx(content, {
             remarkPlugins: [remarkExternalLinks, remarkMath],
-            rehypePlugins: [rehypeKatex],
+            rehypePlugins: [customRehypeKatex],
             skipExport: true,
           })
         ).trim();
@@ -81,7 +84,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
         try {
           code = transform(jsx, {
             presets: ['react'],
-            compact: false,
+            compact: true,
           }).code;
         } catch (err) {
           console.log('transform error');
@@ -107,6 +110,8 @@ export const _frontmatter = ${JSON.stringify(data)}`;
 
         setFn(fn.bind(null, {}, React, ...values)());
         setError(null);
+
+        console.timeEnd('compile');
       } catch (e) {
         console.log('liveupdate error caught:', e);
         setFn(null);
