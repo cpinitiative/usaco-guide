@@ -2,10 +2,12 @@
 id: usaco-691
 source: USACO Silver 2017 January
 title: Hoof, Paper, Scissors
-author: Óscar Garries (C++), Owen Wang (Java)
+author: Óscar Garries (C++), Owen Wang (Java), Mrinall Umausdhan (Editorial)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_hps_silver_jan17.html)
+
+Editorial: As opposed to the official editorial there also exists a simpler solution in which one does not need to get involved with multiple 2D arrays, instead there is also a fairly straightforward solution using prefix sums with 1D arrays. To find the maximum amounts of wins we simply have to simulate changing the gesture in each index in the moves array we are provided within the input. Now the problem is narrowed down to two questions. How do we efficiently calculate the best place we need to change the gesture or if we need to change it at all? And how do we calculate the number of wins of a certain gesture given the range of turns the gesture is played? Well to calculate the number of wins a gesture makes given the range of turns it is used we have to maintain a prefix sum for each of the three gestures so any given range we can find the number of wins for a specific gesture. Now to find the area where the gesture should be changed to maximize wins we then go through each index of the array and use the given ranges of $\texttt{moves[1]}$  to $\texttt{moves[i]}$, apply it to the prefix sums and add the number of wins to the prefix sum that outputs the greatest amount of wins; Meaning that gesture gives the largest amount of wins in that range. We then repeat the same process for the ranges of $\texttt{moves[i]}$ to $\texttt{moves[N]}$ and add the value to the greatest amount of wins in the range $\texttt{moves[1]}$ to $\texttt{moves[i]}$ as specified in a previous step. Finally, we store the greatest sum of wins in the simulation of changing gestures and output the answer. 
 
 <LanguageSection>
 <CPPSection>
@@ -108,4 +110,6 @@ public class hps {
 ```
 
 </JavaSection>
+
+
 </LanguageSection>
