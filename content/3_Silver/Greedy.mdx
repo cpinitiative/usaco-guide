@@ -198,6 +198,22 @@ pw.close();
 
 </JavaSection>
 
+<PySection>
+
+```python
+# read in the input, store the algorithms in a list, algorithms
+algorithms.sort();
+count = 0 # number of minutes used so far
+i = 0
+while count + algorithms[i] <= x:
+	# while there is enough time, learn more algorithms
+	count += algorithms[i]
+	i+=1
+print(i) # print the ans
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
@@ -413,6 +429,26 @@ pw.close();
 ```
 
 </JavaSection>
+
+<PySection>
+
+We'll be using a list of list to store the events.
+
+```python
+# read in the input, store the events in [begin, end] format in list events.
+events.sort(key=lambda x:x[1]); # sorts by second element (ending time)
+currentEventEnd = -1
+ans = 0 # how many events were attended?
+for i in range(n): # process events in order of end time
+	if events[i][0] >= currentEventEnd: # if event can be attended
+		# we know that this is the earliest ending event that we can attend
+		# because of how the events are sorted
+		currentEventEnd = events[i][1]
+		ans+=1
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
