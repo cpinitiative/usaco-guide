@@ -53,7 +53,6 @@ const customRehypeKatex = options => {
         );
       }
 
-      // console.log(element);
       if (element.tagName === 'div') element.tagName = 'MATHDIV';
       else if (element.tagName === 'span') element.tagName = 'MATHSPAN';
       else throw 'unknown tag?';
@@ -64,6 +63,7 @@ const customRehypeKatex = options => {
           value: result,
         },
       ];
+      element.properties['latex'] = value;
       // element.children = parseHtml.parse(result).children
     }
   }

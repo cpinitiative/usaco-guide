@@ -43,6 +43,7 @@ export const components = {
     return (
       <div
         className={props.className}
+        data-latex={`$$${props.latex}$$`}
         dangerouslySetInnerHTML={{ __html: props.children }}
       />
     );
@@ -51,6 +52,7 @@ export const components = {
     return (
       <span
         className={props.className}
+        data-latex={`$${props.latex}$`}
         dangerouslySetInnerHTML={{ __html: props.children }}
       />
     );
