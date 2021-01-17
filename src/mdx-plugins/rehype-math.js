@@ -11,7 +11,6 @@ const parseHtml = unified().use(parse, { fragment: true, position: false });
 const source = 'rehype-katex';
 
 const customRehypeKatex = options => {
-  console.log('ran');
   const settings = options || {};
   const throwOnError = settings.throwOnError || false;
 
@@ -21,7 +20,6 @@ const customRehypeKatex = options => {
     visit(tree, 'element', onelement);
 
     function onelement(element) {
-      console.log(element);
       const classes = element.properties.className || [];
       const inline = classes.includes('math-inline');
       const displayMode = classes.includes('math-display');
@@ -71,4 +69,4 @@ const customRehypeKatex = options => {
   }
 };
 
-export default customRehypeKatex;
+module.exports = customRehypeKatex;
