@@ -275,6 +275,33 @@ public class Subordinates
 
 </JavaSection>
 
+<PySection>
+
+In the Python solution, we need to set recursion limit to $2\times10^5$.
+
+```python
+import sys
+sys.setrecursionlimit(200006)
+def dfs(x):
+	ans = 0
+	for e in edges[x]:
+		if e != fa[x-1]:
+			ans += dfs(e)
+	sub[x-1] = ans
+	return ans+1
+N = int(input())
+edges = [[] for _ in range(N+1)]
+sub = [0 for _ in range(N)]
+fa = [1] + list(map(int, input().split()))
+for ind, f in enumerate(fa):
+	edges[f].append(ind+1)
+dfs(1)
+for i in sub:
+	print(i, end=" ")
+```
+
+</PySection>
+
 </LanguageSection>
 
 <!--
