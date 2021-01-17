@@ -10,6 +10,7 @@ import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Helmet } from 'react-helmet';
+import { ConfettiProvider } from '../context/ConfettiContext';
 
 export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
@@ -47,11 +48,13 @@ export default function Template(props) {
         `}</script>
       </Helmet>
 
-      <MarkdownLayout markdownData={module}>
-        <div className="py-4">
-          <Markdown body={body} />
-        </div>
-      </MarkdownLayout>
+      <ConfettiProvider>
+        <MarkdownLayout markdownData={module}>
+          <div className="py-4">
+            <Markdown body={body} />
+          </div>
+        </MarkdownLayout>
+      </ConfettiProvider>
     </Layout>
   );
 }
@@ -75,6 +78,7 @@ export const pageQuery = graphql`
       }
       fields {
         division
+        gitAuthorTime
       }
       toc {
         cpp {

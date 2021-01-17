@@ -63,7 +63,7 @@ export const plugins = [
           },
         },
         {
-          resolve: `gatsby-remark-katex`,
+          resolve: require.resolve('./src/mdx-plugins/katex.ts'),
           options: {
             // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
             strict: `ignore`,
@@ -134,6 +134,7 @@ export const plugins = [
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
       denyUrls: [/extensions\//i, /^chrome:\/\//i],
+      defaultIntegrations: false,
     },
   },
   {
@@ -152,7 +153,14 @@ export const plugins = [
     },
   },
   'gatsby-plugin-webpack-bundle-analyser-v2',
-
+  {
+    resolve: `gatsby-plugin-hotjar`,
+    options: {
+      includeInDevelopment: false, // optional parameter to include script in development
+      id: 2173658,
+      sv: 6,
+    },
+  },
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline
   // `gatsby-plugin-offline`,

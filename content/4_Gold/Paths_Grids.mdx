@@ -130,7 +130,7 @@ A common archetype of DP Problems involves a 2D grid of square cells (like graph
 
 Usually, the sub-problems in this type of DP are a sub-rectangle of the whole grid. For example, consider a problem in which we count the number of paths from $(1, 1)$ to $(N, M)$ when we can only move in the positive $x$-direction and the positive $y$-direction. 
 
-Let $dp(x, y)$ be the number of paths in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $dp(x, y)$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we construct paths that end on $(x, y)$. Working backwards like that motivates the following recurrence: $dp(x, y) = dp(x-1, y) + dp(x, y-1)$. We can use this recurrence to calculate $dp(N, M)$. Keep in mind that $dp(1, 1) = 1$ because the path to $(1, 1)$ is just a single cell. In general, thinking about how you can append cells to paths will help you construct the correct DP recurrence.
+Let $\texttt{dp}[x][y]$ be the number of paths in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $\texttt{dp}[x][y]$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we construct paths that end on $(x, y)$. Working backwards like that motivates the following recurrence: $\texttt{dp}[x][y] = \texttt{dp}[x-1][y] + \texttt{dp}[x][y-1]$. We can use this recurrence to calculate $\texttt{dp}[N][M]$. Keep in mind that $\texttt{dp}[1][1] = 1$ because the path to $(1, 1)$ is just a single cell. In general, thinking about how you can append cells to paths will help you construct the correct DP recurrence.
 
 When using the DP recurrence, it's important that you compute the DP values in an order such that the dp-value for a cell is known before you use it to compute the dp-value for another cell. In the example problem above, it's fine to iterate through each row from $0$ to $M-1$:
 
@@ -168,7 +168,7 @@ for(int i = 0; i < M; i++) {
 
 </LanguageSection>
 
-Note how the coordinates in the code are in the form (x coordinate, y coordinate). Most of the time, it's more convenient to think of points as (row, column) instead, which swaps the order of the coordinates, though the code uses the former format to be consistent with the definition of $dp(x, y)$.
+Note how the coordinates in the code are in the form (x coordinate, y coordinate). Most of the time, it's more convenient to think of points as (row, column) instead, which swaps the order of the coordinates, though the code uses the former format to be consistent with the definition of $\texttt{dp}[x][y]$.
 
 ## Solution - Grid Paths
 
@@ -178,9 +178,9 @@ We come close to being able to use our original recurrence, but we have to modif
 
 $$
 
-  dp(x, y) =
+  \texttt{dp}[x][y] =
 \begin{cases}
-dp(x-1, y) + dp(x, y-1) & \text{if $(x, y)$ is not a trap} \\
+\texttt{dp}[x-1][y] + \texttt{dp}[x][y-1] & \text{if $(x, y)$ is not a trap} \\
 0, & \text{if $(x, y)$ is a trap}
 \end{cases}
 
@@ -321,10 +321,10 @@ In the above grid, see how the bolded path has diagonal movements at characters 
 Based on the three "actions", which are also the three possible movements of the path, we can create a DP-recurrence to find the longest common subsequence:
 
 $$
-dp(i, j) =
+\texttt{dp}[i][j] =
 \begin{cases}
-\max(dp(i-1, j), dp(i, j-1)) & \text{if }A_i \neq B_j \\
-dp(i-1,j-1)+1, & \text{if }A_i = B_j
+\max(\texttt{dp}[i-1][j], \texttt{dp}[i][j-1]) & \text{if }A_i \neq B_j \\
+\texttt{dp}[i-1][j-1]+1, & \text{if }A_i = B_j
 \end{cases}
 $$
 

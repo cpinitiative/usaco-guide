@@ -1,8 +1,15 @@
 import * as React from 'react';
 import Confetti from '../Confetti';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
-const ModuleConfetti = ({ show, onDone }) => {
+const ModuleConfetti = forwardRef((props, ref) => {
   let config = {
     numParticles: 100,
     gravity: 250,
@@ -13,20 +20,34 @@ const ModuleConfetti = ({ show, onDone }) => {
   };
   const { numParticles, gravity, speed, scale, spin, twist } = config;
   const { height, width } = useWindowDimensions();
+  const [show, setShow] = useState(false);
 
-  React.useEffect(() => {
-    let timeout = null;
-    if (show) timeout = setTimeout(() => onDone(), 3000);
-    if (timeout) return () => clearTimeout(timeout);
+  const confettiRef = useRef<any>();
+
+  useImperativeHandle(ref, () => ({
+    showConfetti: () => {
+      if (show) confettiRef.current.generateParticles();
+      else setShow(true);
+    },
+  }));
+
+  useEffect(() => {
+    // show is set to true when a call to show confetti is made.
+    // if subsequent calls to show confetti are made before the confetti component unmounts,
+    // we will use the same confetti component.
+    if (show) {
+      confettiRef.current.generateParticles();
+    }
   }, [show]);
 
   if (!show) return null;
+
   return (
     <div className="fixed inset-0 pointer-events-none z-20">
       <Confetti
         width={width}
         height={height}
-        makeItRainOn="mount"
+        makeItRainOn="other"
         emitDuration={1000}
         numParticles={numParticles}
         gravity={gravity}
@@ -36,9 +57,11 @@ const ModuleConfetti = ({ show, onDone }) => {
         maxScale={scale * 2}
         spin={spin}
         twist={twist}
+        onComplete={() => setShow(false)}
+        ref={confettiRef}
       />
     </div>
   );
-};
+});
 
 export default ModuleConfetti;

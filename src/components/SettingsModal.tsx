@@ -127,17 +127,6 @@ export default function SettingsModal({ isOpen, onClose }) {
                     </button>
                   </span>
 
-                  <label className="flex items-center mt-3">
-                    <input
-                      type="checkbox"
-                      onChange={() => userSettings.setHide(!userSettings.hide)}
-                      className="form-checkbox h-5 w-5 text-gray-600"
-                      checked={userSettings.hide}
-                    />
-                    <span className="ml-2 text-gray-700">
-                      Hide tags & solutions
-                    </span>
-                  </label>
                   <label className="flex items-center mt-2">
                     <input
                       type="checkbox"
@@ -148,6 +137,48 @@ export default function SettingsModal({ isOpen, onClose }) {
                       checked={userSettings.darkMode}
                     />
                     <span className="ml-2 text-gray-700">Dark mode</span>
+                  </label>
+
+                  <label className="flex items-center mt-3">
+                    <input
+                      type="checkbox"
+                      onChange={() =>
+                        userSettings.setHideTagsAndDifficulty(
+                          !userSettings.hideTagsAndDifficulty
+                        )
+                      }
+                      className="form-checkbox h-5 w-5 text-gray-600"
+                      checked={userSettings.hideTagsAndDifficulty}
+                    />
+                    <span className="ml-2 text-gray-700">
+                      Hide difficulty and tags
+                    </span>
+                  </label>
+
+                  <label className="flex items-center mt-3">
+                    <input
+                      type="checkbox"
+                      onChange={() =>
+                        userSettings.setHideSols(!userSettings.hideSols)
+                      }
+                      className="form-checkbox h-5 w-5 text-gray-600"
+                      checked={userSettings.hideSols}
+                    />
+                    <span className="ml-2 text-gray-700">Hide solutions</span>
+                  </label>
+
+                  <label className="flex items-center mt-3">
+                    <input
+                      type="checkbox"
+                      onChange={() =>
+                        userSettings.setShowIgnored(!userSettings.showIgnored)
+                      }
+                      className="form-checkbox h-5 w-5 text-gray-600"
+                      checked={userSettings.showIgnored}
+                    />
+                    <span className="ml-2 text-gray-700">
+                      Show ignored problems & modules on dashboard
+                    </span>
                   </label>
 
                   <div className="h-3" />

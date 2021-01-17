@@ -34,21 +34,12 @@ export const problems = {
 			'similar to independent set on tree'
 		),
 		new Problem(
-			'CF',
-			'Baltic OI - Village (Minimum)',
-			'contest/1387/problem/B1',
+			'Baltic OI',
+			'2020 - Village (Minimum)',
+			'https://codeforces.com/contest/1387/problem/B1',
 			'Normal',
 			false,
 			['Tree', 'Greedy'],
-			''
-		),
-		new Problem(
-			'POI',
-			'Sabotage',
-			'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-			'Normal',
-			false,
-			['Binary Search'],
 			''
 		),
 		new Problem(
@@ -58,26 +49,26 @@ export const problems = {
 			'Normal',
 			false,
 			[],
-			''
+			'poi-16-par'
 		),
 		new Problem('Gold', 'Delegation', '1019', 'Hard', false, ['Greedy'], ''),
 		new Problem(
 			'POI',
-			'Spies',
+			'2004 - Spies',
 			'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
 			'Hard',
 			false,
 			['Func Graph'],
-			'poi-spies'
+			'poi-04-szp'
 		),
 		new Problem(
 			'POI',
-			'Mafia',
+			'2008 - Mafia',
 			'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
 			'Hard',
 			false,
 			['Func Graph'],
-			'poi-mafia'
+			'poi-08-maf'
 		),
 	],
 	insane: [
@@ -88,7 +79,7 @@ export const problems = {
 			'Very Hard',
 			false,
 			['DP', 'Tree'],
-			'coi-torrent'
+			'coi-16-torrent'
 		),
 		new Problem(
 			'Plat',
@@ -184,7 +175,7 @@ Let $dp_2[v]$ represent the maximum matching of the subtree of $v$ such that we 
 Since we will take no edges to a child of $v$, the children vertices of $v$ can all take an edge to some child, or not. Additionally, observe that the children of $v$ taking an edge to a child will not prevent other children of $v$ from doing the same. In other words, all of the children are independent. So, the transitions are:
 
 $$
-dp_2[v] = \sum_{u \in child(v)} max(dp_1[u], dp_2[u])
+dp_2[v] = \sum_{u \in child(v)} \max(dp_1[u], dp_2[u])
 $$
 
 #### Taking One Edge
@@ -192,13 +183,13 @@ $$
 The case where we take one child edge of $v$ is a bit trickier. Let's assume the edge we take is $v \rightarrow u$, where $u \in child(v)$. Then, to calculate $dp_1[v]$ for the fixed $u$:
 
 $$
-dp_1[v] = dp_2[u] + 1 + dp_2[v] - max(dp_2[u], dp_1[u])
+dp_1[v] = dp_2[u] + 1 + dp_2[v] - \max(dp_2[u], dp_1[u])
 $$
 
 In other words, we take the edge $v \rightarrow u$, but we can't take any children of $u$ in the matching, so we add $dp_2[u] + 1$. Then, to deal with the other children, we add:
 
 $$
-\sum_{w \in child(v), w \neq u} dp_2[w].
+\sum_{w \in child(v), w \neq u} \max(dp_1[w], dp_2[w]).
 $$
 
 Fortunately, since we've calculated $dp_2[v]$ already, this expression simplifies to:

@@ -12,7 +12,8 @@ const MarkCompleteButton = ({
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
-  const handleSelect = option => {
+
+  const handleClick = option => {
     setShow(false);
     onChange(option);
   };
@@ -163,7 +164,7 @@ const MarkCompleteButton = ({
               {ModuleProgressOptions.map(option => (
                 <button
                   key={option}
-                  onClick={() => handleSelect(option)}
+                  onClick={() => handleClick(option)}
                   className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
                 >

@@ -1,6 +1,7 @@
 ---
 id: apio-14-sequence
-title: APIO 2014 Sequence
+source: APIO 2014
+title: Sequence
 author: Andi Qu
 ---
 
@@ -30,7 +31,7 @@ $$
 
 The answer is $dp[n - 1][k + 1]$ (assuming we make an extra split at the end of the array, which doesn't affect our answer).
 
-Computing this naively would take $O(n^2k)$ time, but we can do much better than that.
+Computing this naively would take $\mathcal{O}(n^2k)$ time, but we can do much better than that.
 
 ## Using CHT
 
@@ -46,7 +47,7 @@ Recall that a linear function can be defined as $y = mx + c$.
 
 In this case, we have $m = -p_l$, $x = p_{n - 1} - p_i$, and $c = dp[l][j - 1]$.
 
-This means we can use CHT (with a deque) to compute the answer in $O(nk)$ - a significant improvement!
+This means we can use CHT (with a deque) to compute the answer in $\mathcal{O}(nk)$ - a significant improvement!
 
 ## One Final Optimization
 
@@ -54,13 +55,13 @@ Unfortunately, if we implement this solution directly, we exceed the memory limi
 
 Notice how $dp[i][j]$ only depends on $dp[l][j - 1]$. This means that instead of storing $k$ arrays of $dp[i]$, we can simply store two $dp$ arrays and alternate between them.
 
-This brings the memory used down to $O(n)$, which is good enough to pass.
+This brings the memory used down to $\mathcal{O}(n)$, which is good enough to pass.
 
 ## Complexity
 
-Time: $O(nk)$.
+Time: $\mathcal{O}(nk)$.
 
-Memory: $O(n)$.
+Memory: $\mathcal{O}(n)$.
 
 ## Code
 

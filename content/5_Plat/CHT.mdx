@@ -74,7 +74,7 @@ export const problems = {
 			'Normal',
 			false,
 			['DP', 'convex'],
-			'poi-lightning-conductor'
+			'poi-11-pio'
 		),
 		new Problem(
 			'POI',
@@ -128,7 +128,7 @@ A sufficient (but not necessary) set of conditions:
  - All the functions are continuous along the range $[l,r]$.
  - No two functions intersect at more than one point.
 
-The most common case is where each $f_i(x)$ is of the form $a_ix+b_i$. Given two lines $f_i(x)=a_ix+b_i$ and $f_j(x)=a_jx+b_j$ such that $a_i<a_j$, their intersection point at $m=\frac{b_i-b_j}{a_j-a_i}$ can be found in $O(1)$ time. Then it's clear that
+The most common case is where each $f_i(x)$ is of the form $a_ix+b_i$. Given two lines $f_i(x)=a_ix+b_i$ and $f_j(x)=a_jx+b_j$ such that $a_i<a_j$, their intersection point at $m=\frac{b_i-b_j}{a_j-a_i}$ can be found in $\mathcal{O}(1)$ time. Then it's clear that
 
  - For all $x\le m$, $f_i(x)\ge f_j(x)$.
  - For all $x\ge m$, $f_i(x)\le f_j(x)$.
@@ -143,7 +143,7 @@ Some possible nonlinear forms of $f_i(x)$:
   - If this function is defined for all $x\in [l,r]$.
   - Note that when $a_i<a_j$, $\sqrt{x-a_i}-\sqrt{x-a_j}$ is strictly decreasing over the range $x\in [a_j,\infty)$.
 
-In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $O(N)$ using a `std::deque` in C++. For the more general $O(N \log N)$ CHT (which involves a `std::set`), see [the LineContainer module](/adv/LC).
+In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $\mathcal{O}(N)$ using a `std::deque` in C++. For the more general $\mathcal{O}(N \log N)$ CHT (which involves a `std::set`), see [the LineContainer module](/adv/LC).
 
 <FocusProblem problem={problems.sample[0]} />
 
@@ -180,7 +180,7 @@ Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a strai
 
 Since we sorted the rectangles and no two rectangles are nested, the slopes of the lines we insert are strictly increasing. The query positions are also strictly increasing.
 
-This means we can solve this problem using CHT in $O(N)$ time! Here is my implementation:
+This means we can solve this problem using CHT in $\mathcal{O}(N)$ time! Here is my implementation:
 
 ```cpp
 #include <bits/stdc++.h>

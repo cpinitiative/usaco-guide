@@ -1,12 +1,13 @@
 ---
 id: apio-19-bridges
-title: APIO 2019 Bridges
+source: APIO 2019
+title: Bridges
 author: Andi Qu
 ---
 
 The main idea in this problem is to use square-root decomposition on queries. For convenience, call type 1 queries **updates** and type 2 queries **calculations**.
 
-First, split the queries into blocks of about $\sqrt N$ queries. In each block, there are $O(\sqrt N)$ updates or calculations. For each block:
+First, split the queries into blocks of about $\sqrt N$ queries. In each block, there are $\mathcal{O}(\sqrt N)$ updates or calculations. For each block:
 
 - Split the bridges into two groups: **changed** and **unchanged**.
 - If we sort the calculations and unchanged bridges in decreasing order of weight, we can simply use DSU to find which nodes are connected from those bridges alone.
@@ -20,7 +21,7 @@ First, split the queries into blocks of about $\sqrt N$ queries. In each block, 
         - The key thing here is that we need a way to roll back DSU unions, since the set of "good" bridges may differ from query to query
         - To achieve this, we simply use DSU with path balancing only and keep a stack of previous DSU operations
 
-The complexity of this algorithm is thus $O((Q + M) \sqrt Q)$. Some constant-factor optimization may be needed to get this to run in time though.
+The complexity of this algorithm is thus $\mathcal{O}((Q + M) \sqrt Q)$. Some constant-factor optimization may be needed to get this to run in time though.
 
 ## Code
 

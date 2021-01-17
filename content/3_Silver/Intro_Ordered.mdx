@@ -18,7 +18,16 @@ export const problems = {
 			'Easy',
 			false,
 			['iterators'],
-			'just do upper_bound'
+			'cses-1091'
+		),
+		new Problem(
+			'CF',
+			'Cellular Network',
+			'https://codeforces.com/contest/702/problem/C',
+			'Easy',
+			false,
+			['iterators'],
+			'cellular-network'
 		),
 		new Problem(
 			'CSES',
@@ -27,7 +36,7 @@ export const problems = {
 			'Normal',
 			true,
 			['set'],
-			'just insert into set one at a time'
+			'cses-1163'
 		),
 		new Problem(
 			'CSES',
@@ -43,7 +52,7 @@ export const problems = {
 		new Problem('CSES', 'Bit Inversions', '1188', 'Hard', false, [], '@B'),
 	],
 	general: [
-		new Problem('Silver', 'Milk Measurement', '763', 'Normal', false, []),
+		new Problem('Silver', 'Milk Measurement', '763', 'Normal', false, [], 'usaco-763'),
 		new Problem(
 			'CF',
 			'Jury Marks',
@@ -80,6 +89,23 @@ export const problems = {
 <!-- Hard, do not attempt until Gold/Plat (2100 on CF) -->
 <!-- First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF) -->
 
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource source="IUSACO" title="4.4 - Sets & Maps">
+		module is based off this
+	</Resource>
+	<Resource source="CP2" title="2.2.2 - Non-Linear Data Structures">
+		see decription of BSTs and heaps
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
 <Resources>
 	<Resource source="IUSACO" title="4.3 - Sets & Maps">
 		module is based off this
@@ -89,10 +115,13 @@ export const problems = {
 	</Resource>
 </Resources>
 
+</JavaSection>
+
+</LanguageSection>
+
 <br />
 
-In ordered sets and maps, accessing or removing the next key higher or lower than some input `k` is also supported.
-
+In sets and maps where keys (or elements) are stored in sorted order, accessing or removing the next key higher or lower than some input key `k` is supported.
 
 ## Using Iterators
 
@@ -113,27 +142,31 @@ In Bronze, we avoided discussion of any set operations involving iterators.
 In Java, iterators are helpful for looping through sets.
 
 Iterators used with `HashSet` would yield the elements in random order:
+
 ```java
 Set<Integer> set = new HashSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
 Iterator it = set.iterator();
 while(it.hasNext()){
-   Integer i = (Integer)it.next();
-   System.out.print(i + " "); // returns 0 1 -2 3
+	Integer i = (Integer)it.next();
+	System.out.print(i + " "); // returns 0 1 -2 3
 }
 ```
+
 But with `TreeSet` the elements are in sorted order:
+
 ```java
 Set<Integer> set = new TreeSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
 Iterator it = set.iterator();
 while(it.hasNext()){
-   Integer i = (Integer)it.next();
-   System.out.print(i + " "); // returns -2 0 1 3
+	Integer i = (Integer)it.next();
+	System.out.print(i + " "); // returns -2 0 1 3
 }
 ```
 
 Instead of creating an iterator and looping with it like in C++, Java provides a for-each loop which creates a hidden iterator and loops with it automatically:
+
 ```java
 Set<Integer> set = new TreeSet<Integer>();
 set.add(1); set.add(3); set.add(0); set.add(-2);
@@ -141,9 +174,10 @@ for (int i : set){
    System.out.print(i + " "); // returns -2 0 1 3
 }
 ```
+
 <Warning>
 
-You shouldn't modify sets when traversing it with set iterators like in any other iterators for Collections (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling a `next()` method.
+You shouldn't modify sets when traversing it with set iterators like in any other iterators for `Collections` (this **INCLUDES** when using a for-each loop). The only modification possible is using the iterator `remove()` method which can only be used once before calling the `next()` method.
 
 </Warning>
 
@@ -188,7 +222,7 @@ Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`
 
 <JavaSection>
 
-The ordered set (TreeSet) allows for a multitude of additional operations: 
+`TreeSet`s in Java allow for a multitude of additional operations: 
 
 - `first()`: returns the lowest element in the set
 - `last()`: returns the greatest element in the set
@@ -216,7 +250,7 @@ System.out.println(set.higher(23); // ERROR, no such element exists
 
 </LanguageSection>
 
-One limitation of the ordered set is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. These operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
+One limitation of ordered sets is that we can't efficiently access the $k^{th}$ largest element in the set, or find the number of elements in the set greater than some arbitrary $x$. In C++, these operations can be handled using a data structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
 
 ## Ordered Maps
 
@@ -342,7 +376,7 @@ Priority queues are **not** implemented in the same way as sets and multisets, b
 	<Resource source="CSA" url="heaps" title="Heaps"></Resource>
 </Resources>
 
-A **priority queue** (or **heap**) supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $O(\log N)$ time according to the number of elements in the priority queue. Priority queues are simpler and faster than sets, so you should use them instead whenever possible.
+A **priority queue** (or **heap**) supports the following operations: insertion of elements, deletion of the element considered highest priority, and retrieval of the highest priority element, all in $\mathcal{O}(\log N)$ time according to the number of elements in the priority queue. Priority queues are simpler and faster than sets, so you should use them instead whenever possible.
 
 <LanguageSection>
 

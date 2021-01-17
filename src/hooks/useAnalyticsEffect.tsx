@@ -18,5 +18,9 @@ export const useAnalyticsEffect = () => {
       .database()
       .ref('analytics/pageviews')
       .set(firebase.database.ServerValue.increment(1));
+    firebase
+      .database()
+      .ref('pageviews')
+      .set(firebase.database.ServerValue.increment(1));
   });
 };
