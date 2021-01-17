@@ -31,7 +31,7 @@ using ll = long long;
 
 template<class T> struct LSegTree {
 	int N; vector<T> t, lz; T U=-1e18;
-    T F(T i, T j) { return max(i,j); } LSegTree() {}
+	T F(T i, T j) { return max(i,j); } LSegTree() {}
 	LSegTree(int N) : N(N), t(4*(N+1),U), lz(4*(N+1),0) {}
 	void pull(int i) { t[i] = F(t[i*2],t[i*2+1]); }
 	void push(int i, int l, int r) {
@@ -73,23 +73,22 @@ int main() {
 	for(int i=1; i<=n; i++) ps[i] = ps[i-1] + a[i];
 
 	// construct the segment tree
-    st = LSegTree<ll>(n);
+	st = LSegTree<ll>(n);
 	st.build(ps);
 
 	// queries
-    while(q--) {
+	while(q--) {
 		int t; cin >> t;
-
-        if(t==1) {
+		if(t==1) {
 			// update $a_i$ to $x$
 			int i; ll x; cin >> i >> x;
 			st.upd(i, n, x-a[i]); a[i]=x;
-        } else {
+		} else {
 			// max $ps$ in the range $[b,c]$
 			int b, c; cin >> b >> c;
 			cout << st.qry(b-1,c) - st.qry(b-1,b-1) << '\n';
-        }
-    }
+		}
+	}
 
 }
 ```
