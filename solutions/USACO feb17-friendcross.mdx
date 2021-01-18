@@ -2,7 +2,7 @@
 id: usaco-722
 source: USACO Platinum 2017 February
 title: Why Did the Cow Cross the Road III
-author: Benjamin Qi
+author: Benjamin Qi, Dong Liu
 ---
 
 [External Solution](http://www.usaco.org/current/data/sol_friendcross_platinum_feb17.html)
@@ -403,7 +403,7 @@ After generating the appropriate sequence of updates and queries, can apply divi
 Let us consider an easier version: where we're just asked to count number of crossing pairs (ignoring whether the cows are friendly or not). To calculate the number of crossing pairs, we can add the cows in road 1 in reverse, while counting the number of cows that are added before in road 2. We can use a binary indexed tree to count this. This takes $\mathcal O(N)$ space and $\mathcal O(N\log N)$ time.
 
 To count the number of unfriendly crossings, instead of keeping track of the count for each BIT node, we keep track a list representing the cow breeds. Now to query the range for a breed $b$, we count the number of breeds in the range $[1, b-k-1]$ and $[b+k+1, n]$. We can use a [Order Statistic Tree
-](https://usaco.guide/gold/PURS?lang=cpp#order-statistic-tree) in C++ to represent the cow breeds.  $\mathcal O(N\log N)$ space and $\mathcal O(N\log N)$ time.
+](https://usaco.guide/gold/PURS?lang=cpp#order-statistic-tree) in C++ to represent the cow breeds. Since each update takes $\log N$ operations, it would allocate $\log N$ nodes, thus resulting with $\mathcal O(N\log N)$ space and $\mathcal O(N\log N)$ time.
 
 <LanguageSection>
 
