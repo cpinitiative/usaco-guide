@@ -1,0 +1,121 @@
+---
+id: usaco-1062
+source: USACO Silver 2020 February
+title: Cowntagion
+author: Kevin Sheng
+---
+
+[Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+/**
+ * 2020 dec silver
+ * 4
+ * 1 2
+ * 1 3
+ * 1 4 should output 5
+ */
+public class Cowntagion {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        int farmNum  = Integer.parseInt(read.readLine());
+        ArrayList<Integer>[] neighbors = new ArrayList[farmNum];
+        for (int f = 0; f < farmNum; f++) {
+            neighbors[f] = new ArrayList<>();
+        }
+        for (int i = 0; i < farmNum - 1; i++) {  // the thing is a tree if you didn't know alr
+            StringTokenizer path = new StringTokenizer(read.readLine());
+            int farm1 = Integer.parseInt(path.nextToken()) - 1;
+            int farm2 = Integer.parseInt(path.nextToken()) - 1;
+            neighbors[farm1].add(farm2);
+            neighbors[farm2].add(farm1);
+        }
+
+        ArrayList<Integer>[] spreadTo = new ArrayList[farmNum];
+        for (int f = 0; f < farmNum; f++) {
+            spreadTo[f] = new ArrayList<>();
+        }
+        HashSet<Integer> visited = new HashSet<>(Collections.singletonList(0));
+        ArrayDeque<Integer> frontier = new ArrayDeque<>(Collections.singletonList(0));
+        while (!frontier.isEmpty()) {
+            int current = frontier.poll();
+            for (int n : neighbors[current]) {
+                if (!visited.contains(n)) {
+                    spreadTo[current].add(n);
+                    visited.add(n);
+                    frontier.add(n);
+                }
+            }
+        }
+        int minDays = 0;
+        frontier = new ArrayDeque<>(Collections.singletonList(0));
+        while (!frontier.isEmpty()) {
+            int current = frontier.poll();
+            ArrayList<Integer> nextUp = spreadTo[current];
+            if (nextUp.isEmpty()) {
+                continue;
+            }
+            frontier.addAll(nextUp);
+            minDays += (int) Math.ceil(Math.log(nextUp.size() + 1) / Math.log(2)) + nextUp.size();
+        }
+        System.out.println(minDays);
+    }
+}
+```
+
+</JavaSection>
+
+
+<PySection>
+
+```py
+"""
+2020 dec silver
+4
+1 2
+1 3
+1 4 should output 5
+"""
+from math import log, ceil
+from collections import deque
+
+farmNum = int(input())
+neighbors = [[] for _ in range(farmNum)]
+for _ in range(farmNum - 1):
+    start, end = [int(i) - 1 for i in input().split()]
+    neighbors[start].append(end)
+    neighbors[end].append(start)
+
+spreadTo = [[] for _ in range(farmNum)]
+visited = {0}
+frontier = deque([0])
+while frontier:
+    curr = frontier.popleft()
+    for n in neighbors[curr]:
+        if n not in visited:
+            spreadTo[curr].append(n)
+            visited.add(n)
+            frontier.append(n)
+
+minDays = 0
+frontier = deque([0])
+while frontier:
+    curr = frontier.popleft()
+    nextUp = spreadTo[curr]
+    if not nextUp:
+        continue
+    frontier.extend(nextUp)
+    minDays += ceil(log(len(nextUp) + 1, 2)) + len(nextUp)
+print(minDays)
+```
+
+</PySection>
+
+</LanguageSection>
