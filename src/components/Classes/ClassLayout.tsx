@@ -28,10 +28,16 @@ export default function ClassLayout({
     setUserClasses,
     userClassIds,
     firebaseUser,
+    isLoaded: userDataLoaded,
   } = useContext(UserDataContext);
-  const { loading, error, data, students, isInstructor } = useContext(
-    ClassContext
-  );
+  const {
+    loading: classLoading,
+    error,
+    data,
+    students,
+    isInstructor,
+  } = useContext(ClassContext);
+  const loading = classLoading || !userDataLoaded;
   const [changingJoinLinkStatus, setChangingJoinLinkStatus] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
 
@@ -121,10 +127,8 @@ export default function ClassLayout({
     error ||
     showNotFound ||
     (!isInstructor &&
-      !(
-        userClasses.some((c: { id: string }) => c.id === classId) &&
-        userClassIds.includes(classId)
-      ))
+      !userClasses?.some((c: { id: string }) => c.id === classId) &&
+      !userClassIds?.includes(classId))
   ) {
     return (
       <>
