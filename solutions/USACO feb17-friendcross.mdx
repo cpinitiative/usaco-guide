@@ -397,3 +397,74 @@ int main() {
 ## Solution 3
 
 After generating the appropriate sequence of updates and queries, can apply divide & conquer as described in the module.
+
+## Solution 4
+
+Let us consider an easier version: where we're just asked to count number of crossing pairs (ignoring whether the cows are friendly or not). To calculate the number of crossing pairs, we can add the cows in road 1 in reverse, while counting the number of cows that are added before in road 2. We can use a binary indexed tree to count this. This takes $\mathcal O(N)$ space and $\mathcal O(N\log N)$ time.
+
+To count the number of unfriendly crossings, instead of keeping track of the count for each BIT node, we keep track a list representing the cow breeds. Now to query the range for a breed $b$, we count the number of breeds in the range $[1, b-k-1]$ and $[b+k+1, n]$. We can use a [Order Statistic Tree
+](https://usaco.guide/gold/PURS?lang=cpp#order-statistic-tree) in C++ to represent the cow breeds.  $\mathcal O(N\log N)$ space and $\mathcal O(N\log N)$ time.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+
+using ll = long long;
+template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+const int N = 1e5+5;
+int n, k, a[N], b[N];
+
+template<class T> struct BIT {
+
+	struct Node {
+		Tree<int> t;
+		void ins(int val) { t.insert(val); }
+		T get(int x) {
+			int a = t.order_of_key(max(0, x-k));
+			int b = t.size() - t.order_of_key(min(x+k+1,n+1));
+			return a+b;
+		}
+	};
+
+	Node a[N];
+
+	T qry(int pos, int x) {
+		T res = 0;
+		for(int i=pos; i; i-=i&(-i)) res += a[i].get(x);
+		return res;
+	}
+	void upd(int pos, int val) {
+		for(int i=pos; i<=n; i+=i&(-i)) a[i].ins(val);
+	}
+};
+BIT<ll> bit;
+
+int main() {
+
+	freopen("friendcross.in", "r", stdin);
+	freopen("friendcross.out", "w", stdout);
+
+	cin >> n >> k;
+	for(int i=n; i>=1; i--) cin >> a[i];
+	for(int i=1; i<=n; i++) { int x; ri(x); b[x] = i; }
+	ll ans = 0;
+	for(int i=1; i<=n; i++) {
+		int x = a[i];
+		ans += bit.qry(b[x], x);
+		bit.upd(b[x], x);
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
