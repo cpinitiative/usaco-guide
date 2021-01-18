@@ -411,12 +411,19 @@ To count the number of unfriendly crossings, instead of keeping track of the cou
 
 ```cpp
 #include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void setIO(string s = "") {
+	cin.tie(0)->sync_with_stdio(0); if (s.size()) {
+		freopen((s+".in").c_str(), "r", stdin);
+		freopen((s+".out").c_str(), "w", stdout); }
+}
+
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
-using namespace std;
 
-using ll = long long;
 template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 const int N = 1e5+5;
@@ -433,8 +440,10 @@ template<class T> struct BIT {
 			return a+b;
 		}
 	};
+	vector<Node> a;
 
-	Node a[N];
+	BIT() {}
+	BIT(int n) { a.resize(n+1); }
 
 	T qry(int pos, int x) {
 		T res = 0;
@@ -448,20 +457,23 @@ template<class T> struct BIT {
 BIT<ll> bit;
 
 int main() {
+	setIO("friendcross");
 
-	freopen("friendcross.in", "r", stdin);
-	freopen("friendcross.out", "w", stdout);
-
-	cin >> n >> k;
-	for(int i=n; i>=1; i--) cin >> a[i];
-	for(int i=1; i<=n; i++) { int x; cin >> x; b[x] = i; }
-	ll ans = 0;
-	for(int i=1; i<=n; i++) {
-		int x = a[i];
+	ll ans = 0; int x;
+	scanf("%d%d", &n, &k);
+	bit = BIT<ll>(n);
+	for(int i=n; i>=1; i--) {
+		scanf("%d", &a[i]);
+	}
+	for(int i=1; i<=n; i++) { 
+		scanf("%d", &x); b[x] = i; 
+	}
+	for(int i=1; i<=n; i++) { 
+		x = a[i];
 		ans += bit.qry(b[x], x);
 		bit.upd(b[x], x);
 	}
-	cout << ans << '\n';
+	printf("%lld\n", ans);
 }
 ```
 
