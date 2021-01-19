@@ -69,6 +69,8 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ### Method 1: [<iostream\>](http://www.cplusplus.com/reference/iostream/)
 
+This library is quite straight forward to use and the `cin` function simply assigns values sepearated by spaces or lines to different variables. Similarly, the `cout` function simply writes on the standard console and either an escape sequence (that's what the `\n` does below) or the `endl` command can enter a new line at the end. 
+
 ```cpp
 #include <iostream>
 using namespace std;
@@ -115,7 +117,7 @@ The first method can be sped up so that the difference in speed is not significa
 
 ### Java
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. 
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner` and has quite a few more methods and the `io` library must be imported for its use as well.
 
 Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
 
@@ -449,7 +451,7 @@ print(x)
 
 <FocusProblem problem={problems.fence[0]} />
 
-In USACO, input is read from a file called `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
+From December 2020 onwards, USACO switched to using standard IO; however to practice older problems, it will still be necessary. In USACO, the inout and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
 
 <LanguageSection>
 
@@ -487,13 +489,54 @@ int main() {
 }
 ```
 
+### Method 3: Re-defining IO
+
+The standard IO functions can also be re-defined to work with file IO using [`freopen`](https://en.cppreference.com/w/cpp/io/c/freopen). Essentially, it changes the standard IO to point to files instead, and this allows simple functions to be used for files as well. The following template (which is commonly used on USACO solution pages) uses this redefinition to solve this example. After re-defining the IO functions, then you can simply use `cin` and `cout` to read and write data.
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+void setIO(string s){ //this function is the template that redefines the standard IO
+	ios_base::sync_with_stdio(0);cin.tie(0);
+	freopen((s+".in").c_str(),"r",stdin);
+	freopen((s+".out").c_str(),"w",stdout);
+}
+int main(){
+	setIO("problemname"); //the input string is simply the file name without the ".in" or ".out"
+	int N, M, ans; //these are fake variables to be initialized from a file
+	cin >> N >> M; //here, the cin function reads from the file instead of the standard IO
+	
+	// rest of the code
+	
+	cout<< ans << endl; //this creates/overwrites the output file
+}
+```
+
 </CPPSection>
 
 <JavaSection>
 
 ### Java
 
-Again, `BufferedReader` and `PrintWriter` should be used. The provided constructor `public Kattio(String problemName)` handles file input / output for you.
+Again, `BufferedReader` and `PrintWriter` should be used.
+
+```java
+//imports
+public class Main{
+	public static void main(String[] args) throws IOException{
+		BufferedReader br=new BufferedReader(new FileReader("problemname.in"));
+		StringTokenizer st=new StringTokenizer(br.readLine()); //this class simply breaks down a string into sections called tokens
+								       //that can be accessed individually by the nextToken method
+		int N=Integer.parseInt(st.nextToken()),M=Integer.parseInt(st.nextToken()); //fake variable initialization
+		
+		//rest of the code
+		
+		PrintWriter pw=new PrintWriter(new FileWriter("problemname.out"));
+		pw.println(N+1); //fake answer being written to the output file
+		pw.close(); //pw.flush() would also work
+	}
+}
+```
 
 </JavaSection>
 
@@ -774,7 +817,7 @@ Here are some examples of what is allowed and what isn't:
 
 #### C++
 
-For method 1:
+For methods 1 and 2:
 
 ```cpp
 cout << ans; // OK, no newline
@@ -785,6 +828,22 @@ cout << ans << "\n\n"; // NOT OK, extra newline
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+#### Java
+
+For method 2:
+
+```java
+pw.print(ans); // OK, no newline
+pw.println(ans); // OK, newline
+pw.print(ans+"\n"); // OK, newline
+pw.print(ans+" "); // NOT OK, extra space
+pw.print(ans+"\n\n") // NOT OK, extra newline
+```
+
+</JavaSection>
 
 <PySection>
 
