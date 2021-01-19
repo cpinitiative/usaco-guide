@@ -16,13 +16,13 @@ To do this, we use a BIT as a frequency table, keeping track of the number of ha
 
 That leads us to this algorithm:
 
-1. Initialize the BIT so the frequency of each value is 0.
+1. Initialize a BIT so that the frequency of each value is 0.
 2. Create an array `inversions`. `inversions[j]` will store the number of inversion pairs with the second number being $j$
 3. For each hair $j$ in the order it appears in the array:
 
     a. Count the number of hairs taller than it that appear before the hair in the array, which is just the frequencies of all values greater than $j$. Store this in `inversions[j]`.
 
-    b. Update the frequency table with $j$.
+    b. Increment the frequency of $arr[j]$.
 
 The number of inversions would then be the sum of the all values we computed in step 3a. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ then $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to length $n$, and they would no longer be part of an inversion.
 
