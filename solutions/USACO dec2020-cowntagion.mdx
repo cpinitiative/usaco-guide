@@ -32,22 +32,23 @@ public class Cowntagion {
         }
 
         int minDays = 0;
-        HashSet<Integer> visited = new HashSet<>(Collections.singletonList(0));
+        boolean[] visited = new boolean[farmNum];
         ArrayDeque<Integer> frontier = new ArrayDeque<>(Collections.singletonList(0));
+        visited[0] = true;
         // do a bfs of the tree
         while (!frontier.isEmpty()) {
             int current = frontier.poll();
             // this stores all the farms that this farm should spread to for optimal spreading
-            ArrayList<Integer> spreadTo = new ArrayList<>();
+            int spreadTo = 0;
             for (int n : neighbors[current]) {
-                if (!visited.contains(n)) {
-                    spreadTo.add(n);
-                    visited.add(n);
+                if (!visited[n]) {
+                    spreadTo++;
+                    visited[n] = true;
                     frontier.add(n);
                 }
             }
             // the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
-            minDays += Math.ceil(Math.log10(spreadTo.size() + 1) / Math.log10(2)) + spreadTo.size();
+            minDays += Math.ceil(Math.log10(spreadTo + 1) / Math.log10(2)) + spreadTo;
         }
 
         System.out.println(minDays);
@@ -72,19 +73,20 @@ for _ in range(farmNum - 1):
     neighbors[end].append(start)
 
 minDays = 0
-visited = {0}
+visited = [False for _ in range(farmNum)]
 frontier = deque([0])
+visited[0] = True
 while frontier:
     curr = frontier.popleft()
     # this stores all the farms that this farm should spread to for optimal spreading
-    spreadTo = []
+    spreadTo = 0
     for n in neighbors[curr]:
-        if n not in visited:
-            spreadTo.append(n)
-            visited.add(n)
+        if not visited[n]:
+            spreadTo += 1
+            visited[n] = True
             frontier.append(n)
     # the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
-    minDays += ceil(log(len(spreadTo) + 1, 2)) + len(spreadTo)
+    minDays += ceil(log(spreadTo + 1, 2)) + spreadTo
 
 print(minDays)
 ```
