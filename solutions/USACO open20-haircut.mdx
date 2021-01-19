@@ -24,7 +24,7 @@ That leads us to this algorithm:
 
     b. Increment the frequency of $A[j]$ in the BIT.
 
-The number of inversions would then be the sum of the all values we computed in step 3a. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ then $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to length $n$, and they would no longer be part of an inversion.
+The number of inversions would then be the sum of all the values we computed in step 3a. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ then $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to length $n$, and $(i, j)$ would no longer be an inversion.
 
 Thus, the number of inversions if all hairs greater than $n$ are cut to length $n$ is simply the sum of the first $n - 1$ elements of the inversions array (if $n$ is 0 then all hairs are 0 units long, so there are 0 inversions for $n = 0$). This is basically just the prefix sum of the `inversions` array.
 
