@@ -10,7 +10,7 @@ author: Jeffrey Meng
 
 First, we need to count the number of inversions. (Fun fact: the number of inversions is also a measure of how sorted an array is. If an array has 0 inversions, it's perfectly sorted in ascending order.) 
 
-One way to count inversions is to use a Binary Indexed Tree. Think of an inversion as a pair $i, j$, with $i < j$ & $a[i] > a[j]$. Then, we can easily compute, for each element in the array, the number of inversions it is $j$ for.
+One way to count inversions is to use a Binary Indexed Tree. Think of an inversion as a pair $i, j$, with $i < j$ & $A[i] > A[j]$. Then, we can easily compute, for each element in the array, the number of inversions it is $j$ for.
 
 To do this, we use a BIT as a frequency table, keeping track of the number of hairs before index $i$ of each possible value. If our BIT is named `tree`, `tree[i]` will tell us how many times $i$ is seen in the array of hairs. As long as we fill out the frequency table in the order the elements appear in the array, we can use the frequency table to also count the number of inversions, because the frequency table only contains hairs to the left of the hair we are currently considering.
 
@@ -22,7 +22,7 @@ That leads us to this algorithm:
 
     a. Count the number of hairs taller than it that appear before the hair in the array, which is just the frequencies of all values greater than $j$. Store this in `inversions[j]`.
 
-    b. Increment the frequency of $arr[j]$.
+    b. Increment the frequency of $A[j]$ in the BIT.
 
 The number of inversions would then be the sum of the all values we computed in step 3a. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ then $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to length $n$, and they would no longer be part of an inversion.
 
