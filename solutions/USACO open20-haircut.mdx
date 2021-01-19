@@ -12,21 +12,21 @@ First, we need to count the number of inversions. (Fun fact: the number of inver
 
 One way to count inversions is to use a Binary Indexed Tree. Think of an inversion as a pair $i, j$, with $i < j$ & $a[i] > a[j]$. Then, we can easily compute, for each element in the array, the number of inversions it is $j$ for.
 
-To do this, we use the BIT as a frequency table, keeping track of the number of hairs before index $i$ of each possible value. If our BIT is named $tree$, $tree[i]$ will tell us how many times $i$ is seen in the array of hairs. The trick, however, is that as long as we fill out the frequency table in the order the elements appear in the array, we can use the frequency table to also count the number of inversions, because the frequency table only contains hairs to the left of the hair we are currently considering.
+To do this, we use a BIT as a frequency table, keeping track of the number of hairs before index $i$ of each possible value. If our BIT is named `tree`, `tree[i]` will tell us how many times $i$ is seen in the array of hairs. As long as we fill out the frequency table in the order the elements appear in the array, we can use the frequency table to also count the number of inversions, because the frequency table only contains hairs to the left of the hair we are currently considering.
 
-The algorithm to count inversions:
+That leads us to this algorithm:
 
-1. Initialze the BIT so the frequency of each value is 0.
+1. Initialize the BIT so the frequency of each value is 0.
 2. Create an array `inversions`. `inversions[j]` will store the number of inversion pairs with the second number being $j$
 3. For each hair $j$ in the order it appears in the array:
 
     a. Count the number of hairs taller than it that appear before the hair in the array, which is just the frequencies of all values greater than $j$. Store this in `inversions[j]`.
-    
+
     b. Update the frequency table with $j$.
 
-The number of inversions would then be the sum of the all values we computed in step 2a. However, we also need to consider the haircuts. If we cut all hairs greater than a number $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ than $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to height $n$, and they would no longer be part of an inversion.
+The number of inversions would then be the sum of the all values we computed in step 3a. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $j \geq n$, because the definition of an inversion is that $i > j$, but if $j \geq n$ then $i > n$ must also be true. However, if this is true, then $i$ and $j$ would both have been cut to length $n$, and they would no longer be part of an inversion.
 
-Thus, the number of inversions if all hairs greater than $n$ are cut to height $n$ is simply the sum of the first $n - 1$ elements of the inversions array (if $n$ is 0 then all hairs are 0 tall, so there are 0 inversions). This is also just the prefix sum of the `inversions` array.
+Thus, the number of inversions if all hairs greater than $n$ are cut to length $n$ is simply the sum of the first $n - 1$ elements of the inversions array (if $n$ is 0 then all hairs are 0 units long, so there are 0 inversions for $n = 0$). This is basically just the prefix sum of the `inversions` array.
 
 
 <LanguageSection>
@@ -55,7 +55,7 @@ public class Haircut {
         BIT tree = new BIT(N + 1); // hair can be at most N
 
         long[] inversionsWithValue = new long[N + 1];
-        // inversionsWithValue[i] == the number of inversions used with all hairs of height i
+        // inversionsWithValue[i] == the number of inversions used with all hairs of length i
 
         for (int value : hairs) {
 
