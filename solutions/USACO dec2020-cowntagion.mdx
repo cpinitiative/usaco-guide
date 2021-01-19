@@ -23,7 +23,7 @@ public class Cowntagion {
         for (int f = 0; f < farmNum; f++) {
             neighbors[f] = new ArrayList<>();
         }
-        for (int i = 0; i < farmNum - 1; i++) {  // note: a connected graph with n nodes and n - 1 edges is always a tree
+        for (int i = 0; i < farmNum - 1; i++) {
             StringTokenizer path = new StringTokenizer(read.readLine());
             int farm1 = Integer.parseInt(path.nextToken()) - 1;
             int farm2 = Integer.parseInt(path.nextToken()) - 1;
@@ -35,7 +35,6 @@ public class Cowntagion {
         boolean[] visited = new boolean[farmNum];
         ArrayDeque<Integer> frontier = new ArrayDeque<>(Collections.singletonList(0));
         visited[0] = true;
-        // do a bfs of the tree
         while (!frontier.isEmpty()) {
             int current = frontier.poll();
             // this stores all the farms that this farm should spread to for optimal spreading
@@ -48,11 +47,22 @@ public class Cowntagion {
                 }
             }
             // the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
-            minDays += Math.ceil(Math.log10(spreadTo + 1) / Math.log10(2)) + spreadTo;
+            minDays += ceilLog2(spreadTo + 1) + spreadTo;
         }
 
         System.out.println(minDays);
     }
+
+    // returns the smallest x such that 2^x >= n
+    private static int ceilLog2(int n) { 
+        int count = 0;
+        int so_far = 1;  
+        while (so_far < n) { 
+            so_far *= 2;
+            count++;
+        }
+        return count;
+    } 
 }
 ```
 
@@ -62,8 +72,13 @@ public class Cowntagion {
 <PySection>
 
 ```py
-from math import log, ceil
 from collections import deque
+
+
+# straight from stackoverflow
+def ceiLog2(x):  # returns the smallest n so that 2^n >= x
+    return 1 if x == 0 else (x - 1).bit_length()
+
 
 farmNum = int(input())
 neighbors = [[] for _ in range(farmNum)]
@@ -86,7 +101,7 @@ while frontier:
             visited[n] = True
             frontier.append(n)
     # the log base 2 is so enough superspreader events go around so that there are enough cows, and then we need to add the length of spreadTo so the cows can actually go to the other farms
-    minDays += ceil(log(spreadTo + 1, 2)) + spreadTo
+    minDays += ceiLog2(spreadTo + 1) + spreadTo
 
 print(minDays)
 ```
