@@ -38,6 +38,154 @@ Don't forget that once Bessie reaches the goal, she will ignore further commands
 
 ### Implementation
 
-<!-- I really don't want to write Cow Navigation. Anyone have code? -->
 
-<IncompleteSection />
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+/*This implementation also keeps track of whether cow 1 (facing left) and cow 2 (facing up) 
+have reached the end at some point. This adds a factor of 4 to the solution however it still runs fast enough */
+#pragma GCC optimize("O2")
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <bitset>
+#include <math.h>
+#include <string>
+#include <algorithm>
+#include <assert.h>
+#include<bits/stdc++.h>
+#include <vector>
+#include <queue>
+#include<stdio.h>
+#include<ctype.h>
+#define ll long long
+using namespace std;
+
+int n;
+
+struct state{
+    int x1;
+    int y1;
+    int dir1;
+    int x2;
+    int y2;
+    int dir2;
+    int finished1;
+    int finished2;
+    int dist;
+};
+char arr[21][21];
+int visited[21][21][4][21][21][4][2][2];
+//x1, y1, dir1, x2, y2, dir2, finished1, finished2
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+//up, left, down, right
+//test if a cell is possible to visit
+bool inside(int x, int y){
+    if (x >= 0 && x < n && y >= 0 && y < n){
+        if (arr[x][y] != 'H'){
+            return true;
+        }
+    }
+    return false;
+}
+//set a state as visited
+bool setvisited(state cur){
+    visited[cur.x1][cur.y1][cur.dir1][cur.x2][cur.y2][cur.dir2][cur.finished1][cur.finished2] = 1;
+}
+//check if a state has been visited
+bool free(state cur){
+    if (visited[cur.x1][cur.y1][cur.dir1][cur.x2][cur.y2][cur.dir2][cur.finished1][cur.finished2] == -1){
+        return true;
+    }
+    return false;
+}
+int main(){
+    ifstream in("cownav.in");
+    ofstream out("cownav.out");
+    in >> n;
+    for (int x = 0; x < n; x++){
+        for (int y = 0; y < n; y++){
+            in >> arr[x][y];
+        }
+    }
+    for (int x = 0; x < n; x++){
+        for (int y = 0; y < n; y++){
+            for (int d1 = 0; d1 < 4; d1++){
+                for (int z = 0; z < n; z++){
+                    for (int b = 0; b < n; b++){
+                        for (int d2 = 0; d2 < 4; d2++){
+                            visited[x][y][d1][z][b][d2][0][0] = -1;
+                            visited[x][y][d1][z][b][d2][1][0] = -1;
+                            visited[x][y][d1][z][b][d2][0][1] = -1;
+                            visited[x][y][d1][z][b][d2][1][1] = -1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    queue<state> q;
+    q.push({n - 1, 0, 1, n - 1, 0, 0, 0, 0, 0});
+    while(q.size() > 0){
+        state cur = q.front();
+        q.pop();
+        state ncur = cur;
+
+        //check if reached the end
+        if (cur.x1 == 0 && cur.y1 == n - 1){
+            ncur.finished1 = 1;
+        }
+        if (cur.x2 == 0 && cur.y2 == n - 1){
+            ncur.finished2 = 1;
+        }
+        if (free(ncur)){
+            q.push(ncur);
+        }
+        if (ncur.finished1 && ncur.finished2){
+            out << ncur.dist << "\n";
+            return 0;
+        }
+        //turn clockwise
+        ncur = cur;
+        ncur.dir1 = (cur.dir1 + 1) % 4;
+        ncur.dir2 = (cur.dir2 + 1) % 4;
+        ncur.dist += 1;
+        if (free(ncur)){
+            setvisited(ncur);
+            q.push(ncur);
+        }
+        //turn counter clockwise
+        ncur = cur;
+        ncur.dir1 = (cur.dir1 - 1) == -1?3:(cur.dir1 - 1);
+        ncur.dir2 = (cur.dir2 - 1) == -1?3:(cur.dir2 - 1);
+        ncur.dist += 1;
+        if (free(ncur)){
+            setvisited(ncur);
+            q.push(ncur);
+        }
+        //go forward
+        ncur = cur;
+        if (inside(ncur.x1 + dx[ncur.dir1], ncur.y1 + dy[ncur.dir1])){
+            ncur.x1 += dx[ncur.dir1];
+            ncur.y1 += dy[ncur.dir1];
+        }
+        if (inside(ncur.x2 + dx[ncur.dir2], ncur.y2 + dy[ncur.dir2])){
+            ncur.x2 += dx[ncur.dir2];
+            ncur.y2 += dy[ncur.dir2];
+        }
+        ncur.dist += 1;
+        if (free(ncur)){
+            setvisited(ncur);
+            q.push(ncur);
+        }
+    }
+    out << -1 << "\n";
+
+}
+```
+
+</CPPSection>
+</LanguageSection>
