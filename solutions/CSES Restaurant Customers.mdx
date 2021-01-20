@@ -113,12 +113,11 @@ After computation
     </table>
 </center>
 
-In our above problem, our $x$ is fixed at $1$. As a result, when we encounter a starting point, we can increment by $1$, and for an endpoint, decrement by $1$. We actually cannot compute the prefix directly since $V \leq 10^9$, and we will run out of memory when creating an array of size $V$.
+In our above problem, our $x$ is fixed at $1$. As a result, when we encounter a starting point, we can increment by $1$, and for an endpoint, decrement by $1$. We actually cannot compute the prefix sum array directly since $V \leq 10^9$, and we will run out of memory when creating an array of size $V$.
 
-### Implementation 1
+## Implementation 1
 
-We assign start points the value $1$ and end points the value $-1$. Then, if we put the start and end points into an array and sort them, the problem becomes: "given an array of values, find the maximum sum at some prefix in the array."
-
+If we put the start and end points into a list and sort them, all we need to do is find the max sum of values over all prefixes of the list.
 
 ```cpp
 #include <bits/stdc++.h> 
@@ -164,7 +163,7 @@ int main(){
 
 ## Implementation 2
 
-Coordinate compress and only compute the prefix array for interesting intervals.
+Coordinate compress interval endpoints and only compute the prefix sum array for interesting intervals.
 
 <LanguageSection>
 
