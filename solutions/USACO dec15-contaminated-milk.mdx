@@ -1,0 +1,116 @@
+---
+id: usaco-569
+source: USACO Bronze 2015 December
+title: Contaminated Milk
+author: Jesse Choe
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_badmilk_bronze_dec15.html)
+
+In this problem, we are asked to find how many people are sick based on what type of milk each person drank, when they drank it, and when a person got sick. To solve this problem, 
+we must find the types of milk that could (potentially) make a person sick. To do this, we must check if a person drank milk type X before they became sick. Therefore, we loop over
+every sick person and store the possible milk types in a 2D array of integers. Then, we loop over all the possible milk types for every sick person and check for commonalities. If
+there is consistency in the possible milk types (every sick person), then we add that to an array and consider it one of the possible types of milk that would make someone sick.
+After this, we check how many people drank one of the possible milk types (consistent with each sick person), and print the number of people who were sick.
+
+<LanguageSection>
+
+  <CPPSection>
+    #include <bits/stdc++.h>
+
+    using namespace std;
+    using ll = long long;
+    using vl = vector<ll>;
+    using pl = pair<ll, ll>;
+    using vpl = vector<pl>;
+    using vc = vector<char>;
+    using vs = vector<string>;
+    using str = string;
+
+    #define FastIO ios_base::sync_with_stdio(0); cin.tie(0)
+    #define pb push_back
+    #define mp make_pair
+    #define all(x) begin(x), end(x)
+    #define sor(x) sort(all(x))
+    #define ins insert
+    #define f first
+    #define s second
+    #define sz(x) (ll)(x).size()
+    #define len(x) (ll)(x).length()
+    #define FOR(i, a, b) for(ll i=a; i<b; ++i)
+    #define ROF(i, b, a) for(ll i=(b)-1; i>=a; --i)
+    #define EACH(a, x) for(auto& a: x)
+
+    void setIO(string fileName = ""){
+      FastIO;
+      if(len(fileName)){
+        freopen((fileName+".in").c_str(), "r", stdin);
+        freopen((fileName+".out").c_str(), "w", stdout);
+      }
+    }
+
+    struct Drinks {
+      ll t, p, m;
+    };
+
+    struct Sick {
+      ll p, t;
+    };
+
+    int main(){
+      setIO("badmilk");
+      ll n, m, d, s; cin >> n >> m >> d >> s;
+      vector<Drinks> drinks(d); vector<Sick> sick(s);
+      vl drank[n];
+      FOR(i, 0, d){
+        cin >> drinks[i].p >> drinks[i].m >> drinks[i].t;
+        drinks[i].p--; drinks[i].m--; drinks[i].t--;
+      }
+      FOR(i, 0, s){
+        cin >> sick[i].p >> sick[i].t;
+        sick[i].p--; sick[i].t--;
+      }
+      FOR(i, 0, d){
+        FOR(j, 0, s){
+          if(drinks[i].p == sick[j].p && drinks[i].t < sick[j].t){
+            drank[drinks[i].p].pb(drinks[i].m);
+          }
+        }
+      }
+      vector<bool> sickMilk(m);
+      FOR(milk, 0, m){
+        sickMilk[milk] = true;
+      }
+      FOR(milk, 0, m){
+        FOR(person, 0, n){
+          if(sz(drank[person])){
+            bool possible = false;
+            EACH(a, drank[person]){
+              if(a == milk){
+                possible = true;
+                break;
+              }
+            }
+            if(!possible){
+              sickMilk[milk] = false;
+            }
+          }
+        }
+      }
+      vector<bool> isSick(n);
+      FOR(milk, 0, m){
+        FOR(i, 0, d){
+          if(sickMilk[milk] && drinks[i].m == milk){
+            isSick[drinks[i].p] = true;
+          }
+        }
+      }
+      ll ans = 0;
+      FOR(i, 0, n){
+        ans += isSick[i];
+      }
+      cout << ans << endl;
+    }
+  </CPPSection>
+
+</LanguageSection>
