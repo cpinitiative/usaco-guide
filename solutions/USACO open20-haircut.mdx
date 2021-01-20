@@ -12,7 +12,7 @@ First, we need to count the number of inversions. (Fun fact: the number of inver
 
 One way to count inversions is to use a binary indexed tree. Think of an inversion as a pair of values $a, b$, with $a > b$ and $a$ appearing before $b$ in the array. Then we can easily compute, for each value in the array, the number of inversions for which it is $b$.
 
-To do this, we use a BIT as a frequency table, keeping track of the number of hairs of each possible value. If our BIT is named `tree`, `tree[i]` will tell us how many times $i$ is seen in the array of hairs. The trick is that as long as we fill out the frequency table in the order the elements appear in the array, we can use the frequency table to also count the number of inversions, because at that point in time the frequency table only contains hairs to the left of the hair we are currently considering.
+To do this, we use a BIT as a frequency table, keeping track of the number of hairs of each possible value. If our BIT is named `tree`, `tree[i]` will tell us how many times $i$ is seen in the array of hairs. The trick is that as long as we fill out the frequency table in the order the elements appear in the array, we can also use the frequency table to count the number of inversions, because at each point in time the frequency table only contains hairs to the left of the hair we are currently considering.
 
 That leads us to this algorithm:
 
