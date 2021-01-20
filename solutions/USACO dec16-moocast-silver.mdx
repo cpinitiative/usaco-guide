@@ -123,30 +123,28 @@ public class moocast {
     static Cow[] cows;
 
     public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(new File("moocast.in"));
+        BufferedReader br = new BufferedReader(new FileReader("moocast.in"));
         PrintWriter out = new PrintWriter("moocast.out");
-
-        N = sc.nextInt();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
         cows = new Cow[N];
-
         for (int i = 0; i < N; i++) {
-            cows[i] = new Cow(i, sc.nextInt(), sc.nextInt(), sc.nextInt());
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            cows[i] = new Cow(i, a, b, c);
         }
-
-        sc.close();
-
         int max = 0;
         for (int i = 0; i < N; i++) {
             max = Math.max(max, transmit(cows[i]));
         }
-
         out.println(max);
         out.close();
     }
 
     private static int transmit(Cow cow) {
         boolean[] visited = new boolean[N];
-
         return transmit(cow, visited);
     }
 
@@ -154,23 +152,18 @@ public class moocast {
         if (visited[cow.index]) {
             return 0;
         }
-
         visited[cow.index] = true;
-
         int count = 0;
-
         for (int i = 0; i < N; i++) {
             if (Math.sqrt(Math.pow(Math.abs(cows[i].x - cow.x), 2) + Math.pow(Math.abs(cows[i].y - cow.y), 2)) < cow.power) {
                 count += transmit(cows[i], visited);
             }
         }
-
         return count + 1;
     }
 
     private static class Cow {
         int x, y, power, index;
-
         public Cow(int index, int x, int y, int power) {
             this.x = x;
             this.y = y;
