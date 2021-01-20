@@ -16,6 +16,7 @@ After this, we check how many people drank one of the possible milk types (consi
 <LanguageSection>
 
   <CPPSection>
+  
     #include <bits/stdc++.h>
 
     using namespace std;
@@ -70,6 +71,9 @@ After this, we check how many people drank one of the possible milk types (consi
         cin >> sick[i].p >> sick[i].t;
         sick[i].p--; sick[i].t--;
       }
+      
+      // Check if it's a possible "sick-making" milk type.
+      
       FOR(i, 0, d){
         FOR(j, 0, s){
           if(drinks[i].p == sick[j].p && drinks[i].t < sick[j].t){
@@ -77,6 +81,9 @@ After this, we check how many people drank one of the possible milk types (consi
           }
         }
       }
+      
+      // Check whether the possible "sick-making" milk type is consistent with every sick person 
+      
       vector<bool> sickMilk(m);
       FOR(milk, 0, m){
         sickMilk[milk] = true;
@@ -97,6 +104,9 @@ After this, we check how many people drank one of the possible milk types (consi
           }
         }
       }
+      
+      // Check if person P is sick
+      
       vector<bool> isSick(n);
       FOR(milk, 0, m){
         FOR(i, 0, d){
@@ -105,6 +115,9 @@ After this, we check how many people drank one of the possible milk types (consi
           }
         }
       }
+      
+      // Print the number of sick people
+      
       ll ans = 0;
       FOR(i, 0, n){
         ans += isSick[i];
