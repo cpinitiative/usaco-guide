@@ -1,7 +1,7 @@
 ---
 id: sp
 title: 'Shortest Paths with Non-Negative Edge Weights'
-author: Benjamin Qi, Andi Qu
+author: Benjamin Qi, Andi Qu, Qi Wang
 prerequisites:
   - bfs
   - custom-cpp-stl
@@ -33,7 +33,7 @@ export const problems = {
 			['SP'],
 			'cses-1195'
 		),
-		new Problem('Gold', 'Milk Pumping', '969', 'Easy', false, ['SP'], ''),
+		new Problem('Gold', 'Milk Pumping', '969', 'Easy', false, ['SP'], 'usaco-969'),
 		new Problem('Gold', 'Why Did the Cow Cross the Road', '717', 'Easy', false, ['SP'], ''),
 		new Problem('Gold', 'Fine Dining', '861', 'Easy', false, ['SP'], ''),
 		new Problem('Gold', 'Shortcut', '899', 'Normal', false, ['SP'], ''),
@@ -186,9 +186,9 @@ Used as the first step of the following:
 
 <FocusProblem problem={problems.sample[0]} />
 
-### $O(N^2)$
+### $\mathcal{O}(N^2)$
 
-The USACO training pages present a $O(N^2)$ implementation, although this is rarely used nowadays.
+The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although this is rarely used nowadays.
 
 <Resources>
 	<Resource
@@ -198,7 +198,7 @@ The USACO training pages present a $O(N^2)$ implementation, although this is rar
 	></Resource>
 </Resources>
 
-### $O(M\log N)$
+### $\mathcal{O}(M\log N)$
 
 <Resources>
 	<Resource source="CPH" title="13.2 - Dijkstra" starred>
@@ -213,7 +213,7 @@ The USACO training pages present a $O(N^2)$ implementation, although this is rar
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph"></Resource>
 </Resources>
 
-### $O(M\log N)$ Implementation
+### $\mathcal{O}(M\log N)$ Implementation
 
 <Resources>
 	<Resource
@@ -358,19 +358,17 @@ public class test {
 
 <Warning>
 
-It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test of the above problem!
+It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test case of the above problem! 
 
-<IncompleteSection>
+The last test case contains 100000 destinations and 149997 flights. City 1 has flights to cities 2 through 50000. Cities 2 through 50000 have flights to city 50001. City 50001 has flights to cities 50002 through 100000. Without the `continue`, after the program pops cities 1 through 50000 off the queue, the priority queue will contain 49999 routes that end at city 50001. Every one of the 49999 times city 50001 is popped off the queue and processed, we must iterate over all of its outgoing flights (to cities 50002 through 100000). This results in a runtime of $\Theta(N^2\log N)$, which will TLE. 
 
-(explanation of hack case)
-
-</IncompleteSection>
+On the other hand, if we did include the `continue`, the program will never iterate through the adjacency list of city 50001 after processing it for the first time.
 
 </Warning>
 
 <Optional title="Faster Dijkstra">
 
-Can be done in $O(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
+Can be done in $\mathcal{O}(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
 
 </Optional>
 

@@ -13,10 +13,12 @@ The following is a list of third party services that the USACO Guide / Competiti
 - Algolia for Search
   - Open source plan. With some optimizations you _might_ be able to get by with the free tier plan. Otherwise pay as you go.
   - No easy replacement. Without this, module search + problems search won't work.
-- Freshdesk (free plan)
-  - Not necessary. We (sort of not really) use this just to manage emails.
-- FormSubmit (free)
-  - We use this for contact us / module feedback forms; it just sends an email to the USACO Guide.
+- Hotjar & Google analytics
+
+## IDE
+
+- https://github.com/thecodingwizard/ide
+- Uses a [Judge0](https://github.com/judge0/judge0) instance hosted on DigitalOcean at https://judge0.usaco.guide/
 
 ## Forum
 
@@ -36,5 +38,16 @@ The following is a list of third party services that the USACO Guide / Competiti
 
 ## Competitive Programming Initiative
 
-- Mailchimp (free plan)
+- Google Nonprofits
+  - gsuite for Nonprofits
+  - Google Ad Grant
+- Microsoft Nonprofits
+- Github Nonprofits
+- Canva for Nonprofits
 - Slido (nonprofit plan)
+- Mailchimp (free plan)
+
+## Services we no longer use
+
+- Freshdesk (free plan)
+  - Not necessary. We (sort of not really) use this just to manage emails.

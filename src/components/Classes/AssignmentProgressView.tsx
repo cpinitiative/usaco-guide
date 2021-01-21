@@ -30,6 +30,7 @@ export default function AssignmentProgressView({
         .map(student => {
           const progressMap = {
             Solved: '✓',
+            Reviewing: '✓',
             Solving: 'IP',
             Skipped: '-',
             Ignored: '--',

@@ -1,12 +1,13 @@
 ---
 id: balkan-17-cityattractions
-title: Balkan OI 2017 City Attractions
+source: Balkan OI 2017
+title: City Attractions
 author: Andi Qu
 ---
 
 ## Introduction
 
-Let the node that Gigel goes to from node $i$ be $t_i$. Since the graph made from the directed edges $i \rightarrow t_i$ is a [functional graph](/silver/func-graphs), we can use [binary jumping](/plat/binjump) or any other efficient method to find the final node.
+Let the node that Gigel goes to from node $i$ be $t_i$. Since the graph made from the directed edges $i \rightarrow t_i$ is a [functional graph](/silver/func-graphs), we can use [binary jumping](/plat/bin-jump) or any other efficient method to find the final node.
 
 Now we only need to find all $t_i$ and we are done! However, this isn't as straightforward as it sounds...
 
@@ -16,7 +17,7 @@ Let's consider a simpler problem: suppose we root the tree at node $1$ and Gigel
 
 Let $dp[i]$ be the node in the subtree of $i$ (excluding $i$ itself) such that $a[dp[i]] - dist(i, dp[i])$ is maximized. Additionally, we store this value in the DP array. We can find $dp[i]$ by taking the best of $c$ and $dp[c]$ over all children $c$ of $i$.
 
-This algorithm runs in $O(N)$ time.
+This algorithm runs in $\mathcal{O}(N)$ time.
 
 ## Finding all $t_i$
 
@@ -26,7 +27,7 @@ To address this issue, we can first do a DFS to find $dp$ as defined above, and 
 
 After doing this, $dp[i]$ is simply $t_i$ as desired.
 
-These two DFSes run in $O(N)$ time, so the final complexity is $O(N + \log K)$ (from the binary jumping).
+These two DFSes run in $\mathcal{O}(N)$ time, so the final complexity is $\mathcal{O}(N + \log K)$ (from the binary jumping).
 
 ## Code
 

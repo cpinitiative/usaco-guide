@@ -9,9 +9,7 @@ Thank you to the following companies:
 - [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free hosting & continuous deployment
 - [Algolia](https://algolia.com/), search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
-- [Sentry](https://sentry.io/), error reporting
-- [BrowserStack](https://browserstack.com/), browser testing
-- [slido](https://www.sli.do/), Q&A and polling platform
+- And [more](docs/Companies.md)!
 
 ## Documentation
 
@@ -20,11 +18,31 @@ Thank you to the following companies:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
+See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get started, simply pick an [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work on, leave a comment, and submit a Pull Request!
 
 Join our Discord server: https://discord.gg/Gq9cX4j
 
-**We're actively looking for a web developer, SEO specialist, or a graphic designer to help with the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
+## Our Team
+
+The USACO Guide is run by the [Competitive Programming Initiative](https://joincpi.org/). We're looking for Content Authors to join our team to help us improve the Guide! Learn more [here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
+
+### Core Staff
+
+- Benjamin Qi
+- Nathan Wang
+- Andi Qu
+- Siyong Huang
+- Darren Yao
+- Andrew Wang
+- Michael Cao
+- Nathan Chen
+
+### Content Authors
+
+- Óscar Garries Urbina (since Jan 2021)
+- Qi Wang (since Jan 2021)
+- Dong Liu (since Jan 2021)
+- _This could be you! [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
 ## Tech Stack
 
@@ -35,6 +53,7 @@ Our front-end is built with:
 - Typescript
 - Tailwind CSS & Tailwind UI
 - MDX (JSX in Markdown)
+- Firebase
 - Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info

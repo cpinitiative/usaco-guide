@@ -4,11 +4,12 @@ import DashboardCard from './DashboardCard';
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
 
 type ActiveItemStatus =
-  | 'Solving'
   | 'Skipped'
-  | 'Reading'
-  | 'Practicing'
-  | 'Ignored';
+  | 'Ignored'
+  | 'Reading' // only for modules
+  | 'Practicing' // only for modules
+  | 'Solving' // only for problems
+  | 'Reviewing'; // only for problems
 
 export type ActiveItem = {
   label: string;
@@ -17,13 +18,14 @@ export type ActiveItem = {
 };
 
 const statusClasses: { [key in ActiveItemStatus]: string } = {
-  Reading:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
-  Solving:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Skipped: difficultyClasses.Normal,
   Ignored: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
+  Reading:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Practicing: difficultyClasses.Easy,
+  Solving:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
+  Reviewing: difficultyClasses.Insane,
 };
 
 export default function ActiveItems({
@@ -41,6 +43,7 @@ export default function ActiveItems({
       return 0;
     };
     const statusVal: { [key in ActiveItemStatus]: number } = {
+      Reviewing: -1,
       Reading: 0,
       Solving: 1,
       Practicing: 1,
@@ -55,8 +58,11 @@ export default function ActiveItems({
       const secs = [
         'General',
         'Bronze',
+        'Old Bronze',
         'Silver',
+        'Old Silver',
         'Gold',
+        'Old Gold',
         'Platinum',
         'Advanced',
       ];

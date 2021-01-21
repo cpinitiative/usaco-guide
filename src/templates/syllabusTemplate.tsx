@@ -10,11 +10,16 @@ import MODULE_ORDERING, {
   SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
-import { getModule } from '../utils/utils';
+import { getModulesForDivision } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import getProgressInfo from '../utils/getProgressInfo';
+import DashboardProgress, {
+  DashboardProgressSmall,
+} from '../components/Dashboard/DashboardProgress';
+// import UserDataContext from '../context/UserDataContext/UserDataContext';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import ModuleLink from '../components/Dashboard/ModuleLink';
 import { ModuleLinkInfo } from '../models/module';
 import styled from 'styled-components';
@@ -121,39 +126,47 @@ export default function Template(props) {
 
   const { division } = props.pageContext;
 
-  const section = getModule(allModules, division);
+  const section = getModulesForDivision(allModules, division);
 
-  const { userProgressOnModules, userProgressOnProblems } = React.useContext(
-    UserDataContext
-  );
+  // const { userProgressOnModules, userProgressOnProblems } = React.useContext(
+  //   UserDataContext
+  // );
+
   const moduleIDs = section.reduce(
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  let moduleProgressInfo = getProgressInfo(
-    moduleIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
-  let problemIDs = [];
-  for (let chapter of MODULE_ORDERING[division]) {
-    for (let moduleID of chapter.items) {
-      for (let problem of allModules[moduleID].problems) {
+  const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
+  const problemIDs = [];
+  for (const chapter of MODULE_ORDERING[division]) {
+    for (const moduleID of chapter.items) {
+      for (const problem of allModules[moduleID].problems) {
         problemIDs.push(problem.uniqueID);
       }
     }
   }
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+
+  const progressBarForCategory = category => {
+    const problemIDs = [];
+    for (const chapter of MODULE_ORDERING[division])
+      if (chapter.name == category.name) {
+        for (const moduleID of chapter.items) {
+          for (const problem of allModules[moduleID].problems) {
+            problemIDs.push(problem.uniqueID);
+          }
+        }
+      }
+    const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+    return (
+      problemIDs.length > 1 && (
+        <DashboardProgressSmall
+          {...problemsProgressInfo}
+          total={problemIDs.length}
+        />
+      )
+    );
+  };
 
   return (
     <Layout>
@@ -212,6 +225,9 @@ export default function Template(props) {
                   <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out">
                     {category.name}
                   </h2>
+                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out">
+                    {progressBarForCategory(category)}
+                  </div>
                   <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark-group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition duration-150 ease-in-out">
                     {category.description}
                   </p>
@@ -227,7 +243,9 @@ export default function Template(props) {
                           item.frontmatter.title,
                           item.frontmatter.description,
                           item.frontmatter.frequency,
-                          item.isIncomplete
+                          item.isIncomplete,
+                          [],
+                          item.fields.gitAuthorTime
                         )
                       }
                     />
@@ -257,6 +275,9 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
+          fields {
+            gitAuthorTime
+          }
         }
       }
     }

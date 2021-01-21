@@ -63,14 +63,6 @@ export const plugins = [
           },
         },
         {
-          resolve: require.resolve('./src/mdx-plugins/katex.ts'),
-          options: {
-            // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
-            strict: `ignore`,
-            output: 'html',
-          },
-        },
-        {
           resolve: `gatsby-remark-images`,
           options: {
             maxWidth: 832,
@@ -82,7 +74,8 @@ export const plugins = [
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
       ],
-      remarkPlugins: [require(`remark-external-links`)],
+      remarkPlugins: [require(`remark-external-links`), require('remark-math')],
+      rehypePlugins: [require('./src/mdx-plugins/rehype-math.js')],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,
@@ -153,7 +146,14 @@ export const plugins = [
     },
   },
   'gatsby-plugin-webpack-bundle-analyser-v2',
-
+  {
+    resolve: `gatsby-plugin-hotjar`,
+    options: {
+      includeInDevelopment: false, // optional parameter to include script in development
+      id: 2173658,
+      sv: 6,
+    },
+  },
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline
   // `gatsby-plugin-offline`,

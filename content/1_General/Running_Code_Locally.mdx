@@ -1,7 +1,7 @@
 ---
 id: running-code-locally
 title: Running Code Locally
-author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen
+author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang
 description: Options for running your language of choice locally.
 prerequisites:
  - running-code-online
@@ -13,7 +13,7 @@ Depends on your personal preference. Try multiple and see which one you like bes
 
 </Info>
 
-If you're just starting out, it's easier to begin by running code online and worry about running locally later.
+If you're just starting out, it's easier to begin by running code online and worry about running locally later. You can find more information about running code online [here](https://usaco.guide/general/running-code-online).
 
 ## Using an IDE
 
@@ -97,20 +97,26 @@ It can be useful to use a Java IDE to take advantage of the powerful debugging f
 
 <Resources>
 	<Resource
-		source="Jetbrains"
+		source="JetBrains"
 		title="IntelliJ IDEA Community"
 		url="https://www.jetbrains.com/idea/"
 	>
 		free
 	</Resource>
 	<Resource
-		source="Eclipse"
-		title="IDE"
+		source="Eclipse Foundation"
+		title="Eclipse"
 		url="https://www.eclipse.org/eclipseide/"
 	>
 		free
 	</Resource>
-	<Resource source="BlueJ" title="BlueJ" url="https://bluej.org/"></Resource>
+	<Resource
+		  source="King's College London"
+		  title="BlueJ"
+		  url="https://bluej.org/"
+	>
+		free
+	</Resource>
 </Resources>
 
 </JavaSection>
@@ -161,7 +167,7 @@ Vim is probably the easiest way to print syntax-highlighted code on Mac, see the
 - [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding) (I don't use)
   - test manager can be useful
   - linting is covered by the above
-  - stress testing is covered in [Debugging](/general/debugging)
+  - stress testing is covered in [Debugging](/general/debugging-lang#stress-testing)
   - can't get debug to work
 
 <!--    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
@@ -243,22 +249,72 @@ If you installed Clang on Mac, then you can download `stdc++.h` from [here](http
 
 <JavaSection>
 
-First, download the [JDK](https://docs.oracle.com/en/java/javase/14/install/overview-jdk-installation.html#GUID-8677A77F-231A-40F7-98B9-1FD0B48C346A). Then, test that you can use the right commands.
+### Installation
 
-On Windows, open `cmd` and type the following command into the prompt:
+#### Linux
 
+First, you can check if you have Java already installed by running `java --version` in the terminal. If it returns something like this:
 ```
-java
+openjdk 11.0.9.1 2020-11-04
+OpenJDK Runtime Environment (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04)
+OpenJDK 64-Bit Server VM (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing)
 ```
+That means you have Java installed already. On the other hand, if you get something like this:
+```
+Command 'java' not found
+```
+You will have to download and install JDK. On most Linux distros, the JDK can be downloaded via the built in package manager.
 
-If you get the below result, you may have to add the JDK to your [PATH](https://docs.oracle.com/en/java/javase/14/install/installation-jdk-microsoft-windows-platforms.html#GUID-A7E27B90-A28D-4237-9383-A58B416071CA) variable.
+##### Ubuntu/Debian
 
+On Ubuntu, Debian, and other Ubuntu/Debian based distos, the JDK can be installed via `apt`. You can install the Java JDK from the default repositories by running: `sudo apt install default-jdk`.
+
+After this finishes installing, if you run `java --version` again, you should get something like above.
+
+##### Arch
+
+On Arch and other Arch based distos (like Manjaro), the JDK can be installed via `pacman`. You can install the Java JDK from the default repositories by running: `sudo pacman -S jdk-openjdk`.
+
+After this finishes installing, if you run `java --version` again, you should get something like above.
+
+##### Fedora
+
+On Fedora and other Red Hat based distos, the JDK can be installed via `dnf`. You can install the Java JDK from the default repositories by running: `sudo dnf install java-openjdk-devel.x86_64`.
+
+After this finishes installing, if you run `java --version` again, you should get something like above.
+
+#### Windows
+
+First, can check if you already have Java installed by running `java --version` in `cmd`. If it returns something like this:
+```
+openjdk 11.0.9.1 2020-11-04
+OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
+OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
+```
+That means that you have Java installed already. On the other hand, if you get something like this:
 ```
 'java' is not recognized as an internal or external command,
-operable program or batch file
+operable program or batch file.
 ```
+You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_windows_hotspot_11.0.9.1_1.msi).
 
-Otherwise, you're probably good to go.
+After it finishes installing, if you run `java --version` again, you should get something like above. Note: the installer should automatically add Java into the system `PATH`, but in the event that it doesn't, you can find more information on how to do that [here](https://www.poftut.com/how-to-set-java-jre-and-jdk-home-path-and-environment-variables-on-windows).
+
+#### macOS
+
+First, can check if you already have Java installed by running `java --version` in the terminal. If it returns something like this:
+```
+openjdk 11.0.9.1 2020-11-04
+OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
+OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
+```
+That means that you have Java installed already. On the other hand, if you get something like this:
+```
+-bash: java: command not found
+```
+You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_mac_hotspot_11.0.9.1_1.pkg).
+
+After it finishes installing, if you run `java --version` again, you should get something like above.
 
 ### Compiling and Running
 
@@ -288,7 +344,7 @@ java Main
 
 If everything goes accordingly, the console should output `Hello World!`.
 
-If you do USACO-style file I/O, meaning that files are in the "local directory", then the files must be located in the same directory as the source code (if you use the above method).
+If you do USACO-style file I/O, meaning that files are in the "local directory", then the files must be located in the same directory as the source code (if you use the above method). You can find a Java testing script for USACO [here](https://usaco.guide/general/debugging-lang#stress-testing).
 
 </JavaSection>
 

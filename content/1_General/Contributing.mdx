@@ -47,7 +47,7 @@ Some examples:
 
 ## Writing Content
 
-All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with limited Latex support from [KaTeX](https://katex.org/) and some custom components. You can check how an `.mdx` file renders by pasting it in the [live editor](/liveupdate).
+All modules are written in [MDX](https://mdxjs.com/) (Markdown + JSX), with limited $\LaTeX$ support from [KaTeX](https://katex.org/) and some custom components. You can check how an `.mdx` file renders by pasting it in the [live editor](/liveupdate).
 
 See the [Content Documentation](https://github.com/cpinitiative/usaco-guide/blob/master/docs/Content%20Documentation.md) for more info.
 
@@ -64,36 +64,69 @@ See the [Content Documentation](https://github.com/cpinitiative/usaco-guide/blob
 
 ### Adding a Solution
 
-First, [fork](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop) the GitHub repository.
+1. [Fork](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop) the GitHub repository. 
 
-If it doesn't already exist, create a new `mdx` file in `solutions` including frontmatter, ex. the following in [`USACO jan17-cow-dance-show.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/USACO%20jan17-cow-dance-show.mdx):
+2. If it doesn't already exist, create a new `mdx` file in `solutions` including frontmatter, ex. the following in [`USACO jan17-cow-dance-show.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/USACO%20jan17-cow-dance-show.mdx):
 
-```
----
-id: usaco-690
-title: USACO 2017 January Silver - Cow Dance Show
-author: Óscar Garries
----
+  ``` 
+  ---
+  id: usaco-690
+  source: USACO Silver 2017 January
+  title: Cow Dance Show
+  author: Óscar Garries
+  ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
+  [Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
 
-(add solution here ...)
-```
+  <LanguageSection>
 
-It is **not** necessary to add an alternative implementation in the same language as the official analysis (unless the alternative implementation takes a different approach or is written better / differently from the official implementation).
+  <CPPSection>
 
-Keep file and ID names consistent; namely, USACO IDs should correspond to the URL on [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690). Then add the solution ID (`usaco-690`) as the last argument of the `Problem` constructor in the corresponding module (in this case, [`Binary_Search_Ans.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search_Ans.mdx)).
+  **Time Complexity:** $\mathcal{O}(N\log^2N)$
 
-```
-new Problem(
-  'Silver',
-  'Cow Dance Show',
-  '690',
-  'Easy',
-  false,
-  [],
-  'usaco-690'
-),
-```
+  ^ Format time complexity like this.
 
-Make sure to check that both the module and the solution render properly using the live editor before submitting a pull request.
+  (add C++ code + explanation here ...)
+
+  Use `\texttt{}` around variable names with length greater than one, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
+
+  $$
+  \texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
+  $$
+
+  </CPPSection>
+
+  <PySection>
+
+  (if you have Python code)
+
+  </PySection>
+
+  <JavaSection>
+  
+  (if you have Java code)
+
+  </JavaSection>
+
+  </LanguageSection>
+  ```
+
+  It is **not** necessary to add an alternative implementation in the same language as the official analysis (unless the alternative implementation takes a different approach or is written better / differently from the official implementation).
+
+  Keep file names and solution IDs consistent; namely, USACO IDs should correspond to the URL on [usaco.org](http://www.usaco.org/index.php?page=viewproblem2&cpid=690). 
+
+3. Add the solution ID (ex. `usaco-690`) as the last argument of the `Problem` constructor in the corresponding module (in this case, [`Binary_Search_Ans.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search_Ans.mdx)). Also add tags (if you want).
+
+  ```
+  new Problem(
+    'Silver',
+    'Cow Dance Show',
+    '690',
+    'Easy',
+    false,
+    ['tag1', 'tag2'],
+    'usaco-690'
+  ),
+  ```
+
+4. Check that both the module and the solution render properly using the [live editor](/liveupdate/) before submitting a [pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-pull-requests).

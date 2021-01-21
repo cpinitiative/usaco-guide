@@ -48,6 +48,7 @@ todo - find particularly bad example of repetition
    - Includes (but not limited to) uninitialized variables, array out of bounds, shifting int by $\ge 32$ bits, not returning anything from non-`void` functions.
    - Can result in different outputs locally / on the USACO server.
    - Compiling with [additional options](/general/debugging-lang#other-options) can help catch these.
+   - C++ - can use [`array::at`](https://www.cplusplus.com/reference/array/array/at/) or [`vector::at`](https://www.cplusplus.com/reference/vector/vector/at/) instead of `[]` to throw exceptions when the index is out of bounds.
  - Any overflows or NaNs?
  - Confusing $N$ and $M$, $i$ and $j$, etc.?
  - Shadowed or unused variables?
@@ -57,11 +58,17 @@ todo - find particularly bad example of repetition
    - You can compare against a model solution (if available).
  - Rewrite your solution from the start.
    - Don't delete your previous program. Make a new file! It's always possible that you might introduce more bugs.
+ - Use a [debugger](/general/debugging-lang/#debuggers) (if you're using an IDE).
+   - Set breakpoints to stop your program at certain lines.
+   - Step through lines one by one and watch how the values of your variables change.
+   - Probably slower than well-placed print statements ...
+
+Of course, many of these are also relevant for RE / TLE.
 
 ## Runtime Error
 
  - Have you tested all corner cases locally?
- - Any undefined behavior? (see above)
+ - Any undefined behavior?
  - Are you reading or writing outside the range of any vector?
  - Any assertions that might fail?
  - Any possible division by 0? (mod 0 for example)
@@ -74,6 +81,7 @@ todo - find particularly bad example of repetition
  - Do you have any possible infinite loops?
  - What is the complexity of your algorithm?
  - Avoid `vector`, `map`. (use `array`s / `unordered_map`)
+ - Did you remove debug output before submitting (ex. are you printing a lot of information to `stderr`)?
 
 ## Before Posting on the [Forum](https://forum.usaco.guide/)
 

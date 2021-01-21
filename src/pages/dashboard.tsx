@@ -12,7 +12,10 @@ import {
 } from '../../content/ordering';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
-import getProgressInfo from '../utils/getProgressInfo';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import Announcements from '../components/Dashboard/Announcements';
 import {
   AnnouncementInfo,
@@ -83,14 +86,19 @@ export default function DashboardPage(props: PageProps) {
     return Object.keys(userProgressOnProblems)
       .filter(
         x =>
-          (userProgressOnProblems[x] === 'Solving' ||
+          (userProgressOnProblems[x] === 'Reviewing' ||
+            userProgressOnProblems[x] === 'Solving' ||
             userProgressOnProblems[x] === 'Skipped' ||
             (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
         ...problemIDMap[x],
-        status: userProgressOnProblems[x] as 'Solving' | 'Skipped' | 'Ignored',
+        status: userProgressOnProblems[x] as
+          | 'Reviewing'
+          | 'Solving'
+          | 'Skipped'
+          | 'Ignored',
       }));
   }, [userProgressOnProblems, showIgnored]);
 
@@ -102,14 +110,7 @@ export default function DashboardPage(props: PageProps) {
   // console.log(Object.keys(moduleIDToName).filter(
   //   x => moduleIDToSectionMap[x] == null
   // )); shouldn't be any ...
-  let allModulesProgressInfo = getProgressInfo(
-    moduleProgressIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
+  let allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
     return [
@@ -122,14 +123,7 @@ export default function DashboardPage(props: PageProps) {
   // const allStarredProblemIDs = problemStatisticsIDs.filter(
   //   x => problemIDMap[x].starred
   // );
-  const allProblemsProgressInfo = getProgressInfo(
-    problemStatisticsIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const allProblemsProgressInfo = getProblemsProgressInfo(problemStatisticsIDs);
   // const allStarredProblemsProgressInfo = getProgressInfo(
   //   allStarredProblemIDs,
   //   userProgressOnProblems,

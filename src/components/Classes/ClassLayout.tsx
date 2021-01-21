@@ -3,7 +3,7 @@ import { Link, navigate } from 'gatsby';
 import * as Icons from 'heroicons-react';
 import DynamicMarkdownRenderer from '../DynamicMarkdownRenderer';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import SEO from '../seo';
 import FirebaseContext from '../../context/FirebaseContext';
 import ClassContext from '../../context/ClassContext';
@@ -28,10 +28,16 @@ export default function ClassLayout({
     setUserClasses,
     userClassIds,
     firebaseUser,
+    isLoaded: userDataLoaded,
   } = useContext(UserDataContext);
-  const { loading, error, data, students, isInstructor } = useContext(
-    ClassContext
-  );
+  const {
+    loading: classLoading,
+    error,
+    data,
+    students,
+    isInstructor,
+  } = useContext(ClassContext);
+  const loading = classLoading || !userDataLoaded;
   const [changingJoinLinkStatus, setChangingJoinLinkStatus] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
 
@@ -119,15 +125,10 @@ export default function ClassLayout({
     loading ||
     notFound ||
     error ||
-    showNotFound
-    // The below code would prevent non-members from viewing classes
-    // but it would also prevent non-member admins from viewing
-    // ||
-    // (!isInstructor &&
-    //   !(
-    //     userClasses.some((c: { id: string }) => c.id === classId) &&
-    //     userClassIds.includes(classId)
-    //   ))
+    showNotFound ||
+    (!isInstructor &&
+      !userClasses?.some((c: { id: string }) => c.id === classId) &&
+      !userClassIds?.includes(classId))
   ) {
     return (
       <>
