@@ -1,7 +1,7 @@
 ---
 id: intro-sorting
 title: Introduction to Sorting
-author: Darren Yao, Benjamin Qi, Allen Li
+author: Darren Yao, Benjamin Qi, Allen Li, Andrew Wang
 description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
 frequency: 2
 prerequisites:
@@ -23,6 +23,15 @@ export const problems = {
 		),
 	],
 	dis: [
+		new Problem(
+			'CSES',
+			'Distinct Numbers',
+			'1621',
+			'Easy',
+			true,
+			[],
+			'cses-1621',
+		),
 		new Problem(
 			'CF',
 			'Kayaking',
@@ -103,6 +112,22 @@ Although you usually do **not** need to know how sorting is implemented, you sho
 	Covers sorting arrays
 </Resource>
 
+<Resource 
+	  source = "Oracle"
+	  title = "Arrays.sort"
+	  url = "https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])"
+	>
+	API for sorting static arrays
+</Resource>
+
+<Resource 
+	  source = "Oracle"
+	  title = "Collections.sort"
+	  url = "https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)"
+	>
+	API for sorting dynamic arrays
+</Resource>
+
 </JavaSection>
 
 <PySection>
@@ -121,22 +146,19 @@ Although you usually do **not** need to know how sorting is implemented, you sho
 
 </LanguageSection>
 
-### (Dynamic) Arrays
+### Static Arrays
 
 <LanguageSection>
 
 <CPPSection>
 
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`), whereas static arrays require `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The default sort function sorts the array in ascending order.
+To sort static arrays, use `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. Range can also be specified by replacing `arr` and `arr + N` with the intended range.
 
 </CPPSection>
 
 <JavaSection>
 
-In order to sort a static or dynamic array, use `Arrays.sort(arr)` or `Collections.sort(list)` respectively. The default sort function sorts the array in ascending order.
-
-- [Arrays.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(java.lang.Object[])>)
-- [Collections.sort](<https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)>)
+In order to sort a static array, use `Arrays.sort(arr)`.
 
 <Warning>
 
@@ -150,6 +172,25 @@ Two ways to avoid this:
 
 - Declare the underlying array as an array of objects, for example `Long` instead of `long`. This forces the `Arrays.sort()` function to use mergesort, which is always $\mathcal{O}(N \log N)$.
 - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
+
+</JavaSection>
+
+</LanguageSection>
+
+### Dynamic Arrays
+
+<LanguageSection>
+
+<CPPSection>
+
+In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`). The default sort function sorts the array in ascending order.
+
+</CPPSection>
+
+<JavaSection>
+
+In order to sort a dynamic array, use `Collections.sort(list)`. The default sort function sorts the array in ascending order.
+
 
 </JavaSection>
 
