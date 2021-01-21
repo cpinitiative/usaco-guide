@@ -302,6 +302,7 @@ export default function PostPage(props: {
     }
     return () => window.removeEventListener('beforeunload', handler);
   }, [hasChanges, isInstructor, edit]);
+
   if (loading || notFound || error || (!isInstructor && !post.published)) {
     return (
       <>

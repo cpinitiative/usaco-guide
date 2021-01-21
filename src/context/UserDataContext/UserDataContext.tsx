@@ -159,6 +159,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   signIn: () => {},
   signOut: () => {},
   userClasses: [],
+  userClassIds: [],
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},

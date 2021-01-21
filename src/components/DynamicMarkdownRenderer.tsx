@@ -11,7 +11,7 @@ import grayMatter from 'gray-matter';
 
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
-import customRehypeKatex from '../mdx-plugins/rehype-math';
+import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 
 class ErrorBoundary extends React.Component {
   state: {
