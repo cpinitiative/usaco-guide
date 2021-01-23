@@ -9,9 +9,9 @@ In this problem, we're given $n$ intervals with distinct start and end points, a
 
 ## Solution
 
-A common application of prefix sums is to determine, given a set of intervals, the number of intervals that cover any particular point.
+We can use prefix sums to determine the number of intervals that cover any particular point, and then find the maximum number in the  sum.
 
-A naïve approach to this problem is to create an array $\texttt{ctr}$, where $\texttt{ctr}[i]$ is the number of intervals that cover each point $i$. We can do this by looping through each interval $[a,b]$ and increasing $\texttt{ctr}[i]$ by $1$ for each index in $a \leq i \leq b$.
+A naïve approach is to create an array $\texttt{ctr}$, where $\texttt{ctr}[i]$ is the number of intervals that cover each point $i$. We can do this by looping through each interval $[a,b]$ and increasing $\texttt{ctr}[i]$ by $1$ for each index in $a \leq i \leq b$.
 
 This results in a $\mathcal{O}(nV)$ time complexity (where $0 \leq a \leq b \leq V$), which easily times out (think what happens when the interval $[0, V]$ is queried $n$ times).
 
@@ -113,7 +113,9 @@ After computation
     </table>
 </center>
 
-In our above problem, our $x$ is fixed at $1$. As a result, when we encounter a starting point, we can increment by $1$, and for an endpoint, decrement by $1$. We actually cannot compute the prefix sum array directly since $V \leq 10^9$, and we will run out of memory when creating an array of size $V$.
+In this problem, our $x$ is fixed at $1$. As a result, when we encounter a starting point, we can increment by $1$, and for an endpoint, decrement by $1$. We actually cannot compute the prefix sum array directly since $V \leq 10^9$, and we will run out of memory when creating an array of size $V$.
+
+Instead, we can either coordinate compress and compute the prefix sum over interesting intervals or sweep over the intervals while maintaining a running prefix sum.
 
 ## Implementation 1
 
