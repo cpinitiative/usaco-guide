@@ -2,14 +2,59 @@
 id: cses-1090
 source: CSES
 title: Ferris Wheel
-author: Danh Ta Chi Thanh
+author: Kenny Cho, Danh Ta Chi Thanh
 ---
-
 
 ## Solution
 
 [Unofficial Editorial](https://codeforces.com/blog/entry/83295)
 
+## Solution 1 - Start with heaviest
+
+For each gondola, we can either 1) pair the heaviest child with another child, or 2) only include the heaviest child.
+
+Hence, we check if the sum of the weights of the lightest and heaviest child exceeds the weight limit. If it doesn't, they can go on the same gondola. 
+
+**Time Complexity:** $\mathcal{O}(n\log n)$ (from sorting)
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int n, x, p[200000], num = 0;
+
+int main() {
+    cin >> n >> x;
+    for (int i = 0; i < n; i++) cin >> p[i];
+
+    sort(p, p + n); // Sort the weights from lightest to heaviest
+
+    int min_i = 0, max_i = n - 1;
+    while (min_i <= max_i) {
+        if (p[min_i] + p[max_i] <= x) min_i++; // If possible, pair lightest child with heaviest, move to next lightest child
+        num++, max_i--; // Increment number of gondolas, move to next heaviest child
+    }
+
+    cout << num << endl;
+    return 0;
+}
+``` 
+
+</CPPSection>
+
+</LanguageSection>
+
+## Solution 2 - Start with lightest
+
+We could also start with the lightest child and pair it with the heaviest child possible. Afterwards, we give each leftover child their own gondola.
+
+**Time Complexity:** $\mathcal{O}(n\log n)$ (from sorting)
 
 ```cpp
 #include <bits/stdc++.h>
