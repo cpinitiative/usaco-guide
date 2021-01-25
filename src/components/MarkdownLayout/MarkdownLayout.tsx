@@ -22,6 +22,7 @@ import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -67,6 +68,11 @@ export default function MarkdownLayout({
   const { userProgressOnModules, setModuleProgress, lang } = useContext(
     UserDataContext
   );
+  React.useEffect(() => {
+    if (lang !== 'showAll') {
+      updateLangURL(lang);
+    }
+  }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
@@ -87,6 +93,7 @@ export default function MarkdownLayout({
             }
             fields {
               division
+              gitAuthorTime
             }
             problems {
               uniqueID
@@ -124,12 +131,12 @@ export default function MarkdownLayout({
   // console.log(markdownData)
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
-  let problemIDs = [];
+  const problemIDs = [];
   const activeIDs = [];
   const prob_to_module = {};
 
-  for (let moduleLink of moduleLinks) {
-    for (let problem of moduleLink.probs) {
+  for (const moduleLink of moduleLinks) {
+    for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
       prob_to_module[uniqueID] = module.id;
     }
@@ -139,13 +146,13 @@ export default function MarkdownLayout({
     activeIDs.push(markdownData.id);
     const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
     // oops how to assert not -1
-    for (let problem of moduleLinks[ind].probs) {
+    for (const problem of moduleLinks[ind].probs) {
       const uniqueID = problem.uniqueID;
       problemIDs.push(uniqueID);
     }
   } else {
     moduleLinks.forEach(link => {
-      for (let problem of link.probs) {
+      for (const problem of link.probs) {
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
         }

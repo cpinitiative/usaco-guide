@@ -1,13 +1,11 @@
 ---
-id: poi-lightning-conductor
-source: POI
-title: Lightning Conductor
-author: Andi Qu, Benjamin Qi
+id: poi-08-maf
+source: POI 2008
+title: Mafia
+author: Benjamin Qi
 ---
 
-[Andi's Code](https://github.com/dolphingarlic/CompetitiveProgramming/blob/master/POI/POI%2011-lightning_conductor.cpp)
-
-Oops TL seems sorta tight to pass $\mathcal{O}(N\log N)$ ...
+Similar to "POI - Spies." Maximum is easy. For minimum, we want to choose a subset of participants of maximum size such that no participant in the subset shoots at another. This can again be done with a greedy strategy.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -215,61 +213,70 @@ void setIO(str s = "") {
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
 }
 
-int N;
-db stor[500001];
+int n, spy[MX], ST[MX], EN[MX], adj[MX];
+bitset<MX> vis, used;
 
-db eval(const pi& a, const int& b) { return a.s+stor[b-a.f]; }
+int sum;
 
-int bet(const pi& x, const pi& y) { // O(log N) check
-	if (x.s >= y.s) return N;
-	if (eval(x,y.f) < y.s) return y.f-1;
-	assert(x.f < y.f);
-	int lo = y.f, hi = N;
-	lo --;
-	while (lo < hi) {
-		int mid = (lo+hi+1)/2;
-		if (stor[mid-x.f]+x.s >= stor[mid-y.f]+y.s) lo = mid;
-		else hi = mid-1;
-	}
-	return lo;
-}
-
-// int bet(const pi& x, const pi& y) { // O(1) check
-// 	if (x.s >= y.s) return N;
-// 	db dif = (db)(y.f-x.f)/(y.s-x.s)-(y.s-x.s);
-// 	if (dif < 0) return y.f-1;
-// 	dif /= 2;
-// 	return (int)floor(min(N.0,y.f+dif*dif));
-// }
-
-vd solve(vi H) {
-	deque<pair<pi,int>> D; // store function, last good
-	auto ins = [&](pi p) {
-		while (1) {
-			if (!sz(D)) break;
-			D.bk.s = bet(D.bk.f,p); // last x such that D.bk is better than p
-			if (sz(D) > 1 && D[sz(D)-2].s >= D.bk.s) D.pop_back();
-			else break;
+void dfs(int _) {
+	vi st = {_};
+	while (sz(st)) {
+		int x = st.bk; vis[x] = 1;
+		if (ST[x] == EN[x]) {
+			sum += used[x];
+			if (sz(st) > 1) if (!used[x]) used[st[sz(st)-2]]  = 1;
+			st.pop_back(); continue;
 		}
-		D.pb({p,N});
-	};
-	vd res;
-	F0R(i,sz(H)) {
-		ins({i,H[i]});
-		while (sz(D) && D[0].s < i) D.pop_front();
-		res.pb(eval(D[0].f,i));
+		int t = adj[ST[x]++];
+		if (!vis[t]) st.pb(t);
 	}
-	return res;
 }
 
 int main() {
-	setIO(); re(N);
-	F0R(i,N+1) stor[i] = sqrt(i);
-	vi H(N); re(H);
-	vd v = solve(H);
-	reverse(all(H));
-	vd v2 = solve(H); reverse(all(v2));
-	reverse(all(H));
-	F0R(i,N) ps((int)ceil(max(v[i],v2[i]))-H[i]);
+	setIO(); re(n);
+	FOR(i,1,n+1) {
+		re(spy[i]);
+		ST[spy[i]] ++;
+	}
+	int ind = 0;
+	FOR(i,1,n+1) {
+		int tmp = ind; ind += ST[i];
+		ST[i] = tmp; EN[i] = ind;
+	}
+	FOR(i,1,n+1) adj[ST[spy[i]]++] = i;
+	FOR(i,1,n+1) ST[spy[i]]--;
+	int survive = 0;
+	FOR(i,1,n+1) survive += ST[i] == EN[i];
+	FOR(i,1,n+1) if (!vis[i]) {
+		int x = i, y = spy[i];
+		while (x != y) x = spy[x], y = spy[spy[y]];
+		vi cyc = {x}; while (spy[cyc.bk] != x) cyc.pb(spy[cyc.bk]);
+
+		bool isCyc = 1;
+		trav(t,cyc) if (EN[t] != ST[t]+1) isCyc = 0;
+		survive += sz(cyc) > 1 && isCyc;
+
+		trav(t,cyc) vis[t] = 1;
+		vector<bool> v;
+		trav(t,cyc) {
+			dfs(t);
+			v.pb(used[t]);
+		}
+		F0R(j,sz(v)) if (v[j] == 1) {
+			rotate(begin(v),begin(v)+j,end(v));
+			break;
+		}
+		if (v[0] == 0) {
+			sum += (sz(v)+1)/2;
+			continue;
+		}
+		int cur = 0;
+		F0R(j,sz(v)) {
+			if (v[j] == 0) cur ++;
+			else sum += cur/2, cur = 0;
+		}
+		sum += cur/2;
+	}
+	ps(sum,n-survive);
 }
 ```

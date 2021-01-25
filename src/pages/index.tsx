@@ -8,6 +8,7 @@ import Video from '../components/Video';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import TrustedBy from '../components/Index/TrustedBy';
+import ContributorsSection from '../components/Index/ContributorsSection';
 
 export default function IndexPage(props: PageProps) {
   const learnMoreRef = useRef();
@@ -462,10 +463,12 @@ export default function IndexPage(props: PageProps) {
 
       <AuthorsSection />
 
+      <ContributorsSection />
+
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
-            &copy; 2020 Competitive Programming Initiative.
+            &copy; 2021 Competitive Programming Initiative.
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}

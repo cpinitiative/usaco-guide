@@ -17,7 +17,10 @@ import HomeworkAssignmentSummary from './HomeworkAssignmentSummary';
 export const format = (timestamp: firebaseType.firestore.Timestamp) => {
   if (!timestamp) return;
   const date = moment(timestamp.toDate());
-  const diff = date.diff(moment(), 'days');
+  const diff = date
+    .clone()
+    .startOf('day')
+    .diff(moment().startOf('day'), 'days');
   if (diff === 0) {
     return date.format('[Today,] h:mm A');
   } else if (diff === 1) {

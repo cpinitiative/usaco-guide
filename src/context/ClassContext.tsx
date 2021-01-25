@@ -63,7 +63,13 @@ const ClassContext = createContext<{
     instructors: string[];
     joinCodes: string[];
     name: string;
-    studentsCanJoin: boolean;
+    students: {
+      id: string;
+      name: string;
+      email: string;
+      // lastRefresh: firebaseType.firestore.Timestamp;
+    }[];
+    bannedStudentIds: string[];
   };
 }>({
   loading: true,

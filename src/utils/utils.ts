@@ -1,7 +1,7 @@
 import MODULE_ORDERING from '../../content/ordering';
 import { ModuleInfo, ModuleLinkInfo } from '../models/module';
 
-export const getModule = (allModules, division) => {
+export const getModulesForDivision = (allModules, division) => {
   return MODULE_ORDERING[division].map(k => {
     // rip spaghetti code, clean this up
     if (typeof k === 'object') {
@@ -40,7 +40,8 @@ export function graphqlToModuleLinks(allMdx: any): ModuleLinkInfo[] {
         null,
         null,
         null,
-        cur.node.problems
+        cur.node.problems,
+        cur.node.fields.gitAuthorTime
       )
   );
 }
@@ -56,6 +57,7 @@ export function graphqlToModuleInfo(mdx: any): ModuleInfo {
     mdx.frontmatter.description,
     mdx.frontmatter.frequency,
     mdx.toc,
-    mdx.parent.relativePath
+    mdx.parent.relativePath,
+    mdx.fields.gitAuthorTime
   );
 }

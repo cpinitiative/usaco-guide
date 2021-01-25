@@ -39,6 +39,24 @@ export const components = {
   IncompleteSection,
   Asterisk,
   Youtube,
+  MATHDIV: props => {
+    return (
+      <div
+        className={props.className}
+        data-latex={`$$${props.latex}$$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
+  MATHSPAN: props => {
+    return (
+      <span
+        className={props.className}
+        data-latex={`$${props.latex}$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
 
   ...HTMLComponents,
 };
