@@ -1,14 +1,12 @@
 ---
 id: bin-jump
 title: 'Binary Jumping'
-author: Benjamin Qi
+author: Benjamin Qi, Neo Wang
 description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
 frequency: 3
 prerequisites:
   - func-graphs
 ---
-
-
 
 export const problems = {
 	sample: [
@@ -217,7 +215,82 @@ export const problems = {
 
 ### Solution
 
-<IncompleteSection />
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int N, Q;
+
+const int MX = 2e5+5;
+
+int up[MX][20]; // 18 is calculated by $\log_2 2e5$ but we can add padding to be safe
+
+vector<int> adj[MX]; // adjacency list
+
+void dfs(int v, int p) { // we keep track of the current node v and its parent p
+    up[v][0] = p;
+
+    FOR(i, 1, 20) {
+        if(up[v][i-1] != -1) up[v][i] = up[up[v][i-1]][i-1]; // construction of our ancestor tree
+        else up[v][i] = -1;
+    }
+
+    for(int e : adj[v]) if(e != p) dfs(e, v); // standard tree dfs
+}
+
+int query(int v, int j) { // a is our vertex, and j is the jump we make
+    if(v == -1 || j == 0) return v;
+    for(int i = 19; i >= 0; i--) { // start at our max value
+        if(j >= (1 << i)) return query(up[v][i], j - (1 << i));
+    }
+    return -1;
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    cin >> N >> Q;
+    FOR(i, 2, N+1) { // one based indexing
+        int a; cin >> a;
+        adj[a].push_back(i);
+        adj[i].push_back(a);
+    }
+
+    // memset(up, -1, sizeof up);
+
+    dfs(1, -1); // start at parent 1 (our root)
+
+    // uncomment below if you want to see the parent array
+
+    // F0R(i, N) {
+    //     F0R(j, 3) { // change this to the depth log_2(depth)
+    //         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
+    //     }
+    //     cerr << "\n";
+    // }
+
+    F0R(i, Q) {
+        int a, b;
+        cin >> a >> b;
+        cout << query(a, b) << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Problems
 
