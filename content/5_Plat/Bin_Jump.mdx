@@ -199,6 +199,12 @@ export const problems = {
 	],
 };
 
+<Info>
+
+Binary jumping is more commonly referred to as "binary lifting."
+
+</Info>
+
 ## Binary Jumping
 
 <FocusProblem problem={problems.sample[0]} />
@@ -206,7 +212,7 @@ export const problems = {
 ### Tutorial
 
 <Resources>
-	<Resource source="CPH" title="18.1 - Finding Ancestors">
+	<Resource source="CPH" title="18.1 - Finding Ancestors" >
 		{' '}
 	</Resource>
 	<Resource source="AryanshS" title="Binary Lifting" url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1" />
@@ -214,6 +220,18 @@ export const problems = {
 </Resources>
 
 ### Solution
+
+To solve this problem, we can use a standard binary lifting implementation where ```query(int v, int j)``` corresponds to the $j$th ancestor of v.
+
+In our ```query(int v, int j)``` if we ever encounter a value of $-1$ or $0$, then such a node does not exist and we can simply return its value. This is because the lowest number a node can be is $1$ (the root of the tree).
+
+To calculate the columns required for the ```up``` array, use the formula $\textrm{ceil}(\log_2{N})+1$ which in our case simplifies to $\textrm{ceil}(\log_2{(2\cdot 10^5)}) + 1 = 19$.
+
+<Info>
+
+It never hurts to add additional columns (as long as it's reasonable)!
+
+</Info>
 
 <LanguageSection>
 
@@ -233,7 +251,7 @@ int N, Q;
 
 const int MX = 2e5+5;
 
-int up[MX][20]; // 18 is calculated by $\log_2 2e5$ but we can add padding to be safe
+int up[MX][20]; // 19 is calculated with our expression but we can add padding to be safe.
 
 vector<int> adj[MX]; // adjacency list
 
@@ -266,8 +284,6 @@ int main() {
         adj[a].push_back(i);
         adj[i].push_back(a);
     }
-
-    // memset(up, -1, sizeof up);
 
     dfs(1, -1); // start at parent 1 (our root)
 
@@ -305,12 +321,12 @@ int main() {
 ### Tutorial
 
 <Resources>
-	<Resource source="CPH" title="18.3 - LCA Method 1" starred></Resource>
+	<Resource source="CPH" title="18.3 - LCA Method 1" starred />
 	<Resource
 		source="cp-algo"
 		title="LCA with Binary Lifting"
 		url="graph/lca_binary_lifting.html"
-	></Resource>
+	/>
 </Resources>
 
 <Optional title="Improvements">
