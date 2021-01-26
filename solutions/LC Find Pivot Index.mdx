@@ -30,12 +30,14 @@ public:
         
         psums.push_back(0);
         for(int i = 0; i<nums.size(); i++){
+            //Notice i in psums is always one less than the current index
             psums.push_back(psums[i] + nums[i]);
         }
         
 
         
         for(int i = 0; i<psums.size()-1; i++){
+            //Checking whether the left and the right are equal in area
             if(psums[i] - psums[0] == psums[nums.size()] - psums[i+1]){
                 return i;
             }
@@ -46,6 +48,7 @@ public:
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
@@ -57,12 +60,14 @@ class Solution {
         int[] psums = new int[nums.length+1];
         
         for(int i = 0; i<nums.length; i++){
+            //Notice i in psums is always one less than the index we are modifying
             psums[i+1] = psums[i] + nums[i];
         }
         
 
         
         for(int i = 0; i<psums.length-1; i++){
+            //Checking whether the left and the right are equal in area
             if(psums[i] - psums[0] == psums[nums.length] - psums[i+1]){
                 return i;
             }
