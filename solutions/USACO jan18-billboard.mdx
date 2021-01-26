@@ -2,12 +2,57 @@
 id: usaco-759
 source: USACO Bronze 2018 January
 title: Blocked Billboard II
-author: Melody Yu
+author: Melody Yu, Danh Ta Chi Thanh
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_billboard_bronze_jan18.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_billboard_bronze_jan18.html)
 
 <LanguageSection>
+<CPPSection>
+
+## C++ Implementation
+
+```cpp
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+void solve(){
+    int x[5],y[5];
+	for (int i=1;i<=4;++i){
+		cin >> x[i] >> y[i];
+	}
+	if (x[4]>=x[2] && x[3]<=x[1] && y[4]>=y[2] && y[3]<=y[1]){
+		cout << 0;
+	}
+	else if (x[3]<=x[1] && y[3]<=y[1] && y[4]>y[1] && x[4]>=x[2]){
+		cout << (x[2]-x[1])*(y[2]-y[4]);
+	}
+	else if (y[3]<y[2] && x[3]<=x[1] && y[4]>=y[2] && x[4]>=x[2]){
+		cout << (x[2]-x[1])*(y[3]-y[1]);
+	}
+	else if (x[4]>x[1] && x[3]<=x[1] && y[4]>=y[2] && y[3]<=y[1]){
+		cout << (x[2]-x[4])*(y[2]-y[1]);
+	}
+	else if (x[3]<x[2] && x[4]>=x[2] && y[4]>=y[2] && y[3]<=x[1]){
+		cout << (x[3]-x[1])*(y[2]-y[1]);
+	}
+	else cout << (x[2]-x[1])*(y[2]-y[1]);
+	return;
+}
+
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	freopen("billboard.in","r",stdin);
+	freopen("billboard.out","w",stdout);
+	solve();
+	return 0;
+}
+```
+
+</CPPSection>
+
 
 <PySection>
 
