@@ -48,12 +48,12 @@ export interface ProblemJSON {
 }
 export class ProblemWithDivisionInfo extends Problem {
   constructor(
-    public division: string,
-    public moduleId: string,
-    public moduleTitle: string,
-    public source: string,
-    public name: string,
-    public id: string,
+    public division: string | null,
+    public moduleId: string | null,
+    public moduleTitle: string | null,
+    public source: string | null,
+    public name: string | null,
+    public id: string | null,
     public difficulty?:
       | 'Very Easy'
       | 'Easy'
