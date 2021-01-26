@@ -18,6 +18,34 @@ $$
 If this returns true, we can return our answer because the problem wants the left-most index. If it finishes the for-loop without returning, it means there is no pivot index so return $-1$.
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+//Created by Qi Wang
+
+class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        vector<int> psums;
+        
+        psums.push_back(0);
+        for(int i = 0; i<nums.size(); i++){
+            psums.push_back(psums[i] + nums[i]);
+        }
+        
+
+        
+        for(int i = 0; i<psums.size()-1; i++){
+            if(psums[i] - psums[0] == psums[nums.size()] - psums[i+1]){
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
