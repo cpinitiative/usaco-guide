@@ -67,6 +67,8 @@ public:
 //Created by Qi Wang
 
 
+//Solution 1
+
 class Solution {
     public int pivotIndex(int[] nums) {
         int[] psums = new int[nums.length+1];
@@ -83,6 +85,29 @@ class Solution {
             if(psums[i] - psums[0] == psums[nums.length] - psums[i+1]){
                 return i;
             }
+        }
+        return -1;
+    }
+}
+
+
+//Solution 2
+
+class Solution {
+    public int pivotIndex(int[] nums) {        
+        int total = 0;
+        for(int num : nums)
+            total += num;
+        
+        int curSum = 0;
+        for(int i = 0; i<nums.length; i++){
+            //curSum is up to i not inclusive of i.
+            if(curSum == total - curSum - nums[i]){
+                return i;
+            }
+
+            //updating curSum
+            curSum += nums[i];
         }
         return -1;
     }
