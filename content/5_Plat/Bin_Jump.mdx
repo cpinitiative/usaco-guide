@@ -222,15 +222,24 @@ Binary jumping is more commonly referred to as "binary lifting."
 
 ### Solution
 
-To solve this problem, we can use a standard binary lifting implementation where ```query(int v, int j)``` corresponds to the $j$th ancestor of v.
+To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$th ancestor of $x$.
 
-In our ```query(int v, int j)``` if we ever encounter a value of $-1$ or $0$, then such a node does not exist and we can simply return its value. This is because the lowest number a node can be is $1$ (the root of the tree).
+In our ```jmp(int x, int d)``` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree). 
 
-To calculate the columns required for the ```up``` array, use the formula $\textrm{ceil}(\log_2{N})+1$ which in our case simplifies to $\textrm{ceil}(\log_2{(2\cdot 10^5)}) + 1 = 19$.
+In our ```jmp(int x, int d)``` implementation, we can test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $$i$$.
+
+<Spoiler title="Illustration of the jump method">
+
+![Binary Lifting Diagram](https://i.imgur.com/Mu1UZI4.png)
+
+</Spoiler>
+
+To calculate the columns required for the ```up``` array, use the formula $\textrm{ceil}(\log_2{N})$ which in our case simplifies to $\textrm{ceil}(\log_2{(2\cdot 10^5)}) = 18$.
+
 
 <Info>
 
-It never hurts to add additional columns (as long as it's reasonable)!
+It never hurts to add additional rows - or columns, depending on your implementation -  (as long as it's reasonable)!
 
 </Info>
 
@@ -250,29 +259,24 @@ using namespace std;
 
 int N, Q;
 
-const int MX = 2e5+5;
+const int MX = 2e5+5; // maximum N
+const int MS = 18; // 18 is calculated by $\log_2 2e5$
 
-int up[MX][20]; // 19 is calculated with our expression but we can add padding to be safe.
+int up[MS][MX]; 
 
 vector<int> adj[MX]; // adjacency list
 
-void dfs(int v, int p) { // we keep track of the current node v and its parent p
-    up[v][0] = p;
-
-    FOR(i, 1, 20) {
-        if(up[v][i-1] != -1) up[v][i] = up[up[v][i-1]][i-1]; // construction of our ancestor tree
-        else up[v][i] = -1;
+void dfs(int x) { // build jump table
+    FOR(i, 1, MS) up[i][x] = up[i-1][up[i-1][x]];
+    trav(y,adj[x]) if (y != up[0][x]) {
+        up[0][y]=x;
+        dfs(y);
     }
-
-    for(int e : adj[v]) if(e != p) dfs(e, v); // standard tree dfs
 }
 
-int query(int v, int j) { // a is our vertex, and j is the jump we make
-    if(v == -1 || j == 0) return v;
-    for(int i = 19; i >= 0; i--) { // start at our max value
-        if(j >= (1 << i)) return query(up[v][i], j - (1 << i));
-    }
-    return -1;
+int jmp(int x, int d) {
+    F0R(i, MS) if((d >> i) & 1) x = up[i][x];
+    return x ? x : -1; // modfication to return -1 if not found
 }
 
 int main() {
@@ -280,18 +284,19 @@ int main() {
     cin.tie(0);
 
     cin >> N >> Q;
-    FOR(i, 2, N+1) { // one based indexing
+
+    FOR(i, 2, N+1) {
         int a; cin >> a;
         adj[a].push_back(i);
         adj[i].push_back(a);
     }
 
-    dfs(1, -1); // start at parent 1 (our root)
+    dfs(1); // dfs from our root (1)
 
     // uncomment below if you want to see the parent array
 
-    // F0R(i, N) {
-    //     F0R(j, 3) { // change this to the depth log_2(depth)
+    // F0R(i, MS) {
+    //     FOR(j, 1, N+1) { // change this to the depth log_2(depth)
     //         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
     //     }
     //     cerr << "\n";
@@ -300,7 +305,7 @@ int main() {
     F0R(i, Q) {
         int a, b;
         cin >> a >> b;
-        cout << query(a, b) << "\n";
+        cout << jmp(a, b) << "\n";
     }
 }
 ```
