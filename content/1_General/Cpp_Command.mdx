@@ -326,7 +326,7 @@ co() { g++ -std=c++17 -O2 -o "${1%.*}" $1 -Wall; }
 run() { co $1 && ./${1%.*} & fg; }
 ```
 
-Now you can easily compile and run `name.cpp` from the command line with `co name.cpp && ./name` or `run name.cpp`. Note that all occurrences of `$1` in the function are replaced with `name.cpp`, while `${1%.*}` removes the file extension from `$1`.
+Now you can easily compile and run `name.cpp` from the command line with `co name.cpp && ./name` or `run name.cpp`. Note that all occurrences of `$1` in the function are replaced with `name.cpp`, while `${1%.*}` removes the file extension from `$1` to produce `name`.
 
 ### What is `& fg` for?
 
@@ -353,7 +353,7 @@ int main() {
 }
 ```
 
-According to the resource above, the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog`.
+According to the resource above, the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog.cpp`.
 
 If `& fg` is removed from the run command above then the terminal displays no message at all. Leaving it in produces the following (ignore the first two lines):
 
