@@ -21,28 +21,21 @@ author: Danh Ta Chi Thanh
 
 using namespace std;
 
-int a,b,c,ans,n; 
-
-void solve(){
-	cin >> a >> b >> c;
-	for (int i=0;i<1005;++i){
-		if (a*i>c) break;
-		for (int j=0;j<1005;++j){
-			n=a*i+b*j;
-			if (n>c) break;
-			ans=max(ans,n);
-		}
-	}
-	cout << ans << "\n";
-	return;
-}
-
 int main(){
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen("pails.in","r",stdin);
 	freopen("pails.out","w",stdout);
-	solve();
+	int a,b,c,ans=0;
+	cin >> a >> b >> c;
+	for (int i = 0; i < 1001; ++i) {
+		if (a*i > c) break;
+		for (int j = 0; j < 1001; ++j) {
+			int n = a*i + b*j;
+			if (n > c) break;
+			ans = max(ans,n);
+		}
+	}
+	cout << ans;
 	return 0;
 }
 
