@@ -159,23 +159,32 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
     probably suffices.
 
-4.  You should be able to compile with `g++-#`, where # is the version number (ex. 9). Running the following command
+4.  You should be able to compile with `g++-#`, where # is the version number (e.g., 10). Running the following command
 
     ```
-    g++-9 --version
+    g++-10 --version
     ```
 
     should display something like this:
 
     ```
-    g++-9 (Homebrew GCC 9.2.0_2) 9.2.0
-    Copyright (C) 2019 Free Software Foundation, Inc.
+    g++-10 (Homebrew GCC 10.2.0_2) 10.2.0
+    Copyright (C) 2020 Free Software Foundation, Inc.
     This is free software; see the source for copying conditions.  There is NO
     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     ```
 
-5.  If you want to be able to compile with just `g++`, write a shell alias! Aliases are discussed [here](TODO: link to alias section). Avoid overriding the system `g++` as that will almost surely cause problems.
+5.  If you want to be able to compile with just `g++`, write a shell alias! Put the following lines into your shell's rc file (`~/.bashrc` if you use `bash`, and `~/.zshrc` if you use `zsh`).
+
+    ```bash
+    alias g++=g++-10
+    ```
+
     Once you do so, `g++ --version` should now output the same thing as `g++-9 --version`.
+
+    Note: avoid overriding the system `g++` with symlinking or hard-linking as
+    that will almost surely cause problems. Don't worry if you don't know what
+    those terms mean.
 
 <!-- <Resources>
 	<Resource
