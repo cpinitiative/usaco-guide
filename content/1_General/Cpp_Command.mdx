@@ -136,7 +136,7 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
     If you previously installed these you may need to update them:
 
-    ```
+    ```bash
     softwareupdate --list # list updates
     softwareupdate -i -a # installs all updates
     ```
@@ -174,14 +174,8 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     ```
 
-5.  If you want to be able to compile with just `g++`, create a symbolic link as mentioned [here](https://stackoverflow.com/questions/28970935/osx-replace-gcc-version-4-2-1-with-4-9-installed-via-homebrew/28982564#28982564).
-
-    ```
-    cd /usr/local/bin
-    ln -fs g++-9 g++
-    ```
-
-    `g++ --version` should now output the same thing as `g++-9 --version`.
+5.  If you want to be able to compile with just `g++`, write a shell alias! Aliases are discussed [here](TODO: link to alias section). Avoid overriding the system `g++` as that will almost surely cause problems.
+    Once you do so, `g++ --version` should now output the same thing as `g++-9 --version`.
 
 <!-- <Resources>
 	<Resource
@@ -234,9 +228,22 @@ If you type some integer and then press enter, then the program should produce o
 g++ name.cpp -o name && ./name
 ```
 
+Don't be afraid, the `./name` will only run if `g++ name.cpp -o name` finished successfully. Such is the magic of `&&`!
+
 ### Redirecting Input & Output
 
-If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
+If you want to read standard input from `inp.txt`, use the following:
+```
+./name < inp.txt
+```
+
+If you want to write standard output to `out.txt`, then use the following:
+
+```
+./name > out.txt
+```
+
+They can also be used in conjunction, as shown below:
 
 ```
 ./name < inp.txt > out.txt
@@ -254,7 +261,7 @@ g++ -std=c++17 -O2 name.cpp -o name -Wall
 
 Explanation:
 
-- `-O2` tells `g++` to compile your code to run more quickly (see [here](https://www.rapidtables.com/code/linux/gcc/gcc-o.html))
+- `-O2` tells `g++` to compile your code to run more quickly (see [here](https://www.rapidtables.com/code/linux/gcc/gcc-o.html)). Note that `-O2` will slow down compilation time significantly. Think of it as a trade-off between runtime and compile time. 
 - `-std=c++17` allows you to use features that were added to C++ in 2017. USACO currently uses `-std=c++11`.
 - `-Wall` checks your program for common errors. See [Debugging](/general/debugging-lang/#warning-options) for more information.
 
