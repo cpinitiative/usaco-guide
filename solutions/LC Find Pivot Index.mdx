@@ -9,10 +9,10 @@ author: Qi Wang
 
 ## Solution 1
 
-The pivot index must have the same sum on its left and its right. To calculate this, we can create a prefix sum of the $\texttt{nums}$ array (in my solution it is cushioned with one $0$ at index $0$). Afterwards, all we need to do is to loop through every index from $0$ (inclusive) to $\texttt{nums}.length$ (exclusive) in the $\texttt{psums}$ array and check for:
+The pivot index must have the same sum on its left and its right. To calculate this, we can create a prefix sum of the $\texttt{nums}$ array (in my solution it is cushioned with one $0$ at index $0$). Loop through every index in the $\texttt{psums}$ array and check for:
 
 $$
-\texttt{psums}[i] - \texttt{psums}[0] == \texttt{psums}[\texttt{nums}.length] - \texttt{psums}[i+1]
+\texttt{psums}[i] == \texttt{psums}[\texttt{nums}.length] - \texttt{psums}[i+1]
 $$
 
 If this is true, we can return our current index because the problem wants the left-most index. If it finishes the for-loop without returning, it means there is no valid pivot index so return $-1$.
@@ -42,7 +42,7 @@ public:
         
         for(int i = 0; i<psums.size()-1; i++){
             //Checking whether the left and the right are equal in area
-            if(psums[i] - psums[0] == psums[nums.size()] - psums[i+1]){
+            if(psums[i] == psums[nums.size()] - psums[i+1]){
                 return i;
             }
         }
@@ -76,7 +76,7 @@ class Solution {
         
         for(int i = 0; i<psums.length-1; i++){
             //Checking whether the left and the right are equal in area
-            if(psums[i] - psums[0] == psums[nums.length] - psums[i+1]){
+            if(psums[i] == psums[nums.length] - psums[i+1]){
                 return i;
             }
         }
