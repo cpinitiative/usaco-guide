@@ -81,7 +81,9 @@ def usaco_stats():
 	month = ["dec","jan","feb","open"]
 	month_expand = ["December","January","February","US Open"]
 	offset = [0, 1, 1, 1]
-	year = [15, 16, 17, 18, 19]
+	# year = [15, 16, 17, 18, 19]
+	# offset = [0,1,1]
+	year = [20]
 	score_data = {"Bronze": {}, "Silver": {}, "Gold": {}, "Platinum": {}}
 	for division in ['bronze','silver','gold','platinum']:
 		for a in year:
