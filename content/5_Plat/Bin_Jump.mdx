@@ -265,14 +265,6 @@ int up[MS][MX];
 
 vector<int> adj[MX]; // adjacency list
 
-void dfs(int x) { // build jump table
-    FOR(i, 1, MS) up[i][x] = up[i-1][up[i-1][x]];
-    trav(y,adj[x]) {
-        up[0][y]=x;
-        dfs(y);
-    }
-}
-
 int jmp(int x, int d) {
     F0R(i, MS) if((d >> i) & 1) x = up[i][x];
     return x ?: -1; // modfication to return -1 if not found
@@ -286,10 +278,10 @@ int main() {
 
     FOR(i, 2, N+1) {
         int a; cin >> a;
-        adj[a].push_back(i);
+        up[0][i] = a;
     }
 
-    dfs(1); // dfs from our root (1)
+    FOR(i, 1, 18) FOR(j, 1, N+1) up[i][j] = up[i-1][up[i-1][j]]; // construct our parent array
 
     // uncomment below if you want to see the parent array
 
