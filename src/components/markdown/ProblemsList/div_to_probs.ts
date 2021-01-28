@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1083', '2021 January', 'Uddered but not Herd'],
+    ['1084', '2021 January', 'Even More Odd Photos'],
+    ['1085', '2021 January', 'Just Stalling'],
     ['1059', '2020 December', 'Do You Know Your ABCs?'],
     ['1060', '2020 December', 'Daisy Chains'],
     ['1061', '2020 December', 'Stuck in a Rut'],
@@ -65,6 +68,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1086', '2021 January', 'Dance Mooves'],
+    ['1087', '2021 January', 'No Time to Paint'],
+    ['1088', '2021 January', 'Spaced Out'],
     ['1062', '2020 December', 'Cowntagion'],
     ['1063', '2020 December', 'Rectangular Pasture'],
     ['1064', '2020 December', 'Stuck in a Rut'],
@@ -130,6 +136,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1089', '2021 January', 'Uddered but not Herd'],
+    ['1090', '2021 January', 'Telephone'],
+    ['1091', '2021 January', 'Dance Mooves'],
     ['1065', '2020 December', 'Replication'],
     ['1066', '2020 December', 'Bovine Genetics'],
     ['1067', '2020 December', 'Square Pasture'],
@@ -194,6 +203,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1092', '2021 January', 'Sum of Distances'],
+    ['1093', '2021 January', 'Minimum Cost Paths'],
+    ['1094', '2021 January', 'Paint by Letters'],
     ['1068', '2020 December', 'Sleeping Cows'],
     ['1069', '2020 December', 'Spaceship'],
     ['1070', '2020 December', 'Cowmistry'],
