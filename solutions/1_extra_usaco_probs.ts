@@ -6,7 +6,6 @@ import { Problem } from '../content/models';
 // to be included in USACO division table
 
 export default [
-  new Problem('Silver', 'Spaced Out', '1088', 'Normal', false, ['Greedy'], ''),
   new Problem(
     'Silver',
     'No Time To Paint',

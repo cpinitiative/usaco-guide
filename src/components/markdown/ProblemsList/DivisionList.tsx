@@ -181,9 +181,9 @@ export function DivisionList(props): JSX.Element {
   for (const moduleLink of moduleLinks) {
     for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      // if (moduleLink.id === 'eulers-formula') {
-      //   console.log('UNIQUE ID', uniqueID, problem.tags);
-      // }
+      if (moduleLink.id === 'eulers-formula') {
+        console.log('UNIQUE ID', uniqueID, problem.tags);
+      }
       probToLink[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
       probToTags[uniqueID] = problem.tags;
       probToDifficulty[uniqueID] = problem.difficulty;
