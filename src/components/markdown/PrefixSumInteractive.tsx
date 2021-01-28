@@ -8,9 +8,13 @@ const PrefMatrix = [
   [0, 7, 5, 4, 2, 3],
 ];
 
-const PrefixSumInteractive = () => {
+const PrefixSumInteractive = ({ demo2 = false }) => {
   const prefI = 2;
   const prefJ = 3;
+  const A = 3,
+    B = 4,
+    a = 2,
+    b = 2;
   // [x0, y0, x1, y1, weight?]
   const [highlightRect, setHighlightRect] = React.useState(null);
   const [rectangles, setRectangles] = React.useState([]);
@@ -28,7 +32,9 @@ const PrefixSumInteractive = () => {
           : acc,
       0
     );
-    if (weight === -1) {
+    if (weight == -2) {
+      classes.push('bg-red-200 dark:bg-red-700');
+    } else if (weight === -1) {
       classes.push('bg-red-100 dark:bg-red-800');
     } else if (weight === 1) {
       classes.push('bg-blue-100 dark:bg-blue-900');
@@ -79,20 +85,38 @@ const PrefixSumInteractive = () => {
         style={{ minWidth: '32rem' }}
       >
         <div className="space-y-2 text-right">
-          {renderStep([0, 0, prefI - 1, prefJ, 1], 'add prefix[i-1][j]')}
-          {renderStep([0, 0, prefI, prefJ - 1, 1], 'add prefix[i][j-1]')}
-          {renderStep(
-            [0, 0, prefI - 1, prefJ - 1, -1],
-            'subtract prefix[i-1][j-1]'
+          {demo2 ? (
+            <>
+              {renderStep([0, 0, A, B, 1], 'add prefix[A][B]')}
+              {renderStep([0, 0, a - 1, B, -1], 'subtract[a-1][B]')}
+              {renderStep([0, 0, A, b - 1, -1], 'subtract prefix[A][b-1]')}
+              {renderStep([0, 0, a - 1, b - 1, 1], 'add prefix[a-1][b-1]')}
+              <div
+                className="font-mono p-1"
+                onMouseEnter={() => setHighlightRect([a, b, A, B])}
+                onMouseLeave={() => setHighlightRect(null)}
+              >
+                to get our result
+              </div>
+            </>
+          ) : (
+            <>
+              {renderStep([0, 0, prefI - 1, prefJ, 1], 'add prefix[i-1][j]')}
+              {renderStep([0, 0, prefI, prefJ - 1, 1], 'add prefix[i][j-1]')}
+              {renderStep(
+                [0, 0, prefI - 1, prefJ - 1, -1],
+                'subtract prefix[i-1][j-1]'
+              )}
+              {renderStep([prefI, prefJ, prefI, prefJ, 1], 'add array[i][j]')}
+              <div
+                className="font-mono p-1"
+                onMouseEnter={() => setHighlightRect([0, 0, prefI, prefJ])}
+                onMouseLeave={() => setHighlightRect(null)}
+              >
+                to get prefix[i][j]
+              </div>
+            </>
           )}
-          {renderStep([prefI, prefJ, prefI, prefJ, 1], 'add array[i][j]')}
-          <div
-            className="font-mono p-1"
-            onMouseEnter={() => setHighlightRect([0, 0, prefI, prefJ])}
-            onMouseLeave={() => setHighlightRect(null)}
-          >
-            to get prefix[i][j]
-          </div>
         </div>
         <div className="text-center relative">
           {PrefMatrix.map(renderRow)}
