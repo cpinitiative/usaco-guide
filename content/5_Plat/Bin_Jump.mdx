@@ -222,11 +222,11 @@ Binary jumping is more commonly referred to as "binary lifting."
 
 ### Solution
 
-To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$th ancestor of $x$.
+To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$-th ancestor of $x$.
 
 In our ```jmp(int x, int d)``` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree). 
 
-In our ```jmp(int x, int d)``` implementation, we can test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $$i$$.
+In our ```jmp(int x, int d)``` implementation, we can test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $0, 1, 2$ (in that order) from the right.
 
 <Spoiler title="Illustration of the jump method">
 
@@ -234,7 +234,7 @@ In our ```jmp(int x, int d)``` implementation, we can test if we jump in powers 
 
 </Spoiler>
 
-To calculate the columns required for the ```up``` array, use the formula $\textrm{ceil}(\log_2{N})$ which in our case simplifies to $\textrm{ceil}(\log_2{(2\cdot 10^5)}) = 18$.
+To calculate the columns required for the ```up``` array, use the formula $\lceil (\log_2{N}) \rceil$ which in our case simplifies to $\lceil (\log_2{(2\cdot 10^5)})\rceil = 18$.
 
 
 <Info>
@@ -276,7 +276,7 @@ void dfs(int x) { // build jump table
 
 int jmp(int x, int d) {
     F0R(i, MS) if((d >> i) & 1) x = up[i][x];
-    return x ? x : -1; // modfication to return -1 if not found
+    return x ?: -1; // modfication to return -1 if not found
 }
 
 int main() {
