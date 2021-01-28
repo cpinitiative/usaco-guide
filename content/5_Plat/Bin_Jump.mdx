@@ -267,7 +267,7 @@ vector<int> adj[MX]; // adjacency list
 
 void dfs(int x) { // build jump table
     FOR(i, 1, MS) up[i][x] = up[i-1][up[i-1][x]];
-    trav(y,adj[x]) if (y != up[0][x]) {
+    trav(y,adj[x]) {
         up[0][y]=x;
         dfs(y);
     }
@@ -287,7 +287,6 @@ int main() {
     FOR(i, 2, N+1) {
         int a; cin >> a;
         adj[a].push_back(i);
-        adj[i].push_back(a);
     }
 
     dfs(1); // dfs from our root (1)
