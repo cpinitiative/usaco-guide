@@ -21,51 +21,6 @@ If this is true, we can return our current index because the problem wants the l
 
 <CPPSection>
 
-</CPPSection>
-
-<JavaSection>
-
-</JavaSection>
-
-<PySection>
-
-</PySection>
-
-</LanguageSection>
-
-## Solution 2
-
-The alternate solution does not require an array to store the sums. Instead, we only need the total sum of the array and the current sum at each index (exclusive of index). With this we check for:
-
-$$
-\texttt{curSum} == \texttt{total} - \texttt{curSum} - \texttt{nums}[i];
-$$
-
-If this is true, we can return our current index because the problem wants the left-most index. If it finishes the for-loop without returning, it means there is no valid pivot index so return $-1$.
-
-Note: This is technically the same solution as solution 1, but it is another way to think about approaching this question.
-
-<LanguageSection>
-
-<CPPSection>
-
-</CPPSection>
-
-<JavaSection>
-
-</JavaSection>
-
-<PySection>
-
-</PySection>
-
-</LanguageSection>
-
-<LanguageSection>
-<CPPSection>
-
-## C++ Implmentation
-
 ```cpp
 //Created by Qi Wang
 
@@ -92,6 +47,90 @@ public:
         return -1;
     }
 };
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+//Created by Qi Wang
+
+
+//Solution 1
+
+class Solution {
+    public int pivotIndex(int[] nums) {
+        int[] psums = new int[nums.length+1];
+        
+        for(int i = 0; i<nums.length; i++){
+            //Notice i in psums is always one less than the index we are modifying
+            psums[i+1] = psums[i] + nums[i];
+        }
+        
+
+        
+        for(int i = 0; i<psums.length-1; i++){
+            //Checking whether the left and the right are equal in area
+            if(psums[i] - psums[0] == psums[nums.length] - psums[i+1]){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+# Created by Qi Wang
+
+# Solution 1
+
+class Solution:
+    def pivotIndex(self, nums: List[int]) -> int:
+        psums = [0]
+        for i in range(len(nums)):
+            # Notice i in psums is always one less than the current index
+            psums.append(psums[i] + nums[i]);
+        
+        for i in range(len(nums)):
+            # Checking whether the left and the right are equal in area
+            if psums[i] == psums[len(nums)] - psums[i+1]:
+                return i;
+            
+        return -1;
+```
+
+</PySection>
+
+</LanguageSection>
+
+
+## Solution 2
+
+The alternate solution does not require an array to store the sums. Instead, we only need the total sum of the array and the current sum at each index (exclusive of index). With this we check for:
+
+$$
+\texttt{curSum} == \texttt{total} - \texttt{curSum} - \texttt{nums}[i];
+$$
+
+If this is true, we can return our current index because the problem wants the left-most index. If it finishes the for-loop without returning, it means there is no valid pivot index so return $-1$.
+
+Note: This is technically the same solution as solution 1, but it is another way to think about approaching this question.
+
+<LanguageSection>
+
+<CPPSection>
+
+## C++ Implmentation
+
+```cpp
+//Created by Qi Wang
 
 //Solution 2
 class Solution {
@@ -127,30 +166,6 @@ public:
 //Created by Qi Wang
 
 
-//Solution 1
-
-class Solution {
-    public int pivotIndex(int[] nums) {
-        int[] psums = new int[nums.length+1];
-        
-        for(int i = 0; i<nums.length; i++){
-            //Notice i in psums is always one less than the index we are modifying
-            psums[i+1] = psums[i] + nums[i];
-        }
-        
-
-        
-        for(int i = 0; i<psums.length-1; i++){
-            //Checking whether the left and the right are equal in area
-            if(psums[i] - psums[0] == psums[nums.length] - psums[i+1]){
-                return i;
-            }
-        }
-        return -1;
-    }
-}
-
-
 //Solution 2
 
 class Solution {
@@ -183,22 +198,6 @@ class Solution {
 
 ```py
 # Created by Qi Wang
-
-# Solution 1
-
-class Solution:
-    def pivotIndex(self, nums: List[int]) -> int:
-        psums = [0]
-        for i in range(len(nums)):
-            # Notice i in psums is always one less than the current index
-            psums.append(psums[i] + nums[i]);
-        
-        for i in range(len(nums)):
-            # Checking whether the left and the right are equal in area
-            if psums[i] == psums[len(nums)] - psums[i+1]:
-                return i;
-            
-        return -1;
 
 # Solution 2
 
