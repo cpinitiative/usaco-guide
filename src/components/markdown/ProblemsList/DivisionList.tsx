@@ -249,7 +249,7 @@ export function DivisionList(props): JSX.Element {
       if (probInfo[1].includes('December')) {
         year++;
       }
-      let season = `${year - 1} - ${year}`;
+      const season = `${year - 1} - ${year}`;
       if (!(season in divisionToSeasonToProbs[division])) {
         divisionToSeasonToProbs[division][season] = [];
       }
