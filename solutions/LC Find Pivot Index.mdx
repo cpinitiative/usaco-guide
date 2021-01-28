@@ -144,18 +144,25 @@ class Solution {
 <PySection>
 
 ```py
+# Created by Qi Wang
+
+# Solution 1
 
 class Solution:
     def pivotIndex(self, nums: List[int]) -> int:
         psums = [0]
         for i in range(len(nums)):
+            # Notice i in psums is always one less than the current index
             psums.append(psums[i] + nums[i]);
         
         for i in range(len(nums)):
+            # Checking whether the left and the right are equal in area
             if psums[i] == psums[len(nums)] - psums[i+1]:
                 return i;
             
         return -1;
+
+# Solution 2
 
 class Solution:
     def pivotIndex(self, nums: List[int]) -> int:
