@@ -73,7 +73,7 @@ const probSources = {
   ],
   DMOJ: [
     'https://dmoj.ca/problem/',
-    'Don Mills Online Judge',
+    'DMOJ',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
   FHC: [

@@ -358,7 +358,7 @@ Special functionality based on source:
     	HE: 'HackerEarth',
     	AC: 'AtCoder',
     	CC: 'CodeChef',
-    	DMOJ: 'Don Mills Online Judge',
+    	DMOJ: 'DMOJ',
     	SPOJ: 'Sphere Online Judge',
     	YS: 'Library Checker',
     	LC: 'LeetCode',
