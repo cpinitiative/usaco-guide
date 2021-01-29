@@ -1,0 +1,102 @@
+---
+id: cpp-setup-windows
+title: (Optional) Setting up C++ on Windows
+author: Shourya Bansal, @wastingtime#1534
+description: Doing the difficult task of setting up C++ on Windows
+prerequisites:
+    - cpp-command
+---
+### IDEs
+
+[Visual Studio](https://visualstudio.microsoft.com/) and [CLion](https://www.jetbrains.com/clion/) are popular IDEs for
+developing C++ applications on Windows. Although they are good for developing applications, they can be rather
+cumbersome when writing individual code files for competitive programming. For this reason, many prefer to use a text
+editor such as [Visual Studio Code](https://code.visualstudio.com/) (not to be confused with Visual Studio).
+
+
+<Resources>
+    <Resource
+        source="Microsoft"
+        title="Set Up Visual Studio"
+        url="https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-160"
+    >
+        Setting Up Visual Studio
+    </Resource>
+    <Resource
+        source="Microsoft"
+        title="Set Up Visual Studio Code"
+        url="https://code.visualstudio.com/docs/setup/windows"
+    >
+        Installing VS Code
+    </Resource>
+</Resources>
+
+### Compilers
+
+There are several ways to get compiler support working on windows. Depending on your preference, you may choose one.
+
+#### MinGW
+
+If you want to keep the ease of use and simplicity of Linux C++, with the ability to use commands like `g++` and easily
+include `<bits/stdc++.h>`, you can install the compiler MinGW. This is a version of the `g++` compiler from Linux
+available on Windows. If you are using VS Code, setting up MinGW can be more difficult, but there are great guides to
+make the process easier.
+
+<Resources>
+    <Resource
+        title="MinGW Installation"
+        url="https://tinyurl.com/mingw-usaco"
+    >
+    The MinGW Installer
+    </Resource>
+    <Resource
+        title="MinGW with VS Code"
+        url="https://code.visualstudio.com/docs/cpp/config-mingw"
+    >
+    Setting Up MinGW with VS Code
+    </Resource>
+</Resources>
+
+#### Microsoft Compiler Toolset
+
+Microsoft's Visual C++ Compiler is the official compiler for compiling programs for Windows and can be installed either
+via installing the relevant packages with Visual Studio 2019 or the build tools from their website. More information
+on its installation can be found
+[in their documentation](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160).
+
+In order to get a similar library to `<bits/stdc++.h>` you can use the following template:
+
+```cpp
+#ifdef _WIN32
+#include <__msvc_all_public_headers.hpp>
+#endif
+#ifdef __linux__
+#include <bits/stdc++.h>
+#endif
+using namespace std;
+```
+
+This checks if the compiler is compiling for windows (your local machine) or if it is compiling for the remote judge and
+subsequently includes the correct libraries for the system.
+
+*Note: this comes with the same consequences as using `<bits/stdc++.h>` for the same reasons*.
+
+#### Windows Subsystem for Linux
+
+Windows Subsystem for Linux, commonly referred to as WSL, acts as a compatibility layer, allowing you to install and run
+linux executables. This means that you can install `g++`, use `g++`, and consequently include `<bits/stdc++.h>`. To
+install the necessary tools on WSL.
+
+To install the necessary tools after setting up WSL, you can run the following commands.
+
+On Debian based distributions like Ubuntu:
+```sh
+sudo apt-get install build-essential
+```
+
+On Arch based distributions like Arch Linux:
+```sh
+sudo pacman -Sy base-devel
+```
+
+More information can be found on the [Microsoft website](https://docs.microsoft.com/en-us/windows/wsl/).

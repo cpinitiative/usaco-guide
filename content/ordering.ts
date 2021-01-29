@@ -57,6 +57,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'cpp-command',
         'debugging-lang',
         'fast-io',
+        'cpp-setup-windows',
         'generic',
         'lambda',
       ],
