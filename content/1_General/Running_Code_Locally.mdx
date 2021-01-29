@@ -1,7 +1,7 @@
 ---
 id: running-code-locally
 title: Running Code Locally
-author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang
+author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang, Shourya Bansal, @wastingtime#1534
 description: Options for running your language of choice locally.
 prerequisites:
  - running-code-online
@@ -225,7 +225,87 @@ If you install GCC as described later in the module linked above, then you shoul
 
 ### Windows
 
-Geany or CodeBlocks?
+Your best options for text editors during competitions will probably be either Geany, CodeBlocks, or Visual Studio Code.
+The decision comes down solely to your preference.
+
+If you want to get the full functionality of C++ on your Windows Machine, you should install one of the following
+compilers:
+
+#### MinGW
+
+If you want to keep the ease of use and simplicity of Linux C++, including the ability to use commands like `g++` and
+easily include `<bits/stdc++.h>`, you can install the compiler MinGW. This is a version of the `g++` compiler from Linux
+available on Windows. If you are using VS Code, setting up MinGW can be more difficult, but there are great guides to
+make the process easier.
+
+<Resources>
+    <Resource
+        title="MinGW Installation"
+        url="https://tinyurl.com/mingw-usaco"
+    >
+    The MinGW Installer
+    </Resource>
+    <Resource
+        title="MinGW with VS Code"
+        url="https://code.visualstudio.com/docs/cpp/config-mingw"
+    >
+    Setting Up MinGW with VS Code
+    </Resource>
+</Resources>
+
+#### Microsoft Compiler Toolset
+
+Microsoft's Visual C++ Compiler is the official compiler for compiling programs for Windows and can be installed either
+via installing the relevant packages with Visual Studio 2019 or the build tools from their website. More information
+on its installation can be found in their documentation.
+
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Microsoft Compiler Toolset Documentation"
+		url="https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160"
+	>
+	The Visual Studio Documentation
+	</Resource>
+</Resources>
+
+In order to get a similar library to `<bits/stdc++.h>` you can use the following template, which automatically swaps
+between `<bits/stdc++.h>` and Microsoft's variant depending on the system running it:
+
+```cpp
+#ifdef _WIN32
+#include <__msvc_all_public_headers.hpp>
+#endif
+#ifdef __linux__
+#include <bits/stdc++.h>
+#endif
+using namespace std;
+```
+
+This checks if the compiler is compiling for windows (your local machine) or if it is compiling for the remote judge and
+subsequently includes the correct libraries for the system. This comes with the same consequences as using
+`<bits/stdc++.h>` for the same reasons.
+
+*Note: As USACO has now disallowed the use of templates during competitions, if you want to be able to get the
+functionality of `<bits/stdc++.h>` on your local machine, you should use MinGW instead.*
+
+#### Windows Subsystem for Linux
+
+Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel within you windows installation,
+allowing you to use Linux binaries without having to use Linux as your main Operating System. This means that you can
+install `g++`, use `g++`, and consequently include `<bits/stdc++.h>`.
+
+To install the necessary tools after setting up WSL, you can run the following commands.
+
+On Debian based distributions like Ubuntu:
+```sh
+sudo apt-get install build-essential
+```
+
+On Arch based distributions like Arch Linux:
+```sh
+sudo pacman -Sy base-devel
+```
 
 ### Mac
 
