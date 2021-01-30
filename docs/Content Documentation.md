@@ -360,7 +360,7 @@ Special functionality based on source:
     	HE: 'HackerEarth',
     	AC: 'AtCoder',
     	CC: 'CodeChef',
-    	DMOJ: 'DMOJ Modern Online Judge',
+    	DMOJ: 'DMOJ: Modern Online Judge',
     	SPOJ: 'Sphere Online Judge',
     	YS: 'Library Checker',
     	LC: 'LeetCode',
