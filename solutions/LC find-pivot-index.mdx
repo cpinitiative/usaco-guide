@@ -30,22 +30,20 @@ If this is true, we can return our current index because the problem wants the l
 //Created by Qi Wang
 class Solution {
 public:
-    int pivotIndex(vector<int>& nums) {
-        vector<int> psums;
-        
-        //Constructing psums
-        psums.push_back(0);
-        for (auto &num : nums) psums.push_back(psums.back()+num);
-        
-        
-        for(int i = 0; i<psums.size()-1; i++){
-            //Checking whether the left and the right are equal in area
-            if(psums[i] == psums[nums.size()] - psums[i+1]){
-                return i;
-            }
-        }
-        return -1;
-    }
+	int pivotIndex(vector<int>& nums) {
+		vector<int> psums{0};
+		//Constructing psums
+		for (int num : nums) psums.push_back(psums.back()+num);
+		
+		
+		for(int i = 0; i<psums.size()-1; i++){
+			//Checking whether the left and the right are equal in area
+			if(psums[i] == psums[nums.size()] - psums[i+1]){
+				return i;
+			}
+		}
+		return -1;
+	}
 };
 ```
 
@@ -58,22 +56,22 @@ public:
 ```java
 //Created by Qi Wang
 class Solution {
-    public int pivotIndex(int[] nums) {
-        List<Integer> psums = new ArrayList<>();
-        
-        //Constructing psums
-        psums.add(0);
-        for (int num : nums) psums.add(psums.get(psums.size()-1)+num);
-        
-        
-        for(int i = 0; i<psums.length-1; i++){
-            //Checking whether the left and the right are equal in area
-            if(psums.get(i) == psums.get(nums.length) - psums.get(i+1)){
-                return i;
-            }
-        }
-        return -1;
-    }
+	public int pivotIndex(int[] nums) {
+		List<Integer> psums = new ArrayList<>();
+		
+		//Constructing psums
+		psums.add(0);
+		for (int num : nums) psums.add(psums.get(psums.size()-1)+num);
+		
+		
+		for(int i = 0; i<psums.length-1; i++){
+			//Checking whether the left and the right are equal in area
+			if(psums.get(i) == psums.get(nums.length) - psums.get(i+1)){
+				return i;
+			}
+		}
+		return -1;
+	}
 }
 ```
 
@@ -86,18 +84,18 @@ class Solution {
 ```py
 # Created by Qi Wang
 class Solution:
-    def pivotIndex(self, nums: List[int]) -> int:
-        psums = [0]
-        for i in range(len(nums)):
-            # Notice i in psums is always one less than the current index
-            psums.append(psums[i] + nums[i]);
-        
-        for i in range(len(nums)):
-            # Checking whether the left and the right are equal in area
-            if psums[i] == psums[len(nums)] - psums[i+1]:
-                return i;
-            
-        return -1;
+	def pivotIndex(self, nums: List[int]) -> int:
+		psums = [0]
+		for i in range(len(nums)):
+			# Notice i in psums is always one less than the current index
+			psums.append(psums[i] + nums[i]);
+		
+		for i in range(len(nums)):
+			# Checking whether the left and the right are equal in area
+			if psums[i] == psums[len(nums)] - psums[i+1]:
+				return i;
+			
+		return -1;
 ```
 
 </PySection>
@@ -127,22 +125,22 @@ Note: This is technically the same solution as solution 1, but it is another way
 //Created by Qi Wang
 class Solution {
 public:
-    int pivotIndex(vector<int>& nums) {      
-        int total = 0;
-        for(auto &x : nums)
-            total += x;
-        
-        int curSum = 0;
-        for(int i = 0; i<nums.size(); i++){
-            //curSum is up to i not inclusive of i.
-            if(curSum == total - curSum - nums[i]){
-                return i;
-            }
-            //updating curSum
-            curSum += nums[i];
-        }
-        return -1;
-    }
+	int pivotIndex(vector<int>& nums) {      
+		int total = 0;
+		for(int x : nums)
+			total += x;
+		
+		int curSum = 0;
+		for(int i = 0; i<nums.size(); i++){
+			//curSum is up to i not inclusive of i.
+			if(curSum == total - curSum - nums[i]){
+				return i;
+			}
+			//updating curSum
+			curSum += nums[i];
+		}
+		return -1;
+	}
 };
 ```
 
@@ -155,22 +153,22 @@ public:
 ```java
 //Created by Qi Wang
 class Solution {
-    public int pivotIndex(int[] nums) {        
-        int total = 0;
-        for(int num : nums)
-            total += num;
-        
-        int curSum = 0;
-        for(int i = 0; i<nums.length; i++){
-            //curSum is up to i not inclusive of i.
-            if(curSum == total - curSum - nums[i]){
-                return i;
-            }
-            //updating curSum
-            curSum += nums[i];
-        }
-        return -1;
-    }
+	public int pivotIndex(int[] nums) {        
+		int total = 0;
+		for(int num : nums)
+			total += num;
+		
+		int curSum = 0;
+		for(int i = 0; i<nums.length; i++){
+			//curSum is up to i not inclusive of i.
+			if(curSum == total - curSum - nums[i]){
+				return i;
+			}
+			//updating curSum
+			curSum += nums[i];
+		}
+		return -1;
+	}
 }
 ```
 
@@ -183,18 +181,17 @@ class Solution {
 ```py
 # Created by Qi Wang
 class Solution:
-    def pivotIndex(self, nums: List[int]) -> int:
-        total = sum(nums);
-        
-        curSum = 0;
-        for i in range(len(nums)):
-            # curSum is up to i not inclusive of i.
-            if curSum == total - curSum - nums[i]:
-                return i;
-            # updating curSum    
-            curSum += nums[i];
-        return -1;
-        
+	def pivotIndex(self, nums: List[int]) -> int:
+		total = sum(nums);
+		
+		curSum = 0;
+		for i in range(len(nums)):
+			# curSum is up to i not inclusive of i.
+			if curSum == total - curSum - nums[i]:
+				return i;
+			# updating curSum    
+			curSum += nums[i];
+		return -1;
 ```
 
 </PySection>
