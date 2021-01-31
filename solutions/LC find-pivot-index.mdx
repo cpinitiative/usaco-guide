@@ -11,7 +11,11 @@ author: Qi Wang
 
 The pivot index must have the same sum on its left and its right. To calculate this, we can create a prefix sum of the $\texttt{nums}$ array (in my solution it is cushioned with one $0$ at index $0$). Loop through every index in the $\texttt{psums}$ array and check for:
 
-`psums[i] == psums[nums.size()] - psums[i+1]`
+$$
+
+\texttt{psums}[i] {=} \texttt{psums}[\text{size}(\texttt{nums})] - \texttt{psums}[i+1]
+
+$$
 
 If this is true, we can return our current index because the problem wants the left-most index. If it finishes the for-loop without returning, it means there is no valid pivot index so return $-1$.
 
@@ -114,7 +118,11 @@ class Solution:
 
 The alternate solution does not require an array to store the sums. Instead, we only need the total sum of the array and the current sum at each index (exclusive of index). With this we check for:
 
-`curSum == total - curSum - nums[i];`
+$$
+
+\texttt{curSum} {=} \texttt{total} - \texttt{curSum} - \texttt{nums}[i]
+
+$$
 
 Note: This is technically the same solution as solution 1, but it is another way to think about approaching this question.
 
