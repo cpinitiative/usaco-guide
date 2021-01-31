@@ -2,10 +2,10 @@
 id: usaco-595
 source: USACO Bronze 2016 January
 title: Subsequences Summing to Sevens
-author: Óscar Garries
+author: thetazero
 ---
 
-[Official Analysis](http://www.usaco.org/currrent/data/sol_div7_silver_jan16.html)
+[Official Analysis](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
 
 <LanguageSection>
 <CPPSection>
@@ -18,25 +18,25 @@ author: Óscar Garries
 using namespace std;
 
 int main(){
-  freopen("div7.in", "r", stdin);
-  freopen("div7.out", "w", stdout);
-  int n;
-  cin >> n;
-  vector<int> pref(n+1)
-  int ans=0;
-  vector<int> first(7, -1);
-  first[0]=0;
-  for(int i=1;i<=n;i++){
-    int x;
-    cin >> x;
-    pref[i]=(pref[i-1]+x)%7;
-    if(first[pref[i]]==-1){
-      first[pref[i]]=i;
-    }else{
-      ans=max(ans, i-first[pref[i]]);
-    }
-  }
-  cout << ans << endl;
+	freopen("div7.in", "r", stdin);
+	freopen("div7.out", "w", stdout);
+	int n;
+	cin >> n;
+	vector<int> pref(n+1);
+	int ans=0;
+	vector<int> first(7, -1);
+	first[0]=0;
+	for(int i=1;i<=n;i++){
+		int x;
+		cin >> x;
+		pref[i]=(pref[i-1]+x)%7;
+		if(first[pref[i]]==-1){
+			first[pref[i]]=i;
+		}else{
+			ans=max(ans, i-first[pref[i]]);
+		}
+	}
+	cout << ans << endl;
 }
 ```
 
