@@ -14,7 +14,8 @@ author: Qi Wang
 <CPPSection>
 
 ```cpp
-//Official Solution
+//Official Solution modified by Qi Wang
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -37,7 +38,7 @@ void setIO(string name) {
 const int MX = 100005;
 
 int N,M,comp[MX],num;
-char col[MX];
+bool col[MX];
 vi adj[MX];
  
 void dfs(int x) {
@@ -49,18 +50,21 @@ void dfs(int x) {
 int main() {
 	setIO("milkvisits"); cin >> N >> M;
 	string s; cin >> s;
-	FOR(i,1,N+1) col[i] = s[i-1];
+	FOR(i,1,N+1) col[i] = s[i-1]=='G';
 	F0R(i,N-1) {
 		int A,B; cin >> A >> B;
 		adj[A].pb(B), adj[B].pb(A);
 	}
+
 	FOR(i,1,N+1) if (!comp[i]) {
 		num ++;
+        //Making Connected Components
 		dfs(i);
 	}
+
 	F0R(i,M) {
 		int A,B; char C; cin >> A >> B >> C;
-		if (col[A] == C || comp[A] != comp[B]) cout << 1;
+		if (col[A] == (C=='G') || comp[A] != comp[B]) cout << 1;
 		else cout << 0;
 	}
 	cout << "\n";
@@ -78,28 +82,27 @@ import java.util.*;
 import java.io.*;
 
 public class milkvisit {
-    static int N, M, q;
-    static int[] F, C;
-    static boolean[] vis;
-    static List<Integer>[] adjList;
+    static int N, M, num=1;
+    static boolean[] comp;
+    static int[] C;
+    static List<Integer>[] adj;
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
         InputReader in = new InputReader("milkvisits.in");
 
         N = in.nextInt();
         M = in.nextInt();
-        F = new int[N];
-        C = new int[N];
-        vis = new boolean[N];
-        adjList = new List[N];
+        col = new boolean[N];
+        comp = new int[N];
+        adj = new List[N];
 
         for (int i = 0; i < N; i++) {
-            adjList[i] = new ArrayList<>();
+            adj[i] = new ArrayList<>();
         }
 
         String line = in.nextLine();
         for (int i = 0; i < N; i++) {
-            F[i] = line.charAt(i)=='H'?0:1;
+            col[i] = line.charAt(i)=='G';
         }
 
         for (int i = 0; i < N-1; i++) {
@@ -107,42 +110,40 @@ public class milkvisit {
             a = in.nextInt()-1;
             b = in.nextInt()-1;
 
-            adjList[a].add(b);
-            adjList[b].add(a);
+            adj[a].add(b);
+            adj[b].add(a);
         }
 
         for (int i = 0; i < N; i++) {
-            if(vis[i]) continue;
-            dfs(i, F[i]);
+            dfs(i, col[i]);
             q++;
         }
 
 
         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("milkvisits.out")));
         for (int i = 0; i < M; i++) {
-            int a, b, c;
+            int a, b;
+            boolean c;
             a = in.nextInt()-1;
             b = in.nextInt()-1;
-            c = in.next().equals("H")?0:1;
+            c = in.next().equals("G");
 
             //Checking whether it is possible to get that type of milk
-            if(C[a] == C[b] && F[a] == c) out.print(1);
-            if(C[a] == C[b] && F[a] != c) out.print(0);
-            if(C[a] != C[b]) out.print(1);
+            if(comp[a] != comp[b] || col[a] == c) out.print(1);
+            else out.print(0);
         }
 
         out.close();
     }
 
-    public static void dfs(int f, int s) {
-        if(vis[f]) return;
-        vis[f] = true;
+    public static void dfs(int f) {
+        if(comp[f] > 0) return;
 
-        C[f] = q;
+        comp[f] = q;
 
-        for(int t : adjList[f]) {
-            if(F[t] == s) {
-                dfs(t, s);
+        for(int t : adj[f]) {
+            if(col[t] == col[f]) {
+                dfs(t);
             }
         }
     }
