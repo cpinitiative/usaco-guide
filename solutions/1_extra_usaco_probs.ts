@@ -7,6 +7,15 @@ import { Problem } from '../content/models';
 
 export default [
   new Problem(
+    'Silver',
+    'No Time To Paint',
+    '1087',
+    'Normal',
+    false,
+    ['Prefix Sums'],
+    ''
+  ),
+  new Problem(
     'Plat',
     'Cave Paintings',
     '996',
@@ -25,4 +34,35 @@ export default [
     'usaco-1044'
   ),
   new Problem('Plat', 'Exercise', '1045', 'Hard', false, null, 'usaco-1045'),
+  new Problem('Plat', 'Spaceship', '1069', 'Hard', false, ['Matrix'], ''),
+  new Problem('Plat', 'Sleeping Cows', '1068', 'Normal', false, ['DP'], ''),
+  new Problem(
+    'Plat',
+    'Sum of Distances',
+    '1092',
+    'Normal',
+    false,
+    ['BFS', 'PIE'],
+    ''
+  ),
+  new Problem(
+    'Plat',
+    'Minimum Cost Paths',
+    '1093',
+    'Normal',
+    false,
+    ['Convex'],
+    ''
+  ),
+  new Problem(
+    'Plat',
+    'Help Yourself',
+    '1022',
+    'Very Hard',
+    false,
+    ['Lazy Segment Tree'],
+    ''
+  ),
+  new Problem('Plat', 'Redistricting', '900', 'Normal', false, ['Deque'], ''),
+  new Problem('Plat', 'Circus', '1046', 'Very Hard', false, ['Tree'], ''),
 ];

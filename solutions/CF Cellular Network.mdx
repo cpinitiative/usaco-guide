@@ -9,6 +9,58 @@ author: Benjamin Qi
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
 
+This solution can also be implemented with Binary Search, but it's better to implement it with a set. The code below is provided only if you want additional practice for binary searching a sorted array.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// returns the first index in the array that is >= value, or arr.size() if no such index exists
+int binarySearch(const vector<int> &arr, int value) {
+    int lo = 0, hi = arr.size()-1;
+    while (lo <= hi) {
+        int mid = (lo+hi)/2;
+        if (arr[mid] < value) {
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    return lo;
+}
+
+int main() {
+    int n, m; cin >> n >> m;
+    vector<int> cities, towers;
+    for (int i = 0; i < n; i++) {
+        int city; cin >> city; cities.push_back(city);
+    }
+    for (int i = 0; i < m; i++) {
+        int tower; cin >> tower; towers.push_back(tower);
+    }
+
+    int minR = 0;
+    for (int i = 0; i < n; i++) {
+        int towerRight = binarySearch(towers, cities[i]);
+        int towerLeft = towerRight - 1;
+
+        int minRForThisCity = 2e9;
+        if (towerRight < m) {
+            assert(towers[towerRight] >= cities[i]);
+            minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
+        }
+        if (towerLeft >= 0) {
+            assert(towers[towerLeft] <= cities[i]);
+            minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
+        }
+
+        minR = max(minR, minRForThisCity);
+    }
+
+    cout << minR << endl;
+}
+```
+
 ## Solution 2 - Two Pointers
 
 ```cpp
