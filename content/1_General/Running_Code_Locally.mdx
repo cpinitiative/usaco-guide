@@ -4,7 +4,7 @@ title: Running Code Locally
 author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Owen Wang, Shourya Bansal
 description: Options for running your language of choice locally.
 prerequisites:
- - running-code-online
+  - running-code-online
 ---
 
 <Info title="Which text editor or IDE should I use?">
@@ -18,7 +18,13 @@ If you're just starting out, it's easier to begin by running code online and wor
 ## Using an IDE
 
 <Resources>
-  <Resource source="IOI" title="2019 Contest Environment" url="https://ioi2019.az/en-content-26.html#SOFTWARE">for reference, software you can use at IOI</Resource>
+	<Resource
+		source="IOI"
+		title="2019 Contest Environment"
+		url="https://ioi2019.az/en-content-26.html#SOFTWARE"
+	>
+		for reference, software you can use at IOI
+	</Resource>
 </Resources>
 
 Please let us know if you have trouble with installation!
@@ -111,9 +117,9 @@ It can be useful to use a Java IDE to take advantage of the powerful debugging f
 		free
 	</Resource>
 	<Resource
-		  source="King's College London"
-		  title="BlueJ"
-		  url="https://bluej.org/"
+		source="King's College London"
+		title="BlueJ"
+		url="https://bluej.org/"
 	>
 		free
 	</Resource>
@@ -128,7 +134,6 @@ Python comes with a program, known as **IDLE** (Integrated Development and Learn
 </PySection>
 
 </LanguageSection>
-
 
 ## Using Command Line
 
@@ -225,39 +230,69 @@ If you install GCC as described later in the module linked above, then you shoul
 
 ### Windows
 
-Your best options for text editors during competitions will probably be either Geany, CodeBlocks, or Visual Studio Code.
-The decision comes down solely to your preference.
+With the variety of software available for Windows, deciding what to use can be difficult. While the most popular options are Visual Studio Code, Geany, and CodeBlocks, any text editor or IDE that you feel comfortable using (as long as it works with C++) will work.
 
-If you want to get the full functionality of C++ on your Windows Machine, you should install one of the following
-compilers:
+To get the full functionality of C++ on your Windows Machine, you should install one of the following compilers, from easiest to most difficult to set up and use:
 
-#### MinGW
+#### Simple: [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
 
-If you want to keep the ease of use and simplicity of Linux C++, including the ability to use commands like `g++` and
-easily include `<bits/stdc++.h>`, you can install the compiler MinGW. This is a version of the `g++` compiler from Linux
-available on Windows. If you are using VS Code, setting up MinGW can be more difficult, but there are great guides to
-make the process easier.
+If you want to keep the ease of use and simplicity of Linux C++, including the ability to use commands like `g++` and easily include `<bits/stdc++.h>`, you can install the compiler MinGW. This is a version of the `g++` compiler from Linux available on Windows. If you are using VS Code, setting up MinGW can be more difficult, but there are great guides to make the process easier.
 
 <Resources>
-    <Resource
-        title="MinGW Installation"
-        url="https://tinyurl.com/mingw-usaco"
-    >
-    The MinGW Installer
-    </Resource>
-    <Resource
-        title="MinGW with VS Code"
-        url="https://code.visualstudio.com/docs/cpp/config-mingw"
-    >
-    Setting Up MinGW with VS Code
-    </Resource>
+	<Resource
+		source="MinGW"
+		title="MinGW Installation (Official)"
+		url="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe"
+	>
+		The Official MinGW Installer
+	</Resource>
+	<Resource
+		source="Microsoft"
+		title="MinGW Installation (Easier)"
+		url="https://tinyurl.com/mingw-usaco"
+	>
+		Microsoft's Simpler MinGW Installer
+	</Resource>
+	<Resource
+		source="Microsoft"
+		title="MinGW with VS Code"
+		url="https://code.visualstudio.com/docs/cpp/config-mingw"
+	>
+		Setting Up MinGW with VS Code
+	</Resource>
+	<Resource
+		source="Jetbrains"
+		title="Configuring CLion on Windows"
+		url="https://www.jetbrains.com/help/clion/quick-tutorial-on-configuring-clion-on-windows.html#MinGW"
+	>
+		Setting up MinGW with CLion
+	</Resource>
 </Resources>
 
-#### Microsoft Compiler Toolset
+Depending on the installer you used, installing MinGW could be a little complicated.
 
-Microsoft's Visual C++ Compiler is the official compiler for compiling programs for Windows and can be installed either
-via installing the relevant packages with Visual Studio 2019 or the build tools from their website. More information
-on its installation can be found in their documentation.
+**The Official Installer:**
+
+1.  First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
+2.  Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
+3.  Finally, Add it to your PATH following the latter half of [this tutorial](http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
+
+**Microsoft's Mirror Installer:**
+
+1.  First, [download the installer](https://tinyurl.com/mingw-usaco)
+2.  When you run it, leave all settings at default except `Architecture`.
+	1. For `Architecture`, select `x86_64`.
+3.  After you click next, copy the `Destination Folder Path` for later and finish the installation.
+4.  Now, you need to add MinGW to your `Path`. To do that:
+	1.  After the Installation has completed, search for `Environmental Variables` in the Windows Search Bar and click open
+	2.  Click the button `Environment Variables` at the bottom left.
+	3.  In the bottom half of the screen (under `System variables`), find the key `Path` and double click.
+	4.  Click `New` on the top right and paste the path you copied. Add `\bin` to the end of it. It should look something like this: `C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin`
+	5.  You're Good to Go!
+
+#### Moderate: Microsoft Compiler Toolset
+
+Microsoft's Visual C++ Compiler is the official compiler for compiling programs for Windows and can be installed either via installing the relevant packages with Visual Studio 2019 or the build tools from their website. More information on its installation can be found in their documentation.
 
 <Resources>
 	<Resource
@@ -265,12 +300,11 @@ on its installation can be found in their documentation.
 		title="Microsoft Compiler Toolset Documentation"
 		url="https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160"
 	>
-	The Visual Studio Documentation
+		The Visual Studio Documentation
 	</Resource>
 </Resources>
 
-In order to get a similar library to `<bits/stdc++.h>` you can use the following template, which automatically swaps
-between `<bits/stdc++.h>` and Microsoft's variant depending on the system running it:
+In order to get a similar library to `<bits/stdc++.h>` you can use the following template, which automatically swaps between `<bits/stdc++.h>` and Microsoft's variant depending on the system running it:
 
 ```cpp
 #ifdef _WIN32
@@ -282,30 +316,60 @@ between `<bits/stdc++.h>` and Microsoft's variant depending on the system runnin
 using namespace std;
 ```
 
-This checks if the compiler is compiling for windows (your local machine) or if it is compiling for the remote judge and
-subsequently includes the correct libraries for the system. This comes with the same consequences as using
-`<bits/stdc++.h>` for the same reasons.
+This checks if the compiler is compiling for windows (your local machine) or if it is compiling for the remote judge and subsequently includes the correct libraries for the system. This comes with the same consequences as using `<bits/stdc++.h>` for the same reasons.
 
-*Note: As USACO has now disallowed the use of templates during competitions, if you want to be able to get the
-functionality of `<bits/stdc++.h>` on your local machine, you should use MinGW instead.*
+_Note: As USACO has now disallowed the use of templates during competitions, if you want to be able to get the functionality of `<bits/stdc++.h>` on your local machine, you should use MinGW instead._
 
-#### Windows Subsystem for Linux
+#### Difficult: [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 
-Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel within you windows installation,
-allowing you to use Linux binaries without having to use Linux as your main Operating System. This means that you can
-install `g++`, use `g++`, and consequently include `<bits/stdc++.h>`.
+If you're already accustomed to the Linux Command line, this might be the best option for you.
+
+Windows Subsystem for Linux, commonly referred to as WSL, runs the linux kernel (or an emulation layer, depending on which version you use) within you windows installation. This allows you to use Linux binaries without needing to use Linux as your main Operating System, meaning that you can install `g++`, use `g++`, and consequently include `<bits/stdc++.h>` in your Competitive Programming C++ files.
+
+Many people use WSL (such as Anthony), but it can be difficult to properly set up.
+
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="VSCode - GCC on WSL"
+		url="https://code.visualstudio.com/docs/cpp/config-wsl"
+	>
+		difficult for beginners
+	</Resource>
+</Resources>
+
+If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
 To install the necessary tools after setting up WSL, you can run the following commands.
 
 On Debian based distributions like Ubuntu:
+
 ```sh
 sudo apt-get install build-essential
 ```
 
 On Arch based distributions like Arch Linux:
+
 ```sh
 sudo pacman -Sy base-devel
 ```
+
+You can find many tutorials on how to style up WSL and make it feel more cozy. The first step is to use a proper terminal and not the default one that Windows provides. An easy to use option is Windows Terminal, which can be found on the [Microsoft Store](https://www.microsoft.com/store/productId/9N0DX20HK701).
+
+<Resources>
+	<Resource
+		title="Set Up and Customize Windows Terminal"
+		url="https://medium.com/@ajitsahoo29/the-ultimate-guide-to-install-and-customize-windows-terminal-2019-6963dfc06587"
+	>
+	Setting up your terminal
+	</Resource>
+	<Resource
+		title="Make the command line look good"
+		url="https://medium.com/@shivam1/make-your-terminal-beautiful-and-fast-with-zsh-shell-and-powerlevel10k-6484461c6efb"
+	>
+	Get a beautiful command line interface
+	</Resource>
+</Resources>
 
 ### Mac
 
@@ -334,15 +398,19 @@ If you installed Clang on Mac, then you can download `stdc++.h` from [here](http
 #### Linux
 
 First, you can check if you have Java already installed by running `java --version` in the terminal. If it returns something like this:
+
 ```
 openjdk 11.0.9.1 2020-11-04
 OpenJDK Runtime Environment (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04)
 OpenJDK 64-Bit Server VM (build 11.0.9.1+1-Ubuntu-0ubuntu1.20.04, mixed mode, sharing)
 ```
+
 That means you have Java installed already. On the other hand, if you get something like this:
+
 ```
 Command 'java' not found
 ```
+
 You will have to download and install JDK. On most Linux distros, the JDK can be downloaded via the built in package manager.
 
 ##### Ubuntu/Debian
@@ -366,16 +434,20 @@ After this finishes installing, if you run `java --version` again, you should ge
 #### Windows
 
 First, can check if you already have Java installed by running `java --version` in `cmd`. If it returns something like this:
+
 ```
 openjdk 11.0.9.1 2020-11-04
 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
 ```
+
 That means that you have Java installed already. On the other hand, if you get something like this:
+
 ```
 'java' is not recognized as an internal or external command,
 operable program or batch file.
 ```
+
 You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_windows_hotspot_11.0.9.1_1.msi).
 
 After it finishes installing, if you run `java --version` again, you should get something like above. Note: the installer should automatically add Java into the system `PATH`, but in the event that it doesn't, you can find more information on how to do that [here](https://www.poftut.com/how-to-set-java-jre-and-jdk-home-path-and-environment-variables-on-windows).
@@ -383,15 +455,19 @@ After it finishes installing, if you run `java --version` again, you should get 
 #### macOS
 
 First, can check if you already have Java installed by running `java --version` in the terminal. If it returns something like this:
+
 ```
 openjdk 11.0.9.1 2020-11-04
 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
 ```
+
 That means that you have Java installed already. On the other hand, if you get something like this:
+
 ```
 -bash: java: command not found
 ```
+
 You will have to download and install JDK from [here](https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.9.1%2B1/OpenJDK11U-jdk_x64_mac_hotspot_11.0.9.1_1.pkg).
 
 After it finishes installing, if you run `java --version` again, you should get something like above.
