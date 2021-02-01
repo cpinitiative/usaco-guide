@@ -11,7 +11,9 @@ author: Benjamin Qi, Danh Ta Chi Thanh
 
 ## Solution 2
 
-Another approach is that we find the number of pairs `(cow_1,cow_2)` such that the first cow comes before the second cow but leaves before the second cow does that (assuming without loss of generality that the 52-character string represents the entry and exit points of the cow in alphabetical way). In other word, we define `a`,`b`,`c`,`d` as the entry and exit points of the two cows, respectively, and we have to counts the number of `(a,b,c,d)`s such that `a<b<c<d` and $s[a] = s[c]$, $s[b] = s[d]$ (see the code implementation below for better understanding).
+We can also find the number of pairs $(cow_1, cow_2)$ such that the $cow_1$ enters before the $cow_2$ and leaves after $cow_2$ enters (assuming without loss of generality that the 52-character string represents the entry and exit points of the cow in alphabetical way). 
+
+In other words, we define $start_x$, $end_x$, as the entry and exit points of a $cow_x$, where $start_x$ is the index of the first occurrence of $cow_x$ and $end_x$ is the index of the last occurrence of $cow_x$. Thus, we count the number of pairs of cows $(x, y)$ such that $start_x$ < $start_y$ < $end_x$ < $end_y$.
 
 **Time Complexity:** $\mathcal{O}(N^4)$
 
