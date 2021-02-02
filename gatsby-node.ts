@@ -1,14 +1,22 @@
 import { SECTIONS } from './content/ordering';
 
+const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
 const Problem = require('./src/models/problem').Problem; // needed to eval export
 const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
-execSync(
-  `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
-);
+try {
+  execSync(
+    `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
+  );
+} catch (e) {
+  console.warn(
+    'Git fetch failed. Ignore this if developing or building locally.'
+  );
+  console.error(e);
+}
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -178,7 +186,7 @@ exports.createResolvers = ({ createResolvers }) => {
             if (node.type === 'heading') {
               let val = {
                 depth: node.depth,
-                value: mdastToString(node),
+                value: mdastToStringWithKatex(node),
                 slug: slugger.slug(mdastToString(node)),
               };
               if (cppCt === 0 && javaCt === 0 && pyCt === 0) {

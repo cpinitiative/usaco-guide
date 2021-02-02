@@ -143,28 +143,28 @@ export default function ClassSelectPage(props: { path: string }) {
           </ul>
           {isAdmin && (
             <div className={'mb-6'}>
-              <h1 className="text-3xl font-bold leading-9 mb-2 mt-8">
-                Other Classes (visible to administrators only)
-              </h1>
+              {/*<h1 className="text-3xl font-bold leading-9 mb-2 mt-8">*/}
+              {/*  Other Classes (visible to administrators only)*/}
+              {/*</h1>*/}
 
-              <ul className={'pt-4'}>
-                {otherClasses &&
-                  otherClasses
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .filter(
-                      c => userClasses.findIndex(uc => uc.id === c.id) === -1
-                    )
-                    .map(otherClass => (
-                      <li key={otherClass.id}>
-                        <Link
-                          to={`/class/${otherClass.id}`}
-                          className={'text-blue-600 hover:underline'}
-                        >
-                          {otherClass.name}
-                        </Link>
-                      </li>
-                    ))}
-              </ul>
+              {/*<ul className={'pt-4'}>*/}
+              {/*  {otherClasses &&*/}
+              {/*    otherClasses*/}
+              {/*      .sort((a, b) => a.name.localeCompare(b.name))*/}
+              {/*      .filter(*/}
+              {/*        c => userClasses.findIndex(uc => uc.id === c.id) === -1*/}
+              {/*      )*/}
+              {/*      .map(otherClass => (*/}
+              {/*        <li key={otherClass.id}>*/}
+              {/*          <Link*/}
+              {/*            to={`/class/${otherClass.id}`}*/}
+              {/*            className={'text-blue-600 hover:underline'}*/}
+              {/*          >*/}
+              {/*            {otherClass.name}*/}
+              {/*          </Link>*/}
+              {/*        </li>*/}
+              {/*      ))}*/}
+              {/*</ul>*/}
               <h1 className="text-3xl font-bold leading-9 mb-2 mt-8">
                 Add an Instructor
               </h1>

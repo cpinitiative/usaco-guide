@@ -1,14 +1,12 @@
 ---
 id: bin-jump
 title: 'Binary Jumping'
-author: Benjamin Qi
+author: Benjamin Qi, Neo Wang
 description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
 frequency: 3
 prerequisites:
   - func-graphs
 ---
-
-
 
 export const problems = {
 	sample: [
@@ -55,12 +53,12 @@ export const problems = {
 		),
 		new Problem(
 			'POI',
-			'Frog',
+			'2010 - Frog',
 			'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
 			'Normal',
 			false,
 			[],
-			'poi-frog'
+			'poi-10-zab'
 		),
 		new Problem(
 			'CF',
@@ -201,6 +199,7 @@ export const problems = {
 	],
 };
 
+
 ## Binary Jumping
 
 <FocusProblem problem={problems.sample[0]} />
@@ -215,9 +214,93 @@ export const problems = {
 	<Resource source="SecondThread" title="Tree Basics - Binary Lifting" url="https://codeforces.com/blog/entry/81527"> </Resource>
 </Resources>
 
+<Info>
+
+Binary jumping is more commonly referred to as "binary lifting."
+
+</Info>
+
 ### Solution
 
-<IncompleteSection />
+To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$-th ancestor of $x$.
+
+In our ```jmp(int x, int d)``` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree). 
+
+In our implementation, we test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $0, 2, 3$ (in that order) counting from the right.
+
+<Spoiler title="Illustration of the jump method">
+
+![Binary Lifting Diagram](./assets/binaryliftingjump.png)
+
+</Spoiler>
+
+To calculate the rows required for the ```int up[MS][MX]``` array, use the formula $\lceil \log_2{N} \rceil$ which in our case simplifies to $\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
+
+<Info>
+
+It never hurts to add additional rows - or columns, depending on your implementation -  (as long as it's reasonable)!
+
+</Info>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int N, Q;
+
+const int MX = 2e5+5; // maximum N
+const int MS = 18; // 18 is calculated by $\log_2 2e5$
+
+int up[MS][MX]; 
+
+int jmp(int x, int d) {
+    F0R(i, MS) if((d >> i) & 1) x = up[i][x];
+    return x ?: -1; // modfication to return -1 if not found
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    cin >> N >> Q;
+
+    FOR(i, 2, N+1) {
+        int a; cin >> a;
+        up[0][i] = a;
+    }
+
+    FOR(i, 1, MS) FOR(j, 1, N+1) up[i][j] = up[i-1][up[i-1][j]]; // construct our parent array
+
+    // uncomment below if you want to see the parent array
+
+    // F0R(i, MS) {
+    //     FOR(j, 1, N+1) {
+    //         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
+    //     }
+    //     cerr << "\n";
+    // }
+
+    F0R(i, Q) {
+        int a, b;
+        cin >> a >> b;
+        cout << jmp(a, b) << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Problems
 
@@ -232,12 +315,12 @@ export const problems = {
 ### Tutorial
 
 <Resources>
-	<Resource source="CPH" title="18.3 - LCA Method 1" starred></Resource>
+	<Resource source="CPH" title="18.3 - LCA Method 1" starred />
 	<Resource
 		source="cp-algo"
 		title="LCA with Binary Lifting"
 		url="graph/lca_binary_lifting.html"
-	></Resource>
+	/>
 </Resources>
 
 <Optional title="Improvements">
