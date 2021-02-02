@@ -58,22 +58,34 @@ int main() {
 	freopen("circlecross.in","r",stdin);
 	freopen("circlecross.out","w",stdout);
 	string s; cin >> s;
-	int Enter[26], Exit[26];
-	//Set all elements of Enter and Exit arrays to -1.
-	memset(Enter,-1,sizeof(Enter));
-	memset(Exit,-1,sizeof(Exit));
+	int Start[26], Exit[26];
+	//Set all elements of Start and End arrays to -1.
+	memset(Start,-1,sizeof(Start));
+	memset(End,-1,sizeof(End));
 	for (int i = 0; i < s.size(); ++i) {
-		if (Enter[s[i]-'A'] == -1) Enter[s[i]-'A'] = i;
-		else Exit[s[i]-'A'] = i;
+		if (Start[s[i]-'A'] == -1) Start[s[i]-'A'] = i;
+		else End[s[i]-'A'] = i;
 	}
 	int ans = 0;
 	for (int i = 0; i < 26; ++i)
 		for (int j = 0; j < 26; ++j)
-			ans +=  Enter[i] < Enter[j] && Enter[j] < Exit[i] && Exit[i] < Exit[j];
+			ans +=  Start[i] < Start[j] && Start[j] < End[i] && End[i] < End[j];
 	cout << ans;
 	return 0;
 }
 ```
+
+<Info title="Useful functions for initializing array values">
+
+In this problem, you can use `std::fill` instead of `memset` with no significant difference. However, with large arrays (i.e. arrays with $10^5$ or $10^6$ elements) it seems that `memset` is [more efficient](https://lemire.me/blog/2020/01/20/filling-large-arrays-with-zeroes-quickly-in-c/) than `std::fill`.
+
+</Info>
+
+<Warning>
+
+Make sure you know what `memset` actually does before using it! `memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers, `memset(arr, -1, sizeof arr)` will set each element to $-1$, as you might expect. However, `memset(arr, 1, sizeof arr)` will set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $1$. Note that if you want to initialize the whole array to some values that is neither 0 nor -1, you can write a single `for` loop or use `std::fill` to do that.
+
+</Warning>
 
 </CPPSection>
 
