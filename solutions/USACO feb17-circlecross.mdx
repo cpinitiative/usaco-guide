@@ -58,22 +58,21 @@ int main() {
 	freopen("circlecross.in","r",stdin);
 	freopen("circlecross.out","w",stdout);
 	string s; cin >> s;
-	int enter[26], exit[26];
-	//Set all elements of enter and exit arrays to -1.
-	memset(enter,-1,sizeof(enter));
-	memset(exit,-1,sizeof(exit));
+	int Enter[26], Exit[26];
+	//Set all elements of Enter and Exit arrays to -1.
+	memset(Enter,-1,sizeof(Enter));
+	memset(Exit,-1,sizeof(Exit));
 	for (int i = 0; i < s.size(); ++i) {
-		if (enter[s[i]-'A'] == -1) enter[s[i]-'A'] = i;
-		else exit[s[i]-'A'] = i;
+		if (Enter[s[i]-'A'] == -1) Enter[s[i]-'A'] = i;
+		else Exit[s[i]-'A'] = i;
 	}
 	int ans = 0;
 	for (int i = 0; i < 26; ++i)
 		for (int j = 0; j < 26; ++j)
-			ans +=  enter[i] < enter[j] && enter[j] < exit[i] && exit[i] < exit[j];
+			ans +=  Enter[i] < Enter[j] && Enter[j] < Exit[i] && Exit[i] < Exit[j];
 	cout << ans;
 	return 0;
 }
-
 ```
 
 </CPPSection>
