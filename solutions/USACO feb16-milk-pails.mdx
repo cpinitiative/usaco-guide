@@ -19,11 +19,11 @@ In our matrix, the current amount of milk in $X$ is $i$, and $Y$ is $j$.
 
 For every step, we simulate all the possible actions.
 
-1. Fill either pail completely to the top: set $i$ or $j$ to $X$ and $Y$ respectively.
+1. Fill either pail completely to the top: set $i$ to $X$ or $j$ to $Y$.
 2. Empty either pail: set $i$ or $j$ to $0$.
-3. Pour the contents of each pail until you either run out or reach the bucket size.
+3. Pour the contents of one pail into another without overflowing.
 
-To solve 3, we can find the pour to be $\min(i, X - j)$ or $\min(j, Y-i)$. Then add/subtract this quantity to each pail appropriately.
+To perform operation 3, let the quantity to be poured $Q$ be denoted by either $Q_x=\min(i, X - j)$ or $Q_y=\min(j, Y-i)$, depending on which bucket is poured ($Q_x$ if we are pouring out of $x$ and vice versa). Then, to pour $X$ into $Y$, we subtract this poured quantity $Q_x$ from $X$ and add it to $Y$. In other words, if we were to pour $X$ into $Y$, the new amount in $X$ would be $X - Q_x$, and the new amount in $Y$ is $Y + Q_x$. To pour $Y$ into $X$, this would be $Y_{\textrm{new}}=Y-Q_y$, $X_{\textrm{new}}=X+Q_y$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -86,7 +86,7 @@ int main() {
         }
     }
 
-    cout << ret;
+    cout << ret << endl;
 }
 ```
 
