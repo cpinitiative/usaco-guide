@@ -46,7 +46,7 @@ class Graph{
          Iterator<Integer> i = adj.get(v).listIterator();
          while (i.hasNext()){
              int n = i.next();
-             if (!visited[n]){
+             if(!visited[n]){
                  ans += DFSUtil(n, visited); // recurse to the next edge/station in it's path and increase the number of stations visited.
              }
          }
@@ -68,10 +68,10 @@ class Graph{
          Scanner sc = new Scanner(new File("factory.in"));
          PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("factory.out")));
          int N = sc.nextInt(); Graph  g = new Graph(N); boolean used = false;
-         for (int i = 0; i < N - 1; i++){
+         for(int i = 0; i < N - 1; i++){
              g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B. 
          }
-         for (int i = 0; i < N; i++){
+         for(int i = 0; i < N; i++){
               int ans = g.DFS(i);
               if(ans == N){
                    out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output. 
