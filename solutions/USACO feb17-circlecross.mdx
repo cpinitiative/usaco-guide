@@ -17,11 +17,15 @@ In other words, we define $start_x$, $end_x$, as the entry and exit points of a 
 
 **Time Complexity:** $\mathcal{O}(N^4)$ (where $N$ is the number of entries and exits)
 
+Alternatively, we can store the positions of entry points and exit points in another arrays in order to reduce the **Time Complexity** to  $\mathcal{O}(N^2)$. 
+
 <LanguageSection>
 
 <CPPSection>
 
 ## C++ Implementation
+
+Naive $\mathcal{O}(N^4)$ solution
 
 ```cpp
 #include <bits/stdc++.h>
@@ -41,6 +45,35 @@ int main() {
 	cout << ans;
 	return 0;
 }
+```
+
+Optimized $\mathcal{O}(N^2)$ solution
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("circlecross.in","r",stdin);
+	freopen("circlecross.out","w",stdout);
+	string s; cin >> s;
+	int enter[26], exit[26];
+	//Set all elements of enter and exit arrays to -1.
+	memset(enter,-1,sizeof(enter));
+	memset(exit,-1,sizeof(exit));
+	for (int i = 0; i < s.size(); ++i) {
+		if (enter[s[i]-'A'] == -1) enter[s[i]-'A'] = i;
+		else exit[s[i]-'A'] = i;
+	}
+	int ans = 0;
+	for (int i = 0; i < 26; ++i)
+		for (int j = 0 ; j < 26; ++j)
+			ans +=  enter[i] < enter[j] && enter[j] < exit[i] && exit[i] < exit[j];
+	cout << ans;
+	return 0;
+}
+
 ```
 
 </CPPSection>
