@@ -13,11 +13,11 @@ In this problem, we're given an array $a$ and we're asked to answer 2 types of q
 2. calculate the maximum prefix sum in the range $[a,b]$
 
 We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this problem.
-Let $ps_i$ be the sum of $a_1, a_2, \dots a_i$. We can maintain a segment tree consisting of the maximum $ps$ in the range of $[l,r]$. 
+Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can maintain a segment tree consisting of the maximum $\texttt{ps}$ in the range of $[l,r]$. 
 
 To update the value at position $i$ to $x$, we add $x-a_i$ to each of the values in the range $[i,N]$.
 
-To answer a query of type 2, our answer would be $\max_{i \in [a, b]}(ps_i) - ps_{a-1}$.
+To answer a query of type 2, our answer would be $\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
 
 # Code
 
@@ -70,7 +70,7 @@ int main() {
 	a = ps = vector<ll>(n+1);
 	for(int i=1; i<=n; i++) cin >> a[i];
 	
-	// construct $ps$
+	// construct ps
 	ps[0] = 0;
 	for(int i=1; i<=n; i++) ps[i] = ps[i-1] + a[i];
 
@@ -82,13 +82,13 @@ int main() {
 	while(q--) {
 		int t; cin >> t;
 		if(t==1) {
-			// update $a_i$ to $x$
+			// update a[i] to x
 			int i; ll x; cin >> i >> x;
 			st.upd(i, n, x-a[i]); a[i]=x;
 		} else {
-			// max $ps$ in the range $[b,c]$
-			int b, c; cin >> b >> c;
-			cout << st.qry(b-1,c) - st.qry(b-1,b-1) << '\n';
+			// max ps in the range [a,b] - ps[a-1]
+			int a, b; cin >> a >> b1;
+			cout << st.qry(a-1,b) - st.qry(a-1,a-1) << '\n';
 		}
 	}
 
