@@ -2,13 +2,93 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries
+author: Óscar Garries, Neo Wang
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
 
 <LanguageSection>
 <CPPSection>
+
+## C++ Implementation (BFS)
+
+We can directly simulate all operations using BFS.
+
+When we are performing our BFS, we only have to keep track of the distance between the current amount of milk in pails $X$ and $Y$. That way, we can check all nodes with distance $\le K$.
+In our matrix, the current amount of milk in $X$ is $i$, and $Y$ is $j$.
+
+For every step, we simulate all the possible actions.
+
+1. Fill either pail completely to the top: set $i$ or $j$ to $X$ and $Y$ respectively.
+2. Empty either pail: set $i$ or $j$ to $0$.
+3. Pour the contents of each pail until you either run out or reach the bucket size.
+
+To solve 3, we can find the pour to be $\min(i, X - j)$ or $\min(j, Y-i)$. Then add/subtract this quantity to each pail appropriately.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int X, Y, K, M;
+
+const int MX = 101;
+const int MOD = 1e9 + 7;
+
+int dist[MX][MX];
+
+void setIn(string s) { freopen(s.c_str(),"r",stdin); }
+void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    setIn("pails.in");
+    setOut("pails.out");
+
+    cin >> X >> Y >> K >> M;
+
+    F0R(i, MX) F0R(j, MX) dist[i][j] = MOD;
+
+    queue<pair<int, int>> bfs;
+    bfs.push({0, 0});
+    dist[0][0] = 0;
+
+    while(!bfs.empty()) {
+        pair<int, int> top = bfs.front();
+        bfs.pop();
+        int ndist = dist[top.first][top.second]+1;
+
+        int pourX = min(top.first, Y - top.second);
+        int pourY = min(top.second, X - top.first);
+
+        int nx[] = {top.first, 0, X, top.first, top.first - pourX, top.first + pourY };
+        int ny[] = {0, top.second, top.second, Y, top.second + pourX, top.second - pourY };
+
+        F0R(i, 6) {
+            if(ndist > K || dist[nx[i]][ny[i]] != MOD) continue;
+            dist[nx[i]][ny[i]] = ndist;
+            bfs.push({nx[i], ny[i]});
+        }
+    }
+
+    int ret = MOD;
+
+    F0R(i, MX) {
+        F0R(j, MX) {
+            if(dist[i][j] != MOD) ret = min(ret, abs(M - (i+j)));
+        }
+    }
+
+    cout << ret;
+}
+```
 
 ## C++ Implementation
 
