@@ -2,7 +2,7 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries
+author: Óscar Garries, Nathan Gong
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
@@ -53,4 +53,56 @@ int main () {
 ```
 
 </CPPSection>
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class pails {
+    static int x, y, k, m, sol;
+    static boolean[][][] vis;
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(new File("pails.in"));
+        PrintWriter out = new PrintWriter("pails.out");
+
+        x = sc.nextInt();
+        y = sc.nextInt();
+        k = sc.nextInt();
+        m = sc.nextInt();
+        sol = m;
+
+        vis = new boolean[x+1][y+1][k+1];
+        dfs(0, 0, 0);
+        
+        out.println(Math.abs(sol));
+        out.close();
+    }
+
+    static void dfs(int curX, int curY, int curK) {
+        if (vis[curX][curY][curK]) return;
+        vis[curX][curY][curK] = true;
+
+        if (curK == k) {
+            sol = Math.min(sol, Math.abs(m - (curX + curY)));
+            return;
+        }
+
+        //case 1
+        dfs(x, curY, curK+1);
+        dfs(curX, y, curK+1);
+        //case 2
+        dfs(0, curY, curK+1);
+        dfs(curX, 0, curK+1);
+        //case 3
+        dfs(Math.min(curX+curY, x), Math.max((curX+curY)-x, 0), curK+1);
+        dfs(Math.max((curX+curY)-y, 0), Math.min(curX+curY, y), curK+1);
+    }
+}
+
+```
+
+</JavaSection>
 </LanguageSection>
