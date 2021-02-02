@@ -15,7 +15,7 @@ Since $+i$ and $-i$ are constant, we can first calculate the best cost and then 
 
 Thus, if we keep two min segtrees (one for going downwards and one for going upwards), we can keep track of the minimum cost by setting each value in the downwards segtree to $p_j-j$ and each value in the upwards segtree to $p_j+j$.
 
-To query, we can simulate going downwards or upwards from position $k$. To go downwards, we must buy pizza in the range $[1\dots k]$ so we query the minimum cost in the range $[1\dots k]$. Going upwards is similar to going downwards, but instead of buying pizza in the range $[1\dots k]$, we're buying pizza in the range $[k\dots N]$; thus we query the range $[k\dots N[$ in the upwards segtree.
+To query, we can simulate going downwards or upwards from position $k$. To go downwards, we must buy pizza in the range $[1\dots k]$ so we query the minimum cost in the range $[1\dots k]$. Going upwards is similar to going downwards, but instead of buying pizza in the range $[1\dots k]$, we're buying pizza in the range $[k\dots N]$; thus we query the range $[k\dots N]$ in the upwards segtree.
  
 <LanguageSection>
 
@@ -62,7 +62,7 @@ int main() {
 		int t; cin >> t;
 		if(t == 1) {
 			int k, x; cin >> k >> x;
-			p[k]=x; pull(k);
+			p[k] = x; pull(k);
 		} else {
 			int k; cin >> k;
 			int D = down.qry(1,k) + k;
