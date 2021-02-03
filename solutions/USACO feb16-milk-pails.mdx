@@ -24,10 +24,9 @@ For every step, we simulate all the possible actions.
 2. Empty either pail: set $i$ or $j$ to $0$.
 3. Pour the contents of one pail into another without overflowing or running out of milk.
 
-To perform operation 3, we can find the amount poured to be $\min(i, X-j)$ or $\min(j, Y-i)$. Then add/subtract this quantity to each pail approriately.
+To perform operation 3, we can find the amount poured to be $\min(i, X-j)$ or $\min(j, Y-i)$ depending on which pail you pour from. Then add/subtract this quantity to each pail approriately.
 
 Now, to compute the smallest $|i+j-M|$, simply scan over all elements where $A[i][j] \le K$
-
 
 ```cpp
 #include <bits/stdc++.h>
@@ -86,7 +85,7 @@ int main() {
 
     F0R(i, MX) {
         F0R(j, MX) {
-            if(dist[i][j] != MOD) ret = min(ret, abs(M - (i+j)));
+            if(dist[i][j] <= K) ret = min(ret, abs(M - (i+j)));
         }
     }
 
