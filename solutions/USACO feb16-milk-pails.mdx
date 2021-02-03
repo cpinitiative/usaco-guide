@@ -14,7 +14,7 @@ author: Óscar Garries, Neo Wang
 
 We can directly simulate all operations using BFS.
 
-When we are performing our BFS, we only have to keep track of the amount of operations used so far for the current amount of milk in pails $X$ and $Y$. That way, we can check all nodes with distance $\le K$ once our BFS is finished, and then compute the smallest value of  $|i + j -M|$.
+In this problem, we only care about states $(i, j)$ where pail $X$ has $i$ and pail $Y$ has $j$ units of milk. We can perform a BFS starting from base state $(0, 0)$ to compute $\texttt{dist}[i][j]$, the minimum number of steps to reach each state. Afterwards, compute the answer by iterating over all states where $\texttt{dist}[i][j] \le K$ and finding the minimum $|i+j-M|$.
 
 For every step, we simulate all the possible actions.
 
@@ -22,10 +22,9 @@ For every step, we simulate all the possible actions.
 2. Empty either pail: set $i$ or $j$ to $0$.
 3. Pour the contents of one pail into another without overflowing or running out of milk.
 
-To perform operation 3, let the quantity to be poured $Q$ be denoted by either $Q_x=\min(i, Y - j)$ or $Q_y=\min(j, X-i)$, depending on which bucket is poured ($Q_x$ if we are pouring out of $x$ and vice versa). Then, to pour $X$ into $Y$, we subtract this poured quantity $Q_x$ from $X$ and add it to $Y$. In other words, if we were to pour $X$ into $Y$, the new amount in $X$ would be $X - Q_x$, and the new amount in $Y$ is $Y + Q_x$. To pour $Y$ into $X$, this would be $Y_{\textrm{new}}=Y-Q_y$, $X_{\textrm{new}}=X+Q_y$.
+To perform operation 3, we can find the amount poured to be $\min(i, X-j)$ or $\min(j, Y-i)$ depending on which pail you pour from. Then add/subtract this quantity to each pail approriately.
 
-Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and compute the minimum $|i+j-M|$.
-
+Now, to compute the smallest $|i+j-M|$, simply scan over all elements where $A[i][j] \le K$
 
 ```cpp
 #include <bits/stdc++.h>
