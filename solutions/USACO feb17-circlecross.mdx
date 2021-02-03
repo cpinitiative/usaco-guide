@@ -7,45 +7,11 @@ author: Benjamin Qi, Danh Ta Chi Thanh
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)
 
-Let $N$ be the number of cows.
+**Time Complexity:** $\mathcal{O}(N^2)$, where $N$ is the number of cows.
 
-## $\mathcal{O}(N^4)$ Solution
+<!-- Solution -->
 
-Let the first occurrence of a letter be the cow's entry and the last occurrence her exit. Then, we count the number of pairs $(cow_1, cow_2)$ such that $cow_1$ enters before $cow_2$ and leaves somewhere between $cow_2$'s entry and exit. 
-
-Define $start_x$ to be the index of the first occurrence of $cow_x$ and $end_x$ to be the index of the last occurrence of $cow_x$. Thus, we count the number of pairs of cows $(x, y)$ such that $start_x < start_y < end_x < end_y$.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("circlecross.in","r",stdin);
-	freopen("circlecross.out","w",stdout);
-	string s; cin >> s;
-	int ans = 0;
-	for (int a = 0; a < s.size(); ++a) 
-		for (int b = a+1; b < s.size(); ++b) 
-			for (int c = b+1; c < s.size(); ++c) 
-				for (int d = c+1; d < s.size(); ++d) 
-					ans += s[a] == s[c] && s[b] == s[d];
-	cout << ans;
-	return 0;
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
-## $\mathcal{O}(N^2)$ Solution
-
-Alternatively, we can store the positions of entry and exit points for each of the cows. Then, we can loop through all pairs of cows and see if they cross based on their entry and exit points.
+Define $Start_x$ and $End_x$ to be the indices of the first and last occurrences of cow $x$ in the input string, respectively. It suffices to loop over all pairs of cows $(i,j)$ and check whether cow $i$ enters before cow $j$ and leaves somewhere between cow $j$'s entry and exit. In other words, increment the answer if $Start_i < Start_j < End_i < End_j$.
 
 <LanguageSection>
 
@@ -71,12 +37,44 @@ int main() {
 	int ans = 0;
 	for (int i = 0; i < 26; ++i)
 		for (int j = 0; j < 26; ++j)
-			ans +=  Start[i] < Start[j] && Start[j] < End[i] && End[i] < End[j];
+			ans += Start[i] < Start[j] && Start[j] < End[i] && End[i] < End[j];
 	cout << ans;
-	return 0;
 }
 ```
 
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative Implementation
+
+**Time Complexity:** $\mathcal{O}(N^4)$
+
+Due to the low constraints, we can iterate over all $\mathcal{O}(N^4)$ possible pairs of intersecting paths and check whether they represent two cows.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	freopen("circlecross.in","r",stdin);
+	freopen("circlecross.out","w",stdout);
+	string s; cin >> s;
+	int ans = 0;
+	for (int a = 0; a < s.size(); ++a) 
+		for (int b = a+1; b < s.size(); ++b) 
+			for (int c = b+1; c < s.size(); ++c) 
+				for (int d = c+1; d < s.size(); ++d) 
+					ans += s[a] == s[c] && s[b] == s[d];
+	cout << ans;
+}
+```
 
 </CPPSection>
 
