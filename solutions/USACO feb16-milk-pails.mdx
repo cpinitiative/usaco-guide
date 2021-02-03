@@ -39,7 +39,7 @@ using namespace std;
 int X, Y, K, M;
 
 const int MX = 101;
-const int MOD = 1e9 + 7;
+const int INF = 1e9 + 7;
 
 int dist[MX][MX];
 
@@ -55,7 +55,7 @@ int main() {
 
     cin >> X >> Y >> K >> M;
 
-    F0R(i, MX) F0R(j, MX) dist[i][j] = MOD;
+    F0R(i, MX) F0R(j, MX) dist[i][j] = INF;
 
     queue<pair<int, int>> bfs;
     bfs.push({0, 0});
@@ -73,13 +73,13 @@ int main() {
         int ny[] = {0, top.second, top.second, Y, top.second + pourX, top.second - pourY };
 
         F0R(i, 6) {
-            if(ndist > K || dist[nx[i]][ny[i]] != MOD) continue;
+            if(ndist > K || dist[nx[i]][ny[i]] != INF) continue;
             dist[nx[i]][ny[i]] = ndist;
             bfs.push({nx[i], ny[i]});
         }
     }
 
-    int ret = MOD;
+    int ret = INF;
 
     F0R(i, MX) {
         F0R(j, MX) {
