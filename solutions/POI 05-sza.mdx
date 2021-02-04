@@ -32,18 +32,16 @@ Therefore, we can also make $S$ using $U$ (i.e. it's a template of $S$).
 First, use KMP to compute the prefix function $\pi$ of $S$. The shortest template of $S$ is either $S$ itself or the shortest template of $S[0 : \pi[|S| - 1]]$.
 
 <Spoiler title="Proof">
+    
+We'll prove instead that any template of $S$ that isn't $S$ itself is also a template of $S[0 : \pi[|S| - 1]]$, since that's equivalent.
 
-Since $S[0 : \pi[|S| - 1]]$ is the longest proper prefix of $S$ that is also a suffix, we know that the only longer string that can be $S$'s template is $S$ itself.
-
-If the shortest template of $S[0 : \pi[|S| - 1]]$ (call it $T'$) is also a template of $S$, then we're done. What if it's not, and the actual template (call it $T$) has $|T'| < |T| < \pi[|S| - 1]$?
-
-Let's assume for a contradiction that this happens.
+Since $S[0 : \pi[|S| - 1]]$ is the longest proper prefix of $S$ that is also a suffix, we know that the only longer string that can be $S$'s template is $S$ itself. Let the shortest template of $S[0 : \pi[|S| - 1]]$ be $T'$ and some longer template of $S$ be $T$.
 
 By hint 1, $T$ must be a prefix and suffix of $S$, which means that it's also a prefix and suffix of $S[0 : \pi[|S| - 1]]$.
 
 This means that we can make at least half of $T$'s prefix using $T'$, since we can make $S[0 : \pi[|S| - 1]]$ (which is bigger than $T$) using $T'$ and $|T'| < |T|$. A similar argument holds for being able to make at least half of $T$'s suffix.
 
-However, this implies that $T'$ is a template of $T$, as we can combine this prefix and suffix to form the whole string. This is a contradiction, so we are done.
+This implies that $T'$ is a template of $T$, as we can combine this prefix and suffix to form the whole string. Therefore $T$ is also a template of $S[0 : \pi[|S| - 1]]$.
 
 </Spoiler>
 
