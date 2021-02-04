@@ -67,26 +67,26 @@ ll DP(int i) {
 	// simluate traveling from another SCC to this SCC
 	trav(j, rgraph[i])
 		dp[i] = max(dp[i], DP(j) + group[i]);
-    return dp[i];
+	return dp[i];
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	
 	cin >> n >> m;
-    scc.init(n+1);
-    FOR(i,1,n) cin >> value[i];
+	scc.init(n+1);
+	FOR(i,1,n) cin >> value[i];
 	while(m--) {
-        int a,b; cin >> a >> b;
-        scc.ae(a,b);
-    }
+		int a,b; cin >> a >> b;
+		scc.ae(a,b);
+	}
 
-    // generate SCC
+	// generate SCC
 	scc.gen(n);
 	// set dp to 0
 	fill(dp+1, dp+n+1, 0);
 	// precompute group value for each SCC
-    FOR(i,1,n) group[scc.comp[i]] += value[i];
+	FOR(i,1,n) group[scc.comp[i]] += value[i];
 	// create reverse edges for SCC
 	FOR(i,1,n) trav(j, scc.adj[i]) {
 		if(scc.comp[i] == scc.comp[j]) continue;
@@ -95,7 +95,7 @@ int main() {
 	// find dp value for each SCC
 	ll ans = 0;
 	trav(i, scc.comps) ans = max(ans, DP(i));
-    
+	
 	cout << ans << '\n';
 }
 ```
