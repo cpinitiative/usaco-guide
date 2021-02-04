@@ -2,7 +2,7 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Nathan Gong
+author: Óscar Garries, Neo Wang, Nathan Gong
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
@@ -11,7 +11,88 @@ author: Óscar Garries, Nathan Gong
 	
 <CPPSection>
 
-## C++ Implementation
+## C++ Implementation (BFS)
+
+We can directly simulate all operations using BFS.
+
+In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail $Y$ has $j$ units of milk. We can perform a BFS starting from base state $(0, 0)$ to compute $\texttt{dist}[i][j]$, the minimum number of steps to reach each state. Afterwards, compute the answer by iterating over all states where $\texttt{dist}[i][j] \le K$ and finding the minimum $|i+j-M|$.
+
+For every transition in the BFS, we simulate all possible actions.
+
+1. Fill either pail completely to the top: set $i$ to $X$ or $j$ to $Y$.
+2. Empty either pail: set $i$ or $j$ to $0$.
+3. Pour the contents of one pail into another without overflowing or running out of milk.
+
+To perform operation 3, we can find the amount poured to be $\min(i, Y-j)$ or $\min(j, X-i)$ depending on which pail you pour from. Then add/subtract this quantity to each pail appropriately.
+
+Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and compute the minimum $|i+j-M|$.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
+#define F0R(i, a) for(int i = 0; i < (a); i++)
+#define trav(a, x) for (auto& a : x)
+
+int X, Y, K, M;
+
+const int MX = 101;
+const int INF = 1e9 + 7;
+
+int dist[MX][MX];
+
+void setIn(string s) { freopen(s.c_str(),"r",stdin); }
+void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    setIn("pails.in");
+    setOut("pails.out");
+
+    cin >> X >> Y >> K >> M;
+
+    F0R(i, MX) F0R(j, MX) dist[i][j] = INF;
+
+    queue<pair<int, int>> bfs;
+    bfs.push({0, 0});
+    dist[0][0] = 0;
+
+    while(!bfs.empty()) {
+        pair<int, int> top = bfs.front();
+        bfs.pop();
+        int ndist = dist[top.first][top.second]+1;
+
+        int pourX = min(top.first, Y - top.second);
+        int pourY = min(top.second, X - top.first);
+
+        int nx[] = {top.first, 0, X, top.first, top.first - pourX, top.first + pourY }; // all possible pours
+        int ny[] = {0, top.second, top.second, Y, top.second + pourX, top.second - pourY };
+
+        F0R(i, 6) {
+            if(ndist > K || dist[nx[i]][ny[i]] != INF) continue;
+            dist[nx[i]][ny[i]] = ndist;
+            bfs.push({nx[i], ny[i]});
+        }
+    }
+
+    int ret = INF;
+
+    F0R(i, MX) {
+        F0R(j, MX) {
+            if(dist[i][j] <= K) ret = min(ret, abs(M - (i+j)));
+        }
+    }
+
+    cout << ret << endl;
+}
+```
+
+## C++ Implementation (DFS)
 
 ```cpp
 #include <bits/stdc++.h>
