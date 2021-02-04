@@ -2,7 +2,7 @@
 id: usaco-759
 source: USACO Bronze 2018 January
 title: Blocked Billboard II
-author: Melody Yu
+author: Melody Yu (Python), Hua Zhi Vee (C++)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_billboard_bronze_jan18.html)
@@ -60,4 +60,53 @@ elif brCorner and blCorner:
 ```
 
 </PySection>
+
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+```cpp 
+#include<bits/stdc++.h>
+using namespace std;
+
+struct Rect {
+	int x1,y1,x2,y2;
+	int area() { return (y2-y1)*(x2-x1); }
+} r1, r2;
+
+int isInRect(int x, int y, Rect r){
+	if(x >= r.x1 && x <= r.x2 && y >= r.y1 && y <= r.y2) return 1;
+	else return 0;
+}
+
+int main() {
+	ifstream fin("billboard.in");
+	ofstream fout("billboard.out");
+	
+	fin >> r1.x1 >> r1.y1 >> r1.x2 >> r1.y2 >> r2.x1 >> r2.y1 >> r2.x2 >> r2.y2;
+	
+	// Check how many corners are covered
+	int coveredCorners = 0;
+	coveredCorners += isInRect(r1.x1, r1.y1, r2);
+	coveredCorners += isInRect(r1.x1, r1.y2, r2);
+	coveredCorners += isInRect(r1.x2, r1.y1, r2);
+	coveredCorners += isInRect(r1.x2, r1.y2, r2);
+	if(coveredCorners == 4){
+		fout << 0 << endl;
+		return 0;
+	} 
+	
+	// If there are only 1 corner or none covered (including if it passes through the middle, we need to include all)
+	if(coveredCorners < 2){
+		fout << r1.area() << endl;
+		return 0;
+	}
+	
+	// Now there are two covered corners. So we can deduct the area with the intersection of the rectangles.
+	fout << r1.area() - max(0,min(r1.x2,r2.x2)-max(r1.x1,r2.x1)) * max(0,min(r1.y2,r2.y2)-max(r1.y1,r2.y1)) << endl;
+	return 0;
+}
+```
+</CPPSection>
 </LanguageSection>
