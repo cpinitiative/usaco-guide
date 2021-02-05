@@ -24,11 +24,7 @@ const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
 
-const Editor = React.lazy(() =>
-  import('@monaco-editor/react').then(module => ({
-    default: module.ControlledEditor,
-  }))
-);
+const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 const StyledSplit = styled(Split)`
   & > div,
@@ -164,12 +160,12 @@ export default function LiveUpdatePage(props: PageProps) {
             >
               <div className="h-full" style={{ minWidth: '300px' }}>
                 <Editor
-                  theme="dark"
+                  theme="vs-dark"
                   language="markdown"
                   value={markdown}
                   onChange={(e, v) => setMarkdown(v)}
                   options={{ wordWrap: 'on' }}
-                  editorDidMount={(_, e) => {
+                  onMount={e => {
                     editor.current = e;
                     setTimeout(() => {
                       e.layout();
