@@ -163,7 +163,7 @@ export default function LiveUpdatePage(props: PageProps) {
                   theme="vs-dark"
                   language="markdown"
                   value={markdown}
-                  onChange={(e, v) => setMarkdown(v)}
+                  onChange={(v, e) => setMarkdown(v)}
                   options={{ wordWrap: 'on' }}
                   onMount={e => {
                     editor.current = e;
