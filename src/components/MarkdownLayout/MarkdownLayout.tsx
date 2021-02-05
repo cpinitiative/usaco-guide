@@ -25,10 +25,7 @@ import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModal
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 
 const ContentContainer = ({ children, tableOfContents }) => (
-  <main
-    className="relative z-0 pt-6 lg:pt-2 pb-6 focus:outline-none"
-    tabIndex={0}
-  >
+  <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}
@@ -41,7 +38,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
-        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
+        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2 overflow-x-auto">
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />
@@ -49,7 +46,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
 
           {children}
 
-          <div className="pt-4">
+          <div className="pt-4 pb-6">
             <NavBar alignNavButtonsRight={false} />
           </div>
         </div>
@@ -179,7 +176,7 @@ export default function MarkdownLayout({
             <MobileSideNav />
             <DesktopSidebar />
 
-            <div className="w-full overflow-x-auto">
+            <div className="w-full">
               <MobileAppBar />
 
               <ContentContainer tableOfContents={tableOfContents}>
