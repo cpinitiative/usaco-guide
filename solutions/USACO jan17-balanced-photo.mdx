@@ -13,11 +13,19 @@ An alternative solution uses an order statistic tree. This is provided in C++ wi
 
 ## Solution (C++ only)
 
-In order to find the cows taller than the current cow on its left and right, we maintain two balanced binary search trees storing the heights of the cows on the left and right of the current cow. Then, using binary search, we can find the first cow in the set that is higher than the current cow. 
+**Time Complexity:** $\mathcal O(N \log N)$
 
-However, `std::set` is **NOT** a random access data-structure, which means that the time complexity of finding all cows higher than the current cow is $\mathcal O(N)$ (e.g using `distance()`).
+We aim to quickly determine, for each cow, the number of *taller* cows to its left and right. 
 
-To lower the time complexity, we can use an [order statistic tree](/gold/PURS/#order-statistic-tree) to find the number of cows that are higher than each cow in $\mathcal O(\log N)$ time.
+To do this, we can sweep through the cows from left to right and maintain two balanced binary search trees: one for storing the heights of cows on each side of the current cow. Then, use binary search to count the number of heights in each set that are greater than the height of the current cow. 
+
+We can use [order statistic trees](/gold/PURS/#order-statistic-tree) to achieve this in $\mathcal O(N \log N)$ time.
+
+<Warning>
+
+We may **not** use [`std::set`](http://www.cplusplus.com/reference/set/set/) because it is a random access data-structure. The time complexity of counting the number of heights taller than the current cow is $\mathcal O(N)$ (using [`set::lower_bound`](http://www.cplusplus.com/reference/set/set/lower_bound/) and [`std::distance`](http://www.cplusplus.com/reference/iterator/distance/)).
+
+</Warning>
 
 <LanguageSection>
 	
@@ -62,4 +70,5 @@ int main()
 ```
 
 </CPPSection>
+
 </LanguageSection>
