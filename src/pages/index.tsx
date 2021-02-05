@@ -468,7 +468,15 @@ export default function IndexPage(props: PageProps) {
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
-            &copy; 2021 Competitive Programming Initiative.
+            &copy; 2021 Competitive Programming Initiative. Powered by{' '}
+            <a
+              href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
+              target="_blank"
+              className="underline"
+            >
+              Vercel
+            </a>
+            .
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}
