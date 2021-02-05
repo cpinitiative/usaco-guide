@@ -11,7 +11,7 @@ import Tooltip from '../Tooltip/Tooltip';
 import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
 
 const LinkWithProgress = styled(SidebarLinkWithProgress)`
-  &::after {
+  &&::after {
     ${({ small }) => css`
       // prettier-ignore
       left: calc(-1.75rem - ${small
@@ -35,7 +35,7 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)`
     }
   }
 
-  &::after {
+  &&::after {
     ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
   }
   // lol no clue why two ampersands are needed but they are...
@@ -43,7 +43,7 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)`
     ${({ small }) => (small ? tw`border-2 border-gray-500` : tw`border-0`)}
   }
 
-  &::before {
+  &&::before {
     left: calc(-1.75rem - 1px);
     @media (min-width: 768px) {
       left: calc(-3rem - 1px); // -(3rem padding plus half of width)
