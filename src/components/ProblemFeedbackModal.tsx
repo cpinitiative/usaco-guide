@@ -101,7 +101,7 @@ export default function ProblemFeedbackModal({
           <div className="rounded-md shadow-sm mt-3">
             <textarea
               rows={10}
-              className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+              className="form-textarea block w-full transition text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={solutionCode}
               onChange={e => setSolutionCode(e.target.value)}
             />
@@ -186,7 +186,7 @@ export default function ProblemFeedbackModal({
           <div className="rounded-md shadow-sm">
             <textarea
               rows={2}
-              className="form-textarea block w-full transition duration-150 ease-in-out sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+              className="form-textarea block w-full transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={otherFeedback}
               onChange={e => setOtherFeedback(e.target.value)}
               placeholder="I hated the problem / I loved the problem / etc"
@@ -269,7 +269,7 @@ export default function ProblemFeedbackModal({
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none"
+                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}

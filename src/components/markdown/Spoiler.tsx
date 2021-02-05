@@ -38,7 +38,7 @@ const Spoiler = ({ children, title }) => {
             />
           </svg>
         )}
-        {title}
+        <span className="flex-1">{title}</span>
       </p>
 
       {show && <div className="px-4 spoiler-body">{children}</div>}

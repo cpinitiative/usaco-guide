@@ -192,7 +192,7 @@ export default function ProblemSelect({
               placeholder={'Start typing a problem name...'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 flex-1 form-input block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
             />
           </div>
           <div className={'mt-2'}>
@@ -320,7 +320,7 @@ export default function ProblemSelect({
                       placeholder={'Enter a name...'}
                       value={customProblemName}
                       onChange={e => setCustomProblemName(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
                   <div className={'mt-3'}>
@@ -329,7 +329,7 @@ export default function ProblemSelect({
                       placeholder={'e.g Silver, Gold, Plat'}
                       value={customProblemDivision}
                       onChange={e => setCustomProblemDivision(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
                   <div className={'mt-3'}>
@@ -338,7 +338,7 @@ export default function ProblemSelect({
                       placeholder={'e.g custom, Silver, Gold, Old Gold'}
                       value={customProblemSource}
                       onChange={e => setCustomProblemSource(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
                   <div className={'mt-3'}>
@@ -347,7 +347,7 @@ export default function ProblemSelect({
                       placeholder={'http:// or https://'}
                       value={customProblemLink}
                       onChange={e => setCustomProblemLink(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
                   <div className={'mt-3'}>
@@ -385,7 +385,7 @@ export default function ProblemSelect({
                       placeholder={'http:// or https://'}
                       value={customProblemSolution}
                       onChange={e => setCustomProblemSolution(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
                   <div className={'mt-3'}>
@@ -394,7 +394,7 @@ export default function ProblemSelect({
                       placeholder={'Tag1, Tag2, Tag3'}
                       value={customProblemTags}
                       onChange={e => setCustomProblemTags(e.target.value)}
-                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                     />
                   </div>
 
@@ -407,7 +407,7 @@ export default function ProblemSelect({
                           setCustomProblemStarred(e.target.checked)
                         }
                         type="checkbox"
-                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                        className="form-checkbox h-4 w-4 text-indigo-600 transition"
                       />
                     </div>
                     <div className="ml-3 text-sm leading-5">
