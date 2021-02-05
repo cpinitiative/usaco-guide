@@ -133,7 +133,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setDarkMode(!userSettings.darkMode)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       checked={userSettings.darkMode}
                     />
                     <span className="ml-2 text-gray-700">Dark mode</span>
@@ -147,7 +147,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                           !userSettings.hideTagsAndDifficulty
                         )
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       checked={userSettings.hideTagsAndDifficulty}
                     />
                     <span className="ml-2 text-gray-700">
@@ -161,7 +161,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setHideSols(!userSettings.hideSols)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       checked={userSettings.hideSols}
                     />
                     <span className="ml-2 text-gray-700">Hide solutions</span>
@@ -173,7 +173,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setShowIgnored(!userSettings.showIgnored)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                       checked={userSettings.showIgnored}
                     />
                     <span className="ml-2 text-gray-700">
