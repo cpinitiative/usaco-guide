@@ -38,7 +38,6 @@ export function ProblemsList(props: ProblemsListProps) {
   for (const problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
-  console.log('HA', props.division);
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
