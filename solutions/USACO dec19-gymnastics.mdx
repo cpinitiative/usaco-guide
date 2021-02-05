@@ -2,7 +2,7 @@
 id: usaco-963
 source: USACO Bronze 2019 December
 title: Cow Gymnastics
-author: Krish Thawani
+author: Krish Thawani (Java), Hua Zhi Vee (C++)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
@@ -68,4 +68,40 @@ public class gymnastics {
 ```
 </JavaSection>
 
+<CPPSection>
+
+```cpp 
+#include<bits/stdc++.h>
+using namespace std;
+
+bool b[20][20]; // b[A-1][B-1] = 1 if A was better than B in any session.
+
+int main(){
+	ifstream fin("gymnastics.in");
+	ofstream fout("gymnastics.out");
+	
+	int k, n; fin >> k >> n;
+	int a[n];
+	while(k--){ // Looping through k times
+		for(int i=0;i<n;i++) fin >> a[i];
+		
+		for(int i=0;i<n;i++){
+			for(int j=i+1;j<n;j++){
+				b[a[i]-1][a[j]-1] = true;
+			}
+		}
+	}
+	
+	int count = 0;
+	for(int i=0;i<n;i++){
+		for(int j=i+1;j<n;j++){
+            // If not both are true, we count it
+			if(!b[i][j] || !b[j][i]) count++;
+		}
+	}
+	fout << count << endl;
+}
+```
+
+</CPPSection>
 </LanguageSection>
