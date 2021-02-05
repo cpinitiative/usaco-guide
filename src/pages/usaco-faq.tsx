@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { graphql, PageProps } from 'gatsby';
-import Layout from '../../components/layout';
-import SEO from '../../components/seo';
-import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 // @ts-ignore
-import FAQ from '../../faq.mdx';
+import FAQ from '../faq.mdx';
 
 import { DiscussionEmbed } from 'disqus-react';
 import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 import {
   FacebookIcon,
@@ -21,9 +21,9 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share';
-import { components } from '../../components/markdown/MDXProvider';
+import { components } from '../components/markdown/MDXProvider';
 import { MDXProvider } from '@mdx-js/react';
-import { OffsetAnchor } from '../../components/markdown/HTMLComponents';
+import { OffsetAnchor } from '../components/markdown/HTMLComponents';
 
 const customComponents = {
   ...components,
@@ -57,7 +57,7 @@ const customComponents = {
 export default function USACOFAQPage(props: PageProps) {
   const { darkMode } = useContext(UserDataContext);
 
-  const shareURL = 'https://usaco.guide/blog/usaco-faq';
+  const shareURL = 'https://usaco.guide/usaco-faq';
 
   const handleShare = platform => {
     if (window.ga) {
