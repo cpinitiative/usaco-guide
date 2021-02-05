@@ -200,9 +200,9 @@ export default function MarkdownLayout({
 
                 <ForumCTA />
 
-                <div className="my-8">
-                  <ModuleFeedback markdownData={markdownData} />
-                </div>
+                {/*<div className="my-8">*/}
+                {/*  <ModuleFeedback markdownData={markdownData} />*/}
+                {/*</div>*/}
               </ContentContainer>
             </div>
           </ProblemFeedbackModalProvider>
