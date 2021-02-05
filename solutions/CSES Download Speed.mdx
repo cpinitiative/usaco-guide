@@ -40,38 +40,38 @@ bool V[501];
 int pa[501];
  
 bool reachable() {
-    memset(V, false, sizeof(V));
-    queue<int> Q; Q.push(1); V[1]=1;
-    while(!Q.empty()) {
-        int i=Q.front(); Q.pop();
-        FOR(j,1,n) if (adj[i][j] && !V[j])
-            V[j]=1, pa[j]=i, Q.push(j);
-    }
-    return V[n];
+	memset(V, false, sizeof(V));
+	queue<int> Q; Q.push(1); V[1]=1;
+	while(!Q.empty()) {
+		int i=Q.front(); Q.pop();
+		FOR(j,1,n) if (adj[i][j] && !V[j])
+			V[j]=1, pa[j]=i, Q.push(j);
+	}
+	return V[n];
 }
  
 int main() {
-    cin >> n >> m;
-    FOR(i,1,n) FOR(j,1,n) adj[i][j] = 0;
-    F0R(i,m) {
-        ll a,b,c; cin >> a >> b >> c;
+	cin >> n >> m;
+	FOR(i,1,n) FOR(j,1,n) adj[i][j] = 0;
+	F0R(i,m) {
+		ll a,b,c; cin >> a >> b >> c;
 		adj[a][b] += c;
-    }
-    int v, u;
+	}
+	int v, u;
 	ll maxflow = 0;
-    while(reachable()) {
-        ll flow = 1e18;
-        for (v=n; v!=1; v=pa[v]) {
-            u = pa[v];
-            flow = min(flow, adj[u][v]);
-        }
+	while(reachable()) {
+		ll flow = 1e18;
+		for (v=n; v!=1; v=pa[v]) {
+			u = pa[v];
+			flow = min(flow, adj[u][v]);
+		}
 		maxflow += flow;
-        for (v=n; v!=1; v=pa[v]) {
-            u = pa[v];
-            adj[u][v] -= flow;
-            adj[v][u] += flow;
-        }
-    }
+		for (v=n; v!=1; v=pa[v]) {
+			u = pa[v];
+			adj[u][v] -= flow;
+			adj[v][u] += flow;
+		}
+	}
 	cout << maxflow << '\n';
 }
 ```
