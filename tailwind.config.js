@@ -55,6 +55,8 @@ module.exports = {
       './src/**/*.ts',
       './src/**/*.tsx',
       './content/**/*.mdx',
+      './content/**/*.ts',
+      './content/**/*.tsx',
       './gatsby-browser.tsx',
     ],
   },

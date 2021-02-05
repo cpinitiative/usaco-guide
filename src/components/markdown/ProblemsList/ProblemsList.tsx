@@ -35,9 +35,10 @@ export function ProblemsList(props: ProblemsListProps) {
   const divisionTable = !!props.division;
   const showSubmitCodeButtons = props.showSubmitCodeButtons || false;
   let showPercent = true; // props.division != 'Platinum';
-  for (let problem of props.problems) {
+  for (const problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
+  console.log('HA', props.division);
   return (
     <div className="-mx-4 sm:-mx-6 lg:mx-0">
       <div className="flex flex-col">
@@ -62,7 +63,13 @@ export function ProblemsList(props: ProblemsListProps) {
                     (divisionTable ? (
                       showPercent && (
                         <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                          <TextTooltip content="Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.">
+                          <TextTooltip
+                            content={
+                              props.division === 'Platinum'
+                                ? 'Percentage of points scored by the top 10 USA pre-college participants.'
+                                : 'Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.'
+                            }
+                          >
                             Percent
                           </TextTooltip>
                         </th>

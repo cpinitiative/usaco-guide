@@ -49,35 +49,35 @@ Technically, you can solve all Bronze problems without using anything from this 
 <Resources>
 	<Resource
 		source="LCPP"
-		url="https://www.learncpp.com/cpp-tutorial/6-15-an-introduction-to-stdarray/"
-		title="6.15 - Intro to std::array"
+		url="https://www.learncpp.com/cpp-tutorial/an-introduction-to-stdarray/"
+		title="9.22 - Intro to std::array"
 	>
 		{' '}
 	</Resource>
 </Resources>
 
-You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
+You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of 25 `int`s can be initialized using the following line of code:
 
 ```cpp
-array<int, 25> ar;
+array<int, 25> arr;
 ```
 
 The array class supports the normal STL operations (such as `.empty()` or `.size()`) as well as the normal square-bracket access operator:
 
 ```cpp
-ar[5] //access the element at the 5th index.
+arr[5] // accesses the element at the 5th index
 ```
 
-In C++, arrays initialized locally using either the default syntax (i.e. `int arr[10];` ) or the array class are initialized to random numbers, because C++ doesn't have built-in memory management. In order to initialize an array to zero, you have several options:
+In C++, arrays initialized locally using either the default syntax (i.e. `int arr[25];` ) or the array class are initialized to random numbers because C++ doesn't have built-in memory management. In order to initialize an array to zero, you have several options:
 
  - Use a for loop (or nested for loops).
  - Declare the array globally.
- - Add braces at the end of the declaration (i.e. `int arr[10]{};` ). See [LearnCpp](https://www.learncpp.com/cpp-tutorial/62-arrays-part-ii/) for more information regarding this syntax.
- - Use a built-in function such as [`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/) or [`std::fill(arr, arr+10, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
+ - Declare the array with an empty initializer list (i.e. `int arr[25]{};` ) as mentioned [here](https://www.learncpp.com/cpp-tutorial/arrays-part-ii/).
+ - Use a built-in function such as [`std::fill_n(arr, 25, 0)`](http://www.cplusplus.com/reference/algorithm/fill_n/) or [`std::fill(arr, arr+25, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
 
 <Warning>
 
-Make sure you know what `memset` actually does before using it! `memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers, `memset(arr, -1, sizeof arr)` will set each element to $-1$, as you might expect. However, `memset(arr, 1, sizeof arr)` will set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $1$.
+[`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/) will also zero-initialize an array. However, it's important to note that `memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers, `memset(arr, -1, sizeof arr)` will set each element to $-1$, as you might expect. On the other hand, `memset(arr, 1, sizeof arr)` will set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $1$.
 
 </Warning>
 
@@ -93,8 +93,8 @@ Make sure you know what `memset` actually does before using it! `memset` treats 
 	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
 	<Resource
 		source="LCPP"
-		title="6.16 - Intro to std::vector"
-		url="https://www.learncpp.com/cpp-tutorial/6-16-an-introduction-to-stdvector/"
+		title="9.23 - Intro to std::vector"
+		url="https://www.learncpp.com/cpp-tutorial/an-introduction-to-stdvector/"
 	>
 		{' '}
 	</Resource>
@@ -135,7 +135,7 @@ In array-based contest problems, we'll use one-, two-, and three-dimensional sta
 	</Resource>
 	<Resource
 		source="LCPP"
-		title="6.17 - Intro to Iterators"
+		title="9.24 - Intro to Iterators"
 		url="https://www.learncpp.com/cpp-tutorial/introduction-to-iterators/"
 	>
 		{' '}
