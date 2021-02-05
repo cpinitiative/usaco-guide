@@ -6,7 +6,7 @@ export default function WelcomeBackBanner({
   lastViewedModuleLabel,
 }) {
   return (
-    <div className="bg-blue-700 dark:bg-blue-900 shadow hover:shadow-lg transition duration-150 ease-in-out lg:rounded-lg w-full">
+    <div className="bg-blue-700 dark:bg-blue-900 shadow hover:shadow-lg transition lg:rounded-lg w-full">
       <Link
         className="p-8 block sm:flex sm:items-center sm:justify-between"
         to={lastViewedModuleURL || '/general/using-this-guide'}
@@ -29,7 +29,7 @@ export default function WelcomeBackBanner({
           <span className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
-              className="inline-flex items-center px-4 lg:px-8 py-2 lg:py-3 border border-transparent lg:text-lg font-medium rounded-md text-white bg-blue-800 hover:bg-blue-600 dark-hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150"
+              className="inline-flex items-center px-4 lg:px-8 py-2 lg:py-3 border border-transparent lg:text-lg font-medium rounded-md text-white bg-blue-800 hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150"
             >
               {lastViewedModuleURL
                 ? `Continue: ${lastViewedModuleLabel}`

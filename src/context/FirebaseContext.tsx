@@ -12,9 +12,7 @@ const firebaseConfig = {
   appId: '1:862152331454:web:8ba85fda47360ef9fe8eef',
 };
 
-
 export const FirebaseProvider = ({ children }) => {
-  
   const [firebase, setFirebase] = React.useState(null);
 
   React.useEffect(() => {
@@ -26,7 +24,7 @@ export const FirebaseProvider = ({ children }) => {
       const database = import('firebase/database');
 
       Promise.all([app, auth, firestore, database, functions]).then(values => {
-        const firebaseInstance = values[0];
+        const firebaseInstance = values[0].default;
         firebaseInstance.initializeApp(firebaseConfig);
         setFirebase(firebaseInstance);
       });

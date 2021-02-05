@@ -39,7 +39,7 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)`
     ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
   }
   // lol no clue why two ampersands are needed but they are...
-  .mode-dark &&::after {
+  .dark &&::after {
     ${({ small }) => (small ? tw`border-2 border-gray-500` : tw`border-0`)}
   }
 
@@ -79,7 +79,7 @@ const StyledLink = styled.div`
       ${tw`bg-blue-600`}
     }
   }
-  .mode-dark &:hover {
+  .dark &:hover {
     &::before {
       ${tw`bg-gray-400`}
     }
@@ -87,19 +87,19 @@ const StyledLink = styled.div`
 `;
 
 const FrequencyCircleColors = [
-  'group-hover:text-red-500 dark-group-hover:text-red-400',
-  'group-hover:text-orange-500 dark-group-hover:text-orange-400',
-  'group-hover:text-yellow-500 dark-group-hover:text-yellow-400',
-  'group-hover:text-teal-500 dark-group-hover:text-teal-400',
-  'group-hover:text-green-500 dark-group-hover:text-green-400',
+  'group-hover:text-red-500 dark:group-hover:text-red-400',
+  'group-hover:text-orange-500 dark:group-hover:text-orange-400',
+  'group-hover:text-yellow-500 dark:group-hover:text-yellow-400',
+  'group-hover:text-teal-500 dark:group-hover:text-teal-400',
+  'group-hover:text-green-500 dark:group-hover:text-green-400',
 ];
 
 const FrequencyTextColors = [
-  'group-hover:text-red-600 dark-group-hover:text-red-400',
-  'group-hover:text-orange-600 dark-group-hover:text-orange-400',
-  'group-hover:text-yellow-600 dark-group-hover:text-yellow-400',
-  'group-hover:text-teal-600 dark-group-hover:text-teal-400',
-  'group-hover:text-green-600 dark-group-hover:text-green-400',
+  'group-hover:text-red-600 dark:group-hover:text-red-400',
+  'group-hover:text-orange-600 dark:group-hover:text-orange-400',
+  'group-hover:text-yellow-600 dark:group-hover:text-yellow-400',
+  'group-hover:text-teal-600 dark:group-hover:text-teal-400',
+  'group-hover:text-green-600 dark:group-hover:text-green-400',
 ];
 
 // https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
@@ -239,7 +239,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
               progress === 'Ignored'
                 ? 'text-gray-400 dark:text-gray-600'
                 : 'text-gray-700 dark:text-gray-400'
-            } group-hover:text-blue-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out mb-1 flex items-center`}
+            } group-hover:text-blue-800 dark:group-hover:text-dark-high-emphasis transition mb-1 flex items-center`}
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
@@ -266,13 +266,13 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
                 count={link.frequency}
                 totalCount={4}
                 color={
-                  'transition duration-150 ease-in-out text-gray-400 ' +
+                  'transition text-gray-400 ' +
                   FrequencyCircleColors[link.frequency]
                 }
               />
               <span
                 className={
-                  `ml-1 transition duration-150 ease-in-out text-gray-500 ` +
+                  `ml-1 transition text-gray-500 ` +
                   FrequencyTextColors[link.frequency]
                 }
               >
@@ -281,7 +281,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
             </p>
           )}
           {/* https://stackoverflow.com/questions/9229213/convert-iso-date-to-milliseconds-in-javascript */}
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out leading-5">
+          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark:group-hover:text-dark-high-emphasis transition leading-5">
             {link.description}
 
             <i>

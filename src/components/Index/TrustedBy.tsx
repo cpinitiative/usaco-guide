@@ -58,9 +58,9 @@ export default function TrustedBy() {
                     Registered Users
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numUsers === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                     title={
                       numUsers !== -1 ? `${numUsers} registered users` : null
                     }
@@ -73,9 +73,9 @@ export default function TrustedBy() {
                     Pageviews
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numPageviews === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                     title={
                       numPageviews !== -1 ? `${numPageviews} pageviews` : null
                     }
@@ -88,9 +88,9 @@ export default function TrustedBy() {
                     Github Stars
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numStars === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                   >
                     {numStars}
                   </dd>

@@ -48,7 +48,7 @@ export default function Activity() {
 
   return (
     <div className="sm:px-6 lg:px-8 py-4">
-      <div className="bg-white dark:bg-gray-900 shadow transition duration-150 ease-in-out sm:rounded-lg px-4 py-5 sm:p-6">
+      <div className="bg-white dark:bg-gray-900 shadow transition sm:rounded-lg px-4 py-5 sm:p-6">
         <div className="max-w-xs mx-auto">
           <CalendarHeatmap
             startDate={startDate}
