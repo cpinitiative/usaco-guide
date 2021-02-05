@@ -79,7 +79,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto px-0.5">
       <div
         className="flex justify-center space-x-8"
         style={{ minWidth: '32rem' }}
