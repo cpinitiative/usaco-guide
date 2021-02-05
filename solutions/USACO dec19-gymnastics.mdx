@@ -70,8 +70,21 @@ public class gymnastics {
 
 <CPPSection>
 
-### C++ Implementation
-We create a 2D array of booleans which states if A has a ranking higher than B in any point of time. We use $\mathcal{O}(K \cdot N^2)$ to create this array. Then we use $\mathcal{O}(N^2)$ to iterate through all pairs and check if they satisfy the condition. The overall time complexity is hence $\mathcal{O}(K \cdot N^2)$. 
+### Solution 1
+From [official analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html): As the problem statement says, for each pair of cows $(A,B)$, we will count how many practice sessions cow $A$ did better than cow $B$ in. If cow $A$ did better than cow $B$ in all K practice sessions, we increment a counter, and we'll print out the value of the counter once we've looped over all pairs of cows.
+
+### Solution 2
+
+We generate the ranking when we read the data.
+
+We create a 2D array of booleans which states if $A$ has a ranking higher than $B$ in any point of time.
+We read every ranking, then for all $\frac{n(n+1)}{2}$ pairs we set $b[A][B]=\text{true}$.
+
+We use $\mathcal{O}(K \cdot N^2)$ to create this array.
+
+Then we use $\mathcal{O}(N^2)$ to iterate through all pairs and check if they satisfy the condition. At least one of $b[A][B]$ and $b[B][A]$ must be true, and hence we only need to check if they are both true. If they are not both true, we increment our $\text{count}$ by 1.
+
+**Time complexity:** $\mathcal{O}(K \cdot N^2)$. 
 
 ```cpp 
 #include<bits/stdc++.h>
