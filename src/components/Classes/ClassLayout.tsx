@@ -3,7 +3,7 @@ import { Link, navigate } from 'gatsby';
 import * as Icons from 'heroicons-react';
 import DynamicMarkdownRenderer from '../DynamicMarkdownRenderer';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import SEO from '../seo';
 import FirebaseContext from '../../context/FirebaseContext';
 import ClassContext from '../../context/ClassContext';
@@ -28,10 +28,16 @@ export default function ClassLayout({
     setUserClasses,
     userClassIds,
     firebaseUser,
+    isLoaded: userDataLoaded,
   } = useContext(UserDataContext);
-  const { loading, error, data, students, isInstructor } = useContext(
-    ClassContext
-  );
+  const {
+    loading: classLoading,
+    error,
+    data,
+    students,
+    isInstructor,
+  } = useContext(ClassContext);
+  const loading = classLoading || !userDataLoaded;
   const [changingJoinLinkStatus, setChangingJoinLinkStatus] = useState(false);
   const [joinLinkCopied, setJoinLinkCopied] = useState(false);
 
@@ -119,15 +125,10 @@ export default function ClassLayout({
     loading ||
     notFound ||
     error ||
-    showNotFound
-    // The below code would prevent non-members from viewing classes
-    // but it would also prevent non-member admins from viewing
-    // ||
-    // (!isInstructor &&
-    //   !(
-    //     userClasses.some((c: { id: string }) => c.id === classId) &&
-    //     userClassIds.includes(classId)
-    //   ))
+    showNotFound ||
+    (!isInstructor &&
+      !userClasses?.some((c: { id: string }) => c.id === classId) &&
+      !userClassIds?.includes(classId))
   ) {
     return (
       <>
@@ -183,14 +184,14 @@ export default function ClassLayout({
                       <div className="flex items-center space-x-3">
                         <div className="space-y-1">
                           <Link to={`/class/${classId}`}>
-                            <h1 className="text-2xl leading-9 font-bold tracking-tight text-gray-900 dark:text-gray-100 hover:text-gray-600 dark-hover:text-gray-300">
+                            <h1 className="text-2xl leading-9 font-bold tracking-tight text-gray-900 dark:text-gray-100 hover:text-gray-600 dark:hover:text-gray-300">
                               {data?.name}
                             </h1>
                           </Link>
                           <h2 className="text-small leading-3 font-medium tracking-tight text-gray-900 dark:text-gray-100">
                             {data?.date}
                           </h2>
-                          <h4 className="text-sm leading-9 text-gray-500 group-hover:text-gray-900 dark-group-hover:text-gray-100 font-medium">
+                          <h4 className="text-sm leading-9 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
                             {data?.instructorNames.join(', ')}
                           </h4>
                         </div>
@@ -349,7 +350,7 @@ export default function ClassLayout({
                             {!data?.studentsCanJoin ? (
                               <a
                                 className={
-                                  'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                  'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark:active:text-blue-700'
                                 }
                                 onClick={async e => {
                                   e.preventDefault();
@@ -373,7 +374,7 @@ export default function ClassLayout({
                               <>
                                 <a
                                   className={
-                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark:active:text-blue-700'
                                   }
                                   onClick={e => {
                                     e.preventDefault();
@@ -391,7 +392,7 @@ export default function ClassLayout({
                                 (
                                 <a
                                   className={
-                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark-active:text-blue-700'
+                                    'cursor-pointer text-blue-600 dark:text-blue-400 hover:underline active:text-blue-900 dark:active:text-blue-700'
                                   }
                                   onClick={async e => {
                                     e.preventDefault();
@@ -488,7 +489,7 @@ export default function ClassLayout({
                                         )
                                       }
                                       type="checkbox"
-                                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                      className="form-checkbox h-4 w-4 text-indigo-600 transition"
                                     />
                                   </div>
                                   <div className="ml-3 text-sm leading-5">
@@ -593,20 +594,22 @@ export default function ClassLayout({
                     <div className={'w-full mt-3'}>
                       <label className="bold">Class Name</label>
                       <input
+                        type="text"
                         placeholder={'Enter a name...'}
                         value={editClassTitle}
                         onChange={e => setEditClassTitle(e.target.value)}
                         disabled={editClassSubmitting}
-                        className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                       />
                       <div className="mt-3">
                         <label className="bold">Class Date (optional)</label>
                         <input
+                          type="text"
                           placeholder={'e.g. Saturdays 9AM'}
                           value={editClassDate}
                           onChange={e => setEditClassDate(e.target.value)}
                           disabled={editClassSubmitting}
-                          className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          className="form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                         />
                       </div>
                       {editClassError && (

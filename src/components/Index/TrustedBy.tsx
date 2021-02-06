@@ -29,7 +29,10 @@ export default function TrustedBy() {
     '.' +
     Math.floor((numUsers % 1000) / 100) +
     'k';
-  const pageviewsText = Math.floor(numPageviews / 1000) + 'k';
+  const pageviewsText =
+    numPageviews >= 1000000
+      ? (numPageviews / 1000000).toFixed(2) + 'M'
+      : Math.floor(numPageviews / 1000) + 'k';
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 pt-12 sm:pt-16">
@@ -55,9 +58,9 @@ export default function TrustedBy() {
                     Registered Users
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numUsers === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                     title={
                       numUsers !== -1 ? `${numUsers} registered users` : null
                     }
@@ -70,9 +73,9 @@ export default function TrustedBy() {
                     Pageviews
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numPageviews === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                     title={
                       numPageviews !== -1 ? `${numPageviews} pageviews` : null
                     }
@@ -85,9 +88,9 @@ export default function TrustedBy() {
                     Github Stars
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
                       numStars === -1 ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    } transition`}
                   >
                     {numStars}
                   </dd>

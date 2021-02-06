@@ -20,6 +20,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
       </label>
       <div className="relative rounded-md shadow-sm">
         <input
+          type="text"
           id={id}
           className={
             'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700' +
@@ -174,7 +175,7 @@ export default function ContactUsSlideover({
           <span className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
-              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition duration-150 ease-in-out"
+              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition"
               onClick={onClose}
             >
               Cancel
@@ -184,7 +185,7 @@ export default function ContactUsSlideover({
             <button
               type="submit"
               disabled={!submitEnabled}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition duration-150 ease-in-out ${
+              className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition ${
                 submitEnabled
                   ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dar-hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'
                   : 'bg-blue-400 dark:bg-blue-800 focus:outline-none cursor-default'
@@ -306,7 +307,7 @@ export default function ContactUsSlideover({
                           id={`contact_topic_${idx}`}
                           type="radio"
                           name="type"
-                          className="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out dark:bg-gray-600"
+                          className="form-radio h-4 w-4 text-blue-600 transition dark:bg-gray-600"
                           checked={topic === t}
                           onChange={() => setTopic(t)}
                         />

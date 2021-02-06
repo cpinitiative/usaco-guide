@@ -5,17 +5,31 @@ author: Benjamin Qi, Andi Qu
 description: 'Using Divide & Conquer to answer offline or online range queries on a static array.'
 frequency: 1
 prerequisites:
- - tree-euler
+  - tree-euler
 ---
-
-
 
 export const problems = {
 	diviSample: [
-		new Problem('CSES', 'Range Minimum Queries I', '1647', 'Very Easy', false, [], ''),
+		new Problem(
+			'CSES',
+			'Static Range Minimum Queries',
+			'1647',
+			'Very Easy',
+			false,
+			[],
+			''
+		),
 	],
 	general: [
-		new Problem('JOI', 'Secret', 'JOI14_secret', 'Easy', false, [], 'joi-14-secret'),
+		new Problem(
+			'JOI',
+			'2014 - Secret',
+			'JOI14_secret',
+			'Easy',
+			false,
+			[],
+			'joi-14-secret'
+		),
 		new Problem('CC', 'Product on Segment', 'SEGPROD', 'Easy', false, [], ''),
 		new Problem(
 			'Baltic OI',
@@ -41,7 +55,7 @@ export const problems = {
 			'997',
 			'Hard',
 			false,
-			[],
+			['Matrix', 'D&C'],
 			''
 		),
 	],
@@ -57,7 +71,7 @@ $$
 A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]
 $$
 
-where $\ominus$ denotes an associative operation. 
+where $\ominus$ denotes an associative operation.
 
 In the [prerequisite module](/gold/tree-euler#sparse-tables), it was shown that we can get $\mathcal{O}(1)$ time queries with $\mathcal{O}(N\log N)$ time preprocessing when $\ominus$ denotes `min`. But how do we generalize to other associative operations?
 
@@ -100,7 +114,7 @@ void divi(int l, int r, vi v) {
 		trav(_,v) ans[_] = x[l];
 		return;
 	}
-	int m = (l+r)/2; 
+	int m = (l+r)/2;
 	lef[m] = x[m]; ROF(i,l,m) lef[i] = min(x[i],lef[i+1]);
 	rig[m+1] = x[m+1]; FOR(i,m+2,r+1) rig[i] = min(rig[i-1],x[i]);
 	vi todo[2];
@@ -136,46 +150,52 @@ int main() {
 We do the same thing as above, except we store all computes values of `lef` and `rig` within a 2D array using $\mathcal{O}(N\log N)$ memory, similarly as sparse table.
 
 <Resources>
-	<Resource source="Benq" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RangeQuery.h" title="RangeQuery">implementation</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/Static%20Range%20Queries%20(9.1)/RangeQuery.h"
+		title="RangeQuery"
+	>
+		implementation
+	</Resource>
 </Resources>
 
 ### Solution - RMQ
 
 In the code below, `dat` performs the roles that both `lef` and `rig` do in the previous solution. Let `comb(l,r)` equal $A[l]\ominus A[l+1]\ominus \cdots \ominus A[r]$. For example, if $n=20$ and we only consider levels $0$ and $1$ then we get
 
- - `dat[0][i]=comb(i,9)` for `i` in `[0,9]`
- - `dat[0][i]=comb(10,i)` for `i` in `[10,19]`
- - `dat[1][i]=comb(i,4)` for `i` in `[0,4]`
- - `dat[1][i]=comb(5,i)` for `i` in `[5,9]`
- - `dat[1][i]=comb(i,14)` for `i` in `[10,14]`
- - `dat[1][i]=comb(15,i)` for `i` in `[15,19]`
- - `mask[0..4]=0`
- - `mask[5..9]=2`
- - `mask[10..14]=1`
- - `mask[15..19]=3`
+- `dat[0][i]=comb(i,9)` for `i` in `[0,9]`
+- `dat[0][i]=comb(10,i)` for `i` in `[10,19]`
+- `dat[1][i]=comb(i,4)` for `i` in `[0,4]`
+- `dat[1][i]=comb(5,i)` for `i` in `[5,9]`
+- `dat[1][i]=comb(i,14)` for `i` in `[10,14]`
+- `dat[1][i]=comb(15,i)` for `i` in `[15,19]`
+- `mask[0..4]=0`
+- `mask[5..9]=2`
+- `mask[10..14]=1`
+- `mask[15..19]=3`
 
 Examples of queries:
 
- - To query `comb(0,16)` we first count the number of training zeroes in `mask[0]` XOR `mask[16]`, which is `0`. So our answer is `min(dat[0][0],dat[0][16])`.
- - To query `comb(12,18)` we first count the number of training zeroes in `mask[12]` XOR `mask[18]`, which is `1`. So our answer is `min(dat[1][12],dat[1][12])`.
+- To query `comb(0,16)` we first count the number of training zeroes in `mask[0]` XOR `mask[16]`, which is `0`. So our answer is `min(dat[0][0],dat[0][16])`.
+- To query `comb(12,18)` we first count the number of training zeroes in `mask[12]` XOR `mask[18]`, which is `1`. So our answer is `min(dat[1][12],dat[1][12])`.
 
 ```cpp
 int n,q;
 vi x, ans;
- 
+
 int dat[18][MX], mask[MX]; // 18 = ceil(log2(n))
- 
+
 void divi(int l, int r, int lev) { // generate dat and mask
 	if (l == r) return;
-	int m = (l+r)/2; 
-	dat[lev][m] = x[m]; 
+	int m = (l+r)/2;
+	dat[lev][m] = x[m];
 	ROF(i,l,m) dat[lev][i] = min(x[i],dat[lev][i+1]);
-	dat[lev][m+1] = x[m+1]; 
+	dat[lev][m+1] = x[m+1];
 	FOR(i,m+2,r+1) dat[lev][i] = min(dat[lev][i-1],x[i]);
 	FOR(i,m+1,r+1) mask[i] ^= 1<<lev;
 	divi(l,m,lev+1); divi(m+1,r,lev+1);
 }
- 
+
 int main() {
 	setIO(); re(n,q);
 	x.rsz(n); re(x);
@@ -185,7 +205,7 @@ int main() {
 		if (a == b) ps(x[a]);
 		else { // find level where info is stored
 			// ctz gives number of training zeroes
-			int bits = __builtin_ctz(mask[a]^mask[b]); 
+			int bits = __builtin_ctz(mask[a]^mask[b]);
 			ps(min(dat[bits][a],dat[bits][b]));
 		}
 	}

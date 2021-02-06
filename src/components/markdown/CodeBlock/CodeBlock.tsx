@@ -114,7 +114,7 @@ export default ({ children, className }) => {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     className={
-                      'text-white w-6 h-6 transform group-hover:-translate-y-2 transition duration-150 ease-in-out mb-2 ' +
+                      'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
                       (collapsed ? '' : 'rotate-180')
                     }
                   >

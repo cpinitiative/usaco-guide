@@ -8,6 +8,7 @@ import { SECTION_LABELS } from '../../../content/ordering';
 import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { useContext } from 'react';
+// import { timeAgoString } from '../Dashboard/ModuleLink';
 
 const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   let moduleLink = moduleLinks.find(x => x.id === prerequisite);
@@ -77,6 +78,9 @@ export default function ModuleHeaders({
             />
           </div>
         )}
+        {/* {markdownData instanceof ModuleInfo && 
+          `Last Updated: ${time_ago(markdownData.gitAuthorTime)}`
+        } */}
       </div>
 
       {markdownData instanceof ModuleInfo && markdownData.prerequisites && (

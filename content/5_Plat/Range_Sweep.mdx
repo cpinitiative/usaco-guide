@@ -30,11 +30,19 @@ export const problems = {
 			'Easy',
 			false,
 			undefined,
-			'Offline 2D queries can be done with a 1D data structure'
+			'HE-twin-permutations'
 		),
 		new Problem('Plat', 'Slingshot', '816', 'Normal', false, ['PURQ'], ''),
 		new Problem('CSES', 'Robot Path', '1742', 'Hard', false, ['PURQ'], ''),
-		new Problem('IZhO', 'Hedgehog Daniyar and Algorithms', 'https://oj.uz/problem/view/IZhO19_sortbooks', 'Hard', false, [],''),
+		new Problem(
+			'IZhO',
+			'2019 - Hedgehog Daniyar and Algorithms',
+			'https://oj.uz/problem/view/IZhO19_sortbooks',
+			'Hard',
+			false,
+			[],
+			''
+		),
 	],
 	numLIS: [
 		new Problem(
@@ -56,7 +64,7 @@ export const problems = {
 			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2017/contest3_solutions/solutions.pdf'
 		),
 		new Problem('Plat', 'Sort It Out', '865', 'Very Hard', false, ['DP'], ''),
-	]
+	],
 };
 
 <FocusProblem problem={problems.sample[0]} />
@@ -87,21 +95,21 @@ The [other module](/adv/springboards) describes a simpler way of doing this, tho
  * Description: 1D point update, range query where \texttt{comb} is
  	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
  * Time: O(\log N)
- * Source: 
+ * Source:
 	* http://codeforces.com/blog/entry/18051
 	* KACTL
  * Verification: SPOJ Fenwick
  */
 
 template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return min(a,b); } 
+	const T ID = 0; T comb(T a, T b) { return min(a,b); }
 	int n; vector<T> seg;
 	void init(int _n) { n = _n; seg.assign(2*n,ID); }
 	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
 	void upd(int p, T val) { // set val at position p
 		ckmin(seg[p += n],val); for (p /= 2; p; p /= 2) pull(p); }
 	T query(int l, int r) {	// sum on interval [l, r]
-		T ra = ID, rb = ID; 
+		T ra = ID, rb = ID;
 		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
 			if (l&1) ra = comb(ra,seg[l++]);
 			if (r&1) rb = comb(seg[--r],rb);
@@ -124,7 +132,7 @@ int main() {
 	cin >> N >> P;
 	vector<pair<pair<int,int>,pair<int,int>>> ev;
 	for (int i = 0; i < P; ++i) {
-		pair<int,int> a,b; 
+		pair<int,int> a,b;
 		cin >> a.f >> a.s >> b.f >> b.s;
 		ev.push_back({a,{i,-1}}); // start point
 		ev.push_back({b,{i,1}}); // end point

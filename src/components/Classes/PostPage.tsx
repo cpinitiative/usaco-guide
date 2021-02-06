@@ -48,12 +48,12 @@ export interface ProblemJSON {
 }
 export class ProblemWithDivisionInfo extends Problem {
   constructor(
-    public division: string,
-    public moduleId: string,
-    public moduleTitle: string,
-    public source: string,
-    public name: string,
-    public id: string,
+    public division: string | null,
+    public moduleId: string | null,
+    public moduleTitle: string | null,
+    public source: string | null,
+    public name: string | null,
+    public id: string | null,
     public difficulty?:
       | 'Very Easy'
       | 'Easy'
@@ -284,7 +284,11 @@ export default function PostPage(props: {
           ? dueDate.getTime() !== post?.dueDate?.toDate().getTime()
           : !!post?.dueDate)) ||
       problems.length !== postProblems.length ||
-      problems.some((el, i) => el?.uniqueID !== postProblems[i]?.uniqueID) ||
+      problems.some(
+        (el, i) =>
+          el?.uniqueID !== postProblems[i]?.uniqueID ||
+          el?.difficulty !== postProblems[i]?.difficulty
+      ) ||
       content !== post?.content,
     [title, content, dueDate, type, post, problems, postProblems]
   );
@@ -298,6 +302,7 @@ export default function PostPage(props: {
     }
     return () => window.removeEventListener('beforeunload', handler);
   }, [hasChanges, isInstructor, edit]);
+
   if (loading || notFound || error || (!isInstructor && !post.published)) {
     return (
       <>
@@ -343,7 +348,7 @@ export default function PostPage(props: {
                       'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 ' +
                       (edit && hasChanges
                         ? 'bg-gray-300 dark:bg-gray-700'
-                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150')
+                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150')
                     }
                   >
                     {edit && hasChanges
@@ -367,7 +372,7 @@ export default function PostPage(props: {
                             setTitle(post.title);
                           }}
                           className={
-                            'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                            'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150'
                           }
                         >
                           Edit
@@ -424,7 +429,7 @@ export default function PostPage(props: {
                         }
                       }}
                       className={
-                        'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                        'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150'
                       }
                     >
                       {hasChanges ? 'Discard Changes' : 'Stop Editing'}
@@ -505,10 +510,11 @@ export default function PostPage(props: {
             <div className="mt-4">
               {edit ? (
                 <input
+                  type="text"
                   placeholder={'Enter a title...'}
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                 />
               ) : (
                 <h1 className="text-2xl leading-9 font-bold">{post.title}</h1>
@@ -525,7 +531,7 @@ export default function PostPage(props: {
                     }}
                     value={dueDate}
                     onChange={date => setDueDate(date[0])}
-                    className="dark:bg-gray-200 dark:text-gray-800 flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="dark:bg-gray-200 dark:text-gray-800 flex-1 form-input block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                   />
                 ) : (
                   <h1 className="text-md text-gray-800 dark:text-gray-200 leading-7 tracking-tight">

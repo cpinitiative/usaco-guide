@@ -63,14 +63,6 @@ export const plugins = [
           },
         },
         {
-          resolve: require.resolve('./src/mdx-plugins/katex.ts'),
-          options: {
-            // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
-            strict: `ignore`,
-            output: 'html',
-          },
-        },
-        {
           resolve: `gatsby-remark-images`,
           options: {
             maxWidth: 832,
@@ -82,7 +74,8 @@ export const plugins = [
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
       ],
-      remarkPlugins: [require(`remark-external-links`)],
+      remarkPlugins: [require(`remark-external-links`), require('remark-math')],
+      rehypePlugins: [require('./src/mdx-plugins/rehype-math.js')],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,
@@ -98,7 +91,9 @@ export const plugins = [
     resolve: `gatsby-plugin-postcss`,
     options: {
       postCssPlugins: [
+        require('postcss-import'),
         require(`tailwindcss`),
+        require('postcss-nested'),
         require(`autoprefixer`),
         ...(process.env.NODE_ENV === `production` ? [require(`cssnano`)] : []),
       ],

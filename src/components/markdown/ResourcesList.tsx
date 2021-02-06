@@ -125,7 +125,7 @@ export function Resource(props) {
   // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
   return (
     <tr className="block sm:table-row">
-      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
         {source && (
           <>
             {des ? <TextTooltip content={des}>{source}</TextTooltip> : source}
@@ -135,7 +135,7 @@ export function Resource(props) {
       <td
         className={`${
           props.source && 'pl-2 sm:pl-6'
-        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
+        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
       >
         <div className="flex items-center">
           {props.starred && (

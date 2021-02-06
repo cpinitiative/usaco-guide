@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
+import ButtonGroup from './ButtonGroup';
+import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 
 const UserAuthButton = props => {
   const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
@@ -77,7 +79,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-700 dark:opacity-75" />
         </Transition.Child>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" />
         &#8203;
@@ -93,15 +95,15 @@ export default function SettingsModal({ isOpen, onClose }) {
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="bg-white dark:bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
-              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  className="h-6 w-6 text-blue-600"
+                  className="h-6 w-6 text-blue-600 dark:text-blue-300"
                 >
                   <path
                     strokeLinecap="round"
@@ -119,47 +121,18 @@ export default function SettingsModal({ isOpen, onClose }) {
               </div>
               <div className="mt-3 sm:ml-4 sm:mt-1">
                 <h3
-                  className="text-xl font-medium text-gray-900 text-center sm:text-left"
+                  className="text-xl font-medium text-gray-900 dark:text-gray-100 text-center sm:text-left"
                   id="modal-headline"
                 >
                   Settings
                 </h3>
                 <div className="mt-3">
-                  <span className="relative z-0 inline-flex shadow-sm rounded-md">
-                    <button
-                      type="button"
-                      onClick={() => userSettings.setLang('cpp')}
-                      className={`relative inline-flex items-center px-4 py-2 rounded-l-md border text-sm leading-5 font-medium ${
-                        userSettings.lang === 'cpp'
-                          ? 'border-blue-600 bg-blue-600 text-white'
-                          : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-                      } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
-                    >
-                      C++
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => userSettings.setLang('java')}
-                      className={`-ml-px relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
-                        userSettings.lang === 'java'
-                          ? 'border-blue-600 bg-blue-600 text-white'
-                          : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-                      } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
-                    >
-                      Java
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => userSettings.setLang('py')}
-                      className={`-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border text-sm leading-5 font-medium ${
-                        userSettings.lang === 'py'
-                          ? 'border-blue-600 bg-blue-600 text-white'
-                          : 'border-gray-300 bg-white text-gray-700 hover:text-gray-500 active:bg-gray-100 active:text-gray-700'
-                      } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
-                    >
-                      Python
-                    </button>
-                  </span>
+                  <ButtonGroup
+                    options={['cpp', 'java', 'py']}
+                    value={userSettings.lang}
+                    onChange={v => userSettings.setLang(v)}
+                    labelMap={LANGUAGE_LABELS}
+                  />
 
                   <label className="flex items-center mt-2">
                     <input
@@ -167,10 +140,12 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setDarkMode(!userSettings.darkMode)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:ring-offset-gray-900 dark:focus:ring-blue-400 dark:border-gray-600 rounded"
                       checked={userSettings.darkMode}
                     />
-                    <span className="ml-2 text-gray-700">Dark mode</span>
+                    <span className="ml-2 text-gray-700 dark:text-gray-300">
+                      Dark mode
+                    </span>
                   </label>
 
                   <label className="flex items-center mt-3">
@@ -181,10 +156,10 @@ export default function SettingsModal({ isOpen, onClose }) {
                           !userSettings.hideTagsAndDifficulty
                         )
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:ring-offset-gray-900 dark:focus:ring-blue-400 dark:border-gray-600 rounded"
                       checked={userSettings.hideTagsAndDifficulty}
                     />
-                    <span className="ml-2 text-gray-700">
+                    <span className="ml-2 text-gray-700 dark:text-gray-300">
                       Hide difficulty and tags
                     </span>
                   </label>
@@ -195,10 +170,12 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setHideSols(!userSettings.hideSols)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:ring-offset-gray-900 dark:focus:ring-blue-400 dark:border-gray-600 rounded"
                       checked={userSettings.hideSols}
                     />
-                    <span className="ml-2 text-gray-700">Hide solutions</span>
+                    <span className="ml-2 text-gray-700 dark:text-gray-300">
+                      Hide solutions
+                    </span>
                   </label>
 
                   <label className="flex items-center mt-3">
@@ -207,22 +184,22 @@ export default function SettingsModal({ isOpen, onClose }) {
                       onChange={() =>
                         userSettings.setShowIgnored(!userSettings.showIgnored)
                       }
-                      className="form-checkbox h-5 w-5 text-gray-600"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:ring-offset-gray-900 dark:focus:ring-blue-400 dark:border-gray-600 rounded"
                       checked={userSettings.showIgnored}
                     />
-                    <span className="ml-2 text-gray-700">
+                    <span className="ml-2 text-gray-700 dark:text-gray-300">
                       Show ignored problems & modules on dashboard
                     </span>
                   </label>
 
                   <div className="h-3" />
 
-                  <UserAuthButton className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" />
+                  <UserAuthButton className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150" />
 
                   <div className="h-3" />
 
                   <button
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
                     onClick={handleExportUserData}
                   >
                     Export User Data
@@ -253,12 +230,12 @@ export default function SettingsModal({ isOpen, onClose }) {
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-gray-50 dark:bg-dark-surface px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
               >
                 Done
               </button>

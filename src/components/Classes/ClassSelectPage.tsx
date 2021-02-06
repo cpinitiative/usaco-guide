@@ -143,28 +143,28 @@ export default function ClassSelectPage(props: { path: string }) {
           </ul>
           {isAdmin && (
             <div className={'mb-6'}>
-              <h1 className="text-3xl font-bold leading-9 mb-2 mt-8">
-                Other Classes (visible to administrators only)
-              </h1>
+              {/*<h1 className="text-3xl font-bold leading-9 mb-2 mt-8">*/}
+              {/*  Other Classes (visible to administrators only)*/}
+              {/*</h1>*/}
 
-              <ul className={'pt-4'}>
-                {otherClasses &&
-                  otherClasses
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .filter(
-                      c => userClasses.findIndex(uc => uc.id === c.id) === -1
-                    )
-                    .map(otherClass => (
-                      <li key={otherClass.id}>
-                        <Link
-                          to={`/class/${otherClass.id}`}
-                          className={'text-blue-600 hover:underline'}
-                        >
-                          {otherClass.name}
-                        </Link>
-                      </li>
-                    ))}
-              </ul>
+              {/*<ul className={'pt-4'}>*/}
+              {/*  {otherClasses &&*/}
+              {/*    otherClasses*/}
+              {/*      .sort((a, b) => a.name.localeCompare(b.name))*/}
+              {/*      .filter(*/}
+              {/*        c => userClasses.findIndex(uc => uc.id === c.id) === -1*/}
+              {/*      )*/}
+              {/*      .map(otherClass => (*/}
+              {/*        <li key={otherClass.id}>*/}
+              {/*          <Link*/}
+              {/*            to={`/class/${otherClass.id}`}*/}
+              {/*            className={'text-blue-600 hover:underline'}*/}
+              {/*          >*/}
+              {/*            {otherClass.name}*/}
+              {/*          </Link>*/}
+              {/*        </li>*/}
+              {/*      ))}*/}
+              {/*</ul>*/}
               <h1 className="text-3xl font-bold leading-9 mb-2 mt-8">
                 Add an Instructor
               </h1>
@@ -244,10 +244,11 @@ export default function ClassSelectPage(props: { path: string }) {
                 <div className="mt-3">
                   <label className="bold">Instructor's Email Address</label>
                   <input
+                    type="email"
                     value={addInstructorEmail}
                     onChange={e => setAddInstructorEmail(e.target.value)}
                     disabled={addInstructorLoading}
-                    className="font-bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="font-bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                   />
                 </div>
                 <div className={'mt-2'}>
@@ -261,7 +262,7 @@ export default function ClassSelectPage(props: { path: string }) {
                           setAddInstructorAlsoMakeAdmin(e.target.checked)
                         }
                         type="checkbox"
-                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                        className="form-checkbox h-4 w-4 text-indigo-600 transition"
                       />
                     </div>
                     <div className="ml-3 text-sm leading-5">

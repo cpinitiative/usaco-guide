@@ -11,7 +11,7 @@ const TableOfContentsBlock = ({
   let links = genLinksFromTOCHeadings(
     tableOfContents,
     _ =>
-      'block mb-2 transition duration-150 ease-in-out text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark-hover:text-dark-high-emphasis'
+      'block mb-2 transition text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark:hover:text-dark-high-emphasis'
   );
   return (
     <div>
@@ -25,12 +25,12 @@ const TableOfContentsBlock = ({
       )}
       <hr className="my-6 dark:border-gray-700" />
 
-      <LinksToEdit className="group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
+      <LinksToEdit className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
 
       {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"
         target="_blank"
-        className="mt-1 group block transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
+        className="mt-1 group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
       >
         Need help? Ask on Reddit!
         <svg

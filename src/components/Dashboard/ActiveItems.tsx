@@ -85,7 +85,7 @@ export default function ActiveItems({
             <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link
                 to={item.url}
-                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-300 dark-hover:text-blue-200 transition ease-in-out duration-150"
+                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200 transition ease-in-out duration-150"
               >
                 {item.label}
                 <span

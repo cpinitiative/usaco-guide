@@ -6,6 +6,7 @@ interface EnrolledClass {
 }
 export type UserClassesAPI = {
   userClasses: EnrolledClass[];
+  userClassIds: string[];
   setUserClasses: (enrolledClasses: EnrolledClass[]) => void;
 };
 
