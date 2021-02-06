@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useReducer, useState } from 'react';
+import { createContext, useReducer, useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
 import UserLang, { UserLangAPI } from './properties/userLang';
@@ -116,6 +116,7 @@ type UserDataContextAPI = UserLangAPI &
     isLoaded: boolean;
     onlineUsers: number;
     getDataExport: Function;
+    importUserData: Function;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
@@ -123,6 +124,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   darkMode: false,
   firebaseUser: null,
   getDataExport: () => {},
+  importUserData: () => {},
   hideTagsAndDifficulty: false,
   hideSols: false,
   divisionTableQuery: {
@@ -222,10 +224,10 @@ export const UserDataProvider = ({ children }) => {
         .onSnapshot(snapshot => {
           let data = snapshot.data();
           if (!data) {
-            let lastViewedModule = UserDataContextAPIs.find(
+            const lastViewedModule = UserDataContextAPIs.find(
               x => x instanceof LastViewedModule
             ).exportValue();
-            let localDataIsNotEmpty = lastViewedModule !== null;
+            const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
               if (
@@ -291,6 +293,27 @@ export const UserDataProvider = ({ children }) => {
         (acc, api) => ({ ...acc, ...api.exportValue() }),
         {}
       );
+    },
+
+    importUserData: (data: JSON) => {
+      if (
+        confirm(
+          'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+        )
+      ) {
+        UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+        UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+        if (firebaseUser) {
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(data);
+        }
+        triggerRerender();
+        return true;
+      }
+      return false;
     },
   };
 

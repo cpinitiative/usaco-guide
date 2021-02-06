@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Transition } from '@headlessui/react';
 import ButtonGroup from './ButtonGroup';
@@ -27,6 +27,39 @@ export default function SettingsModal({ isOpen, onClose }) {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  const [file, setFile] = useState('');
+  const [resetInput, setResetInput] = useState(0);
+
+  // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
+  const handleUpload = e => {
+    const file = e.target.files[0];
+    console.log('FOUND', file);
+    if (file.type !== 'application/json') {
+      alert('Must upload a JSON file.');
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.readAsText(file, 'UTF-8');
+    fileReader.onload = e => {
+      // console.log("e.target.result", e.target.result);
+      setFile(e.target.result);
+    };
+  };
+
+  const handleImportUserData = e => {
+    if (file === '') return;
+    try {
+      const data = JSON.parse(file);
+      if (userSettings.importUserData(data)) {
+        setFile('');
+        setResetInput(resetInput + 1); // clears file input
+      }
+    } catch (e) {
+      alert(e);
+      console.error(e);
+    }
   };
 
   return (
@@ -170,6 +203,30 @@ export default function SettingsModal({ isOpen, onClose }) {
                   >
                     Export User Data
                   </button>
+
+                  <div className="h-3" />
+
+                  <button
+                    className={`${
+                      file !== ''
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
+                        : 'text-gray-300 dark:text-gray-600 cursor-default'
+                    } inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md bg-white dark:bg-gray-800`}
+                    disabled={!file}
+                    onClick={handleImportUserData}
+                  >
+                    Import User Data
+                  </button>
+
+                  {/* https://stackoverflow.com/questions/38731271/clear-an-input-field-with-reactjs */}
+                  {/* https://stackoverflow.com/questions/42192346/how-to-reset-reactjs-file-input */}
+                  <input
+                    className="py-2 text-sm"
+                    type="file"
+                    accept="application/json"
+                    onChange={handleUpload}
+                    key={resetInput}
+                  />
                 </div>
               </div>
             </div>

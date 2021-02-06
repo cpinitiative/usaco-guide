@@ -36,7 +36,7 @@ module.exports = {
       borderColor: ['group-focus'],
       boxShadow: ['group-focus'],
       opacity: ['group-focus'],
-      textColor: ['group-focus', 'active'],
+      textColor: ['group-focus', 'active', 'disabled'],
       textDecoration: ['group-focus'],
       display: ['dark'],
       backgroundOpacity: ['dark'],
