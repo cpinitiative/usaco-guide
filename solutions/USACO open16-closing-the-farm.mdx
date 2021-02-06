@@ -10,10 +10,7 @@ author: Jesse Choe
 <LanguageSection>
 <CPPSection>
 
-In this problem, we are asked to determine if each barn is connected after a certain barn is closed. To check this, we can run a depth-first search (DFS) algorithm
-on the last node to be closed, since each line asks whether the closure of the previous barn will allow connection between each of the unclosed nodes, making the last
-closed barn irrelevant to the output. To close each barn, we can store a boolean array and set each closed barn to be true for each iteration. Then, we can run the
-DFS and check how many nodes have been visited; if all the unclosed nodes have been visited, then we print "YES"; otherwise, we print "NO".
+In this problem, we are asked to determine if all remaining barns are connected as the barns close one at a time. To check this, we can run a depth-first search (DFS) starting from the barn that will close last. To simulate the closure each barn, we can store a boolean array and set each barn in the iteration to be "closed".Then, we can run the DFS and check how many nodes have been visited. If all the unclosed nodes have been visited, then we print "YES"; otherwise, we print "NO".
 
 ```cpp
 #include <bits/stdc++.h>
@@ -52,12 +49,12 @@ void setIO(string fileName = ""){
 	}
 }
 
-vl adj[3001], order(3001); ll nodes;
+vl adj[3001], order(3001); int nodes;
 vb visited(3001), closed(3001);
 
 // Store the global variables, including the number of nodes visited and the boolean closed array.
 
-void DFS(ll node){
+void DFS(int node){
     if(visited[node] || closed[node]) return;
     // Increase the number of nodes if and only if they haven't been closed.
     nodes++;
@@ -71,9 +68,9 @@ void DFS(ll node){
 
 int main(){
     setIO("closing");
-    ll n, m; cin >> n >> m;
+    int n, m; cin >> n >> m;
     FOR(i, 0, m){
-        ll a, b; cin >> a >> b;
+        int a, b; cin >> a >> b;
         adj[a].pb(b);
         adj[b].pb(a);
     }
@@ -88,7 +85,7 @@ int main(){
         fill(all(visited), false);
         nodes = 0;
         closed[order[i]] = true;
-        DFS(order[n-1]);
+        DFS(order[n-1]); // DFS from the barn that will close last
 	// Have all the unclosed barns been visited?
         (nodes == n-i-1) ? cout << "YES" << endl: cout << "NO" << endl;
     }
