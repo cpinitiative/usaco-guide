@@ -55,7 +55,116 @@ Don't be afraid to use KMP again!
 
 </Spoiler>
 
-<Spoiler title="Solution">
+<Spoiler title="Solution 1">
+
+**Time complexity:** $\mathcal O(N \log N)$.
+
+First, we compute the prefix function $\pi$ of $S$ using KMP.
+
+If $2\pi[i - 1] \geq i$, then $S[0 : i]$ will never be the shortest template of $S$ because we know that $S[0 : \pi[i - 1]]$ is a template of $S[0 : i]$.
+
+This means that we only have $\mathcal O(\log N)$ candidate templates to check! We can then use KMP again on each candidate and check whether the maximum "gap" between matches is sufficiently small.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int p[500000];
+
+int shortest_template(int n) {
+    if (!p[n - 1]) return n;
+    if (p[n - 1] * 2 >= n) return shortest_template(p[n - 1]);
+    int cand = shortest_template(p[n - 1]);
+    for (int i = 0, j = 0, curr = -1; i < n; i++) {
+        while (j && (j == cand || s[i] != s[j])) j = p[j - 1];
+        if (s[i] == s[j]) j++;
+        if (j == cand) curr = i;
+        if (i - curr >= cand) return n;
+    }
+    return cand;
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> s;
+    int n = s.size();
+    for (int i = 1; i < n; i++) {
+        p[i] = p[i - 1];
+        while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
+        if (s[i] == s[p[i]]) p[i]++;
+    }
+    cout << shortest_template(n);
+    return 0;
+}
+```
+
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+**Time complexity:** $\mathcal O(N \log N)$.
+
+<Warning>
+
+The official time limits are very tight and `std::set`/`std::multiset` have very bad constant factors, so this code doesn't actually get 100 points. Nevertheless, we think the idea behind this solution is interesting enough to share.
+
+</Warning>
+
+First, we compute the prefix function $\pi$ of $S$ using KMP. While doing this, we also construct a tree where node $(i + 1)$'s parent is $\pi[i]$ for each $0 \leq i < N$.
+
+Notice how the subtree of node $i$ is the set of all positions $j$ where $S[0 : i] = S[j - i : j]$.
+
+This means that we can traverse up the tree from node $N$ and keep track of the nodes in the current node's subtree (using something like a `std::set`).
+
+To check whether the current node works, we simply check whether the gaps between positions in the subtree are sufficiently small. We can keep track of these gaps using something like a `std::multiset`
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int p[500000];
+vector<int> graph[500000];
+bool visited[500000];
+set<int> matches;
+multiset<int> gaps;
+
+void dfs(int node) {
+    visited[node] = true;
+    set<int>::iterator ub = matches.upper_bound(node);
+    int l = *prev(ub), r = *ub;
+    gaps.erase(gaps.find(r - l));
+    gaps.insert(node - l), gaps.insert(r - node);
+    matches.insert(node);
+    for (int i : graph[node]) if (!visited[i]) dfs(i);
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> s;
+    int n = s.size();
+    for (int i = 1; i < n; i++) {
+        p[i] = p[i - 1];
+        while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
+        if (s[i] == s[p[i]]) p[i]++;
+        if (p[i]) graph[p[i] - 1].push_back(i);
+    }
+    int ans = n;
+    matches.insert(-1), matches.insert(n);
+    gaps.insert(n + 1);
+    for (int i = n; i; i = p[i - 1]) {
+        dfs(i - 1);
+        if (*gaps.rbegin() <= i) ans = i;
+    }
+    cout << ans;
+    return 0;
+}
+```
+
+</Spoiler>
+
+<Spoiler title="Solution 3">
 
 **Time complexity:** $\mathcal O(N)$.
 
