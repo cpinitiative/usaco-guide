@@ -9,7 +9,6 @@ frequency: 2
 ---
 
 
-
 export const problems = {
 	sample: [
 		new Problem(
@@ -85,22 +84,205 @@ export const problems = {
 
 <!-- [convex hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms). -->
 
+
+## Introduction
+
+The **Convex Hull** is the subset of points that forms the smallest convex polygon which encloses all points in the set.
+To visualize this, imagine that each point is a pole. Then, imagine what happens if you were to wrap a rope around the outside of all the poles, and then pull infinitely hard, such that the connections between any two points that lie on the edge of the rope are lines. The set of points that touch the rope (and are not colinear) is the convex hull.
+
+<Spoiler title="Convex Hull Visualization">
+
+![Convex Hull Visualization](./assets/convexhull.jpg)
+
+</Spoiler>
+
 <FocusProblem problem={problems.sample[0]} />
 
 ## With Graham Scan
 
-- [cp-algo](https://cp-algorithms.com/geometry/grahams-scan-convex-hull.html)
-- [My Implementation](<https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h>)
+<Resources>
+	<Resource source="cp-algo" title="Graham Scan" url="https://cp-algorithms.com/geometry/grahams-scan-convex-hull.html" starred />
+	<Resource source="Benq" title="Graham Scan Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h" />
+	<Resource source="VisuAlgo" title="Graham Scan Visualization" url="https://visualgo.net/en/convexhull" />
+	<Resource source="UCSD" title="Original Graham Scan Paper" url="http://www.math.ucsd.edu/~ronspubs/72_10_convex_hull.pdf" />
+</Resources>
+
+<Youtube id="9rQMLpQn5xQ"/>
+
+## Tutorial
+
+The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around an abitrary pivot $P_0$. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
+
+To start the creation of the convex hull, we choose 3 points. The pivot, the first, and the last point.
+
+Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. In doing so, we only have to keep track of the topmost $2$ points, and the current point we are considering to add to the hull.
+
+There are two only 2 cases for our 3 points: either the turn from $v[i-2] \rightarrow v[i-1] \rightarrow v[i]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of polygons cannot be convex, and thus we must pop the stack and include the candidate point. Otherwise, we can simply add the candidate point to our stack.
+
+To understand why, consider those three points: the top two points in the stack, and our candidate point. Since our turn is counterclockwise, we are looking for such points that make a counterclockwise turn.
+
+<Spoiler title="Illustration">
+
+![Illustration of Convex Hull](./assets/convexhullpts.jpg)
+
+</Spoiler>
+
+
+<Spoiler title="Worked Example">
+
+**Example**
+
+Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0)$
+
+Using the steps from our Graham Scan.
+
+1. Sorting the points by counterclockwise angle: Our bottommost point is $(2,0)$, so we then sort all the points by their counterclockwise angle. Our resulting sorted points are $(2,0),(5,3),(3,2),(2,3),(1,2)$.
+
+2. Maintaining the stack:
+
+Our initial stack elements are $v[N-1], v[0], v[1]$, which corresponds to $(1,2), (2,0), (5,3)$. Then, starting from $v[2]$, we process each point.
+
+First, we check if the turn between $v[0], v[1], v[2]$ is counterclockwise, which it is not. Hence, the point $v[1]$ cannot be part of the convex hull. We pop it and insert $v[2]$.
+
+Our stack now is then $(1,2),(2,0),(5,3)$.
+
+Then, we check whether the turn between $v[1], v[2], v[3]$ is counterclockwise, which it is. Therefore, we push $(2, 3)$ to our stack.
+
+Our stack now is then $(1,2),(2,0),(5,3),(2,3)$.
+
+Then, we check whether the turn between $v[2], v[3], v[4]$ is counterclockwise, which it is. However, because $(1, 2)$ is already in our stack, we have completed the cycle, and our convex hull is complete.
+
+Our stack now is then $(1,2),(2,0),(5,3),(2,3)$, which is the convex hull of all our points.
+
+</Spoiler>
 
 ### Solution
 
-<IncompleteSection />
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for (int i = (a); i < (b); i++)
+#define FORE(i, a, b) for (int i = (a); i <= (b); i++)
+#define F0R(i, a) for (int i = 0; i < (a); i++)
+#define trav(a, x) for (auto &a : x)
+
+#define f first
+#define s second
+#define bk back()
+#define pb push_back
+
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+
+int N, Q;
+
+const int MX = 2e5 + 5;
+
+using T = long long; // or long long
+const T EPS = 1e-9; // might want to change
+using P = pair<T,T>; using vP = vector<P>; using Line = pair<P,P>;
+int sgn(T a) { return (a>EPS)-(a<-EPS); }
+T sq(T a) { return a*a; }
+
+bool close(const P& a, const P& b) { 
+    return sgn(a.f-b.f) == 0 && sgn(a.s-b.s) == 0; } 
+T norm(const P& p) { return sq(p.f)+sq(p.s); }
+T abs(const P& p) { return sqrt(norm(p)); }
+T arg(const P& p) { return atan2(p.s,p.f); }
+P conj(const P& p) { return P(p.f,-p.s); }
+P perp(const P& p) { return P(-p.s,p.f); }
+P dir(T ang) { return P(cos(ang),sin(ang)); }
+
+P operator-(const P& l) { return P(-l.f,-l.s); }
+P operator+(const P& l, const P& r) { 
+    return P(l.f+r.f,l.s+r.s); }
+P operator-(const P& l, const P& r) { 
+    return P(l.f-r.f,l.s-r.s); }
+P operator*(const P& l, const T& r) { 
+    return P(l.f*r,l.s*r); }
+P operator*(const T& l, const P& r) { return r*l; }
+P operator/(const P& l, const T& r) { 
+    return P(l.f/r,l.s/r); }
+P operator*(const P& l, const P& r) { 
+    return P(l.f*r.f-l.s*r.s,l.s*r.f+l.f*r.s); }
+P operator/(const P& l, const P& r) { 
+    return l*conj(r)/norm(r); }
+P& operator+=(P& l, const P& r) { return l = l+r; }
+P& operator-=(P& l, const P& r) { return l = l-r; }
+P& operator*=(P& l, const T& r) { return l = l*r; }
+P& operator/=(P& l, const T& r) { return l = l/r; }
+P& operator*=(P& l, const P& r) { return l = l*r; }
+P& operator/=(P& l, const P& r) { return l = l/r; }
+
+P unit(const P& p) { return p/abs(p); }
+T dot(const P& a, const P& b) { return a.f*b.f+a.s*b.s; }
+T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; }
+T cross(const P& p, const P& a, const P& b) {
+    return cross(a-p,b-p); }
+P reflect(const P& p, const Line& l) { 
+    P a = l.f, d = l.s-l.f;
+    return a+conj((p-a)/d)*d; }
+P foot(const P& p, const Line& l) { 
+    return (p+reflect(p,l))/(T)2; }
+bool p_on_seg(const P& p, const Line& l) {
+    return sgn(cross(l.f,l.s,p)) == 0 && sgn(dot(p-l.f,p-l.s)) <= 0; }
+
+using vi = vector<int>;
+using vP = vector<P>;
+
+vi hullInd(const vP& v) {
+	int ind = min_element(all(v))-begin(v);
+	vi cand(sz(v)),C; iota(all(cand),0);
+	sort(all(cand),[&](int a, int b) { 
+		P x = v[a]-v[ind], y = v[b]-v[ind]; T t = cross(x,y);
+		return t != 0 ? t > 0 : norm(x) < norm(y);
+	});
+	#define bad(x) cross(v[C[sz(C)-2]],v[C.bk],v[x]) <= 0
+	trav(t,cand) {
+		while (sz(C) > 1 && bad(t)) C.pop_back();
+		C.pb(t); } // if hull has > 1 point
+	if (v[ind]!=v[C.bk])while(sz(C)>2&&bad(ind))C.pop_back();
+	return C;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    for(;;) {
+        int n; cin >> n;
+        if(!n) break;
+        vP pts;
+        set<P> pt; // points are not necessarily distinct so we have to keep track of the unique ones
+        
+        F0R(i, n) {
+            long long a, b;
+            cin >> a >> b;
+            pt.insert(P(a, b));
+        }
+
+        trav(a, pt) pts.pb(a);
+
+        vi ret = hullInd(pts);
+        cout << sz(ret) << '\n';
+        trav(a, ret) {
+            cout << pts[a].first << " " << pts[a].second << '\n';
+        }
+    }
+}
+```
 
 ## With Monotone Chain
 
-- CPH 30.3 (brief)
-- [Wikipedia](https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain)
-- [My Implementation](<https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull%20(13.2).h>)
+<Resources>
+	<Resource source="CPH" title="Monotone Chain" url="https://usaco.guide/CPH.pdf#page=288" starred />
+	<Resource source="Wikipedia" title="Monotone Chain" url="https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain" />
+	<Resource source="Benq" title="Monotone Chain Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull%20(13.2).h" />
+</Resources>
 
 ### Solution
 
