@@ -38,7 +38,7 @@ void fileIO(string filename) {
 int MOD = 1;
 
 bool cmp(int &a, int &b) {
-    //Sorts by the max mod, so Bessie can get the max amount of leftovers
+	//Sorts by the max mod, so Bessie can get the max amount of leftovers
 	return (a % MOD) > (b % MOD);
 }
 
@@ -54,22 +54,22 @@ void solve() {
 	int mx = 0;
 	for(int i = 1; i <= maxD; i++) {
 		int amount = 0;
-        //Amount calculates how many groups of "i" berries can be put into a basket
+		//for loop calculates how many groups of "i" berries can be put into a basket
 		for(int j = 0; j < N; j++) {
 			amount += A[j] / i;
 		}
-        //If the amount is not enough for K / 2 baskets, it is not valid
+		//If the amount is not enough for K / 2 baskets, it is not valid
 		if(amount < K / 2) {
 			continue;
 		}
 		if(amount >= K) {
-            //If there are enough "i" sections for both Bessie and Ellie, then Bessie can collect (K / 2) * i berries
+			//If there are enough "i" sections for both Bessie and Ellie, then Bessie can collect (K / 2) * i berries
 			mx = max(mx, (K / 2) * i);
 			continue;
 		}
 		MOD = i;
 		sort(all(A), cmp);	
-        //Gives all of the rest over mod numbers to Bessie. 
+		//Gives all of the rest over mod numbers to Bessie. 
 		int cur = (amount - K / 2) * i;
 		for(int j = 0; j < N && j + amount < K; j++) {
 			cur += A[j] % i;
