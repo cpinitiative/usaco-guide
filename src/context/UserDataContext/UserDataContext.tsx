@@ -222,10 +222,10 @@ export const UserDataProvider = ({ children }) => {
         .onSnapshot(snapshot => {
           let data = snapshot.data();
           if (!data) {
-            let lastViewedModule = UserDataContextAPIs.find(
+            const lastViewedModule = UserDataContextAPIs.find(
               x => x instanceof LastViewedModule
             ).exportValue();
-            let localDataIsNotEmpty = lastViewedModule !== null;
+            const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
               if (
