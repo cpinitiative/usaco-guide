@@ -55,8 +55,11 @@ void setIO(string fileName = ""){
 vl adj[3001], order(3001); ll nodes;
 vb visited(3001), closed(3001);
 
+// Store the global variables, including the number of nodes visited and the boolean closed array.
+
 void DFS(ll node){
     if(visited[node] || closed[node]) return;
+    // Increase the number of nodes if and only if they haven't been closed.
     nodes++;
     visited[node] = true;
     EACH(u, adj[node]){
@@ -77,6 +80,7 @@ int main(){
     FOR(i, 0, n){
         cin >> order[i];
     }
+    // Check the first line which indicates whether the initial farm is fully connected.
     DFS(1);
     if(nodes == n) cout << "YES" << endl;
     else cout << "NO" << endl;
@@ -85,6 +89,7 @@ int main(){
         nodes = 0;
         closed[order[i]] = true;
         DFS(order[n-1]);
+	// Have all the unclosed barns been visited?
         (nodes == n-i-1) ? cout << "YES" << endl: cout << "NO" << endl;
     }
 }
