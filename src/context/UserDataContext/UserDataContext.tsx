@@ -311,7 +311,9 @@ export const UserDataProvider = ({ children }) => {
             .set(data);
         }
         triggerRerender();
+        return true;
       }
+      return false;
     },
   };
 

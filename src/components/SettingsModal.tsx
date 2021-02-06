@@ -52,13 +52,14 @@ export default function SettingsModal({ isOpen, onClose }) {
     if (file === '') return;
     try {
       const data = JSON.parse(file);
-      userSettings.importUserData(data);
+      if (userSettings.importUserData(data)) {
+        setFile('');
+        setResetInput(resetInput + 1); // clears file input
+      }
     } catch (e) {
       alert(e);
       console.error(e);
     }
-    setFile('');
-    setResetInput(resetInput + 1); // clears file input
   };
 
   return (
