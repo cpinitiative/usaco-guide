@@ -1,31 +1,32 @@
 ---
 id: cpp-command
 title: C++ With the Command Line
-author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen
+author: Benjamin Qi, Hankai Zhang, Anthony Wang, Nathan Wang, Nathan Chen, Michael Lan
 description: 'OS-specific instructions for installing and running C++ via the command line.'
 prerequisites:
-  - running-code
+  - running-code-locally
 ---
 
+## Command Line Basics
+
 <Resources>
-	<Resource source="CPH" title="1.1 - C++ Code Template" url="./CPH.pdf#page=14">
+	<Resource source="CPH" title="1.1 - C++ Code Template" url="/CPH.pdf#page=14">
 		what compiling a simple program looks like
 	</Resource>
 </Resources>
 
-## Command Line Basics
-
 <IncompleteSection>
 
-what is the command line? :P
+hm, anything simpler / interactive (and free)?
 
 </IncompleteSection>
 
-<IncompleteSection>
+### General
 
-link more resources
-
-</IncompleteSection>
+<Resources>
+	<Resource source="MIT" title="Command Line" url="https://py.mit.edu/fall20/notes/command_line">Python</Resource>
+	<Resource source="Learn Enough" title="Command Line" url="https://www.learnenough.com/command-line-tutorial/basics"> </Resource>
+</Resources>
 
 ### Linux
 
@@ -37,7 +38,7 @@ link more resources
 
 Should be mostly the same as Linux ...
 
-Open the **Terminal** application and familiarize yourself with some basic commands. Upgrade to [`zsh`](https://support.apple.com/en-us/HT208050) if you haven't already. 
+Open the **Terminal** application and familiarize yourself with some basic commands. Upgrade to [`zsh`](https://support.apple.com/en-us/HT208050) if you haven't already.
 
 <Resources>
 	<Resource
@@ -51,16 +52,19 @@ Open the **Terminal** application and familiarize yourself with some basic comma
 		title="Mac Terminal Cheat Sheet"
 		url="https://www.makeuseof.com/tag/mac-terminal-commands-cheat-sheet/"
 	>keyboard shortcuts / terminal commands</Resource>
-	<Resource source="Armin Briegel" title="Moving to zsh" url="https://scriptingosx.com/2019/06/moving-to-zsh/" starred></Resource>
+	<Resource source="Armin Briegel" title="Moving to zsh" url="https://scriptingosx.com/2019/06/moving-to-zsh/"></Resource>
 </Resources>
 
 ### Windows
 
-<IncompleteSection />
+<Resources>
+	<Resource source="Princeton" title="Windows Command Prompt in 15 Minutes" url="https://www.cs.princeton.edu/courses/archive/spr05/cos126/cmd-prompt.html">Java</Resource>
+	<Resource source="ComputerHope" title="Windows Command Line" url="https://www.computerhope.com/issues/chusedos.htm"> </Resource>
+</Resources>
 
 ## Installing GCC
 
-[USACO](http://www.usaco.org/index.php?page=instructions) (and most contests) use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s `g++` to compile and run your code. You'll need `g++` specifically to use the `#include <bits/stdc++.h>` header file within the template provided in [Code Conventions](/general/code-con#template); see [C++ Tips & Tricks](/general/cpp-tips#include-bitsstdch) for details.
+[USACO](http://www.usaco.org/index.php?page=instructions) (and most contests) use [GCC](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)'s `g++` to compile and run your code. You'll need `g++` specifically to use the `#include <bits/stdc++.h>` header file within the template provided in [Code Conventions](/general/code-con#c); see [Running Code Locally](/general/running-code-locally#including-bitsstdch) for details.
 
 ### On Linux
 
@@ -74,53 +78,7 @@ If it is not preinstalled, you can probably install it using your distro's packa
 
 ### On Windows
 
-<Resources>
-	<Resource
-		source="Jetbrains"
-		title="Configuring CLion on Windows"
-		url="https://www.jetbrains.com/help/clion/quick-tutorial-on-configuring-clion-on-windows.html#MinGW"
-	>
-		setting up Cygwin, MinGW, WSL, or MSVC
-	</Resource>
-</Resources>
-
-#### [MinGW](http://mingw.org/) (Minimalist GNU for Windows)
-
-<Resources>
-	<Resource
-		source="Microsoft"
-		title="VSCode - GCC on Windows"
-		url="https://code.visualstudio.com/docs/cpp/config-mingw"
-	>
-		MinGW
-	</Resource>
-	<Resource
-		source="Rose-Hulman"
-		title="Adding MinGW to PATH"
-		url="https://www.rose-hulman.edu/class/csse/resources/MinGW/installation.htm"
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-1.  First, download and run the [MinGW installer](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/).
-2.  Once it's installed, open the MinGW Installation Manager, click on Basic Setup on the left, and select `mingw32-gcc-g++-bin` for installation.
-
-#### [WSL 2](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) (Windows Subsystem for Linux 2)
-
-This is what I (Anthony) personally use, although it may be more difficult to properly set up.
-
-<Resources>
-	<Resource
-		source="Microsoft"
-		title="VSCode - GCC on WSL"
-		url="https://code.visualstudio.com/docs/cpp/config-wsl"
-	>
-		difficult for beginners
-	</Resource>
-</Resources>
-
-If you want to code in (neo)vim, you can install WSL and code through WSL bash.
+There are multiple ways to install C++ command line tools on windows, depending on your needs. To find more information, go to [Running Code Locally with Windows](/general/running-code-locally#windows).
 
 ### On Mac
 
@@ -132,7 +90,7 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
     If you previously installed these you may need to update them:
 
-    ```
+    ```bash
     softwareupdate --list # list updates
     softwareupdate -i -a # installs all updates
     ```
@@ -155,29 +113,32 @@ If you want to code in (neo)vim, you can install WSL and code through WSL bash.
 
     probably suffices.
 
-4.  You should be able to compile with `g++-#`, where # is the version number (ex. 9). Running the following command
+4.  You should be able to compile with `g++-#`, where # is the version number (e.g., 10). Running the following command
 
     ```
-    g++-9 --version
+    g++-10 --version
     ```
 
     should display something like this:
 
     ```
-    g++-9 (Homebrew GCC 9.2.0_2) 9.2.0
-    Copyright (C) 2019 Free Software Foundation, Inc.
+    g++-10 (Homebrew GCC 10.2.0_2) 10.2.0
+    Copyright (C) 2020 Free Software Foundation, Inc.
     This is free software; see the source for copying conditions.  There is NO
     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     ```
 
-5.  If you want to be able to compile with just `g++`, create a symbolic link as mentioned [here](https://stackoverflow.com/questions/28970935/osx-replace-gcc-version-4-2-1-with-4-9-installed-via-homebrew/28982564#28982564).
+5.  If you want to be able to compile with just `g++`, write a shell alias! Put the following lines into your shell's rc file (`~/.bashrc` if you use `bash`, and `~/.zshrc` if you use `zsh`).
 
-    ```
-    cd /usr/local/bin
-    ln -fs g++-9 g++
+    ```bash
+    alias g++=g++-10
     ```
 
-    `g++ --version` should now output the same thing as `g++-9 --version`.
+    Once you do so, `g++ --version` should now output the same thing as `g++-10 --version`.
+
+    Note: avoid overriding the system `g++` with symlinking or hard-linking as
+    that will almost surely cause problems. Don't worry if you don't know what
+    those terms mean.
 
 <!-- <Resources>
 	<Resource
@@ -230,9 +191,23 @@ If you type some integer and then press enter, then the program should produce o
 g++ name.cpp -o name && ./name
 ```
 
+Note that `&&` ensures that `./name` only runs if `g++ name.cpp -o name` finishes successfully.
+
 ### Redirecting Input & Output
 
-If you want to read input from `inp.txt` and write to `out.txt`, then use the following:
+If you want to read standard input from `inp.txt`, use the following:
+
+```
+./name < inp.txt
+```
+
+If you want to write standard output to `out.txt`, then use the following:
+
+```
+./name > out.txt
+```
+
+They can also be used in conjunction, as shown below:
 
 ```
 ./name < inp.txt > out.txt
@@ -248,11 +223,9 @@ Use [compiler flags](https://developers.redhat.com/blog/2018/03/21/compiler-and-
 g++ -std=c++17 -O2 name.cpp -o name -Wall
 ```
 
-Explanation:
-
-- `-O2` tells `g++` to compile your code to run more quickly (see [here](https://www.rapidtables.com/code/linux/gcc/gcc-o.html))
-- `-std=c++17` allows you to use features that were added to C++ in 2017. USACO currently uses `-std=c++11`.
-- `-Wall` checks your program for common errors. See [Debugging](/general/debugging) for more information.
+- `-O2` tells `g++` to compile your code to run more quickly while increasing compilation time (see [here](https://www.rapidtables.com/code/linux/gcc/gcc-o.html)).
+- `-std=c++17` allows you to use features that were added to C++ in 2017. USACO currently uses `-std=c++0x` ([aka C++11](https://stackoverflow.com/questions/9538701/what-is-the-difference-between-c0x-and-c11)).
+- `-Wall` checks your program for common errors. See [Debugging](/general/debugging-lang/#warning-options) for more information.
 
 You should always compile with these flags.
 
@@ -266,7 +239,7 @@ The process is similar for Linux. If you're on Windows, you can use an IDE to ge
 
 </Info>
 
-Of course, retyping the flags above can get tedious. You should define shortcuts so you don't need to type them every time!
+Retyping the flags above can get tedious. You should define shortcuts so you don't need to type them every time!
 
 <Resources>
 	<Resource
@@ -282,32 +255,32 @@ Of course, retyping the flags above can get tedious. You should define shortcuts
 	></Resource>
 </Resources>
 
-First, create your `.zshenv` if it doesn't already exist.
+First, create your `.zshrc` if it doesn't already exist.
 
 ```
-touch ~/.zshenv
+touch ~/.zshrc
 ```
 
-Open your `.zshenv` with TextEdit.
+Open your `.zshrc` with a text editor.
 
 ```
-open -a TextEdit ~/.zshenv
+open ~/.zshrc
 ```
 
 or some text editor (ex. sublime text with `subl`).
 
 ```
-subl ~/.zshenv
+subl ~/.zshrc
 ```
 
 You can add **aliases** and **functions** here, such as the following to compile and run C++ on Mac.
 
-```
-co() { g++ -std=c++17 -O2 -o $1 $1.cpp -Wall; }
-run() { co $1 && ./$1 & fg; }
+```bash
+co() { g++ -std=c++17 -O2 -o "${1%.*}" $1 -Wall; }
+run() { co $1 && ./${1%.*} & fg; }
 ```
 
-Now you can easily compile and run `name.cpp` from the command line with `co name && ./name` or `run name`. Note that all occurrences of `$1` in the function are replaced with `name`.
+Now you can easily compile and run `name.cpp` from the command line with `co name.cpp && ./name` or `run name.cpp`. Note that all occurrences of `$1` in the function are replaced with `name.cpp`, while `${1%.*}` removes the file extension from `$1` to produce `name`.
 
 ### What is `& fg` for?
 
@@ -334,14 +307,14 @@ int main() {
 }
 ```
 
-According to the resource above, the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog`.
+According to the resource above, the `& fg` is necessary for getting `zsh` on Mac to display crash messages (such as segmentation fault). For example, consider the running the first `prog.cpp` above with `run prog.cpp`.
 
 If `& fg` is removed from the run command above then the terminal displays no message at all. Leaving it in produces the following (ignore the first two lines):
 
 ```
 [2] 30594
-[2]  - running    ./$1
-zsh: segmentation fault  ./$1
+[2]  - running    ./${1%.*}
+zsh: segmentation fault  ./${1%.*}
 ```
 
 ### Measuring Time & Memory Usage
@@ -379,7 +352,7 @@ int main() {
 }
 ```
 
-Then `co prog && gtime -v ./prog` gives the following:
+Then `co prog.cpp && gtime -v ./prog` gives the following:
 
 ```
   Command being timed: "./prog"

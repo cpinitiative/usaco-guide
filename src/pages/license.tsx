@@ -2,26 +2,28 @@ import * as React from 'react';
 import { Link, PageProps } from 'gatsby';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function LicensePage(props: PageProps) {
   return (
     <Layout>
       <SEO title="License and Usage" />
 
+      <TopNavigationBar />
+
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="block mt-4 underline text-blue-600">
-          &larr; Back to Home
-        </Link>
         <h1 className="mt-8 text-4xl font-extrabold">License and Usage</h1>
 
-        <div className="mt-6 text-gray-900 text-lg">
+        <div className="mt-6 text-gray-900 text-lg dark:text-dark-high-emphasis">
           <p className="mb-4">
             No part of this site may be used, reproduced, redistributed,
             commercialized, or sold without prior written permission, except as
             permitted under the{' '}
             <a
               rel="license"
-              className={'text-blue-500 hover:text-blue-700 hover:underline'}
+              className={
+                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
+              }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
             >
@@ -48,7 +50,9 @@ export default function LicensePage(props: PageProps) {
             substitute for,{' '}
             <a
               rel="license"
-              className={'text-blue-500 hover:text-blue-700 hover:underline'}
+              className={
+                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
+              }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
             >
@@ -115,7 +119,7 @@ export default function LicensePage(props: PageProps) {
             cases described above, please contact us at{' '}
             <a
               href="mailto:usacoguide@gmail.com"
-              className="text-blue-600 underline"
+              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
             >
               usacoguide@gmail.com
             </a>
@@ -124,7 +128,10 @@ export default function LicensePage(props: PageProps) {
             {/* please do not contact him directly. Instead, direct any questions */}
             {/* related to the USACO Guide to the coordinator, Nathan Wang. */}
           </p>
-          <Link to="/" className="block mb-4 underline text-blue-600">
+          <Link
+            to="/"
+            className="block mb-4 underline text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          >
             &larr; Back to Home
           </Link>
         </div>

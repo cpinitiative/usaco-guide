@@ -37,11 +37,12 @@ export const problems = {
 		),
 	],
 	comb: [
+		new Problem('CSES', 'Pizzeria Queries', '2206', 'Easy', false, [], 'cses-2206'),
 		new Problem('Old Gold', 'Marathon', '495', 'Easy', false, [], ''),
 		new Problem('Old Gold', 'Optimal Milking', '365', 'Normal', false, [], ''),
 		new Problem(
 			'POI',
-			'Cards',
+			'2014 - Cards',
 			'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
 			'Normal',
 			false,
@@ -70,6 +71,7 @@ export const problems = {
 };
 
 <Resources>
+	<Resource source="CF" title="EDU: Segment Tree Pt 1 Step 2" url="https://codeforces.com/edu/course/2/lesson/4/1" starred>both of these topics</Resource>
 	<Resource
 		source="cp-algo"
 		title="Segment Tree - More complex queries"
@@ -88,7 +90,7 @@ You want to support queries of the following form on an array $a_1,\ldots,a_N$ (
 
 > Find the first $i$ such that $a_i\ge x$.
 
-Of course, you can do this in $O(\log^2N)$ time with a max segment tree and binary searching on the first $i$ such that $\max(a_1,\ldots,a_i)\ge x$. But try to do this in $O(\log N)$ time.
+Of course, you can do this in $\mathcal{O}(\log^2N)$ time with a max segment tree and binary searching on the first $i$ such that $\max(a_1,\ldots,a_i)\ge x$. But try to do this in $\mathcal{O}(\log N)$ time.
 
 ### Solution - Hotel Queries
 
@@ -102,7 +104,7 @@ If $\max(a_l, \dots, a_{mid}) \geq x$, then we know that the answer is in the ra
 
 Imagine that the segment tree is a decision tree. We start at the root and move down. When we're at some node that contains $\max(a_l, \dots, a_r)$ and we know that the answer is in the range $[l, r]$, we move to the left child if $\max(a_l, \dots, a_{mid}) \geq x$; otherwise, we move to the right child.
 
-This is convenient because $\max(a_l, \dots, a_{mid})$ is already stored in the left child, so we can find it in $O(1)$ time.
+This is convenient because $\max(a_l, \dots, a_{mid})$ is already stored in the left child, so we can find it in $\mathcal{O}(1)$ time.
 
 ```cpp
 #include <bits/stdc++.h>

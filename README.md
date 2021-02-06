@@ -1,11 +1,15 @@
+![USACO Guide](./src/assets/banner-image-big.jpg)
+
 # USACO Guide
 
 A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.
 
 Thank you to the following companies:
 
-- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), for providing free hosting & continuous deployment
-- [Algolia](https://algolia.com/), for providing search for free
+- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free hosting & continuous deployment
+- [Algolia](https://algolia.com/), search functionality
+- [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
+- And [more](docs/Companies.md)!
 
 ## Documentation
 
@@ -14,9 +18,31 @@ Thank you to the following companies:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome!
+See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get started, simply pick an [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work on, leave a comment, and submit a Pull Request!
 
-**We're actively looking for a web developer to help add new features to the site. If you're interested in joining the team, send us an email at usacoguide@gmail.com!**
+Join our Discord server: https://discord.gg/Gq9cX4j
+
+## Our Team
+
+The USACO Guide is run by the [Competitive Programming Initiative](https://joincpi.org/). We're looking for Content Authors to join our team to help us improve the Guide! Learn more [here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit).
+
+### Core Staff
+
+- Benjamin Qi
+- Nathan Wang
+- Andi Qu
+- Siyong Huang
+- Darren Yao
+- Andrew Wang
+- Michael Cao
+- Nathan Chen
+
+### Content Authors
+
+- Óscar Garries Urbina (since Jan 2021)
+- Qi Wang (since Jan 2021)
+- Dong Liu (since Jan 2021)
+- _This could be you! [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
 ## Tech Stack
 
@@ -26,15 +52,14 @@ Our front-end is built with:
 - Gatsby
 - Typescript
 - Tailwind CSS & Tailwind UI
+- MDX (JSX in Markdown)
+- Firebase
+- Deployed with [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info
 
-If you have any questions, please reach out to Nathan Wang at nathan.r.wang@gmail.com, or through social media (some variant of @thecodingwizard)
+If you have any questions, please reach out to us at usacoguide@gmail.com.
 
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
-
----
-
-[![Powered by Vercel](./powered-by-vercel.svg)](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)

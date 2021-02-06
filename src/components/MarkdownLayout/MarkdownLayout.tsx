@@ -1,316 +1,59 @@
 import * as React from 'react';
-import Transition from '../Transition';
-import { useContext, useRef, useState } from 'react';
-import {
-  ModuleFrequency,
-  ModuleInfo,
-  ModuleLinkInfo,
-} from '../../models/module';
-import { graphql, Link, useStaticQuery } from 'gatsby';
-import MODULE_ORDERING, { SECTION_LABELS } from '../../../content/ordering';
-import ModuleFrequencyDots from './ModuleFrequencyDots';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
-import MarkCompleteButton from './MarkCompleteButton';
-import ModuleConfetti from './ModuleConfetti';
-import TextTooltip from '../Tooltip/TextTooltip';
+import { useContext, useState } from 'react';
+import { ModuleInfo } from '../../models/module';
+import { graphql, useStaticQuery } from 'gatsby';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { SidebarNav } from './SidebarNav/SidebarNav';
 import { graphqlToModuleLinks } from '../../utils/utils';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
-import Logo from '../Logo';
-import { Frequency } from '../Frequency';
 import { SolutionInfo } from '../../models/solution';
-import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 
-import getProgressInfo from '../../utils/getProgressInfo';
-import { DashboardProgressSmall } from '../../components/Dashboard/DashboardProgress';
-import { Language } from '../../context/UserDataContext/properties/userLang';
 import ModuleFeedback from './ModuleFeedback';
+import ConfettiContext from '../../context/ConfettiContext';
+import ForumCTA from '../ForumCTA';
+import { SettingsModalProvider } from '../../context/SettingsModalContext';
+import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
+import MobileSideNav from './MobileSideNav';
+import DesktopSidebar from './DesktopSidebar';
+import MobileAppBar from './MobileAppBar';
+import NavBar from './NavBar';
+import NotSignedInWarning from './NotSignedInWarning';
+import ModuleHeaders from './ModuleHeaders';
+import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 
-const Breadcrumbs = () => {
-  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
-  const module = moduleLayoutInfo.markdownLayoutInfo;
-  if (module instanceof SolutionInfo) return null;
-  return (
-    <nav className="flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500 dark:text-dark-med-emphasis">
-      <Link
-        to="/dashboard/"
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
-      >
-        Home
-      </Link>
-      <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
+const ContentContainer = ({ children, tableOfContents }) => (
+  <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
+    <div className="mx-auto">
+      <div className="flex justify-center">
+        {/* Placeholder for the sidebar */}
+        <div
+          className="flex-shrink-0 hidden lg:block order-1"
+          style={{ width: '20rem' }}
         />
-      </svg>
-      <Link
-        to={`/${module.section}/`}
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
-      >
-        {SECTION_LABELS[module.section]}
-      </Link>
-      <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
-      <span className="whitespace-no-wrap">{module.title}</span>
-    </nav>
-  );
-};
+        {tableOfContents.length > 1 && (
+          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+            <TableOfContentsSidebar tableOfContents={tableOfContents} />
+          </div>
+        )}
+        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2 overflow-x-auto">
+          <div className="hidden lg:block">
+            <NavBar />
+            <div className="h-8" />
+          </div>
 
-const SidebarBottomButtons = ({ onContactUs }) => {
-  const languages = {
-    showAll: 'All',
-    cpp: 'C++',
-    java: 'Java',
-    py: 'Python',
-  };
-  const nextLang: { [key: string]: Language } = {
-    showAll: 'cpp',
-    cpp: 'java',
-    java: 'py',
-    py: 'cpp',
-  };
-  const userSettings = useContext(UserDataContext);
-  return (
-    <>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setLang(nextLang[userSettings.lang])}
-        >
-          <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          >
-            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-          Language: {languages[userSettings.lang]}
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setHide(!userSettings.hide)}
-        >
-          {userSettings.hide ? (
-            <>
-              <svg
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>{' '}
-            </>
-          ) : (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
-              />
-            </svg>
-          )}
-          Hide Tags and Solutions: {userSettings.hide ? 'Yes' : 'No'}
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => userSettings.setDarkMode(!userSettings.darkMode)}
-        >
-          {userSettings.darkMode ? (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          ) : (
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          )}
-          Dark Mode: {userSettings.darkMode ? 'On' : 'Off'}
-        </button>
-      </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis dark-focus:text-dark-high-emphasis dark-hover:bg-gray-900 dark-focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={onContactUs}
-        >
-          <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark-group-hover:text-gray-400 transition ease-in-out duration-150"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          >
-            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-          Contact Us
-        </button>
-      </div>
-    </>
-  );
-};
+          {children}
 
-const NavBar = ({ alignNavButtonsRight = true }) => {
-  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
-  const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
-
-  if (markdownLayoutInfo instanceof SolutionInfo) return null;
-
-  const sortedModuleLinks = React.useMemo(() => {
-    let links: ModuleLinkInfo[] = [];
-    for (let group of MODULE_ORDERING[markdownLayoutInfo.section]) {
-      for (let id of group.items) {
-        links.push(sidebarLinks.find(x => x.id === id));
-      }
-    }
-    return links;
-  }, [sidebarLinks]);
-  let moduleIdx = React.useMemo(
-    () => sortedModuleLinks.findIndex(x => x.id === markdownLayoutInfo.id),
-    [markdownLayoutInfo, sortedModuleLinks]
-  );
-  let prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
-  let nextModule =
-    moduleIdx === sortedModuleLinks.length - 1
-      ? null
-      : sortedModuleLinks[moduleIdx + 1];
-
-  const disabledClasses =
-    'text-gray-200 pointer-events-none dark:text-dark-disabled-emphasis';
-  const activeClasses =
-    'text-gray-500 hover:text-gray-800 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out';
-  return (
-    <div
-      className={`flex ${
-        alignNavButtonsRight ? 'sm:justify-between' : 'justify-between'
-      }`}
-    >
-      {alignNavButtonsRight && <div className="flex-1 sm:hidden" />}
-      <span className="-ml-4 rounded-md">
-        <Link
-          to={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
-          className={
-            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
-            (prevModule === null ? disabledClasses : activeClasses)
-          }
-        >
-          <svg
-            className="-ml-0.5 mr-1 h-4 w-4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M15 19l-7-7 7-7" />
-          </svg>
-          Prev
-        </Link>
-      </span>
-      <div className="hidden sm:flex items-center">
-        <Breadcrumbs />
+          <div className="pt-4 pb-6">
+            <NavBar alignNavButtonsRight={false} />
+          </div>
+        </div>
       </div>
-      <span className="rounded-md -mr-4">
-        <Link
-          to={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
-          className={
-            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
-            (nextModule === null ? disabledClasses : activeClasses)
-          }
-        >
-          Next
-          <svg
-            className="-mr-0.5 ml-1 h-4 w-4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
-      </span>
     </div>
-  );
-};
-
-const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
-  let moduleLink = moduleLinks.find(x => x.id === prerequisite);
-  if (moduleLink)
-    return (
-      <li key={prerequisite}>
-        <a
-          href={moduleLink.url}
-          target="_blank"
-          className="underline text-black dark:text-blue-200"
-        >
-          {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-        </a>
-      </li>
-    );
-  return <li key={prerequisite}>{prerequisite}</li>;
-};
+  </main>
+);
 
 export default function MarkdownLayout({
   markdownData,
@@ -319,15 +62,15 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const {
-    userProgressOnModules,
-    setModuleProgress,
-    lang,
-    userProgressOnProblems,
-  } = useContext(UserDataContext);
+  const { userProgressOnModules, setModuleProgress, lang } = useContext(
+    UserDataContext
+  );
+  React.useEffect(() => {
+    if (lang !== 'showAll') {
+      updateLangURL(lang);
+    }
+  }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [isContactUsActive, setIsContactUsActive] = useState(false);
-  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
@@ -343,12 +86,15 @@ export default function MarkdownLayout({
             frontmatter {
               title
               id
+              author
             }
             fields {
               division
+              gitAuthorTime
             }
             problems {
               uniqueID
+              solID
             }
           }
         }
@@ -360,14 +106,16 @@ export default function MarkdownLayout({
   ]);
   // console.log(moduleLinks);
 
+  const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(markdownData.id, progress);
     if (
       moduleProgress !== 'Complete' &&
       (progress === 'Practicing' || progress === 'Complete')
-    )
-      setIsConfettiActive(true);
+    ) {
+      showConfetti();
+    }
   };
 
   // Scroll behavior smooth was causing a number of issues...
@@ -380,298 +128,83 @@ export default function MarkdownLayout({
   // console.log(markdownData)
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
-  let problemIDs = [];
-  if (markdownData instanceof ModuleInfo) {
-    let ind = 0;
-    while (moduleLinks[ind].id != markdownData.id) ind++;
-    for (let problem of moduleLinks[ind].probs)
-      problemIDs.push(problem.uniqueID);
+  const problemIDs = [];
+  const activeIDs = [];
+  const prob_to_module = {};
+
+  for (const moduleLink of moduleLinks) {
+    for (const problem of moduleLink.probs) {
+      const uniqueID = problem.uniqueID;
+      prob_to_module[uniqueID] = module.id;
+    }
   }
 
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  if (markdownData instanceof ModuleInfo) {
+    activeIDs.push(markdownData.id);
+    const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
+    // oops how to assert not -1
+    for (const problem of moduleLinks[ind].probs) {
+      const uniqueID = problem.uniqueID;
+      problemIDs.push(uniqueID);
+    }
+  } else {
+    moduleLinks.forEach(link => {
+      for (const problem of link.probs) {
+        if (problem.solID === markdownData.id) {
+          activeIDs.push(link.id);
+        }
+      }
+    });
+  }
 
+  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
-        conf: setIsConfettiActive,
+        activeIDs: activeIDs,
+        isMobileNavOpen,
+        setIsMobileNavOpen,
+        moduleProgress,
+        handleCompletionChange,
       }}
     >
-      <ModuleConfetti
-        show={isConfettiActive}
-        onDone={() => setIsConfettiActive(false)}
-      />
-      <Transition show={isMobileNavOpen} timeout={300}>
-        <div className="lg:hidden">
-          <div className="fixed inset-0 flex z-40">
-            <Transition
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div
-                className="fixed inset-0"
-                onClick={() => setIsMobileNavOpen(false)}
-              >
-                <div className="absolute inset-0 bg-gray-600 dark:bg-gray-800 opacity-75" />
-              </div>
-            </Transition>
+      <SettingsModalProvider>
+        <ContactUsSlideoverProvider>
+          <ProblemFeedbackModalProvider>
+            <MobileSideNav />
+            <DesktopSidebar />
 
-            <Transition
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-dark-surface">
-                <div className="absolute top-0 right-0 -mr-14 p-1">
-                  <button
-                    className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
-                    aria-label="Close sidebar"
-                    onClick={() => setIsMobileNavOpen(false)}
-                  >
-                    <svg
-                      className="h-6 w-6 text-white"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="flex-1 h-0 pt-5 flex flex-col">
-                  <Link
-                    className="flex-shrink-0 flex items-center px-4"
-                    to="/dashboard/"
-                  >
-                    <Logo />
-                  </Link>
-                  <div className="px-4">
-                    <Breadcrumbs />
-                  </div>
-                  <SidebarNav />
-                </div>
-                <SidebarBottomButtons
-                  onContactUs={() => {
-                    setIsMobileNavOpen(false);
-                    setIsContactUsActive(true);
-                  }}
+            <div className="w-full">
+              <MobileAppBar />
+
+              <ContentContainer tableOfContents={tableOfContents}>
+                <NotSignedInWarning />
+
+                <ModuleHeaders
+                  problemIDs={problemIDs}
+                  moduleLinks={moduleLinks}
                 />
-              </div>
-            </Transition>
-            <div className="flex-shrink-0 w-14">
-              {/* Force sidebar to shrink to fit close icon */}
-            </div>
-          </div>
-        </div>
-      </Transition>
-      {/* Static sidebar for desktop */}
-      <div
-        className="hidden lg:block fixed z-10 top-0 left-0 bottom-0"
-        style={{ width: '20rem' }}
-      >
-        <div
-          className="border-r border-gray-200 bg-white dark:bg-dark-surface dark:border-gray-800 h-screen flex flex-col"
-          style={{ width: '20rem' }}
-        >
-          <div className="flex-grow h-0 flex flex-col pt-5">
-            <Link
-              className="flex items-center flex-shrink-0 px-4 pb-2"
-              to="/dashboard/"
-            >
-              <Logo />
-            </Link>
-            {/* Sidebar component, swap this element with another sidebar if you like */}
-            <SidebarNav />
-          </div>
-          <SidebarBottomButtons
-            onContactUs={() => setIsContactUsActive(true)}
-          />
-        </div>
-      </div>
-      <div>
-        <div className="sticky top-0 inset-x-0 bg-white dark:bg-dark-surface z-10 shadow lg:hidden pl-1 pt-1 flex items-center">
-          <MobileMenuButtonContainer
-            className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center"
-            aria-label="Open sidebar"
-            onClick={() => setIsMobileNavOpen(true)}
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </MobileMenuButtonContainer>
-          <div className="flex-1 ml-4 mr-4 sm:mr-6">
-            <NavBar />
-          </div>
-        </div>
-        <main
-          className="relative z-0 pt-6 lg:pt-2 pb-6 focus:outline-none"
-          tabIndex={0}
-        >
-          <div className="mx-auto">
-            <div className="flex justify-center">
-              {/* Placeholder for the sidebar */}
-              <div
-                className="flex-shrink-0 hidden lg:block"
-                style={{ width: '20rem' }}
-              />
-              <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0">
-                <div className="hidden lg:block">
-                  <NavBar />
-                </div>
 
-                <div className="lg:h-8" />
-
-                {markdownData instanceof ModuleInfo &&
-                  markdownData.frequency !== null && (
-                    <div className="px-0.5">
-                      <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
-                        <Frequency frequency={markdownData.frequency} />
-                        {/* <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> */}
-                        {problemIDs.length > 0 && (
-                          <DashboardProgressSmall
-                            {...problemsProgressInfo}
-                            total={problemIDs.length}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                <div className="sm:flex sm:items-center sm:justify-between mb-4">
-                  <div className="flex-1 min-w-0">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">
-                      {markdownData.title}
-                    </h1>
-                    {markdownData.author && (
-                      <p
-                        className={`text-gray-500 dark:text-dark-med-emphasis`}
-                      >
-                        Author
-                        {markdownData.author.indexOf(',') !== -1
-                          ? 's'
-                          : ''}: {markdownData.author}
-                      </p>
-                    )}
-                  </div>
-                  {markdownData instanceof ModuleInfo && (
-                    <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
-                      <MarkCompleteButton
-                        state={moduleProgress}
-                        onChange={handleCompletionChange}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {markdownData instanceof ModuleInfo &&
-                  markdownData.prerequisites && (
-                    <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4">
-                      <div className="flex">
-                        <div className="flex-shrink-0">
-                          <svg
-                            className="h-5 w-5 text-blue-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-3">
-                          <h3 className="text-sm leading-5 font-medium text-blue-800 dark:text-dark-high-emphasis">
-                            Prerequisites
-                          </h3>
-                          <div className="mt-2 text-sm leading-5 text-blue-800 dark:text-blue-200">
-                            <ul className="list-disc list-inside pl-3 space-y-1">
-                              {markdownData.prerequisites.map(x =>
-                                renderPrerequisite(x, moduleLinks)
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                {markdownData instanceof ModuleInfo &&
-                  markdownData.description && (
-                    <p className="italic">{markdownData.description}</p>
-                  )}
-
-                <div className="xl:hidden">
+                <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
                   <TableOfContentsBlock tableOfContents={tableOfContents} />
                 </div>
 
                 {children}
 
-                <div className="my-8">
-                  <ModuleFeedback markdownData={markdownData} />
-                </div>
+                <ModuleProgressUpdateBanner />
 
-                {markdownData instanceof ModuleInfo && (
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8 border-t border-gray-200 pt-8 dark:border-gray-800 dark:text-dark-high-emphasis">
-                    <TextTooltip content="You can use this as a way to track your progress throughout this guide.">
-                      Module Progress
-                    </TextTooltip>
-                    :
-                    <span className="ml-4">
-                      <MarkCompleteButton
-                        onChange={handleCompletionChange}
-                        state={moduleProgress}
-                        dropdownAbove
-                      />
-                    </span>
-                  </h3>
-                )}
+                <ForumCTA />
 
-                <div className="border-t border-gray-200 pt-4 dark:border-gray-800">
-                  <NavBar alignNavButtonsRight={false} />
-                </div>
-              </div>
-              <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0">
-                <TableOfContentsSidebar tableOfContents={tableOfContents} />
-              </div>
+                {/*<div className="my-8">*/}
+                {/*  <ModuleFeedback markdownData={markdownData} />*/}
+                {/*</div>*/}
+              </ContentContainer>
             </div>
-          </div>
-        </main>
-      </div>
-      <ContactUsSlideover
-        isOpen={isContactUsActive}
-        onClose={() => setIsContactUsActive(false)}
-        activeModule={markdownData instanceof ModuleInfo ? markdownData : null}
-      />
+          </ProblemFeedbackModalProvider>
+        </ContactUsSlideoverProvider>
+      </SettingsModalProvider>
     </MarkdownLayoutContext.Provider>
   );
 }

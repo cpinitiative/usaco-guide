@@ -6,13 +6,20 @@ import { graphql } from 'gatsby';
 import MODULE_ORDERING, {
   moduleIDToSectionMap,
   SECTION_LABELS,
+  SECTION_SEO_DESCRIPTION,
+  SECTION_SEO_TITLES,
   SectionID,
 } from '../../content/ordering';
-import { getModule } from '../utils/utils';
+import { getModulesForDivision } from '../utils/utils';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import DashboardProgress from '../components/Dashboard/DashboardProgress';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import getProgressInfo from '../utils/getProgressInfo';
+import DashboardProgress, {
+  DashboardProgressSmall,
+} from '../components/Dashboard/DashboardProgress';
+// import UserDataContext from '../context/UserDataContext/UserDataContext';
+import {
+  getProblemsProgressInfo,
+  getModulesProgressInfo,
+} from '../utils/getProgressInfo';
 import ModuleLink from '../components/Dashboard/ModuleLink';
 import { ModuleLinkInfo } from '../models/module';
 import styled from 'styled-components';
@@ -33,7 +40,7 @@ const DottedLineContainer = styled.div`
       border-right: 2px dashed;
       ${tw`border-gray-100`}
     }
-    .mode-dark &::before {
+    .dark &::before {
       ${tw`border-gray-700`}
     }
   }
@@ -45,7 +52,7 @@ const SectionContainer = styled.div`
   &:hover h2 {
     ${tw`text-gray-600`}
   }
-  .mode-dark &:hover h2 {
+  .dark &:hover h2 {
     ${tw`text-gray-300`}
   }
   &:hover h2 + p {
@@ -54,12 +61,12 @@ const SectionContainer = styled.div`
 `;
 
 const HeroBGColor: { [key in SectionID]: string } = {
-  general: 'bg-blue-600 dark:bg-blue-900',
-  bronze: 'bg-orange-600 dark:bg-orange-900',
-  silver: 'bg-teal-600 dark:bg-teal-900',
-  gold: 'bg-yellow-600 dark:bg-yellow-900',
-  plat: 'bg-purple-600 dark:bg-purple-900',
-  adv: 'bg-green-600 dark:bg-green-900',
+  general: 'bg-blue-700 dark:bg-blue-900',
+  bronze: 'bg-orange-800 dark:bg-orange-900',
+  silver: 'bg-teal-700 dark:bg-teal-900',
+  gold: 'bg-yellow-700 dark:bg-yellow-900',
+  plat: 'bg-purple-700 dark:bg-purple-900',
+  adv: 'bg-green-700 dark:bg-green-900',
 };
 
 const HeroTextColor: { [key in SectionID]: string } = {
@@ -119,43 +126,54 @@ export default function Template(props) {
 
   const { division } = props.pageContext;
 
-  const section = getModule(allModules, division);
+  const section = getModulesForDivision(allModules, division);
 
-  const { userProgressOnModules, userProgressOnProblems } = React.useContext(
-    UserDataContext
-  );
+  // const { userProgressOnModules, userProgressOnProblems } = React.useContext(
+  //   UserDataContext
+  // );
+
   const moduleIDs = section.reduce(
     (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
     []
   );
-  let moduleProgressInfo = getProgressInfo(
-    moduleIDs,
-    userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
-  );
-  let problemIDs = [];
-  for (let chapter of MODULE_ORDERING[division]) {
-    for (let moduleID of chapter.items) {
-      for (let problem of allModules[moduleID].problems) {
+  const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
+  const problemIDs = [];
+  for (const chapter of MODULE_ORDERING[division]) {
+    for (const moduleID of chapter.items) {
+      for (const problem of allModules[moduleID].problems) {
         problemIDs.push(problem.uniqueID);
       }
     }
   }
-  const problemsProgressInfo = getProgressInfo(
-    problemIDs,
-    userProgressOnProblems,
-    ['Solved'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
-  );
+  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+
+  const progressBarForCategory = category => {
+    const problemIDs = [];
+    for (const chapter of MODULE_ORDERING[division])
+      if (chapter.name == category.name) {
+        for (const moduleID of chapter.items) {
+          for (const problem of allModules[moduleID].problems) {
+            problemIDs.push(problem.uniqueID);
+          }
+        }
+      }
+    const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+    return (
+      problemIDs.length > 1 && (
+        <DashboardProgressSmall
+          {...problemsProgressInfo}
+          total={problemIDs.length}
+        />
+      )
+    );
+  };
 
   return (
     <Layout>
-      <SEO title={SECTION_LABELS[division]} />
+      <SEO
+        title={SECTION_SEO_TITLES[division]}
+        description={SECTION_SEO_DESCRIPTION[division]}
+      />
       <div className="min-h-screen">
         <TopNavigationBar currentSection={division} />
 
@@ -204,10 +222,13 @@ export default function Template(props) {
             {section.map(category => (
               <SectionContainer key={category.name}>
                 <div className="flex-1 md:text-right pr-12 group">
-                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out">
+                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
                     {category.name}
                   </h2>
-                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark-group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition duration-150 ease-in-out">
+                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
+                    {progressBarForCategory(category)}
+                  </div>
+                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition">
                     {category.description}
                   </p>
                 </div>
@@ -222,7 +243,9 @@ export default function Template(props) {
                           item.frontmatter.title,
                           item.frontmatter.description,
                           item.frontmatter.frequency,
-                          item.isIncomplete
+                          item.isIncomplete,
+                          [],
+                          item.fields.gitAuthorTime
                         )
                       }
                     />
@@ -252,6 +275,9 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
+          fields {
+            gitAuthorTime
+          }
         }
       }
     }

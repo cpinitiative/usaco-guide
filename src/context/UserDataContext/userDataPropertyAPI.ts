@@ -97,7 +97,7 @@ export default abstract class UserDataPropertyAPI {
     } catch (e) {
       console.error(`Couldn't parse ${key} from localStorage`, e);
     }
-    return v || defaultValue;
+    return v === null ? defaultValue : v;
   }
 
   /**

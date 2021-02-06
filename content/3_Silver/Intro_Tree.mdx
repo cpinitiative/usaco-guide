@@ -33,7 +33,7 @@ export const problems = {
 			'Tree',
 			'DFS',
 		]),
-		new Problem('Silver', 'Milk Visits', '968', 'Easy', false, ['DFS']),
+		new Problem('Silver', 'Milk Visits', '968', 'Easy', false, ['DFS'], 'usaco-968'),
 		new Problem(
 			'IOI',
 			'2010 - Traffic',
@@ -41,7 +41,7 @@ export const problems = {
 			'Easy',
 			true,
 			[],
-			'ioi-traffic'
+			'ioi-10-traffic'
 		),
 		new Problem(
 			'CSES',
@@ -59,12 +59,26 @@ export const problems = {
 			'Normal',
 			false,
 			['Tree', 'DFS'],
-			'@CPH 14.2'
+			'cses-1132'
 		),
-		new Problem('CSES', 'Tree Distances II', '1133', 'Normal', false, [
-			'Tree',
-			'DFS',
-		]),
+		new Problem(
+			'CSES',
+			'Tree Distances II',
+			'1133',
+			'Normal',
+			false,
+			['Tree', 'DFS',],
+			'cses-1133'
+		),
+		new Problem(
+			'POI',
+			'2017 - Sabotage',
+			'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+			'Normal',
+			false,
+			['Tree'],
+			'poi-17-sab'
+		),
 		new Problem(
 			'CCC',
 			'Phenomenal Reviews',
@@ -74,7 +88,7 @@ export const problems = {
 			['Tree', 'DFS'],
 			'ccc-reviews'
 		),
-		new Problem('Silver', 'Clock Tree', '1016', 'Normal', false, []),
+		new Problem('Silver', 'Clock Tree', '1016', 'Normal', false, ['Tree', 'Bipartite']),
 		new Problem(
 			'CF',
 			"Wizard's Tour",
@@ -82,7 +96,16 @@ export const problems = {
 			'Hard',
 			false,
 			['DFS'],
-			'wizards-tour'
+			'wizards-tour',
+		),
+		new Problem(
+			'POI',
+			'2014 - Hotels',
+			'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+			'Hard',
+			false,
+			['Tree', 'Prefix Sums'],
+			'poi-14-hot'
 		),
 	],
 };
@@ -106,12 +129,8 @@ export const problems = {
 ## Resources
 
 <Resources>
-
-<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred>
-	{' '}
-	traversing tree, diameter{' '}
-</Resource>
-
+<Resource source="CPH" title="14.1, 14.2 - Tree algorithms" starred>traversing tree, diameter</Resource>
+<Resource source="SecondThread" title="Tree Basics - Tree Diameter" url="https://codeforces.com/blog/entry/81527"> </Resource>
 </Resources>
 
 <!--
@@ -255,6 +274,33 @@ public class Subordinates
 ```
 
 </JavaSection>
+
+<PySection>
+
+In the Python solution, we need to set recursion limit to $2\times10^5$.
+
+```python
+import sys
+sys.setrecursionlimit(200006) # set recursion limit
+def dfs(x): # x is the current node
+	ans = 0 # stores the number of subordinates
+	for e in edges[x]:
+		if e != fa[x-1]:
+			ans += dfs(e)
+	sub[x-1] = ans # 0-index is more convenient for printing
+	return ans+1 # add the node x itself
+N = int(input())
+edges = [[] for _ in range(N+1)] # create empty adjacency list
+sub = [0 for _ in range(N)] # the number of subordinates
+fa = [1] + list(map(int, input().split())) # the parent of each node, set the parent of node 1 to itself
+for ind, f in enumerate(fa):
+	edges[f].append(ind+1) # add edges to the adjacency list
+dfs(1)
+for i in sub:
+	print(i, end=" ")
+```
+
+</PySection>
 
 </LanguageSection>
 

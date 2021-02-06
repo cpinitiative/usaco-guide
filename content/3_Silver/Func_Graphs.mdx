@@ -27,7 +27,7 @@ export const problems = {
 			'https://codeforces.com/contest/1137/problem/D',
 			'Hard',
 			false,
-			["Func Graph, Floyd's Algorithm"],
+			["Func Graph", "Floyd's Algorithm"],
 			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
 		),
 	],
@@ -39,13 +39,13 @@ export const problems = {
 			'Easy',
 			false,
 			['Func Graph'],
-			'Try to solve the problem in $O(N)$!'
+			'Try to solve the problem in $\mathcal{O}(N)$!'
 		),
 		new Problem(
 			'CSES',
 			'Planets Cycles',
 			'1751',
-			'Normal',
+			'Easy',
 			true,
 			['Func Graph'],
 			''
@@ -59,6 +59,24 @@ export const problems = {
 			['Permutation'],
 			''
 		),
+		new Problem(
+			'Silver',
+			'Dance Mooves',
+			'1086',
+			'Normal',
+			false,
+			['Permutation'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Dance Mooves',
+			'1091',
+			'Hard',
+			false,
+			['Permutation', 'Two Pointers'],
+			''
+		),
 	],
 };
 
@@ -68,7 +86,7 @@ export const problems = {
 
 <br />
 
-It's easy to solve the above problem in $O(N^2)$ time. We'll solve it in $O(N)$.
+It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it in $\mathcal{O}(N)$.
 
 ## Introduction
 
@@ -82,141 +100,10 @@ In a **functional graph**, each node has exactly one out-edge. This is also comm
 
 You can think of every connected component of a functional graph as a rooted tree plus an additional edge going out of the root.
 
-### Solution - Badge
-
-<IncompleteSection />
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-const int MN = 1e3+10;
-
-int N, p[MN], f[MN];
-bool v[MN], u[MN];
-int dfs(int n)
-{
-	v[n]=u[n]=true;
-	if(u[p[n]])//Cycle created
-	{
-		f[n]=n;//Nodes in cycle point to themselves
-		u[p[n]]=false;//remember where cycle started
-		u[n]=false;
-		return -1;
-	}
-	else if(v[p[n]])//You point into some already visited cycle
-	{
-		u[n]=false;
-		return f[n]=f[p[n]];
-	}
-	else
-	{
-		int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
-		if(t!=-1)
-		{
-			u[n]=false;
-			return f[n]=t;
-		}
-		else if(u[n])//You are part of the cycle, and so is the node that points to you.
-		{
-			u[n]=false;
-			f[n]=n;
-			return -1;
-		}
-		else//You are the start of the cycle. Whatever points to you is not part of the cycle anymore
-			return f[n]=n;
-	}
-}
-int main()
-{
-	scanf("%d", &N);
-	for (int i=1;i<=N;++i)
-		scanf("%d", p+i);
-	for (int i=1;i<=N;++i)
-		if(!v[i])
-			dfs(i);
-	for (int i=1;i<=N;++i)
-		printf("%d%c", f[i], " \n"[i==N]);
-	return 0;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class badge
-{
-	static InputReader in = new InputReader(System.in);
-	static PrintWriter out = new PrintWriter(System.out);
-	public static final int MN = 1010;
-	public static int N;
-	public static int[] p = new int[MN], f = new int[MN];
-	public static boolean[] v = new boolean[MN], u = new boolean[MN];
-	public static int dfs(int n)
-	{
-		v[n]=u[n]=true;
-		if(u[p[n]]) //Cycle created
-		{
-			f[n]=n;//Nodes in cycle point to themselves
-			u[p[n]]=false;//remember where cycle started
-			u[n]=false;
-			return -1;
-		}
-		else if(v[p[n]]) //You point into some already visited cycle
-		{
-			u[n]=false;
-			return f[n]=f[p[n]];
-		}
-		else
-		{
-			int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
-			if(t!=-1)
-			{
-				u[n]=false;
-				return f[n]=t;
-			}
-			else if(u[n]) //You are part of the cycle, and so is the node that points to you.
-			{
-				u[n]=false;
-				f[n]=n;
-				return -1;
-			}
-			else //You are the start of the cycle. Whatever points to you is not part of the cycle anymore
-				return f[n]=n;
-		}
-	}
-	public static void main(String... args)
-	{
-		N = in.nextInt();
-		for (int i=1;i<=N;++i)
-			p[i]=in.nextInt();
-		for (int i=1;i<=N;++i)
-			if(!v[i])
-				dfs(i);
-		for (int i=1;i<=N;++i)
-		{
-			out.print(f[i]);
-			if(i<N) out.print(" ");
-			else out.println();
-		}
-		out.close();
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
 
 ## Floyd's Algorithm
 
-**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $O(N)$ time and $O(1)$ memory (not counting the graph itself).
+**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $\mathcal{O}(N)$ time and $\mathcal{O}(1)$ memory (not counting the graph itself).
 
 <Resources>
 	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
@@ -228,6 +115,7 @@ public class badge
 	<Resouce source="CP2" title="5.7 - Cycle-Finding">
 		{' '}
 	</Resouce>
+	<Resource source="VisuAlgo" title="Floyd's Algorithm Visualization" url="https://visualgo.net/en/cyclefinding"/>
 </Resources>
 
 ### Example - Cooperative Game
@@ -460,15 +348,183 @@ $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1
 
 </Spoiler>
 
-<!-- ## Count Cycles
+## Solution - Badge
+
+### Solution 1
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int N;
+vi P,ans;
+bool in_cycle;
+
+void gen(int x) {
+	if (ans[x] != -2) {
+		if (ans[x] == -1) ans[x] = x, in_cycle = 1; // found a cycle!
+		return;
+	}
+	ans[x] = -1; gen(P[x]);
+	if (ans[x] != -1) { in_cycle = 0; return; }
+	ans[x] = in_cycle ? x : ans[P[x]];
+}
+
+int main() {
+	setIO(); rv(N,P); trav(t,P) --t;
+	ans = vi(N,-2);
+	F0R(i,N) gen(i); // in_cycle is always reset to 0
+	trav(t,ans) pr(t+1,' ');
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class badge
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+	public static final int MN = 1010;
+	public static int N;
+	public static int[] p = new int[MN], f = new int[MN];
+	public static boolean[] v = new boolean[MN], u = new boolean[MN];
+	public static int dfs(int n)
+	{
+		v[n]=u[n]=true;
+		if(u[p[n]]) //Cycle created
+		{
+			f[n]=n;//Nodes in cycle point to themselves
+			u[p[n]]=false;//remember where cycle started
+			u[n]=false;
+			return -1;
+		}
+		else if(v[p[n]]) //You point into some already visited cycle
+		{
+			u[n]=false;
+			return f[n]=f[p[n]];
+		}
+		else
+		{
+			int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
+			if(t!=-1)
+			{
+				u[n]=false;
+				return f[n]=t;
+			}
+			else if(u[n]) //You are part of the cycle, and so is the node that points to you.
+			{
+				u[n]=false;
+				f[n]=n;
+				return -1;
+			}
+			else //You are the start of the cycle. Whatever points to you is not part of the cycle anymore
+				return f[n]=n;
+		}
+	}
+	public static void main(String... args)
+	{
+		N = in.nextInt();
+		for (int i=1;i<=N;++i)
+			p[i]=in.nextInt();
+		for (int i=1;i<=N;++i)
+			if(!v[i])
+				dfs(i);
+		for (int i=1;i<=N;++i)
+		{
+			out.print(f[i]);
+			if(i<N) out.print(" ");
+			else out.println();
+		}
+		out.close();
+	}
+}
+``` 
+
+</JavaSection>
+
+
+</LanguageSection>
+
+
+<br />
+
+This code generates the answer independently for each connected component. Note that it uses 0-indexing, not 1-indexing.
+
+Try simulating the algorithm on the following directed graph in CSAcademy's [Graph Editor](https://csacademy.com/app/graph_editor/). 
+
+```
+0 1
+1 2
+2 3
+3 4
+4 2
+5 6
+6 1
+```
+
+
+ - On the first step, we make the following recursive calls: `gen(0)` -> `gen(1)` -> `gen(2)` -> `gen(3)` -> `gen(4)` -> `gen(2)`, at which point we stop since `ans[2] = -1`. Since we have reached `2` for the second time, we know that `2` is part of a cycle and `ans[2] = 2`. Similarly, `ans[3] = 3` and `ans[4] = 4` since they are part of the cycle. On the other hand, `ans[0] = ans[1] = 2` since neither of them are part of the cycle.
+
+ - Later, we make the following recursive calls when we start at vertex `5`: `gen(5)` -> `gen(6)` -> `gen(1)`. We already know that `ans[1] = 2`, so `ans[5] = ans[6] = 2` as well.
+
+### Solution 2
+
+`go(x)` generates answers for all vertices in the connected component containing `x`. Requires reverse adjacency lists (`radj`).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int N;
+vi P,ans;
+V<vi> radj;
+
+void fill_radj(int x) {
+	trav(t,radj[x]) if (ans[t] == -1) {
+		ans[t] = ans[x];
+		fill_radj(t);
+	}
+}
+
+void go(int x) {
+	int y = x;
+	do { // find a cycle using Floyd's algo
+		x = P[x];
+		y = P[P[y]];
+	} while (y != x); 
+	do { // set ans[x] = x for all x along cycle
+		ans[x] = x;
+		x = P[x];
+	} while (y != x);
+	do { // set ans'es for all x not along cycle
+		fill_radj(x);
+		x = P[x];
+	} while (y != x);
+}
+
+int main() {
+	setIO(); rv(N,P); trav(t,P) --t;
+	radj.rsz(N); F0R(i,N) radj[P[i]].pb(i);
+	ans = vi(N,-1); F0R(i,N) if (ans[i] == -1) go(i);
+	trav(t,ans) pr(t+1,' ');
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Count Cycles
 
 The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
-
-<IncompleteSection>
-
-Find example problem to submit to?
-
-</IncompleteSection>
 
 <LanguageSection>
 
@@ -476,7 +532,6 @@ Find example problem to submit to?
 
 ```cpp
 //UNTESTED
-
 //Each node points to next_node[node]
 
 bool visited[MAXN], on_stack[MAXN];
@@ -502,11 +557,44 @@ int main()
 
 </CPPSection>
 
-</LanguageSection> -->
+<JavaSection>
+
+```java
+//source: Mayank Kumar
+import java.io.*;
+import java.util.*;
+public class badge2{
+    static boolean[] visited=new boolean[MAXN],onStack=new boolean[MAXN];
+    static int numberOfCycles=0;
+    static int[] nextNode=new int[MAXN];
+    public static void main(String[] args) throws IOException{
+        //Take in input
+        for(int i=1;i!=N;++i)
+            if(!visited[i])
+                dfs(i);
+        System.out.println();
+        System.out.close();
+    }
+    public static void dfs(int n){
+        visited[n]=onStack[n]=true;
+        int u=nextNode[n];
+        if(onStack[u])
+            ++numberOfCycles;
+        else if(!visited[u])
+            dfs(u);
+        onStack[n]=false;
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
 
 ## $K$-th Successor
 
-As described briefly in CPH 16.3, can be found in $O(\log K)$ time using **binary jumping**. See the Platinum [module](/plat/bin-jump) for details.
+As described briefly in CPH 16.3, can be found in $\mathcal{O}(\log K)$ time using **binary jumping**. See the Platinum [module](/plat/bin-jump) for details.
 
 ## Problems
 
@@ -516,7 +604,7 @@ Additional problems involving functional graphs can be found in the [Tree DP](/g
 
 <!-- new Problem(
 	'JOI',
-	'Space Pirate',
+	'2014 - Space Pirate',
 	'JOI14_space_pirate',
 	'Insane',
 	false,

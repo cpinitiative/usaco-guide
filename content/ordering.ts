@@ -20,7 +20,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'About This Guide',
       description:
         "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing'],
+      items: ['using-this-guide', 'modules', 'contributing', 'code-con'],
     },
     {
       name: 'Getting Started',
@@ -29,17 +29,17 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'intro',
         'choosing-lang',
         'resources-learning-to-code',
-        'running-code',
+        'running-code-online',
         'data-types',
         'io',
         'expected',
-        'code-con',
       ],
     },
     {
       name: 'General',
       description: 'Useful for competitors of all levels.',
       items: [
+        'debugging-general',
         'practicing',
         'contest-strategy',
         'resources-cp',
@@ -49,60 +49,62 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Language-Specific',
+      description:
+        'Setup instructions and discussion of language-specific features.',
       items: [
         'factors-choosing',
+        'running-code-locally',
         'cpp-command',
-        'debugging',
+        'debugging-lang',
         'fast-io',
         'generic',
-        'cpp-tips',
+        'lambda',
       ],
     },
     {
       name: 'USA',
       description:
         'Information specific to USACO as well as USA camps and contests.',
-      items: ['usaco-month', 'usaco-camp', 'resources-usa'],
+      items: ['usaco-monthlies', 'usaco-camp', 'resources-usa'],
     },
   ],
   bronze: [
     {
       name: 'Basics',
-      items: [
-        'time-comp',
-        'intro-ds',
-        'simulation',
-        'rect-geo',
-        'intro-sorting',
-        'intro-sets',
-      ],
+      items: ['time-comp', 'rect-geo', 'simulation'],
     },
     {
       name: 'Complete Search',
       description:
-        'Solving bronze problems by checking all possible cases in the solution space.',
+        'Solving Bronze problems by checking all possible cases in the solution space.',
       items: ['intro-complete', 'complete-rec'],
     },
     {
-      name: 'Unusual',
+      name: 'Data Structures',
+      description:
+        "It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.",
+      items: ['intro-ds', 'intro-sorting', 'intro-sets'],
+    },
+    {
+      name: 'Additional',
+      description: 'Topics not strictly necessary to know to pass Bronze.',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
   ],
   silver: [
     {
-      name: 'Sorting & Sets',
+      name: 'Sorting & Ordered Sets',
       items: [
         'binary-search-sorted',
         'sorting-custom',
         'intro-ordered',
         'custom-cpp-stl',
+        'greedy',
       ],
     },
     {
       name: 'Misc. Topics',
-      description:
-        'Most of these require sorting and/or sets as a prerequisite.',
-      items: ['prefix-sums', '2P', 'binary-search-ans', 'greedy'],
+      items: ['prefix-sums', '2P', 'binary-search-ans', 'intro-bitwise'],
     },
     {
       name: 'Graphs',
@@ -120,7 +122,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis', 'dp-nt'],
+      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis'],
     },
     {
       name: 'Graphs',
@@ -205,7 +207,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['comb-sub', 'dp-more'],
+      items: ['comb-sub', 'dp-more', 'dp-sos'],
     },
     {
       name: 'Flows',
@@ -229,6 +231,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'multiplicative',
         'matroid-isect',
         'interactive',
+        'vectorization',
       ],
     },
   ],
@@ -245,6 +248,28 @@ export const SECTION_LABELS: { [key in SectionID]: string } = {
   gold: 'Gold',
   plat: 'Platinum',
   adv: 'Advanced',
+};
+export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
+  general:
+    'General information for USACO and Competitive Programming. Includes resources to pick a language, set up an IDE, practice tips, and more!',
+  bronze:
+    'Topics for USACO Bronze include time complexity, data structures, sorting, simulation, complete search, ad hoc, greedy, graphs, rectangle geometry, sets and maps, and recursion.',
+  silver:
+    'Topics for USACO Silver include binary search on the answer, prefix sums, two pointers, dfs, floodfill, trees, custom comparators, greedy with sorting, and more!',
+  gold:
+    'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, string hashing, and more!',
+  plat:
+    'Topics for USACO Platinum include segment trees, advanced tree techniques, advanced dynamic programming, computational geometry, matrix exponentiation, and more!',
+  adv:
+    'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
+};
+export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
+  general: 'General USACO Information',
+  bronze: 'USACO Bronze Topics',
+  silver: 'USACO Silver Topics',
+  gold: 'USACO Gold Topics',
+  plat: 'USACO Platinum Topics',
+  adv: 'Advanced USACO Topics',
 };
 
 let moduleIDToSectionMap: { [key: string]: SectionID } = {};

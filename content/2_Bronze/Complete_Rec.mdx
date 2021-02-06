@@ -1,7 +1,7 @@
 ---
 id: complete-rec
 title: 'Complete Search with Recursion'
-author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang
+author: Darren Yao, Sam Zhang, Michael Cao, Andrew Wang, Benjamin Qi, Dong Liu
 description: 'Includes generating subsets and permutations.'
 frequency: 1
 prerequisites:
@@ -35,17 +35,9 @@ export const problems = {
 			[],
 			'@CPH 5.3'
 		),
+		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
 	],
 	gen: [
-		new Problem(
-			'Bronze',
-			'Back & Forth',
-			'857',
-			'Hard',
-			false,
-			[],
-			'Try all $10 * 11^4$ possibilities for each day, and simulate for each possibility. See the editorial for more details.'
-		), // 99.63
 		new Problem(
 			'Bronze',
 			'Livestock Lineup',
@@ -55,7 +47,24 @@ export const problems = {
 			['permutations'],
 			''
 		), // 91.95
-		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
+		new Problem(
+			'Bronze',
+			'Back & Forth',
+			'857',
+			'Hard',
+			false,
+			[],
+			'usaco-857'
+		), // 99.63
+		new Problem(
+			'Old Bronze',
+			'Wormholes',
+			'360',
+			'Very Hard',
+			false,
+			['permutations'],
+			''
+		), // 91.95
 	],
 };
 
@@ -91,9 +100,9 @@ Although knowledge of recursion is not strictly necessary for Bronze, we think t
 
 ### Solution - Apple Division
 
-Since $n\le 20$, we can try all possible divisions of $n$ apples into two sets and find the one with the minimum difference in weights. Here are two ways to do this.
+Since $n\le 20$, we can solve the focus problem by trying all possible divisions of $n$ apples into two sets and finding the one with the minimum difference in weights. Here are two ways to do this.
 
-<Spoiler title="Method 1 - Recursion">
+#### Generating Subsets Recursively
 
 The first method would be to write a recursive function which searches over all possibilities.
 
@@ -268,11 +277,26 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+n = int(input())
+p = list(map(int, input().split()))
+
+def solve(i, s1, s2):
+	if i == n:
+		return abs(s2-s1)
+	return min(solve(i+1, s1+p[i], s2), 
+			   solve(i+1, s1, s2+p[i]))
+
+print(solve(0, 0, 0))
+```
+	
+</PySection>	
+
 </LanguageSection>
 
-</Spoiler>
-
-<Spoiler title="Method 2 - Bitmasks">
+#### Generating Subsets with Bitmasks
 
 <Warning>
 
@@ -282,11 +306,16 @@ You are not expected to know this for Bronze.
 
 A **bitmask** is an integer whose binary representation is used to represent a subset. For a particular bitmask, if the $i$'th bit is turned on (equal to $1$), we say the $i$'th apple is in $s_1$. Then, the rest of the apples are in $s_2$. We can iterate through all subsets $s_1$ if we check all bitmasks ranging from $0$ to $2^N-1$. For each bitmask, find the sum of $s_1$ and $s_2$ and find the minimum difference between their sums.
 
-
 Note the fancy bitwise operations:
 
 - `1 << x` for an integer $x$ is another way of writing $2^x$, which, in binary, has only the $x$'th bit turned on.
 - The `&` (and) operator will take two integers and return a new integer. `a & b` for integers $a$ and $b$ will return a new integer whose $i$'th bit is turned on if and only if the $i$'th bit is turned on for both $a$ and $b$. Thus, `mask & (1 << x)` will return a positive value only if the $x$'th bit is turned on in $mask$.
+
+<Info title="Bitwise Operations">
+
+Check the Silver [module](/silver/intro-bitwise) module for more information.
+
+</Info>
 
 <LanguageSection>
 
@@ -464,13 +493,34 @@ public class Main {
 
 </JavaSection>
 
-</LanguageSection>
+<PySection>
 
-</Spoiler>
+```py
+n = int(input())
+p = list(map(int, input().split()))
+
+ans = float('inf')
+for mask in range(1<<n):
+	s1,s2 = 0,0
+	for i in range(n):
+		if mask & (1<<i):
+			s1 += p[i]
+		else:
+			s2 += p[i]
+	ans = min(ans, abs(s1-s2))
+
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
 
 ## Permutations
 
 A **permutation** is a reordering of a list of elements.
+
+<FocusProblem problem={problems.permSam[0]} />
 
 ### Lexicographical Order
 
@@ -494,25 +544,133 @@ Notice that the list starts with permutations beginning with 1 (just like a dict
 
 Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
 
-### Generating Permutations
+Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can just iterate through all $N!=N\cdot (N-1)\cdot (N-2)\cdots 1$ permutations and check each permutation for validity. 
 
-<FocusProblem problem={problems.permSam[0]} />
-
-Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can probably iterate through all permutations and check each permutation for validity. For a list of $N$ elements, there are $N!$ ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $O(N \cdot N!)$.
+### Solution - Creating Strings I
 
 <Resources>
 	<Resource source="CPH" title="5.2 - Generating Permutations" starred>
-		good explanation + code including next_permutation
+		brief explanation + code for both of the methods below
 	</Resource>
 </Resources>
 
-<!-- no need to repeat -->
+
+#### Generating Permutations Recursively
+
+<!-- For a list of $N$ elements, there are  ways to permute them, and generally we'll need to read through each permutation once to check its validity, for a time complexity of $\mathcal{O}(N \cdot N!)$. -->
+
+Just a slight modification of method 1 from CPH.
 
 <LanguageSection>
 
 <CPPSection>
 
-### About [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    if(sz(name)){
+        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+int N, cnt[26];
+string S, perm;
+vector<string> perms;
+
+void search() {
+	if (sz(perm) == sz(S)) {
+		perms.pb(perm);
+		return;
+	}
+	for (int i = 0; i < 26; ++i) if (cnt[i]) {
+		--cnt[i]; 
+		perm += char('a'+i);
+		search();
+		++cnt[i]; 
+		perm.pop_back();
+	}
+}
+
+int main() {
+	setIO();
+	cin >> S;
+	for (auto c : S) cnt[c-'a'] ++;
+	search();
+	cout << sz(perms) << '\n';
+	for (auto t : perms) cout << t << '\n';
+}
+```
+
+</CPPSection>
+
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String s, perm;
+	static ArrayList<String> perms;
+	static int N, cnt[];
+		
+	static void search() {
+		if (perm.length() == s.length()) {
+			perms.add(perm);
+			return;
+		}
+		for (int i = 0; i < 26; ++i) {
+			if (cnt[i] > 0) {
+				--cnt[i];
+				perm += (char)(i + 'a');
+				search();
+				++cnt[i];
+				perm = perm.substring(0, perm.length() - 1); //removes last character
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		s = br.readLine();
+		N = s.length();
+		cnt = new int[26];
+		perms = new ArrayList<String>();
+		perm = "";
+		for (int i = 0; i < N; ++i) {
+			int index = (int)(s.charAt(i) - 'a');
+			++cnt[index];
+		}
+		search();
+		Collections.sort(perms);
+		System.out.println(perms.size());
+		for (String i : perms) {
+			System.out.println(i);
+		}
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+#### Generating Permutations Using [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
 
 <Resources>
 	<Resource
@@ -537,31 +695,12 @@ do {
 
 Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
 
-</CPPSection>
-
-<JavaSection>
 
 <Warning>
 
-`next_permutation` is not available in Java.
+One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically smaller than the initial string won't be generated.
 
 </Warning>
-
-</JavaSection>
-
-</LanguageSection>
-
-### Solution - Creating Strings I
-
-<Spoiler title="Method 1 - Recursively">
-
-<IncompleteSection />
-
-</Spoiler>
-
-<Spoiler title="Method 2 - With next_permutation">
-
-One small detail is that you need to sort the string before calling `next_permutation()` because the method generates strings in lexicographical order. If the string isn't sorted, then strings which are lexicographically better than the initial string won't be generated.
 
 <LanguageSection>
 
@@ -605,9 +744,17 @@ int main() {
 
 </CPPSection>
 
-</LanguageSection>
+<JavaSection>
 
-</Spoiler>
+<Warning>
+
+`next_permutation` is not available in Java.
+
+</Warning>
+
+</JavaSection>
+
+</LanguageSection>
 
 <!-- <Resources>
   <Resource source="GFG" url="write-a-c-program-to-print-all-permutations-of-a-given-string" title="Printing all Permutations of Given String"> </Resource>
@@ -621,7 +768,7 @@ int main() {
 
 #### Method 1
 
-($O(N\cdot N!)$ code)
+($\mathcal{O}(N\cdot N!)$ code)
 
 <IncompleteSection />
 
@@ -672,15 +819,13 @@ public class Test {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.3 - Backtracking" starred></Resource>
-	<Resource source="CP2" title="3.2 - Complete Search">
-		{' '}
-	</Resource>
+	<Resource source="CPH" title="5.3 - Backtracking" starred>code and explanation for focus problem</Resource>
+	<Resource source="CP2" title="3.2 - Complete Search">iterative vs recursive complete search</Resource>
 </Resources>
 
 ### Solution - Chessboard & Queens
 
-<Spoiler title="Method 1 - Generating Permutations">
+#### Using `next_permutation`
 
 Since no two queens can be in the same column, let's generate a permutation of length $8$. Then, the $p_i$ represents the column that the $i$-th queen goes on.
 
@@ -762,6 +907,7 @@ int main() {
 
 <JavaSection>
 
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -821,38 +967,117 @@ public class Chessboard {
 }
 ```
 
+
 </JavaSection>
 
 </LanguageSection>
 
-</Spoiler>
+#### Using Backtracking
 
-<Spoiler title="Method 2 - Backtracking">
+According to CPH:
+
+> A backtracking algorithm begins with an empty solution and extends the solution step by step. The search recursively goes through all different ways how a solution can be constructed.
 
 Since the bounds are small, we can recursively backtrack over all ways to place the queens, storing the current state of the board.
 
 Then, we can try to place a queen at all squares $x, y$ if it isn't attacked by a queen or blocked and recurse, before removing this queen and backtracking.
 
-Finally, when we have placed all the queens and the boardstate is valid, then increment the answer.
+Finally, when we have placed all the queens and the board's state is valid, then increment the answer.
 
-<IncompleteSection>
+<LanguageSection>
 
-</IncompleteSection>
+<CPPSection>
 
-</Spoiler>
+```cpp
+string g[8];
+bool sum[15], dif[15], c[8];
+int ans = 0;
+ 
+void dfs(int r) { // place queen in r-th row
+	if (r == 8) {
+		++ans; // found valid placement
+		return;
+	}
+	for (int i = 0; i < 8; ++i) if (g[r][i] == '.' && !c[i] && !sum[i+r] && !dif[i-r+7]) {
+		c[i] = sum[i+r] = dif[i-r+7] = 1;
+		dfs(r+1);
+		c[i] = sum[i+r] = dif[i-r+7] = 0;
+	}
+}
+ 
+int main() {
+	setIO(); 
+	for (int i = 0; i < 8; ++i) cin >> g[i];
+	dfs(0); 
+	cout << ans;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static String g[];
+	static boolean sum[], dif[], c[];
+	static int ans = 0;
+	static void dfs(int r) { //place queen in row r
+		if (r == 8) {
+			++ ans; 
+			return;
+		}
+		for (int i = 0; i < 8; ++i) {
+			if(g[r].charAt(i) == '.' && !c[i] && !sum[i + r] && !dif[i - r + 7]) {
+				c[i] = sum[i + r] = dif[i - r + 7] = true;
+				dfs(r + 1);
+				c[i] = sum[i + r] = dif[i - r + 7] = false;
+			}
+		}
+	}
+		
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		g = new String[8];
+		sum = new boolean[15]; dif = new boolean[15]; c = new boolean[8];
+		for(int i = 0; i < 8; ++i) {
+			g[i] = br.readLine();
+		}
+		dfs(0);
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+#### Pruning
+
+<FocusProblem problem={problems.back[1]} />
+
+Both of the resources below describe this well so I won't repeat it here.
+
+<Resources>
+	<Resource source="CPH" title="5.4 - Pruning the search" starred>code and explanation for focus problem</Resource>
+	<Resource source="CP2" title="3.2 - Complete Search">pruning tips</Resource>
+</Resources>
 
 ## Problems
 
-<Warning>
-
-Don't expect a problem like "Grid Paths" in an actual contest.
-
-</Warning>
+None of these require pruning.
 
 <Problems problems={problems.gen} />
 
+You can find more problems at the CP2 link given above or at [USACO Training](https://train.usaco.org/). However, these sorts of problems appear much less frequently then they once did.
+
 <IncompleteSection>
 
-more probs?
+make code consistent, improve some of these explanations
 
 </IncompleteSection>

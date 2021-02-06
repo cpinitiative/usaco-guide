@@ -1,15 +1,13 @@
 ---
 id: dfs
 title: Depth First Search (DFS)
-author: Siyong Huang
+author: Siyong Huang, Andrew Wang, Jason Chen, Benjamin Qi
 prerequisites:
   - intro-graphs
   - complete-rec
 description: 'Recursively traversing a graph.'
 frequency: 4
 ---
-
-
 
 export const problems = {
 	sample: [
@@ -37,7 +35,6 @@ export const problems = {
 			['DFS'],
 			'kattis-birthday'
 		),
-		new Problem('Silver', 'Moo Particle', '1040', 'Normal', false, ['Sorting']),
 		new Problem(
 			'Gold',
 			'Moocast',
@@ -85,9 +82,20 @@ export const problems = {
 			[],
 			'ccc-20-escape'
 		),
-		new Problem('Silver', 'Snow Boots', '811', 'Hard', false, [], ''),
+		new Problem('Silver', 'Snow Boots', '811', 'Hard', false, [], 'usaco-811'),
+		new Problem(
+			'CSES',
+			'Even Outdegree Edges',
+			'2179',
+			'Very Hard',
+			true,
+			['DFS'],
+			'cses-2179'
+		),
 	],
 };
+
+<!-- new Problem('Silver', 'Moo Particle', '1040', 'Normal', false, ['Sorting']), -->
 
 <!--
 new Problem(
@@ -208,81 +216,268 @@ int main()
 
 <JavaSection>
 
-<Warning>
-
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code will use the [Chinese edge representation](https://codeforces.com/blog/entry/67883).
-
-</Warning>
-
 ```java
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class BuildingRoads
-{
-	static InputReader in = new InputReader(System.in); //Check General/IO
-	static PrintWriter out = new PrintWriter(System.out);
-
-	public static final int MN = 100010, MM = 200020;
-
-	static int N, M, ans;
-	static int[] rep = new int[MN], hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
-	static boolean[] visited = new boolean[MN];
-
-	public static void adde(int u, int v, int id)
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
 	{
-		nx[id] = hd[u];
-		hd[u] = id;
-		to[id] = v;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
 	}
+
 	public static void dfs(int node)
 	{
 		visited[node] = true;
-		for(int id=hd[node], u;id!=-1;id=nx[id])
-		{
-			u=to[id];
+		for (int u: adj[node])
 			if(!visited[u])
 				dfs(u);
-		}
 	}
 	public static int count_components()
 	{
-		int count=0;
-		for(int i=1;i<=N;++i)
-			if(!visited[i])
-			{
-				rep[count++]=i;
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
 				dfs(i);
 			}
-		return count;
-	}
-
-	public static void main(String... args)
-	{
-		N=in.nextInt();
-		M=in.nextInt();
-		for(int i=1;i<=N;++i) hd[i]=-1;
-		for(int i=0,u,v;i<M;++i)
-		{
-			u = in.nextInt();
-			v = in.nextInt();
-			adde(u, v, i*2);
-			adde(v, u, i*2+1);
 		}
-		ans = count_components();
-		out.println(ans-1);
-		for(int i=1;i<ans;++i)
-			out.println(rep[i-1] + " " + rep[i]);
-		out.close();
+		return count;
 	}
 }
 ```
 
 </JavaSection>
 
+<PySection>
+
+```py
+def solve(n, adj):
+    unvisited = set(range(1, n+1))
+    starts = set()
+
+    def dfs(current):
+        for next in adj[current]:
+            if next in unvisited:
+                unvisited.remove(next)
+                dfs(next)
+
+    while unvisited:
+        start = unvisited.pop()
+        starts.add(start)
+        dfs(start)
+
+    print(len(starts) - 1)
+    root = starts.pop()
+    for other in starts:
+        print(root, other)
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    adj = [set() for _ in range(n+1)]
+    for _ in range(m):
+        u, v = map(int, input().split())
+        adj[u].add(v)
+        adj[v].add(u)
+    solve(n, adj)
+```
+
+Unfortunately, a danger in using DFS when dealing with large bounds is the possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the recursion limit in Python is set to [1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014) by default. So if you submit the above code, you'll get the following:
+
+```
+Traceback (most recent call last):
+  File "input/code.py", line 28, in <module>
+    solve(n, adj)
+  File "input/code.py", line 14, in solve
+    dfs(start, start)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  File "input/code.py", line 9, in dfs
+    dfs(start, next)
+  [Previous line repeated 994 more times]
+  File "input/code.py", line 7, in dfs
+    if next in unvisited:
+RecursionError: maximum recursion depth exceeded in comparison
+```
+
+We can fix this by increasing the recursion limit:
+
+```py
+import sys
+sys.setrecursionlimit(1000000)
+```
+
+although we still get TLE on two test cases.
+
+To resolve this, we can implement a non-recursive solution (which turns out to be slightly faster). You can imagine adding to `to_visit` as calling the function recursively and popping from `to_visit` as starting the execution of the recursive function (though they are not exactly equivalent in the strictest sense).
+
+```py
+def solve(n, adj):
+	unvisited = set(range(1, n+1))
+	starts = set()
+
+	def dfs(start):
+		to_visit = [start]
+		while to_visit:
+			current = to_visit.pop()
+			for next in adj[current]:
+				if next in unvisited:
+					unvisited.remove(next)
+					to_visit.append(next)
+
+	while unvisited:
+		start = unvisited.pop()
+		starts.add(start)
+		dfs(start)
+
+	print(len(starts) - 1)
+	root = starts.pop()
+	for other in starts:
+		print(root, other)
+
+if __name__ == '__main__':
+	n, m = map(int, input().split())
+	adj = [set() for _ in range(n+1)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		adj[u].add(v)
+		adj[v].add(u)
+	solve(n, adj)
+```
+
+Recursion errors also come up frequently in [flood fill](/silver/ff) problems.
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
+
+<!--
+<LanguageSection>
+
+<CPPSection>
+
+</CPPSection>
+
+<JavaSection>
+
+</JavaSection>
+
+<CPPSection>
+
+## Increased recursion limit
+
+Refer to the module on [increasing stack size](/general/cpp-command#adjusting-stack-size).
+
+</CPPSection>
+
+<JavaSection>
+
+## DFS With Stack
+
+A danger in using DFS when dealing with large bounds is the possibility of a common runtime error, **StackOverFlow Error** in Java. This commonly occurs when $N > 10^5$ due to the limited memory of the built-in "stack" of recursive calls. To resolve this, we can implement our solution iteravely by making our own stack instead of recursively calling a function. You can imagine adding to this stack being the equivalent of calling the recursive function and popping from this stack being the same as executing the function. (**Note**: StackOverFlow Error is more common in [floodfill](/silver/ff) problems due to the grid-like nature leading to high depths in recursion calls.)
+
+Solution using iterative DFS:
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+	public static ArrayList<Integer> adj[];
+	public static ArrayList<Integer> rep = new ArrayList<Integer>();
+	public static boolean visited[];
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		adj = new ArrayList[N+1];
+		visited = new boolean[N+1];
+		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
+		for (int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			adj[u].add(v); adj[v].add(u);
+		}
+		int ans = count_components();
+		out.println(ans-1);
+		for (int i = 1; i < ans; i++){
+			out.println(rep.get(i-1) + " " + rep.get(i));
+		}
+		out.close();
+	}
+
+	public static void dfs(int node)
+	{
+		Stack<Integer> dfs_stack = new Stack<Integer>();
+		dfs_stack.push(node);
+		while(!dfs_stack.isEmpty()){
+			int cur = dfs_stack.pop();
+			visited[cur] = true;
+			for (int u: adj[cur])
+				if(!visited[u])
+					dfs_stack.push(u);
+		}
+	}
+	public static int count_components()
+	{
+		int count = 0;
+		for (int i = 1; i <= adj.length-1; i++){
+			if(!visited[i]){
+				count++;
+				rep.add(i);
+				dfs(i);
+			}
+		}
+		return count;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+</PySection>
+
+</LanguageSection>
+-->
+
+<Optional title="Adjacency List Without an Array of Vectors">
+
+See [here.](https://codeforces.com/blog/entry/67883)
+
+</Optional>
 
 ### Problems
 

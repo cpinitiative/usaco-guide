@@ -43,7 +43,7 @@ export default function SectionsDropdown({
               isActive ? 'text-gray-600' : 'text-gray-400'
             } h-5 w-5 group-hover:text-gray-500 transition ease-in-out duration-150 ${
               !noDarkMode &&
-              'dark:text-dark-med-emphasis dark-group-hover:text-dark-med-emphasis'
+              'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis'
             }`}
             viewBox="0 0 20 20"
             fill="currentColor"

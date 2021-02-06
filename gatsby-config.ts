@@ -2,9 +2,10 @@ require('dotenv').config();
 
 export const siteMetadata = {
   title: `USACO Guide`,
-  description: `A free collection of curated, high-quality resources to take you from Bronze to Platinum and beyond.`,
+  description: `A free collection of curated, high-quality competitive programming resources to take you from USACO Bronze to USACO Platinum and beyond. Written by top USACO Finalists, these tutorials will guide you through your competitive programming journey.`,
   author: `@usacoguide`,
   siteUrl: `https://usaco.guide/`,
+  keywords: ['USACO', 'Competitive Programming', 'USACO Guide'],
 };
 
 export const plugins = [
@@ -62,13 +63,6 @@ export const plugins = [
           },
         },
         {
-          resolve: `gatsby-remark-katex`,
-          options: {
-            // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
-            strict: `ignore`,
-          },
-        },
-        {
           resolve: `gatsby-remark-images`,
           options: {
             maxWidth: 832,
@@ -80,7 +74,8 @@ export const plugins = [
         //   resolve: require.resolve('./src/mdx-plugins/table-of-contents.ts'),
         // },
       ],
-      remarkPlugins: [require(`remark-external-links`)],
+      remarkPlugins: [require(`remark-external-links`), require('remark-math')],
+      rehypePlugins: [require('./src/mdx-plugins/rehype-math.js')],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,
@@ -96,7 +91,9 @@ export const plugins = [
     resolve: `gatsby-plugin-postcss`,
     options: {
       postCssPlugins: [
+        require('postcss-import'),
         require(`tailwindcss`),
+        require('postcss-nested'),
         require(`autoprefixer`),
         ...(process.env.NODE_ENV === `production` ? [require(`cssnano`)] : []),
       ],
@@ -127,16 +124,18 @@ export const plugins = [
     },
   },
   {
-    resolve: 'gatsby-plugin-sentry',
+    resolve: '@sentry/gatsby',
     options: {
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
-      environment: process.env.NODE_ENV,
-      enabled: (() =>
-        ['production', 'stage'].indexOf(process.env.NODE_ENV) !== -1)(),
+      denyUrls: [/extensions\//i, /^chrome:\/\//i],
+      defaultIntegrations: false,
     },
   },
-  `gatsby-plugin-netlify-cache`,
+  {
+    resolve: `gatsby-plugin-create-client-paths`,
+    options: { prefixes: [`/class/*`] },
+  },
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: 'gatsby-plugin-algolia',
@@ -145,9 +144,18 @@ export const plugins = [
       apiKey: process.env.ALGOLIA_API_KEY,
       queries: require('./src/utils/algolia-queries'),
       enablePartialUpdates: true,
+      skipIndexing: !!!process.env.ALGOLIA_APP_ID,
     },
   },
   'gatsby-plugin-webpack-bundle-analyser-v2',
+  {
+    resolve: `gatsby-plugin-hotjar`,
+    options: {
+      includeInDevelopment: false, // optional parameter to include script in development
+      id: 2173658,
+      sv: 6,
+    },
+  },
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline
   // `gatsby-plugin-offline`,

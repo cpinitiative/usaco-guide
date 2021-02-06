@@ -1,3 +1,8 @@
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+// import { ProblemProgress } from '../models/problem';
+// import { ModuleProgress } from '../models/module';
+
 const getProgressInfo = (
   keys: string[],
   data: { [key: string]: string },
@@ -18,8 +23,31 @@ const getProgressInfo = (
     else if (inProgressValues.includes(data[key])) res.inProgress++;
     else if (skippedValues.includes(data[key])) res.skipped++;
     else if (notStartedValues.includes(data[key])) res.notStarted++;
+    // otherwise ignored
   }
   return res;
 };
 
-export default getProgressInfo;
+export function getModulesProgressInfo(moduleIDs: string[]) {
+  const { userProgressOnModules } = useContext(UserDataContext);
+  return getProgressInfo(
+    moduleIDs,
+    userProgressOnModules,
+    ['Complete'],
+    ['Reading', 'Practicing'],
+    ['Skipped'],
+    ['Not Started']
+  );
+}
+
+export function getProblemsProgressInfo(problemIDs: string[]) {
+  const { userProgressOnProblems } = useContext(UserDataContext);
+  return getProgressInfo(
+    problemIDs,
+    userProgressOnProblems,
+    ['Solved', 'Reviewing'],
+    ['Solving'],
+    ['Skipped'],
+    ['Not Attempted']
+  );
+}

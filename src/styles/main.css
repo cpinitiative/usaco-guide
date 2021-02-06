@@ -1,12 +1,12 @@
-/*! purgecss start ignore */
 @tailwind base;
 @tailwind components;
 
+/*! purgecss start ignore */
 html {
   background-color: white;
 }
 
-html.mode-dark {
+html.dark {
   @apply text-dark-high-emphasis bg-dark-surface min-h-screen;
 }
 
@@ -15,25 +15,29 @@ html.transitioning-color-scheme * {
   transition-duration: 0ms !important;
 }
 
+/* Scrollbar styles */
+/* Thanks https://joshwcomeau.com/! */
 @media (orientation: landscape) {
-  .mode-dark ::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
-    @apply bg-gray-500;
+    background-color: theme('colors.gray.200');
   }
-
-  .mode-dark ::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     border-radius: 3px;
     background-color: transparent;
   }
-
-  .mode-dark ::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    @apply bg-gray-700 border-2 border-gray-500;
+    background-color: theme('colors.gray.500');
+    border: 2px solid theme('colors.gray.200');
   }
-
-  .mode-dark ::-webkit-scrollbar-corner {
-    @apply bg-dark-surface;
+  .dark ::-webkit-scrollbar {
+    background-color: theme('colors.gray.800');
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    border: 2px solid theme('colors.gray.800');
+    background-color: theme('colors.gray.400');
   }
 }
 
@@ -63,7 +67,7 @@ html.transitioning-color-scheme * {
   @apply text-blue-600 font-semibold;
 }
 
-.mode-dark .markdown a {
+.dark .markdown a {
   color: #a9c5ea;
 }
 
@@ -84,7 +88,7 @@ html.transitioning-color-scheme * {
   @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
 }
 
-.mode-dark .markdown blockquote {
+.dark .markdown blockquote {
   @apply text-dark-high-emphasis border-dark-med-emphasis;
 }
 
@@ -166,7 +170,7 @@ html.transitioning-color-scheme * {
   @apply text-blue-600 font-semibold mr-2;
 }
 
-.mode-dark .markdown ol li:before {
+.dark .markdown ol li:before {
   @apply text-blue-300;
 }
 
@@ -206,8 +210,17 @@ html.transitioning-color-scheme * {
 .table-alternating-stripes tr:nth-child(even) {
   @apply bg-gray-50;
 }
-.mode-dark .table-alternating-stripes tr:nth-child(even) {
+.dark .table-alternating-stripes tr:nth-child(even) {
   background-color: #1c2538;
+}
+
+.dark-mde-container .editor-toolbar {
+  border-top-color: #4a5568;
+  border-left-color: #4a5568;
+  border-right-color: #4a5568;
+}
+.dark-mde-container .CodeMirror {
+  background-color: #edf2f7;
 }
 
 /* from https://www.lekoarts.de/en/blog/language-tabs-for-gatsbys-code-blocks */
@@ -258,5 +271,13 @@ html.transitioning-color-scheme * {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.form-input {
+  @apply border-gray-300 rounded-md focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50;
+}
+
+.dark .ais-Highlight-highlighted, .dark .ais-Snippet-highlighted {
+  @apply bg-orange-700;
 }
 /*! purgecss end ignore */

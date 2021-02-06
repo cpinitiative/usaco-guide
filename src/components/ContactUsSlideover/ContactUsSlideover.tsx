@@ -2,8 +2,10 @@ import * as React from 'react';
 import { ModuleInfo } from '../../models/module';
 import { SECTION_LABELS } from '../../../content/ordering';
 import SlideoverForm from './SlideoverForm';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useStickyState from '../../hooks/useStickyState';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -18,6 +20,7 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
       </label>
       <div className="relative rounded-md shadow-sm">
         <input
+          type="text"
           id={id}
           className={
             'form-input block w-full sm:text-sm sm:leading-5 transition ease-in-out duration-150 dark:bg-gray-900 dark:border-gray-700' +
@@ -61,14 +64,14 @@ export function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
-  activeModule = null,
 }: {
   isOpen: boolean;
   onClose: any;
   activeModule?: ModuleInfo;
 }) {
-  const [name, setName] = useStickyState('', 'contact_form_name');
-  const [email, setEmail] = useStickyState('', 'contact_form_email');
+  const userSettings = useContext(UserDataContext);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
@@ -86,13 +89,27 @@ export default function ContactUsSlideover({
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
 
+  const markdownContext = useContext(MarkdownLayoutContext);
+
   React.useEffect(() => {
-    if (activeModule)
+    const activeModule = markdownContext?.markdownLayoutInfo;
+    if (activeModule && activeModule instanceof ModuleInfo)
       setLocation(
         `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
       );
     else setLocation('');
-  }, [activeModule]);
+  }, [markdownContext?.markdownLayoutInfo]);
+
+  const { firebaseUser } = useContext(UserDataContext);
+  useEffect(() => {
+    if (!firebaseUser) return;
+    if (email === '') {
+      setEmail(firebaseUser.email);
+    }
+    if (name === '') {
+      setName(firebaseUser.displayName);
+    }
+  }, [firebaseUser]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -120,8 +137,15 @@ export default function ContactUsSlideover({
     data.append('email', email);
     data.append('location', location);
     data.append('url', window.location.href);
+    data.append('lang', userSettings.lang);
     data.append('topic', topic);
     data.append('message', message);
+    data.append(
+      '_subject',
+      `[Contact Us] ${topic || 'Other'} ${location ? `- ${location} ` : ''} - ${
+        email || 'Unknown Email'
+      }`
+    );
     setSubmitEnabled(false);
     try {
       await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
@@ -151,7 +175,7 @@ export default function ContactUsSlideover({
           <span className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
-              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition duration-150 ease-in-out"
+              className="py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md text-sm leading-5 font-medium text-gray-700 dark:text-dark-med-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition"
               onClick={onClose}
             >
               Cancel
@@ -161,7 +185,7 @@ export default function ContactUsSlideover({
             <button
               type="submit"
               disabled={!submitEnabled}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition duration-150 ease-in-out ${
+              className={`inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white transition ${
                 submitEnabled
                   ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dar-hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'
                   : 'bg-blue-400 dark:bg-blue-800 focus:outline-none cursor-default'
@@ -174,9 +198,32 @@ export default function ContactUsSlideover({
       }
       onSubmit={handleSubmit}
     >
+      <div className="bg-gray-50 dark:bg-gray-900 mb-4">
+        <div className="px-4 py-5 sm:p-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
+            Ask on the USACO Forum!
+          </h3>
+          <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500 dark:text-gray-400">
+            <p>
+              Get a faster response by reaching out on the USACO Forum instead.
+            </p>
+          </div>
+          <div className="mt-5">
+            <span className="inline-flex rounded-md shadow-sm">
+              <a
+                href="https://forum.usaco.guide/"
+                target="_blank"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+              >
+                Join Forum
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
       <div className="px-4 sm:px-6">
         {showSuccess && (
-          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4 mt-6">
+          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -216,7 +263,7 @@ export default function ContactUsSlideover({
           </div>
         )}
         {!showSuccess && (
-          <div className="space-y-6 pt-6 pb-5">
+          <div className="space-y-6 pb-5">
             <Field
               label="Name"
               id="contact_name"
@@ -260,7 +307,7 @@ export default function ContactUsSlideover({
                           id={`contact_topic_${idx}`}
                           type="radio"
                           name="type"
-                          className="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out dark:bg-gray-600"
+                          className="form-radio h-4 w-4 text-blue-600 transition dark:bg-gray-600"
                           checked={topic === t}
                           onChange={() => setTopic(t)}
                         />

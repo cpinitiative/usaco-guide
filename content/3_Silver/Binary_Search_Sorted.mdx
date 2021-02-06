@@ -27,7 +27,7 @@ export const problems = {
 		new Problem('Silver', 'Out of Sorts', '834', 'Very Hard', false, []),
 	], -->
 
-Suppose that we want to find an element in a sorted array of size $N$ in $O(\log N)$ time. We can do this with [**binary search**](https://en.wikipedia.org/wiki/Binary_search_algorithm); each iteration of the binary search cuts the search space in half, so the algorithm tests $O(\log N)$ values. This is efficient and much better than testing every element in an array.
+Suppose that we want to find an element in a sorted array of size $N$ in $\mathcal{O}(\log N)$ time. We can do this with [**binary search**](https://en.wikipedia.org/wiki/Binary_search_algorithm); each iteration of the binary search cuts the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values. This is efficient and much better than testing every element in an array.
 
 <Resources>
 	<Resource source="CSA" title="Binary Search" url="binary_search" starred>
@@ -35,6 +35,9 @@ Suppose that we want to find an element in a sorted array of size $N$ in $O(\log
 	</Resource>
 	<Resource source="CPH" title="3.3 - Binary Search" starred>
 		code, lower_bound + upper_bound, some applications
+	</Resource>
+	<Resource source="CF" title="EDU: Binary Search - Step 1" url="https://codeforces.com/edu/course/2/lesson/6/1/practice" starred> 
+		problems similar to those covered in this module
 	</Resource>
 	<Resource
 		source="KA@KhanAcademy"
@@ -44,6 +47,12 @@ Suppose that we want to find an element in a sorted array of size $N$ in $O(\log
 		plenty of diagrams, javascript implementation
 	</Resource>
 </Resources>
+
+<Warning>
+
+The code provided in the CSAcademy link under "Binary search on functions" is not correct! See [Binary Search on the Answer](/silver/binary-search-ans) for details.
+
+</Warning>
 
 <!-- 	<Resource source="GFG" title="Binary Search" url="binary-search"></Resource> -->
 
@@ -87,6 +96,27 @@ Suppose that we want to find an element in a sorted array of size $N$ in $O(\log
 
 </JavaSection>
 
+<PySection>
+
+<Resources>
+	<Resource
+		source="Python"
+		url="https://docs.python.org/3/library/bisect.html"
+		title="Array bisection algorithm"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/binary-search-bisect-in-python/"
+		title="Binary Search (bisect) in Python"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+</PySection>
+
 </LanguageSection>
 
 <!-- ## Coordinate Compression
@@ -101,13 +131,16 @@ A related topic is **coordinate compression**, which takes some points and reass
 
 As each of the points are in the range $0 \ldots 1,000,000,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
 
-Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use the `lower_bound` and `upper_bound` functions given above to count the number of cows in any range $[A,B]$ in $O(\log N)$ time.
+Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use binary search to count the number of cows in any range $[A,B]$ in $\mathcal{O}(\log N)$ time.
 
 <LanguageSection>
 
 <CPPSection>
 
+We can use the the builtin [`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound) functions.
+
 ```cpp
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -144,11 +177,14 @@ int main() {
 		cout << upper_bound(begin(v),end(v),B)-lower_bound(begin(v),end(v),A) << "\n";
 	}
 }
+
 ```
 
 </CPPSection>
 
 <JavaSection>
+
+We can use the builtin [`Arrays.binarySearch`](https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)) function.
 
 ```java
 
@@ -190,6 +226,31 @@ public class haybales{
 ```
 
 </JavaSection>
+
+<PySection>
+
+We can use the builtin [`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect) function.
+
+```py
+
+from bisect import bisect
+
+inp = open("haybales.in", 'r')
+out = open("haybales.out", 'w')
+
+N, Q = map(int, inp.readline().split())
+arr = sorted(list(map(int, inp.readline().split())))
+
+for i in range(Q):
+	a, b = map(int, inp.readline().split())
+	print(bisect(arr, b) - bisect(arr, a-1), file=out)
+
+inp.close()
+out.close()
+
+```
+
+</PySection>
 
 </LanguageSection>
 

@@ -5,14 +5,13 @@ import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
 export default function FocusProblem({ problem }: { problem: Problem }) {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  // A note about "relative z-10":
+  // transform must go in the isHovered condition
   // See https://github.com/thecodingwizard/usaco-guide/issues/198
-  // transform creates a new stacking context, so without "relative z-10" the tippy dropdown menu
-  // will be positioned under other elements despite its z-index.
+  // transform creates a new stacking context :(
   return (
     <div
-      className={`relative z-10 shadow block transition duration-150 ease-in-out transform dark:bg-gray-900 ${
-        isHovered && '-translate-y-1 shadow-lg'
+      className={`shadow block transition dark:bg-gray-900 ${
+        isHovered && 'transform -translate-y-1 shadow-lg'
       }`}
       id={'problem-' + problem.uniqueID}
     >
@@ -24,7 +23,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 block group transition duration-150 ease-in-out py-4"
+                className="flex-1 block group transition py-4"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >

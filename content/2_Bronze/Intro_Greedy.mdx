@@ -1,15 +1,13 @@
 ---
 id: intro-greedy
 title: Introduction to Greedy Algorithms
-author: Darren Yao
+author: Darren Yao, Melody Yu, Benjamin Qi
 description: 'Selecting the choice that seems to be the best at the moment at every step of your algorithm.'
 frequency: 2
 prerequisites:
   - ad-hoc
   - intro-ds
 ---
-
-
 
 export const problems = {
 	tutorial: [
@@ -31,7 +29,24 @@ export const problems = {
 			'Normal',
 			false,
 			[],
-			'Cells in the last row and column can be toggled uniquely. Toggle the appropriate ones and then recurse to the rectangle in the previous row/column, and solve the same way.'
+			'usaco-689'
+		),
+		new Problem(
+			'Bronze',
+			'Even More Odd Photos',
+			'1084',
+			'Normal',
+			false,
+			['Greedy'],
+			''
+		),
+		new Problem(
+			'Old Bronze',
+			'Censoring',
+			'526',
+			'Normal',
+			false,
+			[],
 		),
 		new Problem(
 			'Bronze',
@@ -40,7 +55,33 @@ export const problems = {
 			'Hard',
 			true,
 			[],
-			'If there are $K$ elements out of order, such that $a_i \neq s_i$ where $s$ is the sorted array, the answer is $K - 1$. This can be achieved by greedily sorting the elements similar to bubble sort.'
+			'usaco-785'
+		),
+		new Problem(
+			'Bronze',
+			'Social Distancing 1',
+			'1035',
+			'Hard',
+			false,
+			[],
+		),
+		new Problem(
+			'Silver', 
+			'Cowntagion', 
+			'1062', 
+			'Hard', 
+			false, 
+			['Greedy', 'Tree'], 
+			'usaco-1062'
+		),
+		new Problem(
+			'Silver',
+			'Spaced Out',
+			'1088',
+			'Hard',
+			false,
+			['Greedy'],
+			''
 		),
 		new Problem(
 			'Bronze',
@@ -48,7 +89,7 @@ export const problems = {
 			'989',
 			'Very Hard',
 			true,
-			[],
+			['Greedy'],
 			'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.'
 		),
 		new Problem('Silver', 'Rest Stops', '810', 'Very Hard', true, [], ''),
@@ -93,6 +134,59 @@ It is highly recommended you read it to gain a better understanding of the greed
 
 </Spoiler>
 
+<Spoiler title="Solution">
+
+<LanguageSection>
+
+<PySection>
+
+```py
+import sys
+sys.stdin = open("breedflip.in","r")
+sys.stdout = open("breedflip.out","w")
+
+N,a,b = input(),input(),input()
+s = [False]+[x != y for x,y in zip(a,b)] # difference list
+# now count occurrences of [False,True], as the first C++ solution does
+print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:]))) 
+```
+
+<!-- 
+```python
+fin, fout = open('breedflip.in'), open('breedflip.out', 'w')
+
+n = int(fin.readline())
+
+a = fin.readline()
+b = fin.readline()
+
+s = []
+for x in range(n):
+    if a[x] != b[x]:
+        s.append(1)
+    else:
+        s.append(0)
+
+def count(x,s):
+    count = 0
+    for f in range(len(s) - 1):
+        if s[f] == int(x[0]) and s[f+ 1] == int(x[1]):
+            count += 1
+
+    return count
+
+s = [0] + s + [0]
+fout.write(str((count('01', s) + count('10', s))//2))
+```
+ -->
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+
 Note that not all greedy problems necessarily require mathematical proofs of correctness. It is often sufficent to intuitively convince yourself your algorithm is correct.
 
 <Info title="Pro Tip">
@@ -106,9 +200,5 @@ Sometimes, if the algorithm is easy enough to implement, you don't even need to 
 ## Problems
 
 <Problems problems={problems.general} />
-
-<IncompleteSection>
-
-</IncompleteSection>
 
 <!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->

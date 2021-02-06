@@ -1,10 +1,10 @@
 ---
 id: PURS
 title: 'Point Update Range Sum'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Dong Liu
 prerequisites:
   - prefix-sums
-description: 'Introduces Segment Tree, Binary Indexed Tree, and Order Statistic Tree (C++ only).'
+description: 'Introduces Segment Tree, Binary Indexed Tree, and C++ Order Statistic Tree.'
 frequency: 3
 ---
 
@@ -14,7 +14,7 @@ export const problems = {
 	sample: [
 		new Problem(
 			'CSES',
-			'Range Sum Queries II',
+			'Dynamic Range Sum Queries',
 			'1648',
 			'Easy',
 			false,
@@ -25,7 +25,7 @@ export const problems = {
 	segSam: [
 		new Problem(
 			'CSES',
-			'Range Minimum Queries II',
+			'Dynamic Range Minimum Queries',
 			'1649',
 			'Easy',
 			false,
@@ -41,39 +41,12 @@ export const problems = {
 	practice: [
 		new Problem(
 			'CSES',
-			'List Removals',
-			'1749',
-			'Easy',
-			false,
-			undefined,
-			'easy with indexed set'
-		),
-		new Problem(
-			'CSES',
-			'Salary Queries',
-			'1144',
-			'Easy',
-			false,
-			undefined,
-			'easy with indexed set'
-		),
-		new Problem(
-			'CSES',
 			'Range Update Queries',
 			'1651',
 			'Easy',
-			false,
-			undefined,
-			'not harder than point update range query'
-		),
-		new Problem(
-			'CSES',
-			'Increasing Subsequence II',
-			'1748',
-			'Easy',
-			false,
-			undefined,
-			''
+			true,
+			['PURS'],
+			'cses-1651'
 		),
 		new Problem(
 			'Kattis',
@@ -81,47 +54,62 @@ export const problems = {
 			'megainversions',
 			'Easy',
 			false,
-			undefined,
-			'also just inversion counting'
+			['PURS', 'Inversions'],
+			'kattis-megainversions'
+		),
+		new Problem(
+			'CSES',
+			'List Removals',
+			'1749',
+			'Easy',
+			false,
+			['PURS'],
+			'cses-1749'
+		),
+		new Problem(
+			'CSES',
+			'Salary Queries',
+			'1144',
+			'Easy',
+			false,
+			['PURS', 'Coordinate Compress'],
+			'cses-1144'
+		),
+		new Problem(
+			'CSES',
+			'Increasing Subsequence II',
+			'1748',
+			'Easy',
+			false,
+			['PURS', 'Coordinate Compress'],
+			'cses-1748'
 		),
 		new Problem(
 			'CSES',
 			'Distinct Values Queries',
 			'1734',
 			'Normal',
-			false,
-			undefined,
-			'Do queries in increasing order of $a$.'
+			true,
+			['PURS', 'Offline'],
+			'cses-1734'
 		),
 	],
 	usaco: [
-		new Problem('Gold', 'Haircut', '1041', 'Easy', false, undefined, ''),
-		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, undefined, ''),
-		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, undefined, ''),
-		new Problem(
-			'Gold',
-			'Sleepy Cow Sort',
+		new Problem('Gold', 'Haircut', '1041', 'Easy', true, ['PURS', 'Inversions'], 'usaco-1041'),
+		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, ['PURS', 'Inversions'], 'usaco-693'),
+		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, ['PURS', 'Inversions'], ''),
+		new Problem('Gold', 'Sleepy Cow Sort',
 			'898',
 			'Easy',
 			false,
-			undefined,
-			'All USACO problems (aside from some special exceptions) have only one possible output.'
+			['PURS'],
+			''
 		),
-		new Problem('Plat', 'Mincross', '720', 'Easy', false, undefined, ''),
-		new Problem(
-			'Silver',
-			'Out of Sorts',
-			'834',
-			'Normal',
-			false,
-			undefined,
-			"aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."
-		),
-		new Problem('Gold', 'Out of Sorts', '837', 'Hard', false, undefined, ''),
-		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, [], ''),
-		new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''),
+		new Problem('Plat', 'Mincross', '720', 'Easy', false, ['PURS', 'Inversions'], ''),
+		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, ['PURS'], ''),
 	],
 };
+
 
 <!-- 	new Problem(
 		'YS',
@@ -133,11 +121,23 @@ export const problems = {
 		''
 	), -->
 
+<!-- 	new Problem(
+		'Silver',
+		'Out of Sorts',
+		'834',
+		'Normal',
+		false,
+		undefined,
+		"aka Sorting Steps: https://csacademy.com/contest/round-42/task/sorting-steps/ -  Of course, this doesn't require anything other than sorting but fast range sum queries may make this easier."
+	),
+	new Problem('Gold', 'Out of Sorts', '837', 'Hard', false, undefined, ''),
+	new Problem('Plat', 'Out of Sorts', '840', 'Hard', false, [], ''), -->
+
 <FocusProblem problem={problems.sample[0]} />
 
 <br />
 
-Most gold range query problems require you to support following tasks in $O(\log N)$ time each on an array of size $N$:
+Most gold range query problems require you to support following tasks in $\mathcal{O}(\log N)$ time each on an array of size $N$:
 
 - Update the element at a single position (point).
 - Query the sum of some consecutive subarray.
@@ -148,7 +148,8 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 <FocusProblem problem={problems.segSam[0]} />
 
-A **segment tree** allows you to do point update and range query in $O(\log N)$ time each for **any** associative operation, not just summation.
+A **segment tree** allows you to do point update and range query in $\mathcal{O}(\log N)$ time each for **any** associative operation, not just summation.
+
 
 ### Resources
 
@@ -159,6 +160,7 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 </Info>
 
 <Resources>
+	<Resource source="CF" title="EDU: Segment Tree Pt 1 Steps 1, 3, 4" url="https://codeforces.com/edu/course/2/lesson/4/1" starred>basic operations, inversion counting</Resource>
 	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
 		Interactive updates.
 	</Resource>
@@ -173,30 +175,13 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 		title="Simplest form of a Segment Tree"
 		url="data_structures/segment_tree.html"
 	>
-		Advanced versions will be covered in Plat.
+		"Advanced versions" are covered in Platinum.
 	</Resource>
 </Resources>
 
 <!-- <Resource source="PAPS" title="11.2.3 - Segment Trees"></Resource> -->
 
-### Implementations
-
-<Resources>
-	<Resource
-		source="CF"
-		title="AICash - Efficient and easy segment trees"
-		url="18051"
-	>
-		simple implementation
-	</Resource>
-	<Resource
-		source="Benq"
-		title="SegTree"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h"
-	>
-		based off above
-	</Resource>
-</Resources>
+<!-- ### Implementations
 
 <LanguageSection>
 
@@ -268,6 +253,123 @@ public class segtree {
 
 </JavaSection>
 
+</LanguageSection> -->
+
+### Solution - Dynamic Range Minimum Queries
+
+<Resources>
+	<Resource
+		source="CF"
+		title="AICash - Efficient and easy segment trees"
+		url="18051"
+	>
+		simple implementation
+	</Resource>
+	<Resource
+		source="Benq"
+		title="SegTree"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/SegTree%20(9.2).h"
+	>
+		based off above
+	</Resource>
+</Resources>
+
+Note that `st.init(n+1)` allows us to update and query indices in the range `[0,n+1)=[0,n]`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 1e18; T comb(T a, T b) { return min(a,b); }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// min on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<int> st;
+
+int main() {
+	int n, q; cin >> n >> q;
+	st.init(n+1);
+	for(int i=1; i<=n; i++) {
+		int a; cin >> a;
+		st.upd(i, a);
+	}
+	for(int i=1; i<=q; i++) {
+		int t, a, b; cin >> t >> a >> b;
+		if (t==1) st.upd(a,b);
+		else cout << st.query(a,b) <<"\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Solution - Dynamic Range Sum Queries
+
+Compared to the previous problem, all we need to change are `T`, `ID`, and `comb`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class T> struct Seg { // comb(ID,b) = b
+	const T ID = 0; T comb(T a, T b) { return a+b; }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg.assign(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T val) { // set val at position p
+		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
+	T query(int l, int r) {	// sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
+};
+
+Seg<long long> st;
+
+int main() {
+	int n, q; cin >> n >> q;
+	st.init(n+1);
+	for(int i=1; i<=n; i++) {
+		int a; cin >> a;
+		st.upd(i, a);
+	}
+	for(int i=1; i<=q; i++) {
+		int t, a, b; cin >> t >> a >> b;
+		if (t==1) st.upd(a,b);
+		else cout << st.query(a,b) <<"\n";
+	}
+}
+```
+
+</CPPSection>
+
 </LanguageSection>
 
 ## Binary Indexed Tree
@@ -297,11 +399,99 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 	></Resource>
 </Resources>
 
+<!-- 
+
 ### Implementations
 
 <LanguageSection>
 
 <CPPSection>
+
+
+</CPPSection>
+
+<JavaSection>
+
+<IncompleteSection>
+
+how to run this code ...
+
+</IncompleteSection>
+
+```java
+public static long[] fwt;
+public static long query(int a, int b) {
+	return sum(b) - sum(a - 1);
+}
+public static long sum(int i) {
+	long sum = 0;
+	while (i > 0) {
+		sum += fwt[i];
+		i -= (i & -i); // least significant bit
+	}
+	return sum;
+}
+public static void update(int i, long v) {
+	while (i < fwt.length) {
+		fwt[i] += v;
+		i += (i & -i);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection> -->
+
+### Solution - Range Sum Queries II
+
+<LanguageSection>
+
+<CPPSection>
+
+#### Solution 1
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const int MX = 2e5+5;
+
+int n, q;
+vector<ll> bit(MX), x(MX);
+
+void upd(int i, ll v) {
+	for (; i<=n; i+=i&(-i)) bit[i]+=v;
+}
+
+ll qry(int i) {
+	ll sum = 0;
+	for(; i>0; i-=i&(-i)) sum += bit[i];
+	return sum;
+}
+
+int main() {
+	cin >> n >> q;
+	for(int i=1; i<=n; i++) {
+		cin >> x[i];
+		upd(i, x[i]);
+	}
+	for(int i=1; i<=q; i++) {
+		int t,a,b; cin >> t >> a >> b;
+		if (t==1) {
+			upd(a, -x[a]); // remove its current value
+			x[a]=b; upd(a, x[a]); // add its new value
+		} else {
+			cout << qry(b)-qry(a-1) << "\n";
+		}
+	}
+}
+```
+
+#### Solution 2
+
+Writing a BIT this way has the advantage of generalizing to multiple dimensions.
 
 <Resources>
 	<Resource
@@ -319,32 +509,49 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 	</Resource>
 </Resources>
 
-</CPPSection>
+```cpp
+/**
+ * Description: range sum queries and point updates for $D$ dimensions
+ * Source: https://codeforces.com/blog/entry/64914
+ * Verification: SPOJ matsum
+ * Usage: \texttt{BIT<int,10,10>} gives 2D BIT
+ * Time: O((\log N)^D)
+ */
 
-<JavaSection>
+template <class T, int ...Ns> struct BIT {
+	T val = 0; void upd(T v) { val += v; }
+	T query() { return val; }
+};
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+	BIT<T,Ns...> bit[N+1];
+	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
+		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
+	template<typename... Args> T sum(int r, Args... args) {
+		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
+		return res; }
+	template<typename... Args> T query(int l, int r, Args... 
+		args) { return sum(r,args...)-sum(l-1,args...); }
+}; 
 
-```java
-public static long[] fwt;
-public static long query(int a, int b) {
-	return sum(b) - sum(a - 1);
-}
-public static long sum(int i) {
-	long sum = 0;
-	while (i > 0) {
-		sum += fwt[i];
-		i -= (i & -i); //least important bit
+BIT<ll,MX> B;
+int N,Q;
+
+int main() {
+	setIO(); cin >> N >> Q;
+	vi x(N+1);
+	FOR(i,1,N+1) {
+		re(x[i]);
+		B.upd(i,x[i]);
 	}
-	return sum;
-}
-public static void update(int i, long v) {
-	while (i > 0 && i < fwt.length) {
-		fwt[i] += v;
-		i += (i & -i);
+	F0R(i,Q) {
+		int t,a,b; cin >> t >> a >> b;
+		if (t == 1) B.upd(a,b-x[a]), x[a] = b;
+		else cout << B.query(a,b) << "\n";
 	}
 }
 ```
 
-</JavaSection>
+</CPPSection>
 
 </LanguageSection>
 
@@ -378,7 +585,7 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
-To use indexed set locally, you need to install GCC as mentioned in [Running Code](/general/running-code).
+To use indexed set locally, you need to [install GCC](/general/cpp-command#installing-gcc).
 
 ### With a BIT
 
@@ -436,6 +643,8 @@ int main() {
 }
 ```
 
+Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
+
 </CPPSection>
 
 <JavaSection>
@@ -486,11 +695,15 @@ public class Main {
 
 </LanguageSection>
 
-Note that if it were not the case that all elements of the input array were distinct, then this code would be incorrect since `Tree<int>` would remove duplicates. Instead, we would use an indexed set of pairs (`Tree<pair<int,int>>`), where the first element of each pair would denote the value while the second would denote the position of the value in the array.
-
 </Spoiler>
 
 ## Range Sum Problems
+
+<Info title="Coordinate Compression">
+
+If the coordinates are large (say, up to $10^9$), then you should apply [coordinate compression](https://www.quora.com/What-is-coordinate-compression-and-what-is-it-used-for) before using a BIT or segment tree (though [sparse segment trees](/plat/sparse-seg) do exist).
+
+</Info>
 
 ### General
 
@@ -498,6 +711,8 @@ Note that if it were not the case that all elements of the input array were dist
 
 ### USACO
 
-Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting.
+<!-- Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting. -->
 
 <Problems problems={problems.usaco} />
+
+A hint regarding Sleepy Cow Sort: All USACO problems (aside from some special exceptions) have only one possible output.

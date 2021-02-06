@@ -27,13 +27,13 @@ export default function ProblemsPage(props: PageProps) {
     <Layout>
       <SEO title="All Problems" />
 
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <TopNavigationBar />
 
         <InstantSearch searchClient={searchClient} indexName={indexName}>
-          <div className="py-16 bg-blue-600 px-4">
+          <div className="py-16 bg-blue-600 dark:bg-blue-900 px-4">
             <div className="max-w-3xl mx-auto mb-6">
-              <h1 className="text-center text-3xl sm:text-5xl font-bold text-white mb-6">
+              <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
                 Problems (Beta)
               </h1>
               <CustomSearchBox />
