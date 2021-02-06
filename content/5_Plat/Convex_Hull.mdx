@@ -1,7 +1,7 @@
 ---
 id: convex-hull
 title: 'Convex Hull'
-author: Benjamin Qi
+author: Benjamin Qi, Neo Wang
 description: Smallest convex polygon containing a set of points on a grid.
 prerequisites:
   - geo-pri
@@ -88,7 +88,7 @@ export const problems = {
 ## Introduction
 
 The **Convex Hull** is the subset of points that forms the smallest convex polygon which encloses all points in the set.
-To visualize this, imagine that each point is a pole. Then, imagine what happens if you were to wrap a rope around the outside of all the poles, and then pull infinitely hard, such that the connections between any two points that lie on the edge of the rope are lines. The set of points that touch the rope (and are not colinear) is the convex hull.
+To visualize this, imagine that each point is a pole. Then, imagine what happens if you were to wrap a rope around the outside of all the poles, and then pull infinitely hard, such that the connections between any two points that lie on the edge of the rope are lines. The set of points that touch the rope is the convex hull.
 
 <Spoiler title="Convex Hull Visualization">
 
@@ -101,25 +101,33 @@ To visualize this, imagine that each point is a pole. Then, imagine what happens
 ## With Graham Scan
 
 <Resources>
-	<Resource source="cp-algo" title="Graham Scan" url="https://cp-algorithms.com/geometry/grahams-scan-convex-hull.html" starred />
-	<Resource source="Benq" title="Graham Scan Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h" />
+	<Resource source="Wikipedia" title="Graham Scan" url="https://en.wikipedia.org/wiki/Graham_scan" />
 	<Resource source="VisuAlgo" title="Graham Scan Visualization" url="https://visualgo.net/en/convexhull" />
 	<Resource source="UCSD" title="Original Graham Scan Paper" url="http://www.math.ucsd.edu/~ronspubs/72_10_convex_hull.pdf" />
 </Resources>
 
 <Youtube id="9rQMLpQn5xQ"/>
 
-## Tutorial
 
-The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around an abitrary pivot $P_0$. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
+### Solution
 
-To start the creation of the convex hull, we choose 3 points. The pivot, the first, and the last point based on our initial sorting.
+<LanguageSection>
+
+<CPPSection>
+
+Using [Benq's implementation](https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h)
+
+The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
+
+To start the creation of the convex hull, we choose 3 points. The pivot (first point), the second point, and the last point based on our initial sorting.
 
 Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. In doing so, we only have to keep track of the topmost $2$ points, and the current point we are considering to add to the hull.
 
-There are two only 2 cases for our 3 points: either the turn from $v[i-2] \rightarrow v[i-1] \rightarrow v[i]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of polygons cannot be convex, and thus we must pop the stack and include the candidate point. Otherwise, we can simply add the candidate point to our stack.
+In our implementation, our stack is $\texttt{v}$.
 
-To understand why, consider those three points: the top two points in the stack, and our candidate point. Since our turn is counterclockwise, we are looking for such points that make a counterclockwise turn.
+There are two only 2 cases for our 3 points: either the turn from $\texttt{v}[i-1] \rightarrow \texttt{v}[i] \rightarrow \textrm{candidate point}$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the topmost point and then proceed to check convexity of the next candidate point. Otherwise, we include it in our hull.
+
+To understand why, consider those three points: the top two points in the stack, and our candidate point. Since our turn is counterclockwise, we are looking for such points that make a counterclockwise turn. It is easy to see that when a clockwise turn it is made, the polygon can no longer be convex.
 
 <Spoiler title="Illustration">
 
@@ -134,7 +142,7 @@ To understand why, consider those three points: the top two points in the stack,
 
 Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0)$
 
-Using the steps from our Graham Scan.
+Using the steps from our Graham Scan:
 
 1. Sorting the points by counterclockwise angle: Our bottommost point is $(2,0)$, so we then sort all the points by their counterclockwise angle. Our resulting sorted points are $(2,0),(5,3),(3,2),(2,3),(1,2)$.
 
@@ -155,8 +163,6 @@ Then, we check whether the turn between $v[2], v[3], v[4]$ is counterclockwise, 
 Our stack now is then $(1,2),(2,0),(5,3),(2,3)$, which is the convex hull of all our points.
 
 </Spoiler>
-
-### Solution
 
 ```cpp
 #include <bits/stdc++.h>
@@ -234,19 +240,17 @@ using vi = vector<int>;
 using vP = vector<P>;
 
 vi hullInd(const vP& v) {
-	int ind = min_element(all(v))-begin(v);
-	vi cand(sz(v)),C; iota(all(cand),0);
-	sort(all(cand),[&](int a, int b) { 
+	int ind = int(min_element(all(v))-begin(v));
+	vi cand, C{ind}; F0R(i,sz(v)) if (v[i] != v[ind]) cand.pb(i);
+	sort(all(cand),[&](int a, int b) { // sort by angle, tiebreak by distance
 		P x = v[a]-v[ind], y = v[b]-v[ind]; T t = cross(x,y);
-		return t != 0 ? t > 0 : norm(x) < norm(y);
-	});
-	#define bad(x) cross(v[C[sz(C)-2]],v[C.bk],v[x]) <= 0
-	trav(t,cand) {
-		while (sz(C) > 1 && bad(t)) C.pop_back();
-		C.pb(t); } // if hull has > 1 point
-	if (v[ind]!=v[C.bk])while(sz(C)>2&&bad(ind))C.pop_back();
+		return t != 0 ? t > 0 : norm(x) < norm(y); }); 
+	trav(c,cand) {
+		while (sz(C) > 1 && cross(v[end(C)[-2]],v[C.bk],v[c]) <= 0) C.pop_back();
+		C.pb(c); }
 	return C;
 }
+
 
 int main()
 {
@@ -256,18 +260,16 @@ int main()
     for(;;) {
         int n; cin >> n;
         if(!n) break;
-        vP pts;
-        set<P> pt; // points are not necessarily distinct so we have to keep track of the unique ones
+        vP pts(n);
         
         F0R(i, n) {
             long long a, b;
             cin >> a >> b;
-            pt.insert(P(a, b));
+            pts[i] = P(a, b);
         }
 
-        trav(a, pt) pts.pb(a);
-
         vi ret = hullInd(pts);
+        
         cout << sz(ret) << '\n';
         trav(a, ret) {
             cout << pts[a].first << " " << pts[a].second << '\n';
@@ -275,6 +277,10 @@ int main()
     }
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## With Monotone Chain
 
