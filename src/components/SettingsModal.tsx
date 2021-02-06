@@ -31,8 +31,6 @@ export default function SettingsModal({ isOpen, onClose }) {
 
   const [file, setFile] = useState('');
   const [resetInput, setResetInput] = useState(0);
-  // const [wut, setWut] = useState('');
-  // console.log('???', file === '');
 
   // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
   const handleUpload = e => {
@@ -205,27 +203,29 @@ export default function SettingsModal({ isOpen, onClose }) {
                     Export User Data
                   </button>
 
-                  {/* https://stackoverflow.com/questions/38731271/clear-an-input-field-with-reactjs */}
-                  {/* https://stackoverflow.com/questions/42192346/how-to-reset-reactjs-file-input */}
-                  <input
-                    className="inline-flex items-center px-4 py-2 text-sm leading-5 font-medium text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-                    type="file"
-                    accept="application/json"
-                    onChange={handleUpload}
-                    key={resetInput}
-                  />
+                  <div className="h-3" />
 
                   <button
                     className={`${
                       file !== ''
-                        ? 'text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
-                        : 'text-gray-300 cursor-default'
-                    } inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md bg-white`}
+                        ? 'text-gray-700 dark:text-gray-200 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
+                        : 'text-gray-300 dark:text-gray-600 cursor-default'
+                    } inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md bg-white dark:bg-gray-800`}
                     disabled={!file}
                     onClick={handleImportUserData}
                   >
                     Import User Data
                   </button>
+
+                  {/* https://stackoverflow.com/questions/38731271/clear-an-input-field-with-reactjs */}
+                  {/* https://stackoverflow.com/questions/42192346/how-to-reset-reactjs-file-input */}
+                  <input
+                    className="py-2 text-sm"
+                    type="file"
+                    accept="application/json"
+                    onChange={handleUpload}
+                    key={resetInput}
+                  />
                 </div>
               </div>
             </div>
