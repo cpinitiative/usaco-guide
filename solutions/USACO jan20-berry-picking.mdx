@@ -54,7 +54,7 @@ void solve() {
 	int mx = 0;
 	for(int i = 1; i <= maxD; i++) {
 		int amount = 0;
-		//for loop calculates how many groups of "i" berries can be put into a basket
+		//For loop calculates how many groups of "i" berries can be put into a basket
 		for(int j = 0; j < N; j++) {
 			amount += A[j] / i;
 		}
@@ -63,13 +63,13 @@ void solve() {
 			continue;
 		}
 		if(amount >= K) {
-			//If there are enough "i" sections for both Bessie and Ellie, then Bessie can collect (K / 2) * i berries
+			//If there is greater than or equal to "i" sections for both Bessie and Ellie, then Bessie can collect (K / 2) * i berries
 			mx = max(mx, (K / 2) * i);
 			continue;
 		}
 		MOD = i;
 		sort(all(A), cmp);	
-		//Gives all of the rest over mod numbers to Bessie. 
+		//Gives the maximum amount of leftovers to Bessie
 		int cur = (amount - K / 2) * i;
 		for(int j = 0; j < N && j + amount < K; j++) {
 			cur += A[j] % i;
