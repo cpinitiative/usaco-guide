@@ -361,13 +361,11 @@ export function ProblemComponent(props: ProblemComponentProps) {
         onClick={e => {
           e.preventDefault();
           setCopied(true);
-          setTimeout(() => {
-            navigator.clipboard.writeText(
-              window.location.href.split(/[?#]/)[0] +
-                '#problem-' +
-                problem.uniqueID
-            );
-          }, 0);
+          navigator.clipboard.writeText(
+            window.location.href.split(/[?#]/)[0] +
+              '#problem-' +
+              problem.uniqueID
+          );
         }}
         className="h-5 w-5 inline-block"
       >
