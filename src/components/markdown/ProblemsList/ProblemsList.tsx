@@ -348,45 +348,42 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
   const [copied, setCopied] = React.useState(false);
 
-  // const [visible, setVisible] = React.useState(true);
-  // const show = () => setVisible(true);
-  // const hide = () => setVisible(false);
-  //
-  console.log('???', window.location, window.location.href);
   const urlButton = (
-    // visible={visible}
     <Tippy
-      content={copied ? 'Copied!' : 'Copy problem URL to clipboard?'}
+      content={copied ? 'Copied!' : 'Copy problem URL to clipboard'}
       hideOnClick={false}
       onUntrigger={() => {
         return setTimeout(() => setCopied(false), 200);
       }}
     >
-      <button
-        onClick={() => {
+      <a
+        href={`#problem-${problem.uniqueID}`}
+        onClick={e => {
+          e.preventDefault();
           setCopied(true);
-          // console.log('START', window.location.href);
           setTimeout(() => {
-            // console.log('END', window.location.href);
-            navigator.clipboard.writeText(window.location.href);
+            console.log(window.location.href, problem.uniqueID);
+            navigator.clipboard.writeText(
+              window.location.href.split(/[?#]/)[0] +
+                '#problem-' +
+                problem.uniqueID
+            );
           }, 0);
         }}
+        className="h-5 w-5 inline-block"
       >
-        <a href={`#problem-${problem.uniqueID}`}>
-          <svg
-            fill="none"
-            height="20"
-            width="20"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-        </a>
-      </button>
-      {/*  onClick={visible ? hide : show} */}
+        <svg
+          fill="none"
+          height="20"
+          width="20"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      </a>
     </Tippy>
   );
 
