@@ -362,7 +362,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
           e.preventDefault();
           setCopied(true);
           setTimeout(() => {
-            console.log(window.location.href, problem.uniqueID);
             navigator.clipboard.writeText(
               window.location.href.split(/[?#]/)[0] +
                 '#problem-' +
