@@ -27,7 +27,7 @@ const MagicScriptTag = () => {
         dark = mql.matches;
       }
     }
-    if (dark) document.documentElement.classList.add('mode-dark');
+    if (dark) document.documentElement.classList.add('dark');
   })()
   `;
   // eslint-disable-next-line react/no-danger

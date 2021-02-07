@@ -75,7 +75,7 @@ export default function SubmitCodeButton({ problem }: { problem: Problem }) {
                       <div className="rounded-md shadow-sm mt-3">
                         <textarea
                           rows={10}
-                          className="form-textarea block w-full transition duration-150 ease-in-out text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+                          className="form-textarea block w-full transition text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
                           value={code}
                           onChange={e => setCode(e.target.value)}
                         />

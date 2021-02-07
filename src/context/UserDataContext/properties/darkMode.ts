@@ -33,9 +33,9 @@ export default class DarkMode extends SimpleUserDataPropertyAPI {
     if (this._value === val) return;
     this._value = val;
     if (this.value) {
-      document.documentElement.classList.add('mode-dark');
+      document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('mode-dark');
+      document.documentElement.classList.remove('dark');
     }
     document.documentElement.classList.add('transitioning-color-scheme');
     setTimeout(

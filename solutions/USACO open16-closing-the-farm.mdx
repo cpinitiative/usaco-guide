@@ -1,16 +1,17 @@
 ---
 id: usaco-644
-source: USACO Silver 2016 US Open
+source: USACO Silver 2016 Open
 title: Closing the Farm
-author: Jesse Choe
+author: Jesse Choe, Maggie Liu
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_closing_silver_open16.html)
 
-<LanguageSection>
-<CPPSection>
-
 In this problem, we are asked to determine if all remaining barns are connected as the barns close one at a time. To check this, we can run a depth-first search (DFS) starting from the barn that will close last. To simulate the closure of each barn, we can store a boolean array and set each barn in the iteration to be "closed". Then, we can run the DFS and check how many nodes have been visited. If all the unclosed nodes have been visited, then we print "YES"; otherwise, we print "NO".
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -91,5 +92,76 @@ int main(){
     }
 }
 ```
+
+## Alternate Implementation
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <vector>
+using namespace std;
+void dfs(int barn);
+
+vector<bool> visited(3000, false);
+vector<bool> open(3000, true);
+vector<int> graph[3000];
+int main() 
+{
+    freopen("closing.in", "r", stdin);
+    freopen("closing.out", "w", stdout);
+    int n, m;
+    cin >> n >> m;
+    int a, b;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> a >> b;
+        graph[a - 1].push_back(b - 1);
+        graph[b - 1].push_back(a - 1);
+    }
+    bool connected = true;
+    int barn;
+    for (int i = 0; i < n; i++)
+    {
+        visited.assign(n, false);
+        //find first open barn and run dfs
+        for (int i = 0; i < n; i++)
+        {
+            if (open[i])
+            {
+                dfs(i);
+                break;
+            }
+        }
+        connected = true;
+        //if any barn is open but not visited, the farm is not connected
+        for (int i = 0; i < n; i++)
+        {
+            if (!visited[i] && open[i])
+            {
+                connected = false;
+            }
+        }
+        cout << (connected ? "YES" : "NO") << endl;
+        cin >> barn;
+        open[barn - 1] = false;
+    }
+    return 0;
+}
+
+void dfs(int barn)
+{
+    if (visited[barn] || !open[barn])
+    {
+        return;
+    }
+    visited[barn] = true;
+    for (int i = 0; i < graph[barn].size(); i++)
+    {
+        dfs(graph[barn][i]);
+    }
+}
+```
+
 </CPPSection>
+
 </LanguageSection>

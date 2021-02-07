@@ -18,7 +18,7 @@ const TableOfContentsSidebar = ({
   const activeHash = useActiveHash(hashes, '10px 0px 0px 0px');
 
   const getLinkStyles = heading =>
-    'block mb-1 text-sm transition duration-150 ease-in-out ' +
+    'block mb-1 text-sm transition ' +
     (activeHash === heading.slug
       ? 'underline text-blue-600 dark:text-dark-high-emphasis'
       : 'text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis');
@@ -31,12 +31,12 @@ const TableOfContentsSidebar = ({
       </h2>
       {links}
 
-      <LinksToEdit className="group block mt-8 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
+      <LinksToEdit className="group block mt-8 transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis" />
 
       {/* <OutboundLink
         href="https://www.reddit.com/r/usaco/"
         target="_blank"
-        className="group block mt-2 transition duration-150 ease-in-out text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
+        className="group block mt-2 transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
       >
         Need help? Ask on Reddit!
         <svg

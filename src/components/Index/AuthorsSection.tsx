@@ -114,7 +114,7 @@ const AuthorCard = ({
                 <a
                   key={author.name + sm}
                   href={socialMedia[sm].link(author[sm])}
-                  className="text-blue-300 hover:text-blue-200 dark:text-gray-400 dark-hover:text-gray-300 transition duration-100"
+                  className="text-blue-300 hover:text-blue-200 dark:text-gray-400 dark:hover:text-gray-300 transition duration-100"
                 >
                   <span className="sr-only">{sm}</span>
                   {socialMedia[sm].icon}

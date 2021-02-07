@@ -1,5 +1,6 @@
 import { SECTIONS } from './content/ordering';
 
+const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
 const Problem = require('./src/models/problem').Problem; // needed to eval export
@@ -185,7 +186,7 @@ exports.createResolvers = ({ createResolvers }) => {
             if (node.type === 'heading') {
               let val = {
                 depth: node.depth,
-                value: mdastToString(node),
+                value: mdastToStringWithKatex(node),
                 slug: slugger.slug(mdastToString(node)),
               };
               if (cppCt === 0 && javaCt === 0 && pyCt === 0) {

@@ -42,8 +42,6 @@ export default function ModuleHeaders({
 
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
-  // if (markdownData instanceof ModuleInfo)
-  //   console.log("AUTHOR TIME",markdownData.gitAuthorTime)
   return (
     <>
       {markdownData instanceof ModuleInfo && markdownData.frequency !== null && (
