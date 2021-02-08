@@ -123,6 +123,8 @@ To start the creation of the convex hull, we choose 2 points. The pivot (first p
 
 Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. As a result, we only have to check the candidate point against the topmost 2 points.
 
+In order for the hull to be convex, every three consecutive points of the stack must contain a counterclockwise turn.
+
 Denote our stack as $\texttt{C}$, the top element of $\texttt{C}$ as $\texttt{C}[i]$ and $\texttt{cand}[i]$ as the $i$-th sorted point.
 
 There are 2 cases for our 3 points: either the turn from $\texttt{C}[i-1] \rightarrow \texttt{C}[i] \rightarrow \texttt{cand}[i]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the top element off $\texttt{C}$ and proceed to check convexity of the next candidate point. Otherwise the turn is counterclockwise, and thus we include it in our hull.
@@ -203,41 +205,52 @@ P conj(const P& p) { return P(p.f,-p.s); } // conjugate vectors
 
 // basic operations
 P operator+(const P& l, const P& r) { 
-    return P(l.f+r.f,l.s+r.s); }
+    return P(l.f+r.f,l.s+r.s); 
+}
 P operator-(const P& l, const P& r) { 
-    return P(l.f-r.f,l.s-r.s); }
+    return P(l.f-r.f,l.s-r.s); 
+}
 P operator*(const P& l, const T& r) { 
-    return P(l.f*r,l.s*r); }
-P operator*(const T& l, const P& r) { return r*l; }
+    return P(l.f*r,l.s*r); 
+}
+P operator*(const T& l, const P& r) { 
+    return r*l; 
+}
 P operator/(const P& l, const T& r) { 
-    return P(l.f/r,l.s/r); }
+    return P(l.f/r,l.s/r);
+}
 P operator*(const P& l, const P& r) { 
-    return P(l.f*r.f-l.s*r.s,l.s*r.f+l.f*r.s); }
+    return P(l.f*r.f-l.s*r.s,l.s*r.f+l.f*r.s); 
+}
 P operator/(const P& l, const P& r) { 
-    return l*conj(r)/norm(r); }
+    return l*conj(r)/norm(r); 
+}
 
 P unit(const P& p) { return p/abs(p); } // unit vector
 T dot(const P& a, const P& b) { return a.f*b.f+a.s*b.s; } // dot product
 T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; } // cross product
 T cross(const P& p, const P& a, const P& b) { // cross product
-    return cross(a-p,b-p); }
+    return cross(a-p,b-p); 
+}
 
 using vi = vector<int>;
 using vP = vector<P>;
 
 vi hullInd(const vP& v) {
 	int ind = int(min_element(all(v))-begin(v));
-	vi cand, C{ind}; 
+	vi cand, C{ind};
     F0R(i,sz(v)) if (v[i] != v[ind]) cand.pb(i);
 
 	sort(all(cand),[&](int a, int b) { // sort by angle, tiebreak by distance
-		P x = v[a]-v[ind], y = v[b]-v[ind];
+        P x = v[a]-v[ind], y = v[b]-v[ind];
         T t = cross(x,y);
 		return t != 0 ? t > 0 : norm(x) < norm(y); }
     );
 
 	trav(c,cand) { // for every point
-		while (sz(C) > 1 && cross(v[end(C)[-2]],v[C.bk],v[c]) <= 0) C.pop_back(); // pop until counterclockwise and size > 1
+		while (sz(C) > 1 && cross(v[end(C)[-2]],v[C.bk],v[c]) <= 0) {
+            C.pop_back(); // pop until counterclockwise and size > 1
+        }
 		C.pb(c); 
     }
 
