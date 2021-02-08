@@ -108,18 +108,19 @@ To visualize this, imagine that each point is a pole. Then, imagine what happens
 
 <Youtube id="9rQMLpQn5xQ"/>
 
-
 ### Solution
+
+<Resources>
+	<Resource source="Benq" title="Graham Scan Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h" />
+</Resources>
 
 <LanguageSection>
 
 <CPPSection>
 
-Using [Benq's implementation](https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h)
+The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
 
-The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
-
-To start the creation of the convex hull, we choose 3 points. The pivot (first point), the second point, and the last point based on our initial sorting.
+To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting.
 
 Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. In doing so, we only have to keep track of the topmost $2$ points, and the current point we are considering to add to the hull.
 
@@ -144,23 +145,25 @@ Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0)$
 
 Using the steps from our Graham Scan:
 
-1. Sorting the points by counterclockwise angle: Our bottommost point is $(2,0)$, so we then sort all the points by their counterclockwise angle. Our resulting sorted points are $(2,0),(5,3),(3,2),(2,3),(1,2)$.
+1. Sorting the points by counterclockwise angle: Our leftmost point is $(1,2)$, so we then sort all the points by their counterclockwise angle. If the angles are the same, we can tiebreak by distance. Our resulting sorted points are $(2,0),(3,2),(5,3),(2,3)$ with initial pivot $(1,2)$.
 
 2. Maintaining the stack:
 
-Let's denote the $i$-th point as $\texttt{pts}[i]$.
+Let's denote the $i$-th sorted point as $\texttt{pts}[i]$.
 
-Our initial stack elements are $\texttt{pts}[N-1], \texttt{pts}[0], \texttt{pts}[1]$, which corresponds to $(1,2), (2,0), (5,3)$. Then, starting from $\texttt{pts}[2]$, we process each point.
+Our initial stack elements are $(1,2),(2,0)$. Then, starting from $\texttt{pts}[2]$, we process each point.
 
-First, we check if the turn between $\texttt{pts}[0], \texttt{pts}[1], \texttt{pts}[2]$ is counterclockwise, which it is not. Hence, the point $\texttt{pts}[1]$ cannot be part of the convex hull. We pop it and insert $\texttt{pts}[2]$.
+First, we check if the turn between $(1,2), (2,0), and (3,2)$, is counterclockwise, which it is. Hence, the point $\texttt{pts}[2]$ is inserted on our stack.
+
+Our stack now is then $(1,2),(2,0),(3,2)$.
+
+Then, we check the turn $(2,0),(3,2),(5,3)$ which is clockwise. Hence, we pop the stack until the counterclockwise property can be satisfied. In this case, only $(5,3)$ is popped. Afterwards, we push $(2, 3)$ to our stack.
 
 Our stack now is then $(1,2),(2,0),(5,3)$.
 
-Then, we check whether the turn between $v[1], v[2], v[3]$ is counterclockwise, which it is. Therefore, we push $(2, 3)$ to our stack.
+Then, we check whether the turn between $\texttt{pts}[2], \texttt{pts}[3], \texttt{pts}[4]$ is counterclockwise, which it is, so we push $(2,3)$ to our stack.
 
-Our stack now is then $(1,2),(2,0),(5,3),(2,3)$.
-
-Then, we check whether the turn between $\texttt{pts}[2], \texttt{pts}[3], \texttt{pts}[4]$ is counterclockwise, which it is. However, because $(1, 2)$ is already in our stack, we have completed the cycle, and our convex hull is complete.
+Since we have processed all points, we have completed the cycle, and our convex hull is complete.
 
 Our stack now is then $(1,2),(2,0),(5,3),(2,3)$, which is the convex hull of all our points.
 
