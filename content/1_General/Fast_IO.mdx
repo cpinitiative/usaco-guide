@@ -5,8 +5,6 @@ author: Benjamin Qi, Nathan Chen
 description: 'Speeding up I/O speeds can make a substantial difference in problems with large inputs.'
 ---
 
-
-
 export const problems = {
 	general: [new Problem('Plat', 'Robotic Cow Herd', '674', 'Insane')],
 };
@@ -103,9 +101,9 @@ int main() { // 258 ms
 
 </Spoiler>
 
-### A Faster Method
+### Method 4: `fread` and `fwrite`
 
-If we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
+Using `FastIO` from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) further reduces the runtime.
 
 <Spoiler title="91ms">
 
@@ -129,11 +127,38 @@ int main() {
 
 </Spoiler>
 
-### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
+### Optimizations 
+
+<Resources>
+	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
+		timing various I/O methods
+	</Resource>
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
+		title="Significance of [above]"
+		starred
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+
+#### `ios::sync_with_stdio(0);`
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
+		title="ios_base::sync_with_stdio"
+	>
+		documentation
+	</Resource>
+</Resources>
 
 Adding this immediately after `main()` significantly reduces the runtime of method 1.
 
-<Spoiler title="254ms">
+<Spoiler title="299ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -142,7 +167,7 @@ using namespace std;
 vector<int> P[100000];
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios::sync_with_stdio(0);
 	freopen("roboherd.in","r",stdin);
 	freopen("roboherd.out","w",stdout);
 	int N,K; cin >> N >> K;
@@ -157,24 +182,25 @@ int main() {
 
 </Spoiler>
 
+You may also see `cin.sync_with_stdio(0)` and `ios_base::sync_with_stdio(0)`; these are all equivalent.
+
+<Warning>
+
+Make sure that this line comes before taking any input ([Source](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio)).
+
+> If this function is called after I/O has occurred on the standard stream, the behavior is implementation-defined: implementations range from no effect to destroying the read buffer.
+
+</Warning>
+
+<Warning>
+
+You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after including this line. In fact, as `freopen` is C-style I/O, it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if this line is included. But as far as I know, it works properly.
+
+</Warning>
+
+#### `cin.tie(0)`
+
 <Resources>
-	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
-		timing various I/O methods
-	</Resource>
-	<Resource
-		source="SO"
-		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
-		title="Significance of [above]"
-	>
-		{' '}
-	</Resource>
-	<Resource
-		source="CPP"
-		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
-		title="ios_base::sync_with_stdio"
-	>
-		documentation
-	</Resource>
 	<Resource
 		source="CPP"
 		url="http://www.cplusplus.com/reference/ios/ios/tie/"
@@ -184,13 +210,19 @@ int main() {
 	</Resource>
 </Resources>
 
-You may see `cin.sync_with_stdio(0);` used in place of `ios_base::sync_with_stdio(0);` but they should have the same effect.
+`cout` is no longer flushed before input is read. Should give a significant improvement where you frequently alternate between taking input and output (?). Don't use in interactive problems ...
 
 <Warning>
 
-Actually, the first link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
+You may see some programmers using `cout.tie(0)`. This doesn't actually do anything since `cout` isn't tied to anything ...
 
 </Warning>
+
+<IncompleteSection>
+
+todo: more explanation, example problem where this reduces runtime ...
+
+</IncompleteSection>
 
 </CPPSection>
 
