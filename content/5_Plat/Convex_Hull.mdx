@@ -118,15 +118,15 @@ To visualize this, imagine that each point is a pole. Then, imagine what happens
 
 <CPPSection>
 
-The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the bottommost (and rightmost if there is a tie), point as $P_0$. 
+The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the leftmost (and bottommost if there is a tie), point as $P_0$. 
 
 To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting.
 
 Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. In doing so, we only have to keep track of the topmost $2$ points, and the current point we are considering to add to the hull.
 
-In our implementation, our stack is $\texttt{v}$.
+Denote our stack as $\texttt{C}$, the top element of $\texttt{C}$ as $\texttt{C}[i]$ and $\texttt{cand}[i]$ as the $i$-th sorted point.
 
-There are two only 2 cases for our 3 points: either the turn from $\texttt{v}[i-1] \rightarrow \texttt{v}[i] \rightarrow \textrm{candidate point}$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the topmost point and then proceed to check convexity of the next candidate point. Otherwise, we include it in our hull.
+There are 2 cases for our 3 points: either the turn from $\texttt{C}[i-1] \rightarrow \texttt{C}[i] \rightarrow \texttt{cand}[i]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the top element off $\texttt{C}$ and proceed to check convexity of the next candidate point. Otherwise the turn is counterclockwise, and thus we include it in our hull.
 
 To understand why, consider those three points: the top two points in the stack, and our candidate point. Since our turn is counterclockwise, we are looking for such points that make a counterclockwise turn. It is easy to see that when a clockwise turn it is made, the polygon can no longer be convex.
 
