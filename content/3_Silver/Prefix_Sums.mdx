@@ -359,7 +359,9 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 -->
 
-### Code
+### Sample code for Static Range Sum
+
+<Spoiler title="Sample Code">
 
 <LanguageSection>
 
@@ -386,9 +388,17 @@ vl psum(const vl& a) {
 }
 
 int main() {
-	for (ll i: psum({1,2,3,4,5}))
-		cout << i << " ";
-	// 0 1 3 6 10 15
+	int N, Q;
+	cin >> N >> Q;
+	vl a(N);
+	for (ll& x: a)
+		cin >> x;
+	vl p = psum(a);
+	for (int i = 0; i < Q; ++i) {
+		int l, r;
+		cin >> l >> r;
+		cout << p[r] - p[l] << "\n";
+	}
 }
 ```
 
@@ -403,13 +413,21 @@ def psum(a):
 	for i in a:
 		psum.append(psum[-1]+i) # psum[-1] is the last element in the list
 	return psum
-print(psum([1,2,3,4,5]))
+
+N, Q = map(int, input().split())
+a = list(map(int, input().split()))
+p = psum(a)
+
+for i in range(Q):
+	l, r = map(int, input().split())
+	print(p[r]-p[l])
 ```
 
 </PySection>
 
 </LanguageSection>
 
+</Spoiler>
 
 ### Problems
 
