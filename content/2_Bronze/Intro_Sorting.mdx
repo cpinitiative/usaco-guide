@@ -152,7 +152,7 @@ Although you usually do **not** need to know how sorting is implemented, you sho
 
 <CPPSection>
 
-To sort static arrays, use `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The range can also be specified by replacing `arr` and `arr + N` with the intended range. For example, `sort(arr + 1, arr + 4)` sorts [`arr[1]`, `arr[4]`).
+To sort static arrays, use `sort(arr, arr + N)` where $N$ is the number of elements to be sorted. The range can also be specified by replacing `arr` and `arr + N` with the intended range. For example, `sort(arr + 1, arr + 4)` sorts indices [1, 4).
 
 ```cpp
 #include <bits/stdc++.h>
@@ -165,10 +165,10 @@ int main() {
 		cout << arr[i] << " "; //1 2 3 4 5
 	cout << endl;
 
-	arr[0] = 5; arr[1] = 1; arr[2] = 3; arr[3] = 2; arr[4] = 4;
-	sort(arr + 1, arr + 4);
+	int arr2[] = {5, 1, 3, 2, 4};
+	sort(arr2 + 1, arr2 + 4);
 	for (int i = 0; i < N; i++)
-		cout << arr[i] << " "; //5 1 2 3 4
+		cout << arr2[i] << " "; //5 1 2 3 4
 }
 
 ```
@@ -217,7 +217,7 @@ Two ways to avoid this:
 
 <CPPSection>
 
-In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`). The default sort function sorts the array in ascending order. Similarly, we can specify the range. For example, `sort(v.begin() + 1, v.end() + 1)` sorts [`v[1]`, `v[4]`)
+In order to sort a dynamic array, use `sort(v.begin(), v.end())` (or `sort(begin(v),end(v))`). The default sort function sorts the array in ascending order. Similarly, we can specify the range. For example, `sort(v.begin() + 1, v.end() + 1)` sorts indices [1, 4)
 
 ```cpp
 #include <bits/stdc++.h>
@@ -341,9 +341,3 @@ for x, y in list:
 Note: For "Why Did the Cow Cross the Road III", you need a custom comparator for Java. This is covered in [Silver](/silver/sorting-custom).
 
 There are some more sorting problems in the [Intro to Sets](/bronze/intro-sets) module.
-
-<!-- 
-
-what about USACO problems? (though sorting is _very_ rare in Bronze)
-
-I added one, but I can't find anything else -->
