@@ -1,1 +1,106 @@
+---
+id: usaco-968
+source: USACO Silver 2019 December
+title: Milk Visits
+author: Tanish Tyagi
+---
 
+[Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+We can use a DFS to create connected components from an adjacency list (which is made when we process the roads between the farms). Each connected component will have nodes that all have the same breed. 
+
+Graph based off sample test case: 
+
+Use `\texttt{}` around variable names with length greater than one, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define maxn 100005
+
+int n, m, cc;
+int components[maxn];
+string s;
+char pref[maxn];
+vector<int> adj[maxn];
+
+void setIO(string name, bool includeout=false) { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    // alternatively, cin.tie(0)->sync_with_stdio(0);
+    freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+    if (includeout) {
+        freopen((name+".out").c_str(), "w", stdout);
+    }
+}
+
+void dfs(int start) {
+    if (components[start] != 0) {
+        return;
+    }
+    components[start] = cc; //assign component #
+    for (auto next : adj[start]) {
+        if (pref[start] == pref[next]) {
+            dfs(next);
+        }
+    }
+}
+
+int main() {
+    setIO("milkvisits", true);
+    string ans = "";
+    cin >> n >> m;
+    cin >> s;
+    for (int i = 1; i < n+1; i++) {
+        pref[i] = s[i-1];
+    }
+    for (int i = 0; i < n-1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    for (int i = 1; i < n+1; i++) {
+		if (components[i] == 0) {
+			//add new component
+			cc++;
+			dfs(i);
+    	}
+	}
+    
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        char c;
+        cin >> a >> b >> c;
+        if ((components[a] == components[b] && pref[a] == c) || components[a] != components[b]) {
+            ans += '1';
+        } else {
+            ans += '0';
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}
+```
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+(if you have Java code)
+
+</JavaSection>
+
+</LanguageSection>
