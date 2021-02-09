@@ -13,7 +13,7 @@ author: Tanish Tyagi
 
 **Time Complexity:** $\mathcal{O}(N+M)$
 
-We can use a DFS to create connected components from an adjacency list (which is made when we process the roads between the farms). Each connected component will have nodes that all have the same breed. 
+We can use a DFS to create connected components from an adjacency list (which is made when we process the roads between the farms). Each connected component will contain farms that all have the same breed. 
 
 Graph based off sample test case: <br/>
 1 (H) --> 2 (H), 5 (G) <br/>
@@ -22,16 +22,16 @@ Graph based off sample test case: <br/>
 4 (H) --> 2 (H) <br/>
 5 (G) --> 1 (G) <br/>
 
+NOTE: We are not going to store the breed of cow in our adjacency list. The breed is there for convenience.
+
 Connected Components based off of graph: <br/>
-components = [1, 1, 2, 1, 3] <br/> <br/>
+components (first index is 1) = [1, 1, 2, 1, 3] <br/> <br/>
 Farms 1,2, and 4 are all Holsteins and make up component 1, farm 3 makes up component 2, and farm 5 makes up component 3. 
 
-When it comes to seeing which farmers will be happy, we just have to evalulate 2 conditions: <br/>
-1. Farm $A$ and $B$ are part of the same component. If $C$ is the same breed as $A$, then we should output.
+When it comes to seeing which farmers will be happy, we just have to evalulate 3 conditions: <br/>
+1. Farm $A$ and $B$ are part of the same component. If $C$ is the same breed as $A$ / $B$, then we should output 1.
 2. Farm $A$ and $B$ are part of the different components. This means that the farmer will always be satisfied because the path between $A$ and $B$ contains both breeds of cows. We should output 1.
 3. If case 1 and 2 are not met, then we should output 0.
-
-Use `\texttt{}` around variable names with length greater than one, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
 
 ```cpp
 #include <bits/stdc++.h>
