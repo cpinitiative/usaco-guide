@@ -365,14 +365,14 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
 	for (int i = 0; i < k; i++) {
 		while(!d.isEmpty() && nums[i] > nums[d.peekLast()]) {
-    		d.pollLast();
+			d.pollLast();
 		}
 		d.addLast(i);
 	}
 	for (int i = k; i < nums.length; i++) {
 		ret.add(nums[d.peekFirst()]);
 		if(!d.isEmpty() && d.peekFirst() <= i-k) {
- 			d.pollFirst();
+			d.pollFirst();
 		}
 		while(!d.isEmpty() && nums[i] >= nums[d.peekLast()]) {
 			d.pollLast();
