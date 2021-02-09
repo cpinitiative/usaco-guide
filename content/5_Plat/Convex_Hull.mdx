@@ -119,15 +119,15 @@ The **Convex Hull** is the subset of points that forms the smallest convex polyg
 
 The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the leftmost (and bottommost if there is a tie), point as $P_0$. 
 
-To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting.
+We maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. As a result, we only have to check the candidate point against the topmost 2 points.
 
-Then, we maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. As a result, we only have to check the candidate point against the topmost 2 points.
+To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting.
 
 In order for the hull to be convex, every three consecutive points of the stack must contain a counterclockwise turn.
 
-Denote our stack as $\texttt{C}$, the top element of $\texttt{C}$ as $\texttt{C}[i]$ and $\texttt{cand}[i]$ as the $i$-th sorted point.
+Denote our stack as $\texttt{C}$, the top element of $\texttt{C}$ as $\texttt{C}[i]$ and $\texttt{cand}[j]$ as the $i$-th sorted point.
 
-There are 2 cases for our 3 points: either the turn from $\texttt{C}[i-1] \rightarrow \texttt{C}[i] \rightarrow \texttt{cand}[i]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the top element off $\texttt{C}$ and proceed to check convexity of the next candidate point. Otherwise the turn is counterclockwise, and thus we include it in our hull.
+There are 2 cases for our 3 points: either the turn from $\texttt{C}[i-1] \rightarrow \texttt{C}[i] \rightarrow \texttt{cand}[j]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the top element off $\texttt{C}$ and proceed to check convexity of the point until the turn is counterclockwise. Otherwise the turn is counterclockwise, and thus we include it in our hull.
 
 To understand why, consider those three points: the top two points in the stack, and our candidate point. Since our turn is counterclockwise, we are looking for such points that make a counterclockwise turn. It is easy to see that when a clockwise turn it is made, the polygon can no longer be convex.
 
@@ -137,22 +137,21 @@ To understand why, consider those three points: the top two points in the stack,
 
 </Spoiler>
 
-
 <Spoiler title="Worked Example">
 
-**Example**
+> Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0),(6,2)$.
 
-Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0)$
+[Animated](https://convexhull.tiiny.site/)
 
 Using the steps from our Graham Scan:
 
-1. Sorting the points by counterclockwise angle: Our leftmost point is $(1,2)$, so we then sort all the points by their counterclockwise angle. If the angles are the same, we can tiebreak by distance. Our resulting sorted points are $(2,0),(3,2),(5,3),(2,3)$ with initial pivot $(1,2)$.
+1. Sorting the points by counterclockwise angle: Our leftmost point is $(1,2)$, so we then sort all the points by their counterclockwise angle. If the angles are the same, we can tiebreak by distance. Our resulting sorted points are $(2,0),(6,2),(3,2),(5,3),(2,3)$ with initial pivot $(1,2)$. Note that $(6,2), (3,2)$, are colinear but since $(6,2)$ is further away it breaks the tie, thus placing it before $(3,2)$.
 
 2. Maintaining the stack:
 
-Let's denote the $i$-th sorted point as $\texttt{pts}[i]$.
+Let's denote the index of $i$-th sorted point as $i$.
 
-Our initial stack elements are $(1,2),(2,0)$. Then, starting from $\texttt{pts}[2]$, we process each point.
+Our initial stack elements are $(1,2),(2,0)$. Then, starting from point $2$, we process each point.
 
 First, we check if the turn between $(1,2), (2,0)$, and $(3,2)$, is counterclockwise, which it is. Hence, the point $\texttt{pts}[2]$ is inserted on our stack.
 
@@ -196,38 +195,15 @@ const int MX = 2e5 + 5;
 using T = long long; // or long long
 const T EPS = 1e-9; // might want to change
 using P = pair<T,T>; using vP = vector<P>; using Line = pair<P,P>;
-int sgn(T a) { return (a>EPS)-(a<-EPS); }
-T sq(T a) { return a*a; } // square
 
+T sq(T a) { return a*a; } // square
 T norm(const P& p) { return sq(p.f)+sq(p.s); } // x^2 + y^2
-T abs(const P& p) { return sqrt(norm(p)); } // absolute value vector
-P conj(const P& p) { return P(p.f,-p.s); } // conjugate vectors
 
 // basic operations
-P operator+(const P& l, const P& r) { 
-    return P(l.f+r.f,l.s+r.s); 
-}
 P operator-(const P& l, const P& r) { 
     return P(l.f-r.f,l.s-r.s); 
 }
-P operator*(const P& l, const T& r) { 
-    return P(l.f*r,l.s*r); 
-}
-P operator*(const T& l, const P& r) { 
-    return r*l; 
-}
-P operator/(const P& l, const T& r) { 
-    return P(l.f/r,l.s/r);
-}
-P operator*(const P& l, const P& r) { 
-    return P(l.f*r.f-l.s*r.s,l.s*r.f+l.f*r.s); 
-}
-P operator/(const P& l, const P& r) { 
-    return l*conj(r)/norm(r); 
-}
 
-P unit(const P& p) { return p/abs(p); } // unit vector
-T dot(const P& a, const P& b) { return a.f*b.f+a.s*b.s; } // dot product
 T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; } // cross product
 T cross(const P& p, const P& a, const P& b) { // cross product
     return cross(a-p,b-p); 
