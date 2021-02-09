@@ -25,42 +25,42 @@ using namespace std;
 
 int main()
 {
-    int n, m;
-    cin >> n >> m;
-    int cities[n];
-    set<int> towers;
-    int tower;
-    for (int i = 0; i < n; i++)
-    {
-        cin >> cities[i];
-    }
-    for (int i = 0; i < m; i++)
-    {
-        cin >> tower;
-        towers.insert(tower);
-    }
-    int r = 0;
-    for (int i = 0; i < n; i++)
-    {
-        int dist = 2e9 + 1;
-        //find closest tower to the right of the city
-        auto closesttower = towers.lower_bound(cities[i]);
-        if (closesttower != towers.end())
-        {
-            //if a tower is found, update the distance
-            dist = *closesttower - cities[i];
-        }
-        //find closest tower to the left of the city
-        if (closesttower != towers.begin())
-        {
-            closesttower--;
-            //update dist with the minimum of the distances
-            dist = min(dist, cities[i] - *closesttower);
-        }
-        r = max(r, dist);
-    }
-    cout << r << endl;
-    return 0;
+	int n, m;
+	cin >> n >> m;
+	int cities[n];
+	set<int> towers;
+	int tower;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> cities[i];
+	}
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tower;
+		towers.insert(tower);
+	}
+	int r = 0;
+	for (int i = 0; i < n; i++)
+	{
+		int dist = 2e9 + 1;
+		//find closest tower to the right of the city
+		auto closesttower = towers.lower_bound(cities[i]);
+		if (closesttower != towers.end())
+		{
+			//if a tower is found, update the distance
+			dist = *closesttower - cities[i];
+		}
+		//find closest tower to the left of the city
+		if (closesttower != towers.begin())
+		{
+			closesttower--;
+			//update dist with the minimum of the distances
+			dist = min(dist, cities[i] - *closesttower);
+		}
+		r = max(r, dist);
+	}
+	cout << r << endl;
+	return 0;
 }
 ```
 
