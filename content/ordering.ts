@@ -97,8 +97,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'binary-search-sorted',
         'sorting-custom',
-        'intro-ordered',
         '2P',
+        'intro-ordered',
         'custom-cpp-stl',
         'greedy',
       ],
