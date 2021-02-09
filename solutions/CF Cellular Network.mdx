@@ -74,47 +74,47 @@ using namespace std;
 
 // returns the first index in the array that is >= value, or arr.size() if no such index exists
 int binarySearch(const vector<int> &arr, int value) {
-    int lo = 0, hi = arr.size()-1;
-    while (lo <= hi) {
-        int mid = (lo+hi)/2;
-        if (arr[mid] < value) {
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
-        }
-    }
-    return lo;
+	int lo = 0, hi = arr.size()-1;
+	while (lo <= hi) {
+		int mid = (lo+hi)/2;
+		if (arr[mid] < value) {
+			lo = mid + 1;
+		} else {
+			hi = mid - 1;
+		}
+	}
+	return lo;
 }
 
 int main() {
-    int n, m; cin >> n >> m;
-    vector<int> cities, towers;
-    for (int i = 0; i < n; i++) {
-        int city; cin >> city; cities.push_back(city);
-    }
-    for (int i = 0; i < m; i++) {
-        int tower; cin >> tower; towers.push_back(tower);
-    }
+	int n, m; cin >> n >> m;
+	vector<int> cities, towers;
+	for (int i = 0; i < n; i++) {
+		int city; cin >> city; cities.push_back(city);
+	}
+	for (int i = 0; i < m; i++) {
+		int tower; cin >> tower; towers.push_back(tower);
+	}
 
-    int minR = 0;
-    for (int i = 0; i < n; i++) {
-        int towerRight = binarySearch(towers, cities[i]);
-        int towerLeft = towerRight - 1;
+	int minR = 0;
+	for (int i = 0; i < n; i++) {
+		int towerRight = binarySearch(towers, cities[i]);
+		int towerLeft = towerRight - 1;
 
-        int minRForThisCity = 2e9;
-        if (towerRight < m) {
-            assert(towers[towerRight] >= cities[i]);
-            minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
-        }
-        if (towerLeft >= 0) {
-            assert(towers[towerLeft] <= cities[i]);
-            minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
-        }
+		int minRForThisCity = 2e9;
+		if (towerRight < m) {
+			assert(towers[towerRight] >= cities[i]);
+			minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
+		}
+		if (towerLeft >= 0) {
+			assert(towers[towerLeft] <= cities[i]);
+			minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
+		}
 
-        minR = max(minR, minRForThisCity);
-    }
+		minR = max(minR, minRForThisCity);
+	}
 
-    cout << minR << endl;
+	cout << minR << endl;
 }
 ```
 
