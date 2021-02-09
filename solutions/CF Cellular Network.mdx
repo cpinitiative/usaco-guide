@@ -2,7 +2,7 @@
 id: cellular-network
 source: CF
 title: Cellular Network
-author: Benjamin Qi, Maggie Liu
+author: Benjamin Qi, Maggie Liu, Nathan Wang
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
@@ -13,9 +13,9 @@ author: Benjamin Qi, Maggie Liu
 
 ## Solution 1 - Using a Set
 
-We use the set $\texttt{towers}$ to store the coordinates of the cellular towers. For each city, we want to find the closest tower and calculate the distance. The minimal $\texttt{r}$ will be the maximum of all these distances. To find the closest tower to a certain city, we check the towers to the left and right and determine which one is closer.
+We use the set $\texttt{towers}$ to store the coordinates of the cellular towers. For each city, we want to find the closest tower and calculate the distance. The minimal $r$ will be the maximum of all these distances. To find the closest tower to a certain city, we check the towers to the left and right and determine which one is closer.
 
-Looping through the cities, we use $\texttt{lower\_bound}$ to find the closest tower to the right of the city. If this tower is found, calculate the distance between this tower and the city. If the tower is not at the beginning of the set, the previous tower in the set will be the tower to the left of the city. So, $\texttt{dist}$ will be the minimum of the distance to the tower on the right and the distance to the tower on the left. Then, update $\texttt{r}$ with the maximum of $\texttt{r}$ and $\texttt{dist}$.
+Looping through the cities, we use `lower_bound` to find the closest tower to the right of the city. If this tower is found, calculate the distance between this tower and the city. If the tower is not at the beginning of the set, the previous tower in the set will be the tower to the left of the city. So, $\texttt{dist}$ will be the minimum of the distance to the tower on the right and the distance to the tower on the left. Then, set $r$ to be the maximum of itself and $\texttt{dist}$.
 
 ```cpp
 #include <iostream>
@@ -23,7 +23,7 @@ Looping through the cities, we use $\texttt{lower\_bound}$ to find the closest t
 #include <algorithm>
 using namespace std;
 
-int main() 
+int main()
 {
     int n, m;
     cin >> n >> m;
@@ -40,13 +40,11 @@ int main()
         towers.insert(tower);
     }
     int r = 0;
-    set<int>::iterator closesttower;
-    int dist;
     for (int i = 0; i < n; i++)
     {
-        dist = 2e9 + 1;
+        int dist = 2e9 + 1;
         //find closest tower to the right of the city
-        closesttower = towers.lower_bound(cities[i]);
+        auto closesttower = towers.lower_bound(cities[i]);
         if (closesttower != towers.end())
         {
             //if a tower is found, update the distance
@@ -125,28 +123,28 @@ int main() {
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 typedef long long ll;
 typedef pair <int, int> pii;
 typedef vector<int> vi;
- 
+
 #define mp make_pair
 #define pb push_back
- 
+
 #define FOR(i, a, b) for (int i=a; i<b; i++)
 #define F0R(i, a) for (int i=0; i<a; i++)
- 
+
 #define f first
 #define s second
 #define lb lower_bound
 #define ub upper_bound
 #define endl "\n"
- 
+
 const int MOD = 1000000007;
 double PI = 4*atan(1);
- 
+
 int dist[100000], ans = 0;
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);cin.tie(0);
 	F0R(i,100000) dist[i] = 2*MOD;
