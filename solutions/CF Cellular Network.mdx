@@ -11,62 +11,7 @@ author: Benjamin Qi, Maggie Liu, Nathan Wang
 
 <CPPSection>
 
-## Solution 1 - Using a Set
-
-We use the set $\texttt{towers}$ to store the coordinates of the cellular towers. For each city, we want to find the closest tower and calculate the distance. The minimal $r$ will be the maximum of all these distances. To find the closest tower to a certain city, we check the towers to the left and right and determine which one is closer.
-
-Looping through the cities, we use `lower_bound` to find the closest tower to the right of the city. If this tower is found, calculate the distance between this tower and the city. If the tower is not at the beginning of the set, the previous tower in the set will be the tower to the left of the city. So, $\texttt{dist}$ will be the minimum of the distance to the tower on the right and the distance to the tower on the left. Then, set $r$ to be the maximum of itself and $\texttt{dist}$.
-
-```cpp
-#include <iostream>
-#include <set>
-#include <algorithm>
-using namespace std;
-
-int main()
-{
-	int n, m;
-	cin >> n >> m;
-	int cities[n];
-	set<int> towers;
-	int tower;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> cities[i];
-	}
-	for (int i = 0; i < m; i++)
-	{
-		cin >> tower;
-		towers.insert(tower);
-	}
-	int r = 0;
-	for (int i = 0; i < n; i++)
-	{
-		int dist = 2e9 + 1;
-		//find closest tower to the right of the city
-		auto closesttower = towers.lower_bound(cities[i]);
-		if (closesttower != towers.end())
-		{
-			//if a tower is found, update the distance
-			dist = *closesttower - cities[i];
-		}
-		//find closest tower to the left of the city
-		if (closesttower != towers.begin())
-		{
-			closesttower--;
-			//update dist with the minimum of the distances
-			dist = min(dist, cities[i] - *closesttower);
-		}
-		r = max(r, dist);
-	}
-	cout << r << endl;
-	return 0;
-}
-```
-
-This solution can also be implemented with Binary Search, but it's better to implement it with a set. The code below is provided only if you want additional practice for binary searching a sorted array.
-
-## Solution 2 - Binary Search
+## Solution 1 - Binary Search on a Sorted Array
 
 ```cpp
 #include <bits/stdc++.h>
@@ -118,7 +63,7 @@ int main() {
 }
 ```
 
-## Solution 3 - Two Pointers
+## Solution 2 - Two Pointers
 
 ```cpp
 #include <bits/stdc++.h>
@@ -138,7 +83,6 @@ typedef vector<int> vi;
 #define s second
 #define lb lower_bound
 #define ub upper_bound
-#define endl "\n"
 
 const int MOD = 1000000007;
 double PI = 4*atan(1);
@@ -167,6 +111,60 @@ int main() {
 	return 0;
 }
 ```
+
+## Solution 3 - Using a Set
+
+We use the set $\texttt{towers}$ to store the coordinates of the cellular towers. For each city, we want to find the closest tower and calculate the distance. The minimal $r$ will be the maximum of all these distances. To find the closest tower to a certain city, we check the towers to the left and right and determine which one is closer.
+
+Looping through the cities. For each city, we use `lower_bound` to find the closest tower to the right of the city. If this tower is found, calculate the distance between this tower and the city. If the tower is not at the beginning of the set, the previous tower in the set will be the tower to the left of the city. Define $\texttt{dist}$ to be the minimum of the distance to the tower on the right and the distance to the tower on the left. Then, set $r$ to be the maximum of itself and $\texttt{dist}$.
+
+```cpp
+#include <iostream>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+	int n, m;
+	cin >> n >> m;
+	int cities[n];
+	set<int> towers;
+	int tower;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> cities[i];
+	}
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tower;
+		towers.insert(tower);
+	}
+	int r = 0;
+	for (int i = 0; i < n; i++)
+	{
+		int dist = 2e9 + 1;
+		//find closest tower to the right of the city
+		auto closesttower = towers.lower_bound(cities[i]);
+		if (closesttower != towers.end())
+		{
+			//if a tower is found, update the distance
+			dist = *closesttower - cities[i];
+		}
+		//find closest tower to the left of the city
+		if (closesttower != towers.begin())
+		{
+			closesttower--;
+			//update dist with the minimum of the distances
+			dist = min(dist, cities[i] - *closesttower);
+		}
+		r = max(r, dist);
+	}
+	cout << r << endl;
+	return 0;
+}
+```
+
 
 </CPPSection>
 
