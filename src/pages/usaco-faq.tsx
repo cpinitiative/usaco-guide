@@ -152,7 +152,7 @@ export default function USACOFAQPage(props: PageProps) {
               <span className="text-blue-700 dark:text-blue-300">FAQ</span>
             </h1>
             <p className="max-w-xl mt-5 mx-auto text-xl leading-7 text-gray-600 dark:text-gray-400">
-              Getting started with USACO can be challening. Here, we address
+              Getting started with USACO can be challenging. Here, we address
               some of the most common questions people have.
             </p>
             <div className="mt-6">
