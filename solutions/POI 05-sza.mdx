@@ -101,11 +101,13 @@ int main() {
 
 <Spoiler title="Solution 2">
 
-**Time complexity:** $\mathcal O(N \log N)$.
+**Time complexity:** $\mathcal O(N)$.
 
 <Warning>
 
-The official time limits are very tight and `std::set`/`std::multiset` have very bad constant factors, so this code doesn't actually get 100 points. Nevertheless, we think the idea behind this solution is interesting enough to share.
+The official time limits are very tight and `std::vector` has a bad constant factor, so this code only scores points. Nevertheless, we think the idea behind this solution is interesting enough to share.
+
+It's also an interesting example of how something with a less-optimal big-O complexity (i.e. solution 1) runs faster in practice.
 
 </Warning>
 
@@ -113,28 +115,28 @@ First, we compute the prefix function $\pi$ of $S$ using KMP. While doing this, 
 
 Notice how the subtree of node $i$ is the set of all positions $j$ where $S[0 : i] = S[j - i : j]$.
 
-This means that we can traverse up the tree from node $N$ and keep track of the nodes in the current node's subtree (using something like a `std::set`).
+This means that we can traverse up the tree from node $N$ and keep track of the nodes in the current node's subtree (using a linked list).
 
-To check whether the current node works, we simply check whether the gaps between positions in the subtree are sufficiently small. We can keep track of these gaps using something like a `std::multiset`
+To check whether the current node works, we simply check whether the gaps between positions in the subtree are sufficiently small. We can keep track of these gaps by keeping a global maximum that we update each time we erase a node from the linked list.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 string s;
-int p[500000];
-vector<int> graph[500000];
-bool visited[500000];
-set<int> matches;
-multiset<int> gaps;
+int p[500001], mx_gap = 1, ans, prv[500001], nxt[500001];
+vector<int> graph[500001];
+bool visited[500001];
 
 void dfs(int node) {
     visited[node] = true;
-    set<int>::iterator ub = matches.upper_bound(node);
-    int l = *prev(ub), r = *ub;
-    gaps.erase(gaps.find(r - l));
-    gaps.insert(node - l), gaps.insert(r - node);
-    matches.insert(node);
+    if (node && !visited[p[node - 1]]) {
+        dfs(p[node - 1]);
+        if (mx_gap <= node) ans = min(ans, node);
+    }
+    mx_gap = max(mx_gap, nxt[node] - prv[node]);
+    nxt[prv[node]] = nxt[node];
+    prv[nxt[node]] = prv[node];
     for (int i : graph[node]) if (!visited[i]) dfs(i);
 }
 
@@ -142,19 +144,17 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin >> s;
     int n = s.size();
+    graph[0].push_back(1);
     for (int i = 1; i < n; i++) {
         p[i] = p[i - 1];
         while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
         if (s[i] == s[p[i]]) p[i]++;
-        if (p[i]) graph[p[i] - 1].push_back(i);
+        graph[p[i]].push_back(i + 1);
     }
-    int ans = n;
-    matches.insert(-1), matches.insert(n);
-    gaps.insert(n + 1);
-    for (int i = n; i; i = p[i - 1]) {
-        dfs(i - 1);
-        if (*gaps.rbegin() <= i) ans = i;
-    }
+    prv[0] = 0, nxt[0] = 1, prv[n] = n - 1, nxt[n] = n;
+    for (int i = 1; i < n; i++) prv[i] = i - 1, nxt[i] = i + 1;
+    ans = n;
+    dfs(n);
     cout << ans;
     return 0;
 }
