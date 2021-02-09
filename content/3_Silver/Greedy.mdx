@@ -19,7 +19,7 @@ export const problems = {
 			'1074',
 			'Easy',
 			false,
-			[],
+			['Median'],
 			'cses-1074'
 		),
 		new Problem(
@@ -28,7 +28,7 @@ export const problems = {
 			'1084',
 			'Easy',
 			false,
-			[],
+			['Sorting'],
 			'cses-1084'
 		),
 		new Problem(
@@ -37,18 +37,26 @@ export const problems = {
 			'1090',
 			'Easy',
 			false,
-			[],
+			['Greedy', 'Sorting', '2P'],
 			'cses-1090'
 		),
-		new Problem('CSES', 'Towers', '1073', 'Easy', true, ['multiset', 'greedy'], 'cses-1073'),
 		new Problem(
 			'CSES',
 			'Tasks & Deadlines',
 			'1630',
 			'Easy',
 			true,
-			[],
+			['Greedy', 'Sorting'],
 			'@CPH 6.3'
+		),
+		new Problem(
+			'CSES',
+			'Towers',
+			'1073',
+			'Easy',
+			true,
+			['Ordered Set', 'Greedy', 'LIS', 'Binary Search'],
+			'cses-1073'
 		),
 		new Problem(
 			'CSES',
@@ -56,8 +64,8 @@ export const problems = {
 			'1632',
 			'Normal',
 			true,
-			['sets'],
-			'cses-1632',
+			['Sorting', 'Ordered Set', 'Greedy'],
+			'cses-1632'
 		),
 		new Problem(
 			'CSES',
@@ -65,7 +73,7 @@ export const problems = {
 			'1161',
 			'Hard',
 			false,
-			[],
+			['Greedy', 'Huffman Coding', 'Priority Queue'],
 			'cses-1161'
 		),
 	],
@@ -98,7 +106,15 @@ export const problems = {
 			'usaco-571'
 		),
 		new Problem('Gold', 'High Card Low Card', '573', 'Normal', true, [], ''),
-		new Problem('Silver', 'Berry Picking', '990', 'Normal', false, [], 'usaco-990'),
+		new Problem(
+			'Silver',
+			'Berry Picking',
+			'990',
+			'Normal',
+			false,
+			[],
+			'usaco-990'
+		),
 		new Problem(
 			'Silver',
 			'Why Did the Cow Cross the Road',
@@ -170,7 +186,7 @@ The implementation of this algorithm is very simple. We sort the array, and then
 sort(algorithms.begin(), algorithms.end());
 int count = 0; // number of minutes used so far
 int i = 0;
-while(count + algorithms[i] <= x){
+while(i < N && count + algorithms[i] <= x){
   // while there is enough time, learn more algorithms
   count += algorithms[i];
   i++;
@@ -187,7 +203,7 @@ cout << i << endl; // print the ans
 Arrays.sort(algorithms);
 int count = 0; // number of minutes used so far
 int i = 0;
-while(count + algorithms[i] <= x){
+while(i < N && count + algorithms[i] <= x){
     // while there is enough time, learn more algorithms
     count += algorithms[i];
     i++;
@@ -197,6 +213,22 @@ pw.close();
 ```
 
 </JavaSection>
+
+<PySection>
+
+```python
+# read in the input, store the algorithms in a list, algorithms
+algorithms.sort();
+count = 0 # number of minutes used so far
+i = 0
+while i < N and count + algorithms[i] <= x:
+	# while there is enough time, learn more algorithms
+	count += algorithms[i]
+	i+=1
+print(i) # print the ans
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -218,14 +250,14 @@ One possible ordering for a greedy algorithm would always select the next possib
 		y1="5"
 		x2="80"
 		y2="5"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="40"
 		y1="15"
 		x2="120"
 		y2="15"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 	<line
@@ -233,14 +265,14 @@ One possible ordering for a greedy algorithm would always select the next possib
 		y1="25"
 		x2="180"
 		y2="25"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="150"
 		y1="35"
 		x2="180"
 		y2="35"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 </svg>
@@ -253,14 +285,14 @@ In this example, the greedy algorithm selects two events, which is optimal. Howe
 		y1="5"
 		x2="160"
 		y2="5"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="40"
 		y1="15"
 		x2="80"
 		y2="15"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 	<line
@@ -268,7 +300,7 @@ In this example, the greedy algorithm selects two events, which is optimal. Howe
 		y1="25"
 		x2="135"
 		y2="25"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 	<line
@@ -276,7 +308,7 @@ In this example, the greedy algorithm selects two events, which is optimal. Howe
 		y1="35"
 		x2="180"
 		y2="35"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 </svg>
@@ -289,7 +321,7 @@ In this case, the greedy algorithm selects to attend only one event. However, th
 		y1="5"
 		x2="160"
 		y2="5"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 	<line
@@ -297,21 +329,21 @@ In this case, the greedy algorithm selects to attend only one event. However, th
 		y1="15"
 		x2="80"
 		y2="15"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="100"
 		y1="25"
 		x2="135"
 		y2="25"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="150"
 		y1="35"
 		x2="180"
 		y2="35"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 </svg>
 
@@ -325,7 +357,7 @@ Instead, we can select the event that ends as early as possible. This correctly 
 		y1="5"
 		x2="160"
 		y2="5"
-		style={{strokeWidth:1}}
+		style={{ strokeWidth: 1 }}
 		className="stroke-current text-black dark:text-gray-200"
 	/>
 	<line
@@ -333,21 +365,21 @@ Instead, we can select the event that ends as early as possible. This correctly 
 		y1="15"
 		x2="80"
 		y2="15"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="100"
 		y1="25"
 		x2="135"
 		y2="25"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 	<line
 		x1="150"
 		y1="35"
 		x2="180"
 		y2="35"
-		style={{stroke:"rgb(255,0,0)",strokeWidth:1}}
+		style={{ stroke: 'rgb(255,0,0)', strokeWidth: 1 }}
 	/>
 </svg>
 
@@ -413,6 +445,26 @@ pw.close();
 ```
 
 </JavaSection>
+
+<PySection>
+
+We'll be using a list of list to store the events.
+
+```python
+# read in the input, store the events in [begin, end] format in list events.
+events.sort(key=lambda x:x[1]); # sorts by second element (ending time)
+currentEventEnd = -1
+ans = 0 # how many events were attended?
+for i in range(n): # process events in order of end time
+	if events[i][0] >= currentEventEnd: # if event can be attended
+		# we know that this is the earliest ending event that we can attend
+		# because of how the events are sorted
+		currentEventEnd = events[i][1]
+		ans+=1
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 

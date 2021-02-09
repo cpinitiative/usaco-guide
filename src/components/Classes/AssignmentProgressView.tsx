@@ -115,7 +115,7 @@ export default function AssignmentProgressView({
               checked={showStudentEmails}
               onChange={e => setShowStudentEmails(e.target.checked)}
               type="checkbox"
-              className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+              className="form-checkbox h-4 w-4 text-indigo-600 transition"
             />
           </div>
           <div className="ml-3 text-sm leading-5">

@@ -4,49 +4,113 @@ title: Flood Fill
 author: Darren Yao
 prerequisites:
   - dfs
-description: 'Finding connected components in a graph respresented by a grid.'
+description: 'Finding connected components in a graph represented by a grid.'
 frequency: 3
 ---
 
-
-
 export const problems = {
 	sample: [
-		new Problem('CSES', 'Counting Rooms', '1192', 'Easy', false, [], '@B'),
+		new Problem(
+			'CSES',
+			'Counting Rooms',
+			'1192',
+			'Easy',
+			false,
+			['Flood Fill'],
+			'@B'
+		),
 	],
 	general: [
-		new Problem('Silver', 'Icy Perimeter', '895', 'Easy', true, []),
+		new Problem(
+			'Silver',
+			'Icy Perimeter',
+			'895',
+			'Easy',
+			true,
+			['Flood Fill'],
+			''
+		),
 		new Problem(
 			'Silver',
 			'Switching on the Lights',
 			'570',
 			'Normal',
 			false,
-			[],
+			['Flood Fill'],
 			'usaco-570'
 		),
-		new Problem('Silver', 'Build Gates', '596', 'Normal', false, []),
+		new Problem(
+			'Silver',
+			'Build Gates',
+			'596',
+			'Normal',
+			false,
+			['Flood Fill'],
+			'usaco-596'
+		),
 		new Problem(
 			'Silver',
 			'Milk Pails',
 			'620',
 			'Normal',
 			false,
-			[],
+			['Flood Fill'],
 			'usaco-620'
 		),
-		new Problem('Silver', "Where's Bessie?", '740', 'Normal', true, [], 'usaco-740'),
 		new Problem(
 			'Silver',
-			'Why Did ... (Count Cross)',
+			"Where's Bessie?",
+			'740',
+			'Normal',
+			true,
+			['Flood Fill'],
+			'usaco-740'
+		),
+		new Problem(
+			'Silver',
+			'Why Did the Cow Cross the Road III',
 			'716',
 			'Normal',
 			true,
-			[],
+			['Flood Fill'],
 			'usaco-716'
 		),
-		new Problem('Silver', 'Mooyo Mooyo', '860', 'Normal', false, [], ''),
-		new Problem('Silver', 'Multiplayer Moo', '836', 'Hard', false, []),
+		new Problem(
+			'Silver',
+			'Mooyo Mooyo',
+			'860',
+			'Normal',
+			false,
+			['Flood Fill'],
+			''
+		),
+		new Problem(
+			'CCO',
+			'Escape Room',
+			'ccc20s2',
+			'Normal',
+			false,
+			['Flood Fill'],
+			'ccc-20-escape'
+		),
+		new Problem(
+			'Silver',
+			'Snow Boots',
+			'811',
+			'Hard',
+			false,
+			['Flood Fill'],
+			'usaco-811'
+		),
+		new Problem(
+			'Silver',
+			'Multiplayer Moo',
+			'836',
+			'Hard',
+			false,
+			['Flood Fill'],
+			''
+		),
 	],
 };
 
@@ -410,12 +474,14 @@ int main() {
 <JavaSection>
 
 <Warning>
+
 Recursive implementations of floodfill in Java can sometimes lead to StackOverflowError. To avoid Stack Overflow, use your own stack in an iterative implementation like the one below.
+
 </Warning>
 
 ```java
-import java.io.*; 
-import java.util.*; 
+import java.io.*;
+import java.util.*;
 
 public class test{
    public static boolean[][] v;
@@ -435,7 +501,7 @@ public class test{
       while(!s.isEmpty()){
          Pair p = s.pop();
          x = p.a; y = p.b;
-         if (x < 0 || x >= N || y < 0 || y >= M || g[x][y] == '#' || v[x][y]) 
+         if (x < 0 || x >= N || y < 0 || y >= M || g[x][y] == '#' || v[x][y])
             continue;
          v[x][y] = true;
          for (int i = 0; i < 4; i++){
@@ -456,8 +522,8 @@ public class test{
          String str = br.readLine();
          for (int j = 0; j < M; j++){
             g[i][j] = str.charAt(j);
-         } 
-      }   
+         }
+      }
       v = new boolean[N][M];
       int ans = 0;
       for (int i = 0; i < N; i++){
@@ -466,7 +532,7 @@ public class test{
                ff(i,j);
                ans++;
             }
-         } 
+         }
       }
       out.println(ans);
       out.close();

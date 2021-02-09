@@ -5,6 +5,9 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+// import { Link } from 'gatsby';
+
+import Tippy from '@tippyjs/react';
 
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
@@ -35,7 +38,7 @@ export function ProblemsList(props: ProblemsListProps) {
   const divisionTable = !!props.division;
   const showSubmitCodeButtons = props.showSubmitCodeButtons || false;
   let showPercent = true; // props.division != 'Platinum';
-  for (let problem of props.problems) {
+  for (const problem of props.problems) {
     if (!problem.fraction) showPercent = false;
   }
   return (
@@ -54,7 +57,7 @@ export function ProblemsList(props: ProblemsListProps) {
                     {divisionTable ? 'Contest' : 'Source'}
                   </th>
 
-                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-no-wrap">
+                  <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-nowrap">
                     Problem Name
                   </th>
 
@@ -62,7 +65,13 @@ export function ProblemsList(props: ProblemsListProps) {
                     (divisionTable ? (
                       showPercent && (
                         <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
-                          <TextTooltip content="Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.">
+                          <TextTooltip
+                            content={
+                              props.division === 'Platinum'
+                                ? 'Percentage of points scored by the top 10 USA pre-college participants.'
+                                : 'Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.'
+                            }
+                          >
                             Percent
                           </TextTooltip>
                         </th>
@@ -227,7 +236,7 @@ const StyledProblemRow = styled.tr`
     isActive
       ? css`
           background-color: #fdfdea !important;
-          .mode-dark && {
+          .dark && {
             background-color: #3c3c00 !important;
           }
         `
@@ -237,7 +246,7 @@ const StyledProblemRow = styled.tr`
 const Anchor = styled.a`
   ${tw`text-blue-600 font-semibold`}
 
-  .mode-dark && {
+  .dark && {
     color: #a9c5ea;
   }
 `;
@@ -248,7 +257,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const id = `problem-${problem.uniqueID}`;
   const divisionTable = !!props.division;
   React.useEffect(() => {
-    const hashHandler = () => {
+    const hashHandler = (): void => {
       setIsActive(
         window && window.location && window.location.hash === '#' + id
       );
@@ -256,11 +265,12 @@ export function ProblemComponent(props: ProblemComponentProps) {
     hashHandler();
 
     window.addEventListener('hashchange', hashHandler, false);
-    return () => window.removeEventListener('hashchange', hashHandler, false);
+    return (): void =>
+      window.removeEventListener('hashchange', hashHandler, false);
   }, []);
 
   const statusCol = (
-    <td className="pl-4 md:pl-6 whitespace-no-wrap text-sm font-medium">
+    <td className="pl-4 md:pl-6 whitespace-nowrap text-sm font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
@@ -271,7 +281,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   );
 
   const sourceCol = (
-    <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+    <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
       {problem.tooltipHoverDescription ? (
         <TextTooltip content={problem.tooltipHoverDescription}>
           {problem.source}
@@ -283,7 +293,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   );
 
   const nameCol = (
-    <td className="pl-4 md:px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+    <td className="pl-4 md:px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
       <div className="flex items-center">
         {problem.starred && (
           <Tooltip content="We highly recommend you do all starred problems!">
@@ -310,9 +320,10 @@ export function ProblemComponent(props: ProblemComponentProps) {
       </div>
     </td>
   );
+
   const difficultyCol = (
     <td
-      className={`pl-4 md:pl-6 py-4 whitespace-no-wrap leading-5 ${
+      className={`pl-4 md:pl-6 py-4 whitespace-nowrap leading-5 ${
         !showSols ? 'pr-4 md:pr-6' : ''
       }`}
     >
@@ -335,6 +346,44 @@ export function ProblemComponent(props: ProblemComponentProps) {
     </td>
   );
 
+  const [copied, setCopied] = React.useState(false);
+
+  const urlButton = (
+    <Tippy
+      content={copied ? 'Copied!' : 'Copy problem URL to clipboard'}
+      hideOnClick={false}
+      onUntrigger={() => {
+        return setTimeout(() => setCopied(false), 200);
+      }}
+    >
+      <a
+        href={`#problem-${problem.uniqueID}`}
+        onClick={e => {
+          e.preventDefault();
+          setCopied(true);
+          navigator.clipboard.writeText(
+            window.location.href.split(/[?#]/)[0] +
+              '#problem-' +
+              problem.uniqueID
+          );
+        }}
+        className="h-5 w-5 inline-block"
+      >
+        <svg
+          fill="none"
+          height="20"
+          width="20"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      </a>
+    </Tippy>
+  );
+
   return (
     <StyledProblemRow id={id} isActive={isActive}>
       {statusCol}
@@ -352,7 +401,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             )
           : difficultyCol)}
       {showTagsAndDifficulty && !alwaysHideTags && (
-        <td className="pl-4 md:pl-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium">
+        <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
             <details className="text-gray-500 dark:text-dark-med-emphasis">
               <summary>Show Tags</summary>
@@ -375,21 +424,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         />
       )}
       {props.showSubmitCodeButtons && submitCodeCol}
-      <td>
-        <a href={`#problem-${problem.uniqueID}`}>
-          <svg
-            fill="none"
-            height="20"
-            width="20"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-        </a>
-      </td>
+      <td>{urlButton}</td>
     </StyledProblemRow>
   );
 }
@@ -477,7 +512,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           >
             <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
               <svg
-                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition duration-150 ease-in-out"
+                className="h-5 w-5 text-gray-300 mr-1 group-hover:text-yellow-300 transition"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -504,7 +539,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     );
   }
   return (
-    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-no-wrap text-sm font-medium leading-none">
+    <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
       {contents}
       {/* {sol} */}
       {/* {/^[a-zA-Z\-0-9]+$/.test(problem.sketch) && "OK"} */}

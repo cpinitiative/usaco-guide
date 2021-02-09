@@ -244,10 +244,11 @@ export default function ClassSelectPage(props: { path: string }) {
                 <div className="mt-3">
                   <label className="bold">Instructor's Email Address</label>
                   <input
+                    type="email"
                     value={addInstructorEmail}
                     onChange={e => setAddInstructorEmail(e.target.value)}
                     disabled={addInstructorLoading}
-                    className="font-bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="font-bold form-input dark:text-gray-900 block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                   />
                 </div>
                 <div className={'mt-2'}>
@@ -261,7 +262,7 @@ export default function ClassSelectPage(props: { path: string }) {
                           setAddInstructorAlsoMakeAdmin(e.target.checked)
                         }
                         type="checkbox"
-                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                        className="form-checkbox h-4 w-4 text-indigo-600 transition"
                       />
                     </div>
                     <div className="ml-3 text-sm leading-5">
