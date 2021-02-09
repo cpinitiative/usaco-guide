@@ -110,7 +110,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Graphs',
       description:
         'Every (?) Silver - Plat contest has at least one graph problem.',
-      items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
+      items: ['dfs', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
   gold: [
