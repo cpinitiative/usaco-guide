@@ -1,11 +1,10 @@
 ---
-id: binary-search-ans
-title: 'Binary Search on the Answer'
+id: binary-search
+title: 'Binary Search'
 author: Darren Yao, Abutalib Namazov, Andrew Wang
 prerequisites:
   - intro-greedy
-  - binary-search-sorted
-description: 'Binary searching on arbitrary monotonic functions.'
+description: 'Binary searching on arbitrary monotonic functions and built-in functions for binary search.'
 frequency: 3
 ---
 
@@ -86,7 +85,15 @@ export const problems = {
 			'usaco-624'
 		),
 	],
-	count: new Problem('Silver', 'Counting Haybales', '666', 'Easy', false, [], ''),
+	count: new Problem(
+		'Silver',
+		'Counting Haybales',
+		'666',
+		'Easy',
+		false,
+		[],
+		''
+	),
 	general: [
 		new Problem(
 			'CF',
@@ -609,11 +616,11 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 }
 
 int main() {
-	ll n; int k;
+	ll n; ll k;
 	vector<int> v;
 	cin >> n >> k;
 	for(ll i = 0; i < n; i++){
-		int t; cin >> t;
+		ll t; cin >> t;
 		v.push_back(t);
 	}
 	sort(v.begin(), v.end());
@@ -824,10 +831,7 @@ public static int firstTrue(int lo, int hi) {
 
 ### Mistake 3 - Integer Overflow
 
-The first version of `firstTrue` won't work if `hi-lo` initially exceeds `INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds `INT_MAX` at any point during execution. 
-
-For this reason, we would have received WA if we had used `(lo+hi+1)/2` instead of `lo+(hi+1-lo)/2` in the solution to "Maximum Median." An easy way to resolve this is to use `long long` in place of `int` everywhere.
-
+The first version of `firstTrue` won't work if `hi-lo` initially exceeds `INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds `INT_MAX` at any point during execution. If this is an issue, use `long long`s instead of `int`s.
 
 ## Library Functions For Binary Search
 
