@@ -2,12 +2,32 @@
 id: usaco-968
 source: USACO Silver 2019 December
 title: Milk Visits
-author: Qi Wang
+author: Qi Wang, Tanish Tyagi
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_milkvisits_silver_dec19.html)
 
 **Time Complexity:** $\mathcal{O}(N + M)$
+
+We can use a DFS to create connected components from an adjacency list (which is made when we process the roads between the farms). Each connected component will contain farms that all have the same breed. 
+
+Graph based off sample test case: <br/>
+1 (H) --> 2 (H), 5 (G) <br/>
+2 (H) --> 3, 4 (H) <br/>
+3 (G) --> 2 (H) <br/>
+4 (H) --> 2 (H) <br/>
+5 (G) --> 1 (G) <br/>
+
+NOTE: We are not going to store the breed of cow in our adjacency list. The breed is there for convenience.
+
+Connected Components based off of graph: <br/>
+components (first index is 1) = [1, 1, 2, 1, 3] <br/> <br/>
+Farms 1,2, and 4 are all Holsteins and make up component 1, farm 3 makes up component 2, and farm 5 makes up component 3. 
+
+When it comes to seeing which farmers will be happy, we just have to evalulate 3 conditions: <br/>
+1. Farm $A$ and $B$ are part of the same component. If $C$ is the same breed as $A$ / $B$, then we should output 1.
+2. Farm $A$ and $B$ are part of the different components. This means that the farmer will always be satisfied because the path between $A$ and $B$ contains both breeds of cows. We should output 1.
+3. If case 1 and 2 are not met, then we should output 0.
 
 <LanguageSection>
 
