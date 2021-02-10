@@ -20,7 +20,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'About This Guide',
       description:
         "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing', 'code-con'],
+      items: ['using-this-guide', 'modules', 'contributing'],
     },
     {
       name: 'Getting Started',

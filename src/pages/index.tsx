@@ -332,13 +332,13 @@ export default function IndexPage(props: PageProps) {
                 </div>
                 <div className="mt-12">
                   <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    How can I report a problem?
+                    How do I report a problem or ask a question?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Contact Us" button or email us at{' '}
+                      "Contact Us" button. Alternatively, email us at{' '}
                       <a
                         href="mailto:usacoguide@gmail.com"
                         className="text-blue-600 dark:text-blue-400 underline"
@@ -346,6 +346,56 @@ export default function IndexPage(props: PageProps) {
                         usacoguide@gmail.com
                       </a>
                       .
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    I'm looking for classes, club curriculum, contests...
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      Check out the{' '}
+                      <OutboundLink
+                        href="https://joincpi.org/?ref=home"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        Competitive Programming Initiative
+                      </OutboundLink>
+                      !
+                    </p>
+                  </dd>
+                </div>
+              </div>
+              <div className="mt-12 md:mt-0">
+                <div>
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    Is this guide for non-USACO competitive programmers?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      Of course! While we structure our content around USACO,
+                      feel free to use this guide even if you don't do USACO.
+                      You will still learn a lot from it!
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    How can I get help?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      If you get stuck, head over to the{' '}
+                      <OutboundLink
+                        href="https://forum.usaco.guide"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USACO Forum
+                      </OutboundLink>{' '}
+                      for help.
                     </p>
                   </dd>
                 </div>
@@ -381,76 +431,6 @@ export default function IndexPage(props: PageProps) {
                         Github Repository
                       </OutboundLink>
                       .
-                    </p>
-                  </dd>
-                </div>
-              </div>
-              <div className="mt-12 md:mt-0">
-                <div>
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    Is this guide for non-USACO competitive programmers?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Of course! While we structure our content around USACO,
-                      feel free to use this guide even if you don't do USACO.
-                      You will still learn a lot from it!
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    How can I get help?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      If you get stuck, feel free to ask for help by clicking
-                      the "Contact Us" button. It may take some time for your
-                      question to be addressed. You can also head over to the{' '}
-                      <OutboundLink
-                        href="https://forum.usaco.guide"
-                        target="_blank"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        USACO Forum
-                      </OutboundLink>{' '}
-                      for help.
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    Who should I contact?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      If you have any questions related to this guide, please
-                      contact us at{' '}
-                      <a
-                        href="mailto:usacoguide@gmail.com"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        usacoguide@gmail.com
-                      </a>
-                      .
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    I'm looking for classes, club curriculum, contests...
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Check out the{' '}
-                      <OutboundLink
-                        href="https://joincpi.org/?ref=home"
-                        target="_blank"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        Competitive Programming Initiative
-                      </OutboundLink>
-                      !
                     </p>
                   </dd>
                 </div>
