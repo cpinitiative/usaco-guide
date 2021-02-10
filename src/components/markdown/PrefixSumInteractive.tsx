@@ -79,16 +79,16 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
   };
 
   return (
-    <div className="overflow-x-auto px-0.5">
+    <div className="overflow-x-auto">
       <div
         className="flex justify-center space-x-8"
-        style={{ minWidth: '32rem' }}
+        style={{ minWidth: '34rem' }}
       >
         <div className="space-y-2 text-right">
           {demo2 ? (
             <>
               {renderStep([0, 0, A, B, 1], 'add prefix[A][B]')}
-              {renderStep([0, 0, a - 1, B, -1], 'subtract[a-1][B]')}
+              {renderStep([0, 0, a - 1, B, -1], 'subtract prefix[a-1][B]')}
               {renderStep([0, 0, A, b - 1, -1], 'subtract prefix[A][b-1]')}
               {renderStep([0, 0, a - 1, b - 1, 1], 'add prefix[a-1][b-1]')}
               <div

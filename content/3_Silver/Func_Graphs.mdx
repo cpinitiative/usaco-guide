@@ -27,8 +27,8 @@ export const problems = {
 			'https://codeforces.com/contest/1137/problem/D',
 			'Hard',
 			false,
-			['Func Graph', "Floyd's Algorithm"],
-			"Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)"
+			['Func Graph', 'Floyd's Algorithm'],
+			'Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)'
 		),
 	],
 	probs: [
@@ -39,7 +39,7 @@ export const problems = {
 			'Easy',
 			false,
 			['Func Graph'],
-			'Try to solve the problem in $mathcal{O}(N)$!'
+			'Try to solve the problem in $\mathcal{O}(N)$!'
 		),
 		new Problem(
 			'CSES',
@@ -74,7 +74,7 @@ export const problems = {
 			'1091',
 			'Hard',
 			false,
-			['Permutation', '2P'],
+			['Permutation', 'Two Pointers'],
 			''
 		),
 	],
@@ -363,20 +363,20 @@ vi P,ans;
 bool in_cycle;
 
 void gen(int x) {
-    if (ans[x] != -2) {
-        if (ans[x] == -1) ans[x] = x, in_cycle = 1; // found a cycle!
-        return;
-    }
-    ans[x] = -1; gen(P[x]);
-    if (ans[x] != -1) { in_cycle = 0; return; }
-    ans[x] = in_cycle ? x : ans[P[x]];
+	if (ans[x] != -2) {
+		if (ans[x] == -1) ans[x] = x, in_cycle = 1; // found a cycle!
+		return;
+	}
+	ans[x] = -1; gen(P[x]);
+	if (ans[x] != -1) { in_cycle = 0; return; }
+	ans[x] = in_cycle ? x : ans[P[x]];
 }
 
 int main() {
-    setIO(); re(N); rv(N,P); each(t,P) --t;
-    ans = vi(N,-2);
-    F0R(i,N) gen(i); // in_cycle is always reset to 0
-    each(t,ans) pr(t+1,' ');
+	setIO(); re(N); rv(N,P); each(t,P) --t;
+	ans = vi(N,-2);
+	F0R(i,N) gen(i); // in_cycle is always reset to 0
+	each(t,ans) pr(t+1,' ');
 }
 ```
 
