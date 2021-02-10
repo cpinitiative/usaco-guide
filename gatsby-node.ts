@@ -44,7 +44,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions;
+  const { createPage, createRedirect } = actions;
   const result = await graphql(`
     query {
       modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
@@ -52,6 +52,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           node {
             frontmatter {
               id
+              redirects
             }
             fields {
               division
@@ -68,6 +69,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             frontmatter {
               title
               id
+              redirects
             }
           }
         }
@@ -81,8 +83,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
     if (!node.fields?.division) return;
+    const path = `/${node.fields.division}/${node.frontmatter.id}`;
+    if (node.frontmatter.redirects) {
+      node.frontmatter.redirects.forEach(fromPath => {
+        createRedirect({
+          fromPath,
+          toPath: path,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+    }
     createPage({
-      path: `/${node.fields.division}/${node.frontmatter.id}`,
+      path,
       component: moduleTemplate,
       context: {
         id: node.frontmatter.id,
@@ -94,8 +107,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
   const solutions = result.data.solutions.edges;
   solutions.forEach(({ node }) => {
+    const path = `/solutions/${node.frontmatter.id}`;
+    if (node.frontmatter.redirects) {
+      node.frontmatter.redirects.forEach(fromPath => {
+        createRedirect({
+          fromPath,
+          toPath: path,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+    }
     createPage({
-      path: `/solutions/${node.frontmatter.id}`,
+      path: path,
       component: solutionTemplate,
       context: {
         id: node.frontmatter.id,
@@ -125,6 +149,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type MdxFrontmatter implements Node {
       prerequisites: [String]
       date: String
+      redirects: [String]
     }
     
     type Heading {
