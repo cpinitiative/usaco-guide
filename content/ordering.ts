@@ -88,23 +88,24 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional',
       description: 'Topics not strictly necessary to know to pass Bronze.',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'intro-bitwise'],
     },
   ],
   silver: [
     {
-      name: 'Sorting & Ordered Sets',
+      name: 'Prefix Sums',
+      items: ['prefix-sums'],
+    },
+    {
+      name: 'Sorting & Searching',
       items: [
         'sorting-custom',
         '2P',
         'intro-ordered',
         'custom-cpp-stl',
         'greedy',
+        'binary-search',
       ],
-    },
-    {
-      name: 'Misc. Topics',
-      items: ['prefix-sums', 'binary-search', 'intro-bitwise'],
     },
     {
       name: 'Graphs',
