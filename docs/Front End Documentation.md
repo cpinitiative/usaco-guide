@@ -12,7 +12,7 @@ The following is written for individuals without front-end development experienc
    - Install [yarn](https://classic.yarnpkg.com/en/)
      - `npm install -g yarn`? might work
 2. Clone repo
-   - `git clone https://github.com/thecodingwizard/usaco-guide.git`
+   - `git clone https://github.com/cpinitiative/usaco-guide.git`
 3. Install Dependencies
    - `yarn`
 4. Run development server

@@ -5,6 +5,9 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+// import { Link } from 'gatsby';
+
+import Tippy from '@tippyjs/react';
 
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
@@ -254,7 +257,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const id = `problem-${problem.uniqueID}`;
   const divisionTable = !!props.division;
   React.useEffect(() => {
-    const hashHandler = () => {
+    const hashHandler = (): void => {
       setIsActive(
         window && window.location && window.location.hash === '#' + id
       );
@@ -262,7 +265,8 @@ export function ProblemComponent(props: ProblemComponentProps) {
     hashHandler();
 
     window.addEventListener('hashchange', hashHandler, false);
-    return () => window.removeEventListener('hashchange', hashHandler, false);
+    return (): void =>
+      window.removeEventListener('hashchange', hashHandler, false);
   }, []);
 
   const statusCol = (
@@ -316,6 +320,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
       </div>
     </td>
   );
+
   const difficultyCol = (
     <td
       className={`pl-4 md:pl-6 py-4 whitespace-nowrap leading-5 ${
@@ -339,6 +344,44 @@ export function ProblemComponent(props: ProblemComponentProps) {
     <td className={`leading-5 pr-4`}>
       <SubmitCodeButton problem={problem} />
     </td>
+  );
+
+  const [copied, setCopied] = React.useState(false);
+
+  const urlButton = (
+    <Tippy
+      content={copied ? 'Copied!' : 'Copy problem URL to clipboard'}
+      hideOnClick={false}
+      onUntrigger={() => {
+        return setTimeout(() => setCopied(false), 200);
+      }}
+    >
+      <a
+        href={`#problem-${problem.uniqueID}`}
+        onClick={e => {
+          e.preventDefault();
+          setCopied(true);
+          navigator.clipboard.writeText(
+            window.location.href.split(/[?#]/)[0] +
+              '#problem-' +
+              problem.uniqueID
+          );
+        }}
+        className="h-5 w-5 inline-block"
+      >
+        <svg
+          fill="none"
+          height="20"
+          width="20"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      </a>
+    </Tippy>
   );
 
   return (
@@ -381,21 +424,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         />
       )}
       {props.showSubmitCodeButtons && submitCodeCol}
-      <td>
-        <a href={`#problem-${problem.uniqueID}`}>
-          <svg
-            fill="none"
-            height="20"
-            width="20"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-        </a>
-      </td>
+      <td>{urlButton}</td>
     </StyledProblemRow>
   );
 }

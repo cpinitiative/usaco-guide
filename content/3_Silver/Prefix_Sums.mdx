@@ -27,7 +27,7 @@ export const problems = {
 			'find-pivot-index',
 			'Very Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'lc-find-pivot-index'
 		),
 		new Problem(
@@ -36,7 +36,7 @@ export const problems = {
 			'572',
 			'Very Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'usaco-572'
 		),
 		new Problem(
@@ -45,7 +45,7 @@ export const problems = {
 			'595',
 			'Easy',
 			true,
-			[],
+			['Prefix Sums'],
 			'usaco-595'
 		),
 		new Problem(
@@ -54,7 +54,7 @@ export const problems = {
 			'691',
 			'Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'usaco-691'
 		),
 		new Problem(
@@ -63,7 +63,7 @@ export const problems = {
 			'1661',
 			'Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'cses-1661'
 		),
 		new Problem(
@@ -72,7 +72,7 @@ export const problems = {
 			'1662',
 			'Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'cses-1662'
 		),
 		new Problem(
@@ -81,7 +81,7 @@ export const problems = {
 			'715',
 			'Easy',
 			false,
-			[],
+			['Prefix Sums'],
 			'usaco-715'
 		),
 		new Problem(
@@ -90,7 +90,7 @@ export const problems = {
 			'104',
 			'Normal',
 			true,
-			[],
+			['Prefix Sums'],
 			'usaco-104'
 		),
 	],
@@ -132,7 +132,7 @@ export const problems = {
 			'923',
 			'Hard',
 			true,
-			['Prefix Sums', 'Max Subarray Sum'],
+			['2D Prefix Sums', 'Max Subarray Sum'],
 			'Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated.'
 		),
 		new Problem(
@@ -141,10 +141,18 @@ export const problems = {
 			'1063',
 			'Hard',
 			false,
-			['Prefix Sums'],
+			['2D Prefix Sums'],
 			''
 		),
-		new Problem('Plat', 'Modern Art', '744', 'Very Hard', false, [], ''),
+		new Problem(
+			'Plat',
+			'Modern Art',
+			'744',
+			'Very Hard',
+			false,
+			['2D Prefix Sums'],
+			''
+		),
 	],
 	related: [
 		new Problem(
@@ -185,7 +193,15 @@ export const problems = {
 			['Prefix Sums'],
 			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
 		),
-		new Problem('Plat', 'Sprinklers', '794', 'Insane', false, [], ''),
+		new Problem(
+			'Plat',
+			'Sprinklers',
+			'794',
+			'Insane',
+			false,
+			['Prefix Sums'],
+			''
+		),
 	],
 };
 
@@ -365,20 +381,19 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 <CPPSection>
 
-
 In C++ we can use [`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/), although it doesn't shorten the code by much.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 #define sz(x) (int)size(x)
 
 using ll = long long;
 using vl = vector<ll>;
 
 vl psum(const vl& a) {
-	vl psum(sz(a)+1); 
+	vl psum(sz(a)+1);
 	for (int i = 0; i < sz(a); ++i)
 		psum[i+1] = psum[i]+a[i];
 	// or partial_sum(begin(a),end(a),begin(psum)+1);
@@ -391,7 +406,6 @@ int main() {
 	// 0 1 3 6 10 15
 }
 ```
-
 
 </CPPSection>
 
@@ -410,14 +424,13 @@ print(psum([1,2,3,4,5]))
 
 </LanguageSection>
 
-
 ### Problems
 
 <Problems problems={problems.cum} />
 
 <Warning>
 
-The last problem isn't submittable on USACO. Download the test data and use the script provided [here](/general/debugging-lang#stress-testing) to test your solution.
+"Haybale Stacking" isn't submittable on the USACO website. Use [this link](https://www.acmicpc.net/problem/5912) to submit.
 
 </Warning>
 
@@ -684,7 +697,6 @@ Try playing with the interactive widget below by clicking the buttons to see whi
 
 Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query after an $\mathcal{O}(NM)$ preprocessing.
 
-
 ### Solution - Forest Queries
 
 <Warning>
@@ -692,7 +704,6 @@ Since no matter the size of the submatrix we are summing, we only need to access
 We need to be cautious of off-by-one errors, as intervals can be inclusive, exclusive, 1-indexed, etc.
 
 </Warning>
-
 
 <LanguageSection>
 
@@ -737,7 +748,7 @@ int main() {
     }
 
     FOR(i, 1, N+1) {
-        FOR(j, 1, N+1){ 
+        FOR(j, 1, N+1){
             pfx[i][j] = arr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
             // pfx[i][j] += pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
         }
@@ -750,18 +761,18 @@ int main() {
     }
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>
 
-
-<!-- 
+<!--
 
 ### 2-Dimensional
 
 #### Point
 
-We can apply a similar concept to 2D matrices. Let $\texttt{prefix}[i][j]$ be the sum of the values in the rectangle between $(0,0)$ and $(i, j)$, or $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. $\texttt{prefix}[i][j]$ is equal to the sum of $\texttt{arr}[i][j]$ and all the values in the region formed by the union of rectangles $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$. 
+We can apply a similar concept to 2D matrices. Let $\texttt{prefix}[i][j]$ be the sum of the values in the rectangle between $(0,0)$ and $(i, j)$, or $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. $\texttt{prefix}[i][j]$ is equal to the sum of $\texttt{arr}[i][j]$ and all the values in the region formed by the union of rectangles $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$.
 
 To determine the sum of values in this region, we can add the sum of values in these rectangles ($\texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1]$) and subtract the double counted overlap $\texttt{prefix}[i-1][j-1]$. This can be expressed by
 
@@ -808,7 +819,7 @@ $$
 \texttt{prefix}[i][j] = \sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
 $$
 
-For our example, we get 
+For our example, we get
 
 <center>
 	<table className='text-center'>
@@ -850,7 +861,7 @@ For our example, we get
 	</table>
 </center>
 
-Notice it is padded with zeroes, and all queries can now be processed using 
+Notice it is padded with zeroes, and all queries can now be processed using
 
 $$
 \texttt{prefix}[A][B] - \texttt{prefix}[a-1][B] - \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]

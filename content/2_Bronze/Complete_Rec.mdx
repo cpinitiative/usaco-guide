@@ -8,8 +8,6 @@ prerequisites:
   - intro-complete
 ---
 
-
-
 export const problems = {
 	subset: [
 		new Problem(
@@ -18,12 +16,20 @@ export const problems = {
 			'1623',
 			'Easy',
 			false,
-			['Recursion', 'Subsets'],
+			['Complete Search', 'Subsets'],
 			'@B'
 		),
 	],
 	permSam: [
-		new Problem('CSES', 'Creating Strings I', '1622', 'Easy', false, [], '@B'),
+		new Problem(
+			'CSES',
+			'Creating Strings I',
+			'1622',
+			'Easy',
+			false,
+			['Complete Search', 'Permutation'],
+			'@B'
+		),
 	],
 	back: [
 		new Problem(
@@ -32,10 +38,18 @@ export const problems = {
 			'1624',
 			'Normal',
 			false,
-			[],
+			['Complete Search', 'Permutation'],
 			'@CPH 5.3'
 		),
-		new Problem('CSES', 'Grid Paths', '1625', 'Insane', false, [], '@CPH 5.4'),
+		new Problem(
+			'CSES',
+			'Grid Paths',
+			'1625',
+			'Insane',
+			false,
+			['Pruning'],
+			'@CPH 5.4'
+		),
 	],
 	gen: [
 		new Problem(
@@ -44,7 +58,7 @@ export const problems = {
 			'965',
 			'Hard',
 			true,
-			['permutations'],
+			['Complete Search', 'Permutation'],
 			''
 		), // 91.95
 		new Problem(
@@ -53,7 +67,7 @@ export const problems = {
 			'857',
 			'Hard',
 			false,
-			[],
+			['Complete Search'],
 			'usaco-857'
 		), // 99.63
 		new Problem(
@@ -62,7 +76,7 @@ export const problems = {
 			'360',
 			'Very Hard',
 			false,
-			['permutations'],
+			['Complete Search', 'Permutation'],
 			''
 		), // 91.95
 	],
@@ -141,7 +155,7 @@ ll solve(int i, ll s1, ll s2){
 	if(i == n){
 		return abs(s1 - s2);
 	}
-	return min(solve(i + 1, s1 + weights[i], s2), 
+	return min(solve(i + 1, s1 + weights[i], s2),
 				solve(i + 1, s1, s2 + weights[i]));
 }
 
@@ -286,13 +300,13 @@ p = list(map(int, input().split()))
 def solve(i, s1, s2):
 	if i == n:
 		return abs(s2-s1)
-	return min(solve(i+1, s1+p[i], s2), 
+	return min(solve(i+1, s1+p[i], s2),
 			   solve(i+1, s1, s2+p[i]))
 
 print(solve(0, 0, 0))
 ```
-	
-</PySection>	
+
+</PySection>
 
 </LanguageSection>
 
@@ -544,7 +558,7 @@ Notice that the list starts with permutations beginning with 1 (just like a dict
 
 Generally, unless you are specifically asked to find the lexicographically smallest/largest solution, you do not need to worry about whether permutations are being generated in lexicographical order. However, the idea of lexicographical order does appear quite often in programming contest problems, and in a variety of contexts, so it is strongly recommended that you familiarize yourself with its definition.
 
-Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can just iterate through all $N!=N\cdot (N-1)\cdot (N-2)\cdots 1$ permutations and check each permutation for validity. 
+Some problems will ask for an ordering of elements that satisfies certain conditions. In these problems, if $N \leq 10$, we can just iterate through all $N!=N\cdot (N-1)\cdot (N-2)\cdots 1$ permutations and check each permutation for validity.
 
 ### Solution - Creating Strings I
 
@@ -553,7 +567,6 @@ Some problems will ask for an ordering of elements that satisfies certain condit
 		brief explanation + code for both of the methods below
 	</Resource>
 </Resources>
-
 
 #### Generating Permutations Recursively
 
@@ -596,10 +609,10 @@ void search() {
 		return;
 	}
 	for (int i = 0; i < 26; ++i) if (cnt[i]) {
-		--cnt[i]; 
+		--cnt[i];
 		perm += char('a'+i);
 		search();
-		++cnt[i]; 
+		++cnt[i];
 		perm.pop_back();
 	}
 }
@@ -616,7 +629,6 @@ int main() {
 
 </CPPSection>
 
-
 <JavaSection>
 
 ```java
@@ -627,7 +639,7 @@ public class Main {
 	static String s, perm;
 	static ArrayList<String> perms;
 	static int N, cnt[];
-		
+
 	static void search() {
 		if (perm.length() == s.length()) {
 			perms.add(perm);
@@ -643,7 +655,7 @@ public class Main {
 			}
 		}
 	}
-		
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		s = br.readLine();
@@ -694,7 +706,6 @@ do {
 ```
 
 Each call to `next_permutation` makes a constant number of swaps on average if we go through all $N!$ permutations of size $N$.
-
 
 <Warning>
 
@@ -819,8 +830,12 @@ public class Test {
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="5.3 - Backtracking" starred>code and explanation for focus problem</Resource>
-	<Resource source="CP2" title="3.2 - Complete Search">iterative vs recursive complete search</Resource>
+	<Resource source="CPH" title="5.3 - Backtracking" starred>
+		code and explanation for focus problem
+	</Resource>
+	<Resource source="CP2" title="3.2 - Complete Search">
+		iterative vs recursive complete search
+	</Resource>
 </Resources>
 
 ### Solution - Chessboard & Queens
@@ -907,7 +922,6 @@ int main() {
 
 <JavaSection>
 
-
 ```java
 import java.io.*;
 import java.util.*;
@@ -967,7 +981,6 @@ public class Chessboard {
 }
 ```
 
-
 </JavaSection>
 
 </LanguageSection>
@@ -992,7 +1005,7 @@ Finally, when we have placed all the queens and the board's state is valid, then
 string g[8];
 bool sum[15], dif[15], c[8];
 int ans = 0;
- 
+
 void dfs(int r) { // place queen in r-th row
 	if (r == 8) {
 		++ans; // found valid placement
@@ -1004,11 +1017,11 @@ void dfs(int r) { // place queen in r-th row
 		c[i] = sum[i+r] = dif[i-r+7] = 0;
 	}
 }
- 
+
 int main() {
-	setIO(); 
+	setIO();
 	for (int i = 0; i < 8; ++i) cin >> g[i];
-	dfs(0); 
+	dfs(0);
 	cout << ans;
 }
 ```
@@ -1027,7 +1040,7 @@ public class Main {
 	static int ans = 0;
 	static void dfs(int r) { //place queen in row r
 		if (r == 8) {
-			++ ans; 
+			++ ans;
 			return;
 		}
 		for (int i = 0; i < 8; ++i) {
@@ -1038,7 +1051,7 @@ public class Main {
 			}
 		}
 	}
-		
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		g = new String[8];
@@ -1064,8 +1077,12 @@ public class Main {
 Both of the resources below describe this well so I won't repeat it here.
 
 <Resources>
-	<Resource source="CPH" title="5.4 - Pruning the search" starred>code and explanation for focus problem</Resource>
-	<Resource source="CP2" title="3.2 - Complete Search">pruning tips</Resource>
+	<Resource source="CPH" title="5.4 - Pruning the search" starred>
+		code and explanation for focus problem
+	</Resource>
+	<Resource source="CP2" title="3.2 - Complete Search">
+		pruning tips
+	</Resource>
 </Resources>
 
 ## Problems
