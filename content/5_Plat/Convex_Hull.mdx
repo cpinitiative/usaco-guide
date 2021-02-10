@@ -119,17 +119,13 @@ The **Convex Hull** is the subset of points that forms the smallest convex polyg
 
 The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the leftmost (and bottommost if there is a tie), point as $P_0$. 
 
-We maintain a stack containing the points of the convex hull, such that the set of points in the stack is convex. As a result, we only have to check the candidate point against the topmost 2 points.
+We maintain a stack containing the points such that the following invariant holds: every three consecutive points $a,b,c$ of the stack form a counterclockwise turn. In other words, $c$ lies to the left of the line from $a$ to $b$. This condition implies that the points of the stack form the vertices of a convex polygon.
 
-To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting.
+To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting. After that, we attempt to add each point in $\texttt{cand}$ to the stack.
 
-In order for the hull to be convex, every three consecutive points of the stack must contain a counterclockwise turn.
-
-A counterclockwise turn from $a \rightarrow b \rightarrow c$ means that $c$ is to the left of the line from $a$ to $b$.
-
-Denote our stack as $\texttt{hull}$, the top element of $\texttt{hull}$ as $\texttt{hull}[i]$ and $\texttt{cand}[j]$ as the $j$-th sorted candidate point.
-
-There are 2 cases for our 3 points: either the turn from $\texttt{hull}[i-1] \rightarrow \texttt{hull}[i] \rightarrow \texttt{cand}[j]$ is counterclockwise or not. If the turn is not counterclockwise, then we know that our current set of points cannot be convex, and thus we pop the top element off $\texttt{hull}$ and proceed to check convexity of the point until the turn is counterclockwise. Otherwise the turn is counterclockwise, and thus we include it in our hull.
+Denote our stack as $\texttt{hull}$, the top element of $\texttt{hull}$ as $\texttt{hull}[i]$ and $\texttt{cand}[j]$ as the $j$-th sorted candidate point. Before adding $\texttt{cand}[j]$ to the stack, we check whether $\texttt{hull}[i-1] \rightarrow \texttt{hull}[i] \rightarrow \texttt{cand}[j]$ forms a counterclockwise turn. 
+ - If so, then we add $\texttt{cand}[j]$ to the stack and the invariant holds. Continue with $\texttt{cand}[j+1]$. 
+- Otherwise, $\texttt{hull}[i]$ lies within the convex hull of the other points in the stack along with $\texttt{cand}[j]$, so we pop $\texttt{hull}[i]$ from the stack and continue with $\texttt{cand}[j]$.
 
 <Spoiler title="Illustration">
 
@@ -141,19 +137,15 @@ There are 2 cases for our 3 points: either the turn from $\texttt{hull}[i-1] \ri
 
 > Find the convex hull of the points $(1,2),(2,3),(5,3),(3,2),(2,0),(6,2)$.
 
-[Animated](https://convexhull.tiiny.site/)
+[Animation](https://convexhull.tiiny.site/) (created with [GeoDeb](https://github.com/lukakalinovcic/geodeb)).
 
-Animation created with [GeoDeb](https://github.com/lukakalinovcic/geodeb).
-
-Another convex Hull visualization with more points can be found [here.](https://lukakalinovcic.github.io/geodeb/gallery/hull.html)
+Another convex hull visualization with more points can be found [here.](https://lukakalinovcic.github.io/geodeb/gallery/hull.html)
 
 Using the steps from our Graham Scan:
 
 1. Sorting the points by counterclockwise angle: Our leftmost point is $(1,2)$, so we then sort all the points by their counterclockwise angle. If the angles are the same, we can tiebreak by distance. Our resulting sorted points are $(2,0),(6,2),(3,2),(5,3),(2,3)$ with initial pivot $(1,2)$. Note that $(6,2), (3,2)$, are colinear but since $(6,2)$ is further away it breaks the tie, thus placing it before $(3,2)$.
 
 2. Maintaining the stack:
-
-	Let's denote the $j$-th sorted point as $\texttt{cand}[j]$.
 
 	Our initial stack elements are $(1,2),(2,0)$. Then, starting from $\texttt{cand}[2]$, we process each point.
 
@@ -233,7 +225,7 @@ vi hullInd(const vP& v) {
 
 	trav(c,cand) { // for every point
 		while (sz(hull) > 1 && cross(v[end(hull)[-2]],v[hull.bk],v[c]) <= 0) {
-            hull.pop_back(); // pop until counterclockwise and size > 1
+            hull.pop_back(); // pop until counterclockwise or size <= 1
         }
 		hull.pb(c); 
     }
