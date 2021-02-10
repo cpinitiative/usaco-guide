@@ -537,6 +537,37 @@ int main() {
 
 </Spoiler>
 
+Rewriting with `scanf` and `printf` is an option:
+
+<Spoiler title="2011ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; scanf("%d",&T);
+	for (int i = 0; i < T; ++i) {
+		int a,b; scanf("%d%d",&a,&b);
+		printf("%d\n",factors[a]-factors[b]);
+	}
+}
+```
+
+</Spoiler>
+
+But what if we want to stick with `cin` and `cout`?
+
 ### Method 1 - Print a Single String
 
 In general, it may be faster to store the answer in a single `string` and output it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
@@ -573,6 +604,37 @@ int main() {
 
 Note that the above TLEs on test 5 if `cin.sync_with_stdio(0)` is not included.
 
+Also, the change in runtime if we use `scanf` and `printf` appears to be negligible.
+
+<Spoiler title="2027 ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; scanf("%d",&T);
+	string ans;
+	for (int i = 0; i < T; ++i) {
+		int a,b; scanf("%d%d",&a,&b);
+		ans += to_string(factors[a]-factors[b])+"\n";
+	}
+	printf("%s",ans.c_str());
+}
+```
+
+</Spoiler>
+
 ### Method 2 - `cin.tie(0)`
 
 <Resources>
@@ -607,7 +669,6 @@ From the second resource:
 > If `cin` and `cout` are tied, you can expect the output to be flushed (i.e., visible on the console) before the program prompts input from the user. If you untie the streams, the program might block waiting for the user to enter their name but the "Enter name" message is not yet visible (because `cout` is buffered by default, output is flushed/displayed on the console only on demand or when the buffer is full).
 >
 > So if you untie `cin` from `cout`, you must make sure to flush `cout` manually every time you want to display something before expecting input on `cin`.
-
 
 <Spoiler title="1076 ms">
 
