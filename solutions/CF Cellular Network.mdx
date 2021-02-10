@@ -2,7 +2,7 @@
 id: cellular-network
 source: CF
 title: Cellular Network
-author: Benjamin Qi, Maggie Liu, Nathan Wang
+author: Nathan Wang, Benjamin Qi, Maggie Liu
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
@@ -18,15 +18,12 @@ author: Benjamin Qi, Maggie Liu, Nathan Wang
 using namespace std;
 
 // returns the first index in the array that is >= value, or arr.size() if no such index exists
-int binarySearch(const vector<int> &arr, int value) {
-	int lo = 0, hi = arr.size()-1;
-	while (lo <= hi) {
+int firstAtLeast(const vector<int>& arr, int value) {
+	int lo = 0, hi = arr.size();
+	while (lo < hi) {
 		int mid = (lo+hi)/2;
-		if (arr[mid] < value) {
-			lo = mid + 1;
-		} else {
-			hi = mid - 1;
-		}
+		if (arr[mid] >= value) hi = mid;
+		else lo = mid+1;
 	}
 	return lo;
 }
@@ -43,7 +40,7 @@ int main() {
 
 	int minR = 0;
 	for (int i = 0; i < n; i++) {
-		int towerRight = binarySearch(towers, cities[i]);
+		int towerRight = firstAtLeast(towers, cities[i]);
 		int towerLeft = towerRight - 1;
 
 		int minRForThisCity = 2e9;
