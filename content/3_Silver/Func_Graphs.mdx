@@ -358,8 +358,12 @@ $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
 int N;
-vi P,ans;
+vector<int> P,ans;
 bool in_cycle;
 
 void gen(int x) {
@@ -373,10 +377,12 @@ void gen(int x) {
 }
 
 int main() {
-	setIO(); re(N); rv(N,P); each(t,P) --t;
-	ans = vi(N,-2);
-	F0R(i,N) gen(i); // in_cycle is always reset to 0
-	each(t,ans) pr(t+1,' ');
+	cin >> N;
+	P.assign(N, 0);
+	for(int& x:P) cin >> x, --x;
+	ans.assign(N, -2);
+	for(int i=0;i<N;++i) gen(i); // in_cycle is always reset to 0
+	for(int t:ans) cout << t+1 << " ";
 }
 ```
 
