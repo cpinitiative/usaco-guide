@@ -20,7 +20,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'About This Guide',
       description:
         "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing', 'code-con'],
+      items: ['using-this-guide', 'modules', 'contributing'],
     },
     {
       name: 'Getting Started',
@@ -70,7 +70,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   bronze: [
     {
-      name: 'Basics',
+      name: 'Fundamentals',
       items: ['time-comp', 'rect-geo', 'simulation'],
     },
     {
@@ -88,29 +88,30 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional',
       description: 'Topics not strictly necessary to know to pass Bronze.',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'intro-bitwise'],
     },
   ],
   silver: [
     {
-      name: 'Sorting & Ordered Sets',
-      items: [
-        'binary-search-sorted',
-        'sorting-custom',
-        'intro-ordered',
-        'custom-cpp-stl',
-        'greedy',
-      ],
+      name: 'Prefix Sums',
+      items: ['prefix-sums'],
     },
     {
-      name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans', 'intro-bitwise'],
+      name: 'Sorting & Searching',
+      items: [
+        'sorting-custom',
+        '2P',
+        'intro-ordered',
+        'custom-cpp-stl',
+        'greedy-sorting',
+        'binary-search',
+      ],
     },
     {
       name: 'Graphs',
       description:
         'Every (?) Silver - Plat contest has at least one graph problem.',
-      items: ['dfs', 'bipartite', 'ff', 'intro-tree', 'func-graphs'],
+      items: ['dfs', 'ff', 'intro-tree', 'func-graphs'],
     },
   ],
   gold: [

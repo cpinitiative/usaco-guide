@@ -4,7 +4,6 @@ title: 'More Operations on Ordered Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
 prerequisites:
   - intro-sets
-  - binary-search-sorted
 description: 'Using iterators with sets, finding the next element smaller or larger than a specified key in a set.'
 frequency: 2
 ---
@@ -17,7 +16,7 @@ export const problems = {
 			'1091',
 			'Easy',
 			false,
-			['iterators'],
+			['Ordered Set'],
 			'cses-1091'
 		),
 		new Problem(
@@ -26,7 +25,7 @@ export const problems = {
 			'https://codeforces.com/contest/702/problem/C',
 			'Easy',
 			false,
-			['iterators'],
+			['Ordered Set'],
 			'cellular-network'
 		),
 		new Problem(
@@ -35,7 +34,7 @@ export const problems = {
 			'1163',
 			'Normal',
 			true,
-			['set'],
+			['Ordered Set'],
 			'cses-1163'
 		),
 		new Problem(
@@ -44,33 +43,56 @@ export const problems = {
 			'1164',
 			'Normal',
 			true,
-			[],
+			['Ordered Set'],
 			'cses-1164'
 		),
 	],
 	sample: [
-		new Problem('CSES', 'Bit Inversions', '1188', 'Hard', false, [], '@B'),
+		new Problem(
+			'CSES',
+			'Bit Inversions',
+			'1188',
+			'Hard',
+			false,
+			['Ordered Set'],
+			'@B'
+		),
 	],
 	general: [
-		new Problem('Silver', 'Milk Measurement', '763', 'Normal', false, [], 'usaco-763'),
 		new Problem(
-			'CF',
-			'Jury Marks',
-			'contest/831/problem/C',
+			'Silver',
+			'Milk Measurement',
+			'763',
 			'Normal',
 			false,
-			[],
+			['Ordered Set'],
+			'usaco-763'
+		),
+		new Problem(
+			'Silver',
+			'Convention II',
+			'859',
+			'Normal',
+			true,
+			['Ordered Set'],
 			''
 		),
-		new Problem('Silver', 'Convention II', '859', 'Normal', true, []),
-		new Problem('Gold', 'Snow Boots', '813', 'Hard', true, [], 'usaco-813'),
+		new Problem(
+			'Gold',
+			'Snow Boots',
+			'813',
+			'Hard',
+			true,
+			['Linked List', 'Ordered Set'],
+			'usaco-813'
+		),
 		new Problem(
 			'CF',
 			'Mahmoud & Ehab & Function',
 			'contest/862/problem/E',
 			'Very Hard',
 			false,
-			[],
+			['Ordered Set'],
 			''
 		),
 		new Problem(
@@ -79,8 +101,17 @@ export const problems = {
 			'contest/878/problem/C',
 			'Insane',
 			false,
-			[],
+			['Ordered Set'],
 			''
+		),
+		new Problem(
+			'SAPO',
+			'2018 - Stadium',
+			'https://saco-evaluator.org.za/cms/sapo2018z',
+			'Insane',
+			false,
+			['2P', 'Ordered Set'],
+			'sapo-18-stadium'
 		),
 	],
 };
@@ -222,7 +253,7 @@ Suppose that we replace `s.upper_bound(7)` with `upper_bound(begin(s),end(s),7)`
 
 <JavaSection>
 
-`TreeSet`s in Java allow for a multitude of additional operations: 
+`TreeSet`s in Java allow for a multitude of additional operations:
 
 - `first()`: returns the lowest element in the set
 - `last()`: returns the greatest element in the set
@@ -444,7 +475,6 @@ We can store each of these differences in a multiset `ret`; after each inversion
 
 Inverting a bit at a 0-indexed position `x` corresponds to inserting `x` into `dif` if it not currently present or removing `x` if it is, and then doing the same with `x+1`. Whenever we insert or remove an element of `dif`, we should update `ret` accordingly.
 
-
 <LanguageSection>
 
 <CPPSection>
@@ -505,15 +535,15 @@ Java solutions are too slow for the CSES. Use C++ instead to get AC.
 
 ```java
 
-import java.io.*; 
-import java.util.*; 
- 
+import java.io.*;
+import java.util.*;
+
 class BitInversion{
    public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
    public static String s;
    public static int m;
    public static TreeSet<Integer> dif = new TreeSet<Integer>();
-   
+
    public static void modify(int x){
       if(x == 0 || x == s.length()) return;
       if(dif.contains(x)){ // x is currently present in dif, remove it
@@ -550,7 +580,7 @@ class BitInversion{
       }
       out.close();
    }
-   
+
    static void add(int x){
       if(ret.containsKey(x)){
          ret.put(x, ret.get(x) + 1);
@@ -631,9 +661,9 @@ int main() {
 
 ```java
 
-import java.io.*; 
-import java.util.*; 
- 
+import java.io.*;
+import java.util.*;
+
 class BitInversion{
    public static PriorityQueue<Integer> pq = new PriorityQueue<Integer>(Collections.reverseOrder());
    public static String s;
@@ -671,7 +701,7 @@ class BitInversion{
          if(s.charAt(i) != s.charAt(i+1)) dif.add(i+1); // initialize dif
       }
       for (int it : dif){
-         if(dif.higher(it) != null){ 
+         if(dif.higher(it) != null){
             add(dif.higher(it) - it);
          }
       }
@@ -685,7 +715,7 @@ class BitInversion{
       }
       out.close();
    }
-   
+
 }
 
 ```

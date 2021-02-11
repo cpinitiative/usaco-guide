@@ -20,4 +20,19 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'dongliu0426',
     sinceDate: 'Jan 2021',
   },
+  {
+    name: 'Neo Wang',
+    githubUsername: 'nwatx',
+    sinceDate: 'Jan 2021',
+  },
+  {
+    name: 'Jesse Choe',
+    githubUsername: 'jessechoe10',
+    sinceDate: 'Feb 2021',
+  },
+  {
+    name: 'Mrinall Umasudhan',
+    githubUsername: 'MrinallU',
+    sinceDate: 'Feb 2021',
+  },
 ];
