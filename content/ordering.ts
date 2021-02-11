@@ -94,7 +94,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   silver: [
     {
       name: 'Prefix Sums',
-      items: ['prefix-sums'],
+      items: ['prefix-sums', 'prefix-sums-2'],
     },
     {
       name: 'Sorting & Searching',
