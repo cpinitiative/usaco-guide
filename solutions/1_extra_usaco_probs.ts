@@ -8,6 +8,34 @@ import { Problem } from '../content/models';
 export default [
   new Problem(
     'Silver',
+    'Secret Cow Code',
+    '692',
+    'Normal',
+    false,
+    ['Recursion'],
+    ''
+  ),
+  new Problem(
+    'Plat',
+    'Greedy Gift Takers',
+    '770',
+    'Normal',
+    false,
+    ['Binary Search'],
+    ''
+  ),
+  new Problem('Plat', 'Lifeguards', '792', 'Normal', false, ['DP'], ''),
+  new Problem(
+    'Silver',
+    'Teleportation',
+    '812',
+    'Normal',
+    false,
+    ['Ordered Set'],
+    ''
+  ),
+  new Problem(
+    'Silver',
     'No Time To Paint',
     '1087',
     'Normal',
