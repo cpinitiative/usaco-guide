@@ -119,38 +119,11 @@ The first method can be sped up so that the difference in speed is not significa
 
 In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner` and has quite a few more methods and the `io` library must be imported for its use as well.
 
-Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, based off Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
+Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, which is a shortened version of Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
+
+<!-- 
 
 ```java
-/** Simple yet moderately fast I/O routines.
- *
- * Example usage:
- *
- * Kattio io = new Kattio();
- *
- * while (io.hasMoreTokens()) {
- *    int n = io.nextInt();
- *    double d = io.nextDouble();
- *    double ans = d*n;
- *
- *    io.println("Answer: " + ans);
- * }
- *
- * io.close();
- *
- *
- * Some notes:
- *
- * - When done, you should always do io.close() or io.flush() on the
- *   Kattio-instance, otherwise, you may lose output.
- *
- * - The nextInt(), nextDouble(), and nextLong() methods will throw an
- *   exception if there is no more data in the input, so it is generally
- *   a good idea to use hasMoreTokens() to check for end-of-file.
- *
- * @author: Kattis
- */
-
 import java.util.*;
 import java.io.*;
 
@@ -206,6 +179,67 @@ public class Main {
 		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
+``` -->
+
+```java
+/** Simple yet moderately fast I/O routines.
+ * Some notes:
+ *
+ * - When done, you should always do io.close() or io.flush() on the
+ *   Kattio-instance, otherwise, you may lose output.
+ *
+ * - The nextInt(), nextDouble(), and nextLong() methods will throw an
+ *   exception if there is no more data in the input.
+ *
+ * @author: Kattis
+ */
+
+import java.util.*;
+import java.io.*;
+
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st;
+
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException { 
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	// returns null if no more input
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
+			return st.nextToken();
+		} catch (Exception e) {}
+		return null;
+	}
+	
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+
+public class Main {
+	static Kattio io = new Kattio();
+	public static void main(String[] args) {
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		io.print("sum is ");
+		io.println(a + b + c);
+		String s = io.next();
+		io.close(); // make sure to include this line -- closes io and flushes the output
+	}
+}
 ```
 
 The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
@@ -219,15 +253,9 @@ The input methods in our `Kattio` class mimic those of `Scanner`. Given an insta
 | `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
 | `io.println()` | Prints the argument to designated output stream and adds a newline |
 | `io.print()` | Prints the argument to designated output stream |
-| `io.close()` | Closes the output stream and flushes the output |
+| `io.close()` | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush())) at the end, or you won't see any output! |
 
-<Warning>
-
-If you don't call [`io.close()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#close()) at the end or [`io.flush()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()), you won't see any output!
-
-</Warning>
-
-<Info title="PrintWriter Buffering">
+<!-- <Info title="PrintWriter Buffering"> -->
 
 The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37. But since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered), I don't think including `BufferedOutputStream` is necessary.
 
@@ -244,6 +272,12 @@ PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
 ```
 
 should suffice.
+
+<!-- </Info> -->
+
+<Info title="USACO Contests">
+
+Although you are not allowed to copy-paste `Kattio` during a USACO contest, feel free to refer to it (as it describes basic functionality for input / output).
 
 </Info>
 
