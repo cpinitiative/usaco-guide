@@ -181,11 +181,13 @@ export function DivisionList(props): JSX.Element {
   for (const moduleLink of moduleLinks) {
     for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      // if (moduleLink.id === 'eulers-formula') {
-      //   console.log('UNIQUE ID', uniqueID, problem.tags);
-      // }
       probToLink[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
-      probToTags[uniqueID] = problem.tags;
+      const prevTags = probToTags[uniqueID] || [];
+      const allTags = prevTags.concat(problem.tags);
+      // console.log('ALL TAGS', allTags, prevTags, problem.tags);
+      probToTags[uniqueID] = [...new Set(allTags)];
+      // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+      // console.log('NEW TAGS', probToTags[uniqueID]);
       probToDifficulty[uniqueID] = problem.difficulty;
       probToSol[uniqueID] = problem.solID;
     }

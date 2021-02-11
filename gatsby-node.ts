@@ -240,19 +240,26 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `[Problem]`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
-          let problems = [];
+          const problems = [];
           mdast.children.forEach(node => {
             if (
               node.type === 'export' &&
               node.value.includes('export const problems =')
             ) {
-              let str = node.value.replace('export ', '') + '; problems';
-              let res = eval(str);
+              const str = node.value.replace('export ', '') + '; problems';
+              const res = eval(str);
               Object.keys(res).forEach(k => {
-                problems.push(...res[k]);
+                const arr = res[k];
+                if (Array.isArray(arr)) {
+                  // console.log('MULTIPLE PROBLEM');
+                  problems.push(...arr);
+                } else {
+                  // console.log('SINGLE PROBLEM');
+                  problems.push(arr);
+                }
               });
             }
           });
