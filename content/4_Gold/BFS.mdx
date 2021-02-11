@@ -259,32 +259,39 @@ deque.removeLast(); // [1, 3]
 <CPPSection>
 
 ```cpp
-int n,m, dist[MX], pre[MX];
-vi adj[MX];
+#include <bits/stdc++.h>
+
+using namespace std;
+using vi = vector<int>;
+
+#define pb push_back
 
 int main() {
-	setIO(); re(n,m);
-	F0R(i,m) {
-		int a,b; re(a,b);
+	int N, M; cin >> N >> M;
+	vi dist(N,INT_MAX), pre(N);
+	vector<vi> adj(N);
+	for (int _ = 0; _ < M; ++_) {
+		int a,b; cin >> a >> b; --a,--b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
-	FOR(i,2,n+1) dist[i] = MOD;
-	queue<int> q; q.push(1);
-	while (sz(q)) {
+	queue<int> q;
+	dist[0] = 0; q.push(0);
+	while (!q.empty()) {
 		int x = q.front(); q.pop();
-		trav(t,adj[x]) if (dist[t] == MOD) {
+		for (int t: adj[x]) if (dist[t] == INT_MAX) {
 			dist[t] = dist[x]+1; pre[t] = x;
 			q.push(t);
 		}
 	}
-	if (dist[n] == MOD) ps("IMPOSSIBLE");
+	if (dist[N-1] == INT_MAX) cout << "IMPOSSIBLE";
 	else {
-		ps(dist[n]+1);
-		vi v{n}; while (v.back() != 1) v.pb(pre[v.back()]);
-		reverse(all(v));
-		trav(t,v) pr(t,' ');
+		cout << dist[N-1]+1 << "\n";
+		vi v{N-1}; while (v.back() != 0) v.pb(pre[v.back()]);
+		reverse(begin(v), end(v));
+		for (int t: v) cout << t+1 << " ";
 	}
 }
+
 ```
 
 <!--
