@@ -1,10 +1,9 @@
 ---
 id: prefix-sums
-title: 'Prefix Sums'
+title: 'Introduction to Prefix Sums'
 author: Darren Yao, Eric Wei
-description: 'Computing range sum queries in constant time over a fixed array.'
+description: 'Computing range sum queries in constant time over a fixed 1D array.'
 prerequisites:
-  - intro-sets
 frequency: 3
 ---
 
@@ -18,17 +17,6 @@ export const problems = {
 			false,
 			[],
 			'@B'
-		),
-	],
-	maxsum: [
-		new Problem(
-			'CSES',
-			'Max Subarray Sum',
-			'1643',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
 		),
 	],
 	cum: [
@@ -103,6 +91,26 @@ export const problems = {
 			true,
 			['Prefix Sums'],
 			'usaco-104'
+		),
+	],
+	related: [
+		new Problem(
+			'Silver',
+			'My Cow Ate My Homework',
+			'762',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.'
+		),
+		new Problem(
+			'CSES',
+			'Range XOR Queries',
+			'1650',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'cses-1650'
 		),
 	],
 };
@@ -336,14 +344,16 @@ print(psum([1,2,3,4,5]))
 
 </Warning>
 
-### Max Subarray Sum
+## Prefix Minimum, XOR, etc.
 
-<FocusProblem problem={problems.maxsum[0]} />
+<Info title="XOR">
 
-This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
+Check [Intro to Bitwise Operators](/bronze/bitwise) if you're not familiar with XOR.
 
-<Spoiler title="Why are the two methods equivalent?">
+</Info>
 
-Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
+Similar to prefix sums, you can also take prefix minimum or maximum; but _you cannot_ answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
 
-</Spoiler>
+### Problems
+
+<Problems problems={problems.related} />
