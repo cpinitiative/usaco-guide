@@ -187,10 +187,10 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `TableOfContents`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
-          let cpp = [],
+          const cpp = [],
             java = [],
             py = [];
           // lol the spaghetti code going to be insane
@@ -200,7 +200,7 @@ exports.createResolvers = ({ createResolvers }) => {
           const slugger = new Slugger();
           mdast.children.forEach(node => {
             if (node.type === 'jsx') {
-              let str = 'exact match ' + node.value;
+              const str = 'exact match ' + node.value;
               cppCt += str.split('<CPPSection>').length - 1;
               javaCt += str.split('<JavaSection>').length - 1;
               pyCt += str.split('<PySection>').length - 1;
@@ -209,7 +209,7 @@ exports.createResolvers = ({ createResolvers }) => {
               pyCt -= str.split('</PySection>').length - 1;
             }
             if (node.type === 'heading') {
-              let val = {
+              const val = {
                 depth: node.depth,
                 value: mdastToStringWithKatex(node),
                 slug: slugger.slug(mdastToString(node)),
@@ -270,7 +270,7 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `Boolean`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
           let incomplete = false;
