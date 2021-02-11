@@ -331,24 +331,35 @@ int main() {
 
 ```java
 import java.util.*;
+import java.io.*;
 
 public class Main{
     static int N, Q;
-    public static void main(String[] args){
-        Scanner in = new Scanner(System.in);
-        N = in.nextInt(); Q = in.nextInt();
+    public static void main(String[] args) throws IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter writer = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(reader.readLine());
+        N = Integer.parseInt(st.nextToken());
+		Q = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(reader.readLine());
         long[] a = new long[N];
         for(int i = 0; i<N; i++){
-            a[i] = in.nextLong();
+            a[i] = Long.parseLong(st.nextToken());
         }
 
         long[] p = psum(a);
 
         for(int i = 0; i<Q; i++){
             int l, r;
-            l = in.nextInt(); r = in.nextInt();
-            System.out.println(p[r]-p[l]);
+			st = new StringTokenizer(reader.readLine());
+            l = Integer.parseInt(st.nextToken());
+			r = Integer.parseInt(st.nextToken());
+			writer.println(p[r]-p[l]);
         }
+		
+		reader.close();
+		writer.close();
     }
 
     public static long[] psum(long[] a){
