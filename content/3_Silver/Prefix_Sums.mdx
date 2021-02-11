@@ -20,6 +20,17 @@ export const problems = {
 			'@B'
 		),
 	],
+	maxsum: [
+		new Problem(
+			'CSES',
+			'Max Subarray Sum',
+			'1643',
+			'Easy',
+			false,
+			['Prefix Sums'],
+			'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
+		),
+	],
 	cum: [
 		new Problem(
 			'LC',
@@ -324,3 +335,15 @@ print(psum([1,2,3,4,5]))
 "Haybale Stacking" isn't submittable on the USACO website. Use [this link](https://www.acmicpc.net/problem/5912) to submit.
 
 </Warning>
+
+### Max Subarray Sum
+
+<FocusProblem problem={problems.maxsum[0]} />
+
+This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
+
+<Spoiler title="Why are the two methods equivalent?">
+
+Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
+
+</Spoiler>

@@ -9,17 +9,6 @@ frequency: 2
 ---
 
 export const problems = {
-    maxsum: [
-		new Problem(
-			'CSES',
-			'Max Subarray Sum',
-			'1643',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
-		),
-	],
 	sample2: [
 		new Problem(
 			'CSES',
@@ -386,7 +375,7 @@ Try playing with the interactive widget below by clicking the buttons to see whi
 Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query after an $\mathcal{O}(NM)$ preprocessing.
 
 ### Solution - Forest Queries
-<Spoiler title="Solution">
+<Spoler title="Solution">
 <Warning>
 
 We need to be cautious of off-by-one errors, as intervals can be inclusive, exclusive, 1-indexed, etc.
@@ -454,7 +443,7 @@ int main() {
 
 </LanguageSection>
 
-</Spoiler>
+</Spolier>
 
 <!--
 
@@ -572,18 +561,6 @@ Given a rectangle with endpoints $(x_1, y_1), (x_2, y_2)$, we can compute the "l
 <Problems problems={problems.cum2} />
 
 ## Additional Applications
-
-### Max Subarray Sum
-
-<FocusProblem problem={problems.maxsum[0]} />
-
-This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
-
-<Spoiler title="Why are the two methods equivalent?">
-
-Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
-
-</Spoiler>
 
 <Problems problems={problems.cum3} />
 
