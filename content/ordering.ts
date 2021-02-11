@@ -71,7 +71,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Fundamentals',
-      items: ['time-comp', 'rect-geo', 'simulation'],
+      items: ['time-comp', 'simulation'],
     },
     {
       name: 'Complete Search',
@@ -88,7 +88,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional',
       description: 'Topics not strictly necessary to know to pass Bronze.',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'intro-bitwise'],
+      items: [
+        'ad-hoc',
+        'rect-geo',
+        'intro-greedy',
+        'intro-graphs',
+        'intro-bitwise',
+      ],
     },
   ],
   silver: [
