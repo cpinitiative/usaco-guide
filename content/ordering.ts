@@ -59,6 +59,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'fast-io',
         'generic',
         'lambda',
+        'notes-cpp-ds',
       ],
     },
     {
@@ -70,8 +71,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   bronze: [
     {
-      name: 'Fundamentals',
-      items: ['time-comp', 'rect-geo', 'simulation'],
+      name: 'Getting Started',
+      items: ['time-comp', 'rect-geo', 'intro-ds', 'simulation'],
     },
     {
       name: 'Complete Search',
@@ -80,10 +81,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['intro-complete', 'complete-rec'],
     },
     {
-      name: 'Data Structures',
-      description:
-        "It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.",
-      items: ['intro-ds', 'intro-sorting', 'intro-sets'],
+      name: 'Sorting & Sets',
+      description: '',
+      items: ['intro-sorting', 'intro-sets'],
+      // It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.
     },
     {
       name: 'Additional',
