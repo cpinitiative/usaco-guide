@@ -25,13 +25,27 @@ As we iterate through the planets outside the $\textit{loop}$, the $\texttt{cycl
 #include <iostream>
 #include <vector>
 using namespace std;
-void dfs(int planet);
 
 vector<bool> visited;
 vector<int> destinations;
 vector<int> cycle;
-int steps = 0;
 vector<int> cyclelength;
+int steps = 0;
+
+void dfs(int planet)
+{
+	//add planet to cycle
+	cycle.push_back(planet);
+	if (visited[planet])
+	{
+		//add steps from the planet to current step count
+		steps += cyclelength[planet];
+		return;
+	}
+	visited[planet] = true;
+	steps++;
+	dfs(destinations[planet]);
+}
 
 int main() 
 {
@@ -70,21 +84,6 @@ int main()
 	}
 	cout << endl;
 	return 0;
-}
-
-void dfs(int planet)
-{
-	//add planet to cycle
-	cycle.push_back(planet);
-	if (visited[planet])
-	{
-		//add steps from the planet to current step count
-		steps += cyclelength[planet];
-		return;
-	}
-	visited[planet] = true;
-	steps++;
-	dfs(destinations[planet]);
 }
 ```
 
