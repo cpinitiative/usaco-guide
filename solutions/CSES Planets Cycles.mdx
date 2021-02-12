@@ -1,0 +1,93 @@
+---
+id: cses-1751
+source: CSES 
+title: Planets Cycles
+author: Maggie Liu
+---
+
+Define the number of teleportations starting from a planet as the $\texttt{cyclelength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{cyclelength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{cycle}$ vector. When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), we add the $\texttt{cyclelength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count. 
+
+Once we have $\texttt{cycle}$ and $\texttt{steps}$ (the $\texttt{cyclelength}$ of the $\textit{start}$) we can calculate the $\texttt{cyclelength}$ of all the planets in this $\texttt{cycle}$. We know the $\textit{repeat}$ will always be the planet at the end of the $\texttt{cycle}$, but there are two cases for the $\textit{repeat}$. 
+1. The $\textit{repeat}$ was visited twice in the current $\texttt{cycle}$.
+2. The $\textit{repeat}$ was visited previously and only appears at the end of the current $\texttt{cycle}$.
+
+For the first case, let the planets in the $\texttt{cycle}$ between the two occurrences of the $\textit{repeat}$ be the $\textit{loop}$. For the planets inside the $\textit{loop}$, the repeating planet when starting from that planet is itself. Thus, the $\texttt{cyclelength}$ of any planet inside the $\textit{loop}$ will be the same as the $\texttt{cyclelength}$ of the $\textit{repeat}$. For all the planets outside the $\textit{loop}$, the planet that repeats when starting from each planet will still be the $\textit{repeat}$.
+
+For the second case, all the planets are outside the $\textit{loop}$. The repeating planet when starting from any of the planets in the $\texttt{cycle}$ will be the $\textit{repeat}$.
+
+As we iterate through the planets outside the $\textit{loop}$, the $\texttt{cyclelength}$ will decrease by $1$ each time, starting from $\texttt{steps}$. For planets inside the $\textit{loop}$, the $\texttt{cyclelength}$ will be the same as the $\texttt{cyclelength}$ of the $\textit{repeat}$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+void dfs(int planet);
+
+vector<bool> visited;
+vector<int> destinations;
+vector<int> cycle;
+int steps = 0;
+vector<int> cyclelength;
+
+int main() 
+{
+	int n, d;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> d;
+		destinations.push_back(d - 1);
+	}
+	visited.assign(n, false);
+	cyclelength.assign(n, 0);
+	for (int i = 0; i < n; i++)
+	{
+		if (!visited[i])
+		{
+			cycle.clear();
+			steps = 0;
+			dfs(i);
+			int decrement = 1;
+			//for each planet in current cycle, calculate cyclelength
+			for (int j = 0; j < cycle.size() - 1; j++)
+			{
+				if (cycle[j] == cycle.back())
+				{
+					decrement = 0;
+				}
+				cyclelength[cycle[j]] = steps;
+				steps -= decrement;
+			}
+		}
+	}
+	for (int i = 0; i < n; i++)
+	{
+		cout << cyclelength[i] << " ";
+	}
+	cout << endl;
+	return 0;
+}
+
+void dfs(int planet)
+{
+	//add planet to cycle
+	cycle.push_back(planet);
+	if (visited[planet])
+	{
+		//add steps from the planet to current step count
+		steps += cyclelength[planet];
+		return;
+	}
+	visited[planet] = true;
+	steps++;
+	dfs(destinations[planet]);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
