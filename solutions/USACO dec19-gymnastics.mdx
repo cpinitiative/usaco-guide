@@ -2,7 +2,7 @@
 id: usaco-963
 source: USACO Bronze 2019 December
 title: Cow Gymnastics
-author: Krish Thawani
+author: Krish Thawani (Java), Hua Zhi Vee (C++)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
@@ -68,4 +68,53 @@ public class gymnastics {
 ```
 </JavaSection>
 
+<CPPSection>
+
+## Alternate Solution
+
+We generate the ranking as we read the data.
+
+We create a 2D array of booleans which states if $A$ has a ranking higher than $B$ in any point of time.
+We read every ranking, then for all $\frac{N(N-1)}{2}$ pairs we set $b[A][B]=\text{true}$.
+
+Then we iterate though all pairs in $\mathcal{O}(N^2)$ time and check if they satisfy the condition. At least one of $b[A][B]$ and $b[B][A]$ must be true, and hence we only need to check if they are both true. If one of them is false, we increment our $\texttt{count}$ by 1.
+
+Note that at least one of them must be true, since in every ranking either $A>B$ or $B>A$.
+
+**Time Complexity:** $\mathcal{O}(K \cdot N^2)$
+
+```cpp 
+#include<bits/stdc++.h>
+using namespace std;
+
+bool b[20][20]; // b[A-1][B-1] = 1 if A was better than B in any session.
+
+int main(){
+	ifstream fin("gymnastics.in");
+	ofstream fout("gymnastics.out");
+	
+	int k, n; fin >> k >> n;
+	int a[n];
+	while(k--){ // Looping through k times
+		for(int i=0;i<n;i++) fin >> a[i];
+		
+		for(int i=0;i<n;i++){
+			for(int j=i+1;j<n;j++){
+				b[a[i]-1][a[j]-1] = true;
+			}
+		}
+	}
+	
+	int count = 0;
+	for(int i=0;i<n;i++){
+		for(int j=i+1;j<n;j++){
+			// If either is false, we increment the count
+			if(!b[i][j] || !b[j][i]) count++;
+		}
+	}
+	fout << count << endl;
+}
+```
+
+</CPPSection>
 </LanguageSection>
