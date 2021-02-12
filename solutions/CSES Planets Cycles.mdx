@@ -5,7 +5,7 @@ title: Planets Cycles
 author: Maggie Liu
 ---
 
-Define the number of teleportations starting from a planet as the $\texttt{cyclelength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{cyclelength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{cycle}$ vector. When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), we add the $\texttt{cyclelength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count. 
+Define the number of teleportations starting from a planet as the $\texttt{cyclelength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{cyclelength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{cycle}$ queue. When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), we add the $\texttt{cyclelength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count. 
 
 Once we have $\texttt{cycle}$ and $\texttt{steps}$ (the $\texttt{cyclelength}$ of the $\textit{start}$) we can calculate the $\texttt{cyclelength}$ of all the planets in this $\texttt{cycle}$. We know the $\textit{repeat}$ will always be the planet at the end of the $\texttt{cycle}$, but there are two cases for the $\textit{repeat}$. 
 1. The $\textit{repeat}$ was visited twice in the current $\texttt{cycle}$.
@@ -23,58 +23,43 @@ As we iterate through the planets outside the $\textit{loop}$, the $\texttt{cycl
 
 ```cpp
 #include <iostream>
-#include <vector>
+#include <queue>
 using namespace std;
+void dfs(int planet);
 
-vector<bool> visited;
-vector<int> destinations;
-vector<int> cycle;
-vector<int> cyclelength;
+bool visited[200000] = {false};
+int destinations[200000];
+int cyclelength[200000] = {0};
+queue<int> cycle;
 int steps = 0;
-
-void dfs(int planet)
-{
-	//add planet to cycle
-	cycle.push_back(planet);
-	if (visited[planet])
-	{
-		//add steps from the planet to current step count
-		steps += cyclelength[planet];
-		return;
-	}
-	visited[planet] = true;
-	steps++;
-	dfs(destinations[planet]);
-}
 
 int main() 
 {
-	int n, d;
+	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++)
 	{
-		cin >> d;
-		destinations.push_back(d - 1);
+		cin >> destinations[i];
+		destinations[i]--;
 	}
-	visited.assign(n, false);
-	cyclelength.assign(n, 0);
 	for (int i = 0; i < n; i++)
 	{
 		if (!visited[i])
 		{
-			cycle.clear();
 			steps = 0;
 			dfs(i);
 			int decrement = 1;
 			//for each planet in current cycle, calculate cyclelength
-			for (int j = 0; j < cycle.size() - 1; j++)
+			while (!cycle.empty())
 			{
-				if (cycle[j] == cycle.back())
+				//loop started, don't need to decrement anymore
+				if (cycle.front() == cycle.back())
 				{
 					decrement = 0;
 				}
-				cyclelength[cycle[j]] = steps;
+				cyclelength[cycle.front()] = steps;
 				steps -= decrement;
+				cycle.pop();
 			}
 		}
 	}
@@ -84,6 +69,21 @@ int main()
 	}
 	cout << endl;
 	return 0;
+}
+
+void dfs(int planet)
+{
+	//add planet to cycle
+	cycle.push(planet);
+	if (visited[planet])
+	{
+		//add steps from the planet to current step count
+		steps += cyclelength[planet];
+		return;
+	}
+	visited[planet] = true;
+	steps++;
+	dfs(destinations[planet]);
 }
 ```
 
