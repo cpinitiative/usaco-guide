@@ -87,4 +87,119 @@ void dfs(int planet)
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class planetCycles {
+    static int N, L;
+    static int[] P, A;
+    static boolean[] vis;
+    static LinkedList<Integer> q = new LinkedList<>();
+    public static void main(String[] args) throws IOException {
+        Kattio in = new Kattio(System.in);
+
+        N = in.getInt();
+        P = new int[N+1];
+        vis = new boolean[N+1];
+        A = new int[N+1];
+        for (int i = 1; i < N + 1; i++) {
+            P[i] = in.getInt();
+        }
+
+        for (int i = 1; i < N + 1; i++) {
+            if(!vis[i]){
+                L = 0;
+                dfs(i);
+                int de = 1;
+                Integer last = q.peekLast();
+                while(!q.isEmpty()){
+                    if(q.peekFirst().equals(last)) de = 0;
+                    A[q.poll()] = L;
+                    L-=de;
+                }
+            }
+        }
+
+        for (int i = 1; i < N + 1; i++) {
+            System.out.print(A[i] + " ");
+        }
+    }
+
+    public static void dfs(int n){
+        vis[n] = true;
+        q.add(n);
+        L++;
+        if(!vis[P[n]])
+            dfs(P[n]);
+        else
+            q.add(P[n]); L += A[P[n]];
+
+    }
+
+    static class Kattio extends PrintWriter {
+        public Kattio(InputStream i) {
+            super(new BufferedOutputStream(System.out));
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+        public Kattio(InputStream i, OutputStream o) {
+            super(new BufferedOutputStream(o));
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+
+        public boolean hasMoreTokens() {
+            return peekToken() != null;
+        }
+
+        public int getInt() {
+            return Integer.parseInt(nextToken());
+        }
+
+        public double getDouble() {
+            return Double.parseDouble(nextToken());
+        }
+
+        public long getLong() {
+            return Long.parseLong(nextToken());
+        }
+
+        public String getWord() {
+            return nextToken();
+        }
+
+
+
+        private BufferedReader r;
+        private String line;
+        private StringTokenizer st;
+        private String token;
+
+        private String peekToken() {
+            if (token == null)
+                try {
+                    while (st == null || !st.hasMoreTokens()) {
+                        line = r.readLine();
+                        if (line == null) return null;
+                        st = new StringTokenizer(line);
+                    }
+                    token = st.nextToken();
+                } catch (IOException e) { }
+            return token;
+        }
+
+        private String nextToken() {
+            String ans = peekToken();
+            token = null;
+            return ans;
+        }
+    }
+
+}
+
+```
+</JavaSection>
+
 </LanguageSection>
