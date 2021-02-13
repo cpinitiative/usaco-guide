@@ -3,6 +3,9 @@ import MDXProvider from './src/components/markdown/MDXProvider';
 import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
 import { darkModeKey } from './src/context/UserDataContext/properties/darkMode';
+import { enableStaticRendering } from 'mobx-react-lite';
+
+enableStaticRendering(typeof window === 'undefined');
 
 export const wrapRootElement = ({ element }) => (
   <FirebaseProvider>
