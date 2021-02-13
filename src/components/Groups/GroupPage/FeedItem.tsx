@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Transition } from '@headlessui/react';
 
 export default function FeedItem() {
+  const [isHover, setIsHover] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = React.useRef();
 
@@ -18,9 +19,10 @@ export default function FeedItem() {
   }, []);
 
   return (
-    <Link
-      to={`/groups/myGroupId/post/hello`}
-      className="bg-white px-4 py-4 shadow sm:px-6 sm:py-5 sm:rounded-lg hover:bg-cyan-50 transition block"
+    <div
+      className={`${
+        isHover ? 'bg-cyan-50' : 'bg-white'
+      } px-4 shadow sm:px-6 sm:rounded-lg transition block`}
     >
       <div className="flex space-x-4">
         <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
@@ -39,7 +41,12 @@ export default function FeedItem() {
             />
           </svg>
         </div>
-        <div className="min-w-0 flex-1">
+        <Link
+          to={`/groups/myGroupId/post/hello`}
+          className="min-w-0 flex-1 py-4 sm:py-5"
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
           <h2
             id="question-title-81614"
             className="text-base font-medium text-gray-900"
@@ -47,7 +54,7 @@ export default function FeedItem() {
             Binary Search on a Sorted Array
           </h2>
           <p className="text-sm text-gray-500">December 9 at 11:43 AM</p>
-        </div>
+        </Link>
         <div className="flex-shrink-0 self-center flex">
           <div className="relative inline-block text-left">
             <div ref={ref}>
@@ -152,6 +159,6 @@ export default function FeedItem() {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
