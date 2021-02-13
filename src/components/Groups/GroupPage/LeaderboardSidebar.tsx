@@ -21,8 +21,8 @@ export default function LeaderboardSidebar() {
         <div className="flow-root mt-6">
           <ul className="-my-5 divide-y divide-gray-200">
             <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
                     src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
@@ -31,11 +31,11 @@ export default function LeaderboardSidebar() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Leonard Krasner
+                    1. Leonard Krasner
                   </p>
                   <p className="text-sm text-gray-500 truncate">1500 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -45,23 +45,22 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
             <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                     alt=""
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Floyd Miles
+                    2. Leonard Krasner
                   </p>
                   <p className="text-sm text-gray-500 truncate">1500 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -71,23 +70,22 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
             <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                     alt=""
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Emily Selman
+                    3. Leonard Krasner
                   </p>
                   <p className="text-sm text-gray-500 truncate">1500 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -97,23 +95,25 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
+            <li className="py-2 text-sm text-gray-700 italic text-center">
+              7 more people
+            </li>
             <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                     alt=""
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
+                    11. Jeffrey Meng
                   </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
+                  <p className="text-sm text-gray-500 truncate">1100 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -123,23 +123,25 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+            <li
+              className="py-4 bg-light-blue-50 -mx-6 px-6"
+              style={{ borderColor: 'transparent ' }}
+            >
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                     alt=""
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
+                    12. Nathan Wang
                   </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
+                  <p className="text-sm text-gray-500 truncate">1000 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -149,23 +151,22 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
+            <li className="py-4" style={{ borderColor: 'transparent ' }}>
+              <div className="flex items-center lg:space-x-4">
+                <div className="flex-shrink-0 hidden lg:block">
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                     alt=""
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
+                    13. Billy Bob
                   </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
+                  <p className="text-sm text-gray-500 truncate">900 points</p>
                 </div>
-                <div>
+                <div className="ml-4">
                   <a
                     href="/"
                     className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
@@ -175,213 +176,8 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <li className="py-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    Kristin Watson
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">1500 points</p>
-                </div>
-                <div>
-                  <a
-                    href="/"
-                    className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    View
-                  </a>
-                </div>
-              </div>
+            <li className="py-2 text-sm text-gray-700 italic text-center">
+              12 more people
             </li>
           </ul>
         </div>

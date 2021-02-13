@@ -5,6 +5,7 @@ import Groups from '../mobx/GroupsStore';
 import GroupSelectPage from '../components/Groups/GroupSelectPage';
 import GroupsStore from '../mobx/GroupsStore';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
+import PostPage from '../components/Groups/PostPage';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -34,6 +35,7 @@ export default function GroupsRouter() {
         {/*  Component={StudentProgressPage}*/}
         {/*  path="/:classId/student-progress"*/}
         {/*/>*/}
+        <PostPage path="/:groupId/post/:postId" />
         <GroupPage path="/:groupId" />
         <GroupSelectPage path="/" />
         <NotFoundPageWrapper default />

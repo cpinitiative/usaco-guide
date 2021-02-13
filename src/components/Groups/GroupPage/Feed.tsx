@@ -2,6 +2,7 @@ import * as React from 'react';
 import Tabs from '../../Tabs';
 import { useState } from 'react';
 import FeedItem from './FeedItem';
+import { Link } from 'gatsby';
 
 export default function Feed() {
   const feedTabs = ['Feed', 'Assignments', 'Announcements'];
@@ -17,13 +18,9 @@ export default function Feed() {
         />
       </div>
       <div className="mt-4">
-        <h1 className="sr-only">Recent questions</h1>
-        <ul className="space-y-4">
+        <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
           {[0, 1, 2, 3, 4, 5, 6, 7].map(x => (
-            <li
-              className="bg-white px-3 py-4 shadow sm:px-6 sm:py-5 sm:rounded-lg hover:bg-cyan-50 transition"
-              key={x}
-            >
+            <li key={x}>
               <FeedItem />
             </li>
           ))}

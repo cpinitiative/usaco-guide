@@ -38,7 +38,7 @@ export default function Tabs({
                 idx === 0 ? 'rounded-l-lg' : ''
               } ${
                 idx === options.length - 1 ? 'rounded-r-lg' : ''
-              } group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10 focus:outline-none`}
+              } group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-2 text-sm font-medium text-center hover:bg-gray-50 focus:z-10 focus:outline-none`}
             >
               <span>{option}</span>
               <span
