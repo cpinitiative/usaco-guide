@@ -5,17 +5,15 @@ title: Planets Cycles
 author: Maggie Liu
 ---
 
-Define the number of teleportations starting from a planet as the $\texttt{cyclelength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{cyclelength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{cycle}$ queue. When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), we add the $\texttt{cyclelength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count. 
+Define the number of teleportations starting from a planet as the $\texttt{pathlength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{pathlength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{path}$ queue and keep track of the $\texttt{steps}$, the length of the path so far. When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), add the $\texttt{pathlength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count because we would continue to visit all of the planets that $\textit{repeat}$ would go on to visit. 
 
-Once we have $\texttt{cycle}$ and $\texttt{steps}$ (the $\texttt{cyclelength}$ of the $\textit{start}$) we can calculate the $\texttt{cyclelength}$ of all the planets in this $\texttt{cycle}$. We know the $\textit{repeat}$ will always be the planet at the end of the $\texttt{cycle}$, but there are two cases for the $\textit{repeat}$. 
-1. The $\textit{repeat}$ was visited twice in the current $\texttt{cycle}$.
-2. The $\textit{repeat}$ was visited previously and only appears at the end of the current $\texttt{cycle}$.
+Once we have $\texttt{path}$ and $\texttt{steps}$ (the $\texttt{pathlength}$ of the $\textit{start}$) we can calculate the $\texttt{pathlength}$ of all the planets in this $\texttt{path}$. We know the $\textit{repeat}$ will always be the planet at the end of the $\texttt{path}$, but it may appear elsewhere as well. We can break this down into two cases:
+1. The $\textit{repeat}$ was visited twice in the current $\texttt{path}$. Let the planets in the $\texttt{path}$ between the two occurrences of the $\textit{repeat}$ be the $\textit{cycle}$.
+2. The $\textit{repeat}$ was visited previously and only appears at the end of the current $\texttt{path}$. All of the planets in the $\texttt{path}$ are not part of a $\textit{cycle}$.
 
-For the first case, let the planets in the $\texttt{cycle}$ between the two occurrences of the $\textit{repeat}$ be the $\textit{loop}$. For the planets inside the $\textit{loop}$, the repeating planet when starting from that planet is itself. Thus, the $\texttt{cyclelength}$ of any planet inside the $\textit{loop}$ will be the same as the $\texttt{cyclelength}$ of the $\textit{repeat}$. For all the planets outside the $\textit{loop}$, the planet that repeats when starting from each planet will still be the $\textit{repeat}$.
+For planets inside a $\textit{cycle}$, the repeating planet when starting from that planet is itself. For all the planets outside the $\textit{cycle}$, the planet that repeats when starting from each planet will still be the $\textit{repeat}$.
 
-For the second case, all the planets are outside the $\textit{loop}$. The repeating planet when starting from any of the planets in the $\texttt{cycle}$ will be the $\textit{repeat}$.
-
-As we iterate through the planets outside the $\textit{loop}$, the $\texttt{cyclelength}$ will decrease by $1$ each time, starting from $\texttt{steps}$. For planets inside the $\textit{loop}$, the $\texttt{cyclelength}$ will be the same as the $\texttt{cyclelength}$ of the $\textit{repeat}$.
+Since the planets outside the $\textit{cycle}$ all have paths ending at the $\textit{repeat}$, each one's $\texttt{pathlength}$ is $1$ less than the previous'. So, as we iterate through the planets outside the $\textit{cycle}$, the $\texttt{pathlength}$ will decrease by $1$ each time, starting from $\texttt{steps}$. Once we get to the $\textit{cycle}$, the $\texttt{pathlength}$ of the planets will all be equal to the $\texttt{pathlength}$ of the $\textit{repeat}$, which is the length of the $\textit{cycle}$.
 
 <LanguageSection>
 
@@ -29,11 +27,11 @@ void dfs(int planet);
 
 bool visited[200000] = {false};
 int destinations[200000];
-int cyclelength[200000] = {0};
-queue<int> cycle;
+int pathlength[200000] = {0};
+queue<int> path;
 int steps = 0;
 
-int main() 
+int main()
 {
 	int n;
 	cin >> n;
@@ -49,23 +47,23 @@ int main()
 			steps = 0;
 			dfs(i);
 			int decrement = 1;
-			//for each planet in current cycle, calculate cyclelength
-			while (!cycle.empty())
+			//for each planet in current path, calculate pathlength
+			while (!path.empty())
 			{
-				//loop started, don't need to decrement anymore
-				if (cycle.front() == cycle.back())
+				//we are in the cycle; all nodes have same pathlength
+				if (path.front() == path.back())
 				{
 					decrement = 0;
 				}
-				cyclelength[cycle.front()] = steps;
+				pathlength[path.front()] = steps;
 				steps -= decrement;
-				cycle.pop();
+				path.pop();
 			}
 		}
 	}
 	for (int i = 0; i < n; i++)
 	{
-		cout << cyclelength[i] << " ";
+		cout << pathlength[i] << " ";
 	}
 	cout << endl;
 	return 0;
@@ -73,12 +71,12 @@ int main()
 
 void dfs(int planet)
 {
-	//add planet to cycle
-	cycle.push(planet);
+	//add planet to path
+	path.push(planet);
 	if (visited[planet])
 	{
-		//add steps from the planet to current step count
-		steps += cyclelength[planet];
+		//add pathlength of the repeat planet to current step count
+		steps += pathlength[planet];
 		return;
 	}
 	visited[planet] = true;
