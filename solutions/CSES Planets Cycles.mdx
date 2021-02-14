@@ -106,23 +106,23 @@ class Kattio extends PrintWriter {
     // standard input
     public Kattio() { this(System.in,System.out); }
     public Kattio(InputStream i, OutputStream o) {
-        super(o);
-        r = new BufferedReader(new InputStreamReader(i));
+    	    super(o);
+	    r = new BufferedReader(new InputStreamReader(i));
     }
     // USACO-style file input
     public Kattio(String problemName) throws IOException {
-        super(new FileWriter(problemName+".out"));
-        r = new BufferedReader(new FileReader(problemName+".in"));
+            super(new FileWriter(problemName+".out"));
+            r = new BufferedReader(new FileReader(problemName+".in"));
     }
 
     // returns null if no more input
     public String next() {
-        try {
-            while (st == null || !st.hasMoreTokens())
-                st = new StringTokenizer(r.readLine());
-            return st.nextToken();
-        } catch (Exception e) {}
-        return null;
+            try {
+                while (st == null || !st.hasMoreTokens())
+                    st = new StringTokenizer(r.readLine());
+                return st.nextToken();
+            } catch (Exception e) {}
+            return null;
     }
 
     public int nextInt() { return Integer.parseInt(next()); }
@@ -131,52 +131,51 @@ class Kattio extends PrintWriter {
 }
 
 public class planetCycles {
-    static int N, steps;
-    static int[] destinations, pathlength;
-    static boolean[] visited;
-    static LinkedList<Integer> path = new LinkedList<>();
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
+	static int N, steps;
+	static int[] destinations, pathlength;
+	static boolean[] visited;
+	static LinkedList<Integer> path = new LinkedList<>();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		N = io.nextInt();
+		destinations = new int[N+1];
+		visited = new boolean[N+1];
+		pathlength = new int[N+1];
+		for (int i = 1; i < N + 1; i++) {
+			destinations[i] = io.nextInt();
+		}
 
-        N = io.nextInt();
-        destinations = new int[N+1];
-        visited = new boolean[N+1];
-        pathlength = new int[N+1];
-        for (int i = 1; i < N + 1; i++) {
-            destinations[i] = io.nextInt();
-        }
+		for (int i = 1; i < N + 1; i++) {
+			if(!visited[i]){
+		        	steps = 0;
+				dfs(i);
+				int decrement = 1;
+				Integer last = path.peekLast();
+				while(!path.isEmpty()){
+			        	if(path.peekFirst().equals(last)) decrement = 0;
+						pathlength[path.poll()] = steps;
+						steps-=decrement;
+				}
+			}
+		}
 
-        for (int i = 1; i < N + 1; i++) {
-            if(!visited[i]){
-                steps = 0;
-                dfs(i);
-                int decrement = 1;
-                Integer last = path.peekLast();
-                while(!path.isEmpty()){
-                    if(path.peekFirst().equals(last)) decrement = 0;
-                    pathlength[path.poll()] = steps;
-                    steps-=decrement;
-                }
-            }
-        }
+		for (int i = 1; i < N + 1; i++) {
+			io.print(pathlength[i] + " ");
+		}
+		io.close();
+	}
 
-        for (int i = 1; i < N + 1; i++) {
-            io.print(pathlength[i] + " ");
-        }
-        io.close();
-    }
-
-    public static void dfs(int n){
-        visited[n] = true;
-        path.add(n);
-        steps++;
-        if(!visited[destinations[n]])
-            dfs(destinations[n]);
-        else {
-            path.add(destinations[n]);
-            steps += pathlength[destinations[n]];
-        }
-    }
+	public static void dfs(int n){
+		visited[n] = true;
+		path.add(n);
+		steps++;
+		if(!visited[destinations[n]])
+			dfs(destinations[n]);
+		else {
+			path.add(destinations[n]);
+			steps += pathlength[destinations[n]];
+		}
+	}
 }
 
 ```
