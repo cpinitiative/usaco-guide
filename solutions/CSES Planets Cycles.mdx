@@ -98,20 +98,52 @@ void dfs(int planet)
 import java.util.*;
 import java.io.*;
 
+
+class Kattio extends PrintWriter {
+    private BufferedReader r;
+    private StringTokenizer st;
+
+    // standard input
+    public Kattio() { this(System.in,System.out); }
+    public Kattio(InputStream i, OutputStream o) {
+        super(o);
+        r = new BufferedReader(new InputStreamReader(i));
+    }
+    // USACO-style file input
+    public Kattio(String problemName) throws IOException {
+        super(new FileWriter(problemName+".out"));
+        r = new BufferedReader(new FileReader(problemName+".in"));
+    }
+
+    // returns null if no more input
+    public String next() {
+        try {
+            while (st == null || !st.hasMoreTokens())
+                st = new StringTokenizer(r.readLine());
+            return st.nextToken();
+        } catch (Exception e) {}
+        return null;
+    }
+
+    public int nextInt() { return Integer.parseInt(next()); }
+    public double nextDouble() { return Double.parseDouble(next()); }
+    public long nextLong() { return Long.parseLong(next()); }
+}
+
 public class planetCycles {
     static int N, steps;
     static int[] destinations, pathlength;
     static boolean[] visited;
     static LinkedList<Integer> path = new LinkedList<>();
-    public static void main(String[] args) throws IOException {
-        Kattio in = new Kattio(System.in);
+    public static void main(String[] args) {
+        Kattio in = new Kattio(System.in, System.out);
 
-        N = in.getInt();
+        N = in.nextInt();
         destinations = new int[N+1];
         visited = new boolean[N+1];
         pathlength = new int[N+1];
         for (int i = 1; i < N + 1; i++) {
-            destinations[i] = in.getInt();
+            destinations[i] = in.nextInt();
         }
 
         for (int i = 1; i < N + 1; i++) {
@@ -129,8 +161,9 @@ public class planetCycles {
         }
 
         for (int i = 1; i < N + 1; i++) {
-            System.out.print(pathlength[i] + " ");
+            in.print(pathlength[i] + " ");
         }
+        in.close();
     }
 
     public static void dfs(int n){
@@ -139,69 +172,13 @@ public class planetCycles {
         steps++;
         if(!visited[destinations[n]])
             dfs(destinations[n]);
-        else
-            path.add(destinations[n]); steps += pathlength[destinations[n]];
-
-    }
-
-    static class Kattio extends PrintWriter {
-        public Kattio(InputStream i) {
-            super(new BufferedOutputStream(System.out));
-            r = new BufferedReader(new InputStreamReader(i));
-        }
-        public Kattio(InputStream i, OutputStream o) {
-            super(new BufferedOutputStream(o));
-            r = new BufferedReader(new InputStreamReader(i));
-        }
-
-        public boolean hasMoreTokens() {
-            return peekToken() != null;
-        }
-
-        public int getInt() {
-            return Integer.parseInt(nextToken());
-        }
-
-        public double getDouble() {
-            return Double.parseDouble(nextToken());
-        }
-
-        public long getLong() {
-            return Long.parseLong(nextToken());
-        }
-
-        public String getWord() {
-            return nextToken();
-        }
-
-
-
-        private BufferedReader r;
-        private String line;
-        private StringTokenizer st;
-        private String token;
-
-        private String peekToken() {
-            if (token == null)
-                try {
-                    while (st == null || !st.hasMoreTokens()) {
-                        line = r.readLine();
-                        if (line == null) return null;
-                        st = new StringTokenizer(line);
-                    }
-                    token = st.nextToken();
-                } catch (IOException e) { }
-            return token;
-        }
-
-        private String nextToken() {
-            String ans = peekToken();
-            token = null;
-            return ans;
+        else {
+            path.add(destinations[n]);
+            steps += pathlength[destinations[n]];
         }
     }
-
 }
+
 
 ```
 </JavaSection>
