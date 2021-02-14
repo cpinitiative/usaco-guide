@@ -99,48 +99,48 @@ import java.util.*;
 import java.io.*;
 
 public class planetCycles {
-    static int N, L;
-    static int[] P, A;
-    static boolean[] vis;
-    static LinkedList<Integer> q = new LinkedList<>();
+    static int N, steps;
+    static int[] destinations, pathlength;
+    static boolean[] visited;
+    static LinkedList<Integer> path = new LinkedList<>();
     public static void main(String[] args) throws IOException {
         Kattio in = new Kattio(System.in);
 
         N = in.getInt();
-        P = new int[N+1];
-        vis = new boolean[N+1];
-        A = new int[N+1];
+        destinations = new int[N+1];
+        visited = new boolean[N+1];
+        pathlength = new int[N+1];
         for (int i = 1; i < N + 1; i++) {
-            P[i] = in.getInt();
+            destinations[i] = in.getInt();
         }
 
         for (int i = 1; i < N + 1; i++) {
             if(!vis[i]){
-                L = 0;
+                steps = 0;
                 dfs(i);
-                int de = 1;
-                Integer last = q.peekLast();
-                while(!q.isEmpty()){
-                    if(q.peekFirst().equals(last)) de = 0;
-                    A[q.poll()] = L;
-                    L-=de;
+                int decrement = 1;
+                Integer last = path.peekLast();
+                while(!path.isEmpty()){
+                    if(path.peekFirst().equals(last)) decrement = 0;
+                    pathlength[path.poll()] = steps;
+                    steps-=de;
                 }
             }
         }
 
         for (int i = 1; i < N + 1; i++) {
-            System.out.print(A[i] + " ");
+            System.out.print(pathlength[i] + " ");
         }
     }
 
     public static void dfs(int n){
-        vis[n] = true;
-        q.add(n);
-        L++;
-        if(!vis[P[n]])
-            dfs(P[n]);
+        visited[n] = true;
+        path.add(n);
+        steps++;
+        if(!vis[destinations[n]])
+            dfs(destinations[n]);
         else
-            q.add(P[n]); L += A[P[n]];
+            q.add(destinations[n]); steps += pathlength[destinations[n]];
 
     }
 
