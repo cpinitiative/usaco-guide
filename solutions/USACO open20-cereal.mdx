@@ -1,0 +1,85 @@
+---
+id: usaco-1039
+source: USACO Silver 2020 Open
+title: Cereal
+author: Aadit Ambadkar
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_cereal_silver_open20.html)
+
+<LanguageSection>
+<JavaSection>
+## Java Recursive Implementation
+
+This is a problem is a great example of recursion inside classes. The details have been left to you to figure out, but notice the ```static class Box``` allows the static variables to be called. This is key to the recursion, and is unique to Java.
+
+A hint if you get stuck while using a recursive implementation: Can a cow with a greater index take a box before a cow with a lesser index?
+
+
+```java
+import java.io.*;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
+public class cereal {
+    static int[][] match;
+    static Box[] boxes;
+    static HashSet<Integer> cur;
+    public static void main(String[] args) throws IOException {
+        BufferedReader f = new BufferedReader(new FileReader("cereal.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("cereal.out")));
+        StringTokenizer st = new StringTokenizer(f.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        match = new int[n][2];
+        boxes = new Box[m];
+        for (int i = 0; i < m; i++) {
+            boxes[i]=new Box();
+        }
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(f.readLine());
+            int a = Integer.parseInt(st.nextToken())-1;
+            int b = Integer.parseInt(st.nextToken())-1;
+            match[i][0]=a;
+            match[i][1]=b;
+        }
+        cur = new HashSet<>();
+        int[] ans = new int[n];
+        for (int i = n-1; i >= 0; i--) {
+            cur.add(i);
+            boxes[match[i][0]].add(i);
+            ans[i]=cur.size();
+        }
+        for (int i = 0; i < n; i++) {
+            pw.println(ans[i]);
+        }
+        pw.close();
+    }
+    public static class Box {
+        int tcow;
+
+        public Box() {
+            tcow=-1;
+        }
+        public void add(int cow) {
+            if (tcow==-1) tcow=cow;
+            else if (cow>tcow) {
+                if (boxes[match[cow][1]]==this) cur.remove(cow);
+                else {
+                    boxes[match[cow][1]].add(cow);
+                }
+            }
+            else {
+                int ocow = tcow;
+                tcow=cow;
+                if (boxes[match[ocow][1]]==this) cur.remove(ocow);
+                else {
+                    boxes[match[ocow][1]].add(ocow);
+                }
+            }
+
+        }
+    }
+}
+
+```
