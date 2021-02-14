@@ -18,9 +18,9 @@ export default function LeaderboardSidebar() {
             View All &rarr;
           </a>
         </div>
-        <div className="flow-root mt-6">
-          <ul className="-my-5 divide-y divide-gray-200">
-            <li className="py-4">
+        <div className="flow-root mt-2">
+          <ul>
+            <li className="py-3">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
@@ -45,7 +45,7 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-            <li className="py-4">
+            <li className="py-3">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
@@ -70,7 +70,7 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-            <li className="py-4">
+            <li className="py-3">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
@@ -95,10 +95,10 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-            <li className="py-2 text-sm text-gray-700 italic text-center">
+            <li className="text-sm text-gray-700 italic text-center">
               7 more people
             </li>
-            <li className="py-4">
+            <li className="py-3">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
@@ -123,10 +123,7 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-            <li
-              className="py-4 bg-light-blue-50 -mx-6 px-6"
-              style={{ borderColor: 'transparent ' }}
-            >
+            <li className="py-3 bg-light-blue-50 px-6 -mx-6">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
@@ -151,7 +148,7 @@ export default function LeaderboardSidebar() {
                 </div>
               </div>
             </li>
-            <li className="py-4" style={{ borderColor: 'transparent ' }}>
+            <li className="py-3">
               <div className="flex items-center lg:space-x-4">
                 <div className="flex-shrink-0 hidden lg:block">
                   <img
