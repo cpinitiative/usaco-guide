@@ -61,13 +61,13 @@ export default function Breadcrumbs({ className }) {
               clipRule="evenodd"
             />
           </svg>
-          <a
-            href="/"
+          <Link
+            to="/groups/myGroupId/post/postId"
             aria-current="page"
             className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
           >
             Class 5 Homework
-          </a>
+          </Link>
         </div>
       </li>
     </ol>

@@ -491,7 +491,7 @@ export default function PostPage() {
               </div>
               <div className="mt-6 border-t border-gray-200 py-6 space-y-8">
                 <div>
-                  <h2 className="font-medium text-gray-500">
+                  <h2 className="font-medium text-gray-600">
                     Assignment Leaderboard
                   </h2>
                   <ul>
