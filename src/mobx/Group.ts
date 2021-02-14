@@ -5,6 +5,7 @@ enum GroupPermission {
   OWNER = 'owner',
 }
 export default class Group {
+  groupId = '';
   name = '';
   detail?: string = '';
   ownerIds: string[] = [];
@@ -17,6 +18,7 @@ export default class Group {
   }[] = [];
 
   constructor({
+    groupId,
     ownerIds,
     adminIds,
     memberIds,
@@ -24,6 +26,7 @@ export default class Group {
     name,
     detail,
   }: {
+    groupId: string;
     ownerIds: string[];
     adminIds: string[];
     memberIds: string[];
@@ -35,6 +38,7 @@ export default class Group {
     name: string;
     detail?: string;
   }) {
+    this.groupId = groupId;
     this.ownerIds = ownerIds;
     this.adminIds = adminIds;
     this.memberIds = memberIds;

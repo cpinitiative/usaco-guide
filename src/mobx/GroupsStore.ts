@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { getObserverTree, makeAutoObservable, runInAction } from 'mobx';
 import Group from './Group';
 import firebaseType from 'firebase';
 enum GroupPermission {
@@ -35,14 +35,17 @@ export const groupConverter = {
       name: string;
       detail?: string;
     };
-    return new Group(data);
+    return new Group({
+      groupId: snapshot.id,
+      ...data,
+    });
   },
 };
 
 export default class GroupsStore {
   firebase: typeof firebaseType;
-  groups: { data: Group[]; error } = { data: null, error: null };
-  activeGroup: { data: Group; error } = { data: null, error: null };
+  groups: Group[] = null;
+  activeGroup: Group = null;
 
   constructor(firebase: typeof firebaseType) {
     this.firebase = firebase;
@@ -53,7 +56,7 @@ export default class GroupsStore {
 
   async loadGroups(userId: string): Promise<void> {
     const snapshot = await Promise.all(
-      ['ownerIds', 'memberIds', 'adminids'].map(key =>
+      ['ownerIds', 'memberIds', 'adminIds'].map(key =>
         this.firebase
           .firestore()
           .collection('groups')
@@ -66,7 +69,7 @@ export default class GroupsStore {
       .map(snapshot => snapshot.docs.map(doc => doc.data()))
       .flat();
     runInAction(() => {
-      this.groups.data = data;
+      this.groups = data;
     });
   }
 
@@ -79,7 +82,7 @@ export default class GroupsStore {
       .get();
     const data = snapshot.data();
     runInAction(() => {
-      this.activeGroup.data = data;
+      this.activeGroup = data;
     });
   }
 }

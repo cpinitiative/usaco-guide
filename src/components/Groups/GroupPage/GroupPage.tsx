@@ -2,14 +2,17 @@ import * as React from 'react';
 import { useContext, useEffect } from 'react';
 import { GroupsContext } from '../../../pages/groups';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Tabs from '../../Tabs';
 import Feed from './Feed';
 import LeaderboardSidebar from './LeaderboardSidebar';
 import { Link } from 'gatsby';
+import { observer } from 'mobx-react-lite';
 
-export default function GroupPage(props: { path: string }): React.ReactElement {
+export default observer(function GroupPage(props: {
+  path: string;
+}): React.ReactElement {
   const { groupId } = props as { path: string; groupId: string };
   const groupsStore = useContext(GroupsContext);
+  const group = groupsStore.activeGroup;
 
   useEffect(() => {
     groupsStore.loadCurrentGroup(groupId);
@@ -23,10 +26,10 @@ export default function GroupPage(props: { path: string }): React.ReactElement {
         <header className="py-6 sm:py-12 bg-gradient-to-r from-light-blue-800 to-cyan-600">
           <div className="max-w-7xl px-4 sm:px-8 mx-auto">
             <h1 className="text-white text-xl sm:text-3xl font-bold">
-              Monta Vista Competitive Programming Club
+              {group?.name ?? 'Loading...'}
             </h1>
             <p className="text-cyan-100 text-base sm:text-lg mt-2">
-              Meetings every Monday at 11:20am.
+              {group?.detail}
             </p>
           </div>
         </header>
@@ -53,4 +56,4 @@ export default function GroupPage(props: { path: string }): React.ReactElement {
       </div>
     </>
   );
-}
+});
