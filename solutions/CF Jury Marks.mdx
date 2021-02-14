@@ -1,0 +1,57 @@
+---
+id: jury-marks
+source: CF
+title: Jury Marks
+author: Danh Ta Chi Thanh
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/53302)
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(K^2 \log K)$
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int K, N;
+	cin >> K >> N;
+	vector<int> a, b;
+	a.resize(K+1);
+	for (int i = 1; i <= K; ++i) {
+		cin >> a[i];
+		a[i] += a[i-1];
+	}
+	b.resize(N); 
+	for (int& p : b) cin >> p;
+	set<int> init;
+	for (int m = 1; m <= K; ++m) {
+		init.insert(b.front() - a[m]);
+	}
+	int ans = 0;
+	for (const int& d : init) { //must be `const int` (or `auto` for simplicity)
+		set<int> points;
+		for (int i = 1; i <= K; ++i) {
+			points.insert(d + a[i]);
+		}
+		bool flag = true;
+		for (int& p : b) flag &= points.count(p);
+		ans += flag;
+	}
+	cout << ans;
+	return 0;
+}
+```
+
+
+</CPPSection>
+
+</LanguageSection>
