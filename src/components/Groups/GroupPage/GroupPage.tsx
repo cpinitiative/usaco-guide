@@ -6,17 +6,19 @@ import Feed from './Feed';
 import LeaderboardSidebar from './LeaderboardSidebar';
 import { Link } from 'gatsby';
 import { observer } from 'mobx-react-lite';
+import { runInAction } from 'mobx';
 
 export default observer(function GroupPage(props: {
   path: string;
 }): React.ReactElement {
   const { groupId } = props as { path: string; groupId: string };
   const groupsStore = useContext(GroupsContext);
-  const group = groupsStore.activeGroup;
-
   useEffect(() => {
-    groupsStore.loadCurrentGroup(groupId);
-  }, []);
+    runInAction(() => {
+      groupsStore.activeGroupId = groupId;
+    });
+  }, [groupId]);
+  const group = groupsStore.activeGroup;
 
   return (
     <>

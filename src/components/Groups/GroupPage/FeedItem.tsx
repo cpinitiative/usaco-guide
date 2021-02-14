@@ -52,7 +52,9 @@ export default observer(function FeedItem({ post }: { post: Post }) {
             >
               {post.title}
             </h2>
-            <p className="text-sm text-gray-500">December 9 at 11:43 AM</p>
+            <p className="text-sm text-gray-500">
+              {post.timestamp.toDate().toString().slice(0, 15)}
+            </p>
           </div>
         </Link>
         <div className="flex-shrink-0 self-center flex">

@@ -1,4 +1,9 @@
-import { getObserverTree, makeAutoObservable, runInAction } from 'mobx';
+import {
+  getObserverTree,
+  makeAutoObservable,
+  reaction,
+  runInAction,
+} from 'mobx';
 import Group from './Group';
 import firebaseType from 'firebase';
 enum GroupPermission {
@@ -46,12 +51,22 @@ export default class GroupsStore {
   firebase: typeof firebaseType;
   groups: Group[] = null;
   activeGroup: Group = null;
+  activeGroupId = null;
 
   constructor(firebase: typeof firebaseType) {
     this.firebase = firebase;
     makeAutoObservable(this, {
       firebase: false,
     });
+    reaction(
+      () => this.activeGroupId, // Observe everything that is used in the JSON.
+      groupId => {
+        console.log('got new group id', groupId);
+        if (this.activeGroup?.groupId !== groupId) {
+          this.loadActiveGroup(groupId);
+        }
+      }
+    );
   }
 
   async loadGroups(userId: string): Promise<void> {
@@ -79,10 +94,12 @@ export default class GroupsStore {
     });
   }
 
-  async loadCurrentGroup(groupId: string) {
+  async loadActiveGroup(groupId: string) {
     const currentGroup = this.groups?.find(group => group.groupId === groupId);
     if (this.activeGroup?.groupId !== groupId && currentGroup !== null) {
-      this.activeGroup = currentGroup;
+      runInAction(() => {
+        this.activeGroup = currentGroup;
+      });
     }
     const snapshot = await this.firebase
       .firestore()
@@ -90,12 +107,16 @@ export default class GroupsStore {
       .doc(groupId)
       .get();
     if (!this.activeGroup) {
-      this.activeGroup = new Group(this.firebase, groupId);
+      runInAction(() => {
+        this.activeGroup = new Group(this.firebase, groupId);
+      });
     }
     if (this.activeGroup.groupId !== groupId) {
       // stale request?
       return;
     }
-    this.activeGroup.updateFromJson(snapshot.data() as any);
+    runInAction(() => {
+      this.activeGroup.updateFromJson(snapshot.data() as any);
+    });
   }
 }

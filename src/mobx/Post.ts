@@ -4,6 +4,7 @@ import Group from './Group';
 export class Post {
   id = null; // Unique id of this Post, immutable.
   title = null;
+  timestamp = null;
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
   group: Group;
@@ -54,6 +55,7 @@ export class Post {
     return {
       id: this.id,
       title: this.title,
+      timestamp: this.timestamp,
     };
   }
 
@@ -61,6 +63,7 @@ export class Post {
   updateFromJson(json) {
     this.autoSave = false; // Prevent sending of our changes back to the server.
     this.title = json.title;
+    this.timestamp = json.timestamp;
     this.autoSave = true;
   }
 

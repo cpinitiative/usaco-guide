@@ -5,7 +5,7 @@ import Groups from '../mobx/GroupsStore';
 import GroupSelectPage from '../components/Groups/GroupSelectPage';
 import GroupsStore from '../mobx/GroupsStore';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
-import PostPage from '../components/Groups/PostPage';
+import PostPage from '../components/Groups/PostPage/PostPage';
 import useFirebase from '../hooks/useFirebase';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
