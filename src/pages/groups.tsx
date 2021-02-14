@@ -1,4 +1,4 @@
-import React, { createContext, ReactElement, useMemo } from 'react';
+import React, { createContext, ReactElement, useContext, useMemo } from 'react';
 import { Router } from '@reach/router';
 import NotFoundPage from './404';
 import Groups from '../mobx/GroupsStore';
@@ -6,6 +6,8 @@ import GroupSelectPage from '../components/Groups/GroupSelectPage';
 import GroupsStore from '../mobx/GroupsStore';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
 import PostPage from '../components/Groups/PostPage';
+import useFirebase from '../hooks/useFirebase';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -15,7 +17,17 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 };
 
 export default function GroupsRouter() {
-  const groupsStore = useMemo(() => new GroupsStore(), []);
+  const firebase = useFirebase();
+  const groupsStore = useMemo(() => {
+    if (firebase) {
+      return new GroupsStore(firebase);
+    } else {
+      return null;
+    }
+  }, [firebase]);
+
+  // still loading?
+  if (!groupsStore) return null;
   return (
     <GroupsContext.Provider value={groupsStore}>
       <Router basepath="/groups">
