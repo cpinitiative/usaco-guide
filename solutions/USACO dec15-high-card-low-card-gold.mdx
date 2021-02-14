@@ -19,7 +19,7 @@ import java.util.*;
 import java.io.*;
 
 public class highcardgold {
-	static int[] C;
+	static boolean[] C;
 	static List<Integer> B = new ArrayList<>();
 	static List<Integer> F = new ArrayList<>();
 	static List<Integer> S = new ArrayList<>();
@@ -28,11 +28,11 @@ public class highcardgold {
 		Kattio io = new Kattio("cardgame");
 		N = io.nextInt();
 
-		C = new int[2*N+1];
+		C = new boolean[2*N+1];
 
 		for (int i = 0; i < N; i++) {
 			int c = io.nextInt();
-			C[c]++;
+			C[c] = true;
 			if(i < N/2)
 				F.add(c);
 			else
@@ -40,7 +40,7 @@ public class highcardgold {
 		}
 
 		for (int i = 1; i < 2 * N + 1; i++) {
-			if(C[i] == 0) B.add(i);
+			if(!C[i]) B.add(i);
 		}
 
 		Collections.sort(F);
@@ -51,7 +51,6 @@ public class highcardgold {
 		for (int i = F.size()-1; i >= 0; i--) {
 			if(F.get(i) < B.get(ix)){
 				score++;
-				B.remove(ix);
 				ix--;
 			}
 		}
