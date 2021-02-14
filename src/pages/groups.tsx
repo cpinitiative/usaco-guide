@@ -8,6 +8,7 @@ import GroupPage from '../components/Groups/GroupPage/GroupPage';
 import PostPage from '../components/Groups/PostPage';
 import useFirebase from '../hooks/useFirebase';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
+import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -32,22 +33,7 @@ export default function GroupsRouter() {
   return (
     <GroupsContext.Provider value={groupsStore}>
       <Router basepath="/groups">
-        {/*<ClassPageWrapper Component={ClassPage} path="/:classId" />*/}
-        {/*<ClassPageWrapper Component={ClassJoinPage} path="/:classId/join" />*/}
-        {/*<ClassPageWrapper*/}
-        {/*  Component={PostPage}*/}
-        {/*  type={'assignment'}*/}
-        {/*  path="/:classId/assignments/:assignmentId"*/}
-        {/*/>*/}
-        {/*<ClassPageWrapper*/}
-        {/*  Component={PostPage}*/}
-        {/*  type={'announcement'}*/}
-        {/*  path="/:classId/announcements/:announcementId"*/}
-        {/*/>*/}
-        {/*<ClassPageWrapper*/}
-        {/*  Component={StudentProgressPage}*/}
-        {/*  path="/:classId/student-progress"*/}
-        {/*/>*/}
+        <ProblemPage path="/:groupId/post/:postId/problems/:problemId" />
         <PostPage path="/:groupId/post/:postId" />
         <GroupPage path="/:groupId" />
         <GroupSelectPage path="/" />
