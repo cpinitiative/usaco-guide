@@ -1,4 +1,4 @@
-import React, { createContext, ReactElement, useMemo } from 'react';
+import React, { createContext, ReactElement, useContext, useMemo } from 'react';
 import { Router } from '@reach/router';
 import NotFoundPage from './404';
 import Groups from '../mobx/GroupsStore';
@@ -7,6 +7,7 @@ import GroupsStore from '../mobx/GroupsStore';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
 import PostPage from '../components/Groups/PostPage';
 import useFirebase from '../hooks/useFirebase';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -19,7 +20,7 @@ export default function GroupsRouter() {
   const firebase = useFirebase();
   const groupsStore = useMemo(() => {
     if (firebase) {
-      return new GroupsStore();
+      return new GroupsStore(firebase);
     } else {
       return null;
     }
