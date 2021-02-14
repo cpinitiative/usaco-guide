@@ -46,7 +46,9 @@ export default class GroupsStore {
 
   constructor(firebase: typeof firebaseType) {
     this.firebase = firebase;
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      firebase: false,
+    });
   }
 
   async loadGroups(userId: string): Promise<void> {
