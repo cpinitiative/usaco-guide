@@ -2,7 +2,7 @@
 id: poi-05-sza
 source: POI 2005
 title: Template
-author: Andi Qu
+author: Andi Qu, Benjamin Qi
 ---
 
 Let the string be $S$.
@@ -103,9 +103,9 @@ int main() {
 
 <Warning>
 
-The official time limits are very tight and `std::vector` has a bad constant factor, so this code only scores 60 points. Nevertheless, we think the idea behind this solution is interesting enough to share.
+The official time limits are very tight and `std::vector` has a bad constant factor, so this approach only gets 100 points if you represent the graph described below without `std::vector`. For more details, see [this CodeForces blog post](https://codeforces.com/blog/entry/67883).
 
-It's also an interesting example of how something with a less-optimal big-O complexity (i.e. solution 1) runs faster in practice.
+This is also an interesting example of how something with a less-optimal big-O complexity (i.e. solution 1) runs faster in practice.
 
 </Warning>
 
@@ -121,12 +121,18 @@ To check whether the current node works, we simply check whether the gaps betwee
 #include <bits/stdc++.h>
 using namespace std;
 
+const int MX = 5e5+5;
+
 string s;
-int p[500001], mx_gap = 1, ans, prv[500001], nxt[500001];
-vector<int> graph[500001];
-bool visited[500001];
+int p[MX], mx_gap = 1, ans, prv[MX], nxt[MX];
+int graph[MX];
+bool visited[MX];
+
+int num_child[MX];
+int n;
 
 void dfs(int node) {
+    assert(node <= n);
     visited[node] = true;
     if (node && !visited[p[node - 1]]) {
         dfs(p[node - 1]);
@@ -135,20 +141,27 @@ void dfs(int node) {
     mx_gap = max(mx_gap, nxt[node] - prv[node]);
     nxt[prv[node]] = nxt[node];
     prv[nxt[node]] = prv[node];
-    for (int i : graph[node]) if (!visited[i]) dfs(i);
+    for (int ind = num_child[node]; ind < num_child[node+1]; ++ind) {
+        int i = graph[ind];
+        if (!visited[i]) dfs(i);
+    }
 }
-
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin >> s;
-    int n = s.size();
-    graph[0].push_back(1);
+    n = s.size();
+    ++ num_child[0];
     for (int i = 1; i < n; i++) {
         p[i] = p[i - 1];
         while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
         if (s[i] == s[p[i]]) p[i]++;
-        graph[p[i]].push_back(i + 1);
+        ++num_child[p[i]];
     }
+    for (int i = 1; i <= n+1; ++i) num_child[i] += num_child[i-1];
+    graph[--num_child[0]] = 1;
+    for (int i = 1; i < n; i++)
+        graph[--num_child[p[i]]] = i+1;
+
     prv[0] = 0, nxt[0] = 1, prv[n] = n - 1, nxt[n] = n;
     for (int i = 1; i < n; i++) prv[i] = i - 1, nxt[i] = i + 1;
     ans = n;
