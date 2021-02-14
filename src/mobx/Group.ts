@@ -1,11 +1,18 @@
-import { makeAutoObservable } from 'mobx';
+import {
+  makeAutoObservable,
+  onBecomeObserved,
+  onBecomeUnobserved,
+  runInAction,
+  trace,
+} from 'mobx';
+import { Post } from './Post';
 enum GroupPermission {
   MEMBER = 'member',
   ADMIN = 'admin',
   OWNER = 'owner',
 }
 export default class Group {
-  groupId = '';
+  groupId = ''; // immutable
   name = '';
   detail?: string = '';
   ownerIds: string[] = [];
@@ -16,17 +23,26 @@ export default class Group {
     id: string;
     permission: GroupPermission;
   }[] = [];
+  posts: Post[] = [];
+  firebase;
+  unsubscribePosts;
 
-  constructor({
-    groupId,
-    ownerIds,
-    adminIds,
-    memberIds,
-    members,
-    name,
-    detail,
-  }: {
-    groupId: string;
+  constructor(firebase, groupId) {
+    this.firebase = firebase;
+    this.groupId = groupId;
+
+    makeAutoObservable(this, {
+      firebase: false,
+      groupId: false,
+      unsubscribePosts: false,
+      resumePosts: false,
+      suspendPosts: false,
+    });
+    onBecomeObserved(this, 'posts', this.resumePosts);
+    onBecomeUnobserved(this, 'posts', this.suspendPosts);
+  }
+
+  updateFromJson(json: {
     ownerIds: string[];
     adminIds: string[];
     memberIds: string[];
@@ -38,15 +54,48 @@ export default class Group {
     name: string;
     detail?: string;
   }) {
-    this.groupId = groupId;
-    this.ownerIds = ownerIds;
-    this.adminIds = adminIds;
-    this.memberIds = memberIds;
-    this.members = members;
-    this.name = name;
-    this.detail = detail;
+    this.ownerIds = json.ownerIds;
+    this.adminIds = json.adminIds;
+    this.memberIds = json.memberIds;
+    this.members = json.members;
+    this.name = json.name;
+    this.detail = json.detail;
+  }
 
-    makeAutoObservable(this);
+  resumePosts = () => {
+    this.unsubscribePosts = this.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.groupId)
+      .collection('posts')
+      .onSnapshot(snap => {
+        runInAction(() => {
+          this.posts
+            .filter(post => !snap.docs.includes(doc => doc.id === post.id))
+            .forEach(post => this.removePost(post));
+          snap.docs.forEach(doc => {
+            this.updatePostFromFirebaseDoc(doc);
+          });
+        });
+      });
+  };
+
+  suspendPosts = () => {
+    this.unsubscribePosts();
+  };
+
+  updatePostFromFirebaseDoc(doc) {
+    let post = this.posts.find(post => post.id === doc.id);
+    if (!post) {
+      post = new Post(this, doc.id);
+      this.posts.push(post);
+    }
+    post.updateFromJson(doc.data());
+  }
+
+  removePost(post) {
+    this.posts.splice(this.posts.indexOf(post), 1);
+    post.dispose();
   }
 }
 

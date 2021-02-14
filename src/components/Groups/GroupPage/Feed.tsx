@@ -1,12 +1,15 @@
 import * as React from 'react';
 import Tabs from '../../Tabs';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import FeedItem from './FeedItem';
 import { Link } from 'gatsby';
+import { GroupsContext } from '../../../pages/groups';
+import { observer } from 'mobx-react-lite';
 
-export default function Feed() {
+export default observer(function Feed() {
   const feedTabs = ['Feed', 'Assignments', 'Announcements'];
   const [currentFeed, setCurrentFeed] = useState('Feed');
+  const groupStore = useContext(GroupsContext);
 
   return (
     <>
@@ -19,13 +22,13 @@ export default function Feed() {
       </div>
       <div className="mt-4">
         <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
-          {[0, 1, 2, 3, 4, 5, 6, 7].map(x => (
-            <li key={x}>
-              <FeedItem />
+          {groupStore.activeGroup.posts.map(post => (
+            <li key={post.id}>
+              <FeedItem post={post} />
             </li>
           ))}
         </ul>
       </div>
     </>
   );
-}
+});

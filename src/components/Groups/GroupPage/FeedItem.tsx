@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Transition } from '@headlessui/react';
+import { GroupsContext } from '../../../pages/groups';
+import { observer } from 'mobx-react-lite';
+import { Post } from '../../../mobx/Post';
 
-export default function FeedItem() {
+export default observer(function FeedItem({ post }: { post: Post }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = React.useRef();
 
@@ -23,7 +26,7 @@ export default function FeedItem() {
     >
       <div className="flex">
         <Link
-          to={`/groups/myGroupId/post/hello`}
+          to={`/groups/${post.group.groupId}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
           <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
@@ -47,7 +50,7 @@ export default function FeedItem() {
               id="question-title-81614"
               className="text-base font-medium text-gray-900"
             >
-              Binary Search on a Sorted Array
+              {post.title}
             </h2>
             <p className="text-sm text-gray-500">December 9 at 11:43 AM</p>
           </div>
@@ -156,4 +159,4 @@ export default function FeedItem() {
       </div>
     </div>
   );
-}
+});

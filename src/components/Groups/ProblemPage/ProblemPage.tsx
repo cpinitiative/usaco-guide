@@ -206,7 +206,7 @@ export default function ProblemPage() {
                   />
                 </div>
                 <div className="mt-1 text-sm space-x-2 text-gray-500">
-                  Drag and drop a file on the textbox, or{' '}
+                  You can drag and drop a file on the textbox, or{' '}
                   <a href="/" className="hover:text-gray-900 underline">
                     click here
                   </a>{' '}

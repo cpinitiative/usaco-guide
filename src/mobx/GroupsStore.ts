@@ -35,10 +35,10 @@ export const groupConverter = {
       name: string;
       detail?: string;
     };
-    return new Group({
-      groupId: snapshot.id,
-      ...data,
-    });
+    // const group = new Group(this.firebase, snapshot.id);
+    // group.updateFromJson(data);
+    // return group;
+    throw "shouldn't be called";
   },
 };
 
@@ -61,12 +61,18 @@ export default class GroupsStore {
           .firestore()
           .collection('groups')
           .where(key, 'array-contains', userId)
-          .withConverter(groupConverter)
           .get()
       )
     );
     const data = snapshot
-      .map(snapshot => snapshot.docs.map(doc => doc.data()))
+      .map(snapshot =>
+        snapshot.docs.map(doc => {
+          const group = new Group(this.firebase, doc.id);
+          group.updateFromJson(doc.data() as any);
+          return group;
+        })
+      )
+      // @ts-ignore
       .flat();
     runInAction(() => {
       this.groups = data;
@@ -74,15 +80,22 @@ export default class GroupsStore {
   }
 
   async loadCurrentGroup(groupId: string) {
+    const currentGroup = this.groups?.find(group => group.groupId === groupId);
+    if (this.activeGroup?.groupId !== groupId && currentGroup !== null) {
+      this.activeGroup = currentGroup;
+    }
     const snapshot = await this.firebase
       .firestore()
       .collection('groups')
       .doc(groupId)
-      .withConverter(groupConverter)
       .get();
-    const data = snapshot.data();
-    runInAction(() => {
-      this.activeGroup = data;
-    });
+    if (!this.activeGroup) {
+      this.activeGroup = new Group(this.firebase, groupId);
+    }
+    if (this.activeGroup.groupId !== groupId) {
+      // stale request?
+      return;
+    }
+    this.activeGroup.updateFromJson(snapshot.data() as any);
   }
 }

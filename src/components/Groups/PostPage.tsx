@@ -8,14 +8,14 @@ export default function PostPage() {
     <>
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
-        <Breadcrumbs className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4" />
+        <Breadcrumbs className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4" />
       </nav>
       <main
         className="flex-1 relative overflow-y-auto focus:outline-none"
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-5xl xl:grid xl:grid-cols-3">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
             <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200">
               <div>
                 <div>
@@ -307,7 +307,7 @@ export default function PostPage() {
                                           className="absolute inset-0"
                                           aria-hidden="true"
                                         ></span>
-                                        Milk Pails
+                                        Counting Haybales
                                       </Link>
                                     </h2>
                                   </span>
@@ -383,7 +383,7 @@ export default function PostPage() {
                                           className="absolute inset-0"
                                           aria-hidden="true"
                                         ></span>
-                                        Milk Pails
+                                        Grass Planting
                                       </Link>
                                     </h2>
                                   </span>
@@ -491,7 +491,7 @@ export default function PostPage() {
               </div>
               <div className="mt-6 border-t border-gray-200 py-6 space-y-8">
                 <div>
-                  <h2 className="font-medium text-gray-600">
+                  <h2 className="font-medium text-gray-600 mb-1">
                     Assignment Leaderboard
                   </h2>
                   <ul>
