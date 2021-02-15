@@ -24,6 +24,7 @@ export default class Group {
     permission: GroupPermission;
   }[] = [];
   posts: Post[] = [];
+  creatingNewPost = false;
   firebase;
   unsubscribePosts;
 
@@ -91,6 +92,14 @@ export default class Group {
       this.posts.push(post);
     }
     post.updateFromJson(doc.data());
+  }
+
+  createNewPost() {
+    this.creatingNewPost = true;
+    // todo: create new post, return promise or something
+    setTimeout(() => {
+      this.creatingNewPost = false;
+    }, 1000);
   }
 
   removePost(post) {

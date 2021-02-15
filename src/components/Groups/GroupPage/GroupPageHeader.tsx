@@ -29,7 +29,7 @@ export default observer(function GroupPageHeader(props: { group: Group }) {
             {props.group?.detail}
           </p>
         </div>
-        <div className="mt-4 md:mt-0 md:ml-4">
+        <div className="mt-4 md:mt-0 md:ml-4 text-right">
           <div className="relative inline-block text-left" ref={ref}>
             <div>
               <button
@@ -70,36 +70,17 @@ export default observer(function GroupPageHeader(props: { group: Group }) {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                <a
-                  href="/"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                <button
+                  type="button"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
+                  onClick={() => props.group?.createNewPost()}
+                  disabled={props.group?.creatingNewPost}
                 >
-                  Account settings
-                </a>
-                <a
-                  href="/"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  role="menuitem"
-                >
-                  Support
-                </a>
-                <a
-                  href="/"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  role="menuitem"
-                >
-                  License
-                </a>
-                <form method="POST" action="#">
-                  <button
-                    type="submit"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    role="menuitem"
-                  >
-                    Sign out
-                  </button>
-                </form>
+                  {props.group?.creatingNewPost
+                    ? 'Creating new post...'
+                    : 'Create New Post'}
+                </button>
               </div>
             </Transition>
           </div>
