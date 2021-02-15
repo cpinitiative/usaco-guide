@@ -6,6 +6,8 @@ import Feed from './Feed';
 import LeaderboardSidebar from './LeaderboardSidebar';
 import { Link } from 'gatsby';
 import { observer } from 'mobx-react-lite';
+import { Transition } from '@headlessui/react';
+import GroupPageHeader from './GroupPageHeader';
 
 export default observer(function GroupPage(props: {
   path: string;
@@ -18,16 +20,7 @@ export default observer(function GroupPage(props: {
       <TopNavigationBar />
       <div className="min-h-screen bg-gray-100">
         {/* When the mobile menu is open, add `overflow-hidden` to the `body` element to prevent double scrollbars */}
-        <header className="py-6 sm:py-12 bg-gradient-to-r from-light-blue-800 to-cyan-600">
-          <div className="max-w-7xl px-4 sm:px-8 mx-auto">
-            <h1 className="text-white text-xl sm:text-3xl font-bold">
-              {group?.name ?? 'Loading...'}
-            </h1>
-            <p className="text-cyan-100 text-base sm:text-lg mt-2">
-              {group?.detail}
-            </p>
-          </div>
-        </header>
+        <GroupPageHeader group={group} />
         <Link
           to="/leaderboard"
           className="md:hidden bg-white shadow flex items-center justify-between px-4 sm:px-8 py-3"
