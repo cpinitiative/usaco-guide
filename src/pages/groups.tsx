@@ -9,12 +9,26 @@ import PostPage from '../components/Groups/PostPage/PostPage';
 import useFirebase from '../hooks/useFirebase';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
+import { runInAction } from 'mobx';
 
 export const GroupsContext = createContext<Groups>(null);
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
   return <NotFoundPage {...props} />;
+};
+
+const GroupPageWrapper = (props: any): ReactElement => {
+  const { Component, ...propsExceptComponent } = props;
+  const store = useContext(GroupsContext);
+
+  React.useEffect(() => {
+    runInAction(() => {
+      store.activeGroupId = props.groupId;
+    });
+  }, [props.groupId]);
+
+  return <Component {...propsExceptComponent} />;
 };
 
 export default function GroupsRouter() {
@@ -33,9 +47,12 @@ export default function GroupsRouter() {
   return (
     <GroupsContext.Provider value={groupsStore}>
       <Router basepath="/groups">
-        <ProblemPage path="/:groupId/post/:postId/problems/:problemId" />
-        <PostPage path="/:groupId/post/:postId" />
-        <GroupPage path="/:groupId" />
+        <GroupPageWrapper
+          Component={ProblemPage}
+          path="/:groupId/post/:postId/problems/:problemId"
+        />
+        <GroupPageWrapper Component={PostPage} path="/:groupId/post/:postId" />
+        <GroupPageWrapper Component={GroupPage} path="/:groupId" />
         <GroupSelectPage path="/" />
         <NotFoundPageWrapper default />
       </Router>

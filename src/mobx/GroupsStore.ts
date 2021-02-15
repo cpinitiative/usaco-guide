@@ -61,7 +61,6 @@ export default class GroupsStore {
     reaction(
       () => this.activeGroupId, // Observe everything that is used in the JSON.
       groupId => {
-        console.log('got new group id', groupId);
         if (this.activeGroup?.groupId !== groupId) {
           this.loadActiveGroup(groupId);
         }
@@ -95,6 +94,11 @@ export default class GroupsStore {
   }
 
   async loadActiveGroup(groupId: string) {
+    console.log('loading group ', groupId);
+    if (groupId === null) {
+      this.activeGroup = null;
+      return;
+    }
     const currentGroup = this.groups?.find(group => group.groupId === groupId);
     if (this.activeGroup?.groupId !== groupId && currentGroup !== null) {
       runInAction(() => {

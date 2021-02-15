@@ -11,17 +11,12 @@ import PostProblems from './PostProblems';
 import PostSidebar from './PostSidebar';
 
 export default observer(function PostPage(props) {
-  const { groupId, postId } = props as {
+  const { postId } = props as {
     path: string;
     groupId: string;
     postId: string;
   };
   const store = useContext(GroupsContext);
-  useEffect(() => {
-    runInAction(() => {
-      store.activeGroupId = groupId;
-    });
-  }, [groupId]);
 
   const post = store.activeGroup?.posts.find(post => post.id === postId);
 
