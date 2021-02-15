@@ -7,11 +7,11 @@ author: Danh Ta Chi Thanh
 
 [Official Editorial](https://codeforces.com/blog/entry/53302)
 
+**Time Complexity:** $\mathcal{O}(K^2 \log K)$
+
 <LanguageSection>
 
 <CPPSection>
-
-**Time Complexity:** $\mathcal{O}(K^2 \log K)$
 
 ## C++ Implementation
 
@@ -37,13 +37,13 @@ int main() {
 		init.insert(b.front() - a[m]);
 	}
 	int ans = 0;
-	for (const int& d : init) { //must be `const int` (or `auto` for simplicity)
+	for (int d : init) {
 		set<int> points;
 		for (int i = 1; i <= K; ++i) {
 			points.insert(d + a[i]);
 		}
 		bool flag = true;
-		for (int& p : b) flag &= points.count(p);
+		for (int p : b) flag &= points.count(p);
 		ans += flag;
 	}
 	cout << ans;
