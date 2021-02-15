@@ -29,10 +29,10 @@ void setIO(string name, bool includeout=false) { // name is nonempty for USACO f
     }
 }
 
-bool check(long long dist) {
-    long long currPoint = intervals[0].first; //starting off at earliest possible point
-    long long currInterval = 0; //what patch we are currently on
-    long long placed = 0; //how many cows have we placed in total
+bool check(ll dist) {
+    ll currPoint = intervals[0].first; //starting off at earliest possible point
+    ll currInterval = 0; //what patch we are currently on
+    ll placed = 0; //how many cows have we placed in total
     while (placed < n) {
         if (intervals[currInterval].first <= currPoint && intervals[currInterval].second >= currPoint) {
             //placed another cow down
@@ -61,9 +61,9 @@ int main() {
         cin >> intervals[i].first >> intervals[i].second;
     }
     sort(intervals, intervals + m);
-    long long lo = 1; long long hi = pow(10, 18) + 5;
+    ll lo = 1; ll hi = pow(10, 18) + 5;
     while (lo + 1 < hi) {
-        long long mid = (lo + hi) / 2;
+        ll mid = (lo + hi) / 2;
         if (check(mid)) {
             lo = mid;
         } else {
