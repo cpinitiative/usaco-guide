@@ -5,6 +5,20 @@ import Breadcrumbs from '../Breadcrumbs';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { GroupsContext } from '../../../pages/groups';
+import styled from 'styled-components';
+
+const ScoreInput = styled.input`
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+`;
 
 export default observer(function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -16,6 +30,10 @@ export default observer(function ProblemPage(props) {
   const store = useContext(GroupsContext);
   const problem = store.activeGroup?.posts.find(post => post.id === postId)
     ?.problems[problemId];
+
+  if (!problem) {
+    return null;
+  }
 
   return (
     <>
@@ -209,7 +227,7 @@ export default observer(function ProblemPage(props) {
                 </div>
               </div>
               <section aria-labelledby="activity-title">
-                <div className="pb-4">
+                <div>
                   <h2
                     id="activity-title"
                     className="text-xl font-medium text-gray-900"
@@ -217,7 +235,33 @@ export default observer(function ProblemPage(props) {
                     Submit Code
                   </h2>
                 </div>
-                <div>
+                <div className="text-sm mt-1 text-gray-900">
+                  <b>Self-graded problem</b>: Use the Problem Statement link
+                  above to test your code. Submit your code and your score
+                  below. Group admins will manually verify your code to ensure
+                  the score you entered is accurate.
+                </div>
+                <div className="mt-4">
+                  <label
+                    htmlFor="score"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Score
+                  </label>
+                  <div className="mt-1 relative rounded-md shadow-sm w-24">
+                    <ScoreInput
+                      type="number"
+                      name="score"
+                      id="score"
+                      min={0}
+                      max={100}
+                      className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 pr-3 sm:text-sm border-gray-300"
+                      placeholder="0 - 100"
+                      aria-describedby="price-currency"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
                   <textarea
                     rows={3}
                     className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border-gray-300 font-mono"
