@@ -12,12 +12,6 @@ export const problems = {
 	fence: new Problem('Bronze', 'Fence Painting', '567', 'Very Easy'),
 };
 
-<Info title="Update">
-
-USACO problems from December 2020 onwards use standard I/O rather than file I/O. You'll still need to use file I/O to submit to earlier problems.
-
-</Info>
-
 <LanguageSection>
 
 <CPPSection>
@@ -532,17 +526,25 @@ print(x)
 
 ## File I/O
 
+<Info title="Update">
+
+USACO problems from December 2020 onwards use standard I/O rather than file I/O. You'll still need to use file I/O to submit to earlier problems.
+
+</Info>
+
+In older USACO problems, the input and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`.
+
 <FocusProblem problem={problems.fence} />
 
-From December 2020 onwards, USACO switched to using standard IO; however to practice older problems, it will still be necessary. In USACO, the input and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
+You must rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
 
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1 - `freopen`
+### Method 1 - [`freopen`](https://www.cplusplus.com/reference/cstdio/freopen/)
 
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library.
+You will need the [`<cstdio>`](http://www.cplusplus.com/reference/cstdio/) library. The `freopen` statements reuse standard I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf` and `printf`) to read and write data.
 
 ```cpp
 #include <iostream>
@@ -551,35 +553,37 @@ using namespace std;
 
 int main() {
 	freopen("problemname.in", "r", stdin);
+	// the following line creates/overwrites the output file
 	freopen("problemname.out", "w", stdout);
-	// this creates/overwrites the output file
-
-	// now can use cin or scanf
+	// cin reads from the file instead of standard input
 	int a, b, c; cin >> a >> b >> c;
-	// here, the cin function reads from the file instead of standard input
+	// cout prints to the file instead of standard output
 	cout << "sum is " << a+b+c << "\n";
 }
 ```
 
-Essentially, the `freopen` statements change the standard IO to point to files instead, and this allows simple functions to be used for files as well. After re-defining the IO functions, then you can simply use `cin` and `cout` to read and write data.
+
+To test your solution locally without file I/O, just comment out the lines with `freopen`.
 
 For convenience, we can define a function that will redirect `stdin` and `stdout` based on the problem name:
 
 ```cpp
-#include "bits/stdc++.h"
+#include <iostream>
+#include <cstdio>
 using namespace std;
 
-void setIO(string s) { //this function is the template that redefines the standard IO
+void setIO(string s) { // the argument is the filename without the extension
 	freopen((s+".in").c_str(),"r",stdin);
 	freopen((s+".out").c_str(),"w",stdout);
 }
 
 int main() {
-	setIO("problemname"); //the input string is simply the file name without the ".in" or ".out"
+	setIO("problemname");
 	int a, b, c; cin >> a >> b >> c;
 	cout << "sum is " << a+b+c << "\n";
 }
 ```
+
 
 ### Method 2 - [`<fstream>`](http://www.cplusplus.com/reference/fstream/)
 
@@ -701,9 +705,7 @@ For an explanation of the solutions below, check the [Rectangle Geometry](/bronz
 
 <CPPSection>
 
-### Method 1
-
-Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you comment out both of the lines containing `freopen` then the program reads from standard in and writes to standard out as usual.
+### Method 1 - `freopen`
 
 <Spoiler title="Method 1">
 
@@ -729,9 +731,7 @@ int main() {
 
 </Spoiler>
 
-### Method 2
-
-Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
+### Method 2 - `<fstream>`
 
 <Spoiler title="Method 2">
 
