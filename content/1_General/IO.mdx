@@ -46,7 +46,6 @@ export const problems = {
 
 <!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
 
-
 The code snippets below will read in three integers as part of a single line and output their sum. For example, given the input
 
 ```
@@ -69,17 +68,15 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are **standard**. 
-
-
+In most websites (such as CodeForces and CSES), input and output are **standard**.
 
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1 - [<iostream\>](http://www.cplusplus.com/reference/iostream/)
+### Method 1 - [`<iostream>`](https://www.cplusplus.com/reference/iostream/)
 
-This library is quite straightforward to use and the `cin` function simply assigns values sepearated by spaces or lines to different variables. Similarly, the `cout` function simply writes on the standard console and either an escape sequence (that's what the `\n` does below) or the `endl` command can enter a new line at the end.
+More straightforward to use. Calling the extraction operator `operator>>` on [`cin`](https://www.cplusplus.com/reference/iostream/cin/) reads whitespace-separated data from standard input. Similarly, calling the insertion operator `operator<<` on [`cout`](https://www.cplusplus.com/reference/iostream/cout/) writes to standard output. The [escape sequence](https://en.cppreference.com/w/cpp/language/escape) `\n` represents a new line.
 
 ```cpp
 #include <iostream>
@@ -88,12 +85,19 @@ using namespace std;
 int main() {
 	int a, b, c; cin >> a >> b >> c;
 	cout << "sum is " << a+b+c << "\n";
+	// or cout << "sum is " << a+b+c << endl;
 }
 ```
 
-### Method 2 - [<cstdio\>](http://www.cplusplus.com/reference/cstdio/)
+<Info title="endl vs \n">
 
-This library includes the `scanf` and `printf` functions, which are slightly more complicated to use, but are significantly faster (generally only an issue with large input sizes):
+[`endl`](https://www.cplusplus.com/reference/ostream/endl/) and `\n` are _not_ equivalent; see [Fast I/O](/general/fast-io) for details.
+
+</Info>
+
+### Method 2 - [`<cstdio>`](https://www.cplusplus.com/reference/cstdio/)
+
+This library includes the [`scanf`](https://www.cplusplus.com/reference/cstdio/scanf/) and [`printf`](https://www.cplusplus.com/reference/cstdio/printf/) functions, which are slightly more complicated to use.
 
 ```cpp
 #include <cstdio>
@@ -119,7 +123,11 @@ int main() {
 }
 ```
 
-The first method can be sped up so that the difference in speed is not significant; see [Fast I/O](/general/fast-io) for details.
+<Info title="Input Speed">
+
+The second method is significantly faster (generally only an issue with large input sizes). However, the first method can be sped up so that the difference in speed is not significant; see [Fast I/O](/general/fast-io) for details.
+
+</Info>
 
 </CPPSection>
 
@@ -547,9 +555,9 @@ You must rename the `.in` and `.out` files depending on the problem. For example
 
 <CPPSection>
 
-### Method 1 - [`freopen`](https://www.cplusplus.com/reference/cstdio/freopen/)
+### Method 1 - `freopen`
 
-You will need the [`<cstdio>`](http://www.cplusplus.com/reference/cstdio/) library. The `freopen` statements reuse standard I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf` and `printf`) to read and write data.
+You will need the `<cstdio>` library. The `freopen` statements reuse standard I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf` and `printf`) to read and write data.
 
 ```cpp
 #include <iostream>
@@ -588,8 +596,7 @@ int main() {
 }
 ```
 
-
-### Method 2 - [`<fstream>`](http://www.cplusplus.com/reference/fstream/)
+### Method 2 - [`<fstream>`](https://www.cplusplus.com/reference/fstream/)
 
 You cannot use C-style I/O (`scanf`, `printf`) with this method.
 
