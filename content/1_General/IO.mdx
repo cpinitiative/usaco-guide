@@ -156,7 +156,7 @@ This works, but `Scanner` and `System.out.print` are slow when we have to handle
 
 ### Method 2 - [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html)
 
-These are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. It has quite a few more methods and the `io` library must be imported for its use as well.
+These are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. It has quite a few more methods and the `io` library must be imported for its use as well. A [`StringTokenizer`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/StringTokenizer.html) is used to split the input line by whitespace into tokens, which are then accessed individually by the `nextToken()` method.
 
 ```java
 import java.io.*;
@@ -167,8 +167,6 @@ public class Main {
 	static PrintWriter pw = new PrintWriter(System.out);
 	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(r.readLine());
-		// StringTokenizer breaks down a string into "tokens"
-		// that can be accessed individually by the nextToken() method
 		int a = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
 		int c = Integer.parseInt(st.nextToken());
