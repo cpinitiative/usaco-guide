@@ -2,13 +2,30 @@ import * as React from 'react';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import { Link } from 'gatsby';
 import Breadcrumbs from '../Breadcrumbs';
+import { observer } from 'mobx-react-lite';
+import { useContext } from 'react';
+import { GroupsContext } from '../../../pages/groups';
 
-export default function ProblemPage() {
+export default observer(function ProblemPage(props) {
+  const { postId, problemId } = props as {
+    path: string;
+    groupId: string;
+    postId: string;
+    problemId: string;
+  };
+  const store = useContext(GroupsContext);
+  const problem = store.activeGroup?.posts.find(post => post.id === postId)
+    ?.problems[problemId];
+
   return (
     <>
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
-        <Breadcrumbs className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4" />
+        <Breadcrumbs
+          className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          group={problem.post.group}
+          post={problem.post}
+        />
       </nav>
       <main
         className="flex-1 relative overflow-y-auto focus:outline-none"
@@ -20,9 +37,11 @@ export default function ProblemPage() {
               <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">
-                    Milk Pails
+                    Problem: {problem.name}
                   </h1>
-                  <p className="mt-2 text-sm text-gray-500">Class 5 Homework</p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    {problem.post.title}
+                  </p>
                 </div>
                 {/*<div className="mt-4 flex space-x-3 md:mt-0">*/}
                 {/*  <button*/}
@@ -317,4 +336,4 @@ export default function ProblemPage() {
       </main>
     </>
   );
-}
+});

@@ -1,10 +1,14 @@
-import { makeAutoObservable, reaction } from 'mobx';
+import { makeAutoObservable, reaction, toJS } from 'mobx';
 import Group from './Group';
+import { Problem } from './Problem';
+import firebase from 'firebase';
 
 export class Post {
   id = null; // Unique id of this Post, immutable.
   title = null;
   timestamp = null;
+  body = null;
+  problems: { [key: string]: Problem } = {};
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
   group: Group;
@@ -38,6 +42,10 @@ export class Post {
     );
   }
 
+  get dueDateString() {
+    return this.timestamp.toDate().toString().slice(0, 15);
+  }
+
   // Remove this Post from the client and the server.
   delete() {
     // should be in a transport layer...
@@ -56,6 +64,11 @@ export class Post {
       id: this.id,
       title: this.title,
       timestamp: this.timestamp,
+      body: this.body,
+      problems: Object.keys(this.problems).reduce(
+        (acc, cur) => ({ ...acc, [cur]: this.problems[cur].asJson }),
+        []
+      ),
     };
   }
 
@@ -64,7 +77,22 @@ export class Post {
     this.autoSave = false; // Prevent sending of our changes back to the server.
     this.title = json.title;
     this.timestamp = json.timestamp;
+    this.body = json.body;
+    Object.keys(this.problems)
+      .filter(id => !json.problems.hasOwnProperty(id))
+      .forEach(id => this.removeProblem(this.problems[id]));
+    Object.entries(json.problems).forEach(([id, problem]) => {
+      if (!this.problems[id]) {
+        this.problems[id] = new Problem(this, id);
+      }
+      this.problems[id].updateFromJson(problem);
+    });
     this.autoSave = true;
+  }
+
+  removeProblem(problem: Problem) {
+    delete this.problems[problem.id];
+    problem.dispose();
   }
 
   // Clean up the observer.

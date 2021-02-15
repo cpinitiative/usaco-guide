@@ -6,8 +6,10 @@ export default observer(function PostHeader({ post }: { post: Post }) {
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Class 5 Homework</h1>
-        <p className="mt-2 text-sm text-gray-500">Due on March 3rd, 2021</p>
+        <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
+        <p className="mt-2 text-sm text-gray-500">
+          Due on {post.dueDateString}
+        </p>
       </div>
       {/*<div className="mt-4 flex space-x-3 md:mt-0">*/}
       {/*  <button*/}
