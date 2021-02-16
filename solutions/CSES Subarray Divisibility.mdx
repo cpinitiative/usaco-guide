@@ -107,58 +107,58 @@ const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};
 //mt19937 rng((uint32_t)std::chrono::steady_clock::now().time_since_epoch().count()); 
 
 namespace input {
-    template<class T> void re(complex<T>& x);
-    template<class T1, class T2> void re(pair<T1,T2>& p);
-    template<class T> void re(vector<T>& a);
-    template<class T, size_t SZ> void re(array<T,SZ>& a);
+	template<class T> void re(complex<T>& x);
+	template<class T1, class T2> void re(pair<T1,T2>& p);
+	template<class T> void re(vector<T>& a);
+	template<class T, size_t SZ> void re(array<T,SZ>& a);
 
-    template<class T> void re(T& x) { cin >> x; }
-    void re(double& x) { string t; re(t); x = stod(t); }
-    void re(ld& x) { string t; re(t); x = stold(t); }
-    template<class Arg, class... Args> void re(Arg& first, Args&... rest) { 
-        re(first); re(rest...); 
-    }
+	template<class T> void re(T& x) { cin >> x; }
+	void re(double& x) { string t; re(t); x = stod(t); }
+	void re(ld& x) { string t; re(t); x = stold(t); }
+	template<class Arg, class... Args> void re(Arg& first, Args&... rest) { 
+		re(first); re(rest...); 
+	}
 
-    template<class T> void re(complex<T>& x) { T a,b; re(a,b); x = cd(a,b); }
-    template<class T1, class T2> void re(pair<T1,T2>& p) { re(p.f,p.s); }
-    template<class T> void re(vector<T>& a) { F0R(i,sz(a)) re(a[i]); }
-    template<class T, size_t SZ> void re(array<T,SZ>& a) { F0R(i,SZ) re(a[i]); }
+	template<class T> void re(complex<T>& x) { T a,b; re(a,b); x = cd(a,b); }
+	template<class T1, class T2> void re(pair<T1,T2>& p) { re(p.f,p.s); }
+	template<class T> void re(vector<T>& a) { F0R(i,sz(a)) re(a[i]); }
+	template<class T, size_t SZ> void re(array<T,SZ>& a) { F0R(i,SZ) re(a[i]); }
 }
 
 using namespace input;
 
 namespace output {
-    template<class T1, class T2> void pr(const pair<T1,T2>& x);
-    template<class T, size_t SZ> void pr(const array<T,SZ>& x);
-    template<class T> void pr(const vector<T>& x);
-    template<class T> void pr(const set<T>& x);
-    template<class T1, class T2> void pr(const map<T1,T2>& x);
+	template<class T1, class T2> void pr(const pair<T1,T2>& x);
+	template<class T, size_t SZ> void pr(const array<T,SZ>& x);
+	template<class T> void pr(const vector<T>& x);
+	template<class T> void pr(const set<T>& x);
+	template<class T1, class T2> void pr(const map<T1,T2>& x);
 
-    template<class T> void pr(const T& x) { cout << x; }
-    template<class Arg, class... Args> void pr(const Arg& first, const Args&... rest) { 
-        pr(first); pr(rest...); 
-    }
+	template<class T> void pr(const T& x) { cout << x; }
+	template<class Arg, class... Args> void pr(const Arg& first, const Args&... rest) { 
+		pr(first); pr(rest...); 
+	}
 
-    template<class T1, class T2> void pr(const pair<T1,T2>& x) { 
-        pr("{",x.f,", ",x.s,"}"); 
-    }
-    template<class T> void prContain(const T& x) {
-        pr("{");
-        bool fst = 1; for (const auto& a: x) pr(!fst?", ":"",a), fst = 0; // const needed for vector<bool>
-        pr("}");
-    }
-    template<class T, size_t SZ> void pr(const array<T,SZ>& x) { prContain(x); }
-    template<class T> void pr(const vector<T>& x) { prContain(x); }
-    template<class T> void pr(const set<T>& x) { prContain(x); }
-    template<class T1, class T2> void pr(const map<T1,T2>& x) { prContain(x); }
-    
-    void ps() { pr("\n"); }
-    template<class Arg> void ps(const Arg& first) { 
-        pr(first); ps(); // no space at end of line
-    }
-    template<class Arg, class... Args> void ps(const Arg& first, const Args&... rest) { 
-        pr(first," "); ps(rest...); // print w/ spaces
-    }
+	template<class T1, class T2> void pr(const pair<T1,T2>& x) { 
+		pr("{",x.f,", ",x.s,"}"); 
+	}
+	template<class T> void prContain(const T& x) {
+		pr("{");
+		bool fst = 1; for (const auto& a: x) pr(!fst?", ":"",a), fst = 0; // const needed for vector<bool>
+		pr("}");
+	}
+	template<class T, size_t SZ> void pr(const array<T,SZ>& x) { prContain(x); }
+	template<class T> void pr(const vector<T>& x) { prContain(x); }
+	template<class T> void pr(const set<T>& x) { prContain(x); }
+	template<class T1, class T2> void pr(const map<T1,T2>& x) { prContain(x); }
+	
+	void ps() { pr("\n"); }
+	template<class Arg> void ps(const Arg& first) { 
+		pr(first); ps(); // no space at end of line
+	}
+	template<class Arg, class... Args> void ps(const Arg& first, const Args&... rest) { 
+		pr(first," "); ps(rest...); // print w/ spaces
+	}
 }
 
 using namespace output;
@@ -167,28 +167,28 @@ int N;
 vl M;
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0); cout.tie(0);
 
-    cin >> N;
+	cin >> N;
 
-    M.resize(N);
+	M.resize(N);
 
-    ll psums = 0;
-    M[psums] = 1;
+	ll psums = 0;
+	M[psums] = 1;
 
-    F0R(i, N){
-        int a; re(a);
-        psums += a;
-        //Accounting for negative sums here
-        M[((psums%N)+N)%N]++;
-    }
-    ll res = 0;
-    trav(x, M){
-        //Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
-        res += (x * (x-1))/2;
-    }
-    pr(res);
+	F0R(i, N){
+		int a; re(a);
+		psums += a;
+		//Accounting for negative sums here
+		M[((psums%N)+N)%N]++;
+	}
+	ll res = 0;
+	trav(x, M){
+		//Calculating the # of pairs. This calculates the pairs without duplicates and reverse groups.
+		res += (x * (x-1))/2;
+	}
+	pr(res);
 }
 ```
 
