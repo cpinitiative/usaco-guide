@@ -69,41 +69,41 @@ const int MOD = 1e9;
 int x[100001], y[100001], cmp[400001];
 
 int find(int A) {
-    while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
-    return A;
+	while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
+	return A;
 }
 void onion(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n, m, k;
-    cin >> n >> m >> k;
-    FOR(i, 0, 2 * (n + m)) cmp[i] = i;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m, k;
+	cin >> n >> m >> k;
+	FOR(i, 0, 2 * (n + m)) cmp[i] = i;
 
-    FOR(i, 0, k) {
-        int c;
-        cin >> x[i] >> y[i] >> c;
-        c ^= (x[i] & 1) && (y[i] & 1);
+	FOR(i, 0, k) {
+		int c;
+		cin >> x[i] >> y[i] >> c;
+		c ^= (x[i] & 1) && (y[i] & 1);
 
-        if (c) {
-            onion(x[i], y[i] + n);
-            onion(x[i] + m + n, y[i] + 2 * n + m);
-        } else {
-            onion(x[i] + m + n, y[i] + n);
-            onion(x[i], y[i] + 2 * n + m);
-        }
-    }
+		if (c) {
+			onion(x[i], y[i] + n);
+			onion(x[i] + m + n, y[i] + 2 * n + m);
+		} else {
+			onion(x[i] + m + n, y[i] + n);
+			onion(x[i], y[i] + 2 * n + m);
+		}
+	}
 
-    int cnt = -1;
-    FOR(i, 0, n + m) {
-        if (find(i) == find(i + n + m)) return cout << "0", 0;
-        if (find(i) == i) cnt++;
-    }
+	int cnt = -1;
+	FOR(i, 0, n + m) {
+		if (find(i) == find(i + n + m)) return cout << "0", 0;
+		if (find(i) == i) cnt++;
+	}
 
-    int ans = 1;
-    FOR(i, 0, cnt) ans = (ans * 2) % MOD;
-    cout << ans;
-    return 0;
+	int ans = 1;
+	FOR(i, 0, cnt) ans = (ans * 2) % MOD;
+	cout << ans;
+	return 0;
 }
 ```

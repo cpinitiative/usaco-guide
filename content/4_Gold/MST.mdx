@@ -131,10 +131,10 @@ To review a couple of terms:
 #include "DSU.h"
 
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-  sort(all(ed));
-  T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-  trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
-  return ans;
+	sort(all(ed));
+	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
+	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
+	return ans;
 }
 ```
 
@@ -148,34 +148,34 @@ public static PriorityQueue<Edge> pq; //contains all edges
 
 //Assumes that DSU code is included
 public static void kruskal() {
-    while (!pq.isEmpty()) {
-        Edge e = pq.poll();
-        if (find(e.start) != find(e.end)) {
-            MST.get(e.start).add(e.end);
-            MST.get(e.end).add(e.start);
-            union(e.start, e.end);
-        }
-    }
+	while (!pq.isEmpty()) {
+		Edge e = pq.poll();
+		if (find(e.start) != find(e.end)) {
+			MST.get(e.start).add(e.end);
+			MST.get(e.end).add(e.start);
+			union(e.start, e.end);
+		}
+	}
 }
 
 static class Edge implements Comparable<Edge> {
-    int start,
-    end,
-    weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
-    public int compareTo(Edge o) {
-        if (this.weight > o.weight) {
-            return 1;
-        } else if (this.weight == o.weight) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
+	int start,
+	end,
+	weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
+	public int compareTo(Edge o) {
+		if (this.weight > o.weight) {
+			return 1;
+		} else if (this.weight == o.weight) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 }
 ```
 
@@ -206,49 +206,49 @@ typedef vector<int> vi;
 #define s second
  
 struct DSU {
-    vi e; void init(int N) { e = vi(N,-1); }
-    // get representive component, uses path compression
-    int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-    bool sameSet(int a, int b) { return get(a) == get(b); }
-    int size(int x) { return -e[get(x)]; }
-    bool unite(int x, int y) { // union by size
-        x = get(x), y = get(y); if (x == y) return 0;
-        if (e[x] > e[y]) swap(x,y);
-        e[x] += e[y]; e[y] = x; return 1;
-    }
+	vi e; void init(int N) { e = vi(N,-1); }
+	// get representive component, uses path compression
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	bool sameSet(int a, int b) { return get(a) == get(b); }
+	int size(int x) { return -e[get(x)]; }
+	bool unite(int x, int y) { // union by size
+		x = get(x), y = get(y); if (x == y) return 0;
+		if (e[x] > e[y]) swap(x,y);
+		e[x] += e[y]; e[y] = x; return 1;
+	}
 };
  
 int comp;
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-    sort(all(ed));
-    T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
-    trav(a,ed)
-    if (D.unite(a.s.f,a.s.s)) {
-        ans += a.f;
-        comp--;
-    }
-    return ans;
+	sort(all(ed));
+	T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
+	trav(a,ed)
+	if (D.unite(a.s.f,a.s.s)) {
+		ans += a.f;
+		comp--;
+	}
+	return ans;
 }
  
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n, m; cin >> n >> m;
-    vector<pair<ll,pi>> edge;
-    for (int i = 0; i < m; i++){
-        int a, b; ll c;
-        cin >> a >> b >> c;
-        edge.push_back(mp(c, mp(a, b)));
-    }
-    comp = n;
-    ll ans = kruskal(n, edge);
-    if(comp == 1){
-        cout << ans;
-    }
-    else{
-        cout << "IMPOSSIBLE";
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m; cin >> n >> m;
+	vector<pair<ll,pi>> edge;
+	for (int i = 0; i < m; i++){
+		int a, b; ll c;
+		cin >> a >> b >> c;
+		edge.push_back(mp(c, mp(a, b)));
+	}
+	comp = n;
+	ll ans = kruskal(n, edge);
+	if(comp == 1){
+		cout << ans;
+	}
+	else{
+		cout << "IMPOSSIBLE";
+	}
+	return 0;
 }
 ```
 </CPPSection>
@@ -261,81 +261,81 @@ import java.io.*;
 import java.util.*;
 
 class kruskal {
-    static int comp;
-    static int disjoint[];
-    static int size[];
-    public static void main(String[] args) throws IOException {
-        BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(sc.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+	static int comp;
+	static int disjoint[];
+	static int size[];
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 
-        PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
-        for (int m = 0; m < M; m++) {
-            st = new StringTokenizer(sc.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+		PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 
-            pq.add(new Edge(a, b, w));
-        }
-        comp = N;
-        long ans = 0;
-        disjoint = new int[N + 1];
-        Arrays.fill(disjoint, -1);
-        size = new int[N + 1];
-        Arrays.fill(size, 0);
-        while (!pq.isEmpty()) {
-            Edge e = pq.poll();
-            if (find(e.start) != find(e.end)) {
-                union(e.start, e.end);
-                ans += e.weight;
-            }
-        }
-        out.println((comp == 1) ? ans : "IMPOSSIBLE");
-        out.close();
-    }
-    public static int find(int v) {
-        if (disjoint[v] == -1) {
-            return v;
-        }
-        disjoint[v] = find(disjoint[v]);
-        return disjoint[v];
-    }
-    public static void union(int u, int v) {
-        int uroot = find(u);
-        int vroot = find(v);
-        if (uroot == vroot) {
-            return;
-        }
-        if (size[uroot] < size[vroot]) {
-            disjoint[uroot] = vroot;
-            size[vroot] = size[uroot] + size[vroot];
-            comp--;
-        } else {
-            disjoint[vroot] = uroot;
-            size[uroot] = size[uroot] + size[vroot];
-            comp--;
-        }
-    }
+			pq.add(new Edge(a, b, w));
+		}
+		comp = N;
+		long ans = 0;
+		disjoint = new int[N + 1];
+		Arrays.fill(disjoint, -1);
+		size = new int[N + 1];
+		Arrays.fill(size, 0);
+		while (!pq.isEmpty()) {
+			Edge e = pq.poll();
+			if (find(e.start) != find(e.end)) {
+				union(e.start, e.end);
+				ans += e.weight;
+			}
+		}
+		out.println((comp == 1) ? ans : "IMPOSSIBLE");
+		out.close();
+	}
+	public static int find(int v) {
+		if (disjoint[v] == -1) {
+			return v;
+		}
+		disjoint[v] = find(disjoint[v]);
+		return disjoint[v];
+	}
+	public static void union(int u, int v) {
+		int uroot = find(u);
+		int vroot = find(v);
+		if (uroot == vroot) {
+			return;
+		}
+		if (size[uroot] < size[vroot]) {
+			disjoint[uroot] = vroot;
+			size[vroot] = size[uroot] + size[vroot];
+			comp--;
+		} else {
+			disjoint[vroot] = uroot;
+			size[uroot] = size[uroot] + size[vroot];
+			comp--;
+		}
+	}
 }
 class Edge implements Comparable<Edge> {
-    public int start, end, weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
-    public int compareTo(Edge o) {
-        if (this.weight < o.weight) {
-            return -1;
-        } else if (this.weight == o.weight) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
+	public int start, end, weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
+	public int compareTo(Edge o) {
+		if (this.weight < o.weight) {
+			return -1;
+		} else if (this.weight == o.weight) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 }
 ```
 
@@ -392,51 +392,51 @@ vector<pl> adj[200000];
 int n;
 ll MAX = 100000000000L;
 ll prim(){
-    ll weight = 0;
-    vector<bool> selected(n, false);
-    vector<ll> min(n, MAX);
-    min[0] = 0;
-    set<pl> q;
-    q.insert({0, 0});
-    vector<bool> visited(n, false);
-    for (int i = 0; i < n; ++i) {
-        if (q.empty()) {
-            return -1;
-        }
-        int v = q.begin() -> s;
-        visited[v] = true;
-        weight += q.begin()-> f;
-        q.erase(q.begin());
+	ll weight = 0;
+	vector<bool> selected(n, false);
+	vector<ll> min(n, MAX);
+	min[0] = 0;
+	set<pl> q;
+	q.insert({0, 0});
+	vector<bool> visited(n, false);
+	for (int i = 0; i < n; ++i) {
+		if (q.empty()) {
+			return -1;
+		}
+		int v = q.begin() -> s;
+		visited[v] = true;
+		weight += q.begin()-> f;
+		q.erase(q.begin());
 
-        for (pl e : adj[v]) {
-            if(!visited[e.s] && e.f < min[e.s]) {
-                q.erase({min[e.s], e.s});
-                min[e.s] = e.f;
-                q.insert({e.f, e.s});
-            }
-        }
-    }
-    return weight;
+		for (pl e : adj[v]) {
+			if(!visited[e.s] && e.f < min[e.s]) {
+				q.erase({min[e.s], e.s});
+				min[e.s] = e.f;
+				q.insert({e.f, e.s});
+			}
+		}
+	}
+	return weight;
 }
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int m; cin >> n >> m;
-    for (int i = 0; i < m; i++){
-        int a, b; ll c;
-        cin >> a >> b >> c;
-        a--; b--;
-        adj[a].pb(mp(c, b));
-        adj[b].pb(mp(c, a));
-    }
-    ll ans = prim();
-    if(ans == -1){
-        cout << "IMPOSSIBLE";
-    }
-    else{
-        cout << ans;
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int m; cin >> n >> m;
+	for (int i = 0; i < m; i++){
+		int a, b; ll c;
+		cin >> a >> b >> c;
+		a--; b--;
+		adj[a].pb(mp(c, b));
+		adj[b].pb(mp(c, a));
+	}
+	ll ans = prim();
+	if(ans == -1){
+		cout << "IMPOSSIBLE";
+	}
+	else{
+		cout << ans;
+	}
+	return 0;
 }
 ```
 
@@ -449,85 +449,85 @@ import java.io.*;
 import java.util.*;
 
 class prim {
-    static Map<Integer, ArrayList<Edge>> tree;
-    static int N, ct;
-    static long[] dist;
-    static long max = 10000000000000000 L;
-    public static void main(String[] args) throws IOException {
-        BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(sc.readLine());
-        N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+	static Map<Integer, ArrayList<Edge>> tree;
+	static int N, ct;
+	static long[] dist;
+	static long max = 10000000000000000 L;
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 
-        tree = new HashMap<Integer, ArrayList<Edge>> ();
-        for (int i = 1; i <= N; i++) {
-            tree.put(i, new ArrayList<Edge> ());
-        }
-        for (int m = 0; m < M; m++) {
-            st = new StringTokenizer(sc.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+		tree = new HashMap<Integer, ArrayList<Edge>> ();
+		for (int i = 1; i <= N; i++) {
+			tree.put(i, new ArrayList<Edge> ());
+		}
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 
-            tree.get(a).add(new Edge(a, b, w));
-            tree.get(b).add(new Edge(b, a, w));
-        }
-        long ans = prim(1);
-        out.println((ct == N) ? ans : "IMPOSSIBLE");
-        out.close();
-    }
-    static long prim(int source) {
-        dist = new long[N + 1];
-        boolean[] visited = new boolean[N + 1];
-        PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
-        Arrays.fill(dist, max);
-        dist[source] = 0;
-        long ret = 0;
-        pq.add(new Pair(0, source));
-        while (!pq.isEmpty()) {
-            Pair p = pq.poll();
-            int v = p.b;
-            if (visited[v]) {
-                continue;
-            }
-            visited[v] = true;
-            ct++;
-            ret += dist[v];
-            for (Edge e: tree.get(v)) {
-                if (e.weight < dist[e.end] && !visited[e.end]) {
-                    dist[e.end] = e.weight;
-                    pq.add(new Pair(dist[e.end], e.end));
-                }
-            }
-        }
-        return ret;
-    }
+			tree.get(a).add(new Edge(a, b, w));
+			tree.get(b).add(new Edge(b, a, w));
+		}
+		long ans = prim(1);
+		out.println((ct == N) ? ans : "IMPOSSIBLE");
+		out.close();
+	}
+	static long prim(int source) {
+		dist = new long[N + 1];
+		boolean[] visited = new boolean[N + 1];
+		PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
+		Arrays.fill(dist, max);
+		dist[source] = 0;
+		long ret = 0;
+		pq.add(new Pair(0, source));
+		while (!pq.isEmpty()) {
+			Pair p = pq.poll();
+			int v = p.b;
+			if (visited[v]) {
+				continue;
+			}
+			visited[v] = true;
+			ct++;
+			ret += dist[v];
+			for (Edge e: tree.get(v)) {
+				if (e.weight < dist[e.end] && !visited[e.end]) {
+					dist[e.end] = e.weight;
+					pq.add(new Pair(dist[e.end], e.end));
+				}
+			}
+		}
+		return ret;
+	}
 }
 class Edge {
-    public int start, end, weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
+	public int start, end, weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
 }
 class Pair implements Comparable<Pair> {
-    public long a;
-    public int b;
-    public Pair(long a, int b) {
-        this.a = a;
-        this.b = b;
-    }
-    public int compareTo(Pair o) {
-        if (this.a > o.a) {
-            return 1;
-        } else if (this.a == o.a) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
+	public long a;
+	public int b;
+	public Pair(long a, int b) {
+		this.a = a;
+		this.b = b;
+	}
+	public int compareTo(Pair o) {
+		if (this.a > o.a) {
+			return 1;
+		} else if (this.a == o.a) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 }
 ```
 
