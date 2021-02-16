@@ -8,6 +8,8 @@ import { Link } from 'gatsby';
 import { observer } from 'mobx-react-lite';
 import { Transition } from '@headlessui/react';
 import GroupPageHeader from './GroupPageHeader';
+import SEO from '../../seo';
+import Layout from '../../layout';
 
 export default observer(function GroupPage(props: {
   path: string;
@@ -16,7 +18,8 @@ export default observer(function GroupPage(props: {
   const group = groupsStore.activeGroup;
 
   return (
-    <>
+    <Layout>
+      <SEO title={group?.name} />
       <TopNavigationBar />
       <div className="min-h-screen bg-gray-100">
         {/* When the mobile menu is open, add `overflow-hidden` to the `body` element to prevent double scrollbars */}
@@ -44,6 +47,6 @@ export default observer(function GroupPage(props: {
           </div>
         ) : null}
       </div>
-    </>
+    </Layout>
   );
 });

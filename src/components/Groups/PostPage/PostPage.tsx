@@ -9,6 +9,8 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import PostProblems from './PostProblems';
 import PostSidebar from './PostSidebar';
+import SEO from '../../seo';
+import Layout from '../../layout';
 
 export default observer(function PostPage(props) {
   const { postId } = props as {
@@ -32,7 +34,8 @@ export default observer(function PostPage(props) {
   }
 
   return (
-    <>
+    <Layout>
+      <SEO title={`${post.title} · ${post.group.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -180,6 +183,6 @@ export default observer(function PostPage(props) {
           </div>
         </div>
       </main>
-    </>
+    </Layout>
   );
 });

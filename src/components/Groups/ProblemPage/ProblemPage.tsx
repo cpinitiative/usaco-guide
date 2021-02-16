@@ -6,6 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { GroupsContext } from '../../../pages/groups';
 import styled from 'styled-components';
+import Layout from '../../layout';
+import SEO from '../../seo';
 
 const ScoreInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -36,7 +38,8 @@ export default observer(function ProblemPage(props) {
   }
 
   return (
-    <>
+    <Layout>
+      <SEO title={`Problem: ${problem.name} · ${problem.post.group.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -236,7 +239,7 @@ export default observer(function ProblemPage(props) {
                   </h2>
                 </div>
                 <div className="text-sm mt-1 text-gray-900">
-                  <b>Self-graded problem</b>: Use the Problem Statement link
+                  <b>Self-graded problem:</b> Use the Problem Statement link
                   above to test your code. Submit your code and your score
                   below. Group admins will manually verify your code to ensure
                   the score you entered is accurate.
@@ -255,7 +258,7 @@ export default observer(function ProblemPage(props) {
                       id="score"
                       min={0}
                       max={100}
-                      className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 pr-3 sm:text-sm border-gray-300"
+                      className="focus:ring-gray-900 focus:border-gray-900 block w-full pl-3 pr-3 sm:text-sm border-gray-300"
                       placeholder="0 - 100"
                       aria-describedby="price-currency"
                     />
@@ -378,6 +381,6 @@ export default observer(function ProblemPage(props) {
           </div>
         </div>
       </main>
-    </>
+    </Layout>
   );
 });
