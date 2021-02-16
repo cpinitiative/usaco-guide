@@ -5,21 +5,15 @@ title: Movie Festival II
 author: Shreyas Thumathy, Benjamin Qi
 ---
 
-<Warning>
+<!-- In this problem, we're asked the maximum number of movie intervals $(start, end)$ we can cover using $k$ people. -->
 
-Please review the solution to
+<!-- ## Main Idea -->
 
-</Warning>
-
-In this problem, we're asked the maximum number of movie intervals $(start, end)$ we can cover using $k$ people.
-
-## Main Idea
-
-The first step is the same as that of [Movie Festival](/silver/greedy-sorting#example---the-scheduling-problem); sort the movies in increasing order of end time.
+The first step is the same as that of [Movie Festival](/silver/greedy-sorting#example---the-scheduling-problem); sort the movies in increasing order of end time. For each movie in order, we will assign it to one of the $K$ members to watch (or none of them).
 
 Keep track of the time each member finishes watching the latest movie that has been assigned to them in a sorted collection (e.g. a `multiset` in C++). Initially, the collection consists of $K$ zeroes.
 
-For each movie in increasing order of end time, we can assign a member to watch it if there exists an element in the sorted collection less than or equal to the start time of the movie. If there are multiple such elements, choose the greatest one (the member who finished watching the latest movie assigned to him the latest). Increment the answer and update the collection accordingly.
+For each movie in order, we can assign a member to watch it if there exists an element in the sorted collection less than or equal to the start time of the movie. If there are multiple such elements, choose the greatest one (the member who finished watching the latest movie assigned to him the latest). Increment the answer and update the collection accordingly.
 
 <!-- If there are multiple members, choose the one who finishes watching the previous movie latest (that way, if we encounter a movie that has an earlier start time, we can still assign that movie). -->
 
