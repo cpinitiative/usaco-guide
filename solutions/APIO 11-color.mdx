@@ -5,11 +5,13 @@ title: Table Coloring
 author: Andi Qu
 ---
 
-## TL;DR
+## Explanation
+
+### TL;DR
 
 If we view the grid as a graph, we get $K$ connected components. The answer is then either $2^{K - 1}$ or $0$ and we use DSU or DFS to determine which one it is.
 
-## Intuition
+### Intuition
 
 Let $c(x, y) = 1$ if the cell $(x, y)$ is blue and $0$ otherwise. For convenience, also add a row 0 and column 0.
 
@@ -31,7 +33,7 @@ $$
 
 I made a [helpful spreadsheet](https://docs.google.com/spreadsheets/d/1cSNyb3wBq39R2FsSD-kuPpfBsLXCVxSXKsqllo2sUs0/edit?usp=sharing) for you to visualise this.
 
-## Counting the colorings
+### Counting the colorings
 
 Without loss of generality, let the cell $(0, 0)$ be red (since its color doesn't change the answer). This means that without any already-colored cells, all cells $(x, 0)$ and $(0, y)$ are independent.
 
@@ -44,19 +46,19 @@ View the grid as a graph:
 
 This creates $K$ connected components. The answer is thus either $2^{K - 1}$ or $0$. This is because each node in a connected component is dependent on the other nodes in that component and all connected components are independent. If it simply isn't possible to color the table, the answer is $0$.
 
-## Checking Whether the Answer is $0$
+### Checking Whether the Answer is $0$
 
 Since each already-colored cell $(x, y)$ determines whether the colors of the cells $(x, 0)$ and $(0, y)$ are the same, we can instead split each node in our graph into 2 nodes (one for each color) and create edges between nodes we know must be the same color.
 
 This problem then becomes checking whether there is an odd cycle in the resulting graph, which we can answer efficiently using DSU or DFS.
 
-## Complexity
+## Implementation
 
-Time: $\mathcal{O}(N)$.
+**Time Complexity:** $\mathcal{O}(N)$
 
-Memory: $\mathcal{O}(N)$.
+<LanguageSection>
 
-## Code
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -107,3 +109,7 @@ int main() {
 	return 0;
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
