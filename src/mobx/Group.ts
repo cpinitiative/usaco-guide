@@ -27,6 +27,8 @@ export default class Group {
   creatingNewPost = false;
   firebase;
   unsubscribePosts;
+  // todo: return true if user is admin of this group
+  isUserAdmin = true;
 
   constructor(firebase, groupId) {
     this.firebase = firebase;

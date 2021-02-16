@@ -12,6 +12,7 @@ export class Post {
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
   group: Group;
+  _editBackupData; // used for cancelling editing
 
   constructor(group, id) {
     makeAutoObservable(this, {
@@ -20,23 +21,18 @@ export class Post {
       autoSave: false,
       saveHandler: false,
       dispose: false,
+      _editBackupData: false,
     });
     this.group = group;
     this.id = id;
 
     this.saveHandler = reaction(
       () => this.asJson, // Observe everything that is used in the JSON.
-      ({ id, ...data }) => {
+      () => {
         // If autoSave is true, send JSON to the server.
         if (this.autoSave) {
           // oops this should be in a transport layer but whatever
-          this.group.firebase
-            .firestore()
-            .collection('groups')
-            .doc(group.id)
-            .collection('posts')
-            .doc(this.id)
-            .set(data);
+          this.writeToServer();
         }
       }
     );
@@ -44,6 +40,21 @@ export class Post {
 
   get dueDateString() {
     return this.timestamp.toDate().toString().slice(0, 15);
+  }
+
+  startEditing() {
+    this.autoSave = false;
+    this._editBackupData = this.asJson;
+  }
+
+  stopEditing() {
+    this.updateFromJson(this._editBackupData);
+    this.autoSave = true;
+  }
+
+  saveEdits() {
+    this._editBackupData = this.asJson;
+    this.writeToServer();
   }
 
   // Remove this Post from the client and the server.
@@ -88,6 +99,19 @@ export class Post {
       this.problems[id].updateFromJson(problem);
     });
     this.autoSave = true;
+  }
+
+  writeToServer() {
+    console.log('saving');
+    const { id, ...data } = this.asJson;
+    console.log(data);
+    this.group.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.group.groupId)
+      .collection('posts')
+      .doc(this.id)
+      .set(data);
   }
 
   removeProblem(problem: Problem) {

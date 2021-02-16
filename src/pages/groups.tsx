@@ -10,6 +10,7 @@ import useFirebase from '../hooks/useFirebase';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import { runInAction } from 'mobx';
+import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -50,6 +51,10 @@ export default function GroupsRouter() {
         <GroupPageWrapper
           Component={ProblemPage}
           path="/:groupId/post/:postId/problems/:problemId"
+        />
+        <GroupPageWrapper
+          Component={EditPostPage}
+          path="/:groupId/post/:postId/edit"
         />
         <GroupPageWrapper Component={PostPage} path="/:groupId/post/:postId" />
         <GroupPageWrapper Component={GroupPage} path="/:groupId" />
