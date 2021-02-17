@@ -338,6 +338,62 @@ class PCB{
 
 </LanguageSection>
 
+## Extension - LCS of Permutations
+
+Given two permutations of length $N$ ($1\le N \le 10^5$), find the longest common subsequence.
+
+### $\mathcal O(N^2)$
+
+See [here](/gold/paths-grids#solution---longest-common-subsequence).
+
+### $\mathcal O(N\log N)$
+
+In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if $a[i] = b[j]$, but since both arrays are permutations of length $N$, for each $a[i]$, there must be only one matching element in $b$.  
+
+Thus we can reorder the elements in $b$ such that $b[i]$ becomes $\texttt{pos}[b[i]]$ where $\texttt{pos}[i]$ represents the index of $i$ in $a$. After reordering $b$, our answer would be the LIS of $b$. 
+
+Reordering $b$ takes $\mathcal O(N)$ and finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in this algorithm is $\mathcal O(N\log N)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 5;
+int n, a[N], pos[N], b[N];
+vector<int> lis;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n;
+	for (int i = 1; i <= n; ++i) {
+		cin >> a[i];
+		pos[a[i]] = i;
+	}
+	for (int i = 1; i <= n; ++i) {
+		cin >> b[i];
+		b[i] = pos[b[i]];
+	}
+	for (int i = 1; i <= n; ++i) {
+		int p = lower_bound(begin(lis), end(lis), b[i]) - begin(lis);
+		if (p == lis.size())
+			lis.push_back(b[i]);
+		else
+			lis[p] = b[i];
+	}
+	cout << lis.size() << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+
 
 ## Problems
 
