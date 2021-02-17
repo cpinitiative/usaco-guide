@@ -32,10 +32,13 @@ def modify(lines):
 	# found_code = False
 	# found_complexity = False
 	for index,line in enumerate(lines):
-		line = line.replace("## C++ Implementation","## Implementation")
-		line = line.replace("## Java Implementation","## Implementation")
-		line = line.replace("## Python Implementation","## Implementation")
-		lines[index] = line
+		if line.startswith("## Implementation") and not lines[index+1].startswith("\n"):
+			new_lines[index] = line+"\n"
+	# for index,line in enumerate(lines):
+	# 	line = line.replace("## C++ Implementation","## Implementation")
+	# 	line = line.replace("## Java Implementation","## Implementation")
+	# 	line = line.replace("## Python Implementation","## Implementation")
+	# 	new_lines[index] = line
 		# if line.startswith("## Implementation"):
 		# 	found_impl = True
 		# if line.startswith("```"):

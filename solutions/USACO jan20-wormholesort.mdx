@@ -5,10 +5,11 @@ title: Wormhole Sort
 author: Óscar Garries, Neo Wang
 ---
 
+## Solution 1 - DFS
+
 [Official Analysis](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
 
-
-### C++ Implementation (DFS)
+### Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -83,14 +84,13 @@ int main () {
 
 ```
 
-## Alternative Solution (DSU/UF + Binary Search)
+## Solution 2 - DSU/UF + Binary Search
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 Like the DFS solution, we binary search on the answer $x$. $x$ is valid if all $p_i$ are in the same component as $i$, which we can query in $\mathcal{O}(\alpha(N))$ using a Union Find/Disjoint Set data structure.
 
-
-### C++ Implementation (DSU/UF + Binary Search)
+### Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -185,17 +185,19 @@ int main() {
 
 ```
 
-## Alternative Solution (DSU/UF)
+## Solution 3 - DSU/UF
 
 **Time Complexity:** $\mathcal{O}(N + M\log M)$
 
 We can alternatively search for our weight by adding the weights greatest $\rightarrow$ least until all $p_i$ are in the same component as $i$.
 
 Our resulting time complexity is $\mathcal{O}(N)$ after an initial sorting of the weights.
-<LanguageSection>
-<CPPSection>
 
-### C++ Implementation (DSU/UF)
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
