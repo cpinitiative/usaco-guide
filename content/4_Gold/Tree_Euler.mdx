@@ -172,11 +172,141 @@ public static void dfs(int i, int p) {
 
 </LanguageSection>
 
-<IncompleteSection>
+### Example Input
 
-example input
+```
+5 3
+4 2 5 2 1
+1 2
+1 3
+3 4
+3 5
+2 3
+1 5 3
+2 3
+```
 
-</IncompleteSection>
+Our example input corresponds to the following graph: ![Subtree graph](./assets/subtreequeriesgraph.jpg)
+
+Before our `dfs`, our `st` and `en` arrays are initialized with zeros. In this visualization, the first row represents the node indices, the second row represents the `st` array, and the third represents `en`.
+
+Current timer value: 0
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Since we call `dfs(1,0)`, our timer starts at `st[1]` and sets it to the current value of 0. Then, we proceed to `dfs()` nodes 2 and 3.
+
+Current timer value: 1
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td className='bg-green-100 dark:bg-green-700'>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve `dfs(2, 1)` and `dfs(3,1)`. It does not matter which order we process these in, so for this example we start with `dfs(2,1)`. Since the timer is at `1`, we set `st[2]=1`. However, because `2` has no children, we don't call `dfs`. Instead, we set `en[2]=1` because our current timer is `2`.
+
+Current timer value: 2
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>0</td><td className='bg-green-100 dark:bg-green-700'>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>0</td><td className='bg-red-100 dark:bg-red-700'>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve `dfs(3,1)`. Similar to before, we set `st[3]=timer` which in this case is 2. Then, we proceed to make the calls `dfs(4, 3)` and `dfs(5, 3)`.
+
+Current timer value: 3
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>0</td><td>1</td><td className='bg-green-100 dark:bg-green-700'>2</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve `dfs(4, 3)` and `dfs(5,3)`. First, we resolve `dfs(4,3)` by setting `st[node]=timer`, which in this case means `st[4]=3`. Then, since `4` has no children, `en[4]=3`.
+
+Now the value of the timer is `4`, and we must resolve `dfs(5,3)`. Similar to before, we set `st[5]=4`. Since `5` also has no children, `en[5]=4`.
+
+Current timer value: 5
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>0</td><td>1</td><td>2</td><td className='bg-green-100 dark:bg-green-700'>3</td><td className='bg-green-100 dark:bg-green-700'>4</td>
+</tr>
+<tr>
+<td>0</td><td>1</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>3</td><td className='bg-red-100 dark:bg-red-700'>4</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now, we must traverse back up the `dfs` calls. One of these resolves node `3`, setting `en[3]=timer-1` or `en[3]=4`. We then do the same for node `1`, setting `en[1]=4`. Our DFS traversal is now complete.
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
+</tr>
+<tr>
+<td className='bg-red-100 dark:bg-red-700'>5</td><td>1</td><td className='bg-red-100 dark:bg-red-700'>4</td><td>3</td><td>4</td>
+</tr>
+</tbody>
+</table>
+</center>
 
 ### Solution - Subtree Queries
 
