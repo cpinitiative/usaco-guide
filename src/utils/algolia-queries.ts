@@ -87,6 +87,7 @@ const queries = [
           problemModules[x.id].push({
             id: edge.node.frontmatter.id,
             title: edge.node.frontmatter.title,
+            starred: edge.node.problems.starred
           });
         });
       });
