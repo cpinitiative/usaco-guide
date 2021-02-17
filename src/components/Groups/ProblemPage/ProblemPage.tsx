@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import Breadcrumbs from '../Breadcrumbs';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
@@ -64,40 +64,60 @@ export default observer(function ProblemPage(props) {
                     {problem.post.title}
                   </p>
                 </div>
-                {/*<div className="mt-4 flex space-x-3 md:mt-0">*/}
-                {/*  <button*/}
-                {/*    type="button"*/}
-                {/*    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"*/}
-                {/*  >*/}
-                {/*    /!* Heroicon name: solid/pencil *!/*/}
-                {/*    <svg*/}
-                {/*      className="-ml-1 mr-2 h-5 w-5 text-gray-400"*/}
-                {/*      xmlns="http://www.w3.org/2000/svg"*/}
-                {/*      viewBox="0 0 20 20"*/}
-                {/*      fill="currentColor"*/}
-                {/*      aria-hidden="true"*/}
-                {/*    >*/}
-                {/*      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />*/}
-                {/*    </svg>*/}
-                {/*    <span>Edit</span>*/}
-                {/*  </button>*/}
-                {/*  <button*/}
-                {/*    type="button"*/}
-                {/*    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"*/}
-                {/*  >*/}
-                {/*    /!* Heroicon name: solid/bell *!/*/}
-                {/*    <svg*/}
-                {/*      className="-ml-1 mr-2 h-5 w-5 text-gray-400"*/}
-                {/*      xmlns="http://www.w3.org/2000/svg"*/}
-                {/*      viewBox="0 0 20 20"*/}
-                {/*      fill="currentColor"*/}
-                {/*      aria-hidden="true"*/}
-                {/*    >*/}
-                {/*      <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />*/}
-                {/*    </svg>*/}
-                {/*    <span>Subscribe</span>*/}
-                {/*  </button>*/}
-                {/*</div>*/}
+                {problem.post.group.isUserAdmin && (
+                  <div className="mt-4 flex space-x-3 md:mt-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            'Are you sure you want to delete this problem?'
+                          )
+                        ) {
+                          problem.delete();
+                          navigate(
+                            `/groups/${problem.post.group.groupId}/posts/${problem.post.id}`,
+                            {
+                              replace: true,
+                            }
+                          );
+                        }
+                      }}
+                      className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                    >
+                      <svg
+                        className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                      <span>Delete</span>
+                    </button>
+                    <Link
+                      to="edit"
+                      className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                    >
+                      <svg
+                        className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                      </svg>
+                      <span>Edit</span>
+                    </Link>
+                  </div>
+                )}
               </div>
               <aside className="mt-8 xl:hidden">
                 <h2 className="sr-only">Details</h2>
@@ -218,16 +238,7 @@ export default observer(function ProblemPage(props) {
                 </div>
               </aside>
               <div className="py-3 xl:pt-6 xl:pb-10">
-                <div className="prose max-w-none">
-                  <p>
-                    <a
-                      href="http://www.usaco.org/index.php?page=viewproblem2&cpid=615"
-                      target="_blank"
-                    >
-                      Milk Pails Problem Statement
-                    </a>
-                  </p>
-                </div>
+                <div className="prose max-w-none">{problem.body}</div>
               </div>
               <section aria-labelledby="activity-title">
                 <div>
@@ -303,7 +314,7 @@ export default observer(function ProblemPage(props) {
                     />
                   </svg>
                   <span className="text-green-700 text-sm font-medium">
-                    0 / 100 points earned
+                    0 / {problem.points} points earned
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -327,7 +338,7 @@ export default observer(function ProblemPage(props) {
                     />
                   </svg>
                   <span className="text-gray-900 text-sm font-medium">
-                    Difficulty: Easy
+                    Difficulty: {problem.difficulty}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -346,7 +357,7 @@ export default observer(function ProblemPage(props) {
                     />
                   </svg>
                   <span className="text-gray-900 text-sm font-medium">
-                    Source: USACO
+                    Source: {problem.source}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">

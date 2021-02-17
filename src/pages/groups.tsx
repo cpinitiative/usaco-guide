@@ -11,6 +11,7 @@ import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import { runInAction } from 'mobx';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
+import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
 
 export const GroupsContext = createContext<Groups>(null);
 
@@ -48,6 +49,10 @@ export default function GroupsRouter() {
   return (
     <GroupsContext.Provider value={groupsStore}>
       <Router basepath="/groups">
+        <GroupPageWrapper
+          Component={EditProblemPage}
+          path="/:groupId/post/:postId/problems/:problemId/edit"
+        />
         <GroupPageWrapper
           Component={ProblemPage}
           path="/:groupId/post/:postId/problems/:problemId"

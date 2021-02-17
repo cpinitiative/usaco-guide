@@ -1,8 +1,11 @@
 import { makeAutoObservable, reaction, toJS } from 'mobx';
 import Group from './Group';
 import { Problem } from './Problem';
+import { v4 as uuidv4 } from 'uuid';
 
 export class Post {
+  group: Group;
+
   id = null; // Unique id of this Post, immutable.
   title = null;
   timestamp = null;
@@ -10,11 +13,14 @@ export class Post {
   pinned = false;
   isPublished = false;
   problems: { [key: string]: Problem } = {};
+
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
-  group: Group;
+
   _editBackupData; // used for cancelling editing
+  isEditing = false;
   isWritingToServer = false;
+  _beforeUnloadListener = null;
 
   constructor(group, id) {
     makeAutoObservable(this, {
@@ -24,6 +30,7 @@ export class Post {
       saveHandler: false,
       dispose: false,
       _editBackupData: false,
+      _beforeUnloadListener: false,
     });
     this.group = group;
     this.id = id;
@@ -54,10 +61,18 @@ export class Post {
 
   startEditing() {
     this.autoSave = false;
+    this.isEditing = true;
     this._editBackupData = this.asJson;
+    this._beforeUnloadListener = (e: BeforeUnloadEvent) => {
+      e.returnValue = 'You have unsaved changes!';
+      return false;
+    };
+    window.addEventListener('beforeunload', this._beforeUnloadListener);
   }
 
   stopEditing() {
+    window.removeEventListener('beforeunload', this._beforeUnloadListener);
+    this.isEditing = false;
     this.updateFromJson(this._editBackupData);
     this.autoSave = true;
   }
@@ -117,6 +132,7 @@ export class Post {
   }
 
   writeToServer() {
+    console.log('Writing post ' + this.id + ' to server');
     this.isWritingToServer = true;
     const { id, ...data } = this.asJson;
     return this.group.firebase
@@ -127,6 +143,13 @@ export class Post {
       .doc(this.id)
       .set(data)
       .finally(() => (this.isWritingToServer = false));
+  }
+
+  createNewProblem(): Problem {
+    const id = uuidv4();
+    this.problems[id] = new Problem(this, id);
+    this.problems[id].name = 'New Problem';
+    return this.problems[id];
   }
 
   removeProblem(problem: Problem) {

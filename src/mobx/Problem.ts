@@ -12,6 +12,11 @@ export class Problem {
   saveHandler = null;
   post: Post;
 
+  isWritingToServer = false;
+  isEditing = false;
+  _editBackupData = null;
+  _beforeUnloadListener = null;
+
   constructor(post, id) {
     makeAutoObservable(this, {
       id: false,
@@ -19,6 +24,8 @@ export class Problem {
       autoSave: false,
       saveHandler: false,
       dispose: false,
+      _editBackupData: false,
+      _beforeUnloadListener: false,
     });
     this.post = post;
     this.id = id;
@@ -29,16 +36,15 @@ export class Problem {
         // If autoSave is true, send JSON to the server.
         if (this.autoSave) {
           // oops this should be in a transport layer but whatever
-          // todo
+          this.writeToServer();
         }
       }
     );
   }
 
   // Remove this Problem from the client and the server.
-  delete() {
-    // should be in a transport layer...
-    // todo
+  async delete() {
+    this.post.removeProblem(this);
   }
 
   get asJson() {
@@ -60,6 +66,46 @@ export class Problem {
     this.points = json.points;
     this.difficulty = json.difficulty;
     this.autoSave = true;
+  }
+
+  startEditing() {
+    this.autoSave = false;
+    this.post.autoSave = false;
+    this.isEditing = true;
+    this._editBackupData = this.asJson;
+    this._beforeUnloadListener = (e: BeforeUnloadEvent) => {
+      e.returnValue = 'You have unsaved changes!';
+      return false;
+    };
+    window.addEventListener('beforeunload', this._beforeUnloadListener);
+  }
+
+  stopEditing() {
+    window.removeEventListener('beforeunload', this._beforeUnloadListener);
+    this.isEditing = false;
+    this.updateFromJson(this._editBackupData);
+    this.post.autoSave = true;
+    this.autoSave = true;
+  }
+
+  saveEdits() {
+    this._editBackupData = this.asJson;
+    return this.writeToServer();
+  }
+
+  writeToServer() {
+    console.log('writing problem ' + this.id + ' to server');
+    this.isWritingToServer = true;
+    return this.post.group.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.post.group.groupId)
+      .collection('posts')
+      .doc(this.post.id)
+      .update({
+        problems: this.post.asJson.problems,
+      })
+      .finally(() => (this.isWritingToServer = false));
   }
 
   dispose() {
