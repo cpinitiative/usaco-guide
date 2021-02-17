@@ -1,18 +1,19 @@
 import { makeAutoObservable, reaction, toJS } from 'mobx';
 import Group from './Group';
 import { Problem } from './Problem';
-import firebase from 'firebase';
 
 export class Post {
   id = null; // Unique id of this Post, immutable.
   title = null;
   timestamp = null;
   body = null;
+  pinned = false;
   problems: { [key: string]: Problem } = {};
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
   group: Group;
   _editBackupData; // used for cancelling editing
+  isWritingToServer = false;
 
   constructor(group, id) {
     makeAutoObservable(this, {
@@ -54,13 +55,13 @@ export class Post {
 
   saveEdits() {
     this._editBackupData = this.asJson;
-    this.writeToServer();
+    return this.writeToServer();
   }
 
   // Remove this Post from the client and the server.
-  delete() {
+  async delete() {
     // should be in a transport layer...
-    this.group.firebase
+    await this.group.firebase
       .firestore()
       .collection('groups')
       .doc(this.group.groupId)
@@ -76,6 +77,7 @@ export class Post {
       title: this.title,
       timestamp: this.timestamp,
       body: this.body,
+      pinned: this.pinned,
       problems: Object.keys(this.problems).reduce(
         (acc, cur) => ({ ...acc, [cur]: this.problems[cur].asJson }),
         []
@@ -86,13 +88,15 @@ export class Post {
   // Update this Post with information from the server.
   updateFromJson(json) {
     this.autoSave = false; // Prevent sending of our changes back to the server.
-    this.title = json.title;
-    this.timestamp = json.timestamp;
-    this.body = json.body;
+    this.title = json.title || '';
+    this.timestamp = json.timestamp || null;
+    this.body = json.body || '';
+    this.pinned = json.pinned || false;
+    const problems = json.problems || {};
     Object.keys(this.problems)
-      .filter(id => !json.problems.hasOwnProperty(id))
+      .filter(id => !problems.hasOwnProperty(id))
       .forEach(id => this.removeProblem(this.problems[id]));
-    Object.entries(json.problems).forEach(([id, problem]) => {
+    Object.entries(problems).forEach(([id, problem]) => {
       if (!this.problems[id]) {
         this.problems[id] = new Problem(this, id);
       }
@@ -102,16 +106,16 @@ export class Post {
   }
 
   writeToServer() {
-    console.log('saving');
+    this.isWritingToServer = true;
     const { id, ...data } = this.asJson;
-    console.log(data);
-    this.group.firebase
+    return this.group.firebase
       .firestore()
       .collection('groups')
       .doc(this.group.groupId)
       .collection('posts')
       .doc(this.id)
-      .set(data);
+      .set(data)
+      .finally(() => (this.isWritingToServer = false));
   }
 
   removeProblem(problem: Problem) {

@@ -22,7 +22,7 @@ export default observer(function Feed() {
       </div>
       <div className="mt-4">
         <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
-          {groupStore.activeGroup.posts.map(post => (
+          {groupStore.activeGroup.feed.map(post => (
             <li key={post.id}>
               <FeedItem post={post} />
             </li>

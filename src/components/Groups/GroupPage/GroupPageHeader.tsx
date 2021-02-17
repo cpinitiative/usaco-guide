@@ -3,6 +3,7 @@ import * as React from 'react';
 import Group from '../../../mobx/Group';
 import { observer } from 'mobx-react-lite';
 import { useRef, useState } from 'react';
+import { navigate } from 'gatsby';
 
 export default observer(function GroupPageHeader(props: { group: Group }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
@@ -74,7 +75,11 @@ export default observer(function GroupPageHeader(props: { group: Group }) {
                   type="button"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
-                  onClick={() => props.group?.createNewPost()}
+                  onClick={() =>
+                    props.group
+                      ?.createNewPost()
+                      .then(postId => navigate(`post/${postId}/edit`))
+                  }
                   disabled={props.group?.creatingNewPost}
                 >
                   {props.group?.creatingNewPost

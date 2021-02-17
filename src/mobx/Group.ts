@@ -3,9 +3,9 @@ import {
   onBecomeObserved,
   onBecomeUnobserved,
   runInAction,
-  trace,
 } from 'mobx';
 import { Post } from './Post';
+
 enum GroupPermission {
   MEMBER = 'member',
   ADMIN = 'admin',
@@ -74,7 +74,7 @@ export default class Group {
       .onSnapshot(snap => {
         runInAction(() => {
           this.posts
-            .filter(post => !snap.docs.includes(doc => doc.id === post.id))
+            .filter(post => !snap.docs.includes(post.id))
             .forEach(post => this.removePost(post));
           snap.docs.forEach(doc => {
             this.updatePostFromFirebaseDoc(doc);
@@ -96,17 +96,34 @@ export default class Group {
     post.updateFromJson(doc.data());
   }
 
-  createNewPost() {
+  async createNewPost() {
     this.creatingNewPost = true;
-    // todo: create new post, return promise or something
-    setTimeout(() => {
+    const ref = await this.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.groupId)
+      .collection('posts')
+      .add({
+        title: 'Untitled Post',
+        timestamp: this.firebase.firestore.Timestamp.now(),
+      });
+    runInAction(() => {
       this.creatingNewPost = false;
-    }, 1000);
+    });
+    return ref.id;
   }
 
   removePost(post) {
-    this.posts.splice(this.posts.indexOf(post), 1);
+    if (this.posts.indexOf(post) !== -1)
+      this.posts.splice(this.posts.indexOf(post), 1);
     post.dispose();
+  }
+
+  get feed(): Post[] {
+    return [...this.posts].sort((a, b) => {
+      if (a.pinned !== b.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+      return b.timestamp.toMillis() - a.timestamp.toMillis();
+    });
   }
 }
 
