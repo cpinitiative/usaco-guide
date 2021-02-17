@@ -152,7 +152,9 @@ Let $\texttt{dp}[i][j][mask]$ be the number of ways to tile the grid so that:
 For example, the following state would contribute toward $\texttt{dp}[1][3][10100_2]$:
 ![](broken-profile-state-example.png)
 
-We now have two cases when calculating $\texttt{dp}[i][j][mask]$:
+The answer will be $\textt{dp}[N - 1][M - 1][0]$.
+
+We now have three cases when calculating $\texttt{dp}[i][j][mask]$:
 - The $j$-th bit of the mask is 0, meaning that cell $(i, j)$ is **covered**.
 	- Case 1: we used a vertical tile to cover it.
 		- Cell $(i, j - 1)$ must have been empty, so there are $\texttt{dp}[i - 1][j][mask \oplus 2^j]$ ways to do this.
