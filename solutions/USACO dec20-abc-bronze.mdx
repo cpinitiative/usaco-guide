@@ -26,15 +26,6 @@ author: Mrinall Umasudhan
            return d;
       }
       
-      public static boolean valid(int[] arr){
-           int a = arr[0]; int b = arr[1]; int c = arr[2];
-           int aPlusB = arr[3]; int bPlusC = arr[4]; int cPlusA = arr[5];
-           int totalVal = arr[6];
-
-           return totalVal == (a + b + c) && aPlusB == (a + b) && bPlusC == (b + c) && cPlusA == (c + a);
-      }
- 
-
       public static int[] reverse(int data[], int left, int right){
            while(left < right){
                 int temp = data[left];
@@ -44,7 +35,9 @@ author: Mrinall Umasudhan
            
            return data;
       }
-    
+      
+      // Generate all possible permutations of the array.
+      
       public static boolean findNextPermutation(int d[]){
            if(d.length <= 1){
                 return false;
@@ -76,26 +69,34 @@ author: Mrinall Umasudhan
           return true;
     }
 
-    
-     public static void main(String args[]) {
-          Scanner sc = new Scanner(System.in);
-          int n = 7;
-          int [] arr = new int[n];
+    // Given the a permutation check if the values fufill the condition given in the problem statement.
+    public static boolean valid(int[] arr){ 
+         int a = arr[0]; int b = arr[1]; int c = arr[2];
+         int aPlusB = arr[3]; int bPlusC = arr[4]; int cPlusA = arr[5]; 
+         int totalVal = arr[6];
+
+         return totalVal == (a + b + c) && aPlusB == (a + b) && bPlusC == (b + c) && cPlusA == (c + a);
+    }
+     
+    public static void main(String args[]) {
+         Scanner sc = new Scanner(System.in);
+         int n = 7;
+         int [] arr = new int[n];
           
-          for(int i = 0; i < n; i++){
-               arr[i] = sc.nextInt();
-          }
+         for(int i = 0; i < n; i++){
+              arr[i] = sc.nextInt();
+         }
            
-          Arrays.sort(arr);
+         Arrays.sort(arr);
            
-          while(findNextPermutation(arr)){
-               if(valid(arr)){
-                    System.out.println(arr[0] + " " + arr[1] + " " + arr[2]);
-                    break;
-               }
-          }
-     }
- }
+         while(findNextPermutation(arr)){
+              if(valid(arr)){
+                   System.out.println(arr[0] + " " + arr[1] + " " + arr[2]);
+                   break;
+              }
+         }
+    }
+}
 ```
 
 </JavaSection>
