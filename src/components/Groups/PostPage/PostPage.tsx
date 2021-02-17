@@ -188,6 +188,7 @@ export default observer(function PostPage(props) {
             <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
               <PostHeader post={post} />
               <PostBody post={post} />
+              {post.group.isUserAdmin && <PostProblems post={post} />}
             </div>
           )}
         </div>
