@@ -16,7 +16,6 @@ author: Maggie Liu
 ```cpp
 #include <iostream>
 #include <cstdio>
-#include <vector>
 using namespace std;
 
 int energy(pair<int, int> a, pair<int, int> b)
@@ -30,7 +29,7 @@ int main()
 	freopen("checklist.out", "w", stdout);
 	int h, g;
 	cin >> h >> g;
-	vector<pair<int, int>> hcows(h), gcows(g);
+	pair<int, int> hcows[1000], gcows[1000];
 	for (int i = 0; i < h; i++)
 	{
 		cin >> hcows[i].first >> hcows[i].second;
@@ -41,7 +40,7 @@ int main()
 	}
 	//dp[0][i][j] is min cost to visit i holsteins and j guernseys ending with holstein
 	//dp[1][i][j] is min cost to visit i holsteins and j guernseys ending with guernsey
-	long long dp[2][h + 1][g + 1];
+	long long dp[2][1001][1001];
 	for (int i = 0; i <= h; i++)
 	{
 		for (int j = 0; j <= g; j++)
