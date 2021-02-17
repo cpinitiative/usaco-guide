@@ -16,98 +16,84 @@ author: Mrinall Umasudhan
 
 ```java
  
-public class abc {
-    public static int[] swap(int d[], int l, int r) {
-        int temp = d[l];
-        d[l] = d[r];
-        d[r] = temp;
-        return d;
-    }
+ public class abc {
+      public static int[] swap(int d[], int l, int r){
+           int temp = d[l];
+           d[l] = d[r];
+           d[r] = temp;
+           return d;
+      }
+      
+      public static boolean valid(int[] arr){
+           int a = arr[0]; int b = arr[1]; int c = arr[2];
+           int aPlusB = arr[3]; int bPlusC = arr[4]; int cPlusA = arr[5];
+           int totalVal = arr[6];
 
-    public static int[] reverse(int data[], int left, int right) {
-        while (left < right) {
-            int temp = data[left];
-            data[left++] = data[right];
-            data[right--] = temp;
-        }
-        return data;
-    }
-    public static boolean findNextPermutation(int d[]){
-        if (d.length <= 1)
-            return false;
-
-        int last = d.length - 2;
-
-        while (last >= 0) {
-            if (d[last] < d[last + 1]) {
-                break;
-            }
-            last--;
-        }
-        if (last < 0) {return false;}
-        int nextGreater = d.length - 1;
-        for (int i = d.length - 1; i > last; i--) {
-            if (d[i] > d[last]) {
-                nextGreater = i;
-                break;
-            }
-        }
-        d = swap(d, nextGreater, last);
-        d = reverse(d, last + 1, d.length - 1);
-        return true;
-    }
-
-    public static void main(String args[]) {
-        InputReader sc = new InputReader(System.in);
-        int n = 7;
-        int [] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
-        }
-        Arrays.sort(arr);
-        while (findNextPermutation(arr)){
-            if(valid(arr)) {
-                System.out.println(arr[0] + " " + arr[1] + " " + arr[2]);
-                break;
-            }
-        }
-    }
-
-    private static boolean valid(int[] arr) {
-        int a = arr[0]; int b = arr[1]; int c = arr[2];
-        int aPlusB = arr[3]; int bPlusC = arr[4]; int cPlusA = arr[5];
-        int totalVal = arr[6];
-
-        return totalVal == (a + b + c) && aPlusB == (a + b) && bPlusC == (b + c) && cPlusA == (c + a);
-    }
+           return totalVal == (a + b + c) && aPlusB == (a + b) && bPlusC == (b + c) && cPlusA == (c + a);
+      }
  
-    static class InputReader {
-        public BufferedReader r;
-        public StringTokenizer tokenizer;
 
-        public InputReader(InputStream stream) {
-            r = new BufferedReader(new InputStreamReader(stream), 32768);
-            tokenizer = null;
-        }
+      public static int[] reverse(int data[], int left, int right){
+           while(left < right){
+                int temp = data[left];
+                data[left++] = data[right];
+                data[right--] = temp;
+           }
+           
+           return data;
+      }
+    
+      public static boolean findNextPermutation(int d[]){
+           if(d.length <= 1){
+                return false;
+           }
+         
+           int last = d.length - 2;
 
-        public String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(r.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+           while(last >= 0){
+                if (d[last] < d[last + 1]) {
+                     break;
                 }
-            }
-            return tokenizer.nextToken();
-        }
-
-        public int nextInt() {
-            return Integer.parseInt(next());
-        }
-
+                last--;
+           }
+           
+           if(last < 0){
+                return false;
+           }
+           
+           int nextGreater = d.length - 1;
+           for(int i = d.length - 1; i > last; i--){
+                if(d[i] > d[last]){
+                     nextGreater = i;
+                     break;
+                }
+           }
+          
+          d = swap(d, nextGreater, last);
+          d = reverse(d, last + 1, d.length - 1);
+          return true;
     }
 
-}
+    
+     public static void main(String args[]) {
+          Scanner sc = new Scanner(System.in);
+          int n = 7;
+          int [] arr = new int[n];
+          
+          for(int i = 0; i < n; i++){
+               arr[i] = sc.nextInt();
+          }
+           
+          Arrays.sort(arr);
+           
+          while(findNextPermutation(arr)){
+               if(valid(arr)){
+                    System.out.println(arr[0] + " " + arr[1] + " " + arr[2]);
+                    break;
+               }
+          }
+     }
+ }
 ```
 
 </JavaSection>
