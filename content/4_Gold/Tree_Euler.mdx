@@ -196,19 +196,19 @@ Current timer value: 0
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+<td>st[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
 </tr>
 <tr>
-<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
 </tr>
 </tbody>
 </table>
 </center>
 
-Since we call `dfs(1,0)`, our timer starts at `st[1]` and sets it to the current value of 0. Then, we proceed to `dfs()` nodes 2 and 3.
+Since we call `dfs(1, 0)`, our timer starts at `st[1]` and sets it to the current value of 0. Then, we proceed to `dfs()` nodes 2 and 3.
 
 Current timer value: 1
 
@@ -216,19 +216,19 @@ Current timer value: 1
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td className='bg-green-100 dark:bg-green-700'>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+<td>st[i]</td><td className='bg-green-100 dark:bg-green-700'>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
 </tr>
 <tr>
-<td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
 </tr>
 </tbody>
 </table>
 </center>
 
-Now we must resolve `dfs(2, 1)` and `dfs(3,1)`. It does not matter which order we process these in, so for this example we start with `dfs(2,1)`. Since the timer is at `1`, we set `st[2]=1`. However, because `2` has no children, we don't call `dfs`. Instead, we set `en[2]=1` because our current timer is `2`.
+Now we must resolve `dfs(2, 1)` and `dfs(3, 1)`. It does not matter which order we process these in, so for this example we start with `dfs(2, 1)`. Since the timer is at `1`, we set `st[2]=1`. However, because `2` has no children, we don't call `dfs`. Instead, we set `en[2]=1` because our current timer is `2`.
 
 Current timer value: 2
 
@@ -236,19 +236,19 @@ Current timer value: 2
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td>0</td><td className='bg-green-100 dark:bg-green-700'>1</td><td>0</td><td>0</td><td>0</td>
+<td>st[i]</td><td>0</td><td className='bg-green-100 dark:bg-green-700'>1</td><td>0</td><td>0</td><td>0</td>
 </tr>
 <tr>
-<td>0</td><td className='bg-red-100 dark:bg-red-700'>1</td><td>0</td><td>0</td><td>0</td>
+<td>en[i]</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>1</td><td>0</td><td>0</td><td>0</td>
 </tr>
 </tbody>
 </table>
 </center>
 
-Now we must resolve `dfs(3,1)`. Similar to before, we set `st[3]=timer` which in this case is 2. Then, we proceed to make the calls `dfs(4, 3)` and `dfs(5, 3)`.
+Now we must resolve `dfs(3, 1)`. Similar to before, we set `st[3]=timer` which in this case is 2. Then, we proceed to make the calls `dfs(4, 3)` and `dfs(5, 3)`.
 
 Current timer value: 3
 
@@ -256,21 +256,21 @@ Current timer value: 3
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td>0</td><td>1</td><td className='bg-green-100 dark:bg-green-700'>2</td><td>0</td><td>0</td>
+<td>st[i]</td><td>0</td><td>1</td><td className='bg-green-100 dark:bg-green-700'>2</td><td>0</td><td>0</td>
 </tr>
 <tr>
-<td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
+<td>en[i]</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
 </tr>
 </tbody>
 </table>
 </center>
 
-Now we must resolve `dfs(4, 3)` and `dfs(5,3)`. First, we resolve `dfs(4,3)` by setting `st[node]=timer`, which in this case means `st[4]=3`. Then, since `4` has no children, `en[4]=3`.
+Now we must resolve `dfs(4, 3)` and `dfs(5, 3)`. First, we resolve `dfs(4, 3)` by setting `st[node]=timer`, which in this case means `st[4]=3`. Then, since `4` has no children, `en[4]=3`.
 
-Now the value of the timer is `4`, and we must resolve `dfs(5,3)`. Similar to before, we set `st[5]=4`. Since `5` also has no children, `en[5]=4`.
+Now the value of the timer is `4`, and we must resolve `dfs(5, 3)`. Similar to before, we set `st[5]=4`. Since `5` also has no children, `en[5]=4`.
 
 Current timer value: 5
 
@@ -278,13 +278,13 @@ Current timer value: 5
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td>0</td><td>1</td><td>2</td><td className='bg-green-100 dark:bg-green-700'>3</td><td className='bg-green-100 dark:bg-green-700'>4</td>
+<td>st[i]</td><td>0</td><td>1</td><td>2</td><td className='bg-green-100 dark:bg-green-700'>3</td><td className='bg-green-100 dark:bg-green-700'>4</td>
 </tr>
 <tr>
-<td>0</td><td>1</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>3</td><td className='bg-red-100 dark:bg-red-700'>4</td>
+<td>en[i]</td><td>0</td><td>1</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>3</td><td className='bg-red-100 dark:bg-red-700'>4</td>
 </tr>
 </tbody>
 </table>
@@ -296,13 +296,13 @@ Now, we must traverse back up the `dfs` calls. One of these resolves node `3`, s
 <table className="text-center">
 <tbody>
 <tr>
-<td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
 </tr>
 <tr>
-<td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
+<td>st[i]</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
 </tr>
 <tr>
-<td className='bg-red-100 dark:bg-red-700'>5</td><td>1</td><td className='bg-red-100 dark:bg-red-700'>4</td><td>3</td><td>4</td>
+<td>en[i]</td><td className='bg-red-100 dark:bg-red-700'>5</td><td>1</td><td className='bg-red-100 dark:bg-red-700'>4</td><td>3</td><td>4</td>
 </tr>
 </tbody>
 </table>
