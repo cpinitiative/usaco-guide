@@ -456,8 +456,9 @@ public class ForestQueries {
 		int N = n + 1;
 		int[][] forest = new int[N][N];
 		for (int i = 1; i < N; i++) {
+			String row = io.nextLine();
 			for (int j = 1; j < N; j++) {
-				if (io.next().equals("*")) {
+				if (row.charAt(j - 1) == '*') {
 					forest[i][j] = 1;
 				}
 			}
@@ -509,6 +510,14 @@ public class ForestQueries {
 				while (st == null || !st.hasMoreTokens())
 					st = new StringTokenizer(r.readLine());
 				return st.nextToken();
+			} catch (Exception ignored) {
+			}
+			return null;
+		}
+
+		public String nextLine() {
+			try {
+				return r.readLine();
 			} catch (Exception ignored) {
 			}
 			return null;
