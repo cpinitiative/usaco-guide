@@ -8,6 +8,7 @@ export class Post {
   timestamp = null;
   body = null;
   pinned = false;
+  isPublished = false;
   problems: { [key: string]: Problem } = {};
   autoSave = true; // Indicator for submitting changes in this post to the server.
   saveHandler = null; // Disposer of the side effect auto-saving this post (dispose).
@@ -41,6 +42,14 @@ export class Post {
 
   get dueDateString() {
     return this.timestamp.toDate().toString().slice(0, 15);
+  }
+
+  get isAssignment() {
+    return Object.keys(this.problems).length !== 0;
+  }
+
+  get isAnnouncement() {
+    return Object.keys(this.problems).length === 0;
   }
 
   startEditing() {
@@ -78,6 +87,7 @@ export class Post {
       timestamp: this.timestamp,
       body: this.body,
       pinned: this.pinned,
+      isPublished: this.isPublished,
       problems: Object.keys(this.problems).reduce(
         (acc, cur) => ({ ...acc, [cur]: this.problems[cur].asJson }),
         []
@@ -92,6 +102,7 @@ export class Post {
     this.timestamp = json.timestamp || null;
     this.body = json.body || '';
     this.pinned = json.pinned || false;
+    this.isPublished = json.isPublished || false;
     const problems = json.problems || {};
     Object.keys(this.problems)
       .filter(id => !problems.hasOwnProperty(id))

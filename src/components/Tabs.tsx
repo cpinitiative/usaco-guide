@@ -2,10 +2,12 @@ import * as React from 'react';
 
 export default function Tabs({
   options,
+  labelMap,
   value,
   onChange,
 }: {
   options: string[];
+  labelMap?: { [key: string]: string };
   value: string;
   onChange: (newValue: string) => void;
 }) {
@@ -23,7 +25,7 @@ export default function Tabs({
         >
           {options.map(option => (
             <option value={option} key={option}>
-              {option}
+              {labelMap ? labelMap[option] : option}
             </option>
           ))}
         </select>
@@ -40,7 +42,7 @@ export default function Tabs({
                 idx === options.length - 1 ? 'rounded-r-lg' : ''
               } group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-2 text-sm font-medium text-center hover:bg-gray-50 focus:z-10 focus:outline-none`}
             >
-              <span>{option}</span>
+              <span>{labelMap ? labelMap[option] : option}</span>
               <span
                 aria-hidden="true"
                 className={`${

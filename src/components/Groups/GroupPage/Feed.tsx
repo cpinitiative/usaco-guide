@@ -5,10 +5,10 @@ import FeedItem from './FeedItem';
 import { Link } from 'gatsby';
 import { GroupsContext } from '../../../pages/groups';
 import { observer } from 'mobx-react-lite';
+import { action } from 'mobx';
 
 export default observer(function Feed() {
-  const feedTabs = ['Feed', 'Assignments', 'Announcements'];
-  const [currentFeed, setCurrentFeed] = useState('Feed');
+  const feedTabs = ['all', 'assignments', 'announcements'];
   const groupStore = useContext(GroupsContext);
 
   return (
@@ -16,8 +16,16 @@ export default observer(function Feed() {
       <div className="px-4 sm:px-0">
         <Tabs
           options={feedTabs}
-          value={currentFeed}
-          onChange={x => setCurrentFeed(x)}
+          labelMap={{
+            all: 'Feed',
+            assignments: 'Assignments',
+            announcements: 'Announcements',
+          }}
+          value={groupStore.activeGroup.currentFeed}
+          onChange={action(
+            (x: 'all' | 'assignments' | 'announcements') =>
+              (groupStore.activeGroup.currentFeed = x)
+          )}
         />
       </div>
       <div className="mt-4">

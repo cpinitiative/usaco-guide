@@ -2,12 +2,16 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Post } from '../../../mobx/Post';
 import { Link } from 'gatsby';
+import { action } from 'mobx';
 
 export default observer(function PostHeader({ post }: { post: Post }) {
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          {post.title}
+          {post.isPublished ? '' : ' (Unpublished)'}
+        </h1>
         <p className="mt-2 text-sm text-gray-500">
           Due on {post.dueDateString}
         </p>
@@ -31,21 +35,10 @@ export default observer(function PostHeader({ post }: { post: Post }) {
           </Link>
           <button
             type="button"
+            onClick={action(() => (post.isPublished = !post.isPublished))}
             className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
           >
-            <svg
-              className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Unpublish</span>
+            <span>{post.isPublished ? 'Unpublish' : 'Publish'}</span>
           </button>
         </div>
       )}

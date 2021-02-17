@@ -29,6 +29,7 @@ export default class Group {
   unsubscribePosts;
   // todo: return true if user is admin of this group
   isUserAdmin = true;
+  currentFeed: 'all' | 'assignments' | 'announcements' = 'all';
 
   constructor(firebase, groupId) {
     this.firebase = firebase;
@@ -106,6 +107,7 @@ export default class Group {
       .add({
         title: 'Untitled Post',
         timestamp: this.firebase.firestore.Timestamp.now(),
+        isPublished: false,
       });
     runInAction(() => {
       this.creatingNewPost = false;
@@ -120,10 +122,19 @@ export default class Group {
   }
 
   get feed(): Post[] {
-    return [...this.posts].sort((a, b) => {
-      if (a.pinned !== b.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-      return b.timestamp.toMillis() - a.timestamp.toMillis();
-    });
+    return this.posts
+      .filter(post => {
+        if (!this.isUserAdmin && !post.isPublished) return false;
+        if (this.currentFeed === 'all') return true;
+        if (this.currentFeed === 'assignments') return post.isAssignment;
+        if (this.currentFeed === 'announcements') return post.isAnnouncement;
+        throw 'unknown feed ' + this.currentFeed;
+      })
+      .sort((a, b) => {
+        if (a.pinned !== b.pinned)
+          return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return b.timestamp.toMillis() - a.timestamp.toMillis();
+      });
   }
 }
 
