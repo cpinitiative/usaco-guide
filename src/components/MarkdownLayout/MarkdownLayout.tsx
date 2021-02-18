@@ -90,7 +90,6 @@ export default function MarkdownLayout({
             }
             fields {
               division
-              gitAuthorTime
             }
             problems {
               uniqueID

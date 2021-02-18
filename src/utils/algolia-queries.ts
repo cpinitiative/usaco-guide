@@ -9,6 +9,7 @@ const pageQuery = `{
           id
           title
           description
+          division
         }
         fields {
           division
@@ -89,11 +90,12 @@ const queries = [
             title: edge.node.frontmatter.title,
             starred: edge.node.problems.starred
           });
+
         });
       });
       data.data.edges.forEach(edge => {
         edge.node.problems.forEach(x => {
-          if (!!res.find(existing => existing.objectID === x.uniqueID)) return;
+          if (res.find(existing => existing.objectID === x.uniqueID)) return;
 
           res.push(problemToAlgoliaRecord(x, problemModules[x.id]));
         });

@@ -245,7 +245,7 @@ export default function Template(props) {
                           item.frontmatter.frequency,
                           item.isIncomplete,
                           [],
-                          item.fields.gitAuthorTime
+                          0
                         )
                       }
                     />
@@ -275,9 +275,7 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
-          fields {
-            gitAuthorTime
-          }
+         
         }
       }
     }
