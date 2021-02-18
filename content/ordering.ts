@@ -20,7 +20,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'About This Guide',
       description:
         "In this first chapter, you'll learn about how this guide is structured and how best to use this guide.",
-      items: ['using-this-guide', 'modules', 'contributing', 'code-con'],
+      items: ['using-this-guide', 'modules', 'contributing'],
     },
     {
       name: 'Getting Started',
@@ -59,6 +59,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'fast-io',
         'generic',
         'lambda',
+        'notes-cpp-ds',
       ],
     },
     {
@@ -70,8 +71,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   ],
   bronze: [
     {
-      name: 'Basics',
-      items: ['time-comp', 'rect-geo', 'simulation'],
+      name: 'Getting Started',
+      items: ['time-comp', 'rect-geo', 'intro-ds', 'simulation'],
     },
     {
       name: 'Complete Search',
@@ -80,31 +81,35 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['intro-complete', 'complete-rec'],
     },
     {
-      name: 'Data Structures',
-      description:
-        "It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.",
-      items: ['intro-ds', 'intro-sorting', 'intro-sets'],
+      name: 'Sorting & Sets',
+      description: '',
+      items: ['intro-sorting', 'intro-sets'],
+      // It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.
     },
     {
       name: 'Additional',
       description: 'Topics not strictly necessary to know to pass Bronze.',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'intro-bitwise'],
     },
   ],
   silver: [
     {
-      name: 'Sorting & Ordered Sets',
+      name: 'Prefix Sums',
       items: [
-        'binary-search-sorted',
-        'sorting-custom',
-        'intro-ordered',
-        'custom-cpp-stl',
-        'greedy',
+        'prefix-sums', 
+        'prefix-sums-2',
       ],
     },
     {
-      name: 'Misc. Topics',
-      items: ['prefix-sums', '2P', 'binary-search-ans', 'intro-bitwise'],
+      name: 'Sorting & Searching',
+      items: [
+        'sorting-custom',
+        '2P',
+        'intro-ordered',
+        'custom-cpp-stl',
+        'greedy-sorting',
+        'binary-search',
+      ],
     },
     {
       name: 'Graphs',

@@ -17,7 +17,7 @@ export const problems = {
 			'1012',
 			'Easy',
 			false,
-			[],
+			['Greedy'],
 			'See below.'
 		),
 	],
@@ -28,7 +28,7 @@ export const problems = {
 			'689',
 			'Normal',
 			false,
-			[],
+			['Greedy'],
 			'usaco-689'
 		),
 		new Problem(
@@ -41,47 +41,13 @@ export const problems = {
 			''
 		),
 		new Problem(
-			'Old Bronze',
-			'Censoring',
-			'526',
-			'Normal',
-			false,
-			[],
-		),
-		new Problem(
 			'Bronze',
 			'Out of Place',
 			'785',
 			'Hard',
 			true,
-			[],
-			'usaco-785'
-		),
-		new Problem(
-			'Bronze',
-			'Social Distancing 1',
-			'1035',
-			'Hard',
-			false,
-			[],
-		),
-		new Problem(
-			'Silver', 
-			'Cowntagion', 
-			'1062', 
-			'Hard', 
-			false, 
-			['Greedy', 'Tree'], 
-			'usaco-1062'
-		),
-		new Problem(
-			'Silver',
-			'Spaced Out',
-			'1088',
-			'Hard',
-			false,
 			['Greedy'],
-			''
+			'usaco-785'
 		),
 		new Problem(
 			'Bronze',
@@ -92,13 +58,23 @@ export const problems = {
 			['Greedy'],
 			'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.'
 		),
-		new Problem('Silver', 'Rest Stops', '810', 'Very Hard', true, [], ''),
+		new Problem(
+			'Silver',
+			'Rest Stops',
+			'810',
+			'Very Hard',
+			true,
+			['Greedy'],
+			''
+		),
 	],
 };
 
+<!-- new Problem('Bronze', 'Social Distancing 1', '1035', 'Hard', false, [], ''), -->
+
 ## Greedy Algorithms
 
-Some USACO Bronze problems that appear to be Ad Hoc can actually be solved using **greedy** algorithms. This idea will be covered in a future [module](/silver/greedy), but we'll introduce the general mindset in this section.
+Some USACO Bronze problems that appear to be ad hoc can actually be solved using **greedy** algorithms. This idea will be covered in a future [module](/silver/greedy-sorting), but we'll introduce the general mindset in this section.
 
 <Resources>
 	<Resource source="CPH" title="6.1 - Coin Problem" starred>
@@ -148,10 +124,10 @@ sys.stdout = open("breedflip.out","w")
 N,a,b = input(),input(),input()
 s = [False]+[x != y for x,y in zip(a,b)] # difference list
 # now count occurrences of [False,True], as the first C++ solution does
-print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:]))) 
+print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:])))
 ```
 
-<!-- 
+<!--
 ```python
 fin, fout = open('breedflip.in'), open('breedflip.out', 'w')
 
@@ -162,18 +138,18 @@ b = fin.readline()
 
 s = []
 for x in range(n):
-    if a[x] != b[x]:
-        s.append(1)
-    else:
-        s.append(0)
+	if a[x] != b[x]:
+		s.append(1)
+	else:
+		s.append(0)
 
 def count(x,s):
-    count = 0
-    for f in range(len(s) - 1):
-        if s[f] == int(x[0]) and s[f+ 1] == int(x[1]):
-            count += 1
+	count = 0
+	for f in range(len(s) - 1):
+		if s[f] == int(x[0]) and s[f+ 1] == int(x[1]):
+			count += 1
 
-    return count
+	return count
 
 s = [0] + s + [0]
 fout.write(str((count('01', s) + count('10', s))//2))
@@ -185,7 +161,6 @@ fout.write(str((count('01', s) + count('10', s))//2))
 </LanguageSection>
 
 </Spoiler>
-
 
 Note that not all greedy problems necessarily require mathematical proofs of correctness. It is often sufficent to intuitively convince yourself your algorithm is correct.
 

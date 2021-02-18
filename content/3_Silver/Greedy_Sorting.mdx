@@ -1,17 +1,36 @@
 ---
-id: greedy
+id: greedy-sorting
 title: 'Greedy Algorithms with Sorting'
 author: Darren Yao
+redirects:
+  - /silver/greedy
 prerequisites:
   - intro-greedy
-  - sorting-custom
+  - 2P
   - intro-ordered
 description: 'Solving greedy problems by sorting the input.'
 frequency: 3
 ---
 
 export const problems = {
-	movie: [new Problem('CSES', 'Movie Festival', '1629', 'Easy', false, [], '')],
+	studyalgo: new Problem(
+		'CF',
+		'Studying Algorithms',
+		'https://codeforces.com/gym/102951/problem/B',
+		'Very Easy',
+		false,
+		['Sorting', 'Greedy'],
+		''
+	),
+	movie: new Problem(
+		'CSES',
+		'Movie Festival',
+		'1629',
+		'Easy',
+		false,
+		['Sorting', 'Greedy'],
+		''
+	),
 	cses: [
 		new Problem(
 			'CSES',
@@ -73,7 +92,7 @@ export const problems = {
 			'1161',
 			'Hard',
 			false,
-			['Greedy', 'Huffman Coding', 'Priority Queue'],
+			['Greedy', 'Ordered Set'],
 			'cses-1161'
 		),
 	],
@@ -84,7 +103,7 @@ export const problems = {
 			'https://codeforces.com/contest/762/problem/B',
 			'Easy',
 			false,
-			[],
+			['Greedy', 'Sorting', '2P'],
 			'CF-726B'
 		),
 		new Problem(
@@ -93,7 +112,7 @@ export const problems = {
 			'835',
 			'Easy',
 			false,
-			['Sorting'],
+			['Greedy', 'Sorting'],
 			'usaco-835'
 		),
 		new Problem(
@@ -102,18 +121,26 @@ export const problems = {
 			'571',
 			'Easy',
 			false,
-			[],
+			['Greedy', 'Sorting', 'Ordered Set'],
 			'usaco-571'
 		),
-		new Problem('Gold', 'High Card Low Card', '573', 'Normal', true, [], ''),
 		new Problem(
-			'Silver',
-			'Berry Picking',
-			'990',
+			'Gold',
+			'High Card Low Card',
+			'573',
+			'Easy',
+			true,
+			['Greedy', 'Sorting', 'Ordered Set'],
+			'usaco-573'
+		),
+		new Problem(
+			'CSA',
+			'Sure Bet',
+			'sure-bet',
 			'Normal',
 			false,
-			[],
-			'usaco-990'
+			['Greedy', 'Sorting', '2P'],
+			''
 		),
 		new Problem(
 			'Silver',
@@ -121,10 +148,18 @@ export const problems = {
 			'714',
 			'Normal',
 			false,
-			['Sorting'],
+			['Greedy', 'Ordered Set'],
 			'usaco-714'
 		),
-		new Problem('CSA', 'Sure Bet', 'sure-bet', 'Normal', false, [], ''),
+		new Problem(
+			'Silver',
+			'Berry Picking',
+			'990',
+			'Normal',
+			false,
+			['Sorting', 'Greedy'],
+			'usaco-990'
+		),
 	],
 };
 
@@ -159,11 +194,13 @@ Usually, when using a greedy algorithm, there is a **value function** that deter
 
 Here, we'll focus on problems where some sorting step is involved.
 
-## Example: Studying Algorithms
+## Example - Studying Algorithms
 
 Steph wants to improve her knowledge of algorithms over winter break. She has a total of $X$ ($1 \leq X \leq 10^4$) minutes to dedicate to learning algorithms. There are $N$ ($1 \leq N \leq 100$) algorithms, and each one of them requires $a_i$ ($1 \leq a_i \leq 100$) minutes to learn. Find the maximum number of algorithms she can learn.
 
-### Solution
+<FocusProblem problem={problems.studyalgo} />
+
+### Solution - Studying Algorithms
 
 <Spoiler title="Solution">
 
@@ -187,9 +224,9 @@ sort(algorithms.begin(), algorithms.end());
 int count = 0; // number of minutes used so far
 int i = 0;
 while(i < N && count + algorithms[i] <= x){
-  // while there is enough time, learn more algorithms
-  count += algorithms[i];
-  i++;
+	// while there is enough time, learn more algorithms
+	count += algorithms[i];
+	i++;
 }
 cout << i << endl; // print the ans
 ```
@@ -204,9 +241,9 @@ Arrays.sort(algorithms);
 int count = 0; // number of minutes used so far
 int i = 0;
 while(i < N && count + algorithms[i] <= x){
-    // while there is enough time, learn more algorithms
-    count += algorithms[i];
-    i++;
+	// while there is enough time, learn more algorithms
+	count += algorithms[i];
+	i++;
 }
 pw.println(i); // print the ans
 pw.close();
@@ -234,13 +271,13 @@ print(i) # print the ans
 
 </Spoiler>
 
-## Example: The Scheduling Problem
+## Example - The Scheduling Problem
 
-<FocusProblem problem={problems.movie[0]} />
+<FocusProblem problem={problems.movie} />
 
 There are $N$ events, each described by their starting and ending times. You can only attend one event at a time, and if you choose to attend an event, you must attend the entire event. Traveling between events is instantaneous. What's the maximum number of events you can attend?
 
-### Bad Greedy: Earliest Starting Next Event
+### Bad Greedy - Earliest Starting Next Event
 
 One possible ordering for a greedy algorithm would always select the next possible event that begins as soon as possible. Let's look at the following example, where the selected events are highlighted in red:
 
@@ -347,7 +384,7 @@ In this case, the greedy algorithm selects to attend only one event. However, th
 	/>
 </svg>
 
-### Correct Greedy: Earliest Ending Next Event
+### Correct Greedy - Earliest Ending Next Event
 
 Instead, we can select the event that ends as early as possible. This correctly selects the three events.
 

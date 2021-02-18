@@ -133,7 +133,7 @@ function time_ago(time) {
     [5806080000, 'Last century', 'Next century'], // 60*60*24*7*4*12*100*2
     [58060800000, 'centuries', 2903040000], // 60*60*24*7*4*12*100*20, 60*60*24*7*4*12*100
   ];
-  const seconds = (+new Date() - time) / 1000,
+  let seconds = (+new Date() - time) / 1000,
     token = 'ago',
     list_choice = 1;
 
@@ -145,7 +145,7 @@ function time_ago(time) {
     token = 'from now';
     list_choice = 2;
   }
-  if (seconds > 1209600) {
+  if (seconds > 4838400) {
     return '';
   }
   let i = 0,

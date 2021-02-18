@@ -39,13 +39,11 @@ This means that we can use the D&C optimization to find all $opt_i$!
 
 We can use a BIT or any other suitable data structure to query the number of points in a rectangle efficiently.
 
-## Complexity
+## Implementation
 
-Time: $\mathcal{O}(N \log^2 N)$.
+**Time Complexity:** $\mathcal{O}(N \log^2 N)$
 
-Memory: $\mathcal{O}(N)$.
-
-## Code
+**Memory Complexity:** $\mathcal{O}(N)$
 
 ```cpp
 #include <bits/stdc++.h>
@@ -58,69 +56,69 @@ int n, a[100001], b[100001];
 vector<int> cand;
 
 void update(int pos, ll val) {
-    for (; pos <= n; pos += pos & (-pos)) bit[pos] += val;
+	for (; pos <= n; pos += pos & (-pos)) bit[pos] += val;
 }
 
 ll query(int x, int y) {
-    ll ans = 0;
-    for (; y; y -= y & (-y)) ans += bit[y];
-    for (x--; x; x -= x & (-x)) ans -= bit[x];
-    return ans;
+	ll ans = 0;
+	for (; y; y -= y & (-y)) ans += bit[y];
+	for (x--; x; x -= x & (-x)) ans -= bit[x];
+	return ans;
 }
 
 void divide_conquer(int l = 0, int r = cand.size() - 1, int l_opt = 0, int r_opt = n - 1) {
-    int mid = (l + r) / 2, opt = -1;
-    ll best_delta = 1;
-    FOR(i, max(l_opt, cand[mid]), r_opt + 1) {
-        update(a[i], 1);
-        int inv = 1 - query(a[i] + 1, a[cand[mid]] - 1) - query(a[i], a[cand[mid]]);
-        if (inv <= best_delta) best_delta = inv, opt = i;
-    }
-    ans = min(ans, best_delta);
+	int mid = (l + r) / 2, opt = -1;
+	ll best_delta = 1;
+	FOR(i, max(l_opt, cand[mid]), r_opt + 1) {
+		update(a[i], 1);
+		int inv = 1 - query(a[i] + 1, a[cand[mid]] - 1) - query(a[i], a[cand[mid]]);
+		if (inv <= best_delta) best_delta = inv, opt = i;
+	}
+	ans = min(ans, best_delta);
 
-    if (mid != r) {
-        FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], -1);
-        FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], -1);
-        divide_conquer(mid + 1, r, opt, r_opt);
-        FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], 1);
-        FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], 1);
-    }
+	if (mid != r) {
+		FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], -1);
+		FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], -1);
+		divide_conquer(mid + 1, r, opt, r_opt);
+		FOR(i, cand[mid], cand[(mid + r + 1) / 2]) update(a[i], 1);
+		FOR(i, max(opt, cand[(mid + r + 1) / 2]), r_opt + 1) update(a[i], 1);
+	}
 
-    if (mid != l) {
-        FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], 1);
-        FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
-        divide_conquer(l, mid - 1, l_opt, opt);
-        FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], -1);
-        FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], 1);
-    }
+	if (mid != l) {
+		FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], 1);
+		FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
+		divide_conquer(l, mid - 1, l_opt, opt);
+		FOR(i, cand[(mid + l - 1) / 2], min(l_opt, cand[mid])) update(a[i], -1);
+		FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], 1);
+	}
 
-    FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
+	FOR(i, max(l_opt, cand[mid]), r_opt + 1) update(a[i], -1);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> n;
-    bool sorted = true, distinct = true;
-    FOR(i, 0, n) {
-        cin >> a[i];
-        b[i] = a[i];
-        if (i) sorted &= (a[i] >= a[i - 1]), distinct &= (a[i] != a[i - 1]);
-    }
-    if (sorted) return cout << distinct << '\n', 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n;
+	bool sorted = true, distinct = true;
+	FOR(i, 0, n) {
+		cin >> a[i];
+		b[i] = a[i];
+		if (i) sorted &= (a[i] >= a[i - 1]), distinct &= (a[i] != a[i - 1]);
+	}
+	if (sorted) return cout << distinct << '\n', 0;
 
-    sort(b, b + n);
-    FOR(i, 0, n) {
-        a[i] = lower_bound(b, b + n, a[i]) - b + 1;
-        if (!i || a[i] > a[cand.back()]) cand.push_back(i);
-    }
+	sort(b, b + n);
+	FOR(i, 0, n) {
+		a[i] = lower_bound(b, b + n, a[i]) - b + 1;
+		if (!i || a[i] > a[cand.back()]) cand.push_back(i);
+	}
 
-    divide_conquer();
-    for (int i = n - 1; ~i; i--) {
-        update(a[i], 1);
-        ans += query(1, a[i] - 1);
-    }
-    cout << ans << '\n';
-    return 0;
+	divide_conquer();
+	for (int i = n - 1; ~i; i--) {
+		update(a[i], 1);
+		ans += query(1, a[i] - 1);
+	}
+	cout << ans << '\n';
+	return 0;
 }
 ```

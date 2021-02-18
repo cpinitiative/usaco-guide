@@ -70,10 +70,10 @@ arr[5] // accesses the element at the 5th index
 
 In C++, arrays initialized locally using either the default syntax (i.e. `int arr[25];` ) or the array class are initialized to random numbers because C++ doesn't have built-in memory management. In order to initialize an array to zero, you have several options:
 
- - Use a for loop (or nested for loops).
- - Declare the array globally.
- - Declare the array with an empty initializer list (i.e. `int arr[25]{};` ) as mentioned [here](https://www.learncpp.com/cpp-tutorial/arrays-part-ii/).
- - Use a built-in function such as [`std::fill_n(arr, 25, 0)`](http://www.cplusplus.com/reference/algorithm/fill_n/) or [`std::fill(arr, arr+25, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
+- Use a for loop (or nested for loops).
+- Declare the array globally.
+- Declare the array with an empty initializer list (i.e. `int arr[25]{};` ) as mentioned [here](https://www.learncpp.com/cpp-tutorial/arrays-part-ii/).
+- Use a built-in function such as [`std::fill_n(arr, 25, 0)`](http://www.cplusplus.com/reference/algorithm/fill_n/) or [`std::fill(arr, arr+25, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
 
 <Warning>
 
@@ -107,18 +107,27 @@ For example, the following code creates a dynamic array and adds the numbers $1$
 ```cpp
 vector<int> v;
 for(int i = 1; i <= 10; i++){
-    v.push_back(i);
+	v.push_back(i);
 }
 ```
 
-In C++, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
+`g++` will allow you to create an array of variable length:
 
 ```cpp
-vector<int> v(30); // one way
-vector<int> v; v.resize(30); // another way
+int n; cin >> n;
+int v[n];
 ```
 
-In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
+However, variable-length arrays are [_not_ part of the C++ standard](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard). We recommend that you use a `vector` for this purpose instead:
+
+```cpp
+vector<int> v(n); // one way
+vector<int> v; v.resize(n); // another way
+```
+
+In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays much of the time. However, we can also have dynamic arrays of dynamic arrays (e.g. `vector<vector<int>>`) static arrays of dynamic arrays (e.g. `array<vector<int>,5>`), dynamic arrays of static arrays (e.g. `vector<array<int,5>>`), and so on.
+
+<!-- Usually, the choice between a static array and a dynamic array is just personal preference. -->
 
 ### Iterating
 
@@ -158,7 +167,7 @@ For example, `v.begin()` or `begin(v)` returns an iterator pointing to the first
 
 ```cpp
 for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
-    cout << *it << " "; //prints the values in the vector using the iterator
+	cout << *it << " "; //prints the values in the vector using the iterator
 }
 ```
 
@@ -175,7 +184,7 @@ We can also use a for-each loop.
 
 ```cpp
 for (int element : v) {
-    cout << element << " "; //prints the values in the vector
+	cout << element << " "; //prints the values in the vector
 }
 ```
 
@@ -261,7 +270,7 @@ In a dynamic array, we can also add and delete elements at the end in $\mathcal{
 ```java
 ArrayList<Integer> list = new ArrayList<Integer>();
 for(int i = 1; i <= 10; i++){
-    list.add(i);
+	list.add(i);
 }
 ```
 
@@ -276,10 +285,10 @@ ArrayList<Integer> list = new ArrayList<Integer>();
 list.add(1); list.add(7); list.add(4); list.add(5); list.add(2);
 int[] arr = {1, 7, 4, 5, 2};
 for(int i = 0; i < list.size(); i++){ // regular
-    System.out.println(list.get(i));
+	System.out.println(list.get(i));
 }
 for(int element : arr){ // for-each
-    System.out.println(element);
+	System.out.println(element);
 }
 ```
 
@@ -306,8 +315,6 @@ System.out.println(list.get(2)); // 5
 
 <!-- END JAVA SECTION ON ARRAYS -->
 
-
-
 <!-- BEGIN PYTHON SECTION ON ARRAYS -->
 
 <PySection>
@@ -324,7 +331,7 @@ Python lists are **generic**. This means that they can store any kind of data ty
 
 ```py
 for i in range(1, 11): # Note that range(i, j) includes i, but does not include j
-    arr.append(i)
+	arr.append(i)
 ```
 
 In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
@@ -341,11 +348,11 @@ We can use a regular for loop to iterate through all elements of a list.
 arr = [1, 7, 4, 5, 2]
 
 for i in range(len(arr)):
-    print(arr[i], end = " ")
+	print(arr[i], end = " ")
 print()
 
 for element in arr:
-    print(element, end = " ")
+	print(element, end = " ")
 print()
 ```
 
@@ -384,7 +391,7 @@ arr = arr[3:] # [4, 4, 9]
 
 ### List Comprehensions
 
-List comprehensions are extremely useful for simplifying a python for loop that modifies/creates a list into one expression. The general syntax is: `[ expression for item in list if conditional ]` 
+List comprehensions are extremely useful for simplifying a python for loop that modifies/creates a list into one expression. The general syntax is: `[ expression for item in list if conditional ]`
 
 An example is provided in the code block below.
 
@@ -393,8 +400,8 @@ An example is provided in the code block below.
 old_list = [2, 5, 3, 1, 6]
 new_list = []
 for i in old_list:
-    if i % 2 == 1:
-        new_list.append(i * 2);
+	if i % 2 == 1:
+		new_list.append(i * 2);
 print(new_list) # [10, 6, 2]
 # Simplified one liner with list comprehension
 # Recall the form [ expression for item in list if conditional ]
@@ -422,15 +429,15 @@ For more information on list comprehensions, including nesting them to create mu
 		title="List Comprehensions in Python"
 		url="https://www.pythonforbeginners.com/basics/list-comprehensions-in-python"
 	>
-	{'Basic list comprehension tutorial'}
+		{'Basic list comprehension tutorial'}
 	</Resource>
 	<Resource
 		source="GFG"
 		title="Nested List Comprehensions in Python"
 		url="https://www.geeksforgeeks.org/nested-list-comprehensions-in-python/"
 	>
-	{'Nesting list comprehensions'}
-    </Resource>
+		{'Nesting list comprehensions'}
+	</Resource>
 </Resources>
 
 </PySection>
@@ -440,7 +447,6 @@ For more information on list comprehensions, including nesting them to create mu
 </LanguageSection>
 
 <!-- END SECTION ON ARRAYS -->
-
 
 ## Pairs & Tuples
 
@@ -602,102 +608,21 @@ One thing to keep in mind when using arrays is the memory limit. Usually the USA
 
 <CPPSection>
 
-## Unspecified Behavior
+<Optional title="Additional Notes About C++ Data Structures">
 
-```cpp
-vi res{-1};
-int addElement() {
-	res.pb(-1);
-	return sz(res)-1;
-}
+See [here](/general/notes-cpp-ds).
 
-void rec(int x) {
-	F0R(i,10) {
-		res[i] = addElement();
-		ps(i,res[i]);
-	}
-}
-
-int main() {
-	rec(0);
-}
-```
-
-Running the above code with C++17
-
-```
-g++ -std=c++17 bad.cpp -o bad && ./bad
-```
-
-gives the intended output:
-
-```
-0 1
-1 2
-2 3
-3 4
-4 5
-5 6
-6 7
-7 8
-8 9
-9 10
-```
-
-But running with C++14
-
-```
-g++ -std=c++14 bad.cpp -o bad && ./bad
-```
-
-gives:
-
-```
-0 -1
-1 -1
-2 3
-3 -1
-4 5
-5 6
-6 7
-7 -1
-8 9
-9 10
-```
-
-However, the code works correctly if you save the result of `addElement()` to an intermediate variable.
-
-```cpp
-void rec(int x) {
-	F0R(i,10) {
-		int tmp = addElement();
-		res[i] = tmp;
-		ps(i,res[i]);
-	}
-}
-```
-
-<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
-
-The problem is that `res[i] = addElement();` only works if `addElement()` is evaluated before `res[i]` is. If `res[i]` is evaluated first, and *then* `addElement()` results in the memory for `res` being reallocated, then `res[i]` is invalidated. The order in which `res[i]` and `addElement()` are evaluated is unspecified (at least before C++17).
-
-See [this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated) StackOverflow post for some discussion about why this is the case (also a similar issue [here](https://stackoverflow.com/questions/18040037/why-does-setting-an-element-of-a-map-to-its-size-increments-the-size-before-as)).
-
+</Optional>
 
 </CPPSection>
 
-<JavaSection>
-
-</JavaSection>
-
-<PySection>
-
-</PySection>
+<JavaSection />
+<PySection />
 
 </LanguageSection>
 
 ## Problems
 
-Nothing to see here! To reiterate, arrays of fixed size should suffice for essentially every Bronze problem, but dynamic arrays, pairs, and tuples can greatly simplify implementation at times.
+Nothing to see here! To reiterate, arrays of fixed size should suffice for essentially every Bronze problem, but dynamic arrays, pairs, and tuples can greatly simplify implementation at times. You'll see some examples of these in the following module.
 
 <!-- Unless someone has any. I really can't find anything... -->
