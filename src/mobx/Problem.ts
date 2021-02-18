@@ -63,7 +63,7 @@ export class Problem {
     this.name = json.name;
     this.body = json.body;
     this.source = json.source;
-    this.points = json.points;
+    this.points = parseInt(json.points) || 0;
     this.difficulty = json.difficulty;
     this.autoSave = true;
   }

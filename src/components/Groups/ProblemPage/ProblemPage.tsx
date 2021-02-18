@@ -76,7 +76,7 @@ export default observer(function ProblemPage(props) {
                         ) {
                           problem.delete();
                           navigate(
-                            `/groups/${problem.post.group.groupId}/posts/${problem.post.id}`,
+                            `/groups/${problem.post.group.groupId}/post/${problem.post.id}`,
                             {
                               replace: true,
                             }

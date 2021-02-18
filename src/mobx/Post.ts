@@ -59,6 +59,13 @@ export class Post {
     return Object.keys(this.problems).length === 0;
   }
 
+  get totalPoints() {
+    return Object.keys(this.problems).reduce(
+      (acc, cur) => acc + this.problems[cur].points,
+      0
+    );
+  }
+
   startEditing() {
     this.autoSave = false;
     this.isEditing = true;

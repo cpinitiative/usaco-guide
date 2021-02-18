@@ -21,7 +21,7 @@ export default observer(function PostSidebar({ post }: { post: Post }) {
             />
           </svg>
           <span className="text-green-700 text-sm font-medium">
-            400 / 1600 points earned
+            400 / {post.totalPoints} points earned
           </span>
         </div>
         <div className="flex items-center space-x-2">

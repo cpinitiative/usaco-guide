@@ -123,4 +123,10 @@ export default class GroupsStore {
       this.activeGroup.updateFromJson(snapshot.data() as any);
     });
   }
+
+  handleLogOut = () => {
+    this.groups = null;
+    this.activeGroup = null;
+    this.activeGroupId = null;
+  };
 }
