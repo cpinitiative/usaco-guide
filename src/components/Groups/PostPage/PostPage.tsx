@@ -18,7 +18,7 @@ export default observer(function PostPage(props) {
     groupId: string;
     postId: string;
   };
-  const store = useContext(GroupsContext);
+  const store = useContext(GroupsContext).groupsStore;
 
   const post = store.activeGroup?.posts.find(post => post.id === postId);
 

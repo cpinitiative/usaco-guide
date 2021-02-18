@@ -6,6 +6,7 @@ import {
 } from 'mobx';
 import Group from './Group';
 import firebaseType from 'firebase';
+import RootStore from './RootStore';
 enum GroupPermission {
   MEMBER = 'member',
   ADMIN = 'admin',
@@ -49,14 +50,17 @@ export const groupConverter = {
 
 export default class GroupsStore {
   firebase: typeof firebaseType;
+  rootStore: RootStore;
   groups: Group[] = null;
   activeGroup: Group = null;
   activeGroupId = null;
 
-  constructor(firebase: typeof firebaseType) {
-    this.firebase = firebase;
+  constructor(rootStore: RootStore) {
+    this.firebase = rootStore.firebase;
+    this.rootStore = rootStore;
     makeAutoObservable(this, {
       firebase: false,
+      rootStore: false,
     });
     reaction(
       () => this.activeGroupId, // Observe everything that is used in the JSON.
@@ -81,7 +85,7 @@ export default class GroupsStore {
     const data = snapshot
       .map(snapshot =>
         snapshot.docs.map(doc => {
-          const group = new Group(this.firebase, doc.id);
+          const group = new Group(this, doc.id);
           group.updateFromJson(doc.data() as any);
           return group;
         })
@@ -112,7 +116,7 @@ export default class GroupsStore {
       .get();
     if (!this.activeGroup) {
       runInAction(() => {
-        this.activeGroup = new Group(this.firebase, groupId);
+        this.activeGroup = new Group(this, groupId);
       });
     }
     if (this.activeGroup.groupId !== groupId) {

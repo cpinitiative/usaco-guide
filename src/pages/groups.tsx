@@ -1,4 +1,10 @@
-import React, { createContext, ReactElement, useContext, useMemo } from 'react';
+import React, {
+  createContext,
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Router } from '@reach/router';
 import NotFoundPage from './404';
 import Groups from '../mobx/GroupsStore';
@@ -12,8 +18,9 @@ import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import { runInAction } from 'mobx';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
+import RootStore from '../mobx/RootStore';
 
-export const GroupsContext = createContext<Groups>(null);
+export const GroupsContext = createContext<RootStore>(null);
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -22,7 +29,7 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const store = useContext(GroupsContext);
+  const store = useContext(GroupsContext).groupsStore;
 
   React.useEffect(() => {
     runInAction(() => {
@@ -35,13 +42,18 @@ const GroupPageWrapper = (props: any): ReactElement => {
 
 export default function GroupsRouter() {
   const firebase = useFirebase();
+  const { firebaseUser } = useContext(UserDataContext);
   const groupsStore = useMemo(() => {
     if (firebase) {
-      return new GroupsStore(firebase);
+      return new RootStore(firebase);
     } else {
       return null;
     }
   }, [firebase]);
+
+  useEffect(() => {
+    if (groupsStore) groupsStore.firebaseUser = firebaseUser;
+  }, [firebaseUser]);
 
   // still loading?
   if (!groupsStore) return null;

@@ -9,7 +9,7 @@ import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 
 const GroupSelectPage = observer((props: { path: string }) => {
-  const groupsStore = useContext(GroupsContext);
+  const groupsStore = useContext(GroupsContext).groupsStore;
   const { isLoaded, firebaseUser } = useContext(UserDataContext);
 
   useEffect(() => {

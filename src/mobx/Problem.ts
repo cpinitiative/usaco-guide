@@ -1,5 +1,6 @@
 import { makeAutoObservable, reaction } from 'mobx';
 import { Post } from './Post';
+import { ProblemSubmission } from './ProblemSubmission';
 
 export class Problem {
   id = null;
@@ -106,6 +107,20 @@ export class Problem {
         problems: this.post.asJson.problems,
       })
       .finally(() => (this.isWritingToServer = false));
+  }
+
+  // returns a new temporary submission but doesn't write it to the server
+  // intended for problem submission page
+  createTemporarySubmission() {
+    const ref = this.post.group.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.post.group.groupId)
+      .collection('submissions')
+      .doc();
+    const submission = new ProblemSubmission(this, ref.id);
+    submission.userId = this.post.group.groupsStore.rootStore.firebaseUser.uid;
+    return submission;
   }
 
   dispose() {

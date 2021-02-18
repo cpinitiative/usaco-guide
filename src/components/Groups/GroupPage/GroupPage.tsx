@@ -14,7 +14,7 @@ import Layout from '../../layout';
 export default observer(function GroupPage(props: {
   path: string;
 }): React.ReactElement {
-  const groupsStore = useContext(GroupsContext);
+  const groupsStore = useContext(GroupsContext).groupsStore;
   const group = groupsStore.activeGroup;
 
   return (

@@ -5,6 +5,7 @@ import {
   runInAction,
 } from 'mobx';
 import { Post } from './Post';
+import GroupsStore from './GroupsStore';
 
 enum GroupPermission {
   MEMBER = 'member',
@@ -26,17 +27,20 @@ export default class Group {
   posts: Post[] = [];
   creatingNewPost = false;
   firebase;
+  groupsStore: GroupsStore;
   unsubscribePosts;
   // todo: return true if user is admin of this group
   isUserAdmin = true;
   currentFeed: 'all' | 'assignments' | 'announcements' = 'all';
 
-  constructor(firebase, groupId) {
-    this.firebase = firebase;
+  constructor(groupsStore: GroupsStore, groupId) {
+    this.firebase = groupsStore.firebase;
+    this.groupsStore = groupsStore;
     this.groupId = groupId;
 
     makeAutoObservable(this, {
       firebase: false,
+      groupsStore: false,
       groupId: false,
       unsubscribePosts: false,
       resumePosts: false,

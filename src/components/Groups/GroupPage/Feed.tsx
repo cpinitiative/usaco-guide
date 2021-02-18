@@ -9,7 +9,7 @@ import { action } from 'mobx';
 
 export default observer(function Feed() {
   const feedTabs = ['all', 'assignments', 'announcements'];
-  const groupStore = useContext(GroupsContext);
+  const groupStore = useContext(GroupsContext).groupsStore;
 
   return (
     <>

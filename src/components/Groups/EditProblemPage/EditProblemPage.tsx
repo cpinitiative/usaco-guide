@@ -16,7 +16,7 @@ export default observer(function EditProblemPage(props) {
     postId: string;
     problemId: string;
   };
-  const store = useContext(GroupsContext);
+  const store = useContext(GroupsContext).groupsStore;
 
   const problem = store.activeGroup?.posts.find(post => post.id === postId)
     ?.problems[problemId];

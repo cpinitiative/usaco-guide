@@ -5,22 +5,9 @@ import Breadcrumbs from '../Breadcrumbs';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { GroupsContext } from '../../../pages/groups';
-import styled from 'styled-components';
 import Layout from '../../layout';
 import SEO from '../../seo';
-
-const ScoreInput = styled.input`
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  &[type='number'] {
-    -moz-appearance: textfield;
-  }
-`;
+import ProblemSubmission from './ProblemSubmissionInterface';
 
 export default observer(function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -29,7 +16,7 @@ export default observer(function ProblemPage(props) {
     postId: string;
     problemId: string;
   };
-  const store = useContext(GroupsContext);
+  const store = useContext(GroupsContext).groupsStore;
   const problem = store.activeGroup?.posts.find(post => post.id === postId)
     ?.problems[problemId];
 
@@ -240,62 +227,7 @@ export default observer(function ProblemPage(props) {
               <div className="py-3 xl:pt-6 xl:pb-10">
                 <div className="prose max-w-none">{problem.body}</div>
               </div>
-              <section aria-labelledby="activity-title">
-                <div>
-                  <h2
-                    id="activity-title"
-                    className="text-xl font-medium text-gray-900"
-                  >
-                    Submit Code
-                  </h2>
-                </div>
-                <div className="text-sm mt-1 text-gray-900">
-                  <b>Self-graded problem:</b> Use the Problem Statement link
-                  above to test your code. Submit your code and your score
-                  below. Group admins will manually verify your code to ensure
-                  the score you entered is accurate.
-                </div>
-                <div className="mt-4">
-                  <label
-                    htmlFor="score"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Score
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm w-24">
-                    <ScoreInput
-                      type="number"
-                      name="score"
-                      id="score"
-                      min={0}
-                      max={100}
-                      className="focus:ring-gray-900 focus:border-gray-900 block w-full pl-3 pr-3 sm:text-sm border-gray-300"
-                      placeholder="0 - 100"
-                      aria-describedby="price-currency"
-                    />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <textarea
-                    rows={3}
-                    className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border-gray-300 font-mono"
-                    placeholder="Paste code here, or drag and drop a file here."
-                  />
-                </div>
-                <div className="mt-1 text-sm space-x-2 text-gray-500">
-                  You can drag and drop a file on the textbox, or{' '}
-                  <a href="/" className="hover:text-gray-900 underline">
-                    click here
-                  </a>{' '}
-                  to choose a file.
-                </div>
-                <button
-                  type="submit"
-                  className="mt-4 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                >
-                  Submit Code
-                </button>
-              </section>
+              <ProblemSubmission problem={problem} />
             </div>
             <aside className="hidden xl:block xl:pl-8">
               <h2 className="sr-only">Details</h2>
