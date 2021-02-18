@@ -47,7 +47,7 @@ This gets rid of the $\log N$ factor in our original complexity and so the final
 
 (There is also an $\mathcal{O}(N)$ solution - try to come up with it yourself!)
 
-## Code
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -58,26 +58,26 @@ using namespace std;
 pair<long long, long long> p[1000000];
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n, len;
-    cin >> n >> len;
-    for (int i = 0; i < n; i++) cin >> p[i].x >> p[i].y;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, len;
+	cin >> n >> len;
+	for (int i = 0; i < n; i++) cin >> p[i].x >> p[i].y;
 
-    double l = 1, r = 1.5e9;
-    while (r - l > 1e-3) {
-        double mid = (l + r) / 2, curr = 0;
-        for (int i = 0; i < n; i++) {
-            double delta = sqrt(mid * mid - p[i].y * p[i].y);
-            double a = p[i].x - delta, b = p[i].x + delta;
-            if (a <= curr) curr = max(curr, b);
-        }
+	double l = 1, r = 1.5e9;
+	while (r - l > 1e-3) {
+		double mid = (l + r) / 2, curr = 0;
+		for (int i = 0; i < n; i++) {
+			double delta = sqrt(mid * mid - p[i].y * p[i].y);
+			double a = p[i].x - delta, b = p[i].x + delta;
+			if (a <= curr) curr = max(curr, b);
+		}
 
-        if (curr >= len) r = mid;
-        else l = mid;
-    }
+		if (curr >= len) r = mid;
+		else l = mid;
+	}
 
-    cout << fixed << setprecision(4) << l;
-    return 0;
+	cout << fixed << setprecision(4) << l;
+	return 0;
 }
 ```

@@ -184,34 +184,34 @@ struct DSU {
 
 <JavaSection>
 
-This implementation assumes that `p` is an array that starts such that `p[i] = -1` for every $0 <= i < n$.
+This implementation assumes that `disjoint` is an array that starts such that `disjoint[i] = -1` for every $0 <= i < n$.
 
 ```java
 public static int disjoint[]; //0 indexed
 public static int size[];
 //finds the "representative" node in a's component
 public static int find(int v) {
-    if (disjoint[v] == -1) {
-        return v;
-    }
-    disjoint[v] = find(disjoint[v]);
-    return disjoint[v];
+	if (disjoint[v] == -1) {
+		return v;
+	}
+	disjoint[v] = find(disjoint[v]);
+	return disjoint[v];
 }
 
 //returns whether the merge changed connectivity
 public static void union(int u, int v) {
-    int uroot = find(u);
-    int vroot = find(v);
-    if (uroot == vroot) {
-        return;
-    }
-    if (size[uroot] < size[vroot]) {
-        disjoint[uroot] = vroot;
-        size[vroot] = size[uroot] + size[vroot];
-    } else {
-        disjoint[vroot] = uroot;
-        size[uroot] = size[uroot] + size[vroot];
-    }
+	int uroot = find(u);
+	int vroot = find(v);
+	if (uroot == vroot) {
+		return;
+	}
+	if (size[uroot] < size[vroot]) {
+		disjoint[uroot] = vroot;
+		size[vroot] = size[uroot] + size[vroot];
+	} else {
+		disjoint[vroot] = uroot;
+		size[uroot] = size[uroot] + size[vroot];
+	}
 }
 ```
 
@@ -238,32 +238,32 @@ using namespace std;
 int sz[200000], pa[200000];
 
 int get(int x) {
-    return x == pa[x] ? x : pa[x] = get(pa[x]);
+	return x == pa[x] ? x : pa[x] = get(pa[x]);
 }
 
 void unite(int a, int b) {
-    a = get(a), b = get(b);
-    if (a == b) return;
-    if (sz[a] > sz[b]) swap(a, b);
-    pa[a] = b;
-    sz[b] += sz[a];
+	a = get(a), b = get(b);
+	if (a == b) return;
+	if (sz[a] > sz[b]) swap(a, b);
+	pa[a] = b;
+	sz[b] += sz[a];
 }
 
 int main() {
-    int n, q; cin >> n >> q;
-    for (int i = 0; i < n; i++) {
-        sz[i] = 1;
-        pa[i] = i;
-    }
-    for (int i = 0; i < q; i++) {
-        int t, u, v; cin >> t >> u >> v;
-        if (t == 0) {
-            unite(u, v);
-        } else {
-            cout << (get(u) == get(v) ? 1 : 0) << endl;
-        }
-    }
-    return 0;
+	int n, q; cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		sz[i] = 1;
+		pa[i] = i;
+	}
+	for (int i = 0; i < q; i++) {
+		int t, u, v; cin >> t >> u >> v;
+		if (t == 0) {
+			unite(u, v);
+		} else {
+			cout << (get(u) == get(v) ? 1 : 0) << endl;
+		}
+	}
+	return 0;
 }
 ```
 
@@ -275,57 +275,57 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static int disjoint[]; //0 indexed
-    public static int size[];
-    public static int find(int v) {
-        if (disjoint[v] == -1) {
-            return v;
-        }
-        disjoint[v] = find(disjoint[v]);
-        return disjoint[v];
-    }
+	public static int disjoint[]; //0 indexed
+	public static int size[];
+	public static int find(int v) {
+		if (disjoint[v] == -1) {
+			return v;
+		}
+		disjoint[v] = find(disjoint[v]);
+		return disjoint[v];
+	}
 
-    public static void union(int u, int v) {
-        int uroot = find(u);
-        int vroot = find(v);
-        if (uroot == vroot) {
-            return;
-        }
-        if (size[uroot] < size[vroot]) {
-            disjoint[uroot] = vroot;
-            size[vroot] = size[uroot] + size[vroot];
-        } else {
-            disjoint[vroot] = uroot;
-            size[uroot] = size[uroot] + size[vroot];
-        }
-    }
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int q = Integer.parseInt(st.nextToken());
+	public static void union(int u, int v) {
+		int uroot = find(u);
+		int vroot = find(v);
+		if (uroot == vroot) {
+			return;
+		}
+		if (size[uroot] < size[vroot]) {
+			disjoint[uroot] = vroot;
+			size[vroot] = size[uroot] + size[vroot];
+		} else {
+			disjoint[vroot] = uroot;
+			size[uroot] = size[uroot] + size[vroot];
+		}
+	}
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
 
-        disjoint = new int[n];
-        size = new int[n];
-        Arrays.fill(disjoint, -1);
-        for (int i = 0; i < q; i++) {
-            st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            if (t == 0) {
-                union(a, b);
-            } else {
-                if (find(a) == find(b)) {
-                    out.println(1);
-                } else {
-                    out.println(0);
-                }
-            }
-        }
-        out.close();
-    }
+		disjoint = new int[n];
+		size = new int[n];
+		Arrays.fill(disjoint, -1);
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int t = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			if (t == 0) {
+				union(a, b);
+			} else {
+				if (find(a) == find(b)) {
+					out.println(1);
+				} else {
+					out.println(0);
+				}
+			}
+		}
+		out.close();
+	}
 }
 ```
 

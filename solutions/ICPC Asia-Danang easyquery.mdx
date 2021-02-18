@@ -218,29 +218,29 @@ void setIO(str s = "") {
 }
 
 template<int SZ> struct Wavelet {
-    vi nex[2*SZ][2];
-    void build(vi& a, int ind, int L, int R) {
-        if (L == R) return;
-        F0R(i,2) nex[ind][i] = {0};
-        vi A[2]; int M = (L+R)/2;
-        trav(t,a) {
-            A[t>M].pb(t);
-            F0R(i,2) nex[ind][i].pb(sz(A[i]));
-        }
-        build(A[0],2*ind,L,M); build(A[1],2*ind+1,M+1,R);
-    }
-    pi lef(int lo, int hi, int u, int v, int ind, int L, int R) {
-        if (L == R) return {L,min(v,hi-lo)-u};
-        int M = (L+R)/2, t = nex[ind][0][hi]-nex[ind][0][lo];
-        if (t > u) return lef(nex[ind][0][lo],nex[ind][0][hi],u,v,2*ind,L,M);
-        return lef(nex[ind][1][lo],nex[ind][1][hi],u-t,v-t,2*ind+1,M+1,R);
-    }
-    pi rig(int lo, int hi, int u, int v, int ind, int L, int R) {
-        if (L == R) return {L,v-max(u,0)};
-        int M = (L+R)/2, t = nex[ind][0][hi]-nex[ind][0][lo];
-        if (t >= v) return rig(nex[ind][0][lo],nex[ind][0][hi],u,v,2*ind,L,M);
-        return rig(nex[ind][1][lo],nex[ind][1][hi],u-t,v-t,2*ind+1,M+1,R);
-    }
+	vi nex[2*SZ][2];
+	void build(vi& a, int ind, int L, int R) {
+		if (L == R) return;
+		F0R(i,2) nex[ind][i] = {0};
+		vi A[2]; int M = (L+R)/2;
+		trav(t,a) {
+			A[t>M].pb(t);
+			F0R(i,2) nex[ind][i].pb(sz(A[i]));
+		}
+		build(A[0],2*ind,L,M); build(A[1],2*ind+1,M+1,R);
+	}
+	pi lef(int lo, int hi, int u, int v, int ind, int L, int R) {
+		if (L == R) return {L,min(v,hi-lo)-u};
+		int M = (L+R)/2, t = nex[ind][0][hi]-nex[ind][0][lo];
+		if (t > u) return lef(nex[ind][0][lo],nex[ind][0][hi],u,v,2*ind,L,M);
+		return lef(nex[ind][1][lo],nex[ind][1][hi],u-t,v-t,2*ind+1,M+1,R);
+	}
+	pi rig(int lo, int hi, int u, int v, int ind, int L, int R) {
+		if (L == R) return {L,v-max(u,0)};
+		int M = (L+R)/2, t = nex[ind][0][hi]-nex[ind][0][lo];
+		if (t >= v) return rig(nex[ind][0][lo],nex[ind][0][hi],u,v,2*ind,L,M);
+		return rig(nex[ind][1][lo],nex[ind][1][hi],u-t,v-t,2*ind+1,M+1,R);
+	}
 };
 
 Wavelet<1<<18> W;
@@ -250,21 +250,21 @@ T ID;
 T comb(T a, T b) { F0R(i,30) ckmin(a[i],b[i]); return a; }
 
 struct Seg {
-    int n; vector<T> seg;
-    void init(int _n) { n = _n; seg = vector<T>(2*n,ID); }
-    void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-    void upd(int p, T value) {  // set value at position p
-        seg[p += n] = value;
-        for (p /= 2; p; p /= 2) pull(p);
-    }
-    T query(int l, int r) {  // sum on interval [l, r]
-        T ra = ID, rb = ID;
-        for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-            if (l&1) ra = comb(ra,seg[l++]);
-            if (r&1) rb = comb(seg[--r],rb);
-        }
-        return comb(ra,rb);
-    }
+	int n; vector<T> seg;
+	void init(int _n) { n = _n; seg = vector<T>(2*n,ID); }
+	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
+	void upd(int p, T value) {  // set value at position p
+		seg[p += n] = value;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
+	T query(int l, int r) {  // sum on interval [l, r]
+		T ra = ID, rb = ID;
+		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
+			if (l&1) ra = comb(ra,seg[l++]);
+			if (r&1) rb = comb(seg[--r],rb);
+		}
+		return comb(ra,rb);
+	}
 };
 
 Seg dat[4];
@@ -276,62 +276,62 @@ vi rm;
 vi oc[MX];
 
 void upd(int ind) {
-    int pos = m[a[ind]];
-    oc[pos].pb(ind);
-    FOR(i,1,4) if (i <= sz(oc[pos])) {
-        T val;
-        F0R(j,30) {
-            if (a[ind]&(1<<j)) val[j] = oc[pos][sz(oc[pos])-i];
-            else val[j] = MOD;
-        }
-        dat[i].upd(pos,val);
-    }
+	int pos = m[a[ind]];
+	oc[pos].pb(ind);
+	FOR(i,1,4) if (i <= sz(oc[pos])) {
+		T val;
+		F0R(j,30) {
+			if (a[ind]&(1<<j)) val[j] = oc[pos][sz(oc[pos])-i];
+			else val[j] = MOD;
+		}
+		dat[i].upd(pos,val);
+	}
 }
 
 void solve() {
-    re(n,q); a.rsz(n); re(a);
-    m.clear(); rm.clear();
-    trav(t,a) m[t] = 0;
-    int co = 0;
-    trav(t,m) {
-        rm.pb(t.f);
-        t.s = co++;
-    }
-    vi A; trav(t,a) A.pb(m[t]);
-    W.build(A,1,0,sz(m)-1);
-    F0R(i,n) todo[i].clear(), oc[i].clear();
-    F0R(i,q) FOR(j,1,4) ans[i][j] = 0;
-    F0R(i,q) {
-        int l,r,u,v; re(l,r,u,v); l--,r--; u--,v--;
-        // get s_u and # of occurrences
-        pi a = W.lef(l,r+1,u,v+1,1,0,sz(m)-1); a.f = rm[a.f];
-        // get s_v and # of occurrences
-        pi b = W.rig(l,r+1,u,v+1,1,0,sz(m)-1); b.f = rm[b.f];
-        FOR(j,1,min(a.s,3)+1) ans[i][j] |= a.f;
-        FOR(j,1,min(b.s,3)+1) ans[i][j] |= b.f;
-        todo[l].pb({r,a.f,b.f,i});
-    }
-    FOR(j,1,4) dat[j].init(n);
-    R0F(i,n) {
-        upd(i);
-        trav(t,todo[i]) {
-            FOR(j,1,4) {
-                auto a = dat[j].query(m[t[1]]+1,m[t[2]]-1);
-                F0R(k,30) if (a[k] <= t[0]) ans[t[3]][j] |= 1<<k;
-            }
-        }
-    }
-    F0R(i,q) {
-        ll ret = 0; FOR(j,1,4) ret += ans[i][j];
-        ps(ret);
-    }
+	re(n,q); a.rsz(n); re(a);
+	m.clear(); rm.clear();
+	trav(t,a) m[t] = 0;
+	int co = 0;
+	trav(t,m) {
+		rm.pb(t.f);
+		t.s = co++;
+	}
+	vi A; trav(t,a) A.pb(m[t]);
+	W.build(A,1,0,sz(m)-1);
+	F0R(i,n) todo[i].clear(), oc[i].clear();
+	F0R(i,q) FOR(j,1,4) ans[i][j] = 0;
+	F0R(i,q) {
+		int l,r,u,v; re(l,r,u,v); l--,r--; u--,v--;
+		// get s_u and # of occurrences
+		pi a = W.lef(l,r+1,u,v+1,1,0,sz(m)-1); a.f = rm[a.f];
+		// get s_v and # of occurrences
+		pi b = W.rig(l,r+1,u,v+1,1,0,sz(m)-1); b.f = rm[b.f];
+		FOR(j,1,min(a.s,3)+1) ans[i][j] |= a.f;
+		FOR(j,1,min(b.s,3)+1) ans[i][j] |= b.f;
+		todo[l].pb({r,a.f,b.f,i});
+	}
+	FOR(j,1,4) dat[j].init(n);
+	R0F(i,n) {
+		upd(i);
+		trav(t,todo[i]) {
+			FOR(j,1,4) {
+				auto a = dat[j].query(m[t[1]]+1,m[t[2]]-1);
+				F0R(k,30) if (a[k] <= t[0]) ans[t[3]][j] |= 1<<k;
+			}
+		}
+	}
+	F0R(i,q) {
+		ll ret = 0; FOR(j,1,4) ret += ans[i][j];
+		ps(ret);
+	}
 }
 
 int main() {
-    cin.sync_with_stdio(0); cin.tie(0);
-    F0R(i,30) ID[i] = MOD;
-    int t; re(t);
-    F0R(i,t) solve();
+	cin.sync_with_stdio(0); cin.tie(0);
+	F0R(i,30) ID[i] = MOD;
+	int t; re(t);
+	F0R(i,t) solve();
 }
 ```
 

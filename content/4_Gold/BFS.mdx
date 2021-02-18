@@ -310,38 +310,38 @@ int dist[MAX_N];
 bool visited[MAX_N];
 
 void bfs(int startNode) {
-    dist[startNode] = 0;
-    queue<int> bfsQueue;
-    bfsQueue.push(startNode);
-    visited[startNode] = true;
-    while (!bfsQueue.empty()) {
-        int currentNode = bfsQueue.front();
-        bfsQueue.pop();
-        for (auto neighbour: graph[currentNode]) {
-            if (!visited[neighbour]) {
-                visited[neighbour] = true;
-                dist[neighbour] = dist[currentNode] + 1;
-                bfsQueue.push(neighbour);
-            }
-        }
-    }
+	dist[startNode] = 0;
+	queue<int> bfsQueue;
+	bfsQueue.push(startNode);
+	visited[startNode] = true;
+	while (!bfsQueue.empty()) {
+		int currentNode = bfsQueue.front();
+		bfsQueue.pop();
+		for (auto neighbour: graph[currentNode]) {
+			if (!visited[neighbour]) {
+				visited[neighbour] = true;
+				dist[neighbour] = dist[currentNode] + 1;
+				bfsQueue.push(neighbour);
+			}
+		}
+	}
 }
 
 int main() {
-    int N, M, v, x, y;
-    cin >> N >> M >> v;
-    for (int i = 1; i <= M; i += 1) {
-        cin >> x >> y;
-        graph[x].push_back(y);
-    }
-    for (int i = 1; i <= N; i += 1) {
-        dist[i] = -1;
-    }
-    bfs(v);
-    for (int i = 1; i <= N; i += 1) {
-        cout << dist[i] << " ";
-    }
-    return 0;
+	int N, M, v, x, y;
+	cin >> N >> M >> v;
+	for (int i = 1; i <= M; i += 1) {
+		cin >> x >> y;
+		graph[x].push_back(y);
+	}
+	for (int i = 1; i <= N; i += 1) {
+		dist[i] = -1;
+	}
+	bfs(v);
+	for (int i = 1; i <= N; i += 1) {
+		cout << dist[i] << " ";
+	}
+	return 0;
 }
 ``` -->
 
@@ -462,41 +462,41 @@ int n, m, depth[4000][4000], ans = 1;
 string snow[4000];
 
 bool inside(int x, int y) {
-    return (x > -1 && x < n && y > -1 && y < m && snow[x][y] != '.');
+	return (x > -1 && x < n && y > -1 && y < m && snow[x][y] != '.');
 }
 
 int main() {
-    iostream::sync_with_stdio(false);
-    cin.tie(0);
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
 
-    cin >> n >> m;
-    for (int i = 0; i < n; i++) cin >> snow[i];
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) cin >> snow[i];
 
-    deque<pair<int, int>> q;
-    q.push_back({0, 0});
-    depth[0][0] = 1;
+	deque<pair<int, int>> q;
+	q.push_back({0, 0});
+	depth[0][0] = 1;
 
-    while (q.size()) {
-        pair<int, int> c = q.front();
-        q.pop_front();
-        ans = max(ans, depth[c.first][c.second]);
+	while (q.size()) {
+		pair<int, int> c = q.front();
+		q.pop_front();
+		ans = max(ans, depth[c.first][c.second]);
 
-        for (int i = 0; i < 4; i++) {
-            int x = c.first + dx[i], y = c.second + dy[i];
-            if (inside(x, y) && depth[x][y] == 0) {
-                if (snow[x][y] == snow[c.first][c.second]) {
-                    depth[x][y] = depth[c.first][c.second];
-                    q.push_front({x, y});
-                } else {
-                    depth[x][y] = depth[c.first][c.second] + 1;
-                    q.push_back({x, y});
-                }
-            }
-        }
-    }
+		for (int i = 0; i < 4; i++) {
+			int x = c.first + dx[i], y = c.second + dy[i];
+			if (inside(x, y) && depth[x][y] == 0) {
+				if (snow[x][y] == snow[c.first][c.second]) {
+					depth[x][y] = depth[c.first][c.second];
+					q.push_front({x, y});
+				} else {
+					depth[x][y] = depth[c.first][c.second] + 1;
+					q.push_back({x, y});
+				}
+			}
+		}
+	}
 
-    cout << ans;
-    return 0;
+	cout << ans;
+	return 0;
 }
 ```
 

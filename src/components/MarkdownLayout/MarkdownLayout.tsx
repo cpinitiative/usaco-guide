@@ -130,6 +130,7 @@ export default function MarkdownLayout({
   // console.log(userProgressOnProblems)
   const problemIDs = [];
   const activeIDs = [];
+  const problemURLs = [];
   const prob_to_module = {};
 
   for (const moduleLink of moduleLinks) {
@@ -152,6 +153,7 @@ export default function MarkdownLayout({
       for (const problem of link.probs) {
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
+          problemURLs.push(link.url + '#problem-' + problem.uniqueID);
         }
       }
     });
@@ -163,7 +165,8 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
-        activeIDs: activeIDs,
+        activeIDs,
+        problemURLs,
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,
