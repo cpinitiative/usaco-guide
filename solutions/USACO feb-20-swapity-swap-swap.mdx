@@ -1,0 +1,124 @@
+---
+id: usaco-1014
+source: USACO Silver 2020 Feburary
+title: Swapity Swap Swap
+author: Qi Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_swap_silver_feb20.html)
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class swapswap {
+	static int N, M, K;
+	static int[] f;
+	static int[] P, A;
+	static boolean[] vis;
+	static List<Integer> c = new ArrayList<>();
+	static Queue<Integer> q = new LinkedList<>();
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("swap");
+		N = io.nextInt();
+		M = io.nextInt();
+		K = io.nextInt();
+
+		vis = new boolean[N+1];
+		f = new int[N+1];
+		P = new int[N+1];
+		A = new int[N+1];
+
+		for (int i = 1; i < N + 1; i++) {
+			f[i] = i;
+		}
+
+		for (int i = 0; i < M; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+
+			for (int j = a; j <= (a + b) / 2; j++) {
+				int temp = f[j];
+				f[j] = f[b-j+a];
+				f[b-j+a] = temp;
+			}
+		}
+
+		for(int i = 1; i < N + 1; i++) {
+			P[f[i]] = i;
+		}
+
+		for (int i = 1; i < N + 1; i++) {
+			if(!vis[i]) {
+				dfs(i);
+
+				int si = q.size();
+				int ix = 0;
+				while (!q.isEmpty()) {
+					int np = (ix + K) % si;
+					A[c.get(np)] = q.poll();
+					ix++;
+				}
+				c.clear();
+			}
+		}
+
+		for (int i = 1; i < N + 1; i++) {
+			io.println(A[i]);
+		}
+
+		io.close();
+	}
+
+	public static void dfs(int n) {
+		vis[n] = true;
+		c.add(n);
+		q.add(n);
+		if(!vis[P[n]])
+			dfs(P[n]);
+	}
+
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
