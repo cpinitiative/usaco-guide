@@ -12,7 +12,7 @@ author: Jesse Choe
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -52,31 +52,31 @@ void setIO(string fileName = ""){
 }
 
 int main(){
-    setIO("shuffle");
-    ll n; cin >> n;
-    vl cnt(n), a(n);
-    FOR(i, 0, n){
-        cin >> a[i];
-        a[i]--;
-        cnt[a[i]]++;
-    }
-    ll ans = n;
-    queue<ll> q;
-    FOR(i, 0, n){
-        if(cnt[i] == 0){
-            q.push(i);
-            ans--;
-        }
-    }
-    while(!q.empty()){
-        ll cur = q.front();
-        q.pop();
-        if(--cnt[a[cur]] == 0){
-            q.push(a[cur]);
-            ans--;
-        }
-    }
-    cout << ans << endl;
+	setIO("shuffle");
+	ll n; cin >> n;
+	vl cnt(n), a(n);
+	FOR(i, 0, n){
+		cin >> a[i];
+		a[i]--;
+		cnt[a[i]]++;
+	}
+	ll ans = n;
+	queue<ll> q;
+	FOR(i, 0, n){
+		if(cnt[i] == 0){
+			q.push(i);
+			ans--;
+		}
+	}
+	while(!q.empty()){
+		ll cur = q.front();
+		q.pop();
+		if(--cnt[a[cur]] == 0){
+			q.push(a[cur]);
+			ans--;
+		}
+	}
+	cout << ans << endl;
 }
 ```
 

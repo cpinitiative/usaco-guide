@@ -2,15 +2,16 @@
 id: usaco-788
 source: USACO Silver 2018 January
 title: Mootube
-author: Óscar Garries
+author: Óscar Garries (C++), Qi Wang (Java)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_mootube_silver_jan18.html)
 
 <LanguageSection>
+
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -63,4 +64,105 @@ int main () {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class mootube {
+	static int N, Q, K, S;
+	static boolean[] vist;
+	static List<Edge> adj[];
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("mootube");
+		N = io.nextInt()+1;
+		Q = io.nextInt();
+		adj = new List[N];
+
+		for (int i = 0; i < N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < N - 2; i++) {
+			int a,b,c;
+			a = io.nextInt();
+			b = io.nextInt();
+			c = io.nextInt();
+			adj[a].add(new Edge(b, c));
+			adj[b].add(new Edge(a, c));
+		}
+
+		for (int i = 0; i < Q; i++) {
+			vist = new boolean[N];
+			S = 0;
+			K = io.nextInt();
+			int a = io.nextInt();
+
+			dfs(a);
+
+			io.println(S-1);
+		}
+
+		io.close();
+	}
+
+	public static void dfs(int x){
+		vist[x] = true;
+		S++;
+		for(Edge e : adj[x]) {
+			if(!vist[e.t] && e.w >= K) {
+				dfs(e.t);
+			}
+		}
+	}
+
+	private static class Edge {
+		int t, w;
+		public Edge(int a, int b){
+			t = a; w = b;
+		}
+	}
+
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+
+```
+
+</JavaSection>
+
 </LanguageSection>

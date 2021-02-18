@@ -272,37 +272,37 @@ const int MS = 18; // 18 is calculated by $\log_2 2e5$
 int up[MS][MX]; 
 
 int jmp(int x, int d) {
-    F0R(i, MS) if((d >> i) & 1) x = up[i][x];
-    return x ?: -1; // modfication to return -1 if not found
+	F0R(i, MS) if((d >> i) & 1) x = up[i][x];
+	return x ?: -1; // modfication to return -1 if not found
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    cin >> N >> Q;
+	cin >> N >> Q;
 
-    FOR(i, 2, N+1) {
-        int a; cin >> a;
-        up[0][i] = a;
-    }
+	FOR(i, 2, N+1) {
+		int a; cin >> a;
+		up[0][i] = a;
+	}
 
-    FOR(i, 1, MS) FOR(j, 1, N+1) up[i][j] = up[i-1][up[i-1][j]]; // construct our parent array
+	FOR(i, 1, MS) FOR(j, 1, N+1) up[i][j] = up[i-1][up[i-1][j]]; // construct our parent array
 
-    // uncomment below if you want to see the parent array
+	// uncomment below if you want to see the parent array
 
-    // F0R(i, MS) {
-    //     FOR(j, 1, N+1) {
-    //         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
-    //     }
-    //     cerr << "\n";
-    // }
+	// F0R(i, MS) {
+	//     FOR(j, 1, N+1) {
+	//         cerr << setfill(' ') << setw(2) << up[i][j] << " ";
+	//     }
+	//     cerr << "\n";
+	// }
 
-    F0R(i, Q) {
-        int a, b;
-        cin >> a >> b;
-        cout << jmp(a, b) << "\n";
-    }
+	F0R(i, Q) {
+		int a, b;
+		cin >> a >> b;
+		cout << jmp(a, b) << "\n";
+	}
 }
 ```
 

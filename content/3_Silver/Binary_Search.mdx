@@ -463,11 +463,11 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 
 ```java
 static long search(){
-    long pos = 0; long max = (long)2E9;
-    for(long a = max; a >= 1; a /= 2){
-        while(f(pos+a)) pos += a;
-    }
-    return pos;
+	long pos = 0; long max = (long)2E9;
+	for(long a = max; a >= 1; a /= 2){
+		while(f(pos+a)) pos += a;
+	}
+	return pos;
 }
 ```
 
@@ -648,35 +648,35 @@ static long k;
 static long[] arr;
 public static void main(String[] args) {
 
-    n = r.nextInt(); k = r.nextLong();
-    arr = new long[n];
-    for(int i = 0; i < n; i++){
-        arr[i] = r.nextLong();
-    }
-    Arrays.sort(arr);
+	n = r.nextInt(); k = r.nextLong();
+	arr = new long[n];
+	for(int i = 0; i < n; i++){
+		arr[i] = r.nextLong();
+	}
+	Arrays.sort(arr);
 
-    pw.println(search());
-    pw.close();
+	pw.println(search());
+	pw.close();
 }
 
 // binary searches for the correct answer
 static long search(){
-    long pos = 0; long max = (long)2E9;
-    for(long a = max; a >= 1; a /= 2){
-        while(f(pos+a)) pos += a;
-    }
-    return pos;
+	long pos = 0; long max = (long)2E9;
+	for(long a = max; a >= 1; a /= 2){
+		while(f(pos+a)) pos += a;
+	}
+	return pos;
 }
 
 // checks whether the number of given operations is sufficient
 // to raise the median of the array to x
 static boolean f(long x){
-    long operationsNeeded = 0;
-    for(int i = (n-1)/2; i < n; i++){
-        operationsNeeded += Math.max(0, x-arr[i]);
-    }
-    if(operationsNeeded <= k){ return true; }
-    else{ return false; }
+	long operationsNeeded = 0;
+	for(int i = (n-1)/2; i < n; i++){
+		operationsNeeded += Math.max(0, x-arr[i]);
+	}
+	if(operationsNeeded <= k){ return true; }
+	else{ return false; }
 }
 ```
 
@@ -728,19 +728,19 @@ Consider the code from CSAcademy's [Binary Search on Functions](https://csacadem
 
 ```cpp
 long long f(int x) {
-    return (long long)x * x;
+	return (long long)x * x;
 }
 int square_root(int x) {
-    int left = 0, right = x;
-    while (left < right) {
-        int middle = (left + right) / 2;
-        if (f(middle) <= x) {
-            left = middle;
-        } else {
-            right = middle - 1;
-        }
-    }
-    return left;
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
 }
 ```
 
@@ -818,13 +818,13 @@ int firstTrue(function<bool(int)> f, int lo, int hi) {
 
 ```java
 public static int firstTrue(int lo, int hi) {
-   for (hi ++; lo < hi; ) {
-      // returns smallest x in [lo,hi] that satisfies f
-      // hi+1 if no x satisfies f
-      int mid = lo+(hi-lo)/2;
-      if(f(mid)) hi = mid; else lo = mid+1;
-   }
-   return lo;
+	for (hi ++; lo < hi; ) {
+		// returns smallest x in [lo,hi] that satisfies f
+		// hi+1 if no x satisfies f
+		int mid = lo+(hi-lo)/2;
+		if(f(mid)) hi = mid; else lo = mid+1;
+	}
+	return lo;
 }
 ```
 
@@ -971,35 +971,35 @@ import java.io.*;
 import java.util.*;
 
 public class haybales{
-   public static void main(String[] args) throws IOException
-   {
-      BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
-      PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      int N = Integer.parseInt(st.nextToken());
-      int Q = Integer.parseInt(st.nextToken());
-      int[] arr = new int[N];
-      st = new StringTokenizer(br.readLine());
-      for(int i = 0; i < N; i++){
-         arr[i] = Integer.parseInt(st.nextToken());
-      }
-      Arrays.sort(arr);
-      for(int i = 0; i < Q; i++){
-         st = new StringTokenizer(br.readLine());
-         int low = Integer.parseInt(st.nextToken());
-         int high = Integer.parseInt(st.nextToken());
-         int bi = Arrays.binarySearch(arr, low);
-         if(bi < 0){
-            bi = Math.abs(bi+1);
-         }
-         int ti = Arrays.binarySearch(arr, high);
-         if(ti < 0){
-            ti = Math.abs(ti+2);
-         }
-         out.println(ti-bi+1);
-      }
-      out.close();
-   }
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int Q = Integer.parseInt(st.nextToken());
+		int[] arr = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for(int i = 0; i < N; i++){
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(arr);
+		for(int i = 0; i < Q; i++){
+			st = new StringTokenizer(br.readLine());
+			int low = Integer.parseInt(st.nextToken());
+			int high = Integer.parseInt(st.nextToken());
+			int bi = Arrays.binarySearch(arr, low);
+			if(bi < 0){
+				bi = Math.abs(bi+1);
+			}
+			int ti = Arrays.binarySearch(arr, high);
+			if(ti < 0){
+				ti = Math.abs(ti+2);
+			}
+			out.println(ti-bi+1);
+		}
+		out.close();
+	}
 }
 
 ```

@@ -151,15 +151,15 @@ int find_lis(vector<int> a) {
 ```java
 
 public static int find_lis(int[] a) {
-   int n = a.length, lis = 0;
-   int[] dp = new int[n]; Arrays.fill(dp, 1);
-   for (int i = 0; i < n; i++) {
-      for (int j = 0; j < i; j++) 
-         if (a[j] < a[i]) 
-            dp[i] = Math.max(dp[i], dp[j] + 1);
-      lis = Math.max(lis, dp[i]);
-   }
-   return lis;
+	int n = a.length, lis = 0;
+	int[] dp = new int[n]; Arrays.fill(dp, 1);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < i; j++) 
+			if (a[j] < a[i]) 
+				dp[i] = Math.max(dp[i], dp[j] + 1);
+		lis = Math.max(lis, dp[i]);
+	}
+	return lis;
 }
 
 ```
@@ -210,14 +210,14 @@ int find_lis(vector<int> a) {
 
 ```java
 public static int find_lis(int[] a) {
-   ArrayList<Integer> dp = new ArrayList<Integer>();
-   for (int i : a) {
-      int pos = Collections.binarySearch(dp, i);
-      if(pos < 0) pos = Math.abs(pos + 1);
-      if (pos == dp.size()) dp.add(i);
-      else dp.set(pos, i);
-   }
-   return dp.size();
+	ArrayList<Integer> dp = new ArrayList<Integer>();
+	for (int i : a) {
+		int pos = Collections.binarySearch(dp, i);
+		if(pos < 0) pos = Math.abs(pos + 1);
+		if (pos == dp.size()) dp.add(i);
+		else dp.set(pos, i);
+	}
+	return dp.size();
 }
 ```
 
@@ -287,19 +287,19 @@ pair<int, int> a[100000];
 set<int> s;
 
 int main() {
-    iostream::sync_with_stdio(false);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
-    sort(a, a + n, greater<pair<int, int>>());
-    // finding the LIS of a reversed array = finding the LDS
-    for (int i = 0; i < n; i++) {
-        if (s.upper_bound(a[i].second) == s.end()) lis++;
-        else s.erase(s.upper_bound(a[i].second));
-        s.insert(a[i].second);
-    }
-    cout << lis;
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
+	sort(a, a + n, greater<pair<int, int>>());
+	// finding the LIS of a reversed array = finding the LDS
+	for (int i = 0; i < n; i++) {
+		if (s.upper_bound(a[i].second) == s.end()) lis++;
+		else s.erase(s.upper_bound(a[i].second));
+		s.insert(a[i].second);
+	}
+	cout << lis;
 }
 ```
 
