@@ -6,7 +6,7 @@ redirects:
 title: 'Binary Search'
 author: Darren Yao, Abutalib Namazov, Andrew Wang
 prerequisites:
-  - greedy
+  - greedy-sorting
 description: 'Binary searching on arbitrary monotonic functions and built-in functions for binary search.'
 frequency: 3
 ---
@@ -126,6 +126,15 @@ export const problems = {
 			'cses-1085'
 		),
 		new Problem(
+			'CSES',
+			'Multiplication Table',
+			'2422',
+			'Normal',
+			false,
+			['Binary Search'],
+			''
+		),
+		new Problem(
 			'CF',
 			'Edu C: Magic Ship',
 			'problemset/problem/1117/C',
@@ -223,6 +232,13 @@ export const problems = {
 	</Resource>
 	<Resource source="TC" title="Binary Search" url="binary-search">
 		similar material
+	</Resource>
+	<Resource
+		source="LC"
+		title="Python Ultimate Binary Search Template"
+		url="https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems"
+	>
+		many problems & applications
 	</Resource>
 </Resources>
 
@@ -775,8 +791,10 @@ This code does not necessarily work if `lo` is negative! Consider the following 
 
 ```cpp
 int main() {
-	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n"; // -8, should be -9
-	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n"; // infinite loop
+	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n"; 
+	// -8, should be -9
+	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n"; 
+	// infinite loop
 }
 ```
 
@@ -920,7 +938,6 @@ Instead, let's place all of the locations of the haybales into a list and sort i
 We can use the the built-in [`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound) functions.
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -955,6 +972,56 @@ int main() {
 	for (int i = 0; i < Q; ++i) {
 		int A,B; cin >> A >> B;
 		cout << upper_bound(begin(v),end(v),B)-lower_bound(begin(v),end(v),A) << "\n";
+	}
+}
+```
+
+or just write our own function to binary search:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int N,Q; cin >> N >> Q;
+	vector<int> v(N);
+	for (int& t: v) cin >> t;
+	sort(begin(v),end(v));
+	auto at_most = [&](int x) { // returns # of elements <= x
+		int lo = 0, hi = sz(v);
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (v[mid] <= x) lo = mid+1;
+			else hi = mid;
+		}
+		return lo;
+	};
+	for (int i = 0; i < Q; ++i) {
+		int A,B; cin >> A >> B;
+		cout << at_most(B)-at_most(A-1) << "\n";
 	}
 }
 ```
