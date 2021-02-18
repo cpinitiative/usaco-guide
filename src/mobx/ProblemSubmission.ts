@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction } from 'mobx';
-import { Post } from './Post';
 import { Problem } from './Problem';
+import firebase from 'firebase';
 
 export class ProblemSubmission {
   id = null;
@@ -9,6 +9,7 @@ export class ProblemSubmission {
   score = null;
   code = null;
   userId = null;
+  timestamp: firebase.firestore.Timestamp = null;
 
   constructor(problem, id) {
     this.problem = problem;
@@ -19,6 +20,19 @@ export class ProblemSubmission {
     });
   }
 
+  get timestampString() {
+    return this.timestamp.toDate().toString().substr(0, 24);
+  }
+
+  get earnedPoints() {
+    return Math.round((this.score / 100.0) * this.problem.points);
+  }
+
+  get verdict() {
+    if (this.score === 100) return 'all_correct';
+    return 'wrong_answer';
+  }
+
   get asJson() {
     return {
       id: this.id,
@@ -26,17 +40,20 @@ export class ProblemSubmission {
       code: this.code,
       userId: this.userId,
       problemId: this.problem.id,
+      timestamp: this.timestamp,
     };
   }
 
   updateFromJson(json) {
-    this.score = json.score || null;
+    this.score = parseInt(json.score) || null;
     this.code = json.code || null;
     this.userId = json.userId || null;
+    this.timestamp = json.timestamp || null;
   }
 
   // saves submission to server
   submit() {
+    this.timestamp = this.problem.post.group.firebase.firestore.Timestamp.now();
     const { id, ...data } = this.asJson;
     return this.problem.post.group.firebase
       .firestore()

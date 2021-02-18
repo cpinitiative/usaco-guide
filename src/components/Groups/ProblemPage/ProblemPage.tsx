@@ -8,6 +8,7 @@ import { GroupsContext } from '../../../pages/groups';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import ProblemSubmission from './ProblemSubmissionInterface';
+import ProblemSubmissionsList from './ProblemSubmissionsList';
 
 export default observer(function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -314,10 +315,12 @@ export default observer(function ProblemPage(props) {
               </div>
               <div className="mt-6 border-t border-gray-200 py-6 space-y-8">
                 <div>
-                  <h2 className="font-medium text-gray-600">My Submissions</h2>
-                  <p className="text-sm text-gray-500 mt-2">
-                    No submissions yet!
-                  </p>
+                  <h2 className="font-medium text-gray-600 mb-2">
+                    My Submissions
+                  </h2>
+                  <ProblemSubmissionsList
+                    submissions={problem.userSubmissions}
+                  />
                 </div>
               </div>
             </aside>

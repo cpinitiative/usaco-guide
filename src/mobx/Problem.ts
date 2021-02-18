@@ -1,4 +1,10 @@
-import { makeAutoObservable, reaction } from 'mobx';
+import {
+  makeAutoObservable,
+  onBecomeObserved,
+  onBecomeUnobserved,
+  reaction,
+  runInAction,
+} from 'mobx';
 import { Post } from './Post';
 import { ProblemSubmission } from './ProblemSubmission';
 
@@ -9,6 +15,7 @@ export class Problem {
   source = null;
   points = null;
   difficulty = null;
+  userSubmissions: ProblemSubmission[] = [];
   autoSave = true;
   saveHandler = null;
   post: Post;
@@ -17,6 +24,8 @@ export class Problem {
   isEditing = false;
   _editBackupData = null;
   _beforeUnloadListener = null;
+
+  unsubscribeSubmissions;
 
   constructor(post, id) {
     makeAutoObservable(this, {
@@ -41,6 +50,9 @@ export class Problem {
         }
       }
     );
+
+    onBecomeObserved(this, 'userSubmissions', this.resumeUserSubmissions);
+    onBecomeUnobserved(this, 'userSubmissions', this.suspendUserSubmissions);
   }
 
   // Remove this Problem from the client and the server.
@@ -121,6 +133,52 @@ export class Problem {
     const submission = new ProblemSubmission(this, ref.id);
     submission.userId = this.post.group.groupsStore.rootStore.firebaseUser.uid;
     return submission;
+  }
+
+  resumeUserSubmissions = () => {
+    this.unsubscribeSubmissions = this.post.group.firebase
+      .firestore()
+      .collection('groups')
+      .doc(this.post.group.groupId)
+      .collection('submissions')
+      .where(
+        'userId',
+        '==',
+        this.post.group.groupsStore.rootStore.firebaseUser.uid
+      )
+      .onSnapshot(snap => {
+        runInAction(() => {
+          this.userSubmissions
+            .filter(submission => !snap.docs.includes(submission.id))
+            .forEach(submission => this.removeSubmission(submission));
+          snap.docs.forEach(doc => {
+            this.updateSubmissionFromFirebaseDoc(doc);
+          });
+          this.userSubmissions.sort(
+            (a, b) => b.timestamp.toMillis() - a.timestamp.toMillis()
+          );
+        });
+      });
+  };
+
+  suspendUserSubmissions = () => {
+    this.unsubscribeSubmissions();
+  };
+
+  updateSubmissionFromFirebaseDoc(doc) {
+    let submission = this.userSubmissions.find(
+      submission => submission.id === doc.id
+    );
+    if (!submission) {
+      submission = new ProblemSubmission(this, doc.id);
+      this.userSubmissions.push(submission);
+    }
+    submission.updateFromJson(doc.data());
+  }
+
+  removeSubmission(submission: ProblemSubmission) {
+    if (this.userSubmissions.indexOf(submission) !== -1)
+      this.userSubmissions.splice(this.userSubmissions.indexOf(submission), 1);
   }
 
   dispose() {
