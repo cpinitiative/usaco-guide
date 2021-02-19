@@ -358,9 +358,11 @@ See [here](/gold/paths-grids#solution---longest-common-subsequence).
 
 In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if $a[i] = b[j]$, but since both arrays are permutations of length $N$, for each $a[i]$, there must be only one matching element in $b$.  
 
-Thus we can reorder the elements in $b$ such that $b[i]$ becomes $\texttt{pos}[b[i]]$ where $\texttt{pos}[i]$ represents the index of $i$ in $a$. After reordering $b$, our answer would be the LIS of $b$. 
+Let us create an array $c$ where $c[i]$ is $a^{-1}[b[i]]$. Our final LIS $c[x_1], c[x_2], \dots c[x_k]$ corresponds to the LCS $b[x_1], b[x_2], \dots b[x_k]$, which is equivalent to $a[c[x_1]], a[c[x_2]], \dots a[c[x_k]]$.
 
-Reordering $b$ takes $\mathcal O(N)$ and finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in this algorithm is $\mathcal O(N\log N)$.
+In other words, every increasing subsequence $x_{1 \dots k}$ in $c$ corresponds to a common subsequence between $a$ and $b$.
+
+Finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in this algorithm is $\mathcal O(N\log N)$.
 
 <LanguageSection>
 
