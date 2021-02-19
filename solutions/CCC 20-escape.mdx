@@ -25,28 +25,28 @@ bool done[1000005];
 
 void dfs(int x) {
 	if (done[x]) {
-        return;
-    }
+		return;
+	}
 	if (x == N * M) {
 		cout << "yes" << endl;
 		exit(0);
 	}
 	done[x] = 1;
-    for (int& t : todo[x]) {
-        dfs(t);
-    }
+	for (int& t : todo[x]) {
+		dfs(t);
+	}
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin >> M >> N;
-    for (int i = 1; i < M + 1; i++) {
-        for (int j = 1; j < N + 1; j++) {
-            int x;
-            cin >> x;
-            todo[i * j].push_back(x);
-        }
-    }
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> M >> N;
+	for (int i = 1; i < M + 1; i++) {
+		for (int j = 1; j < N + 1; j++) {
+			int x;
+			cin >> x;
+			todo[i * j].push_back(x);
+		}
+	}
 	dfs(1);
 	cout << "no" << endl;
 }
