@@ -7,15 +7,17 @@ author: Neo Wang (C++)
 
 [Official Analysis](http://www.usaco.org/current/data/sol_hps_gold_jan17.html)
 
-<LanguageSection>
-
 ## Solution
 
 The main observation for this problem is to realize that we only need to keep track of the number of games played $i$, the number of times switched so far $j$, and the current gesture $k$ in order to determine the most amount of previous games won for any game $i$.
 
-For every move, either Bessie can switch to either `H, P, S` or stay on her current gesture. If she changes her gesture, then the next game $i+1$ will have used $j+1$ gestures, which corresponds to the `dp` state `dp[i+1][j+1][k]`. We can simulate this for all 3 gestures. Then, all we have to do is keep track of whether or not Bessie won at game $i$ with a gesture of $k$. Note that you can just compare the current gesture to `H,P,S` because there is always exactly one way to win. 
+For every move, either Bessie can switch to either `H, P, S` or stay on her current gesture. If she changes her gesture, then the next game $i+1$ will have used $j+1$ gestures, which corresponds to the `dp` state `dp[i+1][j+1][k]`. We can simulate this for all 3 gestures. Then, all we have to do is keep track of whether or not Bessie won at game $i$ with a gesture of $k$. 
+
+Note that you can just compare the current gesture to `H,P,S` because there is always exactly one way to win. 
 
 **Time Complexity:** $\mathcal{O}(NK)$
+
+<LanguageSection>
 
 <CPPSection>
 
