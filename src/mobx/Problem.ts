@@ -141,6 +141,7 @@ export class Problem {
       .collection('groups')
       .doc(this.post.group.groupId)
       .collection('submissions')
+      .where('problemId', '==', this.id)
       .where(
         'userId',
         '==',

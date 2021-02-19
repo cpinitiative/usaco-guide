@@ -24,7 +24,9 @@ export default observer(function ProblemSubmissionInterface({
 }: {
   problem: Problem;
 }) {
-  const [submission] = useState(() => problem.createTemporarySubmission());
+  const [submission, setSubmission] = useState(() =>
+    problem.createTemporarySubmission()
+  );
 
   return (
     <section>
@@ -74,7 +76,10 @@ export default observer(function ProblemSubmissionInterface({
       </div>
       <button
         type="button"
-        onClick={() => submission.submit()}
+        onClick={() => {
+          submission.submit();
+          setSubmission(problem.createTemporarySubmission());
+        }}
         className="mt-4 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
       >
         Submit Code

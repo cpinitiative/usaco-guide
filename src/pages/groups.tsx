@@ -19,6 +19,7 @@ import { runInAction } from 'mobx';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
 import RootStore from '../mobx/RootStore';
+import ProblemSubmissionPopup from '../components/Groups/ProblemSubmissionPopup';
 
 export const GroupsContext = createContext<RootStore>(null);
 
@@ -78,6 +79,7 @@ export default function GroupsRouter() {
         <GroupSelectPage path="/" />
         <NotFoundPageWrapper default />
       </Router>
+      <ProblemSubmissionPopup />
     </GroupsContext.Provider>
   );
 }

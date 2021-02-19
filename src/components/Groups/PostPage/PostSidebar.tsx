@@ -40,7 +40,7 @@ export default observer(function PostSidebar({ post }: { post: Post }) {
             />
           </svg>
           <span className="text-gray-900 text-sm font-medium">
-            Due on March 3rd, 2021
+            Due on {post.dueDateString}
           </span>
         </div>
       </div>

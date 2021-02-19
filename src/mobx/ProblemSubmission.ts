@@ -29,8 +29,8 @@ export class ProblemSubmission {
   }
 
   get verdict() {
-    if (this.score === 100) return 'all_correct';
-    return 'wrong_answer';
+    if (this.score === 100) return 'AC';
+    return 'WA';
   }
 
   get asJson() {

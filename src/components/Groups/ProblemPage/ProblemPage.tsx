@@ -309,7 +309,7 @@ export default observer(function ProblemPage(props) {
                     />
                   </svg>
                   <span className="text-gray-900 text-sm font-medium">
-                    Due on March 3rd, 2021
+                    Due on {problem.post.dueDateString}
                   </span>
                 </div>
               </div>
