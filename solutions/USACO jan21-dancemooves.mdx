@@ -11,7 +11,7 @@ author: Neo Wang
 
 Just like the official analysis, the key observation to make here is that all cows will share the same answer if they have been in the same position. In other words, any cow `i` will share the same positions with `P[i]`, the position of the cow after `K` swaps. Since we are only keeping track of the unique items, it suffices to use a `set` or in this case an `unordered_set` to keep track of the distinct position a cow covers. After linking all our components together, it suffices to insert them all into a singular set - the set takes care of counting distinct numbers. The trick here is that we perform `insert()` on `components[dsu.get(i)]` in order to count this cumulative distinctness in a single position.
 
-**Time Complexity:** $\mathcal{O}(N)$.
+**Time Complexity:** $\mathcal{O}(N+K)$
 
 <LanguageSection>
 
@@ -91,7 +91,8 @@ int main() {
 	dsu.init(N+1);
 
 	for(int i = 1; i <= N; i++) dsu.unite(i, P[i]);
-	for(int i = 1; i <= N; i++) for(int a : trav[i]) components[dsu.get(i)].insert(a);
+	for(int i = 1; i <= N; i++) 
+		for(int a: trav[i]) components[dsu.get(i)].insert(a);
 
 	for(int i = 1; i <= N; i++) cout << components[dsu.get(i)].size() << "\n";
 }
