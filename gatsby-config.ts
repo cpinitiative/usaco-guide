@@ -143,7 +143,7 @@ export const plugins = [
       appId: process.env.ALGOLIA_APP_ID,
       apiKey: process.env.ALGOLIA_API_KEY,
       queries: require('./src/utils/algolia-queries'),
-      enablePartialUpdates: false,
+      enablePartialUpdates: true,
       skipIndexing: !!!process.env.ALGOLIA_APP_ID,
     },
   },
