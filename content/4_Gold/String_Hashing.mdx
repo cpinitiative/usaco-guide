@@ -259,7 +259,7 @@ int main() {
 
 </LanguageSection>
 
-An alternative solution without a sliding window would be to hash the substrings that we're trying to match. Since order doesn't matter, we need to modify our hash function slightly.
+An alternative solution without frequency tables would be to hash the substrings that we're trying to match. Since order doesn't matter, we need to modify our hash function slightly.
 
 In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two base-modulo pairs).
 
@@ -297,22 +297,25 @@ int main() {
 	ll n_hsh1 = 1, h_hsh1 = 1, n_hsh2 = 1, h_hsh2 = 1;
 	ll poly1 = 0, poly2 = 0, p_pow1 = 1, p_pow2 = 1;
 	for (int i = 0; i < n.size(); i++) {
+		// Compute product hashes
 		n_hsh1 = n_hsh1 * (P1 + n[i] - 'a') % M1;
 		n_hsh2 = n_hsh2 * (P2 + n[i] - 'a') % M2;
 		h_hsh1 = h_hsh1 * (P1 + h[i] - 'a') % M1;
 		h_hsh2 = h_hsh2 * (P2 + h[i] - 'a') % M2;
-
+		// Compute polynomial hashes
 		poly1 = (poly1 * P1 + (h[i] - 'a')) % M1;
 		poly2 = (poly2 * P2 + (h[i] - 'a')) % M2;
+		// p_pow1 and p_pow2 will be used to **update** the polynomial hashes
 		p_pow1 = p_pow1 * P1 % M1;
 		p_pow2 = p_pow2 * P2 % M2;
 	}
 	if (n_hsh1 == h_hsh1 && n_hsh2 == h_hsh2) good.insert({poly1, poly2});
 
 	for (int i = n.size(); i < h.size(); i++) {
+		// Update product hashes using modular inverse
 		h_hsh1 = h_hsh1 * inv(P1 + h[i - n.size()] - 'a', M1) % M1 * (P1 + h[i] - 'a') % M1;
 		h_hsh2 = h_hsh2 * inv(P2 + h[i - n.size()] - 'a', M2) % M2 * (P2 + h[i] - 'a') % M2;
-
+		// Update polynomial hashes
 		poly1 = (poly1 * P1 - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
 		poly2 = (poly2 * P2 - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
 		
