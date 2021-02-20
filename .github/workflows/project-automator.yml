@@ -1,0 +1,22 @@
+# This workflow will triage pull requests and apply a label based on the
+# paths that are modified in the pull request.
+#
+# To use this workflow, you will need to set up a .github/labeler.yml
+# file with configuration.  For more information, see:
+# https://github.com/actions/labeler
+
+name: Project Automator
+on: [pull_request]
+
+jobs:
+  label:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: srggrs/assign-one-project-github-action@1.2.0
+      with:
+        # The url of the project to be assigned to.
+        project: https://github.com/cpinitiative/usaco-guide/projects/9
+        # The column name of the project, defaults to "To do" for issues and "In progress" for pull requests.
+        column_name: "Pending Review"
