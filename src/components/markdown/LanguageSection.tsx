@@ -84,7 +84,6 @@ export const LanguageSection = props => {
         {notAvailable}
         {fallbackLang && (
           <>
-            <br />
             {sections[fallbackLang]}
           </>
         )}
