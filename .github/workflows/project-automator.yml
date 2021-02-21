@@ -5,20 +5,21 @@
 # file with configuration.  For more information, see:
 # https://github.com/actions/labeler
 
-name: Project Automator
-on: [pull_request]
+name: Label
+on:
+  pull_request:
+    types: [opened]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  label:
-
+  assign_one_project:
     runs-on: ubuntu-latest
-
+    name: Assign to Project
     steps:
-      - name: "Assign to project"
-        uses: peter-evans/create-or-update-project-card@v1
-        with:
-          project-name: Pull Requests
-          column-name: Pending Review
-          token: ${{secrets.GITHUB_TOKEN}}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: new pr to project
+      uses: srggrs/assign-one-project-github-action@1.2.0
+      if: github.event.action == 'opened'
+      with:
+        project: Pull Requests
+        column_name: Pending Review
