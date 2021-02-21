@@ -9,7 +9,7 @@ author: Neo Wang
 
 ## Solution (DSU)
 
-Just like the official analysis, the key observation to make here is that all cows will share the same answer if they have been in the same position. In other words, any cow `i` will share the same positions with `P[i]`, the position of the cow after `K` swaps. Since we are only keeping track of the unique items, it suffices to use a `set` or in this case an `unordered_set` to keep track of the distinct position a cow covers. After linking all our components together, it suffices to insert them all into a singular set - the set takes care of counting distinct numbers. The trick here is that we perform `insert()` on `components[dsu.get(i)]` in order to count this cumulative distinctness in a single position.
+Just like the official analysis, the key observation to make here is that all cows will share the same answer if they have been in the same position. In other words, any cow `i` will share the same positions with `P[i]`, the position of the cow after `K` swaps. Since we are only keeping track of the unique items, it suffices to use a [`set`](https://en.cppreference.com/w/cpp/container/set) or in this case an [`unordered_set`](https://en.cppreference.com/w/cpp/container/unordered_set) to keep track of the distinct position a cow covers. After linking all our components together, it suffices to insert them all into a singular set - the set takes care of counting distinct numbers. The trick here is that we perform [`insert()`](https://en.cppreference.com/w/cpp/container/unordered_set/insert) on `components[dsu.get(i)]` in order to count this cumulative distinctness in a single position.
 
 **Time Complexity:** $\mathcal{O}(N\alpha +K)$
 
