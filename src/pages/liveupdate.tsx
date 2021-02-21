@@ -40,9 +40,9 @@ const StyledSplit = styled(Split)`
 
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
 function getQueryVariable(query, variable) {
-  let vars = query.split('&');
+  const vars = query.split('&');
   for (let i = 0; i < vars.length; i++) {
-    let pair = vars[i].split('=');
+    const pair = vars[i].split('=');
     if (decodeURIComponent(pair[0]) == variable) {
       return decodeURIComponent(pair[1]);
     }
@@ -158,13 +158,14 @@ export default function LiveUpdatePage(props: PageProps) {
                 if (editor.current !== undefined) editor.current.layout();
               }}
             >
+              {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="h-full" style={{ minWidth: '300px' }}>
                 <Editor
                   theme="vs-dark"
                   language="markdown"
                   value={markdown}
                   onChange={(v, e) => setMarkdown(v)}
-                  options={{ wordWrap: 'on' }}
+                  options={{ wordWrap: 'on', rulers: [80] }}
                   onMount={e => {
                     editor.current = e;
                     setTimeout(() => {
