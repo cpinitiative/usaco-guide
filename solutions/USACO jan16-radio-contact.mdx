@@ -58,12 +58,12 @@ int N, M;
 const int INF = 1e9+7;
 const int MX = 1e3+1;
 
-int dd(int a, int b) {
-	return abs(a-b)*abs(a-b);
+int sq(int a) {
+	return a * a;
 }
 
 int dist(pi a, pi b) { // distance squared between two points
-	return dd(a.f, b.f) + dd(a.s, b.s);
+	return sq(a.f - b.f) + sq(a.s - b.s);
 }
 
 map<char, int> md{{'N', 0}, {'E', 1}, {'S', 2}, {'W', 3}};
@@ -81,11 +81,12 @@ int main() {
 
 	cin >> N >> M;
 	
-	for(int i = 0; i < MX; i++) for(int j = 0; j < MX; j++) dp[i][j] = INF;
+	fill_n(dp[0], MX*MX, INF);
 
-	int a, b; cin >> a >> b;
 	vector<pi> jl(N+1); // john location
 	vector<pi> bl(M+1); // bessie location
+
+	int a, b; cin >> a >> b;
 
 	jl[0] = {a, b}; // initial john location
 	cin >> a >> b;
