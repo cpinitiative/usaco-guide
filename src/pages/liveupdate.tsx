@@ -168,6 +168,7 @@ export default function LiveUpdatePage(props: PageProps) {
                   options={{ wordWrap: 'on', rulers: [80] }}
                   onMount={e => {
                     editor.current = e;
+                    e.getModel().updateOptions({ insertSpaces: false });
                     setTimeout(() => {
                       e.layout();
                       e.focus();
