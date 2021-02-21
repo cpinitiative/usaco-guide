@@ -100,8 +100,6 @@ export const problems = {
 	''
 ), -->
 
-<FocusProblem problem={problems.ex[0]} />
-
 ## Tutorial
 
 <Resources>
@@ -184,9 +182,13 @@ public static long get_hash(int a, int b) { // Endpoints of the substring
 
 It's generally a good idea to use two randomized bases rather than just one to decrease the probability that two random strings hash to the same value.
 
+<FocusProblem problem={problems.ex[0]} />
+
 ## Solution - Searching For Strings
 
-**Time Complexity:** $\mathcal O(|N| + |H|)$.
+### One Hash
+
+**Time Complexity:** $\mathcal O((|N| + |H|) \cdot \Sigma)$, where $\Sigma$ is the size of the alphabet.
 
 We'll use a [sliding window](/gold/sliding) over $H$ to find the "matches" with $N$.
 
@@ -259,10 +261,16 @@ int main() {
 
 </LanguageSection>
 
+### Two Hashes
+
+**Time Complexity:** $\mathcal O((|N| + |H|) \log M)$
+
 An alternative solution without frequency tables would be to hash the substrings that we're trying to match. Since order doesn't matter, we need to modify our hash function slightly.
 
 In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two modulos).
 This hash is nice because the relative order of the letters doesn't matter, as multiplication is commutative.
+
+Since this hash requires the modular inverse, there's an extra $\log M$ factor in the time complexity.
 
 Alternative hashes (e.g. computing the sum $(P + s_1)^2 + (P + s_2)^2 + \dots + (P + s_k)^2 \bmod M$) also work for other hashing problems, but the test cases are too strong for that to pass here.
 
@@ -331,6 +339,15 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
+
+<Optional title="Probability of Collisions + Hashing a Tree">
+
+If "small" isn't a satisfying-enough answer for "what's the probability of collision?", then
+you should check out [rng-58's blog post talking about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html).
+
+This post also explains how to hash rooted trees - an uncommon technique, but still useful to know!
+
+</Optional>
 
 <!-- ## Adjacency Lists
 
