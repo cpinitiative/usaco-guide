@@ -4,17 +4,20 @@ import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
 export const LanguageSection = props => {
-  const { lang } = useContext(UserDataContext);
+  const { lang: userLang } = useContext(UserDataContext);
 
-  let sections = {};
+  const sections = {};
   React.Children.map(props.children, child => {
-    let type = child.props.mdxType;
-    if (type === 'CPPSection') sections['cpp'] = child;
-    if (type === 'JavaSection') sections['java'] = child;
-    if (type === 'PySection') sections['py'] = child;
+    const type = child.props.mdxType;
+    const typeToLang = {
+      CPPSection: 'cpp',
+      JavaSection: 'java',
+      PySection: 'py',
+    };
+    sections[typeToLang[type]] = child;
   });
 
-  if (lang === 'showAll') {
+  if (userLang === 'showAll') {
     return (
       <>
         {Object.keys(sections).map(lang => (
@@ -27,9 +30,16 @@ export const LanguageSection = props => {
     );
   }
 
-  if (!sections.hasOwnProperty(lang)) {
-    return (
-      <div className="p-4 bg-red-50 rounded-md dark:bg-red-900">
+  if (!sections.hasOwnProperty(userLang)) {
+    const langs = ['cpp', 'java', 'py'];
+    let fallbackLang = '';
+    for (const lang of langs)
+      if (sections.hasOwnProperty(lang)) {
+        fallbackLang = lang;
+        break;
+      }
+    const notAvailable = (
+      <div className="p-4 bg-red-50 rounded-md dark:bg-red-900 mb-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg
@@ -47,26 +57,36 @@ export const LanguageSection = props => {
           <div className="ml-3">
             <h3 className="text-sm leading-5 font-medium text-red-800 dark:text-red-200">
               This section isn't yet available in your chosen language:{' '}
-              {LANGUAGE_LABELS[lang]}.
+              {LANGUAGE_LABELS[userLang]}.
+              {fallbackLang && (
+                <> Defaulting to {LANGUAGE_LABELS[fallbackLang]}.</>
+              )}
             </h3>
             <div className="mt-2 text-sm leading-5 text-red-700 dark:text-red-300">
-              Please choose a different default language for now. Submitting a
-              Pull Request on{' '}
+              {/* Please choose a different default language for now.  */}
+              Submitting a Pull Request on{' '}
               <a
                 href="https://github.com/cpinitiative/usaco-guide"
                 target="_blank"
+                rel="noreferrer"
               >
                 Github
               </a>{' '}
-              to help add support for {LANGUAGE_LABELS[lang]} would be
+              to help add support for {LANGUAGE_LABELS[userLang]} would be
               appreciated!
             </div>
           </div>
         </div>
       </div>
     );
+    return (
+      <>
+        {notAvailable}
+        {fallbackLang && sections[fallbackLang]}
+      </>
+    );
   }
-  return sections[lang];
+  return sections[userLang];
 };
 
 export const CPPSection = props => {
