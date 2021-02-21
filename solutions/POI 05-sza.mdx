@@ -69,29 +69,29 @@ string s;
 int p[500000];
 
 int shortest_template(int n) {
-    if (!p[n - 1]) return n;
-    if (p[n - 1] * 2 >= n) return shortest_template(p[n - 1]);
-    int cand = shortest_template(p[n - 1]);
-    for (int i = 0, j = 0, curr = -1; i < n; i++) {
-        while (j && (j == cand || s[i] != s[j])) j = p[j - 1];
-        if (s[i] == s[j]) j++;
-        if (j == cand) curr = i;
-        if (i - curr >= cand) return n;
-    }
-    return cand;
+	if (!p[n - 1]) return n;
+	if (p[n - 1] * 2 >= n) return shortest_template(p[n - 1]);
+	int cand = shortest_template(p[n - 1]);
+	for (int i = 0, j = 0, curr = -1; i < n; i++) {
+		while (j && (j == cand || s[i] != s[j])) j = p[j - 1];
+		if (s[i] == s[j]) j++;
+		if (j == cand) curr = i;
+		if (i - curr >= cand) return n;
+	}
+	return cand;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin >> s;
-    int n = s.size();
-    for (int i = 1; i < n; i++) {
-        p[i] = p[i - 1];
-        while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
-        if (s[i] == s[p[i]]) p[i]++;
-    }
-    cout << shortest_template(n);
-    return 0;
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> s;
+	int n = s.size();
+	for (int i = 1; i < n; i++) {
+		p[i] = p[i - 1];
+		while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
+		if (s[i] == s[p[i]]) p[i]++;
+	}
+	cout << shortest_template(n);
+	return 0;
 }
 ```
 
@@ -132,42 +132,42 @@ int num_child[MX];
 int n;
 
 void dfs(int node) {
-    assert(node <= n);
-    visited[node] = true;
-    if (node && !visited[p[node - 1]]) {
-        dfs(p[node - 1]);
-        if (mx_gap <= node) ans = min(ans, node);
-    }
-    mx_gap = max(mx_gap, nxt[node] - prv[node]);
-    nxt[prv[node]] = nxt[node];
-    prv[nxt[node]] = prv[node];
-    for (int ind = num_child[node]; ind < num_child[node+1]; ++ind) {
-        int i = graph[ind];
-        if (!visited[i]) dfs(i);
-    }
+	assert(node <= n);
+	visited[node] = true;
+	if (node && !visited[p[node - 1]]) {
+		dfs(p[node - 1]);
+		if (mx_gap <= node) ans = min(ans, node);
+	}
+	mx_gap = max(mx_gap, nxt[node] - prv[node]);
+	nxt[prv[node]] = nxt[node];
+	prv[nxt[node]] = prv[node];
+	for (int ind = num_child[node]; ind < num_child[node+1]; ++ind) {
+		int i = graph[ind];
+		if (!visited[i]) dfs(i);
+	}
 }
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin >> s;
-    n = s.size();
-    ++ num_child[0];
-    for (int i = 1; i < n; i++) {
-        p[i] = p[i - 1];
-        while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
-        if (s[i] == s[p[i]]) p[i]++;
-        ++num_child[p[i]];
-    }
-    for (int i = 1; i <= n+1; ++i) num_child[i] += num_child[i-1];
-    graph[--num_child[0]] = 1;
-    for (int i = 1; i < n; i++)
-        graph[--num_child[p[i]]] = i+1;
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> s;
+	n = s.size();
+	++ num_child[0];
+	for (int i = 1; i < n; i++) {
+		p[i] = p[i - 1];
+		while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
+		if (s[i] == s[p[i]]) p[i]++;
+		++num_child[p[i]];
+	}
+	for (int i = 1; i <= n+1; ++i) num_child[i] += num_child[i-1];
+	graph[--num_child[0]] = 1;
+	for (int i = 1; i < n; i++)
+		graph[--num_child[p[i]]] = i+1;
 
-    prv[0] = 0, nxt[0] = 1, prv[n] = n - 1, nxt[n] = n;
-    for (int i = 1; i < n; i++) prv[i] = i - 1, nxt[i] = i + 1;
-    ans = n;
-    dfs(n);
-    cout << ans;
-    return 0;
+	prv[0] = 0, nxt[0] = 1, prv[n] = n - 1, nxt[n] = n;
+	for (int i = 1; i < n; i++) prv[i] = i - 1, nxt[i] = i + 1;
+	ans = n;
+	dfs(n);
+	cout << ans;
+	return 0;
 }
 ```
 
@@ -200,29 +200,29 @@ string s;
 int p[500000];
 
 int shortest_template(int n) {
-    if (!p[n - 1]) return n;
-    int cand = shortest_template(p[n - 1]);
-    for (int i = p[n - 1], j = cand, curr = p[n - 1] - 1; i < n; i++) {
-        while (j && (j == cand || s[i] != s[j])) j = p[j - 1];
-        if (s[i] == s[j]) j++;
+	if (!p[n - 1]) return n;
+	int cand = shortest_template(p[n - 1]);
+	for (int i = p[n - 1], j = cand, curr = p[n - 1] - 1; i < n; i++) {
+		while (j && (j == cand || s[i] != s[j])) j = p[j - 1];
+		if (s[i] == s[j]) j++;
 
-        if (j == cand) curr = i;
-        if (i - curr >= cand) return n;
-    }
-    return cand;
+		if (j == cand) curr = i;
+		if (i - curr >= cand) return n;
+	}
+	return cand;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin >> s;
-    int n = s.size();
-    for (int i = 1; i < n; i++) {
-        p[i] = p[i - 1];
-        while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
-        if (s[i] == s[p[i]]) p[i]++;
-    }
-    cout << shortest_template(n);
-    return 0;
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> s;
+	int n = s.size();
+	for (int i = 1; i < n; i++) {
+		p[i] = p[i - 1];
+		while (p[i] && s[i] != s[p[i]]) p[i] = p[p[i] - 1];
+		if (s[i] == s[p[i]]) p[i]++;
+	}
+	cout << shortest_template(n);
+	return 0;
 }
 ```
 

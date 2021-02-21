@@ -35,7 +35,7 @@ To find this number, we can do knapsack DP again, but this time using both `a[i]
 
 This knapsack DP runs in $\mathcal{O}(BN^3 / 64)$ as well, which is fast enough for 100 points.
 
-## Code
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -45,35 +45,35 @@ using namespace std;
 int a[100];
 
 int main() {
-    iostream::sync_with_stdio(false);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) cin >> a[i];
-    sort(a, a + n, greater<int>());
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i];
+	sort(a, a + n, greater<int>());
 
-    pair<int, int> best = {0, -1};
-    for (int i = 0; i < n; i++) {
-        bitset<700000> dp;
-        dp[0] = 1;
-        for (int j = 0; j < n; j++) {
-            if (j == i) continue;
-            dp |= dp << a[j];
-        }
-        best = max(best, {dp.count(), i});
-    }
+	pair<int, int> best = {0, -1};
+	for (int i = 0; i < n; i++) {
+		bitset<700000> dp;
+		dp[0] = 1;
+		for (int j = 0; j < n; j++) {
+			if (j == i) continue;
+			dp |= dp << a[j];
+		}
+		best = max(best, {dp.count(), i});
+	}
 
-    bitset<1400000> dp;
-    dp[700000] = 1;
-    for (int i = 0; i < n; i++) {
-        if (i == best.second) continue;
-        dp |= (dp << a[i]) | (dp >> a[i]);
-    }
+	bitset<1400000> dp;
+	dp[700000] = 1;
+	for (int i = 0; i < n; i++) {
+		if (i == best.second) continue;
+		dp |= (dp << a[i]) | (dp >> a[i]);
+	}
 
-    cout << a[best.second] << ' ';
-    for (int i = 1; i < 70000; i++)
-        if (!dp[700000 + i])
-            return cout << i, 0;
-    return 0;
+	cout << a[best.second] << ' ';
+	for (int i = 1; i < 70000; i++)
+		if (!dp[700000 + i])
+			return cout << i, 0;
+	return 0;
 }
 ```

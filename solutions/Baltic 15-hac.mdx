@@ -15,20 +15,21 @@ After playing around with the game, we can make some important observations.
 
 <Info title = "Observation">
 
-At the end of the game, the first player will control a subarray (a contiguous subsequence) of the circular array of length exactly $\left \lceil{\frac{n}{2}}\right \rceil$, and the second player will control the remaining elements. 
+At the end of the game, the first player will control a subarray (a contiguous subsequence) of the circular array of length exactly $\left \lceil{\frac{n}{2}}\right \rceil$, and the second player will control the remaining elements.
 
 </Info>
 
- Since each player can only choose an element not adjacent to any other element once (the first move), the elements each player claims must form a subarray. Also, notice that any move made by either player will increase the length of the subarray they control by one, and both players will always have a valid move. Therefore, because the first player moves first, the subarray they control will be of length $\left \lceil{\frac{n}{2}}\right \rceil$.
+Since each player can only choose an element not adjacent to any other element once (the first move), the elements each player claims must form a subarray. Also, notice that any move made by either player will increase the length of the subarray they control by one, and both players will always have a valid move. Therefore, because the first player moves first, the subarray they control will be of length $\left \lceil{\frac{n}{2}}\right \rceil$.
 
 ### Observation 2
+
 <Info title = "Observation">
 
 For some first move made by the first player claiming index $x$, the second player can always force the first player to control any subarray of length $\left \lceil{\frac{n}{2}}\right \rceil$ containing $x$.
 
 </Info>
 
-Consider the following strategy: for some move by the first player extending to the left or right, make the opposite move. 
+Consider the following strategy: for some move by the first player extending to the left or right, make the opposite move.
 
 Using this strategy, the second player can force the first player to control any subarray of length $\left \lceil{\frac{n}{2}}\right \rceil$ containing the first players first move depending on the second players first move.
 
@@ -46,7 +47,7 @@ where $S_x$ represents a set of sums for all subarrays of length $\left \lceil{\
 
 ### Transforming the Circular Array
 
-First, to deal with the circular aspect of the array, let's concatenate it onto itself to create an array of length $2n$ and call it $\texttt{a}$. Now, we only need to compute subarrays on a linear array, where $S_x = S'_x \cup S'_{x + n} (1 \leq x \leq n)$ where $S'_x$ represents the set of subarrays containing $x$ in $\texttt{a}$. 
+First, to deal with the circular aspect of the array, let's concatenate it onto itself to create an array of length $2n$ and call it $\texttt{a}$. Now, we only need to compute subarrays on a linear array, where $S_x = S'_x \cup S'_{x + n} (1 \leq x \leq n)$ where $S'_x$ represents the set of subarrays containing $x$ in $\texttt{a}$.
 
 ### Using An Ordered Set
 
@@ -58,54 +59,55 @@ Make sure to use a `std::multiset` because there can be duplicate sums.
 
 </Warning>
 
-## Code
+## Implementation
+
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
- 
+
 using vi = vector<int>;
 #define pb push_back
 #define rsz resize
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
- 
+
 using pi = pair<int,int>;
 #define f first
 #define s second
 #define mp make_pair
- 
+
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    int n; cin >> n;
-    vi a(2 * n + 1);
-    a[0] = 0;
-    multiset<int> vals;
-    int SZ = (n + 1) / 2;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        a[n + i] = a[i];
-    }
-    for (int i = 1; i <= 2 * n; i++) {
-        a[i] += a[i - 1];
-    }
-    int ans = 0;
-    vi ret(n + 1, INT_MAX);
-    for (int i = 1; i <= 2 * n; i++) {
-        if (i + SZ - 1 <= 2 * n) {
-            vals.insert(a[i + SZ - 1] - a[i - 1]);
-        }
-        if (i > SZ) {
-            vals.erase(vals.find(a[i - 1] - a[i - 1 - SZ]));
-        }
-        int prev = ((i - 1) % n) + 1;
-        ret[prev] = min(ret[prev], *vals.begin());
-    }
-    for (int i = 1; i <= n; i++) {
-        ans = max(ans, ret[i]);    
-    }
-    cout << ans << '\n';
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	int n; cin >> n;
+	vi a(2 * n + 1);
+	a[0] = 0;
+	multiset<int> vals;
+	int SZ = (n + 1) / 2;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		a[n + i] = a[i];
+	}
+	for (int i = 1; i <= 2 * n; i++) {
+		a[i] += a[i - 1];
+	}
+	int ans = 0;
+	vi ret(n + 1, INT_MAX);
+	for (int i = 1; i <= 2 * n; i++) {
+		if (i + SZ - 1 <= 2 * n) {
+			vals.insert(a[i + SZ - 1] - a[i - 1]);
+		}
+		if (i > SZ) {
+			vals.erase(vals.find(a[i - 1] - a[i - 1 - SZ]));
+		}
+		int prev = ((i - 1) % n) + 1;
+		ret[prev] = min(ret[prev], *vals.begin());
+	}
+	for (int i = 1; i <= n; i++) {
+		ans = max(ans, ret[i]);
+	}
+	cout << ans << '\n';
 }
 ```

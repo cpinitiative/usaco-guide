@@ -22,7 +22,7 @@ This means we can simply set $V$ to 101 and $E$ to 0 to force TLE.
 ```py
 print(101) # Generate the graph
 for i in range(101):
-    print(0)
+	print(0)
 
 print(1) # Single query
 print(0, 1)
@@ -50,14 +50,14 @@ $(V, E) = (100, 1100)$ for subtask 2 and $(V, E) = (300, 347)$ for subtask 5 let
 print(300) # Change (300, 48) to (100, 1011) for subtask 2
 print(48, end=' ')
 for i in range(48):
-    print(0, 1, end=' ') # Self edges
+	print(0, 1, end=' ') # Self edges
 print()
 for i in range(1, 300):
-    print(1, i - 1, 1)
+	print(1, i - 1, 1)
 
 print(10) # 10 queries
 for i in range(10):
-    print(299, 0)
+	print(299, 0)
 ```
 
 ### Subtasks 4 and 6 - breaking Dijkstra
@@ -95,12 +95,12 @@ print(0)
 print(1, 0, 1)
 print(1, 1, 1)
 for i in range(2, 31, 2):
-    print(1, i, -2 * (2**(i//2)))
-    print(2, i + 1, 2**(i//2), i, 0)
+	print(1, i, -2 * (2**(i//2)))
+	print(2, i + 1, 2**(i//2), i, 0)
 
 print(7)
 for i in range(7):
-    print(32, 0)
+	print(32, 0)
 ```
 
 ## Part 2 - the "mystery" problem
@@ -114,10 +114,10 @@ for i in range(7):
 ```py
 print(250, 1501)
 for i in range(300):
-    for j in range(i + 1, 250, i + 1):
-        print(i, j)
+	for j in range(i + 1, 250, i + 1):
+		print(i, j)
 for i in range(88):
-    print(1, 2 * i + 3)
+	print(1, 2 * i + 3)
 ```
 
 ### Subtask 8 - forcing not TLE
@@ -129,9 +129,9 @@ for i in range(88):
 ```py
 print(753, 1501)
 for i in range(1, 752):
-    if i != 1:
-        print(0, i)
-    print(i, 752)
+	if i != 1:
+		print(0, i)
+	print(i, 752)
 ```
 
 <LanguageSection>
@@ -142,44 +142,44 @@ for i in range(1, 752):
 
 ```cpp
 int main() {
-    FOR(TC,1,7) {
-        setOut("apio-2013-taskauthor_"+ts(TC)+".out");
-        int V;
-        vpi adj[300];
-        vpi query;
-        if (TC == 1 || TC == 3) {
-            V = 101;
-            query.pb({0,0});
-        } else if (TC == 2) {
-            V = 100;
-            F0R(i,V-1) adj[i+1].pb({i,-1});
-            F0R(i,950) adj[0].pb({1,1000});
-            F0R(Q,10) query.pb({V-1,0});
-        } else if (TC == 5) {
-            V = 300;
-            F0R(i,V-1) adj[i+1].pb({i,-1});
-            F0R(i,40) adj[0].pb({1,1000});
-            F0R(Q,10) query.pb({V-1,0});
-        } else if (TC == 4 || TC == 6) {
-            V = 33; // 1+V+(V/2)*6+1+6*2
-            int wei = 999999;
-            for (int i = 0; i < V-1; i += 2) {
-                adj[i].pb({i+2,-1});
-                adj[i].pb({i+1,0});
-                adj[i+1].pb({i+2,-wei});
-                wei /= 2;
-            }
-            F0R(i,6) query.pb({0,V-1});
-        }
-        ps(V);
-        F0R(i,V) {
-            pr(sz(adj[i]));
-            trav(t,adj[i]) pr(' ',t.f,' ',t.s);
-            ps();
-        }
-        ps(sz(query));
-        trav(t,query) ps(t.f,t.s);
-    }
+	FOR(TC,1,7) {
+		setOut("apio-2013-taskauthor_"+ts(TC)+".out");
+		int V;
+		vpi adj[300];
+		vpi query;
+		if (TC == 1 || TC == 3) {
+			V = 101;
+			query.pb({0,0});
+		} else if (TC == 2) {
+			V = 100;
+			F0R(i,V-1) adj[i+1].pb({i,-1});
+			F0R(i,950) adj[0].pb({1,1000});
+			F0R(Q,10) query.pb({V-1,0});
+		} else if (TC == 5) {
+			V = 300;
+			F0R(i,V-1) adj[i+1].pb({i,-1});
+			F0R(i,40) adj[0].pb({1,1000});
+			F0R(Q,10) query.pb({V-1,0});
+		} else if (TC == 4 || TC == 6) {
+			V = 33; // 1+V+(V/2)*6+1+6*2
+			int wei = 999999;
+			for (int i = 0; i < V-1; i += 2) {
+				adj[i].pb({i+2,-1});
+				adj[i].pb({i+1,0});
+				adj[i+1].pb({i+2,-wei});
+				wei /= 2;
+			}
+			F0R(i,6) query.pb({0,V-1});
+		}
+		ps(V);
+		F0R(i,V) {
+			pr(sz(adj[i]));
+			trav(t,adj[i]) pr(' ',t.f,' ',t.s);
+			ps();
+		}
+		ps(sz(query));
+		trav(t,query) ps(t.f,t.s);
+	}
 }
 ```
 

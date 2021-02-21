@@ -36,71 +36,71 @@ priority_queue<int, vector<int>, greater<int>> rpq;
 ll lsum, rsum;
 
 void insert(int x) {
-    int median = (lpq.size() ? lpq.top() : 1000000001);
-    if (x <= median) {
-        lpq.push(x);
-        lsum += x;
-    } else {
-        rpq.push(x);
-        rsum += x;
-    }
+	int median = (lpq.size() ? lpq.top() : 1000000001);
+	if (x <= median) {
+		lpq.push(x);
+		lsum += x;
+	} else {
+		rpq.push(x);
+		rsum += x;
+	}
 
-    if (rpq.size() + 1 < lpq.size()) {
-        int nxt = lpq.top();
-        lpq.pop();
-        rpq.push(nxt);
-        lsum -= nxt;
-        rsum += nxt;
-    } else if (lpq.size() < rpq.size()) {
-        int nxt = rpq.top();
-        rpq.pop();
-        lpq.push(nxt);
-        rsum -= nxt;
-        lsum += nxt;
-    }
+	if (rpq.size() + 1 < lpq.size()) {
+		int nxt = lpq.top();
+		lpq.pop();
+		rpq.push(nxt);
+		lsum -= nxt;
+		rsum += nxt;
+	} else if (lpq.size() < rpq.size()) {
+		int nxt = rpq.top();
+		rpq.pop();
+		lpq.push(nxt);
+		rsum -= nxt;
+		lsum += nxt;
+	}
 }
 
 ll pref[100001];
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int k, n;
-    ll same_side = 0;
-    vector<pair<int, int>> v = {{0, 0}};
-    cin >> k >> n;
-    FOR(i, 0, n) {
-        char a, b;
-        int x, y;
-        cin >> a >> x >> b >> y;
-        if (a == b) same_side += abs(x - y);
-        else v.push_back({x, y});
-    }
-    sort(v.begin(), v.end(), cmp);
-    n = v.size() - 1;
-    same_side += n;
-    
-    lsum = rsum = 0;
-    FOR(i, 1, n + 1) {
-        insert(v[i].first);
-        insert(v[i].second);
-        pref[i] = rsum - lsum;
-    }
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int k, n;
+	ll same_side = 0;
+	vector<pair<int, int>> v = {{0, 0}};
+	cin >> k >> n;
+	FOR(i, 0, n) {
+		char a, b;
+		int x, y;
+		cin >> a >> x >> b >> y;
+		if (a == b) same_side += abs(x - y);
+		else v.push_back({x, y});
+	}
+	sort(v.begin(), v.end(), cmp);
+	n = v.size() - 1;
+	same_side += n;
+	
+	lsum = rsum = 0;
+	FOR(i, 1, n + 1) {
+		insert(v[i].first);
+		insert(v[i].second);
+		pref[i] = rsum - lsum;
+	}
 
-    ll ans = pref[n];
-    
-    if (k == 2) {
-        while (lpq.size()) lpq.pop();
-        while (rpq.size()) rpq.pop();
-        lsum = rsum = 0;
-        
-        for (int i = n; i; i--) {
-            insert(v[i].first);
-            insert(v[i].second);
-            ans = min(ans, rsum - lsum + pref[i - 1]);
-        }
-    }
-    cout << same_side + ans;
-    return 0;
+	ll ans = pref[n];
+	
+	if (k == 2) {
+		while (lpq.size()) lpq.pop();
+		while (rpq.size()) rpq.pop();
+		lsum = rsum = 0;
+		
+		for (int i = n; i; i--) {
+			insert(v[i].first);
+			insert(v[i].second);
+			ans = min(ans, rsum - lsum + pref[i - 1]);
+		}
+	}
+	cout << same_side + ans;
+	return 0;
 }
 ```

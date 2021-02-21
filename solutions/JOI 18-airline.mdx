@@ -47,24 +47,24 @@ This solution sends exactly 12 extra nodes.
 #include "Alicelib.h"
 
 void Alice(int N, int M, int A[], int B[]) {
-    std::vector<std::pair<int, int>> edges;
-    // Original graph
-    for (int i = 0; i < M; i++) edges.push_back({A[i], B[i]});
-    // Bit nodes to find node numbers
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < N; j++) {
-            if (j & (1 << i)) edges.push_back({N + i, j});
-        }
-        if (i < 9) edges.push_back({N + i, N + i + 1});
-    }
-    // Special vertex connected to all nodes but bit nodes
-    for (int i = 0; i < N; i++) edges.push_back({N + 10, i});
-    // Other vertex to identify the special vertex
-    edges.push_back({N + 11, N + 10});
-    // Send the graph
-    InitG(N + 12, edges.size());
-    for (int i = 0; i < edges.size(); i++)
-        MakeG(i, edges[i].first, edges[i].second);
+	std::vector<std::pair<int, int>> edges;
+	// Original graph
+	for (int i = 0; i < M; i++) edges.push_back({A[i], B[i]});
+	// Bit nodes to find node numbers
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < N; j++) {
+			if (j & (1 << i)) edges.push_back({N + i, j});
+		}
+		if (i < 9) edges.push_back({N + i, N + i + 1});
+	}
+	// Special vertex connected to all nodes but bit nodes
+	for (int i = 0; i < N; i++) edges.push_back({N + 10, i});
+	// Other vertex to identify the special vertex
+	edges.push_back({N + 11, N + 10});
+	// Send the graph
+	InitG(N + 12, edges.size());
+	for (int i = 0; i < edges.size(); i++)
+		MakeG(i, edges[i].first, edges[i].second);
 }
 ```
 
@@ -78,43 +78,43 @@ bool adj[1012][1012], is_bit[1012], visited[1012];
 int actual[1012];
 
 void Bob(int V, int U, int C[], int D[]) {
-    for (int i = 0; i < U; i++) {
-        graph[C[i]].push_back(D[i]);
-        graph[D[i]].push_back(C[i]);
-        adj[C[i]][D[i]] = adj[D[i]][C[i]] = true;
-    }
-    // Find the 2 special vertices
-    int special;
-    for (int i = 0; i < V; i++) {
-        if (graph[i].size() == 1 && graph[graph[i][0]].size() == V - 11) {
-            special = graph[i][0];
-            break;
-        }
-    }
-    is_bit[special] = true;
-    // Identify the bit vertices
-    int last_bit = special;
-    for (int i = 0; i < V; i++) {
-        if (i != special && !adj[i][special]) {
-            is_bit[i] = true;
-            if (graph[i].size() <= graph[last_bit].size()) last_bit = i;
-        }
-    }
-    for (int i = 9; ~i; i--) {
-        visited[last_bit] = true;
-        for (int j : graph[last_bit]) actual[j] += 1 << i;
-        for (int j : graph[last_bit]) if (is_bit[j] && !visited[j]) {
-            last_bit = j;
-            break;
-        }
-    }
-    // Construct the graph again
-    std::vector<std::pair<int, int>> edges;
-    for (int i = 0; i < V; i++) for (int j = i + 1; j < V; j++) {
-        if (adj[i][j] && !is_bit[i] && !is_bit[j]) edges.push_back({actual[i], actual[j]});
-    }
-    InitMap(V - 12, edges.size());
-    for (std::pair<int, int> i : edges) MakeMap(i.first, i.second);
+	for (int i = 0; i < U; i++) {
+		graph[C[i]].push_back(D[i]);
+		graph[D[i]].push_back(C[i]);
+		adj[C[i]][D[i]] = adj[D[i]][C[i]] = true;
+	}
+	// Find the 2 special vertices
+	int special;
+	for (int i = 0; i < V; i++) {
+		if (graph[i].size() == 1 && graph[graph[i][0]].size() == V - 11) {
+			special = graph[i][0];
+			break;
+		}
+	}
+	is_bit[special] = true;
+	// Identify the bit vertices
+	int last_bit = special;
+	for (int i = 0; i < V; i++) {
+		if (i != special && !adj[i][special]) {
+			is_bit[i] = true;
+			if (graph[i].size() <= graph[last_bit].size()) last_bit = i;
+		}
+	}
+	for (int i = 9; ~i; i--) {
+		visited[last_bit] = true;
+		for (int j : graph[last_bit]) actual[j] += 1 << i;
+		for (int j : graph[last_bit]) if (is_bit[j] && !visited[j]) {
+			last_bit = j;
+			break;
+		}
+	}
+	// Construct the graph again
+	std::vector<std::pair<int, int>> edges;
+	for (int i = 0; i < V; i++) for (int j = i + 1; j < V; j++) {
+		if (adj[i][j] && !is_bit[i] && !is_bit[j]) edges.push_back({actual[i], actual[j]});
+	}
+	InitMap(V - 12, edges.size());
+	for (std::pair<int, int> i : edges) MakeMap(i.first, i.second);
 }
 ```
 

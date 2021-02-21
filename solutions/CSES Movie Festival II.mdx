@@ -2,78 +2,60 @@
 id: cses-1632
 source: CSES
 title: Movie Festival II
-author: Shreyas Thumathy
+author: Shreyas Thumathy, Benjamin Qi
 ---
 
-<Warning title = "">
-		
-This problem is significantly easier after solving Movie Festival.
+<!-- In this problem, we're asked the maximum number of movie intervals $(start, end)$ we can cover using $k$ people. -->
 
-</Warning>
+<!-- ## Main Idea -->
 
-In this problem, we're asked the maximum number of movie intervals $(start, end)$ we can cover using $k$ people rather than $1$.
+The first step is the same as that of [Movie Festival](/silver/greedy-sorting#example---the-scheduling-problem); sort the movies in increasing order of end time. For each movie in order, we will assign it to one of the $K$ members to watch (or none of them).
 
-# Main Idea
+Keep track of the time each member finishes watching all of his currently assigned movies in a sorted collection (e.g. a [`multiset`](https://en.cppreference.com/w/cpp/container/multiset) in C++). Initially, the collection consists of $K$ zeroes.
 
-First, solve the one person variant of this problem. We can use the same approach and include multiple people instead of just one.
+For each movie in order, we can assign a member to watch it if there exists an element in the sorted collection less than or equal to the start time of the movie. If there are multiple such elements, choose the greatest one (the member who finished watching his assigned movies the latest). Assign the member to watch this movie by incrementing the answer and updating the collection accordingly.
 
-Whenever we come across a movie, we check if someone who previously watched a movie can watch this one too. If there are multiple people that can have this movie assigned, choose the latest one (that way if we encounter a movie that has an earlier start time, we can still assign that movie).
+<!-- If there are multiple members, choose the one who finishes watching the previous movie latest (that way, if we encounter a movie that has an earlier start time, we can still assign that movie). -->
 
-If the above condition doesn't hold and there are currently less than K people watching a movie, we can just assign a new person to this movie.
+<LanguageSection>
 
-We can keep a hold of the people watching movies by storing it in some sort of collection, a multiset is used below.
+<CPPSection>
 
-Implementation using a multiset in C++:
+## Implementation
 
 ```cpp
-
 #include <iostream>
 #include <vector>
 #include <set>
 #include <algorithm>
 using namespace std;
 
-int n, k;
-vector<pair<int, int> > v(200005);
-
 int main() {
-	cin >> n >> k;
-	v.resize(n);
-	for (int i = 0; i < n; i++) {
-		// this will allow us to sort by end time.
+	int n, k; cin >> n >> k;
+	vector<pair<int, int>> v(n);
+	for (int i = 0; i < n; i++) // read start time, end time
 		cin >> v[i].second >> v[i].first;
-	}
-	sort(v.begin(), v.end());
-
+	sort(begin(v), end(v)); // sort by end time
 
 	int ans = 0;
-	multiset<int> st;
+	multiset<int> end_times; // times when members will finish watching movies
+	for (int i = 0; i < k; ++i)
+		end_times.insert(0);
 
-	// v[i].s is really the start time of movie i, and v[i].f is the end time.
 	for (int i = 0; i < n; i++) {
-
-		bool flag = 0;
-		// try assigning this movie to someone already in the multiset.
-		if (!st.empty()) {
-			auto it = st.upper_bound(v[i].second);
-			if (it != st.begin()) {
-				--it;
-				if (*it <= v[i].second) {
-					st.erase(it);
-					st.insert(v[i].first);
-					flag = 1, ans++;
-				}
-			}
-		}
-
-		if (st.size() < k && flag == false) {
-			st.insert(v[i].first);
-			ans++;
-		}
+		auto it = end_times.upper_bound(v[i].second);
+		if (it == begin(end_times)) continue;
+		// assign movie to be watched by member in multiset who finishes at time *prev(it)
+		end_times.erase(--it);
+		// member now finishes watching at time v[i].first
+		end_times.insert(v[i].first);
+		++ ans;
 	}
-
 
 	cout << ans;
 }
-
 ```
+
+</CPPSection>
+
+</LanguageSection>

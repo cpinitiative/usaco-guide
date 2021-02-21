@@ -6,7 +6,7 @@ redirects:
 title: 'Binary Search'
 author: Darren Yao, Abutalib Namazov, Andrew Wang
 prerequisites:
-  - greedy
+  - greedy-sorting
 description: 'Binary searching on arbitrary monotonic functions and built-in functions for binary search.'
 frequency: 3
 ---
@@ -126,6 +126,15 @@ export const problems = {
 			'cses-1085'
 		),
 		new Problem(
+			'CSES',
+			'Multiplication Table',
+			'2422',
+			'Normal',
+			false,
+			['Binary Search'],
+			'cses-2422'
+		),
+		new Problem(
 			'CF',
 			'Edu C: Magic Ship',
 			'problemset/problem/1117/C',
@@ -224,6 +233,13 @@ export const problems = {
 	<Resource source="TC" title="Binary Search" url="binary-search">
 		similar material
 	</Resource>
+	<Resource
+		source="LC"
+		title="Python Ultimate Binary Search Template"
+		url="https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems"
+	>
+		many problems & applications
+	</Resource>
 </Resources>
 
 <Youtube id="GU7DpgHINWQ" />
@@ -240,8 +256,8 @@ We want to construct a function `lastTrue` such that `lastTrue(lo, hi, f)` retur
 
 This can be done with binary search if `f(x)` satisfies both of the following conditions:
 
-- If `f(x)` is `true`, then `f(y)` is true for all $y \leq x$.
-- If `f(x)` is `false`, then `f(y)` is false for all $y \geq x$.
+- If `f(x) = true`, then `f(y) = true` for all $y \leq x$.
+- If `f(x) = false`, then `f(y) = false` for all $y \geq x$.
 
 For example, if `f(x)` is given by the following function:
 
@@ -317,7 +333,6 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 ```
 
 </CPPSection>
-
 
 </LanguageSection>
 
@@ -419,6 +434,7 @@ int main() {
 </CPPSection>
 
 
+
 </LanguageSection>
 
 </Spoiler>
@@ -431,19 +447,19 @@ Consider the code from CSAcademy's [Binary Search on Functions](https://csacadem
 
 ```cpp
 long long f(int x) {
-    return (long long)x * x;
+	return (long long)x * x;
 }
 int square_root(int x) {
-    int left = 0, right = x;
-    while (left < right) {
-        int middle = (left + right) / 2;
-        if (f(middle) <= x) {
-            left = middle;
-        } else {
-            right = middle - 1;
-        }
-    }
-    return left;
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
 }
 ```
 
@@ -478,8 +494,10 @@ This code does not necessarily work if `lo` is negative! Consider the following 
 
 ```cpp
 int main() {
-	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n"; // -8, should be -9
-	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n"; // infinite loop
+	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n";
+	// -8, should be -9
+	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n";
+	// infinite loop
 }
 ```
 
@@ -489,7 +507,6 @@ int main() {
 </LanguageSection>
 
 This is because dividing an odd negative integer by two will round it up instead of down.
-
 
 ### Mistake 3 - Integer Overflow
 
@@ -568,6 +585,8 @@ As each of the points are in the range $0 \ldots 1,000,000,000$, storing locatio
 
 Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use binary search to count the number of cows in any range $[A,B]$ in $\mathcal{O}(\log N)$ time.
 
+### With Built-in Function
+
 <LanguageSection>
 
 <CPPSection>
@@ -575,7 +594,6 @@ Instead, let's place all of the locations of the haybales into a list and sort i
 We can use the the built-in [`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound) functions.
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -626,35 +644,35 @@ import java.io.*;
 import java.util.*;
 
 public class haybales{
-   public static void main(String[] args) throws IOException
-   {
-      BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
-      PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      int N = Integer.parseInt(st.nextToken());
-      int Q = Integer.parseInt(st.nextToken());
-      int[] arr = new int[N];
-      st = new StringTokenizer(br.readLine());
-      for(int i = 0; i < N; i++){
-         arr[i] = Integer.parseInt(st.nextToken());
-      }
-      Arrays.sort(arr);
-      for(int i = 0; i < Q; i++){
-         st = new StringTokenizer(br.readLine());
-         int low = Integer.parseInt(st.nextToken());
-         int high = Integer.parseInt(st.nextToken());
-         int bi = Arrays.binarySearch(arr, low);
-         if(bi < 0){
-            bi = Math.abs(bi+1);
-         }
-         int ti = Arrays.binarySearch(arr, high);
-         if(ti < 0){
-            ti = Math.abs(ti+2);
-         }
-         out.println(ti-bi+1);
-      }
-      out.close();
-   }
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int Q = Integer.parseInt(st.nextToken());
+		int[] arr = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for(int i = 0; i < N; i++){
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(arr);
+		for(int i = 0; i < Q; i++){
+			st = new StringTokenizer(br.readLine());
+			int low = Integer.parseInt(st.nextToken());
+			int high = Integer.parseInt(st.nextToken());
+			int bi = Arrays.binarySearch(arr, low);
+			if(bi < 0){
+				bi = Math.abs(bi+1);
+			}
+			int ti = Arrays.binarySearch(arr, high);
+			if(ti < 0){
+				ti = Math.abs(ti+2);
+			}
+			out.println(ti-bi+1);
+		}
+		out.close();
+	}
 }
 
 ```
@@ -681,18 +699,69 @@ for i in range(Q):
 
 inp.close()
 out.close()
-
 ```
 
 </PySection>
 
 </LanguageSection>
 
-<IncompleteSection>
+### Without Built-in Function
 
-solutions w/o builtin functions
+<LanguageSection>
 
-</IncompleteSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int N,Q; cin >> N >> Q;
+	vector<int> v(N);
+	for (int& t: v) cin >> t;
+	sort(begin(v),end(v));
+	auto at_most = [&](int x) { // returns # of elements <= x
+		int lo = 0, hi = sz(v);
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (v[mid] <= x) lo = mid+1;
+			else hi = mid;
+		}
+		return lo;
+	};
+	for (int i = 0; i < Q; ++i) {
+		int A,B; cin >> A >> B;
+		cout << at_most(B)-at_most(A-1) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 

@@ -17,53 +17,53 @@ import java.io.*;
 import java.util.*;
 
 public class gymnastics {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("gymnastics.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("gymnastics.out"));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("gymnastics.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("gymnastics.out"));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int k = Integer.parseInt(st.nextToken());
-        int n = Integer.parseInt(st.nextToken());
-        
-        ArrayList<Integer>[] ratings = new ArrayList[k];
-        
-        // Read inputs into a 2D array (well, actually an array of ArrayLists)
-        for (int i = 0; i < k; i++) {
-            st = new StringTokenizer(br.readLine());
-            ratings[i] = new ArrayList<Integer>();
-            for (int j = 0; j < n; j++) {
-                ratings[i].add(Integer.parseInt(st.nextToken()));
-            }
-        }
-        int pairs = 0;
-        
-        // Iterate over every ranking in the first sequence
-        for (int i = 0; i < n; i++) {
-            int base = ratings[0].get(i);
-            // Iterate over every other ranking in the first sequence, 
-            // to be compared with the base ranking
-            outer:
-            for (int j = i+1; j < n; j++) {
-                int comp = ratings[0].get(j);
-                // Iterate over every line to make sure that the two numbers we are comparing
-                // stay in the same relative position to each other (one is always greater than the other)
-                for (int l = 1; l < k; l++) {
-                    // If the relative positions of the two rankings being compared change, 
-                    // then it is not a pair and continue to the iteration/comparison
-                    if ((ratings[0].indexOf(base) - ratings[0].indexOf(comp)) * (ratings[l].indexOf(base) - ratings[l].indexOf(comp)) < 0) {
-                        continue outer;
-                    }
-                }
-                pairs++;
-            }
-        }
-        pw.println(pairs);
-        
-        
-        
-        br.close();
-        pw.close();
-    }
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int k = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		
+		ArrayList<Integer>[] ratings = new ArrayList[k];
+		
+		// Read inputs into a 2D array (well, actually an array of ArrayLists)
+		for (int i = 0; i < k; i++) {
+			st = new StringTokenizer(br.readLine());
+			ratings[i] = new ArrayList<Integer>();
+			for (int j = 0; j < n; j++) {
+				ratings[i].add(Integer.parseInt(st.nextToken()));
+			}
+		}
+		int pairs = 0;
+		
+		// Iterate over every ranking in the first sequence
+		for (int i = 0; i < n; i++) {
+			int base = ratings[0].get(i);
+			// Iterate over every other ranking in the first sequence, 
+			// to be compared with the base ranking
+			outer:
+			for (int j = i+1; j < n; j++) {
+				int comp = ratings[0].get(j);
+				// Iterate over every line to make sure that the two numbers we are comparing
+				// stay in the same relative position to each other (one is always greater than the other)
+				for (int l = 1; l < k; l++) {
+					// If the relative positions of the two rankings being compared change, 
+					// then it is not a pair and continue to the iteration/comparison
+					if ((ratings[0].indexOf(base) - ratings[0].indexOf(comp)) * (ratings[l].indexOf(base) - ratings[l].indexOf(comp)) < 0) {
+						continue outer;
+					}
+				}
+				pairs++;
+			}
+		}
+		pw.println(pairs);
+		
+		
+		
+		br.close();
+		pw.close();
+	}
 }
 ```
 </JavaSection>

@@ -27,7 +27,7 @@ export const SidebarNav = () => {
       ? 'general'
       : markdownLayoutInfo.section;
   if (markdownLayoutInfo instanceof SolutionInfo) {
-    for (let section in SECTION_LABELS) {
+    for (const section in SECTION_LABELS) {
       MODULE_ORDERING[section].forEach((category: Chapter) => {
         category.items.forEach(moduleID => {
           // console.log(moduleID,activeIDs)

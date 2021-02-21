@@ -37,14 +37,13 @@ Templates in C++ can take advantange of more powerful features (e.g. macros) tha
 </Resources>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
 
 using ll = long long;
 
 using vi = vector<int>;
 #define pb push_back
-#define rsz resize
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 
@@ -53,18 +52,17 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 
-void setIO(string name = "") { // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-	// alternatively, cin.tie(0)->sync_with_stdio(0);
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
 	if (sz(name)) {
-		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
 		freopen((name+".out").c_str(), "w", stdout);
 	}
 }
 
 int main() {
 	setIO();
-
+	
 }
 ```
 
@@ -118,22 +116,22 @@ Modern C++, a groundbreaking language in the current informatics scene, indeed h
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature, temper;
-        string name;
-    public: //external reactions
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature, temper;
+		string name;
+	public: //external reactions
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 ```
 
@@ -154,22 +152,22 @@ To partially alleviate this, we can initialize variables in the class declaratio
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature = 98, temper = 25;
-        string name = "Sal";
-    public: //external reactions
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature = 98, temper = 25;
+		string name = "Sal";
+	public: //external reactions
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 ```
 
@@ -192,32 +190,32 @@ We can create a constructor for the human class and require initialization of th
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature, temper;
-        string name;
-    public: //external reactions
-        human(string _name, int _body_temperature, int _temper) {
-            name = _name;
-            body_temperature = _body_temperature, temper = _temper;
-        }
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature, temper;
+		string name;
+	public: //external reactions
+		human(string _name, int _body_temperature, int _temper) {
+			name = _name;
+			body_temperature = _body_temperature, temper = _temper;
+		}
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 
 int main() {
-    human Sal("Sal", 98, 25);
-    cout << Sal.name() << " feels " << Sal.feeling() << " and is "
-     << Sal.emotion()  << "\n";
+	human Sal("Sal", 98, 25);
+	cout << Sal.name() << " feels " << Sal.feeling() << " and is "
+	 << Sal.emotion()  << "\n";
 }
 ```
 
@@ -225,12 +223,12 @@ This is immediately very extensible if we wish to create multiple instances of `
 
 ```cpp
 void condition(human h) {
-    cout << h.name() << " feels " << h.feeling() << " and is " << h.emotion();
+	cout << h.name() << " feels " << h.feeling() << " and is " << h.emotion();
 }
 
 int main() {
-    human Sal("Sal", 98, 25), Bob("Bob", 100, 9), Joe("Joe", 85, 35);
-    condition(Sal), condition(Bob), condition(Joe);
+	human Sal("Sal", 98, 25), Bob("Bob", 100, 9), Joe("Joe", 85, 35);
+	condition(Sal), condition(Bob), condition(Joe);
 }
 ```
 
@@ -247,19 +245,19 @@ name(name), body_temperature(body_temperature), temper(temper) {}
 
 ```cpp
 struct human {
-    int body_temperature, temper;
-    string name;
-    human(string name, int body_temperature, int temper) :
-    name(name), body_temperature(body_temperature), temper(temper) {}
-    string feeling() { //answers "how do I feel"
-        if(body_temperature >= 97 && body_temperature <= 99) return "good";
-        else return "bad";
-    }
-    string emotion() {
-        if(temper <= 10) return "sad";
-        else if(temper <= 30) return "happy";
-        else return "angry";
-    }
+	int body_temperature, temper;
+	string name;
+	human(string name, int body_temperature, int temper) :
+	name(name), body_temperature(body_temperature), temper(temper) {}
+	string feeling() { //answers "how do I feel"
+		if(body_temperature >= 97 && body_temperature <= 99) return "good";
+		else return "bad";
+	}
+	string emotion() {
+		if(temper <= 10) return "sad";
+		else if(temper <= 30) return "happy";
+		else return "angry";
+	}
 };
 ```
 
@@ -305,7 +303,7 @@ The `human` class example, though well-defined, was mostly intended to serve as 
 
 ```cpp
 struct pt {
-    int x, y, z;
+	int x, y, z;
 } P1{1, 2, 3}, P2{3, 4, 5}; // we can make quick instances right before the ;
 ```
 
@@ -331,7 +329,7 @@ It would be narrow-minded to think that templates are in any way limited to clas
 
 ```cpp
 template<class T> bool ckmin(T& a, const T& b) {
-  return b < a ? a = b, 1 : 0; }
+	return b < a ? a = b, 1 : 0; }
 ```
 
 will set $a$ equal to $\min(a,b)$, and return `true` if the value of $a$ changes.
@@ -340,7 +338,7 @@ One interesting use case is that of the size of various containers. The size mem
 
 ```cpp
 template<class T> inline int sz(T container) {
-    return (int)container.size();
+	return (int)container.size();
 }
 ```
 
@@ -350,10 +348,10 @@ What if we wanted to put multiple arguments in a template to handle multiple cla
 
 ```cpp
 struct CPS {
-    template<class T, class U>
-    bool operator() (const pair<T, U>& a, const pair<T, U>& b) {
-        return make_pair(a.second, a.first) < make_pair(b.second, b.first);
-    }
+	template<class T, class U>
+	bool operator() (const pair<T, U>& a, const pair<T, U>& b) {
+		return make_pair(a.second, a.first) < make_pair(b.second, b.first);
+	}
 };
 ```
 
@@ -450,10 +448,10 @@ In general, it is important that `using` declarations have strong **scope** guar
 
 ```cpp
 struct pt {
-    using T = int;
-    //within this scope, T is an alias for int
-    //just change this declaration to change T's meaning within this struct
-    T x, y, z;
+	using T = int;
+	//within this scope, T is an alias for int
+	//just change this declaration to change T's meaning within this struct
+	T x, y, z;
 };
 ```
 
@@ -461,14 +459,14 @@ In case we want to be able to access the specific type `T`'s alias meaning outsi
 
 ```cpp
 struct pt {
-    using T = int;
-    T x, y, z;
+	using T = int;
+	T x, y, z;
 };
 
 int main() {
-    using U = pt::T;
-    //U becomes a copy of T from pt's scope
-    //U is now in the scope of main
+	using U = pt::T;
+	//U becomes a copy of T from pt's scope
+	//U is now in the scope of main
 }
 ```
 
@@ -517,7 +515,7 @@ But that's obviously not a good idea. A better alternative:
 const int MOD = 1e9 + 7;
 
 int main() {
-    cout << MOD << "\n";
+	cout << MOD << "\n";
 }
 ```
 
@@ -592,11 +590,11 @@ For instance, I may want my struct `pt` to be two-dimensional in some cases, and
 const bool d2 = 0; //change to true if you want the 2d case; otherwise, 3d
 
 template<class T> struct pt {
-    #if(d2)
-        T x, y;
-    #else
-        T x, y, z;
-    #endif
+	#if(d2)
+		T x, y;
+	#else
+		T x, y, z;
+	#endif
 };
 ```
 
@@ -606,11 +604,11 @@ If we are not opposed to using `#define`, we could use `#ifdef` and `#ifndef` to
 // #define 2d // uncomment for 2d
 
 template<class T> struct pt {
-    #ifdef 2d
-        T x, y;
-    #else
-        T x, y, z;
-    #endif
+	#ifdef 2d
+		T x, y;
+	#else
+		T x, y, z;
+	#endif
 }
 ```
 
@@ -618,10 +616,10 @@ There are many clever applications of this, including versioning. Importantly, i
 
 ```cpp
 #if(__cplusplus < 201703L)
-  template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
-    assert(!(hi < lo));
-    return (v < lo) ? lo : (hi < v) ? hi : v;
-  }
+	template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
+		assert(!(hi < lo));
+		return (v < lo) ? lo : (hi < v) ? hi : v;
+	}
 #endif
 ```
 
@@ -631,15 +629,15 @@ Finally, we can write our own namespaces to separate various functions. Within a
 
 ```cpp
 namespace test {
-    const string greeting = "hi";
-    namespace test1 {
-        const int time = 2;
-    } using namespace test1;
-    template<class T> struct my_ds {
-        T s;
-        void add(T x) { s += x; }
-        T get() { return s; }
-    };
+	const string greeting = "hi";
+	namespace test1 {
+		const int time = 2;
+	} using namespace test1;
+	template<class T> struct my_ds {
+		T s;
+		void add(T x) { s += x; }
+		T get() { return s; }
+	};
 }
 ```
 
@@ -647,7 +645,7 @@ These are fairly self-explanatory, but a more rare feature of C++11 is the `inli
 
 ```cpp
 inline namespace test {
-    const string greeting = "hi";
+	const string greeting = "hi";
 }
 ```
 
@@ -655,19 +653,19 @@ So why even have inline namespaces? We can use their features interestingly. For
 
 ```cpp
 namespace v1 {
-    const string buggy_feature = "bugs";
-    const string greeting = "hi";
+	const string buggy_feature = "bugs";
+	const string greeting = "hi";
 }
 
 inline namespace v2 {
-    //removed the buggy_feature from this new version
-    const string buggy_feature = "doesn't exist";
-    const string greeting = "hi";
+	//removed the buggy_feature from this new version
+	const string buggy_feature = "doesn't exist";
+	const string greeting = "hi";
 }
 
 int main() {
-    cout << buggy_feature << "\n"; // doesn't exist
-    cout << v1::buggy_feature << "\n"; // bugs
+	cout << buggy_feature << "\n"; // doesn't exist
+	cout << v1::buggy_feature << "\n"; // bugs
 }
 ```
 

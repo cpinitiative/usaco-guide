@@ -4,19 +4,13 @@ title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang, Allen Li
 description: Demonstrates how to read input and print output for USACO contests, including an example problem.
 prerequisites:
- - data-types
+  - data-types
 ---
 
 export const problems = {
-	cses: [new Problem('CSES', 'Weird Algorithm', '1068', 'Very Easy')],
-	fence: [new Problem('Bronze', 'Fence Painting', '567', 'Very Easy')],
+	weird: new Problem('CSES', 'Weird Algorithm', '1068', 'Very Easy'),
+	fence: new Problem('Bronze', 'Fence Painting', '567', 'Very Easy'),
 };
-
-<Info title="Update">
-
-USACO problems from December 2020 onwards use standard I/O rather than file I/O. You'll still need to use file I/O to submit to earlier problems.
-
-</Info>
 
 <LanguageSection>
 
@@ -46,16 +40,25 @@ USACO problems from December 2020 onwards use standard I/O rather than file I/O.
 
 </JavaSection>
 
-<PySection>
-</PySection>
+<PySection />
 
 </LanguageSection>
 
 <!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
 
-## Standard I/O
+The code snippets below will read in three integers as part of a single line and output their sum. For example, given the input
 
-In most websites (such as CodeForces and CSES), input and output are **standard**. Here, we'll provide examples that take three integers as input and prints their sum. Feel free to test these out at [ide.thecodingwizard.me](https://ide.thecodingwizard.me)!
+```
+1 2 3
+```
+
+the output will be as follows:
+
+```
+sum is 6
+```
+
+Feel free to test them out at [ide.thecodingwizard.me](https://ide.thecodingwizard.me).
 
 <Info title="Out of the methods below, which one should I use?">
 
@@ -63,13 +66,17 @@ It doesn't matter. Whichever you're most comfortable with!
 
 </Info>
 
+## Standard I/O
+
+In most websites (such as CodeForces and CSES), input and output are **standard**.
+
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1: [<iostream\>](http://www.cplusplus.com/reference/iostream/)
+### Method 1 - [`<iostream>`](https://www.cplusplus.com/reference/iostream/)
 
-This library is quite straight forward to use and the `cin` function simply assigns values sepearated by spaces or lines to different variables. Similarly, the `cout` function simply writes on the standard console and either an escape sequence (that's what the `\n` does below) or the `endl` command can enter a new line at the end. 
+More straightforward to use. Calling the extraction operator `operator>>` on [`cin`](https://www.cplusplus.com/reference/iostream/cin/) reads whitespace-separated data from standard input. Similarly, calling the insertion operator `operator<<` on [`cout`](https://www.cplusplus.com/reference/iostream/cout/) writes to standard output. The [escape sequence](https://en.cppreference.com/w/cpp/language/escape) `\n` represents a new line.
 
 ```cpp
 #include <iostream>
@@ -78,12 +85,19 @@ using namespace std;
 int main() {
 	int a, b, c; cin >> a >> b >> c;
 	cout << "sum is " << a+b+c << "\n";
+	// or cout << "sum is " << a+b+c << endl;
 }
 ```
 
-### Method 2: [<cstdio\>](http://www.cplusplus.com/reference/cstdio/)
+<Info title="endl vs \n">
 
-This library includes the `scanf` and `printf` functions, which are slightly more complicated to use, but are significantly faster (generally only an issue with large input sizes):
+[`endl`](https://www.cplusplus.com/reference/ostream/endl/) and `\n` are _not_ equivalent; see [Fast I/O](/general/fast-io) for details.
+
+</Info>
+
+### Method 2 - [`<cstdio>`](https://www.cplusplus.com/reference/cstdio/)
+
+This library includes the [`scanf`](https://www.cplusplus.com/reference/cstdio/scanf/) and [`printf`](https://www.cplusplus.com/reference/cstdio/printf/) functions, which are slightly more complicated to use.
 
 ```cpp
 #include <cstdio>
@@ -109,23 +123,69 @@ int main() {
 }
 ```
 
-The first method can be sped up so that the difference in speed is not significant; see [Fast I/O](/general/fast-io) for details.
+<Info title="Input Speed">
+
+The second method is significantly faster (generally only an issue with large input sizes). However, the first method can be sped up so that the difference in speed is not significant; see [Fast I/O](/general/fast-io) for details.
+
+</Info>
 
 </CPPSection>
 
 <JavaSection>
 
-### Java
+### Method 1 - [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html)
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) to read input and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html) to print output. These methods work, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines. Thus, we use [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html) instead, which are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner` and has quite a few more methods and the `io` library must be imported for its use as well.
+In your CS classes, you've probably implemented input and output using standard input and standard output, or using `Scanner` to read input and `System.out.print` to print output.
 
-Here is a Java template for input and output that which combines `BufferedReader` and `PrintWriter`, which is a shortened version of Kattis's [`Kattio.java`](https://open.kattis.com/help/java). Note that we import the entire `util` and `io` libraries for ease of use. 
+```java
+import java.util.Scanner;
+
+public class Main {
+	static Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) {
+		int a = sc.nextInt();
+		int b = sc.nextInt();
+		int c = sc.nextInt();
+		System.out.print("sum is ");
+		System.out.println(a + b + c);
+	}
+}
+```
+
+This works, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines.
+
+### Method 2 - [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html)
+
+These are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. It has quite a few more methods and the `io` library must be imported for its use as well. A [`StringTokenizer`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/StringTokenizer.html) is used to split the input line by whitespace into tokens, which are then accessed individually by the `nextToken()` method.
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) throws IOException {
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int a = Integer.parseInt(st.nextToken());
+		int b = Integer.parseInt(st.nextToken());
+		int c = Integer.parseInt(st.nextToken());
+		pw.print("sum is ");
+		pw.println(a + b + c);
+		pw.close(); // make sure to include this line -- closes io and flushes the output
+	}
+}
+```
+
+#### I/O Template
+
+The following template (a shortened version of Kattis's [`Kattio.java`](https://open.kattis.com/help/java)) combines `BufferedReader` and `PrintWriter` and takes care of the string processing for you.
 
 <!-- 
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.StringTokenizer;
 
 class Kattio extends PrintWriter {
 	private BufferedReader r;
@@ -194,8 +254,8 @@ public class Main {
  * @author: Kattis
  */
 
-import java.util.*;
 import java.io.*;
+import java.util.StringTokenizer;
 
 class Kattio extends PrintWriter {
 	private BufferedReader r;
@@ -208,7 +268,7 @@ class Kattio extends PrintWriter {
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
-	public Kattio(String problemName) throws IOException { 
+	public Kattio(String problemName) throws IOException {
 		super(new FileWriter(problemName+".out"));
 		r = new BufferedReader(new FileReader(problemName+".in"));
 	}
@@ -222,7 +282,7 @@ class Kattio extends PrintWriter {
 		} catch (Exception e) {}
 		return null;
 	}
-	
+
 	public int nextInt() { return Integer.parseInt(next()); }
 	public double nextDouble() { return Double.parseDouble(next()); }
 	public long nextLong() { return Long.parseLong(next()); }
@@ -236,14 +296,18 @@ public class Main {
 		int c = io.nextInt();
 		io.print("sum is ");
 		io.println(a + b + c);
-		String s = io.next();
 		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
 
-The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
+<Optional title="extends">
 
+`extends` is used so that `Kattio` inherits methods from `PrintWriter` (including `print()`, `println()` and `close()`). If you're interested, see [here](https://www.w3schools.com/java/ref_keyword_extends.asp) for more details.
+
+</Optional>
+
+The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
 
 | Method | Description |
 | --- | --- |
@@ -251,11 +315,13 @@ The input methods in our `Kattio` class mimic those of `Scanner`. Given an insta
 | `io.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
 | `io.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
 | `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
-| `io.println()` | Prints the argument to designated output stream and adds a newline |
-| `io.print()` | Prints the argument to designated output stream |
-| `io.close()` | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush())) at the end, or you won't see any output! |
+| `io.print(arg)` | Prints `arg` to designated output stream |
+| `io.println(arg)` | Prints `arg` to designated output stream and adds a newline |
+| `io.close()` | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
 
-<!-- <Info title="PrintWriter Buffering"> -->
+USACO prohibits prewritten code but allows you to consult resources about basic functionality such as input / output. So feel free to refer to this module during a USACO contest.
+
+<Info title="PrintWriter Buffering">
 
 The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37. But since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered), I don't think including `BufferedOutputStream` is necessary.
 
@@ -265,19 +331,13 @@ Similarly, you may see `PrintWriter`s for file output initialized like the follo
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
-but 
+but
 
 ```java
 PrintWriter pw = new PrintWriter(new FileWriter("problemname.out"));
 ```
 
 should suffice.
-
-<!-- </Info> -->
-
-<Info title="USACO Contests">
-
-Although you are not allowed to copy-paste `Kattio` during a USACO contest, feel free to refer to it (as it describes basic functionality for input / output).
 
 </Info>
 
@@ -319,7 +379,6 @@ n, m = [int(x) for x in input().split()]
 n, m = map(int, input().split())
 ```
 
-
 So taking three integers as input and printing their sum is quite simple:
 
 ```py
@@ -339,7 +398,7 @@ is there some other source which covers this?
 
 ## Example Problem - Weird Algorithm
 
-<FocusProblem problem={problems.cses[0]} />
+<FocusProblem problem={problems.weird} />
 
 Try to implement this yourself!
 
@@ -387,8 +446,7 @@ As noted in the resource above, this problem requires _64-bit integers_.
 <Spoiler title="Method 1">
 
 ```java
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
 	static Scanner r = new Scanner(System.in);
@@ -412,7 +470,7 @@ public class Main {
 
 ```java
 import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
 	static BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
@@ -432,11 +490,9 @@ public class Main {
 
 </Spoiler>
 
-### Method 3 - `Kattio`
+#### With `Kattio`
 
-Essentially the same as method 2.
-
-<Spoiler title="Method 3">
+<Spoiler title="Kattio">
 
 ```java
 // Kattio template code above
@@ -483,31 +539,64 @@ print(x)
 
 ## File I/O
 
-<FocusProblem problem={problems.fence[0]} />
+<Info title="Update">
 
-From December 2020 onwards, USACO switched to using standard IO; however to practice older problems, it will still be necessary. In USACO, the inout and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`. Note that you'll have to rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
+USACO problems from December 2020 onwards use standard I/O rather than file I/O. You'll still need to use file I/O to submit to earlier problems.
+
+</Info>
+
+In older USACO problems, the input and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`.
+
+<FocusProblem problem={problems.fence} />
+
+You must rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
 
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1: `freopen`
+### Method 1 - [`freopen`](https://www.cplusplus.com/reference/cstdio/freopen/)
 
-You will need the [<cstdio\>](http://www.cplusplus.com/reference/cstdio/) library.
+You will need the `<cstdio>` library. The `freopen` statements reuse standard I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf` and `printf`) to read and write data.
 
 ```cpp
+#include <iostream>
 #include <cstdio>
 using namespace std;
 
 int main() {
 	freopen("problemname.in", "r", stdin);
+	// the following line creates/overwrites the output file
 	freopen("problemname.out", "w", stdout);
-	// rest of your code ...
-	// can use cin or scanf
+	// cin reads from the file instead of standard input
+	int a, b, c; cin >> a >> b >> c;
+	// cout prints to the file instead of standard output
+	cout << "sum is " << a+b+c << "\n";
 }
 ```
 
-### Method 2: [`<fstream>`](http://www.cplusplus.com/reference/fstream/)
+To test your solution locally without file I/O, just comment out the lines with `freopen`.
+
+For convenience, we can define a function that will redirect `stdin` and `stdout` based on the problem name:
+
+```cpp
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+void setIO(string s) { // the argument is the filename without the extension
+	freopen((s+".in").c_str(),"r",stdin);
+	freopen((s+".out").c_str(),"w",stdout);
+}
+
+int main() {
+	setIO("problemname");
+	int a, b, c; cin >> a >> b >> c;
+	cout << "sum is " << a+b+c << "\n";
+}
+```
+
+### Method 2 - [`<fstream>`](https://www.cplusplus.com/reference/fstream/)
 
 You cannot use C-style I/O (`scanf`, `printf`) with this method.
 
@@ -518,31 +607,8 @@ using namespace std;
 int main() {
 	ifstream fin("problemname.in");
 	ofstream fout("problemname.out");
-	// rest of your code ...
-
-}
-```
-
-### Method 3: Re-defining IO
-
-The standard IO functions can also be re-defined to work with file IO using [`freopen`](https://en.cppreference.com/w/cpp/io/c/freopen). Essentially, it changes the standard IO to point to files instead, and this allows simple functions to be used for files as well. The following template (which is commonly used on USACO solution pages) uses this redefinition to solve this example. After re-defining the IO functions, then you can simply use `cin` and `cout` to read and write data.
-
-```cpp
-#include "bits/stdc++.h"
-using namespace std;
-void setIO(string s){ //this function is the template that redefines the standard IO
-	ios_base::sync_with_stdio(0);cin.tie(0);
-	freopen((s+".in").c_str(),"r",stdin);
-	freopen((s+".out").c_str(),"w",stdout);
-}
-int main(){
-	setIO("problemname"); //the input string is simply the file name without the ".in" or ".out"
-	int N, M, ans; //these are fake variables to be initialized from a file
-	cin >> N >> M; //here, the cin function reads from the file instead of the standard IO
-	
-	// rest of the code
-	
-	cout<< ans << endl; //this creates/overwrites the output file
+	int a, b, c; fin >> a >> b >> c;
+	fout << "sum is " << a+b+c << "\n";
 }
 ```
 
@@ -552,22 +618,52 @@ int main(){
 
 ### Java
 
-Again, `BufferedReader` and `PrintWriter` should be used.
+Again, `BufferedReader` and `PrintWriter` should be used. Note how `static` initialization of `r` and `pw` is slightly different.
 
 ```java
-//imports
-public class Main{
-	public static void main(String[] args) throws IOException{
-		BufferedReader br=new BufferedReader(new FileReader("problemname.in"));
-		StringTokenizer st=new StringTokenizer(br.readLine()); //this class simply breaks down a string into sections called tokens
-								       //that can be accessed individually by the nextToken method
-		int N=Integer.parseInt(st.nextToken()),M=Integer.parseInt(st.nextToken()); //fake variable initialization
-		
-		//rest of the code
-		
-		PrintWriter pw=new PrintWriter(new FileWriter("problemname.out"));
-		pw.println(N+1); //fake answer being written to the output file
-		pw.close(); //pw.flush() would also work
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	static BufferedReader r;
+	static PrintWriter pw;
+	static {
+		try {
+			r = new BufferedReader(new FileReader("problemname.in"));
+			pw = new PrintWriter(new FileWriter("problemname.out"));
+		} catch (IOException e) {}
+	}
+	public static void main(String[] args) throws IOException {
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int a = Integer.parseInt(st.nextToken());
+		int b = Integer.parseInt(st.nextToken());
+		int c = Integer.parseInt(st.nextToken());
+		pw.print("sum is ");
+		pw.println(a + b + c);
+		pw.close(); // make sure to include this line -- closes io and flushes the output
+	}
+}
+```
+
+#### With `Kattio`
+
+```java
+// Kattio template code above
+
+public class Main {
+	static Kattio io;
+	static {
+		try {
+			io = new Kattio("problemname");
+		} catch(IOException e) {}
+	}
+	public static void main(String[] args) {
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		io.print("sum is ");
+		io.println(a + b + c);
+		io.close(); // make sure to include this line -- closes io and flushes the output
 	}
 }
 ```
@@ -614,16 +710,13 @@ Since USACO currently uses python 3.4.0, [f-strings](https://realpython.com/pyth
 
 <br />
 
-
 For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#slow-solution) module.
 
 <LanguageSection>
 
 <CPPSection>
 
-### Method 1
-
-Use [freopen](http://www.cplusplus.com/reference/cstdio/freopen/). If you comment out both of the lines containing `freopen` then the program reads from standard in and writes to standard out as usual.
+### Method 1 - `freopen`
 
 <Spoiler title="Method 1">
 
@@ -649,9 +742,7 @@ int main() {
 
 </Spoiler>
 
-### Method 2
-
-Use [ifstream & ofstream](http://www.cplusplus.com/doc/tutorial/files/).
+### Method 2 - `<fstream>`
 
 <Spoiler title="Method 2">
 
@@ -675,7 +766,6 @@ int main() {
 
 </Spoiler>
 
-
 </CPPSection>
 
 <JavaSection>
@@ -685,13 +775,19 @@ int main() {
 <Spoiler title="Method 1">
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.Scanner;
 
-public class template {
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		Scanner r = new Scanner(new File("paint.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
+public class Main {
+	static Scanner r;
+	static PrintWriter pw;
+	static {
+		try {
+			r = new Scanner(new File("paint.in"));
+			pw = new PrintWriter(new FileWriter("paint.out"));
+		} catch(IOException e) {}
+	}
+	public static void main(String[] args) throws IOException {
 
 		int a = r.nextInt(), b = r.nextInt();
 		int c = r.nextInt(), d = r.nextInt();
@@ -710,22 +806,27 @@ public class template {
 
 </Spoiler>
 
-
 ### Method 2 - `BufferedReader` and `PrintWriter`
 
 <Spoiler title="Method 2">
 
 ```java
 import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
+	static BufferedReader r;
+	static PrintWriter pw;
+	static {
+		try {
+			r = new BufferedReader(new FileReader("paint.in"));
+			pw = new PrintWriter(new FileWriter("paint.out"));
+		} catch(IOException e) {}
+	}
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("paint.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("paint.out"));
 		int[] cover = new int[100];
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringTokenizer st = new StringTokenizer(r.readLine());
 		int a = Integer.parseInt(st.nextToken()), b = Integer.parseInt(st.nextToken());
 		st = new StringTokenizer(br.readLine());
 		int c = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());
@@ -741,14 +842,11 @@ public class Main {
 }
 ```
 
-
 </Spoiler>
 
-### Method 3 - `Kattio`
+#### With `Kattio`
 
-Essentially the same as method 2. Note how `static` initialization of `io` is different compared to standard input / output since we need to catch [`IOException`](https://docs.oracle.com/javase/7/docs/api/java/io/IOException.html)s.
-
-<Spoiler title="Method 3">
+<Spoiler title="Kattio">
 
 ```java
 // Kattio template code above
@@ -783,7 +881,6 @@ public class Main {
 <PySection>
 
 ### Method 1
-
 
 <Spoiler title="Method 1">
 
@@ -837,21 +934,27 @@ print(ans)
 
 </LanguageSection>
 
-### Note - Extra Whitespace
+## USACO Note - Extra Whitespace
 
-Importantly, USACO will automatically add a newline to the end of your file if it does not end with one. Make sure not to output trailing spaces, or you will get an error such as the following:
+Importantly, USACO will automatically add a newline to the end of your file if it does not end with one.
+
+<Warning>
+
+Occasionally, there is a period of time near the beginning of the contest window where the model outputs do not end in newlines. This renders the problem unsolvable ...
+
+</Warning>
+
+Make sure not to output trailing spaces, or you will get an error such as the following:
 
 ![bad](Error.png)
 
-Here are some examples of what is allowed and what isn't:
+Here are some examples of what is allowed and what isn't when the intended output consists of a single integer `ans`:
 
 <LanguageSection>
 
 <CPPSection>
 
-#### C++
-
-For methods 1 and 2:
+### C++
 
 ```cpp
 cout << ans; // OK, no newline
@@ -865,9 +968,7 @@ cout << ans << "\n\n"; // NOT OK, extra newline
 
 <JavaSection>
 
-#### Java
-
-For method 2:
+### Java
 
 ```java
 pw.print(ans); // OK, no newline
@@ -881,9 +982,7 @@ pw.print(ans+"\n\n") // NOT OK, extra newline
 
 <PySection>
 
-#### Python
-
-For method 2:
+### Python
 
 ```py
 print(ans) # OK, newline

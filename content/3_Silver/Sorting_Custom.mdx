@@ -136,14 +136,14 @@ using namespace std;
 #define s second
 
 int main() {
-    int M = 4;
-    vector<pair<int,pair<int,int>>> v;
-    for (int i = 0; i < M; ++i) {
-        int a,b,w; cin >> a >> b >> w;
-        v.push_back({w,{a,b}});
-    }
-    sort(begin(v),end(v));
-    for (auto e: v) cout << e.s.f << " " << e.s.s << " " << e.f << "\n";
+	int M = 4;
+	vector<pair<int,pair<int,int>>> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({w,{a,b}});
+	}
+	sort(begin(v),end(v));
+	for (auto e: v) cout << e.s.f << " " << e.s.s << " " << e.f << "\n";
 }
 ```
 
@@ -151,14 +151,14 @@ or a `vector` of `array<int,3>`s or `vector<int>`s:
 
 ```cpp
 int main() {
-    int M = 4;
-    vector<array<int,3>> v; // or vector<vector<int>>
-    for (int i = 0; i < M; ++i) {
-        int a,b,w; cin >> a >> b >> w;
-        v.push_back({w,a,b});
-    }
-    sort(begin(v),end(v));
-    for (auto e: v) cout << e[1] << " " << e[2] << " " << e[0] << "\n";
+	int M = 4;
+	vector<array<int,3>> v; // or vector<vector<int>>
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({w,a,b});
+	}
+	sort(begin(v),end(v));
+	for (auto e: v) cout << e[1] << " " << e[2] << " " << e[0] << "\n";
 }
 ```
 
@@ -186,7 +186,7 @@ A C++ `struct` is the same as a `class` in C++, but all members are public by de
 using namespace std;
 
 struct Edge {
-    int a,b,w;
+	int a,b,w;
 };
 
 /* alternatively,
@@ -197,13 +197,13 @@ class Edge {
 */
 
 int main() {
-    int M = 4;
-    vector<Edge> v;
-    for (int i = 0; i < M; ++i) {
-        int a,b,w; cin >> a >> b >> w;
-        v.push_back({a,b,w});
-    }
-    for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -294,19 +294,19 @@ In the context of Wormhole Sort (note the use of [const Edge&](https://stackover
 using namespace std;
 
 struct Edge {
-    int a,b,w;
-    bool operator<(const Edge& y) { return w < y.w; }
+	int a,b,w;
+	bool operator<(const Edge& y) { return w < y.w; }
 };
 
 int main() {
-    int M = 4;
-    vector<Edge> v;
-    for (int i = 0; i < M; ++i) {
-        int a,b,w; cin >> a >> b >> w;
-        v.push_back({a,b,w});
-    }
-    sort(begin(v),end(v));
-    for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	sort(begin(v),end(v));
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -314,7 +314,7 @@ We can also overload the operator outside of the class:
 
 ```cpp
 struct Edge {
-    int a,b,w;
+	int a,b,w;
 };
 bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
 ```
@@ -323,8 +323,8 @@ or within it using [friend](https://www.geeksforgeeks.org/friend-class-function-
 
 ```cpp
 struct Edge {
-    int a,b,w;
-    friend bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
+	int a,b,w;
+	friend bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
 };
 ```
 
@@ -337,20 +337,20 @@ This works for both objects and primitives, and you can declare many different c
 using namespace std;
 
 struct Edge {
-    int a,b,w;
+	int a,b,w;
 };
 
 bool cmp(const Edge& x, const Edge& y) { return x.w < y.w; }
 
 int main() {
-    int M = 4;
-    vector<Edge> v;
-    for (int i = 0; i < M; ++i) {
-        int a,b,w; cin >> a >> b >> w;
-        v.push_back({a,b,w});
-    }
-    sort(begin(v),end(v),cmp);
-    for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	int M = 4;
+	vector<Edge> v;
+	for (int i = 0; i < M; ++i) {
+		int a,b,w; cin >> a >> b >> w;
+		v.push_back({a,b,w});
+	}
+	sort(begin(v),end(v),cmp);
+	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -550,11 +550,11 @@ Now, suppose we wanted to sort a list of `Edge`s in ascending order, primarily b
 
 ```cpp
 struct Edge {
-    int a,b,w;
-    bool operator<(const Edge& y) {
-        if (w != y.w) return w < y.w;
-        return a < y.a;
-    }
+	int a,b,w;
+	bool operator<(const Edge& y) {
+		if (w != y.w) return w < y.w;
+		return a < y.a;
+	}
 };
 ```
 
@@ -564,12 +564,12 @@ struct Edge {
 
 ```java
 static class Edge implements Comparable<Edge> {
-    int a,b,w;
-    public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
-    public int compareTo(Edge y) {
-        if (w != y.w) return Integer.compare(w,y.w);
-        return Integer.compare(a,y.a);
-    }
+	int a,b,w;
+	public Edge(int _a, int _b, int _w) { a = _a; b = _b; w = _w; }
+	public int compareTo(Edge y) {
+		if (w != y.w) return Integer.compare(w,y.w);
+		return Integer.compare(a,y.a);
+	}
 }
 ```
 
@@ -581,12 +581,12 @@ In Python, tuples have a natural order based on their elements in order. We can 
 
 ```py
 class Edge:
-    def __init__(self, a, b, w):
-        self.a = a
-        self.b = b
-        self.w = w
-    def __lt__(self, other): # lt means less than
-    	return (self.w, self.a) < (other.w, other.a)
+	def __init__(self, a, b, w):
+		self.a = a
+		self.b = b
+		self.w = w
+	def __lt__(self, other): # lt means less than
+		return (self.w, self.a) < (other.w, other.a)
 ```
 
 This also gives an easy way to write a key function to sort in this way:

@@ -56,40 +56,40 @@ vb visited(3001), closed(3001);
 // Store the global variables, including the number of nodes visited and the boolean closed array.
 
 void DFS(ll node){
-    if(visited[node] || closed[node]) return;
-    // Increase the number of nodes if and only if they haven't been closed.
-    nodes++;
-    visited[node] = true;
-    EACH(u, adj[node]){
-        if(!visited[u]){
-            DFS(u);
-        }
-    }
+	if(visited[node] || closed[node]) return;
+	// Increase the number of nodes if and only if they haven't been closed.
+	nodes++;
+	visited[node] = true;
+	EACH(u, adj[node]){
+		if(!visited[u]){
+			DFS(u);
+		}
+	}
 }
 
 int main(){
-    setIO("closing");
-    ll n, m; cin >> n >> m;
-    FOR(i, 0, m){
-        ll a, b; cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    FOR(i, 0, n){
-        cin >> order[i];
-    }
-    // Check the first line which indicates whether the initial farm is fully connected.
-    DFS(1);
-    if(nodes == n) cout << "YES" << endl;
-    else cout << "NO" << endl;
-    FOR(i, 0, n-1){
-        fill(all(visited), false);
-        nodes = 0;
-        closed[order[i]] = true;
-        DFS(order[n-1]); // DFS from the barn that will close last
+	setIO("closing");
+	ll n, m; cin >> n >> m;
+	FOR(i, 0, m){
+		ll a, b; cin >> a >> b;
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	FOR(i, 0, n){
+		cin >> order[i];
+	}
+	// Check the first line which indicates whether the initial farm is fully connected.
+	DFS(1);
+	if(nodes == n) cout << "YES" << endl;
+	else cout << "NO" << endl;
+	FOR(i, 0, n-1){
+		fill(all(visited), false);
+		nodes = 0;
+		closed[order[i]] = true;
+		DFS(order[n-1]); // DFS from the barn that will close last
 	// Have all the unclosed barns been visited?
-        (nodes == n-i-1) ? cout << "YES" << endl: cout << "NO" << endl;
-    }
+		(nodes == n-i-1) ? cout << "YES" << endl: cout << "NO" << endl;
+	}
 }
 ```
 
@@ -107,58 +107,58 @@ vector<bool> open(3000, true);
 vector<int> graph[3000];
 int main() 
 {
-    freopen("closing.in", "r", stdin);
-    freopen("closing.out", "w", stdout);
-    int n, m;
-    cin >> n >> m;
-    int a, b;
-    for (int i = 0; i < m; i++)
-    {
-        cin >> a >> b;
-        graph[a - 1].push_back(b - 1);
-        graph[b - 1].push_back(a - 1);
-    }
-    bool connected = true;
-    int barn;
-    for (int i = 0; i < n; i++)
-    {
-        visited.assign(n, false);
-        //find first open barn and run dfs
-        for (int i = 0; i < n; i++)
-        {
-            if (open[i])
-            {
-                dfs(i);
-                break;
-            }
-        }
-        connected = true;
-        //if any barn is open but not visited, the farm is not connected
-        for (int i = 0; i < n; i++)
-        {
-            if (!visited[i] && open[i])
-            {
-                connected = false;
-            }
-        }
-        cout << (connected ? "YES" : "NO") << endl;
-        cin >> barn;
-        open[barn - 1] = false;
-    }
-    return 0;
+	freopen("closing.in", "r", stdin);
+	freopen("closing.out", "w", stdout);
+	int n, m;
+	cin >> n >> m;
+	int a, b;
+	for (int i = 0; i < m; i++)
+	{
+		cin >> a >> b;
+		graph[a - 1].push_back(b - 1);
+		graph[b - 1].push_back(a - 1);
+	}
+	bool connected = true;
+	int barn;
+	for (int i = 0; i < n; i++)
+	{
+		visited.assign(n, false);
+		//find first open barn and run dfs
+		for (int i = 0; i < n; i++)
+		{
+			if (open[i])
+			{
+				dfs(i);
+				break;
+			}
+		}
+		connected = true;
+		//if any barn is open but not visited, the farm is not connected
+		for (int i = 0; i < n; i++)
+		{
+			if (!visited[i] && open[i])
+			{
+				connected = false;
+			}
+		}
+		cout << (connected ? "YES" : "NO") << endl;
+		cin >> barn;
+		open[barn - 1] = false;
+	}
+	return 0;
 }
 
 void dfs(int barn)
 {
-    if (visited[barn] || !open[barn])
-    {
-        return;
-    }
-    visited[barn] = true;
-    for (int i = 0; i < graph[barn].size(); i++)
-    {
-        dfs(graph[barn][i]);
-    }
+	if (visited[barn] || !open[barn])
+	{
+		return;
+	}
+	visited[barn] = true;
+	for (int i = 0; i < graph[barn].size(); i++)
+	{
+		dfs(graph[barn][i]);
+	}
 }
 ```
 

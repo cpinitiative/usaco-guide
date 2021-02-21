@@ -139,27 +139,27 @@ using pi = pair<int,int>;
 #define mp make_pair
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
+	ios::sync_with_stdio(false);
+	cin.tie(0);
 
-    int n; cin >> n;
-    vector<pi> vals;
-    for (int i = 0; i < n; i++) {
-        int l, r; 
-        cin >> l >> r;
-        vals.pb(mp(l, 1));
-        vals.pb(mp(r, -1));
-    }
+	int n; cin >> n;
+	vector<pi> vals;
+	for (int i = 0; i < n; i++) {
+		int l, r; 
+		cin >> l >> r;
+		vals.pb(mp(l, 1));
+		vals.pb(mp(r, -1));
+	}
 
-    sort(all(vals)); 
+	sort(all(vals)); 
 
-    int sum = 0;
-    int ans = 0;
-    for (auto x : vals) {
-        sum += x.s;
-        ans = max(ans, sum);
-    }
-    cout << ans << '\n';
+	int sum = 0;
+	int ans = 0;
+	for (auto x : vals) {
+		sum += x.s;
+		ans = max(ans, sum);
+	}
+	cout << ans << '\n';
 }
 ```
 
@@ -186,47 +186,47 @@ using namespace std;
 void setIn(string s) { freopen(s.c_str(),"r",stdin); }
 void setOut(string s) { freopen(s.c_str(),"w",stdout); }
 void setIO(string s = "") {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    if (!s.empty()) { setIn(s+".in"), setOut(s+".out"); }
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	if (!s.empty()) { setIn(s+".in"), setOut(s+".out"); }
 }
 
 int N;
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    cin >> N;
-    vector<pair<int, int>> customers;
-    F0R(i, N) {
-        int a, b; cin >> a >> b;
-        customers.push_back({a, 1});
-        customers.push_back({b + 1, -1});
-    }
+	cin >> N;
+	vector<pair<int, int>> customers;
+	F0R(i, N) {
+		int a, b; cin >> a >> b;
+		customers.push_back({a, 1});
+		customers.push_back({b + 1, -1});
+	}
 
-    sort(customers.begin(), customers.end());
+	sort(customers.begin(), customers.end());
 
-    int curr = 0;
-    int l = 0;
-    vt<long long> pfx(2*N + 1); // prefix sum array
-    vt<int> arr(2*N);
+	int curr = 0;
+	int l = 0;
+	vt<long long> pfx(2*N + 1); // prefix sum array
+	vt<int> arr(2*N);
 
-    F0R(i, 2*N) { // coordinate compression
-        if(i == 0) { customers[i].first = 0; }
-        else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
-        arr[l+1] += customers[i].second;
-        // pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
-    }
+	F0R(i, 2*N) { // coordinate compression
+		if(i == 0) { customers[i].first = 0; }
+		else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
+		arr[l+1] += customers[i].second;
+		// pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
+	}
 
-    FOR(i, 1, 2*N+1) {
-        pfx[i] = arr[i] + pfx[i-1];
-        // pfx[i] += pfx[i-1]; implementation without arr
-    }
+	FOR(i, 1, 2*N+1) {
+		pfx[i] = arr[i] + pfx[i-1];
+		// pfx[i] += pfx[i-1]; implementation without arr
+	}
 
-    long long ret = 0;
+	long long ret = 0;
 
-    F0R(i, 2*N+1) ret = max(ret, pfx[i]); // find our maximum value
-    cout << ret << "\n";
+	F0R(i, 2*N+1) ret = max(ret, pfx[i]); // find our maximum value
+	cout << ret << "\n";
 }
 ```
 

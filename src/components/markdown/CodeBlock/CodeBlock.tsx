@@ -34,9 +34,10 @@ const renderTokens = (tokens, getLineProps, getTokenProps) => {
       <Line key={i} {...getLineProps({ line, key: i })}>
         <LineNo data-line-number={i + 1} />
         <LineContent>
-          {line.map((token, key) => (
-            <span key={key} {...getTokenProps({ token, key })} />
-          ))}
+          {line.map((token, key) => {
+            token.content = token.content.replace(/ {4}/g, '\t');
+            return <span key={key} {...getTokenProps({ token, key })} />;
+          })}
         </LineContent>
       </Line>
     );

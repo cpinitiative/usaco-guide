@@ -13,7 +13,7 @@ We are asked to find the number of subarrays that sum up to $x$ given the size o
 
 We can have a map that keeps track of the prefix sums. At each index $i$, we can count the number of prefixes with sum equal to $\texttt{prefixSum}[i] - x$. This will ensure that we can remove a prefix from our current prefix to build a subarray with sum $x$. After every iteration, we just add our new prefix sum to the map.
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 ```cpp
 //Created by Qi Wang
@@ -84,58 +84,58 @@ const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};
 //mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
 
 namespace input {
-    template<class T> void re(complex<T>& x);
-    template<class T1, class T2> void re(pair<T1,T2>& p);
-    template<class T> void re(vector<T>& a);
-    template<class T, size_t SZ> void re(array<T,SZ>& a);
+	template<class T> void re(complex<T>& x);
+	template<class T1, class T2> void re(pair<T1,T2>& p);
+	template<class T> void re(vector<T>& a);
+	template<class T, size_t SZ> void re(array<T,SZ>& a);
 
-    template<class T> void re(T& x) { cin >> x; }
-    void re(double& x) { string t; re(t); x = stod(t); }
-    void re(ld& x) { string t; re(t); x = stold(t); }
-    template<class Arg, class... Args> void re(Arg& first, Args&... rest) { 
-        re(first); re(rest...); 
-    }
+	template<class T> void re(T& x) { cin >> x; }
+	void re(double& x) { string t; re(t); x = stod(t); }
+	void re(ld& x) { string t; re(t); x = stold(t); }
+	template<class Arg, class... Args> void re(Arg& first, Args&... rest) { 
+		re(first); re(rest...); 
+	}
 
-    template<class T> void re(complex<T>& x) { T a,b; re(a,b); x = cd(a,b); }
-    template<class T1, class T2> void re(pair<T1,T2>& p) { re(p.f,p.s); }
-    template<class T> void re(vector<T>& a) { F0R(i,sz(a)) re(a[i]); }
-    template<class T, size_t SZ> void re(array<T,SZ>& a) { F0R(i,SZ) re(a[i]); }
+	template<class T> void re(complex<T>& x) { T a,b; re(a,b); x = cd(a,b); }
+	template<class T1, class T2> void re(pair<T1,T2>& p) { re(p.f,p.s); }
+	template<class T> void re(vector<T>& a) { F0R(i,sz(a)) re(a[i]); }
+	template<class T, size_t SZ> void re(array<T,SZ>& a) { F0R(i,SZ) re(a[i]); }
 }
 
 using namespace input;
 
 namespace output {
-    template<class T1, class T2> void pr(const pair<T1,T2>& x);
-    template<class T, size_t SZ> void pr(const array<T,SZ>& x);
-    template<class T> void pr(const vector<T>& x);
-    template<class T> void pr(const set<T>& x);
-    template<class T1, class T2> void pr(const map<T1,T2>& x);
+	template<class T1, class T2> void pr(const pair<T1,T2>& x);
+	template<class T, size_t SZ> void pr(const array<T,SZ>& x);
+	template<class T> void pr(const vector<T>& x);
+	template<class T> void pr(const set<T>& x);
+	template<class T1, class T2> void pr(const map<T1,T2>& x);
 
-    template<class T> void pr(const T& x) { cout << x; }
-    template<class Arg, class... Args> void pr(const Arg& first, const Args&... rest) { 
-        pr(first); pr(rest...); 
-    }
+	template<class T> void pr(const T& x) { cout << x; }
+	template<class Arg, class... Args> void pr(const Arg& first, const Args&... rest) { 
+		pr(first); pr(rest...); 
+	}
 
-    template<class T1, class T2> void pr(const pair<T1,T2>& x) { 
-        pr("{",x.f,", ",x.s,"}"); 
-    }
-    template<class T> void prContain(const T& x) {
-        pr("{");
-        bool fst = 1; for (const auto& a: x) pr(!fst?", ":"",a), fst = 0; // const needed for vector<bool>
-        pr("}");
-    }
-    template<class T, size_t SZ> void pr(const array<T,SZ>& x) { prContain(x); }
-    template<class T> void pr(const vector<T>& x) { prContain(x); }
-    template<class T> void pr(const set<T>& x) { prContain(x); }
-    template<class T1, class T2> void pr(const map<T1,T2>& x) { prContain(x); }
-    
-    void ps() { pr("\n"); }
-    template<class Arg> void ps(const Arg& first) { 
-        pr(first); ps(); // no space at end of line
-    }
-    template<class Arg, class... Args> void ps(const Arg& first, const Args&... rest) { 
-        pr(first," "); ps(rest...); // print w/ spaces
-    }
+	template<class T1, class T2> void pr(const pair<T1,T2>& x) { 
+		pr("{",x.f,", ",x.s,"}"); 
+	}
+	template<class T> void prContain(const T& x) {
+		pr("{");
+		bool fst = 1; for (const auto& a: x) pr(!fst?", ":"",a), fst = 0; // const needed for vector<bool>
+		pr("}");
+	}
+	template<class T, size_t SZ> void pr(const array<T,SZ>& x) { prContain(x); }
+	template<class T> void pr(const vector<T>& x) { prContain(x); }
+	template<class T> void pr(const set<T>& x) { prContain(x); }
+	template<class T1, class T2> void pr(const map<T1,T2>& x) { prContain(x); }
+	
+	void ps() { pr("\n"); }
+	template<class Arg> void ps(const Arg& first) { 
+		pr(first); ps(); // no space at end of line
+	}
+	template<class Arg, class... Args> void ps(const Arg& first, const Args&... rest) { 
+		pr(first," "); ps(rest...); // print w/ spaces
+	}
 }
 
 using namespace output;
@@ -144,28 +144,28 @@ int N, X;
 vi T;
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0); cout.tie(0);
 
-    cin >> N >> X;
-    T.resize(N); re(T);
-    
-    ll psum = 0;
-    ll res = 0;
-    map<ll, int> sums;
-    sums[0]=1;
+	cin >> N >> X;
+	T.resize(N); re(T);
+	
+	ll psum = 0;
+	ll res = 0;
+	map<ll, int> sums;
+	sums[0]=1;
 
-    trav(x, T){
-        psum += x;
-        
-        //If there is a subarray with psum-x, we can exclude from our current subarray. Thus, we can add the number of those subarrays to our answer.
-        res += sums[psum-X];
-        
-        //Incrementing the count of the subarray with sum = psum
-        sums[psum]++;
-    }
+	trav(x, T){
+		psum += x;
+		
+		//If there is a subarray with psum-x, we can exclude from our current subarray. Thus, we can add the number of those subarrays to our answer.
+		res += sums[psum-X];
+		
+		//Incrementing the count of the subarray with sum = psum
+		sums[psum]++;
+	}
 
-    pr(res);
+	pr(res);
 }
 ```
 

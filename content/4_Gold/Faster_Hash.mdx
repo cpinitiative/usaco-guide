@@ -71,7 +71,7 @@ using namespace __gnu_pbds;
 ```cpp
 const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
 struct chash {
-    int operator()(int x) const { return x ^ RANDOM; }
+	int operator()(int x) const { return x ^ RANDOM; }
 };
 gp_hash_table<key, int, chash> table;
 ```
@@ -86,17 +86,17 @@ We can modify the declaration of `gp_hash_table` so that it supports the `resize
 
 ```cpp
 template<class K,class V> using ht = gp_hash_table<
-    K,
-    null_type,
-    hash<K>,
-    equal_to<K>,
-    direct_mask_range_hashing<>,
-    linear_probe_fn<>,
-    hash_standard_resize_policy<
-      hash_exponential_size_policy<>,
-      hash_load_check_resize_trigger<>,
-      true
-    >
+		K,
+		null_type,
+		hash<K>,
+		equal_to<K>,
+		direct_mask_range_hashing<>,
+		linear_probe_fn<>,
+		hash_standard_resize_policy<
+			hash_exponential_size_policy<>,
+			hash_load_check_resize_trigger<>,
+			true
+		>
 >;
 ```
 
@@ -104,9 +104,9 @@ These are the same template arguments as the default `gp_hash_table`, except `fa
 
 ```cpp
 int main() {
-    ht<int,null_type> g; g.resize(5);
-    cout << g.get_actual_size() << "\n"; // 8
-    cout << g.size() << "\n"; // 0
+	ht<int,null_type> g; g.resize(5);
+	cout << g.get_actual_size() << "\n"; // 8
+	cout << g.size() << "\n"; // 0
 }
 ```
 
