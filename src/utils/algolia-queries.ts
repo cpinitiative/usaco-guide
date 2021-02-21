@@ -1,5 +1,12 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
 import extractSearchableText from './extract-searchable-text';
+import {string} from "prop-types";
+
+function transform(tags: string, starred: string, diff: string): string {
+  const omniData = tags + " " + starred + " " + diff;
+  console.log(omniData);
+  return omniData;
+}
 
 const pageQuery = `{
   pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
@@ -87,7 +94,9 @@ const queries = [
           problemModules[x.id].push({
             id: edge.node.frontmatter.id,
             title: edge.node.frontmatter.title,
+            omniData: transform(JSON.stringify(edge.node.problems.tags), JSON.stringify(edge.node.problems.starred), JSON.stringify(edge.node.problems.difficulty)),
           });
+          
         });
       });
       data.data.edges.forEach(edge => {
