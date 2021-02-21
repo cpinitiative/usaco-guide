@@ -39,7 +39,7 @@ export const LanguageSection = props => {
         break;
       }
     const notAvailable = (
-      <div className="p-4 bg-red-50 rounded-md dark:bg-red-900">
+      <div className="p-4 bg-red-50 rounded-md dark:bg-red-900 mb-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg
@@ -82,11 +82,7 @@ export const LanguageSection = props => {
     return (
       <>
         {notAvailable}
-        {fallbackLang && (
-          <>
-            {sections[fallbackLang]}
-          </>
-        )}
+        {fallbackLang && sections[fallbackLang]}
       </>
     );
   }
