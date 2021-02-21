@@ -198,7 +198,7 @@ One way to solve this is by storing the polynomial hashes of each match in a has
 
 Since the test data for this particular problem is very strong, we will probably get hash collisions with only one hash. To remedy this, we use two hashes for each match - this significantly decreases the probability of collisions.
 
-The two base-modulo pairs $(9973, 10^9 + 9)$ and $(69420, 998244353)$ work for this problem.
+Using the base $9973$ with the two modulos $10^9 + 9$ and $10^9 + 7$ works for this problem.
 
 <LanguageSection>
 
@@ -209,7 +209,7 @@ The two base-modulo pairs $(9973, 10^9 + 9)$ and $(69420, 998244353)$ work for t
 typedef long long ll;
 using namespace std;
 
-const ll P1 = 9973, P2 = 69420, M1 = 1e9 + 9, M2 = 998244353;
+const ll P = 9973, M1 = 1e9 + 9, M2 = 1e9 + 7;
 
 int freq_target[26], freq_curr[26];
 string n, h;
@@ -225,11 +225,11 @@ int main() {
 		// Update frequency table
 		freq_target[n[i] - 'a']++, freq_curr[h[i] - 'a']++;
 		// Compute polynomial hashes
-		poly1 = (poly1 * P1 + (h[i] - 'a')) % M1;
-		poly2 = (poly2 * P2 + (h[i] - 'a')) % M2;
+		poly1 = (poly1 * P + (h[i] - 'a')) % M1;
+		poly2 = (poly2 * P + (h[i] - 'a')) % M2;
 		// p_pow1 and p_pow2 will be used to **update** the polynomial hashes
-		p_pow1 = p_pow1 * P1 % M1;
-		p_pow2 = p_pow2 * P2 % M2;
+		p_pow1 = p_pow1 * P % M1;
+		p_pow2 = p_pow2 * P % M2;
 	}
 	{
 		bool match = true;
@@ -240,10 +240,10 @@ int main() {
 	for (int i = n.size(); i < h.size(); i++) {
 		// Update frequency table
 		freq_curr[h[i] - 'a']++;
-		freq_curr[h[i - s.size()] - 'a']--;
+		freq_curr[h[i - n.size()] - 'a']--;
 		// Update polynomial hashes
-		poly1 = (poly1 * P1 - p_pow1 * (h[i - s.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
-		poly2 = (poly2 * P2 - p_pow2 * (h[i - s.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
+		poly1 = (poly1 * P - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
+		poly2 = (poly2 * P - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
 		
 		bool match = true;
 		for (int j = 0; j < 26; j++) match &= freq_curr[j] == freq_target[j];
@@ -261,9 +261,10 @@ int main() {
 
 An alternative solution without frequency tables would be to hash the substrings that we're trying to match. Since order doesn't matter, we need to modify our hash function slightly.
 
-In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two base-modulo pairs).
+In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two modulos).
+This hash is nice because the relative order of the letters doesn't matter, as multiplication is commutative.
 
-Alternative hashes (e.g. computing the sum $(P + s_1)^2 + (P + s_2)^2 + \dots + (P + s_k)^2 \bmod M$) also work for other problems, but the test cases are too strong for that to pass here.
+Alternative hashes (e.g. computing the sum $(P + s_1)^2 + (P + s_2)^2 + \dots + (P + s_k)^2 \bmod M$) also work for other hashing problems, but the test cases are too strong for that to pass here.
 
 <LanguageSection>
 
@@ -274,7 +275,7 @@ Alternative hashes (e.g. computing the sum $(P + s_1)^2 + (P + s_2)^2 + \dots + 
 typedef long long ll;
 using namespace std;
 
-const ll P1 = 9973, P2 = 69420, M1 = 1e9 + 9, M2 = 998244353;
+const ll P = 9973, M1 = 1e9 + 9, M2 = 1e9 + 7;
 
 ll inv(ll base, ll MOD) {
 	ll ans = 1, expo = MOD - 2;
@@ -298,26 +299,26 @@ int main() {
 	ll poly1 = 0, poly2 = 0, p_pow1 = 1, p_pow2 = 1;
 	for (int i = 0; i < n.size(); i++) {
 		// Compute product hashes
-		n_hsh1 = n_hsh1 * (P1 + n[i] - 'a') % M1;
-		n_hsh2 = n_hsh2 * (P2 + n[i] - 'a') % M2;
-		h_hsh1 = h_hsh1 * (P1 + h[i] - 'a') % M1;
-		h_hsh2 = h_hsh2 * (P2 + h[i] - 'a') % M2;
+		n_hsh1 = n_hsh1 * (P + n[i] - 'a') % M1;
+		n_hsh2 = n_hsh2 * (P + n[i] - 'a') % M2;
+		h_hsh1 = h_hsh1 * (P + h[i] - 'a') % M1;
+		h_hsh2 = h_hsh2 * (P + h[i] - 'a') % M2;
 		// Compute polynomial hashes
-		poly1 = (poly1 * P1 + (h[i] - 'a')) % M1;
-		poly2 = (poly2 * P2 + (h[i] - 'a')) % M2;
+		poly1 = (poly1 * P + (h[i] - 'a')) % M1;
+		poly2 = (poly2 * P + (h[i] - 'a')) % M2;
 		// p_pow1 and p_pow2 will be used to **update** the polynomial hashes
-		p_pow1 = p_pow1 * P1 % M1;
-		p_pow2 = p_pow2 * P2 % M2;
+		p_pow1 = p_pow1 * P % M1;
+		p_pow2 = p_pow2 * P % M2;
 	}
 	if (n_hsh1 == h_hsh1 && n_hsh2 == h_hsh2) good.insert({poly1, poly2});
 
 	for (int i = n.size(); i < h.size(); i++) {
 		// Update product hashes using modular inverse
-		h_hsh1 = h_hsh1 * inv(P1 + h[i - n.size()] - 'a', M1) % M1 * (P1 + h[i] - 'a') % M1;
-		h_hsh2 = h_hsh2 * inv(P2 + h[i - n.size()] - 'a', M2) % M2 * (P2 + h[i] - 'a') % M2;
+		h_hsh1 = h_hsh1 * inv(P + h[i - n.size()] - 'a', M1) % M1 * (P + h[i] - 'a') % M1;
+		h_hsh2 = h_hsh2 * inv(P + h[i - n.size()] - 'a', M2) % M2 * (P + h[i] - 'a') % M2;
 		// Update polynomial hashes
-		poly1 = (poly1 * P1 - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
-		poly2 = (poly2 * P2 - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
+		poly1 = (poly1 * P - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
+		poly2 = (poly2 * P - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
 		
 		if (n_hsh1 == h_hsh1 && n_hsh2 == h_hsh2) good.insert({poly1, poly2});
 	}
