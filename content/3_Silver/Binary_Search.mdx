@@ -509,68 +509,68 @@ import java.io.*;
 import java.util.*;
 
 public class BinarySearch{
-    static int n, k;
-    static List<Integer> v = new ArrayList<>();
-    public static void main(String[] args){
-        Kattio io = new Kattio();
+	static int n, k;
+	static List<Integer> v = new ArrayList<>();
+	public static void main(String[] args){
+		Kattio io = new Kattio();
 
-        n = io.nextInt(); k = io.nextInt();
-        for(int i = 0; i < n; i++){
-            int t = io.nextInt();
-            v.add(t);
-        }
-        Collections.sort(v);
-        io.println(lastTrue(1, (int)2e9));
+		n = io.nextInt(); k = io.nextInt();
+		for(int i = 0; i < n; i++){
+			int t = io.nextInt();
+			v.add(t);
+		}
+		Collections.sort(v);
+		io.println(lastTrue(1, (int)2e9));
 		io.close();
-    }
+	}
 
-    public static boolean f(int x){
-        // returns true if median can be raised to x
-        long operationsNeeded = 0;
-        for (int i = (n-1)/2; i < n; i++)
-            operationsNeeded += Math.max(0, x-v.get(i));
-        return operationsNeeded <= k;
-    }
+	public static boolean f(int x){
+		// returns true if median can be raised to x
+		long operationsNeeded = 0;
+		for (int i = (n-1)/2; i < n; i++)
+			operationsNeeded += Math.max(0, x-v.get(i));
+		return operationsNeeded <= k;
+	}
 
-    public static int lastTrue(int lo, int hi) {
-        for (--lo; lo < hi; ) {
-            int mid = lo+(hi-lo+1)/2;
-            if (f(mid)) lo = mid;
-            else hi = mid-1;
-        }
-        return lo;
-    }
+	public static int lastTrue(int lo, int hi) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			if (f(mid)) lo = mid;
+			else hi = mid-1;
+		}
+		return lo;
+	}
 
-    static class Kattio extends PrintWriter {
-        private BufferedReader r;
-        private StringTokenizer st;
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
 
-        // standard input
-        public Kattio() { this(System.in,System.out); }
-        public Kattio(InputStream i, OutputStream o) {
-            super(o);
-            r = new BufferedReader(new InputStreamReader(i));
-        }
-        // USACO-style file input
-        public Kattio(String problemName) throws IOException {
-            super(new FileWriter(problemName+".out"));
-            r = new BufferedReader(new FileReader(problemName+".in"));
-        }
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
 
-        // returns null if no more input
-        public String next() {
-            try {
-                while (st == null || !st.hasMoreTokens())
-                    st = new StringTokenizer(r.readLine());
-                return st.nextToken();
-            } catch (Exception e) {}
-            return null;
-        }
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
 
-        public int nextInt() { return Integer.parseInt(next()); }
-        public double nextDouble() { return Double.parseDouble(next()); }
-        public long nextLong() { return Long.parseLong(next()); }
-    }
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
 }
 ```
 
