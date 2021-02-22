@@ -34,42 +34,55 @@ const LineContent = styled.span`
   display: table-cell;
 `;
 
-class CodeSnipButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.clickEvent = this.clickEvent.bind(this);
+const CodeSnippetLineContent = styled(LineContent)`
+  color: #00bb00; // any better color?
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
+`;
 
-  clickEvent() {
-    this.props.setCodeSnipShow(this.props.codeSnipID, !this.props.showSnip);
+const CodeSnipButton = ({
+  snipID,
+  showSnip,
+  onShowSnipChange,
+}: {
+  snipID: number;
+  showSnip: boolean;
+  onShowSnipChange: (snipID: number, showSnip: boolean) => void;
+}) => {
+  return (
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      opacity="0.3"
+      className={
+        'transform transition translate-y-0.5 h-4 cursor-pointer' +
+        (!showSnip ? ' -rotate-90' : '')
+      }
+      onClick={() => onShowSnipChange(snipID, !showSnip)}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={3}
+        d="M17 10l-5 5-5-5"
+      />
+    </svg>
+  );
+};
+
+class CodeBlock extends React.Component<
+  {
+    children: string;
+    className: string;
+  },
+  {
+    collapsed: boolean;
+    codeSnipShow: boolean[];
   }
-
-  render() {
-    return (
-      <svg
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        opacity="0.3"
-        style={{ height: '1em' } /* todo: make class */}
-        className={
-          'transform transition translate-y-0.5' +
-          (!this.props.showSnip ? ' -rotate-90' : '')
-        }
-        onClick={this.clickEvent}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={3}
-          d="M17 10l-5 5-5-5"
-        />
-      </svg>
-    );
-  }
-}
-
-class CodeBlock extends React.Component {
+> {
   codeSnips = [];
 
   constructor(props) {
@@ -133,16 +146,21 @@ class CodeBlock extends React.Component {
                 <LineNo data-line-number={'..'} />
                 <LineSnip>
                   <CodeSnipButton
-                    setCodeSnipShow={this.setCodeSnipShow}
-                    codeSnipID={curSnip}
+                    onShowSnipChange={this.setCodeSnipShow}
+                    snipID={curSnip}
                     showSnip={false}
                   />{' '}
                   {/*this.state.codeSnipShow[curSnip] is false*/}
                 </LineSnip>
-                <LineContent>
-                  {codeSnips[curSnip].value}{' '}
-                  {/*kinda scuffed but if it's an empty string nothing happens anyways; todo: make it lighter or have some custom color*/}
-                </LineContent>
+                <CodeSnippetLineContent
+                  onClick={this.setCodeSnipShow.bind(this, curSnip, true)}
+                >
+                  Code Snippet
+                  {codeSnips[curSnip].value
+                    ? `: ${codeSnips[curSnip].value}`
+                    : ''}{' '}
+                  (Click to expand)
+                </CodeSnippetLineContent>
               </Line>
             );
           } else return null; // or nothing
@@ -163,8 +181,8 @@ class CodeBlock extends React.Component {
           i < codeSnips[curSnip].end ? (
             <LineSnip>
               <CodeSnipButton
-                setCodeSnipShow={this.setCodeSnipShow}
-                codeSnipID={curSnip}
+                onShowSnipChange={this.setCodeSnipShow}
+                snipID={curSnip}
                 showSnip={true}
               />{' '}
               {/*this.state.codeSnipShow[curSnip] is true*/}
