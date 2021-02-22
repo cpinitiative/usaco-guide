@@ -319,6 +319,31 @@ export default function IndexPage(props: PageProps) {
               <div>
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    What is the USACO?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      USACO stands for the{' '}
+                      <OutboundLink
+                        href="http://www.usaco.org/"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USA Computing Olympiad
+                      </OutboundLink>
+                      . Check out the{' '}
+                      <Link
+                        to="/usaco-faq"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USACO FAQ Page
+                      </Link>{' '}
+                      for more information.
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Is this an official syllabus?
                   </dt>
                   <dd className="mt-2">
