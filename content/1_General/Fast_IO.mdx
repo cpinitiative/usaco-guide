@@ -389,7 +389,7 @@ class FastIO extends PrintWriter {
 		stream = new FileInputStream(i);
 	}
 
-	// throws InputMismatchException() if no more input
+	// throws InputMismatchException() if previously detected end of file
 	private int nextByte() {
 		if (numChars == -1) throw new InputMismatchException();
 		if (curChar >= numChars) {
@@ -404,18 +404,18 @@ class FastIO extends PrintWriter {
 		return buf[curChar++];
 	}
 
-	// to read in an entire lines, replace c <= ' '
-	// with a function to test whether c is a line break
+	// to read in entire lines, replace c <= ' '
+	// with a function that checks whether c is a line break
 	public String next() {
 		int c; do { c = nextByte(); } while (c <= ' ');
 		StringBuilder res = new StringBuilder();
 		do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
 		return res.toString();
 	}
-	public int nextInt() {
+	public int nextInt() { // nextLong() would be implemented similarly
 		int c; do { c = nextByte(); } while (c <= ' ');
 		int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
-		int res = 0; // change to long if necessary
+		int res = 0;
 		do {
 			if (c < '0' || c > '9')
 				throw new InputMismatchException();
