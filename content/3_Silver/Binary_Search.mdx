@@ -609,6 +609,28 @@ int square_root(int x) {
 ```
 </CPPSection>
 
+<JavaSection>
+
+```java
+public static long f(int x) {
+	return (long)x * x;
+}
+public static int square_root(int x) {
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 This results in an infinite loop if `left=0` and `right=1`! To fix this, set `middle = (left+right+1)/2` instead.
