@@ -370,9 +370,9 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 <JavaSection>
 
 ```java
-public static int lastTrue(int lo, int hi) {
+public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 	for (int dif = (hi-(--lo)); dif>0; dif /= 2)
-		while (lo+dif <= hi && f(lo+dif)) lo += dif; //f is the function
+		while (lo+dif <= hi && f.test(lo+dif)) lo += dif; //f is the function
 	return lo;
 }
 ```
