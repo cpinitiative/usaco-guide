@@ -315,7 +315,7 @@ See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
 <JavaSection>
 
 ```java
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class BinarySearch {
     public static void main(String[] args) {
@@ -326,11 +326,11 @@ public class BinarySearch {
         // no numbers satisfy the condition
     }
 
-    public static int lastTrue(int lo, int hi, Function<Integer, Boolean> f) {
+    public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
         for (--lo; lo < hi; ) {
             int mid = lo+(hi-lo+1)/2;
             // find the middle of the current range (rounding up)
-            if (f.apply(mid)) lo = mid;
+            if (f.test(mid)) lo = mid;
                 // if mid works, then all numbers smaller than mid also work
             else hi = mid-1;
             // if mid does not work, greater values would not work too
