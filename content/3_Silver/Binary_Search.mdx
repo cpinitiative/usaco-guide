@@ -418,6 +418,32 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.function.Predicate;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(lastTrue(2,10,(x) -> true)); // 10
+		// all numbers satisfy the condition
+		System.out.println(lastTrue(2,10,(x) -> x*x>=30)); // 5
+		System.out.println(lastTrue(2,10,(x) -> false)); // 1
+		// no numbers satisfy the condition
+	}
+
+	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+		for (hi ++; lo < hi; ) {
+			int mid = lo+(hi-lo)/2;
+			if (f.test(mid)) hi = mid;
+			else lo = mid+1;
+		}
+		return lo;
+	}
+}
+```
+</JavaSection>
+
 </LanguageSection>
 
 ### Example - Maximum Median
