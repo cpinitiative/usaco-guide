@@ -656,6 +656,21 @@ int firstTrue(int lo, int hi, function<bool(int)> f) {
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = (lo+hi)/2;
+		if (f.test(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
 
 This code does not necessarily work if `lo` is negative! Consider the following example:
