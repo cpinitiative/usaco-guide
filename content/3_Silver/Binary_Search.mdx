@@ -312,6 +312,59 @@ See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
 
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(lastTrue(2,10,1)); // 10
+		// all numbers satisfy the condition
+		System.out.println(lastTrue(2,10,3)); // 5
+		System.out.println(lastTrue(2,10,2)); // 1
+		// no numbers satisfy the condition
+	}
+
+	public static boolean f1(int x){return true;}
+
+	public static boolean f2(int x){return false;}
+
+	public static int f3(int x){return x*x;}
+
+	public static int lastTrue(int lo, int hi, int f) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			// find the middle of the current range (rounding up)
+			if(f == 1){
+				if (f1(mid)) lo = mid;
+				// if mid works, then all numbers smaller than mid also work
+				else hi = mid-1;
+				// if mid does not work, greater values would not work too
+				// so we don't care about them
+			}
+			else if(f == 2){
+				if (f2(mid)) lo = mid;
+				// if mid works, then all numbers smaller than mid also work
+				else hi = mid-1;
+				// if mid does not work, greater values would not work too
+				// so we don't care about them
+			}
+			else{
+				if (f3(mid)) lo = mid;
+				// if mid works, then all numbers smaller than mid also work
+				else hi = mid-1;
+				// if mid does not work, greater values would not work too
+				// so we don't care about them
+			}
+		}
+		return lo;
+	}
+}
+
+```
+
+</JavaSection>
 
 </LanguageSection>
 
