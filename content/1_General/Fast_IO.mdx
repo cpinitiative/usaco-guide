@@ -3,6 +3,8 @@ id: fast-io
 title: Fast Input & Output
 author: Benjamin Qi, Nathan Chen
 description: 'Speeding up I/O speeds can make a substantial difference in problems with large inputs.'
+prerequisites:
+  - io
 ---
 
 export const problems = {
@@ -213,7 +215,9 @@ You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after inc
 
 Keep in mind that a Java program that only reads in $N$ and outputs a number takes 138ms on USACO.
 
-[`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html) is probably the easiest way to read input in Java, though it is also extremely slow.
+### Method 1 - [`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html)
+
+Probably the easiest way to read input in Java, though it is also extremely slow.
 
 <Spoiler title="3188ms">
 
@@ -221,7 +225,6 @@ Keep in mind that a Java program that only reads in $N$ and outputs a number tak
 import java.util.*;
 import java.io.*;
 
-//3188ms
 public class roboherd_scanner {
 
 	static int P[][] = new int[100000][];
@@ -246,11 +249,11 @@ public class roboherd_scanner {
 
 </Spoiler>
 
-A common alternative to reading input for programming contests is [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html), which reads faster from a file than `Scanner`. `BufferedReader` reads line-by-line with the `.readLine()` method, which returns a string. Methods like `Integer.parseInt()` are used to convert strings into primitives, and they can directly convert a line into a number, like in `Integer.parseInt(br.readLine())`.
+### Method 2 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`.split()`](<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#split(java.lang.String)>)
 
-Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String` or the `.nextToken()` in [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html). Notice that `StringTokenizer` for splitting strings is slightly faster than `.split()`. Apparently [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html) is even faster!
+`BufferedReader` reads line-by-line with the `.readLine()` method, which returns a string. Methods like `Integer.parseInt()` are used to convert strings into primitives, and they can directly convert a line into a number, like in `Integer.parseInt(br.readLine())`.
 
-_Reading input with `BufferedReader` and `.split()`_:
+Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String`.
 
 <Spoiler title="1209ms">
 
@@ -258,7 +261,6 @@ _Reading input with `BufferedReader` and `.split()`_:
 import java.util.*;
 import java.io.*;
 
-//1209ms
 public class roboherd_buffered_reader_string_split {
 
 	static int P[][] = new int[100000][];
@@ -285,7 +287,9 @@ public class roboherd_buffered_reader_string_split {
 
 </Spoiler>
 
-_Reading input with `BufferedReader` and `StringTokenizer`_:
+### Method 3 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html)
+
+Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly faster than `.split()`.
 
 <Spoiler title="986ms">
 
@@ -293,14 +297,11 @@ _Reading input with `BufferedReader` and `StringTokenizer`_:
 import java.util.*;
 import java.io.*;
 
-//986ms
 public class roboherd_buffered_reader_string_tokenizer {
-
 	static int P[][] = new int[100000][];
-
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out")));
+		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -320,7 +321,11 @@ public class roboherd_buffered_reader_string_tokenizer {
 
 </Spoiler>
 
-_Reading input with `BufferedReader` and `StreamTokenizer`_:
+As [`Kattio`](/general/io?lang=java#io-template) is just a wrapper around `BufferedReader` and `PrintWriter`, it performs similarly. This method is usually fast enough and doesn't require too much typing, so we recommend that you go with this.
+
+### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
+
+Apparently this is even faster! Though properly reading in `long`s would require additional work (since they are interpreted as `double`s by default).
 
 <Spoiler title="569ms">
 
@@ -355,122 +360,101 @@ public class roboherd {
 
 </Spoiler>
 
-Faster methods of reading input exist too - Even faster than `BufferedReader` is a custom-written Fast I/O class that uses `InputStream`. Note that this custom class is similar to the custom-written `FastIO.h` in the C++ section, as both read input through a byte buffer. Despite the name of the class being "FastIO," it only reads input.
+### Method 5 - [`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html)
 
-<Spoiler title="320ms">
+Even faster than `BufferedReader` is a custom-written Fast I/O class that reads bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++ section.
+
+<Spoiler title="382ms">
+
+Based off several sources, including `Kattio`, [this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and [this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/FastScanner.java).
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-//320ms
-public class roboherd_is {
+class FastIO extends PrintWriter {
+	private InputStream stream;
+	private byte[] buf = new byte[1<<16];
+	private int curChar, numChars;
 
-	static int P[][] = new int[100000][];
-
-	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO("roboherd.in");
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-
-		int N = sc.nextInt();
-		int K = sc.nextInt();
-		for(int i = 0; i < N; ++i) {
-			int M = sc.nextInt(); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
-		}
-
-		if(N == 3) pw.println(61);
-		else pw.println(1000000000000000000L);
-		pw.close();
+	// standard input
+	public FastIO() { this(System.in,System.out); }
+	public FastIO(InputStream i, OutputStream o) {
+		super(o);
+		stream = i;
+	}
+	// file input
+	public FastIO(String i, String o) throws IOException {
+		super(new FileWriter(o));
+		stream = new FileInputStream(i);
 	}
 
-	// new FastIO("file_name") to read a file
-	// new FastIO(System.in) to read from stdin
-	// has similar syntax to Scanner, though much faster :)
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
-
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
+	// throws InputMismatchException() if no more input
+	private int nextByte() {
+		if (numChars == -1) throw new InputMismatchException();
+		if (curChar >= numChars) {
+			curChar = 0;
+			try {
+				numChars = stream.read(buf);
+			} catch (IOException e) {
+				throw new InputMismatchException();
 			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
+			if (numChars == -1) return -1; // end of file
 		}
+		return buf[curChar++];
+	}
 
-		long nextLong() throws Exception {
-			long ret = 0;
+	// to read in an entire lines, replace c <= ' '
+	// with a function to test whether c is a line break
+	public String next() {
+		int c; do { c = nextByte(); } while (c <= ' ');
+		StringBuilder res = new StringBuilder();
+		do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+		return res.toString();
+	}
+	public int nextInt() {
+		int c; do { c = nextByte(); } while (c <= ' ');
+		int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+		int res = 0; // change to long if necessary
+		do {
+			if (c < '0' || c > '9')
+				throw new InputMismatchException();
+			res = 10*res+c-'0';
+			c = nextByte();
+		} while (c > ' ');
+		return res * sgn;
+	}
+	public double nextDouble() { return Double.parseDouble(next()); }
+}
 
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
+public class Main {
+	static int P[][] = new int[100000][];
+	public static void main(String[] args) throws Exception {
+		// String s = "roboherd";
+		// FastIO io = new FastIO(s+".in",s+".out");
+		FastIO io = new FastIO("roboherd.in","roboherd.out");
+		int N = io.nextInt();
+		int K = io.nextInt();
+		for(int i = 0; i < N; ++i) {
+			int M = io.nextInt(); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = io.nextInt();
 		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-
+		if(N == 3) io.println(61);
+		else io.println(1000000000000000000L);
+		io.close();
 	}
 }
 ```
 
+<Warning>
+
+Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of ~100ms.
+
+</Warning>
+
 </Spoiler>
 
-The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary.
+<!-- The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary. -->
 
 </JavaSection>
 
@@ -727,7 +711,7 @@ You may see some competitive programmers including this line. This doesn't actua
 
 In general, it may be faster to store the answer in a single `StringBuilder` and output it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
 
-When printing to the standard output stream in Java, it is faster to use `new PrintWriter(System.out)` than `System.out`. The syntax for `PrintWriter` is equivalent to that of `System.out` so it should be easy to use. The only difference is that one has to call `.flush()` or `.close()` on the `PrintWriter` at the very end of the program in order to write the output.
+When printing to the standard output stream in Java, it is faster to use `new PrintWriter(System.out)` than `System.out` (as all the methods above do). The syntax for `PrintWriter` is equivalent to that of `System.out` so it should be easy to use. The only difference is that one has to call `.flush()` or `.close()` on the `PrintWriter` at the very end of the program in order to write the output.
 
 </JavaSection>
 
