@@ -413,6 +413,27 @@ public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 
 </JavaSection>
 
+<PySection>
+
+<Warning>
+It is NOT recommended to use tenary expression in the python implementation of binary search because python tenary expression does not accept statements.*
+</Warning>
+
+```python
+def lastTrue(f, lo, hi): # python scoping...
+	lo-=1
+	locs=locals()
+	while locs["lo"] < locs["hi"]:
+		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
+		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
+	return locs["lo"]
+```
+This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to:
+- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
+- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
+
+</PySection>
+
 </LanguageSection>
 
 ### Finding The Minimum `x` Such That `f(x) = true`
