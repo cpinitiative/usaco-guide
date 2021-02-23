@@ -12,6 +12,7 @@ import grayMatter from 'gray-matter';
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
+import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 
 class ErrorBoundary extends React.Component {
   state: {
@@ -75,7 +76,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
         const jsx = (
           await mdx(content, {
             remarkPlugins: [remarkExternalLinks, remarkMath],
-            rehypePlugins: [customRehypeKatex],
+            rehypePlugins: [customRehypeKatex, rehypeSnippets],
             skipExport: true,
           })
         ).trim();
