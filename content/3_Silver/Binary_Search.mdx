@@ -828,7 +828,8 @@ We can fix this with:
 int firstTrue(function<bool(int)> f, int lo, int hi) {
 	for (hi ++; lo < hi; ) {
 		int mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
+		if f(mid) hi = mid;
+		else lo = mid+1;
 	}
 	return lo;
 }
@@ -842,7 +843,8 @@ int firstTrue(function<bool(int)> f, int lo, int hi) {
 public static int firstTrue(Predicate<Integer> f, int lo, int hi) {
 	for (hi ++; lo < hi; ) {
 		int mid = lo+(hi-lo)/2;
-		if(f.test(mid)) hi = mid; else lo = mid+1;
+		if(f.test(mid)) hi = mid; 
+		else lo = mid+1;
 	}
 	return lo;
 }
