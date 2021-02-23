@@ -9,21 +9,12 @@ description: 'A subset of the edges of a connected, undirected, edge-weighted gr
 frequency: 2
 ---
 
-
 export const problems = {
 	standard: [
 		new Problem('CSES', 'Road Reparation', '1675', 'Easy', false, ['MST'], ''),
 	],
 	general: [
-		new Problem(
-			'Old Silver',
-			'Superbull',
-			'531',
-			'Easy',
-			false,
-			['MST'],
-			''
-		),
+		new Problem('Old Silver', 'Superbull', '531', 'Easy', false, ['MST'], ''),
 		new Problem('Gold', 'Fenced In', '623', 'Easy', false, ['MST'], ''),
 		new Problem(
 			'Gold',
@@ -31,7 +22,7 @@ export const problems = {
 			'946',
 			'Normal',
 			false,
-			['MST', 'Prim'],
+			['MST'],
 			'usaco-946'
 		),
 		new Problem(
@@ -90,41 +81,35 @@ To review a couple of terms:
 ## Kruskal's
 
 <Resources>
-  <Resource source="CPH" title="15.1 - Kruskal's" starred></Resource>
-  <Resource
-    source="cp-algo"
-    title="Kruskal's"
-    url="graph/mst_kruskal.html"
-  ></Resource>
-  <Resource
-    source="cp-algo"
-    title="Kruskal's with DSU"
-    url="graph/mst_kruskal_with_dsu.html"
-  ></Resource>
-  <Resource source="CP2" title="4.3.2 - Kruskal's">
-    {' '}
-  </Resource>
+	<Resource source="CPH" title="15.1 - Kruskal's" starred></Resource>
+	<Resource source="cp-algo" title="Kruskal's" url="graph/mst_kruskal.html" />
+	<Resource
+		source="cp-algo"
+		title="Kruskal's with DSU"
+		url="graph/mst_kruskal_with_dsu.html"
+	/>
+	<Resource source="CP2" title="4.3.2 - Kruskal's" />
 </Resources>
 
 <!--  <Resource source="PAPS" title="12.4 - Kruskal's">
     description, example, explanation of correctness
   </Resource> -->
 
-**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$. 
-
+**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$.
 
 ### Implementation
+
 <LanguageSection>
 <CPPSection>
 
 <Resources>
-  <Resource
-    source="Benq (from KACTL)"
-    url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
-    title="DSU"
-  >
-    Disjoint Set Union + Kruskal
-  </Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
+		title="DSU"
+	>
+		Disjoint Set Union + Kruskal
+	</Resource>
 </Resources>
 
 ```cpp
@@ -194,17 +179,17 @@ static class Edge implements Comparable<Edge> {
 #include <vector>
 #include <algorithm>
 using namespace std;
- 
+
 typedef long long ll;
 typedef pair<int, int> pi;
 typedef vector<int> vi;
- 
+
 #define trav(a,x) for (auto& a: x)
 #define all(x) begin(x), end(x)
 #define mp make_pair
 #define f first
 #define s second
- 
+
 struct DSU {
 	vi e; void init(int N) { e = vi(N,-1); }
 	// get representive component, uses path compression
@@ -217,7 +202,7 @@ struct DSU {
 		e[x] += e[y]; e[y] = x; return 1;
 	}
 };
- 
+
 int comp;
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	sort(all(ed));
@@ -229,7 +214,7 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	}
 	return ans;
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
@@ -251,10 +236,10 @@ int main() {
 	return 0;
 }
 ```
+
 </CPPSection>
 
 <JavaSection>
-
 
 ```java
 import java.io.*;
@@ -345,26 +330,26 @@ class Edge implements Comparable<Edge> {
 ## Prim's
 
 <Resources>
-  <Resource source="CPH" title="15.3 - Prim's" starred></Resource>
-  <Resource
-    source="cp-algo"
-    title="Prim's"
-    url="graph/mst_prim.html"
-  ></Resource>
-  <Resource source="CP2" title="4.3.3 - Prim's">
-    {' '}
-  </Resource>
+	<Resource source="CPH" title="15.3 - Prim's" starred></Resource>
+	<Resource
+		source="cp-algo"
+		title="Prim's"
+		url="graph/mst_prim.html"
+	></Resource>
+	<Resource source="CP2" title="4.3.3 - Prim's">
+		{' '}
+	</Resource>
 </Resources>
 
-Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added. 
+Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added.
 
-The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue. 
+The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue.
 
 ### Complexity
 
-Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. 
+Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue.
 
-Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$). 
+Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$).
 
 ### Solution - Road Reparation
 

@@ -2,53 +2,87 @@
 id: usaco-894
 source: USACO Silver 2019 January
 title: Grass Planting
-author: Aadit Ambadkar
+author: Neo Wang, Aadit Ambadkar
 ---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_planting_silver_jan19.html)
 
 ## Solution 1 - Intended Solution
 
-$\mathcal{O}(N)$ using a key insight.
+**Time Complexity:** $\mathcal{O}(N)$
 
-Let `adj[i]` represent the number of paths adjacent to node $i$ in the graph. Then, considering that node, and that node alone, you would need exactly `adj[i]+1` numbers to fill it. This is because you would need `adj[i]` for each of the adjacent nodes, and $1$ for the node itself. So, our answer is the maximum of all the adjacents, plus $1$. 
+Let $\texttt{adj}[i]$ represent the number of paths adjacent to node $i$ in the graph. Then, considering that node, and that node alone, you would need exactly $\texttt{adj}[i]+1$ numbers to fill it. This is because you would need $\texttt{adj}[i]$ for each of the adjacent nodes, and $1$ for the node itself. So, our answer is the maximum of all the adjacents, plus $1$. 
+
+<LanguageSection>
+
+<JavaSection>
 
 ```java
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class planting {
+public class GrassPlanting {
 	public static void main(String[] args) throws IOException {
-		BufferedReader f = new BufferedReader(new FileReader("planting.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("planting.out")));
-		StringTokenizer st = new StringTokenizer(f.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		if (n==1) {
-			pw.println(1);
-			pw.close();
-		} else if (n==2) {
-			pw.println(2);
-			pw.close();
+		Kattio io = new Kattio("planting");
+		int n = io.nextInt();
+		int[] deg = new int[n+1];
+		for(int i = 0; i < n-1; i++) {
+			int a = io.nextInt(), b = io.nextInt();
+			deg[a]++; deg[b]++;
 		}
-		int[] adj = new int[n];
-		Arrays.fill(adj, 1);
-		int max=1;
-		for (int i = 0; i < n-1; i++) {
-			st = new StringTokenizer(f.readLine());
-			int ne = Integer.parseInt(st.nextToken())-1;
-			if (++adj[ne]>adj[max]) max=ne;
-			ne = Integer.parseInt(st.nextToken())-1;
-			if (++adj[ne]>adj[max]) max=ne;
+
+		int ret = 0;
+
+		for(int i = 1; i <= n; i++) ret = Math.max(ret, deg[i]);
+		io.println(ret+1);
+		io.close();
+	}
+
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
 		}
-		pw.println(adj[max]);
-		pw.close();
+
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
 	}
 }
 ```
 
+</JavaSection>
+
+</LanguageSection>
+
 ## Solution 2 - DFS
 
 This can also be solved using DFS in $\mathcal{O}(V+E)$, which for this problem is $\mathcal{O}(N)$.
+
+<LanguageSection>
+
+<JavaSection>
 
 ```java
 import java.io.*;
@@ -100,3 +134,7 @@ public class Main {
 	}
 }
 ```
+
+</JavaSection>
+
+</LanguageSection>
