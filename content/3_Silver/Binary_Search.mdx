@@ -548,6 +548,14 @@ using namespace std;
 
 using ll = long long;
 
+bool f(int x) {
+	// returns true if median can be raised to x
+	ll operationsNeeded = 0;
+	for (ll i = (n-1)/2; i < n; i++)
+		operationsNeeded += max(0, x-v[i]);
+	return operationsNeeded <= k;
+}
+
 int lastTrue(int lo, int hi, function<bool(int)> f) {
 	for (--lo; lo < hi; ) {
 		int mid = lo+(hi-lo+1)/2;
@@ -566,13 +574,7 @@ int main() {
 		v.push_back(t);
 	}
 	sort(v.begin(), v.end());
-	cout << lastTrue(1,2e9,[&](int x) {
-		// returns true if median can be raised to x
-		ll operationsNeeded = 0;
-		for (ll i = (n-1)/2; i < n; i++)
-		   operationsNeeded += max(0, x-v[i]);
-		return operationsNeeded <= k;
-	});
+	cout << lastTrue(1,2e9);
 }
 ```
 
