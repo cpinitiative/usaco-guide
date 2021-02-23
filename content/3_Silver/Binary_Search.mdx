@@ -742,6 +742,26 @@ public static int square_root(int x) {
 
 </JavaSection>
 
+<PySection>
+
+```python
+def f(x):
+	return x*x
+
+def square_root(x):
+	left = 0
+	right = 0
+	while left < right:
+		middle = (left + right) // 2
+		if f(middle) <= x:
+			left = middle
+		else:
+			right = middle - 1
+	return left
+```
+
+</PySection>
+
 </LanguageSection>
 
 This results in an infinite loop if `left=0` and `right=1`! To fix this, set `middle = (left+right+1)/2` instead.
