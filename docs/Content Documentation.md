@@ -425,3 +425,121 @@ In the example above, nothing will be rendered for Python.
 
 </IncompleteSection>
 ```
+
+### Code Blocks and Code Snippets
+
+Code blocks are separated by three backticks, just like in normal markdown. Additionally, we have support for collapsible code snippets:
+
+````markdown
+```cpp
+//BeginCodeSnip{Optional Code Snippet Title}
+My snippet code goes here
+You can indent the entire BeginCodeSnip block (including the BeginCodeSnip line) and it will function as expected
+//EndCodeSnip
+
+Another example of a snippet without titles:
+
+//BeginCodeSnip{}
+My snippet code goes here
+//EndCodeSnip
+
+My non-snippet code goes here
+```
+````
+
+Some common snippets have shorthand notations, as defined in `src/mdx-plugins/rehype-snippets.js`. They can be accessed using `CodeSnip{Snip ID}`.
+
+````markdown
+## Kattio
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class myClass {
+	CodeSnip{Kattio}
+
+    public static void main ...
+}
+```
+
+`CodeSnip{Kattio}` gets replaced with an indented version (based off of indentation of `CodeSnip`):
+
+```java
+//BeginCodeSnip{Kattio}
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st;
+
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	// returns null if no more input
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
+			return st.nextToken();
+		} catch (Exception e) {}
+		return null;
+	}
+
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+//EndCodeSnip
+```
+
+## C++ Long Template
+
+```cpp
+CodeSnip{Benq Template}
+```
+
+Gets replaced with [Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
+
+## C++ Short Template
+
+```cpp
+CodeSnip{Template Short}
+```
+
+Is replaced with
+
+```cpp
+//BeginCodeSnip{C++ Short Template}
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+//EndCodeSnip
+```
+````
