@@ -346,6 +346,40 @@ See [Java Function Interface](https://docs.oracle.com/javase/8/docs/api/java/uti
 
 </JavaSection>
 
+<PySection>
+
+```python
+def lastTrue(f, lo, hi):
+	""" Binary Search
+	:param f: (lambda function) check a state
+	:param lo: (int) lower bound
+	:param hi: (int) upper bound
+	:return res: (int) the maximum x such that f(x) is true
+	"""
+	res = lo-1
+	while lo <= hi:
+		mid = (lo+hi)//2 # find the middle of the current range
+		if f(mid):
+			# if mid works, then all numbers smaller than mid also work
+			res = mid # update the answer
+			lo = mid+1 # cut the part before mid
+			# notice that we already handled mid itself so we cut it as well
+		else:
+			# if mid does not work, greater values would not work too
+			hi = mid-1 # cut mid and after
+	# now res is the answer
+	# if res is l-1 that means no value in the range satisfies the condition
+	return res
+print(lastTrue(lambda x:True, 2, 10)) # 10
+# all numbers satisfy the condition
+print(lastTrue(lambda x:x*x <= 30, 2, 10)) # 5
+print(lastTrue(lambda x:False, 2, 10)) # 1
+# no numbers satisfy the condition
+```
+See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if you're not familiar with the syntax used in the program.
+
+</PySection>
+
 </LanguageSection>
 
 
