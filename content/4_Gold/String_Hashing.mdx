@@ -1,7 +1,7 @@
 ---
 id: string-hashing
 title: 'String Hashing'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Andi Qu
 description: 'Quickly test equality of substrings with a small probability of failure.'
 frequency: 1
 prerequisites:
@@ -109,6 +109,15 @@ export const problems = {
 
 </Resources>
 
+<Optional>
+
+If "small" isn't a satisfying-enough answer for "what's the probability of collision?", then
+you should check out [rng-58's blog post talking about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html).
+
+This post also explains how to hash rooted trees - an uncommon technique, but still useful to know!
+
+</Optional>
+
 ## Implementation - Single Base
 
 As mentioned in the articles above, there is no need to calculate modular inverses.
@@ -201,6 +210,7 @@ One way to solve this is by storing the polynomial hashes of each match in a has
 Since the test data for this particular problem is very strong, we will probably get hash collisions with only one hash. To remedy this, we use two hashes for each match - this significantly decreases the probability of collisions.
 
 Using the base $9973$ with the two modulos $10^9 + 9$ and $10^9 + 7$ works for this problem.
+However, note that using two bases with the same modulo works too.
 
 <LanguageSection>
 
@@ -339,15 +349,6 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
-<Optional title="Probability of Collisions + Hashing a Tree">
-
-If "small" isn't a satisfying-enough answer for "what's the probability of collision?", then
-you should check out [rng-58's blog post talking about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html).
-
-This post also explains how to hash rooted trees - an uncommon technique, but still useful to know!
-
-</Optional>
 
 <!-- ## Adjacency Lists
 
