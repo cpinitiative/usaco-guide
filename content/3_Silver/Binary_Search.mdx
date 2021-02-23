@@ -652,6 +652,41 @@ public class BinarySearch{
 
 </JavaSection>
 
+<PySection>
+
+```python
+# checks whether the number of given operations is sufficient
+# to raise the median of the array to x
+def f(x):
+	operationsNeeded = 0
+	for i in range((n-1)//2,n):
+		operationsNeeded += max(0, x-v[i])
+	if operationsNeeded <= k:
+		return True
+	else:
+		return False
+# binary searches for the correct answer
+def search(lo, hi):
+	lo-=1
+	while lo < hi:
+		mid = lo+(hi-lo+1)//2;
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid-1
+		
+	return lo
+
+
+v=[]
+n, k = map(int, input().split())
+v = list(map(int, input().split()))
+v.sort()
+print(search(1, 2E9))
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
