@@ -122,6 +122,38 @@ template<class H, class... T> void DBG(H h, T... t) {
 #define dbg(...) 0
 #endif
 //EndCodeSnip`,
+  Kattio: `//BeginCodeSnip{Kattio}
+class Kattio extends PrintWriter {
+\tprivate BufferedReader r;
+\tprivate StringTokenizer st;
+
+\t// standard input
+\tpublic Kattio() { this(System.in,System.out); }
+\tpublic Kattio(InputStream i, OutputStream o) {
+\t\tsuper(o);
+\t\tr = new BufferedReader(new InputStreamReader(i));
+\t}
+\t// USACO-style file input
+\tpublic Kattio(String problemName) throws IOException {
+\t\tsuper(new FileWriter(problemName+".out"));
+\t\tr = new BufferedReader(new FileReader(problemName+".in"));
+\t}
+
+\t// returns null if no more input
+\tpublic String next() {
+\t\ttry {
+\t\t\twhile (st == null || !st.hasMoreTokens())
+\t\t\t\tst = new StringTokenizer(r.readLine());
+\t\t\treturn st.nextToken();
+\t\t} catch (Exception e) {}
+\t\treturn null;
+\t}
+
+\tpublic int nextInt() { return Integer.parseInt(next()); }
+\tpublic double nextDouble() { return Double.parseDouble(next()); }
+\tpublic long nextLong() { return Long.parseLong(next()); }
+}
+//EndCodeSnip`,
 };
 
 module.exports = options => {
