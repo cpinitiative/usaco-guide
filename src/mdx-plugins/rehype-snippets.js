@@ -7,7 +7,7 @@ const replacements = {
   'Benq Template': `//BeginCodeSnip{Benq Template}
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using db = long double; // or double, if TL is tight
 using str = string; // yay python!
@@ -19,17 +19,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -42,19 +42,19 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 #define rtn return
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -70,14 +70,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const db PI = acos((db)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-\treturn x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+\treturn x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -91,18 +91,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 \thi ++; assert(lo <= hi); // assuming f is increasing
-\twhile (lo < hi) { // find first index such that f is true 
+\twhile (lo < hi) { // find first index such that f is true
 \t\tT mid = lo+(hi-lo)/2;
-\t\tf(mid) ? hi = mid : lo = mid+1; 
-\t} 
+\t\tf(mid) ? hi = mid : lo = mid+1;
+\t}
 \treturn lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 \tlo --; assert(lo <= hi); // assuming f is decreasing
-\twhile (lo < hi) { // find first index such that f is true 
+\twhile (lo < hi) { // find first index such that f is true
 \t\tT mid = lo+(hi-lo+1)/2;
 \t\tf(mid) ? lo = mid : hi = mid-1;
-\t} 
+\t}
 \treturn lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -170,20 +170,23 @@ module.exports = options => {
     if (node.children.length !== 1) {
       throw 'Expected only one child for a code block';
     }
-    for (let key of Object.keys(replacements)) {
-      let newValue = [];
-      for (let line of node.children[0].value.split('\n')) {
-        let results = line.match(new RegExp(`^(\\s*)\/\/CodeSnip\\{${key}\\}`));
+    let newValue = [];
+    for (let line of node.children[0].value.split('\n')) {
+      let found = false;
+      for (let key of Object.keys(replacements)) {
+        let results = line.match(new RegExp(`^.*?(CodeSnip\\{${key}\\})`));
         if (results) {
-          let prefix = results[1];
+          let prefix = results[0].match(/^\s+/);
+          if (!prefix) prefix = '';
           for (let snippetLine of replacements[key].split('\n')) {
             newValue.push(`${prefix}${snippetLine}`);
           }
-        } else {
-          newValue.push(line);
+          found = true;
+          break;
         }
       }
-      node.children[0].value = newValue.join('\n');
+      if (!found) newValue.push(line);
     }
+    node.children[0].value = newValue.join('\n');
   }
 };

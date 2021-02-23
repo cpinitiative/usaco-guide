@@ -27,7 +27,14 @@ const LineSnip = styled.span`
   white-space: nowrap;
   user-select: none;
   width: 1em;
-  padding-right: 1em;
+  padding-right: 0.5em;
+`;
+
+const CodeSnipButtonIcon = styled.svg`
+  color: rgba(156, 220, 254, 0.3);
+  &:hover {
+    color: rgba(156, 220, 254, 0.7);
+  }
 `;
 
 const LineContent = styled.span`
@@ -35,9 +42,9 @@ const LineContent = styled.span`
 `;
 
 const CodeSnippetLineContent = styled(LineContent)`
-  color: #00bb00; // any better color?
+  color: #00bb00a0; // any better color?
   &:hover > span {
-    text-decoration: underline;
+    color: #00bb00c0;
     cursor: pointer;
   }
 `;
@@ -52,11 +59,10 @@ const CodeSnipButton = ({
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
 }) => {
   return (
-    <svg
+    <CodeSnipButtonIcon
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      opacity="0.3"
       className={
         'transform transition translate-y-0.5 h-4 cursor-pointer' +
         (!showSnip ? ' -rotate-90' : '')
@@ -69,7 +75,7 @@ const CodeSnipButton = ({
         strokeWidth={3}
         d="M17 10l-5 5-5-5"
       />
-    </svg>
+    </CodeSnipButtonIcon>
   );
 };
 
