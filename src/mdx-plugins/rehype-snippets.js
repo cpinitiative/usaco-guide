@@ -154,6 +154,30 @@ class Kattio extends PrintWriter {
 \tpublic long nextLong() { return Long.parseLong(next()); }
 }
 //EndCodeSnip`,
+  TemplateShort: `//BeginCodeSnip{C++ Short Template}
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+\tcin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+\tif (sz(name)) {
+\t\tfreopen((name+".in").c_str(), "r", stdin); // see /general/io
+\t\tfreopen((name+".out").c_str(), "w", stdout);
+\t}
+}
+//EndCodeSnip`,
 };
 
 module.exports = options => {
