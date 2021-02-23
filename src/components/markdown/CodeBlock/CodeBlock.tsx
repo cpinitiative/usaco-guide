@@ -36,7 +36,7 @@ const LineContent = styled.span`
 
 const CodeSnippetLineContent = styled(LineContent)`
   color: #00bb00; // any better color?
-  &:hover {
+  &:hover > span {
     text-decoration: underline;
     cursor: pointer;
   }
@@ -90,17 +90,26 @@ class CodeBlock extends React.Component<
     let i = 0;
     let prev = -1;
     let prevVal = '';
+    let prevIndentation = '';
     let codeSnipShowDefault = [];
-    for (let line of this.props.children.trim().split('\n')) {
+    for (let line of this.props.children.split('\n')) {
       if (prev == -1) {
-        const found = line.match(/BeginCodeSnip{(}|.*?[^\\]})/); // BeginCodeSnip{...}
-        if (found != null)
-          (prev = i), (prevVal = found[0].slice(14, found[0].length - 1)); // stuff inside curly brackets
+        const found = line.match(/^(\s*)\/\/BeginCodeSnip{(.*)}/); // BeginCodeSnip{...}
+        if (found != null) {
+          prev = i;
+          prevVal = found[2]; // stuff inside curly brackets
+          prevIndentation = found[1]; // stuff before //BeginCodeSnip...
+        }
       } else {
         const found = line.match(/EndCodeSnip/);
         if (found != null) {
           //assert(end - prev > 1);
-          this.codeSnips.push({ begin: prev, end: i, value: prevVal }); // inclusive bounds
+          this.codeSnips.push({
+            begin: prev,
+            end: i,
+            value: prevVal,
+            indentation: prevIndentation,
+          }); // inclusive bounds
           codeSnipShowDefault.push(false);
           prev = -1;
         }
@@ -155,11 +164,14 @@ class CodeBlock extends React.Component<
                 <CodeSnippetLineContent
                   onClick={this.setCodeSnipShow.bind(this, curSnip, true)}
                 >
-                  Code Snippet
-                  {codeSnips[curSnip].value
-                    ? `: ${codeSnips[curSnip].value}`
-                    : ''}{' '}
-                  (Click to expand)
+                  {codeSnips[curSnip].indentation}
+                  <span>
+                    Code Snippet
+                    {codeSnips[curSnip].value
+                      ? `: ${codeSnips[curSnip].value}`
+                      : ''}{' '}
+                    (Click to expand)
+                  </span>
                 </CodeSnippetLineContent>
               </Line>
             );

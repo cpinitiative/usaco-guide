@@ -139,10 +139,19 @@ module.exports = options => {
       throw 'Expected only one child for a code block';
     }
     for (let key of Object.keys(replacements)) {
-      node.children[0].value = node.children[0].value.replace(
-        new RegExp(`//CodeSnip\\{${key}\\}`, 'g'),
-        replacements[key]
-      );
+      let newValue = [];
+      for (let line of node.children[0].value.split('\n')) {
+        let results = line.match(new RegExp(`^(\\s*)\/\/CodeSnip\\{${key}\\}`));
+        if (results) {
+          let prefix = results[1];
+          for (let snippetLine of replacements[key].split('\n')) {
+            newValue.push(`${prefix}${snippetLine}`);
+          }
+        } else {
+          newValue.push(line);
+        }
+      }
+      node.children[0].value = newValue.join('\n');
     }
   }
 };
