@@ -511,7 +511,7 @@ Gets replaced with [Benq's Long Template](https://github.com/bqi343/USACO/blob/m
 ## C++ Short Template
 
 ```cpp
-CodeSnip{Template Short}
+CodeSnip{TemplateShort}
 ```
 
 Is replaced with
