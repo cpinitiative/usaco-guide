@@ -93,16 +93,14 @@ class Graph{
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
 using ll = long long;
-using vl = vector<ll>;
-using vb = vector<bool>;
 
-#define FOR(i, a, b) for(ll i=a; i<(ll)b; ++i)
 #define pb push_back
 #define all(x) begin(x), end(x)
 
-void setIO(string name="") { // name is nonempty for USACO file I/O
+void setIO(string name="") { // FastIO See General -> Input/Output
     ios_base::sync_with_stdio(0); cin.tie(0); 
     if((ll)name.size() > 0){
         freopen((name+".in").c_str(), "r", stdin);
@@ -110,7 +108,7 @@ void setIO(string name="") { // name is nonempty for USACO file I/O
     }
 }
 
-vl adj[101]; vb visited(101); ll n;
+vector<ll> adj[101]; vector<bool> visited(101); ll n;
 
 void dfs(ll node){
 	visited[node] = true;
@@ -122,7 +120,7 @@ void dfs(ll node){
 }
 
 bool allVisited(){
-	FOR(i, 0, n){
+	for(int i = 0; i < n; i++){
 		if(!visited[i]){
 			return false;
 		}
@@ -133,12 +131,12 @@ bool allVisited(){
 int main(){
 	setIO("factory");
 	cin >> n;
-	FOR(i, 0, n-1){
+	for(int i = 0; i < (n-1); i++){
 		ll a, b; cin >> a >> b;
 		--a; --b;
 		adj[b].pb(a);
 	}
-	FOR(i, 0, n){
+	for(int i = 0; i < n; i++){
 		fill(all(visited), false);
 		dfs(i);
 		if(allVisited()){
