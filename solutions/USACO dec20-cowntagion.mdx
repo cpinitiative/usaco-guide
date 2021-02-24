@@ -24,6 +24,7 @@ We can use a DFS to keep track of the number of days. Instead of the traditional
 using namespace std;
 
 #define maxn 100005
+
 int n;
 vector<int> adj[maxn];
 
@@ -42,12 +43,11 @@ int dfs(int start, int parent) {
 		days++;
 		currCows *= 2;
 	}
-	// sending 1 cow to each of the child nodes (farms)
+	// Send one cow to each adjacent farm without a sick cow
 	ans += days;
 
 	for (auto next : adj[start]) {
 		if (next != parent) {
-			//add 1 because the sick cow takes 1 day to travel to next node
 			ans += dfs(next, start) + 1; 
 		}
 	}
@@ -66,7 +66,6 @@ int main() {
 	cout << dfs(0,-1) << endl;
 	return 0;
 }
-
 ```
 </CPPSection>
 
@@ -140,11 +139,9 @@ public class Cowntagion {
 ```py
 from collections import deque
 
-
 # straight from stackoverflow
 def ceiLog2(x):  # returns the smallest n so that 2^n >= x
     return 1 if x == 0 else (x - 1).bit_length()
-
 
 farmNum = int(input())
 neighbors = [[] for _ in range(farmNum)]
