@@ -404,7 +404,7 @@ Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$
 
 ### Solution - Subtree Queries
 
-Assumes that $\text{dfs}()` code is included. Uses a segment tree.
+Assumes that $\text{dfs}()$ code is included. Uses a segment tree.
 
 <LanguageSection>
 
@@ -600,7 +600,7 @@ int mn_tin(int x, int y) {
 	return (tin[x] < tin[y] ? x : y);
 }
 
-// Build the segment tree: run `build()` after running $\text{dfs}()`
+// Build the segment tree: run `build()` after running dfs`
 void build(int node = 1, int l = 0, int r = timer - 1) {
 	if (l == r) segtree[node] = euler_tour[l];
 	else {
@@ -618,7 +618,7 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
 }
 
-// Make sure you run $\text{dfs}()` and `build()` before you run this
+// Make sure you run $dfs` and `build()` before you run this
 int lca(int a, int b) {
 	if (tin[a] > tin[b]) swap(a, b);
 	return query(tin[a], tin[b]);
