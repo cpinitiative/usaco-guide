@@ -2,12 +2,64 @@
 id: usaco-1062
 source: USACO Silver 2020 December
 title: Cowntagion
-author: Kevin Sheng
+author: Kevin Sheng (Java), Tanish Tyagi (C++)
 ---
 
 [Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
 
 <LanguageSection>
+
+<CPPSection>
+
+## C++ Implementation
+
+```cpp 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define maxn 100005
+int n;
+vector<int> adj[maxn];
+
+int dfs(int start, int parent) {
+	int ans = 0;
+	int cows = adj[start].size();
+    if (parent == -1) cows++;
+    
+	int currCows = 1;
+    int days = 0;
+	//cloning cows and seeing how many days it will take
+    while (currCows < cows) {
+        days++;
+        currCows *= 2;
+    }
+    ans += days;
+
+    for (auto next : adj[start]) {
+        if (next != parent) {
+            ans += dfs(next, start) + 1; //doing +1 because takes 1 day for the sick cow to travel to next node, so need to factor that in to ans
+        }
+    }
+	return ans;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n-1;i++) {
+		int a,b;
+		cin >> a >> b;
+		a--; b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	cout << dfs(0,-1) << endl;
+    return 0;
+}
+
+```
+</CPPSection>
 
 <JavaSection>
 
