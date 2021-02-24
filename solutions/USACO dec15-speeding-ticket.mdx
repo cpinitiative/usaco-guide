@@ -18,11 +18,7 @@ author: Jesse Choe
 #include <bits/stdc++.h>
 using namespace std;
 
-#define For(i,a,b) for (int i = (a); i < (b); ++i)
-
-// Input/Output - s is basically the file name without the ".in" and ".out"
-
-void setIO(string s) {
+void setIO(string s) { // FastIO See General -> Input/Output
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen((s+".in").c_str(),"r",stdin);
 	freopen((s+".out").c_str(),"w",stdout);
@@ -34,9 +30,9 @@ int main(){
 
 	int start = 0;
 	array<int,100> limit;
-	For(i, 0, N){
+	for(int i = 0; i < N; i++){
 		int length, speed; cin >> length >> speed;
-		For(j, start, start+length){
+		for(int j = start; i < start+length; j++){
 			limit[j] = speed;
 		}
 		start += length;
@@ -44,16 +40,16 @@ int main(){
 
 	start = 0;
 	array<int,100> bessie;
-	For(i, 0, M){
+	for(int i = 0; i < M; i++){
 		int length, speed; cin >> length >> speed;
-		For(j, start, start+length){
+		for(int j = start; i < start+length; j++){
 			bessie[j] = speed;
 		}
 		start += length;
 	}
 
 	int ans = 0;
-	For(i, 0, 100){
+	for(int i = 0; i < 100; i++){
 		ans = max(ans, bessie[i]-limit[i]);
 	}
 	cout << ans << endl;
