@@ -25,22 +25,22 @@ vector<int> adj[maxn];
 int dfs(int start, int parent) {
 	int ans = 0;
 	int cows = adj[start].size();
-    if (parent == -1) cows++;
-    
-	int currCows = 1;
-    int days = 0;
-	//cloning cows and seeing how many days it will take
-    while (currCows < cows) {
-        days++;
-        currCows *= 2;
-    }
-    ans += days;
+	if (parent == -1) cows++;
 
-    for (auto next : adj[start]) {
-        if (next != parent) {
-            ans += dfs(next, start) + 1; //doing +1 because takes 1 day for the sick cow to travel to next node, so need to factor that in to ans
-        }
-    }
+	int currCows = 1;
+	int days = 0;
+	//cloning cows and seeing how many days it will take
+	while (currCows < cows) {
+		days++;
+		currCows *= 2;
+	}
+	ans += days;
+
+	for (auto next : adj[start]) {
+		if (next != parent) {
+			ans += dfs(next, start) + 1; //doing +1 because takes 1 day for the sick cow to travel to next node, so need to factor that in to ans
+		}
+	}
 	return ans;
 }
 
@@ -55,7 +55,7 @@ int main() {
 	}
 
 	cout << dfs(0,-1) << endl;
-    return 0;
+	return 0;
 }
 
 ```
