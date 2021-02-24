@@ -130,7 +130,7 @@ If we can preprocess a rooted tree such that every subtree corresponds to a cont
 
 ### Implementation
 
-After running `dfs()`, each range `[st[i], en[i]]` contains all ranges `[st[j], en[j]]` for each `j` in the subtree of `i`. Also, `en[i]-st[i]+1` is equal to the subtree size of `i`.
+After running $\text{dfs}()`, each range `[st[i], en[i]]` contains all ranges `[st[j], en[j]]` for each `j` in the subtree of `i`. Also, $\texttt{en}[i]-st[i]+1` is equal to the subtree size of `i`.
 
 <LanguageSection>
 
@@ -282,7 +282,7 @@ Our example input corresponds to the following graph:
 
 </center>
 
-Before the DFS, our `st` and `en` arrays are initialized with zeros. In this visualization, the first row represents the node indices, the second row represents `st`, and the third represents `en`.
+Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with zeros. In this visualization, the first row represents the node indices, the second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
 
 Current timer value: 0
 
@@ -302,7 +302,7 @@ Current timer value: 0
 </table>
 </center>
 
-Since we call `dfs(1, 0)`, we set `st[1]` to the current timer value of 0. Then, we proceed to call `dfs(2, 1)` and `dfs(3, 1)`.
+Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer value of 0. Then, we proceed to call $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$.
 
 Current timer value: 1
 
@@ -322,7 +322,7 @@ Current timer value: 1
 </table>
 </center>
 
-Now we must resolve `dfs(2, 1)` and `dfs(3, 1)`. It does not matter which order we process these in, so for this example, we start with `dfs(2, 1)`. Since the timer value is 1, we set `st[2]` to 1 and increment the timer. However, because `2` has no children, we don't call `dfs`. Instead, we set `en[2]` to 1 because our current timer is now 2.
+Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not matter which order we process these in, so for this example, we start with $\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{st}[2]$ to 1 and increment the timer. However, because `2` has no children, we don't call $\text{dfs}$. Instead, we set $\texttt{en}[2]$ to 1 because our current timer is now 2.
 
 Current timer value: 2
 
@@ -342,7 +342,7 @@ Current timer value: 2
 </table>
 </center>
 
-Now we must resolve `dfs(3, 1)`. Similar to before, we set `st[3]` to the value of the timer (2 in this case) and increment the timer. Then, we proceed to make the calls `dfs(4, 3)` and `dfs(5, 3)`.
+Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set $\texttt{st}[3]$ to the value of the timer (2 in this case) and increment the timer. Then, we proceed to make the calls $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$.
 
 Current timer value: 3
 
@@ -362,9 +362,9 @@ Current timer value: 3
 </table>
 </center>
 
-Now we must resolve `dfs(4, 3)` and `dfs(5, 3)`. First, we resolve `dfs(4, 3)` by setting `st[4]` to the value of the timer (3 in this case) and incrementing the timer. Then, since `4` has no children, set `en[4]` to 3.
+Now we must resolve $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$. First, we resolve $\text{dfs}(4, 3)$ by setting $\texttt{st}[4]$ to the value of the timer (3 in this case) and incrementing the timer. Then, since `4` has no children, set $\texttt{en}[4]$ to 3.
 
-Now the value of the timer is 4, and we must resolve `dfs(5, 3)`. Similar to before, we set `st[5]` to 4. Since `5` also has no children, set `en[5]` to 4.
+Now the value of the timer is 4, and we must resolve $\text{dfs}(5, 3)$. Similar to before, we set $\texttt{st}[5]$ to 4. Since `5` also has no children, set $\texttt{en}[5]$ to 4.
 
 Current timer value: 5
 
@@ -384,7 +384,7 @@ Current timer value: 5
 </table>
 </center>
 
-Now, we must resolve the remaining `en[node] = timer - 1` calls. We first encounter and resolve node `3`, setting `en[3]` to 4. We then do the same for node `1`, setting `en[1]` to 4. Our DFS traversal is now complete.
+Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$ calls. We first encounter and resolve node `3`, setting $\texttt{en}[3]$ to 4. We then do the same for node `1`, setting $\texttt{en}[1]$ to 4. Our DFS traversal is now complete.
 
 <center>
 <table className="text-center">
@@ -404,7 +404,7 @@ Now, we must resolve the remaining `en[node] = timer - 1` calls. We first encoun
 
 ### Solution - Subtree Queries
 
-Assumes that `dfs()` code is included. Uses a segment tree.
+Assumes that $\text{dfs}()` code is included. Uses a segment tree.
 
 <LanguageSection>
 
@@ -600,7 +600,7 @@ int mn_tin(int x, int y) {
 	return (tin[x] < tin[y] ? x : y);
 }
 
-// Build the segment tree: run `build()` after running `dfs()`
+// Build the segment tree: run `build()` after running $\text{dfs}()`
 void build(int node = 1, int l = 0, int r = timer - 1) {
 	if (l == r) segtree[node] = euler_tour[l];
 	else {
@@ -618,7 +618,7 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
 }
 
-// Make sure you run `dfs()` and `build()` before you run this
+// Make sure you run $\text{dfs}()` and `build()` before you run this
 int lca(int a, int b) {
 	if (tin[a] > tin[b]) swap(a, b);
 	return query(tin[a], tin[b]);
