@@ -7,6 +7,11 @@ author: Kevin Sheng (Java, Python), Tanish Tyagi (C++)
 
 [Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
 
+We can create a graph based off the roads between the farms which is given as input.
+The fastest way for COWVID-19 to spread to all the farms is for a farm to have superspreader events until 1 cow can be send to every adjacent farm. This would start at the root node, and repeat until COWVID-19 has spread to the entire farm. 
+
+We can use a DFS to keep track of the number of days. Instead of the traditional visited array, we can keep track of the parent node instead. 
+
 <LanguageSection>
 
 <CPPSection>
@@ -25,7 +30,10 @@ vector<int> adj[maxn];
 int dfs(int start, int parent) {
 	int ans = 0;
 	int cows = adj[start].size();
-	if (parent == -1) cows++;
+	if (parent == -1) {
+		//parent node is currently root node 
+		cows++;
+	}
 
 	int currCows = 1;
 	int days = 0;
@@ -34,6 +42,7 @@ int dfs(int start, int parent) {
 		days++;
 		currCows *= 2;
 	}
+	// sending 1 cow to each of the child nodes (farms)
 	ans += days;
 
 	for (auto next : adj[start]) {
@@ -54,7 +63,6 @@ int main() {
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
-
 	cout << dfs(0,-1) << endl;
 	return 0;
 }
