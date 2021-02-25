@@ -91,7 +91,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static int[] deg;
+	public static int[] ans;
 	public static List<Integer>[] adj;
 	public static void main(String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new FileReader("planting.in"));
@@ -109,11 +109,11 @@ public class Main {
 			adj[a - 1].add(b - 1);
 			adj[b - 1].add(a - 1);
 		}
-		deg = new int[farms];
-		deg[0] = 1;
+		ans = new int[farms];
+		ans[0] = 1;
 		dfs(0, 0);
 		int max = 0;
-		for (int i : deg) {
+		for (int i : ans) {
 			max = Math.max(max, i);
 		}
 		pw.println(max);
@@ -125,8 +125,8 @@ public class Main {
 		int g = 1;
 		for (int i : adj.get(self)) {
 			if (i != parent) {
-				while (g == deg[self] || g == deg[parent]) g++;
-				deg[i] = g;
+				while (g == ans[self] || g == ans[parent]) g++;
+				ans[i] = g;
 				dfs(i, self);
 				g++;
 			}
