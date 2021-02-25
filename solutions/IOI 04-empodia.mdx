@@ -26,68 +26,50 @@ To check whether $v[j]=\max(v[i\ldots j])$, we can maintain a separate stack $mx
 **Note:** The test data on Yandex has sequences of length greater than $1100000$ $\ldots$
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+CodeSnip{Benq Template}
 
-int a[2000000], le[2000000], gr[2000000];
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit); 
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+const int BIG = 3000000;
+vi stor[2*BIG];
+int N;
+vi v;
+
+int dif(int x) { return v[x]-x+N; } // add N so difference is non-negative
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	int n;
-	map<int, stack<int>> mp;
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-		mp[a[i] - i].push(i);
-	}
-	stack<int> stck;
-	for (int i = 0; i < n; i++) {
-		while (stck.size() && a[stck.top()] < a[i]) stck.pop();
-		if (stck.size())
-			gr[i] = stck.top();
-		else
-			gr[i] = -1;
-		stck.push(i);
-	}
-	while (stck.size()) stck.pop();
-	for (int i = n - 1; ~i; i--) {
-		while (stck.size() && a[stck.top()] > a[i]) stck.pop();
-		if (stck.size())
-			le[i] = stck.top();
-		else
-			le[i] = n;
-		stck.push(i);
-	}
-
-	vector<pair<int, int>> potential, empodia;
-	for (pair<int, stack<int>> i : mp) {
-		stack<int> active;
-		while (i.second.size()) {
-			while (active.size()) {
-				if (le[i.second.top()] < active.top()) break;
-				if (gr[active.top()] > i.second.top())
-					active.pop();
-				else {
-					potential.push_back({i.second.top(), active.top()});
-					break;
-				}
-			}
-			active.push(i.second.top());
-			i.second.pop();
+	setIO(); re(N); v.rsz(N); re(v);
+	vi mn, mx;
+	int maxL = -1;
+	vpi ans;
+	F0R(j,sz(v)) {
+		while (sz(mn) && v[mn.bk] > v[j]) {
+			stor[dif(mn.bk)].pop_back();
+			mn.pop_back();
 		}
+		while (sz(mx) && v[mx.bk] < v[j]) mx.pop_back();
+		int ind = dif(j);
+		if (sz(stor[ind])) {
+			int x = stor[ind].bk;
+			if ((!sz(mx) || mx.bk < x) && x > maxL) {
+				maxL = x;
+				ans.pb({x,j});
+			}
+		}
+		mn.pb(j); mx.pb(j); stor[ind].pb(j);
 	}
-
-	sort(potential.begin(), potential.end(), greater<pair<int, int>>());
-	for (pair<int, int> i : potential)
-		if (!empodia.size() || empodia.back().second > i.second)
-			empodia.push_back(i);
-
-	cout << empodia.size() << '\n';
-	while (empodia.size()) {
-		cout << empodia.back().first + 1 << ' ' << empodia.back().second + 1 << '\n';
-		empodia.pop_back();
-	}
-	return 0;
+	ps(sz(ans));
+	trav(t,ans) ps(t.f+1,t.s+1);
 }
 ```
