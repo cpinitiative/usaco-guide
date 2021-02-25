@@ -53,30 +53,25 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-multiset<int> ans; int n,k;
- 
-void solve(){
+int main() {
+	ios_base::sync_with_stdio(0); 
+	cin.tie(0);
+	int n, k;
 	cin >> n;
+	multiset<int> ans; 
 	for (int i=0;i<n;++i){
 		cin >> k;
 		auto it = ans.upper_bound(k);
 		//find the tower having the element that is just larger than k to add k to
 		if (it==ans.end()) ans.insert(k); //if it doesn't exist then we create a new tower
-		else{
+		else {
 			//If there exists a satisfying tower then add k to that tower
 			//And update the top element of that tower
 			ans.erase(it);
 			ans.insert(k);
 		}
 	}
-	cout << ans.size() << "\n";
-	return;
-}
-
-int main() {
-	ios_base::sync_with_stdio(0); 
-	cin.tie(0);
-	solve();
+	cout << ans.size();
 	return 0;
 }
 ```
