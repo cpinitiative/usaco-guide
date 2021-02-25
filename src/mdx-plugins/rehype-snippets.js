@@ -123,7 +123,7 @@ template<class H, class... T> void DBG(H h, T... t) {
 #endif
 //EndCodeSnip`,
   Kattio: `//BeginCodeSnip{Kattio}
-class Kattio extends PrintWriter {
+static class Kattio extends PrintWriter {
 \tprivate BufferedReader r;
 \tprivate StringTokenizer st;
 
