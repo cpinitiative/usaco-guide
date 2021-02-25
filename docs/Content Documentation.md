@@ -467,7 +467,7 @@ public class myClass {
 
 ```java
 //BeginCodeSnip{Kattio}
-class Kattio extends PrintWriter {
+static class Kattio extends PrintWriter {
 	private BufferedReader r;
 	private StringTokenizer st;
 
