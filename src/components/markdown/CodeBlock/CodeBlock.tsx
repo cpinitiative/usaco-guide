@@ -53,7 +53,6 @@ const CodeSnipButton = ({
   snipID,
   showSnip,
   onShowSnipChange,
-  buttonDir,
 }: {
   snipID: number;
   showSnip: boolean;
@@ -66,15 +65,7 @@ const CodeSnipButton = ({
       stroke="currentColor"
       className={
         'transform transition translate-y-0.5 h-4 cursor-pointer' +
-        (buttonDir == 'Up'
-          ? ' rotate-180'
-          : buttonDir == 'Down'
-          ? ''
-          : buttonDir == 'Left'
-          ? ' rotate-90'
-          : buttonDir == 'Right'
-          ? ' -rotate-90'
-          : '')
+        (!showSnip ? ' -rotate-90' : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >
@@ -109,7 +100,7 @@ class CodeBlock extends React.Component<
     let codeSnipShowDefault = [];
     for (let line of this.props.children.split('\n')) {
       if (prev == -1) {
-        const found = line.match(/^(\s*)\/\/BeginCodeSnip{(.*)}/); // BeginCodeSnip{...}
+        const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
           prev = i;
           prevVal = found[2]; // stuff inside curly brackets
@@ -173,7 +164,6 @@ class CodeBlock extends React.Component<
                     onShowSnipChange={this.setCodeSnipShow}
                     snipID={curSnip}
                     showSnip={false}
-                    buttonDir={'Right'}
                   />{' '}
                   {/*this.state.codeSnipShow[curSnip] is false*/}
                 </LineSnip>
@@ -200,25 +190,18 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
-      let isFirst =
-        curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
-      let isLast =
-        curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
         <Line key={i} {...getLineProps({ line, key: i })}>
           <LineNo data-line-number={i + delta} />
-          {isFirst || isLast ? (
+          {curSnip < codeSnips.length &&
+          codeSnips[curSnip].begin < i &&
+          i < codeSnips[curSnip].end ? (
             <LineSnip>
               <CodeSnipButton
                 onShowSnipChange={this.setCodeSnipShow}
                 snipID={curSnip}
                 showSnip={true}
-                buttonDir={
-                  isFirst
-                    ? 'Down'
-                    : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
-                }
               />{' '}
               {/*this.state.codeSnipShow[curSnip] is true*/}
             </LineSnip>
