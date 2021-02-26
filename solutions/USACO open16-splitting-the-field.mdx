@@ -132,10 +132,10 @@ void tri() {
 	lef[0] = {v[0].s,v[0].s};
 	for (int i = 1; i < N; ++i) lef[i] = comb(lef[i-1],v[i].s);
 	rig[N-1] = mp(v[N-1].s,v[N-1].s);
-	for (int i = N - 2; i >= 0; --i) rig[i] = comb(rig[i+1],v[i].s);
+	for (int i = N-2; i >= 0; --i) rig[i] = comb(rig[i+1],v[i].s);
 	ll area = (ll)(v.back().f-v.front().f)*(lef.back().s-lef.back().f);
 	ll best = INF;
-	for (int i = 0; i < N - 1; ++i) if (v[i].f != v[i+1].f)
+	for (int i = 0; i < N-1; ++i) if (v[i].f != v[i+1].f)
 		best = min(best,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
 			+(ll)(v.back().f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
 	ans = max(ans,area-best);
