@@ -95,23 +95,22 @@ class Graph{
 #include <bits/stdc++.h>
 
 using namespace std;
-using ll = long long;
 #define pb push_back
 #define all(x) begin(x), end(x)
 
 void setIO(string name=""){ // FastIO See General -> Input/Output
     ios_base::sync_with_stdio(0); cin.tie(0); 
-    if((ll)name.size() > 0){
+    if((int)name.size() > 0){
         freopen((name+".in").c_str(), "r", stdin);
         freopen((name+".out").c_str(), "w", stdout);
     }
 }
 
-vector<ll> adj[101]; vector<bool> visited(101); ll n;
+vector<int> adj[101]; vector<bool> visited(101); int n;
 
-void dfs(ll node){
+void dfs(int node){
 	visited[node] = true;
-	for(ll v: adj[node]){
+	for(int v: adj[node]){
 		if(!visited[v]){
 			dfs(v);
 		}
@@ -131,7 +130,7 @@ int main(){
 	setIO("factory");
 	cin >> n;
 	for(int i = 0; i < (n - 1); i++){
-		ll a, b; cin >> a >> b;
+		int a, b; cin >> a >> b;
 		--a; --b;
 		adj[b].pb(a);
 	}
