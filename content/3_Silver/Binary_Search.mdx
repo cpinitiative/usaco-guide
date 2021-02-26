@@ -4,7 +4,7 @@ redirects:
   - /silver/binary-search-sorted
   - /silver/binary-search-ans
 title: 'Binary Search'
-author: Darren Yao, Abutalib Namazov, Andrew Wang
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang
 prerequisites:
   - greedy-sorting
 description: 'Binary searching on arbitrary monotonic functions and built-in functions for binary search.'
@@ -312,51 +312,44 @@ See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
 
 </CPPSection>
 
-<!--
 <JavaSection>
 
 ```java
-import java.io.*;
-import java.util.*;
+import java.util.function.Predicate;
 
-public class test{
-	public static boolean f(int x){
-		return x*x <= 30;
-		// function f(x) returns true or false
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(lastTrue(2,10,(x) -> true)); // 10
+		// all numbers satisfy the condition
+		System.out.println(lastTrue(2,10,(x) -> x*x<=30)); // 5
+		System.out.println(lastTrue(2,10,(x) -> false)); // 1
+		// no numbers satisfy the condition
 	}
-	public static int lastTrue(int lo, int hi) {
-		int res = lo-1;
-		while (lo <= hi) {
-			int mid = (lo+hi)/2; // find the middle of the current range
-			if (f(mid)) {
+
+	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			// find the middle of the current range (rounding up)
+			if (f.test(mid)) lo = mid;
 				// if mid works, then all numbers smaller than mid also work
-				// so we only care about the part after mid
-				res = mid; // update the answer
-				lo = mid+1; // cut the part before mid
-				// notice that we already handled mid itself so we cut it as well
-			} else {
-				// if mid does not work, greater values would not work too
-				// so we don't care about them
-				hi = mid-1; // cut mid and after
-			}
+			else hi = mid-1;
+			// if mid does not work, greater values would not work too
+			// so we don't care about them
+
 		}
-		// now res is the answer
-		// if res is lo-1 that means no value in the range satisfies the condition
-		return res;
-	}
-	public static void main(String[] args) throws IOException
-	{
-		System.out.println(lastTrue(2,10)); // 5
+		return lo;
 	}
 }
 ```
+
+See [Java Predicate Interface](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html) if you're not familiar with the `Predicate` interface used.
 
 </JavaSection>
 
 <PySection>
 
 ```python
-def lastTrue(f, lo, hi):
+def lastTrue(lo, hi, f):
 	""" Binary Search
 	:param f: (lambda function) check a state
 	:param lo: (int) lower bound
@@ -368,97 +361,32 @@ def lastTrue(f, lo, hi):
 		mid = (lo+hi)//2 # find the middle of the current range
 		if f(mid):
 			# if mid works, then all numbers smaller than mid also work
-			# so we only care about the part after mid
 			res = mid # update the answer
 			lo = mid+1 # cut the part before mid
 			# notice that we already handled mid itself so we cut it as well
 		else:
 			# if mid does not work, greater values would not work too
-			# so we don't care about them
 			hi = mid-1 # cut mid and after
 	# now res is the answer
 	# if res is l-1 that means no value in the range satisfies the condition
 	return res
-print(lastTrue(lambda x:True, 2, 10)) # 10
+
+print(lastTrue(2, 10, lambda x: True)) # 10
 # all numbers satisfy the condition
-print(lastTrue(lambda x:x*x <= 30, 2, 10)) # 5
-print(lastTrue(lambda x:False, 2, 10)) # 1
+print(lastTrue(2, 10, lambda x : x * x <= 30)) # 5
+print(lastTrue(2, 10, lambda x : False)) # 1
 # no numbers satisfy the condition
 ```
 
 See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if you're not familiar with the syntax used in the program.
 
-</PySection> -->
+</PySection>
 
 </LanguageSection>
 
-<!-- 
-<LanguageSection>
-
-<CPPSection>
-
-We can shorten the function by removing `res` and using a ternary if expression.
-
-```cpp
-int lastTrue(function<bool(int)> f, int lo, int hi) {
-	for (--lo; lo < hi; ) {
-		int mid = lo+(hi-lo+1)/2;
-		if (f(mid)) lo = mid;
-		else hi = mid-1;
-	}
-	return lo;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-We can shorten the function by removing `res` and using a ternary if expression.
-
-```java
-public static int lastTrue(int lo, int hi) {
-	for (lo --; lo < hi; ) {
-		int mid = (lo+hi+1)/2;
-		if(f(mid)) lo = mid; else hi = mid-1;
-	}
-	return lo;
-}
-```
-
-</JavaSection>
-
-<PySection> -->
-
-<!--
-*Note: it is NOT recommended to use tenary expression in the python implementation of binary search because python tenary expression does not accept statements.*
-
-<Spoiler title="Python ternary expression">
-
-```python
-def lastTrue(f, lo, hi): # python scoping...
-	lo-=1
-	locs=locals()
-	while locs["lo"] < locs["hi"]:
-		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
-		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
-	return locs["lo"]
-```
-
-This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to:
-
-- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
-- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
-
-</Spoiler> -->
-
-<!-- </PySection>
-
-</LanguageSection> -->
-
 #### Implementation 2
 
-This approach is based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element.
+This approach is based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element. We use powers of 2, very similiar to [Binary Jumping](/plat/bin-jump).
 
 <LanguageSection>
 
@@ -474,16 +402,13 @@ int lastTrue(int lo, int hi, function<bool(int)> f) {
 
 </CPPSection>
 
-<!--
 <JavaSection>
 
 ```java
-static long search(){
-	long pos = 0; long max = (long)2E9;
-	for(long a = max; a >= 1; a /= 2){
-		while(f(pos+a)) pos += a;
-	}
-	return pos;
+public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+	for (int dif = (hi-(--lo)); dif > 0; dif /= 2)
+		while (lo+dif <= hi && f.test(lo+dif)) lo += dif; //f is the function
+	return lo;
 }
 ```
 
@@ -491,18 +416,24 @@ static long search(){
 
 <PySection>
 
-```python
-def search():
-	pos = 0
-	a = mx = 2E9
-	while a >= 1:
-		while f(pos+a):
-			pos += a
-		a //= 2
-    return pos
-```
+<Warning>
+It is NOT recommended to use ternary expressions in the Python implementation of binary search because Python ternary expressions do not accept statements.
+</Warning>
 
-</PySection> -->
+```python
+def lastTrue(lo, hi, f): # python scoping...
+	lo-=1
+	locs=locals()
+	while locs["lo"] < locs["hi"]:
+		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
+		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
+	return locs["lo"]
+```
+This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to:
+- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
+- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
+
+</PySection>
 
 </LanguageSection>
 
@@ -543,40 +474,34 @@ int main() {
 
 </CPPSection>
 
-<!--
 <JavaSection>
 
 ```java
-import java.io.*;
-import java.util.*;
+import java.util.function.Predicate;
 
-public class test{
-	public static boolean f(int x){
-		return x*x >= 30;
-		//function f(x) returns true or false
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(firstTrue(2,10,(x) -> true)); // 2
+		System.out.println(firstTrue(2,10,(x) -> x*x>=30)); // 6
+		System.out.println(firstTrue(2,10,(x) -> false)); // 11
 	}
-	public static int firstTrue(int lo, int hi) {
+
+	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 		for (hi ++; lo < hi; ) {
-			// returns smallest x in [lo,hi] that satisfies f
-			// hi+1 if no x satisfies f
-			int mid = (lo+hi)/2;
-			if(f(mid)) hi = mid; else lo = mid+1;
+			int mid = lo+(hi-lo)/2;
+			if (f.test(mid)) hi = mid;
+			else lo = mid+1;
 		}
 		return lo;
 	}
-	public static void main(String[] args) throws IOException
-	{
-		System.out.println(firstTrue(2,10)); // 6
-	}
 }
 ```
-
 </JavaSection>
 
 <PySection>
 
 ```python
-def firstTrue(f, lo, hi):
+def firstTrue(lo, hi, f):
 	# returns smallest x in [lo,hi] that satisfies f
 	# hi+1 if no x satisfies f
 	hi+=1
@@ -587,13 +512,12 @@ def firstTrue(f, lo, hi):
 		else:
 			lo = mid + 1
 	return lo
-
-print(firstTrue(lambda x:True, 2, 10)) # 2
-print(firstTrue(lambda x:x*x >= 30, 2, 10)) # 6
-print(firstTrue(lambda x:False, 2, 10)) # 11
+print(firstTrue(2, 10, lambda x : True)) # 2
+print(firstTrue(2, 10, lambda x : x * x >= 30)) # 6
+print(firstTrue(2, 10, lambda x : False)) # 11
 ```
 
-</PySection> -->
+</PySection>
 
 </LanguageSection>
 
@@ -625,6 +549,14 @@ using namespace std;
 
 using ll = long long;
 
+bool f(int x) {
+	// returns true if median can be raised to x
+	ll operationsNeeded = 0;
+	for (ll i = (n-1)/2; i < n; i++)
+		operationsNeeded += max(0, x-v[i]);
+	return operationsNeeded <= k;
+}
+
 int lastTrue(int lo, int hi, function<bool(int)> f) {
 	for (--lo; lo < hi; ) {
 		int mid = lo+(hi-lo+1)/2;
@@ -643,56 +575,81 @@ int main() {
 		v.push_back(t);
 	}
 	sort(v.begin(), v.end());
-	cout << lastTrue(1,2e9,[&](int x) {
-		// returns true if median can be raised to x
-		ll operationsNeeded = 0;
-		for (ll i = (n-1)/2; i < n; i++)
-		   operationsNeeded += max(0, x-v[i]);
-		return operationsNeeded <= k;
-	});
+	cout << lastTrue(1, 2e9);
 }
 ```
 
 </CPPSection>
 
-<!--
 <JavaSection>
 
 ```java
-static int n;
-static long k;
-static long[] arr;
-public static void main(String[] args) {
+import java.io.*;
+import java.util.*;
 
-	n = r.nextInt(); k = r.nextLong();
-	arr = new long[n];
-	for(int i = 0; i < n; i++){
-		arr[i] = r.nextLong();
+public class BinarySearch{
+	static int n, k;
+	static List<Integer> v = new ArrayList<>();
+	public static void main(String[] args){
+		Kattio io = new Kattio();
+
+		n = io.nextInt(); k = io.nextInt();
+		for(int i = 0; i < n; i++){
+			int t = io.nextInt();
+			v.add(t);
+		}
+		Collections.sort(v);
+		io.println(lastTrue(1, (int)2e9));
+		io.close();
 	}
-	Arrays.sort(arr);
 
-	pw.println(search());
-	pw.close();
-}
-
-// binary searches for the correct answer
-static long search(){
-	long pos = 0; long max = (long)2E9;
-	for(long a = max; a >= 1; a /= 2){
-		while(f(pos+a)) pos += a;
+	public static boolean f(int x){
+		// returns true if median can be raised to x
+		long operationsNeeded = 0;
+		for (int i = (n-1)/2; i < n; i++)
+			operationsNeeded += Math.max(0, x-v.get(i));
+		return operationsNeeded <= k;
 	}
-	return pos;
-}
 
-// checks whether the number of given operations is sufficient
-// to raise the median of the array to x
-static boolean f(long x){
-	long operationsNeeded = 0;
-	for(int i = (n-1)/2; i < n; i++){
-		operationsNeeded += Math.max(0, x-arr[i]);
+	public static int lastTrue(int lo, int hi) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			if (f(mid)) lo = mid;
+			else hi = mid-1;
+		}
+		return lo;
 	}
-	if(operationsNeeded <= k){ return true; }
-	else{ return false; }
+
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
 }
 ```
 
@@ -711,26 +668,27 @@ def f(x):
 		return True
 	else:
 		return False
-
-
 # binary searches for the correct answer
-def search():
-    pos = 0
-	a = mx = 2E9
-	while a >= 1:
-		while f(pos+a):
-			pos += a
-		a //= 2
-    return int(pos)
+def search(lo, hi):
+	lo-=1
+	while lo < hi:
+		mid = lo+(hi-lo+1)//2;
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid-1
+		
+	return lo
+
 
 v=[]
 n, k = map(int, input().split())
 v = list(map(int, input().split()))
 v.sort()
-print(search())
+print(search(1, 2E9))
 ```
 
-</PySection> -->
+</PySection>
 
 </LanguageSection>
 
@@ -741,6 +699,10 @@ print(search())
 ### Mistake 1 - Off By One
 
 Consider the code from CSAcademy's [Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 long long f(int x) {
@@ -759,6 +721,51 @@ int square_root(int x) {
 	return left;
 }
 ```
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static long f(int x) {
+	return (long)x * x;
+}
+public static int square_root(int x) {
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def f(x):
+	return x*x
+
+def square_root(x):
+	left = 0
+	right = 0
+	while left < right:
+		middle = (left + right) // 2
+		if f(middle) <= x:
+			left = middle
+		else:
+			right = middle - 1
+	return left
+```
+
+</PySection>
+
+</LanguageSection>
 
 This results in an infinite loop if `left=0` and `right=1`! To fix this, set `middle = (left+right+1)/2` instead.
 
@@ -767,6 +774,7 @@ This results in an infinite loop if `left=0` and `right=1`! To fix this, set `mi
 Consider a slightly modified version of `firstTrue`:
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -781,6 +789,38 @@ int firstTrue(int lo, int hi, function<bool(int)> f) {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = (lo+hi)/2;
+		if (f.test(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def firstTrue(lo, hi, f):
+	hi+=1
+	while lo < hi:
+		mid = (lo+hi)//2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid+1
+	return lo
+```
+
+</PySection>
+
 </LanguageSection>
 
 This code does not necessarily work if `lo` is negative! Consider the following example:
@@ -800,31 +840,44 @@ int main() {
 
 </CPPSection>
 
-<!--
 <JavaSection>
 
 ```java
-public static void main(String[] args) throws IOException
-{
-     System.out.println(firstTrue(-10,-7)); // infinite loop
+public static void main(String[] args) {
+	System.out.println(firstTrue(-10,-10,(x) -> false));
+	// -8, should be -9
+	System.out.println(firstTrue(-10,-10,(x) -> true));
+	// infinite loop
 }
 ```
 
-</JavaSection> -->
+</JavaSection>
+
+<PySection>
+
+```python
+print(firstTrue(-10,-10,lambda x : False))
+# -8, should be -9
+print(firstTrue(-10,-10,lambda x : True))
+# infinite loop
+```
+
+</PySection>
 
 </LanguageSection>
 
 This is because dividing an odd negative integer by two will round it up instead of down.
 
-<!-- <LanguageSection>
+<LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int firstTrue(function<bool(int)> f, int lo, int hi) {
+int firstTrue(int lo, int hi, function<bool(int)> f) {
 	for (hi ++; lo < hi; ) {
 		int mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1;
+		if f(mid) hi = mid;
+		else lo = mid+1;
 	}
 	return lo;
 }
@@ -835,12 +888,11 @@ int firstTrue(function<bool(int)> f, int lo, int hi) {
 <JavaSection>
 
 ```java
-public static int firstTrue(int lo, int hi) {
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
 	for (hi ++; lo < hi; ) {
-		// returns smallest x in [lo,hi] that satisfies f
-		// hi+1 if no x satisfies f
 		int mid = lo+(hi-lo)/2;
-		if(f(mid)) hi = mid; else lo = mid+1;
+		if(f.test(mid)) hi = mid; 
+		else lo = mid+1;
 	}
 	return lo;
 }
@@ -848,7 +900,23 @@ public static int firstTrue(int lo, int hi) {
 
 </JavaSection>
 
-</LanguageSection> -->
+<PySection>
+
+```python
+def firstTrue(lo, hi, f):
+	hi+=1
+	while lo < hi:
+		mid = lo+(hi-lo)/2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid+1
+	return lo
+```
+
+</PySection>
+
+</LanguageSection>
 
 ### Mistake 3 - Integer Overflow
 
@@ -917,17 +985,13 @@ The first version of `firstTrue` won't work if `hi-lo` initially exceeds `INT_MA
 
 </LanguageSection>
 
-<!-- ## Coordinate Compression
-
-A related topic is **coordinate compression**, which takes some points and reassigns them to remove wasted space. -->
 
 ### Example - Counting Haybales
 
 <FocusProblem problem={problems.count} />
 
-<!-- > Farmer John has just arranged his $N$ haybales $(1\le N \le 100,000)$ at various points along the one-dimensional road running across his farm. To make sure they are spaced out appropriately, please help him answer $Q$ queries ($1 \le Q \le 100,000$), each asking for the number of haybales within a specific interval along the road. -->
 
-As each of the points are in the range $0 \ldots 1,000,000,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
+As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
 
 Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use binary search to count the number of cows in any range $[A,B]$ in $\mathcal{O}(\log N)$ time.
 
@@ -1106,6 +1170,79 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Haybales{
+	static int N, Q;
+	public static void main(String[] args) throws IOException{
+		Kattio io = new Kattio("haybales");
+		N = io.nextInt();
+		Q = io.nextInt();
+		List<Integer> v = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			int t = io.nextInt();
+			v.add(t);
+		}
+		Collections.sort(v);
+
+		for (int i = 0; i < Q; ++i) {
+			int A = io.nextInt();
+			int B = io.nextInt();
+			io.println(at_most(B)-at_most(A-1));
+		}
+
+		io.close();
+	}
+
+	public static int at_most(int x){ // returns # of elements <= x
+		int lo = 0, hi = v.size();
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (v.get(mid) <= x) lo = mid+1;
+			else hi = mid;
+		}
+		return lo;
+	}
+
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
