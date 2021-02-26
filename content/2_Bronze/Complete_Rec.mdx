@@ -680,6 +680,40 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+S = input()
+cnt = [0]*26
+perm = ""
+perms = []
+
+def search():
+    global perm
+    if len(perm) == len(S):
+        perms.append(perm)
+        return
+    for i in range(26):
+        if cnt[i] == 0:
+            continue
+        cnt[i] -= 1
+        perm += chr(ord('a') + i)
+        search()
+        cnt[i] += 1
+        perm = perm[:-1] # this removes the last character
+    
+
+
+for ch in S:
+    cnt[ord(ch) - ord('a')] += 1
+search()
+print(len(perms))
+for t in perms:
+    print(t)
+```
+
+</PySection>
+
 </LanguageSection>
 
 #### Generating Permutations Using [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
