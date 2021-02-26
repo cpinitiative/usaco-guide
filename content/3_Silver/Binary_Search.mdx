@@ -416,22 +416,18 @@ public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
 
 <PySection>
 
-<Warning>
-It is NOT recommended to use ternary expressions in the Python implementation of binary search because Python ternary expressions do not accept statements.
-</Warning>
-
 ```python
-def lastTrue(lo, hi, f): # python scoping...
+def lastTrue(lo, hi, f):
 	lo-=1
-	locs=locals()
-	while locs["lo"] < locs["hi"]:
-		locs["mid"] = (locs["lo"]+locs["hi"]+1)//2
-		exec("lo = mid" if f(locs["mid"]) else "hi = mid-1",globals(),locs)
-	return locs["lo"]
+	while lo < hi:
+		mid = (lo+hi+1)//2
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid-1
+
+	return lo
 ```
-This code is very cumbersome because we have to use `exec` function to run the code `lo = mid` and `hi = mid - 1`. If you are interested in this function and python scoping rules, please refer to:
-- [Python Scope & the LEGB Rule: Resolving Names in Your Code](https://realpython.com/python-scope-legb-rule)
-- [Setting variables with exec inside a function](https://stackoverflow.com/questions/23168282/setting-variables-with-exec-inside-a-function)
 
 </PySection>
 
