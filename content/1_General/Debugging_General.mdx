@@ -22,13 +22,49 @@ This module is based on both of these resources. I've included the content that 
 
 ## Pre-Submit
 
-<IncompleteSection>
-
-todo - find particularly bad example of repetition
-
-</IncompleteSection>
-
  - Don't repeat yourself!
+
+<LanguageSection>
+
+<JavaSection>
+
+Consider this example of swapping items in an array of integers.
+
+```java
+public static void main(String[] args) {
+	//swap first item with third
+	int first = arr[0];
+	int last = arr[2];
+	arr[0] = last;
+	arr[2] = first;
+
+	//swap second item with fourth
+	int second = arr[1];
+	int secondLast = arr[3];
+	arr[1] = secondLast;
+	arr[3] = second;
+}
+```
+
+Hopefully you notice the unnecessary repetition in this code. Luckily, we can turn this into a function that takes in the two indicies of the array that we want to swap, like so.
+
+```java
+private void swap(int[] arr, int i, int j) {
+	int first = arr[i];
+	arr[i] = arr[j];
+	arr[j] = first;
+}
+
+public static void main(String[] args) {
+	swap(arr, 0, 2);
+	swap(arr, 1, 3);
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
  - Your code should be readable (to yourself at the very least). Variables should be given meaningful names.
    - See [style tips](/general/debugging-lang#style).
  - Use plenty of [print statements](/general/debugging-lang#printing-variables).
@@ -38,10 +74,10 @@ todo - find particularly bad example of repetition
  - Read the full problem statement again.
  - Read your code again.
  - Have you understood the problem correctly?
- - Is your output format correct? 
+ - Is your output format correct?
    - Did you remove debug output before submitting?
  - Add some [assertions](/general/debugging-lang#assertions--warnings), resubmit.
- - Are you sure your algorithm works? 
+ - Are you sure your algorithm works?
    - Go through the algorithm for a simple case / write some testcases to run your algorithm on.
  - Do you handle all corner cases (such as $N=1$) / special cases?
  - Any undefined behavior?
@@ -53,7 +89,7 @@ todo - find particularly bad example of repetition
  - Confusing $N$ and $M$, $i$ and $j$, etc.?
  - Shadowed or unused variables?
    - Compile with [warning options](/general/debugging-lang#warning-options).
- - Write a test case generator and a (simpler) slow solution and compare the outputs 
+ - Write a test case generator and a (simpler) slow solution and compare the outputs
    - See [stress testing](/general/debugging-lang#stress-testing).
    - You can compare against a model solution (if available).
  - Rewrite your solution from the start.
@@ -90,5 +126,5 @@ Of course, many of these are also relevant for RE / TLE.
  - Provide a link to the problem (and the relevant module, if applicable).
  - Include what you've attempted so far.
  - If you have code, post it (formatted as described [here](https://forum.usaco.guide/t/welcome-to-the-usaco-forum/7/2)).
-   - Add comments. 
+   - Add comments.
    - If you know which part doesn't work, mention it.

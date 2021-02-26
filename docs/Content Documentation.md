@@ -11,9 +11,13 @@ All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/
 
 ## 1. Getting Started
 
+### Using LiveUpdate (recommended)
+
+The easiest way to edit content is to use our [LiveUpdate](https://usaco.guide/liveupdate) editor. If you choose this option, you can skip the rest of the "Getting Started" section.
+
 ### Running Site Locally
 
-It is highly recommended to [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes.
+You can also [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes. This is useful if you need to use Tailwind CSS classes, which don't work with /liveupdate.
 
 ### Using Sublime Text with .mdx
 
