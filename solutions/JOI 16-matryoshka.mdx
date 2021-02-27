@@ -21,7 +21,7 @@ If $B_i = \infty$ for each query, then we can simply do a line sweep on the doll
 inserting dolls into the sequence and updating the longest non-increasing subsequence as we get to them.
 
 For variable $B_i$s, we only want the longest non-increasing subsequence for some prefixes
-of the sequence of dolls (not the whole sequence like before). We can thus binary search on the LIS
+of the sequence of dolls (not the whole sequence like before). We can thus binary search on the LDS
 array to find this answer, since the LDS array stores for each $i$, the doll with the smallest $B_j$
 with a non-increasing subsequence ending on it.
 
@@ -51,11 +51,11 @@ int main() {
 	vector<pair<int, int>> dp;
 	for (int i = 0, j = 0; i < q; i++) {
 		while (j < n && doll[j].first >= query[i].first.first) {
-			int lis = upper_bound(dp.begin(), dp.end(),
+			int lds = upper_bound(dp.begin(), dp.end(),
 						make_pair(-doll[j].second, INT_MAX))
 						- dp.begin();
-			if (lis == dp.size()) dp.push_back({-doll[j].second, doll[j].first});
-			else dp[lis] = {-doll[j].second, doll[j].first};
+			if (lds == dp.size()) dp.push_back({-doll[j].second, doll[j].first});
+			else dp[lds] = {-doll[j].second, doll[j].first};
 			j++;
 		}
 		ans[query[i].second] = upper_bound(dp.begin(), dp.end(),
