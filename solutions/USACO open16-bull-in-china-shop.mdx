@@ -15,7 +15,7 @@ The official solution doesn't check if any '#' fall outside the $N \times N$ gri
 
 </Warning>
 
-As we iterate the pieces, we find the left, right, top and bottom sides of the piece and store them in the $\texttt{side}$ array. When we are shifting, we shift $\texttt{piece[i]}$ $\texttt{idy}$ units to the left and $\texttt{idx}$ units up, and shift $\texttt{piece[j]}$ $\texttt{jdy}$ units to the left and $\texttt{jdx}$ units up. This will send the piece at $(x + \texttt{idx}, y + \texttt{idy})$ to $(x, y)$ and the piece at $(x + \texttt{jdx}, y + \texttt{jdy})$ to $(x, y)$. So, we see that $\texttt{idy}$ must be bounded by $\texttt{right} - n$ and $\texttt{left}$, and $\texttt{idx}$ must be bounded by $\texttt{bottom} - n$ and $\texttt{top}$, with $\texttt{jdy}$ and $\texttt{jdx}$ bounded similarly. Because of that, every '#' will fall inside the $N \times N$ grid.
+As we iterate the pieces, we find the left, right, top and bottom sides of the piece and store them in the $\texttt{s}$ array. When we are shifting, we shift $\texttt{piece[i]}$ $\texttt{idy}$ units to the left and $\texttt{idx}$ units up, and shift $\texttt{piece[j]}$ $\texttt{jdy}$ units to the left and $\texttt{jdx}$ units up. This will send the piece at $(x + \texttt{idx}, y + \texttt{idy})$ to $(x, y)$ and the piece at $(x + \texttt{jdx}, y + \texttt{jdy})$ to $(x, y)$. So, we see that $\texttt{idy}$ must be bounded by $\texttt{right} - n + 1$ and $\texttt{left}$, and $\texttt{idx}$ must be bounded by $\texttt{bottom} - n + 1$ and $\texttt{top}$, with $\texttt{jdy}$ and $\texttt{jdx}$ bounded similarly. Because of that, every '#' will fall inside the $N \times N$ grid.
 
 Once we have shifted the pieces, if there are two '#' in the same place, or if the result of superimposing the pieces is not the same as the original figurine ($\texttt{pieces[0]}$), then this shift will not work.
 
@@ -36,7 +36,7 @@ bool check(int piece, int x, int y);
 
 int n;
 bool pieces[11][8][8];
-vector<int> side[11];
+vector<int> s[11];
 int main() 
 {
 	freopen("bcs.in", "r", stdin);
@@ -67,7 +67,7 @@ int main()
 				}
 			}
 		}
-		side[i] = {left, right, top, bottom};
+		s[i] = {left, right, top, bottom};
 	}
 	
 	//try all the pieces and shifts to find the correct one
@@ -75,13 +75,13 @@ int main()
 	{
 		for (int j = i + 1; j <= k; j++)
 		{
-			for (int idx = side[i][3] - n; idx <= side[i][2]; idx++)
+			for (int idx = s[i][3] - n + 1; idx <= s[i][2]; idx++)
 			{
-				for (int idy = side[i][1] - n; idy <= side[i][0]; idy++)
+				for (int idy = s[i][1] - n + 1; idy <= s[i][0]; idy++)
 				{
-					for (int jdx = side[j][3] - n; jdx <= side[j][2]; jdx++)
+					for (int jdx = s[j][3] - n + 1; jdx <= s[j][2]; jdx++)
 					{
-						for (int jdy = side[j][1] - n; jdy <= side[j][0]; jdy++)
+						for (int jdy = s[j][1] - n + 1; jdy <= s[j][0]; jdy++)
 						{
 							bool good = true;
 							for (int x = 0; x < n; x++)
