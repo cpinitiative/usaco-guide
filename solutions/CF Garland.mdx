@@ -17,21 +17,10 @@ We can use dynamic programming to cache such answers.
 
 Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$ characters, with $j$ amount painted of character $k$. Either two things can happen when we add an additional character.
 
-1. We append the character and paint an additional square.
+1. We append the character and paint an additional square. <center>
+$$\texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)$$</center>
+2. We append the character, but since it is the same as our previous character we get to "save" a paint.<center>$$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)$$</center>
 
-<center>
-
-$$\texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)$$
-
-</center>
-
-2. We append the character, but since it is the same as our previous character we get to "save" a paint.
-
-<center>
-
-$$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)$$
-
-</center>
 
 Since this only gives us the best possible score that ends with length $i$, we can just take the current best and translate it using $\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$
 
@@ -44,19 +33,15 @@ Now, we can query the max painting score for any substring containing the first 
 ```cpp
 #include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
-
 using ll = long long;
-
 using vi = vector<int>;
 #define pb push_back
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
-
 using pi = pair<int,int>;
 #define f first
 #define s second
 #define mp make_pair
-
 void setIO(string name = "") {
 	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
 	if (sz(name)) {
@@ -64,57 +49,41 @@ void setIO(string name = "") {
 		freopen((name+".out").c_str(), "w", stdout);
 	}
 }
-
 // i = length of string
 // j = amount painting
 // k = character
-
 int dp[1501][1501][26];
 int S[1501];
-
 int main() {
 	setIO();
-
 	int n; cin >> n;
 	for(int i = 0; i < n; i++) {
 		char a; cin >> a;
 		S[i] = (int)(a - 'a');
 	}
-
 	for(int k = 0; k < 26; k++) { // lower case characters
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				// appending a character
 				dp[i+1][j+1][k] = max(dp[i+1][j+1][k], dp[i][j][k] + 1);
-
 				// if we can "save"
 				if(S[i] == k)
 					dp[i+1][j][k] = max(dp[i+1][j][k], dp[i][j][k] + 1);
 			}
 		}
 	}
-
 	// take the current best and translate it
 	// dp[i+1][j][k] = max(dp[i+1][j][k], dp[i][j][k]);
-
 	for(int k = 0; k < 26; k++)
 		for(int i = 0; i < n; i++)
 			for(int j = 0; j < n; j++)
 				dp[i+1][j][k] = max(dp[i+1][j][k], dp[i][j][k]);
-
 	int q;
 	cin >> q;
-
 	for(int i = 0; i < q; i++) {
 		int a; char b;
 		cin >> a >> b;
 		b -= 'a';
-
 		cout << dp[n][a][(int)b] << '\n';
 	}
 }
-```
-
-</CPPSection>
-
-</LanguageSection>
