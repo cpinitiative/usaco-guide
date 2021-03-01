@@ -9,7 +9,7 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import { SolutionInfo } from '../../models/solution';
 
-import ModuleFeedback from './ModuleFeedback';
+// import ModuleFeedback from './ModuleFeedback';
 import ConfettiContext from '../../context/ConfettiContext';
 import ForumCTA from '../ForumCTA';
 import { SettingsModalProvider } from '../../context/SettingsModalContext';
@@ -130,13 +130,14 @@ export default function MarkdownLayout({
   // console.log(userProgressOnProblems)
   const problemIDs = [];
   const activeIDs = [];
-  const problemURLs = [];
-  const prob_to_module = {};
+  const appearsIn = [];
+  let uniqueID = '';
+  const probToModule = {};
 
   for (const moduleLink of moduleLinks) {
     for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      prob_to_module[uniqueID] = module.id;
+      probToModule[uniqueID] = module.id;
     }
   }
 
@@ -153,7 +154,8 @@ export default function MarkdownLayout({
       for (const problem of link.probs) {
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
-          problemURLs.push(link.url + '#problem-' + problem.uniqueID);
+          appearsIn.push(link.url);
+          uniqueID = problem.uniqueID;
         }
       }
     });
@@ -166,7 +168,8 @@ export default function MarkdownLayout({
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
         activeIDs,
-        problemURLs,
+        appearsIn,
+        uniqueID,
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,

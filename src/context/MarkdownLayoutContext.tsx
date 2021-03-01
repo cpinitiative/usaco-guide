@@ -7,7 +7,8 @@ const MarkdownLayoutContext = createContext<{
   markdownLayoutInfo: ModuleInfo | SolutionInfo;
   sidebarLinks: ModuleLinkInfo[];
   activeIDs: string[];
-  problemURLs: string[];
+  appearsIn: string[];
+  uniqueID: string;
   isMobileNavOpen: boolean;
   setIsMobileNavOpen: (x: boolean) => void;
   moduleProgress: ModuleProgress;
