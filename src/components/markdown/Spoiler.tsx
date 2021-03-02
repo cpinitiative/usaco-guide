@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React, { Children } from "react";
+
 
 const Spoiler = ({ children, title }) => {
+  console.log( "Child for Spoiler " + Children.count(children))
   const [show, setShow] = React.useState(false);
 
   return (
