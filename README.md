@@ -20,7 +20,7 @@ Thank you to the following companies:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get started, simply pick an [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work on, leave a comment, and submit a Pull Request!
 
-Join our Discord server: https://discord.gg/Gq9cX4j
+Join our Discord server: https://discord.gg/UKbyewj2Ft
 
 ## Our Team
 
@@ -45,6 +45,7 @@ The USACO Guide is run by the [Competitive Programming Initiative](https://joinc
 - Neo Wang (since Jan 2021)
 - Jesse Choe (since Feb 2021)
 - Mrinall Umasudhan (since Feb 2021)
+- Maggie Liu (Since Feb 2021)
 - _This could be you! [Apply here](https://docs.google.com/document/d/13xR2A2mOftVzlC6QTSkm3zLLdFtI1NhlzRWJ81FfU9U/edit)._
 
 ## Tech Stack

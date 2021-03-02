@@ -75,7 +75,10 @@ export const plugins = [
         // },
       ],
       remarkPlugins: [require(`remark-external-links`), require('remark-math')],
-      rehypePlugins: [require('./src/mdx-plugins/rehype-math.js')],
+      rehypePlugins: [
+        require('./src/mdx-plugins/rehype-math.js'),
+        require('./src/mdx-plugins/rehype-snippets.js'),
+      ],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,

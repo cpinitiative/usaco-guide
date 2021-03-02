@@ -3,15 +3,18 @@ import { Frequency } from '../Frequency';
 import { DashboardProgressSmall } from '../Dashboard/DashboardProgress';
 import MarkCompleteButton from './MarkCompleteButton';
 import * as React from 'react';
-import { SolutionInfo } from '../../models/solution';
+// import { SolutionInfo } from '../../models/solution';
 import { SECTION_LABELS } from '../../../content/ordering';
 import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { useContext } from 'react';
 // import { timeAgoString } from '../Dashboard/ModuleLink';
 
+// https://stackoverflow.com/questions/50709625/link-with-target-blank-and-rel-noopener-noreferrer-still-vulnerable
+
 const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
   if (prerequisite.startsWith('/')) {
+    // solution
     let leading = prerequisite.split('#')[0];
     if (leading.startsWith('/')) {
       leading = leading.split('/')[2];
@@ -23,6 +26,7 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
           <a
             href={prerequisite}
             target="_blank"
+            rel="noreferrer"
             className="underline text-black dark:text-blue-200"
           >
             {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
@@ -37,6 +41,7 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
           <a
             href={moduleLink.url}
             target="_blank"
+            rel="noreferrer"
             className="underline text-black dark:text-blue-200"
           >
             {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
@@ -58,7 +63,8 @@ export default function ModuleHeaders({
     markdownLayoutInfo: markdownData,
     moduleProgress,
     handleCompletionChange,
-    problemURLs,
+    uniqueID,
+    appearsIn,
   } = useContext(MarkdownLayoutContext);
 
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
@@ -66,7 +72,9 @@ export default function ModuleHeaders({
   if (markdownData instanceof ModuleInfo) {
     prereqs = markdownData.prerequisites || [];
   } else {
-    prereqs = problemURLs;
+    for (const link of appearsIn) {
+      prereqs.push(link + '#problem-' + uniqueID);
+    }
   }
   // const { activeIDs } = useContext(MarkdownLayoutContext);
 
@@ -141,6 +149,31 @@ export default function ModuleHeaders({
             </div>
           </div>
         </div>
+      )}
+
+      {uniqueID && (
+        <a
+          href={uniqueID}
+          target="_blank"
+          rel="noreferrer"
+          className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
+        >
+          Problem Statement
+          <svg
+            className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        </a>
       )}
 
       {markdownData instanceof ModuleInfo && markdownData.description && (

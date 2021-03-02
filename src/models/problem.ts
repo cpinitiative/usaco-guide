@@ -180,7 +180,7 @@ export class Problem {
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
         )
-          this.url = 'http://codeforces.com/' + this.url;
+          this.url = 'https://codeforces.com/' + this.url;
         else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];
