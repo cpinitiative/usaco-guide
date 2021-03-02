@@ -9,7 +9,7 @@ export default observer(function PostHeader({ post }: { post: Post }) {
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          {post.title}
+          {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
         <p className="mt-2 text-sm text-gray-500">

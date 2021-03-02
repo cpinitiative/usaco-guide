@@ -77,7 +77,7 @@ export default function Breadcrumbs({
               aria-current="page"
               className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
             >
-              {post.title}
+              {post.name}
             </Link>
           </div>
         </li>

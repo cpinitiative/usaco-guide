@@ -124,8 +124,8 @@ export default class Group {
         throw 'unknown feed ' + this.currentFeed;
       })
       .sort((a, b) => {
-        if (a.pinned !== b.pinned)
-          return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (a.isPinned !== b.isPinned)
+          return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
         return b.timestamp.toMillis() - a.timestamp.toMillis();
       });
   }

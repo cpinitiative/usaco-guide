@@ -7,6 +7,7 @@ import {
 } from 'mobx';
 import { Post } from './Post';
 import { ProblemSubmission } from './ProblemSubmission';
+import { ProblemData } from '../models/groups/posts';
 
 export class Problem {
   id = null;
@@ -15,6 +16,9 @@ export class Problem {
   source = null;
   points = null;
   difficulty = null;
+  hints = null;
+  solution = null;
+  submissionType = null;
   userSubmissions: ProblemSubmission[] = [];
   autoSave = true;
   saveHandler = null;
@@ -60,7 +64,7 @@ export class Problem {
     this.post.removeProblem(this);
   }
 
-  get asJson() {
+  get asJson(): ProblemData {
     return {
       id: this.id,
       name: this.name,
@@ -68,6 +72,9 @@ export class Problem {
       source: this.source,
       points: this.points,
       difficulty: this.difficulty,
+      hints: this.hints,
+      solution: this.solution,
+      submissionType: this.submissionType,
     };
   }
 
@@ -78,6 +85,9 @@ export class Problem {
     this.source = json.source;
     this.points = parseInt(json.points) || 0;
     this.difficulty = json.difficulty;
+    this.hints = json.hints;
+    this.solution = json.solution;
+    this.submissionType = json.submissionType;
     this.autoSave = true;
   }
 

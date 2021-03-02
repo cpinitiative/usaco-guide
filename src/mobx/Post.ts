@@ -2,15 +2,18 @@ import { makeAutoObservable, reaction, toJS } from 'mobx';
 import Group from './Group';
 import { Problem } from './Problem';
 import { v4 as uuidv4 } from 'uuid';
+import { PostData, ProblemData } from '../models/groups/posts';
+import firebase from 'firebase';
 
 export class Post {
   group: Group;
 
   id = null; // Unique id of this Post, immutable.
-  title = null;
-  timestamp = null;
+  name = null;
+  timestamp: firebase.firestore.Timestamp = null;
+  dueTimestamp: firebase.firestore.Timestamp = null;
   body = null;
-  pinned = false;
+  isPinned = false;
   isPublished = false;
   problems: { [key: string]: Problem } = {};
 
@@ -102,28 +105,29 @@ export class Post {
     this.group.removePost(this);
   }
 
-  get asJson() {
+  get asJson(): PostData {
     return {
       id: this.id,
-      title: this.title,
+      name: this.name,
       timestamp: this.timestamp,
+      dueTimestamp: this.dueTimestamp,
       body: this.body,
-      pinned: this.pinned,
+      isPinned: this.isPinned,
       isPublished: this.isPublished,
-      problems: Object.keys(this.problems).reduce(
-        (acc, cur) => ({ ...acc, [cur]: this.problems[cur].asJson }),
-        []
-      ),
+      problems: Object.keys(this.problems).reduce<{
+        [key: string]: ProblemData;
+      }>((acc, cur) => ({ ...acc, [cur]: this.problems[cur].asJson }), {}),
     };
   }
 
   // Update this Post with information from the server.
-  updateFromJson(json) {
+  updateFromJson(json: PostData) {
     this.autoSave = false; // Prevent sending of our changes back to the server.
-    this.title = json.title || '';
+    this.name = json.name || '';
     this.timestamp = json.timestamp || null;
+    this.dueTimestamp = json.dueTimestamp || null;
     this.body = json.body || '';
-    this.pinned = json.pinned || false;
+    this.isPinned = json.isPinned || false;
     this.isPublished = json.isPublished || false;
     const problems = json.problems || {};
     Object.keys(this.problems)
