@@ -2,7 +2,7 @@
 id: usaco-645
 source: USACO Gold 2016 Open
 title: Splitting the Field
-author: Óscar Garries, Benjamin Qi, Danh Ta Chi Thanh
+author: Óscar Garries, Benjamin Qi
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_split_gold_open16.html)
@@ -135,7 +135,7 @@ void tri() {
 	for (int i = N-2; i >= 0; --i) rig[i] = comb(rig[i+1],v[i].s);
 	ll area = (ll)(v.back().f-v.front().f)*(lef.back().s-lef.back().f);
 	ll best = INF;
-	for (int i = 0; i < N-1; ++i)
+	for (int i = 0; i < N-1; ++i) if (v[i].f != v[i+1].f)
 		best = min(best,(ll)(v[i].f-v[0].f)*(lef[i].s-lef[i].f)
 			+(ll)(v.back().f-v[i+1].f)*(rig[i+1].s-rig[i+1].f));
 	ans = max(ans,area-best);
@@ -152,4 +152,31 @@ int main() {
 	cout << ans;
 	return 0;
 }
+```
+
+## Note - Weak Test Data
+
+The above codes give different outputs on the following test case:
+
+The right answer should be $6$.
+
+```
+17
+0 0
+0 1
+0 2
+1 0
+1 1
+1 2
+2 0
+2 1
+2 2
+2 3
+2 4
+3 2
+3 3
+3 4
+4 2
+4 3
+4 4
 ```
