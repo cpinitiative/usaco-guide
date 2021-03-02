@@ -46,6 +46,11 @@ export default function ProblemsPage(props: PageProps) {
                 items.sort((x, y) => x.label.localeCompare(y.label))
               }
             />
+            <CustomRefinementList
+                attribute="difficulty"
+                limit={100}
+                searchable
+            />
 
           </div>
           <div className="flex justify-center mt-4">

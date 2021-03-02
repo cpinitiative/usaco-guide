@@ -94,7 +94,6 @@ const queries = [
           problemModules[x.id].push({
             id: edge.node.frontmatter.id,
             title: edge.node.frontmatter.title,
-            difficulty: edge.node.problems.difficulty,
           });
         });
       });
