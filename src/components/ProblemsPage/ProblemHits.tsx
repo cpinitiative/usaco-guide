@@ -21,7 +21,7 @@ function ProblemHit({ hit }) {
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 sm:rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
-        {problem.source}
+        {problem.source} {problem.difficulty}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
         <Highlight hit={hit} attribute="name" />

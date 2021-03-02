@@ -275,9 +275,6 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
-          fields {
-            gitAuthorTime
-          }
         }
       }
     }

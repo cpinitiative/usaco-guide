@@ -67,7 +67,7 @@ function problemToAlgoliaRecord({ uniqueID, ...rest }, problemModules) {
   return {
     objectID: uniqueID,
     ...rest,
-    problemModules,
+    ...problemModules,
   };
 }
 
@@ -94,9 +94,8 @@ const queries = [
           problemModules[x.id].push({
             id: edge.node.frontmatter.id,
             title: edge.node.frontmatter.title,
-            omniData: transform(JSON.stringify(edge.node.problems.tags), JSON.stringify(edge.node.problems.starred), JSON.stringify(edge.node.problems.difficulty)),
+            difficulty: edge.node.problems.difficulty,
           });
-          
         });
       });
       data.data.edges.forEach(edge => {
@@ -106,6 +105,7 @@ const queries = [
           res.push(problemToAlgoliaRecord(x, problemModules[x.id]));
         });
       });
+      console.log(res);
       return res;
     },
     indexName: process.env.ALGOLIA_INDEX_NAME + '_problems',

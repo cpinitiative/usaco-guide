@@ -78,7 +78,7 @@ export const pageQuery = graphql`
       }
       fields {
         division
-        gitAuthorTime
+       
       }
       toc {
         cpp {
