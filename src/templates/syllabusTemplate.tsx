@@ -79,40 +79,40 @@ const HeroTextColor: { [key in SectionID]: string } = {
 };
 
 const topicsWarning = (
-  <>
-    The topics below are not exhaustive for this division.
-    <br />
-    Contest problems may contain topics not covered in the guide, or topics
-    listed under different divisions!
-  </>
+    <>
+      The topics below are not exhaustive for this division.
+      <br />
+      Contest problems may contain topics not covered in the guide, or topics
+      listed under different divisions!
+    </>
 );
 const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   general: (
-    <>
-      You don't have to complete all the modules in this section before moving
-      on to Bronze.
-      <br />
-      Feel free to mark some as "skipped" and revisit them at a later time!
-    </>
+      <>
+        You don't have to complete all the modules in this section before moving
+        on to Bronze.
+        <br />
+        Feel free to mark some as "skipped" and revisit them at a later time!
+      </>
   ),
   bronze: topicsWarning,
   silver: topicsWarning,
   gold: topicsWarning,
   plat: (
-    <>
-      {topicsWarning}
-      <br />
-      Some lower-frequency topics are included in "Advanced."
-    </>
+      <>
+        {topicsWarning}
+        <br />
+        Some lower-frequency topics are included in "Advanced."
+      </>
   ),
   adv: (
-    <>
-      Some these topics have not appeared in Platinum and probably never will
-      (ex. Matroid Intersection).
-      <br />
-      Others have appeared in Old Gold or Platinum very infrequently (ex. BCC,
-      Suffix Array).
-    </>
+      <>
+        Some these topics have not appeared in Platinum and probably never will
+        (ex. Matroid Intersection).
+        <br />
+        Others have appeared in Old Gold or Platinum very infrequently (ex. BCC,
+        Suffix Array).
+      </>
   ),
 };
 
@@ -133,8 +133,8 @@ export default function Template(props) {
   // );
 
   const moduleIDs = section.reduce(
-    (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
-    []
+      (acc, cur) => [...acc, ...cur.items.map(x => x.frontmatter.id)],
+      []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
   const problemIDs = [];
@@ -159,104 +159,104 @@ export default function Template(props) {
       }
     const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
     return (
-      problemIDs.length > 1 && (
-        <DashboardProgressSmall
-          {...problemsProgressInfo}
-          total={problemIDs.length}
-        />
-      )
+        problemIDs.length > 1 && (
+            <DashboardProgressSmall
+                {...problemsProgressInfo}
+                total={problemIDs.length}
+            />
+        )
     );
   };
 
   return (
-    <Layout>
-      <SEO
-        title={SECTION_SEO_TITLES[division]}
-        description={SECTION_SEO_DESCRIPTION[division]}
-      />
-      <div className="min-h-screen">
-        <TopNavigationBar currentSection={division} />
+      <Layout>
+        <SEO
+            title={SECTION_SEO_TITLES[division]}
+            description={SECTION_SEO_DESCRIPTION[division]}
+        />
+        <div className="min-h-screen">
+          <TopNavigationBar currentSection={division} />
 
-        <main>
-          <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-              <h1 className="mb-6 text-white text-5xl tracking-tight leading-10 font-black text-white sm:leading-none md:text-6xl text-center">
-                {SECTION_LABELS[division]}
-              </h1>
-              <p
-                className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12 px-4`}
-              >
-                {SECTION_DESCRIPTION[division]}
-              </p>
-              <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Modules Progress
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...moduleProgressInfo}
-                        total={moduleIDs.length}
-                      />
+          <main>
+            <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
+              <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h1 className="mb-6 text-white text-5xl tracking-tight leading-10 font-black text-white sm:leading-none md:text-6xl text-center">
+                  {SECTION_LABELS[division]}
+                </h1>
+                <p
+                    className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12 px-4`}
+                >
+                  {SECTION_DESCRIPTION[division]}
+                </p>
+                <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
+                  <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                        Modules Progress
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                            {...moduleProgressInfo}
+                            total={moduleIDs.length}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Problems Progress
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...problemsProgressInfo}
-                        total={problemIDs.length}
-                      />
+                  <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                        Problems Progress
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                            {...problemsProgressInfo}
+                            total={problemIDs.length}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <DottedLineContainer className="py-12 px-4 max-w-screen-xl mx-auto">
-            {section.map(category => (
-              <SectionContainer key={category.name}>
-                <div className="flex-1 md:text-right pr-12 group">
-                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
-                    {category.name}
-                  </h2>
-                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
-                    {progressBarForCategory(category)}
-                  </div>
-                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition">
-                    {category.description}
-                  </p>
-                </div>
-                <div className="flex-1 pl-12">
-                  {category.items.map(item => (
-                    <ModuleLink
-                      key={item.frontmatter.id}
-                      link={
-                        new ModuleLinkInfo(
-                          item.frontmatter.id,
-                          moduleIDToSectionMap[item.frontmatter.id],
-                          item.frontmatter.title,
-                          item.frontmatter.description,
-                          item.frontmatter.frequency,
-                          item.isIncomplete,
-                          [],
-                          item.fields.gitAuthorTime
-                        )
-                      }
-                    />
-                  ))}
-                </div>
-              </SectionContainer>
-            ))}
-          </DottedLineContainer>
-        </main>
-      </div>
-    </Layout>
+            <DottedLineContainer className="py-12 px-4 max-w-screen-xl mx-auto">
+              {section.map(category => (
+                  <SectionContainer key={category.name}>
+                    <div className="flex-1 md:text-right pr-12 group">
+                      <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
+                        {category.name}
+                      </h2>
+                      <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
+                        {progressBarForCategory(category)}
+                      </div>
+                      <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition">
+                        {category.description}
+                      </p>
+                    </div>
+                    <div className="flex-1 pl-12">
+                      {category.items.map(item => (
+                          <ModuleLink
+                              key={item.frontmatter.id}
+                              link={
+                                new ModuleLinkInfo(
+                                    item.frontmatter.id,
+                                    moduleIDToSectionMap[item.frontmatter.id],
+                                    item.frontmatter.title,
+                                    item.frontmatter.description,
+                                    item.frontmatter.frequency,
+                                    item.isIncomplete,
+                                    [],
+                                    item.fields.gitAuthorTime
+                                )
+                              }
+                          />
+                      ))}
+                    </div>
+                  </SectionContainer>
+              ))}
+            </DottedLineContainer>
+          </main>
+        </div>
+      </Layout>
   );
 }
 export const pageQuery = graphql`
@@ -275,6 +275,9 @@ export const pageQuery = graphql`
             uniqueID
           }
           isIncomplete
+          fields {
+            gitAuthorTime
+          }
         }
       }
     }
