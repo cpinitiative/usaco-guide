@@ -58,7 +58,7 @@ export class ProblemSubmission {
     return this.problem.post.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.problem.post.group.groupId)
+      .doc(this.problem.post.group.id)
       .collection('submissions')
       .doc(this.id)
       .set(data);

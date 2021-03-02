@@ -27,7 +27,7 @@ export default observer(function FeedItem({ post }: { post: Post }) {
     >
       <div className="flex">
         <Link
-          to={`/groups/${post.group.groupId}/post/${post.id}`}
+          to={`/groups/${post.group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
           <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">

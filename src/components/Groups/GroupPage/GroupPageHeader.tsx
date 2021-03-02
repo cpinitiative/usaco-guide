@@ -27,7 +27,7 @@ export default observer(function GroupPageHeader(props: { group: Group }) {
             {props.group?.name ?? 'Loading...'}
           </h1>
           <p className="text-cyan-100 text-base sm:text-lg mt-2">
-            {props.group?.detail}
+            {props.group?.description}
           </p>
         </div>
         <div className="mt-4 md:mt-0 md:ml-4 text-right">

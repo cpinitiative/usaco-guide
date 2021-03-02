@@ -112,7 +112,7 @@ export class Problem {
     return this.post.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.post.group.groupId)
+      .doc(this.post.group.id)
       .collection('posts')
       .doc(this.post.id)
       .update({
@@ -127,7 +127,7 @@ export class Problem {
     const ref = this.post.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.post.group.groupId)
+      .doc(this.post.group.id)
       .collection('submissions')
       .doc();
     const submission = new ProblemSubmission(this, ref.id);
@@ -139,7 +139,7 @@ export class Problem {
     this.unsubscribeSubmissions = this.post.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.post.group.groupId)
+      .doc(this.post.group.id)
       .collection('submissions')
       .where('problemId', '==', this.id)
       .where(

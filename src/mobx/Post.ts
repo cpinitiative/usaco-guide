@@ -95,7 +95,7 @@ export class Post {
     await this.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.group.groupId)
+      .doc(this.group.id)
       .collection('posts')
       .doc(this.id)
       .delete();
@@ -145,7 +145,7 @@ export class Post {
     return this.group.firebase
       .firestore()
       .collection('groups')
-      .doc(this.group.groupId)
+      .doc(this.group.id)
       .collection('posts')
       .doc(this.id)
       .set(data)

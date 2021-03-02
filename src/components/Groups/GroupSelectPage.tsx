@@ -7,17 +7,24 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
+import { autorun } from 'mobx';
 
 const GroupSelectPage = observer((props: { path: string }) => {
-  const groupsStore = useContext(GroupsContext).groupsStore;
-  const { isLoaded, firebaseUser } = useContext(UserDataContext);
+  const rootStore = useContext(GroupsContext);
+  const groupsStore = rootStore.groupsStore;
+  const { isLoaded } = useContext(UserDataContext);
 
-  useEffect(() => {
-    if (firebaseUser?.uid) groupsStore.loadGroups(firebaseUser.uid);
-    else {
-      groupsStore.handleLogOut();
-    }
-  }, [firebaseUser?.uid]);
+  useEffect(
+    () =>
+      autorun(() => {
+        if (rootStore.firebaseUser?.uid) {
+          groupsStore.loadUserGroups();
+        } else {
+          groupsStore.handleLogOut();
+        }
+      }),
+    []
+  );
 
   return (
     <Layout>
@@ -26,15 +33,15 @@ const GroupSelectPage = observer((props: { path: string }) => {
       <main>
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto py-16">
           <h1 className="text-2xl md:text-4xl font-bold mb-8">My Groups</h1>
-          {!isLoaded || (!groupsStore.groups && firebaseUser?.uid) ? (
+          {!isLoaded || (!groupsStore.groups && rootStore.firebaseUser?.uid) ? (
             <div>
               <p className="font-medium text-2xl">Loading...</p>
             </div>
           ) : groupsStore.groups ? (
             groupsStore.groups.map(group => (
-              <div key={group.groupId}>
+              <div key={group.id}>
                 <Link
-                  to={`/groups/${group.groupId}/`}
+                  to={`/groups/${group.id}/`}
                   className="text-blue-600 underline"
                 >
                   {group.name}

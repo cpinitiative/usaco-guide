@@ -6,7 +6,7 @@ import UiStore from './UiStore';
 
 export default class RootStore {
   firebase: typeof firebaseType = null;
-  groupsStore = null;
+  groupsStore: GroupsStore = null;
   uiStore: UiStore = null;
 
   firebaseUser: firebase.User = null;

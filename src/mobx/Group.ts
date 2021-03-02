@@ -6,6 +6,8 @@ import {
 } from 'mobx';
 import { Post } from './Post';
 import GroupsStore from './GroupsStore';
+import { GroupData, MemberData } from '../models/groups/groups';
+import firebaseType from 'firebase';
 
 enum GroupPermission {
   MEMBER = 'member',
@@ -13,35 +15,33 @@ enum GroupPermission {
   OWNER = 'owner',
 }
 export default class Group {
-  groupId = ''; // immutable
+  firebase: typeof firebaseType;
+  groupsStore: GroupsStore;
+  unsubscribePosts;
+
+  id = ''; // immutable
   name = '';
-  detail?: string = '';
+  description: string = '';
   ownerIds: string[] = [];
   adminIds: string[] = [];
   memberIds: string[] = [];
-  members: {
-    name: string;
-    id: string;
-    permission: GroupPermission;
-  }[] = [];
+  members: { [key: string]: MemberData };
   posts: Post[] = [];
-  creatingNewPost = false;
-  firebase;
-  groupsStore: GroupsStore;
-  unsubscribePosts;
+
   // todo: return true if user is admin of this group
   isUserAdmin = true;
+  creatingNewPost = false;
   currentFeed: 'all' | 'assignments' | 'announcements' = 'all';
 
   constructor(groupsStore: GroupsStore, groupId) {
     this.firebase = groupsStore.firebase;
     this.groupsStore = groupsStore;
-    this.groupId = groupId;
+    this.id = groupId;
 
     makeAutoObservable(this, {
       firebase: false,
       groupsStore: false,
-      groupId: false,
+      id: false,
       unsubscribePosts: false,
       resumePosts: false,
       suspendPosts: false,
@@ -50,31 +50,20 @@ export default class Group {
     onBecomeUnobserved(this, 'posts', this.suspendPosts);
   }
 
-  updateFromJson(json: {
-    ownerIds: string[];
-    adminIds: string[];
-    memberIds: string[];
-    members: {
-      name: string;
-      id: string;
-      permission: GroupPermission;
-    }[];
-    name: string;
-    detail?: string;
-  }) {
+  updateFromJson(json: GroupData) {
+    this.name = json.name;
+    this.description = json.description;
     this.ownerIds = json.ownerIds;
     this.adminIds = json.adminIds;
     this.memberIds = json.memberIds;
     this.members = json.members;
-    this.name = json.name;
-    this.detail = json.detail;
   }
 
   resumePosts = () => {
     this.unsubscribePosts = this.firebase
       .firestore()
       .collection('groups')
-      .doc(this.groupId)
+      .doc(this.id)
       .collection('posts')
       .onSnapshot(snap => {
         runInAction(() => {
@@ -106,7 +95,7 @@ export default class Group {
     const ref = await this.firebase
       .firestore()
       .collection('groups')
-      .doc(this.groupId)
+      .doc(this.id)
       .collection('posts')
       .add({
         title: 'Untitled Post',

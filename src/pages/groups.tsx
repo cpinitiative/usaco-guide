@@ -44,7 +44,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
 export default function GroupsRouter() {
   const firebase = useFirebase();
   const { firebaseUser } = useContext(UserDataContext);
-  const groupsStore = useMemo(() => {
+  const rootStore = useMemo(() => {
     if (firebase) {
       return new RootStore(firebase);
     } else {
@@ -53,14 +53,18 @@ export default function GroupsRouter() {
   }, [firebase]);
 
   useEffect(() => {
-    if (groupsStore) groupsStore.firebaseUser = firebaseUser;
+    if (rootStore) {
+      runInAction(() => {
+        rootStore.firebaseUser = firebaseUser;
+      });
+    }
   }, [firebaseUser]);
 
   // still loading?
-  if (!groupsStore) return null;
+  if (!rootStore) return null;
 
   return (
-    <GroupsContext.Provider value={groupsStore}>
+    <GroupsContext.Provider value={rootStore}>
       <Router basepath="/groups">
         <GroupPageWrapper
           Component={EditProblemPage}

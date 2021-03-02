@@ -18,7 +18,7 @@ const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
           <span className="block">
             <h2 className="font-medium leading-3">
               <Link
-                to={`/groups/${problem.post.group.groupId}/post/${problem.post.id}/problems/${problem.id}`}
+                to={`/groups/${problem.post.group.id}/post/${problem.post.id}/problems/${problem.id}`}
               >
                 <span className="absolute inset-0" aria-hidden="true" />
                 {problem.name}
@@ -69,7 +69,7 @@ const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
             </span>
           ) : (
             <Link
-              to={`/groups/${problem.post.group.groupId}/post/${problem.post.id}/problems/${problem.id}`}
+              to={`/groups/${problem.post.group.id}/post/${problem.post.id}/problems/${problem.id}`}
               className="relative text-sm text-gray-500 hover:text-gray-900 font-medium"
             >
               View Problem
