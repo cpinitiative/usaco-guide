@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 
 export type PostData = {
-  id: string;
+  id?: string;
   name: string;
   timestamp: firebase.firestore.Timestamp;
   dueTimestamp: firebase.firestore.Timestamp;

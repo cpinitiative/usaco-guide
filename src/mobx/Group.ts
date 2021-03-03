@@ -8,12 +8,9 @@ import { Post } from './Post';
 import GroupsStore from './GroupsStore';
 import { GroupData, MemberData } from '../models/groups/groups';
 import firebaseType from 'firebase';
+import firebase from 'firebase';
+import { PostData } from '../models/groups/posts';
 
-enum GroupPermission {
-  MEMBER = 'member',
-  ADMIN = 'admin',
-  OWNER = 'owner',
-}
 export default class Group {
   firebase: typeof firebaseType;
   groupsStore: GroupsStore;
@@ -71,7 +68,9 @@ export default class Group {
             .filter(post => !snap.docs.includes(post.id))
             .forEach(post => this.removePost(post));
           snap.docs.forEach(doc => {
-            this.updatePostFromFirebaseDoc(doc);
+            this.updatePostFromFirebaseDoc(
+              doc as firebase.firestore.QueryDocumentSnapshot<PostData>
+            );
           });
         });
       });
@@ -81,7 +80,9 @@ export default class Group {
     this.unsubscribePosts();
   };
 
-  updatePostFromFirebaseDoc(doc) {
+  updatePostFromFirebaseDoc(
+    doc: firebase.firestore.QueryDocumentSnapshot<PostData>
+  ) {
     let post = this.posts.find(post => post.id === doc.id);
     if (!post) {
       post = new Post(this, doc.id);
@@ -92,16 +93,21 @@ export default class Group {
 
   async createNewPost() {
     this.creatingNewPost = true;
+    const defaultPost: PostData = {
+      name: 'Untitled Post',
+      timestamp: this.firebase.firestore.Timestamp.now(),
+      dueTimestamp: this.firebase.firestore.Timestamp.now(),
+      isPublished: false,
+      isPinned: false,
+      body: '',
+      problems: {},
+    };
     const ref = await this.firebase
       .firestore()
       .collection('groups')
       .doc(this.id)
       .collection('posts')
-      .add({
-        title: 'Untitled Post',
-        timestamp: this.firebase.firestore.Timestamp.now(),
-        isPublished: false,
-      });
+      .add(defaultPost);
     runInAction(() => {
       this.creatingNewPost = false;
     });

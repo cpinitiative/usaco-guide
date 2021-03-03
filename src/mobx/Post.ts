@@ -143,7 +143,6 @@ export class Post {
   }
 
   writeToServer() {
-    console.log('Writing post ' + this.id + ' to server');
     this.isWritingToServer = true;
     const { id, ...data } = this.asJson;
     return this.group.firebase

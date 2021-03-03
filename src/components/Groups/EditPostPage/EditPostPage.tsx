@@ -38,7 +38,7 @@ export default observer(function EditPostPage(props) {
 
   return (
     <Layout>
-      <SEO title={`Edit ${post.title} · ${post.group.name}`} />
+      <SEO title={`Edit ${post.name} · ${post.group.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -51,7 +51,7 @@ export default observer(function EditPostPage(props) {
         <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Edit Post: {post.title}
+              Edit Post: {post.name}
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
@@ -88,8 +88,8 @@ export default observer(function EditPostPage(props) {
                       type="text"
                       name="post_name"
                       id="post_name"
-                      value={post.title}
-                      onChange={action(e => (post.title = e.target.value))}
+                      value={post.name}
+                      onChange={action(e => (post.name = e.target.value))}
                       className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
                     />
                   </div>
@@ -123,7 +123,7 @@ export default observer(function EditPostPage(props) {
                 type="button"
                 onClick={action(() => {
                   if (confirm('Are you sure you want to delete this post?')) {
-                    const groupId = post.group.groupId;
+                    const groupId = post.group.id;
                     post.delete().then(() => navigate(-1));
                   }
                 })}
