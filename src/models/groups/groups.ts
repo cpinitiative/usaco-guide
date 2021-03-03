@@ -1,3 +1,5 @@
+import firebaseType from 'firebase';
+
 export type GroupData = {
   id: string;
   name: string;
@@ -21,4 +23,27 @@ export type MemberData = {
   id: string;
   name: string;
   permission: GroupPermission;
+};
+
+export const groupConverter = {
+  toFirestore(group: GroupData): firebaseType.firestore.DocumentData {
+    return {
+      name: group.name,
+      description: group.description,
+      ownerIds: group.ownerIds,
+      adminIds: group.ownerIds,
+      memberIds: group.ownerIds,
+      members: group.members,
+    };
+  },
+
+  fromFirestore(
+    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
+    options: firebaseType.firestore.SnapshotOptions
+  ): GroupData {
+    return {
+      ...snapshot.data(options),
+      id: snapshot.id,
+    } as GroupData;
+  },
 };

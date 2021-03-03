@@ -7,24 +7,11 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import { autorun } from 'mobx';
+import { useUserGroups } from '../../hooks/groups/userGroups';
 
 const GroupSelectPage = observer((props: { path: string }) => {
-  const rootStore = useContext(GroupsContext);
-  const groupsStore = rootStore.groupsStore;
-  const { isLoaded } = useContext(UserDataContext);
-
-  useEffect(
-    () =>
-      autorun(() => {
-        if (rootStore.firebaseUser?.uid) {
-          groupsStore.loadUserGroups();
-        } else {
-          groupsStore.handleLogOut();
-        }
-      }),
-    []
-  );
+  const { firebaseUser } = useContext(UserDataContext);
+  const groups = useUserGroups(firebaseUser?.uid);
 
   return (
     <Layout>
@@ -33,12 +20,21 @@ const GroupSelectPage = observer((props: { path: string }) => {
       <main>
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto py-16">
           <h1 className="text-2xl md:text-4xl font-bold mb-8">My Groups</h1>
-          {!isLoaded || (!groupsStore.groups && rootStore.firebaseUser?.uid) ? (
+          {!firebaseUser?.uid && (
+            <div>
+              <p className="font-medium text-2xl">
+                Please sign in to access Groups.
+              </p>
+            </div>
+          )}
+
+          {groups.isLoading && (
             <div>
               <p className="font-medium text-2xl">Loading...</p>
             </div>
-          ) : groupsStore.groups ? (
-            groupsStore.groups.map(group => (
+          )}
+          {groups.isSuccess &&
+            groups.data.map(group => (
               <div key={group.id}>
                 <Link
                   to={`/groups/${group.id}/`}
@@ -47,14 +43,7 @@ const GroupSelectPage = observer((props: { path: string }) => {
                   {group.name}
                 </Link>
               </div>
-            ))
-          ) : (
-            <div>
-              <p className="font-medium text-2xl">
-                Please sign in to access Groups.
-              </p>
-            </div>
-          )}
+            ))}
         </div>
       </main>
     </Layout>

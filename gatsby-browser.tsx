@@ -2,17 +2,9 @@ import './src/styles/main.css';
 import './src/styles/tailwindcss-utils.css';
 import './src/styles/anchor.css';
 import * as React from 'react';
-import MDXProvider from './src/components/markdown/MDXProvider';
-import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
-import { FirebaseProvider } from './src/context/FirebaseContext';
+import { wrapRootElement as wrap } from './root-wrapper';
 
-export const wrapRootElement = ({ element }) => (
-  <FirebaseProvider>
-    <MDXProvider>
-      <UserDataProvider>{element}</UserDataProvider>
-    </MDXProvider>
-  </FirebaseProvider>
-);
+export const wrapRootElement = wrap;
 
 export const onClientEntry = () => {
   // Source (modified): https://github.com/KaTeX/KaTeX/blob/master/contrib/copy-tex/copy-tex.js
