@@ -24,9 +24,9 @@ using namespace std;
 #define f first
 #define s second
 
-void setIO(string fileName = ""){
+void setIO(string fileName = "") {
 	ios_base::sync_with_stdio(0); cin.tie(0);
-	if((int)fileName.size()){
+	if((int)fileName.size()) {
 		freopen((fileName+".in").c_str(), "r", stdin);
 		freopen((fileName+".out").c_str(), "w", stdout);
 	}
@@ -36,18 +36,18 @@ struct Mountain {
     int l, r;
 };
 
-bool cmp(Mountain a, Mountain b){
-    if(a.l == b.l){
+bool cmp(Mountain a, Mountain b) {
+    if(a.l == b.l) {
         return a.r > b.r;
     }
     return a.l < b.l;
 }
 
-int main(){
+int main() {
     setIO("mountains");
     int n; cin >> n;
     vector<Mountain> mountains;
-    for(int i=0; i<n; i++){
+    for(int i=0; i<n; i++) {
         int x, y; cin >> x >> y;
         Mountain m; m.l = x-y; m.r = x+y;
         mountains.pb(m);
@@ -55,7 +55,7 @@ int main(){
     sort(all(mountains), cmp);
     int mxRight = -1, ans = 0;
     for(int i = 0; i < n; i++) {
-        if(mountains[i].r > mxRight){
+        if(mountains[i].r > mxRight) {
             ans++;
             mxRight = max(mountains[i].r, mxRight);
         }
