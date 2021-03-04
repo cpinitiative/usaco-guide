@@ -31,7 +31,7 @@ const Spoiler = ({ children, title }) => {
     >
       <p
         className="p-4 flex items-start"
-        onClick={e => {onlyContainsCode ? setShow(!show) : setShow(show)}}
+        onClick={e => {onlyContainsCode ? setShow(show) : setShow(!show)}}
         style={{ marginBottom: 0 }}
       >
         {show && (
