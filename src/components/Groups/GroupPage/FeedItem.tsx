@@ -6,8 +6,22 @@ import { GroupsContext } from '../../../pages/groups';
 import { observer } from 'mobx-react-lite';
 import { Post } from '../../../mobx/Post';
 import { action } from 'mobx';
+import {
+  getPostDueDateString,
+  isPostAnnouncement,
+  PostData,
+} from '../../../models/groups/posts';
+import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
-export default observer(function FeedItem({ post }: { post: Post }) {
+export default function FeedItem({
+  group,
+  post,
+}: {
+  group: GroupData;
+  post: PostData;
+}) {
+  const { firebaseUser } = useContext(UserDataContext);
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = React.useRef();
 
@@ -27,11 +41,11 @@ export default observer(function FeedItem({ post }: { post: Post }) {
     >
       <div className="flex">
         <Link
-          to={`/groups/${post.group.id}/post/${post.id}`}
+          to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
           <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
-            {post.isAnnouncement ? (
+            {isPostAnnouncement(post) ? (
               <svg
                 className="h-6 w-6 text-white"
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,10 +85,12 @@ export default observer(function FeedItem({ post }: { post: Post }) {
               {post.name}
               {post.isPublished ? '' : ' (Unpublished)'}
             </h2>
-            <p className="text-sm text-gray-500">{post.dueDateString}</p>
+            <p className="text-sm text-gray-500">
+              {getPostDueDateString(post)}
+            </p>
           </div>
         </Link>
-        {post.group.isUserAdmin && (
+        {isUserAdminOfGroup(group, firebaseUser?.uid) && (
           <div className="flex-shrink-0 self-center flex">
             <div className="relative inline-block text-left" ref={ref}>
               <button
@@ -167,7 +183,7 @@ export default observer(function FeedItem({ post }: { post: Post }) {
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        post.delete();
+                        // post.delete();
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -197,4 +213,4 @@ export default observer(function FeedItem({ post }: { post: Post }) {
       </div>
     </div>
   );
-});
+}

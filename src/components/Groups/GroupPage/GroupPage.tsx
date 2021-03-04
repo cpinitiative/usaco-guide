@@ -6,24 +6,20 @@ import Feed from './Feed';
 import LeaderboardSidebar from './LeaderboardSidebar';
 import { Link } from 'gatsby';
 import { observer } from 'mobx-react-lite';
-import { Transition } from '@headlessui/react';
-import GroupPageHeader from './GroupPageHeader';
 import SEO from '../../seo';
 import Layout from '../../layout';
+import { useGroup } from '../../../hooks/groups/useGroup';
+import GroupPageHeader from './GroupPageHeader';
 
-export default observer(function GroupPage(props: {
-  path: string;
-}): React.ReactElement {
-  const groupsStore = useContext(GroupsContext).groupsStore;
-  const group = groupsStore.activeGroup;
+export default function GroupPage({ path, groupId }: any) {
+  const group = useGroup(groupId);
 
   return (
     <Layout>
-      <SEO title={group?.name} />
+      <SEO title={group.data?.name} />
       <TopNavigationBar />
       <div className="min-h-screen bg-gray-100">
-        {/* When the mobile menu is open, add `overflow-hidden` to the `body` element to prevent double scrollbars */}
-        <GroupPageHeader group={group} />
+        <GroupPageHeader group={group.data} />
         <Link
           to="/leaderboard"
           className="md:hidden bg-white shadow flex items-center justify-between px-4 sm:px-8 py-3"
@@ -34,13 +30,11 @@ export default observer(function GroupPage(props: {
           <div className="py-6">
             <div className="sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8 md:grid md:gap-4 md:grid-cols-12 lg:gap-8">
               <main className="md:col-span-7 lg:col-span-8">
-                <Feed />
+                <Feed group={group.data} />
               </main>
               <aside className="hidden md:block md:col-span-5 lg:col-span-4">
                 <div className="sticky top-4 space-y-4">
-                  <section aria-labelledby="who-to-follow-heading">
-                    <LeaderboardSidebar />
-                  </section>
+                  <section>{/*<LeaderboardSidebar />*/}</section>
                 </div>
               </aside>
             </div>
@@ -49,4 +43,4 @@ export default observer(function GroupPage(props: {
       </div>
     </Layout>
   );
-});
+}

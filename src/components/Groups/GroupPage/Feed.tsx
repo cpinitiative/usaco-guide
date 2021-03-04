@@ -1,15 +1,15 @@
 import * as React from 'react';
 import Tabs from '../../Tabs';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import FeedItem from './FeedItem';
-import { Link } from 'gatsby';
 import { GroupsContext } from '../../../pages/groups';
-import { observer } from 'mobx-react-lite';
 import { action } from 'mobx';
+import { GroupData } from '../../../models/groups/groups';
+import { usePosts } from '../../../hooks/groups/usePosts';
 
-export default observer(function Feed() {
+export default function Feed({ group }: { group: GroupData }) {
   const feedTabs = ['all', 'assignments', 'announcements'];
-  const groupStore = useContext(GroupsContext).groupsStore;
+  const posts = usePosts(group?.id);
 
   return (
     <>
@@ -21,22 +21,24 @@ export default observer(function Feed() {
             assignments: 'Assignments',
             announcements: 'Announcements',
           }}
-          value={groupStore.activeGroup.currentFeed}
-          onChange={action(
-            (x: 'all' | 'assignments' | 'announcements') =>
-              (groupStore.activeGroup.currentFeed = x)
-          )}
+          value={feedTabs[0]}
+          onChange={(x: 'all' | 'assignments' | 'announcements') =>
+            console.log(x)
+          }
         />
       </div>
       <div className="mt-4">
-        <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
-          {groupStore.activeGroup.feed.map(post => (
-            <li key={post.id}>
-              <FeedItem post={post} />
-            </li>
-          ))}
-        </ul>
+        {posts.isLoading && 'Loading posts...'}
+        {posts.isSuccess && (
+          <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
+            {posts.data.map(post => (
+              <li key={post.id}>
+                <FeedItem group={group} post={post} />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
-});
+}

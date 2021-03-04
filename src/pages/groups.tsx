@@ -79,7 +79,7 @@ export default function GroupsRouter() {
           path="/:groupId/post/:postId/edit"
         />
         <GroupPageWrapper Component={PostPage} path="/:groupId/post/:postId" />
-        <GroupPageWrapper Component={GroupPage} path="/:groupId" />
+        <GroupPage path="/:groupId" />
         <GroupSelectPage path="/" />
         <NotFoundPageWrapper default />
       </Router>

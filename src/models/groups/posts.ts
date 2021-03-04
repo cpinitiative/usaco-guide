@@ -1,4 +1,6 @@
 import firebase from 'firebase';
+import firebaseType from 'firebase';
+import { GroupData } from './groups';
 
 export type PostData = {
   id?: string;
@@ -85,3 +87,32 @@ export type TestCaseResult = {
    */
   executionTime: number;
 };
+
+export const postConverter = {
+  toFirestore(post: PostData): firebaseType.firestore.DocumentData {
+    return {
+      name: post.name,
+      timestamp: post.timestamp,
+      dueTimestamp: post.dueTimestamp,
+      body: post.body,
+      isPinned: post.isPinned,
+      isPublished: post.isPublished,
+      problems: post.problems,
+    };
+  },
+
+  fromFirestore(
+    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
+    options: firebaseType.firestore.SnapshotOptions
+  ): PostData {
+    return {
+      ...snapshot.data(options),
+      id: snapshot.id,
+    } as PostData;
+  },
+};
+
+export const isPostAnnouncement = (post: PostData) =>
+  Object.keys(post.problems).length === 0;
+export const getPostDueDateString = (post: PostData) =>
+  post.dueTimestamp.toDate().toString().substr(0, 15);

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import useFirebase from '../useFirebase';
 import { useQuery } from 'react-query';
 import firebaseType from 'firebase';

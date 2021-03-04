@@ -47,3 +47,6 @@ export const groupConverter = {
     } as GroupData;
   },
 };
+
+// todo: actually implement this properly
+export const isUserAdminOfGroup = (group: GroupData, userId: string) => true;

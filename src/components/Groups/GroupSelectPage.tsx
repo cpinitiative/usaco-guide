@@ -7,7 +7,7 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import { useUserGroups } from '../../hooks/groups/userGroups';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
 
 const GroupSelectPage = observer((props: { path: string }) => {
   const { firebaseUser } = useContext(UserDataContext);

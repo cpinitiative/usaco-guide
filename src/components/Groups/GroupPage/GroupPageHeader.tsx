@@ -4,8 +4,11 @@ import Group from '../../../mobx/Group';
 import { observer } from 'mobx-react-lite';
 import { useRef, useState } from 'react';
 import { navigate } from 'gatsby';
+import { GroupData } from '../../../models/groups/groups';
+import { useNewPostMutation } from '../../../hooks/groups/useNewPostMutation';
 
-export default observer(function GroupPageHeader(props: { group: Group }) {
+export default observer(function GroupPageHeader(props: { group: GroupData }) {
+  const newPostMutation = useNewPostMutation();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const ref = useRef();
 
@@ -75,14 +78,17 @@ export default observer(function GroupPageHeader(props: { group: Group }) {
                   type="button"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
-                  onClick={() =>
-                    props.group
-                      ?.createNewPost()
-                      .then(postId => navigate(`post/${postId}/edit`))
-                  }
-                  disabled={props.group?.creatingNewPost}
+                  onClick={() => {
+                    const groupId = props.group?.id;
+                    if (groupId) {
+                      newPostMutation
+                        .mutateAsync(props.group?.id)
+                        .then(postId => navigate(`post/${postId}/edit`));
+                    }
+                  }}
+                  disabled={newPostMutation.isLoading}
                 >
-                  {props.group?.creatingNewPost
+                  {newPostMutation.isLoading
                     ? 'Creating new post...'
                     : 'Create New Post'}
                 </button>
