@@ -11,13 +11,12 @@ const Spoiler = ({ children, title }) => {
   let numChildren = 0;
   let firstName = "None"
   
-  const newChild = React.Children.forEach(children, child => {
+  React.Children.forEach(children, child => {
     if(count == 0) {
       console.log( "Child for Spoiler " + Children.count(children))
       console.log(child.props.mdxType)
       numChildren = Children.count(children)
       firstName = child.props.mdxType
-      return React.cloneElement(child, {expandable: false});
     }
     count++;
   })
@@ -64,7 +63,7 @@ const Spoiler = ({ children, title }) => {
         <span className="flex-1">{title}</span>
       </p>
 
-      {show && <div className="px-4 spoiler-body">{onlyContainsCode ? newChild : children}</div>}
+      {show && <div className="px-4 spoiler-body">{children}</div>}
     </div>
   );
 };
