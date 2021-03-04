@@ -3,13 +3,13 @@ import React, { Children } from "react";
 
 const Spoiler = ({ children, title }) => {
 
-  const [count, setCount] = React.useState(0);
+  let count = 0;
   React.Children.forEach(children, child => {
     if(count == 0) {
       console.log( "Child for Spoiler " + Children.count(children))
       console.log('First Child name =', child.type.displayName)
     }
-    setCount(count + 1) // meh it works
+    count++;
   })
 
 
