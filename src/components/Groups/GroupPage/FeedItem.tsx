@@ -13,6 +13,7 @@ import {
 } from '../../../models/groups/posts';
 import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useDeletePostMutation } from '../../../hooks/groups/useDeletePostMutation';
 
 export default function FeedItem({
   group,
@@ -22,6 +23,9 @@ export default function FeedItem({
   post: PostData;
 }) {
   const { firebaseUser } = useContext(UserDataContext);
+  const showAdminSettings = isUserAdminOfGroup(group, firebaseUser?.uid);
+  const deletePostMutation = useDeletePostMutation(group.id, post.id);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = React.useRef();
 
@@ -90,7 +94,7 @@ export default function FeedItem({
             </p>
           </div>
         </Link>
-        {isUserAdminOfGroup(group, firebaseUser?.uid) && (
+        {showAdminSettings && (
           <div className="flex-shrink-0 self-center flex">
             <div className="relative inline-block text-left" ref={ref}>
               <button
@@ -183,7 +187,7 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        // post.delete();
+                        deletePostMutation.mutate();
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

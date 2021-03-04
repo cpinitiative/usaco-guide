@@ -1,13 +1,13 @@
 import useFirebase from '../useFirebase';
 import { useMutation, useQueryClient } from 'react-query';
-import { postConverter, PostData } from '../../models/groups/posts';
+import { PostData } from '../../models/groups/posts';
 
-export function useNewPostMutation() {
+export function useNewPostMutation(groupId: string) {
   const firebase = useFirebase();
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (groupId: string) => {
+    async () => {
       const defaultPost: PostData = {
         name: 'Untitled Post',
         timestamp: firebase.firestore.Timestamp.now(),
@@ -26,7 +26,7 @@ export function useNewPostMutation() {
       return doc.id;
     },
     {
-      onSuccess: (data, groupId) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['posts', groupId]);
       },
     }

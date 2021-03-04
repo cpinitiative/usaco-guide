@@ -8,7 +8,7 @@ import { GroupData } from '../../../models/groups/groups';
 import { useNewPostMutation } from '../../../hooks/groups/useNewPostMutation';
 
 export default observer(function GroupPageHeader(props: { group: GroupData }) {
-  const newPostMutation = useNewPostMutation();
+  const newPostMutation = useNewPostMutation(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const ref = useRef();
 
@@ -82,7 +82,7 @@ export default observer(function GroupPageHeader(props: { group: GroupData }) {
                     const groupId = props.group?.id;
                     if (groupId) {
                       newPostMutation
-                        .mutateAsync(props.group?.id)
+                        .mutateAsync()
                         .then(postId => navigate(`post/${postId}/edit`));
                     }
                   }}
