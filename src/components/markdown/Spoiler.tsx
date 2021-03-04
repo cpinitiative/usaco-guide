@@ -7,7 +7,7 @@ const Spoiler = ({ children, title }) => {
   React.Children.forEach(children, child => {
     if(count == 0) {
       console.log( "Child for Spoiler " + Children.count(children))
-      console.log('First Child name =', child.defaultProps.displayName)
+      console.log(child)
     }
     count++;
   })

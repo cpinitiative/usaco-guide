@@ -3,7 +3,7 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
-const LanguageSection = props => {
+export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
 
   const sections = {};
@@ -89,10 +89,8 @@ const LanguageSection = props => {
   return sections[userLang];
 };
 
-LanguageSection.defaultProps = {
-  displayName: 'LangSect'
-}
-export default LanguageSection;
+
+
 
 
 
