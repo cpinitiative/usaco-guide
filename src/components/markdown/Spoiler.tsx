@@ -2,9 +2,14 @@ import React, { Children } from "react";
 
 
 const Spoiler = ({ children, title }) => {
-  console.log( "Child for Spoiler " + Children.count(children))
+
+  const [count, setCount] = React.useState(0);
   React.Children.forEach(children, child => {
-    console.log('name =', child.name)
+    if(count == 0) {
+      console.log( "Child for Spoiler " + Children.count(children))
+      console.log('First Child name =', child.type.displayName)
+    }
+    setCount(count + 1) // meh it works
   })
 
 

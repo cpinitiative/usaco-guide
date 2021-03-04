@@ -89,6 +89,8 @@ export const LanguageSection = props => {
   return sections[userLang];
 };
 
+LanguageSection.displayName = 'LanguageSection'
+
 export const CPPSection = props => {
   return <>{props.children}</>;
 };
