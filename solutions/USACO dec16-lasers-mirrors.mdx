@@ -7,11 +7,11 @@ author: Maggie Liu
 
 [Official Analysis](http://www.usaco.org/current/data/sol_lasers_gold_dec16.html)
 
-It is optimal to use each fence post at most once, so we can use BFS to find the minimum number of fence posts needed to direct the laser to the barn. We first map a vector of fence post indices to their x and y coordinates, which we store in $\texttt{lines}$. In the queue $q$, we store the index and a boolean representing the direction of the incoming beam for each point, with true representing a horizonal incoming beam and false representing a vertical one. The vector $\texttt{dist}$ will store the number of edges of the shortest path from the laser to each point.
+It is optimal to use each fence post at most once, so we can use BFS to find the minimum number of fence posts needed to direct the laser to the barn. We first map a vector of fence post indices to their x and y coordinates, which we store in $\texttt{lines}$. In the queue $q$, we store the index and a boolean representing the direction of the incoming beam for each point, with true representing a horizonal incoming beam and false representing a vertical incoming beam. The array $\texttt{dist}$ will store the number of edges of the shortest path from the laser to each point.
 
-When processing an element in the queue, we determine the direction of the incoming beam. We will deflect this beam in the other direction, so we iterate the points that the beam can be deflected to. For each of these points, if we haven't visited it before, we push it into the queue and update the distance as one more than the current distance.
+When processing an element in the queue, we determine the direction of the incoming beam and iterate the points that the beam can be deflected to. For each of these points, if it is unvisited, we add it into the queue and update the distance as one more than the current distance.
 
-If the distance to the barn, $\texttt{dist[1]}$, is $10^9$, then we aren't able to direct the beam to the barn. If we are able to, the number of mirrors needed is one less than the distance.
+If the distance to the barn, $\texttt{dist[1]}$, is $10^9$, we aren't able to reach the barn so we print $-1$. If we are able to, the number of mirrors needed is one less than the distance.
 
 ## Implementation
 
@@ -52,6 +52,7 @@ int main()
 	//dist[i] is number of edges to reach point i from the laser
 	vector<int> dist(n + 2, 1e9);
 	dist[0] = 0;
+	// BFS to find minimum number of fence posts to direct laser to barn
 	while (!q.empty())
 	{
 		int curr = q.front().first;
