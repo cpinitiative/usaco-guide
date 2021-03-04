@@ -15,6 +15,52 @@ Let $\texttt{deg}[i]$ represent the degree of node $i$: the number of paths conn
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+typedef unsigned long long ull;
+typedef long long ll;
+
+#define all(A) A.begin(), A.end()
+
+
+int main () 
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    freopen("planting.in", "r", stdin);
+    freopen("planting.out", "w", stdout);
+
+    int n;
+    cin >> n;
+
+    const int mxN = 1e5;
+    int deg[mxN]{};
+
+    for (int i = 0; i < n-1; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+
+        deg[a]++;
+        deg[b]++;
+    }
+
+    int mx = 0;
+    for (int i = 0; i < n; i++)
+    {
+        mx = max(mx, deg[i]);
+    }
+    cout << mx+1;
+}
+```
+
+</CPPSection>
+
 <JavaSection>
 
 ```java
