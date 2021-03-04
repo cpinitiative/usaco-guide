@@ -97,7 +97,14 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   ),
   bronze: topicsWarning,
   silver: topicsWarning,
-  gold: topicsWarning,
+  gold: (
+    <>
+      {topicsWarning}
+      <br />
+      In particular, DP on Bitmasks / Ranges (listed under Platinum) have
+      appeared in recent Gold contests.
+    </>
+  ),
   plat: (
     <>
       {topicsWarning}

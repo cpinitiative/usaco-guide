@@ -1,7 +1,7 @@
 ---
 id: lis
 title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
+author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -67,6 +67,15 @@ export const problems = {
 			['DP'],
 			'ceoi-18-glo'
 		),
+		new Problem(
+			'JOI',
+			'2016 - Matryoshka',
+			'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
+			'Hard',
+			false,
+			['DP', 'LIS', 'Binary Search'],
+			'joi-16-matryoshka'
+		)
 	],
 };
 
@@ -118,7 +127,9 @@ export const problems = {
 
 In this tutorial, let $A$ be the array we want to find the LIS for.
 
-### $\mathcal{O}(N^2)$
+### Slow Solution
+
+**Time Complexity**: $\mathcal O(N^2)$
 
 <Resources>
 	<Resource source="CPH" title="7.2 - LIS">slow solution</Resource>
@@ -170,7 +181,9 @@ public static int find_lis(int[] a) {
 
 We can do much better than this though!
 
-### $\mathcal{O}(N \log N)$
+### Fast Solution
+
+**Time Complexity**: $\mathcal O(N \log N)$
 
 Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ elements of $A$ with an increasing sequence of length $j$ ending on it (or $\infty$ if there is no such element).
 
@@ -337,6 +350,92 @@ class PCB{
 </JavaSection>
 
 </LanguageSection>
+
+## Extension - LCS on Permutations
+
+Given two permutations of length $N$ ($1\le N \le 10^5$), find the longest common subsequence.
+
+### Example
+
+#### Example Input
+
+```
+5 
+3 2 1 4 5
+1 2 3 4 5
+```
+
+#### Example Output
+
+```
+3
+```
+
+#### Explanation:
+
+One possible longest common subsequence would be $3, 4, 5$.
+
+### Slow Solution
+
+**Time Complexity**: $\mathcal O(N^2)$
+
+See [here](/gold/paths-grids#solution---longest-common-subsequence).
+
+### Efficient Solution
+
+**Time Complexity**: $\mathcal O(N\log N)$
+
+In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if $a[i] = b[j]$, but since both arrays are permutations of length $N$, for each $a[i]$, there must be only one matching element in $b$.  
+
+Let us create an array $pos$ where $pos[x]$ is the index of $x$ in $a$ ($a[pos[x]] = x$). Then, we can create another array, $c$ where $c[i]$ stores $pos[b[i]]$.
+
+Notice that every increasing subsequence $x_{1 \dots k}$ in $c$ corresponds to a common subsequence between $a$ and $b$. Increasing subsequence $c[x_1], c[x_2], \dots c[x_k]$ corresponds to the the common subsequence $b[x_1], b[x_2], \dots b[x_k]$, which is equivalent to $a[c[x_1]], a[c[x_2]], \dots a[c[x_k]]$. Thus, the length of the longest common subsequence between $a$ and $b$ is the longest increasing subsequence of $c$.
+
+Finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in this algorithm is $\mathcal O(N\log N)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 5;
+int n, a[N], b[N], c[N], pos[N];
+vector<int> lis;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n;
+	for (int i = 1; i <= n; ++i) {
+		cin >> a[i];
+		// pos is the inverse of a
+		pos[a[i]] = i;
+	}
+	for (int i = 1; i <= n; ++i) {
+		cin >> b[i];
+	}
+	for (int i = 1; i <= n; ++i) {
+		c[i] = pos[b[i]];
+	}
+	
+	for (int i = 1; i <= n; ++i) {
+		int p = lower_bound(begin(lis), end(lis), c[i]) - begin(lis);
+		if (p == lis.size())
+			lis.push_back(c[i]);
+		else
+			lis[p] = c[i];
+	}
+	cout << lis.size() << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 
 
 ## Problems

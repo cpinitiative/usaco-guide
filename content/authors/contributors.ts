@@ -35,4 +35,9 @@ export const contentAuthors: Contributor[] = [
     githubUsername: 'MrinallU',
     sinceDate: 'Feb 2021',
   },
+  {
+    name: 'Maggie Liu',
+    githubUsername: 'maggie-j-liu',
+    sinceDate: 'Feb 2021',
+  },
 ];
