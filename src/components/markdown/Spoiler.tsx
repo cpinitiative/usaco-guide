@@ -1,19 +1,29 @@
 import React, { Children } from "react";
 
+function determineIfSingularCodeBlock(firstName: string, numChildren: number): boolean {
+  return firstName == "LanguageSection" && numChildren == 1;
+
+}
 
 const Spoiler = ({ children, title }) => {
 
   let count = 0;
+  let numChildren = 0; 
+  let firstName = "None"
+  
   React.Children.forEach(children, child => {
     if(count == 0) {
       console.log( "Child for Spoiler " + Children.count(children))
-      console.log(child.props.mdxType) // this should confirm if this is a LangSect or not
+      console.log(child.props.mdxType)
+      numChildren = Children.count(children)
+      firstName = child.rpops.mdxType
     }
     count++;
   })
 
+  const onlyContainsCode: boolean = determineIfSingularCodeBlock(firstName, numChildren);
 
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = React.useState(onlyContainsCode);
 
   return (
     <div
@@ -21,7 +31,7 @@ const Spoiler = ({ children, title }) => {
     >
       <p
         className="p-4 flex items-start"
-        onClick={e => setShow(!show)}
+        onClick={e => {onlyContainsCode ? setShow(!show) : setShow(show)}}
         style={{ marginBottom: 0 }}
       >
         {show && (
