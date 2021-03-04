@@ -3,6 +3,11 @@ import React, { Children } from "react";
 
 const Spoiler = ({ children, title }) => {
   console.log( "Child for Spoiler " + Children.count(children))
+  React.Children.forEach(children, child => {
+    console.log('name =', child.name)
+  })
+
+
   const [show, setShow] = React.useState(false);
 
   return (
