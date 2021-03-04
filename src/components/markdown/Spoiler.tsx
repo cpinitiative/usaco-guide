@@ -8,7 +8,7 @@ function determineIfSingularCodeBlock(firstName: string, numChildren: number): b
 const Spoiler = ({ children, title }) => {
 
   let count = 0;
-  let numChildren = 0; 
+  let numChildren = 0;
   let firstName = "None"
   
   React.Children.forEach(children, child => {
@@ -16,7 +16,7 @@ const Spoiler = ({ children, title }) => {
       console.log( "Child for Spoiler " + Children.count(children))
       console.log(child.props.mdxType)
       numChildren = Children.count(children)
-      firstName = child.rpops.mdxType
+      firstName = child.props.mdxType
     }
     count++;
   })
