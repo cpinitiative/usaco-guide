@@ -20,6 +20,7 @@ import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
 import RootStore from '../mobx/RootStore';
 import ProblemSubmissionPopup from '../components/Groups/ProblemSubmissionPopup';
+import { UserGroupsProvider } from '../context/UserGroupsContext';
 
 export const GroupsContext = createContext<RootStore>(null);
 
@@ -65,25 +66,30 @@ export default function GroupsRouter() {
 
   return (
     <GroupsContext.Provider value={rootStore}>
-      <Router basepath="/groups">
-        <GroupPageWrapper
-          Component={EditProblemPage}
-          path="/:groupId/post/:postId/problems/:problemId/edit"
-        />
-        <GroupPageWrapper
-          Component={ProblemPage}
-          path="/:groupId/post/:postId/problems/:problemId"
-        />
-        <GroupPageWrapper
-          Component={EditPostPage}
-          path="/:groupId/post/:postId/edit"
-        />
-        <GroupPageWrapper Component={PostPage} path="/:groupId/post/:postId" />
-        <GroupPage path="/:groupId" />
-        <GroupSelectPage path="/" />
-        <NotFoundPageWrapper default />
-      </Router>
-      <ProblemSubmissionPopup />
+      <UserGroupsProvider>
+        <Router basepath="/groups">
+          <GroupPageWrapper
+            Component={EditProblemPage}
+            path="/:groupId/post/:postId/problems/:problemId/edit"
+          />
+          <GroupPageWrapper
+            Component={ProblemPage}
+            path="/:groupId/post/:postId/problems/:problemId"
+          />
+          <GroupPageWrapper
+            Component={EditPostPage}
+            path="/:groupId/post/:postId/edit"
+          />
+          <GroupPageWrapper
+            Component={PostPage}
+            path="/:groupId/post/:postId"
+          />
+          <GroupPage path="/:groupId" />
+          <GroupSelectPage path="/" />
+          <NotFoundPageWrapper default />
+        </Router>
+        <ProblemSubmissionPopup />
+      </UserGroupsProvider>
     </GroupsContext.Provider>
   );
 }
