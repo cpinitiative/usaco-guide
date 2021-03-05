@@ -60,4 +60,70 @@ public class triangles{
 
 </JavaSection>
 
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FAST ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define ll long long
+#define ell unsigned long long int
+#define ld long double
+#define ar array
+#define endl "\n"
+
+#define sz(x) (int)x.size()
+#define all(x) x.begin(), x.end()
+#define pb push_back
+#define mp make_pair
+#define S second
+#define F first
+
+#define PI 3.1415926535897932384626
+
+const int mxN = 2e6;
+const ll mod = 1e9+7;
+
+void setIO(string name = "") {
+	FAST;
+	if(sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin);
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+void solve() {
+	int n;
+	cin >> n;
+	int x[n], y[n];
+	
+	for(int i=0; i<n; i++) cin >> x[i] >> y[i];
+	
+	int area = 0;
+	for(int i=0; i<0; i++) {
+		for(int j=0; j<n; j++) {
+			for(int k=0; k<n; k++) {
+				if(y[i]==y[j] && (x[i]==x[k] || x[j]==x[k])) {
+					int yd = abs(y[k]-y[i]);
+					int xd = abs(x[i]-x[j]);
+					
+					area = max(area,yd*xd);
+				}
+			}
+		}
+	}
+	cout << area << endl;
+}
+
+int main() {
+	setIO("triangles");
+	solve();
+}
+
+```
+
+</CPPSection>
+
 </LanguageSection>
