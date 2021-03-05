@@ -20,7 +20,7 @@ Thank you to the following companies:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions are welcome! To get started, simply pick an [issue](https://github.com/cpinitiative/usaco-guide/issues) you'd like to work on, leave a comment, and submit a Pull Request!
 
-Join our Discord server: https://discord.gg/Gq9cX4j
+Join our Discord server: https://discord.gg/UKbyewj2Ft
 
 ## Our Team
 
