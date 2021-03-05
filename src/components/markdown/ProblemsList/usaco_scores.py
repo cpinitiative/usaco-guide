@@ -58,7 +58,7 @@ def usaco_parse(is_plat,html):
 				tot += 1 
 				if tmpScore < 1: # less than third of points, data is probably complete?
 					bad = False
-				if tot == 10:
+				if is_plat:
 					break
 			fst = False
 		tsum = 0
@@ -88,10 +88,10 @@ def usaco_stats():
 	month = ["dec","jan","feb","open"]
 	month_expand = ["December","January","February","US Open"]
 	offset = [0, 1, 1, 1]
-	year = [15, 16, 17, 18, 19, 20] # 15, 
+	# year = [15, 16, 17, 18, 19, 20] # 15, 
+	year = [20]
 	score_data = {"Bronze": {}, "Silver": {}, "Gold": {}, "Platinum": {}}
-	# 'bronze','silver','gold',
-	for division in ['platinum']:
+	for division in ['bronze','silver','gold','platinum']:
 		for a in year:
 			for j in range(len(month)):
 				url = prefix+str(month[j])+str(a+offset[j])+f"_{division}_results.html"

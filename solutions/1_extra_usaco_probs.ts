@@ -34,15 +34,7 @@ export default [
     ['Ordered Set'],
     ''
   ),
-  new Problem(
-    'Silver',
-    'No Time To Paint',
-    '1087',
-    'Normal',
-    false,
-    ['Prefix Sums'],
-    ''
-  ),
+  new Problem('Plat', 'Redistricting', '900', 'Normal', false, ['Deque'], ''),
   new Problem(
     'Plat',
     'Cave Paintings',
@@ -52,6 +44,16 @@ export default [
     ['DSU', 'DP'],
     ''
   ),
+  new Problem(
+    'Plat',
+    'Help Yourself',
+    '1022',
+    'Very Hard',
+    false,
+    ['Lazy Segment Tree'],
+    ''
+  ),
+  new Problem('Plat', 'Circus', '1046', 'Very Hard', false, ['Tree'], ''),
   new Problem(
     'Plat',
     'Sprinklers 2',
@@ -83,14 +85,76 @@ export default [
     ''
   ),
   new Problem(
-    'Plat',
-    'Help Yourself',
-    '1022',
-    'Very Hard',
+    'Silver',
+    'No Time To Paint',
+    '1087',
+    'Normal',
     false,
-    ['Lazy Segment Tree'],
+    ['Prefix Sums'],
     ''
   ),
-  new Problem('Plat', 'Redistricting', '900', 'Normal', false, ['Deque'], ''),
-  new Problem('Plat', 'Circus', '1046', 'Very Hard', false, ['Tree'], ''),
+  new Problem(
+    'Bronze',
+    'Comfortable Cows',
+    '1108',
+    'Normal',
+    false,
+    ['Simulation'],
+    ''
+  ),
+  new Problem(
+    'Bronze',
+    'Clockwise Fence',
+    '1109',
+    'Normal',
+    false,
+    ['Geometry'],
+    ''
+  ),
+  new Problem(
+    'Silver',
+    'Year of the Cow',
+    '1111',
+    'Normal',
+    false,
+    ['Sorting', 'Greedy'],
+    ''
+  ),
+  new Problem(
+    'Silver',
+    'Just Green Enough',
+    '1112',
+    'Normal',
+    false,
+    ['Prefix Sums'],
+    ''
+  ),
+  new Problem(
+    'Gold',
+    'Just Green Enough',
+    '1113',
+    'Normal',
+    false,
+    ['Prefix Sums', 'Game'],
+    ''
+  ),
+  new Problem('Plat', 'No Time to Dry', '1116', 'Normal', false, ['1DRQ'], ''),
+  new Problem(
+    'Plat',
+    'Minimizing Edges',
+    '1117',
+    'Normal',
+    false,
+    ['BFS', 'Greedy'],
+    ''
+  ),
+  new Problem(
+    'Plat',
+    'Counting Graphs',
+    '1118',
+    'Normal',
+    false,
+    ['BFS', 'Combinatorics', 'PIE'],
+    ''
+  ),
 ];

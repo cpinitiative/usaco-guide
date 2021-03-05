@@ -281,7 +281,7 @@ def get_all():
 	# 		else:
 	# 			cand.append(suffix)
 	print("CANDIDATES")
-	cand = ["jan21results"]
+	cand = ["feb21results"]
 	for a in cand:
 		print(a)
 
@@ -308,5 +308,5 @@ def id_to_sol():
 	print(json.dumps(edLinks,indent=4))
 			# if url == "dec15"
 
-# id_to_sol()
-get_all()
+id_to_sol()
+# get_all()
