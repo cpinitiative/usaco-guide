@@ -1,5 +1,8 @@
 export default {
   Bronze: [
+    ['1107', '2021 February', 'Year of the Cow'],
+    ['1108', '2021 February', 'Comfortable Cows'],
+    ['1109', '2021 February', 'Clockwise Fence'],
     ['1083', '2021 January', 'Uddered but not Herd'],
     ['1084', '2021 January', 'Even More Odd Photos'],
     ['1085', '2021 January', 'Just Stalling'],
@@ -68,6 +71,9 @@ export default {
     ['569', '2015 December', 'Contaminated Milk'],
   ],
   Silver: [
+    ['1110', '2021 February', 'Comfortable Cows'],
+    ['1111', '2021 February', 'Year of the Cow'],
+    ['1112', '2021 February', 'Just Green Enough'],
     ['1086', '2021 January', 'Dance Mooves'],
     ['1087', '2021 January', 'No Time to Paint'],
     ['1088', '2021 January', 'Spaced Out'],
@@ -136,6 +142,9 @@ export default {
     ['572', '2015 December', 'Breed Counting'],
   ],
   Gold: [
+    ['1113', '2021 February', 'Stone Game'],
+    ['1114', '2021 February', 'Modern Art 3'],
+    ['1115', '2021 February', 'Count the Cows'],
     ['1089', '2021 January', 'Uddered but not Herd'],
     ['1090', '2021 January', 'Telephone'],
     ['1091', '2021 January', 'Dance Mooves'],
@@ -203,6 +212,9 @@ export default {
     ['575', '2015 December', "Bessie's Dream"],
   ],
   Platinum: [
+    ['1116', '2021 February', 'No Time to Dry'],
+    ['1117', '2021 February', 'Minimizing Edges'],
+    ['1118', '2021 February', 'Counting Graphs'],
     ['1092', '2021 January', 'Sum of Distances'],
     ['1093', '2021 January', 'Minimum Cost Paths'],
     ['1094', '2021 January', 'Paint by Letters'],
