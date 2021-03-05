@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
-import { groupConverter, GroupData } from '../models/groups/groups';
-import UserDataContext from './UserDataContext/UserDataContext';
-import useFirebase from '../hooks/useFirebase';
 import firebase from 'firebase';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { groupConverter, GroupData } from '../../models/groups/groups';
+import useFirebase from '../useFirebase';
 
 const UserGroupsContext = React.createContext<{
   isLoading: boolean;
