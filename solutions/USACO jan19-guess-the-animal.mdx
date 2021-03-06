@@ -1,0 +1,73 @@
+---
+id: usaco-839
+source : USACO Bronze 2019 January
+title: Guess The Animal
+author: Ethan Wu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_guess_bronze_jan19.html)
+<LanguageSection>
+<JavaSection>
+
+## Implementation
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class animal {
+    public static void main(String[] args)throws IOException{
+        BufferedReader br = new BufferedReader(new FileReader("guess.in"));
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("guess.out")));
+        int n = Integer.parseInt(br.readLine());//number of animals
+        String[] animal = new String[n];//make array to store the animals, ie : cow, bird etc
+         int[] num = new int[n];//number of qualities they have
+        String[][] qualities = new String[n][100];//the traits of each animal will me stored in here
+        for(int i = 0; i < n; i++){
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            animal[i] = st.nextToken();//take in the animal
+            num[i] = Integer.parseInt(st.nextToken());//take in the number of qualities that animal has
+            for(int j = 0; j < num[i]; j++){
+                qualities[i][j] = st.nextToken();//add the qualities that the animal has to the 2d array
+            }
+        }
+        //finding the max amount of yes
+        int ans = 0;
+        for(int i = 0; i < n; i++){
+            for(int j = i + 1; j < n; j++){
+                int counter = 0;
+                for(int k = 0; k < num[i]; k++){
+                    for(int l = 0; l < num[j]; l++){
+                        if(qualities[i][k].equals(qualities[j][l])) counter++; //increment when a similarity is found
+                        /*
+                        The more qualities an animal shares with all the other animals, the more
+                        yes's are needed in order to find this animal. Since you trying to find the max
+                        amount of yes's, you simply find the animal who shares the most amount of similarities
+                        */
+                    }
+                }
+                ans = Math.max(ans, counter);
+                //compare the amount of similarities with the largest amount of similarities found so far
+            }
+
+        }
+        out.println(ans + 1);
+        /*
+        So far, Elsie has narrowed down her guesses to a couple of animals. In order to find the specific animal Bessie
+        is thinking of, she needs ask for one more trait that will be distinctive to the specific animal. So as a 
+        result we increment the answer by one. 
+        */
+
+
+        out.close();
+    }
+
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
+  
