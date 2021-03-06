@@ -49,7 +49,7 @@ export function ProblemsList(props: ProblemsListProps) {
             <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
-                  <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider text-center">
+                  <th className="pl-4 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center">
                     Status
                   </th>
 
@@ -279,7 +279,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
   }, []);
 
   const statusCol = (
-    <td className="pl-4 md:pl-6 whitespace-nowrap text-sm font-medium">
+    <td className="pl-4 whitespace-nowrap text-sm font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
@@ -330,7 +330,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
           className={
             (problem.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
           }
-          style={{ maxWidth: '15rem' }}
+          style={{ maxWidth: '12rem' }}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
