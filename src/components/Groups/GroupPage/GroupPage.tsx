@@ -27,7 +27,7 @@ export default function GroupPage({ path, groupId }: any) {
           <div className="py-6">
             <div className="sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8 md:grid md:gap-4 md:grid-cols-12 lg:gap-8">
               <main className="md:col-span-7 lg:col-span-8">
-                <Feed group={group.groupData} />
+                <Feed />
               </main>
               <aside className="hidden md:block md:col-span-5 lg:col-span-4">
                 <div className="sticky top-4 space-y-4">

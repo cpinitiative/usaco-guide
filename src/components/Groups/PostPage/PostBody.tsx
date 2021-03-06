@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Post } from '../../../mobx/Post';
 import { observer } from 'mobx-react-lite';
+import { PostData } from '../../../models/groups/posts';
 
-export default observer(function PostBody({ post }: { post: Post }) {
+export default function PostBody({ post }: { post: PostData }) {
   return (
     <div className="py-3 xl:pt-6 xl:pb-0">
       <div className="prose max-w-none">
@@ -10,4 +11,4 @@ export default observer(function PostBody({ post }: { post: Post }) {
       </div>
     </div>
   );
-});
+}

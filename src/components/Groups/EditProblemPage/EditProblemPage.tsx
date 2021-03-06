@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
@@ -8,24 +8,43 @@ import { observer } from 'mobx-react-lite';
 import Breadcrumbs from '../Breadcrumbs';
 import { Link, navigate } from 'gatsby';
 import { action } from 'mobx';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import { PostData, ProblemData } from '../../../models/groups/posts';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useProblem } from '../../../hooks/groups/useProblem';
 
-export default observer(function EditProblemPage(props) {
-  const { postId, problemId } = props as {
+export default function EditProblemPage(props) {
+  const { groupId, postId, problemId } = props as {
     path: string;
     groupId: string;
     postId: string;
     problemId: string;
   };
-  const store = useContext(GroupsContext).groupsStore;
+  const activeGroup = useActiveGroup();
+  const post = usePost(postId);
+  const originalProblem = useProblem(postId, problemId);
+  const [problem, editProblem] = useReducer(
+    (oldProblem, updates: Partial<ProblemData>): ProblemData => ({
+      ...oldProblem,
+      ...updates,
+    }),
+    originalProblem
+  );
+  const { saveProblem, deleteProblem } = usePostActions(groupId);
 
-  const problem = store.activeGroup?.posts.find(post => post.id === postId)
-    ?.problems[problemId];
-
-  useEffect(() => {
-    if (!problem) return;
-    problem.startEditing();
-    return () => problem.stopEditing();
-  }, [problem]);
+  const handleDeleteProblem = () => {
+    if (confirm('Are you sure you want to delete this problem?')) {
+      deleteProblem(post, problem.id).then(() => {
+        navigate('../../../', {
+          replace: true,
+        });
+      });
+    }
+  };
+  const handleSaveProblem = () => {
+    saveProblem(post, problem).then(() => navigate(-1));
+  };
 
   if (!problem) {
     return (
@@ -40,13 +59,13 @@ export default observer(function EditProblemPage(props) {
 
   return (
     <Layout>
-      <SEO title={`Edit ${problem.name} · ${problem.post.title}`} />
+      <SEO title={`Edit ${problem.name} · ${post.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
-          group={problem.post.group}
-          post={problem.post}
+          group={activeGroup.groupData}
+          post={post}
         />
       </nav>
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,11 +85,10 @@ export default observer(function EditProblemPage(props) {
             </Link>
             <button
               type="submit"
-              onClick={() => problem.saveEdits().then(() => navigate(-1))}
-              disabled={problem.isWritingToServer}
+              onClick={handleSaveProblem}
               className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
             >
-              {problem.isWritingToServer ? 'Saving...' : 'Save'}
+              Save
             </button>
           </div>
         </div>
@@ -92,7 +110,7 @@ export default observer(function EditProblemPage(props) {
                       name="post_name"
                       id="post_name"
                       value={problem.name}
-                      onChange={action(e => (problem.name = e.target.value))}
+                      onChange={e => editProblem({ name: e.target.value })}
                       className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
                     />
                   </div>
@@ -111,7 +129,7 @@ export default observer(function EditProblemPage(props) {
                       name="post_content"
                       rows={5}
                       value={problem.body}
-                      onChange={action(e => (problem.body = e.target.value))}
+                      onChange={e => editProblem({ body: e.target.value })}
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
@@ -130,7 +148,7 @@ export default observer(function EditProblemPage(props) {
                       name="source"
                       id="source"
                       value={problem.source}
-                      onChange={action(e => (problem.source = e.target.value))}
+                      onChange={e => editProblem({ source: e.target.value })}
                       className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
                     />
                   </div>
@@ -149,7 +167,9 @@ export default observer(function EditProblemPage(props) {
                       name="points"
                       id="points"
                       value={problem.points}
-                      onChange={action(e => (problem.points = e.target.value))}
+                      onChange={e =>
+                        editProblem({ points: parseInt(e.target.value) })
+                      }
                       className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
                     />
                   </div>
@@ -168,9 +188,9 @@ export default observer(function EditProblemPage(props) {
                       name="difficulty"
                       id="difficulty"
                       value={problem.difficulty}
-                      onChange={action(
-                        e => (problem.difficulty = e.target.value)
-                      )}
+                      onChange={e =>
+                        editProblem({ difficulty: e.target.value })
+                      }
                       className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
                     />
                   </div>
@@ -183,27 +203,17 @@ export default observer(function EditProblemPage(props) {
             <div className="flex justify-between">
               <button
                 type="button"
-                onClick={action(() => {
-                  if (
-                    confirm('Are you sure you want to delete this problem?')
-                  ) {
-                    problem.delete();
-                    navigate('../../../', {
-                      replace: true,
-                    });
-                  }
-                })}
+                onClick={handleDeleteProblem}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
               >
                 Delete Problem
               </button>
               <button
                 type="button"
-                onClick={() => problem.saveEdits().then(() => navigate(-1))}
-                disabled={problem.isWritingToServer}
+                onClick={handleSaveProblem}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {problem.isWritingToServer ? 'Saving...' : 'Save'}
+                Save
               </button>
             </div>
           </div>
@@ -212,4 +222,4 @@ export default observer(function EditProblemPage(props) {
       </main>
     </Layout>
   );
-});
+}

@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { ProblemSubmission } from '../../../mobx/ProblemSubmission';
-import { Link } from 'gatsby';
-import { useContext } from 'react';
-import { GroupsContext } from '../../../pages/groups';
-import { action } from 'mobx';
+import {
+  getSubmissionEarnedPoints,
+  getSubmissionStatus,
+  getSubmissionTimestampString,
+  ProblemData,
+  Submission,
+} from '../../../models/groups/posts';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 const SubmissionListItem = ({
+  problem,
   submission,
 }: {
-  submission: ProblemSubmission;
+  problem: ProblemData;
+  submission: Submission;
 }) => {
-  const rootStore = useContext(GroupsContext);
+  const showSubmissionAction = useProblemSubmissionPopupAction();
   return (
     <li className="relative py-2 group">
       <div className="flex items-center justify-between space-x-4">
@@ -19,34 +23,37 @@ const SubmissionListItem = ({
           <button
             type="button"
             className="focus:outline-none"
-            onClick={action(() => {
-              rootStore.uiStore.currentPopupSubmission = submission;
-              rootStore.uiStore.showSubmissionPopup = true;
-            })}
+            onClick={() => showSubmissionAction(submission)}
           >
             <span className="absolute inset-0" aria-hidden="true" />
-            {submission.timestampString}
+            {getSubmissionTimestampString(submission)}
           </button>
         </span>
         <div className="flex items-center text-sm text-gray-500 group-hover:text-gray-900 font-medium">
           <span
             className={`h-5 w-5 ${
-              submission.verdict === 'AC' ? 'bg-green-100' : 'bg-red-100'
+              getSubmissionStatus(submission) === 'AC'
+                ? 'bg-green-100'
+                : 'bg-red-100'
             } rounded-full flex items-center justify-center`}
             aria-hidden="true"
           >
             <span
               className={`h-2.5 w-2.5 ${
-                submission.verdict === 'AC' ? 'bg-green-400' : 'bg-red-400'
+                getSubmissionStatus(submission) === 'AC'
+                  ? 'bg-green-400'
+                  : 'bg-red-400'
               } rounded-full`}
             />
           </span>
           <span
             className={`ml-2 mr-4 ${
-              submission.verdict === 'AC' ? 'text-green-800' : 'text-red-800'
+              getSubmissionStatus(submission) === 'AC'
+                ? 'text-green-800'
+                : 'text-red-800'
             }`}
           >
-            {submission.earnedPoints} / {submission.problem.points}
+            {getSubmissionEarnedPoints(submission, problem)} / {problem.points}
           </span>
           <svg
             className="h-5 w-5 text-gray-400"
@@ -67,19 +74,25 @@ const SubmissionListItem = ({
   );
 };
 
-export default observer(function ProblemSubmissionsList({
+export default function ProblemSubmissionsList({
+  problem,
   submissions,
 }: {
-  submissions: ProblemSubmission[];
+  problem: ProblemData;
+  submissions: Submission[];
 }) {
-  if (submissions?.length === 0) {
+  if (!submissions?.length) {
     return <p className="text-sm text-gray-500">No submissions yet!</p>;
   }
   return (
     <ul>
       {submissions.map(submission => (
-        <SubmissionListItem submission={submission} key={submission.id} />
+        <SubmissionListItem
+          problem={problem}
+          submission={submission}
+          key={submission.id}
+        />
       ))}
     </ul>
   );
-});
+}

@@ -2,8 +2,18 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Problem } from '../../mobx/Problem';
 import { Link, navigate } from 'gatsby';
+import { PostData, ProblemData } from '../../models/groups/posts';
+import { GroupData } from '../../models/groups/groups';
 
-const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
+const ProblemListItem = ({
+  group,
+  post,
+  problem,
+}: {
+  group: GroupData;
+  post: PostData;
+  problem: ProblemData;
+}) => (
   <li className="relative pl-4 pr-6 py-5 hover:bg-gray-50 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6">
     <div className="flex items-center justify-between space-x-4">
       <div className="min-w-0 space-y-3">
@@ -18,7 +28,7 @@ const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
           <span className="block">
             <h2 className="font-medium leading-3">
               <Link
-                to={`/groups/${problem.post.group.id}/post/${problem.post.id}/problems/${problem.id}`}
+                to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
               >
                 <span className="absolute inset-0" aria-hidden="true" />
                 {problem.name}
@@ -63,18 +73,12 @@ const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
       {/* Repo meta info */}
       <div className="hidden sm:flex flex-col flex-shrink-0 items-end space-y-3">
         <p className="flex items-center space-x-4">
-          {problem.post.isEditing ? (
-            <span className="relative text-sm text-gray-500 hover:text-gray-900 font-medium">
-              Edit Problem
-            </span>
-          ) : (
-            <Link
-              to={`/groups/${problem.post.group.id}/post/${problem.post.id}/problems/${problem.id}`}
-              className="relative text-sm text-gray-500 hover:text-gray-900 font-medium"
-            >
-              View Problem
-            </Link>
-          )}
+          <Link
+            to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+            className="relative text-sm text-gray-500 hover:text-gray-900 font-medium"
+          >
+            View Problem
+          </Link>
         </p>
         <p className="flex text-gray-500 text-sm space-x-2">
           <span>Source: {problem.source}</span>
@@ -84,6 +88,6 @@ const ProblemListItem = observer(({ problem }: { problem: Problem }) => (
       </div>
     </div>
   </li>
-));
+);
 
 export default ProblemListItem;

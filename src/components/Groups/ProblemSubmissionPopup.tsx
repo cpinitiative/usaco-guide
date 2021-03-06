@@ -1,16 +1,27 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
 import { Transition } from '@headlessui/react';
 import { useContext } from 'react';
 import { GroupsContext } from '../../pages/groups';
-import { action } from 'mobx';
+import {
+  getSubmissionStatus,
+  getSubmissionTimestampString,
+  Submission,
+} from '../../models/groups/posts';
 
-export default observer(function ProblemSubmissionPopup() {
-  const uiStore = useContext(GroupsContext).uiStore;
+const ProblemSubmissionPopupContext = React.createContext<{
+  showPopup: boolean;
+  setShowPopup: Function;
+  submission: Submission;
+  setSubmission: Function;
+}>(null);
+
+function ProblemSubmissionPopup() {
+  const popupContext = useContext(ProblemSubmissionPopupContext);
+  const submission = popupContext.submission;
 
   return (
     <Transition
-      show={uiStore.showSubmissionPopup}
+      show={popupContext.showPopup}
       className="fixed z-10 inset-0 overflow-y-auto"
     >
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -52,22 +63,18 @@ export default observer(function ProblemSubmissionPopup() {
               className="text-lg leading-6 font-medium text-gray-900"
               id="modal-headline"
             >
-              {uiStore.currentPopupSubmission?.timestampString}
+              {getSubmissionTimestampString(submission)}
             </h3>
             <p className="text-sm text-gray-900 font-medium mt-1">
-              Status: {uiStore.currentPopupSubmission?.verdict}
+              Status: {getSubmissionStatus(submission)}
             </p>
             <div className="mt-2">
-              <pre className="text-sm text-gray-500">
-                {uiStore.currentPopupSubmission?.code}
-              </pre>
+              <pre className="text-sm text-gray-500">{submission?.code}</pre>
             </div>
           </div>
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
             <button
-              onClick={action(() => {
-                uiStore.showSubmissionPopup = false;
-              })}
+              onClick={() => popupContext.setShowPopup(false)}
               type="button"
               className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
             >
@@ -78,4 +85,34 @@ export default observer(function ProblemSubmissionPopup() {
       </div>
     </Transition>
   );
-});
+}
+
+export function ProblemSubmissionPopupProvider({ children }) {
+  const [showPopup, setShowPopup] = React.useState(false);
+  const [submission, setSubmission] = React.useState<Submission>(null);
+  return (
+    <ProblemSubmissionPopupContext.Provider
+      value={{
+        showPopup,
+        setShowPopup,
+        submission,
+        setSubmission,
+      }}
+    >
+      {children}
+      <ProblemSubmissionPopup />
+    </ProblemSubmissionPopupContext.Provider>
+  );
+}
+
+export function useProblemSubmissionPopupAction() {
+  const popupContext = useContext(ProblemSubmissionPopupContext);
+  if (!popupContext) {
+    throw 'useProblemSubmissionPopupAction() must be used in a ProblemSubmissionPopupContext';
+  }
+
+  return (submission: Submission) => {
+    popupContext.setSubmission(submission);
+    popupContext.setShowPopup(true);
+  };
+}

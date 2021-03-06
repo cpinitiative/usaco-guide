@@ -5,10 +5,10 @@ import { observer } from 'mobx-react-lite';
 import { useRef, useState } from 'react';
 import { navigate } from 'gatsby';
 import { GroupData } from '../../../models/groups/groups';
-import { useNewPostAction } from '../../../hooks/groups/useNewPostAction';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 
 export default observer(function GroupPageHeader(props: { group: GroupData }) {
-  const newPostAction = useNewPostAction(props.group?.id);
+  const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const ref = useRef();
 
@@ -81,9 +81,9 @@ export default observer(function GroupPageHeader(props: { group: GroupData }) {
                   onClick={() => {
                     const groupId = props.group?.id;
                     if (groupId) {
-                      newPostAction
-                        .createNewPost()
-                        .then(postId => navigate(`post/${postId}/edit`));
+                      createNewPost().then(postId =>
+                        navigate(`post/${postId}/edit`)
+                      );
                     }
                   }}
                 >

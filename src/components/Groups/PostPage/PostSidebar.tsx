@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Post } from '../../../mobx/Post';
+import {
+  getPostDueDateString,
+  getPostTotalPoints,
+  PostData,
+} from '../../../models/groups/posts';
 
-export default observer(function PostSidebar({ post }: { post: Post }) {
+export default function PostSidebar({ post }: { post: PostData }) {
   return (
     <>
       <h2 className="sr-only">Details</h2>
@@ -21,7 +24,7 @@ export default observer(function PostSidebar({ post }: { post: Post }) {
             />
           </svg>
           <span className="text-green-700 text-sm font-medium">
-            400 / {post.totalPoints} points earned
+            400 / {getPostTotalPoints(post)} points earned
           </span>
         </div>
         <div className="flex items-center space-x-2">
@@ -40,7 +43,7 @@ export default observer(function PostSidebar({ post }: { post: Post }) {
             />
           </svg>
           <span className="text-gray-900 text-sm font-medium">
-            Due on {post.dueDateString}
+            Due on {getPostDueDateString(post)}
           </span>
         </div>
       </div>
@@ -211,4 +214,4 @@ export default observer(function PostSidebar({ post }: { post: Post }) {
       </div>
     </>
   );
-});
+}

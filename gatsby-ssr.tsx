@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { wrapRootElement as wrap } from './root-wrapper';
 import { darkModeKey } from './src/context/UserDataContext/properties/darkMode';
-import { enableStaticRendering } from 'mobx-react-lite';
-
-enableStaticRendering(typeof window === 'undefined');
 
 export const wrapRootElement = wrap;
 

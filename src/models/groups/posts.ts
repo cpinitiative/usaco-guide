@@ -21,6 +21,7 @@ export type PostData = {
 
 export type ProblemData = {
   id: string;
+  postId: string;
   name: string;
   body: string;
   source: string;
@@ -62,6 +63,11 @@ export enum SubmissionType {
 export type Submission = {
   id: string;
   type: SubmissionType;
+  problemId: string;
+  userId: string;
+  code: string;
+  language: 'cpp' | 'java' | 'py';
+  timestamp: firebase.firestore.Timestamp;
   /**
    * If type is SELF_GRADED, this is a numerical number 0-100
    * Otherwise, it's an array of test case results
@@ -112,7 +118,44 @@ export const postConverter = {
   },
 };
 
+export const submissionConverter = {
+  toFirestore(submission: Submission): firebaseType.firestore.DocumentData {
+    const { id, ...data } = submission;
+    return data;
+  },
+
+  fromFirestore(
+    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
+    options: firebaseType.firestore.SnapshotOptions
+  ): Submission {
+    return {
+      ...snapshot.data(options),
+      id: snapshot.id,
+    } as Submission;
+  },
+};
+
 export const isPostAnnouncement = (post: PostData) =>
   Object.keys(post.problems).length === 0;
+export const isPostAssignment = (post: PostData) =>
+  Object.keys(post.problems).length !== 0;
 export const getPostDueDateString = (post: PostData) =>
   post.dueTimestamp.toDate().toString().substr(0, 15);
+export const getPostTotalPoints = (post: PostData) =>
+  Object.keys(post.problems).reduce(
+    (acc, cur) => acc + post.problems[cur].points,
+    0
+  );
+export const getSubmissionTimestampString = (submission: Submission) =>
+  submission?.timestamp.toDate().toString().substr(0, 15);
+export const getSubmissionStatus = (submission: Submission) => {
+  // todo actually implement
+  return ExecutionStatus.AC;
+};
+export const getSubmissionEarnedPoints = (
+  submission: Submission,
+  problem: ProblemData
+) => {
+  // todo actually implement
+  return problem.points;
+};

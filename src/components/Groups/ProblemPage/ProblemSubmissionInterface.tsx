@@ -2,9 +2,16 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Problem } from '../../../mobx/Problem';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { ProblemSubmission } from '../../../mobx/ProblemSubmission';
 import { action } from 'mobx';
+import {
+  PostData,
+  ProblemData,
+  Submission,
+} from '../../../models/groups/posts';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 const ScoreInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -19,14 +26,27 @@ const ScoreInput = styled.input`
   }
 `;
 
-export default observer(function ProblemSubmissionInterface({
+export default function ProblemSubmissionInterface({
   problem,
 }: {
-  problem: Problem;
+  problem: ProblemData;
 }) {
-  const [submission, setSubmission] = useState(() =>
-    problem.createTemporarySubmission()
+  const emptySubmission: Partial<Submission> = {
+    problemId: problem.id,
+    type: problem.submissionType,
+    code: '',
+    language: 'cpp',
+    result: null,
+  };
+  const [submission, editSubmission] = useReducer(
+    (oldSubmission, updates: Partial<Submission>): Partial<Submission> => ({
+      ...oldSubmission,
+      ...updates,
+    }),
+    emptySubmission
   );
+  const activeGroup = useActiveGroup();
+  const { submitSolution } = usePostActions(activeGroup.activeGroupId);
 
   return (
     <section>
@@ -52,8 +72,8 @@ export default observer(function ProblemSubmissionInterface({
             id="score"
             min={0}
             max={100}
-            value={submission.score}
-            onChange={action(e => (submission.score = e.target.value))}
+            value={submission.result ?? ''}
+            onChange={e => editSubmission({ result: parseInt(e.target.value) })}
             className="focus:ring-gray-900 focus:border-gray-900 block w-full pl-3 pr-3 sm:text-sm border-gray-300"
             placeholder="0 - 100"
             aria-describedby="price-currency"
@@ -64,7 +84,7 @@ export default observer(function ProblemSubmissionInterface({
         <textarea
           rows={3}
           value={submission.code}
-          onChange={action(e => (submission.code = e.target.value))}
+          onChange={e => editSubmission({ code: e.target.value })}
           className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border-gray-300 font-mono"
           placeholder="Paste code here, or drag and drop a file here."
         />
@@ -77,8 +97,8 @@ export default observer(function ProblemSubmissionInterface({
       <button
         type="button"
         onClick={() => {
-          submission.submit();
-          setSubmission(problem.createTemporarySubmission());
+          submitSolution(problem, submission);
+          editSubmission(emptySubmission);
         }}
         className="mt-4 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
       >
@@ -86,4 +106,4 @@ export default observer(function ProblemSubmissionInterface({
       </button>
     </section>
   );
-});
+}

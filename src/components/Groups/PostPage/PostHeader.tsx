@@ -3,8 +3,18 @@ import { observer } from 'mobx-react-lite';
 import { Post } from '../../../mobx/Post';
 import { Link } from 'gatsby';
 import { action } from 'mobx';
+import { getPostDueDateString, PostData } from '../../../models/groups/posts';
+import { useContext } from 'react';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
-export default observer(function PostHeader({ post }: { post: Post }) {
+export default function PostHeader({ post }: { post: PostData }) {
+  const { firebaseUser } = useContext(UserDataContext);
+  const group = useActiveGroup().groupData;
+  const { updatePost } = usePostActions(group.id);
+
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
       <div>
@@ -13,10 +23,10 @@ export default observer(function PostHeader({ post }: { post: Post }) {
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
-          Due on {post.dueDateString}
+          Due on {getPostDueDateString(post)}
         </p>
       </div>
-      {post.group.isUserAdmin && (
+      {isUserAdminOfGroup(group, firebaseUser?.uid) && (
         <div className="mt-4 flex space-x-3 md:mt-0">
           <Link
             to="edit"
@@ -35,7 +45,9 @@ export default observer(function PostHeader({ post }: { post: Post }) {
           </Link>
           <button
             type="button"
-            onClick={action(() => (post.isPublished = !post.isPublished))}
+            onClick={() =>
+              updatePost(post.id, { isPublished: !post.isPublished })
+            }
             className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
           >
             <span>{post.isPublished ? 'Unpublish' : 'Publish'}</span>
@@ -44,4 +56,4 @@ export default observer(function PostHeader({ post }: { post: Post }) {
       )}
     </div>
   );
-});
+}

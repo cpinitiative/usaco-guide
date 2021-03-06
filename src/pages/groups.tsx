@@ -1,30 +1,19 @@
-import React, {
-  createContext,
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { createContext, ReactElement } from 'react';
 import { Router } from '@reach/router';
 import NotFoundPage from './404';
-import Groups from '../mobx/GroupsStore';
 import GroupSelectPage from '../components/Groups/GroupSelectPage';
-import GroupsStore from '../mobx/GroupsStore';
 import GroupPage from '../components/Groups/GroupPage/GroupPage';
 import PostPage from '../components/Groups/PostPage/PostPage';
-import useFirebase from '../hooks/useFirebase';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
-import { runInAction } from 'mobx';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
 import RootStore from '../mobx/RootStore';
-import ProblemSubmissionPopup from '../components/Groups/ProblemSubmissionPopup';
 import { UserGroupsProvider } from '../hooks/groups/useUserGroups';
 import {
   ActiveGroupProvider,
   useActiveGroup,
 } from '../hooks/groups/useActiveGroup';
+import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
 
 export const GroupsContext = createContext<RootStore>(null);
 
@@ -35,13 +24,9 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const store = useContext(GroupsContext).groupsStore;
   const { setActiveGroupId } = useActiveGroup();
 
   React.useEffect(() => {
-    runInAction(() => {
-      store.activeGroupId = props.groupId;
-    });
     setActiveGroupId(props.groupId);
   }, [props.groupId]);
 
@@ -49,31 +34,10 @@ const GroupPageWrapper = (props: any): ReactElement => {
 };
 
 export default function GroupsRouter() {
-  const firebase = useFirebase();
-  const { firebaseUser } = useContext(UserDataContext);
-  const rootStore = useMemo(() => {
-    if (firebase) {
-      return new RootStore(firebase);
-    } else {
-      return null;
-    }
-  }, [firebase]);
-
-  useEffect(() => {
-    if (rootStore) {
-      runInAction(() => {
-        rootStore.firebaseUser = firebaseUser;
-      });
-    }
-  }, [firebaseUser]);
-
-  // still loading?
-  if (!rootStore) return null;
-
   return (
-    <GroupsContext.Provider value={rootStore}>
-      <UserGroupsProvider>
-        <ActiveGroupProvider>
+    <UserGroupsProvider>
+      <ActiveGroupProvider>
+        <ProblemSubmissionPopupProvider>
           <Router basepath="/groups">
             <GroupPageWrapper
               Component={EditProblemPage}
@@ -95,9 +59,8 @@ export default function GroupsRouter() {
             <GroupSelectPage path="/" />
             <NotFoundPageWrapper default />
           </Router>
-          <ProblemSubmissionPopup />
-        </ActiveGroupProvider>
-      </UserGroupsProvider>
-    </GroupsContext.Provider>
+        </ProblemSubmissionPopupProvider>
+      </ActiveGroupProvider>
+    </UserGroupsProvider>
   );
 }

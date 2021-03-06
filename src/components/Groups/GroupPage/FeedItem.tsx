@@ -2,9 +2,6 @@ import * as React from 'react';
 import { Link } from 'gatsby';
 import { useContext, useState } from 'react';
 import { Transition } from '@headlessui/react';
-import { GroupsContext } from '../../../pages/groups';
-import { observer } from 'mobx-react-lite';
-import { Post } from '../../../mobx/Post';
 import { action } from 'mobx';
 import {
   getPostDueDateString,
@@ -13,7 +10,7 @@ import {
 } from '../../../models/groups/posts';
 import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { useDeletePostMutation } from '../../../hooks/groups/useDeletePostMutation';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 
 export default function FeedItem({
   group,
@@ -24,7 +21,7 @@ export default function FeedItem({
 }) {
   const { firebaseUser } = useContext(UserDataContext);
   const showAdminSettings = isUserAdminOfGroup(group, firebaseUser?.uid);
-  const deletePostMutation = useDeletePostMutation(group.id, post.id);
+  const { updatePost, deletePost } = usePostActions(group.id);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = React.useRef();
@@ -135,7 +132,9 @@ export default function FeedItem({
                 <div className="py-1">
                   <button
                     type="button"
-                    onClick={action(() => (post.isPinned = !post.isPinned))}
+                    onClick={() =>
+                      updatePost(post.id, { isPinned: !post.isPinned })
+                    }
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
@@ -157,9 +156,9 @@ export default function FeedItem({
                   </button>
                   <button
                     type="button"
-                    onClick={action(
-                      () => (post.isPublished = !post.isPublished)
-                    )}
+                    onClick={() =>
+                      updatePost(post.id, { isPublished: !post.isPublished })
+                    }
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
@@ -187,7 +186,7 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePostMutation.mutate();
+                        deletePost(post.id);
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

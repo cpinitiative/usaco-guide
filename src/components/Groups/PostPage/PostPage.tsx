@@ -1,28 +1,29 @@
 import * as React from 'react';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import { useContext, useEffect } from 'react';
-import { GroupsContext } from '../../../pages/groups';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
-import { observer } from 'mobx-react-lite';
-import { runInAction } from 'mobx';
 import PostProblems from './PostProblems';
 import PostSidebar from './PostSidebar';
 import SEO from '../../seo';
 import Layout from '../../layout';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import {
+  isPostAnnouncement,
+  isPostAssignment,
+} from '../../../models/groups/posts';
 
-export default observer(function PostPage(props) {
+export default function PostPage(props) {
   const { postId } = props as {
     path: string;
     groupId: string;
     postId: string;
   };
-  const store = useContext(GroupsContext).groupsStore;
+  const activeGroup = useActiveGroup();
+  const post = usePost(postId);
 
-  const post = store.activeGroup?.posts.find(post => post.id === postId);
-
-  if (!post) {
+  if (activeGroup.isLoading) {
     return (
       <>
         <TopNavigationBar />
@@ -33,16 +34,27 @@ export default observer(function PostPage(props) {
     );
   }
 
+  if (!post) {
+    return (
+      <>
+        <TopNavigationBar />
+        <main className="text-center py-10">
+          <p className="font-medium text-2xl">Post Not Found</p>
+        </main>
+      </>
+    );
+  }
+
   return (
     <Layout>
-      <SEO title={`${post.title} · ${post.group.name}`} />
+      <SEO title={`${post.name} · ${activeGroup.groupData.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
-            post.isAnnouncement ? 'max-w-4xl' : 'max-w-7xl'
+            isPostAnnouncement(post) ? 'max-w-4xl' : 'max-w-7xl'
           } w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
-          group={post.group}
+          group={activeGroup.groupData}
         />
       </nav>
       <main
@@ -50,7 +62,7 @@ export default observer(function PostPage(props) {
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          {post.isAssignment ? (
+          {isPostAssignment(post) ? (
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
               <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200">
                 <div>
@@ -188,11 +200,11 @@ export default observer(function PostPage(props) {
             <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
               <PostHeader post={post} />
               <PostBody post={post} />
-              {post.group.isUserAdmin && <PostProblems post={post} />}
+              {activeGroup.isUserAdmin && <PostProblems post={post} />}
             </div>
           )}
         </div>
       </main>
     </Layout>
   );
-});
+}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import Group from '../../mobx/Group';
-import { Post } from '../../mobx/Post';
+import { PostData } from '../../models/groups/posts';
+import { GroupData } from '../../models/groups/groups';
 
 export default function Breadcrumbs({
   className,
@@ -9,8 +9,8 @@ export default function Breadcrumbs({
   post,
 }: {
   className?: string;
-  group: Group;
-  post?: Post;
+  group: GroupData;
+  post?: PostData;
 }) {
   return (
     <ol className={'flex items-center space-x-4 ' + className}>

@@ -9,31 +9,39 @@ import Layout from '../../layout';
 import SEO from '../../seo';
 import ProblemSubmission from './ProblemSubmissionInterface';
 import ProblemSubmissionsList from './ProblemSubmissionsList';
+import { useProblem } from '../../../hooks/groups/useProblem';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { getPostDueDateString } from '../../../models/groups/posts';
+import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
 
-export default observer(function ProblemPage(props) {
+export default function ProblemPage(props) {
   const { postId, problemId } = props as {
     path: string;
     groupId: string;
     postId: string;
     problemId: string;
   };
-  const store = useContext(GroupsContext).groupsStore;
-  const problem = store.activeGroup?.posts.find(post => post.id === postId)
-    ?.problems[problemId];
+  const activeGroup = useActiveGroup();
+  const post = usePost(postId);
+  const problem = useProblem(postId, problemId);
+  const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
+  const submissions = useUserProblemSubmissions(problemId);
 
-  if (!problem) {
+  if (!problem || activeGroup.isLoading) {
     return null;
   }
 
   return (
     <Layout>
-      <SEO title={`Problem: ${problem.name} · ${problem.post.group.name}`} />
+      <SEO title={`Problem: ${problem.name} · ${activeGroup.groupData.name}`} />
       <TopNavigationBar />
       <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
-          group={problem.post.group}
-          post={problem.post}
+          group={activeGroup.groupData}
+          post={post}
         />
       </nav>
       <main
@@ -48,11 +56,9 @@ export default observer(function ProblemPage(props) {
                   <h1 className="text-2xl font-bold text-gray-900">
                     Problem: {problem.name}
                   </h1>
-                  <p className="mt-2 text-sm text-gray-500">
-                    {problem.post.title}
-                  </p>
+                  <p className="mt-2 text-sm text-gray-500">{post.name}</p>
                 </div>
-                {problem.post.group.isUserAdmin && (
+                {activeGroup.isUserAdmin && (
                   <div className="mt-4 flex space-x-3 md:mt-0">
                     <button
                       type="button"
@@ -62,13 +68,14 @@ export default observer(function ProblemPage(props) {
                             'Are you sure you want to delete this problem?'
                           )
                         ) {
-                          problem.delete();
-                          navigate(
-                            `/groups/${problem.post.group.groupId}/post/${problem.post.id}`,
-                            {
-                              replace: true,
-                            }
-                          );
+                          deleteProblem(post, problem.id).then(() => {
+                            navigate(
+                              `/groups/${activeGroup.groupData.id}/post/${post.id}`,
+                              {
+                                replace: true,
+                              }
+                            );
+                          });
                         }
                       }}
                       className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
@@ -309,7 +316,7 @@ export default observer(function ProblemPage(props) {
                     />
                   </svg>
                   <span className="text-gray-900 text-sm font-medium">
-                    Due on {problem.post.dueDateString}
+                    Due on {getPostDueDateString(post)}
                   </span>
                 </div>
               </div>
@@ -319,7 +326,8 @@ export default observer(function ProblemPage(props) {
                     My Submissions
                   </h2>
                   <ProblemSubmissionsList
-                    submissions={problem.userSubmissions}
+                    problem={problem}
+                    submissions={submissions}
                   />
                 </div>
               </div>
@@ -329,4 +337,4 @@ export default observer(function ProblemPage(props) {
       </main>
     </Layout>
   );
-});
+}
