@@ -1,0 +1,67 @@
+---
+id: usaco-896
+source: USACO Silver 2019 January
+title: Mountain View
+author: Jesse Choe
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_mountains_silver_jan19.html)
+
+**Time Complexity:** $\mathcal{O}(n\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+## Sorting Struct Using Comparator Function
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define f first
+#define s second
+
+void setIO(string fileName = "") {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	if((int)fileName.size()) {
+		freopen((fileName+".in").c_str(), "r", stdin);
+		freopen((fileName+".out").c_str(), "w", stdout);
+	}
+}
+
+struct Mountain {
+	int l, r;
+};
+
+bool cmp(Mountain a, Mountain b) {
+	if(a.l == b.l) {
+		return a.r > b.r;
+	}
+	return a.l < b.l;
+}
+
+int main() {
+	setIO("mountains");
+	int n; cin >> n;
+	vector<Mountain> mountains;
+	for(int i=0; i<n; i++) {
+		int x, y; cin >> x >> y;
+		mountains.pb({x-y, x+y});
+	}
+	sort(all(mountains), cmp);
+	int rightMost = -1, ans = 0;
+	for(int i = 0; i < n; i++) {
+		if(mountains[i].r > rightMost) {
+			ans++;
+			rightMost = mountains[i].r;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
