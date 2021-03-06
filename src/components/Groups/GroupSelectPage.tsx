@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { useContext, useEffect } from 'react';
-import { GroupsContext } from '../../pages/groups';
-import { observer } from 'mobx-react-lite';
 import { Link } from 'gatsby';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Layout from '../layout';
@@ -9,7 +7,7 @@ import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 
-const GroupSelectPage = observer((props: { path: string }) => {
+const GroupSelectPage = (props: { path: string }) => {
   const { firebaseUser, isLoaded } = useContext(UserDataContext);
   const groups = useUserGroups();
 
@@ -51,6 +49,6 @@ const GroupSelectPage = observer((props: { path: string }) => {
       </main>
     </Layout>
   );
-});
+};
 
 export default GroupSelectPage;

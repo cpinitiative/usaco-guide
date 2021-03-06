@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Post } from '../../../mobx/Post';
 import ProblemListItem from '../ProblemListItem';
 import { navigate } from 'gatsby';
 import { PostData } from '../../../models/groups/posts';

@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { useContext, useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import { GroupsContext } from '../../../pages/groups';
-import { observer } from 'mobx-react-lite';
 import Breadcrumbs from '../Breadcrumbs';
 import { Link, navigate } from 'gatsby';
-import { action } from 'mobx';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import { PostData, ProblemData } from '../../../models/groups/posts';
+import { ProblemData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 

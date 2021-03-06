@@ -1,13 +1,11 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
-import Group from '../../../mobx/Group';
-import { observer } from 'mobx-react-lite';
 import { useRef, useState } from 'react';
 import { navigate } from 'gatsby';
 import { GroupData } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 
-export default observer(function GroupPageHeader(props: { group: GroupData }) {
+export default function GroupPageHeader(props: { group: GroupData }) {
   const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const ref = useRef();
@@ -96,4 +94,4 @@ export default observer(function GroupPageHeader(props: { group: GroupData }) {
       </div>
     </header>
   );
-});
+}

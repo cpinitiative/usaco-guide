@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Post } from '../../../mobx/Post';
-import { observer } from 'mobx-react-lite';
 import { PostData } from '../../../models/groups/posts';
 
 export default function PostBody({ post }: { post: PostData }) {

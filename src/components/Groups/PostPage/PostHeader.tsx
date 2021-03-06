@@ -1,8 +1,5 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Post } from '../../../mobx/Post';
 import { Link } from 'gatsby';
-import { action } from 'mobx';
 import { getPostDueDateString, PostData } from '../../../models/groups/posts';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';

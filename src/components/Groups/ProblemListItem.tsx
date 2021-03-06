@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Problem } from '../../mobx/Problem';
-import { Link, navigate } from 'gatsby';
+import { Link } from 'gatsby';
 import { PostData, ProblemData } from '../../models/groups/posts';
 import { GroupData } from '../../models/groups/groups';
 

@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Problem } from '../../../mobx/Problem';
 import styled from 'styled-components';
 import { useReducer, useState } from 'react';
-import { ProblemSubmission } from '../../../mobx/ProblemSubmission';
-import { action } from 'mobx';
 import {
   PostData,
   ProblemData,
