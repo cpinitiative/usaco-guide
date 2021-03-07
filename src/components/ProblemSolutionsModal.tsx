@@ -82,9 +82,16 @@ export default function ProblemSolutionsModal({
               User Solutions for {problem?.name}
             </h3>
             <p className="mt-1 text-gray-500 dark:text-gray-400">
-              Below are user-submitted solutions for {problem?.name}. Please
-              note that we do not verify the accuracy of solutions, so some
-              solutions may be incorrect.
+              Below are user-submitted solutions for {problem?.name}. If you
+              notice any of them are incorrect, email us at{' '}
+              <a
+                className="underline text-blue-600 dark:text-blue-400"
+                href="mailto:usacoguide@gmail.com"
+                target="_blank"
+              >
+                usacoguide@gmail.com
+              </a>
+              .
             </p>
             <button
               className="my-4 btn-primary"
