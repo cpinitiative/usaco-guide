@@ -13,6 +13,7 @@ import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 import Spoiler from './markdown/Spoiler';
 import { useContext } from 'react';
+import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 
 export default function ProblemSolutionsModal({
   isOpen,
@@ -28,6 +29,7 @@ export default function ProblemSolutionsModal({
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem
   );
+  const { deleteSolution } = useUserProblemSolutionActions();
   const { firebaseUser, signIn } = useContext(UserDataContext);
 
   const publicSolutions = solutions?.filter(
@@ -99,7 +101,21 @@ export default function ProblemSolutionsModal({
                     {submission.language
                       ? LANGUAGE_LABELS[submission.language]
                       : 'Unknown Language'}{' '}
-                    ({submission.isPublic ? 'Public' : 'Private'})
+                    ({submission.isPublic ? 'Public' : 'Private'}){' '}
+                    <button
+                      className="hover:underline text-blue-600 dark:text-blue-300"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            'Are you sure you want to delete this submission?'
+                          )
+                        ) {
+                          deleteSolution(submission.id);
+                        }
+                      }}
+                    >
+                      (Delete)
+                    </button>
                   </h4>
                   <div className="text-sm leading-normal">
                     <CodeBlock

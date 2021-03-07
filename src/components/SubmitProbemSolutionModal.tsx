@@ -9,7 +9,7 @@ import className from 'classnames';
 import ButtonGroup from './ButtonGroup';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import useSubmitUserSolutionForProblemAction from '../hooks/useSubmitUserSolutionForProblemAction';
+import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 
 export default function SubmitProblemSolutionModal({
   isOpen,
@@ -25,7 +25,7 @@ export default function SubmitProblemSolutionModal({
   const [isCodePublic, setIsCodePublic] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
-  const submitAction = useSubmitUserSolutionForProblemAction();
+  const { submitSolution: submitAction } = useUserProblemSolutionActions();
   const { lang } = React.useContext(UserDataContext);
 
   React.useEffect(() => {

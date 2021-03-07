@@ -1,6 +1,7 @@
 import firebaseType from 'firebase';
 
 export type UserSolutionForProblem = {
+  id: string;
   userID: string;
   userName: string;
   problemID: string;
@@ -11,8 +12,9 @@ export type UserSolutionForProblem = {
 
 export const userSolutionForProblemConverter = {
   toFirestore(
-    data: UserSolutionForProblem
+    solution: UserSolutionForProblem
   ): firebaseType.firestore.DocumentData {
+    const { id, ...data } = solution;
     return data;
   },
 
@@ -20,6 +22,9 @@ export const userSolutionForProblemConverter = {
     snapshot: firebaseType.firestore.QueryDocumentSnapshot,
     options: firebaseType.firestore.SnapshotOptions
   ): UserSolutionForProblem {
-    return snapshot.data(options) as UserSolutionForProblem;
+    return {
+      ...snapshot.data(options),
+      id: snapshot.id,
+    } as UserSolutionForProblem;
   },
 };
