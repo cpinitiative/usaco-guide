@@ -1,0 +1,127 @@
+---
+id: usaco-833
+source: USACO Bronze 2018 Open
+title: Family Tree
+author: Danh Ta Chi Thanh
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_family_bronze_open18.html)
+
+## Alternative Solution - BFS
+
+This problem can also be solved by using BFS to find the common ancestors and the distance between the two cows and their nearest common ancestor.
+
+<Warning>
+
+No Bronze / Silver problem has required knowledge of BFS, so feel free to skip this solution if you find it unfamiliar and come back later.
+
+</Warning>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+//vectors
+using vi = vector<int>;
+#define all(x) begin(x), end(x)
+#define sz(x) int((x).size())
+#define pb push_back
+
+//pairs
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("family");
+	int N;
+	string c[3];
+	cin >> N >> c[1] >> c[2];
+	vector<pair<string,int>> dist[3];
+	dist[1].pb(mp(c[1],0));
+	dist[2].pb(mp(c[2],0));
+
+	vector<pair<string,string>> edge(N); //edge list
+
+	for (int i = 0; i < N; ++i) {
+		string u, v;
+		cin >> v >> u;
+		// If v is a mother of u, then there is an edge from node u to node v.
+		edge[i] = mp(u,v);
+	}
+
+	for (int k = 1; k <= 2; ++k) {
+		queue<string> q;
+		q.push(c[k]);
+		// BFS on directed tree
+		// to find the ancestors of both cows and the distance to them
+		while (!q.empty()) {
+			string node = q.front();
+			q.pop();
+			for (auto& E : edge)
+				if (E.f == node)	{
+					q.push(E.s);
+					for (int j = 0; j < sz(dist[k]); ++j)
+						if (dist[k][j].f == node) {
+							dist[k].pb(mp(E.s,dist[k][j].s+1)); break;
+						}
+					break;
+				}
+		}
+	}
+
+	string ancestor;
+	int d1 = 105, d2 = 105;
+	// Finding the common ancestor with shortest distance
+	for (int i = 0; i < sz(dist[1]); ++i) for (int j = 0; j < sz(dist[2]); ++j)
+		if (dist[1][i].f == dist[2][j].f && (d1 > dist[1][i].s || d2 > dist[2][j].s)) {
+			ancestor = dist[1][i].f;
+			d1 = dist[1][i].s;
+			d2 = dist[2][j].s;
+		}
+
+	if (ancestor.empty()) cout << "NOT RELATED";
+
+	else if (ancestor == c[2] || ancestor == c[1]) {
+		if (ancestor == c[1]) swap(c[1],c[2]), swap(d1,d2);
+		cout << c[2] << " is the ";
+		if (d1 >= 2) {
+			for (int i = 0; i < d1 - 2; ++i) cout << "great-";
+			cout << "grand-";
+		}
+		cout << "mother of " << c[1];
+	}
+
+	else {
+		if (d2 < d1) swap(d2,d1), swap(c[2],c[1]);
+		if (d1 == 1) {
+			if (d2 == 1) cout << "SIBLINGS";
+			else {
+				cout << c[1] << " is the ";
+				for (int i = 0; i < d2 - 2; ++i) cout << "great-";
+				cout << "aunt of " << c[2];
+			}
+		}
+		else cout << "COUSINS";
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
