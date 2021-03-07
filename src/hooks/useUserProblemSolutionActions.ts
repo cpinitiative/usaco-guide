@@ -12,7 +12,7 @@ export default function useUserProblemSolutionActions() {
 
   return {
     submitSolution: async (
-      solution: Omit<UserSolutionForProblem, 'userID' | 'userName'>
+      solution: Omit<UserSolutionForProblem, 'userID' | 'userName' | 'id'>
     ) => {
       await firebase
         .firestore()

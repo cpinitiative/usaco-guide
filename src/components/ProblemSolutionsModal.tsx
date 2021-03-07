@@ -96,7 +96,7 @@ export default function ProblemSolutionsModal({
             </h4>
             <div className="space-y-6">
               {currentUserSolutions?.map(submission => (
-                <div>
+                <div key={submission.id}>
                   <h4 className="mb-2 text-gray-700 dark:text-gray-100">
                     {submission.language
                       ? LANGUAGE_LABELS[submission.language]
@@ -140,7 +140,7 @@ export default function ProblemSolutionsModal({
             </h4>
             <div className="space-y-6">
               {publicSolutions?.map(submission => (
-                <div>
+                <div key={submission.id}>
                   <h4 className="mb-2 text-gray-700 dark:text-gray-100">
                     {submission.userName ?? 'Unknown User'} -{' '}
                     {submission.language
