@@ -41,6 +41,11 @@ export default function SubmitProblemSolutionModal({
   const handleSubmit = event => {
     event.preventDefault();
 
+    if (solutionCode.length < 10) {
+      alert('Your solution seems too short!');
+      return;
+    }
+
     setLoading(true);
     submitAction({
       isPublic: isCodePublic,
