@@ -244,6 +244,7 @@ const Anchor = styled.a`
 `;
 
 export function ProblemComponent(props: ProblemComponentProps) {
+  const { darkMode } = useContext(UserDataContext);
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
@@ -355,7 +356,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
 
   const [copied, setCopied] = React.useState(false);
 
-  console.log('HUH');
   const more = (
     <div>
       <Tippy
@@ -368,14 +368,14 @@ export function ProblemComponent(props: ProblemComponentProps) {
               />
               <button
                 type="button"
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
                 role="menuitem"
               >
                 View User Solutions
               </button>
               <button
                 type="button"
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
                 role="menuitem"
                 onClick={e => {
                   e.preventDefault();
@@ -392,7 +392,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
             </div>
           </div>
         }
-        theme="light"
+        theme={darkMode ? 'dark' : 'light'}
         placement="bottom-end"
         arrow={true}
         animation="fade"
@@ -400,7 +400,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
         interactive={true}
         onHidden={() => setCopied(false)}
       >
-        <button className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500">
+        <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
           <span className="sr-only">Open options</span>
           {/* Heroicon name: solid/dots-vertical */}
           <svg
@@ -478,12 +478,12 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
     contents = (
       <>
         {problem.solution?.label && problem.solution?.labelTooltip === null && (
-          <div className="px-4 py-2 text-sm text-gray-700">
+          <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
             Solution: {problem.solution?.label}
           </div>
         )}
         {problem.solution?.label && problem.solution?.labelTooltip?.length > 0 && (
-          <div className="px-4 py-2 text-sm text-gray-700">
+          <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
             <TextTooltip content={problem.solution.labelTooltip}>
               Solution: {problem.solution.label}
             </TextTooltip>
@@ -493,14 +493,14 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           <Anchor
             href={problem.solution.url}
             target="_blank"
-            className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+            className="block w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             {problem.solution.label}
           </Anchor>
         )}
         {problem.solution?.kind === 'internal' && (
           <a
-            className={`flex items-center group px-4 py-2 text-sm text-gray-700 hover:bg-gray-100`}
+            className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
             href={problem.solution.url}
             target="_blank"
           >
@@ -540,7 +540,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
         )}
         {problem.solution?.kind === 'sketch' && (
           <div
-            className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 cursor-pointer"
+            className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 cursor-pointer"
             onClick={() =>
               problem.solution.sketch && props.onShowSolution(problem)
             }
@@ -564,7 +564,7 @@ const ProblemSolutionCell = (props: ProblemComponentProps) => {
           </div>
         )}
         {!problem.solution && (
-          <div className="px-4 py-2 text-sm text-gray-300 dark:text-gray-600">
+          <div className="px-4 py-2 text-sm text-gray-300 dark:text-gray-500">
             <Tooltip
               content={`We haven't written a solution for this problem yet. If needed, request one using the "Contact Us" button!`}
             >
