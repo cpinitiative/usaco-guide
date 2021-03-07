@@ -66,9 +66,9 @@ export default function SubmitProblemSolutionModal({
         </label>
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            Consider leaving solution notes at the top of the code as a comment.
-            Make sure not to leave out any headers/templates, and that your code
-            passes all test cases!
+            Especially if sharing your code, consider cleaning it up and leaving
+            solution notes at the top. Make sure not to leave out any
+            headers/templates, and that your code passes all test cases!
           </p>
           <ButtonGroup
             options={['cpp', 'java', 'py']}
@@ -93,8 +93,8 @@ export default function SubmitProblemSolutionModal({
             Share Solution Code
           </span>
           <span className="text-sm leading-normal text-gray-500 dark:text-gray-400">
-            This will allow other users to view your anonymized solution code if
-            they are stuck.
+            This will allow other users to view your solution code if they are
+            stuck.
           </span>
         </span>
         <span
