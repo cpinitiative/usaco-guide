@@ -104,9 +104,9 @@ export default function ProblemSolutionsModal({
                 : 'Sign in to submit a solution'}
             </button>
             <div className="h-8" />
-            <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+            <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
               My Solutions
-            </h4>
+            </h3>
             <div className="space-y-6">
               {currentUserSolutions?.map(submission => (
                 <div key={submission.id}>
@@ -114,7 +114,8 @@ export default function ProblemSolutionsModal({
                     {submission.language
                       ? LANGUAGE_LABELS[submission.language]
                       : 'Unknown Language'}{' '}
-                    ({submission.isPublic ? 'Public' : 'Private'}){' '}
+                    | Votes: {submission.upvotes.length}. (
+                    {submission.isPublic ? 'Public' : 'Private'}){' '}
                     <button
                       className="hover:underline text-blue-600 dark:text-blue-300"
                       onClick={() => {
@@ -147,51 +148,61 @@ export default function ProblemSolutionsModal({
                 <span>No solutions yet!</span>
               )}
             </div>
-            <div className="h-8" />
-            <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
-              Other Public Solutions
-            </h4>
-            <div className="space-y-6">
-              {publicSolutions?.map(submission => (
-                <div key={submission.id}>
-                  <h4 className="mb-2 text-gray-700 dark:text-gray-100">
-                    {submission.userName ?? 'Unknown User'} -{' '}
-                    {submission.language
-                      ? LANGUAGE_LABELS[submission.language]
-                      : 'Unknown Language'}{' '}
-                    - Votes: {submission.upvotes.length}.{' '}
-                    {firebaseUser?.uid && (
-                      <button
-                        className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-none"
-                        onClick={() => {
-                          if (submission.upvotes.includes(firebaseUser?.uid)) {
-                            undoUpvoteSolution(submission.id);
-                          } else {
-                            upvoteSolution(submission.id);
-                          }
-                        }}
-                      >
-                        {submission.upvotes.includes(firebaseUser?.uid)
-                          ? '(Undo Upvote)'
-                          : '(Upvote)'}
-                      </button>
-                    )}
-                  </h4>
-                  <div className="text-sm leading-normal">
-                    <CodeBlock
-                      className={
-                        submission.language !== 'unknown'
-                          ? `language-${submission.language}`
-                          : undefined
-                      }
-                    >
-                      {submission.solutionCode}
-                    </CodeBlock>
-                  </div>
+            {/* <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+              Public Solutions
+            </h3> */}
+            {['cpp', 'java', 'py'].map(lang => (
+              <>
+                <div className="h-8" />
+                <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+                  Public {LANGUAGE_LABELS[lang]} Solutions
+                </h4>
+                <div className="space-y-6">
+                  {publicSolutions
+                    ?.filter(submission => submission.language == lang)
+                    .map(submission => (
+                      <div key={submission.id}>
+                        <h4 className="mb-2 text-gray-700 dark:text-gray-100">
+                          {submission.userName ?? 'Unknown User'} | Votes:{' '}
+                          {submission.upvotes.length}.{' '}
+                          {firebaseUser?.uid && (
+                            <button
+                              className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-none"
+                              onClick={() => {
+                                if (
+                                  submission.upvotes.includes(firebaseUser?.uid)
+                                ) {
+                                  undoUpvoteSolution(submission.id);
+                                } else {
+                                  upvoteSolution(submission.id);
+                                }
+                              }}
+                            >
+                              {submission.upvotes.includes(firebaseUser?.uid)
+                                ? '(Undo Upvote)'
+                                : '(Upvote)'}
+                            </button>
+                          )}
+                        </h4>
+                        <div className="text-sm leading-normal">
+                          <CodeBlock
+                            className={
+                              submission.language !== 'unknown'
+                                ? `language-${submission.language}`
+                                : undefined
+                            }
+                          >
+                            {submission.solutionCode}
+                          </CodeBlock>
+                        </div>
+                      </div>
+                    ))}
+                  {publicSolutions?.filter(
+                    submission => submission.language == lang
+                  ).length === 0 && <span>No solutions yet!</span>}
                 </div>
-              ))}
-              {publicSolutions?.length === 0 && <span>No solutions yet!</span>}
-            </div>
+              </>
+            ))}
           </div>
         </div>
       </div>
