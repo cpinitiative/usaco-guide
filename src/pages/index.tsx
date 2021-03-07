@@ -376,7 +376,7 @@ export default function IndexPage(props: PageProps) {
                 </div>
                 <div className="mt-12">
                   <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    I'm looking for classes, club curriculum, contests...
+                    I'm looking for classes, club curriculum...
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
