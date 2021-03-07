@@ -21,7 +21,7 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
-import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
+import { ProblemSolutionsModalProvider } from '../../context/ProblemSolutionsModalContext';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 
 const ContentContainer = ({ children, tableOfContents }) => (
@@ -178,7 +178,7 @@ export default function MarkdownLayout({
     >
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
-          <ProblemFeedbackModalProvider>
+          <ProblemSolutionsModalProvider>
             <MobileSideNav />
             <DesktopSidebar />
 
@@ -208,7 +208,7 @@ export default function MarkdownLayout({
                 {/*</div>*/}
               </ContentContainer>
             </div>
-          </ProblemFeedbackModalProvider>
+          </ProblemSolutionsModalProvider>
         </ContactUsSlideoverProvider>
       </SettingsModalProvider>
     </MarkdownLayoutContext.Provider>

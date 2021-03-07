@@ -12,7 +12,7 @@ import styled from 'styled-components';
 
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
-import ProblemFeedbackModalContext from '../../../context/ProblemFeedbackModalContext';
+import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -172,7 +172,6 @@ export default function ProblemStatusCheckbox({
   };
   const tippyRef = useRef();
   const showConfetti = useContext(ConfettiContext);
-  const { openProblemFeedbackModal } = useContext(ProblemFeedbackModalContext);
   return (
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
@@ -188,7 +187,6 @@ export default function ProblemStatusCheckbox({
                 updateModuleProgressToPracticing();
               if (!solved(status) && solved(progress)) {
                 showConfetti();
-                openProblemFeedbackModal(problem);
               }
             }}
             currentProgress={status}

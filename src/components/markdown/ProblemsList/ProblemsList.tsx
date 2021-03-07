@@ -11,11 +11,13 @@ import { Transition as HeadlessUITransition } from '@headlessui/react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import SubmitCodeButton from './SubmitCodeButton';
+import { Instance } from 'tippy.js';
+import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 
 type ProblemsListProps = {
   title?: string;
@@ -355,10 +357,16 @@ export function ProblemComponent(props: ProblemComponentProps) {
   );
 
   const [copied, setCopied] = React.useState(false);
+  const tippyRef = useRef<Instance>();
+
+  const { openProblemSolutionsModal } = useContext(
+    ProblemSolutionsModalContext
+  );
 
   const more = (
     <div>
       <Tippy
+        onCreate={tippy => (tippyRef.current = tippy)}
         content={
           <div className="-mx-2 text-left">
             <div>
@@ -369,14 +377,16 @@ export function ProblemComponent(props: ProblemComponentProps) {
               <button
                 type="button"
                 className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
-                role="menuitem"
+                onClick={() => {
+                  openProblemSolutionsModal(problem);
+                  tippyRef.current.hide();
+                }}
               >
                 View User Solutions
               </button>
               <button
                 type="button"
                 className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
-                role="menuitem"
                 onClick={e => {
                   e.preventDefault();
                   setCopied(true);
