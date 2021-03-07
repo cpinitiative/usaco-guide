@@ -12,53 +12,36 @@ import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 import Spoiler from './markdown/Spoiler';
+import { useContext } from 'react';
 
 export default function ProblemSolutionsModal({
   isOpen,
   onClose,
+  showSubmitSolutionModal,
   problem,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  showSubmitSolutionModal: Function;
   problem: Problem;
 }) {
-  const userSubmissions = useUserSolutionsForProblem(problem);
+  const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
+    problem
+  );
+  const { firebaseUser, signIn } = useContext(UserDataContext);
+
+  const publicSolutions = solutions?.filter(
+    submission => submission.userID !== firebaseUser?.uid
+  );
+
+  if (!isOpen) return null;
 
   return (
-    <Transition show={isOpen} className="fixed z-30 inset-0 h-full">
+    <div className="fixed z-30 inset-0 h-full bg-white dark:bg-dark-surface overflow-y-auto">
       <div className="flex items-end justify-center h-full px-4 text-center sm:block">
-        <Transition.Child
-          className="fixed inset-0 transition-opacity"
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
-        </Transition.Child>
-        <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-        >
-          &#8203;
-        </span>
-
-        <Transition.Child
-          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-5xl sm:w-full"
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enterTo="opacity-100 translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-          leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
-          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-screen overflow-y-auto">
-            <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+        <div className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden sm:max-w-5xl sm:w-full">
+          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="hidden sm:block fixed top-0 right-0 pt-4 pr-4 xl:pt-8 xl:pr-8">
               <button
                 type="button"
                 onClick={() => onClose()}
@@ -67,7 +50,7 @@ export default function ProblemSolutionsModal({
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
                 <svg
-                  className="h-6 w-6"
+                  className="h-6 w-6 xl:h-12 xl:w-12"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -85,43 +68,87 @@ export default function ProblemSolutionsModal({
             </div>
 
             <h3
-              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+              className="text-xl leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
               User Solutions for {problem?.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-gray-500 dark:text-gray-400">
               Below are user-submitted solutions for {problem?.name}. Please
               note that we do not verify the accuracy of solutions, so some
               solutions may be incorrect.
             </p>
-            <div className="mt-6 space-y-6 text-sm leading-normal">
-              {userSubmissions?.map(submission => (
+            <button
+              className="my-4 btn-primary"
+              onClick={() =>
+                firebaseUser ? showSubmitSolutionModal() : signIn()
+              }
+            >
+              {firebaseUser
+                ? 'Submit a Solution'
+                : 'Sign in to submit a solution'}
+            </button>
+            <div className="h-8" />
+            <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+              My Solutions
+            </h4>
+            <div className="space-y-6">
+              {currentUserSolutions?.map(submission => (
                 <div>
-                  <h4 className="text-xl font-semibold mb-2">
+                  <h4 className="mb-2 text-gray-700 dark:text-gray-100">
+                    {submission.language
+                      ? LANGUAGE_LABELS[submission.language]
+                      : 'Unknown Language'}{' '}
+                    ({submission.isPublic ? 'Public' : 'Private'})
+                  </h4>
+                  <div className="text-sm leading-normal">
+                    <CodeBlock
+                      className={
+                        submission.language !== 'unknown'
+                          ? `language-${submission.language}`
+                          : undefined
+                      }
+                    >
+                      {submission.solutionCode}
+                    </CodeBlock>
+                  </div>
+                </div>
+              ))}
+              {currentUserSolutions?.length === 0 && (
+                <span>No solutions yet!</span>
+              )}
+            </div>
+            <div className="h-8" />
+            <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+              Other Public Solutions
+            </h4>
+            <div className="space-y-6">
+              {publicSolutions?.map(submission => (
+                <div>
+                  <h4 className="mb-2 text-gray-700 dark:text-gray-100">
                     {submission.userName ?? 'Unknown User'} -{' '}
                     {submission.language
                       ? LANGUAGE_LABELS[submission.language]
                       : 'Unknown Language'}
                   </h4>
-                  <CodeBlock
-                    className={
-                      submission.language
-                        ? `language-${submission.language}`
-                        : undefined
-                    }
-                  >
-                    {submission.solutionCode}
-                  </CodeBlock>
+                  <div className="text-sm leading-normal">
+                    <CodeBlock
+                      className={
+                        submission.language !== 'unknown'
+                          ? `language-${submission.language}`
+                          : undefined
+                      }
+                    >
+                      {submission.solutionCode}
+                    </CodeBlock>
+                  </div>
                 </div>
               ))}
-              {userSubmissions?.length === 0 && (
-                <span>No submissions yet!</span>
-              )}
+              {publicSolutions?.length === 0 && <span>No solutions yet!</span>}
             </div>
           </div>
-        </Transition.Child>
+        </div>
       </div>
-    </Transition>
+    </div>
   );
 }

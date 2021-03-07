@@ -6,7 +6,7 @@ export type UserSolutionForProblem = {
   problemID: string;
   isPublic: boolean;
   solutionCode: string;
-  language: 'cpp' | 'java' | 'py';
+  language: 'cpp' | 'java' | 'py' | 'unknown';
 };
 
 export const userSolutionForProblemConverter = {
