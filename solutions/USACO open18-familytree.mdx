@@ -71,15 +71,13 @@ int main() {
 		while (!q.empty()) {
 			string node = q.front();
 			q.pop();
-			for (auto& E : edge)
-				if (E.f == node)	{
-					q.push(E.s);
-					for (int j = 0; j < sz(dist[k]); ++j)
-						if (dist[k][j].f == node) {
-							dist[k].pb(mp(E.s,dist[k][j].s+1)); break;
-						}
-					break;
+			for (auto& E : edge) if (E.f == node) {
+				q.push(E.s);
+				for (int j = 0; j < sz(dist[k]); ++j) if (dist[k][j].f == node) {
+					dist[k].pb(mp(E.s,dist[k][j].s+1)); break;
 				}
+				break;
+			}
 		}
 	}
 
