@@ -7,11 +7,11 @@ author: Benjamin Qi, Neo Wang
 
 **Explanation:** [CPH 18.2](/CPH.pdf#page=174)
 
-Unlike the above explanation, instead of storing the subtree size, we can instead perform an Euler Tour in order to determine the bounds of each node's subtree. 
+Unlike the above explanation, instead of storing the subtree size, we store the right index of the subtree in order to determine the bounds of each node's subtree.
 
-Notice that when we update a node with value $A[s]$ to $x$, the root-to-node sum in its subtree increases by the difference $x-A[s]$. Using ETT, this is equivalent to range update.
+Notice that when we update a node with value $A[s]$ to $x$, the root-to-node sum for each node in its subtree increases by the difference $x-A[s]$. Using ETT, this is equivalent to a range update.
 
-We can use a Fenwick tree which supports range sum updates in $\mathcal{O}(\log N)$ time.
+We can use a Fenwick tree which supports range sum updates and point queries in $\mathcal{O}(\log N)$ time.
 
 When implementing your solution, recall that incrementing a range $[a, b]$ with a Fenwick tree corresponds to the operations
 
@@ -19,7 +19,7 @@ When implementing your solution, recall that incrementing a range $[a, b]$ with 
 
 $$\text{upd}(a, x)$$
 
-$$\text{upd}(b+1, x)$$
+$$\text{upd}(b+1, -x)$$
 
 </center>
 
