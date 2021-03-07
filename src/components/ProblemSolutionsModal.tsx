@@ -29,12 +29,18 @@ export default function ProblemSolutionsModal({
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem
   );
-  const { deleteSolution } = useUserProblemSolutionActions();
+  const {
+    deleteSolution,
+    upvoteSolution,
+    undoUpvoteSolution,
+  } = useUserProblemSolutionActions();
   const { firebaseUser, signIn } = useContext(UserDataContext);
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
   );
+
+  publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
   if (!isOpen) return null;
 
@@ -145,7 +151,24 @@ export default function ProblemSolutionsModal({
                     {submission.userName ?? 'Unknown User'} -{' '}
                     {submission.language
                       ? LANGUAGE_LABELS[submission.language]
-                      : 'Unknown Language'}
+                      : 'Unknown Language'}{' '}
+                    - Votes: {submission.upvotes.length}.{' '}
+                    {firebaseUser?.uid && (
+                      <button
+                        className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-none"
+                        onClick={() => {
+                          if (submission.upvotes.includes(firebaseUser?.uid)) {
+                            undoUpvoteSolution(submission.id);
+                          } else {
+                            upvoteSolution(submission.id);
+                          }
+                        }}
+                      >
+                        {submission.upvotes.includes(firebaseUser?.uid)
+                          ? '(Undo Upvote)'
+                          : '(Upvote)'}
+                      </button>
+                    )}
                   </h4>
                   <div className="text-sm leading-normal">
                     <CodeBlock

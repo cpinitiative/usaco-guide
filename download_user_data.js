@@ -111,19 +111,34 @@ const db = admin.firestore();
 // };
 // listAllUsers();
 
-let loggedin = 0,
-  not = 0;
-db.collectionGroup('solutions')
+// let loggedin = 0,
+//   not = 0;
+// db.collectionGroup('solutions')
+//   .get()
+//   .then(snapshot => {
+//     snapshot.docs.forEach(doc => {
+//       let data = doc.data();
+//       if (data.userID) loggedin++;
+//       else not++;
+//     });
+//   })
+//   .then(() => {
+//     console.log(loggedin, not);
+//   });
+
+db.collection('userProblemSolutions')
   .get()
   .then(snapshot => {
-    snapshot.docs.forEach(doc => {
-      let data = doc.data();
-      if (data.userID) loggedin++;
-      else not++;
-    });
+    return Promise.all(
+      snapshot.docs.map(doc => {
+        return db.collection('userProblemSolutions').doc(doc.id).update({
+          upvotes: [],
+        });
+      })
+    );
   })
   .then(() => {
-    console.log(loggedin, not);
+    console.log('done');
   });
 
 // db.collection('users')

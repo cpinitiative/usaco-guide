@@ -12,7 +12,10 @@ export default function useUserProblemSolutionActions() {
 
   return {
     submitSolution: async (
-      solution: Omit<UserSolutionForProblem, 'userID' | 'userName' | 'id'>
+      solution: Omit<
+        UserSolutionForProblem,
+        'userID' | 'userName' | 'id' | 'upvotes'
+      >
     ) => {
       await firebase
         .firestore()
@@ -22,6 +25,7 @@ export default function useUserProblemSolutionActions() {
           ...solution,
           userID: firebaseUser.uid,
           userName: firebaseUser.displayName,
+          upvotes: [],
         });
     },
     deleteSolution: async (solutionID: string) => {
@@ -30,6 +34,24 @@ export default function useUserProblemSolutionActions() {
         .collection('userProblemSolutions')
         .doc(solutionID)
         .delete();
+    },
+    upvoteSolution: async (solutionID: string) => {
+      await firebase
+        .firestore()
+        .collection('userProblemSolutions')
+        .doc(solutionID)
+        .update({
+          upvotes: firebase.firestore.FieldValue.arrayUnion(firebaseUser.uid),
+        });
+    },
+    undoUpvoteSolution: async (solutionID: string) => {
+      await firebase
+        .firestore()
+        .collection('userProblemSolutions')
+        .doc(solutionID)
+        .update({
+          upvotes: firebase.firestore.FieldValue.arrayRemove(firebaseUser.uid),
+        });
     },
   };
 }

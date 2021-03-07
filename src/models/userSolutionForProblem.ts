@@ -7,6 +7,7 @@ export type UserSolutionForProblem = {
   problemID: string;
   isPublic: boolean;
   solutionCode: string;
+  upvotes: string[];
   language: 'cpp' | 'java' | 'py' | 'unknown';
 };
 
@@ -26,6 +27,7 @@ export const userSolutionForProblemConverter = {
     return {
       ...snapshot.data(options),
       id: snapshot.id,
+      upvotes: snapshot.data(options).upvotes ?? [],
     } as UserSolutionForProblem;
   },
 };
