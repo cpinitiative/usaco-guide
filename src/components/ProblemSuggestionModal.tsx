@@ -10,6 +10,9 @@ import ButtonGroup from './ButtonGroup';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import { useContext } from 'react';
+import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
+import { ModuleInfo } from '../models/module';
 
 export default function ProblemSuggestionModal({
   isOpen,
@@ -30,6 +33,7 @@ export default function ProblemSuggestionModal({
   const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
 
   const submitSuggestion = useProblemSuggestionAction();
+  const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -54,9 +58,9 @@ export default function ProblemSuggestionModal({
       '#problem-' +
       tableProblems[0].uniqueID;
 
-    // @thecodingwizard TODO
-    const moduleName =
-      'Nathan forgot to do this then this got pushed to production because of our bad code review procedures.';
+    const moduleName = `${(markdownLayoutInfo as ModuleInfo).section} - ${
+      markdownLayoutInfo.title
+    }`;
 
     submitSuggestion({
       name,
@@ -102,7 +106,7 @@ export default function ProblemSuggestionModal({
             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
             placeholder="https://..."
             value={link}
-            onChange={e => setName(e.target.value)}
+            onChange={e => setLink(e.target.value)}
           />
         </div>
       </div>

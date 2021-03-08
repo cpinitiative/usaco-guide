@@ -18,8 +18,13 @@ export default ProblemSuggestionModalContext;
 export const ProblemSuggestionModalProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableProblems, setTableProblems] = useState<Problem[]>(null);
+  const { firebaseUser } = useContext(UserDataContext);
 
-  const openProblemFeedbackModal = (problems: Problem[]) => {
+  const openProblemSuggestionModal = (problems: Problem[]) => {
+    if (!firebaseUser) {
+      alert('You need to be signed in to suggest problems!');
+      return;
+    }
     setTableProblems(problems);
     setIsOpen(true);
   };
@@ -32,7 +37,7 @@ export const ProblemSuggestionModalProvider = ({ children }) => {
   return (
     <ProblemSuggestionModalContext.Provider
       value={{
-        openProblemSuggestionModal: openProblemFeedbackModal,
+        openProblemSuggestionModal,
       }}
     >
       {children}

@@ -27,7 +27,7 @@ type ProblemsListProps = {
   alwaysHideTags?: boolean;
   modules?: boolean;
   division?: string;
-  showSubmitCodeButtons?: boolean;
+  isClass?: boolean;
 };
 
 let showTagsAndDifficulty = true;
@@ -39,7 +39,7 @@ export function ProblemsList(props: ProblemsListProps) {
   const [showModal, setShowModal] = React.useState(false);
   const alwaysHideTags = props.alwaysHideTags;
   const divisionTable = !!props.division;
-  const showSubmitCodeButtons = props.showSubmitCodeButtons || false;
+  const isClass = props.isClass || false;
   let showPercent = true; // props.division != 'Platinum';
   for (const problem of props.problems) {
     if (!problem.fraction) showPercent = false;
@@ -98,7 +98,7 @@ export function ProblemsList(props: ProblemsListProps) {
                       Module
                     </th>
                   )}
-                  {showSubmitCodeButtons && (
+                  {isClass && (
                     <th className="pr-2 md:pr-3 py-3 leading-4 text-left text-xs font-medium uppercase tracking-wider">
                       Submit Code
                     </th>
@@ -121,10 +121,10 @@ export function ProblemsList(props: ProblemsListProps) {
                     key={problem.id}
                     modules={props.modules}
                     showPercent={showPercent}
-                    showSubmitCodeButtons={showSubmitCodeButtons}
+                    showSubmitCodeButtons={isClass}
                   />
                 ))}
-                {!divisionTable && (
+                {!divisionTable && !isClass && (
                   <SuggestProblemRow problems={props.problems} />
                 )}
               </tbody>

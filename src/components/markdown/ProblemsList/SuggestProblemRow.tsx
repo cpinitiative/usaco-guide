@@ -10,9 +10,6 @@ export default function SuggestProblemRow({
 }) {
   const context = useContext(ProblemSuggestionModalContext);
 
-  // probably in a class or something; suggesting problems shouldn't be allowed
-  if (!context) return null;
-
   return (
     <tr>
       <td colSpan={10}>
