@@ -132,7 +132,7 @@ class CodeBlock extends React.Component<
   }
 
   getCode() {
-    return this.props.children.replace(/[\r\n]+$/, '').replace(/^[\r\n]+/, '');
+    return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
   }
 
   setCollapsed(_collapsed) {
