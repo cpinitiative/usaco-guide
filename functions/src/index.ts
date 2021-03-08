@@ -59,7 +59,7 @@ export const submitProblemSuggestion = functions.https.onCall(
       }
     );
 
-    return ((response as any) as { html_url: string }).html_url;
+    return response.data.html_url;
   }
 );
 
