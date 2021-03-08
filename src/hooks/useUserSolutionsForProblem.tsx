@@ -49,7 +49,7 @@ export default function useUserSolutionsForProblem(problem: Problem) {
         };
       }
     },
-    [problem?.uniqueID]
+    [problem?.uniqueID, firebaseUser?.uid]
   );
 
   return {

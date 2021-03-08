@@ -12,7 +12,6 @@ import styled from 'styled-components';
 
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import ConfettiContext from '../../../context/ConfettiContext';
-import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {

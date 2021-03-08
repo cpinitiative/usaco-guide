@@ -274,6 +274,7 @@ export const UserDataProvider = ({ children }) => {
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
           UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+          setIsAdmin(false);
         });
     },
     isLoaded,

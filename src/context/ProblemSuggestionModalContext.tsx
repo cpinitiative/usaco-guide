@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Problem, ProblemFeedback } from '../models/problem';
 import useFirebase from '../hooks/useFirebase';
 import UserDataContext from './UserDataContext/UserDataContext';
-import ProblemSolutionsModal from '../components/ProblemSolutionsModal';
+import ProblemSolutions from '../components/ProblemSolutions';
 import SubmitProblemSolutionModal from '../components/SubmitProbemSolutionModal';
 import ProblemSuggestionModal from '../components/ProblemSuggestionModal';
 

@@ -19,6 +19,7 @@ import SubmitCodeButton from './SubmitCodeButton';
 import { Instance } from 'tippy.js';
 import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 import SuggestProblemRow from './SuggestProblemRow';
+import { navigate } from 'gatsby';
 
 type ProblemsListProps = {
   title?: string;
@@ -363,10 +364,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
   const [copied, setCopied] = React.useState(false);
   const tippyRef = useRef<Instance>();
 
-  const { openProblemSolutionsModal } = useContext(
-    ProblemSolutionsModalContext
-  );
-
   const more = (
     <div>
       <Tippy
@@ -382,8 +379,12 @@ export function ProblemComponent(props: ProblemComponentProps) {
                 type="button"
                 className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
                 onClick={() => {
-                  openProblemSolutionsModal(problem);
                   tippyRef.current.hide();
+                  navigate('/problem-solutions/', {
+                    state: {
+                      problem,
+                    },
+                  });
                 }}
               >
                 View User Solutions
