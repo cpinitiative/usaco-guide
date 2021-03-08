@@ -33,8 +33,9 @@ export default function ProblemSolutionsModal({
     deleteSolution,
     upvoteSolution,
     undoUpvoteSolution,
+    mutateSolution,
   } = useUserProblemSolutionActions();
-  const { firebaseUser, signIn } = useContext(UserDataContext);
+  const { firebaseUser, signIn, isAdmin } = useContext(UserDataContext);
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
@@ -148,9 +149,6 @@ export default function ProblemSolutionsModal({
                 <span>No solutions yet!</span>
               )}
             </div>
-            {/* <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
-              Public Solutions
-            </h3> */}
             {['cpp', 'java', 'py'].map(lang => (
               <>
                 <div className="h-8" />
@@ -181,6 +179,40 @@ export default function ProblemSolutionsModal({
                               {submission.upvotes.includes(firebaseUser?.uid)
                                 ? '(Undo Upvote)'
                                 : '(Upvote)'}
+                            </button>
+                          )}
+                          {isAdmin && (
+                            <button
+                              className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    "Are you sure you want to make this solution private? (Currently it's nontrivial to undo this...)"
+                                  )
+                                ) {
+                                  mutateSolution(submission.id, {
+                                    isPublic: false,
+                                  });
+                                }
+                              }}
+                            >
+                              (Mark Private as Admin)
+                            </button>
+                          )}
+                          {isAdmin && (
+                            <button
+                              className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    'Are you sure you want to delete this solution?'
+                                  )
+                                ) {
+                                  deleteSolution(submission.id);
+                                }
+                              }}
+                            >
+                              (Delete as Admin)
                             </button>
                           )}
                         </h4>

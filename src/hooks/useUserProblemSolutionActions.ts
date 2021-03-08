@@ -35,6 +35,16 @@ export default function useUserProblemSolutionActions() {
         .doc(solutionID)
         .delete();
     },
+    mutateSolution: async (
+      solutionID: string,
+      updates: Partial<UserSolutionForProblem>
+    ) => {
+      await firebase
+        .firestore()
+        .collection('userProblemSolutions')
+        .doc(solutionID)
+        .update(updates);
+    },
     upvoteSolution: async (solutionID: string) => {
       await firebase
         .firestore()
