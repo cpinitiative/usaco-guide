@@ -1,6 +1,4 @@
 import useFirebase from './useFirebase';
-import { Simulate } from 'react-dom/test-utils';
-import submit = Simulate.submit;
 import { useCallback } from 'react';
 
 export default function useProblemSuggestionAction() {
