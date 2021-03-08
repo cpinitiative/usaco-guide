@@ -13,6 +13,7 @@ import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import { ModuleInfo } from '../models/module';
+import { SECTION_LABELS } from '../../content/ordering';
 
 export default function ProblemSuggestionModal({
   isOpen,
@@ -58,9 +59,9 @@ export default function ProblemSuggestionModal({
       '#problem-' +
       tableProblems[0].uniqueID;
 
-    const moduleName = `${(markdownLayoutInfo as ModuleInfo).section} - ${
-      markdownLayoutInfo.title
-    }`;
+    const moduleName = `${
+      SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
+    } - ${markdownLayoutInfo.title}`;
 
     submitSuggestion({
       name,
@@ -71,8 +72,8 @@ export default function ProblemSuggestionModal({
       problemTableLink,
       moduleName,
     })
-      .then(issueLink => {
-        setCreatedIssueLink(issueLink);
+      .then(response => {
+        setCreatedIssueLink(response.data);
       })
       .catch(e => {
         alert('Error: ' + e.message);
@@ -153,7 +154,7 @@ export default function ProblemSuggestionModal({
               className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
               value={additionalNotes}
               onChange={e => setAdditionalNotes(e.target.value)}
-              placeholder="Optional. Links to solutions or reasons to add the problem would be helpful."
+              placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
             />
           </div>
         </div>
