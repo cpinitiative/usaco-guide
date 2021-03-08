@@ -54,6 +54,10 @@ export default function ProblemSuggestionModal({
       '#problem-' +
       tableProblems[0].uniqueID;
 
+    // @thecodingwizard TODO
+    const moduleName =
+      'Nathan forgot to do this then this got pushed to production because of our bad code review procedures.';
+
     submitSuggestion({
       name,
       link,
@@ -61,6 +65,7 @@ export default function ProblemSuggestionModal({
       tags,
       additionalNotes,
       problemTableLink,
+      moduleName,
     })
       .then(issueLink => {
         setCreatedIssueLink(issueLink);
