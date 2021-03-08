@@ -10,6 +10,7 @@ import ButtonGroup from './ButtonGroup';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
 export default function SubmitProblemSolutionModal({
   isOpen,
@@ -78,7 +79,7 @@ export default function SubmitProblemSolutionModal({
           />
 
           <div className="rounded-md shadow-sm mt-3">
-            <textarea
+            <TabIndentableTextarea
               rows={10}
               className="textarea font-mono"
               value={solutionCode}

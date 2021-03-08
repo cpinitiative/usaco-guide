@@ -149,7 +149,7 @@ export default function ProblemSolutionsModal({
             )}
           </div>
           {['cpp', 'java', 'py'].map(lang => (
-            <>
+            <React.Fragment key={lang}>
               <div className="h-8" />
               <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
                 Public {LANGUAGE_LABELS[lang]} Solutions
@@ -232,7 +232,7 @@ export default function ProblemSolutionsModal({
                   submission => submission.language == lang
                 ).length === 0 && <span>No solutions yet!</span>}
               </div>
-            </>
+            </React.Fragment>
           ))}
         </div>
       </div>
