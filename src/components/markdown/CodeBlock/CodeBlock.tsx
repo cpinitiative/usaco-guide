@@ -98,7 +98,8 @@ class CodeBlock extends React.Component<
     let prevVal = '';
     let prevIndentation = '';
     let codeSnipShowDefault = [];
-    for (let line of this.props.children.split('\n')) {
+    let code = this.getCode();
+    for (let line of code.split('\n')) {
       if (prev == -1) {
         const found = line.match(/^(\s*)\/\/BeginCodeSnip{(.*)}/); // BeginCodeSnip{...}
         if (found != null) {
@@ -128,6 +129,10 @@ class CodeBlock extends React.Component<
 
     //bind
     this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
+  }
+
+  getCode() {
+    return this.props.children.replace(/[\r\n]+$/, '').replace(/^[\r\n]+/, '');
   }
 
   setCollapsed(_collapsed) {
@@ -220,13 +225,13 @@ class CodeBlock extends React.Component<
   }
 
   render() {
-    const children = this.props.children;
+    let code = this.getCode();
     const className = this.props.className;
     if (className === undefined) {
       // no styling, just a regular pre tag
       return (
         <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
-          {children}
+          {code}
         </pre>
       );
     }
@@ -254,7 +259,7 @@ class CodeBlock extends React.Component<
       // @ts-ignore
       <Highlight
         Prism={Prism as any}
-        code={children}
+        code={code}
         language={language}
         theme={vsDark}
       >
