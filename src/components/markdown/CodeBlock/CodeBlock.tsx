@@ -227,7 +227,8 @@ class CodeBlock extends React.Component<
   render() {
     let code = this.getCode();
     const className = this.props.className;
-    if (className === undefined) {
+    const language = className?.replace(/language-/, '');
+    if (!language || language === 'bash') {
       // no styling, just a regular pre tag
       return (
         <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
@@ -235,7 +236,6 @@ class CodeBlock extends React.Component<
         </pre>
       );
     }
-    const language = className.replace(/language-/, '');
     /*const [codeSnips, setCodeSnips] = useState(
       for(let line of children.trim().split("\n"))
       {
