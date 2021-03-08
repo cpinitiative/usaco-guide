@@ -23,6 +23,7 @@ import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { ProblemSolutionsModalProvider } from '../../context/ProblemSolutionsModalContext';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -179,35 +180,39 @@ export default function MarkdownLayout({
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
           <ProblemSolutionsModalProvider>
-            <MobileSideNav />
-            <DesktopSidebar />
+            <ProblemSuggestionModalProvider>
+              <MobileSideNav />
+              <DesktopSidebar />
 
-            <div className="w-full">
-              <MobileAppBar />
+              <div className="w-full">
+                <MobileAppBar />
 
-              <ContentContainer tableOfContents={tableOfContents}>
-                <NotSignedInWarning />
+                <ContentContainer tableOfContents={tableOfContents}>
+                  <NotSignedInWarning />
 
-                <ModuleHeaders
-                  problemIDs={problemIDs}
-                  moduleLinks={moduleLinks}
-                />
+                  <ModuleHeaders
+                    problemIDs={problemIDs}
+                    moduleLinks={moduleLinks}
+                  />
 
-                <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
-                  <TableOfContentsBlock tableOfContents={tableOfContents} />
-                </div>
+                  <div
+                    className={tableOfContents.length > 1 ? 'xl:hidden' : ''}
+                  >
+                    <TableOfContentsBlock tableOfContents={tableOfContents} />
+                  </div>
 
-                {children}
+                  {children}
 
-                <ModuleProgressUpdateBanner />
+                  <ModuleProgressUpdateBanner />
 
-                <ForumCTA />
+                  <ForumCTA />
 
-                {/*<div className="my-8">*/}
-                {/*  <ModuleFeedback markdownData={markdownData} />*/}
-                {/*</div>*/}
-              </ContentContainer>
-            </div>
+                  {/*<div className="my-8">*/}
+                  {/*  <ModuleFeedback markdownData={markdownData} />*/}
+                  {/*</div>*/}
+                </ContentContainer>
+              </div>
+            </ProblemSuggestionModalProvider>
           </ProblemSolutionsModalProvider>
         </ContactUsSlideoverProvider>
       </SettingsModalProvider>

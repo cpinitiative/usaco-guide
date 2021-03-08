@@ -9,59 +9,105 @@ import className from 'classnames';
 import ButtonGroup from './ButtonGroup';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
+import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 
-export default function ProblemFeedbackModal({
+export default function ProblemSuggestionModal({
   isOpen,
   onClose,
-  problem,
-  onSubmit,
-  loading,
-  showSuccess,
+  tableProblems,
 }: {
   isOpen: boolean;
-  loading: boolean;
-  showSuccess: boolean;
-  onClose: () => void;
-  problem: Problem;
-  onSubmit: (feedback: ProblemFeedback) => void;
+  onClose: Function;
+  tableProblems: Problem[];
 }) {
+  const [name, setName] = React.useState('');
+  const [link, setLink] = React.useState('');
   const [difficulty, setDifficulty] = React.useState(null);
   const [tags, setTags] = React.useState('');
-  const [solutionCode, setSolutionCode] = React.useState('');
-  const [codeLang, setCodeLang] = React.useState('');
-  const [isCodePublic, setIsCodePublic] = React.useState(true);
-  const [otherFeedback, setOtherFeedback] = React.useState('');
-  const { lang } = React.useContext(UserDataContext);
+  const [additionalNotes, setAdditionalNotes] = React.useState('');
+
+  const [loading, setLoading] = React.useState(false);
+  const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
+
+  const submitSuggestion = useProblemSuggestionAction();
 
   React.useEffect(() => {
-    if (problem) {
-      setDifficulty(problem.difficulty);
-      setTags(problem.tags?.join(', ') ?? '');
-      setSolutionCode('');
-      setIsCodePublic(true);
-      setOtherFeedback('');
-      setCodeLang(lang);
+    if (isOpen) {
+      setName('');
+      setLink('');
+      setDifficulty(null);
+      setTags('');
+      setAdditionalNotes('');
+      setLoading(false);
+      setCreatedIssueLink(null);
     }
-  }, [problem?.uniqueID]);
+  }, [isOpen]);
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    onSubmit({
+    setLoading(true);
+
+    // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
+    const problemTableLink =
+      window.location.href.split(/[?#]/)[0] +
+      '#problem-' +
+      tableProblems[0].uniqueID;
+
+    submitSuggestion({
+      name,
+      link,
       difficulty,
-      tags: tags.split(', '),
-      solutionCode,
-      isCodePublic,
-      otherFeedback,
-    });
+      tags,
+      additionalNotes,
+      problemTableLink,
+    })
+      .then(issueLink => {
+        setCreatedIssueLink(issueLink);
+      })
+      .catch(e => {
+        alert('Error: ' + e.message);
+      })
+      .finally(() => setLoading(false));
   };
 
-  const feedbackForm = (
+  const form = (
     <>
+      <div>
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
+          Problem Name
+        </label>
+        <div className="mt-2 relative rounded-md shadow-sm">
+          <input
+            type="text"
+            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+            placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </div>
+      </div>
+      <div>
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
+          Problem Link
+        </label>
+        <div className="mt-2 relative rounded-md shadow-sm">
+          <input
+            type="url"
+            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+            placeholder="https://..."
+            value={link}
+            onChange={e => setName(e.target.value)}
+          />
+        </div>
+      </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Difficulty
         </label>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Relative to the module
+        </p>
         <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
           <ButtonGroup
             options={PROBLEM_DIFFICULTY_OPTIONS}
@@ -76,7 +122,8 @@ export default function ProblemFeedbackModal({
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input
-            className="form-input block w-full sm:text-sm sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+            type="text"
+            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
             placeholder="DP, Dijkstra"
             value={tags}
             onChange={e => setTags(e.target.value)}
@@ -85,111 +132,19 @@ export default function ProblemFeedbackModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Solution Code
+          Additional Notes
         </label>
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            Consider leaving solution notes at the top of the code as a comment.
-          </p>
-          <ButtonGroup
-            options={['cpp', 'java', 'py']}
-            labelMap={LANGUAGE_LABELS}
-            value={codeLang}
-            onChange={x => setCodeLang(x)}
-          />
-
-          <div className="rounded-md shadow-sm mt-3">
-            <textarea
-              rows={10}
-              className="form-textarea block w-full transition text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-              value={solutionCode}
-              onChange={e => setSolutionCode(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="flex-grow flex flex-col" id="toggleLabel">
-          <span className="leading-5 font-medium text-gray-900 dark:text-gray-100">
-            Share Solution Code
-          </span>
-          <span className="text-sm leading-normal text-gray-500 dark:text-gray-400">
-            This will allow other users to view your anonymized solution code if
-            they are stuck.
-          </span>
-        </span>
-        <span
-          role="checkbox"
-          tabIndex={0}
-          onClick={() => setIsCodePublic(!isCodePublic)}
-          className={className(
-            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline',
-            isCodePublic ? 'bg-blue-600' : 'bg-gray-200'
-          )}
-        >
-          <span
-            aria-hidden="true"
-            className={className(
-              isCodePublic ? 'translate-x-5' : 'translate-x-0',
-              'relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200'
-            )}
-          >
-            <span
-              className={className(
-                isCodePublic
-                  ? 'opacity-0 ease-out duration-100'
-                  : 'opacity-100 ease-in duration-200',
-                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
-              )}
-            >
-              <svg
-                className="h-3 w-3 text-gray-400"
-                fill="none"
-                viewBox="0 0 12 12"
-              >
-                <path
-                  d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span
-              className={className(
-                isCodePublic
-                  ? 'opacity-100 ease-in duration-200'
-                  : 'opacity-0 ease-out duration-100',
-                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
-              )}
-            >
-              <svg
-                className="h-3 w-3 text-indigo-600"
-                fill="currentColor"
-                viewBox="0 0 12 12"
-              >
-                <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
-              </svg>
-            </span>
-          </span>
-        </span>
-      </div>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Other Feedback
-        </label>
-        <div>
-          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            In case there's anything else you want to tell us.
+            In case there's anything else you want to let us know.
           </p>
           <div className="rounded-md shadow-sm">
             <textarea
-              rows={2}
-              className="form-textarea block w-full transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-              value={otherFeedback}
-              onChange={e => setOtherFeedback(e.target.value)}
-              placeholder="I hated the problem / I loved the problem / etc"
+              rows={3}
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+              value={additionalNotes}
+              onChange={e => setAdditionalNotes(e.target.value)}
+              placeholder="Optional. Links to solutions or reasons to add the problem would be helpful."
             />
           </div>
         </div>
@@ -215,10 +170,20 @@ export default function ProblemFeedbackModal({
         </div>
         <div className="ml-3">
           <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
-            Feedback Submitted!
+            Problem Suggestion Submitted!
           </h3>
           <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
-            <p>Thanks for helping to improve the USACO Guide.</p>
+            <p>
+              Thanks for helping to improve the USACO Guide. You can track the
+              progress of your suggestion here:{' '}
+              <a
+                href={createdIssueLink}
+                target="_blank"
+                className="underline text-black dark:text-white"
+              >
+                {createdIssueLink}
+              </a>
+            </p>
           </div>
         </div>
       </div>
@@ -253,7 +218,7 @@ export default function ProblemFeedbackModal({
         </span>
 
         <Transition.Child
-          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -295,18 +260,27 @@ export default function ProblemFeedbackModal({
               className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
-              Problem Feedback for {problem?.name}
+              Suggest a Problem
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Help us improve the USACO Guide by giving us feedback on the
-              problem {problem?.name}!
+              Help us improve the USACO Guide by suggesting a problem to add!
+              <br />
+              This will be submitted as a public{' '}
+              <a
+                href="https://github.com/cpinitiative/usaco-guide/issues"
+                target="_blank"
+                className="text-blue-600 dark:text-blue-300 underline"
+              >
+                Github issue
+              </a>
+              .
             </p>
             <div className="mt-6 space-y-6">
-              {showSuccess ? successMessage : feedbackForm}
+              {createdIssueLink ? successMessage : form}
             </div>
           </div>
           <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            {showSuccess ? (
+            {createdIssueLink ? (
               <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
                   type="button"
@@ -324,7 +298,7 @@ export default function ProblemFeedbackModal({
                     className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     disabled={loading}
                   >
-                    {loading ? 'Submitting...' : 'Submit Feedback'}
+                    {loading ? 'Submitting...' : 'Submit Suggestion'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

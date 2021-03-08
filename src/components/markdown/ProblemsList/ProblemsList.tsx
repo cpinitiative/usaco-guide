@@ -18,6 +18,7 @@ import tw from 'twin.macro';
 import SubmitCodeButton from './SubmitCodeButton';
 import { Instance } from 'tippy.js';
 import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
+import SuggestProblemRow from './SuggestProblemRow';
 
 type ProblemsListProps = {
   title?: string;
@@ -123,6 +124,9 @@ export function ProblemsList(props: ProblemsListProps) {
                     showSubmitCodeButtons={showSubmitCodeButtons}
                   />
                 ))}
+                {!divisionTable && (
+                  <SuggestProblemRow problems={props.problems} />
+                )}
               </tbody>
             </table>
           </div>
@@ -397,7 +401,7 @@ export function ProblemComponent(props: ProblemComponentProps) {
                   );
                 }}
               >
-                {copied ? 'Copied!' : 'Copy Problem URL'}
+                {copied ? 'Copied!' : 'Copy Permalink'}
               </button>
             </div>
           </div>
