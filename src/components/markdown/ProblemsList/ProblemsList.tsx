@@ -415,7 +415,6 @@ export function ProblemComponent(props: ProblemComponentProps) {
         onHidden={() => setCopied(false)}
       >
         <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
-          <span className="sr-only">Open options</span>
           {/* Heroicon name: solid/dots-vertical */}
           <svg
             className="w-5 h-5"
