@@ -151,7 +151,7 @@ You can run your C++ programs from the command line and use a text editor of you
 		repeatedly ask you to purchase a license.
 	</Resource>
 	<Resource title="Vim" url="https://www.vim.org/">
-		Classic text editor, usually preinstalled on Linux. Also see Neovim, MacVim
+		Classic text editor, usually preinstalled on Linux. Also see Neovim, MacVim.
 	</Resource>
 	<Resource title="Atom" url="https://atom.io/">
 		From the makers of Github.
@@ -162,21 +162,45 @@ Vim is probably the easiest way to print syntax-highlighted code on Mac, see the
 
 #### Sublime Text Notes (Ben)
 
-- I prefer the **Mariana** color scheme in place of the default.
-  - open command palette (Cmd-Shift-P) -> change color scheme
-- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
-  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
+I prefer Sublime Text because it opens instantly, it's simple to use, and it's easy on the eyes. Also, it's not too hard to write your own [custom commands](https://stackoverflow.com/questions/24276143/can-i-create-my-own-command-in-sublime-and-how-to-associate-python-implementatio) in Python.
+
+- I prefer the *Mariana* color scheme in place of the default.
+  - From the command palette (Cmd-Shift-P), follow `UI: Select Color Scheme -> Mariana`
 - [Package - Sublime Linter (GCC)](https://packagecontrol.io/packages/SublimeLinter-gcc)
   - highlights compilation errors and warnings from `-Wall`
-  - can change compilation commands in `linter.py`
+  - can use [`PackageResourceViewer`](https://packagecontrol.io/packages/PackageResourceViewer) to change linter settings. From the command palette, follow `PackageResourceViewer -> Open Resource -> SublimeLinter-gcc -> linter.py`. Now you can modify `linter.py` to compile with the same options that you normally use. For example, my `linter.py` looks like the following:
+
+  ```py
+  class GPlusPlus(Linter):
+      name = "g++"
+      cmd = "g++ ${args} -"
+      regex = OUTPUT_RE
+      multiline = True
+      on_stderr = None
+
+      defaults = {
+          "selector": "source.c++",
+          "args": ["-c", "-DLOCAL", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Wshadow", "-Wconversion", "-Wfloat-equal", "-Wduplicated-cond", "-Wlogical-op"],
+          "-I +": [],
+          "-x": "c++",
+          "-o": getGarbabgeFilePath(),
+      }
+  ```
+
+Here's what linting looks like:
+
+![sublime](running-code-img/sublime-ex.png)
+
+Additional notes:
+
+- I compile and run from the command line rather than building from within sublime text (i.e., I don't use Cmd-B).
+- [`subl` symlink](https://www.sublimetext.com/docs/3/osx_command_line.html)
+  - Using `/usr/local/bin/subl` instead of `~/bin/subl` worked for me on OS X Mojave.
 - [Package - Fast Olympic Coding](https://github.com/Jatana/FastOlympicCoding) (I don't use)
   - test manager can be useful
   - linting is covered by the above
   - stress testing is covered in [Debugging](/general/debugging-lang#stress-testing)
   - can't get debug to work
-
-<!--    - [Editing Build Settings](https://stackoverflow.com/questions/23789410/how-to-edit-sublime-text-build-settings)
-    - no need to do this if you just use command line to compile & run -->
 
 ### Further Instructions
 
@@ -192,12 +216,8 @@ You can use `#include <bits/stdc++.h>` in place of separately including librarie
 		source="SO"
 		title="How does #include <bits/stdc++.h> work in C++?"
 		url="https://stackoverflow.com/questions/25311011/how-does-include-bits-stdc-h-work-in-c/25311052#25311052"
-	>
-		{' '}
-	</Resource>
-	<Resource source="GFG" title="GFG - <bits/stdc++.h>" url="bitsstdc-h-c">
-		{' '}
-	</Resource>
+	/>
+	<Resource source="GFG" title="GFG - <bits/stdc++.h>" url="bitsstdc-h-c" />
 </Resources>
 
 ### Usage
