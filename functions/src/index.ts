@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import firestore from '@google-cloud/firestore';
 import admin from 'firebase-admin';
-import octonode from 'octonode';
+import { Octokit } from '@octokit/core';
 admin.initializeApp();
 
 export const submitProblemSuggestion = functions.https.onCall(
@@ -16,7 +16,6 @@ export const submitProblemSuggestion = functions.https.onCall(
       .auth()
       .getUser(context.auth.uid)
       .then(userRecord => userRecord.displayName);
-    const github = octonode.client();
     const {
       name,
       moduleName,
@@ -32,28 +31,35 @@ export const submitProblemSuggestion = functions.https.onCall(
         'One or more required parameters were not passed.'
       );
     }
-    github.auth.config({
-      username: 'jeffkmeng',
-      password: functions.config().problemsuggestion.issueapikey,
+    const octokit = new Octokit({
+      auth: functions.config().problemsuggestion.issueapikey,
     });
-    const repo = github.repo('cpinitiative/usaco-guide');
+    console.log({
+      auth: functions.config().problemsuggestion.issueapikey,
+    });
 
     const body =
-      `*${submitterName}* (UID ${!context.auth
-        ?.uid}) suggested adding the problem [${name}](${link}) ` +
+      `*${submitterName}* (UID ${context.auth?.uid}) suggested adding the problem [${name}](${link}) ` +
       `to the module [${moduleName}](${problemTableLink}).\n\n` +
       `**Difficulty**: ${difficulty}\n` +
       `**Tags**: ${tags}\n` +
       `**Additional Notes**:${
         additionalNotes ? '\n' + additionalNotes : 'None'
       }\n\n` +
-      `*This report was automatically generated from a user submitted problem suggestion on the USACO guide.`;
+      `*This report was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
 
-    await repo.issue({
-      title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
-      body,
-      labels: ['Problem Suggestion'],
-    });
+    const response = await octokit.request(
+      'POST /repos/{owner}/{repo}/issues',
+      {
+        owner: 'cpinitiative',
+        repo: 'usaco-guide',
+        title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
+        body,
+        labels: ['Problem Suggestion'],
+      }
+    );
+
+    return response.data.html_url;
   }
 );
 
