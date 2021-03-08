@@ -94,6 +94,7 @@ export default function ProblemSuggestionModal({
             placeholder="Ex: USACO December 2012 Silver - Steeplechase"
             value={name}
             onChange={e => setName(e.target.value)}
+            required
           />
         </div>
       </div>
@@ -108,6 +109,7 @@ export default function ProblemSuggestionModal({
             placeholder="https://..."
             value={link}
             onChange={e => setLink(e.target.value)}
+            required
           />
         </div>
       </div>

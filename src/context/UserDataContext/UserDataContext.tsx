@@ -128,7 +128,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
   divisionTableQuery: {
     division: '',
     season: '',
-    showSols: false,
   },
   isLoaded: true,
   lang: 'cpp',
