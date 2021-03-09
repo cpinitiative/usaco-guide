@@ -23,20 +23,21 @@ As the editorial mentions, we can store the number of times a given four-letter 
 
 using namespace std;
 
+// detemplating courtesy of kevin sheng
 int main() {
-    ifstream read("citystate.in");
-    int N;
+	ifstream read("citystate.in");
+	int N;
 	read >> N;
 	map<string, int> city_state;
 	long long total = 0;
 	for (int i = 0; i < N; i++) {
 		string city;
-        string state;
-        read >> city >> state;
+		string state;
+		read >> city >> state;
 		city = city.substr(0, 2);
-        if (city != state) {
-            total += city_state[state + city];
-        }
+		if (city != state) {
+			total += city_state[state + city];
+		}
 		city_state[city + state]++;
 	}
 	ofstream ("citystate.out") << total << endl;
@@ -56,25 +57,25 @@ int seen[26 * 26 * 26 * 26];
 
 int index(string s) {
 	int ind = 0;
-    for (char& c : s) {
-        ind = 26 * ind + c - 'A';
-    }
+	for (char& c : s) {
+		ind = 26 * ind + c - 'A';
+	}
 	return ind;
 }
 
 int main() {
 	ifstream read("citystate.in");
 	int N;
-    read >> N;
+	read >> N;
 	long long total = 0;
 	for (int i = 0; i < N; i++) {
 		string city;
-        string state;
-        read >> city >> state;
+		string state;
+		read >> city >> state;
 		city = city.substr(0,2);
 		if (city != state) {
-            total += seen[index(state+city)];
-        }
+			total += seen[index(state+city)];
+		}
 		seen[index(city + state)]++;
 	}
 	ofstream("citystate.out") << total << endl;

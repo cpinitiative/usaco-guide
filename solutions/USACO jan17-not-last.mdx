@@ -41,30 +41,31 @@ using namespace std;
 
 constexpr int COW_NUM = 7;
 
+// detemplating courtesy of kevin sheng
 int main() {
 	ifstream read("notlast.in");
-    int N;
-    read >> N;
+	int N;
+	read >> N;
 
 	map<string, int> raw;
 	for (int i = 0; i < N; i++) {
 		string a;
-        int b;
-        read >> a >> b;
+		int b;
+		read >> a >> b;
 		raw[a] += b;
 	}
 
 	vector<pair<int, string>> cows;
-    for (pair<string, int> t : raw) {
-        cows.push_back({t.second, t.first});
-    }
+	for (pair<string, int> t : raw) {
+		cows.push_back({t.second, t.first});
+	}
 	sort(cows.begin(), cows.end());
 
 	int ind = 0;
 	if (cows.size() == COW_NUM) {
 		while (ind < cows.size() && cows[ind].first == cows[0].first) {
-            ind++;
-        }
+			ind++;
+		}
 	}
 
 	if (ind < cows.size() && (ind + 1 == cows.size() || cows[ind].first != cows[ind + 1].first)) {
