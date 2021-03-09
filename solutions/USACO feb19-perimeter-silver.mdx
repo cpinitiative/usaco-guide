@@ -16,26 +16,20 @@ This problem can be solved using [Flood Fill](/silver/flood fill) (a Silver topi
 
 
 ```cpp
-
-#include <bits/stdc++.h>
-
-using namespace std;
-
 void setIO(string name = "") {
 	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
-	if (sz(name)) {
+	if (name.size()) {
 		freopen((name+".in").c_str(), "r", stdin); // see /general/io
 		freopen((name+".out").c_str(), "w", stdout);
 	}
 }
 
 
-
 int n, a, p;
 char grid[1001][1001];
 bool visit[1001][1001];
 
-// flood fill that updates perimeter and area for 
+// flood fill that updates perimeter and area for
 // each new block
 void ff (int r, int c){
     if (r >= n || c >= n || r < 0 || c < 0 || grid[r][c] == '.' ){
@@ -48,13 +42,13 @@ void ff (int r, int c){
     a ++;
     visit[r][c] = true;
 
-    if (r + 1 < n && (grid[r + 1][c] == '.' || r + 1 >= n))
+    if ((r + 1 < n && grid[r + 1][c] == '.') || r + 1 >= n)
         p ++;
-    if (r - 1 >= 0 && (grid[r - 1][c] == '.' || r - 1 < 0))
+    if ((r - 1 >= 0 && (grid[r - 1][c] == '.') || r - 1 < 0))
         p ++;
-    if (c + 1 < n && (grid[r][c + 1] == '.' || c + 1 >= n))
+    if ((c + 1 < n && (grid[r][c + 1] == '.') || c + 1 >= n))
         p ++;
-    if (c - 1 >= 0 && (grid[r][c - 1] == '.' || c - 1 < 0))
+    if ((c - 1 >= 0 && (grid[r][c - 1] == '.') || c - 1 < 0))
         p ++;
 
     ff(r + 1, c);
@@ -77,28 +71,29 @@ int main()
         }
     }
 
-    int mxa = -1, mxp = -1;
+    int mxa = -1, mnp = INT_MAX;
     for (int i = 0; i < n; i++){
-        for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
             // call flood fill on each disjoint set of # blocks
             if (grid[i][j] == '#' && !visit[i][j]){
                 a = 0; p = 0;
                 ff(i, j);
                 // test if a new max area was found
-                if (a >= mxa){
+                if (a == mxa){
+                    mnp = min(mnp, p);
+                }
+                else if (a > mxa){
                     mxa = a;
-                    mxp = max(mxp, p);
-
+                    mnp = p;
                 }
             }
         }
     }
     // output
-    fout << mxa << " " << mxp << endl;
+    cout << mxa << " " << mnp << endl;
 
     return 0;
 }
-
 ```
 
 </CPPSection>
