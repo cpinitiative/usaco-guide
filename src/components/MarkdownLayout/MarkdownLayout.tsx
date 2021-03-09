@@ -9,7 +9,6 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import { SolutionInfo } from '../../models/solution';
 
-// import ModuleFeedback from './ModuleFeedback';
 import ConfettiContext from '../../context/ConfettiContext';
 import ForumCTA from '../ForumCTA';
 import { SettingsModalProvider } from '../../context/SettingsModalContext';
@@ -21,8 +20,8 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
-import { ProblemFeedbackModalProvider } from '../../context/ProblemFeedbackModalContext';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -178,7 +177,7 @@ export default function MarkdownLayout({
     >
       <SettingsModalProvider>
         <ContactUsSlideoverProvider>
-          <ProblemFeedbackModalProvider>
+          <ProblemSuggestionModalProvider>
             <MobileSideNav />
             <DesktopSidebar />
 
@@ -208,7 +207,7 @@ export default function MarkdownLayout({
                 {/*</div>*/}
               </ContentContainer>
             </div>
-          </ProblemFeedbackModalProvider>
+          </ProblemSuggestionModalProvider>
         </ContactUsSlideoverProvider>
       </SettingsModalProvider>
     </MarkdownLayoutContext.Provider>

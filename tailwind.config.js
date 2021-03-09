@@ -32,7 +32,7 @@ module.exports = {
   },
   variants: {
     extend: {
-      backgroundColor: ['group-focus', 'active'],
+      backgroundColor: ['group-focus', 'active', 'disabled'],
       borderColor: ['group-focus'],
       boxShadow: ['group-focus'],
       opacity: ['group-focus'],

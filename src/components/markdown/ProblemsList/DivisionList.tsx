@@ -269,12 +269,6 @@ export function DivisionList(props): JSX.Element {
     userSettings.divisionTableQuery && userSettings.divisionTableQuery.season;
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
 
-  const curShowSols =
-    !userSettings.hideSols &&
-    !!(
-      userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.showSols
-    );
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -286,7 +280,6 @@ export function DivisionList(props): JSX.Element {
             userSettings.setDivisionTableQuery({
               division: newDivision,
               season: curSeason,
-              showSols: curShowSols,
             });
           }}
         />
@@ -298,31 +291,15 @@ export function DivisionList(props): JSX.Element {
             userSettings.setDivisionTableQuery({
               division: curDivision,
               season: newSeason,
-              showSols: curShowSols,
             });
           }}
         />
-        {!userSettings.hideSols && (
-          <DivisionButton
-            options={['Show Modules', 'Show Solutions']}
-            state={curShowSols ? 'Show Solutions' : 'Show Modules'}
-            onChange={showSols => {
-              const newShowSols = showSols == 'Show Solutions';
-              if (curShowSols === newShowSols) return;
-              userSettings.setDivisionTableQuery({
-                division: curDivision,
-                season: curSeason,
-                showSols: newShowSols,
-              });
-            }}
-          />
-        )}
       </div>
 
       <ProblemsList
         problems={divisionToSeasonToProbs[curDivision][curSeason]}
         division={curDivision}
-        modules={!curShowSols}
+        modules={true}
       />
     </>
   );
