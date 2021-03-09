@@ -1,125 +1,130 @@
-/*
-Make 2 adjacency lists, one for edges with the same "color" (S) , and another for edges with different colors (D).
-Read in each "edge", and put it into the same adj list or the different adj list depending on whether the type is 'S' or 'D'.
-
-The answer will be 2^(number of connected components), unless it is impossible to properly color the graph, in which case the answer is 0.
-This is because you can flip the colors of the nodes of each connected component.
-For example -  if you have color 1 and color 2, you can change all the nodes with color 1 to color 2, and vice versa.
-
-Keep track of the number of connected components.
-Loop through each node. If the node has not been visited before, increment the number of seen components.
-Then start DFS-ing from that node.
-
----------------------
-DFS(node, color).
-First we have to mark the node with  that color.
-Loop through all nodes that are supposed to have the same color.
-    -If it is unvisited, mark it with that color.
-    - Or else if it is already colored with the other color, then the graph is broken and it is impossible to color the graph properly.
-
-Loop through all nodes that are supposed to have a different color.
-    -If it is unvisited, mark it with the other  color.
-    - Or else if it is already colored with this color, then the graph is broken and it is impossible to color the graph properly.
-
- */
-
-
+---
+id: usaco-920
+source: USACO Silver 2019 February
+title: The Great Revegetation
+author: Sofia Yang
+---
+ 
+[Official Analysis](http://www.usaco.org/current/data/sol_revegetate_silver_feb19.html)
+ 
+ 
+<LanguageSection>
+ 
+<CPPSection>
+ 
+ 
+ 
+</CPPSection>
+ 
+<PySection>
+ 
+ 
+ 
+</PySection>
+ 
+<JavaSection>
+```java
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
+ 
 public class revegetate {
-    public static int[] type;
-    public static boolean impossible;
-    public static ArrayList<Integer>[] same;
-    public static ArrayList<Integer>[] diff;
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("revegetate.out")));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-
-        type = new int[N + 1];
-        same = new ArrayList[N + 1];
-        diff = new ArrayList[N + 1];
-
-        //Initialize the adjacency lists.
-        for (int i = 0; i < N + 1; i++) {
-            same[i] = new ArrayList<>();
-            diff[i] = new ArrayList<>();
-        }
-        int comps = 0; //The number of connected components.
-
-        //Read in the edges.
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            char type = st.nextToken().charAt(0);
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            //They share the same type of grass
-            if (type == 'S') {
-                same[a].add(b);
-                same[b].add(a);
-
-            }
-            //They share different types of grass.
-            if (type == 'D') {
-                diff[a].add(b);
-                diff[b].add(a);
-            }
-        }
-
-        for (int i = 1; i <= N; i++) {
-            //This node is unvisited, so try to color it with color '1'.
-            if (type[i] == 0) {
-                visit(i, 1);
-                comps++;
-            }
-        }
-        //It is impossible to color the fields.
-        if (impossible) {
-            pw.println(0);
-        } else {
-            //The solution is 2^(number of components).
-            pw.print(1);
-            for (int i = 0; i < comps; i++) {
-                pw.print(0);
-            }
-            pw.println();
-        }
-        pw.close();
-
-    }
-
-
-    //Visit a node and color it.
-    public static void visit(int node, int color) {
-        type[node] = color;
-
-        //Check all of the nodes that are supposed to share the same color.
-        for (int next : same[node]) {
-            //There is a contradiction here.
-            if (type[next] == 3 - color) {
-                impossible = true;
-            }
-            if (type[next] == 0) {
-                visit(next, color);
-            }
-        }
-
-        //Check all of the nodes that are supposed to have a different color.
-        for (int next : diff[node]) {
-            //There is a contradiction here.
-            if (type[next] == color) {
-                impossible = true;
-            }
-            if (type[next] == 0) {
-                visit(next, 3 - color);
-            }
-        }
-    }
+	public static int[] type;
+	public static boolean impossible;
+	public static ArrayList<Integer>[] same;
+	public static ArrayList<Integer>[] diff;
+ 
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("revegetate.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+ 
+		type = new int[N + 1];
+		same = new ArrayList[N + 1];
+		diff = new ArrayList[N + 1];
+ 
+		//Initialize the adjacency lists.
+		for (int i = 0; i < N + 1; i++) {
+			same[i] = new ArrayList<>();
+			diff[i] = new ArrayList<>();
+		}
+		int comps = 0; //The number of connected components.
+ 
+		//Read in the edges.
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			char type = st.nextToken().charAt(0);
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+ 
+			//They share the same type of grass
+			if (type == 'S') {
+				same[a].add(b);
+				same[b].add(a);
+ 
+			}
+			//They share different types of grass.
+			if (type == 'D') {
+				diff[a].add(b);
+				diff[b].add(a);
+			}
+		}
+ 
+		for (int i = 1; i <= N; i++) {
+			//This node is unvisited, so try to color it with color '1'.
+			if (type[i] == 0) {
+				visit(i, 1);
+				comps++;
+			}
+		}
+		//It is impossible to color the fields.
+		if (impossible) {
+			pw.println(0);
+		} else {
+			//The solution is 2^(number of components).
+			pw.print(1);
+			for (int i = 0; i < comps; i++) {
+				pw.print(0);
+			}
+			pw.println();
+		}
+		pw.close();
+ 
+	}
+ 
+ 
+	//Visit a node and color it.
+	public static void visit(int node, int color) {
+		type[node] = color;
+ 
+		//Check all of the nodes that are supposed to share the same color.
+		for (int next : same[node]) {
+			//There is a contradiction here.
+			if (type[next] == 3 - color) {
+				impossible = true;
+			}
+			if (type[next] == 0) {
+				visit(next, color);
+			}
+		}
+ 
+		//Check all of the nodes that are supposed to have a different color.
+		for (int next : diff[node]) {
+			//There is a contradiction here.
+			if (type[next] == color) {
+				impossible = true;
+			}
+			if (type[next] == 0) {
+				visit(next, 3 - color);
+			}
+		}
+	}
 }
-
+ 
+ 
+```
+</JavaSection>
+ 
+</LanguageSection>
