@@ -5,6 +5,12 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
+  let expand = null;
+  if (typeof(props.expandable) == "undefined"){
+    expand = true;
+  }else{
+    expand = false;
+  }
 
   const sections = {};
   React.Children.map(props.children, child => {
@@ -15,6 +21,10 @@ export const LanguageSection = props => {
       PySection: 'py',
     };
     sections[typeToLang[type]] = child;
+  });
+
+  const newProps = React.Children.map(props.children, child => {
+        return React.cloneElement(child, {children: child.children, mdxType: child.props.mdx, originalType: child.props.originalType, expandable: expand});
   });
 
   if (userLang === 'showAll') {

@@ -2,28 +2,42 @@ import React, { Children } from "react";
 
 function determineIfSingularCodeBlock(firstName: string, numChildren: number): boolean {
   return firstName == "LanguageSection" && numChildren == 1;
-
 }
+
+
 
 const Spoiler = ({ children, title }) => {
 
   let count = 0;
   let numChildren = 0;
   let firstName = "None"
+  let ogProps;
+
   
   React.Children.forEach(children, child => {
     if(count == 0) {
-      console.log( "Child for Spoiler " + Children.count(children))
-      console.log(child.props.mdxType)
       numChildren = Children.count(children)
       firstName = child.props.mdxType
+      ogProps = child.props;
+      console.log("OG PROPS: " + ogProps);
     }
     count++;
   })
 
+  count = 0;
   const onlyContainsCode: boolean = determineIfSingularCodeBlock(firstName, numChildren);
+  console.log("ONLY CODE: " + onlyContainsCode)
 
-  const [show, setShow] = React.useState(onlyContainsCode);
+  const childrenWithProps = React.Children.map(children, child => {
+    if(count == 1 && onlyContainsCode) {
+      return React.cloneElement(child, {children: child.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: true});
+    }else{
+      return child;
+    }
+  });
+  console.log(childrenWithProps);
+
+  const [show, setShow] = React.useState(false);
 
   return (
     <div
@@ -31,7 +45,7 @@ const Spoiler = ({ children, title }) => {
     >
       <p
         className="p-4 flex items-start"
-        onClick={e => {onlyContainsCode ? setShow(show) : setShow(!show)}}
+        onClick={e => {setShow(!show)}}
         style={{ marginBottom: 0 }}
       >
         {show && (
@@ -63,7 +77,7 @@ const Spoiler = ({ children, title }) => {
         <span className="flex-1">{title}</span>
       </p>
 
-      {show && <div className="px-4 spoiler-body">{children}</div>}
+      {show && <div className="px-4 spoiler-body">{childrenWithProps}</div>}
     </div>
   );
 };

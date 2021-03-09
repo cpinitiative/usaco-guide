@@ -83,6 +83,7 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
+    expandable: boolean;
   },
   {
     collapsed: boolean;
@@ -222,6 +223,8 @@ class CodeBlock extends React.Component<
   render() {
     const children = this.props.children;
     const className = this.props.className;
+    const expand = this.props.expandable;
+
     if (className === undefined) {
       // no styling, just a regular pre tag
       return (
@@ -248,7 +251,7 @@ class CodeBlock extends React.Component<
     //   }
     // }
 
-    const collapsed = this.state.collapsed;
+    const collapsed = !expand ? false: this.state.collapsed;
 
     return (
       // @ts-ignore
@@ -271,7 +274,7 @@ class CodeBlock extends React.Component<
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
+              {tokens.length > 15 && expand && (
                 <div
                   className={
                     (collapsed ? 'h-full' : 'h-12') +
