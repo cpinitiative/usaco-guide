@@ -9,6 +9,7 @@ export type UserSolutionForProblem = {
   solutionCode: string;
   upvotes: string[];
   language: 'cpp' | 'java' | 'py' | 'unknown';
+  timestamp: firebaseType.firestore.Timestamp;
 };
 
 export const userSolutionForProblemConverter = {

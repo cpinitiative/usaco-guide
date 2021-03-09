@@ -14,7 +14,7 @@ export default function useUserProblemSolutionActions() {
     submitSolution: async (
       solution: Omit<
         UserSolutionForProblem,
-        'userID' | 'userName' | 'id' | 'upvotes'
+        'userID' | 'userName' | 'id' | 'upvotes' | 'timestamp'
       >
     ) => {
       await firebase
@@ -26,6 +26,7 @@ export default function useUserProblemSolutionActions() {
           userID: firebaseUser.uid,
           userName: firebaseUser.displayName,
           upvotes: [],
+          timestamp: firebase.firestore.Timestamp.now(),
         });
     },
     deleteSolution: async (solutionID: string) => {
