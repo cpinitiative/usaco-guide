@@ -3,6 +3,7 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
+let newProps;
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
   let expand = null;
@@ -11,6 +12,8 @@ export const LanguageSection = props => {
   }else{
     expand = false;
   }
+  console.log(props);
+  console.log("Expandable in langSect: " + expand)
 
   const sections = {};
   React.Children.map(props.children, child => {
@@ -23,8 +26,8 @@ export const LanguageSection = props => {
     sections[typeToLang[type]] = child;
   });
 
-  const newProps = React.Children.map(props.children, child => {
-        return React.cloneElement(child, {children: child.children, mdxType: child.props.mdx, originalType: child.props.originalType, expandable: expand});
+  newProps = React.Children.map(props.children, child => {
+    return React.cloneElement(child, {children: child.children, mdxType: child.props.mdx, originalType: child.props.originalType, expandable: expand});
   });
 
   if (userLang === 'showAll') {
@@ -98,6 +101,7 @@ export const LanguageSection = props => {
   }
   return sections[userLang];
 };
+
 
 
 

@@ -29,12 +29,14 @@ const Spoiler = ({ children, title }) => {
   console.log("ONLY CODE: " + onlyContainsCode)
 
   const childrenWithProps = React.Children.map(children, child => {
-    if(count == 1 && onlyContainsCode) {
-      return React.cloneElement(child, {children: child.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: true});
+    if(count == 0 && onlyContainsCode) {
+      count++;
+      return React.cloneElement(child, {children: child.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: false});
     }else{
       return child;
     }
   });
+  console.log("Spoiler Props");
   console.log(childrenWithProps);
 
   const [show, setShow] = React.useState(false);

@@ -251,7 +251,7 @@ class CodeBlock extends React.Component<
     //   }
     // }
 
-    const collapsed = !expand ? false: this.state.collapsed;
+    const collapsed = !expand ? false : this.state.collapsed;
 
     return (
       // @ts-ignore
