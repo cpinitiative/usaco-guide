@@ -131,9 +131,16 @@ db.collection('userProblemSolutions')
   .then(snapshot => {
     return Promise.all(
       snapshot.docs.map(doc => {
-        return db.collection('userProblemSolutions').doc(doc.id).update({
-          upvotes: [],
-        });
+        if (!doc.data().timestamp) {
+          return db
+            .collection('userProblemSolutions')
+            .doc(doc.id)
+            .update({
+              timestamp: admin.firestore.Timestamp.fromDate(
+                new Date(2021, 2, 8)
+              ),
+            });
+        }
       })
     );
   })
