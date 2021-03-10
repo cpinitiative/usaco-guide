@@ -31,7 +31,7 @@ const Spoiler = ({ children, title }) => {
   const childrenWithProps = React.Children.map(children, child => {
     if(count == 0 && onlyContainsCode) {
       count++;
-      return React.cloneElement(child, {children: child.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: false});
+      return React.cloneElement(child, {children: ogProps.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: false});
     }else{
       return child;
     }
