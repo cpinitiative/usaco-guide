@@ -1,17 +1,10 @@
 import useFirebase from '../useFirebase';
-import firebaseType from 'firebase';
-import {
-  groupConverter,
-  GroupData,
-  isUserAdminOfGroup,
-} from '../../models/groups/groups';
+import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
 import { useUserGroups } from './useUserGroups';
 import * as React from 'react';
-import { Post } from '../../mobx/Post';
 import firebase from 'firebase';
 import { ReactNode, useContext } from 'react';
 import { postConverter, PostData } from '../../models/groups/posts';
-import { runInAction } from 'mobx';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 const ActiveGroupContext = React.createContext<{

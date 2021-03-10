@@ -3,12 +3,10 @@ import {
   postConverter,
   PostData,
   ProblemData,
-  ProblemHint,
   Submission,
   submissionConverter,
   SubmissionType,
 } from '../../models/groups/posts';
-import { Problem } from '../../mobx/Problem';
 import { v4 as uuidv4 } from 'uuid';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
@@ -32,7 +30,7 @@ export function usePostActions(groupId: string) {
       const defaultPost: PostData = {
         name: 'Untitled Post',
         timestamp: firebase.firestore.Timestamp.now(),
-        dueTimestamp: firebase.firestore.Timestamp.now(),
+        dueTimestamp: null,
         isPublished: false,
         isPinned: false,
         body: '',

@@ -1,4 +1,4 @@
-import React, { createContext, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { Router } from '@reach/router';
 import NotFoundPage from './404';
 import GroupSelectPage from '../components/Groups/GroupSelectPage';
@@ -7,15 +7,12 @@ import PostPage from '../components/Groups/PostPage/PostPage';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
-import RootStore from '../mobx/RootStore';
 import { UserGroupsProvider } from '../hooks/groups/useUserGroups';
 import {
   ActiveGroupProvider,
   useActiveGroup,
 } from '../hooks/groups/useActiveGroup';
 import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
-
-export const GroupsContext = createContext<RootStore>(null);
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {

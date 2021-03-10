@@ -14,6 +14,7 @@ import { useProblem } from '../../../hooks/groups/useProblem';
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
+    use;
     groupId: string;
     postId: string;
     problemId: string;

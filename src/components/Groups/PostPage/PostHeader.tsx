@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import { getPostDueDateString, PostData } from '../../../models/groups/posts';
+import {
+  getPostDueDateString,
+  getPostTimestampString,
+  isPostAssignment,
+  PostData,
+} from '../../../models/groups/posts';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
+import { isUserAdminOfGroup } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
@@ -20,7 +25,7 @@ export default function PostHeader({ post }: { post: PostData }) {
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
-          Due on {getPostDueDateString(post)}
+          {getPostTimestampString(post)}
         </p>
       </div>
       {isUserAdminOfGroup(group, firebaseUser?.uid) && (

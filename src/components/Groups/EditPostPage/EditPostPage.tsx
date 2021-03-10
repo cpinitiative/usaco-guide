@@ -9,6 +9,8 @@ import { usePost } from '../../../hooks/groups/usePost';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { PostData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import useFirebase from '../../../hooks/useFirebase';
+import Flatpickr from 'react-flatpickr';
 
 export default function EditPostPage(props) {
   const { groupId, postId } = props as {
@@ -19,13 +21,18 @@ export default function EditPostPage(props) {
   const activeGroup = useActiveGroup();
   const originalPost = usePost(postId);
   const [post, editPost] = useReducer(
-    (oldPost, updates: Partial<PostData>) => ({
+    (oldPost, updates: Partial<PostData>): PostData => ({
       ...oldPost,
       ...updates,
     }),
     originalPost
   );
   const { savePost, deletePost } = usePostActions(groupId);
+  const firebase = useFirebase();
+
+  React.useEffect(() => {
+    if (!post && originalPost) editPost(originalPost);
+  }, [originalPost, post]);
 
   if (activeGroup.isLoading) {
     return (
@@ -91,7 +98,32 @@ export default function EditPostPage(props) {
                       id="post_name"
                       value={post.name}
                       onChange={e => editPost({ name: e.target.value })}
-                      className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-md shadow-sm sm:text-sm border-gray-300"
+                      className="flex-1 block w-full min-w-0 focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm sm:text-sm border-gray-300"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Due Date (Optional, only for assignments)
+                  </label>
+
+                  <div className="mt-1">
+                    <Flatpickr
+                      placeholder={'Choose a due date (optional)'}
+                      options={{
+                        dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
+                        enableTime: true,
+                      }}
+                      value={post.dueTimestamp?.toDate()}
+                      onChange={date =>
+                        editPost({
+                          dueTimestamp: firebase.firestore.Timestamp.fromDate(
+                            date[0]
+                          ),
+                        })
+                      }
+                      className="dark:bg-gray-200 dark:text-gray-800 flex-1 block w-full min-w-0 focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm border-gray-300 transition sm:text-sm"
                     />
                   </div>
                 </div>

@@ -6,7 +6,7 @@ export type PostData = {
   id?: string;
   name: string;
   timestamp: firebase.firestore.Timestamp;
-  dueTimestamp: firebase.firestore.Timestamp;
+  dueTimestamp: firebase.firestore.Timestamp | null;
   /**
    * Markdown string of the post content
    */
@@ -139,8 +139,21 @@ export const isPostAnnouncement = (post: PostData) =>
   Object.keys(post.problems).length === 0;
 export const isPostAssignment = (post: PostData) =>
   Object.keys(post.problems).length !== 0;
+/**
+ * Returns the due date as a string if the post is an assignment with a due date
+ * Otherwise returns the posting time as a human-readable string
+ */
+export const getPostTimestampString = (post: PostData) => {
+  if (isPostAssignment(post) && post.dueTimestamp) {
+    return 'Due on ' + getPostDueDateString(post);
+  } else {
+    return 'Posted on ' + getPostDateString(post);
+  }
+};
+export const getPostDateString = (post: PostData) =>
+  post.timestamp.toDate().toString().substr(0, 15);
 export const getPostDueDateString = (post: PostData) =>
-  post.dueTimestamp.toDate().toString().substr(0, 15);
+  post.dueTimestamp?.toDate().toString().substr(0, 15);
 export const getPostTotalPoints = (post: PostData) =>
   Object.keys(post.problems).reduce(
     (acc, cur) => acc + post.problems[cur].points,

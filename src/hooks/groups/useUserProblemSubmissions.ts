@@ -2,7 +2,6 @@ import * as React from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { Submission, submissionConverter } from '../../models/groups/posts';
 import useFirebase from '../useFirebase';
-import { runInAction } from 'mobx';
 import { useActiveGroup } from './useActiveGroup';
 
 export default function useUserProblemSubmissions(problemId: string) {

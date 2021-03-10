@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Link } from 'gatsby';
 import { useContext, useState } from 'react';
 import { Transition } from '@headlessui/react';
-import { action } from 'mobx';
 import {
   getPostDueDateString,
+  getPostTimestampString,
   isPostAnnouncement,
   PostData,
 } from '../../../models/groups/posts';
@@ -87,7 +87,7 @@ export default function FeedItem({
               {post.isPublished ? '' : ' (Unpublished)'}
             </h2>
             <p className="text-sm text-gray-500">
-              {getPostDueDateString(post)}
+              {getPostTimestampString(post)}
             </p>
           </div>
         </Link>

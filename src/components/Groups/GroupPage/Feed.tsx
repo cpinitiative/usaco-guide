@@ -16,8 +16,6 @@ export default function Feed() {
   const group = useActiveGroup();
   const { firebaseUser } = useContext(UserDataContext);
 
-  console.log(group);
-
   const feedPosts = group.posts
     ?.filter(post => {
       if (
