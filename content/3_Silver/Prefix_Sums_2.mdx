@@ -110,11 +110,11 @@ This problem has two types of solutions one of which is called the  [Kadane's Al
 
 Suppose that we store the prefix sums at each index in the array. Intuitively, the maximum subarray sum ending at each index is the difference between the maximum prefix sum and the minimum prefix sum. Thus, we can iterate each element in the array and store the minimum prefix sum up to the current index. Then, we can find the maximum subarray sum by subtracting the current prefix sum to the minimum prefix sum.
 
-C++ code:
-
 <LanguageSection>
 
 <CPPSection>
+
+C++ code:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -132,7 +132,7 @@ int main(){
 	}
 	ll max_subarray_sum = dp[0], min_prefix_sum = dp[0];
 	for(int i=1; i<=n; i++){
-		// The maximum subarray sum is the maximum difference the current prefix sum and the minimum prefix sum up to the current index
+		// The max subarray sum is the maximum difference between two prefix sums
 		max_subarray_sum = max(max_subarray_sum, dp[i] - min_prefix_sum);
 		min_prefix_sum = min(min_prefix_sum, dp[i]);
 	}
@@ -160,11 +160,11 @@ Suppose we fix the first element of a subarray. The Kadane's Algorithm solution 
 
 Watch this [video](https://www.youtube.com/watch?v=jnoVtCKECmQ&t=611s) for a more detailed explanation of the approach above.
 
-C++ code:
-
 <LanguageSection>
 
 <CPPSection>
+
+C++ code:
 
 ```cpp
 #include <bits/stdc++.h>
