@@ -1,7 +1,7 @@
 ---
 id: prefix-sums-2
 title: 'More on Prefix Sums'
-author: Darren Yao, Eric Wei, Neo Wang
+author: Darren Yao, Eric Wei, Neo Wang, Jesse Choe
 description: 'Max subarray sum, prefix sums in two dimensions, and a more complicated example.'
 prerequisites:
   - prefix-sums
@@ -102,11 +102,98 @@ export const problems = {
 
 <FocusProblem problem={problems.maxsum} />
 
-This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
+This problem has two types of solutions one of which is called the  [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). However, understanding Kadane's algorithm is **optional** for this problem, since it can also be solved using prefix sums.
 
-<Spoiler title="Why are the two methods equivalent?">
+<Spoiler title="Solution">
 
-Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
+### Solution
+
+Suppose that we store the prefix sums at each index in the array. Intuitively, the maximum subarray sum ending at each index is the difference between the maximum prefix sum and the minimum prefix sum. Thus, we can iterate each element in the array and store the minimum prefix sum up to the current index. Then, we can find the maximum subarray sum by subtracting the current prefix sum to the minimum prefix sum.
+
+C++ code:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+
+int main(){
+	int n; cin >> n;
+	vl dp(n+1, 0); // Prefix sum array initially filled with 0's
+	for(int i=1; i<=n; i++){
+		ll x; cin >> x;
+		dp[i] = dp[i-1] + x; // Compute the prefix sum at each element
+	}
+	ll max_subarray_sum = dp[0], min_prefix_sum = dp[0];
+	for(int i=1; i<=n; i++){
+		// The maximum subarray sum is the maximum difference the current prefix sum and the minimum prefix sum up to the current index
+		max_subarray_sum = max(max_subarray_sum, dp[i] - min_prefix_sum);
+		min_prefix_sum = min(min_prefix_sum, dp[i]);
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Warning>
+
+Note: It is recommended that you skip the following solution.
+
+</Warning>
+
+<Spoiler title = "Alternative Solution">
+
+### Solution
+
+Suppose we fix the first element of a subarray. The Kadane's Algorithm solution involves starting a new subarray sum at an element if that element is greater than the current subarray sum with an addition to the current element. If the subarray sum ending at the current element is greater than the current element, then we continue the subarray sum. Otherwise, we set the new subarray sum equal to the current element and restart our subarray sum. To find the maximum subarray sum over all possible sums, we store an integer $S$, representing the maximum subarray sum at each iteration of the array. When we finish iterating the array, we print $S$.
+
+Watch this [video](https://www.youtube.com/watch?v=jnoVtCKECmQ&t=611s) for a more detailed explanation of the approach above.
+
+C++ code:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+
+int main(){
+	int n; cin >> n;
+	vl x(n);
+	for(int i=0; i<n; i++){
+		cin >> x[i];
+	}
+	ll current_sum = x[0], max_subarray_sum = x[0];
+	for(int i=1; i<n; i++){
+		current_sum = max(current_sum + x[i], x[i]); 
+	// Continue the subarray sum or start a new subarray sum beginning at the current element
+		max_subarray_sum = max(max_subarray_sum, current_sum); 
+		// Store the maximum subarray sum at each iteration
+	}
+	cout << max_subarray_sum << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 
 </Spoiler>
 
