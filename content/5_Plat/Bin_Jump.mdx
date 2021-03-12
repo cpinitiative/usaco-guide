@@ -383,11 +383,7 @@ void dfs(int v, int p) {
         up[v][i] = up[up[v][i-1]][i-1];
     }
 
-    trav(x, adj[v]) {
-        if(x != p) {
-            dfs(x, v);
-        }
-    }
+    trav(x, adj[v]) if(x != p) dfs(x, v);
 
     en[v] = T-1;
 }
@@ -409,9 +405,8 @@ int main() {
     re(N, Q);
     st.resize(N); en.resize(N);
     
-    F0R(i, N-1){
+    F0R(i, N-1) {
         int b; re(b); --b;
-
         adj[b].pb(i+1);
     }
 
@@ -419,7 +414,6 @@ int main() {
 
     F0R(i, Q) {
         int a, b; re(a, b); --a; --b;
-
         pr(LCA(a, b)+1,"\n"); 
     }
 }
