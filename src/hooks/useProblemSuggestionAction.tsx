@@ -13,6 +13,7 @@ export default function useProblemSuggestionAction() {
       additionalNotes,
       problemTableLink,
       moduleName,
+      section,
     }) => {
       if (!firebase) {
         alert('Too fast! Please wait ten seconds and try again.');
@@ -29,6 +30,7 @@ export default function useProblemSuggestionAction() {
         additionalNotes,
         problemTableLink,
         moduleName,
+        section,
       });
     },
     [firebase]
