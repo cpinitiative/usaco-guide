@@ -17,7 +17,7 @@ export const LanguageSection = props => {
   const sections = {};
   React.Children.map(props.children, child => {
     const oldChild = child;
-    const newChild = React.cloneElement(child, {children: oldChild.children, mdxType: oldChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
+    const newChild = React.cloneElement(child, {children: oldChild.props.children, mdxType: oldChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
