@@ -33,17 +33,14 @@ const JoinGroupPage = () => {
         <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto py-16">
           {showNotSignedInMessage && (
             <div>
-              <p className="font-medium text-2xl">
+              <p className="font-medium text-2xl text-center">
                 Please{' '}
-                <a
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    signIn();
-                  }}
+                <button
+                  className="focus:outline-none underline text-blue-600"
+                  onClick={() => signIn()}
                 >
                   sign in
-                </a>{' '}
+                </button>{' '}
                 to access Groups.
               </p>
             </div>
