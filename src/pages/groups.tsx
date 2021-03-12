@@ -13,6 +13,7 @@ import {
   useActiveGroup,
 } from '../hooks/groups/useActiveGroup';
 import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
+import JoinGroupPage from '../components/Groups/JoinGroupPage';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -54,6 +55,7 @@ export default function GroupsRouter() {
             />
             <GroupPageWrapper Component={GroupPage} path="/:groupId" />
             <GroupSelectPage path="/" />
+            <JoinGroupPage path="/join" />
             <NotFoundPageWrapper default />
           </Router>
         </ProblemSubmissionPopupProvider>
