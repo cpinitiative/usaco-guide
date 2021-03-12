@@ -256,7 +256,7 @@ deque.removeLast(); // [1, 3]
 
 **Time Complexity:** $\mathcal{O}(V+E)$
 
-We can observe is that there are many possible shortest paths to output. Fortunately, the problem states that we can print any valid solution. Notice that like every other 0/1 BFS problem, the distance of each node increases by 1 when we travel to the next level of unvisited nodes. However, the problem requires that we add additional information - in this case, the path. When we traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the BFS is complete, this allows us to backtrack through the parents which ultimately leads us to our starting node. We know to terminate at node $1$ because its parent is $0$. If there is no path to our end node, then its distance will be infinity (or `INT_MAX`).
+We can observe is that there are many possible shortest paths to output. Fortunately, the problem states that we can print any valid solution. Notice that like every other 0/1 BFS problem, the distance of each node increases by 1 when we travel to the next level of unvisited nodes. However, the problem requires that we add additional information - in this case, the path. When we traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the BFS is complete, this allows us to backtrack through the parents which ultimately leads us to our starting node. We know to terminate at node $1$ because its parent is $0$. If there is no path to our end node, then its distance will be infinity (or [INT_MAX](https://en.cppreference.com/w/c/types/limits)).
 
 For the test input, we start with the following parent array.
 
@@ -357,8 +357,7 @@ After visiting node $5$ from node $4$
 </table>
 </center>
 
-Finally, we can backtrack from node $n \rightarrow 1$, in this case $5 \rightarrow 1$. This looks like $5 \rightarrow 2 \rightarrow 1$. We break here because we notice that the parent of node $1$ is 0.
-
+Finally, we can backtrack from node $n \rightarrow 1$, in this case $5 \rightarrow 1$, pushing each value that we back track into a vector. The path we take is $5 \rightarrow 2 \rightarrow 1$ which corresponds to the vector $[5, 2, 1]$. We break at node 1 because we notice that its parent is 0. Finally, we reverse the vector and print out it's length (in this case, 3).
 
 <LanguageSection>
 
