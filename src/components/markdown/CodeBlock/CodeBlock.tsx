@@ -94,7 +94,7 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-    console.log("Code Block Props " + props);
+
 
     let i = 0;
     let prev = -1;
@@ -227,7 +227,8 @@ class CodeBlock extends React.Component<
     const children = this.props.children;
     const className = this.props.className;
     const expand = this.props.expandable;
-    console.log("Check Props of CB " + this.props);
+    console.log("Check Props of CB ");
+    console.log(this.props);
 
     if (className === undefined) {
       // no styling, just a regular pre tag
