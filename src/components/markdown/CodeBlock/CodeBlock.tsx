@@ -94,6 +94,8 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
+    console.log("Code Block Props " + props);
+
     let i = 0;
     let prev = -1;
     let prevVal = '';
@@ -191,6 +193,7 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
+
       --maxLines;
       return (
         <Line key={i} {...getLineProps({ line, key: i })}>
@@ -224,6 +227,7 @@ class CodeBlock extends React.Component<
     const children = this.props.children;
     const className = this.props.className;
     const expand = this.props.expandable;
+    console.log("Check Props of CB " + this.props);
 
     if (className === undefined) {
       // no styling, just a regular pre tag

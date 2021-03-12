@@ -3,7 +3,6 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
-let newProps;
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
   let expand = null;
@@ -17,18 +16,18 @@ export const LanguageSection = props => {
 
   const sections = {};
   React.Children.map(props.children, child => {
+    const oldChild = child;
+    const newChild = React.cloneElement(child, {children: oldChild.children, mdxType: oldChild.props.mdx, originalType: oldChild.props.originalType, expandable: expand});
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
       JavaSection: 'java',
       PySection: 'py',
     };
-    sections[typeToLang[type]] = child;
+    sections[typeToLang[type]] = newChild;
+    console.log(" New Child: " + newChild);
   });
 
-  newProps = React.Children.map(props.children, child => {
-    return React.cloneElement(child, {children: child.children, mdxType: child.props.mdx, originalType: child.props.originalType, expandable: expand});
-  });
 
   if (userLang === 'showAll') {
     return (
