@@ -1,5 +1,6 @@
 import './src/styles/main.css';
 import './src/styles/tailwindcss-utils.css';
+import './src/styles/components.css';
 import './src/styles/anchor.css';
 import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';

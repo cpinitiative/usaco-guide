@@ -1,7 +1,7 @@
 ---
 id: mst
 title: 'Minimum Spanning Trees'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Neo Wang
 prerequisites:
   - sp
   - dsu
@@ -51,6 +51,15 @@ export const problems = {
 			'Hard',
 			false,
 			['MST', 'NT'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2013 - Toll',
+			'https://oj.uz/problem/view/APIO13_toll',
+			'Insane',
+			false,
+			['MST', 'Bitmask'],
 			''
 		),
 		new Problem(
@@ -170,6 +179,10 @@ static class Edge implements Comparable<Edge> {
 
 ### Solution - Road Reparation
 
+Notice that the road that allows for a "decent route between any two cities," with cost "as small as possible" is the definition of a minimum spanning tree. Thus, we can use our favorite minimum spanning tree algorithm to determine the cost of such a tree by calculating $\sum c$ for all edges included in the tree.
+
+However, we must also account for the impossible case, which occurs when any nodes cannot be connected to the tree. Recall that the minimum spanning tree must contain a total of $n-1$ edges, so we can use a variable $cnt$ that is incremented every time we add an edge to the minimum spanning tree. After running Kruskal's, if $cnt \ne n-1$, then we know that we failed to built the tree properly. Furthermore, since our minimum spanning tree algorithm gurantees no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
+
 <LanguageSection>
   
 <CPPSection>
@@ -203,14 +216,14 @@ struct DSU {
 	}
 };
 
-int comp;
+int cnt=0;
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 	sort(all(ed));
 	T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
 	trav(a,ed)
 	if (D.unite(a.s.f,a.s.s)) {
 		ans += a.f;
-		comp--;
+		cnt++;
 	}
 	return ans;
 }
@@ -225,9 +238,8 @@ int main() {
 		cin >> a >> b >> c;
 		edge.push_back(mp(c, mp(a, b)));
 	}
-	comp = n;
 	ll ans = kruskal(n, edge);
-	if(comp == 1){
+	if(cnt == n-1){
 		cout << ans;
 	}
 	else{
