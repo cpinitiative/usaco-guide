@@ -365,22 +365,19 @@ To determine the path, we can backtrack from node $n \rightarrow 1$, in this cas
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 using vi = vector<int>;
-
 #define pb push_back
-
 int main() {
 	int N, M; cin >> N >> M;
-	vi dist(N,INT_MAX), pre(N);
-	vector<vi> adj(N);
+	vi dist(N+1,INT_MAX), pre(N+1);
+	vector<vi> adj(N+1);
 	for (int _ = 0; _ < M; ++_) {
-		int a,b; cin >> a >> b; --a,--b;
+		int a,b; cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
 	queue<int> q;
-	dist[0] = 0; q.push(0);
+	dist[1] = 0; q.push(1);
 	while (!q.empty()) {
 		int x = q.front(); q.pop();
 		for (int t: adj[x]) if (dist[t] == INT_MAX) {
@@ -388,15 +385,14 @@ int main() {
 			q.push(t);
 		}
 	}
-	if (dist[N-1] == INT_MAX) cout << "IMPOSSIBLE";
+	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
 	else {
-		cout << dist[N-1]+1 << "\n";
-		vi v{N-1}; while (v.back() != 0) v.pb(pre[v.back()]);
+		cout << dist[N]+1 << "\n";
+		vi v{N}; while (v.back() != 1) v.pb(pre[v.back()]);
 		reverse(begin(v), end(v));
-		for (int t: v) cout << t+1 << " ";
+		for (int t: v) cout << t << " ";
 	}
 }
-
 ```
 
 <!--
