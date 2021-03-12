@@ -370,13 +370,13 @@ We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the answ
 ```cpp
 CodeSnip{Benq Template}
     
-int N, Q, T=1;
+int N, Q, T = 1;
 vi st, en;
 int up[200005][20];
 vi adj[200005];
 
 void dfs(int v, int p) {
-    st[v]=T++;
+    st[v] = T++;
     up[v][0] = p;
 
     FOR(i, 1, 20) {
@@ -389,7 +389,7 @@ void dfs(int v, int p) {
         }
     }
 
-    en[v]=T++;
+    en[v] = T++;
 }
 
 bool anc(int a, int b) {
@@ -397,10 +397,6 @@ bool anc(int a, int b) {
 }
 
 int find(int a, int b) {
-    if (anc(a, b))
-        return a;
-    if (anc(b, a))
-        return b;
     for (int i = 19; i >= 0; --i) {
         if (!anc(up[a][i], b))
             a = up[a][i];
