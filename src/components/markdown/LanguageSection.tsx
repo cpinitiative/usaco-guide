@@ -25,6 +25,7 @@ export const LanguageSection = props => {
       PySection: 'py',
     };
     sections[typeToLang[type]] = newChild;
+    // test
     console.log(newChild);
   });
 
