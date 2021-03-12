@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import firestore from '@google-cloud/firestore';
 import admin from 'firebase-admin';
 import { Octokit } from '@octokit/core';
+import contentCodeowners from '../../content-codeowners.json';
 admin.initializeApp();
 
 export const submitProblemSuggestion = functions.https.onCall(
@@ -16,6 +17,7 @@ export const submitProblemSuggestion = functions.https.onCall(
       .auth()
       .getUser(context.auth.uid)
       .then(userRecord => userRecord.displayName);
+
     const {
       name,
       moduleName,
@@ -24,8 +26,9 @@ export const submitProblemSuggestion = functions.https.onCall(
       tags,
       additionalNotes,
       problemTableLink,
+      section,
     } = data;
-    if (!name || !moduleName || !link || !problemTableLink) {
+    if (!name || !moduleName || !link || !problemTableLink || !section) {
       throw new functions.https.HttpsError(
         'failed-precondition',
         'One or more required parameters were not passed.'
@@ -56,6 +59,7 @@ export const submitProblemSuggestion = functions.https.onCall(
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body,
         labels: ['Problem Suggestion'],
+        assignees: contentCodeowners[section],
       }
     );
 

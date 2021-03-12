@@ -71,6 +71,7 @@ export default function ProblemSuggestionModal({
       additionalNotes,
       problemTableLink,
       moduleName,
+      section: (markdownLayoutInfo as ModuleInfo).section,
     })
       .then(response => {
         setCreatedIssueLink(response.data);
