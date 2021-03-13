@@ -39,50 +39,50 @@ int n,k, sz[MX], nex[MX][20];
 ll m;
 
 int get(int x, int lef) {
-    F0Rd(i,20) if (lef&(1<<i)) x = nex[x][i];
-    return x;
+	F0Rd(i,20) if (lef&(1<<i)) x = nex[x][i];
+	return x;
 }
 
 void solve(int x) {
-    if (m <= n) cout << get(x,m) << " ";
-    else {
-        x = get(x,n);
-        cout << get(x,(m-n)%sz[x]) << " ";
-    }
+	if (m <= n) cout << get(x,m) << " ";
+	else {
+		x = get(x,n);
+		cout << get(x,(m-n)%sz[x]) << " ";
+	}
 }
 
 ll p[MX];
 
 void genNex() {
-    pii cur = {1,k+1};
-    FOR(i,1,n+1) {
-        while (cur.s < n && p[cur.s+1]-p[i] < p[i]-p[cur.f]) cur.f ++, cur.s ++;
-        if (p[i]-p[cur.f] >= p[cur.s]-p[i]) nex[i][0] = cur.f;
-        else nex[i][0] = cur.s;
-    }
+	pii cur = {1,k+1};
+	FOR(i,1,n+1) {
+		while (cur.s < n && p[cur.s+1]-p[i] < p[i]-p[cur.f]) cur.f ++, cur.s ++;
+		if (p[i]-p[cur.f] >= p[cur.s]-p[i]) nex[i][0] = cur.f;
+		else nex[i][0] = cur.s;
+	}
 }
 
 int vis[MX];
 
 void cycSize() {
-    FOR(i,1,n+1) {
-        int I = i;
-        for (;vis[I] == 0; I = nex[I][0]) vis[I] = i;
-        if (vis[I] != i) continue;
+	FOR(i,1,n+1) {
+		int I = i;
+		for (;vis[I] == 0; I = nex[I][0]) vis[I] = i;
+		if (vis[I] != i) continue;
 
-        int cur = 0;
-        for (;vis[I] == i; I = nex[I][0]) { cur ++; vis[I] += n; }
-        for (;vis[I] == i+n; I = nex[I][0]) { sz[I] = cur; vis[I] += n; }
-    }
+		int cur = 0;
+		for (;vis[I] == i; I = nex[I][0]) { cur ++; vis[I] += n; }
+		for (;vis[I] == i+n; I = nex[I][0]) { sz[I] = cur; vis[I] += n; }
+	}
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    cin >> n >> k >> m;
-    FOR(i,1,n+1) cin >> p[i];
-    genNex();
-    FOR(i,1,20) FOR(j,1,n+1) nex[j][i] = nex[nex[j][i-1]][i-1];
-    cycSize();
-    FOR(i,1,n+1) solve(i);
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> k >> m;
+	FOR(i,1,n+1) cin >> p[i];
+	genNex();
+	FOR(i,1,20) FOR(j,1,n+1) nex[j][i] = nex[nex[j][i-1]][i-1];
+	cycSize();
+	FOR(i,1,n+1) solve(i);
 }
 ```

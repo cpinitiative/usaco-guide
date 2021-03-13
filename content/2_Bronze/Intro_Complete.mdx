@@ -61,7 +61,7 @@ export const problems = {
 			'Normal',
 			true,
 			['Complete Search'],
-			'Loop over each position. Then, loop over each non-spotty cow in a nested loop and check whether a spotty cow has the same character as a non-spotty cow to figure out whether the position explains spottiness.'
+			'usaco-736',
 		), // 99.73
 		new Problem(
 			'Bronze',
@@ -142,7 +142,7 @@ export const problems = {
 			'Very Hard',
 			false,
 			['Complete Search'],
-			'Brute force all possible pairs of figurines and all possible ways to shift vertically / horizontally. This requires $6$ nested for loops, and is not very fun to implement. Good luck :)'
+			'usaco-640'
 		), // 47.38
 		new Problem(
 			'Silver',
@@ -174,28 +174,44 @@ In many problems (especially in Bronze) it suffices to check all possible cases 
 
 <Spoiler title="Solution">
 
-We can brute-force every pair of points and find the square of the distance between them, by squaring the formula for Euclidean distance: $\text{distance}^2 = (x_2-x_1)^2 + (y_2-y_1)^2$. Thus, we store the coordinates in arrays `X['Complete Search']` and `Y['Complete Search']`, such that `X[i]` and `Y[i]` are the $x$- and $y$-coordinates of the $i_{th}$ point, respectively. Then, we iterate through all possible pairs of points, using a variable max to store the maximum square of distance between any pair seen so far, and if the square of the distance between a pair is greater than our current maximum, we set our current maximum to it.
+We can iterate through every pair of points and find the square of the distance between them, by squaring the formula for Euclidean distance:
+
+$$
+\text{distance}[(x_1,y_1),(x_2,y_2)]^2 = (x_2-x_1)^2 + (y_2-y_1)^2.
+$$
+
+Maintain the current maximum square distance in `max_square`.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int high = 0; // storing the current maximum
-for(int i = 0; i < n; i++){ // for each first point
-	for(int j = i+1; j < n; j++){ // for each second point
-		int dx = x[i] - x[j];
-		int dy = y[i] - y[j];
-		high = max(high, dx*dx + dy*dy);
-		// if the square of the distance between the two points is greater than
-		// our current maximum, then update the maximum
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int N; cin >> N;
+	vector<int> x(N), y(N);
+	for (int& t: x) cin >> t;
+	for (int& t: y) cin >> t;
+	int max_square = 0;
+	for (int i = 0; i < N; i++) { // for each first point
+		for (int j = i+1; j < N; j++) { // for each second point
+			int dx = x[i]-x[j], dy = y[i]-y[j];
+			int square = dx*dx+dy*dy;
+			// if the square of the distance between the two points is greater than
+			// our current maximum, then update the maximum
+			max_square = max(max_square,square);
+		}
 	}
+	cout << max_square;
 }
-cout << high << endl;
 ```
 
 </CPPSection>
 
+<!-- 
 <JavaSection>
 
 ```java
@@ -226,7 +242,7 @@ for i in range(n):
 print(high)
 ```
 
-</PySection>
+</PySection> -->
 
 </LanguageSection>
 
@@ -234,9 +250,52 @@ print(high)
 
 A couple notes:
 
-- First, since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount.
-- Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in an integer variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. Using a floating point variable will probably work, but you should generally stay with integers whenever possible.
+- Since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount.
+- Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in an integer variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. 
 
+<LanguageSection>
+
+<CPPSection>
+
+The following solution correctly stores the maximum distance in a floating point variable.
+
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int N; cin >> N;
+	vector<int> x(N), y(N);
+	for (int& t: x) cin >> t;
+	for (int& t: y) cin >> t;
+	double max_dist = 0;
+	for (int i = 0; i < N; i++) { // for each first point
+		for (int j = i+1; j < N; j++) { // for each second point
+			int dx = x[i]-x[j], dy = y[i]-y[j];
+			int square = dx*dx+dy*dy;
+			// if the square of the distance between the two points is greater than
+			// our current maximum, then update the maximum
+			max_dist = max(max_dist,sqrt(square));
+		}
+	}
+	cout << (int)pow(max_dist,2);
+}
+```
+
+However, it still fails on the following test case (it outputs 12, but the answer is 13):
+
+```
+2
+0 3
+2 0
+```
+
+Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you should stick with integers whenever possible.
+
+</CPPSection>
+
+</LanguageSection>
 </Spoiler>
 
 ## Problems

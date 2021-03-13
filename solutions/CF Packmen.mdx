@@ -41,48 +41,48 @@ using std::vector;
 
 // assumes packmen and food are all sorted and distinct (ALL the elements)
 bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
-    for (int p : packmen) {
-        vector<int> have_to_eat;
-        while (!food.empty() && food[0] < p) {
-            have_to_eat.push_back(food[0]);
-            food.pop_front();
-        }
+	for (int p : packmen) {
+		vector<int> have_to_eat;
+		while (!food.empty() && food[0] < p) {
+			have_to_eat.push_back(food[0]);
+			food.pop_front();
+		}
 
-        if (have_to_eat.empty()) {
-            // ok, don't have to eat anything to the left, let's to the right as much as possible
-            while (!food.empty() && food[0] - p <= time) {
-                food.pop_front();
-            }
-        } else {
-            if (p - have_to_eat[0] > time) {
-                // oof, we can't eat the leftmost pellet, so we can't eat all of them
-                return false;
-            }
+		if (have_to_eat.empty()) {
+			// ok, don't have to eat anything to the left, let's to the right as much as possible
+			while (!food.empty() && food[0] - p <= time) {
+				food.pop_front();
+			}
+		} else {
+			if (p - have_to_eat[0] > time) {
+				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				return false;
+			}
 
-            int left_time = p - have_to_eat[0];
-            int right_free_time = time - 2 * left_time;  // test for if we went to the left first
-            int left_first = -1;
-            while (left_first + 1 < food.size() && food[left_first + 1] - p <= right_free_time) {
-                left_first++;
-            }
+			int left_time = p - have_to_eat[0];
+			int right_free_time = time - 2 * left_time;  // test for if we went to the left first
+			int left_first = -1;
+			while (left_first + 1 < food.size() && food[left_first + 1] - p <= right_free_time) {
+				left_first++;
+			}
 
-            right_free_time = time - left_time;  // test for if we went to the right first
-            int right_first = -1;
-            while (right_first + 1 < food.size() && (food[right_first + 1] - p) * 2 <= right_free_time) {
-                right_first++;
-            }
+			right_free_time = time - left_time;  // test for if we went to the right first
+			int right_first = -1;
+			while (right_first + 1 < food.size() && (food[right_first + 1] - p) * 2 <= right_free_time) {
+				right_first++;
+			}
 
-            // take the maximum
-            for (int i = 0; i < std::max(left_first, right_first) + 1; i++) {
-                food.pop_front();
-            }
-        }
+			// take the maximum
+			for (int i = 0; i < std::max(left_first, right_first) + 1; i++) {
+				food.pop_front();
+			}
+		}
 
-        if (food.empty()) {
-            return true;
-        }
-    }
-    return food.empty();
+		if (food.empty()) {
+			return true;
+		}
+	}
+	return food.empty();
 }
 
 /**
@@ -93,37 +93,37 @@ bool all_eatable(const vector<int>& packmen, std::deque<int> food, int time) {
  * .**PP.*P.* should output 2
  */
 int main() {
-    int field_len;
-    cin >> field_len;
-    std::string field;
-    cin >> field;
-    for (char& c: field) {
-        c = toupper(c);
-    }
+	int field_len;
+	cin >> field_len;
+	std::string field;
+	cin >> field;
+	for (char& c: field) {
+		c = toupper(c);
+	}
 
-    vector<int> packmen;
-    std::deque<int> food;
-    for (int i = 0; i < field.length(); i++) {
-        if (field[i] == 'P') {
-            packmen.push_back(i);
-        } else if (field[i] == '*') {
-            food.push_back(i);
-        }
-    }
+	vector<int> packmen;
+	std::deque<int> food;
+	for (int i = 0; i < field.length(); i++) {
+		if (field[i] == 'P') {
+			packmen.push_back(i);
+		} else if (field[i] == '*') {
+			food.push_back(i);
+		}
+	}
 
-    int lo = 0;
-    int hi = field.length() * 2;
-    int valid = -1;
-    while (lo <= hi) {
-        int mid = (lo + hi) / 2;
-        if (all_eatable(packmen, food, mid)) {
-            valid = mid;
-            hi = mid - 1;
-        } else {
-            lo = mid + 1;
-        }
-    }
-    cout << valid << endl;
+	int lo = 0;
+	int hi = field.length() * 2;
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+		if (all_eatable(packmen, food, mid)) {
+			valid = mid;
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	cout << valid << endl;
 }
 ```
 
@@ -138,82 +138,82 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Packmen {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        read.readLine();
-        char[] field = read.readLine().toUpperCase().toCharArray();
-        ArrayList<Integer> packmen = new ArrayList<>();
-        ArrayList<Integer> food = new ArrayList<>();
-        for (int i = 0; i < field.length; i++) {
-            if (field[i] == 'P') {
-                packmen.add(i);
-            } else if (field[i] == '*') {
-                food.add(i);
-            }
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		read.readLine();
+		char[] field = read.readLine().toUpperCase().toCharArray();
+		ArrayList<Integer> packmen = new ArrayList<>();
+		ArrayList<Integer> food = new ArrayList<>();
+		for (int i = 0; i < field.length; i++) {
+			if (field[i] == 'P') {
+				packmen.add(i);
+			} else if (field[i] == '*') {
+				food.add(i);
+			}
+		}
 
-        int lo = 0;
-        int hi = field.length * 2;
-        int valid = -1;
-        while (lo <= hi) {
-            int mid = (lo + hi) / 2;
-            if (allEatable(packmen, food, mid)) {
-                valid = mid;
-                hi = mid - 1;
-            } else {
-                lo = mid + 1;
-            }
-        }
-        System.out.println(valid);
-    }
+		int lo = 0;
+		int hi = field.length * 2;
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (allEatable(packmen, food, mid)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		System.out.println(valid);
+	}
 
-    // assumes everything is like sorted and distinct so my life is easier
-    private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
-        /*
-         * because java deques don't allow indexing, we instead keep a
-         * pointer to the leftmost uneaten pellet and move it accordingly
-        */
-        int foodPointer = 0;
-        int foodAmt = food.size();  // shorthand
-        for (int p : packmen) {
-            ArrayList<Integer> haveToEat = new ArrayList<>();
-            while (foodPointer < foodAmt && food.get(foodPointer) < p) {
-                haveToEat.add(food.get(foodPointer++));
-            }
+	// assumes everything is like sorted and distinct so my life is easier
+	private static boolean allEatable(ArrayList<Integer> packmen, ArrayList<Integer> food, int time) {
+		/*
+		 * because java deques don't allow indexing, we instead keep a
+		 * pointer to the leftmost uneaten pellet and move it accordingly
+		*/
+		int foodPointer = 0;
+		int foodAmt = food.size();  // shorthand
+		for (int p : packmen) {
+			ArrayList<Integer> haveToEat = new ArrayList<>();
+			while (foodPointer < foodAmt && food.get(foodPointer) < p) {
+				haveToEat.add(food.get(foodPointer++));
+			}
 
-            if (haveToEat.isEmpty()) {
-                // ok, don't have to eat anything to the left, let's to the right as much as possible
-                while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
-                    foodPointer++;
-                }
-            } else {
-                // oof, we can't eat the leftmost pellet, so we can't eat all of them
-                if (p - haveToEat.get(0) > time) {
-                    return false;
-                }
-                int leftTime = p - haveToEat.get(0);
-                // try going to the left first then going to the right
-                int rightFreeTime = time - 2 * leftTime;
-                int leftFirst = -1;
-                while (foodPointer + leftFirst + 1 < foodAmt && food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
-                    leftFirst++;
-                }
+			if (haveToEat.isEmpty()) {
+				// ok, don't have to eat anything to the left, let's to the right as much as possible
+				while (foodPointer < foodAmt && food.get(foodPointer) - p <= time) {
+					foodPointer++;
+				}
+			} else {
+				// oof, we can't eat the leftmost pellet, so we can't eat all of them
+				if (p - haveToEat.get(0) > time) {
+					return false;
+				}
+				int leftTime = p - haveToEat.get(0);
+				// try going to the left first then going to the right
+				int rightFreeTime = time - 2 * leftTime;
+				int leftFirst = -1;
+				while (foodPointer + leftFirst + 1 < foodAmt && food.get(foodPointer + leftFirst + 1) - p <= rightFreeTime) {
+					leftFirst++;
+				}
 
-                // try going to the left first
-                rightFreeTime = time - leftTime;
-                int rightFirst = -1;
-                while (foodPointer + rightFirst + 1 < foodAmt && 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
-                    rightFirst++;
-                }
+				// try going to the left first
+				rightFreeTime = time - leftTime;
+				int rightFirst = -1;
+				while (foodPointer + rightFirst + 1 < foodAmt && 2 * (food.get(foodPointer + rightFirst + 1) - p) <= rightFreeTime) {
+					rightFirst++;
+				}
 
-                foodPointer += Math.max(leftFirst, rightFirst) + 1;
-            }
-            if (foodPointer >= foodAmt) {
-                return true;
-            }
-        }
-        return foodPointer >= foodAmt;
-    }
+				foodPointer += Math.max(leftFirst, rightFirst) + 1;
+			}
+			if (foodPointer >= foodAmt) {
+				return true;
+			}
+		}
+		return foodPointer >= foodAmt;
+	}
 }
 ```
 
@@ -238,39 +238,39 @@ from typing import List
 # assumes the positions are sorted, as well that the positions are distinct
 # a deque is also usable (it is used in the c++ version), but this method was found to be faster
 def eatable_in_time(food: List[int], packmen: List[int], time: int) -> bool:
-    food_pointer = 0
-    food_amt = len(food)  # convenient shorthand
-    for p in packmen:
-        have_to_eat = []
-        # just assign this packmen all the ones to its left which haven't been eaten
-        while food_pointer < food_amt and food[food_pointer] < p:
-            have_to_eat.append(food[food_pointer])
-            food_pointer += 1
+	food_pointer = 0
+	food_amt = len(food)  # convenient shorthand
+	for p in packmen:
+		have_to_eat = []
+		# just assign this packmen all the ones to its left which haven't been eaten
+		while food_pointer < food_amt and food[food_pointer] < p:
+			have_to_eat.append(food[food_pointer])
+			food_pointer += 1
 
-        if not have_to_eat:
-            while food_pointer < food_amt and food[food_pointer] - p <= time:
-                food_pointer += 1
+		if not have_to_eat:
+			while food_pointer < food_amt and food[food_pointer] - p <= time:
+				food_pointer += 1
 
-        else:
-            if p - have_to_eat[0] > time:  # can't eat all of the pellets if we can't eat the leftmost one
-                return False
+		else:
+			if p - have_to_eat[0] > time:  # can't eat all of the pellets if we can't eat the leftmost one
+				return False
 
-            # try 2 diff strats- go to the left first and switch back or go to the right and switch back
-            left_time = p - have_to_eat[0]
-            right_free_time = time - 2 * left_time
-            left_first = -1
-            while food_pointer + left_first + 1 < food_amt and food[food_pointer + left_first + 1] - p <= right_free_time:
-                left_first += 1
+			# try 2 diff strats- go to the left first and switch back or go to the right and switch back
+			left_time = p - have_to_eat[0]
+			right_free_time = time - 2 * left_time
+			left_first = -1
+			while food_pointer + left_first + 1 < food_amt and food[food_pointer + left_first + 1] - p <= right_free_time:
+				left_first += 1
 
-            right_free_time = time - left_time
-            right_first = -1
-            while food_pointer + right_first + 1 < food_amt and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
-                right_first += 1
-            food_pointer += max(left_first, right_first) + 1
+			right_free_time = time - left_time
+			right_first = -1
+			while food_pointer + right_first + 1 < food_amt and 2 * (food[food_pointer + right_first + 1] - p) <= right_free_time:
+				right_first += 1
+			food_pointer += max(left_first, right_first) + 1
 
-        if food_pointer >= food_amt:  # ok all the food's been eaten
-            return True
-    return food_pointer >= food_amt
+		if food_pointer >= food_amt:  # ok all the food's been eaten
+			return True
+	return food_pointer >= food_amt
 
 
 input()
@@ -279,21 +279,21 @@ field = input().upper()
 all_food = []
 all_packmen = []
 for v, c in enumerate(field):
-    if c == 'P':
-        all_packmen.append(v)
-    elif c == '*':
-        all_food.append(v)
+	if c == 'P':
+		all_packmen.append(v)
+	elif c == '*':
+		all_food.append(v)
 
 lo = 0
 hi = len(field) * 2
 valid = -1
 while lo <= hi:
-    mid = (lo + hi) // 2
-    if eatable_in_time(all_food, all_packmen, mid):
-        valid = mid
-        hi = mid - 1
-    else:
-        lo = mid + 1
+	mid = (lo + hi) // 2
+	if eatable_in_time(all_food, all_packmen, mid):
+		valid = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
 print(valid)
 ```
 

@@ -161,10 +161,6 @@ export class Problem {
   get uniqueID() {
     return this.url;
   }
-  get firebaseUniqueID() {
-    // Firebase does not allow forward slashes in document IDs
-    return this.uniqueID.replace(/\//g, '_');
-  }
 
   private autoGenerateInfoFromSource() {
     if (!(this.source in probSources) && isUsaco(this.source)) {
@@ -180,7 +176,7 @@ export class Problem {
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
         )
-          this.url = 'http://codeforces.com/' + this.url;
+          this.url = 'https://codeforces.com/' + this.url;
         else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];

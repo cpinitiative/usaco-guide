@@ -3,27 +3,52 @@ import { Frequency } from '../Frequency';
 import { DashboardProgressSmall } from '../Dashboard/DashboardProgress';
 import MarkCompleteButton from './MarkCompleteButton';
 import * as React from 'react';
-import { SolutionInfo } from '../../models/solution';
+// import { SolutionInfo } from '../../models/solution';
 import { SECTION_LABELS } from '../../../content/ordering';
 import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { useContext } from 'react';
 // import { timeAgoString } from '../Dashboard/ModuleLink';
 
+// https://stackoverflow.com/questions/50709625/link-with-target-blank-and-rel-noopener-noreferrer-still-vulnerable
+
 const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
-  let moduleLink = moduleLinks.find(x => x.id === prerequisite);
-  if (moduleLink)
-    return (
-      <li key={prerequisite}>
-        <a
-          href={moduleLink.url}
-          target="_blank"
-          className="underline text-black dark:text-blue-200"
-        >
-          {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-        </a>
-      </li>
-    );
+  if (prerequisite.startsWith('/')) {
+    // solution
+    let leading = prerequisite.split('#')[0];
+    if (leading.startsWith('/')) {
+      leading = leading.split('/')[2];
+    }
+    const moduleLink = moduleLinks.find(x => x.id === leading);
+    if (moduleLink)
+      return (
+        <li key={prerequisite}>
+          <a
+            href={prerequisite}
+            target="_blank"
+            rel="noreferrer"
+            className="underline text-black dark:text-blue-200"
+          >
+            {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
+          </a>
+        </li>
+      );
+  } else {
+    const moduleLink = moduleLinks.find(x => x.id === prerequisite);
+    if (moduleLink)
+      return (
+        <li key={prerequisite}>
+          <a
+            href={moduleLink.url}
+            target="_blank"
+            rel="noreferrer"
+            className="underline text-black dark:text-blue-200"
+          >
+            {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
+          </a>
+        </li>
+      );
+  }
   return <li key={prerequisite}>{prerequisite}</li>;
 };
 
@@ -33,14 +58,25 @@ export default function ModuleHeaders({
 }: {
   problemIDs: string[];
   moduleLinks: ModuleLinkInfo[];
-}) {
+}): JSX.Element {
   const {
     markdownLayoutInfo: markdownData,
     moduleProgress,
     handleCompletionChange,
+    uniqueID,
+    appearsIn,
   } = useContext(MarkdownLayoutContext);
 
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+  let prereqs = [];
+  if (markdownData instanceof ModuleInfo) {
+    prereqs = markdownData.prerequisites || [];
+  } else {
+    for (const link of appearsIn) {
+      prereqs.push(link + '#problem-' + uniqueID);
+    }
+  }
+  // const { activeIDs } = useContext(MarkdownLayoutContext);
 
   return (
     <>
@@ -83,7 +119,7 @@ export default function ModuleHeaders({
         } */}
       </div>
 
-      {markdownData instanceof ModuleInfo && markdownData.prerequisites && (
+      {prereqs.length > 0 && (
         <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -101,18 +137,43 @@ export default function ModuleHeaders({
             </div>
             <div className="ml-3">
               <h3 className="text-sm leading-5 font-medium text-blue-800 dark:text-dark-high-emphasis">
-                Prerequisites
+                {markdownData instanceof ModuleInfo
+                  ? 'Prerequisites'
+                  : 'Appears In'}
               </h3>
               <div className="mt-2 text-sm leading-5 text-blue-800 dark:text-blue-200">
                 <ul className="list-disc list-inside pl-3 space-y-1">
-                  {markdownData.prerequisites.map(x =>
-                    renderPrerequisite(x, moduleLinks)
-                  )}
+                  {prereqs.map(x => renderPrerequisite(x, moduleLinks))}
                 </ul>
               </div>
             </div>
           </div>
         </div>
+      )}
+
+      {uniqueID && (
+        <a
+          href={uniqueID}
+          target="_blank"
+          rel="noreferrer"
+          className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"
+        >
+          Problem Statement
+          <svg
+            className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        </a>
       )}
 
       {markdownData instanceof ModuleInfo && markdownData.description && (

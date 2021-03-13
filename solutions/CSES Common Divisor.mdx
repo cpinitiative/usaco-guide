@@ -17,24 +17,24 @@ using namespace std;
 
 int arr[200000];
 int gcd(int a, int b){
-    if(b == 0) return a;
-    return gcd(b, a%b);
+	if(b == 0) return a;
+	return gcd(b, a%b);
 }
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n; cin >> n;
-    for (int i = 0; i < n; i++){
-        cin >> arr[i];
-    }
-    int ans = 1;
-    for (int i = 0; i < n-1; i++){
-        for (int j = i+1; j < n; j++){
-            ans = max(ans, gcd(arr[i], arr[j]));
-        }
-    }
-    cout << ans;
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n; cin >> n;
+	for (int i = 0; i < n; i++){
+		cin >> arr[i];
+	}
+	int ans = 1;
+	for (int i = 0; i < n-1; i++){
+		for (int j = i+1; j < n; j++){
+			ans = max(ans, gcd(arr[i], arr[j]));
+		}
+	}
+	cout << ans;
+	return 0;
 }
 ```
 
@@ -51,26 +51,26 @@ using namespace std;
 
 int cnt[1000001]; //stores count of divisors
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n; cin >> n;
-    for (int i = 0; i < n; i++){
-        int a; cin >> a;
-        for (int j = 1; j*j <= a; j++) {
-            if(a % j == 0) {
-                cnt[j]++; 
-                if (j != a / j) cnt[a / j]++; 
-                // the divisor and quotient are both divisors of a
-            }
-        }
-    }
-    for (int i = 1000000; i >= 1; i--){
-        if(cnt[i] >= 2){
-            cout << i;
-            break;
-        }
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n; cin >> n;
+	for (int i = 0; i < n; i++){
+		int a; cin >> a;
+		for (int j = 1; j*j <= a; j++) {
+			if(a % j == 0) {
+				cnt[j]++; 
+				if (j != a / j) cnt[a / j]++; 
+				// the divisor and quotient are both divisors of a
+			}
+		}
+	}
+	for (int i = 1000000; i >= 1; i--){
+		if(cnt[i] >= 2){
+			cout << i;
+			break;
+		}
+	}
+	return 0;
 }
 ```
 
@@ -91,19 +91,19 @@ using namespace std;
 int cnt[1000001];
  
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    while (n--) {
-        int x; cin >> x;
-        cnt[x]++;
-    }
-    for (int i = 1000000; i; i--) {
-        int div = 0;
-        for (int j = i; j <= 1000000; j += i) div += cnt[j];
-        if (div > 1) return cout << i, 0;
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	while (n--) {
+		int x; cin >> x;
+		cnt[x]++;
+	}
+	for (int i = 1000000; i; i--) {
+		int div = 0;
+		for (int j = i; j <= 1000000; j += i) div += cnt[j];
+		if (div > 1) return cout << i, 0;
+	}
+	return 0;
 }
 ```

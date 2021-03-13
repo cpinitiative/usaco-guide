@@ -114,6 +114,76 @@ It is highly recommended you read it to gain a better understanding of the greed
 
 <LanguageSection>
 
+<CPPSection>
+
+From the [official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+using ll = long long;
+
+int main() {
+	freopen("breedflip.in", "r", stdin);
+	freopen("breedflip.out", "w", stdout);
+	ll n;
+	cin >> n;
+	string A;
+	string B;
+	cin >> A >> B;
+	ll ans = 0;
+	bool mismatched = false;
+	for(ll i=0; i<n; i++) {
+		if(A[i] != B[i]) {
+			if(!mismatched) {
+				mismatched = true;
+				ans++;
+			}
+		} else {
+			mismatched = false;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+From the [official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
+
+```java
+import java.io.*;
+import java.util.*;
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("breedflip.in"));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("breedflip.out")));
+		int n = Integer.parseInt(br.readLine());
+		char[] a = br.readLine().toCharArray();
+		char[] b = br.readLine().toCharArray();
+		int ret = 0;
+		while(!new String(a).equals(new String(b))) {
+			ret++;
+			int lhs = 0;
+			while(a[lhs] == b[lhs]) lhs++;
+			int rhs = n-1;
+			while(a[rhs] == b[rhs]) rhs--;
+			for(int i = lhs; i <= rhs; i++) {
+				if(a[i] == 'G') a[i] = 'H';
+				else a[i] = 'G';
+			}
+		}
+		pw.println(ret);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
 <PySection>
 
 ```py
@@ -126,35 +196,6 @@ s = [False]+[x != y for x,y in zip(a,b)] # difference list
 # now count occurrences of [False,True], as the first C++ solution does
 print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:])))
 ```
-
-<!--
-```python
-fin, fout = open('breedflip.in'), open('breedflip.out', 'w')
-
-n = int(fin.readline())
-
-a = fin.readline()
-b = fin.readline()
-
-s = []
-for x in range(n):
-    if a[x] != b[x]:
-        s.append(1)
-    else:
-        s.append(0)
-
-def count(x,s):
-    count = 0
-    for f in range(len(s) - 1):
-        if s[f] == int(x[0]) and s[f+ 1] == int(x[1]):
-            count += 1
-
-    return count
-
-s = [0] + s + [0]
-fout.write(str((count('01', s) + count('10', s))//2))
-```
- -->
 
 </PySection>
 

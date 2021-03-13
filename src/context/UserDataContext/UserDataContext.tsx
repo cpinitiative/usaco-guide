@@ -13,7 +13,6 @@ import HideTagsAndDifficulty, {
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import HideSols, { HideSolsAPI } from './properties/hideSols';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
 import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
@@ -87,7 +86,6 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
   new HideTagsAndDifficulty(),
-  new HideSols(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new DarkMode(),
@@ -101,7 +99,6 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndDifficultyAPI &
-  HideSolsAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   DarkModeAPI &
@@ -117,20 +114,20 @@ type UserDataContextAPI = UserLangAPI &
     onlineUsers: number;
     getDataExport: Function;
     importUserData: Function;
+    isAdmin: boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
   darkMode: false,
   firebaseUser: null,
+  isAdmin: false,
   getDataExport: () => {},
   importUserData: () => {},
   hideTagsAndDifficulty: false,
-  hideSols: false,
   divisionTableQuery: {
     division: '',
     season: '',
-    showSols: false,
   },
   isLoaded: true,
   lang: 'cpp',
@@ -147,7 +144,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
   },
   setDarkMode: x => {},
   setHideTagsAndDifficulty: x => {},
-  setHideSols: x => {},
   setDivisionTableQuery: x => {},
   setLang: x => {},
   setLastReadAnnouncement: x => {},
@@ -182,6 +178,7 @@ export const UserDataProvider = ({ children }) => {
   }, null);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   // const [onlineUsers, setOnlineUsers] = useState(0);
 
@@ -256,6 +253,7 @@ export const UserDataProvider = ({ children }) => {
           ReactDOM.unstable_batchedUpdates(() => {
             UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
             UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+            setIsAdmin(data.isAdmin ?? false);
             setIsLoaded(true);
             triggerRerender();
           });
@@ -276,10 +274,12 @@ export const UserDataProvider = ({ children }) => {
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
           UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+          setIsAdmin(false);
         });
     },
     isLoaded,
     onlineUsers: -1,
+    isAdmin,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {

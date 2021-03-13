@@ -125,7 +125,7 @@ export const problems = {
 			'Easy',
 			true,
 			['Bipartite'],
-			''
+			'usaco-920'
 		),
 		new Problem(
 			'Baltic OI',
@@ -335,33 +335,33 @@ public class Main{
 
 ```py
 def solve(n, adj):
-    unvisited = set(range(1, n+1))
-    starts = set()
+	unvisited = set(range(1, n+1))
+	starts = set()
 
-    def dfs(current):
-        for next in adj[current]:
-            if next in unvisited:
-                unvisited.remove(next)
-                dfs(next)
+	def dfs(current):
+		for next in adj[current]:
+			if next in unvisited:
+				unvisited.remove(next)
+				dfs(next)
 
-    while unvisited:
-        start = unvisited.pop()
-        starts.add(start)
-        dfs(start)
+	while unvisited:
+		start = unvisited.pop()
+		starts.add(start)
+		dfs(start)
 
-    print(len(starts) - 1)
-    root = starts.pop()
-    for other in starts:
-        print(root, other)
+	print(len(starts) - 1)
+	root = starts.pop()
+	for other in starts:
+		print(root, other)
 
 if __name__ == '__main__':
-    n, m = map(int, input().split())
-    adj = [set() for _ in range(n+1)]
-    for _ in range(m):
-        u, v = map(int, input().split())
-        adj[u].add(v)
-        adj[v].add(u)
-    solve(n, adj)
+	n, m = map(int, input().split())
+	adj = [set() for _ in range(n+1)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		adj[u].add(v)
+		adj[v].add(u)
+	solve(n, adj)
 ```
 
 Unfortunately, a danger in using DFS when dealing with large bounds is the possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the recursion limit in Python is set to [1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014) by default. So if you submit the above code, you'll get the following:

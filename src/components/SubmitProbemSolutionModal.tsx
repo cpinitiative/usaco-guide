@@ -9,87 +9,67 @@ import className from 'classnames';
 import ButtonGroup from './ButtonGroup';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
+import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
-export default function ProblemFeedbackModal({
+export default function SubmitProblemSolutionModal({
   isOpen,
   onClose,
   problem,
-  onSubmit,
-  loading,
-  showSuccess,
 }: {
   isOpen: boolean;
-  loading: boolean;
-  showSuccess: boolean;
   onClose: () => void;
   problem: Problem;
-  onSubmit: (feedback: ProblemFeedback) => void;
 }) {
-  const [difficulty, setDifficulty] = React.useState(null);
-  const [tags, setTags] = React.useState('');
   const [solutionCode, setSolutionCode] = React.useState('');
   const [codeLang, setCodeLang] = React.useState('');
   const [isCodePublic, setIsCodePublic] = React.useState(true);
-  const [otherFeedback, setOtherFeedback] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
+  const { submitSolution: submitAction } = useUserProblemSolutionActions();
   const { lang } = React.useContext(UserDataContext);
 
   React.useEffect(() => {
-    if (problem) {
-      setDifficulty(problem.difficulty);
-      setTags(problem.tags?.join(', ') ?? '');
+    if (isOpen) {
       setSolutionCode('');
       setIsCodePublic(true);
-      setOtherFeedback('');
       setCodeLang(lang);
+      setLoading(false);
+      setShowSuccess(false);
     }
-  }, [problem?.uniqueID]);
+  }, [isOpen]);
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    onSubmit({
-      difficulty,
-      tags: tags.split(', '),
+    if (solutionCode.length < 10) {
+      alert('Your solution seems too short!');
+      return;
+    }
+
+    setLoading(true);
+    submitAction({
+      isPublic: isCodePublic,
       solutionCode,
-      isCodePublic,
-      otherFeedback,
-    });
+      problemID: problem.uniqueID,
+      language: codeLang as any,
+    })
+      .then(() => setShowSuccess(true))
+      .catch(e => alert('Error: ' + e.message))
+      .finally(() => setLoading(false));
   };
 
-  const feedbackForm = (
+  const solutionForm = (
     <>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Problem Difficulty
-        </label>
-        <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
-          <ButtonGroup
-            options={PROBLEM_DIFFICULTY_OPTIONS}
-            value={difficulty}
-            onChange={x => setDifficulty(x)}
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Suggested Tags
-        </label>
-        <div className="mt-2 relative rounded-md shadow-sm">
-          <input
-            className="form-input block w-full sm:text-sm sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-            placeholder="DP, Dijkstra"
-            value={tags}
-            onChange={e => setTags(e.target.value)}
-          />
-        </div>
-      </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Solution Code
         </label>
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            Consider leaving solution notes at the top of the code as a comment.
+            Especially if sharing your code, consider cleaning it up and leaving
+            solution notes at the top. Make sure not to leave out any
+            headers/templates, and that your code passes all test cases!
           </p>
           <ButtonGroup
             options={['cpp', 'java', 'py']}
@@ -99,9 +79,9 @@ export default function ProblemFeedbackModal({
           />
 
           <div className="rounded-md shadow-sm mt-3">
-            <textarea
+            <TabIndentableTextarea
               rows={10}
-              className="form-textarea block w-full transition text-sm font-mono sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+              className="textarea font-mono"
               value={solutionCode}
               onChange={e => setSolutionCode(e.target.value)}
             />
@@ -114,8 +94,8 @@ export default function ProblemFeedbackModal({
             Share Solution Code
           </span>
           <span className="text-sm leading-normal text-gray-500 dark:text-gray-400">
-            This will allow other users to view your anonymized solution code if
-            they are stuck.
+            This will allow other users to view your solution code if they are
+            stuck.
           </span>
         </span>
         <span
@@ -175,25 +155,6 @@ export default function ProblemFeedbackModal({
           </span>
         </span>
       </div>
-      <div>
-        <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Other Feedback
-        </label>
-        <div>
-          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-            In case there's anything else you want to tell us.
-          </p>
-          <div className="rounded-md shadow-sm">
-            <textarea
-              rows={2}
-              className="form-textarea block w-full transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
-              value={otherFeedback}
-              onChange={e => setOtherFeedback(e.target.value)}
-              placeholder="I hated the problem / I loved the problem / etc"
-            />
-          </div>
-        </div>
-      </div>
     </>
   );
 
@@ -215,7 +176,7 @@ export default function ProblemFeedbackModal({
         </div>
         <div className="ml-3">
           <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
-            Feedback Submitted!
+            Solution Submitted!
           </h3>
           <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
             <p>Thanks for helping to improve the USACO Guide.</p>
@@ -295,14 +256,13 @@ export default function ProblemFeedbackModal({
               className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
               id="modal-headline"
             >
-              Problem Feedback for {problem?.name}
+              Submit Solution for {problem?.name}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Help us improve the USACO Guide by giving us feedback on the
-              problem {problem?.name}!
+              Help others out by submitting a solution for {problem?.name}!
             </p>
             <div className="mt-6 space-y-6">
-              {showSuccess ? successMessage : feedbackForm}
+              {showSuccess ? successMessage : solutionForm}
             </div>
           </div>
           <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -324,7 +284,7 @@ export default function ProblemFeedbackModal({
                     className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     disabled={loading}
                   >
-                    {loading ? 'Submitting...' : 'Submit Feedback'}
+                    {loading ? 'Submitting...' : 'Submit Solution'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

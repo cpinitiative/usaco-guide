@@ -48,45 +48,46 @@ export const problems = {
 			'Easy',
 			true,
 			['Functional Graph'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Swapity Swapity Swap',
-			'1014',
-			'Normal',
-			false,
-			['Permutation'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Dance Mooves',
-			'1086',
-			'Normal',
-			false,
-			['Permutation'],
-			''
-		),
-		new Problem(
-			'Gold',
-			'Dance Mooves',
-			'1091',
-			'Hard',
-			false,
-			['Permutation', '2P'],
-			''
+			'cses-1751'
 		),
 	],
 };
 
+<!--
+	new Problem(
+		'Silver',
+		'Swapity Swapity Swap',
+		'1014',
+		'Normal',
+		false,
+		['Permutation'],
+		'usaco-1014'
+	),
+	new Problem(
+		'Silver',
+		'Dance Mooves',
+		'1086',
+		'Normal',
+		false,
+		['Permutation'],
+		'usaco-1086'
+	),
+	new Problem(
+		'Gold',
+		'Dance Mooves',
+		'1091',
+		'Hard',
+		false,
+		['Permutation', '2P'],
+		''
+	), -->
 <!-- or http://www.usaco.org/index.php?page=viewproblem2&cpid=241 -->
 
-<FocusProblem problem={problems.sample[0]} />
+<Warning>
 
-<br />
+No Silver problem has required knowledge of the content presented in this module.
 
-It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it in $\mathcal{O}(N)$.
+</Warning>
 
 ## Introduction
 
@@ -231,43 +232,43 @@ import java.util.*;
 import java.io.*;
 
 public class Cooperative {
-    public static int g[];
-    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    public static void out(int arr[]) {
-        System.out.print("next");
-        for (int a: arr) {
-            System.out.print(" " + a);
-        }
-        System.out.println();
-        System.out.flush();
-    }
-    public static void read() throws Exception {
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        for (int i = 0; i < N; i++) {
-            String s = st.nextToken();
-            for (int j = 0; j < s.length(); j++)
-                g[s.charAt(j) - '0'] = i;
-        }
-    }
-    public static void main(String[] args) throws Exception {
-        g = new int[20];
-        for (;;) { // c*ceil(t/c) times
-            out(new int[]{0,1});
-            read();
-            out(new int[]{0});
-            read();
-            if (g[0] == g[1])
-                break;
-        }
-        for (;;) { // t times
-            out(new int[]{0,1,2,3,4,5,6,7,8,9});
-            read();
-            if (g[0] == g[2])
-                break;
-        }
-        System.out.println("done");
-    }
+	public static int g[];
+	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void out(int arr[]) {
+		System.out.print("next");
+		for (int a: arr) {
+			System.out.print(" " + a);
+		}
+		System.out.println();
+		System.out.flush();
+	}
+	public static void read() throws Exception {
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < N; i++) {
+			String s = st.nextToken();
+			for (int j = 0; j < s.length(); j++)
+				g[s.charAt(j) - '0'] = i;
+		}
+	}
+	public static void main(String[] args) throws Exception {
+		g = new int[20];
+		for (;;) { // c*ceil(t/c) times
+			out(new int[]{0,1});
+			read();
+			out(new int[]{0});
+			read();
+			if (g[0] == g[1])
+				break;
+		}
+		for (;;) { // t times
+			out(new int[]{0,1,2,3,4,5,6,7,8,9});
+			read();
+			if (g[0] == g[2])
+				break;
+		}
+		System.out.println("done");
+	}
 }
 ```
 
@@ -349,7 +350,13 @@ $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1
 
 </Spoiler>
 
-## Solution - Badge
+## Example - Badge
+
+<FocusProblem problem={problems.sample[0]} />
+
+<br />
+
+It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it in $\mathcal{O}(N)$.
 
 ### Solution 1
 
@@ -358,8 +365,12 @@ $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
 int N;
-vi P,ans;
+vector<int> P,ans;
 bool in_cycle;
 
 void gen(int x) {
@@ -373,10 +384,12 @@ void gen(int x) {
 }
 
 int main() {
-	setIO(); rv(N,P); trav(t,P) --t;
-	ans = vi(N,-2);
-	F0R(i,N) gen(i); // in_cycle is always reset to 0
-	trav(t,ans) pr(t+1,' ');
+	cin >> N;
+	P.assign(N, 0);
+	for(int& x:P) cin >> x, --x;
+	ans.assign(N, -2);
+	for(int i=0;i<N;++i) gen(i); // in_cycle is always reset to 0
+	for(int t:ans) cout << t+1 << " ";
 }
 ```
 
@@ -390,65 +403,79 @@ import java.util.*;
 
 public class badge
 {
-	static InputReader in = new InputReader(System.in);
-	static PrintWriter out = new PrintWriter(System.out);
+	static BufferedReader reader;
+	static PrintWriter writer;
 	public static final int MN = 1010;
-	public static int N;
-	public static int[] p = new int[MN], f = new int[MN];
-	public static boolean[] v = new boolean[MN], u = new boolean[MN];
-	public static int dfs(int n)
+	public static int[] p, ans;
+	public static boolean in_cycle;
+	public static void dfs(int n)
 	{
-		v[n]=u[n]=true;
-		if(u[p[n]]) //Cycle created
+		if(ans[n] != 0)
 		{
-			f[n]=n;//Nodes in cycle point to themselves
-			u[p[n]]=false;//remember where cycle started
-			u[n]=false;
-			return u != p[u] ? -1 : u;
+			if(ans[n] == -1) {in_cycle = true; ans[n] = n;} // found a cycle!
+			return;
 		}
-		else if(v[p[n]]) //You point into some already visited cycle
-		{
-			u[n]=false;
-			return f[n]=f[p[n]];
-		}
-		else
-		{
-			int t=dfs(p[n]); //t == -1 means you are in the cycle, and thus should point to yourself. Otherwise t is the node along the cycle that you point to
-			if(t!=-1)
-			{
-				u[n]=false;
-				return f[n]=t;
-			}
-			else if(u[n]) //You are part of the cycle, and so is the node that points to you.
-			{
-				u[n]=false;
-				f[n]=n;
-				return -1;
-			}
-			else //You are the start of the cycle. Whatever points to you is not part of the cycle anymore
-				return f[n]=n;
-		}
+		ans[n]=-1; dfs(p[n]);
+		if(ans[n] != -1) in_cycle = false;
+		else ans[n] = in_cycle ? n : ans[p[n]];
 	}
-	public static void main(String... args)
+	public static void main(String[] args) throws IOException
 	{
-		N = in.nextInt();
+		reader = new BufferedReader(new InputStreamReader(System.in));
+		writer = new PrintWriter(System.out);
+		p = new int[MN]; ans = new int[MN];
+
+		int N = Integer.parseInt(reader.readLine());
+		StringTokenizer st = new StringTokenizer(reader.readLine());
 		for (int i=1;i<=N;++i)
-			p[i]=in.nextInt();
+			p[i]=Integer.parseInt(st.nextToken());
+		reader.close();
+
 		for (int i=1;i<=N;++i)
-			if(!v[i])
-				dfs(i);
+			dfs(i); // in_cycle is always reset to false
+
 		for (int i=1;i<=N;++i)
-		{
-			out.print(f[i]);
-			if(i<N) out.print(" ");
-			else out.println();
-		}
-		out.close();
+			writer.print(ans[i]+" ");
+		writer.close();
 	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+N=int(input())
+p=list(map(int, input().split()))
+ans=[-1]*N
+in_cycle=False
+
+def dfs(x):
+	global in_cycle
+	if ans[x] != -1:
+		if ans[x] == -2: # found a cycle!
+			in_cycle = True
+			ans[x] = x
+		return
+	ans[x] = -2
+	dfs(p[x])
+	if ans[x] != -2:
+		in_cycle = False
+	else:
+		ans[x] = x if in_cycle else ans[p[x]]
+
+for i in range(N):
+	p[i] -= 1
+for i in range(N):
+	dfs(i) # in_cycle is always reset to False
+for i in range(N):
+	ans[i] += 1
+
+print(*ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -562,26 +589,26 @@ int main()
 import java.io.*;
 import java.util.*;
 public class badge2{
-    static boolean[] visited=new boolean[MAXN],onStack=new boolean[MAXN];
-    static int numberOfCycles=0;
-    static int[] nextNode=new int[MAXN];
-    public static void main(String[] args) throws IOException{
-        //Take in input
-        for(int i=1;i!=N;++i)
-            if(!visited[i])
-                dfs(i);
-        System.out.println();
-        System.out.close();
-    }
-    public static void dfs(int n){
-        visited[n]=onStack[n]=true;
-        int u=nextNode[n];
-        if(onStack[u])
-            ++numberOfCycles;
-        else if(!visited[u])
-            dfs(u);
-        onStack[n]=false;
-    }
+	static boolean[] visited=new boolean[MAXN],onStack=new boolean[MAXN];
+	static int numberOfCycles=0;
+	static int[] nextNode=new int[MAXN];
+	public static void main(String[] args) throws IOException{
+		//Take in input
+		for(int i=1;i!=N;++i)
+			if(!visited[i])
+				dfs(i);
+		System.out.println();
+		System.out.close();
+	}
+	public static void dfs(int n){
+		visited[n]=onStack[n]=true;
+		int u=nextNode[n];
+		if(onStack[u])
+			++numberOfCycles;
+		else if(!visited[u])
+			dfs(u);
+		onStack[n]=false;
+	}
 }
 ```
 

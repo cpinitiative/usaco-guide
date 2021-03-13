@@ -197,28 +197,12 @@ export default function USACOFAQPage(props: PageProps) {
         </div>
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16">
+      <div className="px-4 sm:px-6 lg:px-8 my-12 sm:my-16">
         <div className="max-w-3xl mx-auto">
           <div className="markdown">
             <MDXProvider components={customComponents}>
               <FAQ />
             </MDXProvider>
-          </div>
-
-          <hr className="my-12 border-gray-200 border-t" />
-
-          <div className="pb-8">
-            <DiscussionEmbed
-              shortname="usacoguide"
-              config={{
-                url: `https://usaco.guide/blog/usaco-faq`,
-                identifier: 'usaco-faq-page',
-              }}
-              // technically this isn't a valid prop, but disqus will detect the prop change
-              // and will re-render automatically.
-              // @ts-ignore
-              theme={darkMode ? 'dark' : 'light'}
-            />
           </div>
         </div>
       </div>

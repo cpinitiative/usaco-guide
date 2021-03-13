@@ -17,7 +17,7 @@ export const problems = {
 			'Easy',
 			false,
 			['Prime Factorization'],
-			'Prime factorize the given number. Consider each prime in the factorization separately. For each prime, decrement the exponent by 1 the first time, 2 the second time, and so on, until we can no longer continue without repeating a previously used exponent.'
+			'AC-DivGame'
 		),
 		new Problem('CSES', 'Common Divisors', '1081', 'Normal', true, [], 'cses-1081'),
 		new Problem(
@@ -51,6 +51,7 @@ If you've never encountered any **number theory** before, AoPS is a good place t
 	>
 		good book
 	</Resource>
+
 </Resources>
 
 ## Resources
@@ -69,6 +70,7 @@ If you've never encountered any **number theory** before, AoPS is a good place t
 	</Resource>
 	<Resource source="CPH" title="21.1 - Primes & Factors" starred></Resource>
 	<Resource source="PAPS" title="16.1, 16.2 - Number Theory"></Resource>
+	<Resource source="MONT@Modern Olympiad Number Theory" title="1, 3.1, and 3.2 - Divisors" url="https://artofproblemsolving.com/community/c6h2344755" starred></Resource>
 </Resources>
 
 <!-- <Resource source="CF" title="CodeNCode - Number Theory Course" url="77137">lots of advanced stuff you don't need to know at this level</Resource>
@@ -114,15 +116,15 @@ vector<int> factor(int n) {
 
 ```java
 ArrayList<Integer> factor(int n) {
-    ArrayList<Integer> factors = new ArrayList<>();
-    for (int i = 2; i * i <= n; i++) {
-        while (n % i == 0) {
-            factors.add(i);
-            n /= i;
-        }
-    }
-    if (n > 1) factors.add(n);
-    return factors;
+	ArrayList<Integer> factors = new ArrayList<>();
+	for (int i = 2; i * i <= n; i++) {
+		while (n % i == 0) {
+			factors.add(i);
+			n /= i;
+		}
+	}
+	if (n > 1) factors.add(n);
+	return factors;
 }
 ```
 
@@ -152,7 +154,17 @@ This algorithm runs in $\mathcal{O}(\sqrt{n})$ time, because the for loop checks
 
 Let's look at an example of how this algorithm works, for $n = 252$.
 
-![Example](factoralgorithm.png)
+<center>
+
+| $i$ | $n$   | $v$              |
+| --- | ----- | ---------------- |
+| $2$ | $252$ | $\{\}$           |
+| $2$ | $126$ | $\{2\}$          |
+| $2$ | $63$  | $\{2, 2\}$       |
+| $3$ | $21$  | $\{2, 2, 3\}$    |
+| $3$ | $7$   | $\{2, 2, 3, 3\}$ |
+
+</center>
 
 At this point, the for loop terminates, because $i$ is already 3 which is greater than $\lfloor \sqrt{7} \rfloor$. In the last step, we add $7$ to the list of factors $v$, because it otherwise won't be added, for a final prime factorization of $\{2, 2, 3, 3, 7\}$.
 
@@ -168,22 +180,22 @@ The most straightforward solution is just to do what the problem asks us to do -
 using namespace std;
  
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    while (n--) {
-        int x, ans = 0;
-        cin >> x;
-        for (int i = 1; i * i <= x; i++) {
-            if (x % i == 0) {
-                if (i * i == x) ans++;
-                else ans += 2;
-            }
-        }
-        cout << ans << '\n';
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	while (n--) {
+		int x, ans = 0;
+		cin >> x;
+		for (int i = 1; i * i <= x; i++) {
+			if (x % i == 0) {
+				if (i * i == x) ans++;
+				else ans += 2;
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
 }
 ```
 
@@ -195,50 +207,50 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int solve(int n) {
-        int divisors = 0;
-        for (int i = 1; i * i <= n; i++) {
-            if (n % i == 0) {
-                if (i * i == n) divisors++;
-                else divisors += 2;
-            }
-        }
-        return divisors;
-    }
+	static int solve(int n) {
+		int divisors = 0;
+		for (int i = 1; i * i <= n; i++) {
+			if (n % i == 0) {
+				if (i * i == n) divisors++;
+				else divisors += 2;
+			}
+		}
+		return divisors;
+	}
 
-    public static void main(String[] args) {
-        int n = r.nextInt();
-        for (int i = 0; i < n; i++) {
-            int x = r.nextInt();
-            pw.println(solve(x));
-        }
+	public static void main(String[] args) {
+		int n = r.nextInt();
+		for (int i = 0; i < n; i++) {
+			int x = r.nextInt();
+			pw.println(solve(x));
+		}
 
-        pw.close(); // flushes the output once printing is done
-    }
+		pw.close(); // flushes the output once printing is done
+	}
 
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
-        public InputReader(InputStream stream) {
-            reader = new BufferedReader(new InputStreamReader(stream), 32768);
-            tokenizer = null;
-        }
-        String next() { // reads in the next string
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
-        public long nextLong() { return Long.parseLong(next()); } // reads in the next long
-        public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
-    }
-    static InputReader r = new InputReader(System.in);
-    static PrintWriter pw = new PrintWriter(System.out);
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+		String next() { // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+		public int nextInt() { return Integer.parseInt(next()); } // reads in the next int
+		public long nextLong() { return Long.parseLong(next()); } // reads in the next long
+		public double nextDouble() { return Double.parseDouble(next()); } // reads in the next double
+	}
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
 }
 ```
 

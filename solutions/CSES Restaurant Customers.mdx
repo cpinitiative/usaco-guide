@@ -92,8 +92,8 @@ Adding interval $[1, 3]$ with increment point at $1$ and decrement at $3+1=4$
             <td className='bg-green-200 dark:bg-green-800'>1</td>
             <td>2</td>
             <td>0</td>
-            <td>-1</td>
-            <td className='bg-red-200 dark:bg-red-800'>-2</td>
+            <td className='bg-red-200 dark:bg-red-800'>-1</td>
+            <td>-2</td>
         </tr>
     </table>
 </center>
@@ -139,27 +139,27 @@ using pi = pair<int,int>;
 #define mp make_pair
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
+	ios::sync_with_stdio(false);
+	cin.tie(0);
 
-    int n; cin >> n;
-    vector<pi> vals;
-    for (int i = 0; i < n; i++) {
-        int l, r; 
-        cin >> l >> r;
-        vals.pb(mp(l, 1));
-        vals.pb(mp(r, -1));
-    }
+	int n; cin >> n;
+	vector<pi> vals;
+	for (int i = 0; i < n; i++) {
+		int l, r; 
+		cin >> l >> r;
+		vals.pb(mp(l, 1));
+		vals.pb(mp(r, -1));
+	}
 
-    sort(all(vals)); 
+	sort(all(vals)); 
 
-    int sum = 0;
-    int ans = 0;
-    for (auto x : vals) {
-        sum += x.s;
-        ans = max(ans, sum);
-    }
-    cout << ans << '\n';
+	int sum = 0;
+	int ans = 0;
+	for (auto x : vals) {
+		sum += x.s;
+		ans = max(ans, sum);
+	}
+	cout << ans << '\n';
 }
 ```
 
@@ -173,60 +173,45 @@ Coordinate compress interval endpoints and only compute the prefix sum array for
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-#define vt vector
-
-#define FOR(i, a, b) for(int i = (a); i < (b); i++)
-#define FORE(i, a, b) for(int i = (a); i <= (b); i++)
-#define F0R(i, a) for(int i = 0; i < (a); i++)
-#define trav(a, x) for (auto& a : x)
-
-void setIn(string s) { freopen(s.c_str(),"r",stdin); }
-void setOut(string s) { freopen(s.c_str(),"w",stdout); }
-void setIO(string s = "") {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    if (!s.empty()) { setIn(s+".in"), setOut(s+".out"); }
-}
-
-int N;
-
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    cin >> N;
-    vector<pair<int, int>> customers;
-    F0R(i, N) {
-        int a, b; cin >> a >> b;
-        customers.push_back({a, 1});
-        customers.push_back({b + 1, -1});
-    }
+	int N;
+	cin >> N;
+	vector<pair<int, int>> customers;
+	for (int i = 0; i < N; ++i) {
+		int a, b; cin >> a >> b;
+		customers.push_back({a, 1});
+		customers.push_back({b + 1, -1});
+	}
 
-    sort(customers.begin(), customers.end());
+	sort(customers.begin(), customers.end());
 
-    int curr = 0;
-    int l = 0;
-    vt<long long> pfx(2*N + 1); // prefix sum array
-    vt<int> arr(2*N);
+	int curr = 0;
+	int l = 0;
+	vector<long long> pfx(2*N + 1); // prefix sum array
+	vector<int> arr(2*N);
 
-    F0R(i, 2*N) { // coordinate compression
-        if(i == 0) { customers[i].first = 0; }
-        else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
-        arr[l+1] += customers[i].second;
-        // pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
-    }
+	for (int i = 0; i < 2*N; ++i) { // coordinate compression
+		if(i == 0) { customers[i].first = 0; }
+		else if(customers[i].first > curr) { l++; curr = customers[i].first; } // we move a pointer
+		arr[l+1] += customers[i].second;
+		// pfx[l+1] += customers[i].second; implementation without arr, merges all interval end and starts here
+	}
 
-    FOR(i, 1, 2*N+1) {
-        pfx[i] = arr[i] + pfx[i-1];
-        // pfx[i] += pfx[i-1]; implementation without arr
-    }
+	for (int i = 1; i < 2*N + 1; ++i) {
+		pfx[i] = arr[i] + pfx[i-1];
+		// pfx[i] += pfx[i-1]; implementation without arr
+	}
 
-    long long ret = 0;
+	long long ret = 0;
 
-    F0R(i, 2*N+1) ret = max(ret, pfx[i]); // find our maximum value
-    cout << ret << "\n";
+	for (int i = 0; i < 2*N + 1; ++i) 
+		ret = max(ret, pfx[i]); // find our maximum value
+	cout << ret << "\n";
 }
 ```
 

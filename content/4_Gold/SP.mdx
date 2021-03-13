@@ -9,8 +9,6 @@ description: 'Introduces Bellman-Ford, Floyd-Warshall, Dijkstra.'
 frequency: 3
 ---
 
-
-
 export const problems = {
 	sample: [
 		new Problem(
@@ -33,11 +31,35 @@ export const problems = {
 			['SP'],
 			'cses-1195'
 		),
-		new Problem('Gold', 'Milk Pumping', '969', 'Easy', false, ['SP'], 'usaco-969'),
-		new Problem('Gold', 'Why Did the Cow Cross the Road', '717', 'Easy', false, ['SP'], ''),
+		new Problem(
+			'Gold',
+			'Milk Pumping',
+			'969',
+			'Easy',
+			false,
+			['SP'],
+			'usaco-969'
+		),
+		new Problem(
+			'Gold',
+			'Why Did the Cow Cross the Road',
+			'717',
+			'Easy',
+			false,
+			['SP'],
+			''
+		),
 		new Problem('Gold', 'Fine Dining', '861', 'Easy', false, ['SP'], ''),
 		new Problem('Gold', 'Shortcut', '899', 'Normal', false, ['SP'], ''),
-		new Problem('CSES', 'Investigation', '1202', 'Normal', true, ['SP'], 'cses-1202'),
+		new Problem(
+			'CSES',
+			'Investigation',
+			'1202',
+			'Normal',
+			true,
+			['SP'],
+			'cses-1202'
+		),
 		new Problem(
 			'Kattis',
 			'Robot Turtles',
@@ -73,6 +95,15 @@ export const problems = {
 			true,
 			['SP', 'DP'],
 			'joi-18-commuter-pass'
+		),
+		new Problem(
+			'JOI',
+			'2021 - Robot',
+			'https://oj.uz/problem/view/JOI21_ho_t4',
+			'Hard',
+			true,
+			['SP'],
+			''
 		),
 		new Problem(
 			'APIO',
@@ -134,7 +165,7 @@ export const problems = {
 		false,
 		['APSP', 'DP'],
 		''
-	), 
+	),
 -->
 
 Nearly all Gold shortest path problems involve Dijkstra. However, it's a good idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
@@ -142,7 +173,9 @@ Nearly all Gold shortest path problems involve Dijkstra. However, it's a good id
 ## Bellman-Ford
 
 <Resources>
-	<Resource source="CPH" title="13.1 - Bellman-Ford">up to but not including "Negative Cycles"</Resource>
+	<Resource source="CPH" title="13.1 - Bellman-Ford">
+		up to but not including "Negative Cycles"
+	</Resource>
 </Resources>
 
 ## Floyd-Warshall
@@ -160,9 +193,14 @@ Nearly all Gold shortest path problems involve Dijkstra. However, it's a good id
 	<Resource
 		source="cp-algo"
 		title="Floyd-Warshall"
-		url="graph/all-pair-shortest-path-floyd-warshall.html" starred
-	>code, why it works</Resource>
-	<Resource source="PAPS" title="12.3.3 - Floyd-Warshall">code, why it works</Resource>
+		url="graph/all-pair-shortest-path-floyd-warshall.html"
+		starred
+	>
+		code, why it works
+	</Resource>
+	<Resource source="PAPS" title="12.3.3 - Floyd-Warshall">
+		code, why it works
+	</Resource>
 	<Resource source="CP2" title="4.5 - All-Pairs Shortest Paths"></Resource>
 </Resources>
 
@@ -209,7 +247,11 @@ The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although t
 		title="Dijkstra (Sparse Graphs)"
 		url="graph/dijkstra_sparse.html"
 	></Resource>
-	<Resource source="CPC" title="8 - Shortest Paths" url="08_graphs_2"></Resource>
+	<Resource
+		source="CPC"
+		title="8 - Shortest Paths"
+		url="08_graphs_2"
+	></Resource>
 	<Resource source="CP2" title="4.4.3 - SSSP on Weighted Graph"></Resource>
 </Resources>
 
@@ -220,9 +262,7 @@ The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although t
 		source="Benq"
 		title="Dijkstra"
 		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Basics/Dijkstra%20(7.3).h"
-	>
-		{' '}
-	</Resource>
+	/>
 </Resources>
 
 <LanguageSection>
@@ -284,71 +324,71 @@ import java.util.*;
 import java.io.*;
 
 public class test {
-   static class Pair<K, V> {
-      public K a;
-      public V b;
-      public Pair(K a, V b) {
-         this.a = a;
-         this.b = b;
-      }
-      public K getKey() {
-         return a;
-      }
-      public V getValue() {
-         return b;
-      }
-   }
-   static ArrayList<Pair<Integer, Integer>> graph[];
-   static long dist[];
-   static int N;
-   
-   static void dijkstra(int src) {
-   	//Set all distances to infinity
-      for (int i = 0; i < N; ++i) 
-         dist[i] = Long.MAX_VALUE;
-      PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>
-         ((a, b) -> Long.compare(a.getKey(), b.getKey()));
-      dist[src] = 0; // The shortest path from a node to itself is 0
-      pq.add(new Pair<Long, Integer>(0L, src));
-      while(!pq.isEmpty()) {
-         Pair<Long, Integer> p = pq.poll();
-         long cdist = p.getKey();
-         int node = p.getValue();
-         if(cdist != dist[node]) 
-            continue;
-         for (Pair<Integer, Integer> i : graph[node]) {
-            // If we can reach a neighbouring node faster,
-            // we update its minimum distance
-            if(cdist+i.getValue() < dist[i.getKey()]) {
-               dist[i.getKey()] = cdist + i.getValue();
-               pq.add(new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
-            }
-         }
-      }
-   }
-	
-   public static void main(String[] args) throws Exception {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      N = Integer.parseInt(st.nextToken());
-      int M = Integer.parseInt(st.nextToken());
-      graph = new ArrayList[N];
-      dist = new long[N];
-      for (int i = 0; i < N; i++) {
-         graph[i] = new ArrayList<Pair<Integer, Integer>>();
-      }
-      for (int i = 0; i < M; i++) {
-         st = new StringTokenizer(br.readLine());
-         int a = Integer.parseInt(st.nextToken());
-         int b = Integer.parseInt(st.nextToken());
-         int c = Integer.parseInt(st.nextToken());
-         graph[a - 1].add(new Pair<Integer, Integer>(b - 1, c));
-      }
-      dijkstra(0);
-      for (int i = 0; i < N; i++) {
-         System.out.print(dist[i] + " ");
-      }
-   }
+	static class Pair<K, V> {
+		public K a;
+		public V b;
+		public Pair(K a, V b) {
+			this.a = a;
+			this.b = b;
+		}
+		public K getKey() {
+			return a;
+		}
+		public V getValue() {
+			return b;
+		}
+	}
+	static ArrayList<Pair<Integer, Integer>> graph[];
+	static long dist[];
+	static int N;
+
+	static void dijkstra(int src) {
+		//Set all distances to infinity
+		for (int i = 0; i < N; ++i)
+			dist[i] = Long.MAX_VALUE;
+		PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>
+			((a, b) -> Long.compare(a.getKey(), b.getKey()));
+		dist[src] = 0; // The shortest path from a node to itself is 0
+		pq.add(new Pair<Long, Integer>(0L, src));
+		while(!pq.isEmpty()) {
+			Pair<Long, Integer> p = pq.poll();
+			long cdist = p.getKey();
+			int node = p.getValue();
+			if(cdist != dist[node])
+				continue;
+			for (Pair<Integer, Integer> i : graph[node]) {
+				// If we can reach a neighbouring node faster,
+				// we update its minimum distance
+				if(cdist+i.getValue() < dist[i.getKey()]) {
+					dist[i.getKey()] = cdist + i.getValue();
+					pq.add(new Pair<Long, Integer>(dist[i.getKey()], i.getKey()));
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		graph = new ArrayList[N];
+		dist = new long[N];
+		for (int i = 0; i < N; i++) {
+			graph[i] = new ArrayList<Pair<Integer, Integer>>();
+		}
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			graph[a - 1].add(new Pair<Integer, Integer>(b - 1, c));
+		}
+		dijkstra(0);
+		for (int i = 0; i < N; i++) {
+			System.out.print(dist[i] + " ");
+		}
+	}
 }
 ```
 
@@ -358,9 +398,9 @@ public class test {
 
 <Warning>
 
-It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test case of the above problem! 
+It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test case of the above problem!
 
-The last test case contains 100000 destinations and 149997 flights. City 1 has flights to cities 2 through 50000. Cities 2 through 50000 have flights to city 50001. City 50001 has flights to cities 50002 through 100000. Without the `continue`, after the program pops cities 1 through 50000 off the queue, the priority queue will contain 49999 routes that end at city 50001. Every one of the 49999 times city 50001 is popped off the queue and processed, we must iterate over all of its outgoing flights (to cities 50002 through 100000). This results in a runtime of $\Theta(N^2\log N)$, which will TLE. 
+The last test case contains 100000 destinations and 149997 flights. City 1 has flights to cities 2 through 50000. Cities 2 through 50000 have flights to city 50001. City 50001 has flights to cities 50002 through 100000. Without the `continue`, after the program pops cities 1 through 50000 off the queue, the priority queue will contain 49999 routes that end at city 50001. Every one of the 49999 times city 50001 is popped off the queue and processed, we must iterate over all of its outgoing flights (to cities 50002 through 100000). This results in a runtime of $\Theta(N^2\log N)$, which will TLE.
 
 On the other hand, if we did include the `continue`, the program will never iterate through the adjacency list of city 50001 after processing it for the first time.
 

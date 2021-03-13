@@ -2,7 +2,7 @@
 id: intro-sets
 title: Introduction to Sets & Maps
 author: Darren Yao, Benjamin Qi, Allen Li, DRGSH
-description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
+description: 'Maintaining collections of distinct elements in sorted order with ordered sets.'
 frequency: 2
 prerequisites:
   - intro-sorting
@@ -16,12 +16,22 @@ export const problems = {
 			'1621',
 			'Easy',
 			false,
-			[],
+			['Sorting', 'Set'],
 			'cses-1621',
 			'ok'
 		),
 	],
-	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
+	ex: [
+		new Problem(
+			'YS',
+			'Associative Array',
+			'associative_array',
+			'Easy',
+			false,
+			['Map'],
+			''
+		),
+	],
 	standard: [
 		new Problem(
 			'CSES',
@@ -52,6 +62,15 @@ export const problems = {
 		), // 97.41
 		new Problem(
 			'Bronze',
+			'Year of the Cow',
+			'1107',
+			'Normal',
+			false,
+			['Map'],
+			''
+		),
+		new Problem(
+			'Bronze',
 			'Not Last',
 			'687',
 			'Normal',
@@ -74,8 +93,8 @@ export const problems = {
 			'contest/831/problem/C',
 			'Normal',
 			false,
-			['Set'],
-			''
+			['Set', 'Prefix Sums'],
+			'jury-marks'
 		),
 	],
 };
@@ -121,7 +140,7 @@ s.erase(0); // [2, 4]
 // if the element to be removed does not exist, nothing happens
 
 for (int element : s) {
-    cout << element << " ";
+	cout << element << " ";
 }
 cout << endl;
 // You can iterate through an set in sorted order
@@ -147,7 +166,7 @@ set.remove(0); // [2, 4]
 // if the element to be removed does not exist, nothing happens
 
 for(int element : set){
-  System.out.println(element);
+	System.out.println(element);
 }
 // You can iterate through an set in sorted order
 ```
@@ -207,18 +226,18 @@ using namespace std;
 
 int main() {
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    set<int> distinctNumbers;
-    for (int i = 0; i < n; i++) {
-        int number; cin >> number;
-        distinctNumbers.insert(number);
-    }
+	set<int> distinctNumbers;
+	for (int i = 0; i < n; i++) {
+		int number; cin >> number;
+		distinctNumbers.insert(number);
+	}
 
-    cout << distinctNumbers.size() << endl;
+	cout << distinctNumbers.size() << endl;
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -274,88 +293,9 @@ print(len(distinct_nums))
 
 </LanguageSection>
 
-#### Method 2 - Sorting the Array
+#### Method 2 - Sorting
 
-This problem is also solvable without sets. Sort a vector containing all the numbers. The answer is the number of times two adjacent numbers are not equal; more formally, the number of times $a_i \neq a_{i + 1}$, plus one.
-
-<LanguageSection>
-	
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-int main() {
-
-    int n;
-    cin >> n;
-
-    int A[n];
-    for (int i = 0; i < n; ++i) {
-        cin >> A[i];
-    }
-
-    sort(A, A+n);
-
-    int answer = 1;
-
-    for (int i = 0; i < n - 1; ++i) {
-        if (A[i] != A[i + 1]) {
-            answer++;
-        }
-    }
-
-    cout << answer << endl;
-
-    return 0;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class DistinctNumbers {
-
-   public static void main(String[] args) throws IOException {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      int n = Integer.parseInt(br.readLine());
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      int[] arr = new int[n];
-      for (int i = 0; i < n; i++) {
-         arr[i] = Integer.parseInt(st.nextToken());
-      }
-      Arrays.sort(arr);
-      int ans = 1;
-      for (int i = 1; i < n; i++){
-         if(arr[i] != arr[i-1]){
-            ans++;
-         }
-      }
-      System.out.println(ans);
-   }
-}
-```
-
-</JavaSection>
-
-<PySection>
-
-```py
-n = int(input())
-arr = sorted([int(x) for x in input().split()])
-print(1+sum(a != b for a, b in zip(arr, arr[1:]))
-```
-
-</PySection>
-
-</LanguageSection>
+Check out the [sorting solution](/solutions/cses-1621).
 
 ## Maps
 
@@ -483,7 +423,7 @@ To iterate over maps, you can use a `for` loop over the keys.
 
 ```java
 for (int k : m.keySet()){
-    System.out.println(k + " " + m.get(k));
+	System.out.println(k + " " + m.get(k));
 }
 ```
 
@@ -495,21 +435,21 @@ To iterate over `dict`s, there are three options. Dicts will be returned in the 
 
 ```py
 for key in d:
-    print(key)
+	print(key)
 ```
 
 You can iterate over the values:
 
 ```py
 for value in d.values():
-    print(value)
+	print(value)
 ```
 
 You can iterate over the key-value pairs:
 
 ```py
 for key, value in d.items():
-    print(key, value)
+	print(key, value)
 ```
 
 </PySection>
@@ -798,7 +738,7 @@ void iterate_remove_set() {
 /*
 ENTRIES:
 1
- */
+*/
 ```
 
 However, `Iterator` is not commonly seen in Java, so the best option (in most cases) if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new Collection, and then use that new Collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original Collection. See the following code snippet for an example (it works equivalently to the code above):
@@ -825,7 +765,7 @@ void iterate_remove_set_good() {
 /*
 ENTRIES:
 1
- */
+*/
 ```
 
 </JavaSection>

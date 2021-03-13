@@ -17,7 +17,7 @@ export const problems = {
 			'convexhull',
 			'Easy',
 			false,
-			['convex'],
+			['Convex'],
 			''
 		),
 	],
@@ -28,7 +28,7 @@ export const problems = {
 			'roberthood',
 			'Easy',
 			false,
-			['convex'],
+			['Convex'],
 			"doesn't require convex hull since coordinates are small"
 		),
 	],
@@ -39,17 +39,17 @@ export const problems = {
 			'problemset/problem/1299/C',
 			'Easy',
 			false,
-			['convex'],
+			['Convex'],
 			''
 		),
-		new Problem('Plat', 'Balance Beam', '864', 'Normal', false, ['convex'], ''),
+		new Problem('Plat', 'Balance Beam', '864', 'Normal', false, ['Convex'], ''),
 		new Problem(
 			'CF',
 			'Geometers Anonymous',
 			'problemset/problem/1195/F',
 			'Normal',
 			false,
-			['convex', 'PURS'],
+			['Convex', 'PURS'],
 			''
 		),
 		new Problem(
@@ -58,7 +58,7 @@ export const problems = {
 			'382',
 			'Normal',
 			false,
-			['convex'],
+			['Convex'],
 			'testing whether points are inside hull'
 		),
 		new Problem(
@@ -67,7 +67,7 @@ export const problems = {
 			'fenceortho',
 			'Hard',
 			false,
-			['convex'],
+			['Convex'],
 			'enclosing rectangle'
 		),
 		new Problem(
@@ -76,7 +76,7 @@ export const problems = {
 			'https://atcoder.jp/contests/agc044/tasks/agc044_e',
 			'Very Hard',
 			false,
-			['convex'],
+			['Convex'],
 			''
 		),
 	],
@@ -201,62 +201,62 @@ T norm(const P& p) { return sq(p.f)+sq(p.s); } // x^2 + y^2
 
 // basic operations
 P operator-(const P& l, const P& r) { 
-    return P(l.f-r.f,l.s-r.s); 
+	return P(l.f-r.f,l.s-r.s); 
 }
 
 T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; } // cross product
 T cross(const P& p, const P& a, const P& b) { // cross product
-    return cross(a-p,b-p); 
+	return cross(a-p,b-p); 
 }
 
 using vi = vector<int>;
 using vP = vector<P>;
 
 vi hullInd(const vP& v) {
-    int ind = int(min_element(all(v))-begin(v));
-    vi cand, hull{ind};
-    F0R(i,sz(v)) if (v[i] != v[ind]) cand.pb(i);
+	int ind = int(min_element(all(v))-begin(v));
+	vi cand, hull{ind};
+	F0R(i,sz(v)) if (v[i] != v[ind]) cand.pb(i);
 
-    sort(all(cand),[&](int a, int b) { // sort by angle, tiebreak by distance
-        P x = v[a]-v[ind], y = v[b]-v[ind];
-        T t = cross(x,y);
-        return t != 0 ? t > 0 : norm(x) < norm(y);
-    });
+	sort(all(cand),[&](int a, int b) { // sort by angle, tiebreak by distance
+		P x = v[a]-v[ind], y = v[b]-v[ind];
+		T t = cross(x,y);
+		return t != 0 ? t > 0 : norm(x) < norm(y);
+	});
 
-    trav(c,cand) { // for every point
-        while (sz(hull) > 1 && cross(v[end(hull)[-2]],v[hull.bk],v[c]) <= 0) {
-            hull.pop_back(); // pop until counterclockwise and size > 1
-        }
-        hull.pb(c); 
-    }
+	trav(c,cand) { // for every point
+		while (sz(hull) > 1 && cross(v[end(hull)[-2]],v[hull.bk],v[c]) <= 0) {
+			hull.pop_back(); // pop until counterclockwise and size > 1
+		}
+		hull.pb(c); 
+	}
 
-    return hull;
+	return hull;
 }
 
 
 int main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    for(;;) {
-        int n; cin >> n;
-        if(!n) break;
-        vP pts(n);
-        
-        F0R(i, n) {
-            long long a, b;
-            cin >> a >> b;
-            pts[i] = P(a, b);
-        }
+	for(;;) {
+		int n; cin >> n;
+		if(!n) break;
+		vP pts(n);
+		
+		F0R(i, n) {
+			long long a, b;
+			cin >> a >> b;
+			pts[i] = P(a, b);
+		}
 
-        vi ret = hullInd(pts); // gets hull indices of convex hull
-        
-        cout << sz(ret) << '\n';
-        trav(a, ret) {
-            cout << pts[a].first << " " << pts[a].second << '\n';
-        }
-    }
+		vi ret = hullInd(pts); // gets hull indices of convex hull
+		
+		cout << sz(ret) << '\n';
+		trav(a, ret) {
+			cout << pts[a].first << " " << pts[a].second << '\n';
+		}
+	}
 }
 ```
 

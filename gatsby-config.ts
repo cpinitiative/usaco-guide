@@ -65,7 +65,7 @@ export const plugins = [
           resolve: `gatsby-remark-autolink-headers`,
           options: {
             // icon source: https://joshwcomeau.com/
-            icon: `<svg fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
           },
         },
         {
@@ -81,13 +81,16 @@ export const plugins = [
         // },
       ],
       remarkPlugins: [require(`remark-external-links`), require('remark-math')],
-      rehypePlugins: [require('./src/mdx-plugins/rehype-math.js')],
+      rehypePlugins: [
+        require('./src/mdx-plugins/rehype-math.js'),
+        require('./src/mdx-plugins/rehype-snippets.js'),
+      ],
       plugins: [
         {
           resolve: `gatsby-remark-autolink-headers`,
           options: {
             // icon source: https://joshwcomeau.com/
-            icon: `<svg fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
           },
         },
       ],
@@ -135,7 +138,11 @@ export const plugins = [
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
       denyUrls: [/extensions\//i, /^chrome:\/\//i],
-      defaultIntegrations: false,
+      ...(process.env.NODE_ENV === 'production'
+        ? {}
+        : {
+            defaultIntegrations: false,
+          }),
     },
   },
   {
@@ -159,14 +166,14 @@ export const plugins = [
       devMode: true,
     },
   },
-  {
-    resolve: `gatsby-plugin-hotjar`,
-    options: {
-      includeInDevelopment: false, // optional parameter to include script in development
-      id: 2173658,
-      sv: 6,
-    },
-  },
+  // {
+  //   resolve: `gatsby-plugin-hotjar`,
+  //   options: {
+  //     includeInDevelopment: false, // optional parameter to include script in development
+  //     id: 2173658,
+  //     sv: 6,
+  //   },
+  // },
   `gatsby-plugin-meta-redirect`,
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline

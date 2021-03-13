@@ -10,7 +10,7 @@ author: Óscar Garries (C++), Owen Wang (Java)
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -59,7 +59,7 @@ int main () {
 </CPPSection>
 <JavaSection>
 
-## Java Implementation
+## Implementation
 
 ```java
 import java.io.File;
@@ -67,43 +67,43 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class hps {
-    public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(new File("hps.in"));
-        PrintWriter out = new PrintWriter("hps.out");
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(new File("hps.in"));
+		PrintWriter out = new PrintWriter("hps.out");
 
-        int N = sc.nextInt();
-        int[] hooves = new int[N + 1];
-        int[] paper = new int[N + 1];
-        int[] scissors = new int[N + 1];
+		int N = sc.nextInt();
+		int[] hooves = new int[N + 1];
+		int[] paper = new int[N + 1];
+		int[] scissors = new int[N + 1];
 
-        for (int i = 1; i < N + 1; i++) {
-            char action = sc.next().charAt(0);
-            hooves[i] += hooves[i - 1];
-            paper[i] += paper[i - 1];
-            scissors[i] += scissors[i - 1];
-            if (action == 'H') {
-                paper[i] ++;
-            } else if (action == 'P') {
-                scissors[i] ++;
-            } else if (action == 'S') {
-                hooves[i] ++;
-            }
-        }
+		for (int i = 1; i < N + 1; i++) {
+			char action = sc.next().charAt(0);
+			hooves[i] += hooves[i - 1];
+			paper[i] += paper[i - 1];
+			scissors[i] += scissors[i - 1];
+			if (action == 'H') {
+				paper[i] ++;
+			} else if (action == 'P') {
+				scissors[i] ++;
+			} else if (action == 'S') {
+				hooves[i] ++;
+			}
+		}
 
-        sc.close();
+		sc.close();
 
-        int max = 0;
+		int max = 0;
 
-        for (int i = 1; i < N + 1; i++) {
-            int beforeWin = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
-            int afterWin = Math.max(hooves[N] - hooves[i], Math.max(paper[N] - paper[i], scissors[N] - scissors[i]));
+		for (int i = 1; i < N + 1; i++) {
+			int beforeWin = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
+			int afterWin = Math.max(hooves[N] - hooves[i], Math.max(paper[N] - paper[i], scissors[N] - scissors[i]));
 
-            max = Math.max(max, beforeWin + afterWin);
-        }
+			max = Math.max(max, beforeWin + afterWin);
+		}
 
-        out.println(max);
-        out.close();
-    }
+		out.println(max);
+		out.close();
+	}
 }
 ```
 

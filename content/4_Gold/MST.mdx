@@ -1,7 +1,7 @@
 ---
 id: mst
 title: 'Minimum Spanning Trees'
-author: Benjamin Qi, Andrew Wang
+author: Benjamin Qi, Andrew Wang, Neo Wang
 prerequisites:
   - sp
   - dsu
@@ -9,21 +9,12 @@ description: 'A subset of the edges of a connected, undirected, edge-weighted gr
 frequency: 2
 ---
 
-
 export const problems = {
 	standard: [
 		new Problem('CSES', 'Road Reparation', '1675', 'Easy', false, ['MST'], ''),
 	],
 	general: [
-		new Problem(
-			'Old Silver',
-			'Superbull',
-			'531',
-			'Easy',
-			false,
-			['MST'],
-			''
-		),
+		new Problem('Old Silver', 'Superbull', '531', 'Easy', false, ['MST'], ''),
 		new Problem('Gold', 'Fenced In', '623', 'Easy', false, ['MST'], ''),
 		new Problem(
 			'Gold',
@@ -31,7 +22,7 @@ export const problems = {
 			'946',
 			'Normal',
 			false,
-			['MST', 'Prim'],
+			['MST'],
 			'usaco-946'
 		),
 		new Problem(
@@ -63,6 +54,15 @@ export const problems = {
 			''
 		),
 		new Problem(
+			'APIO',
+			'2013 - Toll',
+			'https://oj.uz/problem/view/APIO13_toll',
+			'Insane',
+			false,
+			['MST', 'Bitmask'],
+			''
+		),
+		new Problem(
 			'Balkan OI',
 			'2011 - Timeismoney',
 			'http://oj.uz/problem/view/balkan11_timeismoney',
@@ -90,51 +90,45 @@ To review a couple of terms:
 ## Kruskal's
 
 <Resources>
-  <Resource source="CPH" title="15.1 - Kruskal's" starred></Resource>
-  <Resource
-    source="cp-algo"
-    title="Kruskal's"
-    url="graph/mst_kruskal.html"
-  ></Resource>
-  <Resource
-    source="cp-algo"
-    title="Kruskal's with DSU"
-    url="graph/mst_kruskal_with_dsu.html"
-  ></Resource>
-  <Resource source="CP2" title="4.3.2 - Kruskal's">
-    {' '}
-  </Resource>
+	<Resource source="CPH" title="15.1 - Kruskal's" starred></Resource>
+	<Resource source="cp-algo" title="Kruskal's" url="graph/mst_kruskal.html" />
+	<Resource
+		source="cp-algo"
+		title="Kruskal's with DSU"
+		url="graph/mst_kruskal_with_dsu.html"
+	/>
+	<Resource source="CP2" title="4.3.2 - Kruskal's" />
 </Resources>
 
 <!--  <Resource source="PAPS" title="12.4 - Kruskal's">
     description, example, explanation of correctness
   </Resource> -->
 
-**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$. 
-
+**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$.
 
 ### Implementation
+
 <LanguageSection>
 <CPPSection>
 
 <Resources>
-  <Resource
-    source="Benq (from KACTL)"
-    url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
-    title="DSU"
-  >
-    Disjoint Set Union + Kruskal
-  </Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
+		title="DSU"
+	>
+		Disjoint Set Union + Kruskal
+	</Resource>
 </Resources>
 
 ```cpp
 #include "DSU.h"
 
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-  sort(all(ed));
-  T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-  trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
-  return ans;
+	sort(all(ed));
+	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
+	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
+	return ans;
 }
 ```
 
@@ -148,34 +142,34 @@ public static PriorityQueue<Edge> pq; //contains all edges
 
 //Assumes that DSU code is included
 public static void kruskal() {
-    while (!pq.isEmpty()) {
-        Edge e = pq.poll();
-        if (find(e.start) != find(e.end)) {
-            MST.get(e.start).add(e.end);
-            MST.get(e.end).add(e.start);
-            union(e.start, e.end);
-        }
-    }
+	while (!pq.isEmpty()) {
+		Edge e = pq.poll();
+		if (find(e.start) != find(e.end)) {
+			MST.get(e.start).add(e.end);
+			MST.get(e.end).add(e.start);
+			union(e.start, e.end);
+		}
+	}
 }
 
 static class Edge implements Comparable<Edge> {
-    int start,
-    end,
-    weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
-    public int compareTo(Edge o) {
-        if (this.weight > o.weight) {
-            return 1;
-        } else if (this.weight == o.weight) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
+	int start,
+	end,
+	weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
+	public int compareTo(Edge o) {
+		if (this.weight > o.weight) {
+			return 1;
+		} else if (this.weight == o.weight) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 }
 ```
 
@@ -184,6 +178,10 @@ static class Edge implements Comparable<Edge> {
 </LanguageSection>
 
 ### Solution - Road Reparation
+
+Notice that the road that allows for a "decent route between any two cities," with cost "as small as possible" is the definition of a minimum spanning tree. Thus, we can use our favorite minimum spanning tree algorithm to determine the cost of such a tree by calculating $\sum c$ for all edges included in the tree.
+
+However, we must also account for the impossible case, which occurs when any nodes cannot be connected to the tree. Recall that the minimum spanning tree must contain a total of $n-1$ edges, so we can use a variable $cnt$ that is incremented every time we add an edge to the minimum spanning tree. After running Kruskal's, if $cnt \ne n-1$, then we know that we failed to built the tree properly. Furthermore, since our minimum spanning tree algorithm gurantees no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 
 <LanguageSection>
   
@@ -194,148 +192,147 @@ static class Edge implements Comparable<Edge> {
 #include <vector>
 #include <algorithm>
 using namespace std;
- 
+
 typedef long long ll;
 typedef pair<int, int> pi;
 typedef vector<int> vi;
- 
+
 #define trav(a,x) for (auto& a: x)
 #define all(x) begin(x), end(x)
 #define mp make_pair
 #define f first
 #define s second
- 
+
 struct DSU {
-    vi e; void init(int N) { e = vi(N,-1); }
-    // get representive component, uses path compression
-    int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-    bool sameSet(int a, int b) { return get(a) == get(b); }
-    int size(int x) { return -e[get(x)]; }
-    bool unite(int x, int y) { // union by size
-        x = get(x), y = get(y); if (x == y) return 0;
-        if (e[x] > e[y]) swap(x,y);
-        e[x] += e[y]; e[y] = x; return 1;
-    }
+	vi e; void init(int N) { e = vi(N,-1); }
+	// get representive component, uses path compression
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	bool sameSet(int a, int b) { return get(a) == get(b); }
+	int size(int x) { return -e[get(x)]; }
+	bool unite(int x, int y) { // union by size
+		x = get(x), y = get(y); if (x == y) return 0;
+		if (e[x] > e[y]) swap(x,y);
+		e[x] += e[y]; e[y] = x; return 1;
+	}
 };
- 
-int comp;
+
+int cnt=0;
 template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-    sort(all(ed));
-    T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
-    trav(a,ed)
-    if (D.unite(a.s.f,a.s.s)) {
-        ans += a.f;
-        comp--;
-    }
-    return ans;
+	sort(all(ed));
+	T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
+	trav(a,ed)
+	if (D.unite(a.s.f,a.s.s)) {
+		ans += a.f;
+		cnt++;
+	}
+	return ans;
 }
- 
+
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n, m; cin >> n >> m;
-    vector<pair<ll,pi>> edge;
-    for (int i = 0; i < m; i++){
-        int a, b; ll c;
-        cin >> a >> b >> c;
-        edge.push_back(mp(c, mp(a, b)));
-    }
-    comp = n;
-    ll ans = kruskal(n, edge);
-    if(comp == 1){
-        cout << ans;
-    }
-    else{
-        cout << "IMPOSSIBLE";
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m; cin >> n >> m;
+	vector<pair<ll,pi>> edge;
+	for (int i = 0; i < m; i++){
+		int a, b; ll c;
+		cin >> a >> b >> c;
+		edge.push_back(mp(c, mp(a, b)));
+	}
+	ll ans = kruskal(n, edge);
+	if(cnt == n-1){
+		cout << ans;
+	}
+	else{
+		cout << "IMPOSSIBLE";
+	}
+	return 0;
 }
 ```
+
 </CPPSection>
 
 <JavaSection>
-
 
 ```java
 import java.io.*;
 import java.util.*;
 
 class kruskal {
-    static int comp;
-    static int disjoint[];
-    static int size[];
-    public static void main(String[] args) throws IOException {
-        BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(sc.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+	static int comp;
+	static int disjoint[];
+	static int size[];
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 
-        PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
-        for (int m = 0; m < M; m++) {
-            st = new StringTokenizer(sc.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+		PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 
-            pq.add(new Edge(a, b, w));
-        }
-        comp = N;
-        long ans = 0;
-        disjoint = new int[N + 1];
-        Arrays.fill(disjoint, -1);
-        size = new int[N + 1];
-        Arrays.fill(size, 0);
-        while (!pq.isEmpty()) {
-            Edge e = pq.poll();
-            if (find(e.start) != find(e.end)) {
-                union(e.start, e.end);
-                ans += e.weight;
-            }
-        }
-        out.println((comp == 1) ? ans : "IMPOSSIBLE");
-        out.close();
-    }
-    public static int find(int v) {
-        if (disjoint[v] == -1) {
-            return v;
-        }
-        disjoint[v] = find(disjoint[v]);
-        return disjoint[v];
-    }
-    public static void union(int u, int v) {
-        int uroot = find(u);
-        int vroot = find(v);
-        if (uroot == vroot) {
-            return;
-        }
-        if (size[uroot] < size[vroot]) {
-            disjoint[uroot] = vroot;
-            size[vroot] = size[uroot] + size[vroot];
-            comp--;
-        } else {
-            disjoint[vroot] = uroot;
-            size[uroot] = size[uroot] + size[vroot];
-            comp--;
-        }
-    }
+			pq.add(new Edge(a, b, w));
+		}
+		comp = N;
+		long ans = 0;
+		disjoint = new int[N + 1];
+		Arrays.fill(disjoint, -1);
+		size = new int[N + 1];
+		Arrays.fill(size, 0);
+		while (!pq.isEmpty()) {
+			Edge e = pq.poll();
+			if (find(e.start) != find(e.end)) {
+				union(e.start, e.end);
+				ans += e.weight;
+			}
+		}
+		out.println((comp == 1) ? ans : "IMPOSSIBLE");
+		out.close();
+	}
+	public static int find(int v) {
+		if (disjoint[v] == -1) {
+			return v;
+		}
+		disjoint[v] = find(disjoint[v]);
+		return disjoint[v];
+	}
+	public static void union(int u, int v) {
+		int uroot = find(u);
+		int vroot = find(v);
+		if (uroot == vroot) {
+			return;
+		}
+		if (size[uroot] < size[vroot]) {
+			disjoint[uroot] = vroot;
+			size[vroot] = size[uroot] + size[vroot];
+			comp--;
+		} else {
+			disjoint[vroot] = uroot;
+			size[uroot] = size[uroot] + size[vroot];
+			comp--;
+		}
+	}
 }
 class Edge implements Comparable<Edge> {
-    public int start, end, weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
-    public int compareTo(Edge o) {
-        if (this.weight < o.weight) {
-            return -1;
-        } else if (this.weight == o.weight) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
+	public int start, end, weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
+	public int compareTo(Edge o) {
+		if (this.weight < o.weight) {
+			return -1;
+		} else if (this.weight == o.weight) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 }
 ```
 
@@ -345,26 +342,26 @@ class Edge implements Comparable<Edge> {
 ## Prim's
 
 <Resources>
-  <Resource source="CPH" title="15.3 - Prim's" starred></Resource>
-  <Resource
-    source="cp-algo"
-    title="Prim's"
-    url="graph/mst_prim.html"
-  ></Resource>
-  <Resource source="CP2" title="4.3.3 - Prim's">
-    {' '}
-  </Resource>
+	<Resource source="CPH" title="15.3 - Prim's" starred></Resource>
+	<Resource
+		source="cp-algo"
+		title="Prim's"
+		url="graph/mst_prim.html"
+	></Resource>
+	<Resource source="CP2" title="4.3.3 - Prim's">
+		{' '}
+	</Resource>
 </Resources>
 
-Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added. 
+Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added.
 
-The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue. 
+The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue.
 
 ### Complexity
 
-Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue. 
+Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue.
 
-Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$). 
+Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$).
 
 ### Solution - Road Reparation
 
@@ -392,51 +389,51 @@ vector<pl> adj[200000];
 int n;
 ll MAX = 100000000000L;
 ll prim(){
-    ll weight = 0;
-    vector<bool> selected(n, false);
-    vector<ll> min(n, MAX);
-    min[0] = 0;
-    set<pl> q;
-    q.insert({0, 0});
-    vector<bool> visited(n, false);
-    for (int i = 0; i < n; ++i) {
-        if (q.empty()) {
-            return -1;
-        }
-        int v = q.begin() -> s;
-        visited[v] = true;
-        weight += q.begin()-> f;
-        q.erase(q.begin());
+	ll weight = 0;
+	vector<bool> selected(n, false);
+	vector<ll> min(n, MAX);
+	min[0] = 0;
+	set<pl> q;
+	q.insert({0, 0});
+	vector<bool> visited(n, false);
+	for (int i = 0; i < n; ++i) {
+		if (q.empty()) {
+			return -1;
+		}
+		int v = q.begin() -> s;
+		visited[v] = true;
+		weight += q.begin()-> f;
+		q.erase(q.begin());
 
-        for (pl e : adj[v]) {
-            if(!visited[e.s] && e.f < min[e.s]) {
-                q.erase({min[e.s], e.s});
-                min[e.s] = e.f;
-                q.insert({e.f, e.s});
-            }
-        }
-    }
-    return weight;
+		for (pl e : adj[v]) {
+			if(!visited[e.s] && e.f < min[e.s]) {
+				q.erase({min[e.s], e.s});
+				min[e.s] = e.f;
+				q.insert({e.f, e.s});
+			}
+		}
+	}
+	return weight;
 }
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int m; cin >> n >> m;
-    for (int i = 0; i < m; i++){
-        int a, b; ll c;
-        cin >> a >> b >> c;
-        a--; b--;
-        adj[a].pb(mp(c, b));
-        adj[b].pb(mp(c, a));
-    }
-    ll ans = prim();
-    if(ans == -1){
-        cout << "IMPOSSIBLE";
-    }
-    else{
-        cout << ans;
-    }
-    return 0;
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int m; cin >> n >> m;
+	for (int i = 0; i < m; i++){
+		int a, b; ll c;
+		cin >> a >> b >> c;
+		a--; b--;
+		adj[a].pb(mp(c, b));
+		adj[b].pb(mp(c, a));
+	}
+	ll ans = prim();
+	if(ans == -1){
+		cout << "IMPOSSIBLE";
+	}
+	else{
+		cout << ans;
+	}
+	return 0;
 }
 ```
 
@@ -449,85 +446,85 @@ import java.io.*;
 import java.util.*;
 
 class prim {
-    static Map<Integer, ArrayList<Edge>> tree;
-    static int N, ct;
-    static long[] dist;
-    static long max = 10000000000000000 L;
-    public static void main(String[] args) throws IOException {
-        BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(sc.readLine());
-        N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+	static Map<Integer, ArrayList<Edge>> tree;
+	static int N, ct;
+	static long[] dist;
+	static long max = 10000000000000000 L;
+	public static void main(String[] args) throws IOException {
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(sc.readLine());
+		N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 
-        tree = new HashMap<Integer, ArrayList<Edge>> ();
-        for (int i = 1; i <= N; i++) {
-            tree.put(i, new ArrayList<Edge> ());
-        }
-        for (int m = 0; m < M; m++) {
-            st = new StringTokenizer(sc.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+		tree = new HashMap<Integer, ArrayList<Edge>> ();
+		for (int i = 1; i <= N; i++) {
+			tree.put(i, new ArrayList<Edge> ());
+		}
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(sc.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 
-            tree.get(a).add(new Edge(a, b, w));
-            tree.get(b).add(new Edge(b, a, w));
-        }
-        long ans = prim(1);
-        out.println((ct == N) ? ans : "IMPOSSIBLE");
-        out.close();
-    }
-    static long prim(int source) {
-        dist = new long[N + 1];
-        boolean[] visited = new boolean[N + 1];
-        PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
-        Arrays.fill(dist, max);
-        dist[source] = 0;
-        long ret = 0;
-        pq.add(new Pair(0, source));
-        while (!pq.isEmpty()) {
-            Pair p = pq.poll();
-            int v = p.b;
-            if (visited[v]) {
-                continue;
-            }
-            visited[v] = true;
-            ct++;
-            ret += dist[v];
-            for (Edge e: tree.get(v)) {
-                if (e.weight < dist[e.end] && !visited[e.end]) {
-                    dist[e.end] = e.weight;
-                    pq.add(new Pair(dist[e.end], e.end));
-                }
-            }
-        }
-        return ret;
-    }
+			tree.get(a).add(new Edge(a, b, w));
+			tree.get(b).add(new Edge(b, a, w));
+		}
+		long ans = prim(1);
+		out.println((ct == N) ? ans : "IMPOSSIBLE");
+		out.close();
+	}
+	static long prim(int source) {
+		dist = new long[N + 1];
+		boolean[] visited = new boolean[N + 1];
+		PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
+		Arrays.fill(dist, max);
+		dist[source] = 0;
+		long ret = 0;
+		pq.add(new Pair(0, source));
+		while (!pq.isEmpty()) {
+			Pair p = pq.poll();
+			int v = p.b;
+			if (visited[v]) {
+				continue;
+			}
+			visited[v] = true;
+			ct++;
+			ret += dist[v];
+			for (Edge e: tree.get(v)) {
+				if (e.weight < dist[e.end] && !visited[e.end]) {
+					dist[e.end] = e.weight;
+					pq.add(new Pair(dist[e.end], e.end));
+				}
+			}
+		}
+		return ret;
+	}
 }
 class Edge {
-    public int start, end, weight;
-    public Edge(int s, int e, int w) {
-        start = s;
-        end = e;
-        weight = w;
-    }
+	public int start, end, weight;
+	public Edge(int s, int e, int w) {
+		start = s;
+		end = e;
+		weight = w;
+	}
 }
 class Pair implements Comparable<Pair> {
-    public long a;
-    public int b;
-    public Pair(long a, int b) {
-        this.a = a;
-        this.b = b;
-    }
-    public int compareTo(Pair o) {
-        if (this.a > o.a) {
-            return 1;
-        } else if (this.a == o.a) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
+	public long a;
+	public int b;
+	public Pair(long a, int b) {
+		this.a = a;
+		this.b = b;
+	}
+	public int compareTo(Pair o) {
+		if (this.a > o.a) {
+			return 1;
+		} else if (this.a == o.a) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
 }
 ```
 

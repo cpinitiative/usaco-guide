@@ -1,15 +1,13 @@
 ---
 id: tree-euler
 title: 'Euler Tour Technique'
-author: Benjamin Qi, Andi Qu, Andrew Wang
+author: Benjamin Qi, Andi Qu, Andrew Wang, Neo Wang
 prerequisites:
   - intro-tree
   - PURS
 description: 'Flattening a tree into an array to easily query and update subtrees.'
 frequency: 2
 ---
-
-
 
 export const problems = {
 	sample: [
@@ -132,7 +130,7 @@ If we can preprocess a rooted tree such that every subtree corresponds to a cont
 
 ### Implementation
 
-After running `dfs()`, each range `[st[i], en[i]]` contains all ranges `[st[j], en[j]]` for each `j` in the subtree of `i`. Also, `en[i]-st[i]+1` is equal to the subtree size of `i`.
+After running $\text{dfs}()$, each range $[\texttt{st}[i], \texttt{en}[i]]$ contains all ranges $[\texttt{st}[j], \texttt{en}[j]]$ for each $j$ in the subtree of $i$. Also, $\texttt{en}[i]-\texttt{st}[i]+1$ is equal to the subtree size of $i$.
 
 <LanguageSection>
 
@@ -172,11 +170,237 @@ public static void dfs(int i, int p) {
 
 </LanguageSection>
 
-<IncompleteSection>
+### Example Input
 
-example input
+```
+5 3
+4 2 5 2 1
+1 2
+1 3
+3 4
+3 5
+2 3
+1 5 3
+2 3
+```
 
-</IncompleteSection>
+Our example input corresponds to the following graph: 
+
+<center>
+
+<svg style="isolation:isolate" className='stroke-current fill-current text-black dark:text-white' viewBox="540 200 747 532" height="240pt">
+  <defs>
+    <clipPath id="a">
+      <path d="M540 200h747v532H540z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#a)">
+    <mask id="b">
+      <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="#fff"/>
+    </mask>
+    <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="none"/>
+    <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="none" mask="url(#b)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
+    <g clip-path="url(#c)">
+      <text transform="translate(879.5 396.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
+        1
+      </text>
+    </g>
+    <defs>
+      <clipPath id="c">
+        <path transform="translate(879.5 344.816)" d="M0 0h30v65.367H0z"/>
+      </clipPath>
+    </defs>
+    <mask id="d">
+      <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="#fff"/>
+    </mask>
+    <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="none"/>
+    <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="none" mask="url(#d)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
+    <g clip-path="url(#e)">
+      <text transform="translate(589.5 283.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
+        2
+      </text>
+    </g>
+    <defs>
+      <clipPath id="e">
+        <path transform="translate(589.5 231.816)" d="M0 0h30v65.367H0z"/>
+      </clipPath>
+    </defs>
+    <g>
+      <mask id="f">
+        <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="#fff"/>
+      </mask>
+      <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="none"/>
+      <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="none" mask="url(#f)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
+      <g clip-path="url(#g)">
+        <text transform="translate(1207.5 355.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
+          5
+        </text>
+      </g>
+      <defs>
+        <clipPath id="g">
+          <path transform="translate(1207.5 303.816)" d="M0 0h30v65.367H0z"/>
+        </clipPath>
+      </defs>
+    </g>
+    <g>
+      <mask id="h">
+        <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="#fff"/>
+      </mask>
+      <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="none"/>
+      <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="none" mask="url(#h)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
+      <g clip-path="url(#i)">
+        <text transform="translate(767.5 686.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
+          4
+        </text>
+      </g>
+      <defs>
+        <clipPath id="i">
+          <path transform="translate(767.5 634.816)" d="M0 0h30v65.367H0z"/>
+        </clipPath>
+      </defs>
+    </g>
+    <g>
+      <mask id="j">
+        <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="#fff"/>
+      </mask>
+      <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="none"/>
+      <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="none" mask="url(#j)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
+      <g clip-path="url(#k)">
+        <text transform="translate(1104.5 686.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
+          3
+        </text>
+      </g>
+      <defs>
+        <clipPath id="k">
+          <path transform="translate(1104.5 634.816)" d="M0 0h30v65.367H0z"/>
+        </clipPath>
+      </defs>
+    </g>
+    <path vector-effect="non-scaling-stroke" stroke-width="5" stroke-linecap="square" stroke-miterlimit="3" d="M835 356l-174-63M1058 674l-212-3M1085 615L938 420M1141 610l69-213"/>
+  </g>
+</svg>
+
+</center>
+
+Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with zeros. In this visualization, the first row represents the node indices, the second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
+
+**Current timer value: 0**
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer value of $0$. Then, we proceed to call $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$.
+
+**Current timer value: 1**
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td className='bg-green-100 dark:bg-green-700'>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not matter which order we process these in, so for this example, we start with $\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{st}[2]$ to 1 and increment the timer. However, because node $2$ has no children, we don't call $\text{dfs}$. Instead, we set $\texttt{en}[2]$ to 1 because our current timer is now 2.
+
+**Current timer value: 2**
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td>0</td><td className='bg-green-100 dark:bg-green-700'>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>en[i]</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set $\texttt{st}[3]$ to the value of the timer (2 in this case) and increment the timer. Then, we proceed to make the calls $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$.
+
+**Current timer value: 3**
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td>0</td><td>1</td><td className='bg-green-100 dark:bg-green-700'>2</td><td>0</td><td>0</td>
+</tr>
+<tr>
+<td>en[i]</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now we must resolve $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$. First, we resolve $\text{dfs}(4, 3)$ by setting $\texttt{st}[4]$ to the value of the timer (3 in this case) and incrementing the timer. Then, since node $4$ has no children, set $\texttt{en}[4]$ to 3.
+
+Now the value of the timer is 4, and we must resolve $\text{dfs}(5, 3)$. Similar to before, we set $\texttt{st}[5]$ to 4. Since node $5$ also has no children, set $\texttt{en}[5]$ to 4.
+
+**Current timer value: 5**
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td>0</td><td>1</td><td>2</td><td className='bg-green-100 dark:bg-green-700'>3</td><td className='bg-green-100 dark:bg-green-700'>4</td>
+</tr>
+<tr>
+<td>en[i]</td><td>0</td><td>1</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>3</td><td className='bg-red-100 dark:bg-red-700'>4</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$ calls. We first encounter and resolve node $3$, setting $\texttt{en}[3]$ to 4. We then do the same for node $1$, setting $\texttt{en}[1]$ to 4. Our DFS traversal is now complete.
+
+<center>
+<table className="text-center">
+<tbody>
+<tr>
+<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+</tr>
+<tr>
+<td>st[i]</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
+</tr>
+<tr>
+<td>en[i]</td><td className='bg-red-100 dark:bg-red-700'>5</td><td>1</td><td className='bg-red-100 dark:bg-red-700'>4</td><td>3</td><td>4</td>
+</tr>
+</tbody>
+</table>
+</center>
 
 ### Solution - Subtree Queries
 
@@ -376,7 +600,7 @@ int mn_tin(int x, int y) {
 	return (tin[x] < tin[y] ? x : y);
 }
 
-// Build the segment tree: run `build()` after running `dfs()`
+// Build the segment tree: run `build()` after running dfs`
 void build(int node = 1, int l = 0, int r = timer - 1) {
 	if (l == r) segtree[node] = euler_tour[l];
 	else {
@@ -388,13 +612,13 @@ void build(int node = 1, int l = 0, int r = timer - 1) {
 }
 
 int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
-	if (l > b || r < a) return -1
+	if (l > b || r < a) return -1;
 	if (l >= a && r <= b) return segtree[node];
 	int mid = (l + r) / 2;
 	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
 }
 
-// Make sure you run `dfs()` and `build()` before you run this
+// Make sure you run $dfs` and `build()` before you run this
 int lca(int a, int b) {
 	if (tin[a] > tin[b]) swap(a, b);
 	return query(tin[a], tin[b]);

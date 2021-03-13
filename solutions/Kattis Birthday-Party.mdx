@@ -23,7 +23,8 @@ Now the problem becomes: given a graph with $p (1 \leq p \leq 100)$ nodes and $c
 
 Since the constraints on edges (and nodes) is small, we can apply [dfs](/silver/dfs/). For each edge, let's run a DFS while ensuring we don't traverse that edge. If we can't visit some node, then the answer is "NO". Otherwise, if we can visit every node after trying to remove every edge, the answer is "YES". Check the code for more information on how to ignore an edge while DFS-ing.
 
-## Code
+## Implementation
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -38,11 +39,11 @@ using pi = pair<int,int>;
 #define s second
 #define mp make_pair
 void setIO(string name = "") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin); // see Input & Output
-        freopen((name+".out").c_str(), "w", stdout);
-    }
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	if(sz(name)){
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
 }
 
 int n, m;
@@ -50,45 +51,45 @@ bool adj[105][105]; //since # nodes is small, you can use an adjacency matrix to
 bool vis[105];
 
 void dfs(int v) {
-    vis[v] = true;
-    for (int to = 0; to < n; to++) {
-        if (adj[v][to] && !vis[to]) {
-            dfs(to);
-        }
-    }
+	vis[v] = true;
+	for (int to = 0; to < n; to++) {
+		if (adj[v][to] && !vis[to]) {
+			dfs(to);
+		}
+	}
 }
 
 void solve() {
-    memset(adj, false, sizeof(adj));
-    vector<pi> edges;
-    for (int i = 0; i < m; i++) {
-        int u, v; 
-        cin >> u >> v;
-        adj[u][v] = true;
-        adj[v][u] = true;
-        edges.pb(mp(u, v));
-    }
-    for (pi x : edges) {
-        adj[x.f][x.s] = false;
-        adj[x.s][x.f] = false;
-        memset(vis, false, sizeof(vis));
-        dfs(0);
-        for (int i = 0; i < n; i++) {
-            if (!vis[i]) {
-                cout << "Yes" << '\n';
-                return;
-            }
-        }
-        adj[x.f][x.s] = true;
-        adj[x.s][x.f] = true;
-    }
-    cout << "No" << '\n';
+	memset(adj, false, sizeof(adj));
+	vector<pi> edges;
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u][v] = true;
+		adj[v][u] = true;
+		edges.pb(mp(u, v));
+	}
+	for (pi x : edges) {
+		adj[x.f][x.s] = false;
+		adj[x.s][x.f] = false;
+		memset(vis, false, sizeof(vis));
+		dfs(0);
+		for (int i = 0; i < n; i++) {
+			if (!vis[i]) {
+				cout << "Yes" << '\n';
+				return;
+			}
+		}
+		adj[x.f][x.s] = true;
+		adj[x.s][x.f] = true;
+	}
+	cout << "No" << '\n';
 }
 
 int main() {
-    setIO();
-    while (cin >> n >> m && (n || m)) {
-        solve(); 
-    }
+	setIO();
+	while (cin >> n >> m && (n || m)) {
+		solve();
+	}
 }
 ```
