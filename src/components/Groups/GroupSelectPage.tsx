@@ -14,11 +14,12 @@ const GroupSelectPage = (props: { path: string }) => {
   const { createNewGroup } = useGroupActions();
 
   const showNotSignedInMessage = isLoaded && !firebaseUser?.uid;
-  const showLoading = groups.isLoading || !isLoaded;
+  const showLoading = !showNotSignedInMessage && !groups.isSuccess;
 
   const handleCreateNewGroup = () => {
-    const groupId = createNewGroup();
-    navigate(`/groups/${groupId}/edit`);
+    createNewGroup().then(groupId => {
+      navigate(`/groups/${groupId}/edit`);
+    });
   };
 
   return (

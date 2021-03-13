@@ -6,11 +6,12 @@ import {
   GroupData,
   GroupPermission,
 } from '../../models/groups/groups';
-import { postConverter, PostData } from '../../models/groups/posts';
+import { useUserGroups } from './useUserGroups';
 
 export function useGroupActions() {
   const firebase = useFirebase();
   const { firebaseUser } = useContext(UserDataContext);
+  const { invalidateData } = useUserGroups();
 
   const updateGroup = async (
     groupId: string,
@@ -22,13 +23,11 @@ export function useGroupActions() {
       .doc(groupId)
       .withConverter(groupConverter)
       .update(updatedData);
+    invalidateData();
   };
 
   return {
-    /**
-     * creates a new group and returns ID immediately, before firebase actually uploads stuff to server
-     */
-    createNewGroup: (): string => {
+    createNewGroup: async () => {
       if (!firebaseUser?.uid) {
         throw 'The user must be logged in to create a new group.';
       }
@@ -50,12 +49,13 @@ export function useGroupActions() {
       const doc = firebase.firestore().collection('groups').doc();
       const docId = doc.id;
 
-      doc.set(defaultGroup);
+      await doc.set(defaultGroup).then(() => invalidateData());
 
       return docId;
     },
     deleteGroup: async (groupId: string) => {
       await firebase.firestore().collection('groups').doc(groupId).delete();
+      invalidateData();
     },
     updateGroup,
   };

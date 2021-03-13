@@ -28,7 +28,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
   const userGroups = useUserGroups();
   const groupData = userGroups.data?.find(group => group.id === activeGroupId);
-  const groupNotFound = userGroups.data && !groupData;
+  const groupNotFound = !userGroups.isLoading && userGroups.data && !groupData;
 
   useFirebase(
     firebase => {

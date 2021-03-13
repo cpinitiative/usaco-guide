@@ -28,6 +28,8 @@ const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
   const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
 
+  console.log('RERENDERED WRAPPER', isLoading);
+
   React.useEffect(() => {
     setActiveGroupId(props.groupId);
   }, [props.groupId]);

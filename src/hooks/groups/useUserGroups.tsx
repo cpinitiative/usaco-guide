@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
-import firebase from 'firebase';
+import ReactDOM from 'react-dom';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { groupConverter, GroupData } from '../../models/groups/groups';
 import useFirebase from '../useFirebase';
@@ -8,8 +8,11 @@ import useFirebase from '../useFirebase';
 const UserGroupsContext = React.createContext<{
   isLoading: boolean;
   isSuccess: boolean;
-  error: null | firebase.firestore.FirestoreError;
   data: null | GroupData[];
+  /**
+   * Call when you want to re-fetch groups
+   */
+  invalidateData: Function;
 }>(null);
 
 const UserGroupsProvider = ({
@@ -19,11 +22,8 @@ const UserGroupsProvider = ({
 }): ReactElement => {
   const { firebaseUser } = React.useContext(UserDataContext);
   const [isLoading, setIsLoading] = React.useState(!!firebaseUser?.uid);
-  const [
-    error,
-    setError,
-  ] = React.useState<null | firebase.firestore.FirestoreError>(null);
   const [groups, setGroups] = React.useState<null | GroupData[]>(null);
+  const [updateCtr, setUpdateCtr] = React.useState(0);
 
   useFirebase(
     firebase => {
@@ -33,7 +33,6 @@ const UserGroupsProvider = ({
         return;
       }
       setIsLoading(true);
-      setError(null);
 
       let queries = {
         ownerIds: null,
@@ -41,40 +40,36 @@ const UserGroupsProvider = ({
         adminIds: null,
       };
 
-      const unsubscribeSnapshots = Object.keys(queries).map(key =>
+      Object.keys(queries).forEach(key => {
         firebase
           .firestore()
           .collection('groups')
           .where(key, 'array-contains', firebaseUser?.uid)
           .withConverter(groupConverter)
-          .onSnapshot(
-            snap => {
-              queries[key] = snap.docs.map(doc => doc.data());
+          .get()
+          .then(snap => {
+            queries[key] = snap.docs.map(doc => doc.data());
 
-              if (Object.keys(queries).every(x => queries[x] !== null)) {
-                setGroups(Object.values(queries).flat());
-                setIsLoading(false);
-              }
-            },
-            error => {
+            if (Object.keys(queries).every(x => queries[x] !== null)) {
+              setGroups(Object.values(queries).flat());
               setIsLoading(false);
-              setError(error);
             }
-          )
-      );
-
-      return () => unsubscribeSnapshots.forEach(unsubscribe => unsubscribe());
+          });
+      });
     },
-    [firebaseUser?.uid]
+    [firebaseUser?.uid, updateCtr]
   );
 
   return (
     <UserGroupsContext.Provider
       value={{
         isLoading,
-        isSuccess: groups !== null && error === null,
-        error,
+        isSuccess: groups !== null,
         data: groups,
+        invalidateData: () => {
+          setIsLoading(true);
+          setUpdateCtr(updateCtr + 1);
+        },
       }}
     >
       {children}
