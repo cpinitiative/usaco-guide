@@ -370,7 +370,7 @@ using vi = vector<int>;
 #define pb push_back
 int main() {
 	int N, M; cin >> N >> M;
-	vi dist(N+1,INT_MAX), pre(N+1);
+	vi dist(N+1,INT_MAX), parent(N+1);
 	vector<vi> adj(N+1);
 	while (M--) {
 		int a,b; cin >> a >> b;
@@ -381,19 +381,18 @@ int main() {
 	while (!q.empty()) {
 		int x = q.front(); q.pop();
 		for (int t: adj[x]) if (dist[t] == INT_MAX) {
-			dist[t] = dist[x]+1; pre[t] = x;
+			dist[t] = dist[x]+1; parent[t] = x;
 			q.push(t);
 		}
 	}
 	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
 	else {
 		cout << dist[N]+1 << "\n";
-		vi v{N}; while (v.back() != 1) v.pb(pre[v.back()]);
+		vi v{N}; while (v.back() != 1) v.pb(parent[v.back()]);
 		reverse(begin(v), end(v));
 		for (int t: v) cout << t << " ";
 	}
 }
-```
 
 <!--
 From the CSA article:
