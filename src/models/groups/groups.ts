@@ -50,5 +50,8 @@ export const groupConverter = {
   },
 };
 
-// todo: actually implement this properly
-export const isUserAdminOfGroup = (group: GroupData, userId: string) => true;
+export const isUserAdminOfGroup = (group: GroupData, userId: string) => {
+  return (
+    !!group?.adminIds.includes(userId) || !!group?.ownerIds.includes(userId)
+  );
+};

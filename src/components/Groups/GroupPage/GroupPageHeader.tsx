@@ -2,12 +2,16 @@ import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { Link, navigate } from 'gatsby';
-import { GroupData } from '../../../models/groups/groups';
+import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 
 export default function GroupPageHeader(props: { group: GroupData }) {
+  const { leaveGroup } = useGroupActions();
   const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const { firebaseUser } = React.useContext(UserDataContext);
   const ref = useRef();
 
   React.useEffect(() => {
@@ -72,26 +76,46 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
+                {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (
+                  <>
+                    <button
+                      type="button"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      onClick={() => {
+                        const groupId = props.group?.id;
+                        if (groupId) {
+                          createNewPost().then(postId =>
+                            navigate(`post/${postId}/edit`)
+                          );
+                        }
+                      }}
+                    >
+                      Create New Post
+                    </button>
+                    <Link
+                      to="edit"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                    >
+                      Edit Group
+                    </Link>
+                  </>
+                )}
                 <button
                   type="button"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   onClick={() => {
                     const groupId = props.group?.id;
                     if (groupId) {
-                      createNewPost().then(postId =>
-                        navigate(`post/${postId}/edit`)
-                      );
+                      leaveGroup(groupId, firebaseUser?.uid)
+                        .then(() => navigate(`/groups/`))
+                        .catch(e => {
+                          alert('Error: ' + e.message);
+                        });
                     }
                   }}
                 >
-                  Create New Post
+                  Leave Group
                 </button>
-                <Link
-                  to="edit"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                >
-                  Edit Group
-                </Link>
               </div>
             </Transition>
           </div>

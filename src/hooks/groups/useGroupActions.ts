@@ -54,9 +54,20 @@ export function useGroupActions() {
       return docId;
     },
     deleteGroup: async (groupId: string) => {
+      // todo @jeffrey delete posts and submissions
       await firebase.firestore().collection('groups').doc(groupId).delete();
       invalidateData();
     },
     updateGroup,
+    leaveGroup: async (groupId: string, userId: string) => {
+      // @jeffrey todo implement this
+      let leftSuccessfully = false;
+      if (leftSuccessfully) {
+        return;
+      }
+      throw new Error(
+        "Since you're the only owner of this group, you are unable to leave. Try adding another owner or deleting the group instead."
+      );
+    },
   };
 }

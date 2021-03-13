@@ -29,7 +29,7 @@ export default function FeedItem({
   React.useEffect(() => {
     const handleClick = e => {
       // @ts-ignore
-      if (ref.current.contains(e.target)) return;
+      if (!ref.current || ref.current.contains(e.target)) return;
       setShowDropdown(false);
     };
     document.addEventListener('mousedown', handleClick);
