@@ -26,6 +26,7 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+import firebase from 'firebase';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -107,7 +108,7 @@ type UserDataContextAPI = UserLangAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
   UserClassesAPI & {
-    firebaseUser: any;
+    firebaseUser: firebase.User;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;

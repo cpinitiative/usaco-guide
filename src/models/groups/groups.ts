@@ -13,7 +13,7 @@ export type GroupData = {
   members: { [key: string]: MemberData };
 };
 
-enum GroupPermission {
+export enum GroupPermission {
   MEMBER = 'member',
   ADMIN = 'admin',
   OWNER = 'owner',
@@ -26,7 +26,9 @@ export type MemberData = {
 };
 
 export const groupConverter = {
-  toFirestore(group: GroupData): firebaseType.firestore.DocumentData {
+  toFirestore(
+    group: Omit<GroupData, 'id'>
+  ): firebaseType.firestore.DocumentData {
     return {
       name: group.name,
       description: group.description,

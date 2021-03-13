@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
-import { navigate } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import { GroupData } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 
@@ -75,7 +75,6 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                 <button
                   type="button"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                  role="menuitem"
                   onClick={() => {
                     const groupId = props.group?.id;
                     if (groupId) {
@@ -87,6 +86,12 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                 >
                   Create New Post
                 </button>
+                <Link
+                  to="edit"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                >
+                  Edit Group
+                </Link>
               </div>
             </Transition>
           </div>

@@ -14,6 +14,10 @@ import {
 } from '../hooks/groups/useActiveGroup';
 import { ProblemSubmissionPopupProvider } from '../components/Groups/ProblemSubmissionPopup';
 import JoinGroupPage from '../components/Groups/JoinGroupPage';
+import EditGroupPage from '../components/Groups/EditGroupPage/EditGroupPage';
+import Layout from '../components/layout';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { Link } from 'gatsby';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -22,11 +26,40 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const { setActiveGroupId } = useActiveGroup();
+  const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
 
   React.useEffect(() => {
     setActiveGroupId(props.groupId);
   }, [props.groupId]);
+
+  if (isLoading || (groupData && groupData.id !== props.groupId)) {
+    return (
+      <Layout>
+        <TopNavigationBar />
+        <main className="text-center py-10">
+          <p className="font-medium text-2xl">Loading...</p>
+        </main>
+      </Layout>
+    );
+  }
+  if (!groupData) {
+    return (
+      <Layout>
+        <TopNavigationBar />
+        <main className="text-center py-10">
+          <p className="font-medium text-2xl">
+            Group not found.{' '}
+            <Link
+              to="/groups"
+              className="text-blue-600 dark:text-blue-400 underline"
+            >
+              Return Home.
+            </Link>
+          </p>
+        </main>
+      </Layout>
+    );
+  }
 
   return <Component {...propsExceptComponent} />;
 };
@@ -53,6 +86,7 @@ export default function GroupsRouter() {
               Component={PostPage}
               path="/:groupId/post/:postId"
             />
+            <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
             <GroupPageWrapper Component={GroupPage} path="/:groupId" />
             <GroupSelectPage path="/" />
             <JoinGroupPage path="/join" />

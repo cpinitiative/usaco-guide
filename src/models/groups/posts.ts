@@ -1,6 +1,5 @@
 import firebase from 'firebase';
 import firebaseType from 'firebase';
-import { GroupData } from './groups';
 
 export type PostData = {
   id?: string;
@@ -119,7 +118,9 @@ export const postConverter = {
 };
 
 export const submissionConverter = {
-  toFirestore(submission: Submission): firebaseType.firestore.DocumentData {
+  toFirestore(
+    submission: Omit<Submission, 'id'> & Partial<Pick<Submission, 'id'>>
+  ): firebaseType.firestore.DocumentData {
     const { id, ...data } = submission;
     return data;
   },

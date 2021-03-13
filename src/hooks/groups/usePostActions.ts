@@ -44,6 +44,7 @@ export function usePostActions(groupId: string) {
         .add(defaultPost);
       return doc.id;
     },
+    // ugh I think this is a duplicate of updatePost
     savePost: async (postId: string, postData: PostData) => {
       await firebase
         .firestore()

@@ -28,6 +28,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
   const userGroups = useUserGroups();
   const groupData = userGroups.data?.find(group => group.id === activeGroupId);
+  const groupNotFound = userGroups.data && !groupData;
 
   useFirebase(
     firebase => {
@@ -63,7 +64,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         setActiveGroupId,
         groupData,
         posts,
-        isLoading: !groupData || !posts,
+        isLoading: groupNotFound ? false : !groupData || !posts,
         isUserAdmin: isUserAdminOfGroup(groupData, firebaseUser?.uid),
         error,
       }}
