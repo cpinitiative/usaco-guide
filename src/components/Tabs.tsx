@@ -19,7 +19,7 @@ export default function Tabs({
         </label>
         <select
           id="question-tabs"
-          className="block w-full rounded-md border-gray-300 text-base font-medium text-gray-900 shadow-sm focus:border-light-blue-500 focus:ring-light-blue-500"
+          className="block w-full rounded-md border-gray-300 dark:border-gray-600 text-base font-medium text-gray-900 dark:bg-gray-800 dark:text-white focus:border-light-blue-500 dark:focus:border-light-blue-500 focus:ring-light-blue-500"
           value={value}
           onChange={e => onChange(e.target.value)}
         >
@@ -31,16 +31,16 @@ export default function Tabs({
         </select>
       </div>
       <div className="hidden sm:block">
-        <nav className="relative z-0 rounded-lg shadow flex divide-x divide-gray-200">
+        <nav className="relative z-0 rounded-lg shadow flex divide-x divide-gray-200 dark:divide-gray-600">
           {options.map((option, idx) => (
             <button
               key={option}
               onClick={() => onChange(option)}
-              className={`text-gray-500 hover:text-gray-700 ${
+              className={`text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 ${
                 idx === 0 ? 'rounded-l-lg' : ''
               } ${
                 idx === options.length - 1 ? 'rounded-r-lg' : ''
-              } group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-2 text-sm font-medium text-center hover:bg-gray-50 focus:z-10 focus:outline-none`}
+              } group relative min-w-0 flex-1 overflow-hidden bg-white dark:bg-gray-800 py-4 px-2 text-sm font-medium text-center hover:bg-gray-50 focus:z-10 focus:outline-none`}
             >
               <span>{labelMap ? labelMap[option] : option}</span>
               <span

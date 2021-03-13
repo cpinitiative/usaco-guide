@@ -39,7 +39,7 @@ const GroupSelectPage = (props: { path: string }) => {
               <div key={group.id}>
                 <Link
                   to={`/groups/${group.id}/`}
-                  className="text-blue-600 underline"
+                  className="text-blue-600 dark:text-blue-300 underline"
                 >
                   {group.name}
                 </Link>

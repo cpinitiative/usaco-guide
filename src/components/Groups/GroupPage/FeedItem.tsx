@@ -38,7 +38,7 @@ export default function FeedItem({
 
   return (
     <div
-      className={`bg-white hover:bg-cyan-50 px-4 shadow sm:px-6 sm:rounded-lg transition block`}
+      className={`bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900 px-4 shadow sm:px-6 sm:rounded-lg transition block`}
     >
       <div className="flex">
         <Link
@@ -81,12 +81,12 @@ export default function FeedItem({
           <div className="min-w-0 flex-1 py-4 sm:py-5">
             <h2
               id="question-title-81614"
-              className="text-base font-medium text-gray-900"
+              className="text-base font-medium text-gray-900 dark:text-gray-100"
             >
               {post.name}
               {post.isPublished ? '' : ' (Unpublished)'}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-300">
               {getPostTimestampString(post)}
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function FeedItem({
             <div className="relative inline-block text-left" ref={ref}>
               <button
                 type="button"
-                className="pl-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="pl-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
                 id="options-menu-0"
                 onClick={e => {
                   setShowDropdown(!showDropdown);

@@ -18,22 +18,19 @@ export default function PostHeader({ post }: { post: PostData }) {
   const { updatePost } = usePostActions(group.id);
 
   return (
-    <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6">
+    <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {getPostTimestampString(post)}
         </p>
       </div>
       {isUserAdminOfGroup(group, firebaseUser?.uid) && (
         <div className="mt-4 flex space-x-3 md:mt-0">
-          <Link
-            to="edit"
-            className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-          >
+          <Link to="edit" className="btn">
             <svg
               className="-ml-1 mr-2 h-5 w-5 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +47,7 @@ export default function PostHeader({ post }: { post: PostData }) {
             onClick={() =>
               updatePost(post.id, { isPublished: !post.isPublished })
             }
-            className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+            className="btn"
           >
             <span>{post.isPublished ? 'Unpublish' : 'Publish'}</span>
           </button>

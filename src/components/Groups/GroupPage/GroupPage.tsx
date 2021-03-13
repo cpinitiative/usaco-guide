@@ -15,11 +15,11 @@ export default function GroupPage({ path, groupId }: any) {
     <Layout>
       <SEO title={group.groupData?.name} />
       <TopNavigationBar />
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <GroupPageHeader group={group.groupData} />
         <Link
           to="/leaderboard"
-          className="md:hidden bg-white shadow flex items-center justify-between px-4 sm:px-8 py-3"
+          className="md:hidden bg-white dark:bg-gray-800 shadow flex items-center justify-between px-4 sm:px-8 py-3"
         >
           <span>View Leaderboard</span> &rarr;
         </Link>

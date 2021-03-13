@@ -16,7 +16,10 @@ export default function Breadcrumbs({
     <ol className={'flex items-center space-x-4 ' + className}>
       <li>
         <div>
-          <Link to="/groups" className="text-gray-400 hover:text-gray-500">
+          <Link
+            to="/groups"
+            className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+          >
             {/* Heroicon name: solid/home */}
             <svg
               className="flex-shrink-0 h-5 w-5"
@@ -35,7 +38,7 @@ export default function Breadcrumbs({
         <div className="flex items-center">
           {/* Heroicon name: solid/chevron-right */}
           <svg
-            className="flex-shrink-0 h-5 w-5 text-gray-400"
+            className="flex-shrink-0 h-5 w-5 text-gray-400 dark:text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -49,7 +52,7 @@ export default function Breadcrumbs({
           </svg>
           <Link
             to={`/groups/${group.id}`}
-            className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+            className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             {group.name}
           </Link>
@@ -60,7 +63,7 @@ export default function Breadcrumbs({
           <div className="flex items-center">
             {/* Heroicon name: solid/chevron-right */}
             <svg
-              className="flex-shrink-0 h-5 w-5 text-gray-400"
+              className="flex-shrink-0 h-5 w-5 text-gray-400 dark:text-gray-500"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -75,7 +78,7 @@ export default function Breadcrumbs({
             <Link
               to={`/groups/${group.id}/post/${post.id}`}
               aria-current="page"
-              className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+              className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               {post.name}
             </Link>

@@ -51,7 +51,7 @@ export default function Feed() {
       <div className="mt-4">
         {group.isLoading && 'Loading posts...'}
         {!group.isLoading && (
-          <ul className="divide-y divide-solid divide-gray-200 sm:divide-none sm:space-y-4">
+          <ul className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
             {feedPosts.map(post => (
               <li key={post.id}>
                 <FeedItem group={group.groupData} post={post} />

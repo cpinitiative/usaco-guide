@@ -49,7 +49,7 @@ export default function PostPage(props) {
     <Layout>
       <SEO title={`${post.name} · ${activeGroup.groupData.name}`} />
       <TopNavigationBar />
-      <nav className="bg-white flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
             isPostAnnouncement(post) ? 'max-w-4xl' : 'max-w-7xl'
