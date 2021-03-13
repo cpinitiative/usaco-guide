@@ -12,15 +12,15 @@ const ProblemListItem = ({
   post: PostData;
   problem: ProblemData;
 }) => (
-  <li className="relative pl-4 pr-6 py-5 hover:bg-gray-50 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6">
+  <li className="relative pl-4 pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6">
     <div className="flex items-center justify-between space-x-4">
       <div className="min-w-0 space-y-3">
         <div className="flex items-center space-x-3">
           <span
-            className="h-5 w-5 bg-green-100 rounded-full flex items-center justify-center"
+            className="h-5 w-5 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center"
             aria-hidden="true"
           >
-            <span className="h-2.5 w-2.5 bg-green-400 rounded-full" />
+            <span className="h-2.5 w-2.5 bg-green-400 dark:bg-green-500 rounded-full" />
           </span>
 
           <span className="block">
@@ -36,7 +36,7 @@ const ProblemListItem = ({
         </div>
         <div className="relative group flex items-center space-x-2.5">
           <svg
-            className="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500"
+            className="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -47,7 +47,7 @@ const ProblemListItem = ({
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-sm text-gray-500 group-hover:text-gray-900 font-medium truncate">
+          <span className="text-sm text-gray-500 dark:text-gray-400 font-medium truncate">
             {problem.points} points
           </span>
         </div>
@@ -73,12 +73,12 @@ const ProblemListItem = ({
         <p className="flex items-center space-x-4">
           <Link
             to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
-            className="relative text-sm text-gray-500 hover:text-gray-900 font-medium"
+            className="relative text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium"
           >
             View Problem
           </Link>
         </p>
-        <p className="flex text-gray-500 text-sm space-x-2">
+        <p className="flex text-gray-500 dark:text-gray-400 text-sm space-x-2">
           <span>Source: {problem.source}</span>
           <span aria-hidden="true">&middot;</span>
           <span>Difficulty: {problem.difficulty}</span>

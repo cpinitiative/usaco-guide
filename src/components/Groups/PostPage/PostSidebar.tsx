@@ -12,7 +12,7 @@ export default function PostSidebar({ post }: { post: PostData }) {
       <div className="space-y-5">
         <div className="flex items-center space-x-2">
           <svg
-            className="h-5 w-5 text-green-500"
+            className="h-5 w-5 text-green-500 dark:text-green-400"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -23,14 +23,14 @@ export default function PostSidebar({ post }: { post: PostData }) {
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-green-700 text-sm font-medium">
+          <span className="text-green-700 dark:text-green-500 text-sm font-medium">
             400 / {getPostTotalPoints(post)} points earned
           </span>
         </div>
         <div className="flex items-center space-x-2">
           {/* Heroicon name: solid/calendar */}
           <svg
-            className="h-5 w-5 text-gray-400"
+            className="h-5 w-5 text-gray-400 dark:text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -42,14 +42,14 @@ export default function PostSidebar({ post }: { post: PostData }) {
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-gray-900 text-sm font-medium">
+          <span className="text-gray-900 dark:text-gray-300 text-sm font-medium">
             Due on {getPostDueDateString(post)}
           </span>
         </div>
       </div>
-      <div className="mt-6 border-t border-gray-200 py-6 space-y-8">
+      <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">
         <div>
-          <h2 className="font-medium text-gray-600 mb-1">
+          <h2 className="font-medium text-gray-600 dark:text-gray-300 mb-1">
             Assignment Leaderboard
           </h2>
           <ul>

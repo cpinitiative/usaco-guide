@@ -82,7 +82,11 @@ export default function ProblemSubmissionsList({
   submissions: Submission[];
 }) {
   if (!submissions?.length) {
-    return <p className="text-sm text-gray-500">No submissions yet!</p>;
+    return (
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        No submissions yet!
+      </p>
+    );
   }
   return (
     <ul>

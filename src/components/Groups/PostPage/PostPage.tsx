@@ -64,7 +64,7 @@ export default function PostPage(props) {
         <div className="pb-8 xl:pb-10">
           {isPostAssignment(post) ? (
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
-              <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200">
+              <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
                 <div>
                   <PostHeader post={post} />
                   <aside className="mt-8 xl:hidden">
