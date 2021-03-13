@@ -29,6 +29,7 @@ import Layout from '../layout';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import Transition from '../Transition';
 import SettingsModal from '../SettingsModal';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -151,7 +152,7 @@ export default function TopNavigationBar({
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userClasses } = useContext(UserDataContext);
+  const userGroups = useUserGroups();
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -165,12 +166,11 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
-    ...(userClasses.length > 0
+    ...(userGroups.data?.length > 0
       ? [
           {
-            label: 'My Class' + (userClasses.length !== 1 ? 'es' : ''),
-            url:
-              '/class/' + (userClasses.length === 1 ? userClasses[0].id : ''),
+            label: 'Groups',
+            url: '/groups',
           },
         ]
       : []),
@@ -249,19 +249,16 @@ export default function TopNavigationBar({
                 >
                   Problems
                 </Link>
-                {userClasses.length > 0 && (
+                {userGroups.data?.length > 0 && (
                   <Link
-                    to={
-                      '/class/' +
-                      (userClasses.length === 1 ? userClasses[0].id : '')
-                    }
+                    to="/groups/"
                     getProps={({ isCurrent }) => ({
                       className: isCurrent
                         ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
                         : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
                     })}
                   >
-                    {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
+                    Groups
                   </Link>
                 )}
                 <a

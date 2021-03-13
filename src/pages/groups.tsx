@@ -28,8 +28,6 @@ const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
   const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
 
-  console.log('RERENDERED WRAPPER', isLoading);
-
   React.useEffect(() => {
     setActiveGroupId(props.groupId);
   }, [props.groupId]);
@@ -68,34 +66,32 @@ const GroupPageWrapper = (props: any): ReactElement => {
 
 export default function GroupsRouter() {
   return (
-    <UserGroupsProvider>
-      <ActiveGroupProvider>
-        <ProblemSubmissionPopupProvider>
-          <Router basepath="/groups">
-            <GroupPageWrapper
-              Component={EditProblemPage}
-              path="/:groupId/post/:postId/problems/:problemId/edit"
-            />
-            <GroupPageWrapper
-              Component={ProblemPage}
-              path="/:groupId/post/:postId/problems/:problemId"
-            />
-            <GroupPageWrapper
-              Component={EditPostPage}
-              path="/:groupId/post/:postId/edit"
-            />
-            <GroupPageWrapper
-              Component={PostPage}
-              path="/:groupId/post/:postId"
-            />
-            <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
-            <GroupPageWrapper Component={GroupPage} path="/:groupId" />
-            <GroupSelectPage path="/" />
-            <JoinGroupPage path="/join" />
-            <NotFoundPageWrapper default />
-          </Router>
-        </ProblemSubmissionPopupProvider>
-      </ActiveGroupProvider>
-    </UserGroupsProvider>
+    <ActiveGroupProvider>
+      <ProblemSubmissionPopupProvider>
+        <Router basepath="/groups">
+          <GroupPageWrapper
+            Component={EditProblemPage}
+            path="/:groupId/post/:postId/problems/:problemId/edit"
+          />
+          <GroupPageWrapper
+            Component={ProblemPage}
+            path="/:groupId/post/:postId/problems/:problemId"
+          />
+          <GroupPageWrapper
+            Component={EditPostPage}
+            path="/:groupId/post/:postId/edit"
+          />
+          <GroupPageWrapper
+            Component={PostPage}
+            path="/:groupId/post/:postId"
+          />
+          <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
+          <GroupPageWrapper Component={GroupPage} path="/:groupId" />
+          <GroupSelectPage path="/" />
+          <JoinGroupPage path="/join" />
+          <NotFoundPageWrapper default />
+        </Router>
+      </ProblemSubmissionPopupProvider>
+    </ActiveGroupProvider>
   );
 }
