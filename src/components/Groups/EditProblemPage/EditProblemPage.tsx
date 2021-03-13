@@ -10,6 +10,7 @@ import { usePost } from '../../../hooks/groups/usePost';
 import { ProblemData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
+import MarkdownEditor from '../MarkdownEditor';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -117,13 +118,9 @@ export default function EditProblemPage(props) {
                   Problem Content
                 </label>
                 <div className="mt-1">
-                  <textarea
-                    id="post_content"
-                    name="post_content"
-                    rows={5}
+                  <MarkdownEditor
                     value={problem.body}
-                    onChange={e => editProblem({ body: e.target.value })}
-                    className="input"
+                    onChange={value => editProblem({ body: value })}
                   />
                 </div>
               </div>

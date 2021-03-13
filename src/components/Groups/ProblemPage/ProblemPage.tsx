@@ -12,6 +12,7 @@ import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { getPostDueDateString } from '../../../models/groups/posts';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
+import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -228,10 +229,8 @@ export default function ProblemPage(props) {
                   </div>
                 </div>
               </aside>
-              <div className="py-3 xl:pt-6 xl:pb-10">
-                <div className="prose dark:prose-light max-w-none">
-                  {problem.body}
-                </div>
+              <div className="py-6 xl:pt-8 xl:pb-12">
+                <SafeMarkdownRenderer>{problem.body}</SafeMarkdownRenderer>
               </div>
               <ProblemSubmission problem={problem} />
             </div>
