@@ -47,7 +47,7 @@ export const submitProblemSuggestion = functions.https.onCall(
       `**Difficulty**: ${difficulty}\n` +
       `**Tags**: ${tags}\n` +
       `**Additional Notes**:${
-        additionalNotes ? '\n' + additionalNotes : 'None'
+        additionalNotes ? '\n' + additionalNotes : ' None'
       }\n\n` +
       `*This report was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
 
