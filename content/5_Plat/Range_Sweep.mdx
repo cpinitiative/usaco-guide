@@ -112,29 +112,29 @@ BIT<int> bit(2000005);
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 
-    cin >> n;
+	cin >> n;
 	for (int i = 0, x1, y1, x2, y2; i < n; ++i) {
 		cin >> x1 >> y1 >> x2 >> y2;
-        if (y1 == y2) {
+		if (y1 == y2) {
 			v.push_back({y1,2,x1,x2});
 		} else {
-            v.push_back({y1,1,x1,1});
-            v.push_back({y2,3,x1,1});
-        }
-    }
-    sort(begin(v), end(v));
+			v.push_back({y1,1,x1,1});
+			v.push_back({y2,3,x1,1});
+		}
+	}
+	sort(begin(v), end(v));
 
 	long long ans = 0;
 	for (auto x : v) {
-        x[2] += 1000001, x[3] += 1000001;
-        if (x[1] == 1)
+		x[2] += 1000001, x[3] += 1000001;
+		if (x[1] == 1)
 			bit.update(x[2], 1);
-        else if (x[1] == 2)
+		else if (x[1] == 2)
 			ans += bit.query(x[3]) - bit.query(x[2] - 1);
-        else
+		else
 			bit.update(x[2], -1);
-    }
-    cout << ans << '\n';
+	}
+	cout << ans << '\n';
 }
 ```
 
