@@ -676,7 +676,7 @@ bool anc(int a, int b) {
     return st[a] <= st[b] && en[a] >= en[b];
 }
 
-int find(int a, int b) {
+int lca(int a, int b) {
     for (int i = 19; i >= 0; --i) {
         if (!anc(up[a][i], b))
             a = up[a][i];
@@ -702,7 +702,7 @@ int main() {
     F0R(i, Q) {
         int a, b; re(a, b); --a; --b;
 
-        pr(depth[a] + depth[b] - 2 * depth[find(a, b)],"\n");
+        pr(depth[a] + depth[b] - 2 * depth[lca(a, b)],"\n");
     }
     
     cerr << "Total Time: " << (double)(clock() - start)/ CLOCKS_PER_SEC;
