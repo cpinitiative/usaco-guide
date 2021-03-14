@@ -102,25 +102,25 @@ export const problems = {
 
 <FocusProblem problem={problems.maxsum} />
 
-### Solution
+### Solution - Max Subarray Sum
 
 <Spoiler title="Solution">
 
-Consider the prefix sum array $p$. The subarray sum $a_j \dots a_{i-1}$ where $j\leq i$ is $p[i]-p[j]$, so we are looking for the maximum possible value of $p[i]-p[j]$ over $0 \leq i \leq j \leq N$. 
+Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$ where $i\leq j$ is $p[j]-p[i]$, so we are looking for the maximum possible value of $p[j]-p[i]$ over $0 \leq i \leq j \leq N$. 
 
-For a fixed right bound $i$, the maximum subarray sum is
+For a fixed right bound $j$, the maximum subarray sum is
 
 $$
-p[i]-\min_{j\leq i}{p[j]}
+p[j]-\min_{i\leq j}{p[i]}
 $$
 
-Thus, we can keep a running minimum to store $\min\limits_{j\leq i}{p[j]}$ as we iterate through $i$. This yields the maximum subarray sum for each possible right bound, and the maximum over all these values is our answer.
+Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we iterate through $i$. This yields the maximum subarray sum for each possible right bound, and the maximum over all these values is our answer.
 
 <LanguageSection>
 
 <CPPSection>
 
-C++ code:
+## C++ Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -160,9 +160,8 @@ This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.o
 
 <Spoiler title = "Alternative Solution: Kadane's Algorithm">
 
-Kadane's Algorithm finds the largest subarray sum using a greedy method. Check the video below for details:
-
-[Video explanation of the max subarray sum using Kadane's Algorithm](https://www.youtube.com/watch?v=jnoVtCKECmQ&t=611s).
+Kadane's Algorithm finds the largest subarray sum using a greedy method. Check this
+[video tutorial](https://www.youtube.com/watch?v=jnoVtCKECmQ&t=611s) for more details.
 
 <LanguageSection>
 
@@ -186,12 +185,11 @@ int main(){
 	ll current_sum = x[0], max_subarray_sum = x[0];
 	for(int i=1; i<n; i++){
 		current_sum = max(current_sum + x[i], x[i]); 
-		/* Continue the subarray sum or 
-		start a new subarray sum beginning 
-		at the current element
+		/* Continue the subarray sum or start a new 
+		subarray sum beginning at the current element.
 		*/
 		max_subarray_sum = max(max_subarray_sum, current_sum); 
-		// Store the maximum subarray sum at each iteration
+		// Store the maximum subarray sum at each iteration.
 	}
 	cout << max_subarray_sum << endl;
 }
