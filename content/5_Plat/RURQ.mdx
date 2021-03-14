@@ -219,6 +219,95 @@ Binary Indexed Trees can support range increments in addition to range sum queri
 
 ### Implementation
 
+Implementation of segment tree with lazy propagation (also implicit segment tree). 
+
+```cpp
+struct segtree_node {
+	segtree_node* left_child, * right_child;
+	int left_bound, right_bound;
+	ll sum;
+	ll lazy;
+
+	void update(ll val) {
+		sum += ((ll)right_bound - left_bound + 1) * val;
+		lazy += val;
+	}
+	void merge() {
+		sum = 0;
+		if (left_child != NULL) {
+			sum += left_child->sum;
+		}
+		if (right_child != NULL) {
+			sum += right_child->sum;
+		}
+	}
+	void prop() {
+		if (lazy == 0) return;
+		if (left_child != NULL) {
+			left_child->update(lazy);
+		}
+		if (right_child != NULL) {
+			right_child->update(lazy);
+		}
+		lazy = 0;
+	}
+
+	void update(int left, int right, ll val) {
+		prop();
+		if (left_bound >= left && right_bound <= right) {
+			update(val);
+			return;
+		}
+		int mid = left_bound + (right_bound - left_bound) / 2;
+		if (left <= mid) {
+			if (left_child == NULL) {
+				left_child = new segtree_node(left_bound, mid);
+			}
+			left_child->update(left, right, val);
+		}
+		if (right > mid) {
+			if (right_child == NULL) {
+				right_child = new segtree_node(mid + 1, right_bound);
+			}
+			right_child->update(left, right, val);
+		}
+		merge();
+	}
+	ll query(int left, int right) {
+		prop();
+		if (left_bound >= left && right_bound <= right) {
+			return sum;
+		}
+		int mid = left_bound + (right_bound - left_bound) / 2;
+		ll res = 0;
+		if (left <= mid) {
+			if (left_child == NULL) {
+				left_child = new segtree_node(left_bound, mid);
+			}
+			res += left_child->query(left, right);
+		}
+		if (right > mid) {
+			if (right_child == NULL) {
+				right_child = new segtree_node(mid + 1, right_bound);
+			}
+			res += right_child->query(left, right);
+		}
+		return res;
+	}
+
+	segtree_node() {
+		left_child = right_child = NULL;
+		left_bound = right_bound = -1;
+		sum = 0; lazy = 0;
+	}
+	segtree_node(int left, int right) {
+		left_child = right_child = NULL;
+		left_bound = left; right_bound = right;
+		sum = 0; lazy = 0;
+	}
+};
+```
+
 <IncompleteSection />
 
 ### Problems
