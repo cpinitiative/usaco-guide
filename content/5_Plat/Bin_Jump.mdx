@@ -401,21 +401,21 @@ int LCA(int a, int b) {
 }
 	
 int main() {   
-    setIO("");
-    re(N, Q);
-    st.resize(N); en.resize(N);
-    
-    rep(N-1) {
-        int b; re(b); --b;
-        adj[b].pb(i+1);
-    }
+	setIO("");
+	re(N, Q);
+	st.resize(N); en.resize(N);
 
-    dfs(0,0);
+	rep(N-1) {
+		int b; re(b); --b;
+		adj[b].pb(i+1);
+	}
 
-    rep(Q) {
-        int a, b; re(a, b); --a; --b;
-        pr(LCA(a, b)+1,"\n"); 
-    }
+	dfs(0,0);
+
+	rep(Q) {
+		int a, b; re(a, b); --a; --b;
+		ps(LCA(a, b)+1); 
+	}
 }
 ```
 
@@ -471,22 +471,22 @@ int lca(int a, int b) {
 }
 	
 int main() {
-    re(N, Q);
-    st.resize(N); en.resize(N);
-    
-    rep(N-1) {
-        int a, b; re(a, b); --a,--b;
-        adj[b].pb(a);
-        adj[a].pb(b);
-    }
+	re(N, Q);
+	st.resize(N); en.resize(N);
 
-    dfs(0,0,0);
+	rep(N-1) {
+		int a, b; re(a, b); --a,--b;
+		adj[b].pb(a);
+		adj[a].pb(b);
+	}
 
-    rep(Q) {
-        int a, b; re(a, b); --a; --b;
+	dfs(0,0,0);
 
-        pr(depth[a] + depth[b] - 2 * depth[lca(a, b)],"\n");
-    }
+	rep(Q) {
+		int a, b; re(a, b); --a; --b;
+
+		ps(depth[a] + depth[b] - 2 * depth[lca(a, b)]);
+	}
 }
 ```
 
