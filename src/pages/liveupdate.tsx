@@ -18,7 +18,6 @@ import useStickyState from '../hooks/useStickyState';
 import Split from 'react-split';
 import styled from 'styled-components';
 import { useRef, useState } from 'react';
-import SettingsModal from '../components/SettingsModal';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -59,7 +58,6 @@ export default function LiveUpdatePage(props: PageProps) {
 
   const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
   const editor = useRef();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
@@ -98,10 +96,6 @@ export default function LiveUpdatePage(props: PageProps) {
   return (
     <Layout>
       <SEO title="MDX Renderer" />
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
 
       <div className="h-screen flex flex-col">
         <div className="block py-3 px-3 shadow dark:bg-gray-900 flex items-center justify-around">
@@ -112,12 +106,12 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             Dashboard
           </a>
-          <button
+          <Link
+            to="/settings"
             className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            onClick={() => setIsSettingsOpen(true)}
           >
             Settings
-          </button>
+          </Link>
           <a
             href="/general/contributing#adding-a-solution"
             target="_blank"
