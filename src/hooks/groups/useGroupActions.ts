@@ -54,8 +54,43 @@ export function useGroupActions() {
       return docId;
     },
     deleteGroup: async (groupId: string) => {
-      // todo @jeffrey delete posts and submissions
-      await firebase.firestore().collection('groups').doc(groupId).delete();
+      let batch = firebase.firestore().batch();
+
+      const posts = await firebase
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('posts')
+        .get();
+      posts.docs.forEach(doc => {
+        batch.delete(
+          firebase
+            .firestore()
+            .collection('groups')
+            .doc(groupId)
+            .collection('posts')
+            .doc(doc.id)
+        );
+      });
+      const submissions = await firebase
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('submissions')
+        .get();
+      submissions.docs.forEach(doc => {
+        batch.delete(
+          firebase
+            .firestore()
+            .collection('groups')
+            .doc(groupId)
+            .collection('submissions')
+            .doc(doc.id)
+        );
+      });
+      batch.delete(firebase.firestore().collection('groups').doc(groupId));
+
+      await batch.commit();
       invalidateData();
     },
     updateGroup,

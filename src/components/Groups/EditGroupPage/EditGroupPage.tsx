@@ -124,7 +124,12 @@ export default function EditGroupPage(props) {
               <button
                 type="button"
                 onClick={() => {
-                  if (confirm('Are you sure you want to delete this group?')) {
+                  if (
+                    confirm('Are you sure you want to delete this group?') &&
+                    confirm(
+                      'Are you REALLY sure? Posts and submissions will be permanently deleted.'
+                    )
+                  ) {
                     deleteGroup(groupId).then(() =>
                       navigate(`/groups/`, { replace: true })
                     );
