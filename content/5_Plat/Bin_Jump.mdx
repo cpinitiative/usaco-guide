@@ -511,40 +511,48 @@ Find LCA of node $a$ and $b$ as described above. Then, the distance between the 
 ```cpp
 CodeSnip{Benq Template}
 	
-int N, Q, T = 1;
+int N, Q, T=1;
 int depth[200005];
-vi st, en;
 int up[200005][20];
 vi adj[200005];
 
-void dfs(int v, int p, int d) {
-	st[v] = T++;
-	up[v][0] = p;
-	depth[v] = d;
+void dfs(int v) {
+    FOR(i, 1, 20) {
+        up[v][i] = up[up[v][i-1]][i-1];
+    }
 
-	FOR(i, 1, 20) {
-		up[v][i] = up[up[v][i-1]][i-1];
-	}
-
-	each(x, adj[v]) {
-		if(x != p) {
-			dfs(x, v, d+1);
-		}
-	}
-
-	en[v] = T-1;
+    each(x, adj[v]) {
+        if(x != up[v][0]) {
+            depth[x] = depth[up[x][0]=v]+1;
+            dfs(x);
+        }
+    }
 }
 
-bool anc(int a, int b) {
-	return st[a] <= st[b] && en[a] >= en[b];
+int jump(int x, int d) {
+	F0R(i, 20) {
+        if ((d>>i)&1) 
+            x = up[x][i];
+    }
+	return x; 
 }
 
-int lca(int a, int b) {
-	for (int i = 19; i >= 0; --i) {
-		if (!anc(up[a][i], b))
-			a = up[a][i];
-	}
-	return up[a][0];
+int LCA(int a, int b) {
+    if(depth[a] < depth[b]) swap(a, b);
+
+    a = jump(a, depth[a] - depth[b]);
+
+    if(a==b) return a;
+
+    R0F(i, 20) {
+        int aT = up[a][i]; int bT = up[b][i];
+        
+        if(aT != bT) {
+            a = aT; b = bT;
+        }
+    }
+
+    return up[a][0];
 }
 	
 int main() {
