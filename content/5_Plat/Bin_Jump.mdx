@@ -325,8 +325,6 @@ int main() {
 	<Resource source="CPH" title="18.3 - LCA Method 1" starred />
 </Resources>
 
-### Implementation
-
 ### Solution (Company Queries II) 
 
 To find $\textrm{lca(a, b)}$, we can first jump the lower node of the two to the same depth as the other. Then, we lift both nodes up decrementally. At the end, the parent of either node is the LCA of the two.
@@ -348,7 +346,7 @@ void dfs(int v) {
 		up[v][i] = up[up[v][i-1]][i-1];
 	}
 
-	each(x, adj[v]) {
+	for(auto x : adj[v]) {
 		if(x != up[v][0]) {
 			depth[x] = depth[up[x][0]=v]+1;
 			dfs(x);
@@ -358,7 +356,7 @@ void dfs(int v) {
 
 int jump(int x, int d) {
 	F0R(i, 20) {
-		if ((d>>i)&1) 
+		if ((d >> i) & 1) 
 			x = up[x][i];
 	}
 	return x; 
@@ -368,15 +366,11 @@ int LCA(int a, int b) {
 	if(depth[a] < depth[b]) swap(a, b);
 
 	a = jump(a, depth[a] - depth[b]);
-
-	if(a==b) return a;
+	if(a == b) return a;
 
 	R0F(i, 20) {
-		int aT = up[a][i]; int bT = up[b][i];
-		
-		if(aT != bT) {
-			a = aT; b = bT;
-		}
+		int aT = up[a][i], bT = up[b][i];
+		if(aT != bT) a = aT, b = bT;
 	}
 
 	return up[a][0];
@@ -395,7 +389,7 @@ int main() {
 
 	F0R(i, Q) {
 		int a, b; re(a, b); --a; --b;
-		pr(LCA(a, b)+1,"\n");
+		ps(LCA(a, b)+1,"\n");
 	}
 }
 ```
@@ -445,7 +439,7 @@ void dfs(int v, int p) {
 		up[v][i] = up[up[v][i-1]][i-1];
 	}
 
-	each(x, adj[v]) if(x != p) dfs(x, v);
+	for(auto x : adj[v]) if(x != p) dfs(x, v);
 
 	en[v] = T-1;
 }
@@ -523,7 +517,7 @@ void dfs(int v) {
 		up[v][i] = up[up[v][i-1]][i-1];
 	}
 
-	each(x, adj[v]) {
+	for(auto x : adj[v]) {
 		if(x != up[v][0]) {
 			depth[x] = depth[up[x][0]=v]+1;
 			dfs(x);
@@ -543,15 +537,11 @@ int LCA(int a, int b) {
 	if(depth[a] < depth[b]) swap(a, b);
 
 	a = jump(a, depth[a] - depth[b]);
-
-	if(a==b) return a;
+	if(a == b) return a;
 
 	R0F(i, 20) {
 		int aT = up[a][i]; int bT = up[b][i];
-		
-		if(aT != bT) {
-			a = aT; b = bT;
-		}
+		if(aT != bT) a = aT, b = bT;
 	}
 
 	return up[a][0];
