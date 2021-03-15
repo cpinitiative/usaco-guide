@@ -214,9 +214,7 @@ export const problems = {
 ### Tutorial
 
 <Resources>
-	<Resource source="CPH" title="18.1 - Finding Ancestors">
-		{' '}
-	</Resource>
+	<Resource source="CPH" title="18.1 - Finding Ancestors" />
 	<Resource source="AryanshS" title="Binary Lifting" url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1" />
 	<Resource source="SecondThread" title="Tree Basics - Binary Lifting" url="https://codeforces.com/blog/entry/81527"> </Resource>
 </Resources>
@@ -319,15 +317,22 @@ int main() {
 
 <FocusProblem problem={problems.lca[1]} />
 
-### Tutorial
+### Solution (Company Queries II) 
 
 <Resources>
-	<Resource source="CPH" title="18.3 - LCA Method 1" starred />
+	<Resource source="CPH" title="18.3 - LCA Method 1">brief description</Resource>
+	<Resource
+		source="Benq"
+		title="LCAjump"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCAjump.h"
+	>
+		alternative implementation
+	</Resource>
 </Resources>
 
 ### Solution (Company Queries II) 
 
-To find $\textrm{lca(a, b)}$, we can first jump the lower node of the two to the same depth as the other. Then, we lift both nodes up decrementally. At the end, the parent of either node is the LCA of the two.
+To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to the same depth as the other. Then, we lift both nodes up decrementally. At the end, the parent of either node is the LCA of the two.
 
 <LanguageSection>
 
@@ -398,24 +403,13 @@ int main() {
 
 </LanguageSection>
 
-<Resources>
-	<Resource
-		source="Benq"
-		title="LCAjump"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Trees%20(10)/LCAjump.h"
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-
 ### Alternative Solution (Company Queries II)
 
-First, let $\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor table for all nodes in the tree. Check [Euler Tour Techniques](/gold/tree-euler).
+As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let $\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor table for all nodes in the tree.
 
-These can be filled with a DFS traversal. $\texttt{up}$ can be generated because depth first allows the ancestors to be filled first before traversing the current node.
+These can be filled with a DFS traversal. $\texttt{up}$ can be generated because DFS allows the ancestors to be filled first before traversing the current node.
 
-With this information, we can declare node $a$ an ancestor of $b$ if $$\texttt{st}[a] \le \texttt{st}[b] \&\& \texttt{en}[a] \ge \texttt{en}[b]$$
+With this information, we can declare node $a$ an ancestor of $b$ if $\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$
 
 We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the answer will be $a$ and $b$ respectively. Otherwise, we can loop from the largest jumps to the the direct ancestor of $a$ to find the LCA of $a$ and $b$. If $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$ to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower common ancestor. Afterwards, our answer is not $a$, but the parent of $a$. 
 
