@@ -2,8 +2,16 @@ import * as functions from 'firebase-functions';
 import firestore from '@google-cloud/firestore';
 import admin from 'firebase-admin';
 import { Octokit } from '@octokit/core';
-import contentCodeowners from '../../content-codeowners.json';
 admin.initializeApp();
+
+const problemSuggestionCodeowners = {
+  general: ['thecodingwizard'],
+  bronze: ['caoash'],
+  silver: ['andrewwangva'],
+  gold: ['caoash'],
+  plat: ['nchn27'],
+  adv: ['bqi343'],
+};
 
 export const submitProblemSuggestion = functions.https.onCall(
   async (data, context) => {
@@ -59,7 +67,7 @@ export const submitProblemSuggestion = functions.https.onCall(
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body,
         labels: ['Problem Suggestion'],
-        assignees: contentCodeowners[section],
+        assignees: problemSuggestionCodeowners[section],
       }
     );
 
