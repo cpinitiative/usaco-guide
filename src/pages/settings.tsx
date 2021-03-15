@@ -35,7 +35,7 @@ import Authentication from '../components/Settings/Authentication';
 export default function SettingsPage() {
   const tabs = ['general', 'profile', 'auth', 'user-data'];
   const [tab, setTab] = React.useReducer((prev, next) => {
-    window.location.hash = '#' + next;
+    location.replace('#' + next);
     return next;
   }, 'general');
 
@@ -48,8 +48,8 @@ export default function SettingsPage() {
       }
     };
     handleHashChange();
-    document.addEventListener('hashchange', handleHashChange);
-    return () => document.removeEventListener('hashChange', handleHashChange);
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashChange', handleHashChange);
   }, []);
 
   return (
