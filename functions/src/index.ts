@@ -1,7 +1,6 @@
 import admin from 'firebase-admin';
 import { Octokit } from '@octokit/core';
 import * as functions from 'firebase-functions';
-import contentCodeowners from '../../content-codeowners.json';
 admin.initializeApp();
 import scheduledFirestoreExport from './backups';
 import getUsers from './getUsers';
@@ -11,6 +10,15 @@ export {
   scheduledFirestoreExport,
   getUsers,
   incrementUsers /* submitToProblem */,
+};
+
+const problemSuggestionCodeowners = {
+  general: ['thecodingwizard'],
+  bronze: ['caoash'],
+  silver: ['andrewwangva'],
+  gold: ['caoash'],
+  plat: ['nchn27'],
+  adv: ['bqi343'],
 };
 
 export const submitProblemSuggestion = functions.https.onCall(
@@ -55,7 +63,7 @@ export const submitProblemSuggestion = functions.https.onCall(
       `**Difficulty**: ${difficulty}\n` +
       `**Tags**: ${tags}\n` +
       `**Additional Notes**:${
-        additionalNotes ? '\n' + additionalNotes : 'None'
+        additionalNotes ? '\n' + additionalNotes : ' None'
       }\n\n` +
       `*This report was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
 
@@ -67,7 +75,7 @@ export const submitProblemSuggestion = functions.https.onCall(
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body,
         labels: ['Problem Suggestion'],
-        assignees: contentCodeowners[section],
+        assignees: problemSuggestionCodeowners[section],
       }
     );
 
