@@ -14,6 +14,7 @@ import Flatpickr from 'react-flatpickr';
 import MarkdownEditor from '../MarkdownEditor';
 import { GroupData } from '../../../models/groups/groups';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {
@@ -30,6 +31,7 @@ export default function EditGroupPage(props) {
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
+  const notificationSystem = useNotificationSystem();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
