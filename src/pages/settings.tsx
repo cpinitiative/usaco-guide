@@ -76,7 +76,7 @@ export default function SettingsPage() {
                   labelMap={{
                     general: 'General',
                     profile: 'Profile',
-                    auth: 'Authentication',
+                    auth: 'Sign In Methods',
                     'user-data': 'User Data',
                   }}
                   value={tab}

@@ -5,7 +5,7 @@ export default function Authentication() {
     <div>
       <div className="space-y-1">
         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-          Authentication
+          Sign In Methods
         </h3>
       </div>
       <div className="h-4" />

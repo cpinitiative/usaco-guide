@@ -22,8 +22,8 @@ export default function Language() {
         onChange={setLang}
         labelMap={LANGUAGE_LABELS}
         descriptionMap={{
-          java: 'Note: Currently very limited support for Java beyond Gold.',
-          py: 'Note: Currently very limited support for Python.',
+          java: 'We currently have very limited support for Java beyond Gold.',
+          py: 'We currently have very limited support for Python.',
         }}
       />
     </div>
