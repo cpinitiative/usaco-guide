@@ -248,7 +248,7 @@ class CodeBlock extends React.Component<
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag
       return (
-        <pre className="-mx-4 sm:-mx-6 lg:mx-0 lg:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
           {code}
         </pre>
       );
@@ -284,7 +284,7 @@ class CodeBlock extends React.Component<
           <div className="gatsby-highlight" data-language={language}>
             <pre
               className={
-                '-mx-4 sm:-mx-6 lg:mx-0 lg:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
                 className
               }
               style={{ ...style }}
