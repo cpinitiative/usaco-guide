@@ -77,6 +77,18 @@ export const problems = {
 
 ## Solution - Intersection Points
 
+We can sweep from bottom to top (by the $y$ coordinate); storing two nodes for vertical segments (one for start and one for end) and one node for horizontal segments.
+
+We can use a Binary Indexed Tree to store the number of **active** vertical segments for each $x$ coordinate.
+
+Then, every time we encounter the start of a vertical segment, we increment the counter for $x$ in the BIT.
+
+Similarly, we decrement the counter for $x$ every time we see the end of a vertical segment.
+
+When we encounter a horizontal segment, we would query the number of active ranges in $[x_1, x_2]$ where $x_1$ is the lower $x$ coordinate and $x_2$ is the upper $x$ coordinate of the segment.
+
+Our answer would be the sum of all the queries.
+
 <LanguageSection>
 
 <CPPSection>
