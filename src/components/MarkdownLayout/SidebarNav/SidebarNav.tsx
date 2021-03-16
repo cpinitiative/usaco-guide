@@ -5,12 +5,15 @@ import Accordion from './Accordion';
 import MODULE_ORDERING, {
   Chapter,
   SECTION_LABELS,
+  SectionID,
   SECTIONS,
 } from '../../../../content/ordering';
 import { useContext, useState } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { SolutionInfo } from '../../../models/solution';
 import SectionsDropdown from '../../SectionsDropdown';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import SidebarAd from './SidebarAd';
 
 export interface NavLinkGroup {
   label: string;
@@ -53,6 +56,8 @@ export const SidebarNav = () => {
   return (
     <nav className="flex-grow bg-white dark:bg-dark-surface flex flex-col h-0">
       <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
+        <SidebarAd currentSection={oriSection as SectionID} />
+
         <div className="flex justify-center my-4">
           <SectionsDropdown
             currentSection={activeSection}
