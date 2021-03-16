@@ -1,22 +1,18 @@
 import { useContext } from 'react';
-import SettingsModalContext from '../../context/SettingsModalContext';
 import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
 import * as React from 'react';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { Link } from 'gatsby';
 
 const SidebarBottomButtons = () => {
-  const { setIsSettingsModalOpen } = useContext(SettingsModalContext);
   const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);
   const { setIsMobileNavOpen } = useContext(MarkdownLayoutContext);
   return (
     <>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
-        <button
+        <Link
           className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
-          onClick={() => {
-            setIsSettingsModalOpen(true);
-            setIsMobileNavOpen(false);
-          }}
+          to="/settings"
         >
           <svg
             className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 transition ease-in-out duration-150"
@@ -39,7 +35,7 @@ const SidebarBottomButtons = () => {
             />
           </svg>
           Settings
-        </button>
+        </Link>
       </div>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <button
