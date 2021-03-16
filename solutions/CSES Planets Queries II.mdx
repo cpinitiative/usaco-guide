@@ -59,109 +59,109 @@ bool incyc[MX];
 // in cyc, in cyc
 
 void dfs(int x) {
-    int X = x;
-    while (tmp[x] == 0) {
-        tmp[x] = X;
-        x = t[x];
-    }
-    while (tmp[x] == X) {
-        tmp[x] = X + n;
-        ind[x] = nex[comp[x]]++;
-        incyc[x] = true;
-        x = t[x];
-    }
+	int X = x;
+	while (tmp[x] == 0) {
+		tmp[x] = X;
+		x = t[x];
+	}
+	while (tmp[x] == X) {
+		tmp[x] = X + n;
+		ind[x] = nex[comp[x]]++;
+		incyc[x] = true;
+		x = t[x];
+	}
 }
 
 void DFS(int cur) {
-    for (int i: child[cur]) {
-        if (!incyc[i]) {
-            depth[i] = depth[cur] + 1;
-            DFS(i);
-        }
-    }
+	for (int i: child[cur]) {
+		if (!incyc[i]) {
+			depth[i] = depth[cur] + 1;
+			DFS(i);
+		}
+	}
 }
 
 void process() {
-    for (int i = 1; i < n + 1; ++i) {
-        dfs(i);
-    }
-    for (int i = 1; i < n + 1; ++i) {
-        par[i][0] = t[i];
-    }
-    for (int i = 1; i < 18; ++i) {
-        for (int j = 1; j < n + 1; ++j) {
-            par[j][i] = par[par[j][i - 1]][i - 1];
-        }
-    }
-    for (int i = 1; i < n + 1; ++i) {
-        if (incyc[i]) {
-            DFS(i);
-        }
-    }
+	for (int i = 1; i < n + 1; ++i) {
+		dfs(i);
+	}
+	for (int i = 1; i < n + 1; ++i) {
+		par[i][0] = t[i];
+	}
+	for (int i = 1; i < 18; ++i) {
+		for (int j = 1; j < n + 1; ++j) {
+			par[j][i] = par[par[j][i - 1]][i - 1];
+		}
+	}
+	for (int i = 1; i < n + 1; ++i) {
+		if (incyc[i]) {
+			DFS(i);
+		}
+	}
 }
 
 int getPar(int a, int b) {
-    for (int i = (18) - 1; i >= 0; --i) {
-        if (b & (1 << i)) {
-            a = par[a][i];
-        }
-    }
-    return a;
+	for (int i = (18) - 1; i >= 0; --i) {
+		if (b & (1 << i)) {
+			a = par[a][i];
+		}
+	}
+	return a;
 }
 
 void gencomp(int x, int i) {
-    if (comp[x]) {
-        return;
-    }
-    comp[x] = i;
-    for (int y: adj[x]) {
-        gencomp(y, i);
-    }
+	if (comp[x]) {
+		return;
+	}
+	comp[x] = i;
+	for (int y: adj[x]) {
+		gencomp(y, i);
+	}
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> n >> q;
-    for (int i = 1; i < n + 1; ++i) {
-        cin >> t[i];
-        child[t[i]].push_back(i);
-        adj[i].push_back(t[i]), adj[t[i]].push_back(i);
-    }
-    for (int i = 1; i < n + 1; ++i) {
-        if (comp[i] == 0) {
-            gencomp(i, i);
-        }
-    }
-    process();
-    for (int i = 0; i < q; ++i) {
-        int a, b;
-        cin >> a >> b;
-        if (comp[a] != comp[b]) {
-            cout << "-1\n";
-            continue;
-        }
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n >> q;
+	for (int i = 1; i < n + 1; ++i) {
+		cin >> t[i];
+		child[t[i]].push_back(i);
+		adj[i].push_back(t[i]), adj[t[i]].push_back(i);
+	}
+	for (int i = 1; i < n + 1; ++i) {
+		if (comp[i] == 0) {
+			gencomp(i, i);
+		}
+	}
+	process();
+	for (int i = 0; i < q; ++i) {
+		int a, b;
+		cin >> a >> b;
+		if (comp[a] != comp[b]) {
+			cout << "-1\n";
+			continue;
+		}
 
-        if (!incyc[a]) {
-            if (incyc[b]) {
-                int x = getPar(a, depth[a]);
-                cout << ((ind[b] - ind[x] + nex[comp[a]]) % nex[comp[a]]) + depth[a];
-            } else {
-                if (getPar(a, depth[a] - depth[b]) == b) {
-                    cout << depth[a] - depth[b];
-                } else {
-                    cout << -1;
-                }
-            }
-        } else {
-            if (incyc[b]) {
-                cout << (ind[b] - ind[a] + nex[comp[a]]) % nex[comp[a]];
-            } else {
-                cout << -1;
-            }
-        }
-        cout << "\n";
-    }
+		if (!incyc[a]) {
+			if (incyc[b]) {
+				int x = getPar(a, depth[a]);
+				cout << ((ind[b] - ind[x] + nex[comp[a]]) % nex[comp[a]]) + depth[a];
+			} else {
+				if (getPar(a, depth[a] - depth[b]) == b) {
+					cout << depth[a] - depth[b];
+				} else {
+					cout << -1;
+				}
+			}
+		} else {
+			if (incyc[b]) {
+				cout << (ind[b] - ind[a] + nex[comp[a]]) % nex[comp[a]];
+			} else {
+				cout << -1;
+			}
+		}
+		cout << "\n";
+	}
 }
 ```
 
