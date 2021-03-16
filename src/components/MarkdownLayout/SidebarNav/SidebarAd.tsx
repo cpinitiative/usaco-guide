@@ -27,15 +27,16 @@ export default function SidebarAd({
     currentSection === 'silver';
 
   return (
-    <div className="py-4 px-4 bg-gray-50 relative mt-2 lg:mt-0">
+    <div className="py-4 px-4 bg-gray-50 dark:bg-gray-900 relative mt-2 lg:mt-0">
       <span className="block font-medium text-lg leading-tight pr-8 mb-2">
         {showClass
           ? 'Online USACO Classes'
           : 'Teach USACO & Earn Volunteer Hours!'}
       </span>
-      <p className="text-gray-600 text-sm mb-2">
-        You can volunteer for the CPI’s USACO Classes and earn service hours
-        while having fun teaching USACO!
+      <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+        {showClass
+          ? 'Learn USACO from the same team that brought you the USACO Guide, with a curriculum integrated with the Guide.'
+          : 'You can volunteer for the CPI’s USACO Classes and earn service hours while having fun teaching USACO!'}
       </p>
       <a
         href={
@@ -44,7 +45,7 @@ export default function SidebarAd({
             : 'https://forum.usaco.guide/t/teach-for-the-competitive-programming-initiative-earn-volunteer-hours/972'
         }
         target="_blank"
-        className="inline-flex px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700"
+        className="inline-flex px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-teal-500 dark:from-teal-600 to-cyan-600 dark:to-cyan-700 hover:from-teal-600 dark:hover:from-teal-500 hover:to-cyan-700 dark:hover:to-cyan-600"
       >
         Learn More
       </a>
@@ -54,7 +55,7 @@ export default function SidebarAd({
           onClick={() => {
             setAdSettings({ ...adSettings, hideMarch2021: true });
           }}
-          className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-cyan-500"
+          className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900 focus:ring-cyan-500"
         >
           <span className="sr-only">Close</span>
           {/* Heroicon name: outline/x */}
