@@ -680,6 +680,37 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+S = input()
+cnt = [0]*26
+perm = ""
+perms = []
+def search():
+	global perm
+	if len(perm) == len(S):
+		perms.append(perm)
+		return
+	for i in range(26):
+		if cnt[i] == 0:
+			continue
+		cnt[i] -= 1
+		perm += chr(ord('a') + i)
+		search()
+		cnt[i] += 1
+		perm = perm[:-1] # this removes the last character
+	
+for ch in S:
+	cnt[ord(ch) - ord('a')] += 1
+search()
+print(len(perms))
+for t in perms:
+	print(t)
+```
+
+</PySection>
+
 </LanguageSection>
 
 #### Generating Permutations Using [`next_permutation`](https://en.cppreference.com/w/cpp/algorithm/next_permutation)
@@ -1067,6 +1098,32 @@ public class Main {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+g = [input() for i in range(8)]
+d1 = [0] * 15
+d2 = [0] * 15
+c = [0] * 8
+ans = 0
+def dfs(r): # place queen in r-th row
+    if r == 8:
+        ans += 1
+    else:
+        for i in range(8):
+            if g[r][i] == '*':
+                continue
+            if c[i] or d1[r + i] or d2[i - r + 7]:
+                continue
+            c[i] = d1[r + i] = d2[i - r + 7] = 1
+            dfs(r + 1)
+            c[i] = d1[r + i] = d2[i - r + 7] = 0
+dfs(0)
+print(ans)
+```
+
+</PySection>
 
 </LanguageSection>
 
