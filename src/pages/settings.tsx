@@ -9,6 +9,7 @@ import DarkMode from '../components/Settings/DarkMode';
 import UserData from '../components/Settings/UserData';
 import Profile from '../components/Settings/Profile';
 import Authentication from '../components/Settings/Authentication';
+import { navigate } from 'gatsby';
 
 /*
 1. General
@@ -60,7 +61,25 @@ export default function SettingsPage() {
 
       <main>
         <div className="relative max-w-xl mx-auto md:px-8 xl:px-0">
-          <div className="pt-10 sm:pt-16 pb-16">
+          <button
+            className="mt-8 btn mx-4 sm:mx-6 md:mx-0"
+            onClick={() => navigate(-1)}
+          >
+            <svg
+              className="-ml-1 mr-2 h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Back
+          </button>
+          <div className="pt-4 sm:pt-6 pb-16">
             <div className="px-4 sm:px-6 md:px-0">
               <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
                 Settings
