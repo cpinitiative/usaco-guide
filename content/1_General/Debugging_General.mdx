@@ -6,7 +6,12 @@ description: 'General tips for identifying errors within your program.'
 ---
 
 <Resources>
-	<Resource source="KACTL" title="Troubleshooting" url="https://github.com/kth-competitive-programming/kactl/blob/master/content/contest/troubleshoot.txt" starred>
+	<Resource
+		source="KACTL"
+		title="Troubleshooting"
+		url="https://github.com/kth-competitive-programming/kactl/blob/master/content/contest/troubleshoot.txt"
+		starred
+	>
 		things to try in an ICPC contest
 	</Resource>
 	<Resource
@@ -14,117 +19,93 @@ description: 'General tips for identifying errors within your program.'
 		title="Asking for help FAQ"
 		url="https://codeforces.com/blog/entry/64993"
 		starred
-	>
-	</Resource>
+	/>
 </Resources>
 
 This module is based on both of these resources. I've included the content that is most relevant to USACO.
 
 ## Pre-Submit
 
- - Don't repeat yourself!
+- Don't repeat yourself!
 
-<LanguageSection>
+<IncompleteSection>
 
-<JavaSection>
+find example of this
 
-Consider this example of swapping items in an array of integers.
+</IncompleteSection>
 
-```java
-public static void main(String[] args) {
-	//swap first item with third
-	int first = arr[0];
-	int last = arr[2];
-	arr[0] = last;
-	arr[2] = first;
-
-	//swap second item with fourth
-	int second = arr[1];
-	int secondLast = arr[3];
-	arr[1] = secondLast;
-	arr[3] = second;
-}
-```
-
-Hopefully you notice the unnecessary repetition in this code. Luckily, we can turn this into a function that takes in the two indicies of the array that we want to swap, like so.
-
-```java
-private void swap(int[] arr, int i, int j) {
-	int first = arr[i];
-	arr[i] = arr[j];
-	arr[j] = first;
-}
-
-public static void main(String[] args) {
-	swap(arr, 0, 2);
-	swap(arr, 1, 3);
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
- - Your code should be readable (to yourself at the very least). Variables should be given meaningful names.
-   - See [style tips](/general/debugging-lang#style).
- - Use plenty of [print statements](/general/debugging-lang#printing-variables).
+- Your code should be consistent and readable (to yourself at the very least).
+  - See [style tips](/general/debugging-lang#style).
+- Give variables meaningful names.
+- Use plenty of [print statements](/general/debugging-lang#printing-variables).
 
 ## Wrong Answer
 
- - Read the full problem statement again.
- - Read your code again.
- - Have you understood the problem correctly?
- - Is your output format correct?
-   - Did you remove debug output before submitting?
- - Add some [assertions](/general/debugging-lang#assertions--warnings), resubmit.
- - Are you sure your algorithm works?
-   - Go through the algorithm for a simple case / write some testcases to run your algorithm on.
- - Do you handle all corner cases (such as $N=1$) / special cases?
- - Any undefined behavior?
-   - Includes (but not limited to) uninitialized variables, array out of bounds, shifting int by $\ge 32$ bits, not returning anything from non-`void` functions.
-   - Can result in different outputs locally / on the USACO server.
-   - Compiling with [additional options](/general/debugging-lang#other-options) can help catch these.
-   - C++ - can use [`array::at`](https://www.cplusplus.com/reference/array/array/at/) or [`vector::at`](https://www.cplusplus.com/reference/vector/vector/at/) instead of `[]` to throw exceptions when the index is out of bounds.
- - Any overflows or NaNs?
- - Confusing $N$ and $M$, $i$ and $j$, etc.?
- - Shadowed or unused variables?
-   - Compile with [warning options](/general/debugging-lang#warning-options).
- - Write a test case generator and a (simpler) slow solution and compare the outputs
-   - See [stress testing](/general/debugging-lang#stress-testing).
-   - You can compare against a model solution (if available).
- - Rewrite your solution from the start.
-   - Don't delete your previous program. Make a new file! It's always possible that you might introduce more bugs.
- - Use a [debugger](/general/debugging-lang/#debuggers) (if you're using an IDE).
-   - Set breakpoints to stop your program at certain lines.
-   - Step through lines one by one and watch how the values of your variables change.
-   - Probably slower than well-placed print statements ...
+- Read the full problem statement again.
+- Read your code again.
+- Have you understood the problem correctly?
+- Is your output format correct?
+  - Did you remove debug output before submitting?
+- Add some [assertions](/general/debugging-lang#assertions--warnings), resubmit.
+- Are you sure your algorithm works?
+  - Go through the algorithm for a simple case / write some testcases to run your algorithm on.
+- Do you handle all corner cases (such as $N=1$) / special cases?
+- Any undefined behavior?
+
+  - can result in different outputs locally vs online
+  - uninitialized variables
+  - not returning anything from non-`void` functions
+  - array out of bounds
+    - C++ - Can use [`array::at`](https://www.cplusplus.com/reference/array/array/at/) or [`vector::at`](https://www.cplusplus.com/reference/vector/vector/at/) instead of `[]` to throw an exception when the index is out of bounds.
+  - [signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
+
+    - USACO problems usually contain a note of the following form if the output format requires 64-bit rather than 32-bit integers, but it's easy to miss:
+
+    > Note that the large size of integers involved in this problem may require the use of 64-bit integer data types (e.g., a `long long` in C/C++)."
+
+  - C++ - Compiling with [additional options](/general/debugging-lang#other-options) can help catch these.
+
+<!-- - Related - shifting an integer by $\ge 32$ bits? -->
+
+- Any NaNs (ex. taking the square root of a negative number)?
+- Confusing $N$ and $M$, $i$ and $j$, etc.?
+- Shadowed or unused variables?
+  - C++ - Compile with [warning options](/general/debugging-lang#warning-options) (`-Wall -Wshadow`).
+- Write a test case generator and a (simpler) slow solution and compare the outputs
+  - See [stress testing](/general/debugging-lang#stress-testing).
+  - You can compare against a model solution (if available).
+- Use a [debugger](/general/debugging-lang/#debuggers) (if you're using an IDE).
+  - Set breakpoints to stop your program at certain lines.
+  - Step through lines one by one and watch how the values of your variables change.
+  - Probably slower than well-placed print statements ...
+- Rewrite your solution from the start.
+  - Make a new file rather than overwriting your previous program! It's always possible that you might introduce more bugs.
 
 Of course, many of these are also relevant for RE / TLE.
 
 ## Runtime Error
 
- - Have you tested all corner cases locally?
- - Any undefined behavior?
- - Are you reading or writing outside the range of any vector?
- - Any assertions that might fail?
- - Any possible division by 0? (mod 0 for example)
- - Any possible infinite recursion?
- - Invalidated pointers or iterators?
- - Are you using too much memory?
+- Have you tested all corner cases locally?
+- Any undefined behavior? (see above)
+- Any assertions that might fail?
+- Any possible division by 0? (mod 0 for example)
+- Any possible infinite recursion?
+- Invalidated pointers or iterators?
+- Are you using too much memory?
 
 ## Time Limit Exceeded
 
- - Do you have any possible infinite loops?
- - What is the complexity of your algorithm?
- - Avoid `vector`, `map`. (use `array`s / `unordered_map`)
- - Did you remove debug output before submitting (ex. are you printing a lot of information to `stderr`)?
+- Do you have any possible infinite loops?
+- What is the complexity of your algorithm?
+- Avoid `vector`, `map`. (use `array` / `unordered_map`)
+- Did you remove debug output before submitting (ex. are you printing a lot of information to `stderr`)?
 
 ## Before Posting on the [Forum](https://forum.usaco.guide/)
 
- - Try everything above first.
-   - If you've found a small counter-test, you should be able to figure out why your code isn't working on your own via print statements.
- - Provide a link to the problem (and the relevant module, if applicable).
- - Include what you've attempted so far.
- - If you have code, post it (formatted as described [here](https://forum.usaco.guide/t/welcome-to-the-usaco-forum/7/2)).
-   - Add comments.
-   - If you know which part doesn't work, mention it.
+- Try everything above first.
+  - If you've found a small counter-test, you should be able to figure out why your code isn't working on your own via print statements.
+- Provide a link to the problem (and the relevant module, if applicable).
+- Include what you've attempted so far.
+- If you have code, post it (formatted as described [here](https://forum.usaco.guide/t/welcome-to-the-usaco-forum/7/2)).
+  - Add comments.
+  - If you know which part doesn't work, mention it.
