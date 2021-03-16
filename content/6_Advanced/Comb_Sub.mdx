@@ -106,6 +106,11 @@ vector<long long> total_min(vector<long long> a, vector<long long> b) {
 
 void process(int g) {
 	dp[g][0] = {0, initial[g]};
+	/*
+	 * we have INF for the first element because 0 would mess up merging
+	 * if it WAS 0, then that would mean we didn't buy this one
+	 * yet the algo would still think all the children are eligible for coupons
+	 */
 	dp[g][1] = {INF, discounted[g]};
 	for (int t : child[g]) {
 		process(t);
