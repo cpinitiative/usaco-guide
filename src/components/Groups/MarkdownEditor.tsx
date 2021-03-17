@@ -7,9 +7,7 @@ export default function MarkdownEditor({ value, onChange }) {
   const { darkMode } = useContext(UserDataContext);
 
   return (
-    <div
-      className={'mt-4 ' + (darkMode ? 'dark-mde-container' : 'mde-container')}
-    >
+    <div className={darkMode ? 'dark-mde-container' : 'mde-container'}>
       <SimpleMDE
         onChange={onChange}
         value={value}

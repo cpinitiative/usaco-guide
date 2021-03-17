@@ -12,6 +12,7 @@ import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
+import Spoiler from '../../markdown/Spoiler';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -114,6 +115,24 @@ export default function ProblemPage(props) {
               </aside>
               <div className="py-6 xl:pt-8 xl:pb-12">
                 <SafeMarkdownRenderer>{problem.body}</SafeMarkdownRenderer>
+
+                {problem.hints.length > 0 && (
+                  <>
+                    <div className="h-10" />
+
+                    <div>
+                      {problem.hints.map(hint => (
+                        <Spoiler title={hint.name || 'Hint'} key={hint.id}>
+                          <div className="pb-4">
+                            <SafeMarkdownRenderer>
+                              {hint.body}
+                            </SafeMarkdownRenderer>
+                          </div>
+                        </Spoiler>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
               <ProblemSubmission problem={problem} />
             </div>

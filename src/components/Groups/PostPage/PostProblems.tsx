@@ -42,7 +42,7 @@ export default function PostProblems({ post }: { post: PostData }) {
           </div>
           <div>
             <div className="flow-root">
-              <ul className="relative z-0 divide-y divide-gray-200 border-b border-gray-200 dark:border-gray-700">
+              <ul className="relative z-0 divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
                 {Object.values(post.problems).map(problem => (
                   <ProblemListItem
                     group={activeGroup.groupData}

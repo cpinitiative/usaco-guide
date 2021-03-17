@@ -11,6 +11,8 @@ import { ProblemData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
+import EditProblemHintModal from './EditProblemHintModal';
+import EditProblemHintSection from './EditProblemHintSection';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -182,6 +184,13 @@ export default function EditProblemPage(props) {
                     className="input"
                   />
                 </div>
+              </div>
+
+              <div className="sm:col-span-4">
+                <EditProblemHintSection
+                  problem={problem}
+                  onChange={newHints => editProblem({ hints: newHints })}
+                />
               </div>
             </div>
           </div>

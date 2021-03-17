@@ -18,9 +18,9 @@ export default function PostHeader({ post }: { post: PostData }) {
   const { updatePost } = usePostActions(activeGroup.groupData.id);
 
   return (
-    <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
+    <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-4 dark:border-gray-700">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
           {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>

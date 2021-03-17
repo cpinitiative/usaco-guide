@@ -40,10 +40,14 @@ export type ProblemData = {
 };
 
 export type ProblemHint = {
+  // /**
+  //  * How many points you lose for activating the hint
+  //  */
+  // penalty: number;
   /**
-   * How many points you lose for activating the hint
+   * Unique ID for the hint
    */
-  penalty: number;
+  id: string;
   /**
    * Publicly visible hint name, optional
    */

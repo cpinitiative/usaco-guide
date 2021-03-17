@@ -81,7 +81,7 @@ export default function PostPage(props) {
           ) : (
             <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
               <PostHeader post={post} />
-              <div className="h-8" />
+              <div className="h-4" />
               <PostBody post={post} />
               <div className="h-8" />
               {activeGroup.showAdminView && <PostProblems post={post} />}
