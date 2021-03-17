@@ -6,7 +6,6 @@ import {
 } from '../../models/groups/groups';
 import { useUserGroups } from './useUserGroups';
 import * as React from 'react';
-import firebase from 'firebase';
 import { ReactNode, useContext } from 'react';
 import { postConverter, PostData } from '../../models/groups/posts';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
@@ -27,26 +26,25 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const [activeGroupId, setActiveGroupId] = React.useState<string>(null);
   const [posts, setPosts] = React.useState<PostData[]>(null);
   const [inStudentView, setInStudentView] = React.useState(false);
-
-  const userGroups = useUserGroups();
-  const cachedGroupData = userGroups.data?.find(
-    group => group.id === activeGroupId
-  );
-
-  const [groupData, setGroupData] = React.useState<GroupData>(cachedGroupData);
-  const groupNotFound = !userGroups.isLoading && userGroups.data && !groupData;
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [groupData, setGroupData] = React.useState<GroupData>();
 
   const notifications = useNotificationSystem();
 
   useFirebase(
     firebase => {
-      if (activeGroupId === null) {
-        setPosts(null);
-        setInStudentView(false);
-        return;
-      }
+      setGroupData(null);
       setPosts(null);
       setInStudentView(false);
+      if (activeGroupId === null) {
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(true);
+      if (!firebaseUser?.uid) return;
+
+      let loadedPosts = false,
+        loadedGroup = false;
       const unsubscribePosts = firebase
         .firestore()
         .collection('groups')
@@ -55,10 +53,17 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         .withConverter(postConverter)
         .onSnapshot(
           snap => {
+            loadedPosts = true;
             setPosts(snap.docs.map(doc => doc.data()));
           },
           error => {
-            notifications.showErrorNotification(error);
+            if (error.code === 'permission-denied') {
+              setIsLoading(false);
+              setGroupData(null);
+              if (loadedGroup && loadedPosts) setIsLoading(false);
+            } else {
+              notifications.showErrorNotification(error);
+            }
           }
         );
       const unsubscribeGroup = firebase
@@ -68,10 +73,17 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         .withConverter(groupConverter)
         .onSnapshot(
           doc => {
+            loadedGroup = true;
             setGroupData(doc.data());
+            if (loadedGroup && loadedPosts) setIsLoading(false);
           },
           error => {
-            notifications.showErrorNotification(error);
+            if (error.code === 'permission-denied') {
+              setIsLoading(false);
+              setGroupData(null);
+            } else {
+              notifications.showErrorNotification(error);
+            }
           }
         );
       return () => {
@@ -79,7 +91,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         unsubscribePosts();
       };
     },
-    [activeGroupId]
+    [activeGroupId, firebaseUser?.uid]
   );
 
   const isUserAdmin = isUserAdminOfGroup(groupData, firebaseUser?.uid);
@@ -90,7 +102,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         setActiveGroupId,
         groupData,
         posts,
-        isLoading: groupNotFound ? false : !groupData || !posts,
+        isLoading,
         showAdminView: isUserAdmin && !inStudentView,
         setInStudentView: setInStudentView,
       }}

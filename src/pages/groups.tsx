@@ -18,6 +18,7 @@ import EditGroupPage from '../components/Groups/EditGroupPage/EditGroupPage';
 import Layout from '../components/layout';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { Link } from 'gatsby';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -27,11 +28,30 @@ const NotFoundPageWrapper = (props: any): ReactElement => {
 const GroupPageWrapper = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
   const { setActiveGroupId, isLoading, groupData } = useActiveGroup();
+  const { firebaseUser, isLoaded, signIn } = React.useContext(UserDataContext);
 
   React.useEffect(() => {
     setActiveGroupId(props.groupId);
   }, [props.groupId]);
 
+  if (isLoaded && !firebaseUser?.uid) {
+    return (
+      <Layout>
+        <TopNavigationBar />
+        <main className="text-center py-10">
+          <p className="font-medium text-2xl">
+            You need to sign in to access groups.{' '}
+            <button
+              onClick={() => signIn()}
+              className="focus:outline-none underline text-blue-600 dark:text-blue-300"
+            >
+              Sign in now
+            </button>
+          </p>
+        </main>
+      </Layout>
+    );
+  }
   if (isLoading || (groupData && groupData.id !== props.groupId)) {
     return (
       <Layout>

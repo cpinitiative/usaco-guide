@@ -14,7 +14,6 @@ export default function Feed() {
   const feedTabs = ['all', 'assignments', 'announcements'];
   const [currentFeed, setCurrentFeed] = React.useState<string>('all');
   const group = useActiveGroup();
-  const { firebaseUser } = useContext(UserDataContext);
 
   const feedPosts = group.posts
     ?.filter(post => {
