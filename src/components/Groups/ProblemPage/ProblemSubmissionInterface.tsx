@@ -8,6 +8,7 @@ import {
 } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useDropzone } from 'react-dropzone';
 
 const ScoreInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -44,6 +45,22 @@ export default function ProblemSubmissionInterface({
   const activeGroup = useActiveGroup();
   const { submitSolution } = usePostActions(activeGroup.activeGroupId);
 
+  const { getRootProps, getInputProps, open } = useDropzone({
+    // Disable click and keydown behavior
+    noClick: true,
+    noKeyboard: true,
+    maxFiles: 1,
+    onDrop: ([file]) => {
+      const fileReader = new FileReader();
+      fileReader.readAsText(file, 'UTF-8');
+      fileReader.onload = e => {
+        editSubmission({
+          code: e.target.result.toString(),
+        });
+      };
+    },
+  });
+
   return (
     <section>
       <div>
@@ -78,7 +95,8 @@ export default function ProblemSubmissionInterface({
           />
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4" {...getRootProps()}>
+        <input {...getInputProps()} />
         <textarea
           rows={3}
           value={submission.code}
@@ -89,8 +107,14 @@ export default function ProblemSubmissionInterface({
       </div>
       <div className="mt-1 text-sm space-x-2 text-gray-500 dark:text-gray-400">
         If you&apos;d prefer, you can also{' '}
-        <button className="hover:text-gray-900 underline">click here</button> to
-        select a file.
+        <button
+          className="hover:text-gray-900 underline"
+          type="button"
+          onClick={() => open()}
+        >
+          click here
+        </button>{' '}
+        to select a file.
       </div>
       <button
         type="button"
