@@ -84,13 +84,13 @@ export default function ProblemSubmissionInterface({
           value={submission.code}
           onChange={e => editSubmission({ code: e.target.value })}
           className="input font-mono"
-          placeholder="Paste code here, or drag and drop a file here."
+          placeholder="Paste code, or drag and drop a file over this textbox."
         />
       </div>
       <div className="mt-1 text-sm space-x-2 text-gray-500 dark:text-gray-400">
-        You can drag and drop a file on the textbox, or{' '}
+        If you&apos;d prefer, you can also{' '}
         <button className="hover:text-gray-900 underline">click here</button> to
-        choose a file.
+        select a file.
       </div>
       <button
         type="button"
