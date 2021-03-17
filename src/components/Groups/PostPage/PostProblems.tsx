@@ -18,13 +18,13 @@ export default function PostProblems({ post }: { post: PostData }) {
               <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Problems
               </h2>
-              {activeGroup.isUserAdmin && (
+              {activeGroup.showAdminView && (
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   Click a problem to edit or delete it.
                 </p>
               )}
             </div>
-            {activeGroup.isUserAdmin && (
+            {activeGroup.showAdminView && (
               <div>
                 <button
                   type="button"

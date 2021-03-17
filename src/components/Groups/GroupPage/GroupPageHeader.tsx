@@ -6,11 +6,13 @@ import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function GroupPageHeader(props: { group: GroupData }) {
   const { leaveGroup } = useGroupActions();
   const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const { showAdminView, setInStudentView } = useActiveGroup();
   const { firebaseUser } = React.useContext(UserDataContext);
   const ref = useRef();
 
@@ -76,7 +78,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (
+                {showAdminView && (
                   <>
                     <button
                       type="button"
@@ -99,6 +101,17 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       Edit Group
                     </Link>
                   </>
+                )}
+                {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (
+                  <button
+                    type="button"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                    onClick={() => {
+                      setInStudentView(showAdminView);
+                    }}
+                  >
+                    {showAdminView ? 'Enter Student View' : 'Exit Student View'}
+                  </button>
                 )}
                 <button
                   type="button"

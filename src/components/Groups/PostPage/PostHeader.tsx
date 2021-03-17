@@ -14,8 +14,8 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function PostHeader({ post }: { post: PostData }) {
   const { firebaseUser } = useContext(UserDataContext);
-  const group = useActiveGroup().groupData;
-  const { updatePost } = usePostActions(group.id);
+  const activeGroup = useActiveGroup();
+  const { updatePost } = usePostActions(activeGroup.groupData.id);
 
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
@@ -28,7 +28,7 @@ export default function PostHeader({ post }: { post: PostData }) {
           {getPostTimestampString(post)}
         </p>
       </div>
-      {isUserAdminOfGroup(group, firebaseUser?.uid) && (
+      {activeGroup.showAdminView && (
         <div className="mt-4 flex space-x-3 md:mt-0">
           <Link to="edit" className="btn">
             <svg

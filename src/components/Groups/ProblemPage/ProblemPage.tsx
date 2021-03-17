@@ -56,7 +56,7 @@ export default function ProblemPage(props) {
                     {post.name}
                   </p>
                 </div>
-                {activeGroup.isUserAdmin && (
+                {activeGroup.showAdminView && (
                   <div className="mt-4 flex space-x-3 md:mt-0">
                     <button
                       type="button"

@@ -13,7 +13,8 @@ const ActiveGroupContext = React.createContext<{
   groupData: GroupData;
   posts: PostData[];
   isLoading: boolean;
-  isUserAdmin: boolean;
+  showAdminView: boolean;
+  setInStudentView: (inStudentView: boolean) => void;
   error: null | firebase.firestore.FirestoreError;
 }>(null);
 
@@ -25,6 +26,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     error,
     setError,
   ] = React.useState<null | firebase.firestore.FirestoreError>(null);
+  const [inStudentView, setInStudentView] = React.useState(false);
 
   const userGroups = useUserGroups();
   const groupData = userGroups.data?.find(group => group.id === activeGroupId);
@@ -35,10 +37,12 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
       if (activeGroupId === null) {
         setError(null);
         setPosts(null);
+        setInStudentView(false);
         return;
       }
       setError(null);
       setPosts(null);
+      setInStudentView(false);
       return firebase
         .firestore()
         .collection('groups')
@@ -57,6 +61,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
     [activeGroupId]
   );
 
+  const isUserAdmin = isUserAdminOfGroup(groupData, firebaseUser?.uid);
   return (
     <ActiveGroupContext.Provider
       value={{
@@ -65,7 +70,8 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         groupData,
         posts,
         isLoading: groupNotFound ? false : !groupData || !posts,
-        isUserAdmin: isUserAdminOfGroup(groupData, firebaseUser?.uid),
+        showAdminView: isUserAdmin && !inStudentView,
+        setInStudentView: setInStudentView,
         error,
       }}
     >

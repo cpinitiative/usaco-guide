@@ -18,11 +18,7 @@ export default function Feed() {
 
   const feedPosts = group.posts
     ?.filter(post => {
-      if (
-        !isUserAdminOfGroup(group.groupData, firebaseUser?.uid) &&
-        !post.isPublished
-      )
-        return false;
+      if (!group.showAdminView && !post.isPublished) return false;
       if (currentFeed === 'all') return true;
       if (currentFeed === 'assignments') return isPostAssignment(post);
       if (currentFeed === 'announcements') return isPostAnnouncement(post);

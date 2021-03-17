@@ -11,6 +11,7 @@ import {
 import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function FeedItem({
   group,
@@ -19,8 +20,7 @@ export default function FeedItem({
   group: GroupData;
   post: PostData;
 }) {
-  const { firebaseUser } = useContext(UserDataContext);
-  const showAdminSettings = isUserAdminOfGroup(group, firebaseUser?.uid);
+  const showAdminSettings = useActiveGroup().showAdminView;
   const { updatePost, deletePost } = usePostActions(group.id);
 
   const [showDropdown, setShowDropdown] = useState(false);

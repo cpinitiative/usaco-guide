@@ -84,7 +84,7 @@ export default function PostPage(props) {
               <div className="h-8" />
               <PostBody post={post} />
               <div className="h-8" />
-              {activeGroup.isUserAdmin && <PostProblems post={post} />}
+              {activeGroup.showAdminView && <PostProblems post={post} />}
             </div>
           )}
         </div>
