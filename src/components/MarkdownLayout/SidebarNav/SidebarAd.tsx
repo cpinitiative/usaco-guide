@@ -11,12 +11,6 @@ export default function SidebarAd({
   const { adSettings, setAdSettings } = useContext(UserDataContext);
   const shouldShowAd = !adSettings?.hideMarch2021;
 
-  React.useEffect(() => {
-    setAdSettings({ ...adSettings, hideMarch2021: false });
-  }, []);
-
-  console.log(currentSection);
-
   if (!shouldShowAd) {
     return null;
   }
