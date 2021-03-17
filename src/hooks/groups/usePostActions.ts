@@ -1,6 +1,5 @@
 import useFirebase from '../useFirebase';
 import {
-  postConverter,
   PostData,
   ProblemData,
   Submission,
@@ -43,17 +42,6 @@ export function usePostActions(groupId: string) {
         .collection('posts')
         .add(defaultPost);
       return doc.id;
-    },
-    // ugh I think this is a duplicate of updatePost
-    savePost: async (postId: string, postData: PostData) => {
-      await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('posts')
-        .doc(postId)
-        .withConverter(postConverter)
-        .set(postData);
     },
     deletePost: async (postId: string) => {
       await firebase

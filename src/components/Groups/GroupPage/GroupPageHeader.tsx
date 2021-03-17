@@ -100,6 +100,12 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     >
                       Edit Group
                     </Link>
+                    <Link
+                      to="join-links"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                    >
+                      View Join Links
+                    </Link>
                   </>
                 )}
                 {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (

@@ -19,6 +19,7 @@ import Layout from '../components/layout';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { Link } from 'gatsby';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
+import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -106,6 +107,10 @@ export default function GroupsRouter() {
             path="/:groupId/post/:postId"
           />
           <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
+          <GroupPageWrapper
+            Component={JoinLinksPage}
+            path="/:groupId/join-links"
+          />
           <GroupPageWrapper Component={GroupPage} path="/:groupId" />
           <GroupSelectPage path="/" />
           <JoinGroupPage path="/join" />

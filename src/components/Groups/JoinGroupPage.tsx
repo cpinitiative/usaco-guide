@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
-import { Link } from 'gatsby';
+import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
 
 const getQuery = name => {
   var url = window.location.href;
