@@ -81,7 +81,7 @@ export const problems = {
 			'AC',
 			'Multiple of 2019',
 			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
-			'Hard',
+			'Normal',
 			false,
 			['Prefix Sums'],
 			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
@@ -90,7 +90,7 @@ export const problems = {
 			'Plat',
 			'Sprinklers',
 			'794',
-			'Insane',
+			'Very Hard',
 			false,
 			['Prefix Sums'],
 			''
@@ -106,7 +106,7 @@ export const problems = {
 
 <Spoiler title="Solution">
 
-Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where $i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of $p[j]-p[i]$ over $0 \leq i \leq j \leq N$. 
+Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where $i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of $p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
 
 For a fixed right bound $j$, the maximum subarray sum is
 
@@ -179,11 +179,11 @@ int main(){
 	}
 	ll current_sum = x[0], max_subarray_sum = x[0];
 	for(int i=1; i<n; i++){
-		current_sum = max(current_sum + x[i], x[i]); 
-		/* Continue the subarray sum or start a new 
+		current_sum = max(current_sum + x[i], x[i]);
+		/* Continue the subarray sum or start a new
 		subarray sum beginning at the current element.
 		*/
-		max_subarray_sum = max(max_subarray_sum, current_sum); 
+		max_subarray_sum = max(max_subarray_sum, current_sum);
 		// Store the maximum subarray sum at each iteration.
 	}
 	cout << max_subarray_sum << endl;
