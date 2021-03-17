@@ -65,20 +65,21 @@ export enum SubmissionType {
 
 export type Submission = {
   id: string;
-  type: SubmissionType;
   problemId: string;
   userId: string;
   code: string;
   language: 'cpp' | 'java' | 'py';
   timestamp: firebase.firestore.Timestamp;
-  /**
-   * If type is SELF_GRADED, this is a numerical number 0-100
-   * Otherwise, it's an array of test case results
-   *
-   * (Is there a better way to type this?)
-   */
-  result: number | TestCaseResult[];
-};
+} & (
+  | {
+      type: SubmissionType.SELF_GRADED;
+      result: number;
+    }
+  | {
+      type: SubmissionType.COMPCS_API;
+      result: TestCaseResult[];
+    }
+);
 
 export enum ExecutionStatus {
   AC = 'AC',

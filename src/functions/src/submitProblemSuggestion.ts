@@ -1,17 +1,6 @@
-import admin from 'firebase-admin';
-import { Octokit } from '@octokit/core';
 import * as functions from 'firebase-functions';
-admin.initializeApp();
-import scheduledFirestoreExport from './backups';
-import getUsers from './getUsers';
-import incrementUsers from './incrementUsers';
-// import submitToProblem from "./submitToProblem";
-export {
-  scheduledFirestoreExport,
-  getUsers,
-  incrementUsers /* submitToProblem */,
-};
-
+import * as admin from 'firebase-admin';
+import { Octokit } from '@octokit/core';
 const problemSuggestionCodeowners = {
   general: ['thecodingwizard'],
   bronze: ['caoash'],
@@ -21,7 +10,11 @@ const problemSuggestionCodeowners = {
   adv: ['bqi343'],
 };
 
-export const submitProblemSuggestion = functions.https.onCall(
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
+
+const submitProblemSuggestion = functions.https.onCall(
   async (data, context) => {
     if (!context.auth?.uid) {
       throw new functions.https.HttpsError(
@@ -82,3 +75,4 @@ export const submitProblemSuggestion = functions.https.onCall(
     return response.data.html_url;
   }
 );
+export default submitProblemSuggestion;

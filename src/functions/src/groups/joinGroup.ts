@@ -3,6 +3,11 @@ import admin from 'firebase-admin';
 interface submitToProblemArgs {
   key: string;
 }
+
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
+
 export default functions.https.onCall(
   async ({ key }: submitToProblemArgs, context) => {
     const callerUid = context.auth?.uid;
@@ -27,6 +32,8 @@ export default functions.https.onCall(
             numUses?: number;
             maxUses?: number;
             expirationTime?: admin.firestore.Timestamp;
+            usedBy: string[];
+            author: string;
           } | null
       );
     if (!keyData) {
