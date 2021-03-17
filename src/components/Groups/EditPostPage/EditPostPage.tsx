@@ -102,6 +102,33 @@ export default function EditPostPage(props) {
 
               <div className="sm:col-span-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Post Date
+                </label>
+
+                <div className="mt-1">
+                  <Flatpickr
+                    placeholder={'Choose a due date'}
+                    options={{
+                      dateFormat:
+                        'Posted On'.split('').join('\\\\') +
+                        ' l, F J, Y, h:i K',
+                      enableTime: true,
+                    }}
+                    value={post.timestamp?.toDate()}
+                    onChange={date =>
+                      editPost({
+                        timestamp: firebase.firestore.Timestamp.fromDate(
+                          date[0]
+                        ),
+                      })
+                    }
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Due Date (Optional, only for assignments)
                 </label>
 
