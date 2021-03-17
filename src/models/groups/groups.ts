@@ -25,6 +25,17 @@ export type MemberData = {
   permission: GroupPermission;
 };
 
+export type JoinGroupLink = {
+  id: string;
+  groupId: string;
+  revoked: boolean;
+  numUses: number;
+  maxUses: number | null;
+  expirationTime: firebaseType.firestore.Timestamp | null;
+  usedBy: string[];
+  author: string;
+};
+
 export const groupConverter = {
   toFirestore(
     group: Omit<GroupData, 'id'>
