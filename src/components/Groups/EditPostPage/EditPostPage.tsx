@@ -28,7 +28,7 @@ export default function EditPostPage(props) {
     }),
     originalPost
   );
-  const { savePost, deletePost } = usePostActions(groupId);
+  const { updatePost, deletePost } = usePostActions(groupId);
   const firebase = useFirebase();
 
   React.useEffect(() => {
@@ -70,7 +70,7 @@ export default function EditPostPage(props) {
             </Link>
             <button
               type="submit"
-              onClick={() => savePost(post.id, post).then(() => navigate(-1))}
+              onClick={() => updatePost(post.id, post).then(() => navigate(-1))}
               className="btn"
             >
               Save
@@ -186,7 +186,9 @@ export default function EditPostPage(props) {
               </button>
               <button
                 type="button"
-                onClick={() => savePost(post.id, post).then(() => navigate(-1))}
+                onClick={() =>
+                  updatePost(post.id, post).then(() => navigate(-1))
+                }
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
               >
                 Save
