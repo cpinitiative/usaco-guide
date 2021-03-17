@@ -40,7 +40,10 @@ export function usePostActions(groupId: string) {
         .collection('groups')
         .doc(groupId)
         .collection('posts')
-        .add(defaultPost);
+        .add({
+          ...defaultPost,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
       return doc.id;
     },
     deletePost: async (postId: string) => {
@@ -98,10 +101,9 @@ export function usePostActions(groupId: string) {
         .collection('groups')
         .doc(groupId)
         .collection('submissions')
-        .withConverter(submissionConverter)
         .add({
           ...submission,
-          timestamp: firebase.firestore.Timestamp.now(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           userId: firebaseUser.uid,
         });
       return doc.id;
