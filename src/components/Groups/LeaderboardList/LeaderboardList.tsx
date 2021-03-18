@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { MemberData } from '../../../models/groups/groups';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { Leaderboard } from '../../../models/groups/leaderboard';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import firebaseType from 'firebase';
 
 const LeaderboardListItem = ({
   place,
@@ -11,7 +11,7 @@ const LeaderboardListItem = ({
   points,
 }: {
   place: number;
-  member: MemberData;
+  member: firebaseType.UserInfo;
   points: number;
 }) => {
   const { firebaseUser } = React.useContext(UserDataContext);
@@ -23,13 +23,13 @@ const LeaderboardListItem = ({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-            {place}. {member.name}
+            {place}. {member.displayName}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
             {points} points
           </p>
         </div>
-        {firebaseUser?.uid === member.id && (
+        {firebaseUser?.uid === member.uid && (
           <div>
             <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100">
               Me
@@ -47,8 +47,9 @@ export default function LeaderboardList({
   leaderboard: Leaderboard;
 }) {
   const activeGroup = useActiveGroup();
+  const members = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard) return [];
+    if (!leaderboard || !members) return [];
 
     const leaderboardSum = {};
     for (let postID of Object.keys(leaderboard)) {
@@ -61,21 +62,17 @@ export default function LeaderboardList({
       }
     }
     let data = activeGroup.groupData.memberIds.map(id => ({
-      member: activeGroup.groupData.members[id],
+      member: members.find(member => member.uid === id),
       points: leaderboardSum[id] ?? 0,
     }));
     return data.sort((a, b) => b.points - a.points);
-  }, [
-    leaderboard,
-    activeGroup.groupData.memberIds,
-    activeGroup.groupData.members,
-  ]);
+  }, [leaderboard, activeGroup.groupData.memberIds, members]);
 
   return (
     <ul>
       {leaderboardItems.map((item, idx) => (
         <LeaderboardListItem
-          key={item.member.id}
+          key={item.member.uid}
           place={idx + 1}
           member={item.member}
           points={item.points}

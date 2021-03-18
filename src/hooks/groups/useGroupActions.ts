@@ -40,14 +40,6 @@ export function useGroupActions() {
         ownerIds: [firebaseUser.uid],
         adminIds: [],
         memberIds: [],
-        members: {
-          [firebaseUser.uid]: {
-            id: firebaseUser.uid,
-            name: firebaseUser.displayName,
-            photoURL: firebaseUser.photoURL,
-            permission: GroupPermission.OWNER,
-          },
-        },
         leaderboard: {},
       };
       const doc = firebase.firestore().collection('groups').doc();
@@ -109,7 +101,7 @@ export function useGroupActions() {
         "Since you're the only owner of this group, you are unable to leave. Try adding another owner or deleting the group instead."
       );
     },
-    createJoinLink: async (groupId: string): JoinGroupLink => {
+    createJoinLink: async (groupId: string): Promise<JoinGroupLink> => {
       const defaultJoinLink: Omit<JoinGroupLink, 'id'> = {
         groupId,
         revoked: false,

@@ -6,6 +6,7 @@ import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import useFirebase from '../../hooks/useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import { navigate } from 'gatsby';
 
 const getQuery = name => {
   const url = window.location.href;
@@ -130,6 +131,7 @@ const JoinGroupPage = () => {
                           };
                         }) => {
                           if (data.success) {
+                            navigate(`/groups/${data.groupId}`);
                           } else {
                             setError({
                               errorCode: data.errorCode,

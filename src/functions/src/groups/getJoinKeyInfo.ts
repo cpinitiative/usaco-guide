@@ -21,7 +21,7 @@ export default functions.https.onCall(
 
     const keyData = await admin
       .firestore()
-      .collection('group-join-keys')
+      .collection('group-join-links')
       .doc(key)
       .get()
       .then(
@@ -45,8 +45,9 @@ export default functions.https.onCall(
     }
     if (
       keyData.revoked ||
-      keyData.numUses >= keyData.maxUses ||
-      keyData.expirationTime.toMillis() < new Date().getMilliseconds()
+      (keyData.maxUses && keyData.numUses >= keyData.maxUses) ||
+      (keyData.expirationTime &&
+        keyData.expirationTime.toMillis() < new Date().getMilliseconds())
     ) {
       return {
         success: false,
@@ -57,7 +58,7 @@ export default functions.https.onCall(
     const snapshot = await admin
       .firestore()
       .collection('groups')
-      .doc(key)
+      .doc(keyData.groupId)
       .get();
     return {
       success: true,

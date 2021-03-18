@@ -8,10 +8,6 @@ export type GroupData = {
   ownerIds: string[];
   adminIds: string[];
   memberIds: string[];
-  /**
-   * Maps owner/admin/member ID's to information about that member
-   */
-  members: { [key: string]: MemberData };
   leaderboard: Leaderboard;
 };
 
@@ -20,13 +16,6 @@ export enum GroupPermission {
   ADMIN = 'admin',
   OWNER = 'owner',
 }
-
-export type MemberData = {
-  id: string;
-  name: string;
-  photoURL: string;
-  permission: GroupPermission;
-};
 
 export type JoinGroupLink = {
   id: string;
@@ -49,7 +38,6 @@ export const groupConverter = {
       ownerIds: group.ownerIds,
       adminIds: group.ownerIds,
       memberIds: group.ownerIds,
-      members: group.members,
     };
   },
 
