@@ -2,13 +2,6 @@ import * as React from 'react';
 import Tabs from '../../Tabs';
 import FeedItem from './FeedItem';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import {
-  isPostAnnouncement,
-  isPostAssignment,
-} from '../../../models/groups/posts';
-import { isUserAdminOfGroup } from '../../../models/groups/groups';
-import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
 export default function Feed() {
   const feedTabs = ['all', 'assignments', 'announcements'];
@@ -19,8 +12,8 @@ export default function Feed() {
     ?.filter(post => {
       if (!group.showAdminView && !post.isPublished) return false;
       if (currentFeed === 'all') return true;
-      if (currentFeed === 'assignments') return isPostAssignment(post);
-      if (currentFeed === 'announcements') return isPostAnnouncement(post);
+      if (currentFeed === 'assignments') return post.type === 'assignment';
+      if (currentFeed === 'announcements') return post.type === 'announcement';
       throw 'unknown feed ' + this.currentFeed;
     })
     .sort((a, b) => {
