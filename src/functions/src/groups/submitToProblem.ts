@@ -15,6 +15,7 @@ export default functions.firestore
       groupId: string;
       postId: string;
       problemId: string;
+      submissionId: string;
     };
     const data = {
       ...snapshot.data(),
@@ -26,41 +27,39 @@ export default functions.firestore
     }
     const groupRef = admin.firestore().collection('groups').doc(groupId);
     const postRef = groupRef.collection('posts').doc(postId);
+    const problemRef = postRef.collection('submissions').doc(problemId);
     console.log(context.params);
     console.log(data);
+
     await Promise.all([
-      admin.firestore().runTransaction(transaction => {
-        return transaction.get(postRef).then(postDoc => {
-          if (!postDoc.exists) {
-            throw new Error(
-              "The post being submitted to couldn't be found (while updating post leaderboard)."
-            );
-          }
-          return transaction.update(postRef, {
-            [`leaderboard.${problemId}.${data.userId}`]: data.result,
-          });
-        });
+      problemRef.update({
+        status: data.result === 1 ? 'AC' : 'WA',
       }),
-      admin.firestore().runTransaction(transaction => {
-        return transaction.get(postRef).then(postDoc => {
-          if (!postDoc.exists) {
-            throw new Error(
-              "The post being submitted to couldn't be found (while updating group leaderboard)."
-            );
-          }
-          const oldProblemScore = postDoc.data().leaderboard[data.userId];
-          return transaction.get(groupRef).then(groupDoc => {
-            if (!groupDoc.exists) {
-              throw new Error(
-                "The group being submitted to couldn't be found."
-              );
-            }
-            const oldTotalScore = groupDoc.data().leaderboard[data.userId];
-            return transaction.update(groupRef, {
-              [`leaderboard.${data.userId}`]:
-                oldTotalScore - oldProblemScore + data.result,
-            });
-          });
+
+      admin.firestore().runTransaction(async transaction => {
+        const postDoc = await transaction.get(postRef);
+        const problemDoc = await transaction.get(problemRef);
+        if (!postDoc.exists || !problemDoc.exists) {
+          throw new Error(
+            "The post, group, or problem being submitted to couldn't be found."
+          );
+        }
+
+        const oldProblemScore =
+          (postDoc.data()?.leaderboard &&
+            postDoc.data()?.leaderboard[data.problemId] &&
+            postDoc.data()?.leaderboard[data.problemId][data.userId]) ||
+          0;
+        const points = data.result * problemDoc.data().points;
+        if (points < oldProblemScore) {
+          return;
+        }
+        await transaction.update(postRef, {
+          [`leaderboard.${problemId}.${data.userId}`]: {
+            bestScore: points,
+            bestScoreStatus: data.status,
+            bestScoreTimestamp: data.timestamp,
+          },
         });
       }),
     ]);
