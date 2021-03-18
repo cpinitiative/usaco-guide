@@ -86,6 +86,11 @@ Similar to the editorial, define $\texttt{dp[x][0][g]}$ to be the minimum cost t
 <Spoiler title="Code">
 
 ```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 constexpr int MAX_GOODS = 5000;
 constexpr long long INF = 1e18;
 
@@ -95,7 +100,7 @@ vector<long long> dp[MAX_GOODS + 1][2];
 vector<int> child[MAX_GOODS + 1];
 
 vector<long long> total_min(vector<long long> a, vector<long long> b) {
-	vector<long long> combined(a.size() + b.size() -1, INF);
+	vector<long long> combined(a.size() + b.size() - 1, INF);
 	for (int i = 0; i < a.size(); i++) {
 		for (int j = 0; j < b.size(); j++) {
 			combined[i + j] = min(combined[i + j], a[i] + b[j]);
