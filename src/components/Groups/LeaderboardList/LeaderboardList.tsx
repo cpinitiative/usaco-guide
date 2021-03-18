@@ -49,7 +49,7 @@ export default function LeaderboardList({
   const activeGroup = useActiveGroup();
   const members = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members) return [];
+    if (!leaderboard || !members) return null;
 
     const leaderboardSum = {};
     for (let postID of Object.keys(leaderboard)) {
@@ -70,14 +70,20 @@ export default function LeaderboardList({
 
   return (
     <ul>
-      {leaderboardItems.map((item, idx) => (
-        <LeaderboardListItem
-          key={item.member.uid}
-          place={idx + 1}
-          member={item.member}
-          points={item.points}
-        />
-      ))}
+      {leaderboardItems ? (
+        leaderboardItems.map((item, idx) => (
+          <LeaderboardListItem
+            key={item.member.uid}
+            place={idx + 1}
+            member={item.member}
+            points={item.points}
+          />
+        ))
+      ) : (
+        <p className="py-2 italic text-gray-600 dark:text-gray-300">
+          Loading...
+        </p>
+      )}
     </ul>
   );
 }
