@@ -36,22 +36,22 @@ export default function ProblemSidebar({
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-green-700 dark:text-green-500 text-sm font-medium">
+          <span className="text-green-700 dark:text-green-400 text-sm font-medium">
             {getEarnedPointsForProblem(problem, submissions)} / {problem.points}{' '}
             points earned
           </span>
         </div>
         <div className="flex items-center space-x-2">
           <svg
-            className="h-5 w-5 text-gray-400 dark:text-gray-500"
+            className="h-5 w-5 text-gray-400 dark:text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path fill="#fff" d="M12 14l9-5-9-5-9 5 9 5z" />
+            <path fill="transparent" d="M12 14l9-5-9-5-9 5 9 5z" />
             <path
-              fill="#fff"
+              fill="transparent"
               d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
             />
             <path
@@ -67,7 +67,7 @@ export default function ProblemSidebar({
         </div>
         <div className="flex items-center space-x-2">
           <svg
-            className="h-5 w-5 text-gray-400 dark:text-gray-500"
+            className="h-5 w-5 text-gray-400 dark:text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

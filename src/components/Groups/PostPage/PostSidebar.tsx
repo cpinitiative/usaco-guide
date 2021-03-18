@@ -49,7 +49,7 @@ export default function PostSidebar({
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-green-700 dark:text-green-500 text-sm font-medium">
+          <span className="text-green-700 dark:text-green-400 text-sm font-medium">
             {totalLeaderboardPoints} /{' '}
             {problems && getTotalPointsFromProblems(problems)} points earned
           </span>

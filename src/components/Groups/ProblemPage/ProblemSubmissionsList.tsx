@@ -24,7 +24,7 @@ const SubmissionListItem = ({
   return (
     <li className="relative py-2 group">
       <div className="flex items-center justify-between space-x-4">
-        <span className="block leading-3 text-sm text-gray-500 group-hover:text-gray-900 font-medium">
+        <span className="block leading-3 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
           <button
             type="button"
             className="focus:outline-none"
@@ -34,7 +34,7 @@ const SubmissionListItem = ({
             {getSubmissionTimestampString(submission)}
           </button>
         </span>
-        <div className="flex items-center text-sm text-gray-500 group-hover:text-gray-900 font-medium">
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
           <span
             className={`h-5 w-5 ${
               submissionCircleBorderColor[getSubmissionStatus(submission)]

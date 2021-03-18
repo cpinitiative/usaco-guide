@@ -120,32 +120,32 @@ export const submissionConverter = {
 };
 
 export const submissionTextColor: { [key in ExecutionStatus]: string } = {
-  AC: 'text-green-800',
-  WA: 'text-red-800',
-  TLE: 'text-red-800',
-  MLE: 'text-red-800',
-  RTE: 'text-red-800',
-  Pending: 'text-gray-800',
+  AC: 'text-green-800 dark:text-green-200',
+  WA: 'text-red-800 dark:text-red-200',
+  TLE: 'text-red-800 dark:text-red-200',
+  MLE: 'text-red-800 dark:text-red-200',
+  RTE: 'text-red-800 dark:text-red-200',
+  Pending: 'text-gray-800 dark:text-gray-200',
 };
 
 export const submissionCircleColor: { [key in ExecutionStatus]: string } = {
-  AC: 'bg-green-400',
-  WA: 'bg-red-400',
-  TLE: 'bg-red-400',
-  MLE: 'bg-red-400',
-  RTE: 'bg-red-400',
-  Pending: 'bg-gray-400',
+  AC: 'bg-green-400 dark:bg-green-500',
+  WA: 'bg-red-400 dark:bg-red-500',
+  TLE: 'bg-red-400 dark:bg-red-500',
+  MLE: 'bg-red-400 dark:bg-red-500',
+  RTE: 'bg-red-400 dark:bg-red-500',
+  Pending: 'bg-gray-400 dark:bg-gray-500',
 };
 
 export const submissionCircleBorderColor: {
   [key in ExecutionStatus]: string;
 } = {
-  AC: 'bg-green-100',
-  WA: 'bg-red-100',
-  TLE: 'bg-red-100',
-  MLE: 'bg-red-100',
-  RTE: 'bg-red-100',
-  Pending: 'bg-gray-100',
+  AC: 'bg-green-100 dark:bg-green-800',
+  WA: 'bg-red-100 dark:bg-red-800',
+  TLE: 'bg-red-100 dark:bg-red-800',
+  MLE: 'bg-red-100 dark:bg-red-800',
+  RTE: 'bg-red-100 dark:bg-red-800',
+  Pending: 'bg-gray-100 dark:bg-gray-800',
 };
 
 export const getSubmissionTimestampString = (submission: Submission) =>
