@@ -7,7 +7,7 @@ if (admin.apps.length === 0) {
 }
 
 export default functions.firestore
-  .document('groups/{groupId}/submissions')
+  .document('groups/{groupId}/submissions/{submissionId}')
   .onCreate(async (snapshot, context) => {
     const data = {
       id: snapshot.id,
