@@ -7,7 +7,6 @@ import PostPage from '../components/Groups/PostPage/PostPage';
 import ProblemPage from '../components/Groups/ProblemPage/ProblemPage';
 import EditPostPage from '../components/Groups/EditPostPage/EditPostPage';
 import EditProblemPage from '../components/Groups/EditProblemPage/EditProblemPage';
-import { UserGroupsProvider } from '../hooks/groups/useUserGroups';
 import {
   ActiveGroupProvider,
   useActiveGroup,
@@ -24,6 +23,7 @@ import {
   ActivePostProblemsProvider,
   useActivePostProblems,
 } from '../hooks/groups/useActivePostProblems';
+import PostLeaderboardPage from '../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -127,6 +127,10 @@ export default function GroupsRouter() {
             <PostPageWrapper
               Component={EditPostPage}
               path="/:groupId/post/:postId/edit"
+            />
+            <PostPageWrapper
+              Component={PostLeaderboardPage}
+              path="/:groupId/post/:postId/leaderboard"
             />
             <PostPageWrapper
               Component={PostPage}

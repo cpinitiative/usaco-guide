@@ -8,6 +8,7 @@ import LeaderboardList from '../LeaderboardList/LeaderboardList';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { Link } from 'gatsby';
 
 export default function PostSidebar({ post }: { post: PostData }) {
   const { groupData } = useActiveGroup();
@@ -58,12 +59,12 @@ export default function PostSidebar({ post }: { post: PostData }) {
             >
               Assignment Leaderboard
             </h3>
-            {/*<a*/}
-            {/*  href="#"*/}
-            {/*  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"*/}
-            {/*>*/}
-            {/*  View All &rarr;*/}
-            {/*</a>*/}
+            <Link
+              to="leaderboard"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            >
+              View All &rarr;
+            </Link>
           </div>
           <div className="h-2" />
           <LeaderboardList leaderboard={leaderboard} />

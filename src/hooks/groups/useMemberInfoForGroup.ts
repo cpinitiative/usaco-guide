@@ -4,7 +4,10 @@ import firebaseType from 'firebase';
 import useFirebase from '../useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
 
-let cachedData: firebaseType.UserInfo[] = null;
+let cachedData: {
+  groupId: string;
+  data: firebaseType.UserInfo[];
+} = null;
 
 export default function getMemberInfoForGroup(group: GroupData) {
   const [memberInfo, setMemberInfo] = React.useState<firebaseType.UserInfo[]>(
@@ -17,29 +20,21 @@ export default function getMemberInfoForGroup(group: GroupData) {
       setMemberInfo(null);
       if (!group) return;
 
-      const userIDs = [
-        ...group.memberIds,
-        ...group.ownerIds,
-        ...group.adminIds,
-      ];
-
-      if (
-        cachedData &&
-        userIDs.every(id => cachedData.some(person => person.uid === id))
-      ) {
-        setMemberInfo(cachedData);
+      if (cachedData?.groupId === group.id) {
+        setMemberInfo(cachedData.data);
       } else {
         firebase
           .functions()
-          .httpsCallable('getUsers')({
-            users: userIDs.map(id => ({
-              uid: id,
-            })),
+          .httpsCallable('getGroupMembers')({
+            groupId: group.id,
           })
           .then(d => {
-            if (d?.data?.users?.length > 0) {
-              setMemberInfo(d.data.users);
-              cachedData = d.data.users;
+            if (d?.data?.length > 0) {
+              setMemberInfo(d.data);
+              cachedData = {
+                groupId: group.id,
+                data: d.data,
+              };
             } else {
               notifications.addNotification({
                 level: 'error',
@@ -52,7 +47,7 @@ export default function getMemberInfoForGroup(group: GroupData) {
           });
       }
     },
-    [group.memberIds, group.ownerIds, group.adminIds]
+    [group.id]
   );
 
   return memberInfo;
