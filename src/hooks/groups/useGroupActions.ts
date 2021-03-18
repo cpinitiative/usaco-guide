@@ -5,6 +5,8 @@ import {
   groupConverter,
   GroupData,
   GroupPermission,
+  JoinGroupLink,
+  joinGroupLinkConverter,
 } from '../../models/groups/groups';
 import { useUserGroups } from './useUserGroups';
 
@@ -106,6 +108,34 @@ export function useGroupActions() {
       throw new Error(
         "Since you're the only owner of this group, you are unable to leave. Try adding another owner or deleting the group instead."
       );
+    },
+    createJoinLink: async (groupId: string): JoinGroupLink => {
+      const defaultJoinLink: Omit<JoinGroupLink, 'id'> = {
+        groupId,
+        revoked: false,
+        numUses: 0,
+        maxUses: null,
+        expirationTime: null,
+        usedBy: [],
+        author: firebaseUser.uid,
+      };
+      const doc = firebase.firestore().collection('group-join-links').doc();
+      const docId = doc.id;
+
+      await doc.set(defaultJoinLink);
+
+      return {
+        ...defaultJoinLink,
+        id: docId,
+      };
+    },
+    updateJoinLink: async (id: string, data: Partial<JoinGroupLink>) => {
+      await firebase
+        .firestore()
+        .collection('group-join-links')
+        .doc(id)
+        .withConverter(joinGroupLinkConverter)
+        .update(data);
     },
   };
 }

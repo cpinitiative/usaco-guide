@@ -242,16 +242,25 @@ export default function EditJoinLinkModal({
               type="button"
               className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
               onClick={() => {
-                if (confirm('Are you sure you want to revoke this link?')) {
+                if (
+                  !link.revoked &&
+                  confirm('Are you sure you want to revoke this link?')
+                ) {
                   onSave({
                     ...link,
                     revoked: true,
                   });
                   onClose();
+                } else if (link.revoked) {
+                  onSave({
+                    ...link,
+                    revoked: false,
+                  });
+                  onClose();
                 }
               }}
             >
-              Revoke Link
+              {link.revoked ? 'Unrevoke Link' : 'Revoke Link'}
             </button>
           </div>
         </Transition.Child>

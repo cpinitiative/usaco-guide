@@ -64,6 +64,23 @@ export const groupConverter = {
   },
 };
 
+export const joinGroupLinkConverter = {
+  toFirestore(link: JoinGroupLink): firebaseType.firestore.DocumentData {
+    const { id, ...data } = link;
+    return data;
+  },
+
+  fromFirestore(
+    snapshot: firebaseType.firestore.QueryDocumentSnapshot,
+    options: firebaseType.firestore.SnapshotOptions
+  ): JoinGroupLink {
+    return {
+      ...snapshot.data(options),
+      id: snapshot.id,
+    } as JoinGroupLink;
+  },
+};
+
 export const isUserAdminOfGroup = (group: GroupData, userId: string) => {
   return (
     !!group?.adminIds.includes(userId) || !!group?.ownerIds.includes(userId)
