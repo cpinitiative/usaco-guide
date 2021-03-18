@@ -12,12 +12,12 @@ export default function LeaderboardSidebar({ leaderboard }) {
           >
             Leaderboard
           </h2>
-          <a
-            href="#"
-            className="text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white"
-          >
-            View All &rarr;
-          </a>
+          {/*<a*/}
+          {/*  href="#"*/}
+          {/*  className="text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white"*/}
+          {/*>*/}
+          {/*  View All &rarr;*/}
+          {/*</a>*/}
         </div>
         <div className="flow-root mt-2">
           <LeaderboardList leaderboard={leaderboard} />

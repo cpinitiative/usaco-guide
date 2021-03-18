@@ -58,12 +58,12 @@ export default function PostSidebar({ post }: { post: PostData }) {
             >
               Assignment Leaderboard
             </h3>
-            <a
-              href="#"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-            >
-              View All &rarr;
-            </a>
+            {/*<a*/}
+            {/*  href="#"*/}
+            {/*  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"*/}
+            {/*>*/}
+            {/*  View All &rarr;*/}
+            {/*</a>*/}
           </div>
           <div className="h-2" />
           <LeaderboardList leaderboard={leaderboard} />
