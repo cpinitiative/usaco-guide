@@ -11,7 +11,7 @@ export default functions.firestore
     'groups/{groupId}/posts/{postId}/problems/{problemId}/submissions/{submissionId}'
   )
   .onCreate(async (snapshot, context) => {
-    const { groupId, postId, problemId } = context.params as {
+    const { groupId, postId, problemId, submissionId } = context.params as {
       groupId: string;
       postId: string;
       problemId: string;
@@ -27,12 +27,13 @@ export default functions.firestore
     }
     const groupRef = admin.firestore().collection('groups').doc(groupId);
     const postRef = groupRef.collection('posts').doc(postId);
-    const problemRef = postRef.collection('submissions').doc(problemId);
-    console.log(context.params);
-    console.log(data);
+    const problemRef = postRef.collection('problems').doc(problemId);
+    const submissionRef = problemRef
+      .collection('submissions')
+      .doc(submissionId);
 
     await Promise.all([
-      problemRef.update({
+      submissionRef.update({
         status: data.result === 1 ? 'AC' : 'WA',
       }),
 
@@ -59,6 +60,7 @@ export default functions.firestore
             bestScore: points,
             bestScoreStatus: data.status,
             bestScoreTimestamp: data.timestamp,
+            bestScoreSubmissionId: submissionId,
           },
         });
       }),
