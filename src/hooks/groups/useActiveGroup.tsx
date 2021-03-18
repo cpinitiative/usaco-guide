@@ -4,7 +4,6 @@ import {
   GroupData,
   isUserAdminOfGroup,
 } from '../../models/groups/groups';
-import { useUserGroups } from './useUserGroups';
 import * as React from 'react';
 import { ReactNode, useContext } from 'react';
 import { postConverter, PostData } from '../../models/groups/posts';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
 
-export default function LeaderboardSidebar() {
+export default function LeaderboardSidebar({ leaderboard }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="p-6">
@@ -20,7 +20,7 @@ export default function LeaderboardSidebar() {
           </a>
         </div>
         <div className="flow-root mt-2">
-          <LeaderboardList />
+          <LeaderboardList leaderboard={leaderboard} />
         </div>
       </div>
     </div>

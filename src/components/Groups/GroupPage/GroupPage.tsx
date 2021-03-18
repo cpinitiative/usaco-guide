@@ -32,7 +32,9 @@ export default function GroupPage({ path, groupId }: any) {
               <aside className="hidden md:block md:col-span-5 lg:col-span-4">
                 <div className="sticky top-4 space-y-4">
                   <section>
-                    <LeaderboardSidebar />
+                    <LeaderboardSidebar
+                      leaderboard={group.groupData.leaderboard}
+                    />
                   </section>
                 </div>
               </aside>

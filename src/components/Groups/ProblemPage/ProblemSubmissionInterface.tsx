@@ -95,8 +95,14 @@ export default function ProblemSubmissionInterface({
             id="score"
             min={0}
             max={100}
-            value={submission.result ?? ''}
-            onChange={e => editSubmission({ result: parseInt(e.target.value) })}
+            value={
+              submission.result === null
+                ? ''
+                : Math.round((submission.result as number) * 100)
+            }
+            onChange={e =>
+              editSubmission({ result: parseInt(e.target.value) / 100 })
+            }
             className="input"
             placeholder="0 - 100"
             aria-describedby="price-currency"

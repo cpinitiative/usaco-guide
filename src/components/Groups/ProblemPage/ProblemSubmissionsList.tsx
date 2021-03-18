@@ -7,6 +7,9 @@ import {
   getSubmissionTimestampString,
   ProblemData,
   Submission,
+  submissionCircleBorderColor,
+  submissionCircleColor,
+  submissionTextColor,
 } from '../../../models/groups/problem';
 
 const SubmissionListItem = ({
@@ -17,33 +20,6 @@ const SubmissionListItem = ({
   submission: Submission;
 }) => {
   const showSubmissionAction = useProblemSubmissionPopupAction();
-
-  const textColor: { [key in ExecutionStatus]: string } = {
-    AC: 'text-green-800',
-    WA: 'text-red-800',
-    TLE: 'text-red-800',
-    MLE: 'text-red-800',
-    RTE: 'text-red-800',
-    Pending: 'text-gray-800',
-  };
-
-  const circleColor: { [key in ExecutionStatus]: string } = {
-    AC: 'bg-green-400',
-    WA: 'bg-red-400',
-    TLE: 'bg-red-400',
-    MLE: 'bg-red-400',
-    RTE: 'bg-red-400',
-    Pending: 'bg-gray-400',
-  };
-
-  const circleBorderColor: { [key in ExecutionStatus]: string } = {
-    AC: 'bg-green-100',
-    WA: 'bg-red-100',
-    TLE: 'bg-red-100',
-    MLE: 'bg-red-100',
-    RTE: 'bg-red-100',
-    Pending: 'bg-gray-100',
-  };
 
   return (
     <li className="relative py-2 group">
@@ -61,19 +37,19 @@ const SubmissionListItem = ({
         <div className="flex items-center text-sm text-gray-500 group-hover:text-gray-900 font-medium">
           <span
             className={`h-5 w-5 ${
-              circleBorderColor[getSubmissionStatus(submission)]
+              submissionCircleBorderColor[getSubmissionStatus(submission)]
             } rounded-full flex items-center justify-center`}
             aria-hidden="true"
           >
             <span
               className={`h-2.5 w-2.5 ${
-                circleColor[getSubmissionStatus(submission)]
+                submissionCircleColor[getSubmissionStatus(submission)]
               } rounded-full`}
             />
           </span>
           <span
             className={`ml-2 mr-4 ${
-              textColor[getSubmissionStatus(submission)]
+              submissionTextColor[getSubmissionStatus(submission)]
             }`}
           >
             {getSubmissionEarnedPoints(submission, problem)} / {problem.points}

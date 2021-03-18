@@ -1,4 +1,5 @@
 import firebaseType from 'firebase';
+import { Leaderboard } from './leaderboard';
 
 export type GroupData = {
   id: string;
@@ -11,6 +12,7 @@ export type GroupData = {
    * Maps owner/admin/member ID's to information about that member
    */
   members: { [key: string]: MemberData };
+  leaderboard: Leaderboard;
 };
 
 export enum GroupPermission {

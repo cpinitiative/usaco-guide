@@ -118,6 +118,36 @@ export const submissionConverter = {
     } as Submission;
   },
 };
+
+export const submissionTextColor: { [key in ExecutionStatus]: string } = {
+  AC: 'text-green-800',
+  WA: 'text-red-800',
+  TLE: 'text-red-800',
+  MLE: 'text-red-800',
+  RTE: 'text-red-800',
+  Pending: 'text-gray-800',
+};
+
+export const submissionCircleColor: { [key in ExecutionStatus]: string } = {
+  AC: 'bg-green-400',
+  WA: 'bg-red-400',
+  TLE: 'bg-red-400',
+  MLE: 'bg-red-400',
+  RTE: 'bg-red-400',
+  Pending: 'bg-gray-400',
+};
+
+export const submissionCircleBorderColor: {
+  [key in ExecutionStatus]: string;
+} = {
+  AC: 'bg-green-100',
+  WA: 'bg-red-100',
+  TLE: 'bg-red-100',
+  MLE: 'bg-red-100',
+  RTE: 'bg-red-100',
+  Pending: 'bg-gray-100',
+};
+
 export const getSubmissionTimestampString = (submission: Submission) =>
   submission?.timestamp?.toDate().toString().substr(0, 24);
 export const getSubmissionStatus = (submission: Submission) => {
@@ -132,7 +162,7 @@ export const getSubmissionEarnedPoints = (
   problem: ProblemData
 ) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
-    return Math.round((submission.result / 100) * problem.points);
+    return Math.round(submission.result * problem.points);
   }
   // todo actually implement
   return problem.points;

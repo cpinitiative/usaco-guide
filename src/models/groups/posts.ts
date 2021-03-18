@@ -7,6 +7,7 @@ import {
   Submission,
   SubmissionType,
 } from './problem';
+import { Leaderboard } from './leaderboard';
 
 export type PostData = {
   id?: string;
@@ -18,6 +19,7 @@ export type PostData = {
   body: string;
   isPinned: boolean;
   isPublished: boolean;
+  leaderboard: Leaderboard;
 } & (
   | {
       type: 'announcement';
@@ -80,7 +82,7 @@ export const getSubmissionEarnedPoints = (
   problem: ProblemData
 ) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
-    return Math.round((submission.result / 100) * problem.points);
+    return Math.round(submission.result * problem.points);
   }
   // todo actually implement
   return problem.points;

@@ -4,7 +4,10 @@ import useFirebase from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
 import { Submission, submissionConverter } from '../../models/groups/problem';
 
-export default function useUserProblemSubmissions(problemId: string) {
+export default function useUserProblemSubmissions(
+  postId: string,
+  problemId: string
+) {
   const { firebaseUser } = React.useContext(UserDataContext);
   const [submissions, setSubmissions] = React.useState<Submission[]>(null);
   const activeGroup = useActiveGroup();
@@ -15,13 +18,15 @@ export default function useUserProblemSubmissions(problemId: string) {
         return firebase
           .firestore()
           .collection('groups')
-          .doc(activeGroup?.activeGroupId)
+          .doc(activeGroup.activeGroupId)
+          .collection('posts')
+          .doc(postId)
+          .collection('problems')
+          .doc(problemId)
           .collection('submissions')
-          .where('problemId', '==', problemId)
           .where('userId', '==', firebaseUser.uid)
           .withConverter(submissionConverter)
           .onSnapshot(snap => {
-            console.log(snap);
             setSubmissions(
               snap.docs
                 .map(doc => doc.data())
@@ -30,7 +35,7 @@ export default function useUserProblemSubmissions(problemId: string) {
           });
       }
     },
-    [firebaseUser?.uid, problemId, activeGroup?.activeGroupId]
+    [firebaseUser?.uid, postId, problemId, activeGroup?.activeGroupId]
   );
 
   return submissions;

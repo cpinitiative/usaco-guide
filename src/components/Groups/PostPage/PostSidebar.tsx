@@ -6,9 +6,16 @@ import {
 import SidebarDueDate from '../SidebarDueDate';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { getTotalPointsOfUserFromLeaderboard } from '../../../models/groups/leaderboard';
 
 export default function PostSidebar({ post }: { post: PostData }) {
   const { problems } = useActivePostProblems();
+  const { firebaseUser } = React.useContext(UserDataContext);
+  const totalLeaderboardPoints = getTotalPointsOfUserFromLeaderboard(
+    post.leaderboard,
+    firebaseUser.uid
+  );
   return (
     <>
       <h2 className="sr-only">Details</h2>
@@ -27,8 +34,8 @@ export default function PostSidebar({ post }: { post: PostData }) {
             />
           </svg>
           <span className="text-green-700 dark:text-green-500 text-sm font-medium">
-            400 / {problems && getTotalPointsFromProblems(problems)} points
-            earned
+            {totalLeaderboardPoints} /{' '}
+            {problems && getTotalPointsFromProblems(problems)} points earned
           </span>
         </div>
         <SidebarDueDate post={post} />
@@ -50,7 +57,7 @@ export default function PostSidebar({ post }: { post: PostData }) {
             </a>
           </div>
           <div className="h-2" />
-          <LeaderboardList />
+          <LeaderboardList leaderboard={post.leaderboard} />
         </div>
       </div>
     </>

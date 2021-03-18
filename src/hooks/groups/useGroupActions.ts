@@ -46,6 +46,7 @@ export function useGroupActions() {
             permission: GroupPermission.OWNER,
           },
         },
+        leaderboard: {},
       };
       const doc = firebase.firestore().collection('groups').doc();
       const docId = doc.id;
