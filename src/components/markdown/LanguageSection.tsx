@@ -109,6 +109,8 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
+  console.log("CPP SECT PROPS");
+  console.log(props);
   return <>{props.children}</>;
 };
 
