@@ -1,6 +1,12 @@
+import moment from 'moment';
 import firebase from 'firebase';
 import firebaseType from 'firebase';
-import { ProblemData } from './problem';
+import {
+  ExecutionStatus,
+  ProblemData,
+  Submission,
+  SubmissionType,
+} from './problem';
 
 export type PostData = {
   id?: string;
@@ -51,8 +57,39 @@ export const getPostTimestampString = (post: PostData) => {
   }
 };
 export const getPostDateString = (post: PostData) =>
-  post.timestamp.toDate().toString().substr(0, 15);
+  moment(post.timestamp.toDate()).format('MMMM Do, YYYY, h:mm:ss a');
 export const getPostDueDateString = (post: PostData) =>
-  post.dueTimestamp?.toDate().toString().substr(0, 15);
+  post.type === 'announcement'
+    ? null
+    : moment(post.dueTimestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a');
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
+export const getSubmissionTimestampString = (submission: Submission) =>
+  moment(submission?.timestamp?.toDate()).format('MMMM Do YYYY, h:mm:ss a');
+export const getSubmissionStatus = (submission: Submission) => {
+  if (submission.type === SubmissionType.SELF_GRADED) {
+    return submission.status;
+  }
+  // todo actually implement
+  return ExecutionStatus.AC;
+};
+export const getSubmissionEarnedPoints = (
+  submission: Submission,
+  problem: ProblemData
+) => {
+  if (submission.type === SubmissionType.SELF_GRADED) {
+    return Math.round((submission.result / 100) * problem.points);
+  }
+  // todo actually implement
+  return problem.points;
+};
+export const getEarnedPointsForProblem = (
+  problem: ProblemData,
+  submissions: Submission[]
+) => {
+  return submissions.reduce(
+    (oldScore, submission) =>
+      Math.max(oldScore, getSubmissionEarnedPoints(submission, problem)),
+    0
+  );
+};
