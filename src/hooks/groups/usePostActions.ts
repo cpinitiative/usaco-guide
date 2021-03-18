@@ -111,6 +111,10 @@ export function usePostActions(groupId: string) {
         .firestore()
         .collection('groups')
         .doc(groupId)
+        .collection('posts')
+        .doc(problem.postId)
+        .collection('problems')
+        .doc(problem.id)
         .collection('submissions')
         .add({
           ...submission,
