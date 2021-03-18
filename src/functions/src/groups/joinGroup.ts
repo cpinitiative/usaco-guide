@@ -21,7 +21,7 @@ export default functions.https.onCall(
 
     const keyData = await admin
       .firestore()
-      .collection('groupJoinKeys')
+      .collection('group-join-keys')
       .doc(key)
       .get()
       .then(
@@ -54,12 +54,13 @@ export default functions.https.onCall(
         message: 'The given key is no longer valid.',
       };
     }
-    return admin
+    await admin
       .firestore()
       .collection('groups')
       .doc(key)
       .update({
         memberIds: admin.firestore.FieldValue.arrayUnion([callerUid]),
       });
+    return { success: true, groupId: keyData.groupId };
   }
 );

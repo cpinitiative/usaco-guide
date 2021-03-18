@@ -21,7 +21,7 @@ export default functions.https.onCall(
 
     const keyData = await admin
       .firestore()
-      .collection('groupJoinKeys')
+      .collection('group-join-keys')
       .doc(key)
       .get()
       .then(
@@ -60,6 +60,7 @@ export default functions.https.onCall(
       .doc(key)
       .get();
     return {
+      success: true,
       name: snapshot.data().name,
     };
   }
