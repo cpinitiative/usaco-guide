@@ -167,7 +167,7 @@ export const getPostTotalPoints = (post: PostData) =>
     0
   );
 export const getSubmissionTimestampString = (submission: Submission) =>
-  submission?.timestamp?.toDate().toString().substr(0, 15);
+  submission?.timestamp?.toDate().toString().substr(0, 24);
 export const getSubmissionStatus = (submission: Submission) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
     return submission.status;
@@ -180,8 +180,18 @@ export const getSubmissionEarnedPoints = (
   problem: ProblemData
 ) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
-    return submission.result;
+    return Math.round((submission.result / 100) * problem.points);
   }
   // todo actually implement
   return problem.points;
+};
+export const getEarnedPointsForProblem = (
+  problem: ProblemData,
+  submissions: Submission[]
+) => {
+  return submissions.reduce(
+    (oldScore, submission) =>
+      Math.max(oldScore, getSubmissionEarnedPoints(submission, problem)),
+    0
+  );
 };

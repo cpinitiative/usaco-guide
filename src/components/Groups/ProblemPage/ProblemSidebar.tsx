@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { PostData, ProblemData } from '../../../models/groups/posts';
+import {
+  getEarnedPointsForProblem,
+  PostData,
+  ProblemData,
+} from '../../../models/groups/posts';
 import SidebarDueDate from '../SidebarDueDate';
 import ProblemSubmissionsList from './ProblemSubmissionsList';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
@@ -12,6 +16,8 @@ export default function ProblemSidebar({
   problem: ProblemData;
 }) {
   const submissions = useUserProblemSubmissions(problem.id);
+
+  if (!submissions) return null;
 
   return (
     <>
@@ -31,7 +37,8 @@ export default function ProblemSidebar({
             />
           </svg>
           <span className="text-green-700 dark:text-green-500 text-sm font-medium">
-            0 / {problem.points} points earned
+            {getEarnedPointsForProblem(problem, submissions)} / {problem.points}{' '}
+            points earned
           </span>
         </div>
         <div className="flex items-center space-x-2">
