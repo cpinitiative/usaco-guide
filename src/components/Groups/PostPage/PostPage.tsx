@@ -64,7 +64,7 @@ export default function PostPage(props) {
                 <div>
                   <PostHeader post={post} />
                   <aside className="mt-8 xl:hidden">
-                    <PostSidebar post={post} />
+                    <PostSidebar post={post} isMobile />
                   </aside>
                   <PostBody post={post} />
                 </div>

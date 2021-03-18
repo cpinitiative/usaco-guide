@@ -10,7 +10,13 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { Link } from 'gatsby';
 
-export default function PostSidebar({ post }: { post: PostData }) {
+export default function PostSidebar({
+  post,
+  isMobile = false,
+}: {
+  post: PostData;
+  isMobile?: boolean;
+}) {
   const { groupData } = useActiveGroup();
   const { problems } = useActivePostProblems();
   const { firebaseUser } = React.useContext(UserDataContext);
@@ -49,26 +55,35 @@ export default function PostSidebar({ post }: { post: PostData }) {
           </span>
         </div>
         <SidebarDueDate post={post} />
-      </div>
-      <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">
-        <div>
-          <div className="flex items-baseline justify-between">
-            <h3
-              id="who-to-follow-heading"
-              className="text-base font-medium text-gray-900 dark:text-gray-100"
-            >
-              Assignment Leaderboard
-            </h3>
-            <Link
-              to="leaderboard"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-            >
-              View All &rarr;
+        {isMobile && (
+          <div>
+            <Link to="leaderboard" className="font-medium hover:underline">
+              View Assignment Leaderboard &rarr;
             </Link>
           </div>
-          <div className="h-2" />
-          <LeaderboardList leaderboard={leaderboard} />
-        </div>
+        )}
+      </div>
+      <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">
+        {!isMobile && (
+          <div>
+            <div className="flex items-baseline justify-between">
+              <h3
+                id="who-to-follow-heading"
+                className="text-base font-medium text-gray-900 dark:text-gray-100"
+              >
+                Assignment Leaderboard
+              </h3>
+              <Link
+                to="leaderboard"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
+                View All &rarr;
+              </Link>
+            </div>
+            <div className="h-2" />
+            <LeaderboardList leaderboard={leaderboard} />
+          </div>
+        )}
       </div>
     </>
   );
