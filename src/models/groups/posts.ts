@@ -74,6 +74,7 @@ export type Submission = {
   | {
       type: SubmissionType.SELF_GRADED;
       result: number;
+      status: ExecutionStatus;
     }
   | {
       type: SubmissionType.COMPCS_API;
@@ -166,8 +167,11 @@ export const getPostTotalPoints = (post: PostData) =>
     0
   );
 export const getSubmissionTimestampString = (submission: Submission) =>
-  submission?.timestamp.toDate().toString().substr(0, 15);
+  submission?.timestamp?.toDate().toString().substr(0, 15);
 export const getSubmissionStatus = (submission: Submission) => {
+  if (submission.type === SubmissionType.SELF_GRADED) {
+    return submission.status;
+  }
   // todo actually implement
   return ExecutionStatus.AC;
 };
@@ -175,6 +179,9 @@ export const getSubmissionEarnedPoints = (
   submission: Submission,
   problem: ProblemData
 ) => {
+  if (submission.type === SubmissionType.SELF_GRADED) {
+    return submission.result;
+  }
   // todo actually implement
   return problem.points;
 };

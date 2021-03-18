@@ -19,6 +19,8 @@ function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   const submission = popupContext.submission;
 
+  if (!submission) return null;
+
   return (
     <Transition
       show={popupContext.showPopup}

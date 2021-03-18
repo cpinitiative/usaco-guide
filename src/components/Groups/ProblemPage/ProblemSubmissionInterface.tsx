@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { useReducer } from 'react';
 import styled from 'styled-components';
-import { useReducer, useState } from 'react';
 import {
-  PostData,
+  ExecutionStatus,
   ProblemData,
   Submission,
 } from '../../../models/groups/posts';
@@ -34,6 +34,7 @@ export default function ProblemSubmissionInterface({
     code: '',
     language: 'cpp',
     result: null,
+    status: ExecutionStatus.PENDING,
   };
   const [submission, editSubmission] = useReducer(
     (oldSubmission, updates: Partial<Submission>): Partial<Submission> => ({
@@ -62,7 +63,13 @@ export default function ProblemSubmissionInterface({
   });
 
   return (
-    <section>
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        submitSolution(problem, submission);
+        editSubmission(emptySubmission);
+      }}
+    >
       <div>
         <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
           Submit Code
@@ -92,6 +99,7 @@ export default function ProblemSubmissionInterface({
             className="input"
             placeholder="0 - 100"
             aria-describedby="price-currency"
+            required
           />
         </div>
       </div>
@@ -103,6 +111,7 @@ export default function ProblemSubmissionInterface({
           onChange={e => editSubmission({ code: e.target.value })}
           className="input font-mono"
           placeholder="Paste code, or drag and drop a file over this textbox."
+          required
         />
       </div>
       <div className="mt-1 text-sm space-x-2 text-gray-500 dark:text-gray-400">
@@ -116,16 +125,9 @@ export default function ProblemSubmissionInterface({
         </button>{' '}
         to select a file.
       </div>
-      <button
-        type="button"
-        onClick={() => {
-          submitSolution(problem, submission);
-          editSubmission(emptySubmission);
-        }}
-        className="mt-4 btn"
-      >
+      <button type="submit" className="mt-4 btn">
         Submit Code
       </button>
-    </section>
+    </form>
   );
 }

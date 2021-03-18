@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  ExecutionStatus,
   getSubmissionEarnedPoints,
   getSubmissionStatus,
   getSubmissionTimestampString,
@@ -16,6 +17,34 @@ const SubmissionListItem = ({
   submission: Submission;
 }) => {
   const showSubmissionAction = useProblemSubmissionPopupAction();
+
+  const textColor: { [key in ExecutionStatus]: string } = {
+    AC: 'text-green-800',
+    WA: 'text-red-800',
+    TLE: 'text-red-800',
+    MLE: 'text-red-800',
+    RTE: 'text-red-800',
+    Pending: 'text-gray-800',
+  };
+
+  const circleColor: { [key in ExecutionStatus]: string } = {
+    AC: 'bg-green-400',
+    WA: 'bg-red-400',
+    TLE: 'bg-red-400',
+    MLE: 'bg-red-400',
+    RTE: 'bg-red-400',
+    Pending: 'bg-gray-400',
+  };
+
+  const circleBorderColor: { [key in ExecutionStatus]: string } = {
+    AC: 'bg-green-100',
+    WA: 'bg-red-100',
+    TLE: 'bg-red-100',
+    MLE: 'bg-red-100',
+    RTE: 'bg-red-100',
+    Pending: 'bg-gray-100',
+  };
+
   return (
     <li className="relative py-2 group">
       <div className="flex items-center justify-between space-x-4">
@@ -32,25 +61,19 @@ const SubmissionListItem = ({
         <div className="flex items-center text-sm text-gray-500 group-hover:text-gray-900 font-medium">
           <span
             className={`h-5 w-5 ${
-              getSubmissionStatus(submission) === 'AC'
-                ? 'bg-green-100'
-                : 'bg-red-100'
+              circleBorderColor[getSubmissionStatus(submission)]
             } rounded-full flex items-center justify-center`}
             aria-hidden="true"
           >
             <span
               className={`h-2.5 w-2.5 ${
-                getSubmissionStatus(submission) === 'AC'
-                  ? 'bg-green-400'
-                  : 'bg-red-400'
+                circleColor[getSubmissionStatus(submission)]
               } rounded-full`}
             />
           </span>
           <span
             className={`ml-2 mr-4 ${
-              getSubmissionStatus(submission) === 'AC'
-                ? 'text-green-800'
-                : 'text-red-800'
+              textColor[getSubmissionStatus(submission)]
             }`}
           >
             {getSubmissionEarnedPoints(submission, problem)} / {problem.points}
