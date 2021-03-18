@@ -22,7 +22,7 @@ const ProblemListItem = ({
   const { firebaseUser } = React.useContext(UserDataContext);
   const pointsEarned =
     (problem.id in post.leaderboard &&
-      post.leaderboard[problem.id][firebaseUser.uid]) ||
+      post.leaderboard[problem.id][firebaseUser.uid]?.bestScore) ||
     0;
   const status =
     pointsEarned !== problem.points ? ExecutionStatus.WA : ExecutionStatus.AC;
