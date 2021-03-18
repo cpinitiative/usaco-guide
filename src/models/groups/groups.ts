@@ -22,6 +22,7 @@ export enum GroupPermission {
 export type MemberData = {
   id: string;
   name: string;
+  photoURL: string;
   permission: GroupPermission;
 };
 
