@@ -54,7 +54,7 @@ export default function LeaderboardList({
     for (let problemID of Object.keys(leaderboard)) {
       for (let userID of Object.keys(leaderboard[problemID])) {
         if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
-        leaderboardSum[userID] += leaderboard[problemID][userID];
+        leaderboardSum[userID] += leaderboard[problemID][userID].bestScore;
       }
     }
     let data = activeGroup.groupData.memberIds.map(id => ({
