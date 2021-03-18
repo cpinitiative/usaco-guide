@@ -9,6 +9,7 @@ import {
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useDropzone } from 'react-dropzone';
+import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 
 const ScoreInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -46,7 +47,7 @@ export default function ProblemSubmissionInterface({
   const activeGroup = useActiveGroup();
   const { submitSolution } = usePostActions(activeGroup.activeGroupId);
 
-  const { getRootProps, getInputProps, open } = useDropzone({
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
@@ -105,11 +106,13 @@ export default function ProblemSubmissionInterface({
       </div>
       <div className="mt-4" {...getRootProps()}>
         <input {...getInputProps()} />
-        <textarea
-          rows={3}
+        <TabIndentableTextarea
+          rows={7}
           value={submission.code}
           onChange={e => editSubmission({ code: e.target.value })}
-          className="input font-mono"
+          className={`input font-mono${
+            isDragActive ? ' border-blue-600 ring-blue-600 ring-1' : ''
+          }`}
           placeholder="Paste code, or drag and drop a file over this textbox."
           required
         />
