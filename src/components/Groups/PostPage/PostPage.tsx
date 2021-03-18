@@ -9,10 +9,6 @@ import SEO from '../../seo';
 import Layout from '../../layout';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import {
-  isPostAnnouncement,
-  isPostAssignment,
-} from '../../../models/groups/posts';
 
 export default function PostPage(props) {
   const { postId } = props as {
@@ -52,7 +48,7 @@ export default function PostPage(props) {
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
-            isPostAnnouncement(post) ? 'max-w-4xl' : 'max-w-7xl'
+            post.type === 'announcement' ? 'max-w-4xl' : 'max-w-7xl'
           } w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
           group={activeGroup.groupData}
         />
@@ -62,7 +58,7 @@ export default function PostPage(props) {
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          {isPostAssignment(post) ? (
+          {post.type === 'assignment' ? (
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
               <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
                 <div>
@@ -83,8 +79,6 @@ export default function PostPage(props) {
               <PostHeader post={post} />
               <div className="h-4" />
               <PostBody post={post} />
-              <div className="h-8" />
-              {activeGroup.showAdminView && <PostProblems post={post} />}
             </div>
           )}
         </div>

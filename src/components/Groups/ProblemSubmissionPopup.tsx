@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Transition } from '@headlessui/react';
 import { useContext } from 'react';
-import { GroupsContext } from '../../pages/groups';
 import {
   getSubmissionStatus,
   getSubmissionTimestampString,
   Submission,
-} from '../../models/groups/posts';
+} from '../../models/groups/problem';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;

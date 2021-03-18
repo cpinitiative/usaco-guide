@@ -1,19 +1,10 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import {
-  getPostDueDateString,
-  getPostTimestampString,
-  isPostAssignment,
-  PostData,
-} from '../../../models/groups/posts';
-import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { isUserAdminOfGroup } from '../../../models/groups/groups';
+import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function PostHeader({ post }: { post: PostData }) {
-  const { firebaseUser } = useContext(UserDataContext);
   const activeGroup = useActiveGroup();
   const { updatePost } = usePostActions(activeGroup.groupData.id);
 

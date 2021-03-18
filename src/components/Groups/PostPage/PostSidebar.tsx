@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {
-  getPostDueDateString,
-  getPostTotalPoints,
+  getTotalPointsFromProblems,
   PostData,
 } from '../../../models/groups/posts';
 import SidebarDueDate from '../SidebarDueDate';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
+import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 
 export default function PostSidebar({ post }: { post: PostData }) {
+  const { problems } = useActivePostProblems();
   return (
     <>
       <h2 className="sr-only">Details</h2>
@@ -26,7 +27,8 @@ export default function PostSidebar({ post }: { post: PostData }) {
             />
           </svg>
           <span className="text-green-700 dark:text-green-500 text-sm font-medium">
-            400 / {getPostTotalPoints(post)} points earned
+            400 / {problems && getTotalPointsFromProblems(problems)} points
+            earned
           </span>
         </div>
         <SidebarDueDate post={post} />

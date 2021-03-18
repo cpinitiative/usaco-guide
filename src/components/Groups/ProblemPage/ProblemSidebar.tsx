@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {
-  getEarnedPointsForProblem,
-  PostData,
-  ProblemData,
-} from '../../../models/groups/posts';
+import { PostData } from '../../../models/groups/posts';
 import SidebarDueDate from '../SidebarDueDate';
 import ProblemSubmissionsList from './ProblemSubmissionsList';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
+import {
+  getEarnedPointsForProblem,
+  ProblemData,
+} from '../../../models/groups/problem';
 
 export default function ProblemSidebar({
   post,

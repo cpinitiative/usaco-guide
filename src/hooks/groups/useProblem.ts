@@ -1,6 +1,6 @@
-import { usePost } from './usePost';
+import { useActivePostProblems } from './useActivePostProblems';
 
-export function useProblem(postId: string, problemId: string) {
-  const post = usePost(postId);
-  return post?.problems[problemId];
+export function useProblem(problemId: string) {
+  const { problems } = useActivePostProblems();
+  return problems?.find(problem => problem.id === problemId);
 }

@@ -42,6 +42,7 @@ export function useGroupActions() {
           [firebaseUser.uid]: {
             id: firebaseUser.uid,
             name: firebaseUser.displayName,
+            photoURL: firebaseUser.photoURL,
             permission: GroupPermission.OWNER,
           },
         },
@@ -54,6 +55,7 @@ export function useGroupActions() {
       return docId;
     },
     deleteGroup: async (groupId: string) => {
+      // @jeffrey todo delete group
       let batch = firebase.firestore().batch();
 
       const posts = await firebase

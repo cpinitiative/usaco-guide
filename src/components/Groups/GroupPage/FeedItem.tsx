@@ -1,15 +1,9 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Transition } from '@headlessui/react';
-import {
-  getPostDueDateString,
-  getPostTimestampString,
-  isPostAnnouncement,
-  PostData,
-} from '../../../models/groups/posts';
-import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { getPostTimestampString, PostData } from '../../../models/groups/posts';
+import { GroupData } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
@@ -46,7 +40,7 @@ export default function FeedItem({
           className="flex flex-1 space-x-4"
         >
           <div className="flex-shrink-0 self-center bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
-            {isPostAnnouncement(post) ? (
+            {post.type === 'announcement' ? (
               <svg
                 className="h-6 w-6 text-white"
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 import {
   ExecutionStatus,
   getSubmissionEarnedPoints,
@@ -6,8 +7,7 @@ import {
   getSubmissionTimestampString,
   ProblemData,
   Submission,
-} from '../../../models/groups/posts';
-import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
+} from '../../../models/groups/problem';
 
 const SubmissionListItem = ({
   problem,

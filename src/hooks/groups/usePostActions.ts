@@ -1,14 +1,15 @@
 import useFirebase from '../useFirebase';
+import { PostData } from '../../models/groups/posts';
+import { v4 as uuidv4 } from 'uuid';
+import { useContext } from 'react';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
-  PostData,
+  problemConverter,
   ProblemData,
   Submission,
   submissionConverter,
   SubmissionType,
-} from '../../models/groups/posts';
-import { v4 as uuidv4 } from 'uuid';
-import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+} from '../../models/groups/problem';
 
 export function usePostActions(groupId: string) {
   const firebase = useFirebase();
@@ -25,7 +26,7 @@ export function usePostActions(groupId: string) {
   };
 
   return {
-    createNewPost: async () => {
+    createNewPost: async (type: 'announcement' | 'assignment') => {
       const defaultPost: PostData = {
         name: 'Untitled Post',
         timestamp: firebase.firestore.Timestamp.now(),
@@ -33,7 +34,7 @@ export function usePostActions(groupId: string) {
         isPublished: false,
         isPinned: false,
         body: '',
-        problems: {},
+        type,
       };
       const doc = await firebase
         .firestore()
@@ -57,9 +58,7 @@ export function usePostActions(groupId: string) {
     },
     updatePost,
     createNewProblem: async (post: PostData) => {
-      const id = uuidv4();
-      const defaultProblem: ProblemData = {
-        id,
+      const defaultProblem: Omit<ProblemData, 'id'> = {
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -70,27 +69,38 @@ export function usePostActions(groupId: string) {
         solution: null,
         submissionType: SubmissionType.SELF_GRADED,
       };
-      await updatePost(post.id, {
-        problems: {
-          ...post.problems,
-          [id]: defaultProblem,
-        },
-      });
-      return id;
+      const doc = await firebase
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('posts')
+        .doc(post.id)
+        .collection('problems')
+        .add(defaultProblem);
+      return doc.id;
     },
     saveProblem: async (post: PostData, problem: ProblemData) => {
-      await updatePost(post.id, {
-        problems: {
-          ...post.problems,
-          [problem.id]: problem,
-        },
-      });
+      await firebase
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('posts')
+        .doc(post.id)
+        .collection('problems')
+        .doc(problem.id)
+        .withConverter(problemConverter)
+        .update(problem);
     },
     deleteProblem: async (post: PostData, problemId: string) => {
-      const { [problemId]: deletedProblem, ...otherProblems } = post.problems;
-      await updatePost(post.id, {
-        problems: otherProblems,
-      });
+      await firebase
+        .firestore()
+        .collection('groups')
+        .doc(groupId)
+        .collection('posts')
+        .doc(post.id)
+        .collection('problems')
+        .doc(problemId)
+        .delete();
     },
     submitSolution: async (
       problem: ProblemData,

@@ -4,10 +4,12 @@ import { navigate } from 'gatsby';
 import { PostData } from '../../../models/groups/posts';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 
 export default function PostProblems({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();
   const { createNewProblem } = usePostActions(activeGroup.activeGroupId);
+  const { problems, isLoading } = useActivePostProblems();
 
   return (
     <section className="mt-8 xl:mt-10">
@@ -43,14 +45,15 @@ export default function PostProblems({ post }: { post: PostData }) {
           <div>
             <div className="flow-root">
               <ul className="relative z-0 divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
-                {Object.values(post.problems).map(problem => (
-                  <ProblemListItem
-                    group={activeGroup.groupData}
-                    post={post}
-                    problem={problem}
-                    key={problem.id}
-                  />
-                ))}
+                {!isLoading &&
+                  Object.values(problems).map(problem => (
+                    <ProblemListItem
+                      group={activeGroup.groupData}
+                      post={post}
+                      problem={problem}
+                      key={problem.id}
+                    />
+                  ))}
               </ul>
             </div>
           </div>

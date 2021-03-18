@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
-import { Submission, SubmissionType } from '../../../models/groups/posts';
+import { Submission, SubmissionType } from '../../../models/groups/problem';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import EditProblemHintModal from './EditProblemHintModal';
-import { ProblemData, ProblemHint } from '../../../models/groups/posts';
+import { ProblemData, ProblemHint } from '../../../models/groups/problem';
 
 export default function EditProblemHintSection({
   problem,

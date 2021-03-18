@@ -20,6 +20,10 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { Link } from 'gatsby';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import JoinLinksPage from '../components/Groups/JoinLinksPage/JoinLinksPage';
+import {
+  ActivePostProblemsProvider,
+  useActivePostProblems,
+} from '../hooks/groups/useActivePostProblems';
 
 // wrapper because reach router types are bad.
 const NotFoundPageWrapper = (props: any): ReactElement => {
@@ -85,38 +89,61 @@ const GroupPageWrapper = (props: any): ReactElement => {
   return <Component {...propsExceptComponent} />;
 };
 
+const SetActivePost = (props: any): ReactElement => {
+  const { Component, ...propsExceptComponent } = props;
+  const { setActivePostId, isLoading } = useActivePostProblems();
+
+  React.useEffect(() => {
+    setActivePostId(props.postId);
+  }, [props.postId]);
+
+  return <Component {...propsExceptComponent} />;
+};
+
+const PostPageWrapper = (props: any): ReactElement => {
+  const { Component, ...propsExceptComponent } = props;
+  return (
+    <GroupPageWrapper
+      {...propsExceptComponent}
+      Component={props => <SetActivePost {...props} Component={Component} />}
+    />
+  );
+};
+
 export default function GroupsRouter() {
   return (
     <ActiveGroupProvider>
-      <ProblemSubmissionPopupProvider>
-        <Router basepath="/groups">
-          <GroupPageWrapper
-            Component={EditProblemPage}
-            path="/:groupId/post/:postId/problems/:problemId/edit"
-          />
-          <GroupPageWrapper
-            Component={ProblemPage}
-            path="/:groupId/post/:postId/problems/:problemId"
-          />
-          <GroupPageWrapper
-            Component={EditPostPage}
-            path="/:groupId/post/:postId/edit"
-          />
-          <GroupPageWrapper
-            Component={PostPage}
-            path="/:groupId/post/:postId"
-          />
-          <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
-          <GroupPageWrapper
-            Component={JoinLinksPage}
-            path="/:groupId/join-links"
-          />
-          <GroupPageWrapper Component={GroupPage} path="/:groupId" />
-          <GroupSelectPage path="/" />
-          <JoinGroupPage path="/join" />
-          <NotFoundPageWrapper default />
-        </Router>
-      </ProblemSubmissionPopupProvider>
+      <ActivePostProblemsProvider>
+        <ProblemSubmissionPopupProvider>
+          <Router basepath="/groups">
+            <PostPageWrapper
+              Component={EditProblemPage}
+              path="/:groupId/post/:postId/problems/:problemId/edit"
+            />
+            <PostPageWrapper
+              Component={ProblemPage}
+              path="/:groupId/post/:postId/problems/:problemId"
+            />
+            <PostPageWrapper
+              Component={EditPostPage}
+              path="/:groupId/post/:postId/edit"
+            />
+            <PostPageWrapper
+              Component={PostPage}
+              path="/:groupId/post/:postId"
+            />
+            <GroupPageWrapper Component={EditGroupPage} path="/:groupId/edit" />
+            <GroupPageWrapper
+              Component={JoinLinksPage}
+              path="/:groupId/join-links"
+            />
+            <GroupPageWrapper Component={GroupPage} path="/:groupId" />
+            <GroupSelectPage path="/" />
+            <JoinGroupPage path="/join" />
+            <NotFoundPageWrapper default />
+          </Router>
+        </ProblemSubmissionPopupProvider>
+      </ActivePostProblemsProvider>
     </ActiveGroupProvider>
   );
 }

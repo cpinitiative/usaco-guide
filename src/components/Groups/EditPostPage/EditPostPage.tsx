@@ -61,7 +61,8 @@ export default function EditPostPage(props) {
         <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b dark:border-gray-700 xl:pb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Edit Post: {post.name}
+              Edit {post.type === 'assignment' ? 'Assignment' : 'Announcement'}:{' '}
+              {post.name}
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
@@ -127,30 +128,32 @@ export default function EditPostPage(props) {
                 </div>
               </div>
 
-              <div className="sm:col-span-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Due Date (Optional, only for assignments)
-                </label>
+              {post.type === 'assignment' && (
+                <div className="sm:col-span-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Due Date (Optional)
+                  </label>
 
-                <div className="mt-1">
-                  <Flatpickr
-                    placeholder={'Choose a due date (optional)'}
-                    options={{
-                      dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
-                      enableTime: true,
-                    }}
-                    value={post.dueTimestamp?.toDate()}
-                    onChange={date =>
-                      editPost({
-                        dueTimestamp: firebase.firestore.Timestamp.fromDate(
-                          date[0]
-                        ),
-                      })
-                    }
-                    className="input"
-                  />
+                  <div className="mt-1">
+                    <Flatpickr
+                      placeholder={'Choose a due date (optional)'}
+                      options={{
+                        dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
+                        enableTime: true,
+                      }}
+                      value={post.dueTimestamp?.toDate()}
+                      onChange={date =>
+                        editPost({
+                          dueTimestamp: firebase.firestore.Timestamp.fromDate(
+                            date[0]
+                          ),
+                        })
+                      }
+                      className="input"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="sm:col-span-6">
                 <label

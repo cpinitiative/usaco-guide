@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { useReducer } from 'react';
 import styled from 'styled-components';
-import {
-  ExecutionStatus,
-  ProblemData,
-  Submission,
-} from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useDropzone } from 'react-dropzone';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
+import {
+  ExecutionStatus,
+  ProblemData,
+  Submission,
+} from '../../../models/groups/problem';
 
 const ScoreInput = styled.input`
   &::-webkit-outer-spin-button,

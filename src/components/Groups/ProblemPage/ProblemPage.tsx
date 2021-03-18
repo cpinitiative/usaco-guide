@@ -5,7 +5,6 @@ import Breadcrumbs from '../Breadcrumbs';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import ProblemSubmission from './ProblemSubmissionInterface';
-import ProblemSubmissionsList from './ProblemSubmissionsList';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
@@ -23,7 +22,7 @@ export default function ProblemPage(props) {
   };
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
-  const problem = useProblem(postId, problemId);
+  const problem = useProblem(problemId);
   const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
 
   if (!problem || activeGroup.isLoading) {

@@ -7,12 +7,12 @@ import Breadcrumbs from '../Breadcrumbs';
 import { Link, navigate } from 'gatsby';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import { ProblemData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintModal from './EditProblemHintModal';
 import EditProblemHintSection from './EditProblemHintSection';
+import { ProblemData } from '../../../models/groups/problem';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -24,7 +24,7 @@ export default function EditProblemPage(props) {
   };
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
-  const originalProblem = useProblem(postId, problemId);
+  const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
     (oldProblem, updates: Partial<ProblemData>): ProblemData => ({
       ...oldProblem,

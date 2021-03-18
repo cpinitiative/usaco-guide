@@ -86,13 +86,27 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
-                          createNewPost().then(postId =>
+                          createNewPost('assignment').then(postId =>
                             navigate(`post/${postId}/edit`)
                           );
                         }
                       }}
                     >
-                      Create New Post
+                      Create New Assignment
+                    </button>
+                    <button
+                      type="button"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      onClick={() => {
+                        const groupId = props.group?.id;
+                        if (groupId) {
+                          createNewPost('announcement').then(postId =>
+                            navigate(`post/${postId}/edit`)
+                          );
+                        }
+                      }}
+                    >
+                      Create New Announcement
                     </button>
                     <Link
                       to="edit"
