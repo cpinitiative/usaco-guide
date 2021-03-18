@@ -31,10 +31,10 @@ export default functions.firestore
     const submissionRef = problemRef
       .collection('submissions')
       .doc(submissionId);
-
+    const status = data.result === 1 ? 'AC' : 'WA';
     await Promise.all([
       submissionRef.update({
-        status: data.result === 1 ? 'AC' : 'WA',
+        status: status,
       }),
 
       admin.firestore().runTransaction(async transaction => {
@@ -58,7 +58,7 @@ export default functions.firestore
         await transaction.update(groupRef, {
           [`leaderboard.${postId}.${problemId}.${data.userId}`]: {
             bestScore: points,
-            bestScoreStatus: data.status,
+            bestScoreStatus: status,
             bestScoreTimestamp: data.timestamp,
             bestScoreSubmissionId: submissionId,
           },
