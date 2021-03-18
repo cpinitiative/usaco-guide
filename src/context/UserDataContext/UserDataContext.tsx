@@ -26,6 +26,10 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+import firebase from 'firebase';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -94,6 +98,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
   new UserClassesProperty(),
+  new AdSettingsProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
@@ -106,8 +111,9 @@ type UserDataContextAPI = UserLangAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
-  UserClassesAPI & {
-    firebaseUser: any;
+  UserClassesAPI &
+  AdSettingsAPI & {
+    firebaseUser: firebase.User;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
@@ -162,6 +168,10 @@ const UserDataContext = createContext<UserDataContextAPI>({
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
   userProgressOnProblemsActivity: [],
+  adSettings: {
+    hideMarch2021: false,
+  },
+  setAdSettings: () => {},
 });
 
 export const UserDataProvider = ({ children }) => {
