@@ -96,11 +96,11 @@ vector<int> child[MAX_GOODS + 1];
 
 vector<long long> total_min(vector<long long> a, vector<long long> b) {
 	vector<long long> combined(a.size() + b.size() -1, INF);
-    for (int i = 0; i < a.size(); i++) {
-        for (int j = 0; j < b.size(); j++) {
+	for (int i = 0; i < a.size(); i++) {
+		for (int j = 0; j < b.size(); j++) {
 			combined[i + j] = min(combined[i + j], a[i] + b[j]);
-        }
-    }
+		}
+	}
 	return combined;
 }
 
@@ -117,7 +117,7 @@ void process(int g) {
 		dp[g][0] = total_min(dp[g][0],dp[t][0]);
 		dp[g][1] = total_min(dp[g][1],dp[t][1]);
 	}
-    for (int i = 0; i < dp[g][1].size(); i++) {
+	for (int i = 0; i < dp[g][1].size(); i++) {
 		dp[g][1][i] = min(dp[g][1][i], dp[g][0][i]);
 	}
 }
@@ -125,13 +125,13 @@ void process(int g) {
 int main() {
 	int good_num;
 	int budget;
-    cin >> good_num >> budget;
+	cin >> good_num >> budget;
 	for (int i = 1; i <= good_num; i++) {
 		cin >> initial[i] >> discounted[i];
-        discounted[i] = initial[i] - discounted[i];
+		discounted[i] = initial[i] - discounted[i];
 		if (i > 1) {
 			int prereq;
-            cin >> prereq;
+			cin >> prereq;
 			child[prereq].push_back(i);
 		}
 	}
