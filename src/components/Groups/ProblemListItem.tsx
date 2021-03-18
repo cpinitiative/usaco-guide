@@ -20,12 +20,13 @@ const ProblemListItem = ({
   problem: ProblemData;
 }) => {
   const { firebaseUser } = React.useContext(UserDataContext);
-  const pointsEarned =
-    (problem.id in post.leaderboard &&
-      post.leaderboard[problem.id][firebaseUser.uid]?.bestScore) ||
-    0;
-  const status =
-    pointsEarned !== problem.points ? ExecutionStatus.WA : ExecutionStatus.AC;
+  const bestSubmission =
+    (post.id in group.leaderboard &&
+      problem.id in group.leaderboard[post.id] &&
+      group.leaderboard[post.id][problem.id][firebaseUser.uid]) ||
+    null;
+  const pointsEarned = bestSubmission?.bestScore || 0;
+  const status = bestSubmission?.bestScoreStatus || ExecutionStatus.WA;
 
   return (
     <li className="relative pl-4 pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6">

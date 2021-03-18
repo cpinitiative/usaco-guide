@@ -7,15 +7,24 @@ import SidebarDueDate from '../SidebarDueDate';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { getTotalPointsOfUserFromLeaderboard } from '../../../models/groups/leaderboard';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function PostSidebar({ post }: { post: PostData }) {
+  const { groupData } = useActiveGroup();
   const { problems } = useActivePostProblems();
   const { firebaseUser } = React.useContext(UserDataContext);
-  const totalLeaderboardPoints = getTotalPointsOfUserFromLeaderboard(
-    post.leaderboard,
-    firebaseUser.uid
-  );
+
+  const leaderboard = groupData.leaderboard;
+  const totalLeaderboardPoints = React.useMemo(() => {
+    let sum = 0;
+    for (let postID of Object.keys(leaderboard)) {
+      for (let problemID of Object.keys(leaderboard[postID])) {
+        sum += leaderboard[postID][problemID][firebaseUser.uid]?.bestScore || 0;
+      }
+    }
+    return sum;
+  }, [firebaseUser.uid, leaderboard]);
+
   return (
     <>
       <h2 className="sr-only">Details</h2>
@@ -57,7 +66,7 @@ export default function PostSidebar({ post }: { post: PostData }) {
             </a>
           </div>
           <div className="h-2" />
-          <LeaderboardList leaderboard={post.leaderboard} />
+          <LeaderboardList leaderboard={leaderboard} />
         </div>
       </div>
     </>

@@ -5,6 +5,7 @@ import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import useFirebase from '../../hooks/useFirebase';
+import { useNotificationSystem } from '../../context/NotificationSystemContext';
 
 const getQuery = name => {
   const url = window.location.href;
@@ -18,32 +19,53 @@ const getQuery = name => {
 
 const JoinGroupPage = () => {
   const { firebaseUser, isLoaded, signIn } = useContext(UserDataContext);
+  const [groupName, setGroupName] = React.useState<string>(null);
+  const [error, setError] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isJoining, setIsJoining] = React.useState(false);
+  const firebase = useFirebase();
 
   const joinKey = typeof window === 'undefined' ? '' : getQuery('key');
-  const firebase = useFirebase();
   const showNotSignedInMessage = isLoaded && !firebaseUser?.uid;
-  const showLoading = !isLoaded;
-  useEffect(() => {
-    firebase
-      .functions()
-      .httpsCallable('getJoinKeyInfo')({
-        key: joinKey,
-      })
-      .then((data: { name: string }) => {
-        // TODO @nathan
-      })
-      .catch(e => {
-        // TODO @nathan
-        switch (e.code) {
-          case 'INVALID_KEY':
-            break;
-          case 'KEY_NOT_FOUND':
-            break;
-          default:
-            alert('Error:' + e.message);
-        }
-      });
-  });
+  const showLoading = isLoading || !isLoaded || !firebase;
+
+  useFirebase(
+    firebase => {
+      setError(null);
+      setIsLoading(true);
+      firebase
+        .functions()
+        .httpsCallable('getJoinKeyInfo')({
+          key: joinKey,
+        })
+        .then(
+          ({
+            data,
+          }: {
+            data: {
+              success: boolean;
+              errorCode?: string;
+              message?: string;
+              name?: string;
+            };
+          }) => {
+            if (data.success) {
+              setGroupName(data.name);
+            } else {
+              setError({ errorCode: data.errorCode, message: data.message });
+            }
+          }
+        )
+        .catch(e => {
+          setError(e);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [joinKey]
+  );
+
   return (
     <Layout>
       <SEO title="Join Group" />
@@ -71,40 +93,64 @@ const JoinGroupPage = () => {
             </div>
           )}
 
-          <p className="text-center text-lg sm:text-2xl">
-            Do you want to join the group{' '}
-            <span className="font-bold">CPI Beginner Class</span>?
-          </p>
+          {error && (
+            <div className="mb-8">
+              <p className="font-medium text-2xl text-center">
+                Error: {error.message}
+              </p>
+            </div>
+          )}
 
-          <div className="mt-8 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                if (!firebase) {
-                  alert('Please wait 10 seconds and try again.');
-                }
-                firebase
-                  .functions()
-                  .httpsCallable('joinGroup')({
-                    key: joinKey,
-                  })
-                  .catch(e => {
-                    // TODO @nathan (in case somebody used the last valid key use in between page load and clicking the button)
-                    switch (e.code) {
-                      case 'INVALID_KEY':
-                        break;
-                      case 'KEY_NOT_FOUND':
-                        break;
-                      default:
-                        alert('Error:' + e.message);
-                    }
-                  });
-              }}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Join Group
-            </button>
-          </div>
+          {!showLoading && groupName && (
+            <>
+              <p className="text-center text-lg sm:text-2xl">
+                Do you want to join the group{' '}
+                <span className="font-bold">{groupName}</span>?
+              </p>
+
+              <div className="mt-8 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsJoining(true);
+                    firebase
+                      .functions()
+                      .httpsCallable('joinGroup')({
+                        key: joinKey,
+                      })
+                      .then(
+                        ({
+                          data,
+                        }: {
+                          data: {
+                            success: boolean;
+                            errorCode?: string;
+                            message?: string;
+                            groupId?: string;
+                          };
+                        }) => {
+                          if (data.success) {
+                          } else {
+                            setError({
+                              errorCode: data.errorCode,
+                              message: data.message,
+                            });
+                          }
+                        }
+                      )
+                      .catch(e => {
+                        setError(e);
+                      })
+                      .finally(() => setIsJoining(false));
+                  }}
+                  className="btn-primary"
+                  disabled={isJoining}
+                >
+                  {isJoining ? 'Joining...' : 'Join Group'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </main>
     </Layout>
