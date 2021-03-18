@@ -55,8 +55,8 @@ export default functions.firestore
         if (points < oldProblemScore) {
           return;
         }
-        await transaction.update(postRef, {
-          [`leaderboard.${problemId}.${data.userId}`]: {
+        await transaction.update(groupRef, {
+          [`leaderboard.${postId}.${problemId}.${data.userId}`]: {
             bestScore: points,
             bestScoreStatus: data.status,
             bestScoreTimestamp: data.timestamp,
