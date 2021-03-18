@@ -7,6 +7,7 @@ import Breadcrumbs from '../Breadcrumbs';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import EditJoinLinkModal from './EditJoinLinkModal';
+import useFirebase from '../../../hooks/useFirebase';
 
 const JoinLinksPage = () => {
   const activeGroup = useActiveGroup();
@@ -23,11 +24,17 @@ const JoinLinksPage = () => {
     author: firebaseUser.uid,
   };
   const [curLink, setCurLink] = React.useState<JoinGroupLink>(null);
+  const firebase = useFirebase();
+  const handleSaveLink = async (link: JoinGroupLink): Promise<string> => {
+    const collection = firebase.firestore().collection('group-join-links');
 
-  const handleSaveLink = (link: JoinGroupLink) => {
-    // @jeffrey help
-    // if link.id is null then create new link
-    // otherwise update link
+    if (link.id) {
+      await collection.doc(link.id).set(link);
+      return link.id;
+    } else {
+      const doc = await collection.add(link);
+      return doc.id;
+    }
   };
 
   if (!activeGroup.showAdminView) {
@@ -36,7 +43,7 @@ const JoinLinksPage = () => {
         <SEO title="403 Forbidden" />
         <TopNavigationBar />
         <p className="text-center mt-12">
-          You don't have permissions to access this page.
+          You don&apos;t have permissions to access this page.
         </p>
       </Layout>
     );

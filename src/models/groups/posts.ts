@@ -1,3 +1,4 @@
+import moment from 'moment';
 import firebase from 'firebase';
 import firebaseType from 'firebase';
 
@@ -158,16 +159,16 @@ export const getPostTimestampString = (post: PostData) => {
   }
 };
 export const getPostDateString = (post: PostData) =>
-  post.timestamp.toDate().toString().substr(0, 15);
+  moment(post.timestamp.toDate()).format('MMMM Do, YYYY, h:mm:ss a');
 export const getPostDueDateString = (post: PostData) =>
-  post.dueTimestamp?.toDate().toString().substr(0, 15);
+  moment(post.dueTimestamp?.toDate()).format('MMMM Do YYYY, h:mm:ss a');
 export const getPostTotalPoints = (post: PostData) =>
   Object.keys(post.problems).reduce(
     (acc, cur) => acc + post.problems[cur].points,
     0
   );
 export const getSubmissionTimestampString = (submission: Submission) =>
-  submission?.timestamp?.toDate().toString().substr(0, 24);
+  moment(submission?.timestamp?.toDate()).format('MMMM Do YYYY, h:mm:ss a');
 export const getSubmissionStatus = (submission: Submission) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
     return submission.status;
