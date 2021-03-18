@@ -19,7 +19,6 @@ export type PostData = {
   body: string;
   isPinned: boolean;
   isPublished: boolean;
-  leaderboard: Leaderboard;
 } & (
   | {
       type: 'announcement';

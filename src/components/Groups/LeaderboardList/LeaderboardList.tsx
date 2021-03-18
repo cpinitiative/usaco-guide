@@ -51,10 +51,13 @@ export default function LeaderboardList({
     if (!leaderboard) return [];
 
     const leaderboardSum = {};
-    for (let problemID of Object.keys(leaderboard)) {
-      for (let userID of Object.keys(leaderboard[problemID])) {
-        if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
-        leaderboardSum[userID] += leaderboard[problemID][userID].bestScore;
+    for (let postID of Object.keys(leaderboard)) {
+      for (let problemID of Object.keys(leaderboard[postID])) {
+        for (let userID of Object.keys(leaderboard[postID][problemID])) {
+          if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
+          leaderboardSum[userID] +=
+            leaderboard[postID][problemID][userID].bestScore;
+        }
       }
     }
     let data = activeGroup.groupData.memberIds.map(id => ({

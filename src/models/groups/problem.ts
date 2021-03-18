@@ -173,7 +173,9 @@ export const getEarnedPointsForProblem = (
 ) => {
   return submissions.reduce(
     (oldScore, submission) =>
-      Math.max(oldScore, getSubmissionEarnedPoints(submission, problem)),
+      getSubmissionStatus(submission) !== 'Pending'
+        ? Math.max(oldScore, getSubmissionEarnedPoints(submission, problem))
+        : oldScore,
     0
   );
 };

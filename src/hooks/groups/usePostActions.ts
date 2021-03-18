@@ -35,7 +35,6 @@ export function usePostActions(groupId: string) {
         isPinned: false,
         body: '',
         type,
-        leaderboard: {},
       };
       const doc = await firebase
         .firestore()
