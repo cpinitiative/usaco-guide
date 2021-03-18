@@ -31,7 +31,7 @@ export default function PostProblems({ post }: { post: PostData }) {
                 <button
                   type="button"
                   onClick={() =>
-                    createNewProblem(post).then(id =>
+                    createNewProblem(post, problems.length + 1).then(id =>
                       navigate(`problems/${id}/edit`)
                     )
                   }

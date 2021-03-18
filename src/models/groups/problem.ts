@@ -20,6 +20,10 @@ export type ProblemData = {
         body: string;
       };
   submissionType: SubmissionType;
+  /**
+   * Lower = appears first in problem list. Ties broken by name.
+   */
+  order: number;
 };
 export type ProblemHint = {
   // /**

@@ -95,7 +95,7 @@ export default function EditProblemPage(props) {
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <label
-                  htmlFor="post_name"
+                  htmlFor="problem_name"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   Problem Name
@@ -103,8 +103,8 @@ export default function EditProblemPage(props) {
                 <div className="mt-1">
                   <input
                     type="text"
-                    name="post_name"
-                    id="post_name"
+                    name="problem_name"
+                    id="problem_name"
                     value={problem.name}
                     onChange={e => editProblem({ name: e.target.value })}
                     className="input"
@@ -112,11 +112,32 @@ export default function EditProblemPage(props) {
                 </div>
               </div>
 
-              <div className="sm:col-span-6">
+              <div className="sm:col-span-4">
                 <label
-                  htmlFor="post_content"
+                  htmlFor="problem_order"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
+                  Problem Order
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="problem_order"
+                    id="problem_order"
+                    value={problem.order}
+                    onChange={e =>
+                      editProblem({ order: parseInt(e.target.value) })
+                    }
+                    className="input"
+                  />
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Smaller order is listed first. Ties broken by name.
+                </p>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Problem Content
                 </label>
                 <div className="mt-1">

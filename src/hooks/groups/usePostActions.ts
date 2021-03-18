@@ -57,7 +57,7 @@ export function usePostActions(groupId: string) {
         .delete();
     },
     updatePost,
-    createNewProblem: async (post: PostData) => {
+    createNewProblem: async (post: PostData, order: number = 10) => {
       const defaultProblem: Omit<ProblemData, 'id'> = {
         postId: post.id,
         name: 'Untitled Problem',
@@ -68,6 +68,7 @@ export function usePostActions(groupId: string) {
         hints: [],
         solution: null,
         submissionType: SubmissionType.SELF_GRADED,
+        order,
       };
       const doc = await firebase
         .firestore()
