@@ -30,18 +30,18 @@ export default functions.firestore
     const problemRef = postRef.collection('submissions').doc(problemId);
     console.log(context.params);
     console.log(data);
+
     await Promise.all([
       problemRef.update({
-        status: data.result === 100 ? 'AC' : 'WA',
+        status: data.result === 1 ? 'AC' : 'WA',
       }),
 
       admin.firestore().runTransaction(async transaction => {
         const postDoc = await transaction.get(postRef);
-        const groupDoc = await transaction.get(groupRef);
-
-        if (!postDoc.exists || !groupDoc.exists) {
+        const problemDoc = await transaction.get(problemRef);
+        if (!postDoc.exists || !problemDoc.exists) {
           throw new Error(
-            "The post or group being submitted to couldn't be found."
+            "The post, group, or problem being submitted to couldn't be found."
           );
         }
 
@@ -50,28 +50,17 @@ export default functions.firestore
             postDoc.data()?.leaderboard[data.problemId] &&
             postDoc.data()?.leaderboard[data.problemId][data.userId]) ||
           0;
-        const oldTotalScore =
-          groupDoc.data()?.leaderboard ||
-          groupDoc.data()?.leaderboard[data.userId] ||
-          0;
-
-        await Promise.all([
-          ...(data.result > oldProblemScore
-            ? [
-                transaction.update(postRef, {
-                  [`leaderboard.${problemId}.${data.userId}`]: {
-                    bestScore: data.result,
-                    bestScoreStatus: data.status,
-                    bestScoreTimestamp: data.timestamp,
-                  },
-                }),
-              ]
-            : []),
-          transaction.update(groupRef, {
-            [`leaderboard.${data.userId}`]:
-              oldTotalScore - oldProblemScore + data.result,
-          }),
-        ]);
+        const points = data.result * problemDoc.data().points;
+        if (points < oldProblemScore) {
+          return;
+        }
+        await transaction.update(postRef, {
+          [`leaderboard.${problemId}.${data.userId}`]: {
+            bestScore: points,
+            bestScoreStatus: data.status,
+            bestScoreTimestamp: data.timestamp,
+          },
+        });
       }),
     ]);
   });
