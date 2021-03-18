@@ -3,7 +3,12 @@ import getUsers from './getUsers';
 import incrementUsers from './incrementUsers';
 import submitProblemSuggestion from './submitProblemSuggestion';
 import { processClassRegistration, approveFinancialAid } from './cpi-classes';
-import { submitToProblem, getJoinKeyInfo, joinGroup } from './groups';
+import {
+  submitToProblem,
+  getJoinKeyInfo,
+  joinGroup,
+  getGroupMembers,
+} from './groups';
 
 export {
   submitProblemSuggestion,
@@ -14,5 +19,6 @@ export {
   incrementUsers,
   submitToProblem,
   getJoinKeyInfo,
+  getGroupMembers,
   joinGroup,
 };
