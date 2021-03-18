@@ -1,4 +1,4 @@
-import { ExecutionStatus, ProblemData } from './problem';
+import { ExecutionStatus } from './problem';
 import firebaseType from 'firebase';
 
 export type Leaderboard = {
