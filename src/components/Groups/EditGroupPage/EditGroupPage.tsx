@@ -31,7 +31,7 @@ export default function EditGroupPage(props) {
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
-  const notificationSystem = useNotificationSystem();
+  const notifications = useNotificationSystem();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
@@ -132,9 +132,9 @@ export default function EditGroupPage(props) {
                       'Are you REALLY sure? Posts and submissions will be permanently deleted.'
                     )
                   ) {
-                    deleteGroup(groupId).then(() =>
-                      navigate(`/groups/`, { replace: true })
-                    );
+                    deleteGroup(groupId)
+                      .then(() => navigate(`/groups/`, { replace: true }))
+                      .catch(e => notifications.showErrorNotification(e));
                   }
                 }}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"

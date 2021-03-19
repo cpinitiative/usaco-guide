@@ -20,6 +20,7 @@ export function NotificationSystemProvider({ children }) {
       value={{
         addNotification: handleAddNotification,
         showErrorNotification: error => {
+          console.error('Found an error', error);
           handleAddNotification({
             level: 'error',
             message: 'Error: ' + (error?.message ? error.message : error),

@@ -50,7 +50,6 @@ export function useGroupActions() {
       return docId;
     },
     deleteGroup: async (groupId: string) => {
-      // @jeffrey todo delete group
       let batch = firebase.firestore().batch();
 
       const posts = await firebase
@@ -59,32 +58,35 @@ export function useGroupActions() {
         .doc(groupId)
         .collection('posts')
         .get();
-      posts.docs.forEach(doc => {
-        batch.delete(
-          firebase
+      posts.docs.forEach(doc => batch.delete(doc.ref));
+      await Promise.all(
+        posts.docs.map(async doc => {
+          const problems = await firebase
             .firestore()
             .collection('groups')
             .doc(groupId)
             .collection('posts')
             .doc(doc.id)
-        );
-      });
-      const submissions = await firebase
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('submissions')
-        .get();
-      submissions.docs.forEach(doc => {
-        batch.delete(
-          firebase
-            .firestore()
-            .collection('groups')
-            .doc(groupId)
-            .collection('submissions')
-            .doc(doc.id)
-        );
-      });
+            .collection('problems')
+            .get();
+          problems.docs.forEach(doc => batch.delete(doc.ref));
+          await Promise.all(
+            problems.docs.map(async problemDoc => {
+              const submissions = await firebase
+                .firestore()
+                .collection('groups')
+                .doc(groupId)
+                .collection('posts')
+                .doc(doc.id)
+                .collection('problems')
+                .doc(problemDoc.id)
+                .collection('submissions')
+                .get();
+              submissions.docs.forEach(doc => batch.delete(doc.ref));
+            })
+          );
+        })
+      );
       batch.delete(firebase.firestore().collection('groups').doc(groupId));
 
       await batch.commit();
