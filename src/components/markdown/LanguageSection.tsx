@@ -117,6 +117,13 @@ export const CPPSection = props => {
       const child2 = React.Children.map(child, childV2 => {
         console.log("CHILD V2");
         console.log(childV2);
+
+        const child3 = React.Children.map(childV2, childV3 => {
+          console.log("CHILD V3");
+          console.log(childV3);
+
+        });
+        return child3
       });
       return child2;
   });
