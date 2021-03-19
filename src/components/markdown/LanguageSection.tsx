@@ -115,7 +115,8 @@ export const CPPSection = props => {
   // let newProps = props;
   // refactor for readability later :P
   console.log("SPECIFIC");
-  console.log(props.children.props.children);
+  const newProps = props;
+  console.log(newProps.children.props);
   // newProps.children.props.children = React.cloneElement(oldProps.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
   console.log("CPP SECT PROPS (POST CHANGE)");
   console.log(props);
