@@ -2,6 +2,7 @@ import * as React from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
+import Children from 'react-children-utilities';
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
@@ -109,20 +110,28 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
-  console.log("CPP SECT PROPS (PRE CHANGE)");
-  console.log(props);
-  // let oldProps = props;
-  // let newProps = props;
-  // refactor for readability later :P
-  console.log("SPECIFIC");
-  const newProps = props;
-  console.log(newProps.children);
-  // newProps.children.props.children = React.cloneElement(oldProps.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
-  console.log("CPP SECT PROPS (POST CHANGE)");
-  console.log(props);
+  let newChildren = Children.deepMap(props.children, function(child) {
+    let check;
+    if (typeof(this.props.className) == "undefined"){ // try changing to this.props.className
+      check = "NONE";
+    }else{
+      check = "language-cpp";
+    }
+    if (check == "language-cpp") {
+      const extraChildProps = {
+        children: this.props.children,
+        className: this.props.className,
+        mdxType: this.props.mdxType,
+        originalType: this.props.originalType,
+        parentName: this.props.parentName
+      }
+      return React.cloneElement(child, extraChildProps);
+    } else {
+      return child;
+    }
+  }.bind(this));
 
-
-  return <>{props.children}</>;
+  return <>{newChildren}</>;
 };
 
 export const JavaSection = props => {
