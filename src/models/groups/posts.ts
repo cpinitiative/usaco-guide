@@ -59,16 +59,16 @@ export const getPostTimestampString = (post: PostData) => {
 };
 export const getPostDateString = (post: PostData) =>
   post.timestamp
-    ? moment(post.timestamp.toDate()).format('MMMM Do, YYYY, h:mm:ss a')
+    ? moment(post.timestamp.toDate()).format('MMMM Do h:mma')
     : null;
 export const getPostDueDateString = (post: PostData) =>
   post.type === 'assignment' && post.dueTimestamp
-    ? moment(post.dueTimestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a')
+    ? moment(post.dueTimestamp.toDate()).format('MMMM Do h:mma')
     : null;
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
 export const getSubmissionTimestampString = (submission: Submission) =>
-  moment(submission?.timestamp?.toDate()).format('MMMM Do YYYY, h:mm:ss a');
+  moment(submission?.timestamp?.toDate()).format('MMMM Do h:mma');
 export const getSubmissionStatus = (submission: Submission) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
     return submission.status;
