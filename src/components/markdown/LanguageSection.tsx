@@ -120,7 +120,6 @@ export const CPPSection = props => {
       });
       return child2;
   });
-  props.children.props.children = React.cloneElement(oldProps.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
   console.log("CPP SECT PROPS (POST CHANGE)");
   console.log(props);
 
