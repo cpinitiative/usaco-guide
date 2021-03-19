@@ -156,10 +156,7 @@ export default function AdminSettings() {
               </div>
               <div>
                 <h4 className="text-lg font-bold">{userData.displayName}</h4>
-                <p>
-                  {userData.email} (Email{' '}
-                  {userData.emailVerified ? 'Verified' : 'Unverified'})
-                </p>
+                <p>{userData.email}</p>
               </div>
             </div>
             <div className="mb-3">
