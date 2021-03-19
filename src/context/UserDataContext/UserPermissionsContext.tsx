@@ -4,6 +4,25 @@ import UserDataContext from './UserDataContext';
 // the value is the firebase claim name
 export type UserPermissions = 'isAdmin' | 'canModerate' | 'canCreateGroups';
 
+export const UserPermissionInformation: {
+  [key in UserPermissions]: { label: string; description: string };
+} = {
+  isAdmin: {
+    label: 'Is Admin',
+    description:
+      'Admins have permissions to do anything -- add other admins and remove other admins. This is a dangerous permission to grant.',
+  },
+  canModerate: {
+    label: 'Can Moderate',
+    description:
+      'Users with this permission can delete or mark user solutions as private.',
+  },
+  canCreateGroups: {
+    label: 'Can Create Groups',
+    description: 'Users with this permission can create Groups.',
+  },
+};
+
 const UserPermissionsContext = React.createContext<{
   permissions: { [key in UserPermissions]: boolean };
 }>(null);
@@ -22,13 +41,15 @@ export const UserPermissionsContextProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (firebaseUser?.uid) {
-      firebaseUser.getIdTokenResult().then(({ claims }) => {
-        setPermissions({
-          isAdmin: !!claims.isAdmin,
-          canModerate: !!claims.canModerate,
-          canCreateGroups: !!claims.canCreateGroup,
-        });
-      });
+      (firebaseUser.getIdTokenResult() as any).then(
+        ({ claims }: { claims: { [key in UserPermissions]: boolean } }) => {
+          setPermissions({
+            isAdmin: !!claims.isAdmin,
+            canModerate: !!claims.canModerate,
+            canCreateGroups: !!claims.canCreateGroups,
+          });
+        }
+      );
     } else {
       setPermissions(defaultPermissions);
     }

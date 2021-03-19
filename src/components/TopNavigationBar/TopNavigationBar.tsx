@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'gatsby';
-import algoliasearch from 'algoliasearch/lite';
 import {
   InstantSearch,
   connectAutoComplete,
@@ -24,11 +23,9 @@ import SectionsDropdown from '../SectionsDropdown';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import { searchClient } from '../../utils/algoliaSearchClient';
-import SEO from '../seo';
-import Layout from '../layout';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import Transition from '../Transition';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -150,7 +147,7 @@ export default function TopNavigationBar({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isAdmin } = useUserPermissions();
   const { userClasses } = useContext(UserDataContext);
   const userGroups = useUserGroups();
   const mobileLinks = [
