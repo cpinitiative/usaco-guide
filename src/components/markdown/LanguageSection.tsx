@@ -9,7 +9,7 @@ export const LanguageSection = props => {
   if (typeof(props.expandable) == "undefined"){
     expand = true;
   }else{
-    expand = false;
+    expand = false; // try this
   }
   console.log(props);
   console.log("Expandable in langSect: " + expand)
@@ -109,8 +109,14 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
-  console.log("CPP SECT PROPS");
+  console.log("CPP SECT PROPS (PRE CHANGE)");
   console.log(props);
+  const oldProps = props;
+  props.children.props.children = React.cloneElement(props.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
+  console.log("CPP SECT PROPS (POST CHANGE)");
+  console.log(props);
+
+
   return <>{props.children}</>;
 };
 
