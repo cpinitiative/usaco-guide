@@ -1,7 +1,8 @@
 import * as React from 'react';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
+import { Link } from 'gatsby';
 
-export default function LeaderboardSidebar({ leaderboard }) {
+export default function LeaderboardSidebar() {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="p-6 pb-3">
@@ -12,12 +13,12 @@ export default function LeaderboardSidebar({ leaderboard }) {
           >
             Leaderboard
           </h2>
-          {/*<a*/}
-          {/*  href="#"*/}
-          {/*  className="text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white"*/}
-          {/*>*/}
-          {/*  View All &rarr;*/}
-          {/*</a>*/}
+          <Link
+            to="leaderboard"
+            className="text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white"
+          >
+            View All &rarr;
+          </Link>
         </div>
         <div className="flow-root mt-2">
           <LeaderboardList />

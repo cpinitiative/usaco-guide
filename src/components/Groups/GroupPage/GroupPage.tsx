@@ -18,7 +18,7 @@ export default function GroupPage({ path, groupId }: any) {
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <GroupPageHeader group={group.groupData} />
         <Link
-          to="/leaderboard"
+          to="leaderboard"
           className="md:hidden bg-white dark:bg-gray-800 shadow flex items-center justify-between px-4 sm:px-8 py-3"
         >
           <span>View Leaderboard</span> &rarr;
@@ -32,9 +32,7 @@ export default function GroupPage({ path, groupId }: any) {
               <aside className="hidden md:block md:col-span-5 lg:col-span-4">
                 <div className="sticky top-4 space-y-4">
                   <section>
-                    <LeaderboardSidebar
-                      leaderboard={group.groupData.leaderboard}
-                    />
+                    <LeaderboardSidebar />
                   </section>
                 </div>
               </aside>

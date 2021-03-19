@@ -9,46 +9,49 @@ import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import TextTooltip from '../../Tooltip/TextTooltip';
 
-export default function PostLeaderboardPage(props) {
-  const { postId } = props as {
-    path: string;
-    groupId: string;
-    postId: string;
-  };
+export default function GroupLeaderboardPage(props) {
   const activeGroup = useActiveGroup();
-  const post = usePost(postId);
-  const { problems } = useActivePostProblems();
+  const posts = activeGroup.posts;
   const leaderboard = activeGroup.groupData.leaderboard;
+
+  const assignments = React.useMemo(() => {
+    return posts?.filter(post => post.type === 'assignment');
+  }, [posts]);
 
   const members = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboardItems = React.useMemo(() => {
-    if (!leaderboard || !members || !problems) return null;
+    if (!leaderboard || !members || !assignments) return null;
 
     const leaderboardSum = {};
-    const postID = post.id;
-    for (let problemID of Object.keys(leaderboard[postID])) {
-      for (let userID of Object.keys(leaderboard[postID][problemID])) {
-        if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
-        leaderboardSum[userID] +=
-          leaderboard[postID][problemID][userID].bestScore;
+    for (let post of assignments) {
+      if (!leaderboard.hasOwnProperty(post.id)) continue;
+      for (let problemID of Object.keys(leaderboard[post.id])) {
+        for (let userID of Object.keys(leaderboard[post.id][problemID])) {
+          if (!(userID in leaderboardSum)) leaderboardSum[userID] = {};
+          if (!(post.id in leaderboardSum[userID]))
+            leaderboardSum[userID][post.id] = 0;
+          leaderboardSum[userID][post.id] +=
+            leaderboard[post.id][problemID][userID].bestScore;
+        }
       }
     }
     let data = activeGroup.groupData.memberIds.map(id => ({
       member: members.find(member => member.uid === id),
-      problemDetails: problems.map(
-        problem => leaderboard[postID]?.[problem.id]?.[id] || null
+      postDetails: assignments.map(post => leaderboardSum[id]?.[post.id] || 0),
+      points: Object.keys(leaderboardSum[id] || {}).reduce(
+        (acc, cur) => acc + leaderboardSum[id][cur],
+        0
       ),
-      points: leaderboardSum[id] ?? 0,
     }));
     return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, members, problems]);
+  }, [leaderboard, members, assignments]);
 
-  const problemCellStyles =
-    'w-16 text-center border-l border-gray-200 dark:border-gray-700';
+  const postCellStyles =
+    'w-16 text-center border-l border-gray-200 dark:border-gray-700 px-2';
 
   return (
     <Layout>
-      <SEO title={`Leaderboard: ${post.name}`} />
+      <SEO title={`Leaderboard: ${activeGroup.groupData.name}`} />
 
       <TopNavigationBar />
 
@@ -56,7 +59,6 @@ export default function PostLeaderboardPage(props) {
         <Breadcrumbs
           className={`max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
           group={activeGroup.groupData}
-          post={post}
         />
       </nav>
 
@@ -64,7 +66,7 @@ export default function PostLeaderboardPage(props) {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex-1 min-w-0 px-4 sm:px-0">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
-              Leaderboard: {post.name}
+              Leaderboard: {activeGroup.groupData.name}
             </h2>
           </div>
           {/*<div className="mt-4 flex md:mt-0 md:ml-4">*/}
@@ -107,16 +109,16 @@ export default function PostLeaderboardPage(props) {
                       {/*<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">*/}
                       {/*  Last Submission Time*/}
                       {/*</th>*/}
-                      {problems?.map((problem, idx) => (
+                      {assignments?.map((post, idx) => (
                         <th
                           scope="col"
                           className={
-                            problemCellStyles +
+                            postCellStyles +
                             ' py-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider'
                           }
-                          key={problem.id}
+                          key={post.id}
                         >
-                          <TextTooltip content={problem.name}>
+                          <TextTooltip content={post.name}>
                             P{idx + 1}
                           </TextTooltip>
                         </th>
@@ -145,15 +147,15 @@ export default function PostLeaderboardPage(props) {
                         {/*<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">*/}
                         {/*  MMMM Do YYYY, h:mm:ss a*/}
                         {/*</td>*/}
-                        {item.problemDetails.map((details, idx) => (
+                        {item.postDetails.map((score, idx) => (
                           <td
                             className={
-                              problemCellStyles +
+                              postCellStyles +
                               ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium'
                             }
-                            key={problems[idx].id}
+                            key={assignments[idx].id}
                           >
-                            {details?.bestScore || 0}
+                            {score}
                           </td>
                         ))}
                       </tr>
