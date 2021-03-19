@@ -19,13 +19,13 @@ export default function AdminSettings() {
   // the type is actually auth.getUsersResult...
   const [userData, setUserData] = React.useState<any>(null);
   const [userPermissions, setUserPermissions] = React.useState<
-    { [key in UserPermissions]: boolean }
+    { [key in UserPermissions]: boolean } | null
   >(null);
   const [isUpdating, setIsUpdating] = React.useState(false);
 
   const editUserPermissions = updates => {
     setUserPermissions({
-      ...userPermissions,
+      ...(userPermissions || {}),
       ...updates,
     });
   };
@@ -60,7 +60,7 @@ export default function AdminSettings() {
   const handleUpdateUserPermissions = async e => {
     e.preventDefault();
 
-    if (!userData.customClaims.isAdmin && userPermissions.isAdmin) {
+    if (!userData.customClaims?.isAdmin && userPermissions.isAdmin) {
       if (
         !confirm(
           'Are you sure you want to grant this user admin permissions? This will give the user complete control over the database!'
@@ -205,7 +205,7 @@ export default function AdminSettings() {
                       </span>
                     </div>
                     <Switch
-                      checked={userPermissions[key]}
+                      checked={userPermissions?.[key] || false}
                       onChange={b => editUserPermissions({ [key]: b })}
                     />
                   </li>
