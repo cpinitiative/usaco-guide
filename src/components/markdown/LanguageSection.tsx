@@ -110,25 +110,29 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
+  let depth = 0;
   let newChildren = Children.deepMap(props.children, function(child) {
-    let check;
-    if (typeof(this.props.className) == "undefined"){ // try changing to this.props.className
-      check = "NONE";
-    }else{
-      check = "language-cpp";
-    }
-    if (check == "language-cpp") {
-      const extraChildProps = {
-        children: this.props.children,
-        className: this.props.className,
-        mdxType: this.props.mdxType,
-        originalType: this.props.originalType,
-        parentName: this.props.parentName
-      }
-      return React.cloneElement(child, extraChildProps);
-    } else {
+    // let check;
+    // if (typeof(this.props.className) == "undefined"){ // try changing to this.props.className
+    //   check = "NONE";
+    // }else{
+    //   check = "language-cpp";
+    // }
+    // if (check == "language-cpp") {
+    //   const extraChildProps = {
+    //     children: this.props.children,
+    //     className: this.props.className,
+    //     mdxType: this.props.mdxType,
+    //     originalType: this.props.originalType,
+    //     parentName: this.props.parentName
+    //   }
+    //   return React.cloneElement(child, extraChildProps);
+    // } else {
+     depth++;
+      console.log(depth);
+      console.log(child)
       return child;
-    }
+    //}
   }.bind(this));
 
   return <>{newChildren}</>;
