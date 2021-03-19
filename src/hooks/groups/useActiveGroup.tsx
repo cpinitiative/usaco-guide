@@ -55,11 +55,12 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
           snap => {
             loadedPosts = true;
             setPosts(snap.docs.map(doc => doc.data()));
+            if (loadedGroup && loadedPosts) setIsLoading(false);
           },
           error => {
             if (error.code === 'permission-denied') {
               setIsLoading(false);
-              setGroupData(null);
+              setPosts(null);
             } else {
               notifications.showErrorNotification(error);
             }
