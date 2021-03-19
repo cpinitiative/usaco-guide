@@ -26,6 +26,7 @@ import { format } from './ClassPage';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import ProblemSelect from './ProblemSelect';
 import AssignmentProgressView from './LoadableAssignmentProgressView';
+import { useDarkMode } from '../../context/DarkModeContext';
 export interface ProblemJSON {
   division: string | null;
   moduleId: string | null;
@@ -100,7 +101,7 @@ export default function PostPage(props: {
   const id: string = type === 'announcement' ? announcementId : assignmentId;
 
   const firebase = useContext(FirebaseContext);
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const { loading, error, data, isInstructor, students } = useContext(
     ClassContext
   );

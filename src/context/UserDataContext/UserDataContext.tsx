@@ -14,7 +14,6 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -30,6 +29,7 @@ import firebase from 'firebase';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -92,7 +92,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new HideTagsAndDifficulty(),
   new DivisionTableQuery(),
   new ShowIgnored(),
-  new DarkMode(),
+  new ThemeProperty(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
@@ -106,7 +106,7 @@ type UserDataContextAPI = UserLangAPI &
   HideTagsAndDifficultyAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
-  DarkModeAPI &
+  ThemePropertyAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
@@ -125,7 +125,6 @@ type UserDataContextAPI = UserLangAPI &
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
-  darkMode: false,
   firebaseUser: null,
   isAdmin: false,
   getDataExport: () => {},
@@ -148,7 +147,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {},
+  theme: 'system',
+  setTheme: x => {},
   setHideTagsAndDifficulty: x => {},
   setDivisionTableQuery: x => {},
   setLang: x => {},
