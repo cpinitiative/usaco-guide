@@ -111,22 +111,12 @@ export const LanguageSection = props => {
 export const CPPSection = props => {
   console.log("CPP SECT PROPS (PRE CHANGE)");
   console.log(props);
-  const oldProps = props;
+  // let oldProps = props;
+  // let newProps = props;
   // refactor for readability later :P
-  const newChildren = React.Children.map(props.children, child => {
-      const child2 = React.Children.map(child, childV2 => {
-        console.log("CHILD V2");
-        console.log(childV2);
-
-        const child3 = React.Children.map(childV2, childV3 => {
-          console.log("CHILD V3");
-          console.log(childV3);
-
-        });
-        return child3
-      });
-      return child2;
-  });
+  console.log("SPECIFIC");
+  console.log(props.children.props.children);
+  // newProps.children.props.children = React.cloneElement(oldProps.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
   console.log("CPP SECT PROPS (POST CHANGE)");
   console.log(props);
 
