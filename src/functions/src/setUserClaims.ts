@@ -13,6 +13,8 @@ export default functions.https.onCall(
       merge,
     }: {
       target: string;
+
+      // default true
       merge?: boolean;
       claims: Record<string, any>;
     },

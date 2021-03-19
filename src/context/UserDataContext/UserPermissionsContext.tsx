@@ -1,7 +1,7 @@
 import * as React from 'react';
 import UserDataContext from './UserDataContext';
 
-// the value is the firebase document array name
+// the value is the firebase claim name
 export type UserPermissions = 'isAdmin' | 'canModerate' | 'canCreateGroups';
 
 const UserPermissionsContext = React.createContext<{
@@ -22,11 +22,12 @@ export const UserPermissionsContextProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (firebaseUser?.uid) {
-      // somehow get user permissions @jeffrey todo
-      setPermissions({
-        isAdmin: true,
-        canModerate: true,
-        canCreateGroups: true,
+      firebaseUser.getIdTokenResult().then(({ claims }) => {
+        setPermissions({
+          isAdmin: !!claims.isAdmin,
+          canModerate: !!claims.canModerate,
+          canCreateGroups: !!claims.canCreateGroup,
+        });
       });
     } else {
       setPermissions(defaultPermissions);

@@ -2,8 +2,9 @@ import * as React from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import { Leaderboard } from '../../../models/groups/leaderboard';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
-import firebaseType from 'firebase';
+import getMemberInfoForGroup, {
+  MemberInfo,
+} from '../../../hooks/groups/useMemberInfoForGroup';
 
 const LeaderboardListItem = ({
   place,
@@ -11,7 +12,7 @@ const LeaderboardListItem = ({
   points,
 }: {
   place: number;
-  member: firebaseType.UserInfo;
+  member: MemberInfo;
   points: number;
 }) => {
   const { firebaseUser } = React.useContext(UserDataContext);
