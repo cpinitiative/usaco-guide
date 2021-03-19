@@ -19,6 +19,7 @@ export type PostData = {
   body: string;
   isPinned: boolean;
   isPublished: boolean;
+  isDeleted: boolean;
 } & (
   | {
       type: 'announcement';

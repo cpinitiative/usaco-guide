@@ -45,6 +45,7 @@ export function ActivePostProblemsProvider({
         .collection('posts')
         .doc(activePostId)
         .collection('problems')
+        .where('isDeleted', '==', false)
         .withConverter(problemConverter)
         .onSnapshot(
           snap => {

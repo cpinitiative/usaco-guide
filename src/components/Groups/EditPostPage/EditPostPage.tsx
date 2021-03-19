@@ -12,6 +12,7 @@ import { usePostActions } from '../../../hooks/groups/usePostActions';
 import useFirebase from '../../../hooks/useFirebase';
 import Flatpickr from 'react-flatpickr';
 import MarkdownEditor from '../MarkdownEditor';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function EditPostPage(props) {
   const { groupId, postId } = props as {
@@ -26,21 +27,28 @@ export default function EditPostPage(props) {
       ...oldPost,
       ...updates,
     }),
-    originalPost
+    null
   );
   const { updatePost, deletePost } = usePostActions(groupId);
   const firebase = useFirebase();
+  const notifications = useNotificationSystem();
 
   React.useEffect(() => {
-    if (!post && originalPost) editPost(originalPost);
+    // we need to check for timestamp -- ServerValue is null initially
+    if (!post && originalPost && originalPost.timestamp) {
+      editPost(originalPost);
+    }
   }, [originalPost, post]);
 
-  if (activeGroup.isLoading) {
+  if (!post) {
+    const postNotFound = !activeGroup.isLoading && !originalPost;
     return (
       <>
         <TopNavigationBar />
         <main className="text-center py-10">
-          <p className="font-medium text-2xl">Loading...</p>
+          <p className="font-medium text-2xl">
+            {postNotFound ? 'Post not found' : 'Loading...'}
+          </p>
         </main>
       </>
     );
@@ -178,9 +186,11 @@ export default function EditPostPage(props) {
                 type="button"
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this post?')) {
-                    deletePost(post.id).then(() =>
-                      navigate(`/groups/${groupId}`, { replace: true })
-                    );
+                    deletePost(post.id)
+                      .then(() =>
+                        navigate(`/groups/${groupId}`, { replace: true })
+                      )
+                      .catch(e => notifications.showErrorNotification(e));
                   }
                 }}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"

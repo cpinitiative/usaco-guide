@@ -49,6 +49,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         .collection('groups')
         .doc(activeGroupId)
         .collection('posts')
+        .where('isDeleted', '==', false)
         .withConverter(postConverter)
         .onSnapshot(
           snap => {
@@ -59,7 +60,6 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
             if (error.code === 'permission-denied') {
               setIsLoading(false);
               setGroupData(null);
-              if (loadedGroup && loadedPosts) setIsLoading(false);
             } else {
               notifications.showErrorNotification(error);
             }

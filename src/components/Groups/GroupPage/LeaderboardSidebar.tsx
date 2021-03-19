@@ -20,7 +20,7 @@ export default function LeaderboardSidebar({ leaderboard }) {
           {/*</a>*/}
         </div>
         <div className="flow-root mt-2">
-          <LeaderboardList leaderboard={leaderboard} />
+          <LeaderboardList />
         </div>
       </div>
     </div>

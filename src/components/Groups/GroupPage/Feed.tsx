@@ -19,7 +19,7 @@ export default function Feed() {
     .sort((a, b) => {
       if (a.isPinned !== b.isPinned)
         return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
-      return b.timestamp.toMillis() - a.timestamp.toMillis();
+      return (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0);
     });
 
   return (

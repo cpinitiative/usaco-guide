@@ -12,6 +12,7 @@ import { usePostActions } from '../../../hooks/groups/usePostActions';
 import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
 import Spoiler from '../../markdown/Spoiler';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -24,6 +25,7 @@ export default function ProblemPage(props) {
   const post = usePost(postId);
   const problem = useProblem(problemId);
   const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
+  const notifications = useNotificationSystem();
 
   if (!problem || activeGroup.isLoading) {
     return null;
@@ -66,14 +68,16 @@ export default function ProblemPage(props) {
                             'Are you sure you want to delete this problem?'
                           )
                         ) {
-                          deleteProblem(post, problem.id).then(() => {
-                            navigate(
-                              `/groups/${activeGroup.groupData.id}/post/${post.id}`,
-                              {
-                                replace: true,
-                              }
-                            );
-                          });
+                          deleteProblem(post, problem.id)
+                            .then(() => {
+                              navigate(
+                                `/groups/${activeGroup.groupData.id}/post/${post.id}`,
+                                {
+                                  replace: true,
+                                }
+                              );
+                            })
+                            .catch(e => notifications.showErrorNotification(e));
                         }
                       }}
                       className="btn"

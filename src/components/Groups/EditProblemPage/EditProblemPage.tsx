@@ -10,9 +10,9 @@ import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
-import EditProblemHintModal from './EditProblemHintModal';
 import EditProblemHintSection from './EditProblemHintSection';
 import { ProblemData } from '../../../models/groups/problem';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -33,18 +33,25 @@ export default function EditProblemPage(props) {
     originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
+  const notifications = useNotificationSystem();
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
   }, [originalProblem, post]);
 
+  const canEditPoints = !activeGroup.groupData.leaderboard[post.id]?.[
+    problemId
+  ];
+
   const handleDeleteProblem = () => {
     if (confirm('Are you sure you want to delete this problem?')) {
-      deleteProblem(post, problem.id).then(() => {
-        navigate('../../../', {
-          replace: true,
-        });
-      });
+      deleteProblem(post, problem.id)
+        .then(() => {
+          navigate('../../../', {
+            replace: true,
+          });
+        })
+        .catch(e => notifications.showErrorNotification(e));
     }
   };
   const handleSaveProblem = () => {
@@ -180,12 +187,19 @@ export default function EditProblemPage(props) {
                     name="points"
                     id="points"
                     value={problem.points}
-                    onChange={e =>
-                      editProblem({ points: parseInt(e.target.value) })
-                    }
+                    onChange={e => {
+                      if (canEditPoints)
+                        editProblem({ points: parseInt(e.target.value) });
+                    }}
                     className="input"
+                    disabled={!canEditPoints}
                   />
                 </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  {canEditPoints
+                    ? "Warning: You won't be able to change point value after a user has submitted code."
+                    : "You can't change this problem's maximum points anymore since a user has already submitted this problem."}
+                </p>
               </div>
 
               <div className="sm:col-span-4">

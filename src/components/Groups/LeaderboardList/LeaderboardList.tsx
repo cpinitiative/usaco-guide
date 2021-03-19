@@ -43,31 +43,43 @@ const LeaderboardListItem = ({
 };
 
 export default function LeaderboardList({
-  leaderboard,
+  postId, // optional. If provided, limits to only certain posts.
 }: {
-  leaderboard: Leaderboard;
+  postId?: string;
 }) {
   const activeGroup = useActiveGroup();
+  const leaderboard = activeGroup.groupData?.leaderboard;
   const members = getMemberInfoForGroup(activeGroup.groupData);
   const leaderboardItems = React.useMemo(() => {
     if (!leaderboard || !members) return null;
 
     const leaderboardSum = {};
-    for (let postID of Object.keys(leaderboard)) {
-      for (let problemID of Object.keys(leaderboard[postID])) {
-        for (let userID of Object.keys(leaderboard[postID][problemID])) {
+
+    const processPost = id => {
+      if (!leaderboard.hasOwnProperty(id)) return;
+      for (let problemID of Object.keys(leaderboard[id])) {
+        for (let userID of Object.keys(leaderboard[id][problemID])) {
           if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
           leaderboardSum[userID] +=
-            leaderboard[postID][problemID][userID].bestScore;
+            leaderboard[id][problemID][userID].bestScore;
         }
       }
+    };
+
+    if (!postId) {
+      for (let postID of Object.keys(leaderboard)) {
+        processPost(postID);
+      }
+    } else {
+      processPost(postId);
     }
+
     let data = activeGroup.groupData.memberIds.map(id => ({
       member: members.find(member => member.uid === id),
       points: leaderboardSum[id] ?? 0,
     }));
     return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, activeGroup.groupData.memberIds, members]);
+  }, [leaderboard, activeGroup.groupData.memberIds, members, postId]);
 
   return (
     <ul>

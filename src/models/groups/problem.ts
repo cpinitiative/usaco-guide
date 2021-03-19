@@ -20,6 +20,7 @@ export type ProblemData = {
         body: string;
       };
   submissionType: SubmissionType;
+  isDeleted: boolean;
   /**
    * Lower = appears first in problem list. Ties broken by name.
    */

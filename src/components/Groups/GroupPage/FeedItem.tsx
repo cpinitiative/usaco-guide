@@ -6,6 +6,7 @@ import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 import { GroupData } from '../../../models/groups/groups';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function FeedItem({
   group,
@@ -18,6 +19,7 @@ export default function FeedItem({
   const { updatePost, deletePost } = usePostActions(group.id);
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const notifications = useNotificationSystem();
   const ref = React.useRef();
 
   React.useEffect(() => {
@@ -180,7 +182,9 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePost(post.id);
+                        deletePost(post.id).catch(e =>
+                          notifications.showErrorNotification(e)
+                        );
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

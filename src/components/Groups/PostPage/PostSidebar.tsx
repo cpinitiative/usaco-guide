@@ -23,14 +23,14 @@ export default function PostSidebar({
 
   const leaderboard = groupData.leaderboard;
   const totalLeaderboardPoints = React.useMemo(() => {
+    if (!leaderboard || !problems) return 0;
     let sum = 0;
-    for (let postID of Object.keys(leaderboard)) {
-      for (let problemID of Object.keys(leaderboard[postID])) {
-        sum += leaderboard[postID][problemID][firebaseUser.uid]?.bestScore || 0;
-      }
-    }
+    problems.forEach(problem => {
+      sum +=
+        leaderboard[post.id]?.[problem.id]?.[firebaseUser.uid]?.bestScore || 0;
+    });
     return sum;
-  }, [firebaseUser.uid, leaderboard]);
+  }, [firebaseUser.uid, leaderboard[post.id], post.id, problems]);
 
   return (
     <>
@@ -81,7 +81,7 @@ export default function PostSidebar({
               </Link>
             </div>
             <div className="h-2" />
-            <LeaderboardList leaderboard={leaderboard} />
+            <LeaderboardList postId={post.id} />
           </div>
         )}
       </div>
