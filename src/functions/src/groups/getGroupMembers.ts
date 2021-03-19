@@ -28,11 +28,10 @@ export default functions.https.onCall(
       .doc(groupId)
       .get()
       .then(snapshot => snapshot.data() as GroupData);
-    if (
-      !groupData.ownerIds.includes(callerUid) &&
-      !groupData.adminIds.includes(callerUid) &&
-      !groupData.memberIds.includes(callerUid)
-    ) {
+    const isAdmin =
+      groupData.ownerIds.includes(callerUid) ||
+      groupData.adminIds.includes(callerUid);
+    if (!isAdmin && !groupData.memberIds.includes(callerUid)) {
       throw new functions.https.HttpsError(
         'permission-denied',
         'The calling user is not a member of the requested group.'
@@ -46,19 +45,27 @@ export default functions.https.onCall(
     const getUserPromises: Promise<admin.auth.GetUsersResult>[] = [];
 
     // getUsers limits to 100, which a group could theoretically exceed
+    // while users remain, get the data for the first 100
     while (members.length > 0) {
       getUserPromises.push(
         admin.auth().getUsers(members.splice(0, 100).map(uid => ({ uid })))
       );
     }
-    return (await Promise.all(getUserPromises)).flatMap(result => {
-      if (result.notFound.length !== 0) {
-        throw new functions.https.HttpsError(
-          'internal',
-          'A user ID in the firebase document could not be fetched.'
-        );
-      }
-      return result.users;
-    });
+    return (await Promise.all(getUserPromises))
+      .flatMap(result => {
+        if (result.notFound.length !== 0) {
+          throw new functions.https.HttpsError(
+            'internal',
+            'A user ID in the firebase document could not be fetched.'
+          );
+        }
+        return result.users;
+      })
+      .map(u => ({
+        ...(isAdmin ? { email: u.email } : {}),
+        uid: u.uid,
+        displayName: u.displayName,
+        photoURL: u.photoURL,
+      }));
   }
 );
