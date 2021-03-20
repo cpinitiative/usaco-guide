@@ -5,8 +5,6 @@ import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
-// import { Link } from 'gatsby';
-import { Transition as HeadlessUITransition } from '@headlessui/react';
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
@@ -17,14 +15,14 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import SubmitCodeButton from './SubmitCodeButton';
 import { Instance } from 'tippy.js';
-import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 import SuggestProblemRow from './SuggestProblemRow';
 import { navigate } from 'gatsby';
+import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 
 type ProblemsListProps = {
   title?: string;
   children?: React.ReactChildren;
-  problems: Problem[];
+  problems: Problem[] | string; // todo: change to just string (list name)
   alwaysHideTags?: boolean;
   modules?: boolean;
   division?: string;
@@ -42,7 +40,22 @@ export function ProblemsList(props: ProblemsListProps) {
   const divisionTable = !!props.division;
   const isClass = props.isClass || false;
   let showPercent = true; // props.division != 'Platinum';
-  for (const problem of props.problems) {
+  const markdownProblems = useMarkdownProblemLists();
+
+  // todo fix typing
+  let problems: any[];
+  if (typeof props.problems === 'string') {
+    problems = markdownProblems.find(list => list.listId === props.problems)
+      .problems;
+    if (!problems)
+      throw new Error(
+        "Couldn't find the problem list with name " + props.problems
+      );
+  } else {
+    problems = props.problems;
+  }
+
+  for (const problem of problems) {
     if (!problem.fraction) showPercent = false;
   }
   return (
@@ -110,7 +123,7 @@ export function ProblemsList(props: ProblemsListProps) {
                 </tr>
               </thead>
               <tbody className="table-alternating-stripes">
-                {props.problems.map(problem => (
+                {problems.map(problem => (
                   <ProblemComponent
                     problem={problem}
                     alwaysHideTags={alwaysHideTags}
@@ -126,7 +139,7 @@ export function ProblemsList(props: ProblemsListProps) {
                   />
                 ))}
                 {!divisionTable && !isClass && (
-                  <SuggestProblemRow problems={props.problems} />
+                  <SuggestProblemRow problems={problems} />
                 )}
               </tbody>
             </table>
