@@ -7,7 +7,7 @@ import firebaseType from 'firebase';
 export default function useFirebase(
   fn: (firebase: typeof firebaseType) => void | (() => void | undefined) = null,
   dep = []
-) {
+): typeof firebaseType {
   const firebase = React.useContext(FirebaseContext);
 
   if (fn == null) return firebase;

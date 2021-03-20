@@ -60,7 +60,7 @@ export default function LiveUpdatePage(props: PageProps) {
   const markdownStorageKey = 'guide:liveupdate:markdown';
 
   const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
-  const editor = useRef();
+  const editor = useRef<any>();
 
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');

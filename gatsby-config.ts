@@ -1,5 +1,11 @@
 require('dotenv').config();
 
+export const flags = {
+  PRESERVE_WEBPACK_CACHE: true,
+  FAST_DEV: true,
+  FAST_REFRESH: true,
+};
+
 export const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality competitive programming resources to take you from USACO Bronze to USACO Platinum and beyond. Written by top USACO Finalists, these tutorials will guide you through your competitive programming journey.`,
@@ -141,7 +147,7 @@ export const plugins = [
   },
   {
     resolve: `gatsby-plugin-create-client-paths`,
-    options: { prefixes: [`/class/*`] },
+    options: { prefixes: [`/class/*`, '/groups/*'] },
   },
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
@@ -154,7 +160,12 @@ export const plugins = [
       skipIndexing: !!!process.env.ALGOLIA_APP_ID,
     },
   },
-  'gatsby-plugin-webpack-bundle-analyser-v2',
+  {
+    resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
+    options: {
+      devMode: true,
+    },
+  },
   // {
   //   resolve: `gatsby-plugin-hotjar`,
   //   options: {

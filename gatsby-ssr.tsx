@@ -1,19 +1,8 @@
 import * as React from 'react';
-import MDXProvider from './src/components/markdown/MDXProvider';
-import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
-import { FirebaseProvider } from './src/context/FirebaseContext';
-import { DarkModeProvider } from './src/context/DarkModeContext';
+import { wrapRootElement as wrap } from './root-wrapper';
 import { themeKey } from './src/context/UserDataContext/properties/themeProperty';
 
-export const wrapRootElement = ({ element }) => (
-  <FirebaseProvider>
-    <MDXProvider>
-      <UserDataProvider>
-        <DarkModeProvider>{element}</DarkModeProvider>
-      </UserDataProvider>
-    </MDXProvider>
-  </FirebaseProvider>
-);
+export const wrapRootElement = wrap;
 
 // https://joshwcomeau.com/gatsby/dark-mode/
 const MagicScriptTag = () => {
