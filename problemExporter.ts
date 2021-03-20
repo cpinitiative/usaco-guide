@@ -21,7 +21,9 @@ async function main() {
               }
             });
             files[folder] = filesArr.map(name => name.replace(/\.mdx$/g, ''));
-            return Promise.all(promises);
+            Promise.all(promises).then(() => {
+              resolve();
+            });
           });
         })
     )
@@ -52,14 +54,18 @@ async function main() {
         fs.writeFile(
           `./content/${divisionFolder}/${moduleFileName}.json`,
           JSON.stringify(
-            problems.reduce((acc, el) => {
-              const { tableID, ...problemData } = el;
-              if (acc[tableID]) {
-                acc[tableID].push(problemData);
-              } else {
-                acc[tableID] = [problemData];
-              }
-            }, {}),
+            problems.reduce(
+              (acc: Record<string, any[]>, el: Record<string, any>) => {
+                const { tableID, ...problemData } = el;
+                if (acc[tableID]) {
+                  acc[tableID].push(problemData);
+                } else {
+                  acc[tableID] = [problemData];
+                }
+                return acc;
+              },
+              {}
+            ),
             null,
             '\t'
           ),
@@ -70,4 +76,6 @@ async function main() {
   });
   await Promise.all(fileWritePromises);
 }
-main();
+main().then(() => {
+  console.log('DONE');
+});
