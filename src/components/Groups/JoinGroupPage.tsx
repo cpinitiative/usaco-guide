@@ -27,8 +27,8 @@ const JoinGroupPage = () => {
   const firebase = useFirebase();
 
   const joinKey = typeof window === 'undefined' ? '' : getQuery('key');
-  const showNotSignedInMessage = isLoaded && !firebaseUser?.uid;
   const showLoading = isLoading || !isLoaded || !firebase;
+  const showNotSignedInMessage = !showLoading && !firebaseUser?.uid;
 
   useFirebase(
     firebase => {
