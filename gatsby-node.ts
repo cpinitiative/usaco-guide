@@ -1,4 +1,5 @@
 import { SECTIONS } from './content/ordering';
+import importFresh = require('import-fresh');
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -24,13 +25,13 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     node.internal.type === 'Mdx' &&
     node.fileAbsolutePath.includes('content')
   ) {
-    delete require.cache[require.resolve('./content/ordering')];
-    const ordering = require('./content/ordering');
+    const ordering = importFresh<any>('./content/ordering');
     createNodeField({
       name: 'division',
       node,
       value: ordering.moduleIDToSectionMap[node.frontmatter.id],
     });
+
     // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
     const gitAuthorTime = execSync(
       `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
@@ -40,6 +41,115 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       name: 'gitAuthorTime',
       value: gitAuthorTime,
     });
+
+    let problemJSON;
+    try {
+      problemJSON = importFresh(
+        node.fileAbsolutePath.substring(0, node.fileAbsolutePath.length - 3) +
+          'json'
+      );
+    } catch (e) {
+      // ignore, there probably aren't any problems in that module
+    }
+    if (problemJSON) {
+      // todo: auto-link internal solution and auto-generate solution based on source
+      // todo: actually generate this properly
+      createNodeField({
+        node,
+        name: 'problemLists',
+        value: [
+          {
+            listId: 'general',
+            problems: [
+              {
+                source: 'Bronze',
+                name: 'Sleepy Cow Herding',
+                id: '915',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
+              },
+              {
+                source: 'Bronze',
+                name: 'Sleepy Cow Sorting',
+                id: '892',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
+              },
+              {
+                source: 'Bronze',
+                name: 'Taming the Herd',
+                id: '809',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
+              },
+              {
+                source: 'Bronze',
+                name: 'Modern Art',
+                id: '737',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
+              },
+              {
+                source: 'Bronze',
+                name: 'Hoofball',
+                id: '808',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
+              },
+              {
+                source: 'Silver',
+                name: 'Spaced Out',
+                id: '1088',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Greedy'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
+              },
+            ],
+          },
+        ],
+      });
+    }
   }
 };
 
@@ -164,6 +274,11 @@ exports.createSchemaCustomization = ({ actions }) => {
       py: [Heading]
     }
     
+    type MdxFieldsProblems {
+      listId: String!
+      problems: [Problem]
+    }
+    
     type Problem {
       source: String!
       name: String!
@@ -250,6 +365,7 @@ exports.createResolvers = ({ createResolvers }) => {
           };
         },
       },
+      // todo: obsolete, delete
       problems: {
         type: `[Problem]`,
         async resolve(source, args, context, info) {

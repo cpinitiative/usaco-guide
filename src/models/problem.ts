@@ -107,6 +107,79 @@ const probSources = {
 //   hover = 'The editorial tab should be right next to the problem tab.';
 // }
 
+export type ProblemInfo = {
+  /**
+   * Unique ID of the problem
+   */
+  uniqueId: string;
+  name: string;
+  url: string;
+  /**
+   * Source of the problem. More information about some problem sources can be found in the probSources map.
+   */
+  source: string;
+  difficulty: ProblemDifficulty;
+  /**
+   * In the context of a module, true if the problem is starred. False otherwise.
+   */
+  isStarred: boolean;
+  tags: string[];
+  solution:
+    | {
+        kind: 'internal';
+        url: string;
+      }
+    | {
+        kind: 'external';
+        url: string;
+      }
+    | {
+        /*
+     If the label is just text. Used for certain sources like CodeForces
+     Ex:
+      - label = Check CF
+      - labelTooltip = "Check content materials, located to the right of the problem statement
+     */
+        kind: 'label';
+        label: string;
+        labelTooltip: string | null;
+      }
+    | {
+        /*
+     Not recommended -- use internal solutions instead.
+     Used if there's a super short solution sketch that's not a full editorial.
+     Latex *is* allowed with the new implementation of problems.
+     */
+        kind: 'sketch';
+        sketch: string;
+      }
+    | null; // null if there's no solution for this problem
+};
+
+/**
+ * Problem information that's stored in module JSON files.
+ * Gatsby will take this information and convert it into ProblemInfo at build time.
+ */
+export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
+  /**
+   * This solution can take on one of three values:
+   * 1. null
+   *    Gatsby will auto-generate information for this problem, and will auto-link to any internal solutions.
+   *    If no information can be auto-generated, and there is no internal solution, it will just set the solution to null.
+   * 2. string starting with http
+   *    Gatsby will treat this solution as an external solution.
+   * 3. any other string
+   *    Gatsby will treat this solution as a solution sketch. Latex is supported. Avoid this -- prefer using
+   *    internal solutions whenever possible.
+   *
+   * Important note: If an internal solution exists for a particular problem,
+   * the solution in ProblemMetadata *must* be set to null.
+   */
+  solution: string | null;
+};
+
+// legacy code follows
+
 type ProblemSolution = {
   kind: 'internal' | 'link' | 'text' | 'sketch';
 

@@ -21,6 +21,7 @@ import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
+import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
