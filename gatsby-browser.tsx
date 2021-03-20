@@ -6,11 +6,14 @@ import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';
 import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
 import { FirebaseProvider } from './src/context/FirebaseContext';
+import { DarkModeProvider } from './src/context/DarkModeContext';
 
 export const wrapRootElement = ({ element }) => (
   <FirebaseProvider>
     <MDXProvider>
-      <UserDataProvider>{element}</UserDataProvider>
+      <UserDataProvider>
+        <DarkModeProvider>{element}</DarkModeProvider>
+      </UserDataProvider>
     </MDXProvider>
   </FirebaseProvider>
 );
