@@ -23,6 +23,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1741',
                 uniqueID: 'https://cses.fi/problemset/task/1741',
+                tableID: 'sam',
               },
               {
                 source: 'mBIT',
@@ -35,6 +36,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102621/problem/L',
                 uniqueID: 'https://codeforces.com/gym/102621/problem/L',
+                tableID: 'lazySegCnt',
               },
               {
                 source: 'IOI',
@@ -47,6 +49,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI08_pyramid_base',
                 uniqueID: 'https://oj.uz/problem/view/IOI08_pyramid_base',
+                tableID: 'lazySegCnt',
               },
               {
                 source: 'HR',
@@ -62,6 +65,7 @@ export default {
                   'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
                 uniqueID:
                   'https://www.hackerrank.com/contests/openbracket-2017/challenges/special-path-on-a-strange-tree/problem',
+                tableID: 'lazySegCnt',
               },
               {
                 source: 'CF',
@@ -75,80 +79,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/997/problem/E',
                 uniqueID: 'https://codeforces.com/contest/997/problem/E',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'dp-sos',
-              title: 'Sum over Subsets DP',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Bit Problem',
-                id: '1654',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1654',
-                uniqueID: 'https://cses.fi/problemset/task/1654',
-              },
-              {
-                source: 'CF',
-                name: 'Bits and Pieces',
-                id: 'contest/1208/problem/F',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Bitmasks', 'DP'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1208/problem/F',
-                uniqueID: 'https://codeforces.com/contest/1208/problem/F',
-              },
-              {
-                source: 'InfoArena',
-                name: 'xortransform',
-                id: 'https://infoarena.ro/problema/xortransform',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['Bitmasks', 'DP', 'NT'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://infoarena.ro/problema/xortransform',
-                uniqueID: 'https://infoarena.ro/problema/xortransform',
-              },
-              {
-                source: 'JOI',
-                name: '2018 - Snake Escaping',
-                id: 'https://oj.uz/problem/view/JOI18_snake_escaping',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['SOS DP'],
-                solID: 'joi-18-snake-escaping',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI18_snake_escaping',
-                uniqueID: 'https://oj.uz/problem/view/JOI18_snake_escaping',
-              },
-              {
-                source: 'CF',
-                name: 'Wise Men',
-                id: 'contest/1326/problem/F2',
-                difficulty: 'Insane',
-                starred: false,
-                tags: ['Bitmasks', 'DP', 'SOS'],
-                solID:
-                  'Solve the case where for each binary string s, a 1 means that the adjacent men know each other, and the 0 means nothing: they can know each other or not.',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1326/problem/F2',
-                uniqueID: 'https://codeforces.com/contest/1326/problem/F2',
+                tableID: 'lazySegCnt',
               },
             ],
           },
@@ -174,6 +105,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/815/problem/C',
                 uniqueID: 'https://codeforces.com/contest/815/problem/C',
+                tableID: 'sam',
               },
               {
                 source: 'COCI',
@@ -186,6 +118,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI19_dzumbus',
                 uniqueID: 'https://oj.uz/problem/view/COCI19_dzumbus',
+                tableID: 'gen',
               },
               {
                 source: 'CF',
@@ -198,6 +131,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1280/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1280/problem/D',
+                tableID: 'gen',
               },
               {
                 source: 'IOI',
@@ -210,6 +144,7 @@ export default {
                 solQuality: 'ok',
                 url: 'http://dmoj.ca/problem/ioi05p6',
                 uniqueID: 'http://dmoj.ca/problem/ioi05p6',
+                tableID: 'gen',
               },
               {
                 source: 'CF',
@@ -222,6 +157,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/735/problem/E',
                 uniqueID: 'https://codeforces.com/contest/735/problem/E',
+                tableID: 'gen',
               },
               {
                 source: 'DMOJ',
@@ -234,6 +170,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/coci08c4p6',
                 uniqueID: 'https://dmoj.ca/problem/coci08c4p6',
+                tableID: 'gen',
               },
             ],
           },
@@ -262,6 +199,7 @@ export default {
                   'https://judge.yosupo.jp/problem/two_edge_connected_components',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/two_edge_connected_components',
+                tableID: 'sam2',
               },
               {
                 source: 'Plat',
@@ -276,6 +214,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                tableID: 'disrupt',
               },
               {
                 source: 'CEOI',
@@ -288,6 +227,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI17_oneway',
                 uniqueID: 'https://oj.uz/problem/view/CEOI17_oneway',
+                tableID: 'probs2',
               },
               {
                 source: 'CSES',
@@ -300,6 +240,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1705',
                 uniqueID: 'https://cses.fi/problemset/task/1705',
+                tableID: 'bccSam',
               },
               {
                 source: 'CSES',
@@ -312,6 +253,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2177',
                 uniqueID: 'https://cses.fi/problemset/task/2177',
+                tableID: 'gen',
               },
               {
                 source: 'POI',
@@ -327,6 +269,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/eDt8w290owtatmCjad0O0ywk/site/?key=statement',
+                tableID: 'gen',
               },
               {
                 source: 'APIO',
@@ -339,6 +282,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO18_duathlon',
                 uniqueID: 'https://oj.uz/problem/view/APIO18_duathlon',
+                tableID: 'gen',
               },
               {
                 source: 'POI',
@@ -353,6 +297,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/YY6-3ua-C1rt7q-97laWc0UP/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/YY6-3ua-C1rt7q-97laWc0UP/site/',
+                tableID: 'gen',
               },
               {
                 source: 'DMOJ',
@@ -365,6 +310,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/tle17c1p6',
                 uniqueID: 'https://dmoj.ca/problem/tle17c1p6',
+                tableID: 'gen',
               },
               {
                 source: 'CEOI',
@@ -377,6 +323,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI15_pipes',
                 uniqueID: 'https://oj.uz/problem/view/CEOI15_pipes',
+                tableID: 'gen',
               },
               {
                 source: 'Plat',
@@ -391,6 +338,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=769',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=769',
+                tableID: 'gen',
               },
             ],
           },
@@ -405,6 +353,85 @@ export default {
               title: 'Critical',
             },
             problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'dp-sos',
+              title: 'Sum over Subsets DP',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Bit Problem',
+                id: '1654',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1654',
+                uniqueID: 'https://cses.fi/problemset/task/1654',
+                tableID: 'probs',
+              },
+              {
+                source: 'CF',
+                name: 'Bits and Pieces',
+                id: 'contest/1208/problem/F',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Bitmasks', 'DP'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1208/problem/F',
+                uniqueID: 'https://codeforces.com/contest/1208/problem/F',
+                tableID: 'probs',
+              },
+              {
+                source: 'InfoArena',
+                name: 'xortransform',
+                id: 'https://infoarena.ro/problema/xortransform',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Bitmasks', 'DP', 'NT'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://infoarena.ro/problema/xortransform',
+                uniqueID: 'https://infoarena.ro/problema/xortransform',
+                tableID: 'probs',
+              },
+              {
+                source: 'JOI',
+                name: '2018 - Snake Escaping',
+                id: 'https://oj.uz/problem/view/JOI18_snake_escaping',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['SOS DP'],
+                solID: 'joi-18-snake-escaping',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI18_snake_escaping',
+                uniqueID: 'https://oj.uz/problem/view/JOI18_snake_escaping',
+                tableID: 'probs',
+              },
+              {
+                source: 'CF',
+                name: 'Wise Men',
+                id: 'contest/1326/problem/F2',
+                difficulty: 'Insane',
+                starred: false,
+                tags: ['Bitmasks', 'DP', 'SOS'],
+                solID:
+                  'Solve the case where for each binary string s, a 1 means that the adjacent men know each other, and the 0 means nothing: they can know each other or not.',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1326/problem/F2',
+                uniqueID: 'https://codeforces.com/contest/1326/problem/F2',
+                tableID: 'probs',
+              },
+            ],
           },
         },
         {
@@ -428,6 +455,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI16_kangaroo',
                 uniqueID: 'https://oj.uz/problem/view/CEOI16_kangaroo',
+                tableID: 'connected_component',
               },
               {
                 source: 'CF',
@@ -443,6 +471,7 @@ export default {
                   'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
                 uniqueID:
                   'https://codeforces.com/group/R2SERIff4f/contest/213171/problem/R',
+                tableID: 'connected_component',
               },
               {
                 source: 'JOI',
@@ -455,6 +484,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI16_skyscraper',
                 uniqueID: 'https://oj.uz/problem/view/JOI16_skyscraper',
+                tableID: 'connected_component',
               },
               {
                 source: 'CSES',
@@ -467,6 +497,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2181',
                 uniqueID: 'https://cses.fi/problemset/task/2181',
+                tableID: 'brokenFocus',
               },
               {
                 source: 'CF',
@@ -479,6 +510,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/845/F',
                 uniqueID: 'https://codeforces.com/problemset/problem/845/F',
+                tableID: 'broken',
               },
               {
                 source: 'COCI',
@@ -491,6 +523,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://evaluator.hsin.hr/tasks/HONI202136selotejp/',
                 uniqueID: 'https://evaluator.hsin.hr/tasks/HONI202136selotejp/',
+                tableID: 'broken',
               },
               {
                 source: 'CEOI',
@@ -503,6 +536,7 @@ export default {
                 solQuality: 'ok',
                 url: 'http://oj.uz/problem/view/CEOI06_connect',
                 uniqueID: 'http://oj.uz/problem/view/CEOI06_connect',
+                tableID: 'broken',
               },
               {
                 source: 'Plat',
@@ -517,6 +551,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=949',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=949',
+                tableID: 'broken',
               },
             ],
           },
@@ -542,6 +577,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1691',
                 uniqueID: 'https://cses.fi/problemset/task/1691',
+                tableID: 'sam',
               },
               {
                 source: 'CSES',
@@ -554,6 +590,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1693',
                 uniqueID: 'https://cses.fi/problemset/task/1693',
+                tableID: 'sam',
               },
               {
                 source: 'Baltic OI',
@@ -567,6 +604,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI14_postmen',
                 uniqueID: 'https://oj.uz/problem/view/BOI14_postmen',
+                tableID: 'general',
               },
               {
                 source: 'CSA',
@@ -581,6 +619,7 @@ export default {
                   'https://csacademy.com/contest/archive/task/matching-substrings',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/matching-substrings',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -593,6 +632,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1361/problem/C',
                 uniqueID: 'https://codeforces.com/contest/1361/problem/C',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -605,6 +645,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/528/problem/C',
                 uniqueID: 'https://codeforces.com/contest/528/problem/C',
+                tableID: 'general',
               },
               {
                 source: 'Balkan OI',
@@ -618,6 +659,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.acmicpc.net/problem/13973',
                 uniqueID: 'https://www.acmicpc.net/problem/13973',
+                tableID: 'general',
               },
             ],
           },
@@ -643,6 +685,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/modulararithmetic',
                 uniqueID: 'https://open.kattis.com/problems/modulararithmetic',
+                tableID: 'kat',
               },
               {
                 source: 'Kattis',
@@ -655,6 +698,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/chineseremainder',
                 uniqueID: 'https://open.kattis.com/problems/chineseremainder',
+                tableID: 'crt',
               },
               {
                 source: 'Kattis',
@@ -668,6 +712,7 @@ export default {
                 url: 'https://open.kattis.com/problems/generalchineseremainder',
                 uniqueID:
                   'https://open.kattis.com/problems/generalchineseremainder',
+                tableID: 'crt',
               },
             ],
           },
@@ -693,6 +738,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/apio17p1',
                 uniqueID: 'https://dmoj.ca/problem/apio17p1',
+                tableID: 'e1',
               },
               {
                 source: 'Plat',
@@ -707,6 +753,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                tableID: 'e2',
               },
               {
                 source: 'Kattis',
@@ -722,6 +769,7 @@ export default {
                   'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
                 uniqueID:
                   'https://utipc20s.kattis.com/problems/utipc20s.islandarchipelago',
+                tableID: 'other',
               },
               {
                 source: 'CF',
@@ -734,6 +782,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1392/problem/I',
                 uniqueID: 'https://codeforces.com/contest/1392/problem/I',
+                tableID: 'other',
               },
               {
                 source: 'CF',
@@ -746,6 +795,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/100453',
                 uniqueID: 'https://codeforces.com/gym/100453',
+                tableID: 'other',
               },
               {
                 source: 'Plat',
@@ -760,6 +810,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1094',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1094',
+                tableID: 'other',
               },
             ],
           },
@@ -785,6 +836,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/partition_function',
                 uniqueID: 'https://judge.yosupo.jp/problem/partition_function',
+                tableID: 'ys',
               },
               {
                 source: 'YS',
@@ -797,6 +849,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/bernoulli_number',
                 uniqueID: 'https://judge.yosupo.jp/problem/bernoulli_number',
+                tableID: 'ys',
               },
               {
                 source: 'Plat',
@@ -811,97 +864,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=974',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=974',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'flow-lb',
-              title: 'Flow with Lower Bounds',
-            },
-            problems: [
-              {
-                source: 'DMOJ',
-                name: 'Hungry Squirrels',
-                id: 'wac4p6',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/wac4p6',
-                uniqueID: 'https://dmoj.ca/problem/wac4p6',
-              },
-              {
-                source: 'CF',
-                name: 'Diverse Singing',
-                id:
-                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
-                uniqueID:
-                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
-              },
-              {
-                source: 'CF',
-                name: 'Captain America',
-                id: 'contest/704/problem/D',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/704/problem/D',
-                uniqueID: 'https://codeforces.com/contest/704/problem/D',
-              },
-              {
-                source: 'CF',
-                name: 'Incorrect Flow',
-                id: 'contest/708/problem/D',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/708/problem/D',
-                uniqueID: 'https://codeforces.com/contest/708/problem/D',
-              },
-              {
-                source: 'AC',
-                name: 'Multi-Path Story',
-                id:
-                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
-                uniqueID:
-                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
-              },
-              {
-                source: 'CF',
-                name: 'Showing Off',
-                id: 'contest/1416/problem/F',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1416/problem/F',
-                uniqueID: 'https://codeforces.com/contest/1416/problem/F',
+                tableID: 'general',
               },
             ],
           },
@@ -927,6 +890,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/convolution_mod',
                 uniqueID: 'https://judge.yosupo.jp/problem/convolution_mod',
+                tableID: 'sam',
               },
               {
                 source: 'YS',
@@ -941,6 +905,7 @@ export default {
                   'https://judge.yosupo.jp/problem/convolution_mod_1000000007',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/convolution_mod_1000000007',
+                tableID: 'sam',
               },
               {
                 source: 'POI',
@@ -956,6 +921,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/9JvSAnyf5d1FlPAEXEdUAtCz/site/',
+                tableID: 'gen',
               },
               {
                 source: 'Kattis',
@@ -968,6 +934,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/kinversions',
                 uniqueID: 'https://open.kattis.com/problems/kinversions',
+                tableID: 'gen',
               },
               {
                 source: 'Kattis',
@@ -980,6 +947,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/matchings',
                 uniqueID: 'https://open.kattis.com/problems/matchings',
+                tableID: 'gen',
               },
               {
                 source: 'Kattis',
@@ -992,6 +960,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/aliencodebreaking',
                 uniqueID: 'https://open.kattis.com/problems/aliencodebreaking',
+                tableID: 'gen',
               },
               {
                 source: 'YS',
@@ -1006,6 +975,7 @@ export default {
                   'https://judge.yosupo.jp/problem/frequency_table_of_tree_distance',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/frequency_table_of_tree_distance',
+                tableID: 'tree',
               },
               {
                 source: 'DMOJ',
@@ -1018,6 +988,621 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/bts17p8',
                 uniqueID: 'https://dmoj.ca/problem/bts17p8',
+                tableID: 'tree',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'flow-lb',
+              title: 'Flow with Lower Bounds',
+            },
+            problems: [
+              {
+                source: 'DMOJ',
+                name: 'Hungry Squirrels',
+                id: 'wac4p6',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/wac4p6',
+                uniqueID: 'https://dmoj.ca/problem/wac4p6',
+                tableID: 'hungry',
+              },
+              {
+                source: 'CF',
+                name: 'Diverse Singing',
+                id:
+                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
+                uniqueID:
+                  'https://codeforces.com/group/ZFgXbZSjvp/contest/274398/problem/C',
+                tableID: 'lower',
+              },
+              {
+                source: 'CF',
+                name: 'Captain America',
+                id: 'contest/704/problem/D',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/704/problem/D',
+                uniqueID: 'https://codeforces.com/contest/704/problem/D',
+                tableID: 'lower',
+              },
+              {
+                source: 'CF',
+                name: 'Incorrect Flow',
+                id: 'contest/708/problem/D',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/708/problem/D',
+                uniqueID: 'https://codeforces.com/contest/708/problem/D',
+                tableID: 'lower',
+              },
+              {
+                source: 'AC',
+                name: 'Multi-Path Story',
+                id:
+                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
+                uniqueID:
+                  'https://atcoder.jp/contests/jag2013summer-day4/tasks/icpc2013summer_day4_i',
+                tableID: 'lower',
+              },
+              {
+                source: 'CF',
+                name: 'Showing Off',
+                id: 'contest/1416/problem/F',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1416/problem/F',
+                uniqueID: 'https://codeforces.com/contest/1416/problem/F',
+                tableID: 'lower',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'LC',
+              title: 'LineContainer',
+            },
+            problems: [
+              {
+                source: 'YS',
+                name: 'Line Add Get Min',
+                id: 'line_add_get_min',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/line_add_get_min',
+                uniqueID: 'https://judge.yosupo.jp/problem/line_add_get_min',
+                tableID: 'sample',
+              },
+              {
+                source: 'CEOI',
+                name: '2017 - Building Bridges',
+                id: 'https://oj.uz/problem/view/CEOI17_building',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['DP', 'Convex'],
+                solID: '@Later',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI17_building',
+                uniqueID: 'https://oj.uz/problem/view/CEOI17_building',
+                tableID: 'sample_cht',
+              },
+              {
+                source: 'Kattis',
+                name: 'Marshland Rescues',
+                id: 'https://maps19.kattis.com/problems/marshlandrescues',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://maps19.kattis.com/problems/marshlandrescues',
+                uniqueID: 'https://maps19.kattis.com/problems/marshlandrescues',
+                tableID: 'half',
+              },
+              {
+                source: 'JOI',
+                name: '2017 - Dragon 2',
+                id: 'https://oj.uz/problem/view/JOI17_dragon2',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI17_dragon2',
+                uniqueID: 'https://oj.uz/problem/view/JOI17_dragon2',
+                tableID: 'half',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2011 - 2circles',
+                id: 'https://oj.uz/problem/view/balkan11_2circles',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Geometry', 'Binary Search'],
+                solID: 'http://boi2011.ro/resurse/tasks/2circles-sol.pdf',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/balkan11_2circles',
+                uniqueID: 'https://oj.uz/problem/view/balkan11_2circles',
+                tableID: 'half',
+              },
+              {
+                source: 'YS',
+                name: 'Segment Add Get Min',
+                id: 'segment_add_get_min',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/segment_add_get_min',
+                uniqueID: 'https://judge.yosupo.jp/problem/segment_add_get_min',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'POI',
+                name: '2014 - Supercomputer',
+                id:
+                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['DP', 'Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+                uniqueID:
+                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'CEOI',
+                name: '2009 - Harbingers',
+                id: 'https://oj.uz/problem/view/CEOI09_harbingers',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DP', 'Convex'],
+                solID: 'http://infosb.net/ceoi2009/tasks/solutions.doc',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI09_harbingers',
+                uniqueID: 'https://oj.uz/problem/view/CEOI09_harbingers',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'FHC',
+                name: "Log Drivin' Hirin",
+                id: '2020/round-2/problems/D',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DP', 'Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
+                uniqueID:
+                  'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'AC',
+                name: 'Contest with Drinks Hard',
+                id: 'contests/arc066/tasks/arc066_d',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://atcoder.jp/contests/arc066/tasks/arc066_d',
+                uniqueID: 'https://atcoder.jp/contests/arc066/tasks/arc066_d',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'TLX',
+                name: 'Mall & Transportation',
+                id: 'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
+                uniqueID:
+                  'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
+                tableID: 'lc_probs',
+              },
+              {
+                source: 'Old Gold',
+                name: 'Fencing the Herd',
+                id: '534',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
+                tableID: 'lc_probs',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'interactive',
+              title: 'Interactive and Communication Problems',
+            },
+            problems: [
+              {
+                source: 'InfO(1) Cup',
+                name: '2017 - Easter Eggs',
+                id: 'https://oj.uz/problem/view/info1cup17_eastereggs',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/info1cup17_eastereggs',
+                uniqueID: 'https://oj.uz/problem/view/info1cup17_eastereggs',
+                tableID: 'interactiveDnC',
+              },
+              {
+                source: 'IOI',
+                name: '2013 - Cave',
+                id: 'https://oj.uz/problem/view/IOI13_cave',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI13_cave',
+                uniqueID: 'https://oj.uz/problem/view/IOI13_cave',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2018 - Combo',
+                id: 'https://oj.uz/problem/view/IOI18_combo',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI18_combo',
+                uniqueID: 'https://oj.uz/problem/view/IOI18_combo',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2017 - The Big Prize',
+                id: 'https://oj.uz/problem/view/IOI17_prize',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI17_prize',
+                uniqueID: 'https://oj.uz/problem/view/IOI17_prize',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2016 - Messy Bug',
+                id: 'https://oj.uz/problem/view/IOI16_messy',
+                difficulty: 'Normal',
+                starred: true,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI16_messy',
+                uniqueID: 'https://oj.uz/problem/view/IOI16_messy',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'APIO',
+                name: '2016 - Gap',
+                id: 'https://oj.uz/problem/view/APIO16_gap',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'apio-16-gap',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/APIO16_gap',
+                uniqueID: 'https://oj.uz/problem/view/APIO16_gap',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'CEOI',
+                name: '2016 - ICC',
+                id: 'https://oj.uz/problem/view/CEOI16_icc',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID:
+                  'http://www.ceoi2016.ro/wp-content/uploads/2016/08/icc-solution.pdf',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI16_icc',
+                uniqueID: 'https://oj.uz/problem/view/CEOI16_icc',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2014 - Rail',
+                id: 'https://oj.uz/problem/view/IOI14_rail',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI14_rail',
+                uniqueID: 'https://oj.uz/problem/view/IOI14_rail',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2015 - Scales',
+                id: 'https://oj.uz/problem/view/IOI15_scales',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI15_scales',
+                uniqueID: 'https://oj.uz/problem/view/IOI15_scales',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2015 - Towns',
+                id: 'https://oj.uz/problem/view/IOI15_towns',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI15_towns',
+                uniqueID: 'https://oj.uz/problem/view/IOI15_towns',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2018 - Highway',
+                id: 'https://oj.uz/problem/view/IOI18_highway',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI18_highway',
+                uniqueID: 'https://oj.uz/problem/view/IOI18_highway',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2017 - Simurgh',
+                id: 'https://oj.uz/problem/view/IOI17_simurgh',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI17_simurgh',
+                uniqueID: 'https://oj.uz/problem/view/IOI17_simurgh',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'APIO',
+                name: '2017 - Koala Game',
+                id: 'https://oj.uz/problem/view/APIO17_koala',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: 'apio-17-koala',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/APIO17_koala',
+                uniqueID: 'https://oj.uz/problem/view/APIO17_koala',
+                tableID: 'interactiveGeneral',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2011 - cmp',
+                id: 'https://oj.uz/problem/view/balkan11_cmp',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/balkan11_cmp',
+                uniqueID: 'https://oj.uz/problem/view/balkan11_cmp',
+                tableID: 'communicationCareLess',
+              },
+              {
+                source: 'IOI',
+                name: '2011 - Parrots',
+                id: 'https://oj.uz/problem/view/IOI11_parrots',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI11_parrots',
+                uniqueID: 'https://oj.uz/problem/view/IOI11_parrots',
+                tableID: 'communicationPermutations',
+              },
+              {
+                source: 'IOI',
+                name: '2017 - Coins',
+                id: 'https://oj.uz/problem/view/IOI17_coins',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI17_coins',
+                uniqueID: 'https://oj.uz/problem/view/IOI17_coins',
+                tableID: 'communicationXOR',
+              },
+              {
+                source: 'IOI',
+                name: '2019 - Transfer',
+                id: 'https://oj.uz/problem/view/IOI19_transfer',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: 'ioi-19-transfer',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI19_transfer',
+                uniqueID: 'https://oj.uz/problem/view/IOI19_transfer',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'CEOI',
+                name: '2014 - Question',
+                id: 'https://oj.uz/problem/view/CEOI14_question_grader',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'ceoi-14-question',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI14_question_grader',
+                uniqueID: 'https://oj.uz/problem/view/CEOI14_question_grader',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'JOI',
+                name: '2015 - Navigation',
+                id: 'https://dunjudge.me/analysis/problems/762/',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'joi-15-navigation',
+                solQuality: 'ok',
+                url: 'https://dunjudge.me/analysis/problems/762/',
+                uniqueID: 'https://dunjudge.me/analysis/problems/762/',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2010 - Saveit!',
+                id: 'https://oj.uz/problem/view/IOI10_saveit',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI10_saveit',
+                uniqueID: 'https://oj.uz/problem/view/IOI10_saveit',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'IOI',
+                name: '2012 - Last Supper',
+                id: 'https://oj.uz/problem/view/IOI12_supper',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI12_supper',
+                uniqueID: 'https://oj.uz/problem/view/IOI12_supper',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'JOI',
+                name: '2018 - Airline',
+                id: 'https://oj.uz/problem/view/JOI18_airline',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'joi-18-airline',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI18_airline',
+                uniqueID: 'https://oj.uz/problem/view/JOI18_airline',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'JOI',
+                name: '2020 - Stray Cat',
+                id: 'https://oj.uz/problem/view/JOI20_stray',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI20_stray',
+                uniqueID: 'https://oj.uz/problem/view/JOI20_stray',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'JOI',
+                name: '2019 - Two Transportations',
+                id: 'https://oj.uz/problem/view/JOI19_transportations',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID:
+                  'https://codeforces.com/blog/entry/66022?#comment-500756',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI19_transportations',
+                uniqueID: 'https://oj.uz/problem/view/JOI19_transportations',
+                tableID: 'communicationGeneral',
+              },
+              {
+                source: 'JOI',
+                name: '2014 - Kanji Shiritori',
+                id: 'https://dunjudge.me/analysis/problems/1042/',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://dunjudge.me/analysis/problems/1042/',
+                uniqueID: 'https://dunjudge.me/analysis/problems/1042/',
+                tableID: 'communicationGeneral',
               },
             ],
           },
@@ -1045,6 +1630,7 @@ export default {
                 url: 'https://contest.yandex.com/ioi/contest/566/problems/E/',
                 uniqueID:
                   'https://contest.yandex.com/ioi/contest/566/problems/E/',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -1057,6 +1643,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://ioinformatics.org/files/ioi2001problem2.pdf',
                 uniqueID: 'https://ioinformatics.org/files/ioi2001problem2.pdf',
+                tableID: 'general',
               },
               {
                 source: 'Baltic OI',
@@ -1070,6 +1657,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI14_coprobber',
                 uniqueID: 'https://oj.uz/problem/view/BOI14_coprobber',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -1085,6 +1673,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/5Z9PRRPP-R90WhmbSY_qHd-1/site/',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -1100,6 +1689,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/M5CruI5eCu8elnNFHuiXBrvV/site/',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -1115,574 +1705,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/y9HM1ctDU8V8xLMRUYACDIRs/site/',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'LC',
-              title: 'LineContainer',
-            },
-            problems: [
-              {
-                source: 'YS',
-                name: 'Line Add Get Min',
-                id: 'line_add_get_min',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/line_add_get_min',
-                uniqueID: 'https://judge.yosupo.jp/problem/line_add_get_min',
-              },
-              {
-                source: 'CEOI',
-                name: '2017 - Building Bridges',
-                id: 'https://oj.uz/problem/view/CEOI17_building',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['DP', 'Convex'],
-                solID: '@Later',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI17_building',
-                uniqueID: 'https://oj.uz/problem/view/CEOI17_building',
-              },
-              {
-                source: 'Kattis',
-                name: 'Marshland Rescues',
-                id: 'https://maps19.kattis.com/problems/marshlandrescues',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://maps19.kattis.com/problems/marshlandrescues',
-                uniqueID: 'https://maps19.kattis.com/problems/marshlandrescues',
-              },
-              {
-                source: 'JOI',
-                name: '2017 - Dragon 2',
-                id: 'https://oj.uz/problem/view/JOI17_dragon2',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI17_dragon2',
-                uniqueID: 'https://oj.uz/problem/view/JOI17_dragon2',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2011 - 2circles',
-                id: 'https://oj.uz/problem/view/balkan11_2circles',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Geometry', 'Binary Search'],
-                solID: 'http://boi2011.ro/resurse/tasks/2circles-sol.pdf',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/balkan11_2circles',
-                uniqueID: 'https://oj.uz/problem/view/balkan11_2circles',
-              },
-              {
-                source: 'YS',
-                name: 'Segment Add Get Min',
-                id: 'segment_add_get_min',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/segment_add_get_min',
-                uniqueID: 'https://judge.yosupo.jp/problem/segment_add_get_min',
-              },
-              {
-                source: 'POI',
-                name: '2014 - Supercomputer',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['DP', 'Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
-                uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
-              },
-              {
-                source: 'CEOI',
-                name: '2009 - Harbingers',
-                id: 'https://oj.uz/problem/view/CEOI09_harbingers',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP', 'Convex'],
-                solID: 'http://infosb.net/ceoi2009/tasks/solutions.doc',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI09_harbingers',
-                uniqueID: 'https://oj.uz/problem/view/CEOI09_harbingers',
-              },
-              {
-                source: 'FHC',
-                name: "Log Drivin' Hirin",
-                id: '2020/round-2/problems/D',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP', 'Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
-                uniqueID:
-                  'https://www.facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D',
-              },
-              {
-                source: 'AC',
-                name: 'Contest with Drinks Hard',
-                id: 'contests/arc066/tasks/arc066_d',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://atcoder.jp/contests/arc066/tasks/arc066_d',
-                uniqueID: 'https://atcoder.jp/contests/arc066/tasks/arc066_d',
-              },
-              {
-                source: 'TLX',
-                name: 'Mall & Transportation',
-                id: 'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
-                uniqueID:
-                  'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
-              },
-              {
-                source: 'Old Gold',
-                name: 'Fencing the Herd',
-                id: '534',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'interactive',
-              title: 'Interactive and Communication Problems',
-            },
-            problems: [
-              {
-                source: 'InfO(1) Cup',
-                name: '2017 - Easter Eggs',
-                id: 'https://oj.uz/problem/view/info1cup17_eastereggs',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/info1cup17_eastereggs',
-                uniqueID: 'https://oj.uz/problem/view/info1cup17_eastereggs',
-              },
-              {
-                source: 'IOI',
-                name: '2013 - Cave',
-                id: 'https://oj.uz/problem/view/IOI13_cave',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI13_cave',
-                uniqueID: 'https://oj.uz/problem/view/IOI13_cave',
-              },
-              {
-                source: 'IOI',
-                name: '2018 - Combo',
-                id: 'https://oj.uz/problem/view/IOI18_combo',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI18_combo',
-                uniqueID: 'https://oj.uz/problem/view/IOI18_combo',
-              },
-              {
-                source: 'IOI',
-                name: '2017 - The Big Prize',
-                id: 'https://oj.uz/problem/view/IOI17_prize',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI17_prize',
-                uniqueID: 'https://oj.uz/problem/view/IOI17_prize',
-              },
-              {
-                source: 'IOI',
-                name: '2016 - Messy Bug',
-                id: 'https://oj.uz/problem/view/IOI16_messy',
-                difficulty: 'Normal',
-                starred: true,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI16_messy',
-                uniqueID: 'https://oj.uz/problem/view/IOI16_messy',
-              },
-              {
-                source: 'APIO',
-                name: '2016 - Gap',
-                id: 'https://oj.uz/problem/view/APIO16_gap',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'apio-16-gap',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/APIO16_gap',
-                uniqueID: 'https://oj.uz/problem/view/APIO16_gap',
-              },
-              {
-                source: 'CEOI',
-                name: '2016 - ICC',
-                id: 'https://oj.uz/problem/view/CEOI16_icc',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID:
-                  'http://www.ceoi2016.ro/wp-content/uploads/2016/08/icc-solution.pdf',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI16_icc',
-                uniqueID: 'https://oj.uz/problem/view/CEOI16_icc',
-              },
-              {
-                source: 'IOI',
-                name: '2014 - Rail',
-                id: 'https://oj.uz/problem/view/IOI14_rail',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI14_rail',
-                uniqueID: 'https://oj.uz/problem/view/IOI14_rail',
-              },
-              {
-                source: 'IOI',
-                name: '2015 - Scales',
-                id: 'https://oj.uz/problem/view/IOI15_scales',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI15_scales',
-                uniqueID: 'https://oj.uz/problem/view/IOI15_scales',
-              },
-              {
-                source: 'IOI',
-                name: '2015 - Towns',
-                id: 'https://oj.uz/problem/view/IOI15_towns',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI15_towns',
-                uniqueID: 'https://oj.uz/problem/view/IOI15_towns',
-              },
-              {
-                source: 'IOI',
-                name: '2018 - Highway',
-                id: 'https://oj.uz/problem/view/IOI18_highway',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI18_highway',
-                uniqueID: 'https://oj.uz/problem/view/IOI18_highway',
-              },
-              {
-                source: 'IOI',
-                name: '2017 - Simurgh',
-                id: 'https://oj.uz/problem/view/IOI17_simurgh',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI17_simurgh',
-                uniqueID: 'https://oj.uz/problem/view/IOI17_simurgh',
-              },
-              {
-                source: 'APIO',
-                name: '2017 - Koala Game',
-                id: 'https://oj.uz/problem/view/APIO17_koala',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: 'apio-17-koala',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/APIO17_koala',
-                uniqueID: 'https://oj.uz/problem/view/APIO17_koala',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2011 - cmp',
-                id: 'https://oj.uz/problem/view/balkan11_cmp',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/balkan11_cmp',
-                uniqueID: 'https://oj.uz/problem/view/balkan11_cmp',
-              },
-              {
-                source: 'IOI',
-                name: '2011 - Parrots',
-                id: 'https://oj.uz/problem/view/IOI11_parrots',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI11_parrots',
-                uniqueID: 'https://oj.uz/problem/view/IOI11_parrots',
-              },
-              {
-                source: 'IOI',
-                name: '2017 - Coins',
-                id: 'https://oj.uz/problem/view/IOI17_coins',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI17_coins',
-                uniqueID: 'https://oj.uz/problem/view/IOI17_coins',
-              },
-              {
-                source: 'IOI',
-                name: '2019 - Transfer',
-                id: 'https://oj.uz/problem/view/IOI19_transfer',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: 'ioi-19-transfer',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI19_transfer',
-                uniqueID: 'https://oj.uz/problem/view/IOI19_transfer',
-              },
-              {
-                source: 'CEOI',
-                name: '2014 - Question',
-                id: 'https://oj.uz/problem/view/CEOI14_question_grader',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'ceoi-14-question',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI14_question_grader',
-                uniqueID: 'https://oj.uz/problem/view/CEOI14_question_grader',
-              },
-              {
-                source: 'JOI',
-                name: '2015 - Navigation',
-                id: 'https://dunjudge.me/analysis/problems/762/',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'joi-15-navigation',
-                solQuality: 'ok',
-                url: 'https://dunjudge.me/analysis/problems/762/',
-                uniqueID: 'https://dunjudge.me/analysis/problems/762/',
-              },
-              {
-                source: 'IOI',
-                name: '2010 - Saveit!',
-                id: 'https://oj.uz/problem/view/IOI10_saveit',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI10_saveit',
-                uniqueID: 'https://oj.uz/problem/view/IOI10_saveit',
-              },
-              {
-                source: 'IOI',
-                name: '2012 - Last Supper',
-                id: 'https://oj.uz/problem/view/IOI12_supper',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI12_supper',
-                uniqueID: 'https://oj.uz/problem/view/IOI12_supper',
-              },
-              {
-                source: 'JOI',
-                name: '2018 - Airline',
-                id: 'https://oj.uz/problem/view/JOI18_airline',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'joi-18-airline',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI18_airline',
-                uniqueID: 'https://oj.uz/problem/view/JOI18_airline',
-              },
-              {
-                source: 'JOI',
-                name: '2020 - Stray Cat',
-                id: 'https://oj.uz/problem/view/JOI20_stray',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI20_stray',
-                uniqueID: 'https://oj.uz/problem/view/JOI20_stray',
-              },
-              {
-                source: 'JOI',
-                name: '2019 - Two Transportations',
-                id: 'https://oj.uz/problem/view/JOI19_transportations',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID:
-                  'https://codeforces.com/blog/entry/66022?#comment-500756',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI19_transportations',
-                uniqueID: 'https://oj.uz/problem/view/JOI19_transportations',
-              },
-              {
-                source: 'JOI',
-                name: '2014 - Kanji Shiritori',
-                id: 'https://dunjudge.me/analysis/problems/1042/',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://dunjudge.me/analysis/problems/1042/',
-                uniqueID: 'https://dunjudge.me/analysis/problems/1042/',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'lagrange',
-              title: 'Lagrangian Relaxation',
-            },
-            problems: [
-              {
-                source: 'Plat',
-                name: 'Tall Barn',
-                id: '697',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
-              },
-              {
-                source: 'NOI.sg',
-                name: '2019 - Feast',
-                id: 'https://oj.uz/problem/view/NOI19_feast',
-                difficulty: 'Very Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/NOI19_feast',
-                uniqueID: 'https://oj.uz/problem/view/NOI19_feast',
-              },
-              {
-                source: 'CF',
-                name: 'New Year & Handle Change',
-                id: 'contest/1279/problem/F',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1279/problem/F',
-                uniqueID: 'https://codeforces.com/contest/1279/problem/F',
-              },
-              {
-                source: 'Kattis',
-                name: 'Blazing New Trails',
-                id: 'blazingnewtrails',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/blazingnewtrails',
-                uniqueID: 'https://open.kattis.com/problems/blazingnewtrails',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2019 - Tennis',
-                id: 'http://81.4.170.42:8980/training/#/task/Tennis/statement',
-                difficulty: 'Normal',
-                starred: true,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'http://81.4.170.42:8980/training/#/task/Tennis/statement',
-                uniqueID:
-                  'http://81.4.170.42:8980/training/#/task/Tennis/statement',
-              },
-              {
-                source: 'IOI',
-                name: '2016 - Aliens',
-                id: 'IOI16_aliens',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: 'https://ioinformatics.org/files/ioi2016solutions.pdf',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI16_aliens',
-                uniqueID: 'https://oj.uz/problem/view/IOI16_aliens',
+                tableID: 'general',
               },
             ],
           },
@@ -1708,6 +1731,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.spoj.com/problems/DYNACON1',
                 uniqueID: 'https://www.spoj.com/problems/DYNACON1',
+                tableID: 'conSam',
               },
               {
                 source: 'CF',
@@ -1720,6 +1744,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1109/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1109/problem/F',
+                tableID: 'con',
               },
               {
                 source: 'SPOJ',
@@ -1732,6 +1757,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.spoj.com/problems/DYNALCA',
                 uniqueID: 'https://www.spoj.com/problems/DYNALCA',
+                tableID: 'con',
               },
               {
                 source: 'YS',
@@ -1746,6 +1772,7 @@ export default {
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum',
+                tableID: 'pathSam',
               },
               {
                 source: 'YS',
@@ -1760,6 +1787,7 @@ export default {
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite',
+                tableID: 'path',
               },
               {
                 source: 'DMOJ',
@@ -1772,6 +1800,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/wac4p7',
                 uniqueID: 'https://dmoj.ca/problem/wac4p7',
+                tableID: 'path',
               },
               {
                 source: 'HR',
@@ -1787,6 +1816,7 @@ export default {
                   'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
                 uniqueID:
                   'https://www.hackerrank.com/contests/pwshpc-online-round/challenges/pwsh-tokens/problem',
+                tableID: 'path',
               },
               {
                 source: 'CEOI',
@@ -1799,6 +1829,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/174/list/',
                 uniqueID: 'https://cses.fi/174/list/',
+                tableID: 'path',
               },
               {
                 source: 'Baltic OI',
@@ -1811,6 +1842,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1386/problem/C',
                 uniqueID: 'https://codeforces.com/contest/1386/problem/C',
+                tableID: 'path',
               },
               {
                 source: 'DMOJ',
@@ -1823,6 +1855,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ds5easy',
                 uniqueID: 'https://dmoj.ca/problem/ds5easy',
+                tableID: 'path',
               },
               {
                 source: 'CF',
@@ -1836,6 +1869,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1344/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1344/problem/E',
+                tableID: 'path',
               },
               {
                 source: 'CF',
@@ -1848,6 +1882,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/117/problem/E',
                 uniqueID: 'https://codeforces.com/contest/117/problem/E',
+                tableID: 'path',
               },
               {
                 source: 'CF',
@@ -1861,6 +1896,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/101620',
                 uniqueID: 'https://codeforces.com/gym/101620',
+                tableID: 'path',
               },
               {
                 source: 'IOI',
@@ -1873,6 +1909,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI11_elephants',
                 uniqueID: 'https://oj.uz/problem/view/IOI11_elephants',
+                tableID: 'path',
               },
               {
                 source: 'YS',
@@ -1887,6 +1924,7 @@ export default {
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_subtree_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_subtree_sum',
+                tableID: 'subSam',
               },
               {
                 source: 'CF',
@@ -1899,6 +1937,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/603/problem/E',
                 uniqueID: 'https://codeforces.com/contest/603/problem/E',
+                tableID: 'sub',
               },
               {
                 source: 'YS',
@@ -1913,6 +1952,7 @@ export default {
                   'https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum',
+                tableID: 'sub',
               },
               {
                 source: 'CF',
@@ -1925,6 +1965,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1172/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1172/problem/E',
+                tableID: 'sub',
               },
               {
                 source: 'DMOJ',
@@ -1937,6 +1978,113 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ds5',
                 uniqueID: 'https://dmoj.ca/problem/ds5',
+                tableID: 'sub',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'matroid-isect',
+              title: 'Matroid Intersection',
+            },
+            problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'lagrange',
+              title: 'Lagrangian Relaxation',
+            },
+            problems: [
+              {
+                source: 'Plat',
+                name: 'Tall Barn',
+                id: '697',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=697',
+                tableID: 'sample',
+              },
+              {
+                source: 'NOI.sg',
+                name: '2019 - Feast',
+                id: 'https://oj.uz/problem/view/NOI19_feast',
+                difficulty: 'Very Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/NOI19_feast',
+                uniqueID: 'https://oj.uz/problem/view/NOI19_feast',
+                tableID: 'probs',
+              },
+              {
+                source: 'CF',
+                name: 'New Year & Handle Change',
+                id: 'contest/1279/problem/F',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1279/problem/F',
+                uniqueID: 'https://codeforces.com/contest/1279/problem/F',
+                tableID: 'probs',
+              },
+              {
+                source: 'Kattis',
+                name: 'Blazing New Trails',
+                id: 'blazingnewtrails',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/blazingnewtrails',
+                uniqueID: 'https://open.kattis.com/problems/blazingnewtrails',
+                tableID: 'probs',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2019 - Tennis',
+                id: 'http://81.4.170.42:8980/training/#/task/Tennis/statement',
+                difficulty: 'Normal',
+                starred: true,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'http://81.4.170.42:8980/training/#/task/Tennis/statement',
+                uniqueID:
+                  'http://81.4.170.42:8980/training/#/task/Tennis/statement',
+                tableID: 'probs',
+              },
+              {
+                source: 'IOI',
+                name: '2016 - Aliens',
+                id: 'IOI16_aliens',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: 'https://ioinformatics.org/files/ioi2016solutions.pdf',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI16_aliens',
+                uniqueID: 'https://oj.uz/problem/view/IOI16_aliens',
+                tableID: 'probs',
               },
             ],
           },
@@ -1962,6 +2110,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1694',
                 uniqueID: 'https://cses.fi/problemset/task/1694',
+                tableID: 'maxSam',
               },
               {
                 source: 'CSES',
@@ -1974,6 +2123,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1711',
                 uniqueID: 'https://cses.fi/problemset/task/1711',
+                tableID: 'flow',
               },
               {
                 source: 'CSES',
@@ -1986,6 +2136,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1696',
                 uniqueID: 'https://cses.fi/problemset/task/1696',
+                tableID: 'match',
               },
               {
                 source: 'SPOJ',
@@ -1998,6 +2149,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.spoj.com/problems/FASTFLOW',
                 uniqueID: 'https://www.spoj.com/problems/FASTFLOW',
+                tableID: 'dinic',
               },
               {
                 source: 'YS',
@@ -2010,20 +2162,9 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/bipartitematching',
                 uniqueID: 'https://judge.yosupo.jp/problem/bipartitematching',
+                tableID: 'dinic',
               },
             ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'matroid-isect',
-              title: 'Matroid Intersection',
-            },
-            problems: [],
           },
         },
         {
@@ -2047,6 +2188,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/237/problem/E',
                 uniqueID: 'https://codeforces.com/contest/237/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2060,6 +2202,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/818/problem/G',
                 uniqueID: 'https://codeforces.com/contest/818/problem/G',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2072,6 +2215,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/802/problem/N',
                 uniqueID: 'https://codeforces.com/contest/802/problem/N',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2085,6 +2229,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1316/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1316/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2097,6 +2242,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1307/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1307/problem/G',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2109,6 +2255,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1427/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1427/problem/G',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2121,8 +2268,21 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1107/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1107/problem/F',
+                tableID: 'appl',
               },
             ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'multiplicative',
+              title: 'Prefix Sums of Multiplicative Functions',
+            },
+            problems: [],
           },
         },
         {
@@ -2146,6 +2306,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1709',
                 uniqueID: 'https://cses.fi/problemset/task/1709',
+                tableID: 'minEx',
               },
               {
                 source: 'Kattis',
@@ -2158,6 +2319,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://maps20.kattis.com/problems/thewrathofkahn',
                 uniqueID: 'https://maps20.kattis.com/problems/thewrathofkahn',
+                tableID: 'pathEx',
               },
               {
                 source: 'CSES',
@@ -2170,6 +2332,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1695',
                 uniqueID: 'https://cses.fi/problemset/task/1695',
+                tableID: 'cut',
               },
               {
                 source: 'Old Gold',
@@ -2183,6 +2346,7 @@ export default {
                 url: 'http://www.usaco.org/index.php?page=viewproblem2&cpid=93',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=93',
+                tableID: 'cut',
               },
               {
                 source: 'CSA',
@@ -2195,6 +2359,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://csacademy.com/contest/archive/task/fashion',
                 uniqueID: 'https://csacademy.com/contest/archive/task/fashion',
+                tableID: 'cut',
               },
               {
                 source: 'CF',
@@ -2207,6 +2372,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/808/F',
                 uniqueID: 'https://codeforces.com/problemset/problem/808/F',
+                tableID: 'cut',
               },
               {
                 source: 'CF',
@@ -2219,6 +2385,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1404/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1404/problem/E',
+                tableID: 'cut',
               },
               {
                 source: 'CF',
@@ -2231,6 +2398,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/724/E',
                 uniqueID: 'https://codeforces.com/problemset/problem/724/E',
+                tableID: 'cut',
               },
               {
                 source: 'AC',
@@ -2243,6 +2411,7 @@ export default {
                 solQuality: 'ok',
                 url: 'http://arc085.contest.atcoder.jp/tasks/arc085_c',
                 uniqueID: 'http://arc085.contest.atcoder.jp/tasks/arc085_c',
+                tableID: 'cut',
               },
               {
                 source: 'FHC',
@@ -2257,20 +2426,9 @@ export default {
                   'https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C',
                 uniqueID:
                   'https://www.facebook.com/codingcompetitions/hacker-cup/2015/round-3/problems/C',
+                tableID: 'cut',
               },
             ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'multiplicative',
-              title: 'Prefix Sums of Multiplicative Functions',
-            },
-            problems: [],
           },
         },
         {
@@ -2295,6 +2453,7 @@ export default {
                 url: 'https://judge.yosupo.jp/problem/persistent_unionfind',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/persistent_unionfind',
+                tableID: 'rollback',
               },
               {
                 source: 'YS',
@@ -2309,6 +2468,7 @@ export default {
                   'https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum',
+                tableID: 'sam',
               },
               {
                 source: 'CF',
@@ -2321,6 +2481,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1140/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1140/problem/F',
+                tableID: 'res',
               },
               {
                 source: 'CF',
@@ -2334,6 +2495,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1217/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1217/problem/F',
+                tableID: 'res',
               },
               {
                 source: 'Baltic OI',
@@ -2346,6 +2508,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1386/problem/C',
                 uniqueID: 'https://codeforces.com/contest/1386/problem/C',
+                tableID: 'res',
               },
             ],
           },
@@ -2371,6 +2534,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1683',
                 uniqueID: 'https://cses.fi/problemset/task/1683',
+                tableID: 'ex',
               },
               {
                 source: 'CSES',
@@ -2383,6 +2547,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1686',
                 uniqueID: 'https://cses.fi/problemset/task/1686',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -2397,6 +2562,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
+                tableID: 'general',
               },
               {
                 source: 'Old Gold',
@@ -2411,6 +2577,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=516',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=516',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -2423,6 +2590,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1239/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1239/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -2439,6 +2607,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
+                tableID: 'general',
               },
               {
                 source: 'Kattis',
@@ -2451,6 +2620,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/equivalences',
                 uniqueID: 'https://open.kattis.com/problems/equivalences',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -2463,6 +2633,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1685',
                 uniqueID: 'https://cses.fi/problemset/task/1685',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -2475,6 +2646,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1684',
                 uniqueID: 'https://cses.fi/problemset/task/1684',
+                tableID: 'satEx',
               },
             ],
           },
@@ -2500,6 +2672,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/shortestpath3',
                 uniqueID: 'https://open.kattis.com/problems/shortestpath3',
+                tableID: 'bellSam',
               },
               {
                 source: 'CSES',
@@ -2512,6 +2685,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1197',
                 uniqueID: 'https://cses.fi/problemset/task/1197',
+                tableID: 'bellSam',
               },
               {
                 source: 'RMI',
@@ -2525,6 +2699,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/RMI19_restore',
                 uniqueID: 'https://oj.uz/problem/view/RMI19_restore',
+                tableID: 'linear',
               },
               {
                 source: 'Kattis',
@@ -2537,6 +2712,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/allpairspath',
                 uniqueID: 'https://open.kattis.com/problems/allpairspath',
+                tableID: 'floydSam',
               },
               {
                 source: 'APIO',
@@ -2549,6 +2725,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO17_merchant',
                 uniqueID: 'https://oj.uz/problem/view/APIO17_merchant',
+                tableID: 'floydProbs',
               },
               {
                 source: 'APIO',
@@ -2561,6 +2738,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://tlx.toki.id/problems/apio-2013/C/',
                 uniqueID: 'https://tlx.toki.id/problems/apio-2013/C/',
+                tableID: 'dijk',
               },
             ],
           },
@@ -2586,6 +2764,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1737',
                 uniqueID: 'https://cses.fi/problemset/task/1737',
+                tableID: 'persistentSample',
               },
               {
                 source: 'COCI',
@@ -2599,6 +2778,7 @@ export default {
                 url: 'https://evaluator.hsin.hr/tasks/HONI202137specijacija/',
                 uniqueID:
                   'https://evaluator.hsin.hr/tasks/HONI202137specijacija/',
+                tableID: 'segtree',
               },
               {
                 source: 'DMOJ',
@@ -2611,6 +2791,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/wac4p5',
                 uniqueID: 'https://dmoj.ca/problem/wac4p5',
+                tableID: 'heap',
               },
               {
                 source: 'YS',
@@ -2623,177 +2804,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/k_shortest_walk',
                 uniqueID: 'https://judge.yosupo.jp/problem/k_shortest_walk',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'slope',
-              title: 'Slope Trick',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Increasing Array II',
-                id: '2132',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: 'cses-2132',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/2132',
-                uniqueID: 'https://cses.fi/problemset/task/2132',
-              },
-              {
-                source: 'CF',
-                name: 'Buy Low Sell High',
-                id: 'contest/866/problem/D',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/866/problem/D',
-                uniqueID: 'https://codeforces.com/contest/866/problem/D',
-              },
-              {
-                source: 'LMiO',
-                name: '2019 - Potatoes & Fertilizers',
-                id: 'LMIO19_bulves',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/LMIO19_bulves',
-                uniqueID: 'https://oj.uz/problem/view/LMIO19_bulves',
-              },
-              {
-                source: 'Plat',
-                name: 'Landscaping',
-                id: '650',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: 'Equivalent Problem: GP of Wroclaw 20 J',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
-              },
-              {
-                source: 'CF',
-                name: 'Bookface',
-                id: 'gym/102576/problem/C',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/gym/102576/problem/C',
-                uniqueID: 'https://codeforces.com/gym/102576/problem/C',
-              },
-              {
-                source: 'CC',
-                name: 'CCDSAP Exam',
-                id: 'CCDSAP',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://www.codechef.com/problems/CCDSAP',
-                uniqueID: 'https://www.codechef.com/problems/CCDSAP',
-              },
-              {
-                source: 'CEOI',
-                name: '2019 - Magic Tree',
-                id: 'CEOI19_magictree',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI19_magictree',
-                uniqueID: 'https://oj.uz/problem/view/CEOI19_magictree',
-              },
-              {
-                source: 'NOI.sg',
-                name: '2018 - Safety',
-                id: 'NOI18_safety',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/NOI18_safety',
-                uniqueID: 'https://oj.uz/problem/view/NOI18_safety',
-              },
-              {
-                source: 'CF',
-                name: 'Farm of Monsters',
-                id: 'gym/102538/problem/F',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/gym/102538/problem/F',
-                uniqueID: 'https://codeforces.com/gym/102538/problem/F',
-              },
-              {
-                source: 'CF',
-                name: 'Moving Walkways',
-                id: 'contest/1209/problem/H',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1209/problem/H',
-                uniqueID: 'https://codeforces.com/contest/1209/problem/H',
-              },
-              {
-                source: 'APIO',
-                name: '2016 - Fireworks',
-                id: 'APIO16_fireworks',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['Slope Trick', 'Small to Large'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/APIO16_fireworks',
-                uniqueID: 'https://oj.uz/problem/view/APIO16_fireworks',
-              },
-              {
-                source: 'CF',
-                name: "April Fools' Problem",
-                id: 'contest/802/problem/O',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Slope Trick'],
-                solID: 'binary search on top of slope trick',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/802/problem/O',
-                uniqueID: 'https://codeforces.com/contest/802/problem/O',
-              },
-              {
-                source: 'ICPC WF',
-                name: 'Conquer the World',
-                id: 'https://icpc.kattis.com/problems/conquertheworld',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Slope Trick', 'Small to Large'],
-                solID: '"Potatoes" on tree!!',
-                solQuality: 'ok',
-                url: 'https://icpc.kattis.com/problems/conquertheworld',
-                uniqueID: 'https://icpc.kattis.com/problems/conquertheworld',
+                tableID: 'heap',
               },
             ],
           },
@@ -2821,6 +2832,274 @@ export default {
                   'https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum',
+                tableID: 'segTreeBeats',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'springboards',
+              title: 'Max Suffix Query with Insertions Only',
+            },
+            problems: [
+              {
+                source: 'Gold',
+                name: 'Springboards',
+                id: '995',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['PURQ'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
+                tableID: 'sample',
+              },
+              {
+                source: 'Plat',
+                name: 'Nocross',
+                id: '721',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['PURQ'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
+                tableID: 'problems',
+              },
+              {
+                source: 'CF',
+                name: 'Rainbow Rectangles',
+                id: '1396/problem/D',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['PURQ'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1396/problem/D',
+                uniqueID: 'https://codeforces.com/contest/1396/problem/D',
+                tableID: 'problems',
+              },
+              {
+                source: 'CF',
+                name: 'Karen & Cards',
+                id: 'contest/815/problem/D',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['PURQ'],
+                solID:
+                  'For each a from p to 1, calculate the number of possible cards with that value of a.',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/815/problem/D',
+                uniqueID: 'https://codeforces.com/contest/815/problem/D',
+                tableID: 'problems',
+              },
+              {
+                source: 'CF',
+                name: 'Interesting Drug',
+                id: 'gym/102059/problem/K',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['PURQ'],
+                solID: 'Genfuncs not required but possibly helpful',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/gym/102059/problem/K',
+                uniqueID: 'https://codeforces.com/gym/102059/problem/K',
+                tableID: 'problems',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'slope',
+              title: 'Slope Trick',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Increasing Array II',
+                id: '2132',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: 'cses-2132',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/2132',
+                uniqueID: 'https://cses.fi/problemset/task/2132',
+                tableID: 'ex',
+              },
+              {
+                source: 'CF',
+                name: 'Buy Low Sell High',
+                id: 'contest/866/problem/D',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/866/problem/D',
+                uniqueID: 'https://codeforces.com/contest/866/problem/D',
+                tableID: 'buy',
+              },
+              {
+                source: 'LMiO',
+                name: '2019 - Potatoes & Fertilizers',
+                id: 'LMIO19_bulves',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/LMIO19_bulves',
+                uniqueID: 'https://oj.uz/problem/view/LMIO19_bulves',
+                tableID: 'potatoes',
+              },
+              {
+                source: 'Plat',
+                name: 'Landscaping',
+                id: '650',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: 'Equivalent Problem: GP of Wroclaw 20 J',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=650',
+                tableID: 'landscaping',
+              },
+              {
+                source: 'CF',
+                name: 'Bookface',
+                id: 'gym/102576/problem/C',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/gym/102576/problem/C',
+                uniqueID: 'https://codeforces.com/gym/102576/problem/C',
+                tableID: 'general',
+              },
+              {
+                source: 'CC',
+                name: 'CCDSAP Exam',
+                id: 'CCDSAP',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://www.codechef.com/problems/CCDSAP',
+                uniqueID: 'https://www.codechef.com/problems/CCDSAP',
+                tableID: 'general',
+              },
+              {
+                source: 'CEOI',
+                name: '2019 - Magic Tree',
+                id: 'CEOI19_magictree',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI19_magictree',
+                uniqueID: 'https://oj.uz/problem/view/CEOI19_magictree',
+                tableID: 'general',
+              },
+              {
+                source: 'NOI.sg',
+                name: '2018 - Safety',
+                id: 'NOI18_safety',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/NOI18_safety',
+                uniqueID: 'https://oj.uz/problem/view/NOI18_safety',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Farm of Monsters',
+                id: 'gym/102538/problem/F',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/gym/102538/problem/F',
+                uniqueID: 'https://codeforces.com/gym/102538/problem/F',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Moving Walkways',
+                id: 'contest/1209/problem/H',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1209/problem/H',
+                uniqueID: 'https://codeforces.com/contest/1209/problem/H',
+                tableID: 'general',
+              },
+              {
+                source: 'APIO',
+                name: '2016 - Fireworks',
+                id: 'APIO16_fireworks',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Slope Trick', 'Small to Large'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/APIO16_fireworks',
+                uniqueID: 'https://oj.uz/problem/view/APIO16_fireworks',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: "April Fools' Problem",
+                id: 'contest/802/problem/O',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Slope Trick'],
+                solID: 'binary search on top of slope trick',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/802/problem/O',
+                uniqueID: 'https://codeforces.com/contest/802/problem/O',
+                tableID: 'general',
+              },
+              {
+                source: 'ICPC WF',
+                name: 'Conquer the World',
+                id: 'https://icpc.kattis.com/problems/conquertheworld',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Slope Trick', 'Small to Large'],
+                solID: '"Potatoes" on tree!!',
+                solQuality: 'ok',
+                url: 'https://icpc.kattis.com/problems/conquertheworld',
+                uniqueID: 'https://icpc.kattis.com/problems/conquertheworld',
+                tableID: 'general',
               },
             ],
           },
@@ -2846,6 +3125,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/stringmatching',
                 uniqueID: 'https://open.kattis.com/problems/stringmatching',
+                tableID: 'KMP',
               },
               {
                 source: 'POI',
@@ -2861,6 +3141,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
+                tableID: 'KMP',
               },
               {
                 source: 'Baltic OI',
@@ -2873,6 +3154,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI19_necklace4',
                 uniqueID: 'https://oj.uz/problem/view/BOI19_necklace4',
+                tableID: 'KMP',
               },
               {
                 source: 'POJ',
@@ -2886,6 +3168,7 @@ export default {
                 solQuality: 'ok',
                 url: 'http://poj.org/problem?id=3167',
                 uniqueID: 'http://poj.org/problem?id=3167',
+                tableID: 'KMP',
               },
               {
                 source: 'POI',
@@ -2901,6 +3184,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/PT4yHRX9Mmz85ndhNPGCi_WB/site/',
+                tableID: 'KMP',
               },
               {
                 source: 'CEOI',
@@ -2917,6 +3201,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/',
+                tableID: 'KMP',
               },
               {
                 source: 'POI',
@@ -2932,6 +3217,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/DkPj-ES6glaEwxppbuaxbOO6/site/',
+                tableID: 'KMP',
               },
               {
                 source: 'POI',
@@ -2947,6 +3233,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/H6hUSie6S-cBVL4PG5rqQnmj/site/',
+                tableID: 'KMP',
               },
               {
                 source: 'YS',
@@ -2959,6 +3246,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/zalgorithm',
                 uniqueID: 'https://judge.yosupo.jp/problem/zalgorithm',
+                tableID: 'Z',
               },
               {
                 source: 'CF',
@@ -2972,6 +3260,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1051/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1051/problem/E',
+                tableID: 'Z',
               },
               {
                 source: 'CF',
@@ -2984,6 +3273,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1313/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1313/problem/E',
+                tableID: 'Z',
               },
               {
                 source: 'CSES',
@@ -2996,6 +3286,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1111',
                 uniqueID: 'https://cses.fi/problemset/task/1111',
+                tableID: 'manacherFocus',
               },
               {
                 source: 'CF',
@@ -3009,6 +3300,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1080/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1080/problem/E',
+                tableID: 'mana',
               },
               {
                 source: 'CF',
@@ -3022,6 +3314,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1326/problem/D2',
                 uniqueID: 'https://codeforces.com/contest/1326/problem/D2',
+                tableID: 'mana',
               },
               {
                 source: 'CF',
@@ -3034,6 +3327,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/17/problem/E',
                 uniqueID: 'https://codeforces.com/contest/17/problem/E',
+                tableID: 'mana',
               },
               {
                 source: 'YS',
@@ -3046,6 +3340,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/set_xor_min',
                 uniqueID: 'https://judge.yosupo.jp/problem/set_xor_min',
+                tableID: 'trie',
               },
               {
                 source: 'CF',
@@ -3059,6 +3354,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1083/problem/B',
                 uniqueID: 'https://codeforces.com/contest/1083/problem/B',
+                tableID: 'trie',
               },
               {
                 source: 'CF',
@@ -3072,6 +3368,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1055/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1055/problem/F',
+                tableID: 'trie',
               },
               {
                 source: 'Gold',
@@ -3086,6 +3383,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=533',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=533',
+                tableID: 'aho',
               },
               {
                 source: 'CF',
@@ -3099,6 +3397,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1202/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1202/problem/E',
+                tableID: 'aho',
               },
               {
                 source: 'APIO',
@@ -3111,6 +3410,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO14_palindrome',
                 uniqueID: 'https://oj.uz/problem/view/APIO14_palindrome',
+                tableID: 'pal',
               },
               {
                 source: 'CF',
@@ -3123,6 +3423,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/17/problem/E',
                 uniqueID: 'https://codeforces.com/contest/17/problem/E',
+                tableID: 'pal',
               },
               {
                 source: 'DMOJ',
@@ -3135,6 +3436,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/mmcc15p3',
                 uniqueID: 'https://dmoj.ca/problem/mmcc15p3',
+                tableID: 'pal',
               },
             ],
           },
@@ -3162,6 +3464,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
+                tableID: 'auto',
               },
               {
                 source: 'CF',
@@ -3176,6 +3479,7 @@ export default {
                   'https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
                 uniqueID:
                   'https://codeforces.com/edu/course/2/lesson/2/2/practice/contest/269103/problem/A',
+                tableID: 'general_suffix',
               },
               {
                 source: 'Kattis',
@@ -3189,6 +3493,7 @@ export default {
                 url: 'https://open.kattis.com/problems/stringmultimatching',
                 uniqueID:
                   'https://open.kattis.com/problems/stringmultimatching',
+                tableID: 'general_suffix',
               },
               {
                 source: 'onlinejudge.org',
@@ -3204,6 +3509,7 @@ export default {
                   'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
                 uniqueID:
                   'https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=18&page=show_problem&problem=1620',
+                tableID: 'general_suffix',
               },
               {
                 source: 'SPOJ',
@@ -3217,6 +3523,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.spoj.com/problems/SUBLEX',
                 uniqueID: 'https://www.spoj.com/problems/SUBLEX',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3229,6 +3536,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/547/problem/E',
                 uniqueID: 'https://codeforces.com/contest/547/problem/E',
+                tableID: 'general_suffix',
               },
               {
                 source: 'HE',
@@ -3244,6 +3552,7 @@ export default {
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
                 uniqueID:
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/suffix-trees/practice-problems/algorithm/power-of-string-3/description/',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3256,6 +3565,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/235/problem/C',
                 uniqueID: 'https://codeforces.com/contest/235/problem/C',
+                tableID: 'general_suffix',
               },
               {
                 source: 'Balkan OI',
@@ -3268,6 +3578,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.acmicpc.net/problem/11555',
                 uniqueID: 'https://www.acmicpc.net/problem/11555',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3280,6 +3591,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/653/problem/F',
                 uniqueID: 'https://codeforces.com/contest/653/problem/F',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3292,6 +3604,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1073/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1073/problem/G',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3304,6 +3617,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1207/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1207/problem/G',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3316,6 +3630,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1063/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1063/problem/F',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3328,6 +3643,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1037/problem/H',
                 uniqueID: 'https://codeforces.com/contest/1037/problem/H',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3340,6 +3656,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102129/problem/I',
                 uniqueID: 'https://codeforces.com/gym/102129/problem/I',
+                tableID: 'general_suffix',
               },
               {
                 source: 'CF',
@@ -3352,6 +3669,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/932/problem/G',
                 uniqueID: 'https://codeforces.com/contest/932/problem/G',
+                tableID: 'paltree',
               },
               {
                 source: 'CF',
@@ -3364,6 +3682,101 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1081/problem/H',
                 uniqueID: 'https://codeforces.com/contest/1081/problem/H',
+                tableID: 'paltree',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'adv',
+            },
+            frontmatter: {
+              id: 'suffix-array',
+              title: 'Suffix Array',
+            },
+            problems: [
+              {
+                source: 'YS',
+                name: 'Suffix Array',
+                id: 'suffixarray',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/suffixarray',
+                uniqueID: 'https://judge.yosupo.jp/problem/suffixarray',
+                tableID: 'sample',
+              },
+              {
+                source: 'YS',
+                name: '# of Substrings',
+                id: 'number_of_substrings',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/number_of_substrings',
+                uniqueID:
+                  'https://judge.yosupo.jp/problem/number_of_substrings',
+                tableID: 'lcpSam',
+              },
+              {
+                source: 'Plat',
+                name: 'Standing Out from the Herd',
+                id: '768',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
+                tableID: 'lcp',
+              },
+              {
+                source: 'CF',
+                name: 'Two Prefixes',
+                id: 'contest/1090/problem/J',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1090/problem/J',
+                uniqueID: 'https://codeforces.com/contest/1090/problem/J',
+                tableID: 'lcp',
+              },
+              {
+                source: 'CSES',
+                name: 'String Transform',
+                id: '1113',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: 'cses-1113',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1113',
+                uniqueID: 'https://cses.fi/problemset/task/1113',
+                tableID: 'burSam',
+              },
+              {
+                source: 'YS',
+                name: 'Run Enumerate',
+                id: 'runenumerate',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Suffix Array'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/runenumerate',
+                uniqueID: 'https://judge.yosupo.jp/problem/runenumerate',
+                tableID: 'runSam',
               },
             ],
           },
@@ -3392,94 +3805,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/b0BM0al2crQBt6zovEtJfOc6/site/?key=statement',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'suffix-array',
-              title: 'Suffix Array',
-            },
-            problems: [
-              {
-                source: 'YS',
-                name: 'Suffix Array',
-                id: 'suffixarray',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/suffixarray',
-                uniqueID: 'https://judge.yosupo.jp/problem/suffixarray',
-              },
-              {
-                source: 'YS',
-                name: '# of Substrings',
-                id: 'number_of_substrings',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/number_of_substrings',
-                uniqueID:
-                  'https://judge.yosupo.jp/problem/number_of_substrings',
-              },
-              {
-                source: 'Plat',
-                name: 'Standing Out from the Herd',
-                id: '768',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=768',
-              },
-              {
-                source: 'CF',
-                name: 'Two Prefixes',
-                id: 'contest/1090/problem/J',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1090/problem/J',
-                uniqueID: 'https://codeforces.com/contest/1090/problem/J',
-              },
-              {
-                source: 'CSES',
-                name: 'String Transform',
-                id: '1113',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: 'cses-1113',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1113',
-                uniqueID: 'https://cses.fi/problemset/task/1113',
-              },
-              {
-                source: 'YS',
-                name: 'Run Enumerate',
-                id: 'runenumerate',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Suffix Array'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/runenumerate',
-                uniqueID: 'https://judge.yosupo.jp/problem/runenumerate',
+                tableID: 'treeRot',
               },
             ],
           },
@@ -3517,6 +3843,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/range_kth_smallest',
                 uniqueID: 'https://judge.yosupo.jp/problem/range_kth_smallest',
+                tableID: 'waveletSam',
               },
               {
                 source: 'Kattis',
@@ -3529,6 +3856,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/easyquery',
                 uniqueID: 'https://open.kattis.com/problems/easyquery',
+                tableID: 'wavelet',
               },
               {
                 source: 'DMOJ',
@@ -3541,6 +3869,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/globexcup19s4',
                 uniqueID: 'https://dmoj.ca/problem/globexcup19s4',
+                tableID: 'wavelet',
               },
             ],
           },
@@ -3566,6 +3895,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://atcoder.jp/contests/agc045/tasks/agc045_a',
                 uniqueID: 'https://atcoder.jp/contests/agc045/tasks/agc045_a',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -3578,6 +3908,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1336/problem/E1',
                 uniqueID: 'https://codeforces.com/contest/1336/problem/E1',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -3590,6 +3921,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1299/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1299/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -3602,6 +3934,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102331/problem/E',
                 uniqueID: 'https://codeforces.com/gym/102331/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'AC',
@@ -3617,6 +3950,7 @@ export default {
                   'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
                 uniqueID:
                   'https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h',
+                tableID: 'general',
               },
               {
                 source: 'TC',
@@ -3633,6 +3967,382 @@ export default {
                   'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
                 uniqueID:
                   'https://community.topcoder.com/stat?c=problem_statement&pm=16109',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'bin-jump',
+              title: 'Binary Jumping',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Company Queries I',
+                id: '1687',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Jumping'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1687',
+                uniqueID: 'https://cses.fi/problemset/task/1687',
+                tableID: 'sample',
+              },
+              {
+                source: 'CSES',
+                name: 'Company Queries II',
+                id: '1688',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['LCA'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1688',
+                uniqueID: 'https://cses.fi/problemset/task/1688',
+                tableID: 'lca',
+              },
+              {
+                source: 'CSES',
+                name: 'Distance Queries',
+                id: '1135',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['LCA'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1135',
+                uniqueID: 'https://cses.fi/problemset/task/1135',
+                tableID: 'lca',
+              },
+              {
+                source: 'CSES',
+                name: 'Planets Queries I',
+                id: '1750',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Jumping'],
+                solID: 'cses-1750',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1750',
+                uniqueID: 'https://cses.fi/problemset/task/1750',
+                tableID: 'binJump',
+              },
+              {
+                source: 'CSES',
+                name: 'Planets Queries II',
+                id: '1160',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Functional Graph'],
+                solID: 'cses-1160',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1160',
+                uniqueID: 'https://cses.fi/problemset/task/1160',
+                tableID: 'binJump',
+              },
+              {
+                source: 'POI',
+                name: '2010 - Frog',
+                id:
+                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'poi-10-zab',
+                solQuality: 'ok',
+                url:
+                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+                uniqueID:
+                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
+                tableID: 'binJump',
+              },
+              {
+                source: 'CF',
+                name: 'Lynyrd Skynyrd',
+                id: '1142/problem/B',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1142/problem/B',
+                uniqueID: 'https://codeforces.com/contest/1142/problem/B',
+                tableID: 'binJump',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2019 - Valley',
+                id: 'https://oj.uz/problem/view/BOI19_valley',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID:
+                  'http://boi2019.eio.ee/wp-content/uploads/2019/05/valley.sol_.en-1.pdf',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI19_valley',
+                uniqueID: 'https://oj.uz/problem/view/BOI19_valley',
+                tableID: 'binJump',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2017 - Toll',
+                id: 'https://oj.uz/problem/view/BOI17_toll',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'baltic-17-toll',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI17_toll',
+                uniqueID: 'https://oj.uz/problem/view/BOI17_toll',
+                tableID: 'binJump',
+              },
+              {
+                source: 'Plat',
+                name: '262144',
+                id: '648',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Binary Jumping'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
+                tableID: 'binJump',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2015 - Editor',
+                id: 'https://oj.uz/problem/view/BOI15_edi',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: [],
+                solID: 'baltic-15-edi',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI15_edi',
+                uniqueID: 'https://oj.uz/problem/view/BOI15_edi',
+                tableID: 'binJump',
+              },
+              {
+                source: 'Plat',
+                name: 'Max Flow',
+                id: '576',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['LCA'],
+                solID:
+                  'First, split each path A-B into the 2 paths A-lca(A, B) and B-lca(A, B). We can then use a Fenwick tree to increment the values of each edge on those paths.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Disruption',
+                id: '842',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Tree Boxes',
+                id: '948',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Newbarns',
+                id: '817',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Diameter'],
+                solID:
+                  'Copy of CF Brain Network "Hard": https://codeforces.com/contest/690/problem/C3',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Gathering',
+                id: '866',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Exercise',
+                id: '901',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
+                tableID: 'usaco',
+              },
+              {
+                source: 'CF',
+                name: 'Sloth Naptime',
+                id: 'https://codeforces.com/gym/102694/problem/C',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Jumping'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/gym/102694/problem/C',
+                uniqueID: 'https://codeforces.com/gym/102694/problem/C',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Duff in the Army',
+                id: '588/problem/E',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/588/problem/E',
+                uniqueID: 'https://codeforces.com/contest/588/problem/E',
+                tableID: 'general',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2017 - Railway',
+                id: 'https://oj.uz/problem/view/BOI17_railway',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'baltic-17-railway',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI17_railway',
+                uniqueID: 'https://oj.uz/problem/view/BOI17_railway',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'MST for Each Edge',
+                id: 'contest/609/problem/E',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/609/problem/E',
+                uniqueID: 'https://codeforces.com/contest/609/problem/E',
+                tableID: 'general',
+              },
+              {
+                source: 'CSA',
+                name: 'Root LCA Queries',
+                id: 'root-lca-queries',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://csacademy.com/contest/archive/task/root-lca-queries',
+                uniqueID:
+                  'https://csacademy.com/contest/archive/task/root-lca-queries',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Two Paths',
+                id: 'contest/1000/problem/G',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1000/problem/G',
+                uniqueID: 'https://codeforces.com/contest/1000/problem/G',
+                tableID: 'general',
+              },
+              {
+                source: 'DMOJ',
+                name: 'Hot & Cold',
+                id: 'bts17p7',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/bts17p7',
+                uniqueID: 'https://dmoj.ca/problem/bts17p7',
+                tableID: 'general',
+              },
+              {
+                source: 'TLX',
+                name: 'Functional Constraint',
+                id: 'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
+                uniqueID:
+                  'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
+                tableID: 'general',
+              },
+              {
+                source: 'TLX',
+                name: 'Graph & Destination',
+                id: 'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['LCA'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
+                uniqueID:
+                  'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
+                tableID: 'general',
               },
             ],
           },
@@ -3659,6 +4369,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1739',
                 uniqueID: 'https://cses.fi/problemset/task/1739',
+                tableID: 'bitSam',
               },
               {
                 source: 'DMOJ',
@@ -3671,6 +4382,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/bfs17p6',
                 uniqueID: 'https://dmoj.ca/problem/bfs17p6',
+                tableID: 'bit',
               },
               {
                 source: 'IOI',
@@ -3683,6 +4395,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI07_pairs',
                 uniqueID: 'https://oj.uz/problem/view/IOI07_pairs',
+                tableID: 'bit',
               },
               {
                 source: 'DMOJ',
@@ -3695,6 +4408,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/dmopc19c7p5',
                 uniqueID: 'https://dmoj.ca/problem/dmopc19c7p5',
+                tableID: 'offSam',
               },
               {
                 source: 'Plat',
@@ -3709,6 +4423,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=722',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=722',
+                tableID: 'off',
               },
               {
                 source: 'Plat',
@@ -3723,6 +4438,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=601',
+                tableID: 'off',
               },
               {
                 source: 'APIO',
@@ -3735,6 +4451,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO19_street_lamps',
                 uniqueID: 'https://oj.uz/problem/view/APIO19_street_lamps',
+                tableID: 'off',
               },
               {
                 source: 'POI',
@@ -3751,6 +4468,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
+                tableID: 'seg',
               },
               {
                 source: 'IOI',
@@ -3764,6 +4482,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI13_game',
                 uniqueID: 'https://oj.uz/problem/view/IOI13_game',
+                tableID: 'seg',
               },
               {
                 source: 'JOI',
@@ -3777,433 +4496,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI17_golf',
                 uniqueID: 'https://oj.uz/problem/view/JOI17_golf',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'adv',
-            },
-            frontmatter: {
-              id: 'springboards',
-              title: 'Max Suffix Query with Insertions Only',
-            },
-            problems: [
-              {
-                source: 'Gold',
-                name: 'Springboards',
-                id: '995',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['PURQ'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
-              },
-              {
-                source: 'Plat',
-                name: 'Nocross',
-                id: '721',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['PURQ'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=721',
-              },
-              {
-                source: 'CF',
-                name: 'Rainbow Rectangles',
-                id: '1396/problem/D',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['PURQ'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1396/problem/D',
-                uniqueID: 'https://codeforces.com/contest/1396/problem/D',
-              },
-              {
-                source: 'CF',
-                name: 'Karen & Cards',
-                id: 'contest/815/problem/D',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['PURQ'],
-                solID:
-                  'For each a from p to 1, calculate the number of possible cards with that value of a.',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/815/problem/D',
-                uniqueID: 'https://codeforces.com/contest/815/problem/D',
-              },
-              {
-                source: 'CF',
-                name: 'Interesting Drug',
-                id: 'gym/102059/problem/K',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['PURQ'],
-                solID: 'Genfuncs not required but possibly helpful',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/gym/102059/problem/K',
-                uniqueID: 'https://codeforces.com/gym/102059/problem/K',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'bin-jump',
-              title: 'Binary Jumping',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Company Queries I',
-                id: '1687',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Jumping'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1687',
-                uniqueID: 'https://cses.fi/problemset/task/1687',
-              },
-              {
-                source: 'CSES',
-                name: 'Company Queries II',
-                id: '1688',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['LCA'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1688',
-                uniqueID: 'https://cses.fi/problemset/task/1688',
-              },
-              {
-                source: 'CSES',
-                name: 'Distance Queries',
-                id: '1135',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['LCA'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1135',
-                uniqueID: 'https://cses.fi/problemset/task/1135',
-              },
-              {
-                source: 'CSES',
-                name: 'Planets Queries I',
-                id: '1750',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Jumping'],
-                solID: 'cses-1750',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1750',
-                uniqueID: 'https://cses.fi/problemset/task/1750',
-              },
-              {
-                source: 'CSES',
-                name: 'Planets Queries II',
-                id: '1160',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Functional Graph'],
-                solID: 'cses-1160',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1160',
-                uniqueID: 'https://cses.fi/problemset/task/1160',
-              },
-              {
-                source: 'POI',
-                name: '2010 - Frog',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'poi-10-zab',
-                solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
-                uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/qDH9CkBHZKHY4vbKRBlXPrA7/site/?key=statement',
-              },
-              {
-                source: 'CF',
-                name: 'Lynyrd Skynyrd',
-                id: '1142/problem/B',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1142/problem/B',
-                uniqueID: 'https://codeforces.com/contest/1142/problem/B',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2019 - Valley',
-                id: 'https://oj.uz/problem/view/BOI19_valley',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID:
-                  'http://boi2019.eio.ee/wp-content/uploads/2019/05/valley.sol_.en-1.pdf',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI19_valley',
-                uniqueID: 'https://oj.uz/problem/view/BOI19_valley',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2017 - Toll',
-                id: 'https://oj.uz/problem/view/BOI17_toll',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'baltic-17-toll',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI17_toll',
-                uniqueID: 'https://oj.uz/problem/view/BOI17_toll',
-              },
-              {
-                source: 'Plat',
-                name: '262144',
-                id: '648',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Binary Jumping'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=648',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2015 - Editor',
-                id: 'https://oj.uz/problem/view/BOI15_edi',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: 'baltic-15-edi',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI15_edi',
-                uniqueID: 'https://oj.uz/problem/view/BOI15_edi',
-              },
-              {
-                source: 'Plat',
-                name: 'Max Flow',
-                id: '576',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['LCA'],
-                solID:
-                  'First, split each path A-B into the 2 paths A-lca(A, B) and B-lca(A, B). We can then use a Fenwick tree to increment the values of each edge on those paths.',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=576',
-              },
-              {
-                source: 'Plat',
-                name: 'Disruption',
-                id: '842',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
-              },
-              {
-                source: 'Plat',
-                name: 'Tree Boxes',
-                id: '948',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=948',
-              },
-              {
-                source: 'Plat',
-                name: 'Newbarns',
-                id: '817',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Diameter'],
-                solID:
-                  'Copy of CF Brain Network "Hard": https://codeforces.com/contest/690/problem/C3',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
-              },
-              {
-                source: 'Plat',
-                name: 'Gathering',
-                id: '866',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=866',
-              },
-              {
-                source: 'Plat',
-                name: 'Exercise',
-                id: '901',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=901',
-              },
-              {
-                source: 'CF',
-                name: 'Sloth Naptime',
-                id: 'https://codeforces.com/gym/102694/problem/C',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Jumping'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/gym/102694/problem/C',
-                uniqueID: 'https://codeforces.com/gym/102694/problem/C',
-              },
-              {
-                source: 'CF',
-                name: 'Duff in the Army',
-                id: '588/problem/E',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/588/problem/E',
-                uniqueID: 'https://codeforces.com/contest/588/problem/E',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2017 - Railway',
-                id: 'https://oj.uz/problem/view/BOI17_railway',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'baltic-17-railway',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI17_railway',
-                uniqueID: 'https://oj.uz/problem/view/BOI17_railway',
-              },
-              {
-                source: 'CF',
-                name: 'MST for Each Edge',
-                id: 'contest/609/problem/E',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/609/problem/E',
-                uniqueID: 'https://codeforces.com/contest/609/problem/E',
-              },
-              {
-                source: 'CSA',
-                name: 'Root LCA Queries',
-                id: 'root-lca-queries',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://csacademy.com/contest/archive/task/root-lca-queries',
-                uniqueID:
-                  'https://csacademy.com/contest/archive/task/root-lca-queries',
-              },
-              {
-                source: 'CF',
-                name: 'Two Paths',
-                id: 'contest/1000/problem/G',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1000/problem/G',
-                uniqueID: 'https://codeforces.com/contest/1000/problem/G',
-              },
-              {
-                source: 'DMOJ',
-                name: 'Hot & Cold',
-                id: 'bts17p7',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/bts17p7',
-                uniqueID: 'https://dmoj.ca/problem/bts17p7',
-              },
-              {
-                source: 'TLX',
-                name: 'Functional Constraint',
-                id: 'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
-                uniqueID:
-                  'https://tlx.toki.id/contests/troc-12-div-1/problems/D',
-              },
-              {
-                source: 'TLX',
-                name: 'Graph & Destination',
-                id: 'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['LCA'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
-                uniqueID:
-                  'https://tlx.toki.id/contests/troc-13-div-1/problems/E',
+                tableID: 'seg',
               },
             ],
           },
@@ -4229,6 +4522,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1083/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1083/problem/E',
+                tableID: 'sample',
               },
               {
                 source: 'APIO',
@@ -4241,6 +4535,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/apio10p1',
                 uniqueID: 'https://dmoj.ca/problem/apio10p1',
+                tableID: 'general',
               },
               {
                 source: 'CEOI',
@@ -4256,6 +4551,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                tableID: 'general',
               },
               {
                 source: 'CEOI',
@@ -4268,6 +4564,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI09_harbingers',
                 uniqueID: 'https://oj.uz/problem/view/CEOI09_harbingers',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -4280,6 +4577,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ioi02p4',
                 uniqueID: 'https://dmoj.ca/problem/ioi02p4',
+                tableID: 'general',
               },
               {
                 source: 'APIO',
@@ -4292,6 +4590,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO14_sequence',
                 uniqueID: 'https://oj.uz/problem/view/APIO14_sequence',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -4307,6 +4606,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -4322,6 +4622,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -4336,6 +4637,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -4350,6 +4652,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=998',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=998',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -4362,120 +4665,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI17_coach',
                 uniqueID: 'https://oj.uz/problem/view/JOI17_coach',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'convex-hull',
-              title: 'Convex Hull',
-            },
-            problems: [
-              {
-                source: 'Kattis',
-                name: 'Convex Hull',
-                id: 'convexhull',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/convexhull',
-                uniqueID: 'https://open.kattis.com/problems/convexhull',
-              },
-              {
-                source: 'Kattis',
-                name: 'Robert Hood',
-                id: 'roberthood',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Convex'],
-                solID:
-                  "doesn't require convex hull since coordinates are small",
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/roberthood',
-                uniqueID: 'https://open.kattis.com/problems/roberthood',
-              },
-              {
-                source: 'CF',
-                name: 'Water Balance',
-                id: 'problemset/problem/1299/C',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/problemset/problem/1299/C',
-                uniqueID: 'https://codeforces.com/problemset/problem/1299/C',
-              },
-              {
-                source: 'Plat',
-                name: 'Balance Beam',
-                id: '864',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
-              },
-              {
-                source: 'CF',
-                name: 'Geometers Anonymous',
-                id: 'problemset/problem/1195/F',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Convex', 'PURS'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/problemset/problem/1195/F',
-                uniqueID: 'https://codeforces.com/problemset/problem/1195/F',
-              },
-              {
-                source: 'Old Gold',
-                name: 'Cow Curling',
-                id: '382',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Convex'],
-                solID: 'testing whether points are inside hull',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
-              },
-              {
-                source: 'Kattis',
-                name: 'Fence Orthogonality',
-                id: 'fenceortho',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Convex'],
-                solID: 'enclosing rectangle',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/fenceortho',
-                uniqueID: 'https://open.kattis.com/problems/fenceortho',
-              },
-              {
-                source: 'AC',
-                name: 'AGC E - Random Pawn',
-                id: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Convex'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
-                uniqueID: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
+                tableID: 'general',
               },
             ],
           },
@@ -4501,6 +4691,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1706',
                 uniqueID: 'https://cses.fi/problemset/task/1706',
+                tableID: 'school',
               },
               {
                 source: 'Gold',
@@ -4515,6 +4706,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=862',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=862',
+                tableID: 'cow',
               },
               {
                 source: 'Plat',
@@ -4529,6 +4721,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=672',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=672',
+                tableID: 'lots',
               },
               {
                 source: 'CSA',
@@ -4543,6 +4736,7 @@ export default {
                   'https://csacademy.com/contest/archive/task/substring-restrictions',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/substring-restrictions',
+                tableID: 'bfs',
               },
               {
                 source: 'TOKI',
@@ -4556,6 +4750,7 @@ export default {
                 url: 'https://tlx.toki.id/contests/troc-15-div-1/problems/E',
                 uniqueID:
                   'https://tlx.toki.id/contests/troc-15-div-1/problems/E',
+                tableID: 'ad',
               },
               {
                 source: 'Baltic OI',
@@ -4569,6 +4764,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI19_nautilus',
                 uniqueID: 'https://oj.uz/problem/view/BOI19_nautilus',
+                tableID: 'ad',
               },
               {
                 source: 'Baltic OI',
@@ -4581,6 +4777,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/106/list/',
                 uniqueID: 'https://cses.fi/106/list/',
+                tableID: 'ad',
               },
               {
                 source: 'COCI',
@@ -4593,6 +4790,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI15_uzastopni',
                 uniqueID: 'https://oj.uz/problem/view/COCI15_uzastopni',
+                tableID: 'ad',
               },
               {
                 source: 'Plat',
@@ -4608,6 +4806,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1021',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1021',
+                tableID: 'ad',
               },
               {
                 source: 'IZhO',
@@ -4620,6 +4819,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IZhO17_bootfall',
                 uniqueID: 'https://oj.uz/problem/view/IZhO17_bootfall',
+                tableID: 'ad',
               },
               {
                 source: 'Baltic OI',
@@ -4632,6 +4832,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI15_tug',
                 uniqueID: 'https://oj.uz/problem/view/BOI15_tug',
+                tableID: 'ad',
               },
               {
                 source: 'CF',
@@ -4644,6 +4845,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1444/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1444/problem/D',
+                tableID: 'ad',
               },
             ],
           },
@@ -4669,6 +4871,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/342/E',
                 uniqueID: 'https://codeforces.com/problemset/problem/342/E',
+                tableID: 'sam',
               },
               {
                 source: 'CSES',
@@ -4681,6 +4884,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2079',
                 uniqueID: 'https://cses.fi/problemset/task/2079',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -4693,6 +4897,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/321/problem/C',
                 uniqueID: 'https://codeforces.com/contest/321/problem/C',
+                tableID: 'general',
               },
               {
                 source: 'Baltic OI',
@@ -4705,6 +4910,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1387/problem/B2',
                 uniqueID: 'https://codeforces.com/contest/1387/problem/B2',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -4717,6 +4923,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2080',
                 uniqueID: 'https://cses.fi/problemset/task/2080',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -4729,6 +4936,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2081',
                 uniqueID: 'https://cses.fi/problemset/task/2081',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -4741,6 +4949,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI11_race',
                 uniqueID: 'https://oj.uz/problem/view/IOI11_race',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -4756,6 +4965,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -4769,6 +4979,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/776/problem/F',
                 uniqueID: 'https://codeforces.com/contest/776/problem/F',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -4782,6 +4993,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/715/problem/C',
                 uniqueID: 'https://codeforces.com/contest/715/problem/C',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -4794,6 +5006,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1140/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1140/problem/G',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -4807,6 +5020,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI14_factories',
                 uniqueID: 'https://oj.uz/problem/view/JOI14_factories',
+                tableID: 'general',
               },
               {
                 source: 'DMOJ',
@@ -4819,6 +5033,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/dmopc19c7p6',
                 uniqueID: 'https://dmoj.ca/problem/dmopc19c7p6',
+                tableID: 'general',
               },
               {
                 source: 'DMOJ',
@@ -4831,6 +5046,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/tc19summerh',
                 uniqueID: 'https://dmoj.ca/problem/tc19summerh',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -4843,6 +5059,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI13_synchronization',
                 uniqueID: 'https://oj.uz/problem/view/JOI13_synchronization',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -4857,6 +5074,222 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'convex-hull',
+              title: 'Convex Hull',
+            },
+            problems: [
+              {
+                source: 'Kattis',
+                name: 'Convex Hull',
+                id: 'convexhull',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/convexhull',
+                uniqueID: 'https://open.kattis.com/problems/convexhull',
+                tableID: 'sample',
+              },
+              {
+                source: 'Kattis',
+                name: 'Robert Hood',
+                id: 'roberthood',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Convex'],
+                solID:
+                  "doesn't require convex hull since coordinates are small",
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/roberthood',
+                uniqueID: 'https://open.kattis.com/problems/roberthood',
+                tableID: 'sample2',
+              },
+              {
+                source: 'CF',
+                name: 'Water Balance',
+                id: 'problemset/problem/1299/C',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/problemset/problem/1299/C',
+                uniqueID: 'https://codeforces.com/problemset/problem/1299/C',
+                tableID: 'general',
+              },
+              {
+                source: 'Plat',
+                name: 'Balance Beam',
+                id: '864',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=864',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Geometers Anonymous',
+                id: 'problemset/problem/1195/F',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Convex', 'PURS'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/problemset/problem/1195/F',
+                uniqueID: 'https://codeforces.com/problemset/problem/1195/F',
+                tableID: 'general',
+              },
+              {
+                source: 'Old Gold',
+                name: 'Cow Curling',
+                id: '382',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Convex'],
+                solID: 'testing whether points are inside hull',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=382',
+                tableID: 'general',
+              },
+              {
+                source: 'Kattis',
+                name: 'Fence Orthogonality',
+                id: 'fenceortho',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Convex'],
+                solID: 'enclosing rectangle',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/fenceortho',
+                uniqueID: 'https://open.kattis.com/problems/fenceortho',
+                tableID: 'general',
+              },
+              {
+                source: 'AC',
+                name: 'AGC E - Random Pawn',
+                id: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Convex'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
+                uniqueID: 'https://atcoder.jp/contests/agc044/tasks/agc044_e',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'DC-SRQ',
+              title: 'Divide & Conquer - SRQ',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Static Range Minimum Queries',
+                id: '1647',
+                difficulty: 'Very Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1647',
+                uniqueID: 'https://cses.fi/problemset/task/1647',
+                tableID: 'diviSample',
+              },
+              {
+                source: 'JOI',
+                name: '2014 - Secret',
+                id: 'JOI14_secret',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: 'joi-14-secret',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI14_secret',
+                uniqueID: 'https://oj.uz/problem/view/JOI14_secret',
+                tableID: 'general',
+              },
+              {
+                source: 'CC',
+                name: 'Product on Segment',
+                id: 'SEGPROD',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://www.codechef.com/problems/SEGPROD',
+                uniqueID: 'https://www.codechef.com/problems/SEGPROD',
+                tableID: 'general',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2017 - Toll',
+                id: 'https://oj.uz/problem/view/BOI17_toll',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'baltic-17-toll',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI17_toll',
+                uniqueID: 'https://oj.uz/problem/view/BOI17_toll',
+                tableID: 'general',
+              },
+              {
+                source: 'DMOJ',
+                name: 'Continued Fractions',
+                id: 'dmopc19c7p4',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/dmopc19c7p4',
+                uniqueID: 'https://dmoj.ca/problem/dmopc19c7p4',
+                tableID: 'general',
+              },
+              {
+                source: 'Plat',
+                name: 'Non-Decreasing Subsequences',
+                id: '997',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Matrix', 'D&C'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
+                tableID: 'general',
               },
             ],
           },
@@ -4884,6 +5317,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=626',
+                tableID: 'dnc_sample',
               },
               {
                 source: 'CEOI',
@@ -4899,6 +5333,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
+                tableID: 'dnc_general',
               },
               {
                 source: 'COI',
@@ -4912,6 +5347,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COI15_nafta',
                 uniqueID: 'https://oj.uz/problem/view/COI15_nafta',
+                tableID: 'dnc_general',
               },
               {
                 source: 'CF',
@@ -4924,6 +5360,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/321/problem/E',
                 uniqueID: 'https://codeforces.com/contest/321/problem/E',
+                tableID: 'dnc_general',
               },
               {
                 source: 'CF',
@@ -4936,6 +5373,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/868/problem/F',
                 uniqueID: 'https://codeforces.com/contest/868/problem/F',
+                tableID: 'dnc_general',
               },
               {
                 source: 'POI',
@@ -4951,6 +5389,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/2yK6zUTXvAjhxSDfbjE4Zx7k/site/?key=statement',
+                tableID: 'dnc_general',
               },
               {
                 source: 'IOI',
@@ -4963,6 +5402,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI14_holiday',
                 uniqueID: 'https://oj.uz/problem/view/IOI14_holiday',
+                tableID: 'dnc_general',
               },
               {
                 source: 'Plat',
@@ -4977,6 +5417,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=926',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=926',
+                tableID: 'dnc_general',
               },
               {
                 source: 'JOI',
@@ -4990,6 +5431,7 @@ export default {
                 url: 'https://joi2013ho.contest.atcoder.jp/tasks/joi2013ho5',
                 uniqueID:
                   'https://joi2013ho.contest.atcoder.jp/tasks/joi2013ho5',
+                tableID: 'dnc_general',
               },
             ],
           },
@@ -5015,6 +5457,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1690',
                 uniqueID: 'https://cses.fi/problemset/task/1690',
+                tableID: 'sam',
               },
               {
                 source: 'AC',
@@ -5027,6 +5470,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://atcoder.jp/contests/dp/tasks/dp_o?lang=en',
                 uniqueID: 'https://atcoder.jp/contests/dp/tasks/dp_o?lang=en',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -5039,6 +5483,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1316/problem/E',
                 uniqueID: 'https://codeforces.com/contest/1316/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'Old Gold',
@@ -5053,6 +5498,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=494',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=494',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -5067,6 +5513,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1089',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1089',
+                tableID: 'general',
               },
               {
                 source: 'Old Gold',
@@ -5081,6 +5528,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=515',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=515',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -5093,6 +5541,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1653',
                 uniqueID: 'https://cses.fi/problemset/task/1653',
+                tableID: 'general',
               },
               {
                 source: 'IZhO',
@@ -5105,6 +5554,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IZhO14_bank',
                 uniqueID: 'https://oj.uz/problem/view/IZhO14_bank',
+                tableID: 'general',
               },
               {
                 source: 'YS',
@@ -5118,6 +5568,7 @@ export default {
                 url: 'https://judge.yosupo.jp/problem/maximum_independent_set',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/maximum_independent_set',
+                tableID: 'general',
               },
               {
                 source: 'Kattis',
@@ -5130,6 +5581,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/catandmice',
                 uniqueID: 'https://open.kattis.com/problems/catandmice',
+                tableID: 'general',
               },
               {
                 source: 'IZhO',
@@ -5142,6 +5594,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IZhO17_subsequence',
                 uniqueID: 'https://oj.uz/problem/view/IZhO17_subsequence',
+                tableID: 'general',
               },
               {
                 source: 'COCI',
@@ -5154,6 +5607,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI16_burza',
                 uniqueID: 'https://oj.uz/problem/view/COCI16_burza',
+                tableID: 'general',
               },
               {
                 source: 'CEOI',
@@ -5166,6 +5620,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI19_amusementpark',
                 uniqueID: 'https://oj.uz/problem/view/CEOI19_amusementpark',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -5178,6 +5633,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI07_training',
                 uniqueID: 'https://oj.uz/problem/view/IOI07_training',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -5190,6 +5646,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1043/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1043/problem/F',
+                tableID: 'bitmask_nt',
               },
               {
                 source: 'CF',
@@ -5202,6 +5659,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1103/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1103/problem/D',
+                tableID: 'bitmask_nt',
               },
               {
                 source: 'CF',
@@ -5214,6 +5672,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1148/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1148/problem/G',
+                tableID: 'bitmask_nt',
               },
               {
                 source: 'CF',
@@ -5226,93 +5685,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1292/problem/F',
                 uniqueID: 'https://codeforces.com/contest/1292/problem/F',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'DC-SRQ',
-              title: 'Divide & Conquer - SRQ',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Static Range Minimum Queries',
-                id: '1647',
-                difficulty: 'Very Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1647',
-                uniqueID: 'https://cses.fi/problemset/task/1647',
-              },
-              {
-                source: 'JOI',
-                name: '2014 - Secret',
-                id: 'JOI14_secret',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: 'joi-14-secret',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI14_secret',
-                uniqueID: 'https://oj.uz/problem/view/JOI14_secret',
-              },
-              {
-                source: 'CC',
-                name: 'Product on Segment',
-                id: 'SEGPROD',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://www.codechef.com/problems/SEGPROD',
-                uniqueID: 'https://www.codechef.com/problems/SEGPROD',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2017 - Toll',
-                id: 'https://oj.uz/problem/view/BOI17_toll',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'baltic-17-toll',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI17_toll',
-                uniqueID: 'https://oj.uz/problem/view/BOI17_toll',
-              },
-              {
-                source: 'DMOJ',
-                name: 'Continued Fractions',
-                id: 'dmopc19c7p4',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/dmopc19c7p4',
-                uniqueID: 'https://dmoj.ca/problem/dmopc19c7p4',
-              },
-              {
-                source: 'Plat',
-                name: 'Non-Decreasing Subsequences',
-                id: '997',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Matrix', 'D&C'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=997',
+                tableID: 'bitmask_nt',
               },
             ],
           },
@@ -5341,6 +5714,7 @@ export default {
                   'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
                 uniqueID:
                   'https://saco-evaluator.org.za/cms/sapo2015z/tasks/jazz/description',
+                tableID: 'sample',
               },
               {
                 source: 'Gold',
@@ -5355,6 +5729,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=647',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -5369,6 +5744,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1114',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1114',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -5381,6 +5757,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1080',
                 uniqueID: 'https://cses.fi/problemset/task/1080',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -5393,6 +5770,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/607/B',
                 uniqueID: 'https://codeforces.com/problemset/problem/607/B',
+                tableID: 'general',
               },
               {
                 source: 'SAPO',
@@ -5408,6 +5786,7 @@ export default {
                   'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
                 uniqueID:
                   'https://saco-evaluator.org.za/cms/sapo2014z/tasks/genghis/description',
+                tableID: 'general',
               },
               {
                 source: 'Baltic OI',
@@ -5420,6 +5799,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/107/list/',
                 uniqueID: 'https://cses.fi/107/list/',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -5434,6 +5814,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=972',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=972',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -5448,6 +5829,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=698',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=698',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -5462,6 +5844,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=602',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=602',
+                tableID: 'general',
               },
               {
                 source: 'CEOI',
@@ -5474,6 +5857,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI12_race',
                 uniqueID: 'https://oj.uz/problem/view/CEOI12_race',
+                tableID: 'general',
               },
             ],
           },
@@ -5500,6 +5884,7 @@ export default {
                 url: 'https://judge.yosupo.jp/problem/sort_points_by_argument',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/sort_points_by_argument',
+                tableID: 'standard',
               },
               {
                 source: 'Kattis',
@@ -5513,6 +5898,7 @@ export default {
                 url: 'https://open.kattis.com/problems/segmentintersection',
                 uniqueID:
                   'https://open.kattis.com/problems/segmentintersection',
+                tableID: 'standard',
               },
               {
                 source: 'Kattis',
@@ -5525,6 +5911,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/segmentdistance',
                 uniqueID: 'https://open.kattis.com/problems/segmentdistance',
+                tableID: 'standard',
               },
               {
                 source: 'Kattis',
@@ -5537,6 +5924,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/pointinpolygon',
                 uniqueID: 'https://open.kattis.com/problems/pointinpolygon',
+                tableID: 'standard',
               },
               {
                 source: 'Kattis',
@@ -5549,6 +5937,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/polygonarea',
                 uniqueID: 'https://open.kattis.com/problems/polygonarea',
+                tableID: 'standard',
               },
               {
                 source: 'CF',
@@ -5561,6 +5950,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/598/problem/F',
                 uniqueID: 'https://codeforces.com/contest/598/problem/F',
+                tableID: 'other',
               },
               {
                 source: 'Kattis',
@@ -5573,6 +5963,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/maxcolinear',
                 uniqueID: 'https://open.kattis.com/problems/maxcolinear',
+                tableID: 'other',
               },
               {
                 source: 'Kattis',
@@ -5585,6 +5976,101 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/birthdaycake',
                 uniqueID: 'https://open.kattis.com/problems/birthdaycake',
+                tableID: 'other',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'mat-exp',
+              title: 'Matrix Exponentiation',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Fibonacci Numbers',
+                id: '1722',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Matrix', 'Exponentiation'],
+                solID: '@CPH 23.2',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1722',
+                uniqueID: 'https://cses.fi/problemset/task/1722',
+                tableID: 'probs',
+              },
+              {
+                source: 'CSES',
+                name: 'Graph Paths I',
+                id: '1723',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Matrix', 'Exponentiation'],
+                solID: '@CPH 23.3',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1723',
+                uniqueID: 'https://cses.fi/problemset/task/1723',
+                tableID: 'probs',
+              },
+              {
+                source: 'CSES',
+                name: 'Graph Paths II',
+                id: '1724',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Matrix', 'Exponentiation'],
+                solID: '@CPH 23.3',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1724',
+                uniqueID: 'https://cses.fi/problemset/task/1724',
+                tableID: 'probs',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2007 - Connected Points',
+                id: 'https://cses.fi/112/list/',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Matrix', 'Exponentiation'],
+                solID:
+                  'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/Baltic/Baltic-07-Points.txt',
+                solQuality: 'ok',
+                url: 'https://cses.fi/112/list/',
+                uniqueID: 'https://cses.fi/112/list/',
+                tableID: 'probs',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2009 - Reading',
+                id: 'https://www.acmicpc.net/problem/7081',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Matrix', 'Exponentiation'],
+                solID: 'http://www.cs.org.mk/boi2009/tasks.html',
+                solQuality: 'ok',
+                url: 'https://www.acmicpc.net/problem/7081',
+                uniqueID: 'https://www.acmicpc.net/problem/7081',
+                tableID: 'probs',
+              },
+              {
+                source: 'Plat',
+                name: 'COWBASIC',
+                id: '746',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Matrix', 'Exponentiation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
+                tableID: 'probs',
               },
             ],
           },
@@ -5611,6 +6097,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1688',
                 uniqueID: 'https://cses.fi/problemset/task/1688',
+                tableID: 'sample',
               },
               {
                 source: 'HR',
@@ -5624,6 +6111,7 @@ export default {
                 url: 'https://www.hackerrank.com/challenges/subtrees-and-paths',
                 uniqueID:
                   'https://www.hackerrank.com/challenges/subtrees-and-paths',
+                tableID: 'sample',
               },
               {
                 source: 'Gold',
@@ -5639,6 +6127,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
+                tableID: 'no',
               },
               {
                 source: 'Gold',
@@ -5653,6 +6142,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
+                tableID: 'no',
               },
               {
                 source: 'Plat',
@@ -5667,6 +6157,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                tableID: 'no',
               },
               {
                 source: 'CSES',
@@ -5679,6 +6170,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2134',
                 uniqueID: 'https://cses.fi/problemset/task/2134',
+                tableID: 'general',
               },
               {
                 source: 'Old Gold',
@@ -5693,6 +6185,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=102',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=102',
+                tableID: 'general',
               },
               {
                 source: 'YS',
@@ -5708,6 +6201,7 @@ export default {
                   'https://judge.yosupo.jp/problem/vertex_set_path_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/vertex_set_path_composite',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -5721,6 +6215,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1254/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1254/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'TLX',
@@ -5733,6 +6228,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://tlx.toki.id/problems/troc-14/H/',
                 uniqueID: 'https://tlx.toki.id/problems/troc-14/H/',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -5745,6 +6241,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI13_synchronization',
                 uniqueID: 'https://oj.uz/problem/view/JOI13_synchronization',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -5758,6 +6255,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI18_catdog',
                 uniqueID: 'https://oj.uz/problem/view/JOI18_catdog',
+                tableID: 'general',
               },
             ],
           },
@@ -5785,6 +6283,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
+                tableID: 'sample',
               },
               {
                 source: 'Baltic OI',
@@ -5798,6 +6297,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/248/list/',
                 uniqueID: 'https://cses.fi/248/list/',
+                tableID: 'general',
               },
               {
                 source: 'CCO',
@@ -5810,6 +6310,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/cco20p6',
                 uniqueID: 'https://dmoj.ca/problem/cco20p6',
+                tableID: 'general',
               },
               {
                 source: 'YS',
@@ -5823,94 +6324,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/k_shortest_walk',
                 uniqueID: 'https://judge.yosupo.jp/problem/k_shortest_walk',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'mat-exp',
-              title: 'Matrix Exponentiation',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Fibonacci Numbers',
-                id: '1722',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Matrix', 'Exponentiation'],
-                solID: '@CPH 23.2',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1722',
-                uniqueID: 'https://cses.fi/problemset/task/1722',
-              },
-              {
-                source: 'CSES',
-                name: 'Graph Paths I',
-                id: '1723',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Matrix', 'Exponentiation'],
-                solID: '@CPH 23.3',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1723',
-                uniqueID: 'https://cses.fi/problemset/task/1723',
-              },
-              {
-                source: 'CSES',
-                name: 'Graph Paths II',
-                id: '1724',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Matrix', 'Exponentiation'],
-                solID: '@CPH 23.3',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1724',
-                uniqueID: 'https://cses.fi/problemset/task/1724',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2007 - Connected Points',
-                id: 'https://cses.fi/112/list/',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Matrix', 'Exponentiation'],
-                solID:
-                  'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/Baltic/Baltic-07-Points.txt',
-                solQuality: 'ok',
-                url: 'https://cses.fi/112/list/',
-                uniqueID: 'https://cses.fi/112/list/',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2009 - Reading',
-                id: 'https://www.acmicpc.net/problem/7081',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Matrix', 'Exponentiation'],
-                solID: 'http://www.cs.org.mk/boi2009/tasks.html',
-                solQuality: 'ok',
-                url: 'https://www.acmicpc.net/problem/7081',
-                uniqueID: 'https://www.acmicpc.net/problem/7081',
-              },
-              {
-                source: 'Plat',
-                name: 'COWBASIC',
-                id: '746',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Matrix', 'Exponentiation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=746',
+                tableID: 'general',
               },
             ],
           },
@@ -5936,6 +6350,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.spoj.com/problems/HORRIBLE',
                 uniqueID: 'https://www.spoj.com/problems/HORRIBLE',
+                tableID: 'bitSample',
               },
               {
                 source: 'CSES',
@@ -5948,6 +6363,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1736',
                 uniqueID: 'https://cses.fi/problemset/task/1736',
+                tableID: 'bitProb',
               },
               {
                 source: 'Baltic OI',
@@ -5960,6 +6376,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI11_grow',
                 uniqueID: 'https://oj.uz/problem/view/BOI11_grow',
+                tableID: 'bitProb',
               },
               {
                 source: 'IOI',
@@ -5972,6 +6389,7 @@ export default {
                 solQuality: 'ok',
                 url: 'http://oj.uz/problem/view/IOI07_sails',
                 uniqueID: 'http://oj.uz/problem/view/IOI07_sails',
+                tableID: 'bitProb',
               },
               {
                 source: 'CSES',
@@ -5984,6 +6402,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1735',
                 uniqueID: 'https://cses.fi/problemset/task/1735',
+                tableID: 'lazySample',
               },
               {
                 source: 'YS',
@@ -5997,6 +6416,7 @@ export default {
                 url: 'https://judge.yosupo.jp/problem/range_affine_range_sum',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/range_affine_range_sum',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'Plat',
@@ -6011,6 +6431,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=578',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=578',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'Old Gold',
@@ -6025,6 +6446,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=418',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=418',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'CSES',
@@ -6037,6 +6459,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2166',
                 uniqueID: 'https://cses.fi/problemset/task/2166',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'IOI',
@@ -6049,6 +6472,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI14_wall',
                 uniqueID: 'https://oj.uz/problem/view/IOI14_wall',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'IOI',
@@ -6061,6 +6485,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ioi05p3',
                 uniqueID: 'https://dmoj.ca/problem/ioi05p3',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'Plat',
@@ -6075,6 +6500,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'JOI',
@@ -6088,6 +6514,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI18_bubblesort2',
                 uniqueID: 'https://oj.uz/problem/view/JOI18_bubblesort2',
+                tableID: 'lazySegTree',
               },
               {
                 source: 'DMOJ',
@@ -6100,6 +6527,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/dmopc20c1p6',
                 uniqueID: 'https://dmoj.ca/problem/dmopc20c1p6',
+                tableID: 'lazySegTree',
               },
             ],
           },
@@ -6125,6 +6553,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1139',
                 uniqueID: 'https://cses.fi/problemset/task/1139',
+                tableID: 'sam',
               },
               {
                 source: 'CF',
@@ -6137,6 +6566,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/600/problem/E',
                 uniqueID: 'https://codeforces.com/contest/600/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -6151,6 +6581,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -6165,6 +6596,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=842',
+                tableID: 'general',
               },
               {
                 source: 'POI',
@@ -6181,6 +6613,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/sUe3qzxBtasek-RAWmZaxY_p/site/?key=statement',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -6193,6 +6626,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI11_race',
                 uniqueID: 'https://oj.uz/problem/view/IOI11_race',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -6205,6 +6639,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI20_joitter2',
                 uniqueID: 'https://oj.uz/problem/view/JOI20_joitter2',
+                tableID: 'general',
               },
               {
                 source: 'COI',
@@ -6217,6 +6652,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/coi09p3',
                 uniqueID: 'https://dmoj.ca/problem/coi09p3',
+                tableID: 'general',
               },
               {
                 source: 'JOI',
@@ -6229,6 +6665,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI19_virus',
                 uniqueID: 'https://oj.uz/problem/view/JOI19_virus',
+                tableID: 'general',
               },
             ],
           },
@@ -6254,6 +6691,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1143',
                 uniqueID: 'https://cses.fi/problemset/task/1143',
+                tableID: 'walkSam',
               },
               {
                 source: 'Old Gold',
@@ -6268,6 +6706,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=231',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=231',
+                tableID: 'walk',
               },
               {
                 source: 'Plat',
@@ -6282,6 +6721,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
+                tableID: 'walk',
               },
               {
                 source: 'YS',
@@ -6296,6 +6736,7 @@ export default {
                   'https://judge.yosupo.jp/problem/point_set_range_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/point_set_range_composite',
+                tableID: 'combSam',
               },
               {
                 source: 'CSES',
@@ -6308,6 +6749,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1190',
                 uniqueID: 'https://cses.fi/problemset/task/1190',
+                tableID: 'combSam',
               },
               {
                 source: 'CSES',
@@ -6320,6 +6762,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2206',
                 uniqueID: 'https://cses.fi/problemset/task/2206',
+                tableID: 'comb',
               },
               {
                 source: 'Old Gold',
@@ -6334,6 +6777,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=495',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=495',
+                tableID: 'comb',
               },
               {
                 source: 'Old Gold',
@@ -6348,6 +6792,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=365',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=365',
+                tableID: 'comb',
               },
               {
                 source: 'POI',
@@ -6363,6 +6808,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/qpsk3ygf8MU7D_1Es0oc_xd8/site/?key=statement',
+                tableID: 'comb',
               },
               {
                 source: 'Plat',
@@ -6377,6 +6823,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=577',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=577',
+                tableID: 'comb',
               },
               {
                 source: 'Balkan OI',
@@ -6389,244 +6836,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI18_election',
                 uniqueID: 'https://oj.uz/problem/view/BOI18_election',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'sparse-seg',
-              title: 'Sparse Segment Trees',
-            },
-            problems: [
-              {
-                source: 'IZhO',
-                name: '2012 - Monkey and Apple-trees',
-                id: 'https://oj.uz/problem/view/IZhO12_apple',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IZhO12_apple',
-                uniqueID: 'https://oj.uz/problem/view/IZhO12_apple',
-              },
-              {
-                source: 'IOI',
-                name: '2005 - Mountain',
-                id: 'https://dmoj.ca/problem/ioi05p3',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'https://ioinformatics.org/files/ioi2005solutions.pdf',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/ioi05p3',
-                uniqueID: 'https://dmoj.ca/problem/ioi05p3',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2015 - Happiness',
-                id: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
-                difficulty: 'Normal',
-                starred: false,
-                tags: [],
-                solID: 'balkan-15-happiness',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
-                uniqueID: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'plat',
-            },
-            frontmatter: {
-              id: 'sweep-line',
-              title: 'Sweep Line',
-            },
-            problems: [
-              {
-                source: 'Kattis',
-                name: 'Closest Pair',
-                id: 'closestpair2',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/closestpair2',
-                uniqueID: 'https://open.kattis.com/problems/closestpair2',
-              },
-              {
-                source: 'Silver',
-                name: 'Cow Steeplechase II',
-                id: '943',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
-              },
-              {
-                source: 'Old Gold',
-                name: 'Hill Walk',
-                id: '266',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
-              },
-              {
-                source: 'COI',
-                name: '2017 - Plahte',
-                id: 'https://oj.uz/problem/view/COCI17_plahte',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/COCI17_plahte',
-                uniqueID: 'https://oj.uz/problem/view/COCI17_plahte',
-              },
-              {
-                source: 'CEOI',
-                name: '2006 - Walk',
-                id: 'https://oj.uz/problem/view/CEOI06_walk',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: 'https://hsin.hr/ceoi2006/tasks/solutions.pdf',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/CEOI06_walk',
-                uniqueID: 'https://oj.uz/problem/view/CEOI06_walk',
-              },
-              {
-                source: 'CEOI',
-                name: '2020 - Roads',
-                id: 'https://codeforces.com/contest/1402/problem/B',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1402/problem/B',
-                uniqueID: 'https://codeforces.com/contest/1402/problem/B',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2014 - Demarcation',
-                id: 'http://oj.uz/problem/view/BOI14_demarcation',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Sweep Line'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'http://oj.uz/problem/view/BOI14_demarcation',
-                uniqueID: 'http://oj.uz/problem/view/BOI14_demarcation',
-              },
-              {
-                source: 'Kattis',
-                name: 'Grid MST',
-                id: 'gridmst',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Manhattan MST'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/gridmst',
-                uniqueID: 'https://open.kattis.com/problems/gridmst',
-              },
-              {
-                source: 'CSA',
-                name: 'The Sprawl',
-                id: 'the-sprawl',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Manhattan MST'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://csacademy.com/contest/archive/task/the-sprawl',
-                uniqueID:
-                  'https://csacademy.com/contest/archive/task/the-sprawl',
-              },
-              {
-                source: 'IOI',
-                name: '2003 - Seeing the Boundary',
-                id: 'https://dmoj.ca/problem/ioi03p6',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Radial Sweep'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/ioi03p6',
-                uniqueID: 'https://dmoj.ca/problem/ioi03p6',
-              },
-              {
-                source: 'CEOI',
-                name: '2006 - Antenna',
-                id: 'https://cses.fi/185/list/',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search', 'Radial Sweep'],
-                solID: 'https://hsin.hr/ceoi2006/tasks/solutions.pdf',
-                solQuality: 'ok',
-                url: 'https://cses.fi/185/list/',
-                uniqueID: 'https://cses.fi/185/list/',
-              },
-              {
-                source: 'POI',
-                name: '2018 - Stone',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Radial Sweep'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
-                uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
-              },
-              {
-                source: 'APIO',
-                name: '2010 - Signaling',
-                id: 'https://dmoj.ca/problem/apio10p3',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Radial Sweep'],
-                solID: 'http://apio-olympiad.org/2010/solutions.pdf',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/apio10p3',
-                uniqueID: 'https://dmoj.ca/problem/apio10p3',
-              },
-              {
-                source: 'JOI',
-                name: '2017 - Dragon 2',
-                id: 'https://oj.uz/problem/view/JOI17_dragon2',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Radial Sweep'],
-                solID: 'https://codeforces.com/blog/entry/51010',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI17_dragon2',
-                uniqueID: 'https://oj.uz/problem/view/JOI17_dragon2',
+                tableID: 'comb',
               },
             ],
           },
@@ -6652,6 +6862,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1648',
                 uniqueID: 'https://cses.fi/problemset/task/1648',
+                tableID: 'sam',
               },
               {
                 source: 'CF',
@@ -6664,6 +6875,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/576/problem/C',
                 uniqueID: 'https://codeforces.com/contest/576/problem/C',
+                tableID: 'fst',
               },
               {
                 source: 'JOI',
@@ -6676,6 +6888,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI18_bitaro',
                 uniqueID: 'https://oj.uz/problem/view/JOI18_bitaro',
+                tableID: 'fst',
               },
               {
                 source: 'POI',
@@ -6690,6 +6903,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
+                tableID: 'fst',
               },
               {
                 source: 'YS',
@@ -6705,6 +6919,7 @@ export default {
                   'https://judge.yosupo.jp/problem/static_range_inversions_query',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/static_range_inversions_query',
+                tableID: 'fst',
               },
               {
                 source: 'APIO',
@@ -6717,6 +6932,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO19_bridges',
                 uniqueID: 'https://oj.uz/problem/view/APIO19_bridges',
+                tableID: 'fst',
               },
               {
                 source: 'JOI',
@@ -6729,6 +6945,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI18_snake_escaping',
                 uniqueID: 'https://oj.uz/problem/view/JOI18_snake_escaping',
+                tableID: 'fst',
               },
               {
                 source: 'Plat',
@@ -6743,6 +6960,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=841',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=841',
+                tableID: 'fst',
               },
               {
                 source: 'DMOJ',
@@ -6755,6 +6973,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/dmopc19c7p7',
                 uniqueID: 'https://dmoj.ca/problem/dmopc19c7p7',
+                tableID: 'fst',
               },
               {
                 source: 'DMOJ',
@@ -6767,6 +6986,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/wac1p7',
                 uniqueID: 'https://dmoj.ca/problem/wac1p7',
+                tableID: 'fst',
               },
               {
                 source: 'JOI',
@@ -6779,6 +6999,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/JOI19_examination',
                 uniqueID: 'https://oj.uz/problem/view/JOI19_examination',
+                tableID: 'bad',
               },
               {
                 source: 'IOI',
@@ -6791,6 +7012,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI09_regions',
                 uniqueID: 'https://oj.uz/problem/view/IOI09_regions',
+                tableID: 'bad',
               },
               {
                 source: 'Plat',
@@ -6805,6 +7027,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=817',
+                tableID: 'bad',
               },
               {
                 source: 'CF',
@@ -6817,6 +7040,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1254/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1254/problem/D',
+                tableID: 'bad',
               },
               {
                 source: 'TLX',
@@ -6829,6 +7053,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://tlx.toki.id/problems/troc-14/H/',
                 uniqueID: 'https://tlx.toki.id/problems/troc-14/H/',
+                tableID: 'bad',
               },
               {
                 source: 'CSA',
@@ -6842,6 +7067,7 @@ export default {
                 url: 'https://csacademy.com/contest/archive/task/shopping-time',
                 uniqueID:
                   'https://csacademy.com/contest/archive/task/shopping-time',
+                tableID: 'bad',
               },
               {
                 source: 'Old Gold',
@@ -6856,6 +7082,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=534',
+                tableID: 'bad',
               },
               {
                 source: 'CF',
@@ -6868,6 +7095,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1178/problem/G',
                 uniqueID: 'https://codeforces.com/contest/1178/problem/G',
+                tableID: 'bad',
               },
               {
                 source: 'IOI',
@@ -6880,6 +7108,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI11_elephants',
                 uniqueID: 'https://oj.uz/problem/view/IOI11_elephants',
+                tableID: 'bad',
               },
               {
                 source: 'Plat',
@@ -6894,6 +7123,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                tableID: 'bad',
               },
               {
                 source: 'IOI',
@@ -6906,6 +7136,262 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI15_teams',
                 uniqueID: 'https://oj.uz/problem/view/IOI15_teams',
+                tableID: 'bad',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'sweep-line',
+              title: 'Sweep Line',
+            },
+            problems: [
+              {
+                source: 'Kattis',
+                name: 'Closest Pair',
+                id: 'closestpair2',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/closestpair2',
+                uniqueID: 'https://open.kattis.com/problems/closestpair2',
+                tableID: 'closest',
+              },
+              {
+                source: 'Silver',
+                name: 'Cow Steeplechase II',
+                id: '943',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=943',
+                tableID: 'segSam',
+              },
+              {
+                source: 'Old Gold',
+                name: 'Hill Walk',
+                id: '266',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=266',
+                tableID: 'seg',
+              },
+              {
+                source: 'COI',
+                name: '2017 - Plahte',
+                id: 'https://oj.uz/problem/view/COCI17_plahte',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/COCI17_plahte',
+                uniqueID: 'https://oj.uz/problem/view/COCI17_plahte',
+                tableID: 'seg',
+              },
+              {
+                source: 'CEOI',
+                name: '2006 - Walk',
+                id: 'https://oj.uz/problem/view/CEOI06_walk',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: 'https://hsin.hr/ceoi2006/tasks/solutions.pdf',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/CEOI06_walk',
+                uniqueID: 'https://oj.uz/problem/view/CEOI06_walk',
+                tableID: 'seg',
+              },
+              {
+                source: 'CEOI',
+                name: '2020 - Roads',
+                id: 'https://codeforces.com/contest/1402/problem/B',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1402/problem/B',
+                uniqueID: 'https://codeforces.com/contest/1402/problem/B',
+                tableID: 'seg',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2014 - Demarcation',
+                id: 'http://oj.uz/problem/view/BOI14_demarcation',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Sweep Line'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'http://oj.uz/problem/view/BOI14_demarcation',
+                uniqueID: 'http://oj.uz/problem/view/BOI14_demarcation',
+                tableID: 'seg',
+              },
+              {
+                source: 'Kattis',
+                name: 'Grid MST',
+                id: 'gridmst',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Manhattan MST'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/gridmst',
+                uniqueID: 'https://open.kattis.com/problems/gridmst',
+                tableID: 'manSam',
+              },
+              {
+                source: 'CSA',
+                name: 'The Sprawl',
+                id: 'the-sprawl',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Manhattan MST'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://csacademy.com/contest/archive/task/the-sprawl',
+                uniqueID:
+                  'https://csacademy.com/contest/archive/task/the-sprawl',
+                tableID: 'man',
+              },
+              {
+                source: 'IOI',
+                name: '2003 - Seeing the Boundary',
+                id: 'https://dmoj.ca/problem/ioi03p6',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Radial Sweep'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/ioi03p6',
+                uniqueID: 'https://dmoj.ca/problem/ioi03p6',
+                tableID: 'radialSam',
+              },
+              {
+                source: 'CEOI',
+                name: '2006 - Antenna',
+                id: 'https://cses.fi/185/list/',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search', 'Radial Sweep'],
+                solID: 'https://hsin.hr/ceoi2006/tasks/solutions.pdf',
+                solQuality: 'ok',
+                url: 'https://cses.fi/185/list/',
+                uniqueID: 'https://cses.fi/185/list/',
+                tableID: 'radial',
+              },
+              {
+                source: 'POI',
+                name: '2018 - Stone',
+                id:
+                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Radial Sweep'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+                uniqueID:
+                  'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+                tableID: 'radial',
+              },
+              {
+                source: 'APIO',
+                name: '2010 - Signaling',
+                id: 'https://dmoj.ca/problem/apio10p3',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Radial Sweep'],
+                solID: 'http://apio-olympiad.org/2010/solutions.pdf',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/apio10p3',
+                uniqueID: 'https://dmoj.ca/problem/apio10p3',
+                tableID: 'radial',
+              },
+              {
+                source: 'JOI',
+                name: '2017 - Dragon 2',
+                id: 'https://oj.uz/problem/view/JOI17_dragon2',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Radial Sweep'],
+                solID: 'https://codeforces.com/blog/entry/51010',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI17_dragon2',
+                uniqueID: 'https://oj.uz/problem/view/JOI17_dragon2',
+                tableID: 'radial',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'plat',
+            },
+            frontmatter: {
+              id: 'sparse-seg',
+              title: 'Sparse Segment Trees',
+            },
+            problems: [
+              {
+                source: 'IZhO',
+                name: '2012 - Monkey and Apple-trees',
+                id: 'https://oj.uz/problem/view/IZhO12_apple',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IZhO12_apple',
+                uniqueID: 'https://oj.uz/problem/view/IZhO12_apple',
+                tableID: 'sparseSample',
+              },
+              {
+                source: 'IOI',
+                name: '2005 - Mountain',
+                id: 'https://dmoj.ca/problem/ioi05p3',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'https://ioinformatics.org/files/ioi2005solutions.pdf',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/ioi05p3',
+                uniqueID: 'https://dmoj.ca/problem/ioi05p3',
+                tableID: 'sparseGeneral',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2015 - Happiness',
+                id: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
+                difficulty: 'Normal',
+                starred: false,
+                tags: [],
+                solID: 'balkan-15-happiness',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
+                uniqueID: 'https://oj.uz/problem/view/Balkan15_HAPPINESS',
+                tableID: 'sparseGeneral',
               },
             ],
           },
@@ -6931,6 +7417,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1740',
                 uniqueID: 'https://cses.fi/problemset/task/1740',
+                tableID: 'sample',
               },
               {
                 source: 'Gold',
@@ -6945,6 +7432,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=995',
+                tableID: 'sample',
               },
               {
                 source: 'HE',
@@ -6960,6 +7448,7 @@ export default {
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
                 uniqueID:
                   'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/',
+                tableID: 'sweep',
               },
               {
                 source: 'Plat',
@@ -6974,6 +7463,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=816',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=816',
+                tableID: 'sweep',
               },
               {
                 source: 'CSES',
@@ -6986,6 +7476,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1742',
                 uniqueID: 'https://cses.fi/problemset/task/1742',
+                tableID: 'sweep',
               },
               {
                 source: 'IZhO',
@@ -6998,6 +7489,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IZhO19_sortbooks',
                 uniqueID: 'https://oj.uz/problem/view/IZhO19_sortbooks',
+                tableID: 'sweep',
               },
               {
                 source: 'Balkan OI',
@@ -7010,6 +7502,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/balkan11_trapezoid',
                 uniqueID: 'https://oj.uz/problem/view/balkan11_trapezoid',
+                tableID: 'numLIS',
               },
               {
                 source: 'COCI',
@@ -7023,6 +7516,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI16_zoltan',
                 uniqueID: 'https://oj.uz/problem/view/COCI16_zoltan',
+                tableID: 'numLIS',
               },
               {
                 source: 'Plat',
@@ -7037,6 +7531,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=865',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=865',
+                tableID: 'numLIS',
               },
             ],
           },
@@ -7062,6 +7557,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1132',
                 uniqueID: 'https://cses.fi/problemset/task/1132',
+                tableID: 'ex',
               },
               {
                 source: 'AC',
@@ -7074,6 +7570,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://atcoder.jp/contests/dp/tasks/dp_v',
                 uniqueID: 'https://atcoder.jp/contests/dp/tasks/dp_v',
+                tableID: 'roots',
               },
               {
                 source: 'Balkan OI',
@@ -7086,6 +7583,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://www.acmicpc.net/problem/14875',
                 uniqueID: 'https://www.acmicpc.net/problem/14875',
+                tableID: 'roots',
               },
               {
                 source: 'Gold',
@@ -7100,6 +7598,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=814',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=814',
+                tableID: 'roots',
               },
               {
                 source: 'Plat',
@@ -7114,6 +7613,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=793',
+                tableID: 'roots',
               },
               {
                 source: 'APIO',
@@ -7126,6 +7626,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/apio10p2',
                 uniqueID: 'https://dmoj.ca/problem/apio10p2',
+                tableID: 'roots',
               },
               {
                 source: 'IZhO',
@@ -7138,6 +7639,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IZhO17_road',
                 uniqueID: 'https://oj.uz/problem/view/IZhO17_road',
+                tableID: 'roots',
               },
               {
                 source: 'APIO',
@@ -7150,6 +7652,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO14_beads',
                 uniqueID: 'https://oj.uz/problem/view/APIO14_beads',
+                tableID: 'roots',
               },
               {
                 source: 'CEOI',
@@ -7162,6 +7665,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1402/problem/C',
                 uniqueID: 'https://codeforces.com/contest/1402/problem/C',
+                tableID: 'roots',
               },
             ],
           },
@@ -7187,6 +7691,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1667',
                 uniqueID: 'https://cses.fi/problemset/task/1667',
+                tableID: 'sampleNormal',
               },
               {
                 source: 'Baltic OI',
@@ -7199,6 +7704,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI13_tracks',
                 uniqueID: 'https://oj.uz/problem/view/BOI13_tracks',
+                tableID: 'sampleZeroOne',
               },
               {
                 source: 'CSES',
@@ -7211,6 +7717,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1193',
                 uniqueID: 'https://cses.fi/problemset/task/1193',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -7223,6 +7730,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1194',
                 uniqueID: 'https://cses.fi/problemset/task/1194',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -7235,6 +7743,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1707',
                 uniqueID: 'https://cses.fi/problemset/task/1707',
+                tableID: 'general',
               },
               {
                 source: 'CSA',
@@ -7247,6 +7756,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://csacademy.com/contest/archive/task/bfs-dfs',
                 uniqueID: 'https://csacademy.com/contest/archive/task/bfs-dfs',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -7261,6 +7771,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7275,6 +7786,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=671',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=671',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7289,6 +7801,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=790',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=790',
+                tableID: 'general',
               },
               {
                 source: 'Old Silver',
@@ -7303,6 +7816,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=282',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=282',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7317,6 +7831,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1090',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1090',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7331,6 +7846,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=695',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=695',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7345,6 +7861,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=575',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=575',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7359,6 +7876,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1065',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1065',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -7373,168 +7891,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=765',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=765',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'dsu',
-              title: 'Disjoint Set Union',
-            },
-            problems: [
-              {
-                source: 'YS',
-                name: 'Union Find',
-                id: 'unionfind',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DSU'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/unionfind',
-                uniqueID: 'https://judge.yosupo.jp/problem/unionfind',
-              },
-              {
-                source: 'CSES',
-                name: 'Road Construction',
-                id: '1676',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DSU'],
-                solID: 'cses-1676',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1676',
-                uniqueID: 'https://cses.fi/problemset/task/1676',
-              },
-              {
-                source: 'Gold',
-                name: 'Closing the Farm',
-                id: '646',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DSU'],
-                solID:
-                  'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
-              },
-              {
-                source: 'Gold',
-                name: 'Mootube',
-                id: '789',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['DSU'],
-                solID: 'usaco-789',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
-              },
-              {
-                source: 'Silver',
-                name: 'Wormhole Sort',
-                id: '992',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['DSU'],
-                solID: 'usaco-992',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
-              },
-              {
-                source: 'Gold',
-                name: 'Moocast',
-                id: '669',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DSU'],
-                solID: 'usaco-669',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
-              },
-              {
-                source: 'CSA',
-                name: 'Mountain Time',
-                id: 'mountain-time',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['DSU'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://csacademy.com/contest/archive/task/mountain-time',
-                uniqueID:
-                  'https://csacademy.com/contest/archive/task/mountain-time',
-              },
-              {
-                source: 'Old Gold',
-                name: 'Ski Course Rating',
-                id: '384',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DSU'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2016 - Park',
-                id: 'https://oj.uz/problem/view/BOI16_park',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['DSU'],
-                solID: 'baltic-16-park',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI16_park',
-                uniqueID: 'https://oj.uz/problem/view/BOI16_park',
-              },
-              {
-                source: 'Gold',
-                name: 'Favorite Colors',
-                id: '1042',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: ['DSU'],
-                solID:
-                  'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $mathcal{O}(1)$ time.',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
-              },
-              {
-                source: 'Plat',
-                name: 'Valleys',
-                id: '950',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['DSU'],
-                solID: 'usaco-950',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                tableID: 'general',
               },
             ],
           },
@@ -7560,6 +7917,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1130',
                 uniqueID: 'https://cses.fi/problemset/task/1130',
+                tableID: 'sample',
               },
               {
                 source: 'AC',
@@ -7572,6 +7930,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://atcoder.jp/contests/dp/tasks/dp_p',
                 uniqueID: 'https://atcoder.jp/contests/dp/tasks/dp_p',
+                tableID: 'usaco',
               },
               {
                 source: 'Gold',
@@ -7586,6 +7945,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=766',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=766',
+                tableID: 'usaco',
               },
               {
                 source: 'Baltic OI',
@@ -7598,6 +7958,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1387/problem/B1',
                 uniqueID: 'https://codeforces.com/contest/1387/problem/B1',
+                tableID: 'usaco',
               },
               {
                 source: 'POI',
@@ -7613,6 +7974,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/1QaUWE_ePAmitZjgAszOVD1U/site/?key=statement',
+                tableID: 'usaco',
               },
               {
                 source: 'Gold',
@@ -7627,6 +7989,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1019',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1019',
+                tableID: 'usaco',
               },
               {
                 source: 'POI',
@@ -7642,6 +8005,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/r6tMTfvQFPAEfQioYMCQndQe/site/?key=statement',
+                tableID: 'usaco',
               },
               {
                 source: 'POI',
@@ -7657,6 +8021,7 @@ export default {
                   'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
                 uniqueID:
                   'https://szkopul.edu.pl/problemset/problem/w3YAoAT3ej27YeiaNWjK57_G/site/?key=statement',
+                tableID: 'usaco',
               },
               {
                 source: 'COI',
@@ -7669,6 +8034,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COI16_torrent',
                 uniqueID: 'https://oj.uz/problem/view/COI16_torrent',
+                tableID: 'insane',
               },
               {
                 source: 'Plat',
@@ -7683,6 +8049,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1020',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1020',
+                tableID: 'insane',
               },
               {
                 source: 'CF',
@@ -7695,6 +8062,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1394/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1394/problem/D',
+                tableID: 'insane',
               },
               {
                 source: 'IOI',
@@ -7707,6 +8075,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI07_training',
                 uniqueID: 'https://oj.uz/problem/view/IOI07_training',
+                tableID: 'insane',
               },
               {
                 source: 'CSES',
@@ -7719,6 +8088,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1752',
                 uniqueID: 'https://cses.fi/problemset/task/1752',
+                tableID: 'insane',
               },
               {
                 source: 'Baltic OI',
@@ -7731,236 +8101,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI16_swap',
                 uniqueID: 'https://oj.uz/problem/view/BOI16_swap',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'divis',
-              title: 'Divisibility',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Counting Divisors',
-                id: '1713',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1713',
-                uniqueID: 'https://cses.fi/problemset/task/1713',
-              },
-              {
-                source: 'AC',
-                name: 'Div Game',
-                id: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Prime Factorization'],
-                solID: 'AC-DivGame',
-                solQuality: 'ok',
-                url: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
-                uniqueID: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
-              },
-              {
-                source: 'CSES',
-                name: 'Common Divisors',
-                id: '1081',
-                difficulty: 'Normal',
-                starred: true,
-                tags: [],
-                solID: 'cses-1081',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1081',
-                uniqueID: 'https://cses.fi/problemset/task/1081',
-              },
-              {
-                source: 'CF',
-                name: 'Orac and LCM',
-                id: '1349/problem/A',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Prime Factorization'],
-                solID: 'orac-lcm',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1349/problem/A',
-                uniqueID: 'https://codeforces.com/contest/1349/problem/A',
-              },
-              {
-                source: 'CSES',
-                name: 'Sum of Divisors',
-                id: '1082',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: 'cses-1082',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1082',
-                uniqueID: 'https://cses.fi/problemset/task/1082',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'intro-dp',
-              title: 'Introduction to DP',
-            },
-            problems: [
-              {
-                source: 'Gold',
-                name: 'Hoof Paper Scissors',
-                id: '694',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DP'],
-                solID: 'usaco-694',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
-              },
-              {
-                source: 'Gold',
-                name: 'Time is Mooney',
-                id: '993',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['DP'],
-                solID: 'dp[time][city] -> money',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
-              },
-              {
-                source: 'Gold',
-                name: 'Teamwork',
-                id: '863',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['DP'],
-                solID:
-                  'let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
-              },
-              {
-                source: 'Gold',
-                name: 'Snakes',
-                id: '945',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['DP'],
-                solID:
-                  'dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
-              },
-              {
-                source: 'Gold',
-                name: 'Circular Barn Revisited',
-                id: '622',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['DP'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
-              },
-              {
-                source: 'Gold',
-                name: 'Taming the Herd',
-                id: '815',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP'],
-                solID:
-                  'dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
-              },
-              {
-                source: 'Gold',
-                name: 'Moortal Cowmbat',
-                id: '971',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP', 'Prefix Sums', 'Floyd-Warshall'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
-              },
-              {
-                source: 'Plat',
-                name: 'Team Building',
-                id: '673',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
-              },
-              {
-                source: 'Gold',
-                name: 'Stamp Painting',
-                id: '791',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['DP'],
-                solID:
-                  'must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
-              },
-              {
-                source: 'Gold',
-                name: 'Bovine Genetics',
-                id: '1066',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['DP'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
+                tableID: 'insane',
               },
             ],
           },
@@ -7988,6 +8129,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=994',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=994',
+                tableID: 'three',
               },
               {
                 source: 'CSES',
@@ -8000,6 +8142,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1642',
                 uniqueID: 'https://cses.fi/problemset/task/1642',
+                tableID: 'four',
               },
             ],
           },
@@ -8010,219 +8153,414 @@ export default {
               division: 'gold',
             },
             frontmatter: {
-              id: 'knapsack',
-              title: 'Knapsack DP',
+              id: 'dsu',
+              title: 'Disjoint Set Union',
+            },
+            problems: [
+              {
+                source: 'YS',
+                name: 'Union Find',
+                id: 'unionfind',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['DSU'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/unionfind',
+                uniqueID: 'https://judge.yosupo.jp/problem/unionfind',
+                tableID: 'sample',
+              },
+              {
+                source: 'CSES',
+                name: 'Road Construction',
+                id: '1676',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['DSU'],
+                solID: 'cses-1676',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1676',
+                uniqueID: 'https://cses.fi/problemset/task/1676',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Closing the Farm',
+                id: '646',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['DSU'],
+                solID:
+                  'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=646',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Mootube',
+                id: '789',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['DSU'],
+                solID: 'usaco-789',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=789',
+                tableID: 'general',
+              },
+              {
+                source: 'Silver',
+                name: 'Wormhole Sort',
+                id: '992',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['DSU'],
+                solID: 'usaco-992',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Moocast',
+                id: '669',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['DSU'],
+                solID: 'usaco-669',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
+                tableID: 'general',
+              },
+              {
+                source: 'CSA',
+                name: 'Mountain Time',
+                id: 'mountain-time',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['DSU'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://csacademy.com/contest/archive/task/mountain-time',
+                uniqueID:
+                  'https://csacademy.com/contest/archive/task/mountain-time',
+                tableID: 'general',
+              },
+              {
+                source: 'Old Gold',
+                name: 'Ski Course Rating',
+                id: '384',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DSU'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=384',
+                tableID: 'harder',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2016 - Park',
+                id: 'https://oj.uz/problem/view/BOI16_park',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['DSU'],
+                solID: 'baltic-16-park',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI16_park',
+                uniqueID: 'https://oj.uz/problem/view/BOI16_park',
+                tableID: 'harder',
+              },
+              {
+                source: 'Gold',
+                name: 'Favorite Colors',
+                id: '1042',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: ['DSU'],
+                solID:
+                  'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $mathcal{O}(1)$ time.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1042',
+                tableID: 'harder',
+              },
+              {
+                source: 'Plat',
+                name: 'Valleys',
+                id: '950',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['DSU'],
+                solID: 'usaco-950',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=950',
+                tableID: 'harder',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'divis',
+              title: 'Divisibility',
             },
             problems: [
               {
                 source: 'CSES',
-                name: 'Dice Combinations',
-                id: '1633',
-                difficulty: 'Very Easy',
+                name: 'Counting Divisors',
+                id: '1713',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1713',
+                uniqueID: 'https://cses.fi/problemset/task/1713',
+                tableID: 'sample',
+              },
+              {
+                source: 'AC',
+                name: 'Div Game',
+                id: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Prime Factorization'],
+                solID: 'AC-DivGame',
+                solQuality: 'ok',
+                url: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
+                uniqueID: 'https://atcoder.jp/contests/abc169/tasks/abc169_d',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Common Divisors',
+                id: '1081',
+                difficulty: 'Normal',
                 starred: true,
-                tags: ['DP', 'Knapsack'],
-                solID: '',
+                tags: [],
+                solID: 'cses-1081',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1633',
-                uniqueID: 'https://cses.fi/problemset/task/1633',
-              },
-              {
-                source: 'CSES',
-                name: 'Minimizing Coins',
-                id: '1634',
-                difficulty: 'Very Easy',
-                starred: true,
-                tags: ['Knapsack'],
-                solID: 'cses-1634',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1634',
-                uniqueID: 'https://cses.fi/problemset/task/1634',
-              },
-              {
-                source: 'CSES',
-                name: 'Coin Combinations I (Unordered)',
-                id: '1635',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Knapsack'],
-                solID: 'cses-1635',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1635',
-                uniqueID: 'https://cses.fi/problemset/task/1635',
-              },
-              {
-                source: 'CSES',
-                name: 'Coin Combinations II (Ordered)',
-                id: '1636',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Knapsack'],
-                solID: 'cses-1636',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1636',
-                uniqueID: 'https://cses.fi/problemset/task/1636',
-              },
-              {
-                source: 'CSES',
-                name: 'Book Shop',
-                id: '1158',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Knapsack'],
-                solID: 'https://codeforces.com/blog/entry/70018',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1158',
-                uniqueID: 'https://cses.fi/problemset/task/1158',
-              },
-              {
-                source: 'CSES',
-                name: 'Money Sums',
-                id: '1745',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Knapsack'],
-                solID: 'https://codeforces.com/blog/entry/70018',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1745',
-                uniqueID: 'https://cses.fi/problemset/task/1745',
-              },
-              {
-                source: 'CSES',
-                name: 'Two Sets II',
-                id: '1093',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Knapsack'],
-                solID: 'https://codeforces.com/blog/entry/70018',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1093',
-                uniqueID: 'https://cses.fi/problemset/task/1093',
-              },
-              {
-                source: 'CSES',
-                name: 'Coding Company',
-                id: '1665',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Knapsack'],
-                solID: 'cses-1665',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1665',
-                uniqueID: 'https://cses.fi/problemset/task/1665',
-              },
-              {
-                source: 'Gold',
-                name: 'Fruit Feast',
-                id: '574',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['DP', 'Knapsack'],
-                solID: 'usaco-574',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
-              },
-              {
-                source: 'Gold',
-                name: 'Talent Show',
-                id: '839',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['DP', 'Knapsack', 'Binary Search'],
-                solID:
-                  'binary search on optimal ratio, then do knapsack on weight',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
-              },
-              {
-                source: 'Plat',
-                name: 'Mooriokart',
-                id: '925',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Knapsack'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
+                url: 'https://cses.fi/problemset/task/1081',
+                uniqueID: 'https://cses.fi/problemset/task/1081',
+                tableID: 'general',
               },
               {
                 source: 'CF',
-                name: 'Round Subset',
-                id: 'http://codeforces.com/contest/837/problem/D',
+                name: 'Orac and LCM',
+                id: '1349/problem/A',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['Knapsack'],
-                solID:
-                  'dp[i][j][l] -> maximum amount of twos we can collect by checking first i numbers, taking j of them with total power of five equal to l',
+                tags: ['Prime Factorization'],
+                solID: 'orac-lcm',
                 solQuality: 'ok',
-                url: 'http://codeforces.com/contest/837/problem/D',
-                uniqueID: 'http://codeforces.com/contest/837/problem/D',
+                url: 'https://codeforces.com/contest/1349/problem/A',
+                uniqueID: 'https://codeforces.com/contest/1349/problem/A',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Sum of Divisors',
+                id: '1082',
+                difficulty: 'Hard',
+                starred: false,
+                tags: [],
+                solID: 'cses-1082',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1082',
+                uniqueID: 'https://cses.fi/problemset/task/1082',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'intro-dp',
+              title: 'Introduction to DP',
+            },
+            problems: [
+              {
+                source: 'Gold',
+                name: 'Hoof Paper Scissors',
+                id: '694',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['DP'],
+                solID: 'usaco-694',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=694',
+                tableID: 'usacoEasy',
               },
               {
                 source: 'Gold',
-                name: 'Cow Poetry',
-                id: '897',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Knapsack', 'Exponentiation'],
-                solID:
-                  'First consider the case where there are only two lines with the same class.',
+                name: 'Time is Mooney',
+                id: '993',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['DP'],
+                solID: 'dp[time][city] -> money',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=993',
+                tableID: 'usacoEasy',
               },
               {
                 source: 'Gold',
-                name: 'Exercise',
-                id: '1043',
+                name: 'Teamwork',
+                id: '863',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['Knapsack', 'Prime Factorization'],
-                solID: 'Prime factorize $K$.',
+                tags: ['DP'],
+                solID:
+                  'let dp[i] -> max sum of skill levels for the first i cows, then precompute subarray maximums',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=863',
+                tableID: 'usacoEasy',
               },
               {
-                source: 'POI',
-                name: '2004 - Maximal',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                source: 'Gold',
+                name: 'Snakes',
+                id: '945',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['Knapsack', 'Prime Factorization'],
-                solID: 'poi-04-mak',
+                tags: ['DP'],
+                solID:
+                  'dp[i][j] -> minimum sum of net sizes needed to catch m snakes with k changes, precompute maximums',
                 solQuality: 'ok',
                 url:
-                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
                 uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=945',
+                tableID: 'usacoEasy',
+              },
+              {
+                source: 'Gold',
+                name: 'Circular Barn Revisited',
+                id: '622',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['DP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=622',
+                tableID: 'usacoPast',
+              },
+              {
+                source: 'Gold',
+                name: 'Taming the Herd',
+                id: '815',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DP'],
+                solID:
+                  'dp[consider first i entries only][last breakout in first i occurs at j][k breakouts among first i entries] -> # changes',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=815',
+                tableID: 'usacoPast',
+              },
+              {
+                source: 'Gold',
+                name: 'Moortal Cowmbat',
+                id: '971',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DP', 'Prefix Sums', 'Floyd-Warshall'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                tableID: 'usacoPast',
               },
               {
                 source: 'Plat',
-                name: 'Exercise',
-                id: '1045',
-                difficulty: 'Insane',
+                name: 'Team Building',
+                id: '673',
+                difficulty: 'Hard',
                 starred: false,
-                tags: ['Knapsack', 'Prime Factorization'],
-                solID: 'Prime factorize $K$.',
+                tags: ['DP'],
+                solID: '',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=673',
+                tableID: 'usacoPast',
+              },
+              {
+                source: 'Gold',
+                name: 'Stamp Painting',
+                id: '791',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['DP'],
+                solID:
+                  'must be K consectutive of same color, complimetary counting for dp[up to position i][number of consecutive] -> number of ways, find closed form to reduce runtime',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=791',
+                tableID: 'usacoPast',
+              },
+              {
+                source: 'Gold',
+                name: 'Bovine Genetics',
+                id: '1066',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['DP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1066',
+                tableID: 'usacoPast',
               },
             ],
           },
@@ -8248,6 +8586,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1145',
                 uniqueID: 'https://cses.fi/problemset/task/1145',
+                tableID: 'sam',
               },
               {
                 source: 'Baltic OI',
@@ -8260,6 +8599,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/105/list/',
                 uniqueID: 'https://cses.fi/105/list/',
+                tableID: 'nonIntersect',
               },
               {
                 source: 'CF',
@@ -8272,6 +8612,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102951/problem/C',
                 uniqueID: 'https://codeforces.com/gym/102951/problem/C',
+                tableID: 'lisperm',
               },
               {
                 source: 'CSES',
@@ -8284,6 +8625,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1073',
                 uniqueID: 'https://cses.fi/problemset/task/1073',
+                tableID: 'lis',
               },
               {
                 source: 'Old Gold',
@@ -8298,6 +8640,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=496',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=496',
+                tableID: 'lis',
               },
               {
                 source: 'LMiO',
@@ -8310,6 +8653,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/LMIO19_triusis',
                 uniqueID: 'https://oj.uz/problem/view/LMIO19_triusis',
+                tableID: 'lis',
               },
               {
                 source: 'Baltic OI',
@@ -8322,6 +8666,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/107/list/',
                 uniqueID: 'https://cses.fi/107/list/',
+                tableID: 'lis',
               },
               {
                 source: 'CEOI',
@@ -8334,6 +8679,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI18_glo',
                 uniqueID: 'https://oj.uz/problem/view/CEOI18_glo',
+                tableID: 'lis',
               },
               {
                 source: 'JOI',
@@ -8347,6 +8693,7 @@ export default {
                 url: 'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
                 uniqueID:
                   'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
+                tableID: 'lis',
               },
             ],
           },
@@ -8357,346 +8704,235 @@ export default {
               division: 'gold',
             },
             frontmatter: {
-              id: 'mst',
-              title: 'Minimum Spanning Trees',
+              id: 'knapsack',
+              title: 'Knapsack DP',
             },
             problems: [
               {
                 source: 'CSES',
-                name: 'Road Reparation',
-                id: '1675',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['MST'],
+                name: 'Dice Combinations',
+                id: '1633',
+                difficulty: 'Very Easy',
+                starred: true,
+                tags: ['DP', 'Knapsack'],
                 solID: '',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1675',
-                uniqueID: 'https://cses.fi/problemset/task/1675',
+                url: 'https://cses.fi/problemset/task/1633',
+                uniqueID: 'https://cses.fi/problemset/task/1633',
+                tableID: 'sam',
               },
               {
-                source: 'Old Silver',
-                name: 'Superbull',
-                id: '531',
+                source: 'CSES',
+                name: 'Minimizing Coins',
+                id: '1634',
+                difficulty: 'Very Easy',
+                starred: true,
+                tags: ['Knapsack'],
+                solID: 'cses-1634',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1634',
+                uniqueID: 'https://cses.fi/problemset/task/1634',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Coin Combinations I (Unordered)',
+                id: '1635',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Knapsack'],
+                solID: 'cses-1635',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1635',
+                uniqueID: 'https://cses.fi/problemset/task/1635',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Coin Combinations II (Ordered)',
+                id: '1636',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Knapsack'],
+                solID: 'cses-1636',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1636',
+                uniqueID: 'https://cses.fi/problemset/task/1636',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Book Shop',
+                id: '1158',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['MST'],
-                solID: '',
+                tags: ['Knapsack'],
+                solID: 'https://codeforces.com/blog/entry/70018',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
+                url: 'https://cses.fi/problemset/task/1158',
+                uniqueID: 'https://cses.fi/problemset/task/1158',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Money Sums',
+                id: '1745',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Knapsack'],
+                solID: 'https://codeforces.com/blog/entry/70018',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1745',
+                uniqueID: 'https://cses.fi/problemset/task/1745',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Two Sets II',
+                id: '1093',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Knapsack'],
+                solID: 'https://codeforces.com/blog/entry/70018',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1093',
+                uniqueID: 'https://cses.fi/problemset/task/1093',
+                tableID: 'knapsack',
+              },
+              {
+                source: 'CSES',
+                name: 'Coding Company',
+                id: '1665',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Knapsack'],
+                solID: 'cses-1665',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1665',
+                uniqueID: 'https://cses.fi/problemset/task/1665',
+                tableID: 'knapsack',
               },
               {
                 source: 'Gold',
-                name: 'Fenced In',
-                id: '623',
+                name: 'Fruit Feast',
+                id: '574',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['MST'],
-                solID: '',
+                tags: ['DP', 'Knapsack'],
+                solID: 'usaco-574',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=574',
+                tableID: 'usaco',
               },
               {
                 source: 'Gold',
-                name: 'I Would Walk 500 Miles',
-                id: '946',
+                name: 'Talent Show',
+                id: '839',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DP', 'Knapsack', 'Binary Search'],
+                solID:
+                  'binary search on optimal ratio, then do knapsack on weight',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=839',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Mooriokart',
+                id: '925',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Knapsack'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=925',
+                tableID: 'usaco',
+              },
+              {
+                source: 'CF',
+                name: 'Round Subset',
+                id: 'http://codeforces.com/contest/837/problem/D',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['MST'],
-                solID: 'usaco-946',
+                tags: ['Knapsack'],
+                solID:
+                  'dp[i][j][l] -> maximum amount of twos we can collect by checking first i numbers, taking j of them with total power of five equal to l',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
+                url: 'http://codeforces.com/contest/837/problem/D',
+                uniqueID: 'http://codeforces.com/contest/837/problem/D',
+                tableID: 'nt',
               },
               {
-                source: 'HR',
-                name: 'Spanning Tree Fraction',
+                source: 'Gold',
+                name: 'Cow Poetry',
+                id: '897',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Knapsack', 'Exponentiation'],
+                solID:
+                  'First consider the case where there are only two lines with the same class.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=897',
+                tableID: 'nt',
+              },
+              {
+                source: 'Gold',
+                name: 'Exercise',
+                id: '1043',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Knapsack', 'Prime Factorization'],
+                solID: 'Prime factorize $K$.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1043',
+                tableID: 'nt',
+              },
+              {
+                source: 'POI',
+                name: '2004 - Maximal',
                 id:
-                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
                 difficulty: 'Normal',
                 starred: false,
-                tags: ['MST', 'Binary Search'],
-                solID: '',
+                tags: ['Knapsack', 'Prime Factorization'],
+                solID: 'poi-04-mak',
                 solQuality: 'ok',
                 url:
-                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
                 uniqueID:
-                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
-              },
-              {
-                source: 'JOI',
-                name: '2015 - Inheritance',
-                id: 'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['MST', 'Binary Search'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
-                uniqueID:
-                  'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
+                  'https://szkopul.edu.pl/problemset/problem/lGqKS9urITMjTXhpdaHqyoEL/site/?key=statement',
+                tableID: 'nt',
               },
               {
                 source: 'Plat',
-                name: 'Fenced In',
-                id: '625',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['MST'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
-              },
-              {
-                source: 'COCI',
-                name: '2017 - Sirni',
-                id: 'https://oj.uz/problem/view/COCI17_sirni',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['MST', 'NT'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/COCI17_sirni',
-                uniqueID: 'https://oj.uz/problem/view/COCI17_sirni',
-              },
-              {
-                source: 'APIO',
-                name: '2013 - Toll',
-                id: 'https://oj.uz/problem/view/APIO13_toll',
+                name: 'Exercise',
+                id: '1045',
                 difficulty: 'Insane',
                 starred: false,
-                tags: ['MST', 'Bitmask'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/APIO13_toll',
-                uniqueID: 'https://oj.uz/problem/view/APIO13_toll',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2011 - Timeismoney',
-                id: 'http://oj.uz/problem/view/balkan11_timeismoney',
-                difficulty: 'Insane',
-                starred: true,
-                tags: ['MST', 'Convex Hull'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'http://oj.uz/problem/view/balkan11_timeismoney',
-                uniqueID: 'http://oj.uz/problem/view/balkan11_timeismoney',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'PURS',
-              title: 'Point Update Range Sum',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Dynamic Range Sum Queries',
-                id: '1648',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS'],
-                solID: 'Can also do range XOR queries w/ update.',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1648',
-                uniqueID: 'https://cses.fi/problemset/task/1648',
-              },
-              {
-                source: 'CSES',
-                name: 'Dynamic Range Minimum Queries',
-                id: '1649',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURQ'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1649',
-                uniqueID: 'https://cses.fi/problemset/task/1649',
-              },
-              {
-                source: 'SPOJ',
-                name: 'Inversion Counting',
-                id: 'INVCNT',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS'],
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://www.spoj.com/problems/INVCNT',
-                uniqueID: 'https://www.spoj.com/problems/INVCNT',
-              },
-              {
-                source: 'CSES',
-                name: 'Range Update Queries',
-                id: '1651',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['PURS'],
-                solID: 'cses-1651',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1651',
-                uniqueID: 'https://cses.fi/problemset/task/1651',
-              },
-              {
-                source: 'Kattis',
-                name: 'Mega Inversions',
-                id: 'megainversions',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Inversions'],
-                solID: 'kattis-megainversions',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/megainversions',
-                uniqueID: 'https://open.kattis.com/problems/megainversions',
-              },
-              {
-                source: 'CSES',
-                name: 'List Removals',
-                id: '1749',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS'],
-                solID: 'cses-1749',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1749',
-                uniqueID: 'https://cses.fi/problemset/task/1749',
-              },
-              {
-                source: 'CSES',
-                name: 'Salary Queries',
-                id: '1144',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Coordinate Compress'],
-                solID: 'cses-1144',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1144',
-                uniqueID: 'https://cses.fi/problemset/task/1144',
-              },
-              {
-                source: 'CSES',
-                name: 'Increasing Subsequence II',
-                id: '1748',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Coordinate Compress'],
-                solID: 'cses-1748',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1748',
-                uniqueID: 'https://cses.fi/problemset/task/1748',
-              },
-              {
-                source: 'CSES',
-                name: 'Distinct Values Queries',
-                id: '1734',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['PURS', 'Offline'],
-                solID: 'cses-1734',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1734',
-                uniqueID: 'https://cses.fi/problemset/task/1734',
-              },
-              {
-                source: 'Gold',
-                name: 'Haircut',
-                id: '1041',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['PURS', 'Inversions'],
-                solID: 'usaco-1041',
+                tags: ['Knapsack', 'Prime Factorization'],
+                solID: 'Prime factorize $K$.',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
-              },
-              {
-                source: 'Gold',
-                name: 'Balanced Photo',
-                id: '693',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Inversions'],
-                solID: 'usaco-693',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
-              },
-              {
-                source: 'Gold',
-                name: 'Circle Cross',
-                id: '719',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Inversions'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
-              },
-              {
-                source: 'Gold',
-                name: 'Sleepy Cow Sort',
-                id: '898',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
-              },
-              {
-                source: 'Plat',
-                name: 'Mincross',
-                id: '720',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['PURS', 'Inversions'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
-              },
-              {
-                source: 'Old Gold',
-                name: 'Cow Hopscotch',
-                id: '532',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['PURS'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1045',
+                tableID: 'nt',
               },
             ],
           },
@@ -8722,6 +8958,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1095',
                 uniqueID: 'https://cses.fi/problemset/task/1095',
+                tableID: 'expo',
               },
               {
                 source: 'CSES',
@@ -8734,6 +8971,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1712',
                 uniqueID: 'https://cses.fi/problemset/task/1712',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -8746,6 +8984,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1279/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1279/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -8758,6 +8997,162 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2182',
                 uniqueID: 'https://cses.fi/problemset/task/2182',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'mst',
+              title: 'Minimum Spanning Trees',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Road Reparation',
+                id: '1675',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['MST'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1675',
+                uniqueID: 'https://cses.fi/problemset/task/1675',
+                tableID: 'standard',
+              },
+              {
+                source: 'Old Silver',
+                name: 'Superbull',
+                id: '531',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['MST'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=531',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Fenced In',
+                id: '623',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['MST'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=623',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'I Would Walk 500 Miles',
+                id: '946',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['MST'],
+                solID: 'usaco-946',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=946',
+                tableID: 'general',
+              },
+              {
+                source: 'HR',
+                name: 'Spanning Tree Fraction',
+                id:
+                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['MST', 'Binary Search'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                uniqueID:
+                  'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
+                tableID: 'general',
+              },
+              {
+                source: 'JOI',
+                name: '2015 - Inheritance',
+                id: 'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['MST', 'Binary Search'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
+                uniqueID:
+                  'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
+                tableID: 'general',
+              },
+              {
+                source: 'Plat',
+                name: 'Fenced In',
+                id: '625',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['MST'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=625',
+                tableID: 'general',
+              },
+              {
+                source: 'COCI',
+                name: '2017 - Sirni',
+                id: 'https://oj.uz/problem/view/COCI17_sirni',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['MST', 'NT'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/COCI17_sirni',
+                uniqueID: 'https://oj.uz/problem/view/COCI17_sirni',
+                tableID: 'general',
+              },
+              {
+                source: 'APIO',
+                name: '2013 - Toll',
+                id: 'https://oj.uz/problem/view/APIO13_toll',
+                difficulty: 'Insane',
+                starred: false,
+                tags: ['MST', 'Bitmask'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/APIO13_toll',
+                uniqueID: 'https://oj.uz/problem/view/APIO13_toll',
+                tableID: 'general',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2011 - Timeismoney',
+                id: 'http://oj.uz/problem/view/balkan11_timeismoney',
+                difficulty: 'Insane',
+                starred: true,
+                tags: ['MST', 'Convex Hull'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'http://oj.uz/problem/view/balkan11_timeismoney',
+                uniqueID: 'http://oj.uz/problem/view/balkan11_timeismoney',
+                tableID: 'general',
               },
             ],
           },
@@ -8783,6 +9178,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1638',
                 uniqueID: 'https://cses.fi/problemset/task/1638',
+                tableID: 'sam',
               },
               {
                 source: 'LC',
@@ -8798,6 +9194,7 @@ export default {
                   'https://leetcode.com/problems/longest-common-subsequence/',
                 uniqueID:
                   'https://leetcode.com/problems/longest-common-subsequence/',
+                tableID: 'pathSam',
               },
               {
                 source: 'CSES',
@@ -8810,6 +9207,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1746',
                 uniqueID: 'https://cses.fi/problemset/task/1746',
+                tableID: 'pathsGrid',
               },
               {
                 source: 'CSES',
@@ -8822,6 +9220,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1639',
                 uniqueID: 'https://cses.fi/problemset/task/1639',
+                tableID: 'pathsGrid',
               },
               {
                 source: 'Gold',
@@ -8836,6 +9235,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=670',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=670',
+                tableID: 'pathsGrid',
               },
               {
                 source: 'Gold',
@@ -8850,6 +9250,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=598',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=598',
+                tableID: 'pathsGrid',
               },
               {
                 source: 'Gold',
@@ -8865,6 +9266,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=718',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=718',
+                tableID: 'pathsGrid',
               },
               {
                 source: 'Old Gold',
@@ -8880,6 +9282,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=553',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=553',
+                tableID: 'pathsGrid',
               },
             ],
           },
@@ -8890,224 +9293,216 @@ export default {
               division: 'gold',
             },
             frontmatter: {
-              id: 'sp',
-              title: 'Shortest Paths with Non-Negative Edge Weights',
+              id: 'PURS',
+              title: 'Point Update Range Sum',
             },
             problems: [
               {
                 source: 'CSES',
-                name: 'Shortest Routes I',
-                id: '1671',
+                name: 'Dynamic Range Sum Queries',
+                id: '1648',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['SP'],
-                solID:
-                  'equivalent to [Kattis SSSP Non-Negative](https://open.kattis.com/problems/shortestpath1)',
+                tags: ['PURS'],
+                solID: 'Can also do range XOR queries w/ update.',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1671',
-                uniqueID: 'https://cses.fi/problemset/task/1671',
+                url: 'https://cses.fi/problemset/task/1648',
+                uniqueID: 'https://cses.fi/problemset/task/1648',
+                tableID: 'sample',
               },
               {
                 source: 'CSES',
-                name: 'Flight Discount',
-                id: '1195',
+                name: 'Dynamic Range Minimum Queries',
+                id: '1649',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['SP'],
-                solID: 'cses-1195',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1195',
-                uniqueID: 'https://cses.fi/problemset/task/1195',
-              },
-              {
-                source: 'Gold',
-                name: 'Milk Pumping',
-                id: '969',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['SP'],
-                solID: 'usaco-969',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
-              },
-              {
-                source: 'Gold',
-                name: 'Why Did the Cow Cross the Road',
-                id: '717',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['SP'],
+                tags: ['PURQ'],
                 solID: '',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
+                url: 'https://cses.fi/problemset/task/1649',
+                uniqueID: 'https://cses.fi/problemset/task/1649',
+                tableID: 'segSam',
               },
               {
-                source: 'Gold',
-                name: 'Fine Dining',
-                id: '861',
+                source: 'SPOJ',
+                name: 'Inversion Counting',
+                id: 'INVCNT',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['SP'],
-                solID: '',
+                tags: ['PURS'],
+                solID: null,
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
-              },
-              {
-                source: 'Gold',
-                name: 'Shortcut',
-                id: '899',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['SP'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
+                url: 'https://www.spoj.com/problems/INVCNT',
+                uniqueID: 'https://www.spoj.com/problems/INVCNT',
+                tableID: 'inv',
               },
               {
                 source: 'CSES',
-                name: 'Investigation',
-                id: '1202',
-                difficulty: 'Normal',
+                name: 'Range Update Queries',
+                id: '1651',
+                difficulty: 'Easy',
                 starred: true,
-                tags: ['SP'],
-                solID: 'cses-1202',
+                tags: ['PURS'],
+                solID: 'cses-1651',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1202',
-                uniqueID: 'https://cses.fi/problemset/task/1202',
+                url: 'https://cses.fi/problemset/task/1651',
+                uniqueID: 'https://cses.fi/problemset/task/1651',
+                tableID: 'practice',
               },
               {
                 source: 'Kattis',
-                name: 'Robot Turtles',
-                id: 'robotturtles',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['SP'],
-                solID: 'https://icpc.cs.vt.edu/hs/2016/judge/',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/robotturtles',
-                uniqueID: 'https://open.kattis.com/problems/robotturtles',
-              },
-              {
-                source: 'CSES',
-                name: 'Flight Routes',
-                id: '1196',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['SP'],
-                solID: 'cses-1196',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1196',
-                uniqueID: 'https://cses.fi/problemset/task/1196',
-              },
-              {
-                source: 'IOI',
-                name: '2011 - Crocodile',
-                id: 'https://oj.uz/problem/view/IOI11_crocodile',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['SP'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI11_crocodile',
-                uniqueID: 'https://oj.uz/problem/view/IOI11_crocodile',
-              },
-              {
-                source: 'JOI',
-                name: '2018 - Commuter Pass',
-                id: 'https://oj.uz/problem/view/JOI18_commuter_pass',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['SP', 'DP'],
-                solID: 'joi-18-commuter-pass',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI18_commuter_pass',
-                uniqueID: 'https://oj.uz/problem/view/JOI18_commuter_pass',
-              },
-              {
-                source: 'JOI',
-                name: '2021 - Robot',
-                id: 'https://oj.uz/problem/view/JOI21_ho_t4',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['SP'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/JOI21_ho_t4',
-                uniqueID: 'https://oj.uz/problem/view/JOI21_ho_t4',
-              },
-              {
-                source: 'APIO',
-                name: '2011 - Find the Path',
-                id: 'https://dmoj.ca/problem/apio11p2',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['SP', 'Geometry'],
-                solID: 'apio-11-path',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/apio11p2',
-                uniqueID: 'https://dmoj.ca/problem/apio11p2',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2012 - Shortest Paths',
-                id: 'https://www.acmicpc.net/problem/5250',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['SP'],
-                solID: 'balkan-12-shortestpaths',
-                solQuality: 'ok',
-                url: 'https://www.acmicpc.net/problem/5250',
-                uniqueID: 'https://www.acmicpc.net/problem/5250',
-              },
-              {
-                source: 'Balkan OI',
-                name: '2015 - Circus',
-                id: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['SP', 'Monotone stack'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
-                uniqueID: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
-              },
-              {
-                source: 'CSES',
-                name: 'Shortest Routes II',
-                id: '1672',
+                name: 'Mega Inversions',
+                id: 'megainversions',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['APSP'],
-                solID: '',
+                tags: ['PURS', 'Inversions'],
+                solID: 'kattis-megainversions',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1672',
-                uniqueID: 'https://cses.fi/problemset/task/1672',
+                url: 'https://open.kattis.com/problems/megainversions',
+                uniqueID: 'https://open.kattis.com/problems/megainversions',
+                tableID: 'practice',
+              },
+              {
+                source: 'CSES',
+                name: 'List Removals',
+                id: '1749',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS'],
+                solID: 'cses-1749',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1749',
+                uniqueID: 'https://cses.fi/problemset/task/1749',
+                tableID: 'practice',
+              },
+              {
+                source: 'CSES',
+                name: 'Salary Queries',
+                id: '1144',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS', 'Coordinate Compress'],
+                solID: 'cses-1144',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1144',
+                uniqueID: 'https://cses.fi/problemset/task/1144',
+                tableID: 'practice',
+              },
+              {
+                source: 'CSES',
+                name: 'Increasing Subsequence II',
+                id: '1748',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS', 'Coordinate Compress'],
+                solID: 'cses-1748',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1748',
+                uniqueID: 'https://cses.fi/problemset/task/1748',
+                tableID: 'practice',
+              },
+              {
+                source: 'CSES',
+                name: 'Distinct Values Queries',
+                id: '1734',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['PURS', 'Offline'],
+                solID: 'cses-1734',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1734',
+                uniqueID: 'https://cses.fi/problemset/task/1734',
+                tableID: 'practice',
               },
               {
                 source: 'Gold',
-                name: 'Moortal Cowmbat',
-                id: '971',
-                difficulty: 'Hard',
+                name: 'Haircut',
+                id: '1041',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['PURS', 'Inversions'],
+                solID: 'usaco-1041',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1041',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Gold',
+                name: 'Balanced Photo',
+                id: '693',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['APSP', 'DP'],
+                tags: ['PURS', 'Inversions'],
+                solID: 'usaco-693',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=693',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Gold',
+                name: 'Circle Cross',
+                id: '719',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS', 'Inversions'],
                 solID: '',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=719',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Gold',
+                name: 'Sleepy Cow Sort',
+                id: '898',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=898',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Mincross',
+                id: '720',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['PURS', 'Inversions'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=720',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Old Gold',
+                name: 'Cow Hopscotch',
+                id: '532',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['PURS'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=532',
+                tableID: 'usaco',
               },
             ],
           },
@@ -9134,6 +9529,7 @@ export default {
                 url: 'https://leetcode.com/problems/sliding-window-maximum',
                 uniqueID:
                   'https://leetcode.com/problems/sliding-window-maximum',
+                tableID: 'constantSam',
               },
               {
                 source: 'CSES',
@@ -9146,6 +9542,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1644',
                 uniqueID: 'https://cses.fi/problemset/task/1644',
+                tableID: 'constant',
               },
               {
                 source: 'CSES',
@@ -9158,6 +9555,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1076',
                 uniqueID: 'https://cses.fi/problemset/task/1076',
+                tableID: 'constant',
               },
               {
                 source: 'CSES',
@@ -9170,6 +9568,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1077',
                 uniqueID: 'https://cses.fi/problemset/task/1077',
+                tableID: 'constant',
               },
               {
                 source: 'CSES',
@@ -9182,6 +9581,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1141',
                 uniqueID: 'https://cses.fi/problemset/task/1141',
+                tableID: 'sam',
               },
               {
                 source: 'CF',
@@ -9194,6 +9594,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/616/problem/D',
                 uniqueID: 'https://codeforces.com/contest/616/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9208,6 +9609,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=767',
+                tableID: 'general',
               },
               {
                 source: 'APIO',
@@ -9220,6 +9622,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/APIO15_bridge',
                 uniqueID: 'https://oj.uz/problem/view/APIO15_bridge',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9234,6 +9637,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
+                tableID: 'general',
               },
               {
                 source: 'Plat',
@@ -9248,6 +9652,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=600',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=600',
+                tableID: 'general',
               },
               {
                 source: 'APIO',
@@ -9260,6 +9665,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/apio09p1',
                 uniqueID: 'https://dmoj.ca/problem/apio09p1',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -9273,6 +9679,7 @@ export default {
                 url: 'https://contest.yandex.com/ioi/contest/566/problems/A/',
                 uniqueID:
                   'https://contest.yandex.com/ioi/contest/566/problems/A/',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -9286,6 +9693,7 @@ export default {
                 url: 'https://contest.yandex.com/ioi/contest/562/problems/B/',
                 uniqueID:
                   'https://contest.yandex.com/ioi/contest/562/problems/B/',
+                tableID: 'general',
               },
               {
                 source: 'YS',
@@ -9300,6 +9708,7 @@ export default {
                   'https://judge.yosupo.jp/problem/queue_operate_all_composite',
                 uniqueID:
                   'https://judge.yosupo.jp/problem/queue_operate_all_composite',
+                tableID: 'queue',
               },
               {
                 source: 'Baltic OI',
@@ -9312,6 +9721,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/BOI15_hac',
                 uniqueID: 'https://oj.uz/problem/view/BOI15_hac',
+                tableID: 'queue',
               },
             ],
           },
@@ -9337,6 +9747,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1645',
                 uniqueID: 'https://cses.fi/problemset/task/1645',
+                tableID: 'nearest',
               },
               {
                 source: 'LC',
@@ -9351,6 +9762,7 @@ export default {
                   'https://leetcode.com/problems/largest-rectangle-in-histogram',
                 uniqueID:
                   'https://leetcode.com/problems/largest-rectangle-in-histogram',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9365,6 +9777,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=743',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=743',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9379,6 +9792,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=922',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=922',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -9391,6 +9805,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1147',
                 uniqueID: 'https://cses.fi/problemset/task/1147',
+                tableID: 'general',
               },
               {
                 source: 'CEOI',
@@ -9403,6 +9818,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1402/problem/A',
                 uniqueID: 'https://codeforces.com/contest/1402/problem/A',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -9415,6 +9831,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/2416',
                 uniqueID: 'https://cses.fi/problemset/task/2416',
+                tableID: 'general',
               },
               {
                 source: 'IOI',
@@ -9428,6 +9845,7 @@ export default {
                 url: 'https://contest.yandex.com/ioi/contest/560/problems/D/',
                 uniqueID:
                   'https://contest.yandex.com/ioi/contest/560/problems/D/',
+                tableID: 'general',
               },
               {
                 source: 'InfoArena',
@@ -9440,6 +9858,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://infoarena.ro/problema/ssdj',
                 uniqueID: 'https://infoarena.ro/problema/ssdj',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -9452,6 +9871,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1148',
                 uniqueID: 'https://cses.fi/problemset/task/1148',
+                tableID: 'general',
               },
               {
                 source: 'COI',
@@ -9465,6 +9885,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COI15_zarulje',
                 uniqueID: 'https://oj.uz/problem/view/COI15_zarulje',
+                tableID: 'general',
               },
             ],
           },
@@ -9490,6 +9911,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ccc20s3',
                 uniqueID: 'https://dmoj.ca/problem/ccc20s3',
+                tableID: 'ex',
               },
               {
                 source: 'CEOI',
@@ -9503,6 +9925,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/165/list/',
                 uniqueID: 'https://cses.fi/165/list/',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -9515,6 +9938,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/835/problem/D',
                 uniqueID: 'https://codeforces.com/contest/835/problem/D',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9529,6 +9953,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=741',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=741',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -9543,6 +9968,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=599',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=599',
+                tableID: 'general',
               },
               {
                 source: 'RMI',
@@ -9558,6 +9984,7 @@ export default {
                   'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
                 uniqueID:
                   'https://csacademy.com/contest/rmi-2017-day-1/task/hangman2/',
+                tableID: 'general',
               },
               {
                 source: 'COCI',
@@ -9571,6 +9998,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI17_osmosmjerka',
                 uniqueID: 'https://oj.uz/problem/view/COCI17_osmosmjerka',
+                tableID: 'general',
               },
               {
                 source: 'COCI',
@@ -9583,6 +10011,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://evaluator.hsin.hr/tasks/HONI202135sateliti/',
                 uniqueID: 'https://evaluator.hsin.hr/tasks/HONI202135sateliti/',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -9595,6 +10024,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/822/problem/E',
                 uniqueID: 'https://codeforces.com/contest/822/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'Baltic OI',
@@ -9608,6 +10038,7 @@ export default {
                 url: 'https://boi18-day2-open.kattis.com/problems/genetics2',
                 uniqueID:
                   'https://boi18-day2-open.kattis.com/problems/genetics2',
+                tableID: 'general',
               },
               {
                 source: 'COCI',
@@ -9621,6 +10052,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COCI16_zamjene',
                 uniqueID: 'https://oj.uz/problem/view/COCI16_zamjene',
+                tableID: 'general',
               },
               {
                 source: 'COI',
@@ -9634,8 +10066,388 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/COI16_palinilap',
                 uniqueID: 'https://oj.uz/problem/view/COI16_palinilap',
+                tableID: 'general',
               },
             ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'sp',
+              title: 'Shortest Paths with Non-Negative Edge Weights',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Shortest Routes I',
+                id: '1671',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['SP'],
+                solID:
+                  'equivalent to [Kattis SSSP Non-Negative](https://open.kattis.com/problems/shortestpath1)',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1671',
+                uniqueID: 'https://cses.fi/problemset/task/1671',
+                tableID: 'sample',
+              },
+              {
+                source: 'CSES',
+                name: 'Flight Discount',
+                id: '1195',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['SP'],
+                solID: 'cses-1195',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1195',
+                uniqueID: 'https://cses.fi/problemset/task/1195',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Gold',
+                name: 'Milk Pumping',
+                id: '969',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['SP'],
+                solID: 'usaco-969',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=969',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Gold',
+                name: 'Why Did the Cow Cross the Road',
+                id: '717',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['SP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=717',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Gold',
+                name: 'Fine Dining',
+                id: '861',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['SP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=861',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Gold',
+                name: 'Shortcut',
+                id: '899',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['SP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=899',
+                tableID: 'dijk',
+              },
+              {
+                source: 'CSES',
+                name: 'Investigation',
+                id: '1202',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['SP'],
+                solID: 'cses-1202',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1202',
+                uniqueID: 'https://cses.fi/problemset/task/1202',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Kattis',
+                name: 'Robot Turtles',
+                id: 'robotturtles',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['SP'],
+                solID: 'https://icpc.cs.vt.edu/hs/2016/judge/',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/robotturtles',
+                uniqueID: 'https://open.kattis.com/problems/robotturtles',
+                tableID: 'dijk',
+              },
+              {
+                source: 'CSES',
+                name: 'Flight Routes',
+                id: '1196',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['SP'],
+                solID: 'cses-1196',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1196',
+                uniqueID: 'https://cses.fi/problemset/task/1196',
+                tableID: 'dijk',
+              },
+              {
+                source: 'IOI',
+                name: '2011 - Crocodile',
+                id: 'https://oj.uz/problem/view/IOI11_crocodile',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['SP'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI11_crocodile',
+                uniqueID: 'https://oj.uz/problem/view/IOI11_crocodile',
+                tableID: 'dijk',
+              },
+              {
+                source: 'JOI',
+                name: '2018 - Commuter Pass',
+                id: 'https://oj.uz/problem/view/JOI18_commuter_pass',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['SP', 'DP'],
+                solID: 'joi-18-commuter-pass',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI18_commuter_pass',
+                uniqueID: 'https://oj.uz/problem/view/JOI18_commuter_pass',
+                tableID: 'dijk',
+              },
+              {
+                source: 'JOI',
+                name: '2021 - Robot',
+                id: 'https://oj.uz/problem/view/JOI21_ho_t4',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['SP'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/JOI21_ho_t4',
+                uniqueID: 'https://oj.uz/problem/view/JOI21_ho_t4',
+                tableID: 'dijk',
+              },
+              {
+                source: 'APIO',
+                name: '2011 - Find the Path',
+                id: 'https://dmoj.ca/problem/apio11p2',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['SP', 'Geometry'],
+                solID: 'apio-11-path',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/apio11p2',
+                uniqueID: 'https://dmoj.ca/problem/apio11p2',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2012 - Shortest Paths',
+                id: 'https://www.acmicpc.net/problem/5250',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['SP'],
+                solID: 'balkan-12-shortestpaths',
+                solQuality: 'ok',
+                url: 'https://www.acmicpc.net/problem/5250',
+                uniqueID: 'https://www.acmicpc.net/problem/5250',
+                tableID: 'dijk',
+              },
+              {
+                source: 'Balkan OI',
+                name: '2015 - Circus',
+                id: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['SP', 'Monotone stack'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
+                uniqueID: 'https://oj.uz/problem/view/Balkan15_CIRCUS',
+                tableID: 'dijk',
+              },
+              {
+                source: 'CSES',
+                name: 'Shortest Routes II',
+                id: '1672',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['APSP'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1672',
+                uniqueID: 'https://cses.fi/problemset/task/1672',
+                tableID: 'apspSam',
+              },
+              {
+                source: 'Gold',
+                name: 'Moortal Cowmbat',
+                id: '971',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['APSP', 'DP'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=971',
+                tableID: 'apsp',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'toposort',
+              title: 'Topological Sort',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Course Schedule',
+                id: '1679',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1679',
+                uniqueID: 'https://cses.fi/problemset/task/1679',
+                tableID: 'sample',
+              },
+              {
+                source: 'CSES',
+                name: 'Round Trip II',
+                id: '1678',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Cycle'],
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1678',
+                uniqueID: 'https://cses.fi/problemset/task/1678',
+                tableID: 'dir',
+              },
+              {
+                source: 'CSES',
+                name: 'Longest Flight Route',
+                id: '1680',
+                difficulty: 'Easy',
+                starred: false,
+                tags: [],
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1680',
+                uniqueID: 'https://cses.fi/problemset/task/1680',
+                tableID: 'dp',
+              },
+              {
+                source: 'CSES',
+                name: 'Game Routes',
+                id: '1681',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['TopoSort'],
+                solID: 'cses-1681',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1681',
+                uniqueID: 'https://cses.fi/problemset/task/1681',
+                tableID: 'general',
+              },
+              {
+                source: 'Kattis',
+                name: 'Quantum Superposition',
+                id: 'quantumsuperposition',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['TopoSort'],
+                solID: 'kattis-quantum',
+                solQuality: 'ok',
+                url: 'https://open.kattis.com/problems/quantumsuperposition',
+                uniqueID:
+                  'https://open.kattis.com/problems/quantumsuperposition',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Timeline',
+                id: '1017',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['TopoSort'],
+                solID: 'not explicitly given, but graph is a DAG',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
+                tableID: 'general',
+              },
+              {
+                source: 'Gold',
+                name: 'Milking Order',
+                id: '838',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['TopoSort', 'Binary Search'],
+                solID: null,
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Course Schedule II',
+                id: '1757',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['TopoSort'],
+                solID: 'cses-1757',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1757',
+                uniqueID: 'https://cses.fi/problemset/task/1757',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'gold',
+            },
+            frontmatter: {
+              id: 'unordered',
+              title: '(Optional) Unordered Sets & Maps',
+            },
+            problems: [],
           },
         },
         {
@@ -9660,6 +10472,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1137',
                 uniqueID: 'https://cses.fi/problemset/task/1137',
+                tableID: 'sample',
               },
               {
                 source: 'CSES',
@@ -9672,6 +10485,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1688',
                 uniqueID: 'https://cses.fi/problemset/task/1688',
+                tableID: 'lca',
               },
               {
                 source: 'CSES',
@@ -9684,6 +10498,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1135',
                 uniqueID: 'https://cses.fi/problemset/task/1135',
+                tableID: 'lca',
               },
               {
                 source: 'YS',
@@ -9696,6 +10511,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://judge.yosupo.jp/problem/staticrmq',
                 uniqueID: 'https://judge.yosupo.jp/problem/staticrmq',
+                tableID: 'rmqSample',
               },
               {
                 source: 'CSES',
@@ -9708,6 +10524,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1138',
                 uniqueID: 'https://cses.fi/problemset/task/1138',
+                tableID: 'problems',
               },
               {
                 source: 'Gold',
@@ -9722,6 +10539,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=921',
+                tableID: 'problems',
               },
               {
                 source: 'Gold',
@@ -9736,6 +10554,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=970',
+                tableID: 'problems',
               },
               {
                 source: 'Plat',
@@ -9750,6 +10569,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=696',
+                tableID: 'problems',
               },
               {
                 source: 'IOI',
@@ -9762,6 +10582,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/IOI09_regions',
                 uniqueID: 'https://oj.uz/problem/view/IOI09_regions',
+                tableID: 'problems',
               },
               {
                 source: 'Plat',
@@ -9776,6 +10597,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=973',
+                tableID: 'problems',
               },
               {
                 source: 'DMOJ',
@@ -9788,132 +10610,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/dmopc20c1p5',
                 uniqueID: 'https://dmoj.ca/problem/dmopc20c1p5',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'unordered',
-              title: '(Optional) Unordered Sets & Maps',
-            },
-            problems: [],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'gold',
-            },
-            frontmatter: {
-              id: 'toposort',
-              title: 'Topological Sort',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Course Schedule',
-                id: '1679',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1679',
-                uniqueID: 'https://cses.fi/problemset/task/1679',
-              },
-              {
-                source: 'CSES',
-                name: 'Round Trip II',
-                id: '1678',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Cycle'],
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1678',
-                uniqueID: 'https://cses.fi/problemset/task/1678',
-              },
-              {
-                source: 'CSES',
-                name: 'Longest Flight Route',
-                id: '1680',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1680',
-                uniqueID: 'https://cses.fi/problemset/task/1680',
-              },
-              {
-                source: 'CSES',
-                name: 'Game Routes',
-                id: '1681',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['TopoSort'],
-                solID: 'cses-1681',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1681',
-                uniqueID: 'https://cses.fi/problemset/task/1681',
-              },
-              {
-                source: 'Kattis',
-                name: 'Quantum Superposition',
-                id: 'quantumsuperposition',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['TopoSort'],
-                solID: 'kattis-quantum',
-                solQuality: 'ok',
-                url: 'https://open.kattis.com/problems/quantumsuperposition',
-                uniqueID:
-                  'https://open.kattis.com/problems/quantumsuperposition',
-              },
-              {
-                source: 'Gold',
-                name: 'Timeline',
-                id: '1017',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['TopoSort'],
-                solID: 'not explicitly given, but graph is a DAG',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1017',
-              },
-              {
-                source: 'Gold',
-                name: 'Milking Order',
-                id: '838',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['TopoSort', 'Binary Search'],
-                solID: null,
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=838',
-              },
-              {
-                source: 'CSES',
-                name: 'Course Schedule II',
-                id: '1757',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['TopoSort'],
-                solID: 'cses-1757',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1757',
-                uniqueID: 'https://cses.fi/problemset/task/1757',
+                tableID: 'problems',
               },
             ],
           },
@@ -9939,6 +10636,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1640',
                 uniqueID: 'https://cses.fi/problemset/task/1640',
+                tableID: 'sample',
               },
               {
                 source: 'CSES',
@@ -9951,6 +10649,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1660',
                 uniqueID: 'https://cses.fi/problemset/task/1660',
+                tableID: 'sample',
               },
               {
                 source: 'CF',
@@ -9963,6 +10662,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/279/problem/B',
                 uniqueID: 'https://codeforces.com/contest/279/problem/B',
+                tableID: 'ad',
               },
               {
                 source: 'CSES',
@@ -9975,6 +10675,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1641',
                 uniqueID: 'https://cses.fi/problemset/task/1641',
+                tableID: 'ad',
               },
               {
                 source: 'Silver',
@@ -9989,6 +10690,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=738',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=738',
+                tableID: 'ad',
               },
               {
                 source: 'CF',
@@ -10001,6 +10703,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/702/problem/C',
                 uniqueID: 'https://codeforces.com/contest/702/problem/C',
+                tableID: 'ad',
               },
               {
                 source: 'Silver',
@@ -10015,6 +10718,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=643',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=643',
+                tableID: 'ad',
               },
               {
                 source: 'Silver',
@@ -10029,6 +10733,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=918',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=918',
+                tableID: 'ad',
               },
               {
                 source: 'CF',
@@ -10041,6 +10746,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/problemset/problem/814/C',
                 uniqueID: 'https://codeforces.com/problemset/problem/814/C',
+                tableID: 'ad',
               },
               {
                 source: 'CEOI',
@@ -10053,6 +10759,286 @@ export default {
                 solQuality: 'ok',
                 url: 'https://oj.uz/problem/view/CEOI10_tower',
                 uniqueID: 'https://oj.uz/problem/view/CEOI10_tower',
+                tableID: 'ad',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'silver',
+            },
+            frontmatter: {
+              id: 'binary-search',
+              title: 'Binary Search',
+            },
+            problems: [
+              {
+                source: 'CF',
+                name: 'Div 2 C - Maximum Median',
+                id: 'contest/1201/problem/C',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1201/problem/C',
+                uniqueID: 'https://codeforces.com/contest/1201/problem/C',
+                tableID: 'ex',
+              },
+              {
+                source: 'Silver',
+                name: 'Cow Dance Show',
+                id: '690',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search', 'Ordered Set'],
+                solID: 'usaco-690',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Silver',
+                name: 'Convention',
+                id: '858',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search', 'Sorting'],
+                solID: 'usaco-858',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Silver',
+                name: 'Angry Cows',
+                id: '594',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search', 'Sorting'],
+                solID: 'usaco-594',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Silver',
+                name: 'Social Distancing',
+                id: '1038',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Binary Search', 'Sorting'],
+                solID: 'usaco-1038',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Gold',
+                name: 'Angry Cows',
+                id: '597',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Binary Search', 'Sorting'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Silver',
+                name: 'Loan Repayment',
+                id: '991',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Binary Search', 'Sqrt'],
+                solID:
+                  'requires some rather tricky analysis to speed up naive $mathcal{O}(Nlog N)$ solution',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Plat',
+                name: 'Load Balancing',
+                id: '624',
+                difficulty: 'Insane',
+                starred: false,
+                tags: ['Binary Search', 'Sorting'],
+                solID: 'usaco-624',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
+                tableID: 'usaco',
+              },
+              {
+                source: 'Silver',
+                name: 'Counting Haybales',
+                id: '666',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
+                tableID: 'count',
+              },
+              {
+                source: 'CF',
+                name: 'Cellular Network',
+                id: 'https://codeforces.com/contest/702/problem/C',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'cellular-network',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/702/problem/C',
+                uniqueID: 'https://codeforces.com/contest/702/problem/C',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Factory Machines',
+                id: '1620',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'cses-1620',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1620',
+                uniqueID: 'https://cses.fi/problemset/task/1620',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Array Division',
+                id: '1085',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'cses-1085',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1085',
+                uniqueID: 'https://cses.fi/problemset/task/1085',
+                tableID: 'general',
+              },
+              {
+                source: 'CSES',
+                name: 'Multiplication Table',
+                id: '2422',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'cses-2422',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/2422',
+                uniqueID: 'https://cses.fi/problemset/task/2422',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Edu C: Magic Ship',
+                id: 'problemset/problem/1117/C',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Binary Search', 'Prefix Sums'],
+                solID: 'cf-magship',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/problemset/problem/1117/C',
+                uniqueID: 'https://codeforces.com/problemset/problem/1117/C',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'The Meeting Place Cannot Be Changed',
+                id: 'contest/782/problem/B',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Binary Search'],
+                solID:
+                  'binary search on time with epsilon and then find if there exist non-empty intersection of the ranges (maximum of left points and minimum of right points)',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/782/problem/B',
+                uniqueID: 'https://codeforces.com/contest/782/problem/B',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Preparing for Merge Sort',
+                id: 'contest/847/problem/B',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'preparing-for-mergesort',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/847/problem/B',
+                uniqueID: 'https://codeforces.com/contest/847/problem/B',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Packmen',
+                id: 'contest/847/problem/E',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'cf-packmen',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/847/problem/E',
+                uniqueID: 'https://codeforces.com/contest/847/problem/E',
+                tableID: 'general',
+              },
+              {
+                source: 'CF',
+                name: 'Level Generation',
+                id: 'problemset/problem/818/F',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Binary Search'],
+                solID:
+                  "first find out which is the best way to construct the graph, then it's possible to see that the number of edges increase for some range and then decrease; so, using binary search find the last i such that f(i-1)<=f(i)",
+                solQuality: 'ok',
+                url: 'https://codeforces.com/problemset/problem/818/F',
+                uniqueID: 'https://codeforces.com/problemset/problem/818/F',
+                tableID: 'general',
+              },
+              {
+                source: 'Baltic OI',
+                name: '2012 - Mobile',
+                id: 'https://oj.uz/problem/view/BOI12_mobile',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Binary Search'],
+                solID: 'baltic-12-mobile',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/BOI12_mobile',
+                uniqueID: 'https://oj.uz/problem/view/BOI12_mobile',
+                tableID: 'general',
               },
             ],
           },
@@ -10090,6 +11076,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1666',
                 uniqueID: 'https://cses.fi/problemset/task/1666',
+                tableID: 'sample',
               },
               {
                 source: 'Silver',
@@ -10104,6 +11091,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=644',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=644',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10118,6 +11106,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=668',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=668',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10132,6 +11121,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=944',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=944',
+                tableID: 'general',
               },
               {
                 source: 'Kattis',
@@ -10144,6 +11134,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://open.kattis.com/problems/birthday',
                 uniqueID: 'https://open.kattis.com/problems/birthday',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -10156,6 +11147,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1682',
                 uniqueID: 'https://cses.fi/problemset/task/1682',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -10170,6 +11162,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=669',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10184,6 +11177,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                tableID: 'general',
               },
               {
                 source: 'Kattis',
@@ -10199,6 +11193,7 @@ export default {
                   'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
                 uniqueID:
                   'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
+                tableID: 'general',
               },
               {
                 source: 'CSES',
@@ -10211,6 +11206,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1668',
                 uniqueID: 'https://cses.fi/problemset/task/1668',
+                tableID: 'bipsample',
               },
               {
                 source: 'CF',
@@ -10223,6 +11219,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/862/problem/B',
                 uniqueID: 'https://codeforces.com/contest/862/problem/B',
+                tableID: 'bip',
               },
               {
                 source: 'Silver',
@@ -10237,6 +11234,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=920',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=920',
+                tableID: 'bip',
               },
               {
                 source: 'Baltic OI',
@@ -10249,6 +11247,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1387/problem/A',
                 uniqueID: 'https://codeforces.com/contest/1387/problem/A',
+                tableID: 'bip',
               },
               {
                 source: 'APIO',
@@ -10261,266 +11260,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/apio11p1',
                 uniqueID: 'https://dmoj.ca/problem/apio11p1',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'silver',
-            },
-            frontmatter: {
-              id: 'binary-search',
-              title: 'Binary Search',
-            },
-            problems: [
-              {
-                source: 'CF',
-                name: 'Div 2 C - Maximum Median',
-                id: 'contest/1201/problem/C',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1201/problem/C',
-                uniqueID: 'https://codeforces.com/contest/1201/problem/C',
-              },
-              {
-                source: 'Silver',
-                name: 'Cow Dance Show',
-                id: '690',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search', 'Ordered Set'],
-                solID: 'usaco-690',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=690',
-              },
-              {
-                source: 'Silver',
-                name: 'Convention',
-                id: '858',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search', 'Sorting'],
-                solID: 'usaco-858',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=858',
-              },
-              {
-                source: 'Silver',
-                name: 'Angry Cows',
-                id: '594',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search', 'Sorting'],
-                solID: 'usaco-594',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=594',
-              },
-              {
-                source: 'Silver',
-                name: 'Social Distancing',
-                id: '1038',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Binary Search', 'Sorting'],
-                solID: 'usaco-1038',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1038',
-              },
-              {
-                source: 'Gold',
-                name: 'Angry Cows',
-                id: '597',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['Binary Search', 'Sorting'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=597',
-              },
-              {
-                source: 'Silver',
-                name: 'Loan Repayment',
-                id: '991',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Binary Search', 'Sqrt'],
-                solID:
-                  'requires some rather tricky analysis to speed up naive $mathcal{O}(Nlog N)$ solution',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=991',
-              },
-              {
-                source: 'Plat',
-                name: 'Load Balancing',
-                id: '624',
-                difficulty: 'Insane',
-                starred: false,
-                tags: ['Binary Search', 'Sorting'],
-                solID: 'usaco-624',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=624',
-              },
-              {
-                source: 'Silver',
-                name: 'Counting Haybales',
-                id: '666',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=666',
-              },
-              {
-                source: 'CF',
-                name: 'Cellular Network',
-                id: 'https://codeforces.com/contest/702/problem/C',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'cellular-network',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/702/problem/C',
-                uniqueID: 'https://codeforces.com/contest/702/problem/C',
-              },
-              {
-                source: 'CSES',
-                name: 'Factory Machines',
-                id: '1620',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'cses-1620',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1620',
-                uniqueID: 'https://cses.fi/problemset/task/1620',
-              },
-              {
-                source: 'CSES',
-                name: 'Array Division',
-                id: '1085',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'cses-1085',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1085',
-                uniqueID: 'https://cses.fi/problemset/task/1085',
-              },
-              {
-                source: 'CSES',
-                name: 'Multiplication Table',
-                id: '2422',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'cses-2422',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/2422',
-                uniqueID: 'https://cses.fi/problemset/task/2422',
-              },
-              {
-                source: 'CF',
-                name: 'Edu C: Magic Ship',
-                id: 'problemset/problem/1117/C',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Binary Search', 'Prefix Sums'],
-                solID: 'cf-magship',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/problemset/problem/1117/C',
-                uniqueID: 'https://codeforces.com/problemset/problem/1117/C',
-              },
-              {
-                source: 'CF',
-                name: 'The Meeting Place Cannot Be Changed',
-                id: 'contest/782/problem/B',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Binary Search'],
-                solID:
-                  'binary search on time with epsilon and then find if there exist non-empty intersection of the ranges (maximum of left points and minimum of right points)',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/782/problem/B',
-                uniqueID: 'https://codeforces.com/contest/782/problem/B',
-              },
-              {
-                source: 'CF',
-                name: 'Preparing for Merge Sort',
-                id: 'contest/847/problem/B',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'preparing-for-mergesort',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/847/problem/B',
-                uniqueID: 'https://codeforces.com/contest/847/problem/B',
-              },
-              {
-                source: 'CF',
-                name: 'Packmen',
-                id: 'contest/847/problem/E',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'cf-packmen',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/847/problem/E',
-                uniqueID: 'https://codeforces.com/contest/847/problem/E',
-              },
-              {
-                source: 'CF',
-                name: 'Level Generation',
-                id: 'problemset/problem/818/F',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Binary Search'],
-                solID:
-                  "first find out which is the best way to construct the graph, then it's possible to see that the number of edges increase for some range and then decrease; so, using binary search find the last i such that f(i-1)<=f(i)",
-                solQuality: 'ok',
-                url: 'https://codeforces.com/problemset/problem/818/F',
-                uniqueID: 'https://codeforces.com/problemset/problem/818/F',
-              },
-              {
-                source: 'Baltic OI',
-                name: '2012 - Mobile',
-                id: 'https://oj.uz/problem/view/BOI12_mobile',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Binary Search'],
-                solID: 'baltic-12-mobile',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/BOI12_mobile',
-                uniqueID: 'https://oj.uz/problem/view/BOI12_mobile',
+                tableID: 'bip',
               },
             ],
           },
@@ -10546,6 +11286,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1192',
                 uniqueID: 'https://cses.fi/problemset/task/1192',
+                tableID: 'sample',
               },
               {
                 source: 'Silver',
@@ -10560,6 +11301,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=895',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=895',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10574,6 +11316,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=570',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=570',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10588,6 +11331,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=596',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=596',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10602,6 +11346,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=620',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10616,6 +11361,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=740',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=740',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10630,6 +11376,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=716',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=716',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10644,6 +11391,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=860',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=860',
+                tableID: 'general',
               },
               {
                 source: 'CCO',
@@ -10656,6 +11404,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://dmoj.ca/problem/ccc20s2',
                 uniqueID: 'https://dmoj.ca/problem/ccc20s2',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10670,6 +11419,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1110',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1110',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10684,6 +11434,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=811',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=811',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -10698,70 +11449,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=836',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=836',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'silver',
-            },
-            frontmatter: {
-              id: 'func-graphs',
-              title: '(Optional) Introduction to Functional Graphs',
-            },
-            problems: [
-              {
-                source: 'CF',
-                name: 'Div 2 B - Badge',
-                id: 'contest/1020/problem/B',
-                difficulty: 'Very Easy',
-                starred: false,
-                tags: ['Functional Graph'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1020/problem/B',
-                uniqueID: 'https://codeforces.com/contest/1020/problem/B',
-              },
-              {
-                source: 'CF',
-                name: 'Cooperative Game',
-                id: 'https://codeforces.com/contest/1137/problem/D',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Functional Graph', "Floyd's Algorithm"],
-                solID:
-                  "Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)",
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/1137/problem/D',
-                uniqueID: 'https://codeforces.com/contest/1137/problem/D',
-              },
-              {
-                source: 'Silver',
-                name: 'The Bovine Shuffle',
-                id: '764',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Functional Graph'],
-                solID: 'usaco-764',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
-              },
-              {
-                source: 'CSES',
-                name: 'Planets Cycles',
-                id: '1751',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Functional Graph'],
-                solID: 'cses-1751',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1751',
-                uniqueID: 'https://cses.fi/problemset/task/1751',
+                tableID: 'general',
               },
             ],
           },
@@ -10787,6 +11475,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102951/problem/B',
                 uniqueID: 'https://codeforces.com/gym/102951/problem/B',
+                tableID: 'studyalgo',
               },
               {
                 source: 'CSES',
@@ -10799,6 +11488,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1629',
                 uniqueID: 'https://cses.fi/problemset/task/1629',
+                tableID: 'movie',
               },
               {
                 source: 'CSES',
@@ -10811,6 +11501,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1074',
                 uniqueID: 'https://cses.fi/problemset/task/1074',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10823,6 +11514,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1084',
                 uniqueID: 'https://cses.fi/problemset/task/1084',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10835,6 +11527,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1090',
                 uniqueID: 'https://cses.fi/problemset/task/1090',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10847,6 +11540,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1630',
                 uniqueID: 'https://cses.fi/problemset/task/1630',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10859,6 +11553,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1073',
                 uniqueID: 'https://cses.fi/problemset/task/1073',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10871,6 +11566,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1632',
                 uniqueID: 'https://cses.fi/problemset/task/1632',
+                tableID: 'cses',
               },
               {
                 source: 'CSES',
@@ -10883,6 +11579,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1161',
                 uniqueID: 'https://cses.fi/problemset/task/1161',
+                tableID: 'cses',
               },
               {
                 source: 'CF',
@@ -10895,6 +11592,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/762/problem/B',
                 uniqueID: 'https://codeforces.com/contest/762/problem/B',
+                tableID: 'other',
               },
               {
                 source: 'Silver',
@@ -10909,6 +11607,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=835',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=835',
+                tableID: 'other',
               },
               {
                 source: 'Silver',
@@ -10923,6 +11622,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=571',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=571',
+                tableID: 'other',
               },
               {
                 source: 'Gold',
@@ -10937,6 +11637,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=573',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=573',
+                tableID: 'other',
               },
               {
                 source: 'CSA',
@@ -10949,6 +11650,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://csacademy.com/contest/archive/task/sure-bet',
                 uniqueID: 'https://csacademy.com/contest/archive/task/sure-bet',
+                tableID: 'other',
               },
               {
                 source: 'Silver',
@@ -10963,6 +11665,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=714',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=714',
+                tableID: 'other',
               },
               {
                 source: 'Silver',
@@ -10977,6 +11680,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=990',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=990',
+                tableID: 'other',
               },
             ],
           },
@@ -11002,6 +11706,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1091',
                 uniqueID: 'https://cses.fi/problemset/task/1091',
+                tableID: 'standard',
               },
               {
                 source: 'CF',
@@ -11014,6 +11719,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/702/problem/C',
                 uniqueID: 'https://codeforces.com/contest/702/problem/C',
+                tableID: 'standard',
               },
               {
                 source: 'CSES',
@@ -11026,6 +11732,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1163',
                 uniqueID: 'https://cses.fi/problemset/task/1163',
+                tableID: 'standard',
               },
               {
                 source: 'CSES',
@@ -11038,6 +11745,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1164',
                 uniqueID: 'https://cses.fi/problemset/task/1164',
+                tableID: 'standard',
               },
               {
                 source: 'CSES',
@@ -11050,6 +11758,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1188',
                 uniqueID: 'https://cses.fi/problemset/task/1188',
+                tableID: 'sample',
               },
               {
                 source: 'Silver',
@@ -11064,6 +11773,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=763',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=763',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11078,6 +11788,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=859',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=859',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -11092,6 +11803,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=813',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=813',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -11104,6 +11816,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/862/problem/E',
                 uniqueID: 'https://codeforces.com/contest/862/problem/E',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -11116,6 +11829,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/878/problem/C',
                 uniqueID: 'https://codeforces.com/contest/878/problem/C',
+                tableID: 'general',
               },
               {
                 source: 'SAPO',
@@ -11128,6 +11842,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://saco-evaluator.org.za/cms/sapo2018z',
                 uniqueID: 'https://saco-evaluator.org.za/cms/sapo2018z',
+                tableID: 'general',
               },
             ],
           },
@@ -11138,154 +11853,299 @@ export default {
               division: 'silver',
             },
             frontmatter: {
-              id: 'prefix-sums',
-              title: 'Introduction to Prefix Sums',
+              id: 'func-graphs',
+              title: '(Optional) Introduction to Functional Graphs',
             },
             problems: [
               {
-                source: 'YS',
-                name: 'Static Range Sum',
-                id: 'static_range_sum',
+                source: 'CF',
+                name: 'Div 2 B - Badge',
+                id: 'contest/1020/problem/B',
                 difficulty: 'Very Easy',
                 starred: false,
-                tags: [],
+                tags: ['Functional Graph'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1020/problem/B',
+                uniqueID: 'https://codeforces.com/contest/1020/problem/B',
+                tableID: 'sample',
+              },
+              {
+                source: 'CF',
+                name: 'Cooperative Game',
+                id: 'https://codeforces.com/contest/1137/problem/D',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Functional Graph', "Floyd's Algorithm"],
+                solID:
+                  "Implement Floyd's Algorithm! (You only actually need 3 friends to solve the problem!)",
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/1137/problem/D',
+                uniqueID: 'https://codeforces.com/contest/1137/problem/D',
+                tableID: 'sample_floyd',
+              },
+              {
+                source: 'Silver',
+                name: 'The Bovine Shuffle',
+                id: '764',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Functional Graph'],
+                solID: 'usaco-764',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=764',
+                tableID: 'probs',
+              },
+              {
+                source: 'CSES',
+                name: 'Planets Cycles',
+                id: '1751',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Functional Graph'],
+                solID: 'cses-1751',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1751',
+                uniqueID: 'https://cses.fi/problemset/task/1751',
+                tableID: 'probs',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'silver',
+            },
+            frontmatter: {
+              id: 'intro-tree',
+              title: 'Introduction to Tree Algorithms',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Subordinates',
+                id: '1674',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Tree'],
                 solID: '@B',
                 solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/static_range_sum',
-                uniqueID: 'https://judge.yosupo.jp/problem/static_range_sum',
+                url: 'https://cses.fi/problemset/task/1674',
+                uniqueID: 'https://cses.fi/problemset/task/1674',
+                tableID: 'treeSam',
               },
               {
-                source: 'LC',
-                name: 'Find Pivot Index',
-                id: 'find-pivot-index',
-                difficulty: 'Very Easy',
+                source: 'CF',
+                name: 'PolandBall & Forest',
+                id: 'contest/755/problem/C',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'lc-find-pivot-index',
+                tags: ['Tree', 'Connected Components', 'Diameter'],
+                solID: '',
                 solQuality: 'ok',
-                url: 'https://leetcode.com/problems/find-pivot-index',
-                uniqueID: 'https://leetcode.com/problems/find-pivot-index',
+                url: 'https://codeforces.com/contest/755/problem/C',
+                uniqueID: 'https://codeforces.com/contest/755/problem/C',
+                tableID: 'tree',
               },
               {
                 source: 'Silver',
-                name: 'Breed Counting',
-                id: '572',
-                difficulty: 'Very Easy',
-                starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'usaco-572',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
-              },
-              {
-                source: 'Silver',
-                name: 'Subsequences Summing to Sevens',
-                id: '595',
+                name: 'Mootube',
+                id: '788',
                 difficulty: 'Easy',
                 starred: true,
-                tags: ['Prefix Sums'],
-                solID: 'usaco-595',
+                tags: ['Tree', 'Connected Components'],
+                solID: 'usaco-788',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
+                tableID: 'tree',
+              },
+              {
+                source: 'CF',
+                name: 'Journey',
+                id: 'contest/839/problem/C',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Tree'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/839/problem/C',
+                uniqueID: 'https://codeforces.com/contest/839/problem/C',
+                tableID: 'tree',
+              },
+              {
+                source: 'IOI',
+                name: '2010 - Traffic',
+                id: 'https://oj.uz/problem/view/IOI10_traffic',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Tree'],
+                solID: 'ioi-10-traffic',
+                solQuality: 'ok',
+                url: 'https://oj.uz/problem/view/IOI10_traffic',
+                uniqueID: 'https://oj.uz/problem/view/IOI10_traffic',
+                tableID: 'tree',
               },
               {
                 source: 'Silver',
-                name: 'Hoof Paper Scissors',
-                id: '691',
+                name: 'Milk Visits',
+                id: '968',
                 difficulty: 'Easy',
-                starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'usaco-691',
+                starred: true,
+                tags: ['Tree', 'Connected Components'],
+                solID: 'usaco-968',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
-              },
-              {
-                source: 'CSES',
-                name: 'Subarray Sums II',
-                id: '1661',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'cses-1661',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1661',
-                uniqueID: 'https://cses.fi/problemset/task/1661',
-              },
-              {
-                source: 'CSES',
-                name: 'Subarray Divisibility',
-                id: '1662',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'cses-1662',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1662',
-                uniqueID: 'https://cses.fi/problemset/task/1662',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
+                tableID: 'tree',
               },
               {
                 source: 'Silver',
-                name: 'Why Did the Cow Cross the Road II',
-                id: '715',
+                name: 'Cowntagion',
+                id: '1062',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'usaco-715',
+                tags: ['Greedy', 'Tree'],
+                solID: 'usaco-1062',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
+                tableID: 'tree',
               },
               {
-                source: 'Old Bronze',
-                name: 'Haybale Stacking',
-                id: '104',
+                source: 'CSES',
+                name: 'Tree Diameter',
+                id: '1131',
                 difficulty: 'Normal',
                 starred: true,
-                tags: ['Prefix Sums'],
-                solID: 'usaco-104',
+                tags: ['Tree'],
+                solID: '@CPH 14.2',
                 solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
-              },
-              {
-                source: 'Silver',
-                name: 'My Cow Ate My Homework',
-                id: '762',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Prefix Sums'],
-                solID:
-                  'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=762',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=762',
+                url: 'https://cses.fi/problemset/task/1131',
+                uniqueID: 'https://cses.fi/problemset/task/1131',
+                tableID: 'tree',
               },
               {
                 source: 'CSES',
-                name: 'Range XOR Queries',
-                id: '1650',
-                difficulty: 'Easy',
+                name: 'Tree Distances I',
+                id: '1132',
+                difficulty: 'Normal',
                 starred: false,
-                tags: ['Prefix Sums'],
-                solID: 'cses-1650',
+                tags: ['Tree'],
+                solID: 'cses-1132',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1650',
-                uniqueID: 'https://cses.fi/problemset/task/1650',
+                url: 'https://cses.fi/problemset/task/1132',
+                uniqueID: 'https://cses.fi/problemset/task/1132',
+                tableID: 'tree',
+              },
+              {
+                source: 'CSES',
+                name: 'Tree Distances II',
+                id: '1133',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Tree'],
+                solID: 'cses-1133',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1133',
+                uniqueID: 'https://cses.fi/problemset/task/1133',
+                tableID: 'tree',
+              },
+              {
+                source: 'POI',
+                name: '2017 - Sabotage',
+                id:
+                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Tree'],
+                solID: 'poi-17-sab',
+                solQuality: 'ok',
+                url:
+                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+                uniqueID:
+                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
+                tableID: 'tree',
+              },
+              {
+                source: 'CCC',
+                name: 'Phenomenal Reviews',
+                id: 'ccc16s3',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Tree'],
+                solID: 'ccc-reviews',
+                solQuality: 'ok',
+                url: 'https://dmoj.ca/problem/ccc16s3',
+                uniqueID: 'https://dmoj.ca/problem/ccc16s3',
+                tableID: 'tree',
+              },
+              {
+                source: 'Silver',
+                name: 'Clock Tree',
+                id: '1016',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Tree', 'Bipartite'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
+                tableID: 'tree',
+              },
+              {
+                source: 'POI',
+                name: '2014 - Hotels',
+                id:
+                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Tree', 'Prefix Sums'],
+                solID: 'poi-14-hot',
+                solQuality: 'ok',
+                url:
+                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                uniqueID:
+                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                tableID: 'tree',
+              },
+              {
+                source: 'CSES',
+                name: 'Even Outdegree Edges',
+                id: '2179',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['DFS', 'Spanning Tree'],
+                solID: 'cses-2179',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/2179',
+                uniqueID: 'https://cses.fi/problemset/task/2179',
+                tableID: 'tree',
+              },
+              {
+                source: 'CF',
+                name: "Wizard's Tour",
+                id: '860/problem/D',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['DFS', 'Spanning Tree'],
+                solID: 'wizards-tour',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/860/problem/D',
+                uniqueID: 'https://codeforces.com/contest/860/problem/D',
+                tableID: 'tree',
               },
             ],
           },
@@ -11312,6 +12172,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1643',
                 uniqueID: 'https://cses.fi/problemset/task/1643',
+                tableID: 'maxsum',
               },
               {
                 source: 'CSES',
@@ -11324,6 +12185,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1652',
                 uniqueID: 'https://cses.fi/problemset/task/1652',
+                tableID: 'sample2',
               },
               {
                 source: 'Silver',
@@ -11338,6 +12200,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=919',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=919',
+                tableID: 'cum2',
               },
               {
                 source: 'Silver',
@@ -11352,6 +12215,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1063',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1063',
+                tableID: 'cum2',
               },
               {
                 source: 'Gold',
@@ -11367,6 +12231,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=923',
+                tableID: 'cum2',
               },
               {
                 source: 'Plat',
@@ -11381,6 +12246,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=744',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=744',
+                tableID: 'cum2',
               },
               {
                 source: 'KS',
@@ -11396,6 +12262,7 @@ export default {
                   'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
                 uniqueID:
                   'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
+                tableID: 'complex',
               },
               {
                 source: 'AC',
@@ -11409,6 +12276,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://atcoder.jp/contests/abc164/tasks/abc164_d',
                 uniqueID: 'https://atcoder.jp/contests/abc164/tasks/abc164_d',
+                tableID: 'complex',
               },
               {
                 source: 'Plat',
@@ -11423,6 +12291,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=794',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=794',
+                tableID: 'complex',
               },
             ],
           },
@@ -11433,215 +12302,165 @@ export default {
               division: 'silver',
             },
             frontmatter: {
-              id: 'intro-tree',
-              title: 'Introduction to Tree Algorithms',
+              id: 'prefix-sums',
+              title: 'Introduction to Prefix Sums',
             },
             problems: [
               {
-                source: 'CSES',
-                name: 'Subordinates',
-                id: '1674',
-                difficulty: 'Easy',
+                source: 'YS',
+                name: 'Static Range Sum',
+                id: 'static_range_sum',
+                difficulty: 'Very Easy',
                 starred: false,
-                tags: ['Tree'],
+                tags: [],
                 solID: '@B',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1674',
-                uniqueID: 'https://cses.fi/problemset/task/1674',
+                url: 'https://judge.yosupo.jp/problem/static_range_sum',
+                uniqueID: 'https://judge.yosupo.jp/problem/static_range_sum',
+                tableID: 'sample',
               },
               {
-                source: 'CF',
-                name: 'PolandBall & Forest',
-                id: 'contest/755/problem/C',
-                difficulty: 'Easy',
+                source: 'LC',
+                name: 'Find Pivot Index',
+                id: 'find-pivot-index',
+                difficulty: 'Very Easy',
                 starred: false,
-                tags: ['Tree', 'Connected Components', 'Diameter'],
-                solID: '',
+                tags: ['Prefix Sums'],
+                solID: 'lc-find-pivot-index',
                 solQuality: 'ok',
-                url: 'https://codeforces.com/contest/755/problem/C',
-                uniqueID: 'https://codeforces.com/contest/755/problem/C',
+                url: 'https://leetcode.com/problems/find-pivot-index',
+                uniqueID: 'https://leetcode.com/problems/find-pivot-index',
+                tableID: 'cum',
               },
               {
                 source: 'Silver',
-                name: 'Mootube',
-                id: '788',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Tree', 'Connected Components'],
-                solID: 'usaco-788',
+                name: 'Breed Counting',
+                id: '572',
+                difficulty: 'Very Easy',
+                starred: false,
+                tags: ['Prefix Sums'],
+                solID: 'usaco-572',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=788',
-              },
-              {
-                source: 'CF',
-                name: 'Journey',
-                id: 'contest/839/problem/C',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Tree'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/839/problem/C',
-                uniqueID: 'https://codeforces.com/contest/839/problem/C',
-              },
-              {
-                source: 'IOI',
-                name: '2010 - Traffic',
-                id: 'https://oj.uz/problem/view/IOI10_traffic',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Tree'],
-                solID: 'ioi-10-traffic',
-                solQuality: 'ok',
-                url: 'https://oj.uz/problem/view/IOI10_traffic',
-                uniqueID: 'https://oj.uz/problem/view/IOI10_traffic',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=572',
+                tableID: 'cum',
               },
               {
                 source: 'Silver',
-                name: 'Milk Visits',
-                id: '968',
+                name: 'Subsequences Summing to Sevens',
+                id: '595',
                 difficulty: 'Easy',
                 starred: true,
-                tags: ['Tree', 'Connected Components'],
-                solID: 'usaco-968',
+                tags: ['Prefix Sums'],
+                solID: 'usaco-595',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=968',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=595',
+                tableID: 'cum',
               },
               {
                 source: 'Silver',
-                name: 'Cowntagion',
-                id: '1062',
+                name: 'Hoof Paper Scissors',
+                id: '691',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['Greedy', 'Tree'],
-                solID: 'usaco-1062',
+                tags: ['Prefix Sums'],
+                solID: 'usaco-691',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1062',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=691',
+                tableID: 'cum',
               },
               {
                 source: 'CSES',
-                name: 'Tree Diameter',
-                id: '1131',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Tree'],
-                solID: '@CPH 14.2',
+                name: 'Subarray Sums II',
+                id: '1661',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Prefix Sums'],
+                solID: 'cses-1661',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1131',
-                uniqueID: 'https://cses.fi/problemset/task/1131',
+                url: 'https://cses.fi/problemset/task/1661',
+                uniqueID: 'https://cses.fi/problemset/task/1661',
+                tableID: 'cum',
               },
               {
                 source: 'CSES',
-                name: 'Tree Distances I',
-                id: '1132',
-                difficulty: 'Normal',
+                name: 'Subarray Divisibility',
+                id: '1662',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['Tree'],
-                solID: 'cses-1132',
+                tags: ['Prefix Sums'],
+                solID: 'cses-1662',
                 solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1132',
-                uniqueID: 'https://cses.fi/problemset/task/1132',
-              },
-              {
-                source: 'CSES',
-                name: 'Tree Distances II',
-                id: '1133',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Tree'],
-                solID: 'cses-1133',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1133',
-                uniqueID: 'https://cses.fi/problemset/task/1133',
-              },
-              {
-                source: 'POI',
-                name: '2017 - Sabotage',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Tree'],
-                solID: 'poi-17-sab',
-                solQuality: 'ok',
-                url:
-                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-                uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/CUjJDGGSEZmO7HvdZU4FKrL6/site/?key=statement',
-              },
-              {
-                source: 'CCC',
-                name: 'Phenomenal Reviews',
-                id: 'ccc16s3',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Tree'],
-                solID: 'ccc-reviews',
-                solQuality: 'ok',
-                url: 'https://dmoj.ca/problem/ccc16s3',
-                uniqueID: 'https://dmoj.ca/problem/ccc16s3',
+                url: 'https://cses.fi/problemset/task/1662',
+                uniqueID: 'https://cses.fi/problemset/task/1662',
+                tableID: 'cum',
               },
               {
                 source: 'Silver',
-                name: 'Clock Tree',
-                id: '1016',
-                difficulty: 'Normal',
+                name: 'Why Did the Cow Cross the Road II',
+                id: '715',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['Tree', 'Bipartite'],
-                solID: '',
+                tags: ['Prefix Sums'],
+                solID: 'usaco-715',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1016',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=715',
+                tableID: 'cum',
               },
               {
-                source: 'POI',
-                name: '2014 - Hotels',
-                id:
-                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Tree', 'Prefix Sums'],
-                solID: 'poi-14-hot',
+                source: 'Old Bronze',
+                name: 'Haybale Stacking',
+                id: '104',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Prefix Sums'],
+                solID: 'usaco-104',
                 solQuality: 'ok',
                 url:
-                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
                 uniqueID:
-                  'https://szkopul.edu.pl/problemset/problem/gDw3iFkeVm7ZA3j_16-XR7jI/site/?key=statement',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=104',
+                tableID: 'cum',
+              },
+              {
+                source: 'Silver',
+                name: 'My Cow Ate My Homework',
+                id: '762',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Prefix Sums'],
+                solID:
+                  'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=762',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=762',
+                tableID: 'related',
               },
               {
                 source: 'CSES',
-                name: 'Even Outdegree Edges',
-                id: '2179',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['DFS', 'Spanning Tree'],
-                solID: 'cses-2179',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/2179',
-                uniqueID: 'https://cses.fi/problemset/task/2179',
-              },
-              {
-                source: 'CF',
-                name: "Wizard's Tour",
-                id: '860/problem/D',
-                difficulty: 'Hard',
+                name: 'Range XOR Queries',
+                id: '1650',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['DFS', 'Spanning Tree'],
-                solID: 'wizards-tour',
+                tags: ['Prefix Sums'],
+                solID: 'cses-1650',
                 solQuality: 'ok',
-                url: 'https://codeforces.com/contest/860/problem/D',
-                uniqueID: 'https://codeforces.com/contest/860/problem/D',
+                url: 'https://cses.fi/problemset/task/1650',
+                uniqueID: 'https://cses.fi/problemset/task/1650',
+                tableID: 'related',
               },
             ],
           },
@@ -11669,6 +12488,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=992',
+                tableID: 'sample',
               },
               {
                 source: 'CSES',
@@ -11681,6 +12501,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://cses.fi/problemset/task/1619',
                 uniqueID: 'https://cses.fi/problemset/task/1619',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11695,6 +12516,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=786',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=786',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11709,6 +12531,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=787',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=787',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11723,6 +12546,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=896',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=896',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11737,6 +12561,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1064',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1064',
+                tableID: 'general',
               },
               {
                 source: 'Gold',
@@ -11751,6 +12576,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=645',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=645',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11765,6 +12591,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1015',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1015',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11779,6 +12606,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=834',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=834',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11793,6 +12621,117 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=967',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=967',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'bronze',
+            },
+            frontmatter: {
+              id: 'complete-rec',
+              title: 'Complete Search with Recursion',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Apple Division',
+                id: '1623',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Complete Search', 'Recursion', 'Subsets'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1623',
+                uniqueID: 'https://cses.fi/problemset/task/1623',
+                tableID: 'subset',
+              },
+              {
+                source: 'CSES',
+                name: 'Creating Strings I',
+                id: '1622',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Complete Search', 'Recursion', 'Permutation'],
+                solID: '@B',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1622',
+                uniqueID: 'https://cses.fi/problemset/task/1622',
+                tableID: 'permSam',
+              },
+              {
+                source: 'CSES',
+                name: 'Chessboard & Queens',
+                id: '1624',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Complete Search', 'Recursion', 'Permutation'],
+                solID: '@CPH 5.3',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1624',
+                uniqueID: 'https://cses.fi/problemset/task/1624',
+                tableID: 'back',
+              },
+              {
+                source: 'CSES',
+                name: 'Grid Paths',
+                id: '1625',
+                difficulty: 'Insane',
+                starred: false,
+                tags: ['Complete Search', 'Recursion', 'Pruning'],
+                solID: '@CPH 5.4',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1625',
+                uniqueID: 'https://cses.fi/problemset/task/1625',
+                tableID: 'back',
+              },
+              {
+                source: 'Bronze',
+                name: 'Livestock Lineup',
+                id: '965',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Complete Search', 'Recursion', 'Permutation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
+                tableID: 'gen',
+              },
+              {
+                source: 'Bronze',
+                name: 'Back & Forth',
+                id: '857',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Complete Search', 'Recursion'],
+                solID: 'usaco-857',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
+                tableID: 'gen',
+              },
+              {
+                source: 'Old Bronze',
+                name: 'Wormholes',
+                id: '360',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Complete Search', 'Recursion', 'Permutation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
+                tableID: 'gen',
               },
             ],
           },
@@ -11820,6 +12759,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -11834,6 +12774,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -11848,6 +12789,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -11862,6 +12804,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -11876,6 +12819,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
+                tableID: 'general',
               },
               {
                 source: 'Silver',
@@ -11890,109 +12834,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'bronze',
-            },
-            frontmatter: {
-              id: 'complete-rec',
-              title: 'Complete Search with Recursion',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Apple Division',
-                id: '1623',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Complete Search', 'Recursion', 'Subsets'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1623',
-                uniqueID: 'https://cses.fi/problemset/task/1623',
-              },
-              {
-                source: 'CSES',
-                name: 'Creating Strings I',
-                id: '1622',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Complete Search', 'Recursion', 'Permutation'],
-                solID: '@B',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1622',
-                uniqueID: 'https://cses.fi/problemset/task/1622',
-              },
-              {
-                source: 'CSES',
-                name: 'Chessboard & Queens',
-                id: '1624',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Complete Search', 'Recursion', 'Permutation'],
-                solID: '@CPH 5.3',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1624',
-                uniqueID: 'https://cses.fi/problemset/task/1624',
-              },
-              {
-                source: 'CSES',
-                name: 'Grid Paths',
-                id: '1625',
-                difficulty: 'Insane',
-                starred: false,
-                tags: ['Complete Search', 'Recursion', 'Pruning'],
-                solID: '@CPH 5.4',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1625',
-                uniqueID: 'https://cses.fi/problemset/task/1625',
-              },
-              {
-                source: 'Bronze',
-                name: 'Livestock Lineup',
-                id: '965',
-                difficulty: 'Hard',
-                starred: true,
-                tags: ['Complete Search', 'Recursion', 'Permutation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
-              },
-              {
-                source: 'Bronze',
-                name: 'Back & Forth',
-                id: '857',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Complete Search', 'Recursion'],
-                solID: 'usaco-857',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=857',
-              },
-              {
-                source: 'Old Bronze',
-                name: 'Wormholes',
-                id: '360',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Complete Search', 'Recursion', 'Permutation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=360',
+                tableID: 'general',
               },
             ],
           },
@@ -12018,6 +12860,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1017/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1017/problem/D',
+                tableID: 'probs',
               },
               {
                 source: 'CF',
@@ -12030,6 +12873,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1338/problem/A',
                 uniqueID: 'https://codeforces.com/contest/1338/problem/A',
+                tableID: 'probs',
               },
               {
                 source: 'CF',
@@ -12042,6 +12886,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1368/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1368/problem/D',
+                tableID: 'probs',
               },
               {
                 source: 'CF',
@@ -12054,6 +12899,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1088/problem/D',
                 uniqueID: 'https://codeforces.com/contest/1088/problem/D',
+                tableID: 'probs',
               },
             ],
           },
@@ -12079,6 +12925,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/gym/102951/problem/A',
                 uniqueID: 'https://codeforces.com/gym/102951/problem/A',
+                tableID: 'sample',
               },
               {
                 source: 'Bronze',
@@ -12093,6 +12940,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=615',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=615',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12107,6 +12955,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=639',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=639',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12121,6 +12970,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1060',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1060',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12135,6 +12985,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=963',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=963',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12149,6 +13000,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=736',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=736',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12163,6 +13015,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1011',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1011',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12177,6 +13030,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=784',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=784',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12191,6 +13045,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=712',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=712',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12205,6 +13060,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=893',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=893',
+                tableID: 'probs',
               },
               {
                 source: 'Silver',
@@ -12220,6 +13076,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=739',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=739',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12234,6 +13091,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=617',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=617',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12248,6 +13106,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=569',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=569',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12262,6 +13121,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1037',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1037',
+                tableID: 'probs',
               },
               {
                 source: 'Bronze',
@@ -12276,6 +13136,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=640',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=640',
+                tableID: 'probs',
               },
               {
                 source: 'Silver',
@@ -12290,6 +13151,349 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=619',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=619',
+                tableID: 'probs',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'bronze',
+            },
+            frontmatter: {
+              id: 'intro-ds',
+              title: 'Introduction to Data Structures',
+            },
+            problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'bronze',
+            },
+            frontmatter: {
+              id: 'intro-greedy',
+              title: 'Introduction to Greedy Algorithms',
+            },
+            problems: [
+              {
+                source: 'Bronze',
+                name: 'Mad Scientist',
+                id: '1012',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Greedy'],
+                solID: 'See below.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
+                tableID: 'tutorial',
+              },
+              {
+                source: 'Bronze',
+                name: 'Cow Tipping',
+                id: '689',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Greedy'],
+                solID: 'usaco-689',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
+                tableID: 'general',
+              },
+              {
+                source: 'Bronze',
+                name: 'Even More Odd Photos',
+                id: '1084',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Greedy'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
+                tableID: 'general',
+              },
+              {
+                source: 'Bronze',
+                name: 'Out of Place',
+                id: '785',
+                difficulty: 'Hard',
+                starred: true,
+                tags: ['Greedy'],
+                solID: 'usaco-785',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
+                tableID: 'general',
+              },
+              {
+                source: 'Bronze',
+                name: 'Race',
+                id: '989',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: ['Greedy'],
+                solID:
+                  'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
+                tableID: 'general',
+              },
+              {
+                source: 'Silver',
+                name: 'Rest Stops',
+                id: '810',
+                difficulty: 'Very Hard',
+                starred: true,
+                tags: ['Greedy'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
+                tableID: 'general',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'bronze',
+            },
+            frontmatter: {
+              id: 'intro-sorting',
+              title: 'Introduction to Sorting',
+            },
+            problems: [
+              {
+                source: 'HR',
+                name: 'Bubble Sort',
+                id:
+                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
+                difficulty: 'Very Easy',
+                starred: false,
+                tags: ['Sorting'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
+                uniqueID:
+                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
+                tableID: 'bubble',
+              },
+              {
+                source: 'CSES',
+                name: 'Distinct Numbers',
+                id: '1621',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Sorting'],
+                solID: 'cses-1621',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1621',
+                uniqueID: 'https://cses.fi/problemset/task/1621',
+                tableID: 'dis',
+              },
+              {
+                source: 'CF',
+                name: 'Kayaking',
+                id: 'contest/863/problem/B',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Sorting', 'Greedy'],
+                solID: 'cf-kayaking',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/863/problem/B',
+                uniqueID: 'https://codeforces.com/contest/863/problem/B',
+                tableID: 'dis',
+              },
+              {
+                source: 'Bronze',
+                name: 'Why Did the Cow Cross the Road III',
+                id: '713',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Sorting', 'Simulation'],
+                solID: 'usaco-713',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
+                tableID: 'dis',
+              },
+              {
+                source: 'Bronze',
+                name: 'Angry Cows',
+                id: '592',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Simulation', 'Sorting'],
+                solID: 'usaco-592',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
+                tableID: 'dis',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'bronze',
+            },
+            frontmatter: {
+              id: 'intro-sets',
+              title: 'Introduction to Sets & Maps',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Distinct Numbers',
+                id: '1621',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Sorting', 'Set'],
+                solID: 'cses-1621',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1621',
+                uniqueID: 'https://cses.fi/problemset/task/1621',
+                tableID: 'dis',
+              },
+              {
+                source: 'YS',
+                name: 'Associative Array',
+                id: 'associative_array',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Map'],
+                solID: '',
+                solQuality: 'ok',
+                url: 'https://judge.yosupo.jp/problem/associative_array',
+                uniqueID: 'https://judge.yosupo.jp/problem/associative_array',
+                tableID: 'ex',
+              },
+              {
+                source: 'CSES',
+                name: 'Sum of Two Values',
+                id: '1640',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Map'],
+                solID: 'cses-1640',
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1640',
+                uniqueID: 'https://cses.fi/problemset/task/1640',
+                tableID: 'standard',
+              },
+              {
+                source: 'Bronze',
+                name: 'Where Am I?',
+                id: '964',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Set'],
+                solID:
+                  'Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice.',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
+                tableID: 'standard',
+              },
+              {
+                source: 'Bronze',
+                name: 'Team Tic Tac Toe',
+                id: '831',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Simulation', 'Set'],
+                solID: 'usaco-831',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                tableID: 'standard',
+              },
+              {
+                source: 'Bronze',
+                name: 'Year of the Cow',
+                id: '1107',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Map'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
+                tableID: 'standard',
+              },
+              {
+                source: 'Bronze',
+                name: 'Not Last',
+                id: '687',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Map', 'Sorting'],
+                solID: 'usaco-687',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
+                tableID: 'standard',
+              },
+              {
+                source: 'Silver',
+                name: 'Cities & States',
+                id: '667',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Map'],
+                solID: 'usaco-667',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
+                tableID: 'standard',
+              },
+              {
+                source: 'CF',
+                name: 'Jury Marks',
+                id: 'contest/831/problem/C',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Set', 'Prefix Sums'],
+                solID: 'jury-marks',
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/831/problem/C',
+                uniqueID: 'https://codeforces.com/contest/831/problem/C',
+                tableID: 'standard',
               },
             ],
           },
@@ -12317,6 +13521,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=894',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=894',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12332,6 +13537,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=916',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=916',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12346,6 +13552,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=940',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=940',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12360,6 +13567,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=965',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12374,6 +13582,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1013',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1013',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12388,6 +13597,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=941',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=941',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12402,6 +13612,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=833',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=833',
+                tableID: 'general',
               },
             ],
           },
@@ -12412,186 +13623,219 @@ export default {
               division: 'bronze',
             },
             frontmatter: {
-              id: 'intro-ds',
-              title: 'Introduction to Data Structures',
-            },
-            problems: [],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'bronze',
-            },
-            frontmatter: {
-              id: 'intro-sorting',
-              title: 'Introduction to Sorting',
-            },
-            problems: [
-              {
-                source: 'HR',
-                name: 'Bubble Sort',
-                id:
-                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-                difficulty: 'Very Easy',
-                starred: false,
-                tags: ['Sorting'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-                uniqueID:
-                  'https://www.hackerrank.com/challenges/ctci-bubble-sort/problem',
-              },
-              {
-                source: 'CSES',
-                name: 'Distinct Numbers',
-                id: '1621',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Sorting'],
-                solID: 'cses-1621',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1621',
-                uniqueID: 'https://cses.fi/problemset/task/1621',
-              },
-              {
-                source: 'CF',
-                name: 'Kayaking',
-                id: 'contest/863/problem/B',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Sorting', 'Greedy'],
-                solID: 'cf-kayaking',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/863/problem/B',
-                uniqueID: 'https://codeforces.com/contest/863/problem/B',
-              },
-              {
-                source: 'Bronze',
-                name: 'Why Did the Cow Cross the Road III',
-                id: '713',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Sorting', 'Simulation'],
-                solID: 'usaco-713',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=713',
-              },
-              {
-                source: 'Bronze',
-                name: 'Angry Cows',
-                id: '592',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Simulation', 'Sorting'],
-                solID: 'usaco-592',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=592',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'bronze',
-            },
-            frontmatter: {
-              id: 'intro-greedy',
-              title: 'Introduction to Greedy Algorithms',
+              id: 'simulation',
+              title: 'Simulation',
             },
             problems: [
               {
                 source: 'Bronze',
-                name: 'Mad Scientist',
-                id: '1012',
+                name: 'Shell Game',
+                id: '891',
                 difficulty: 'Easy',
                 starred: false,
-                tags: ['Greedy'],
-                solID: 'See below.',
+                tags: ['Simulation'],
+                solID: null,
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1012',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
+                tableID: 'example',
               },
               {
                 source: 'Bronze',
-                name: 'Cow Tipping',
-                id: '689',
-                difficulty: 'Normal',
+                name: 'Mixing Milk',
+                id: '855',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['Greedy'],
-                solID: 'usaco-689',
+                tags: ['Simulation'],
+                solID: 'just pour 100 times',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=689',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
+                tableID: 'example',
               },
               {
                 source: 'Bronze',
-                name: 'Even More Odd Photos',
-                id: '1084',
-                difficulty: 'Normal',
+                name: 'The Cow-Signal',
+                id: '665',
+                difficulty: 'Easy',
                 starred: false,
-                tags: ['Greedy'],
+                tags: ['Simulation'],
+                solID: 'usaco-665',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
+                tableID: 'easier',
+              },
+              {
+                source: 'Bronze',
+                name: 'Speeding',
+                id: '568',
+                difficulty: 'Easy',
+                starred: true,
+                tags: ['Simulation'],
+                solID: 'usaco-568',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
+                tableID: 'easier',
+              },
+              {
+                source: 'Bronze',
+                name: 'The Lost Cow',
+                id: '735',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1084',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
+                tableID: 'easier',
               },
               {
                 source: 'Bronze',
-                name: 'Out of Place',
-                id: '785',
+                name: 'The Bovine Shuffle',
+                id: '760',
+                difficulty: 'Easy',
+                starred: false,
+                tags: ['Simulation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
+                tableID: 'easier',
+              },
+              {
+                source: 'Bronze',
+                name: 'Measuring Traffic',
+                id: '917',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Simulation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Circular Barn',
+                id: '616',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Simulation'],
+                solID: 'usaco-616',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Block Game',
+                id: '664',
+                difficulty: 'Normal',
+                starred: true,
+                tags: ['Simulation'],
+                solID: 'usaco-664',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Team Tic Tac Toe',
+                id: '831',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Simulation'],
+                solID: 'usaco-831',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Mowing the Field',
+                id: '593',
+                difficulty: 'Normal',
+                starred: false,
+                tags: ['Simulation'],
+                solID: 'usaco-593',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
+                tableID: 'harder',
+              },
+              {
+                source: 'Old Bronze',
+                name: 'Censoring',
+                id: '526',
                 difficulty: 'Hard',
-                starred: true,
-                tags: ['Greedy'],
-                solID: 'usaco-785',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=785',
-              },
-              {
-                source: 'Bronze',
-                name: 'Race',
-                id: '989',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: ['Greedy'],
-                solID:
-                  'Greedily increment/decrement Bessies speed to fit the conditions until her total distance exceeds K.',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=989',
-              },
-              {
-                source: 'Silver',
-                name: 'Rest Stops',
-                id: '810',
-                difficulty: 'Very Hard',
-                starred: true,
-                tags: ['Greedy'],
+                starred: false,
+                tags: ['Simulation'],
                 solID: '',
                 solQuality: 'ok',
                 url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
                 uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=810',
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Milk Measurement',
+                id: '761',
+                difficulty: 'Hard',
+                starred: false,
+                tags: ['Simulation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
+                tableID: 'harder',
+              },
+              {
+                source: 'Bronze',
+                name: 'Stuck in a Rut',
+                id: '1061',
+                difficulty: 'Very Hard',
+                starred: false,
+                tags: ['Simulation'],
+                solID: '',
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
+                tableID: 'harder',
               },
             ],
           },
@@ -12619,6 +13863,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
+                tableID: 'fence',
               },
               {
                 source: 'Bronze',
@@ -12633,6 +13878,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=759',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=759',
+                tableID: 'sam',
               },
               {
                 source: 'Bronze',
@@ -12647,6 +13893,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=663',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=663',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -12661,6 +13908,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=783',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=783',
+                tableID: 'general',
               },
               {
                 source: 'CF',
@@ -12673,138 +13921,7 @@ export default {
                 solQuality: 'ok',
                 url: 'https://codeforces.com/contest/1216/problem/C',
                 uniqueID: 'https://codeforces.com/contest/1216/problem/C',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'bronze',
-            },
-            frontmatter: {
-              id: 'intro-sets',
-              title: 'Introduction to Sets & Maps',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Distinct Numbers',
-                id: '1621',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Sorting', 'Set'],
-                solID: 'cses-1621',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1621',
-                uniqueID: 'https://cses.fi/problemset/task/1621',
-              },
-              {
-                source: 'YS',
-                name: 'Associative Array',
-                id: 'associative_array',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Map'],
-                solID: '',
-                solQuality: 'ok',
-                url: 'https://judge.yosupo.jp/problem/associative_array',
-                uniqueID: 'https://judge.yosupo.jp/problem/associative_array',
-              },
-              {
-                source: 'CSES',
-                name: 'Sum of Two Values',
-                id: '1640',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Map'],
-                solID: 'cses-1640',
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1640',
-                uniqueID: 'https://cses.fi/problemset/task/1640',
-              },
-              {
-                source: 'Bronze',
-                name: 'Where Am I?',
-                id: '964',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Set'],
-                solID:
-                  'Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice.',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=964',
-              },
-              {
-                source: 'Bronze',
-                name: 'Team Tic Tac Toe',
-                id: '831',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Simulation', 'Set'],
-                solID: 'usaco-831',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
-              },
-              {
-                source: 'Bronze',
-                name: 'Year of the Cow',
-                id: '1107',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Map'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1107',
-              },
-              {
-                source: 'Bronze',
-                name: 'Not Last',
-                id: '687',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Map', 'Sorting'],
-                solID: 'usaco-687',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=687',
-              },
-              {
-                source: 'Silver',
-                name: 'Cities & States',
-                id: '667',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Map'],
-                solID: 'usaco-667',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=667',
-              },
-              {
-                source: 'CF',
-                name: 'Jury Marks',
-                id: 'contest/831/problem/C',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Set', 'Prefix Sums'],
-                solID: 'jury-marks',
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/831/problem/C',
-                uniqueID: 'https://codeforces.com/contest/831/problem/C',
+                tableID: 'general',
               },
             ],
           },
@@ -12819,215 +13936,6 @@ export default {
               title: 'Time Complexity',
             },
             problems: [],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'bronze',
-            },
-            frontmatter: {
-              id: 'simulation',
-              title: 'Simulation',
-            },
-            problems: [
-              {
-                source: 'Bronze',
-                name: 'Shell Game',
-                id: '891',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Simulation'],
-                solID: null,
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=891',
-              },
-              {
-                source: 'Bronze',
-                name: 'Mixing Milk',
-                id: '855',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Simulation'],
-                solID: 'just pour 100 times',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=855',
-              },
-              {
-                source: 'Bronze',
-                name: 'The Cow-Signal',
-                id: '665',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Simulation'],
-                solID: 'usaco-665',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=665',
-              },
-              {
-                source: 'Bronze',
-                name: 'Speeding',
-                id: '568',
-                difficulty: 'Easy',
-                starred: true,
-                tags: ['Simulation'],
-                solID: 'usaco-568',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=568',
-              },
-              {
-                source: 'Bronze',
-                name: 'The Lost Cow',
-                id: '735',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=735',
-              },
-              {
-                source: 'Bronze',
-                name: 'The Bovine Shuffle',
-                id: '760',
-                difficulty: 'Easy',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=760',
-              },
-              {
-                source: 'Bronze',
-                name: 'Measuring Traffic',
-                id: '917',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=917',
-              },
-              {
-                source: 'Bronze',
-                name: 'Circular Barn',
-                id: '616',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Simulation'],
-                solID: 'usaco-616',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=616',
-              },
-              {
-                source: 'Bronze',
-                name: 'Block Game',
-                id: '664',
-                difficulty: 'Normal',
-                starred: true,
-                tags: ['Simulation'],
-                solID: 'usaco-664',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=664',
-              },
-              {
-                source: 'Bronze',
-                name: 'Team Tic Tac Toe',
-                id: '831',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Simulation'],
-                solID: 'usaco-831',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=831',
-              },
-              {
-                source: 'Bronze',
-                name: 'Mowing the Field',
-                id: '593',
-                difficulty: 'Normal',
-                starred: false,
-                tags: ['Simulation'],
-                solID: 'usaco-593',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=593',
-              },
-              {
-                source: 'Old Bronze',
-                name: 'Censoring',
-                id: '526',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=526',
-              },
-              {
-                source: 'Bronze',
-                name: 'Milk Measurement',
-                id: '761',
-                difficulty: 'Hard',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=761',
-              },
-              {
-                source: 'Bronze',
-                name: 'Stuck in a Rut',
-                id: '1061',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Simulation'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1061',
-              },
-            ],
           },
         },
         {
@@ -13108,8 +14016,8 @@ export default {
               division: 'general',
             },
             frontmatter: {
-              id: 'debugging-lang',
-              title: 'Debugging (Language-Specific)',
+              id: 'debugging-general',
+              title: 'How To Debug',
             },
             problems: [],
           },
@@ -13120,8 +14028,8 @@ export default {
               division: 'general',
             },
             frontmatter: {
-              id: 'debugging-general',
-              title: 'How To Debug',
+              id: 'debugging-lang',
+              title: 'Debugging (Language-Specific)',
             },
             problems: [],
           },
@@ -13149,6 +14057,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=807',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=807',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -13163,6 +14072,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=591',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=591',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -13177,6 +14087,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=1059',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -13191,6 +14102,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=987',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=987',
+                tableID: 'general',
               },
               {
                 source: 'Bronze',
@@ -13205,6 +14117,7 @@ export default {
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=939',
                 uniqueID:
                   'http://www.usaco.org/index.php?page=viewproblem2&cpid=939',
+                tableID: 'general',
               },
             ],
           },
@@ -13217,6 +14130,112 @@ export default {
             frontmatter: {
               id: 'factors-choosing',
               title: 'Factors to Consider When Choosing a Language',
+            },
+            problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'general',
+            },
+            frontmatter: {
+              id: 'fast-io',
+              title: 'Fast Input & Output',
+            },
+            problems: [
+              {
+                source: 'Plat',
+                name: 'Robotic Cow Herd',
+                id: '674',
+                difficulty: 'Insane',
+                starred: null,
+                tags: null,
+                solID: null,
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
+                tableID: 'roboherd',
+              },
+              {
+                source: 'CF',
+                name: 'Soldier and Number Game',
+                id: 'https://codeforces.com/contest/546/problem/D',
+                difficulty: 'Normal',
+                starred: null,
+                tags: null,
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://codeforces.com/contest/546/problem/D',
+                uniqueID: 'https://codeforces.com/contest/546/problem/D',
+                tableID: 'soldier',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'general',
+            },
+            frontmatter: {
+              id: 'generic',
+              title: '(Optional) C++ - Writing Generic Code',
+            },
+            problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'general',
+            },
+            frontmatter: {
+              id: 'io',
+              title: 'Input & Output',
+            },
+            problems: [
+              {
+                source: 'CSES',
+                name: 'Weird Algorithm',
+                id: '1068',
+                difficulty: 'Very Easy',
+                starred: null,
+                tags: null,
+                solID: null,
+                solQuality: 'ok',
+                url: 'https://cses.fi/problemset/task/1068',
+                uniqueID: 'https://cses.fi/problemset/task/1068',
+                tableID: 'weird',
+              },
+              {
+                source: 'Bronze',
+                name: 'Fence Painting',
+                id: '567',
+                difficulty: 'Very Easy',
+                starred: null,
+                tags: null,
+                solID: null,
+                solQuality: 'ok',
+                url:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
+                uniqueID:
+                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
+                tableID: 'fence',
+              },
+            ],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'general',
+            },
+            frontmatter: {
+              id: 'lambda',
+              title: '(Optional) C++ - Lambda Expressions',
             },
             problems: [],
           },
@@ -13245,83 +14264,9 @@ export default {
                   'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
                 uniqueID:
                   'https://open.kattis.com/contests/mcpc19open/problems/basketballoneonone',
+                tableID: 'general',
               },
             ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'general',
-            },
-            frontmatter: {
-              id: 'fast-io',
-              title: 'Fast Input & Output',
-            },
-            problems: [
-              {
-                source: 'Plat',
-                name: 'Robotic Cow Herd',
-                id: '674',
-                difficulty: 'Insane',
-                starred: null,
-                tags: null,
-                solID: null,
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=674',
-              },
-              {
-                source: 'CF',
-                name: 'Soldier and Number Game',
-                id: 'https://codeforces.com/contest/546/problem/D',
-                difficulty: 'Normal',
-                starred: null,
-                tags: null,
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://codeforces.com/contest/546/problem/D',
-                uniqueID: 'https://codeforces.com/contest/546/problem/D',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'general',
-            },
-            frontmatter: {
-              id: 'generic',
-              title: '(Optional) C++ - Writing Generic Code',
-            },
-            problems: [],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'general',
-            },
-            frontmatter: {
-              id: 'lambda',
-              title: '(Optional) C++ - Lambda Expressions',
-            },
-            problems: [],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'general',
-            },
-            frontmatter: {
-              id: 'modules',
-              title: 'Introducing Modules',
-            },
-            problems: [],
           },
         },
         {
@@ -13354,47 +14299,8 @@ export default {
               division: 'general',
             },
             frontmatter: {
-              id: 'io',
-              title: 'Input & Output',
-            },
-            problems: [
-              {
-                source: 'CSES',
-                name: 'Weird Algorithm',
-                id: '1068',
-                difficulty: 'Very Easy',
-                starred: null,
-                tags: null,
-                solID: null,
-                solQuality: 'ok',
-                url: 'https://cses.fi/problemset/task/1068',
-                uniqueID: 'https://cses.fi/problemset/task/1068',
-              },
-              {
-                source: 'Bronze',
-                name: 'Fence Painting',
-                id: '567',
-                difficulty: 'Very Easy',
-                starred: null,
-                tags: null,
-                solID: null,
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=567',
-              },
-            ],
-          },
-        },
-        {
-          node: {
-            fields: {
-              division: 'general',
-            },
-            frontmatter: {
-              id: 'oly',
-              title: 'Olympiads',
+              id: 'modules',
+              title: 'Introducing Modules',
             },
             problems: [],
           },
@@ -13407,6 +14313,18 @@ export default {
             frontmatter: {
               id: 'practicing',
               title: 'How to Practice',
+            },
+            problems: [],
+          },
+        },
+        {
+          node: {
+            fields: {
+              division: 'general',
+            },
+            frontmatter: {
+              id: 'oly',
+              title: 'Olympiads',
             },
             problems: [],
           },
@@ -13453,8 +14371,8 @@ export default {
               division: 'general',
             },
             frontmatter: {
-              id: 'running-code-online',
-              title: 'Running Code Online',
+              id: 'usaco-camp',
+              title: 'USACO Camp',
             },
             problems: [],
           },
@@ -13465,8 +14383,8 @@ export default {
               division: 'general',
             },
             frontmatter: {
-              id: 'usaco-camp',
-              title: 'USACO Camp',
+              id: 'running-code-online',
+              title: 'Running Code Online',
             },
             problems: [],
           },

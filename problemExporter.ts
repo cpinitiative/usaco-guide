@@ -7,9 +7,21 @@ async function main() {
     ['1_General', '2_Bronze', '3_Silver', '4_Gold', '5_Plat', '6_Advanced'].map(
       folder =>
         new Promise<void>((resolve, reject) => {
+          const promises = [];
           fs.readdir('./content/' + folder, (err, filesArr) => {
+            filesArr.forEach(name => {
+              if (name.slice(-5) === '.json') {
+                promises.push(
+                  new Promise<void>((res, rej) =>
+                    fs.unlink(`./content/${folder}/${name}`, () => {
+                      res();
+                    })
+                  )
+                );
+              }
+            });
             files[folder] = filesArr.map(name => name.replace(/\.mdx$/g, ''));
-            resolve();
+            return Promise.all(promises);
           });
         })
     )
@@ -39,7 +51,18 @@ async function main() {
       new Promise<void>((resolve, reject) => {
         fs.writeFile(
           `./content/${divisionFolder}/${moduleFileName}.json`,
-          JSON.stringify(problems, null, '\t'),
+          JSON.stringify(
+            problems.reduce((acc, el) => {
+              const { tableID, ...problemData } = el;
+              if (acc[tableID]) {
+                acc[tableID].push(problemData);
+              } else {
+                acc[tableID] = [problemData];
+              }
+            }, {}),
+            null,
+            '\t'
+          ),
           () => resolve()
         );
       })
@@ -47,4 +70,4 @@ async function main() {
   });
   await Promise.all(fileWritePromises);
 }
-main().then(() => console.log('DONE'));
+main();

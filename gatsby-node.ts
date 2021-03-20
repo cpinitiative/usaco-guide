@@ -175,6 +175,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       solQuality: String
       url: String
       uniqueID: String
+      tableID: String
     }
   `;
   createTypes(typeDefs);
@@ -265,14 +266,15 @@ exports.createResolvers = ({ createResolvers }) => {
               const str = node.value.replace('export ', '') + '; problems';
               const res = eval(str);
               Object.keys(res).forEach(k => {
-                const arr = res[k];
-                if (Array.isArray(arr)) {
-                  // console.log('MULTIPLE PROBLEM');
-                  problems.push(...arr);
-                } else {
-                  // console.log('SINGLE PROBLEM');
-                  problems.push(arr);
-                }
+                const arr = [res[k]].flat();
+                // console.log('ADIAIUHF');
+                // console.log(arr);
+                problems.push(
+                  ...arr.map(problem => {
+                    problem.tableID = k;
+                    return problem;
+                  })
+                );
               });
             }
           });
