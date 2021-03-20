@@ -5,6 +5,7 @@ import { UserDataProvider } from './src/context/UserDataContext/UserDataContext'
 import { UserGroupsProvider } from './src/hooks/groups/useUserGroups';
 import { NotificationSystemProvider } from './src/context/NotificationSystemContext';
 import GlobalErrorBoundary from './src/context/GlobalErrorBoundary';
+import { DarkModeProvider } from './src/context/DarkModeContext';
 
 export const wrapRootElement = ({ element }) => (
   <NotificationSystemProvider>
@@ -12,7 +13,9 @@ export const wrapRootElement = ({ element }) => (
       <FirebaseProvider>
         <MDXProvider>
           <UserDataProvider>
-            <UserGroupsProvider>{element}</UserGroupsProvider>
+            <UserGroupsProvider>
+              <DarkModeProvider>{element}</DarkModeProvider>
+            </UserGroupsProvider>
           </UserDataProvider>
         </MDXProvider>
       </FirebaseProvider>

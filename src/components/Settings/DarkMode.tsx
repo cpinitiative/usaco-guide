@@ -1,10 +1,9 @@
 import * as React from 'react';
-import classNames from 'classnames';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import RadioList from '../elements/RadioList';
 
 export default function DarkMode() {
-  const { darkMode, setDarkMode } = React.useContext(UserDataContext);
+  const { theme, setTheme } = React.useContext(UserDataContext);
 
   return (
     <div>
@@ -15,13 +14,13 @@ export default function DarkMode() {
       </div>
       <div className="h-4" />
       <RadioList
-        name="dark_mode"
-        options={['light', 'dark']}
-        value={darkMode ? 'dark' : 'light'}
+        name="theme"
+        options={['light', 'dark', 'system']}
+        value={theme}
         onChange={newValue => {
-          setDarkMode(newValue === 'dark');
+          setTheme(newValue);
         }}
-        labelMap={{ light: 'Light Mode', dark: 'Dark Mode' }}
+        labelMap={{ light: 'Light Mode', dark: 'Dark Mode', system: 'System' }}
         descriptionMap={{}}
       />
     </div>

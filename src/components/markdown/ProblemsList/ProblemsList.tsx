@@ -20,6 +20,7 @@ import { Instance } from 'tippy.js';
 import ProblemSolutionsModalContext from '../../../context/ProblemSolutionsModalContext';
 import SuggestProblemRow from './SuggestProblemRow';
 import { navigate } from 'gatsby';
+import { useDarkMode } from '../../../context/DarkModeContext';
 
 type ProblemsListProps = {
   title?: string;
@@ -251,7 +252,7 @@ const Anchor = styled.a`
 `;
 
 export function ProblemComponent(props: ProblemComponentProps) {
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem, alwaysHideTags } = props;
   const id = `problem-${problem.uniqueID}`;
