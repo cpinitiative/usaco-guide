@@ -28,6 +28,7 @@ export const LanguageSection = props => {
     sections[typeToLang[type]] = newChild;
     // test
     console.log(newChild);
+    //test
   });
 
 
