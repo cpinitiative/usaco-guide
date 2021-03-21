@@ -1,5 +1,14 @@
 import { SECTIONS } from './content/ordering';
 import importFresh = require('import-fresh');
+import {
+  ProblemInfo,
+  ProblemMetadata,
+  ProblemSolutionInfo,
+  probSources,
+} from './src/models/problem';
+import PGS from './src/components/markdown/PGS';
+import { books } from './src/utils/books';
+import id_to_sol from './src/components/markdown/ProblemsList/id_to_sol';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -51,103 +60,112 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     } catch (e) {
       // ignore, there probably aren't any problems in that module
     }
+
+    const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
+      const { solutionMetadata, ...info } = metadata;
+
+      let sol: ProblemSolutionInfo;
+      if (solutionMetadata.kind === 'autogen-label-from-site') {
+        const site = solutionMetadata.site;
+        if (
+          !probSources.hasOwnProperty(site) ||
+          probSources[site].length !== 3
+        ) {
+          console.error(node.frontmatter.id, metadata);
+          throw new Error(
+            "Couldn't autogenerate solution label from problem site " + site
+          );
+        }
+        sol = {
+          kind: 'label',
+          label: 'Check ' + site,
+          labelTooltip: probSources[site][2],
+        };
+      } else if (solutionMetadata.kind === 'internal') {
+        sol = {
+          kind: 'internal',
+        };
+      } else if (solutionMetadata.kind === 'link') {
+        sol = {
+          kind: 'link',
+          url: solutionMetadata.url,
+          label: 'External Sol',
+        };
+      } else if (solutionMetadata.kind === 'CPH') {
+        const getSec = (dictKey, book, sec) => {
+          let url = book;
+          if (sec[sec.length - 1] == ',')
+            sec = sec.substring(0, sec.length - 1);
+          if (!/^\d.*$/.test(sec)) return url;
+          if (!(sec in PGS[dictKey]))
+            throw `Could not find section ${sec} in source ${dictKey}`;
+          url += '#page=' + PGS[dictKey][sec];
+          return url;
+        };
+        let source = 'CPH';
+        let cphUrl = getSec(source, books[source][0], solutionMetadata.section);
+        sol = {
+          kind: 'link',
+          label: 'CPH ' + solutionMetadata.section,
+          url: cphUrl,
+        };
+      } else if (solutionMetadata.kind === 'USACO') {
+        if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
+          throw new Error(
+            "Couldn't find a corresponding USACO external solution for USACO problem ID " +
+              solutionMetadata.usacoId
+          );
+        }
+        sol = {
+          kind: 'link',
+          label: 'External Sol',
+          url:
+            `http://www.usaco.org/current/data/` +
+            id_to_sol[solutionMetadata.usacoId],
+        };
+      } else if (solutionMetadata.kind === 'IOI') {
+        let year = solutionMetadata.year;
+        let num = year - 1994 + 20;
+        sol = {
+          kind: 'link',
+          label: 'External Sol',
+          url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
+        };
+      } else if (solutionMetadata.kind === 'none') {
+        sol = null;
+      } else if (solutionMetadata.kind === 'in-module') {
+        sol = {
+          kind: 'link',
+          label: 'In Module',
+          url: `https://usaco.guide/${
+            ordering.moduleIDToSectionMap[node.frontmatter.id]
+          }/${node.frontmatter.id}#problem-${info.uniqueId}`,
+        };
+      } else if (solutionMetadata.kind === 'sketch') {
+        sol = {
+          kind: 'sketch',
+          sketch: solutionMetadata.sketch,
+        };
+      } else {
+        throw new Error(
+          'Unknown solution metadata ' + JSON.stringify(solutionMetadata)
+        );
+      }
+
+      return {
+        ...info,
+        solution: sol,
+      };
+    };
+
     if (problemJSON) {
-      // todo: auto-link internal solution and auto-generate solution based on source
-      // todo: actually generate this properly
       createNodeField({
         node,
         name: 'problemLists',
-        value: [
-          {
-            listId: 'general',
-            problems: [
-              {
-                source: 'Bronze',
-                name: 'Sleepy Cow Herding',
-                id: '915',
-                difficulty: 'Easy',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=915',
-              },
-              {
-                source: 'Bronze',
-                name: 'Sleepy Cow Sorting',
-                id: '892',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=892',
-              },
-              {
-                source: 'Bronze',
-                name: 'Taming the Herd',
-                id: '809',
-                difficulty: 'Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=809',
-              },
-              {
-                source: 'Bronze',
-                name: 'Modern Art',
-                id: '737',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=737',
-              },
-              {
-                source: 'Bronze',
-                name: 'Hoofball',
-                id: '808',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: [],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=808',
-              },
-              {
-                source: 'Silver',
-                name: 'Spaced Out',
-                id: '1088',
-                difficulty: 'Very Hard',
-                starred: false,
-                tags: ['Greedy'],
-                solID: '',
-                solQuality: 'ok',
-                url:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
-                uniqueID:
-                  'http://www.usaco.org/index.php?page=viewproblem2&cpid=1088',
-              },
-            ],
-          },
-        ],
+        value: Object.keys(problemJSON).map(listId => ({
+          listId,
+          problems: problemJSON[listId].map(getProblemInfo),
+        })),
       });
     }
   }
@@ -276,7 +294,26 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type MdxFieldsProblems {
       listId: String!
-      problems: [Problem]
+      problems: [ProblemInfo]
+    }
+    
+    type ProblemInfo {
+      uniqueId: String!
+      name: String!
+      url: String!
+      source: String!
+      difficulty: String!
+      isStarred: Boolean!
+      tags: [String]
+      solution: ProblemSolutionInfo 
+    }
+    
+    type ProblemSolutionInfo {
+      kind: String!
+      label: String
+      labelTooltip: String
+      url: String
+      sketch: String
     }
     
     type Problem {

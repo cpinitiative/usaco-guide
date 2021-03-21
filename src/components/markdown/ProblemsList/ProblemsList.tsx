@@ -46,7 +46,7 @@ export function ProblemsList(props: ProblemsListProps) {
   let problems: any[];
   if (typeof props.problems === 'string') {
     problems = markdownProblems.find(list => list.listId === props.problems)
-      .problems;
+      ?.problems;
     if (!problems)
       throw new Error(
         "Couldn't find the problem list with name " + props.problems

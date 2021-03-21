@@ -18,7 +18,7 @@ const contests = {
   'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
 };
 
-const probSources = {
+export const probSources = {
   'Old Bronze': [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
@@ -109,7 +109,9 @@ const probSources = {
 
 export type ProblemInfo = {
   /**
-   * Unique ID of the problem
+   * Unique ID of the problem. For convenience, this is equivalent to the URL of the problem.
+   * However, if we ever change the URL of the problem (in case the first URL breaks), do NOT
+   * modify uniqueID. Keep it the same as the old URL.
    */
   uniqueId: string;
   name: string;
@@ -124,58 +126,93 @@ export type ProblemInfo = {
    */
   isStarred: boolean;
   tags: string[];
-  solution:
-    | {
-        kind: 'internal';
-        url: string;
-      }
-    | {
-        kind: 'external';
-        url: string;
-      }
-    | {
-        /*
-     If the label is just text. Used for certain sources like CodeForces
-     Ex:
-      - label = Check CF
-      - labelTooltip = "Check content materials, located to the right of the problem statement
-     */
-        kind: 'label';
-        label: string;
-        labelTooltip: string | null;
-      }
-    | {
-        /*
-     Not recommended -- use internal solutions instead.
-     Used if there's a super short solution sketch that's not a full editorial.
-     Latex *is* allowed with the new implementation of problems.
-     */
-        kind: 'sketch';
-        sketch: string;
-      }
-    | null; // null if there's no solution for this problem
+  solution: ProblemSolutionInfo;
 };
 
-/**
- * Problem information that's stored in module JSON files.
- * Gatsby will take this information and convert it into ProblemInfo at build time.
+export type ProblemSolutionInfo =
+  | {
+      kind: 'internal';
+      // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
+    }
+  | {
+      kind: 'link';
+      /**
+       * Ex: External Sol or CPH 5.3
+       */
+      label: string;
+      url: string;
+    }
+  | {
+      /*
+ If the label is just text. Used for certain sources like CodeForces
+ Ex:
+  - label = Check CF
+  - labelTooltip = "Check content materials, located to the right of the problem statement
  */
+      kind: 'label';
+      label: string;
+      labelTooltip: string | null;
+    }
+  | {
+      /*
+Not recommended -- use internal solutions instead.
+Used if there's a super short solution sketch that's not a full editorial.
+Latex *is* allowed with the new implementation of problems.
+*/
+      kind: 'sketch';
+      sketch: string;
+    }
+  | null; // null if there's no solution for this problem
+
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
-  /**
-   * This solution can take on one of three values:
-   * 1. null
-   *    Gatsby will auto-generate information for this problem, and will auto-link to any internal solutions.
-   *    If no information can be auto-generated, and there is no internal solution, it will just set the solution to null.
-   * 2. string starting with http
-   *    Gatsby will treat this solution as an external solution.
-   * 3. any other string
-   *    Gatsby will treat this solution as a solution sketch. Latex is supported. Avoid this -- prefer using
-   *    internal solutions whenever possible.
-   *
-   * Important note: If an internal solution exists for a particular problem,
-   * the solution in ProblemMetadata *must* be set to null.
-   */
-  solution: string | null;
+  solutionMetadata:
+    | {
+        // auto generate problem solution label based off of the given site
+        // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+        kind: 'autogen-label-from-site';
+        // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+        site: string;
+      }
+    | {
+        // internal solution
+        kind: 'internal';
+      }
+    | {
+        // URL solution
+        // Use this for links to PDF solutions, etc
+        kind: 'link';
+        url: string;
+      }
+    | {
+        // Competitive Programming Handbook
+        // Ex: 5.3 or something
+        kind: 'CPH';
+        section: string;
+      }
+    | {
+        // USACO solution, generates it based off of the USACO problem ID
+        // ex. 1113 is mapped to sol_prob1_gold_feb21.html
+        kind: 'USACO';
+        usacoId: number;
+      }
+    | {
+        // IOI solution, generates it based off of the year
+        // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+        kind: 'IOI';
+        year: number;
+      }
+    | {
+        // no solution exists
+        kind: 'none';
+      }
+    | {
+        // for focus problems, when the solution is presented in the module of the problem
+        kind: 'in-module';
+      }
+    | {
+        kind: 'sketch';
+        sketch: string;
+      };
 };
 
 // legacy code follows
@@ -230,6 +267,7 @@ export class Problem {
   public solution: ProblemSolution | null = null;
   public hover: string = '';
   public tooltipHoverDescription: string | null;
+  public solutionMetadata: any;
 
   get uniqueID() {
     return this.url;
@@ -277,6 +315,10 @@ export class Problem {
     if (isUsaco(this.source) && this.id in id_to_sol) {
       autoGeneratedSolURL =
         `http://www.usaco.org/current/data/` + id_to_sol[this.id];
+      this.solutionMetadata = {
+        kind: 'USACO',
+        usacoId: this.id,
+      };
       // console.log("GENERATED",autoGeneratedSolURL);
     } else if (this.source == 'IOI') {
       for (let i = 1994; i <= 2017; ++i) {
@@ -285,6 +327,10 @@ export class Problem {
           let num = i - 1994 + 20;
           autoGeneratedSolURL =
             `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+          this.solutionMetadata = {
+            kind: 'IOI',
+            usacoId: i,
+          };
           break;
         }
       }
@@ -296,6 +342,10 @@ export class Problem {
             let num = i - 1994 + 20;
             autoGeneratedSolURL =
               `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+            this.solutionMetadata = {
+              kind: 'IOI',
+              usacoId: i,
+            };
             break;
           }
         }
@@ -315,7 +365,12 @@ export class Problem {
           label: 'Check ' + this.source,
           labelTooltip: probSources[this.source][2],
         };
+        this.solutionMetadata = {
+          kind: 'autogen-label-from-site',
+          site: this.source,
+        };
       } else {
+        // this isn't necessary -- can just use hasOwnProperty instead of in
         for (let source in probSources)
           if (
             probSources[source].length == 3 &&
@@ -325,6 +380,10 @@ export class Problem {
               kind: 'text',
               label: 'Check ' + source,
               labelTooltip: probSources[source][2],
+            };
+            this.solutionMetadata = {
+              kind: 'autogen-label-from-site',
+              site: source,
             };
             break;
           }
@@ -361,11 +420,18 @@ export class Problem {
         kind: 'internal',
         url: `/solutions/${solID}`,
       };
+      this.solutionMetadata = {
+        kind: 'internal',
+      };
     } else if (isExternal(solID)) {
       this.solution = {
         kind: 'link',
         url: solID,
         label: 'External Sol',
+      };
+      this.solutionMetadata = {
+        kind: 'link',
+        url: solID,
       };
     } else if (solID.startsWith('@CPH')) {
       const getSec = (dictKey, book, sec) => {
@@ -384,16 +450,32 @@ export class Problem {
         label: solID.substring(1),
         url: cphUrl,
       };
+      this.solutionMetadata = {
+        kind: 'CPH',
+        section: solID.substring(5),
+      };
     } else if (solID.startsWith('@')) {
       let solMsg = null;
       if (solID == '@@') {
         // empty solution
+        this.solutionMetadata = {
+          kind: 'none',
+        };
       } else if (solID == '@B') {
         solMsg = 'Below'; // solution later in module
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
       } else {
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
         solMsg = solID.substring(1); // custom message
       }
       if (solMsg) {
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
         this.solution = {
           kind: 'text',
           label: solMsg,
@@ -403,6 +485,10 @@ export class Problem {
       this.tryAutoGeneratingSolution();
       // console.log(this.solution);
       if (solID && !this.solution) {
+        this.solutionMetadata = {
+          kind: 'sketch',
+          sketch: solID,
+        };
         // only try sketch if all else fails
         this.solution = {
           kind: 'sketch',

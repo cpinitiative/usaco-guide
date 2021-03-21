@@ -1,4 +1,6 @@
-export default {
+import { Problem } from './src/models/problem';
+
+let data = {
   data: {
     allMdx: {
       edges: [
@@ -14418,3 +14420,60 @@ export default {
   },
   extensions: {},
 };
+
+// @ts-ignore
+data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
+  ...x,
+  node: {
+    ...x.node,
+    problems: x.node.problems.map(problem => {
+      const prob = new Problem(
+        problem.source,
+        problem.name,
+        problem.id,
+        problem.difficulty as any,
+        problem.starred,
+        problem.tags,
+        problem.solID,
+        problem.solQuality as any
+      );
+      // let sol = null;
+      // if (prob.solution === null) {}
+      // else if (prob.solution.kind === "link") {
+      //   sol = {
+      //     kind: "link",
+      //     url: prob.solution.url,
+      //     label: prob.solution.label
+      //   };
+      // } else if (prob.solution.kind === "text") {
+      //   sol = {
+      //     kind: "label",
+      //     label: prob.solution.label,
+      //     labelTooltip: prob.solution.labelTooltip ?? null,
+      //   };
+      // } else if (prob.solution.kind === "internal") {
+      //   sol = {
+      //     kind: "internal",
+      //   };
+      // }
+      if (!prob.solutionMetadata) {
+        console.log(prob.uniqueID);
+      }
+      return {
+        uniqueId: prob.uniqueID,
+        name: prob.name,
+        url: prob.url,
+        source: prob.source,
+        difficulty: prob.difficulty,
+        isStarred: prob.starred,
+        tags: prob.tags,
+        solutionMetadata: prob.solutionMetadata || {
+          kind: 'none',
+        },
+        tableID: problem.tableID,
+      };
+    }),
+  },
+}));
+
+export default data;

@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { ProblemInfo } from '../models/problem';
 
 const MarkdownProblemListsContext = React.createContext<
   [
     {
       listId: string;
-      problems: any[];
+      problems: ProblemInfo[];
     }
   ]
 >(null);

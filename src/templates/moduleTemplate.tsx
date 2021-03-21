@@ -17,6 +17,7 @@ export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
+  console.log(mdx.fields.problemLists);
   const { setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
@@ -84,20 +85,23 @@ export const pageQuery = graphql`
       fields {
         division
         gitAuthorTime
-        # todo: update this with proper fields
         problemLists {
           listId
           problems {
-            source
+            uniqueId
             name
-            id
-            difficulty
-            starred
-            tags
-            solID
-            solQuality
             url
-            uniqueID
+            source
+            difficulty
+            isStarred
+            tags
+            solution {
+              kind
+              label
+              labelTooltip
+              url
+              sketch
+            }
           }
         }
       }
