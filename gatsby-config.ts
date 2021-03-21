@@ -1,5 +1,11 @@
 require('dotenv').config();
 
+export const flags = {
+  PRESERVE_WEBPACK_CACHE: true,
+  FAST_DEV: true,
+  FAST_REFRESH: true,
+};
+
 export const siteMetadata = {
   title: `USACO Guide`,
   description: `A free collection of curated, high-quality competitive programming resources to take you from USACO Bronze to USACO Platinum and beyond. Written by top USACO Finalists, these tutorials will guide you through your competitive programming journey.`,
@@ -59,7 +65,7 @@ export const plugins = [
           resolve: `gatsby-remark-autolink-headers`,
           options: {
             // icon source: https://joshwcomeau.com/
-            icon: `<svg fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
           },
         },
         {
@@ -84,7 +90,7 @@ export const plugins = [
           resolve: `gatsby-remark-autolink-headers`,
           options: {
             // icon source: https://joshwcomeau.com/
-            icon: `<svg fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+            icon: `<svg fill='none' height='24' width='24' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' style='display: inline-block; vertical-align: middle;'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'></path><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'></path></svg>`,
           },
         },
       ],
@@ -132,12 +138,16 @@ export const plugins = [
       dsn:
         'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
       denyUrls: [/extensions\//i, /^chrome:\/\//i],
-      defaultIntegrations: false,
+      ...(process.env.NODE_ENV === 'production'
+        ? {}
+        : {
+            defaultIntegrations: false,
+          }),
     },
   },
   {
     resolve: `gatsby-plugin-create-client-paths`,
-    options: { prefixes: [`/class/*`] },
+    options: { prefixes: [`/class/*`, '/groups/*'] },
   },
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
@@ -150,15 +160,20 @@ export const plugins = [
       skipIndexing: !!!process.env.ALGOLIA_APP_ID,
     },
   },
-  'gatsby-plugin-webpack-bundle-analyser-v2',
   {
-    resolve: `gatsby-plugin-hotjar`,
+    resolve: 'gatsby-plugin-webpack-bundle-analyser-v2',
     options: {
-      includeInDevelopment: false, // optional parameter to include script in development
-      id: 2173658,
-      sv: 6,
+      devMode: true,
     },
   },
+  // {
+  //   resolve: `gatsby-plugin-hotjar`,
+  //   options: {
+  //     includeInDevelopment: false, // optional parameter to include script in development
+  //     id: 2173658,
+  //     sv: 6,
+  //   },
+  // },
   `gatsby-plugin-meta-redirect`,
   // this (optional) plugin enables Progressive Web App + Offline functionality
   // To learn more, visit: https://gatsby.dev/offline

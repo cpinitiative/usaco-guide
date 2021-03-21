@@ -1,7 +1,7 @@
 ---
 id: intro-complete
 title: 'Basic Complete Search'
-author: Darren Yao
+author: Darren Yao, Dong Liu
 description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
@@ -61,7 +61,7 @@ export const problems = {
 			'Normal',
 			true,
 			['Complete Search'],
-			'Loop over each position. Then, loop over each non-spotty cow in a nested loop and check whether a spotty cow has the same character as a non-spotty cow to figure out whether the position explains spottiness.'
+			'usaco-736',
 		), // 99.73
 		new Problem(
 			'Bronze',
@@ -211,8 +211,7 @@ int main() {
 
 </CPPSection>
 
-<!-- 
-<JavaSection>
+<!-- <JavaSection>
 
 ```java
 int max = 0; // storing the current maximum
@@ -228,21 +227,31 @@ for(int i = 0; i < n; i++){ // for each first point
 io.println(max);
 ```
 
-</JavaSection>
+</JavaSection> -->
 
 <PySection>
 
+<Warning>
+
+Make sure compile using PyPy 3. TLEs using Python3.
+
+</Warning>
+
 ```py
-high = 0
+n = int(input())
+x = list(map(int, input().split()))
+y = list(map(int, input().split()))
+
+max_square = 0
 for i in range(n):
 	for j in range(i + 1, n):
 		dx = x[i] - x[j]
 		dy = y[i] - y[j]
-		high = max(high, dx * dx + dy * dy)
-print(high)
+		max_square = max(max_square, dx * dx + dy * dy)
+print(max_square)
 ```
 
-</PySection> -->
+</PySection>
 
 </LanguageSection>
 

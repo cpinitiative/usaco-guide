@@ -34,6 +34,7 @@ export default function ButtonGroup({
             [inactiveClasses]: option !== value,
           })}
           onClick={() => onChange(option)}
+          key={option}
         >
           {labelMap ? labelMap[option] : option}
         </button>

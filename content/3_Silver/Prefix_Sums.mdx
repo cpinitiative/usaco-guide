@@ -84,26 +84,6 @@ export const problems = {
 			'usaco-715'
 		),
 		new Problem(
-			'Old Bronze',
-			'Haybale Stacking',
-			'104',
-			'Normal',
-			true,
-			['Prefix Sums'],
-			'usaco-104'
-		),
-	],
-	related: [
-		new Problem(
-			'Silver',
-			'My Cow Ate My Homework',
-			'762',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.'
-		),
-		new Problem(
 			'CSES',
 			'Range XOR Queries',
 			'1650',
@@ -112,8 +92,45 @@ export const problems = {
 			['Prefix Sums'],
 			'cses-1650'
 		),
+		new Problem(
+			'Old Bronze',
+			'Haybale Stacking',
+			'104',
+			'Normal',
+			true,
+			['Prefix Sums'],
+			'usaco-104'
+		),
+		new Problem(
+			'KS@Google KickStart',
+			'Candies (Test Set 1)',
+			'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
+			'Hard',
+			true,
+			['Prefix Sums'],
+			'kickstart-20-c-candies'
+		),
+		new Problem(
+			'AC',
+			'Multiple of 2019',
+			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
+			'Hard',
+			false,
+			['Prefix Sums'],
+			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
+		),
 	],
 };
+
+<!-- new Problem(
+	'Silver',
+	'My Cow Ate My Homework',
+	'762',
+	'Easy',
+	false,
+	['Prefix Sums'],
+	'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.'
+), -->
 
 <!-- equivalent to [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646) -->
 
@@ -285,7 +302,7 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 -->
 
-### Solution - Static Range Sum
+## Solution - Static Range Sum
 
 <LanguageSection>
 
@@ -357,7 +374,7 @@ public class Main{
 			r = Integer.parseInt(st.nextToken());
 			writer.println(p[r]-p[l]);
 		}
-		
+
 		reader.close();
 		writer.close();
 	}
@@ -398,26 +415,24 @@ for i in range(Q):
 
 </LanguageSection>
 
-### Problems
+## Problems
 
 <Problems problems={problems.cum} />
+
+<Info title="XOR">
+
+Check [Intro to Bitwise Operators](/plat/intro-bitwise) if you're not familiar with XOR.
+
+</Info>
+
+<!--
+
+Hint: The XOR of any number with itself is zero.
+
+-->
 
 <Warning>
 
 "Haybale Stacking" isn't submittable on the USACO website. Use [this link](https://www.spoj.com/problems/HAYBALE/) to submit.
 
 </Warning>
-
-## Prefix Minimum, XOR, etc.
-
-<Info title="XOR">
-
-Check [Intro to Bitwise Operators](/bronze/intro-bitwise) if you're not familiar with XOR.
-
-</Info>
-
-Similar to prefix sums, you can also take prefix minimum or maximum; but _you cannot_ answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
-
-### Problems
-
-<Problems problems={problems.related} />

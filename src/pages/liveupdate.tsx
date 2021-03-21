@@ -18,7 +18,9 @@ import useStickyState from '../hooks/useStickyState';
 import Split from 'react-split';
 import styled from 'styled-components';
 import { useRef, useState } from 'react';
-import SettingsModal from '../components/SettingsModal';
+import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+import ButtonGroup from '../components/ButtonGroup';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -58,8 +60,7 @@ export default function LiveUpdatePage(props: PageProps) {
   const markdownStorageKey = 'guide:liveupdate:markdown';
 
   const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
-  const editor = useRef();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const editor = useRef<any>();
 
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
@@ -95,13 +96,11 @@ export default function LiveUpdatePage(props: PageProps) {
     }
   };
 
+  const userSettings = React.useContext(UserDataContext);
+
   return (
     <Layout>
       <SEO title="MDX Renderer" />
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
 
       <div className="h-screen flex flex-col">
         <div className="block py-3 px-3 shadow dark:bg-gray-900 flex items-center justify-around">
@@ -112,12 +111,6 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             Dashboard
           </a>
-          <button
-            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            onClick={() => setIsSettingsOpen(true)}
-          >
-            Settings
-          </button>
           <a
             href="/general/contributing#adding-a-solution"
             target="_blank"
@@ -177,11 +170,60 @@ export default function LiveUpdatePage(props: PageProps) {
                 />
               </div>
               <div
-                className="overflow-y-auto relative"
+                className="flex flex-col"
                 style={{ maxWidth: 'calc(100% - 310px)' }}
               >
-                <div className="markdown p-4">
-                  <RawMarkdownRenderer markdown={markdown} />
+                <div className="border-b border-gray-200 dark:border-gray-700 py-2 px-2 flex-shrink-0 flex items-center justify-between">
+                  <ButtonGroup
+                    options={['cpp', 'java', 'py']}
+                    value={userSettings.lang}
+                    onChange={v => userSettings.setLang(v)}
+                    labelMap={LANGUAGE_LABELS}
+                  />
+                  {/* Settings button */}
+                  <button
+                    onClick={() =>
+                      userSettings.setDarkMode(!userSettings.darkMode)
+                    }
+                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+                  >
+                    {userSettings.darkMode ? (
+                      <svg
+                        className="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                <div className="overflow-y-auto relative flex-1">
+                  <div className="markdown p-4">
+                    <RawMarkdownRenderer markdown={markdown} />
+                  </div>
                 </div>
               </div>
             </StyledSplit>

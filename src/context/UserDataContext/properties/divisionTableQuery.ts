@@ -3,7 +3,6 @@ import SimpleUserDataPropertyAPI from '../simpleUserDataPropertyAPI';
 type DivisionTableQueryInfo = {
   division: string;
   season: string;
-  showSols: boolean;
 };
 
 export type DivisionTableQueryAPI = {
@@ -16,7 +15,6 @@ export default class DivisionTableQuery extends SimpleUserDataPropertyAPI {
   protected defaultValue = {
     division: '',
     season: '',
-    showSols: false,
   };
   protected setterFunctionName = 'setDivisionTableQuery';
 }

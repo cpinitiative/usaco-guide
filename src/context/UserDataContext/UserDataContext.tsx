@@ -13,9 +13,7 @@ import HideTagsAndDifficulty, {
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import HideSols, { HideSolsAPI } from './properties/hideSols';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -27,6 +25,12 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+import firebase from 'firebase';
+import { UserPermissionsContextProvider } from './UserPermissionsContext';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -87,30 +91,30 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
   new HideTagsAndDifficulty(),
-  new HideSols(),
   new DivisionTableQuery(),
   new ShowIgnored(),
-  new DarkMode(),
+  new ThemeProperty(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
   new UserClassesProperty(),
+  new AdSettingsProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
   HideTagsAndDifficultyAPI &
-  HideSolsAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
-  DarkModeAPI &
+  ThemePropertyAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
-  UserClassesAPI & {
-    firebaseUser: any;
+  UserClassesAPI &
+  AdSettingsAPI & {
+    firebaseUser: firebase.User;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
@@ -121,16 +125,13 @@ type UserDataContextAPI = UserLangAPI &
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
-  darkMode: false,
   firebaseUser: null,
   getDataExport: () => {},
   importUserData: () => {},
   hideTagsAndDifficulty: false,
-  hideSols: false,
   divisionTableQuery: {
     division: '',
     season: '',
-    showSols: false,
   },
   isLoaded: true,
   lang: 'cpp',
@@ -145,9 +146,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {},
+  theme: 'system',
+  setTheme: x => {},
   setHideTagsAndDifficulty: x => {},
-  setHideSols: x => {},
   setDivisionTableQuery: x => {},
   setLang: x => {},
   setLastReadAnnouncement: x => {},
@@ -166,6 +167,10 @@ const UserDataContext = createContext<UserDataContextAPI>({
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},
   userProgressOnProblemsActivity: [],
+  adSettings: {
+    hideMarch2021: false,
+  },
+  setAdSettings: () => {},
 });
 
 export const UserDataProvider = ({ children }) => {
@@ -319,7 +324,9 @@ export const UserDataProvider = ({ children }) => {
 
   return (
     <UserDataContext.Provider value={userData}>
-      {children}
+      <UserPermissionsContextProvider>
+        {children}
+      </UserPermissionsContextProvider>
     </UserDataContext.Provider>
   );
 };

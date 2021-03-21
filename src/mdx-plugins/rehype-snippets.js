@@ -198,12 +198,12 @@ module.exports = options => {
     for (let line of node.children[0].value.split('\n')) {
       let found = false;
       for (let key of Object.keys(replacements)) {
-        let results = line.match(new RegExp(`^.*?(CodeSnip\\{${key}\\})`));
+        let results = line.match(
+          new RegExp(`^(\\s*).*?(CodeSnip\\{${key}\\})`)
+        );
         if (results) {
-          let prefix = results[0].match(/^\s+/);
-          if (!prefix) prefix = '';
           for (let snippetLine of replacements[key].split('\n')) {
-            newValue.push(`${prefix}${snippetLine}`);
+            newValue.push(`${results[1]}${snippetLine}`);
           }
           found = true;
           break;
