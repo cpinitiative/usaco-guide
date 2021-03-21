@@ -20,9 +20,15 @@ export default functions.https.onCall(
         ...e,
       };
     }
+    const groupData = await admin
+      .firestore()
+      .collection('groups')
+      .doc(keyData.groupId)
+      .get()
+      .then(snapshot => snapshot.data());
     return {
       success: true,
-      name: keyData.name,
+      name: groupData.name,
     };
   }
 );
