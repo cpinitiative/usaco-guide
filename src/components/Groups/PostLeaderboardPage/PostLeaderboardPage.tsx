@@ -26,8 +26,8 @@ export default function PostLeaderboardPage(props) {
 
     const leaderboardSum = {};
     const postID = post.id;
-    for (let problemID of Object.keys(leaderboard[postID])) {
-      for (let userID of Object.keys(leaderboard[postID][problemID])) {
+    for (let problemID of Object.keys(leaderboard[postID] || {})) {
+      for (let userID of Object.keys(leaderboard[postID][problemID] || {})) {
         if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
         leaderboardSum[userID] +=
           leaderboard[postID][problemID][userID].bestScore;
