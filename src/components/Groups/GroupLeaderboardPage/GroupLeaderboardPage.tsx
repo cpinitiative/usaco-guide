@@ -35,14 +35,18 @@ export default function GroupLeaderboardPage(props) {
         }
       }
     }
-    let data = activeGroup.groupData.memberIds.map(id => ({
-      member: members.find(member => member.uid === id),
-      postDetails: assignments.map(post => leaderboardSum[id]?.[post.id] || 0),
-      points: Object.keys(leaderboardSum[id] || {}).reduce(
-        (acc, cur) => acc + leaderboardSum[id][cur],
-        0
-      ),
-    }));
+    let data = activeGroup.groupData.memberIds
+      .map(id => ({
+        member: members.find(member => member.uid === id),
+        postDetails: assignments.map(
+          post => leaderboardSum[id]?.[post.id] || 0
+        ),
+        points: Object.keys(leaderboardSum[id] || {}).reduce(
+          (acc, cur) => acc + leaderboardSum[id][cur],
+          0
+        ),
+      }))
+      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
     return data.sort((a, b) => b.points - a.points);
   }, [leaderboard, members, assignments]);
 

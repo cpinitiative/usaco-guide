@@ -74,10 +74,12 @@ export default function LeaderboardList({
       processPost(postId);
     }
 
-    let data = activeGroup.groupData.memberIds.map(id => ({
-      member: members.find(member => member.uid === id),
-      points: leaderboardSum[id] ?? 0,
-    }));
+    let data = activeGroup.groupData.memberIds
+      .map(id => ({
+        member: members.find(member => member.uid === id),
+        points: leaderboardSum[id] ?? 0,
+      }))
+      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
     return data.sort((a, b) => b.points - a.points);
   }, [leaderboard, activeGroup.groupData.memberIds, members, postId]);
 
