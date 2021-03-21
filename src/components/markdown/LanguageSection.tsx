@@ -2,7 +2,6 @@ import * as React from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
-import Children from 'react-children-utilities';
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
