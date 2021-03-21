@@ -102,7 +102,7 @@ const JoinGroupPage = () => {
             </div>
           )}
 
-          {!showLoading && groupName && (
+          {!showLoading && !showNotSignedInMessage && groupName && (
             <>
               <p className="text-center text-lg sm:text-2xl">
                 Do you want to join the group{' '}
