@@ -117,10 +117,21 @@ export const CPPSection = props => {
   // refactor for readability later :P
   console.log("SPECIFIC");
   let newProps = props;
-  console.log(newProps.children.props);
+  if (typeof(newProps.children.props) != "undefined"){
+    console.log(newProps.children.props);
+  }
+
   console.log("NEW PROPS")
   console.log(newProps)
-  return <>{props.children}</>;
+
+  if (typeof(newProps.children.props) != "undefined"){
+    console.log(newProps.children.props);
+  }
+  if (typeof(newProps.children.props) != "undefined"){
+    return <>{newProps.children}</>;   // change when injecting props
+  }else{
+    return <>{props.children}</>;
+  }
 };
 
 export const JavaSection = props => {
