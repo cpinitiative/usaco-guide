@@ -118,7 +118,6 @@ export const CPPSection = props => {
   console.log("SPECIFIC");
   let newProps = props;
   console.log(newProps.children.props);
-  newProps.children.props.children = React.cloneElement(props.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
   console.log("NEW PROPS")
   console.log(newProps)
   return <>{props.children}</>;
