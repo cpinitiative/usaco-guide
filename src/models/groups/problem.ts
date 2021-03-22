@@ -163,7 +163,7 @@ export const getSubmissionEarnedPoints = (
   problem: ProblemData
 ) => {
   if (submission.type === SubmissionType.SELF_GRADED) {
-    return submission.result * problem.points;
+    return parseFloat((submission.result * problem.points).toFixed(1));
   }
   // todo actually implement
   return problem.points;

@@ -155,7 +155,7 @@ export default function PostLeaderboardPage(props) {
                             }
                             key={problems[idx].id}
                           >
-                            {details?.bestScore || 0}
+                            {parseFloat(details?.bestScore?.toFixed(1) || '0')}
                           </td>
                         ))}
                       </tr>
