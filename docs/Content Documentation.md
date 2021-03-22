@@ -510,7 +510,7 @@ static class Kattio extends PrintWriter {
 CodeSnip{Benq Template}
 ```
 
-Gets replaced with [Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong_Old.cpp).
+Gets replaced with [Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
 
 ## C++ Short Template
 
