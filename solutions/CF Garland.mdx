@@ -2,12 +2,12 @@
 id: cf-garland
 source: CF
 title: An impassioned circulation of affection
-author: Neo Wang, Qi Wang
+author: Neo Wang, Qi Wang, Jesse Choe
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/52449)
 
-## Solution (Two Pointer)
+## Solution (Two Pointers)
 
 **Time Complexity:** $\mathcal{O}(nq)$
 
@@ -75,7 +75,63 @@ int main() {
 
 </LanguageSection>
 
+## Alternative Solution (Two Pointers with Prefix Sums)
+
+**Time Complexity:** $\mathcal{O}(nq)$
+
+For each query we can use prefix sums to check the number of occurrences of a given letter $a$ and use two pointers to find the maximum Koyomity ending at a given index $j$.
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation:
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int dp[26][1501];
+
+int main(){
+	int n; cin >> n;
+	string s; cin >> s;
+	for(int i=1; i<=n; i++){
+		int color = s[i-1] - 'a';
+		dp[color][i]++;
+	}
+	for(int i=0; i<26; i++){
+		for(int j=1; j<=n; j++){
+			dp[i][j] = dp[i][j-1] + dp[i][j];
+		}
+	}
+	int q; cin >> q;
+	for(int i=0; i<q; i++){
+		int m; char c; cin >> m >> c;
+		c -= 'a';
+		int p1 = 1, p2 = 1, koyomity = 1;
+		while(p2 <= n){
+			int c_count = dp[c][p2] - dp[c][p1-1] + m;
+			if((c_count) < (p2 - p1 + 1)){
+				p1++;
+			} else {
+				koyomity = max(koyomity, (p2 - p1 + 1));
+				p2++;
+			}
+		}
+		cout << koyomity << endl;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
 ## Alternative Solution (Dynamic Programming)
+
+**Note: you do not need to understand this solution at the Silver level.**
 
 **Time Complexity:** $\mathcal{O}(n^2k + q)$
 
