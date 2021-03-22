@@ -26,7 +26,13 @@ export default function getMemberInfoForGroup(group: GroupData) {
 
       if (cachedData?.groupId === group.id) {
         setMemberInfo(cachedData.data);
-      } else {
+      }
+      // second condition is checking if a new member has joined the group.
+      // if so, we should re-fetch member information.
+      if (
+        cachedData?.groupId !== group.id ||
+        group.memberIds.some(id => !cachedData.data.find(x => x.uid === id))
+      ) {
         firebase
           .functions()
           .httpsCallable('getGroupMembers')({
@@ -51,7 +57,7 @@ export default function getMemberInfoForGroup(group: GroupData) {
           });
       }
     },
-    [group.id]
+    [group?.id, group?.memberIds]
   );
 
   return memberInfo;
