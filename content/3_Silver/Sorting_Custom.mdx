@@ -656,15 +656,13 @@ public class Sol {
 
 ## Coordinate Compression
 
-Coordinate compression is another useful technique related to sorting, that can also be used in conjuction with custom comparators. Coordinate compression describes the process of replacing each value in a list with its index if that list was sorted. 
+Coordinate compression is another useful technique related to sorting that can also be used in conjuction with custom comparators. Coordinate compression describes the process of replacing each value in a list with its index if that list was sorted. For example, the list $$\{7, 3, 4, 1\}$$ would be mapped to $$\{3, 1, 2, 0\}$$. Notice that $$1$$ is the least value in the first set, so it becomes $$0$$, and $$7$$ is the greatest value, so it becomes $$3$$, the largest index in the list.
 
-For example, the list $${7, 3, 4, 1}$$ would be mapped to $${3, 1, 2, 0}$$. Notice that $$1$$ is the least value in the first set, so it becomes $$0$$, and $$7$$ is the greatest value, so it becomes $$3$$, the largest index in the list.
-
-When we have values that can take on a large range of possible values, but we only care about their relative order (for example, if we have to know if one value is above another's), coordinate compression is a simple way to help a lot with implementation. For example, if we have a set of integers ranging from $$0$$ to $$10^9$$, we can't use them as array indices because we'd have to create an array of size $$10^9$$, surely a cause for a `Memory Limit Exceeded` verdict. However, if there are only $N = 10^6$$ such integers, we can coordinate compress their values, which guarantees that the values will all be in the range from $$0$$ to $$N-1$$, which *can* be used as array indices.
+When we have values that can take on a large range of possible values, but we only care about their relative order (for example, if we have to know if one value is above another's), coordinate compression is a simple way to help a lot with implementation. If we have a set of integers ranging from $$0$$ to $$10^9$$, we can't use them as array indices because we'd have to create an array of size $$10^9$$, which would surely cause a `Memory Limit Exceeded` verdict. However, if there are only $$N = 10^6$$ such integers, we can coordinate compress their values, which guarantees that the values will all be in the range from $$0$$ to $$N-1$$, which *can* be used as array indices.
 
 <FocusProblem problem={problems.sample[1]} />
 
-A good example of coordinate compression in action is in the solution of USACO Rectangular Pasture. Again, we won't delve into the full solution but instead discuss how coordinate compression was applied. Since the solution uses 2D-prefix sums (another Silver topic), it is helpful if all point coordinates are in the range $$0 to N-1$$ so they can be used as array indices.
+A good example of coordinate compression in action is in the solution of *USACO Rectangular Pasture.* Again, we won't delve into the full solution but instead discuss how coordinate compression is applied. Since the solution uses 2D-prefix sums (another Silver topic), it is helpful if all point coordinates are coordinate-compressed to the range $$0$$ to $$N-1$$ so they can be used as array indices.
 
 Below you will find an excerpt of solution code to Rectangular Pasture that uses coordinate compression. Observe how a custom comparator is used to sort the points (either by `x` or by `y`):
 
