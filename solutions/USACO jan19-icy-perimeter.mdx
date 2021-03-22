@@ -14,75 +14,76 @@ author: Tanish Tyagi
 ## C++ Implementation
 
 ```cpp
-// created by Tanish Tyagi
 #include <bits/stdc++.h>
 
 using namespace std;
-using ll = long long;
 
-const int MAXN = 1005;
+#define ll long long
+#define MAXN 1005
+#define MAXM 1005
 
-char grid[MAXN][MAXN]; // the grid itself
+char grid[MAXN][MAXM]; // the grid itself
 int n;
-bool visited[MAXN][MAXN]; // keeps track of which nodes have been visited
-ll currA = 0; // keeps track of the current area of the current blob of ice cream
-ll currP = 0; // keeps track of the current perimeter of the blob of ice cream
-ll area = 0; 
+bool visited[MAXN][MAXM]; // keeps track of which nodes have been visited
+ll currA = 0;
+ll currP = 0;
+ll area = 0;
 ll perimeter = 0;
 
-void setIO(string name) { 
-	ios_base::sync_with_stdio(0); cin.tie(0); 
-	if (len(name)) {
-		freopen((name + ".in").c_str(), "r", stdin); 
-		freopen((name + ".out").c_str(), "w", stdout);
-	}
+void setIO(string name, bool includeout=false) { // name is nonempty for USACO file I/O
+    ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+    // alternatively, cin.tie(0)->sync_with_stdio(0);
+    freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+    if (includeout) {
+        freopen((name+".out").c_str(), "w", stdout);
+    }
 }
 
-void floodfill(int r, int c) {
-	if (r < 0 || r >= n || c < 0 || c >= n) {
-		currP++;
-		return; // if outside grid
-	}
-	if (visited[r][c]) return; // already visited this square
-	if (grid[r][c] == '.') {
-		currP++;
-		return;
-	}
+void floodfill(int r, int c){
+	if(r < 0 || r >= n || c < 0 || c >= n) {
+        currP++;
+        return; // if outside grid
+    }
+	if(visited[r][c]) return; // already visited this square
+    if (grid[r][c] == '.') {
+        currP++;
+        return;
+    } 
 	visited[r][c] = true; // mark current square as visited
 	if (grid[r][c] == '#') {
-		currA++;
-	}
+        currA++; 
+    }
 	// recursively call floodfill for neighboring squares
-	floodfill(r, c + 1);
-	floodfill(r, c - 1);
-	floodfill(r - 1, c);
-	floodfill(r + 1, c);
+	floodfill(r, c+1);
+	floodfill(r, c-1);
+	floodfill(r-1, c);
+	floodfill(r+1, c);
 }
 
-int main() {
-	setIO("perimeter");
+int main(){
+    setIO("perimeter", true);
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> grid[i][j];
-		}
-	}
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			if (!visited[i][j] && grid[i][j] == '#') {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> grid[i][j];
+        }
+    }
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			if(!visited[i][j] && grid[i][j] == '#'){
 				floodfill(i, j);
-				if (area == currA) {
-					perimeter = min(perimeter, currP);
-				}
-				else {
-					area = max(area, currA);
-					perimeter = max(perimeter, currP);
-				}
-				currA = currP = 0;
+                if (area == currA) {
+                    perimeter = min(perimeter, currP);
+                } else if (currA > area) {
+                    area = currA;
+                    perimeter = currP;
+                }
+                //cout << currA << " , " << currP << endl; 
+                currA = currP = 0;
 			}
 		}
 	}
-	cout << area << " " << perimeter << endl;
+    cout << area << " " << perimeter << endl;
 	return 0;
 }
 ```
