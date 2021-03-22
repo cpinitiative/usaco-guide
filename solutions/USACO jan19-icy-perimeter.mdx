@@ -41,18 +41,18 @@ void setIO(string name, bool includeout=false) { // name is nonempty for USACO f
 
 void floodfill(int r, int c){
 	if(r < 0 || r >= n || c < 0 || c >= n) {
-        currP++;
-        return; // if outside grid
-    }
+		currP++;
+		return; // if outside grid
+	}
 	if(visited[r][c]) return; // already visited this square
-    if (grid[r][c] == '.') {
-        currP++;
-        return;
-    } 
+	if (grid[r][c] == '.') {
+		currP++;
+		return;
+	} 
 	visited[r][c] = true; // mark current square as visited
 	if (grid[r][c] == '#') {
-        currA++; 
-    }
+		currA++; 
+	}
 	// recursively call floodfill for neighboring squares
 	floodfill(r, c+1);
 	floodfill(r, c-1);
@@ -61,29 +61,28 @@ void floodfill(int r, int c){
 }
 
 int main(){
-    setIO("perimeter", true);
+	setIO("perimeter", true);
 	cin >> n;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> grid[i][j];
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cin >> grid[i][j];
+		}
+	}
 	for(int i = 0; i < n; i++){
 		for(int j = 0; j < n; j++){
 			if(!visited[i][j] && grid[i][j] == '#'){
 				floodfill(i, j);
-                if (area == currA) {
-                    perimeter = min(perimeter, currP);
-                } else if (currA > area) {
-                    area = currA;
-                    perimeter = currP;
-                }
-                //cout << currA << " , " << currP << endl; 
-                currA = currP = 0;
+				if (area == currA) {
+					perimeter = min(perimeter, currP);
+				} else if (currA > area) {
+					area = currA;
+					perimeter = currP;
+				}
+				currA = currP = 0;
 			}
 		}
 	}
-    cout << area << " " << perimeter << endl;
+	cout << area << " " << perimeter << endl;
 	return 0;
 }
 ```
