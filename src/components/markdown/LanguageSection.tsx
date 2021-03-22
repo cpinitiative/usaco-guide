@@ -112,14 +112,6 @@ export const LanguageSection = props => {
 export const CPPSection = props => {
 
   const oldProps = props;
-  // let newProps = props;
-  // refactor for readability later :P
-
-
-  if (typeof(props.children.props) != "undefined"){
-    console.log("CPP PROPS")
-      console.log(props.children);
-  }
 
 
     return <>{props.children}</>;
