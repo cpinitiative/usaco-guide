@@ -118,11 +118,11 @@ export const CPPSection = props => {
   console.log("SPECIFIC");
   let newProps = props;
   if (typeof(newProps.children.props) != "undefined"){
-    console.log(newProps.children.props);
+    console.log(newProps.children.props); // change to injection of props
   }
 
   if (typeof(newProps.children.props) != "undefined"){
-    return <>{newProps.children}</>;   // change when injecting props
+    return <>{newProps.children}</>;
   }else{
     return <>{props.children}</>;
   }
