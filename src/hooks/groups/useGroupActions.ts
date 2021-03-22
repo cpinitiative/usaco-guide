@@ -94,14 +94,28 @@ export function useGroupActions() {
     },
     updateGroup,
     leaveGroup: async (groupId: string, userId: string) => {
-      // @jeffrey todo implement this
-      let leftSuccessfully = false;
-      if (leftSuccessfully) {
+      const leaveResult = ((
+        await firebase.functions().httpsCallable('leaveGroup')({
+          groupId,
+        })
+      ).data as never) as
+        | { success: true }
+        | { success: false; errorCode: string };
+      console.log(leaveResult);
+      // === typeguard check
+      if (leaveResult.success === true) {
+        invalidateData();
         return;
       }
-      throw new Error(
-        "Since you're the only owner of this group, you are unable to leave. Try adding another owner or deleting the group instead."
-      );
+      switch (leaveResult.errorCode) {
+        case 'ONLY_OWNER':
+          throw new Error(
+            "Since you're the only owner of this group, you are unable to leave. Try adding another owner or deleting the group instead."
+          );
+        case 'GROUP_NOT_FOUND': // (this shouldn't happen)
+        default:
+          throw new Error('Error handling error: ' + leaveResult.errorCode);
+      }
     },
     createJoinLink: async (groupId: string): Promise<JoinGroupLink> => {
       const defaultJoinLink: Omit<JoinGroupLink, 'id'> = {

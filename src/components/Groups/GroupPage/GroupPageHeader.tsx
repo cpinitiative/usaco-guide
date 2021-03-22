@@ -142,6 +142,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       leaveGroup(groupId, firebaseUser?.uid)
                         .then(() => navigate(`/groups/`))
                         .catch(e => {
+                          console.log(e);
                           alert('Error: ' + e.message);
                         });
                     }

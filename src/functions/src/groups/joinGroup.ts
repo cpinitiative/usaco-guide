@@ -28,14 +28,14 @@ export default functions.https.onCall(
         .collection('groups')
         .doc(keyData.groupId)
         .update({
-          memberIds: admin.firestore.FieldValue.arrayUnion([callerUid]),
+          memberIds: admin.firestore.FieldValue.arrayUnion(callerUid),
         }),
       admin
         .firestore()
         .collection('group-join-links')
         .doc(key)
         .update({
-          usedBy: admin.firestore.FieldValue.arrayUnion([callerUid]),
+          usedBy: admin.firestore.FieldValue.arrayUnion(callerUid),
           numUses: admin.firestore.FieldValue.increment(1),
         }),
     ]);

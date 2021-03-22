@@ -9,6 +9,7 @@ import {
   getJoinKeyInfo,
   joinGroup,
   getGroupMembers,
+  leaveGroup,
 } from './groups';
 
 export {
@@ -23,4 +24,5 @@ export {
   getJoinKeyInfo,
   getGroupMembers,
   joinGroup,
+  leaveGroup,
 };
