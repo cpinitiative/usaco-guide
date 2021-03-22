@@ -92,7 +92,7 @@ const GroupPageWrapper = (props: any): ReactElement => {
 
 const SetActivePost = (props: any): ReactElement => {
   const { Component, ...propsExceptComponent } = props;
-  const { setActivePostId, isLoading } = useActivePostProblems();
+  const { setActivePostId } = useActivePostProblems();
 
   React.useEffect(() => {
     setActivePostId(props.postId);

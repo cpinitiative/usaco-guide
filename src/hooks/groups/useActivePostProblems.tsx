@@ -19,6 +19,7 @@ export function ActivePostProblemsProvider({
   children: ReactNode;
 }) {
   const activeGroup = useActiveGroup();
+  const { firebaseUser } = React.useContext(UserDataContext);
   const [activePostId, setActivePostId] = React.useState<string>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [problems, setProblems] = React.useState<ProblemData[]>();
@@ -29,7 +30,7 @@ export function ActivePostProblemsProvider({
     firebase => {
       setProblems(null);
       setIsLoading(true);
-      if (activePostId === null) {
+      if (activePostId === null || !firebaseUser?.uid) {
         return;
       }
       if (!activeGroup.activeGroupId) {
@@ -64,7 +65,7 @@ export function ActivePostProblemsProvider({
           }
         );
     },
-    [activePostId, activeGroup.activeGroupId]
+    [firebaseUser?.uid, activePostId, activeGroup.activeGroupId]
   );
 
   return (

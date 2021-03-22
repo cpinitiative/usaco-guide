@@ -26,20 +26,22 @@ export default function PostLeaderboardPage(props) {
 
     const leaderboardSum = {};
     const postID = post.id;
-    for (let problemID of Object.keys(leaderboard[postID])) {
-      for (let userID of Object.keys(leaderboard[postID][problemID])) {
+    for (let problemID of Object.keys(leaderboard[postID] || {})) {
+      for (let userID of Object.keys(leaderboard[postID][problemID] || {})) {
         if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
         leaderboardSum[userID] +=
           leaderboard[postID][problemID][userID].bestScore;
       }
     }
-    let data = activeGroup.groupData.memberIds.map(id => ({
-      member: members.find(member => member.uid === id),
-      problemDetails: problems.map(
-        problem => leaderboard[postID]?.[problem.id]?.[id] || null
-      ),
-      points: leaderboardSum[id] ?? 0,
-    }));
+    let data = activeGroup.groupData.memberIds
+      .map(id => ({
+        member: members.find(member => member.uid === id),
+        problemDetails: problems.map(
+          problem => leaderboard[postID]?.[problem.id]?.[id] || null
+        ),
+        points: leaderboardSum[id] ?? 0,
+      }))
+      .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
     return data.sort((a, b) => b.points - a.points);
   }, [leaderboard, members, problems]);
 
