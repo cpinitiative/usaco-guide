@@ -112,20 +112,18 @@ export const LanguageSection = props => {
 export const CPPSection = props => {
   console.log("CPP SECT PROPS");
   console.log(props)
-  let oldProps = props;
+  const oldProps = props;
   // let newProps = props;
   // refactor for readability later :P
   console.log("SPECIFIC");
-  let newProps = props;
-  if (typeof(newProps.children.props) != "undefined"){
+
+  if (typeof(props.children.props) != "undefined"){
+    const newProps = props;
     console.log(newProps.children.props); // change to injection of props
   }
 
-  if (typeof(newProps.children.props) != "undefined"){
-    return <>{newProps.children}</>;
-  }else{
+
     return <>{props.children}</>;
-  }
 };
 
 export const JavaSection = props => {
