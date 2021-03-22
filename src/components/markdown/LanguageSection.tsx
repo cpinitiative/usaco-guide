@@ -110,7 +110,17 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
-
+  console.log("CPP SECT PROPS");
+  console.log(props)
+  let oldProps = props;
+  // let newProps = props;
+  // refactor for readability later :P
+  console.log("SPECIFIC");
+  let newProps = props;
+  console.log(newProps.children.props);
+  newProps.children.props.children = React.cloneElement(props.children.props.chidlren , {children: oldProps.children.props.children.props.children, className: oldProps.children.props.children.props.mdxType, originalType: oldProps.children.props.children.props.originalType, parentName: oldProps.children.props.children.props.parentName});
+  console.log("NEW PROPS")
+  console.log(newProps)
   return <>{props.children}</>;
 };
 
