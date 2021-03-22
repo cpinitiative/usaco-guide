@@ -26,7 +26,7 @@ export const LanguageSection = props => {
     };
     sections[typeToLang[type]] = newChild;
     // test
-    console.log(newChild);
+    console.log(newChild.props.children.props.children);
     //test
   });
 
@@ -111,14 +111,7 @@ export const LanguageSection = props => {
 
 export const CPPSection = props => {
 
-  const oldProps = props;
 
-  React.Children.map(props.children, child => {
-
-    // test
-    console.log(child);
-    //test
-  });
     return <>{props.children}</>;
 };
 
