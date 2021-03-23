@@ -10,15 +10,7 @@ export type ProblemData = {
   points: number;
   difficulty: string;
   hints: ProblemHint[];
-  solution:
-    | {
-        type: 'URL';
-        url: string;
-      }
-    | {
-        type: 'MARKDOWN';
-        body: string;
-      };
+  solution: string | null;
   submissionType: SubmissionType;
   isDeleted: boolean;
   /**

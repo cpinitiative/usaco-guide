@@ -155,6 +155,23 @@ export default function EditProblemPage(props) {
                 </div>
               </div>
 
+              <div className="sm:col-span-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Problem Solution
+                </label>
+                <p className="mt-1 text-sm text-gray-500">
+                  If there's a due date on the assignment, this will only be
+                  shown after the assignment's due date has passed. Otherwise,
+                  it's shown immediately.
+                </p>
+                <div className="mt-2">
+                  <MarkdownEditor
+                    value={problem.solution || ''}
+                    onChange={value => editProblem({ solution: value })}
+                  />
+                </div>
+              </div>
+
               <div className="sm:col-span-4">
                 <label
                   htmlFor="source"

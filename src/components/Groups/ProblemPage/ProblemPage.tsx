@@ -13,6 +13,10 @@ import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
 import Spoiler from '../../markdown/Spoiler';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import {
+  getPostDueDateString,
+  getPostTimestampString,
+} from '../../../models/groups/posts';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -134,6 +138,33 @@ export default function ProblemPage(props) {
                         </Spoiler>
                       ))}
                     </div>
+                  </>
+                )}
+
+                {problem.solution && (
+                  <>
+                    <div className="h-10" />
+                    <div>
+                      <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                        Solution
+                      </h2>
+                    </div>
+                    <div className="h-2" />
+                    {!post.dueTimestamp ||
+                    post.dueTimestamp.toMillis() < Date.now() ? (
+                      <Spoiler title={'Show Solution'}>
+                        <div className="pb-4">
+                          <SafeMarkdownRenderer>
+                            {problem.solution}
+                          </SafeMarkdownRenderer>
+                        </div>
+                      </Spoiler>
+                    ) : (
+                      <p className="text-gray-600 dark:text-gray-400 italic">
+                        The problem solution will be released on{' '}
+                        {getPostDueDateString(post)}.
+                      </p>
+                    )}
                   </>
                 )}
               </div>
