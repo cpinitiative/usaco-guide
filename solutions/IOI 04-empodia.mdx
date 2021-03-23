@@ -7,21 +7,30 @@ author: Benjamin Qi
 
 [Official Editorial](https://ioinformatics.org/page/ioi-2004/30)
 
-Let $v[0],v[1],\ldots,v[n-1]$ denote the input sequence. An interval $[i\ldots j]$ is framed if all three of the following conditions hold:
+Let $v[0],v[1],\ldots,v[n-1]$ denote the input sequence. An interval
+$[i\ldots j]$ is framed if all three of the following conditions hold:
 
 - $v[i]-i=v[j]-j$
 - $v[i]=\min(v[i\ldots j])$
 - $v[j]=\max(v[i\ldots j])$
 
-Our approach will be to iterate over all $j=[0,n)$ and check whether $j$ contributes a new empodio with right endpoint $j$.
+Our approach will be to iterate over all $j=[0,n)$ and check whether $j$
+contributes a new empodio with right endpoint $j$.
 
-- Maintain a stack $mn$ consisting of all indices $i$ satisfying the second condition.
-- When we increment $j$, repeatedly pop the top element $i$ of $mn$ while $v[i]>v[j]$. Then add $j$ to $mn$.
-- To check whether $j$ is part of an empodio, find the maximum $i\in mn$ such that $v[i]-i=v[j]-j$. If $i$ is to the right of the rightmost left endpoint of any empodio found so far and $v[j]=\max(v[i\ldots j])$, then we have found a new empodio.
+- Maintain a stack $mn$ consisting of all indices $i$ satisfying the second
+  condition.
+- When we increment $j$, repeatedly pop the top element $i$ of $mn$ while
+  $v[i]>v[j]$. Then add $j$ to $mn$.
+- To check whether $j$ is part of an empodio, find the maximum $i\in mn$ such
+  that $v[i]-i=v[j]-j$. If $i$ is to the right of the rightmost left endpoint of
+  any empodio found so far and $v[j]=\max(v[i\ldots j])$, then we have found a
+  new empodio.
 
-To check whether $v[j]=\max(v[i\ldots j])$, we can maintain a separate stack $mx$ that stores all indices $i$ such that $v[i]=\max(v[i\ldots j])$.
+To check whether $v[j]=\max(v[i\ldots j])$, we can maintain a separate stack
+$mx$ that stores all indices $i$ such that $v[i]=\max(v[i\ldots j])$.
 
-**Note:** The test data on Yandex has sequences of length greater than $1100000$ $\ldots$
+**Note:** The test data on Yandex has sequences of length greater than $1100000$
+$\ldots$
 
 ```cpp
 #include <bits/stdc++.h>

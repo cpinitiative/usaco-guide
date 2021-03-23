@@ -5,13 +5,17 @@ title: Sum of Two Values
 author: Michael Cao, DRGSH, Benjamin Qi
 ---
 
-Given an array of $n$ elements, you are asked to find two values which sum to $x$.
+Given an array of $n$ elements, you are asked to find two values which sum to
+$x$.
 
 # Main Idea
 
-Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case $a$ cannot be a valid first value).
+Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given
+one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case
+$a$ cannot be a valid first value).
 
-So the question reduces to, given some value $a$, does some other value $x - a$ exist?
+So the question reduces to, given some value $a$, does some other value $x - a$
+exist?
 
 <LanguageSection>
 
@@ -33,31 +37,42 @@ So the question reduces to, given some value $a$, does some other value $x - a$ 
 </JavaSection>
 </LanguageSection>
 
-One idea that comes to mind would be to used a boolean array to store the values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
+One idea that comes to mind would be to used a boolean array to store the
+values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
 
 <LanguageSection>
 
 <PySection>
 
-However, we can store the values in a dictionary which maps each value to an index, and use the [`__contains__`](https://stackoverflow.com/questions/1964934/what-does-contains-do-what-can-call-contains-function) dunder method to check whether a value exists, and return the corresponding index if it does.
+However, we can store the values in a dictionary which maps each value to an
+index, and use the
+[`__contains__`](https://stackoverflow.com/questions/1964934/what-does-contains-do-what-can-call-contains-function)
+dunder method to check whether a value exists, and return the corresponding
+index if it does.
 
 </PySection>
 
 <CPPSection>
 
-However, we can store the values in an (un)ordered map which maps each value to an index, and use the `.count` method to check whether a value exists, and return the corresponding index if it does.
+However, we can store the values in an (un)ordered map which maps each value to
+an index, and use the `.count` method to check whether a value exists, and
+return the corresponding index if it does.
 
 </CPPSection>
 
 <JavaSection>
 
-However, we can store the values in a map which maps each value to an index, and use the `.containsKey` method to check whether a value exists, and return the corresponding index if it does.
+However, we can store the values in a map which maps each value to an index, and
+use the `.containsKey` method to check whether a value exists, and return the
+corresponding index if it does.
 
 </JavaSection>
 
 </LanguageSection>
 
-To be careful not to count the same index twice, we'll add values to the map as we iterate through it, so at some index $i$ you only consider values with index $j < i$.
+To be careful not to count the same index twice, we'll add values to the map as
+we iterate through it, so at some index $i$ you only consider values with index
+$j < i$.
 
 <LanguageSection>
 

@@ -5,27 +5,38 @@ title: Coding Company
 author: Benjamin Qi, Andi Qu
 ---
 
-First, sort the people. This allows us to express the contribution of each team as $(\text{Skill of last person}) - (\text{Skill of first person})$. Let $s_i$ denote the skill of the $i$-th person.
+First, sort the people. This allows us to express the contribution of each team
+as $(\text{Skill of last person}) - (\text{Skill of first person})$. Let $s_i$
+denote the skill of the $i$-th person.
 
-$dp[i][j][k] =$ The number of ways we can form teams from the first $i$ people such that there are $j$ "unfinished" teams and the total penalty so far is $k$.
+$dp[i][j][k] =$ The number of ways we can form teams from the first $i$ people
+such that there are $j$ "unfinished" teams and the total penalty so far is $k$.
 
 There are 4 cases when we transition from $i - 1$ to $i$:
 
 - We make a team consisting of only person $i$.
-  - The number of ways to do this is $dp[i - 1][j][k]$, since the penalty from this team is 0.
+  - The number of ways to do this is $dp[i - 1][j][k]$, since the penalty from
+    this team is 0.
 - We append person $i$ to an unfinished team.
-  - The number of ways to do this is $j \cdot dp[i - 1][j][k]$, since there are $j$ teams we can choose from and the penalties don't change.
+  - The number of ways to do this is $j \cdot dp[i - 1][j][k]$, since there are
+    $j$ teams we can choose from and the penalties don't change.
 - We use person $i$ to "finish" an unfinished team.
-  - The number of ways to do this is $(j+1) \cdot dp[i - 1][j + 1][k - s_i]$, since person $i$ contributes $s_i$ to the cost and there were $j + 1$ teams to choose from.
+  - The number of ways to do this is $(j+1) \cdot dp[i - 1][j + 1][k - s_i]$,
+    since person $i$ contributes $s_i$ to the cost and there were $j + 1$ teams
+    to choose from.
 - We start a new unfinished team with person $i$.
-  - The number of ways to do this is $dp[i - 1][j - 1][k + s_i]$, since person $i$ contributes $-s_i$ to the cost.
+  - The number of ways to do this is $dp[i - 1][j - 1][k + s_i]$, since person
+    $i$ contributes $-s_i$ to the cost.
 
 Two more things:
 
 - $k$ in our DP array can be negative, so just add 5000 to each $k$.
-- $dp[i]$ depends only on $dp[i - 1]$, so we can drop the first dimension that we store (to save memory).
+- $dp[i]$ depends only on $dp[i - 1]$, so we can drop the first dimension that
+  we store (to save memory).
 
-I believe that this is called "open and close interval trick". See [zscoder's blog post](https://codeforces.com/blog/entry/47764) for more information and problems.
+I believe that this is called "open and close interval trick". See
+[zscoder's blog post](https://codeforces.com/blog/entry/47764) for more
+information and problems.
 
 ```cpp
 #include <bits/stdc++.h>

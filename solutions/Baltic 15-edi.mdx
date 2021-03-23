@@ -9,17 +9,32 @@ author: Benjamin Qi
 
 Let `lev[x]=max(0,-a[x])`.
 
-Let `active_y[x]=true` if operation `x` is active after `y` operations, and `false` otherwise. Obviously `active_y[y]=true`.
+Let `active_y[x]=true` if operation `x` is active after `y` operations, and
+`false` otherwise. Obviously `active_y[y]=true`.
 
-Let `activepath_y[x]=true` if operation `x` could possibly be undone after another operation, and `false` otherwise. In other words, `active_y[x]=true` and no `z>x` exists with `active_y[z]=true` and `lev[z]<=lev[x]`. If this is the case, we'll say that "`x` lies on the active path of `y`." Obviously, `activepath_y[y]=true`.
+Let `activepath_y[x]=true` if operation `x` could possibly be undone after
+another operation, and `false` otherwise. In other words, `active_y[x]=true` and
+no `z>x` exists with `active_y[z]=true` and `lev[z]<=lev[x]`. If this is the
+case, we'll say that "`x` lies on the active path of `y`." Obviously,
+`activepath_y[y]=true`.
 
 **Claim:** If `activepath_y[x]` then `active_y[1..x]=active_x[1..x]`.
 
-**Proof:** We use induction. Suppose that this is true for `y=1..q` and we we want to prove it for `y=q+1`. If `lev[q+1]=0` then `q+1` is the only vertex on the active path for `q+1`, so this obviously holds. Otherwise, assume that operation `q+1` undoes operation `z` on the active path for `q`. By the inductive hypothesis, `active_q[1..z]=active_z[1..z]`, which implies that `active_{q+1}[1..z-1]=active_{z-1}[1..z-1]`.
+**Proof:** We use induction. Suppose that this is true for `y=1..q` and we we
+want to prove it for `y=q+1`. If `lev[q+1]=0` then `q+1` is the only vertex on
+the active path for `q+1`, so this obviously holds. Otherwise, assume that
+operation `q+1` undoes operation `z` on the active path for `q`. By the
+inductive hypothesis, `active_q[1..z]=active_z[1..z]`, which implies that
+`active_{q+1}[1..z-1]=active_{z-1}[1..z-1]`.
 
-All operations on the active path for `q+1` aside from `q+1` itself also lie on the active path for `z-1`. Also, for any `t` on the active path for `z-1`, `active_t[1..t]=active_{z-1}[1..t]=active_{q+1}[1..t]`. This completes the proof.
+All operations on the active path for `q+1` aside from `q+1` itself also lie on
+the active path for `z-1`. Also, for any `t` on the active path for `z-1`,
+`active_t[1..t]=active_{z-1}[1..t]=active_{q+1}[1..t]`. This completes the
+proof.
 
-So the solution is to maintain the active path for every `i`. If there exists an operation with level 0 on the active path for `i`, then its state is the answer for `i`; otherwise, the answer for `i` is 0.
+So the solution is to maintain the active path for every `i`. If there exists an
+operation with level 0 on the active path for `i`, then its state is the answer
+for `i`; otherwise, the answer for `i` is 0.
 
 ```cpp
 #include <bits/stdc++.h>

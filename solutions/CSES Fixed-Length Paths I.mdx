@@ -7,7 +7,9 @@ author: Andi Qu, Benjamin Qi
 
 **Time Complexity:** $\mathcal O(N \log N)$.
 
-Given a node $u$, we know that any path in the tree either passes $u$ or is completely contained in one of $u$'s children's subtrees. This means that to solve the problem on a tree containing $u$, we can:
+Given a node $u$, we know that any path in the tree either passes $u$ or is
+completely contained in one of $u$'s children's subtrees. This means that to
+solve the problem on a tree containing $u$, we can:
 
 1. Count the number of paths of length $k$ that pass through $u$.
 2. Remove $u$ and its incident edges from the tree.
@@ -15,17 +17,26 @@ Given a node $u$, we know that any path in the tree either passes $u$ or is comp
 
 ## Counting paths through $u$
 
-We can count the number of paths passing through $u$ in a tree of size $M$ in $\mathcal O(M)$ time.
+We can count the number of paths passing through $u$ in a tree of size $M$ in
+$\mathcal O(M)$ time.
 
-We process each of $u$'s children's subtrees in order. Let $\texttt{cnt}_i[d]$ be the number of nodes we've visited with depth $d$ after processing the first $i$ of $u$'s children's subtrees. A node with depth $d$ in $u$'s $i$-th child's subtree will contribute $\texttt{cnt}_{i - 1}[k - d]$ paths to the answer.
+We process each of $u$'s children's subtrees in order. Let $\texttt{cnt}_i[d]$
+be the number of nodes we've visited with depth $d$ after processing the first
+$i$ of $u$'s children's subtrees. A node with depth $d$ in $u$'s $i$-th child's
+subtree will contribute $\texttt{cnt}_{i - 1}[k - d]$ paths to the answer.
 
-Using two DFSes for each child, we can calculate its contribution and then update $\texttt{cnt}$ in $\mathcal O(M)$ time total.
+Using two DFSes for each child, we can calculate its contribution and then
+update $\texttt{cnt}$ in $\mathcal O(M)$ time total.
 
 ## Applying centroid decomposition
 
-We can combine the previous idea with [centroid decomposition](/plat/centroid) to solve the whole problem in $\mathcal O(N \log N)$ time.
+We can combine the previous idea with [centroid decomposition](/plat/centroid)
+to solve the whole problem in $\mathcal O(N \log N)$ time.
 
-When processing some tree, simply let the $u$ we use be that tree's centroid. Since the centroid tree has a depth of $\mathcal O(\log N)$ and each layer in the centroid tree takes amortized $\mathcal O(N)$ time to process, the total complexity is $\mathcal O(N log N)$.
+When processing some tree, simply let the $u$ we use be that tree's centroid.
+Since the centroid tree has a depth of $\mathcal O(\log N)$ and each layer in
+the centroid tree takes amortized $\mathcal O(N)$ time to process, the total
+complexity is $\mathcal O(N log N)$.
 
 ## Implementation
 
@@ -104,15 +115,20 @@ int main() {
 
 It's also possible to solve this problem in linear time!
 
-We use the same idea as the above solution but with prefix sums instead of a BIT and with [small-to-large merging](/plat/merging) in a single DFS instead of centroid decomposition. This is because we can merge two prefix sum arrays $A$ and $B$ in $\mathcal O(\min(|A|, |B|))$ time.
+We use the same idea as the above solution but with prefix sums instead of a BIT
+and with [small-to-large merging](/plat/merging) in a single DFS instead of
+centroid decomposition. This is because we can merge two prefix sum arrays $A$
+and $B$ in $\mathcal O(\min(|A|, |B|))$ time.
 
-If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the resulting time complexity is
+If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the
+resulting time complexity is
 
 $$
 \mathcal O\left(\sum_{i = 1}^N\left(d_i - \max_{c \in i \text{'s children}}(d_c)\right)\right).
 $$
 
-Since $d_i = \max_{c \in i \text{'s children}}(d_c) + 1$, the above expression simplifies to $\mathcal O(N)$.
+Since $d_i = \max_{c \in i \text{'s children}}(d_c) + 1$, the above expression
+simplifies to $\mathcal O(N)$.
 
 Below is Ben's code implementing this idea:
 

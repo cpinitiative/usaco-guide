@@ -300,7 +300,9 @@ int main() {
 
 ## Solution 2
 
-Use a segment tree + BIT (online) as mentioned in the solution to [Mowing the Field](http://www.usaco.org/index.php?page=viewproblem2&cpid=601). You will run into time / memory limits unless you optimize appropriately ...
+Use a segment tree + BIT (online) as mentioned in the solution to
+[Mowing the Field](http://www.usaco.org/index.php?page=viewproblem2&cpid=601).
+You will run into time / memory limits unless you optimize appropriately ...
 
 **Time Complexity:** $\mathcal{O}(N\log^2N)$
 
@@ -396,13 +398,26 @@ int main() {
 
 ## Solution 3
 
-After generating the appropriate sequence of updates and queries, can apply divide & conquer as described in the module.
+After generating the appropriate sequence of updates and queries, can apply
+divide & conquer as described in the module.
 
 ## Solution 4
 
-Let us consider an easier version; suppose that we just want to count the number of crossing pairs (ignoring whether the cows are friendly or not). To calculate the number of crossing pairs, we can add the cows in road 1 in reverse, while counting the number of cows that are added before in road 2. We can use a binary indexed tree to count this. This takes $\mathcal O(N)$ space and $\mathcal O(N\log N)$ time.
+Let us consider an easier version; suppose that we just want to count the number
+of crossing pairs (ignoring whether the cows are friendly or not). To calculate
+the number of crossing pairs, we can add the cows in road 1 in reverse, while
+counting the number of cows that are added before in road 2. We can use a binary
+indexed tree to count this. This takes $\mathcal O(N)$ space and
+$\mathcal O(N\log N)$ time.
 
-To count the number of unfriendly crossings, instead of keeping track of the count for each BIT node, we maintain a sorted set representing the cow breeds. For a breed $b$, we query the number of breeds in the range $[1, b-k-1]$ and $[b+k+1, n]$. We can use a [Order Statistic Tree ](https://usaco.guide/gold/PURS?lang=cpp#order-statistic-tree) in C++ to represent the cow breeds. Since each update takes $\log N$ operations, it would allocate $\log N$ nodes each update, thus resulting in $\mathcal O(N\log N)$ space and $\mathcal O(N\log^2 N)$ time.
+To count the number of unfriendly crossings, instead of keeping track of the
+count for each BIT node, we maintain a sorted set representing the cow breeds.
+For a breed $b$, we query the number of breeds in the range $[1, b-k-1]$ and
+$[b+k+1, n]$. We can use a
+[Order Statistic Tree ](https://usaco.guide/gold/PURS?lang=cpp#order-statistic-tree)
+in C++ to represent the cow breeds. Since each update takes $\log N$ operations,
+it would allocate $\log N$ nodes each update, thus resulting in
+$\mathcal O(N\log N)$ space and $\mathcal O(N\log^2 N)$ time.
 
 <LanguageSection>
 

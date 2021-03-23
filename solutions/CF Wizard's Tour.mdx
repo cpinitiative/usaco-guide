@@ -7,17 +7,23 @@ author: Benjamin Qi
 
 [Official Editorial](https://codeforces.com/blog/entry/54604) (brief)
 
-In other words, we want to pair up as many edges as possible such that the edges in each pair share a vertex.
+In other words, we want to pair up as many edges as possible such that the edges
+in each pair share a vertex.
 
 > Obviously the task can be solved independently for each component.
 
-The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single connected component.
+The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single
+connected component.
 
 ## Tree Case
 
 <Spoiler title="Solution">
 
-We can write a function `dfs(x,pre)` where `x` is a vertex of the tree and `pre` is the parent vertex of `x`. This function will pair up all edges in the subtree of `x` except maybe the edge connecting `pre` and `x`, depending on the parity of the number of edges in this subtree. The function returns `1` if the edge connecting `pre` and `x` is left unpaired and `0` otherwise.
+We can write a function `dfs(x,pre)` where `x` is a vertex of the tree and `pre`
+is the parent vertex of `x`. This function will pair up all edges in the subtree
+of `x` except maybe the edge connecting `pre` and `x`, depending on the parity
+of the number of edges in this subtree. The function returns `1` if the edge
+connecting `pre` and `x` is left unpaired and `0` otherwise.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -259,9 +265,14 @@ int main() {
 
 <Spoiler title="Solution">
 
-First, find any [spanning tree](/CPH.pdf#page=151). Then for each edge $(a,b)$ not in the spanning tree, disconnect one of its endpoints (it doesn't matter which one). For example, if we disconnect $b$ then we treat the edge as $(a,x)$ instead, where $x$ is connected to no vertices aside from $a$. This reduces the problem to the tree case.
+First, find any [spanning tree](/CPH.pdf#page=151). Then for each edge $(a,b)$
+not in the spanning tree, disconnect one of its endpoints (it doesn't matter
+which one). For example, if we disconnect $b$ then we treat the edge as $(a,x)$
+instead, where $x$ is connected to no vertices aside from $a$. This reduces the
+problem to the tree case.
 
-We only need to modify the above solution slightly. Here we disconnect the edge $(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
+We only need to modify the above solution slightly. Here we disconnect the edge
+$(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
 
 ```cpp
 #include <bits/stdc++.h>

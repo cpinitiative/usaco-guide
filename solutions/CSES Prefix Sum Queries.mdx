@@ -9,16 +9,22 @@ author: Dong Liu
 
 # Solution
 
-In this problem, we're given an array $a$ and we're asked to answer 2 types of queries
+In this problem, we're given an array $a$ and we're asked to answer 2 types of
+queries
 
 1. update the value at position $i$ to $x$
 2. calculate the maximum prefix sum in the range $[a,b]$
 
-We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this problem. Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can maintain a segment tree consisting of the maximum $\texttt{ps}$ in the range of $[l,r]$.
+We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this
+problem. Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can
+maintain a segment tree consisting of the maximum $\texttt{ps}$ in the range of
+$[l,r]$.
 
-To update the value at position $i$ to $x$, we add $x-a_i$ to each of the values in the range $[i,N]$.
+To update the value at position $i$ to $x$, we add $x-a_i$ to each of the values
+in the range $[i,N]$.
 
-To answer a query of type 2, our answer would be $\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
+To answer a query of type 2, our answer would be
+$\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
 
 # Code
 

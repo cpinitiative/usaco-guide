@@ -5,19 +5,31 @@ source: JOI 18 Final Round
 author: Kai Wang
 ---
 
-We use SOS DP to compute $super[mask]$ and $sub[mask]$, which denote $\sum\limits_{mask\in S} a_S$ and $\sum\limits_{S\in mask} a_S$ respectively.
+We use SOS DP to compute $super[mask]$ and $sub[mask]$, which denote
+$\sum\limits_{mask\in S} a_S$ and $\sum\limits_{S\in mask} a_S$ respectively.
 
-For a query, let $A$ be the set of $0$'s, $B$ be the set of $1$'s, and $C$ be the set of $?$'s. By Pigeonhole principle, $\min\{A,B,C\}\le 6$, and I claim we can answer queries in $O(2^{\min\{A,B,C\}})$.
+For a query, let $A$ be the set of $0$'s, $B$ be the set of $1$'s, and $C$ be
+the set of $?$'s. By Pigeonhole principle, $\min\{A,B,C\}\le 6$, and I claim we
+can answer queries in $O(2^{\min\{A,B,C\}})$.
 
-If a query has $|C|\le 6$, we can brute force over all the subsets with 0's at A and 1's at B. Since there are $2^{|C|}$ subsets, this takes $\mathcal{O}(2^{|C|})$ operations.
+If a query has $|C|\le 6$, we can brute force over all the subsets with 0's at A
+and 1's at B. Since there are $2^{|C|}$ subsets, this takes
+$\mathcal{O}(2^{|C|})$ operations.
 
-Otherwise, we can answer queries with the **principle of inclusion-exclusion**. The answer is simply $\sum\limits_{a\in A} super[B | a] (-1)^{|a|}$, which we can calculate in $\mathcal{O}(2^{|A|})$.
+Otherwise, we can answer queries with the **principle of inclusion-exclusion**.
+The answer is simply $\sum\limits_{a\in A} super[B | a] (-1)^{|a|}$, which we
+can calculate in $\mathcal{O}(2^{|A|})$.
 
-The answer is also $\sum\limits_{b\in B} sub[C | b] (-1)^{|B|-|b|}$, which we can calculate in $\mathcal{O}(2^{|B|})$. They can be computed efficiently with submask enumeration. For a detailed explanation on how submask enumeration works, check [cp-algorithms](https://cp-algorithms.com/algebra/all-submasks.html).
+The answer is also $\sum\limits_{b\in B} sub[C | b] (-1)^{|B|-|b|}$, which we
+can calculate in $\mathcal{O}(2^{|B|})$. They can be computed efficiently with
+submask enumeration. For a detailed explanation on how submask enumeration
+works, check
+[cp-algorithms](https://cp-algorithms.com/algebra/all-submasks.html).
 
 **Time Complexity:** $\mathcal{O}(2^L\cdot L+2^{\frac{L}{3}}Q)$
 
-We compute $super$ and $sub$ in $\mathcal{O}(2^L\cdot L)$ with SOS DP, and we process each query in $\mathcal{O} (2^{\frac L3})$.
+We compute $super$ and $sub$ in $\mathcal{O}(2^L\cdot L)$ with SOS DP, and we
+process each query in $\mathcal{O} (2^{\frac L3})$.
 
 ```java
 import java.io.*;

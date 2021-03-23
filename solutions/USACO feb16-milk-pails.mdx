@@ -115,17 +115,25 @@ public class pails {
 
 We can directly simulate all operations using BFS.
 
-In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail $Y$ has $j$ units of milk. We can perform a BFS starting from base state $(0, 0)$ to compute $\texttt{dist}[i][j]$, the minimum number of steps to reach each state. Afterwards, compute the answer by iterating over all states where $\texttt{dist}[i][j] \le K$ and finding the minimum $|i+j-M|$.
+In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail
+$Y$ has $j$ units of milk. We can perform a BFS starting from base state
+$(0, 0)$ to compute $\texttt{dist}[i][j]$, the minimum number of steps to reach
+each state. Afterwards, compute the answer by iterating over all states where
+$\texttt{dist}[i][j] \le K$ and finding the minimum $|i+j-M|$.
 
 For every transition in the BFS, we simulate all possible actions.
 
 1. Fill either pail completely to the top: set $i$ to $X$ or $j$ to $Y$.
 2. Empty either pail: set $i$ or $j$ to $0$.
-3. Pour the contents of one pail into another without overflowing or running out of milk.
+3. Pour the contents of one pail into another without overflowing or running out
+   of milk.
 
-To perform operation 3, we can find the amount poured to be $\min(i, Y-j)$ or $\min(j, X-i)$ depending on which pail you pour from. Then add/subtract this quantity to each pail appropriately.
+To perform operation 3, we can find the amount poured to be $\min(i, Y-j)$ or
+$\min(j, X-i)$ depending on which pail you pour from. Then add/subtract this
+quantity to each pail appropriately.
 
-Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and compute the minimum $|i+j-M|$.
+Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
+compute the minimum $|i+j-M|$.
 
 <LanguageSection>
 	

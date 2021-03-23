@@ -9,11 +9,20 @@ author: Andi Qu, Benjamin Qi, Andrew Wang
 
 ## Solution 1
 
-The largest rectangle must have the same height as the shortest bar that it contains. For each $i$, consider the largest rectangle with height $H[i]$ such that bar $i$ is the shortest bar it contains. The answer is simply the largest of these $N$ rectangles.
+The largest rectangle must have the same height as the shortest bar that it
+contains. For each $i$, consider the largest rectangle with height $H[i]$ such
+that bar $i$ is the shortest bar it contains. The answer is simply the largest
+of these $N$ rectangles.
 
-Since the heights of these rectangles are fixed, we just want them to be as wide as possible. Notice how the rectangle of bar $i$ is bounded by the the closest shorter bars on each side of bar $i$ (or the ends of the histogram if these bars don't exist).
+Since the heights of these rectangles are fixed, we just want them to be as wide
+as possible. Notice how the rectangle of bar $i$ is bounded by the the closest
+shorter bars on each side of bar $i$ (or the ends of the histogram if these bars
+don't exist).
 
-We can use a monotone stack twice to find the closest shorter bars on each side of each bar. See [the stacks module](https://usaco.guide/gold/stacks#application-nearest-smaller-element) for more details.
+We can use a monotone stack twice to find the closest shorter bars on each side
+of each bar. See
+[the stacks module](https://usaco.guide/gold/stacks#application-nearest-smaller-element)
+for more details.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -46,7 +55,10 @@ public:
 
 ## Solution 2
 
-Actually, we only need to go through the heights in one direction. When we see `(i, heights[i])`, we process all rectangles with right end at `i-1` and height greater than `heights[i]`. Note how we process the rectangles that end at the last height by emptying the stack.
+Actually, we only need to go through the heights in one direction. When we see
+`(i, heights[i])`, we process all rectangles with right end at `i-1` and height
+greater than `heights[i]`. Note how we process the rectangles that end at the
+last height by emptying the stack.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -78,7 +90,8 @@ public:
 };
 ```
 
-Alternative implementation: add `-1` to the list of `heights` so we don't have to treat rectangles that end at the last height in `heights` as a special case.
+Alternative implementation: add `-1` to the list of `heights` so we don't have
+to treat rectangles that end at the last height in `heights` as a special case.
 
 ```cpp
 #include <bits/stdc++.h>

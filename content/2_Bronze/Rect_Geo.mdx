@@ -2,7 +2,9 @@
 id: rect-geo
 title: 'Rectangle Geometry'
 author: Darren Yao, Michael Cao, Benjamin Qi, Allen Li, Andrew Wang, Dong Liu
-description: 'Problems involving rectangles whose sides are parallel to the coordinate axes.'
+description:
+  'Problems involving rectangles whose sides are parallel to the coordinate
+  axes.'
 frequency: 2
 prerequisites:
   - time-comp
@@ -70,7 +72,9 @@ export const problems = {
 
 <br />
 
-Most problems in this category include only two or three squares or rectangles, in which case you can simply draw out cases on paper. This should logically lead to a solution.
+Most problems in this category include only two or three squares or rectangles,
+in which case you can simply draw out cases on paper. This should logically lead
+to a solution.
 
 ## Example - Fence Painting
 
@@ -82,9 +86,13 @@ Most problems in this category include only two or three squares or rectangles, 
 
 <Spoiler title="Solution">
 
-Since all the intervals lie between the range, $[0, 100]$, we can mark each interval of length $1$ contained within each interval as painted using a loop. Then the answer will be the number of marked intervals. The code is provided [here](https://usaco.guide/general/io#method-1).
+Since all the intervals lie between the range, $[0, 100]$, we can mark each
+interval of length $1$ contained within each interval as painted using a loop.
+Then the answer will be the number of marked intervals. The code is provided
+[here](https://usaco.guide/general/io#method-1).
 
-However, this solution would not work for higher constraints (ex. if the coordinates were up to $10^9$).
+However, this solution would not work for higher constraints (ex. if the
+coordinates were up to $10^9$).
 
 </Spoiler>
 
@@ -94,13 +102,20 @@ However, this solution would not work for higher constraints (ex. if the coordin
 
 <Spoiler title="Solution">
 
-Calculate the answer by adding the original lengths and subtracting the intersection length.
+Calculate the answer by adding the original lengths and subtracting the
+intersection length.
 
 $$
 (b-a)+(d-c)-\text{intersection}([a,b],[c,d])
 $$
 
-The [official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html) splits computing the intersection length into several cases. However, we do it more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and $[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words, $\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is $\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
+The
+[official analysis](http://www.usaco.org/current/data/sol_paint_bronze_dec15.html)
+splits computing the intersection length into several cases. However, we do it
+more simply here. An interval $[x,x+1]$ is contained within both $[a,b]$ and
+$[c,d]$ if $a\le x$, $c\le x$, $x<b$, and $x<d$. In other words,
+$\max(a,c)\le x$ and $x<\min(b,d)$. So the length of the intersection is
+$\min(b,d)-\max(a,c)$ if this quantity is positive and zero otherwise!
 
 <LanguageSection>
 
@@ -164,7 +179,9 @@ Think of this as the 2D analog of the previous example.
 
 <Spoiler title="Solution">
 
-Since all coordinates are in the range $[-1000,1000]$, we can simply go through each of the $2000^2$ possible visible squares and check which ones are visible using nested for loops.
+Since all coordinates are in the range $[-1000,1000]$, we can simply go through
+each of the $2000^2$ possible visible squares and check which ones are visible
+using nested for loops.
 
 <LanguageSection>
 
@@ -273,7 +290,8 @@ print(ans)
 
 </LanguageSection>
 
-Of course, this wouldn't suffice if the coordinates were changed to be up to $10^9$.
+Of course, this wouldn't suffice if the coordinates were changed to be up to
+$10^9$.
 
 </Spoiler>
 
@@ -289,7 +307,8 @@ Of course, this wouldn't suffice if the coordinates were changed to be up to $10
 
 <JavaSection>
 
-Note how creating a class `Rect` to represent a rectangle makes the code easier to understand.
+Note how creating a class `Rect` to represent a rectangle makes the code easier
+to understand.
 
 ```java
 import java.io.*;
@@ -323,7 +342,9 @@ public class blockedBillboard {
 
 #### Alternative Implementation
 
-We can also use the built-in [`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html) class. To create a new rectangle, use the following constructor:
+We can also use the built-in
+[`Rectangle`](https://docs.oracle.com/javase/8/docs/api/java/awt/Rectangle.html)
+class. To create a new rectangle, use the following constructor:
 
 ```java
 // creates a rectangle with upper-left corner at (x,y) with a specified width and height
@@ -333,18 +354,27 @@ Rectangle newRect = new Rectangle(x, y, width, height);
 The `Rectangle` class supports numerous useful methods, including the following:
 
 - `firstRect.intersects(secondRect)` checks if two rectangles intersect.
-- `firstRect.union(secondRect)` returns a rectangle representing the union of two rectangles.
-- `firstRect.contains(x, y)` checks whether the integer point $(x,y)$ exists in firstRect.
-- `firstRect.intersection(secondRect)` returns a rectangle representing the intersection of two rectangles.
+- `firstRect.union(secondRect)` returns a rectangle representing the union of
+  two rectangles.
+- `firstRect.contains(x, y)` checks whether the integer point $(x,y)$ exists in
+  firstRect.
+- `firstRect.intersection(secondRect)` returns a rectangle representing the
+  intersection of two rectangles.
 - `rect.isEmpty()` checks whether `rect` is empty.
 
-This class can often lessen the implementation needed in some bronze problems and CodeForces problems.
+This class can often lessen the implementation needed in some bronze problems
+and CodeForces problems.
 
 <Info title="Important Note About Java Coordinates">
 
-$y$-[coordinates](https://docs.oracle.com/javase/tutorial/2d/overview/coordinate.html) in Java increase from top to bottom, not bottom to top! This is why we consider the top-left $y$-coordinate of each rectangle in the solution below to be `-y2` instead of `y2`.
+$y$-[coordinates](https://docs.oracle.com/javase/tutorial/2d/overview/coordinate.html)
+in Java increase from top to bottom, not bottom to top! This is why we consider
+the top-left $y$-coordinate of each rectangle in the solution below to be `-y2`
+instead of `y2`.
 
-Alternatively, you can think of `newRect` as creating a rectangle with _lower-left_ corner at $(x,y)$ and work with Cartesian coordinates instead. So the solution below will work if all occurences of `-y2` are replaced with `y1`.
+Alternatively, you can think of `newRect` as creating a rectangle with
+_lower-left_ corner at $(x,y)$ and work with Cartesian coordinates instead. So
+the solution below will work if all occurences of `-y2` are replaced with `y1`.
 
 </Info>
 
@@ -383,7 +413,11 @@ public class blockedBillboard {
 
 <Optional>
 
-[java.awt.geom.Area](https://docs.oracle.com/javase/7/docs/api/java/awt/geom/Area.html) will allow you to calculate the union, intersection, difference, or exclusive or of arbitrary polygons (and more). See [here](<https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/PolyUnion.java>) for an example of usage.
+[java.awt.geom.Area](https://docs.oracle.com/javase/7/docs/api/java/awt/geom/Area.html)
+will allow you to calculate the union, intersection, difference, or exclusive or
+of arbitrary polygons (and more). See
+[here](<https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/PolyUnion.java>)
+for an example of usage.
 
 </Optional>
 
@@ -391,13 +425,17 @@ public class blockedBillboard {
 
 <CPPSection>
 
-Note how creating a struct `Rect` to represent a rectangle makes the code easier to understand.
+Note how creating a struct `Rect` to represent a rectangle makes the code easier
+to understand.
 
 <!-- Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly): -->
 
 <Info title="What's a struct?">
 
-A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same as a C++ `class` but all members are `public` rather than `private` by default. Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more information.
+A C++ [`struct`](http://www.cplusplus.com/doc/tutorial/structures/) is the same
+as a C++ `class` but all members are `public` rather than `private` by default.
+Check [LCPP](https://www.learncpp.com/cpp-tutorial/47-structs/) for more
+information.
 
 </Info>
 
@@ -433,7 +471,8 @@ int main(){
 
 <!-- Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class yourself. -->
 
-Note how creating a class `Rect` to represent a rectangle makes the code easier to understand.
+Note how creating a class `Rect` to represent a rectangle makes the code easier
+to understand.
 
 ```py
 import sys

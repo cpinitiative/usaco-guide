@@ -7,11 +7,17 @@ author: Andi Qu, Benjamin Qi
 
 **Time Complexity:** $\mathcal O(N \log^2 N)$.
 
-This solution is a simple extension of [CSES Fixed-Length Paths I's solution](/solutions/cses-2080).
+This solution is a simple extension of
+[CSES Fixed-Length Paths I's solution](/solutions/cses-2080).
 
-Since we want to count the number of paths of length between $a$ and $b$ instead of a fixed length $k$, a node with depth $d$ in $u$'s $i$-th child's subtree will contribute $\sum_{x = a - d}^{b - d}\texttt{cnt}_{i - 1}[x]$ paths instead of $\texttt{cnt}_{i - 1}[k - d]$ paths to the answer.
+Since we want to count the number of paths of length between $a$ and $b$ instead
+of a fixed length $k$, a node with depth $d$ in $u$'s $i$-th child's subtree
+will contribute $\sum_{x = a - d}^{b - d}\texttt{cnt}_{i - 1}[x]$ paths instead
+of $\texttt{cnt}_{i - 1}[k - d]$ paths to the answer.
 
-This is a range sum, so we can use any range-sum data-structure (e.g. a BIT) to query and update $\texttt{cnt}$ efficiently. This adds an additional $\log N$ factor to the complexity.
+This is a range sum, so we can use any range-sum data-structure (e.g. a BIT) to
+query and update $\texttt{cnt}$ efficiently. This adds an additional $\log N$
+factor to the complexity.
 
 <LanguageSection>
 
@@ -98,15 +104,21 @@ int main() {
 
 It's also possible to solve this problem in linear time!
 
-We use the same idea as the above solution but with prefix sums instead of a BIT and with [small-to-large merging](/plat/merging) in a single DFS instead of centroid decomposition. This is because we can merge two prefix sum arrays $A$ and $B$ in $\mathcal O(\min(|A|, |B|))$ time.
+We use the same idea as the above solution but with prefix sums instead of a BIT
+and with [small-to-large merging](/plat/merging) in a single DFS instead of
+centroid decomposition. This is because we can merge two prefix sum arrays $A$
+and $B$ in $\mathcal O(\min(|A|, |B|))$ time.
 
-If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the resulting time complexity is
+If we let $d_i$ denote the maximum depth in node $i$'s subtree, then the
+resulting time complexity is
 
 $$
 \mathcal O\left(\sum_{i = 1}^N\left(d_i - \max_{c \in i \text{'s children}}(d_c)\right)\right).
 $$
 
-Since $d_i = \max_{c \in i \text{'s children}}(d_c) + 1$, the above expression simplifies to $\mathcal O(N)$ - a significant improvement from our first solution!
+Since $d_i = \max_{c \in i \text{'s children}}(d_c) + 1$, the above expression
+simplifies to $\mathcal O(N)$ - a significant improvement from our first
+solution!
 
 Below is Ben's code implementing this idea:
 

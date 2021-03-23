@@ -9,29 +9,45 @@ author: Andi Qu
 
 General graphs are inconvenient - let's try to turn this graph into a tree!
 
-Run Dijkstra's algorithm from node $A$ to every other node and construct the "shortest path tree" from this (i.e. the tree made of the union of the shortest paths from node $A$ to each other node). Make sure to force the lucky path given in the input to be in this tree!
+Run Dijkstra's algorithm from node $A$ to every other node and construct the
+"shortest path tree" from this (i.e. the tree made of the union of the shortest
+paths from node $A$ to each other node). Make sure to force the lucky path given
+in the input to be in this tree!
 
-Why is this useful? In this case, we get some cool properties from removing edges on the lucky path.
+Why is this useful? In this case, we get some cool properties from removing
+edges on the lucky path.
 
 ## What happens when we remove an edge?
 
-When we remove an edge on the lucky path, the tree splits into two smaller trees - one containing $A$; one containing $B$.
+When we remove an edge on the lucky path, the tree splits into two smaller
+trees - one containing $A$; one containing $B$.
 
-This means the shortest path $A \rightarrow B$ must be of the form $A \rightarrow u \rightarrow v \rightarrow B$ where $u$ and $v$ are two nodes joined by an edge and $u$ is in $A$'s tree while $v$ is in $B$'s tree.
+This means the shortest path $A \rightarrow B$ must be of the form
+$A \rightarrow u \rightarrow v \rightarrow B$ where $u$ and $v$ are two nodes
+joined by an edge and $u$ is in $A$'s tree while $v$ is in $B$'s tree.
 
 Why is this true?
 
-Firstly, any vertex is still connected to either $A$ via its shortest path tree or $B$ via its shortest path tree after a single edge on the shortest path is removed.
+Firstly, any vertex is still connected to either $A$ via its shortest path tree
+or $B$ via its shortest path tree after a single edge on the shortest path is
+removed.
 
-Secondly, we must "jump" from one subtree to the other at some point, so the new shortest paths must have two nodes in separate subtrees joined by an edge.
+Secondly, we must "jump" from one subtree to the other at some point, so the new
+shortest paths must have two nodes in separate subtrees joined by an edge.
 
 ## Updating the shortest paths
 
-An important observation is that if you keep moving up from a node to its parent, you'll eventually reach a node on the lucky path. For node $v$, let this node on the lucky path be $P_v$. Since $N$ is so small, we can just naively find $P_v$ for each $v$.
+An important observation is that if you keep moving up from a node to its
+parent, you'll eventually reach a node on the lucky path. For node $v$, let this
+node on the lucky path be $P_v$. Since $N$ is so small, we can just naively find
+$P_v$ for each $v$.
 
-Since $u$ and $v$ must be in separate subtrees, the path $A \rightarrow u \rightarrow v \rightarrow B$ is only a candidate for the shortest path after removing an edge if that edge lies between $P_u$ and $P_v$.
+Since $u$ and $v$ must be in separate subtrees, the path
+$A \rightarrow u \rightarrow v \rightarrow B$ is only a candidate for the
+shortest path after removing an edge if that edge lies between $P_u$ and $P_v$.
 
-We must thus only update the shortest paths after removing an edge for the edges between $P_u$ and $P_v$ for each edge $(u, v)$.
+We must thus only update the shortest paths after removing an edge for the edges
+between $P_u$ and $P_v$ for each edge $(u, v)$.
 
 Again, we can just naively update these shortest paths.
 

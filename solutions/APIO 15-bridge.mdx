@@ -7,21 +7,33 @@ author: Andi Qu
 
 **Time Complexity:** $\mathcal O(N \log N)$
 
-Since people only cross bridges when their two buildings are on opposite sides of the river, assume without loss of generality that all the people must cross a bridge.
+Since people only cross bridges when their two buildings are on opposite sides
+of the river, assume without loss of generality that all the people must cross a
+bridge.
 
 ## $K = 1$
 
-If the bridge is at position $x$, then the total cost would be $\sum_{i = 1}^N (|S_i - x| + |T_i - x|)$. Clearly, this value is minimized when $x$ is the median of all $S_i$ and $T_i$.
+If the bridge is at position $x$, then the total cost would be
+$\sum_{i = 1}^N (|S_i - x| + |T_i - x|)$. Clearly, this value is minimized when
+$x$ is the median of all $S_i$ and $T_i$.
 
 We can find the median simply by sorting all the numbers in the input.
 
 ## $K = 2$
 
-Since each person crosses exactly one bridge, which one would person $i$ choose? The answer is that they'd choose the bridge that is closest to $\frac{S_i + T_i}{2}$.
+Since each person crosses exactly one bridge, which one would person $i$ choose?
+The answer is that they'd choose the bridge that is closest to
+$\frac{S_i + T_i}{2}$.
 
-This means that if we sort the people by $S_i + T_i$, then we can split them into a prefix where people choose bridge 1 and a suffix where people choose bridge 2. Notice how we can use our solution for $K = 1$ to compute the answer for each bridge.
+This means that if we sort the people by $S_i + T_i$, then we can split them
+into a prefix where people choose bridge 1 and a suffix where people choose
+bridge 2. Notice how we can use our solution for $K = 1$ to compute the answer
+for each bridge.
 
-Now we can simply try out all the places to split the people into prefix and suffix. To maintain a sliding median, we can use two `std::priority_queue`s. (For more details, see [CSES Sliding Median](https://cses.fi/problemset/task/1076))
+Now we can simply try out all the places to split the people into prefix and
+suffix. To maintain a sliding median, we can use two `std::priority_queue`s.
+(For more details, see
+[CSES Sliding Median](https://cses.fi/problemset/task/1076))
 
 ```cpp
 #include <bits/stdc++.h>

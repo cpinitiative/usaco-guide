@@ -5,7 +5,9 @@ title: Sum of Divisors
 author: Benjamin Qi
 ---
 
-Our goal is to compute the summation $\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ in faster than $\Theta(n)$ time.
+Our goal is to compute the summation
+$\sum_{i=1}^n\left\lfloor \frac{n}{i}\right\rfloor\cdot i$ in faster than
+$\Theta(n)$ time.
 
 <Spoiler title="Hint">
 
@@ -15,9 +17,16 @@ $n=10^{12}$ implies that the desired time complexity is $\mathcal{O}(\sqrt n)$!
 
 <Spoiler title="Solution">
 
-The key observation is that there are only $\mathcal{O}(\sqrt n)$ distinct values of $q=\left\lfloor \frac{n}{i}\right\rfloor$. To show this, consider $i\in [1,\sqrt n]$ and $i\in [\sqrt n+1,n]$ separately.
+The key observation is that there are only $\mathcal{O}(\sqrt n)$ distinct
+values of $q=\left\lfloor \frac{n}{i}\right\rfloor$. To show this, consider
+$i\in [1,\sqrt n]$ and $i\in [\sqrt n+1,n]$ separately.
 
-So we can quickly process all terms in the summation with the same value of $q$. We start with $i=1$ and increase it until it reaches $n$. Note that the smallest $j$ such that $\left\lfloor \frac{n}{j}\right\rfloor<\left\lfloor \frac{n}{i}\right\rfloor$ is just $\left\lfloor \frac{n}{\left\lfloor \frac{n}{i}\right\rfloor}\right\rfloor+1$.
+So we can quickly process all terms in the summation with the same value of $q$.
+We start with $i=1$ and increase it until it reaches $n$. Note that the smallest
+$j$ such that
+$\left\lfloor \frac{n}{j}\right\rfloor<\left\lfloor \frac{n}{i}\right\rfloor$ is
+just
+$\left\lfloor \frac{n}{\left\lfloor \frac{n}{i}\right\rfloor}\right\rfloor+1$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -243,6 +252,7 @@ int main() {
 }
 ```
 
-[Loan Repayment](http://www.usaco.org/index.php?page=viewproblem2&cpid=991) uses a similar idea.
+[Loan Repayment](http://www.usaco.org/index.php?page=viewproblem2&cpid=991) uses
+a similar idea.
 
 </Spoiler>

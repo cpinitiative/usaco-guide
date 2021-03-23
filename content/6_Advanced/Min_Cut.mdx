@@ -75,7 +75,8 @@ export const problems = {
 
 ## Resources
 
-The resources below include many clever applications of min cut, including the [Closure Problem](https://en.wikipedia.org/wiki/Closure_problem).
+The resources below include many clever applications of min cut, including the
+[Closure Problem](https://en.wikipedia.org/wiki/Closure_problem).
 
 <Resources>
 	<Resource
@@ -101,15 +102,27 @@ The resources below include many clever applications of min cut, including the [
 
 ### Solution - Coin Grid
 
-This problem asks us to find a **minimum node cover** of a bipartite graph. Construct a flow graph with vertices labeled $0\ldots 2N+1$, source $0$, sink $2N+1$, and the following edges:
+This problem asks us to find a **minimum node cover** of a bipartite graph.
+Construct a flow graph with vertices labeled $0\ldots 2N+1$, source $0$, sink
+$2N+1$, and the following edges:
 
-- Edges from $0\to i$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th row.
-- Edges from $N+i\to 2N+1$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th column.
-- If there exists a coin in $(r,c)$ add an edge from $r\to N+c$ with capacity $\infty$.
+- Edges from $0\to i$ with capacity $1$ for each $1\le i\le N$. Cutting the
+  $i$-th such edge corresponds to choosing the $i$-th row.
+- Edges from $N+i\to 2N+1$ with capacity $1$ for each $1\le i\le N$. Cutting the
+  $i$-th such edge corresponds to choosing the $i$-th column.
+- If there exists a coin in $(r,c)$ add an edge from $r\to N+c$ with capacity
+  $\infty$.
 
-First we find a max flow, which tells us the number of edges with capacity 1 we need to cut. To find the min cut itself, BFS from the source once more time. Edges $(a,b)$ connecting vertices that are reachable from the source (`lev[a] != -1`) to vertices that aren't (`lev[b] == -1`) are part of the minimum cut. In this case, each of these edges must be of the form $(0,i)$ or $(i+N,2N+1)$ for $1\le i\le N$. Each cut edge corresponds to a row or column we remove coins from.
+First we find a max flow, which tells us the number of edges with capacity 1 we
+need to cut. To find the min cut itself, BFS from the source once more time.
+Edges $(a,b)$ connecting vertices that are reachable from the source
+(`lev[a] != -1`) to vertices that aren't (`lev[b] == -1`) are part of the
+minimum cut. In this case, each of these edges must be of the form $(0,i)$ or
+$(i+N,2N+1)$ for $1\le i\le N$. Each cut edge corresponds to a row or column we
+remove coins from.
 
-Note that edges of the form $r\to N+c$ can't be cut because they have capacity $\infty$.
+Note that edges of the form $r\to N+c$ can't be cut because they have capacity
+$\infty$.
 
 ```cpp
 struct Dinic { // flow template
@@ -189,7 +202,9 @@ int main() {
 
 ### Solution - The Wrath of Kahn
 
-Ignore all vertices of $G$ that can never be part of $S$. Then our goal is to find the size of a maximum antichain in the remaining graph, which as mentioned in CPH is just an instance of maximum path cover.
+Ignore all vertices of $G$ that can never be part of $S$. Then our goal is to
+find the size of a maximum antichain in the remaining graph, which as mentioned
+in CPH is just an instance of maximum path cover.
 
 ```cpp
 TopoSort<500> T;

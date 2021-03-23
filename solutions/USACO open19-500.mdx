@@ -294,21 +294,30 @@ int main() {
 
 (By Aryansh Shrivastava)
 
-Since this problem has its roots in optimizing a given weight expression, we are motivated to use math.
+Since this problem has its roots in optimizing a given weight expression, we are
+motivated to use math.
 
-First, we can use modular arithmetic to find a direct expression for the modular residue. The goal is to find an expression for the modular residue involving only basic operations that we will be able to optimize with mathematical techniques. Using modular arithmetic properties (negative numbers in modular arithmetic), consider the expression $\pmod{2019201997}$ to reduce the numbers:
+First, we can use modular arithmetic to find a direct expression for the modular
+residue. The goal is to find an expression for the modular residue involving
+only basic operations that we will be able to optimize with mathematical
+techniques. Using modular arithmetic properties (negative numbers in modular
+arithmetic), consider the expression $\pmod{2019201997}$ to reduce the numbers:
 
 $$
 2019201913x+2019201949y \equiv - 84 x - 48 y \pmod {2019201997}
 $$
 
-Since $x,y$ are bounded by $N \leq 7500,$ this expression will always give a negative value whose absolute value does not exceed the modulus $2019201997.$ Thus, we can easily find an expression for the modular residue from here if we just shift up by the modulus $2019201997$ once:
+Since $x,y$ are bounded by $N \leq 7500,$ this expression will always give a
+negative value whose absolute value does not exceed the modulus $2019201997.$
+Thus, we can easily find an expression for the modular residue from here if we
+just shift up by the modulus $2019201997$ once:
 
 $$
 (2019201913x+2019201949y) \mod 2019201997 = 2019201997 - 84 x - 48 y.
 $$
 
-Now, it remains to optimize this expression. Formally, we must find a $K$-partition of the cows such that
+Now, it remains to optimize this expression. Formally, we must find a
+$K$-partition of the cows such that
 
 $$
 \min\limits_{x,y \, \text{in different groups}} (2019201997 - 84 x - 48 y)
@@ -316,21 +325,38 @@ $$
 
 is maximized.
 
-Now, analyze the function's behavior: for large $x,y,$ the expression becomes small, and for small $x,y,$ the expression becomes large.
+Now, analyze the function's behavior: for large $x,y,$ the expression becomes
+small, and for small $x,y,$ the expression becomes large.
 
-But remembering the condition that $x,y$ must be in different groups to contribute to the answer, this means that large $x,y$ should be together in the same group (to greedily avoid making the expression small) and small $x,y$ should be in different groups (to greedily make the expression large). This leads to the following greedy strategy:
+But remembering the condition that $x,y$ must be in different groups to
+contribute to the answer, this means that large $x,y$ should be together in the
+same group (to greedily avoid making the expression small) and small $x,y$
+should be in different groups (to greedily make the expression large). This
+leads to the following greedy strategy:
 
-Make one group with all the largest cows that can fit and $k-1$ groups with all the smallest cows. Of course, the $k-1$ smallest cows are just $1 \dots k-1,$ so this means that the other $n-(k-1)$ cows will be in the large group.
+Make one group with all the largest cows that can fit and $k-1$ groups with all
+the smallest cows. Of course, the $k-1$ smallest cows are just $1 \dots k-1,$ so
+this means that the other $n-(k-1)$ cows will be in the large group.
 
-Now that we have pinpointed the optimal grouping, we can find the answer by going back to the question: we want to minimize the expression. To minimize the expression, we should greedily choose the largest cows that are in different groups (since large $x,y$ make the expression smaller). Clearly, this means that we should take cow $n,$ the largest cow in the group of large cows, and $k-1,$ the largest cow not in the group of large cows.
+Now that we have pinpointed the optimal grouping, we can find the answer by
+going back to the question: we want to minimize the expression. To minimize the
+expression, we should greedily choose the largest cows that are in different
+groups (since large $x,y$ make the expression smaller). Clearly, this means that
+we should take cow $n,$ the largest cow in the group of large cows, and $k-1,$
+the largest cow not in the group of large cows.
 
-Recall that the problem statement requires $x < y,$ so we have $x = k - 1, y = n.$ Our answer is as easy as a substitution of these values into the modular residue expression $2019201997 - 84 x - 48 y:$
+Recall that the problem statement requires $x < y,$ so we have
+$x = k - 1, y = n.$ Our answer is as easy as a substitution of these values into
+the modular residue expression $2019201997 - 84 x - 48 y:$
 
 $$
 2019201997 - 84 (k-1) - 48 n
 $$
 
-In retrospect, this solution is equivalent to performing Kruskal's MST algorithm by hand when we analyze the edge weight expression and use greedy logic to create the optimal grouping. (So the previous solutions will find the exact same grouping.)
+In retrospect, this solution is equivalent to performing Kruskal's MST algorithm
+by hand when we analyze the edge weight expression and use greedy logic to
+create the optimal grouping. (So the previous solutions will find the exact same
+grouping.)
 
 Senpat's $\mathcal{O}(1)$ code is below:
 

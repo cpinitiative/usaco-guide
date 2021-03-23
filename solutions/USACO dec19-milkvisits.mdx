@@ -7,11 +7,15 @@ author: Benjamin Qi
 
 [Official Analysis (Offline)](http://www.usaco.org/current/data/sol_milkvisits_gold_dec19.html)
 
-To solve this problem _online_, we need efficiently find the closest ancestor of a farm $x$ with a certain milk type. Here are several ways to do this.
+To solve this problem _online_, we need efficiently find the closest ancestor of
+a farm $x$ with a certain milk type. Here are several ways to do this.
 
 ## Method 1
 
-Run the same DFS mentioned in the analysis. For each milk type, store the Euler tour indices at which the answer changes. Then we can get the answer for a vertex using a single `lower_bound` operation on the vector for the corresponding milk type.
+Run the same DFS mentioned in the analysis. For each milk type, store the Euler
+tour indices at which the answer changes. Then we can get the answer for a
+vertex using a single `lower_bound` operation on the vector for the
+corresponding milk type.
 
 **Time Complexity:** $\mathcal{O}(\log N)$ per query.
 
@@ -300,13 +304,20 @@ int main() {
 
 ## Method 2
 
-Generate a [persistent array](https://en.wikipedia.org/wiki/Persistent_array) for each vertex where the indices of the array correspond to the milk types.
+Generate a [persistent array](https://en.wikipedia.org/wiki/Persistent_array)
+for each vertex where the indices of the array correspond to the milk types.
 
-**Time Complexity:** $\mathcal{O}(\log N)$ per query. Apparently this is doable in $\mathcal{O}(\log \log N)$ per query ([paper](http://fox.ucw.cz/papers/perarray/perarray.pdf)). Is this bound optimal for this problem?
+**Time Complexity:** $\mathcal{O}(\log N)$ per query. Apparently this is doable
+in $\mathcal{O}(\log \log N)$ per query
+([paper](http://fox.ucw.cz/papers/perarray/perarray.pdf)). Is this bound optimal
+for this problem?
 
 ## Method 3
 
-Use HLD. We can check whether there exists a farm in the path from a vertex $x$ to the root of the heavy path containing $x$ ($\texttt{root}[x]$) with the desired milk type in $\mathcal{O}(1)$ time using an unordered map. Note that we only need to do two `upper_bound` operations per query.
+Use HLD. We can check whether there exists a farm in the path from a vertex $x$
+to the root of the heavy path containing $x$ ($\texttt{root}[x]$) with the
+desired milk type in $\mathcal{O}(1)$ time using an unordered map. Note that we
+only need to do two `upper_bound` operations per query.
 
 **Time Complexity:** $\mathcal{O}(\log N)$ per query.
 

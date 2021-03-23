@@ -7,21 +7,43 @@ author: Kevin Sheng
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-Binary search on the minimum time it will take for all the Packmen to eat all the pellets. In that case, we would have to check whether the Packmen can eat all the pellets in $d$ units of time.
+Binary search on the minimum time it will take for all the Packmen to eat all
+the pellets. In that case, we would have to check whether the Packmen can eat
+all the pellets in $d$ units of time.
 
 First, notice a few observations:
 
-- Each Packman will eat a continuous subarray of the pellets, because a Packman will visit all pellets between the leftmost and rightmost ones, and thus can eat all pellets between them with no additional time penalty.
-- No two Packmen need to eat overlapping subarrays, as the region of overlap can be assigned to one of the Packman and be ignored by the other.
-- The leftmost Packman will eat the leftmost subarray of pellets, because if this were not the case, the leftmost Packman will definitely cross over another Packman. If this occurs, simply simulate (prevent) the crossing by reversing the directions of both Packmen instead. This ensures the leftmost Packman is always to the left of all other Packmen, and thus will eat a subarray of pellets to the left of all others.
+- Each Packman will eat a continuous subarray of the pellets, because a Packman
+  will visit all pellets between the leftmost and rightmost ones, and thus can
+  eat all pellets between them with no additional time penalty.
+- No two Packmen need to eat overlapping subarrays, as the region of overlap can
+  be assigned to one of the Packman and be ignored by the other.
+- The leftmost Packman will eat the leftmost subarray of pellets, because if
+  this were not the case, the leftmost Packman will definitely cross over
+  another Packman. If this occurs, simply simulate (prevent) the crossing by
+  reversing the directions of both Packmen instead. This ensures the leftmost
+  Packman is always to the left of all other Packmen, and thus will eat a
+  subarray of pellets to the left of all others.
 
-We can repeatedly greedily assign the leftmost unprocessed Packman to the largest possible subarray of pellets that includes the leftmost uneaten pellet. Using this strategy, we can check whether all pellets can be eaten when the Packmen are limited to $d$ units of time.
+We can repeatedly greedily assign the leftmost unprocessed Packman to the
+largest possible subarray of pellets that includes the leftmost uneaten pellet.
+Using this strategy, we can check whether all pellets can be eaten when the
+Packmen are limited to $d$ units of time.
 
-In the below solution, we keep a sorted deque of all the pellet positions. For each Packman, we calculate the maximum number of pellets it can eat so that no pellets to the left are uneaten, and then we remove the eaten pellets from the deque.
+In the below solution, we keep a sorted deque of all the pellet positions. For
+each Packman, we calculate the maximum number of pellets it can eat so that no
+pellets to the left are uneaten, and then we remove the eaten pellets from the
+deque.
 
-However, if a Packman can't eat the leftmost uneaten pellet, then the time $d$ would be invalid, as we have shown previously that given a valid time $d$ there must exist an assignment where the leftmost Packman does eat the leftmost uneaten pellet.
+However, if a Packman can't eat the leftmost uneaten pellet, then the time $d$
+would be invalid, as we have shown previously that given a valid time $d$ there
+must exist an assignment where the leftmost Packman does eat the leftmost
+uneaten pellet.
 
-There are two main cases we consider for each Packman: one where the Packman first goes to the right and then to the left, and another where the Packman first goes to the _left_ and then to the right. We calculate the subarray of pellets eaten in both of these cases and assign the larger one to the Packman.
+There are two main cases we consider for each Packman: one where the Packman
+first goes to the right and then to the left, and another where the Packman
+first goes to the _left_ and then to the right. We calculate the subarray of
+pellets eaten in both of these cases and assign the larger one to the Packman.
 
 <LanguageSection>
 

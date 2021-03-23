@@ -7,13 +7,21 @@ author: Benjamin Qi, Andi Qu
 
 ## Approach 1
 
-**Complexity:** $\mathcal{O}(N \log^2N)$ time with $\mathcal{O}(N \log N)$ memory.
+**Complexity:** $\mathcal{O}(N \log^2N)$ time with $\mathcal{O}(N \log N)$
+memory.
 
-Let the elements of $A$ be nodes of a graph and each potential swap be an edge between two nodes. Notice how this graph is a binary tree. We effectively want to perform some swaps to minimize the BFS order of this tree.
+Let the elements of $A$ be nodes of a graph and each potential swap be an edge
+between two nodes. Notice how this graph is a binary tree. We effectively want
+to perform some swaps to minimize the BFS order of this tree.
 
-Let $\texttt{merge}(A, B, C)$ denote the tree with $A$ as the root and $B$ and $C$ as the subtrees of $A$'s left and right children respectively. We can compute $\texttt{merge}(A, B, C)$ in $\mathcal{O}(|B| + |C|)$ time.
+Let $\texttt{merge}(A, B, C)$ denote the tree with $A$ as the root and $B$ and
+$C$ as the subtrees of $A$'s left and right children respectively. We can
+compute $\texttt{merge}(A, B, C)$ in $\mathcal{O}(|B| + |C|)$ time.
 
-We can now formulate a basic DP state. Let $dp[i][j]$ be the version of node $i$'s subtree after some swaps such that $A_i = j$ initially and the BFS order of $dp[i][j]$ is minimal. Let $l$ and $r$ be node $i$'s left and right children respectively. The following recurrence holds:
+We can now formulate a basic DP state. Let $dp[i][j]$ be the version of node
+$i$'s subtree after some swaps such that $A_i = j$ initially and the BFS order
+of $dp[i][j]$ is minimal. Let $l$ and $r$ be node $i$'s left and right children
+respectively. The following recurrence holds:
 
 $$
 dp[i][j] = \begin{cases}
@@ -23,14 +31,25 @@ dp[i][j] = \begin{cases}
 \end{cases}
 $$
 
-The answer to the problem is thus $dp[1][A_1]$. If we compute this DP naively, we get a $\mathcal{O}(N^2 \log N)$ solution that uses $\mathcal(N^2 \log N)$ memory (since $\mathcal{O}(\sum\text{subtree size}) = \mathcal{O}(N \log N)$).
+The answer to the problem is thus $dp[1][A_1]$. If we compute this DP naively,
+we get a $\mathcal{O}(N^2 \log N)$ solution that uses $\mathcal(N^2 \log N)$
+memory (since $\mathcal{O}(\sum\text{subtree size}) = \mathcal{O}(N \log N)$).
 
-To improve this solution, notice that for some $i$, we have $j = A[k]$ only if $k$ is a child of an ancestor of $i$. Since there are only $\mathcal{O}(\log N)$ ancestors of $i$ and each has at most 2 children, this allows us to cut the time (and memory) complexity down to $\mathcal{O}(N \log^2N)$! For convenience, we still refer to the original DP state in the rest of this solution.
+To improve this solution, notice that for some $i$, we have $j = A[k]$ only if
+$k$ is a child of an ancestor of $i$. Since there are only $\mathcal{O}(\log N)$
+ancestors of $i$ and each has at most 2 children, this allows us to cut the time
+(and memory) complexity down to $\mathcal{O}(N \log^2N)$! For convenience, we
+still refer to the original DP state in the rest of this solution.
 
-However, this DP still uses too much memory. There are two things we need to do to fix this:
+However, this DP still uses too much memory. There are two things we need to do
+to fix this:
 
-- Process the tree in reverse BFS order (i.e. starting from node $N$ and working back to node 1). This allows us to free up the memory used by $dp[l]$ and $dp[r]$ after we process some node $i$. This cuts the memory used down to $\mathcal{O}(N \log N)$, but is still slightly too much.
-- Only compute the states that $dp[1][A_1]$ depends on. For example, the value of $dp[2][A_1]$ is irrelevant if $A_1 < \min(A_2, A_3)$.
+- Process the tree in reverse BFS order (i.e. starting from node $N$ and working
+  back to node 1). This allows us to free up the memory used by $dp[l]$ and
+  $dp[r]$ after we process some node $i$. This cuts the memory used down to
+  $\mathcal{O}(N \log N)$, but is still slightly too much.
+- Only compute the states that $dp[1][A_1]$ depends on. For example, the value
+  of $dp[2][A_1]$ is irrelevant if $A_1 < \min(A_2, A_3)$.
 
 These two optimizations save us just enough memory to get AC.
 
@@ -110,9 +129,11 @@ int main() {
 
 ## Approach 2
 
-Some magic DP. See the discussion on [CF](https://codeforces.com/blog/entry/44769?#comment-293999).
+Some magic DP. See the discussion on
+[CF](https://codeforces.com/blog/entry/44769?#comment-293999).
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$, can be reduced to $\mathcal{O}(N\log N)$.
+**Time Complexity:** $\mathcal{O}(N\log^2N)$, can be reduced to
+$\mathcal{O}(N\log N)$.
 
 **Memory Complexity:** $\mathcal{O}(N\log N)$
 
@@ -379,7 +400,9 @@ int main() {
 
 ## Approach 3
 
-Maintain some collection of heaps and compute the sequence in order. I think this is similar to what the official solution does, although I don't completely understand it.
+Maintain some collection of heaps and compute the sequence in order. I think
+this is similar to what the official solution does, although I don't completely
+understand it.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 

@@ -323,8 +323,17 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(nm)$
 
-We'll process each of the $m$ lines in $\mathcal{O}(n)$ time each. For a fixed line, let $a$ and $b$ be two points on the line. Suppose for simplicity that the line is parallel to the $x$-axis.
+We'll process each of the $m$ lines in $\mathcal{O}(n)$ time each. For a fixed
+line, let $a$ and $b$ be two points on the line. Suppose for simplicity that the
+line is parallel to the $x$-axis.
 
-First, if no vertex of the polygon lies on the line then we can compute all the intersection points of the sides with the line and add / subtract their $x$-coordinates appropriately to get the answer. In my solution, `dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
+First, if no vertex of the polygon lies on the line then we can compute all the
+intersection points of the sides with the line and add / subtract their
+$x$-coordinates appropriately to get the answer. In my solution,
+`dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
 
-To deal with vertices of the polygon that lie on the line, we can envision shifting the line up or down by some small amount so that no vertex lies on the line. This incorrectly leaves out some sides of the polygon that are collinear with the original line, so we should add the lengths of these sides to the answer. These sides are dealt with by the second `if` statement within the loop.
+To deal with vertices of the polygon that lie on the line, we can envision
+shifting the line up or down by some small amount so that no vertex lies on the
+line. This incorrectly leaves out some sides of the polygon that are collinear
+with the original line, so we should add the lengths of these sides to the
+answer. These sides are dealt with by the second `if` statement within the loop.

@@ -7,13 +7,22 @@ author: Benjamin Qi, Óscar Garries, Timothy Gao
 
 **Time Complexity:** $\mathcal{O}(NlogN)$
 
-Let $dp[i]$ be the number of increasing subsequences of $x$ ending on the right of index $i$. Notice that $dp[i]$ can be calculated as the summation of all $dp[j]$ where $j < i$ and $x_j < x_i$.
+Let $dp[i]$ be the number of increasing subsequences of $x$ ending on the right
+of index $i$. Notice that $dp[i]$ can be calculated as the summation of all
+$dp[j]$ where $j < i$ and $x_j < x_i$.
 
-Naively, this gives an $\mathcal O(N^2)$ solution. In order to speed this up, we can coordinate compress, then range sum.
+Naively, this gives an $\mathcal O(N^2)$ solution. In order to speed this up, we
+can coordinate compress, then range sum.
 
-More specifically, we sort all numbers in $x$ and map each distinct number to its index in the sorted array. This is known as coordinate compression, and it makes the range of the numbers significantly smaller.
+More specifically, we sort all numbers in $x$ and map each distinct number to
+its index in the sorted array. This is known as coordinate compression, and it
+makes the range of the numbers significantly smaller.
 
-With this, we can create a [BIT](https://usaco.guide/gold/PURS), where each value is initially 0. As we iterate through $x$, $dp[i]$ would be the sum of the values at positions $j<k$ in the BIT, where $k$ is the index that $x_i$ maps to. We then increase position $k$ in the BIT by $dp[i]$ as preparation for the next element of $x$.
+With this, we can create a [BIT](https://usaco.guide/gold/PURS), where each
+value is initially 0. As we iterate through $x$, $dp[i]$ would be the sum of the
+values at positions $j<k$ in the BIT, where $k$ is the index that $x_i$ maps to.
+We then increase position $k$ in the BIT by $dp[i]$ as preparation for the next
+element of $x$.
 
 <LanguageSection>
 

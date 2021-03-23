@@ -2,7 +2,9 @@
 id: bin-jump
 title: 'Binary Jumping'
 author: Benjamin Qi, Neo Wang, Qi Wang
-description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
+description:
+  'Introduces the problems of finding level ancestors in a tree and computing
+  the lowest common ancestors.'
 frequency: 3
 prerequisites:
 ---
@@ -236,11 +238,17 @@ Binary jumping is more commonly referred to as "binary lifting."
 
 ### Solution
 
-To solve this problem, we can use a standard binary lifting implementation where `jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
+To solve this problem, we can use a standard binary lifting implementation where
+`jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
 
-In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree).
+In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node
+does not exist and we can simply return $-1$. This is because the lowest number
+a node can be is $1$ (the root of the tree).
 
-In our implementation, we test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $0, 2, 3$ (in that order) counting from the right.
+In our implementation, we test if we jump in powers of two by using the $\&$
+operator. If the $i$th bit on the right is toggled, then we jump. For example, a
+jump of $13$ would correspond to the binary number $1101$. We would jump 3 times
+on bits $0, 2, 3$ (in that order) counting from the right.
 
 <Spoiler title="Illustration of the jump method">
 
@@ -248,11 +256,14 @@ In our implementation, we test if we jump in powers of two by using the $\&$ ope
 
 </Spoiler>
 
-To calculate the rows required for the `int up[MS][MX]` array, use the formula $\lceil \log_2{N} \rceil$ which in our case simplifies to $\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
+To calculate the rows required for the `int up[MS][MX]` array, use the formula
+$\lceil \log_2{N} \rceil$ which in our case simplifies to
+$\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
 
 <Info title="Pro Tip">
 
-It never hurts to add additional rows - or columns, depending on your implementation - (as long as it's reasonable)!
+It never hurts to add additional rows - or columns, depending on your
+implementation - (as long as it's reasonable)!
 
 </Info>
 
@@ -341,7 +352,9 @@ int main() {
 	</Resource>
 </Resources>
 
-To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to the same depth as the other. Then, we lift both nodes up decrementally. At the end, the parent of either node is the LCA of the two.
+To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to
+the same depth as the other. Then, we lift both nodes up decrementally. At the
+end, the parent of either node is the LCA of the two.
 
 <LanguageSection>
 
@@ -414,13 +427,22 @@ int main() {
 
 ### Alternative Solution (Company Queries II)
 
-As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let $\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor table for all nodes in the tree.
+As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let
+$\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor
+table for all nodes in the tree.
 
-These can be filled with a DFS traversal. $\texttt{up}$ can be generated because DFS allows the ancestors to be filled first before traversing the current node.
+These can be filled with a DFS traversal. $\texttt{up}$ can be generated because
+DFS allows the ancestors to be filled first before traversing the current node.
 
-With this information, we can declare node $a$ an ancestor of $b$ if $\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
+With this information, we can declare node $a$ an ancestor of $b$ if
+$\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
 
-We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up (in this case, $a$) decrementally while it is not the ancestor of $b$. Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$ to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower common ancestor. Afterwards, our answer is the parent of $a$.
+We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the
+answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up
+(in this case, $a$) decrementally while it is not the ancestor of $b$.
+Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$
+to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower
+common ancestor. Afterwards, our answer is the parent of $a$.
 
 <LanguageSection>
 
@@ -501,7 +523,9 @@ int main() {
 
 ### Solution (Distance Queries)
 
-Find LCA of node $a$ and $b$ as described above. Then, the distance between the two nodes would be the $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
+Find LCA of node $a$ and $b$ as described above. Then, the distance between the
+two nodes would be the
+$\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
 
 <LanguageSection>
 

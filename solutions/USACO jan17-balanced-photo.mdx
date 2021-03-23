@@ -7,23 +7,34 @@ author: Andy Wang
 
 [Official Analysis](http://usaco.org/current/data/sol_bphoto_gold_jan17.html)
 
-The official solution uses a [binary indexed tree](/gold/PURS/#binary-indexed-tree).
+The official solution uses a
+[binary indexed tree](/gold/PURS/#binary-indexed-tree).
 
-An alternative solution uses an order statistic tree. This is provided in C++ with the PBDS data structure; in Java you'll have to implement your own.
+An alternative solution uses an order statistic tree. This is provided in C++
+with the PBDS data structure; in Java you'll have to implement your own.
 
 ## Solution (C++ only)
 
 **Time Complexity:** $\mathcal O(N \log N)$
 
-We aim to quickly determine, for each cow, the number of _taller_ cows to its left and right.
+We aim to quickly determine, for each cow, the number of _taller_ cows to its
+left and right.
 
-To do this, we can sweep through the cows from left to right and maintain two balanced binary search trees: one for storing the heights of cows on each side of the current cow. Then, use binary search to count the number of heights in each set that are greater than the height of the current cow.
+To do this, we can sweep through the cows from left to right and maintain two
+balanced binary search trees: one for storing the heights of cows on each side
+of the current cow. Then, use binary search to count the number of heights in
+each set that are greater than the height of the current cow.
 
-We can use [order statistic trees](/gold/PURS/#order-statistic-tree) to achieve this in $\mathcal O(N \log N)$ time.
+We can use [order statistic trees](/gold/PURS/#order-statistic-tree) to achieve
+this in $\mathcal O(N \log N)$ time.
 
 <Warning>
 
-We may **not** use [`std::set`](http://www.cplusplus.com/reference/set/set/) because it does not support indexing. Additionally, since BBSTs do _not_ support random access, using operations such as [`std::distance`](http://www.cplusplus.com/reference/iterator/distance/) to index takes linear time.
+We may **not** use [`std::set`](http://www.cplusplus.com/reference/set/set/)
+because it does not support indexing. Additionally, since BBSTs do _not_ support
+random access, using operations such as
+[`std::distance`](http://www.cplusplus.com/reference/iterator/distance/) to
+index takes linear time.
 
 </Warning>
 

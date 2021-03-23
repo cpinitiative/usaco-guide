@@ -11,25 +11,34 @@ Let's consider a simpler problem:
 
 > Assuming that node $1$ is painted black, how many ways can we paint the tree?
 
-First, root the tree at node $1$. Let $dp[i]$ be the number of ways that we can paint the subtree of node $i$ such that either node $i$ is colored black, or no nodes are colored black. Note that if $i$ is a leaf, then $dp[i]=2$ (we choose to color node $i$ black or not).
+First, root the tree at node $1$. Let $dp[i]$ be the number of ways that we can
+paint the subtree of node $i$ such that either node $i$ is colored black, or no
+nodes are colored black. Note that if $i$ is a leaf, then $dp[i]=2$ (we choose
+to color node $i$ black or not).
 
-For each child $c$ of $i$, there are $dp[c]$ ways to paint its subtree if $i$ is painted black. This means that we have the recurrence
+For each child $c$ of $i$, there are $dp[c]$ ways to paint its subtree if $i$ is
+painted black. This means that we have the recurrence
 
 $$
 dp[i]=1+\prod_{c \in \text{Children of } i} dp[c]
 $$
 
-where the product corresponds to painting node $i$ black and the $1$ corresponds to painting node $i$ white.
+where the product corresponds to painting node $i$ black and the $1$ corresponds
+to painting node $i$ white.
 
-The answer to the simpler problem is thus $dp[1]-1$. Finding all $dp[i]$ takes $\mathcal{O}(N)$ time.
+The answer to the simpler problem is thus $dp[1]-1$. Finding all $dp[i]$ takes
+$\mathcal{O}(N)$ time.
 
 ## Solving For All Roots
 
 First, root the tree arbitrarily and do a DFS to find all $dp[i]$.
 
-Let $dp2[i]$ be the number of ways to colour the tree if we remove node $i$'s subtree such that either the parent of $i$ is black, or no nodes are colored black. Note that $dp2[1]=1$.
+Let $dp2[i]$ be the number of ways to colour the tree if we remove node $i$'s
+subtree such that either the parent of $i$ is black, or no nodes are colored
+black. Note that $dp2[1]=1$.
 
-The number of ways to paint the tree if we know node $i$ is black is simply $(dp[i]-1)\cdot dp2[i]$. How can we find $dp2[i]$ efficiently though?
+The number of ways to paint the tree if we know node $i$ is black is simply
+$(dp[i]-1)\cdot dp2[i]$. How can we find $dp2[i]$ efficiently though?
 
 The basic recurrence for computing $dp2[i]$ is
 
@@ -37,23 +46,32 @@ $$
 dp2[i] = 1+dp2[\text{Parent of } i] \cdot \prod_{s \in \text{Siblings of } i} dp[s]
 $$
 
-where the product corresponds to painting the parent of $i$ black and the $1$ corresponds to painting the parent of $i$ white.
+where the product corresponds to painting the parent of $i$ black and the $1$
+corresponds to painting the parent of $i$ white.
 
-Since $M$ isn't guaranteed to be prime though, we can't just find the product of each node's children and divide that product by each of its children's $dp[i]$ (since we can't find modular inverses easily).
+Since $M$ isn't guaranteed to be prime though, we can't just find the product of
+each node's children and divide that product by each of its children's $dp[i]$
+(since we can't find modular inverses easily).
 
-However, notice how if node $i$ is the $k$-th child of its parent, then we can use prefix and suffix products to compute
+However, notice how if node $i$ is the $k$-th child of its parent, then we can
+use prefix and suffix products to compute
 
 $$
 \prod_{s \in \text{Siblings of } i}dp[s]
 $$
 
-without using division. (i.e. We find the product of $dp[s]$ for the first to the $(k - 1)$-th child of $i$'s parent, the product of $dp[s]$ for the $(k + 1)$-th to the last child of $i$'s parent, and then multiply those together.)
+without using division. (i.e. We find the product of $dp[s]$ for the first to
+the $(k - 1)$-th child of $i$'s parent, the product of $dp[s]$ for the
+$(k + 1)$-th to the last child of $i$'s parent, and then multiply those
+together.)
 
-Finding all $dp2[i]$ takes $\mathcal{O}(N)$ time using a DFS, so the total complexity of this algorithm is thus $\mathcal{O}(N)$.
+Finding all $dp2[i]$ takes $\mathcal{O}(N)$ time using a DFS, so the total
+complexity of this algorithm is thus $\mathcal{O}(N)$.
 
 ## Implementation
 
-`down` corresponds to $dp$ and `up` corresponds to $dp2$. The code uses the exact same recurrences mentioned above.
+`down` corresponds to $dp$ and `up` corresponds to $dp2$. The code uses the
+exact same recurrences mentioned above.
 
 ```cpp
 #include <bits/stdc++.h>

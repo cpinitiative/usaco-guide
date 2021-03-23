@@ -5,13 +5,17 @@ title: String Transform
 author: Benjamin Qi
 ---
 
-[GFG](https://www.geeksforgeeks.org/inverting-burrows-wheeler-transform/) does an okay (?) job of explaining it and giving some intuition. But the code can be so much shorter ...
+[GFG](https://www.geeksforgeeks.org/inverting-burrows-wheeler-transform/) does
+an okay (?) job of explaining it and giving some intuition. But the code can be
+so much shorter ...
 
 ## My Implementation
 
-Let $t[0\ldots n-1]$ be the BWT of $s[0\ldots n-1]$, where $s$ ends with a character that is smaller than all other characters in $s$ (`#` in this case).
+Let $t[0\ldots n-1]$ be the BWT of $s[0\ldots n-1]$, where $s$ ends with a
+character that is smaller than all other characters in $s$ (`#` in this case).
 
-Consider all indices modulo $n$. If $t_i$ corresponds to $s_{x_i-1}$ (the last character of the $i$-th smallest rotation) then define
+Consider all indices modulo $n$. If $t_i$ corresponds to $s_{x_i-1}$ (the last
+character of the $i$-th smallest rotation) then define
 
 $$
 a_i=s_{x_i}s_{x_i+1}\ldots s_{x_i-1}
@@ -21,9 +25,12 @@ $$
 b_i=s_{x_i-1}s_{x_i}s_{x_i+1}\ldots s_{x_i-2}
 $$
 
-$a_i$ corresponds to the $i$\_th smallest rotation of $s$, and $b_i$ is formed by cyclically shifting $a_i$ by one character. $t_i$ is the last character of $a_i$ and the first character of $b_i$.
+$a_i$ corresponds to the $i$\_th smallest rotation of $s$, and $b_i$ is formed
+by cyclically shifting $a_i$ by one character. $t_i$ is the last character of
+$a_i$ and the first character of $b_i$.
 
-Define $j=\texttt{nex}[i]$ to be the unique $j$ such that $b_j=a_i$. Then we know that $x_{j}=x_i+1$. Given $\texttt{nex}$, we can compute
+Define $j=\texttt{nex}[i]$ to be the unique $j$ such that $b_j=a_i$. Then we
+know that $x_{j}=x_i+1$. Given $\texttt{nex}$, we can compute
 
 $$
 x_0=n-1
@@ -49,7 +56,8 @@ $$
 b_i<b_j\Longleftrightarrow (t_i,a_i)<(t_j,a_j) \Longleftrightarrow (t_i,i)<(t_j,j),
 $$
 
-so we can sort the $b_i$ using a stable sort. Then $\texttt{nex}[i]$ is just the index of the $i$-th rotation in this sort!
+so we can sort the $b_i$ using a stable sort. Then $\texttt{nex}[i]$ is just the
+index of the $i$-th rotation in this sort!
 
 ```cpp
 #include <bits/stdc++.h>
