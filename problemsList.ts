@@ -14456,9 +14456,9 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
       //     kind: "internal",
       //   };
       // }
-      if (!prob.solutionMetadata) {
-        console.log(prob.uniqueID);
-      }
+      // if (!prob.solutionMetadata) {
+      //   console.log(prob.uniqueID);
+      // }
       return {
         uniqueId: prob.uniqueID,
         name: prob.name,
