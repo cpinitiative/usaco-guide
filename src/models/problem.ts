@@ -270,41 +270,47 @@ export class Problem {
   public solutionMetadata: any;
 
   get uniqueID() {
+    let id;
     if (
       ['Bronze', 'Silver', 'Gold', 'Plat'].some(
         x => this.source.indexOf(x) !== -1
       )
     ) {
       // is usaco
-      return `usaco-${this.id}`;
-    }
-    if (this.source === 'CSES') {
-      return `cses-${this.id}`;
-    }
-    if (this.source === 'CF') {
-      return `cf-${this.id}`;
-    }
-    const camelCase = x => {
-      if (x.match(/^[0-9]{4}/) !== null) {
-        return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
-      }
-      x = x.replace(/[^\w\s]/g, '');
-      let str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-        return word.toUpperCase();
-      });
-      if (str.split(' ').length === 1) {
-        return str.toLowerCase();
+      id = `usaco-${this.id}`;
+    } else if (this.source === 'CSES') {
+      id = `cses-${this.id}`;
+    } else if (this.source === 'CF') {
+      let num = this.id.match(/([0-9]+)/g)[0];
+      let char = this.id[this.id.length - 1];
+      if (this.id.indexOf('gym') !== -1) {
+        id = `cfgym-${num}${char}`;
       } else {
-        return str.replace(/\s+/g, '');
+        id = `cf-${num}${char}`;
       }
-    };
-    if (this.source === 'Baltic OI') {
-      return `baltic-${camelCase(this.name)}`;
+    } else {
+      const camelCase = x => {
+        if (x.match(/^[0-9]{4}/) !== null) {
+          return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
+        }
+        x = x.replace(/[^\w\s]/g, '');
+        let str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+          return word.toUpperCase();
+        });
+        if (str.split(' ').length === 1) {
+          return str.toLowerCase();
+        } else {
+          return str.replace(/\s+/g, '');
+        }
+      };
+      if (this.source === 'Baltic OI') {
+        id = `baltic-${camelCase(this.name)}`;
+      } else if (this.source === 'Balkan OI') {
+        id = `balkan-${camelCase(this.name)}`;
+      } else {
+        id = `${camelCase(this.source)}-${camelCase(this.name)}`;
+      }
     }
-    if (this.source === 'Balkan OI') {
-      return `balkan-${camelCase(this.name)}`;
-    }
-    const id = `${camelCase(this.source)}-${camelCase(this.name)}`;
     let extra = '';
     if (this.solutionMetadata?.kind === 'internal') {
       if (this.solID !== id) {
