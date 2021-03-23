@@ -27,12 +27,16 @@ export const LanguageSection = props => {
 
     newChild.props.children = React.Children.map(newChild.props.children, child => {
       let ogChild = child;
-      console.log("INNER")
-      console.log(ogChild.props);
-      const { oldProps } = ogChild.props;
-      let newC =  React.cloneElement(child, {...oldProps, expandable: expand});
-      console.log(newC)
-      return newC;
+      if(typeof (ogChild.props) != "undefined") {
+        console.log("INNER")
+        console.log(ogChild.props);
+        const {oldProps} = ogChild.props;
+        let newC = React.cloneElement(child, {...oldProps, expandable: expand});
+        console.log(newC)
+        return newC;
+      }else{
+        return child;
+      }
     });
 
     sections[typeToLang[type]] = newChild;
