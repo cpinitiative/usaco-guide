@@ -34,8 +34,9 @@ export const LanguageSection = props => {
         let newC = React.cloneElement(child, {...oldProps, expandable: expand});
 
         newC.props.children = React.Children.map(newChild.props.children, child2 => {
-          if(typeof (ogChild.props) != "undefined") {
-            const {oldProps2} = ogChild.props;
+          const ogChild2 = child2.props;
+          if(typeof (ogChild2.props) != "undefined") {
+            const {oldProps2} = ogChild2.props;
             return React.cloneElement(child2, {...oldProps2, expandable: expand});
           }else{
             return child2;
