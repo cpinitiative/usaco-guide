@@ -27,7 +27,9 @@ export const LanguageSection = props => {
 
     newChild.props.children = React.Children.map(newChild.props.children, child => {
       let ogChild = child;
-      return React.cloneElement(child, {children: ogChild.props.children, mdxType: ogChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
+      console.log(ogChild.props);
+      return child;
+      // return React.cloneElement(child, {children: ogChild.props.children, mdxType: oldChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
     });
 
     sections[typeToLang[type]] = newChild;
