@@ -102,6 +102,7 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
+      console.log(props)
     let i = 0;
     let prev = -1;
     let prevVal = '';
