@@ -156,9 +156,7 @@ export const problems = {
 
 <Optional>
 
-If "small" isn't a satisfying-enough answer for "what's the probability of collision?", then
-you should check out [rng-58's blog post talking about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html).
-This blog post talks about the Schwarz-Zippel lemma and how that can be used to calculate the probability of a collision.
+If "small" isn't a satisfying-enough answer for "what's the probability of collision?", then you should check out [rng-58's blog post talking about hashing](http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html). This blog post talks about the Schwarz-Zippel lemma and how that can be used to calculate the probability of a collision.
 
 It also explains how to hash rooted trees - an uncommon technique, but still useful to know!
 
@@ -221,20 +219,20 @@ public static long get_hash(int a, int b) { // Endpoints of the substring
 </LanguageSection>
 
 This implementation calculates
+
 $$
 \texttt{hsh}[i] = \left(\sum_{x = 0}^i P^{i - x} \cdot S[x]\right) \bmod M
 $$
 
 The hash of any particular substring $S[a : b]$ is then calculated as
+
 $$
 \left(\sum_{x = a}^b P^{b - x} \cdot S[x] \right) \bmod M = (\texttt{hsh}[b] - \texttt{hsh}[a] \cdot P^{b - a + 1}) \bmod M
 $$
-using prefix sums. This is nice because the highest power of $P$ in that polynomial
-will always be $P^{b - a}$.
 
-Since $10^9 + 9$ is prime, the probability of collision when using this hash is at most $\frac{N}{10^9 + 9} < 10^{-4}$, by the Schwarz-Zippel lemma.
-This means that if you select any two **different** strings of length at most $N$ and a random base modulo $10^9 + 9$ (e.g. $9973$ in the code), the probability that they
-hash to the same value is at most $10^{-4}$.
+using prefix sums. This is nice because the highest power of $P$ in that polynomial will always be $P^{b - a}$.
+
+Since $10^9 + 9$ is prime, the probability of collision when using this hash is at most $\frac{N}{10^9 + 9} < 10^{-4}$, by the Schwarz-Zippel lemma. This means that if you select any two **different** strings of length at most $N$ and a random base modulo $10^9 + 9$ (e.g. $9973$ in the code), the probability that they hash to the same value is at most $10^{-4}$.
 
 ## Implementation - Multiple Bases
 
@@ -271,8 +269,7 @@ One way to solve this is by storing the polynomial hashes of each match in a has
 
 Since the test data for this particular problem is very strong, we will probably get hash collisions with only one hash. To remedy this, we use two hashes for each match - this significantly decreases the probability of collisions.
 
-Using the base $9973$ with the two modulos $10^9 + 9$ and $10^9 + 7$ works for this problem.
-(Note that using two bases with the same modulo works too.)
+Using the base $9973$ with the two modulos $10^9 + 9$ and $10^9 + 7$ works for this problem. (Note that using two bases with the same modulo works too.)
 
 <LanguageSection>
 
@@ -318,7 +315,7 @@ int main() {
 		// Update polynomial hashes
 		poly1 = (poly1 * P - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
 		poly2 = (poly2 * P - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
-		
+
 		bool match = true;
 		for (int j = 0; j < 26; j++) match &= freq_curr[j] == freq_target[j];
 		if (match) good.insert({poly1, poly2});
@@ -339,8 +336,7 @@ int main() {
 
 An alternative solution without frequency tables would be to hash the substrings that we're trying to match. Since order doesn't matter, we need to modify our hash function slightly.
 
-In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two modulos).
-This hash is nice because the relative order of the letters doesn't matter, as multiplication is commutative.
+In particular, instead of computing the **polynomial** hash of the substrings, compute the product $(P + s_1)(P + s_2) \cdots (P + s_k) \bmod M$ as the hash (again, using two modulos). This hash is nice because the relative order of the letters doesn't matter, as multiplication is commutative.
 
 Since this hash requires the modular inverse, there's an extra $\log M$ factor in the time complexity.
 
@@ -399,7 +395,7 @@ int main() {
 		// Update polynomial hashes
 		poly1 = (poly1 * P - p_pow1 * (h[i - n.size()] - 'a') % M1 + (h[i] - 'a') + M1) % M1;
 		poly2 = (poly2 * P - p_pow2 * (h[i - n.size()] - 'a') % M2 + (h[i] - 'a') + M2) % M2;
-		
+
 		if (n_hsh1 == h_hsh1 && n_hsh2 == h_hsh2) good.insert({poly1, poly2});
 	}
 

@@ -7,7 +7,7 @@ author: Andi Qu
 
 <Spoiler title="Hint 1">
 
-The problem asks for the maximum number of followings after each social exchange event, but is it even possible *not* to achieve that maximum?
+The problem asks for the maximum number of followings after each social exchange event, but is it even possible _not_ to achieve that maximum?
 
 </Spoiler>
 
@@ -36,10 +36,11 @@ We're dealing with a DSU-like structure, so small-to-large merging can potential
 We'll always end up with the same number of followings after a social exchange event regardless of the order in which we choose the triples $(x, y, z)$.
 
 Consider the following graph:
+
 - Nodes represent people on Joitter.
 - There are two types of edges: red and blue.
-    - Red edges are undirected and represent a mutual following
-    - Blue edges are directed and represent a one-way following
+  - Red edges are undirected and represent a mutual following
+  - Blue edges are directed and represent a one-way following
 
 The key observation is that if node $u$ can reach node $v$ using only red edges, then they will be connected with a red edge after a social exchange event. This suggests that we should use DSU to keep track of components of nodes connected by red edges.
 
@@ -59,6 +60,7 @@ Let $V_i$ be the number of followings after the $i$-th merging, and let $F_S$ be
 4. We need to subtract the number of followings from people who previously already followed everyone in both $A$ and $B$ or were already in $A$ or $B$. This number is $|(A \cup F_A) \cap (B \cup F_B)| \cdot |A \cup B|$.
 
 Putting it all together and setting $C_S = S \cup F_S$, we get:
+
 $$
 V_i = V_{i - 1} + |A| \cdot |C_B| + |B| \cdot |C_A| - |C_A \cap C_B| \cdot |A \cup B|.
 $$

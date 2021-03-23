@@ -1,13 +1,14 @@
 ---
 id: cses-1751
-source: CSES 
+source: CSES
 title: Planets Cycles
 author: Maggie Liu (C++), Qi Wang (Java)
 ---
 
-Define the number of teleportations starting from a planet as the $\texttt{pathlength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{pathlength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{path}$ queue and keep track of $\texttt{steps}$, the length of the path (which is also the $\texttt{pathlength}$ of the $\textit{start}$). When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), add the $\texttt{pathlength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count because we would continue to visit all of the planets that $\textit{repeat}$ would go on to visit. 
+Define the number of teleportations starting from a planet as the $\texttt{pathlength}$ of that planet. For each planet that hasn't been visited, we want to find its $\texttt{pathlength}$. Call the planet we are performing $\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the $\textit{start}$, keep track of the planets seen, in order, in the $\texttt{path}$ queue and keep track of $\texttt{steps}$, the length of the path (which is also the $\texttt{pathlength}$ of the $\textit{start}$). When we reach a planet that has already been visited (call this planet the $\textit{repeat}$), add the $\texttt{pathlength}$ of the $\textit{repeat}$ to the current $\texttt{step}$ count because we would continue to visit all of the planets that $\textit{repeat}$ would go on to visit.
 
 Once we have $\texttt{path}$ and $\texttt{steps}$ we can calculate the $\texttt{pathlength}$ of all the planets in this $\texttt{path}$. We know the $\textit{repeat}$ will always be the planet at the end of the $\texttt{path}$, but it may appear elsewhere as well. We can break this down into two cases:
+
 1. The $\textit{repeat}$ was visited twice in the current $\texttt{path}$. The planets in the $\texttt{path}$ between the two occurrences of the $\textit{repeat}$ form a $\textit{cycle}$.
 2. The $\textit{repeat}$ only appears at the end of the current $\texttt{path}$. All of the planets in the $\texttt{path}$ are not part of a $\textit{cycle}$.
 
@@ -179,6 +180,7 @@ public class planetCycles {
 }
 
 ```
+
 </JavaSection>
 
 </LanguageSection>

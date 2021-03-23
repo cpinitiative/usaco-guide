@@ -42,7 +42,7 @@ int query(int lo, int hi, int i=1, int l=1, int r=n) {
 	if(lo > r || hi < l) return 0;
 	if(lo <= l && r <= hi) return st[i];
 	int m = (l+r)/2;
-	return max(query(lo, hi, i*2, l, m), 
+	return max(query(lo, hi, i*2, l, m),
 			query(lo, hi, i*2+1, m+1, r));
 }
 
@@ -58,7 +58,7 @@ int dfs_sz(int cur, int par) {
 }
 void init_lca() {
 	for(int d=1; d<18; d++)
-	for(int i=1; i<=n; i++) 
+	for(int i=1; i<=n; i++)
 		p[i][d] = p[p[i][d-1]][d-1];
 }
 int ct = 1;
@@ -121,7 +121,7 @@ int main() {
 	scanf("%d%d", &n, &q);
 	for(int i=1; i<=n; i++) scanf("%d", &v[i]);
 	for(int i=2; i<=n; i++) {
-		int a, b; 
+		int a, b;
 		scanf("%d%d", &a, &b);
 		adj[a].push_back(b);
 		adj[b].push_back(a);
@@ -131,10 +131,10 @@ int main() {
 	memset(st, 0, sizeof st);
 	dfs_hld(1, 1, 1);
 	while(q--) {
-		int t; 
+		int t;
 		scanf("%d", &t);
 		if(t == 1) {
-			int s, x; 
+			int s, x;
 			scanf("%d%d", &s, &x);
 			v[s] = x;
 			update(id[s], v[s]);

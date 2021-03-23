@@ -7,24 +7,15 @@ author: Andi Qu
 
 **Time Complexity**: $\mathcal O((N + Q) \log N)$
 
-First, let's consider a single query - what's the minimum number of dolls left over? A single nested doll consists of some dolls of increasing
-$R_i$ and $H_i$. If we sort the dolls by $H_i$ and only consider their $R_i$, then the answer is the minimum number of increasing subsequences
-needed to "cover" all the dolls.
+First, let's consider a single query - what's the minimum number of dolls left over? A single nested doll consists of some dolls of increasing $R_i$ and $H_i$. If we sort the dolls by $H_i$ and only consider their $R_i$, then the answer is the minimum number of increasing subsequences needed to "cover" all the dolls.
 
-It's well-known that the minimum number of increasing subsequences is equal to the longest non-increasing subsequence (see [the LIS module](/gold/lis/#application-2---minimum-number-of-increasing-sequences)
-for more details.) This gives us a way to answer a single query in $\mathcal O(N \log N)$ time!
+It's well-known that the minimum number of increasing subsequences is equal to the longest non-increasing subsequence (see [the LIS module](/gold/lis/#application-2---minimum-number-of-increasing-sequences) for more details.) This gives us a way to answer a single query in $\mathcal O(N \log N)$ time!
 
 But what if we need to answer multiple queries?
 
-Since we don't have to answer the queries online, let's sort them in decreasing order of $A_i$.
-If $B_i = \infty$ for each query, then we can simply do a line sweep on the dolls and queries,
-inserting dolls into the sequence and updating the longest non-increasing subsequence as we get to them.
+Since we don't have to answer the queries online, let's sort them in decreasing order of $A_i$. If $B_i = \infty$ for each query, then we can simply do a line sweep on the dolls and queries, inserting dolls into the sequence and updating the longest non-increasing subsequence as we get to them.
 
-For variable $B_i$s, we only want the longest non-increasing subsequence for some prefixes
-of the sequence of dolls (not the whole sequence like before). We can thus binary search on the DP
-array from finding the longest non-increasing subsequence to find this answer.
-This is because the DP array stores, for each $l$, the doll with the smallest
-$R_j$ with a non-increasing subsequence ending on it with length $l$.
+For variable $B_i$s, we only want the longest non-increasing subsequence for some prefixes of the sequence of dolls (not the whole sequence like before). We can thus binary search on the DP array from finding the longest non-increasing subsequence to find this answer. This is because the DP array stores, for each $l$, the doll with the smallest $R_j$ with a non-increasing subsequence ending on it with length $l$.
 
 ```cpp
 #include <bits/stdc++.h>

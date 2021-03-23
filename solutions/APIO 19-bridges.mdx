@@ -11,15 +11,14 @@ First, split the queries into blocks of about $\sqrt N$ queries. In each block, 
 
 - Split the bridges into two groups: **changed** and **unchanged**.
 - If we sort the calculations and unchanged bridges in decreasing order of weight, we can simply use DSU to find which nodes are connected from those bridges alone.
-    - These connected nodes are constant for all calculations in the current block
+  - These connected nodes are constant for all calculations in the current block
 - To handle the updates:
-    - Iterate over the queries in the current block (without sorting)
-    - If the query is an update, simply update the bridge's weight
-    - If the query is a calculation, iterate through each changed bridge and connect
-        the nodes if the weight limit is above the query's weight limit
-        - This works because this means the answer for the current query is dependent only on previous updates
-        - The key thing here is that we need a way to roll back DSU unions, since the set of "good" bridges may differ from query to query
-        - To achieve this, we simply use DSU with path balancing only and keep a stack of previous DSU operations
+  - Iterate over the queries in the current block (without sorting)
+  - If the query is an update, simply update the bridge's weight
+  - If the query is a calculation, iterate through each changed bridge and connect the nodes if the weight limit is above the query's weight limit
+    - This works because this means the answer for the current query is dependent only on previous updates
+    - The key thing here is that we need a way to roll back DSU unions, since the set of "good" bridges may differ from query to query
+    - To achieve this, we simply use DSU with path balancing only and keep a stack of previous DSU operations
 
 The complexity of this algorithm is thus $\mathcal{O}((Q + M) \sqrt Q)$. Some constant-factor optimization may be needed to get this to run in time though.
 

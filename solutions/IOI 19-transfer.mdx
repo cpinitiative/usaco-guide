@@ -5,7 +5,7 @@ title: Data Transfer
 author: Andi Qu
 ---
 
-Let's just focus on subtask 2, since subtask 1's solution is essentially the same. 
+Let's just focus on subtask 2, since subtask 1's solution is essentially the same.
 
 <Spoiler title="Hint 1">
 
@@ -37,13 +37,13 @@ Consider the number of 1s in $x$'s bitwise representation. If this number is odd
 
 ```cpp
 #include "transfer.h"
- 
+
 std::vector<int> get_attachment(std::vector<int> source) {
 	std::vector<int> v;
 	int x = 0;
 	for (int i = 0; i < source.size(); i++)
 		if (source[i]) x ^= (i + 1);
- 
+
 	int last = 0;
 	if (source.size() < 64) {
 		for (int i = 0; i < 6; i++) {
@@ -61,7 +61,7 @@ std::vector<int> get_attachment(std::vector<int> source) {
 	v.push_back(last);
 	return v;
 }
- 
+
 std::vector<int> retrieve(std::vector<int> data) {
 	int last = data.back();
 	data.pop_back();
@@ -81,17 +81,17 @@ std::vector<int> retrieve(std::vector<int> data) {
 			data.pop_back();
 		}
 	}
- 
+
 	if (actual_last != last) return std::vector<int>(data.begin(), data.end());
- 
+
 	int actual_x = 0;
 	for (int i = 0; i < data.size(); i++) {
 		if (data[i]) actual_x ^= (i + 1);
 	}
- 
+
 	int error = actual_x ^ x;
 	if (error == 0) return data;
- 
+
 	data[error - 1] = 1 - data[error - 1];
 	return data;
 }

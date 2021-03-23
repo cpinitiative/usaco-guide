@@ -9,26 +9,23 @@ author: Andi Qu
 
 We will use digit DP to solve this problem.
 
-Firstly, instead of finding the answer for the range $[a, b]$, find the answers for the ranges $[0, a - 1]$ and $[0, b]$ instead, and their
-difference will be the answer. (You'll find that one uses this technique for almost all digit DP problems).
+Firstly, instead of finding the answer for the range $[a, b]$, find the answers for the ranges $[0, a - 1]$ and $[0, b]$ instead, and their difference will be the answer. (You'll find that one uses this technique for almost all digit DP problems).
 
-Let $dp[i][j]$ be the number of good integers with $i$ digits and the $i$-th digits is $j$. The recurrence is
-$dp[i][j] = \sum_{k = 0}^9 dp[i - 1][k] - dp[i - 1][j]$ and the base cases are $dp[1][j] = 1$ for each $j$. Computing DP by hand will show you
-that $dp[i][j] = 9^{i - 1}$.
+Let $dp[i][j]$ be the number of good integers with $i$ digits and the $i$-th digits is $j$. The recurrence is $dp[i][j] = \sum_{k = 0}^9 dp[i - 1][k] - dp[i - 1][j]$ and the base cases are $dp[1][j] = 1$ for each $j$. Computing DP by hand will show you that $dp[i][j] = 9^{i - 1}$.
 
 How do we count the number of good integers not greater than some given $x$ with $d$ digits though? We have two cases:
+
 - The good integer has $d' < d$ digits.
 - The good integer has $d' = d$ digits.
 
 Any good integer falling under the first case will be counted in the answer, so this case contributes exactly $\sum_{i = 0}^{d - 2}9^i$ to the answer.
 
 The second case is a bit trickier though. The key observation is that any good $y$ not greater than $x$ falling under this case satisfies two conditions:
+
 - $x$ and $y$ share a common prefix of length $0 \leq i \leq d$ without any equal neighbouring digits.
 - The $(i + 1)$-th digit of $y$ is less than the $(i + 1)$-th digits of $x$.
 
-This means that for each fixed (good) prefix of $x$'s digits, we can count the number of good $y$ with that prefix! If the $i$-th digits of $x$ is
-$s_i$, then it contributes $s_i \cdot 9^{d - i}$ to the answer. If $s_i > s_{i - 1}$ though, then we must also subtract $9^{d - i}$ from the answer
-to prevent two consecutive digits from being equal.
+This means that for each fixed (good) prefix of $x$'s digits, we can count the number of good $y$ with that prefix! If the $i$-th digits of $x$ is $s_i$, then it contributes $s_i \cdot 9^{d - i}$ to the answer. If $s_i > s_{i - 1}$ though, then we must also subtract $9^{d - i}$ from the answer to prevent two consecutive digits from being equal.
 
 Since we can process each digit of $a$ and $b$ in $\mathcal O(1)$ time, this solution works in $\mathcal O(\log b)$ time.
 

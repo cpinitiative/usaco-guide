@@ -8,7 +8,6 @@ prerequisites:
 frequency: 2
 ---
 
-
 export const problems = {
 	sample: [
 		new Problem(
@@ -84,7 +83,6 @@ export const problems = {
 
 <!-- [convex hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms). -->
 
-
 ## Introduction
 
 The **Convex Hull** is the subset of points that forms the smallest convex polygon which encloses all points in the set. To visualize this, imagine that each point is a pole. Then, imagine what happens if you were to wrap a rope around the outside of all the poles, and then pull infinitely hard, such that the connections between any two points that lie on the edge of the rope are lines. The set of points that touch the rope is the convex hull.
@@ -100,31 +98,48 @@ The **Convex Hull** is the subset of points that forms the smallest convex polyg
 ## With Graham Scan
 
 <Resources>
-	<Resource source="Wikipedia" title="Graham Scan" url="https://en.wikipedia.org/wiki/Graham_scan" />
-	<Resource source="VisuAlgo" title="Graham Scan Visualization" url="https://visualgo.net/en/convexhull" />
-	<Resource source="UCSD" title="Original Graham Scan Paper" url="http://www.math.ucsd.edu/~ronspubs/72_10_convex_hull.pdf" />
+	<Resource
+		source="Wikipedia"
+		title="Graham Scan"
+		url="https://en.wikipedia.org/wiki/Graham_scan"
+	/>
+	<Resource
+		source="VisuAlgo"
+		title="Graham Scan Visualization"
+		url="https://visualgo.net/en/convexhull"
+	/>
+	<Resource
+		source="UCSD"
+		title="Original Graham Scan Paper"
+		url="http://www.math.ucsd.edu/~ronspubs/72_10_convex_hull.pdf"
+	/>
 </Resources>
 
-<Youtube id="9rQMLpQn5xQ"/>
+<Youtube id="9rQMLpQn5xQ" />
 
 ### Solution
 
 <Resources>
-	<Resource source="Benq" title="Graham Scan Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h" />
+	<Resource
+		source="Benq"
+		title="Graham Scan Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull2.h"
+	/>
 </Resources>
 
 <LanguageSection>
 
 <CPPSection>
 
-The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the leftmost (and bottommost if there is a tie), point as $P_0$. 
+The Graham Scan algorithm works in 3 steps. First, it sorts all of the $n$ points by their counterclockwise angle around a pivot $P_0$, breaking ties by distance. This algorithm uses the leftmost (and bottommost if there is a tie), point as $P_0$.
 
 We maintain a stack containing the points such that the following invariant holds: every three consecutive points $a,b,c$ of the stack form a counterclockwise turn. In other words, $c$ lies to the left of the line from $a$ to $b$. This condition implies that the points of the stack form the vertices of a convex polygon.
 
 To start the creation of the convex hull, we choose 2 points. The pivot (first point), and the second point based on our initial sorting. After that, we attempt to add each point in $\texttt{cand}$ to the stack.
 
-Denote our stack as $\texttt{hull}$, the top element of $\texttt{hull}$ as $\texttt{hull}[i]$ and $\texttt{cand}[j]$ as the $j$-th sorted candidate point. Before adding $\texttt{cand}[j]$ to the stack, we check whether $\texttt{hull}[i-1] \rightarrow \texttt{hull}[i] \rightarrow \texttt{cand}[j]$ forms a counterclockwise turn. 
- - If so, then we add $\texttt{cand}[j]$ to the stack and the invariant holds. Continue with $\texttt{cand}[j+1]$. 
+Denote our stack as $\texttt{hull}$, the top element of $\texttt{hull}$ as $\texttt{hull}[i]$ and $\texttt{cand}[j]$ as the $j$-th sorted candidate point. Before adding $\texttt{cand}[j]$ to the stack, we check whether $\texttt{hull}[i-1] \rightarrow \texttt{hull}[i] \rightarrow \texttt{cand}[j]$ forms a counterclockwise turn.
+
+- If so, then we add $\texttt{cand}[j]$ to the stack and the invariant holds. Continue with $\texttt{cand}[j+1]$.
 - Otherwise, $\texttt{hull}[i]$ lies within the convex hull of the other points in the stack along with $\texttt{cand}[j]$, so we pop $\texttt{hull}[i]$ from the stack and continue with $\texttt{cand}[j]$.
 
 <Spoiler title="Illustration">
@@ -147,25 +162,25 @@ Using the steps from our Graham Scan:
 
 2. Maintaining the stack:
 
-	Our initial stack elements are $(1,2),(2,0)$. Then, starting from $\texttt{cand}[2]$, we process each point.
+   Our initial stack elements are $(1,2),(2,0)$. Then, starting from $\texttt{cand}[2]$, we process each point.
 
-	First, we check if the turn between $(1,2), (2,0)$, and $(3,2)$, is counterclockwise, which it is. Hence, the point $\texttt{cand}[2]=(3,2)$ is inserted on our stack.
+   First, we check if the turn between $(1,2), (2,0)$, and $(3,2)$, is counterclockwise, which it is. Hence, the point $\texttt{cand}[2]=(3,2)$ is inserted on our stack.
 
-	Our stack now corresponds to the points: $(1,2),(2,0),(3,2)$.
+   Our stack now corresponds to the points: $(1,2),(2,0),(3,2)$.
 
-	Then, we check the turn $(2,0),(3,2),(6,2)$, which is clockwise. Hence, we pop the stack until the counterclockwise property can be satisfied. In this case, only $(3,2)$ is popped. Afterwards, we push $(6, 2)$ to our stack because it satisfies the counterclockwise property.
+   Then, we check the turn $(2,0),(3,2),(6,2)$, which is clockwise. Hence, we pop the stack until the counterclockwise property can be satisfied. In this case, only $(3,2)$ is popped. Afterwards, we push $(6, 2)$ to our stack because it satisfies the counterclockwise property.
 
-	Our stack now corresponds to the points: $(1,2),(2,0),(6,2)$.
+   Our stack now corresponds to the points: $(1,2),(2,0),(6,2)$.
 
-	Then, we check whether the turn between $(2,0), (6,2), (5,3)$ is counterclockwise, which it is, so we push $(5,3)$ to our stack.
+   Then, we check whether the turn between $(2,0), (6,2), (5,3)$ is counterclockwise, which it is, so we push $(5,3)$ to our stack.
 
-	Our stack now corresponds to the points: $(1,2),(2,0),(6,2),(5,3)$.
+   Our stack now corresponds to the points: $(1,2),(2,0),(6,2),(5,3)$.
 
-	Then, we check whether the turn between $(6,2),(5,3),(2,3)$ is counterclockwise, which it is, so we push $(2,3)$ to our stack.
+   Then, we check whether the turn between $(6,2),(5,3),(2,3)$ is counterclockwise, which it is, so we push $(2,3)$ to our stack.
 
-	Since we have processed all points, we have completed the cycle, and our convex hull is complete.
+   Since we have processed all points, we have completed the cycle, and our convex hull is complete.
 
-	Our stack now is then $(1,2),(2,0),(6,2),(5,3),(2,3)$, which are the vertices of the convex hull.
+   Our stack now is then $(1,2),(2,0),(6,2),(5,3),(2,3)$, which are the vertices of the convex hull.
 
 </Spoiler>
 
@@ -200,13 +215,13 @@ T sq(T a) { return a*a; } // square
 T norm(const P& p) { return sq(p.f)+sq(p.s); } // x^2 + y^2
 
 // basic operations
-P operator-(const P& l, const P& r) { 
-	return P(l.f-r.f,l.s-r.s); 
+P operator-(const P& l, const P& r) {
+	return P(l.f-r.f,l.s-r.s);
 }
 
 T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; } // cross product
 T cross(const P& p, const P& a, const P& b) { // cross product
-	return cross(a-p,b-p); 
+	return cross(a-p,b-p);
 }
 
 using vi = vector<int>;
@@ -227,7 +242,7 @@ vi hullInd(const vP& v) {
 		while (sz(hull) > 1 && cross(v[end(hull)[-2]],v[hull.bk],v[c]) <= 0) {
 			hull.pop_back(); // pop until counterclockwise and size > 1
 		}
-		hull.pb(c); 
+		hull.pb(c);
 	}
 
 	return hull;
@@ -243,7 +258,7 @@ int main()
 		int n; cin >> n;
 		if(!n) break;
 		vP pts(n);
-		
+
 		F0R(i, n) {
 			long long a, b;
 			cin >> a >> b;
@@ -251,7 +266,7 @@ int main()
 		}
 
 		vi ret = hullInd(pts); // gets hull indices of convex hull
-		
+
 		cout << sz(ret) << '\n';
 		trav(a, ret) {
 			cout << pts[a].first << " " << pts[a].second << '\n';
@@ -267,9 +282,22 @@ int main()
 ## With Monotone Chain
 
 <Resources>
-	<Resource source="CPH" title="Monotone Chain" url="https://usaco.guide/CPH.pdf#page=288" starred />
-	<Resource source="Wikipedia" title="Monotone Chain" url="https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain" />
-	<Resource source="Benq" title="Monotone Chain Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull%20(13.2).h" />
+	<Resource
+		source="CPH"
+		title="Monotone Chain"
+		url="https://usaco.guide/CPH.pdf#page=288"
+		starred
+	/>
+	<Resource
+		source="Wikipedia"
+		title="Monotone Chain"
+		url="https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain"
+	/>
+	<Resource
+		source="Benq"
+		title="Monotone Chain Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/geometry%20(13)/Polygons/ConvexHull%20(13.2).h"
+	/>
 </Resources>
 
 ### Solution

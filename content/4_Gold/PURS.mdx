@@ -8,8 +8,6 @@ description: 'Introduces Segment Tree, Binary Indexed Tree, and C++ Order Statis
 frequency: 3
 ---
 
-
-
 export const problems = {
 	sample: [
 		new Problem(
@@ -95,21 +93,54 @@ export const problems = {
 		),
 	],
 	usaco: [
-		new Problem('Gold', 'Haircut', '1041', 'Easy', true, ['PURS', 'Inversions'], 'usaco-1041'),
-		new Problem('Gold', 'Balanced Photo', '693', 'Easy', false, ['PURS', 'Inversions'], 'usaco-693'),
-		new Problem('Gold', 'Circle Cross', '719', 'Easy', false, ['PURS', 'Inversions'], ''),
-		new Problem('Gold', 'Sleepy Cow Sort',
-			'898',
+		new Problem(
+			'Gold',
+			'Haircut',
+			'1041',
 			'Easy',
+			true,
+			['PURS', 'Inversions'],
+			'usaco-1041'
+		),
+		new Problem(
+			'Gold',
+			'Balanced Photo',
+			'693',
+			'Easy',
+			false,
+			['PURS', 'Inversions'],
+			'usaco-693'
+		),
+		new Problem(
+			'Gold',
+			'Circle Cross',
+			'719',
+			'Easy',
+			false,
+			['PURS', 'Inversions'],
+			''
+		),
+		new Problem('Gold', 'Sleepy Cow Sort', '898', 'Easy', false, ['PURS'], ''),
+		new Problem(
+			'Plat',
+			'Mincross',
+			'720',
+			'Easy',
+			false,
+			['PURS', 'Inversions'],
+			''
+		),
+		new Problem(
+			'Old Gold',
+			'Cow Hopscotch',
+			'532',
+			'Hard',
 			false,
 			['PURS'],
 			''
 		),
-		new Problem('Plat', 'Mincross', '720', 'Easy', false, ['PURS', 'Inversions'], ''),
-		new Problem('Old Gold', 'Cow Hopscotch', '532', 'Hard', false, ['PURS'], ''),
 	],
 };
-
 
 <!-- 	new Problem(
 		'YS',
@@ -150,7 +181,6 @@ Both **segment trees** and **binary indexed trees** can accomplish this.
 
 A **segment tree** allows you to do point update and range query in $\mathcal{O}(\log N)$ time each for **any** associative operation, not just summation.
 
-
 ### Resources
 
 <Info title="Pro Tip">
@@ -160,7 +190,14 @@ You can skip more advanced applications such as **lazy propagation** for now. Th
 </Info>
 
 <Resources>
-	<Resource source="CF" title="EDU: Segment Tree Pt 1 Steps 1, 3, 4" url="https://codeforces.com/edu/course/2/lesson/4/1" starred>basic operations, inversion counting</Resource>
+	<Resource
+		source="CF"
+		title="EDU: Segment Tree Pt 1 Steps 1, 3, 4"
+		url="https://codeforces.com/edu/course/2/lesson/4/1"
+		starred
+	>
+		basic operations, inversion counting
+	</Resource>
 	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
 		Interactive updates.
 	</Resource>
@@ -399,7 +436,7 @@ Implementation is shorter than segment tree, but maybe more confusing at first g
 	></Resource>
 </Resources>
 
-<!-- 
+<!--
 
 ### Implementations
 
@@ -527,11 +564,11 @@ template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
 	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
 		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
 	template<typename... Args> T sum(int r, Args... args) {
-		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
+		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...);
 		return res; }
-	template<typename... Args> T query(int l, int r, Args... 
+	template<typename... Args> T query(int l, int r, Args...
 		args) { return sum(r,args...)-sum(l-1,args...); }
-}; 
+};
 
 BIT<ll,MX> B;
 int N,Q;
@@ -649,7 +686,7 @@ Note that if it were not the case that all elements of the input array were dist
 
 <JavaSection>
 
-Using a binary indexed tree, we can count the number of inversions. 
+Using a binary indexed tree, we can count the number of inversions.
 
 ```java
 import java.util.*;

@@ -16,29 +16,29 @@ First, we run a max flow algorithm on the graph. Then, we run another BFS from n
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using vi = vector<int>;
 #define f first
 #define s second
 #define pb push_back
 #define all(x) begin(x), end(x)
- 
+
 #define F0R(i,a) for(int i=0; i<(a); i++)
 #define FOR(i,a,b) for(int i=(a); i<=(b); i++)
 #define R0F(i,a) for(int i=(a)-1; i>=0; i--)
 #define ROF(i,a,b) for(int i=(b); i>=a; i--)
 #define trav(a,x) for (auto& a: x)
- 
+
 int n, m;
 ll adj[501][501], oadj[501][501];
- 
+
 ll flow[501];
 bool V[501];
 int pa[501];
 using pii = pair<int, int>;
 vector<pii> ans;
- 
+
 bool reachable() {
 	memset(V, false, sizeof(V));
 	queue<int> Q; Q.push(1); V[1]=1;
@@ -49,7 +49,7 @@ bool reachable() {
 	}
 	return V[n];
 }
- 
+
 int main() {
 	cin >> n >> m;
 	FOR(i,1,n) FOR(j,1,n) adj[i][j]=oadj[i][j]=0;

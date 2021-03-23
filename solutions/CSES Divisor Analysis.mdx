@@ -30,8 +30,7 @@ We can calculate each $S_i$ using fast exponentiation and modular inverses in $\
 
 ## Product of divisors
 
-Let the product and number of divisors when only considering the first $i$ prime factors
-be $P_i$ and $C_i$ respectively. The answer will be $P_N$.
+Let the product and number of divisors when only considering the first $i$ prime factors be $P_i$ and $C_i$ respectively. The answer will be $P_N$.
 
 $$
 \begin{aligned}
@@ -39,11 +38,9 @@ P_i &= P_{i - 1}^{k_i + 1} \left(x_i^{k_i(k_i + 1)/2} \right)^{C_{i - 1}}
 \end{aligned}
 $$
 
-Again, we can calculate each $P_i$ using fast exponentiation in $\mathcal O(N \log(\max(k_i)))$ time, but there's a catch!
-It might be tempting to use $C_{i - 1}$ from your previously-calculated values in part 1 of this problem, but those values will yield wrong answers.
+Again, we can calculate each $P_i$ using fast exponentiation in $\mathcal O(N \log(\max(k_i)))$ time, but there's a catch! It might be tempting to use $C_{i - 1}$ from your previously-calculated values in part 1 of this problem, but those values will yield wrong answers.
 
-This is because $a^b \not \equiv a^{b \bmod p} \pmod{p}$ in general. However, by Fermat's little theorem,
-$a^b \equiv a^{b \bmod (p - 1)} \pmod{p}$ for prime $p$, so we can just store $C_i$ modulo $10^9 + 6$ to calculate $P_i$.
+This is because $a^b \not \equiv a^{b \bmod p} \pmod{p}$ in general. However, by Fermat's little theorem, $a^b \equiv a^{b \bmod (p - 1)} \pmod{p}$ for prime $p$, so we can just store $C_i$ modulo $10^9 + 6$ to calculate $P_i$.
 
 <LanguageSection>
 

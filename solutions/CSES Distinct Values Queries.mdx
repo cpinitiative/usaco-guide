@@ -19,17 +19,17 @@ Answer queries in order of the right indices. Use a BIT to keep track of indices
 
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 const int MX = 4e5 + 5;
- 
+
 int bit[MX];
 int n, q, sol[MX];
 vector<pair<int, int>> query[MX];
 vector<int> x(MX);
 map<int, int> fst;
- 
+
 int qry (int i) {
 	int res = 0;
 	for (; i; i -= i&(-i)) {
@@ -37,13 +37,13 @@ int qry (int i) {
 	}
 	return res;
 }
- 
+
 void upd (int i, int val) {
 	for (; i <= n; i += i&(-i)) {
 		bit[i] += val;
 	}
 }
- 
+
 int main () {
 	cin >> n >> q;
 	for (int i = 0; i < n; i++) {
@@ -70,4 +70,3 @@ int main () {
 ```
 
 </Spoiler>
-

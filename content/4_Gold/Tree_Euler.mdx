@@ -99,7 +99,7 @@ export const problems = {
 			false,
 			['Euler-Tree', 'PURS'],
 			''
-		)
+		),
 	],
 };
 
@@ -125,7 +125,13 @@ If we can preprocess a rooted tree such that every subtree corresponds to a cont
 	<Resource source="CPH" title="18.2 - Subtrees & Paths" starred>
 		introduces tree traversal array, how to solve above problem
 	</Resource>
-	<Resource source="SecondThread" title="Tree Basics - Tree Flattening" url="https://codeforces.com/blog/entry/81527"> </Resource>
+	<Resource
+		source="SecondThread"
+		title="Tree Basics - Tree Flattening"
+		url="https://codeforces.com/blog/entry/81527"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 ### Implementation
@@ -184,100 +190,246 @@ public static void dfs(int i, int p) {
 2 3
 ```
 
-Our example input corresponds to the following graph: 
+Our example input corresponds to the following graph:
 
 <center>
 
-<svg style="isolation:isolate" className='stroke-current fill-current text-black dark:text-white' viewBox="540 200 747 532" height="240pt">
-  <defs>
-    <clipPath id="a">
-      <path d="M540 200h747v532H540z"/>
-    </clipPath>
-  </defs>
-  <g clip-path="url(#a)">
-    <mask id="b">
-      <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="#fff"/>
-    </mask>
-    <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="none"/>
-    <circle vector-effect="non-scaling-stroke" cx="894.5" cy="377.5" r="64.5" fill="none" mask="url(#b)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
-    <g clip-path="url(#c)">
-      <text transform="translate(879.5 396.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
-        1
-      </text>
-    </g>
-    <defs>
-      <clipPath id="c">
-        <path transform="translate(879.5 344.816)" d="M0 0h30v65.367H0z"/>
-      </clipPath>
-    </defs>
-    <mask id="d">
-      <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="#fff"/>
-    </mask>
-    <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="none"/>
-    <circle vector-effect="non-scaling-stroke" cx="604.5" cy="264.5" r="64.5" fill="none" mask="url(#d)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
-    <g clip-path="url(#e)">
-      <text transform="translate(589.5 283.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
-        2
-      </text>
-    </g>
-    <defs>
-      <clipPath id="e">
-        <path transform="translate(589.5 231.816)" d="M0 0h30v65.367H0z"/>
-      </clipPath>
-    </defs>
-    <g>
-      <mask id="f">
-        <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="#fff"/>
-      </mask>
-      <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="none"/>
-      <circle vector-effect="non-scaling-stroke" cx="1222.5" cy="336.5" r="64.5" fill="none" mask="url(#f)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
-      <g clip-path="url(#g)">
-        <text transform="translate(1207.5 355.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
-          5
-        </text>
-      </g>
-      <defs>
-        <clipPath id="g">
-          <path transform="translate(1207.5 303.816)" d="M0 0h30v65.367H0z"/>
-        </clipPath>
-      </defs>
-    </g>
-    <g>
-      <mask id="h">
-        <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="#fff"/>
-      </mask>
-      <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="none"/>
-      <circle vector-effect="non-scaling-stroke" cx="782.5" cy="667.5" r="64.5" fill="none" mask="url(#h)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
-      <g clip-path="url(#i)">
-        <text transform="translate(767.5 686.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
-          4
-        </text>
-      </g>
-      <defs>
-        <clipPath id="i">
-          <path transform="translate(767.5 634.816)" d="M0 0h30v65.367H0z"/>
-        </clipPath>
-      </defs>
-    </g>
-    <g>
-      <mask id="j">
-        <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="#fff"/>
-      </mask>
-      <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="none"/>
-      <circle vector-effect="non-scaling-stroke" cx="1119.5" cy="667.5" r="64.5" fill="none" mask="url(#j)" stroke-width="10" stroke-linecap="square" stroke-miterlimit="3"/>
-      <g clip-path="url(#k)">
-        <text transform="translate(1104.5 686.121)" font-family="Arial, Helvetica" font-weight="700" font-size="48">
-          3
-        </text>
-      </g>
-      <defs>
-        <clipPath id="k">
-          <path transform="translate(1104.5 634.816)" d="M0 0h30v65.367H0z"/>
-        </clipPath>
-      </defs>
-    </g>
-    <path vector-effect="non-scaling-stroke" stroke-width="5" stroke-linecap="square" stroke-miterlimit="3" d="M835 356l-174-63M1058 674l-212-3M1085 615L938 420M1141 610l69-213"/>
-  </g>
+<svg
+	style="isolation:isolate"
+	className="stroke-current fill-current text-black dark:text-white"
+	viewBox="540 200 747 532"
+	height="240pt"
+>
+	<defs>
+		<clipPath id="a">
+			<path d="M540 200h747v532H540z" />
+		</clipPath>
+	</defs>
+	<g clip-path="url(#a)">
+		<mask id="b">
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="894.5"
+				cy="377.5"
+				r="64.5"
+				fill="#fff"
+			/>
+		</mask>
+		<circle
+			vector-effect="non-scaling-stroke"
+			cx="894.5"
+			cy="377.5"
+			r="64.5"
+			fill="none"
+		/>
+		<circle
+			vector-effect="non-scaling-stroke"
+			cx="894.5"
+			cy="377.5"
+			r="64.5"
+			fill="none"
+			mask="url(#b)"
+			stroke-width="10"
+			stroke-linecap="square"
+			stroke-miterlimit="3"
+		/>
+		<g clip-path="url(#c)">
+			<text
+				transform="translate(879.5 396.121)"
+				font-family="Arial, Helvetica"
+				font-weight="700"
+				font-size="48"
+			>
+				1
+			</text>
+		</g>
+		<defs>
+			<clipPath id="c">
+				<path transform="translate(879.5 344.816)" d="M0 0h30v65.367H0z" />
+			</clipPath>
+		</defs>
+		<mask id="d">
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="604.5"
+				cy="264.5"
+				r="64.5"
+				fill="#fff"
+			/>
+		</mask>
+		<circle
+			vector-effect="non-scaling-stroke"
+			cx="604.5"
+			cy="264.5"
+			r="64.5"
+			fill="none"
+		/>
+		<circle
+			vector-effect="non-scaling-stroke"
+			cx="604.5"
+			cy="264.5"
+			r="64.5"
+			fill="none"
+			mask="url(#d)"
+			stroke-width="10"
+			stroke-linecap="square"
+			stroke-miterlimit="3"
+		/>
+		<g clip-path="url(#e)">
+			<text
+				transform="translate(589.5 283.121)"
+				font-family="Arial, Helvetica"
+				font-weight="700"
+				font-size="48"
+			>
+				2
+			</text>
+		</g>
+		<defs>
+			<clipPath id="e">
+				<path transform="translate(589.5 231.816)" d="M0 0h30v65.367H0z" />
+			</clipPath>
+		</defs>
+		<g>
+			<mask id="f">
+				<circle
+					vector-effect="non-scaling-stroke"
+					cx="1222.5"
+					cy="336.5"
+					r="64.5"
+					fill="#fff"
+				/>
+			</mask>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="1222.5"
+				cy="336.5"
+				r="64.5"
+				fill="none"
+			/>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="1222.5"
+				cy="336.5"
+				r="64.5"
+				fill="none"
+				mask="url(#f)"
+				stroke-width="10"
+				stroke-linecap="square"
+				stroke-miterlimit="3"
+			/>
+			<g clip-path="url(#g)">
+				<text
+					transform="translate(1207.5 355.121)"
+					font-family="Arial, Helvetica"
+					font-weight="700"
+					font-size="48"
+				>
+					5
+				</text>
+			</g>
+			<defs>
+				<clipPath id="g">
+					<path transform="translate(1207.5 303.816)" d="M0 0h30v65.367H0z" />
+				</clipPath>
+			</defs>
+		</g>
+		<g>
+			<mask id="h">
+				<circle
+					vector-effect="non-scaling-stroke"
+					cx="782.5"
+					cy="667.5"
+					r="64.5"
+					fill="#fff"
+				/>
+			</mask>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="782.5"
+				cy="667.5"
+				r="64.5"
+				fill="none"
+			/>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="782.5"
+				cy="667.5"
+				r="64.5"
+				fill="none"
+				mask="url(#h)"
+				stroke-width="10"
+				stroke-linecap="square"
+				stroke-miterlimit="3"
+			/>
+			<g clip-path="url(#i)">
+				<text
+					transform="translate(767.5 686.121)"
+					font-family="Arial, Helvetica"
+					font-weight="700"
+					font-size="48"
+				>
+					4
+				</text>
+			</g>
+			<defs>
+				<clipPath id="i">
+					<path transform="translate(767.5 634.816)" d="M0 0h30v65.367H0z" />
+				</clipPath>
+			</defs>
+		</g>
+		<g>
+			<mask id="j">
+				<circle
+					vector-effect="non-scaling-stroke"
+					cx="1119.5"
+					cy="667.5"
+					r="64.5"
+					fill="#fff"
+				/>
+			</mask>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="1119.5"
+				cy="667.5"
+				r="64.5"
+				fill="none"
+			/>
+			<circle
+				vector-effect="non-scaling-stroke"
+				cx="1119.5"
+				cy="667.5"
+				r="64.5"
+				fill="none"
+				mask="url(#j)"
+				stroke-width="10"
+				stroke-linecap="square"
+				stroke-miterlimit="3"
+			/>
+			<g clip-path="url(#k)">
+				<text
+					transform="translate(1104.5 686.121)"
+					font-family="Arial, Helvetica"
+					font-weight="700"
+					font-size="48"
+				>
+					3
+				</text>
+			</g>
+			<defs>
+				<clipPath id="k">
+					<path transform="translate(1104.5 634.816)" d="M0 0h30v65.367H0z" />
+				</clipPath>
+			</defs>
+		</g>
+		<path
+			vector-effect="non-scaling-stroke"
+			stroke-width="5"
+			stroke-linecap="square"
+			stroke-miterlimit="3"
+			d="M835 356l-174-63M1058 674l-212-3M1085 615L938 420M1141 610l69-213"
+		/>
+	</g>
 </svg>
 
 </center>
@@ -287,19 +439,34 @@ Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with 
 **Current timer value: 0**
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
-</tr>
-<tr>
-<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer value of $0$. Then, we proceed to call $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$.
@@ -307,19 +474,34 @@ Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer v
 **Current timer value: 1**
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td className='bg-green-100 dark:bg-green-700'>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
-</tr>
-<tr>
-<td>en[i]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td className="bg-green-100 dark:bg-green-700">0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not matter which order we process these in, so for this example, we start with $\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{st}[2]$ to 1 and increment the timer. However, because node $2$ has no children, we don't call $\text{dfs}$. Instead, we set $\texttt{en}[2]$ to 1 because our current timer is now 2.
@@ -327,19 +509,34 @@ Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not matte
 **Current timer value: 2**
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td>0</td><td className='bg-green-100 dark:bg-green-700'>1</td><td>0</td><td>0</td><td>0</td>
-</tr>
-<tr>
-<td>en[i]</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>1</td><td>0</td><td>0</td><td>0</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td className="bg-green-100 dark:bg-green-700">1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td className="bg-red-100 dark:bg-red-700">1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set $\texttt{st}[3]$ to the value of the timer (2 in this case) and increment the timer. Then, we proceed to make the calls $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$.
@@ -347,19 +544,34 @@ Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set $\texttt{st}[3
 **Current timer value: 3**
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td>0</td><td>1</td><td className='bg-green-100 dark:bg-green-700'>2</td><td>0</td><td>0</td>
-</tr>
-<tr>
-<td>en[i]</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td className="bg-green-100 dark:bg-green-700">2</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 Now we must resolve $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$. First, we resolve $\text{dfs}(4, 3)$ by setting $\texttt{st}[4]$ to the value of the timer (3 in this case) and incrementing the timer. Then, since node $4$ has no children, set $\texttt{en}[4]$ to 3.
@@ -369,37 +581,67 @@ Now the value of the timer is 4, and we must resolve $\text{dfs}(5, 3)$. Similar
 **Current timer value: 5**
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td>0</td><td>1</td><td>2</td><td className='bg-green-100 dark:bg-green-700'>3</td><td className='bg-green-100 dark:bg-green-700'>4</td>
-</tr>
-<tr>
-<td>en[i]</td><td>0</td><td>1</td><td>0</td><td className='bg-red-100 dark:bg-red-700'>3</td><td className='bg-red-100 dark:bg-red-700'>4</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td className="bg-green-100 dark:bg-green-700">3</td>
+				<td className="bg-green-100 dark:bg-green-700">4</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>0</td>
+				<td className="bg-red-100 dark:bg-red-700">3</td>
+				<td className="bg-red-100 dark:bg-red-700">4</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$ calls. We first encounter and resolve node $3$, setting $\texttt{en}[3]$ to 4. We then do the same for node $1$, setting $\texttt{en}[1]$ to 4. Our DFS traversal is now complete.
 
 <center>
-<table className="text-center">
-<tbody>
-<tr>
-<td>Node Index</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
-</tr>
-<tr>
-<td>st[i]</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
-</tr>
-<tr>
-<td>en[i]</td><td className='bg-red-100 dark:bg-red-700'>5</td><td>1</td><td className='bg-red-100 dark:bg-red-700'>4</td><td>3</td><td>4</td>
-</tr>
-</tbody>
-</table>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node Index</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>st[i]</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+			<tr>
+				<td>en[i]</td>
+				<td className="bg-red-100 dark:bg-red-700">5</td>
+				<td>1</td>
+				<td className="bg-red-100 dark:bg-red-700">4</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 ### Solution - Subtree Queries
@@ -415,21 +657,21 @@ Assumes that `dfs()` code is included. Uses a segment tree.
  * Description: 1D point update, range query where \texttt{comb} is
 	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
  * Time: O(\log N)
- * Source: 
+ * Source:
 	* http://codeforces.com/blog/entry/18051
 	* KACTL
  * Verification: SPOJ Fenwick
  */
 
 template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; } 
+	const T ID = 0; T comb(T a, T b) { return a+b; }
 	int n; vector<T> seg;
 	void init(int _n) { n = _n; seg.assign(2*n,ID); }
 	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
 	void upd(int p, T val) { // set val at position p
 		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
 	T query(int l, int r) {	// sum on interval [l, r]
-		T ra = ID, rb = ID; 
+		T ra = ID, rb = ID;
 		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
 			if (l&1) ra = comb(ra,seg[l++]);
 			if (r&1) rb = comb(seg[--r],rb);
@@ -477,24 +719,24 @@ public class Main {
 	public static int[] en;
 	public static int timer, n;
 	public static ArrayList<Integer> g[];
-   
+
 	//Segtree code
 	public static final int N = (int)1e5;  // limit for array size
-	public static long t[] = new long[2*N]; 
+	public static long t[] = new long[2*N];
 
 	public static void update(int p, long value) {  // set value at position p
 		for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
 	}
 
-	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED) 
+	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
 		long res = 0;
 		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
 			if ((l&1) != 0) res += t[l++];
 			if ((r&1) != 0) res += t[--r];
 		}
 		return res;
-	} 
-   
+	}
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
@@ -637,22 +879,22 @@ public class LCA {
 	public static int[] euler_tour, tin;
 	public static int timer, size, N;
 	public static ArrayList<Integer> g[];
-   
+
    	//Segtree code
 	public static final int maxsize = (int)1e7;  // limit for array size
-	public static int t[] = new int[maxsize]; 
+	public static int t[] = new int[maxsize];
 
 	public static void update(int p, int value) {  // set value at position p
 		for (t[p += size] = value; p > 1; p >>= 1) t[p>>1] = mn_tin(t[p], t[p^1]);
 	}
-	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED) 
+	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
 		int res = N;
 		for (l += size, r += size; l < r; l >>= 1, r >>= 1) {
 			if ((l&1) != 0) res = mn_tin(res, t[l++]);
 			if ((r&1) != 0) res = mn_tin(res, t[--r]);
 		}
 		return res;
-	} 
+	}
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
@@ -688,12 +930,12 @@ public class LCA {
 		for (int next : g[i]) {
 			if(next != p){
 				dfs(next, i);
-				euler_tour[timer++] = i;   
+				euler_tour[timer++] = i;
 			}
 		}
 	}
 	public static int lca(int a, int b) {
-		if(tin[a] > tin[b]) { 
+		if(tin[a] > tin[b]) {
 			int temp = a;
 			a = b;
 			b = temp;
@@ -726,7 +968,12 @@ The above code does $\mathcal{O}(N)$ time preprocessing and allows LCA queries i
 ### Resources
 
 <Resources>
-	<Resource source="CPH" title="9.1 - Minimum Queries" url="/CPH.pdf#page=95" starred>
+	<Resource
+		source="CPH"
+		title="9.1 - Minimum Queries"
+		url="/CPH.pdf#page=95"
+		starred
+	>
 		diagrams
 	</Resource>
 	<Resource source="PAPS" title="11.2.2 - Sparse Tables" starred>
@@ -745,12 +992,11 @@ The above code does $\mathcal{O}(N)$ time preprocessing and allows LCA queries i
 
 From CPH:
 
-> There are also more sophisticated techniques where the preprocessing time is only $\mathcal{O}(N)$, but such
-algorithms are not needed in competitive programming.
+> There are also more sophisticated techniques where the preprocessing time is only $\mathcal{O}(N)$, but such algorithms are not needed in competitive programming.
 
 Ex. the following:
 
- - [CF: $\mathcal{O}(1)$ Query RMQ with $\mathcal{O}(N)$ build](https://codeforces.com/blog/entry/78931)
+- [CF: $\mathcal{O}(1)$ Query RMQ with $\mathcal{O}(N)$ build](https://codeforces.com/blog/entry/78931)
 
 </Optional>
 

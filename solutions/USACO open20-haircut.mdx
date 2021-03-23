@@ -5,10 +5,9 @@ title: Haircut
 author: Jeffrey Meng
 ---
 
-
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_haircut_gold_open20.html)
 
-First, we need to count the number of inversions. (Fun fact: the number of inversions is also a measure of how sorted an array is. If an array has 0 inversions, it's perfectly sorted in ascending order. Conversely, if it has the maximum possible number of inversions, the array is perfectly sorted in descending order.) 
+First, we need to count the number of inversions. (Fun fact: the number of inversions is also a measure of how sorted an array is. If an array has 0 inversions, it's perfectly sorted in ascending order. Conversely, if it has the maximum possible number of inversions, the array is perfectly sorted in descending order.)
 
 One way to count inversions is to use a binary indexed tree. Think of an inversion as a pair of values $a, b$, with $a > b$ and $a$ appearing before $b$ in the array. Then we can easily compute, for each value in the array, the number of inversions for which it is $b$.
 
@@ -19,13 +18,12 @@ That leads us to this algorithm:
 1. Initialize a BIT so that the frequency of each value is 0.
 2. Create an array `inversions`. `inversions[b]` will store the number of inversion pairs with the second value being $b$
 3. For each hair $h$ in the order it appears in the array (with $h$ being the length of the hair):
-    1. Count the number of taller hairs that appear before hair $h$ in the array (which is, at this point in time, just the frequencies of all values greater than $h$). Store this in `inversions[h]`.
-    2. Increment the frequency of $h$ in the BIT.
+   1. Count the number of taller hairs that appear before hair $h$ in the array (which is, at this point in time, just the frequencies of all values greater than $h$). Store this in `inversions[h]`.
+   2. Increment the frequency of $h$ in the BIT.
 
 The number of inversions would then be the sum of all the values we computed in step 3.1. However, we also need to consider the haircuts. If we cut all hairs greater than length $n$ to $n$, what does that mean? It means that there can be no inversions with a $b \geq n$, because the definition of an inversion is that $a > b$, but if $b \geq n$ then $a > n$ must also be true. However, if this is true, then both $a$ and $b$ would have been cut to length $n$, and $(a, b)$ would no longer be an inversion.
 
 Thus, the number of inversions if all hairs greater than $n$ are cut to length $n$ is simply the sum of the first $n - 1$ elements of the inversions array (if $n$ is 0 then all hairs are 0 units long, so there are 0 inversions for $n = 0$). This is basically just the prefix sum of the `inversions` array.
-
 
 <LanguageSection>
 <JavaSection>

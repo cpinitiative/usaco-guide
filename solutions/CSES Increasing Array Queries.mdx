@@ -10,12 +10,14 @@ author: Andi Qu
 In this problem, we can answer the queries offline (i.e. read in the queries and process them in a different order). More specifically, we process queries in order of their left endpoints.
 
 First, let's think about how we'd answer a single query $(l, r)$. Consider the following algorithm:
+
 - Let $\texttt{mx}_0 = 0$ and $j = 0$.
 - For each $i$ in $[l, r]$:
-    - If $x_i > \texttt{mx}_j$, then set $\texttt{mx}_{j + 1} = x_i$ and increment $j$.
-    - Otherwise, add $\texttt{mx}_j - x_i$ to the answer.
+  - If $x_i > \texttt{mx}_j$, then set $\texttt{mx}_{j + 1} = x_i$ and increment $j$.
+  - Otherwise, add $\texttt{mx}_j - x_i$ to the answer.
 
 Notice how each $\texttt{mx}_j$ (except the last) contributes a fixed amount to the answer, regardless of $r$. If $\texttt{pref}$ is the prefix sum array of $x$ and $\texttt{idx}_j$ is the index of $\texttt{mx}_j$ in $x$, then this amount is
+
 $$
 (\texttt{idx}_{j + 1} - 1 - \texttt{idx}_j) \cdot \texttt{mx}_j - (\texttt{pref}_{\texttt{idx}_{j + 1} - 1} - \texttt{pref}_{\texttt{idx}_j})
 $$

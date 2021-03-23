@@ -35,16 +35,18 @@ Since $W$ can be so big though, we can only afford to check "interesting" x-coor
 
 Sort the trees by their x-coordinates and iterate through them. For the current tree $i$, let $p$ be the index of the leftmost tree that satisfies $x_{p} \geq r[x_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
 
-To update $p$, we increment $p$ until $p = N$ or 
+To update $p$, we increment $p$ until $p = N$ or
 
 $$
 x_p - x_i > \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree }c\text{ has } y_c \in (y_a, y_b)).
 $$
 
-As we increment $p$, we also check whether 
+As we increment $p$, we also check whether
+
 $$
 \min(x_p - x_i, \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree }c\text{ has } y_c \in (y_a, y_b)))
-$$ 
+$$
+
 is larger than our current maximum side length, and if so, we update our answer.
 
 We use a `std::set` and `std::multiset` to keep track of the trees and "gaps" between $x_i$ and $x_p$. See the solution for [CSES Bit Inversions](/silver/intro-ordered#harder-example---bit-inversions) for more details.

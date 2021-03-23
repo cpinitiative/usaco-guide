@@ -42,15 +42,7 @@ export const problems = {
 			[],
 			''
 		),
-		new Problem(
-			'CF',
-			'Bricks',
-			'1404/problem/E',
-			'Normal',
-			false,
-			[],
-			''
-		),
+		new Problem('CF', 'Bricks', '1404/problem/E', 'Normal', false, [], ''),
 		new Problem(
 			'CF',
 			'Goods Transportation',
@@ -77,7 +69,7 @@ export const problems = {
 			false,
 			[],
 			''
-		)
+		),
 	],
 };
 
@@ -89,9 +81,11 @@ The resources below include many clever applications of min cut, including the [
 	<Resource
 		source="CPC"
 		title="10 - Network Flow"
-		url="10_graphs_3_network_flow" starred
+		url="10_graphs_3_network_flow"
+		starred
 	>
-		Slides from "Algorithm Design." Min-Cut Max-Flow Theorem, applications of flow / min cut.
+		Slides from "Algorithm Design." Min-Cut Max-Flow Theorem, applications of
+		flow / min cut.
 	</Resource>
 </Resources>
 
@@ -109,11 +103,11 @@ The resources below include many clever applications of min cut, including the [
 
 This problem asks us to find a **minimum node cover** of a bipartite graph. Construct a flow graph with vertices labeled $0\ldots 2N+1$, source $0$, sink $2N+1$, and the following edges:
 
- - Edges from $0\to i$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th row.
- - Edges from $N+i\to 2N+1$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th column.
- - If there exists a coin in $(r,c)$ add an edge from $r\to N+c$ with capacity $\infty$.
+- Edges from $0\to i$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th row.
+- Edges from $N+i\to 2N+1$ with capacity $1$ for each $1\le i\le N$. Cutting the $i$-th such edge corresponds to choosing the $i$-th column.
+- If there exists a coin in $(r,c)$ add an edge from $r\to N+c$ with capacity $\infty$.
 
-First we find a max flow, which tells us the number of edges with capacity 1 we need to cut. To find the min cut itself, BFS from the source once more time. Edges $(a,b)$ connecting vertices that are reachable from the source (`lev[a] != -1`) to vertices that aren't (`lev[b] == -1`) are part of the minimum cut. In this case, each of these edges must be of the form $(0,i)$ or $(i+N,2N+1)$ for $1\le i\le N$. Each cut edge corresponds to a row or column we remove coins from. 
+First we find a max flow, which tells us the number of edges with capacity 1 we need to cut. To find the min cut itself, BFS from the source once more time. Edges $(a,b)$ connecting vertices that are reachable from the source (`lev[a] != -1`) to vertices that aren't (`lev[b] == -1`) are part of the minimum cut. In this case, each of these edges must be of the form $(0,i)$ or $(i+N,2N+1)$ for $1\le i\le N$. Each cut edge corresponds to a row or column we remove coins from.
 
 Note that edges of the form $r\to N+c$ can't be cut because they have capacity $\infty$.
 
@@ -124,17 +118,17 @@ struct Dinic { // flow template
 	int N; V<Edge> eds; V<vi> adj;
 	void init(int _N) { N = _N; adj.rsz(N), cur.rsz(N); }
 	/// void reset() { trav(e,eds) e.flo = 0; }
-	void ae(int u, int v, F cap, F rcap = 0) { assert(min(cap,rcap) >= 0); 
+	void ae(int u, int v, F cap, F rcap = 0) { assert(min(cap,rcap) >= 0);
 		adj[u].pb(sz(eds)); eds.pb({v,0,cap});
 		adj[v].pb(sz(eds)); eds.pb({u,0,rcap});
 	}
 	vi lev; V<vi::iterator> cur;
 	bool bfs(int s, int t) { // level = shortest distance from source
 		lev = vi(N,-1); F0R(i,N) cur[i] = begin(adj[i]);
-		queue<int> q({s}); lev[s] = 0; 
+		queue<int> q({s}); lev[s] = 0;
 		while (sz(q)) { int u = q.ft; q.pop();
 			trav(e,adj[u]) { const Edge& E = eds[e];
-				int v = E.to; if (lev[v] < 0 && E.flo < E.cap) 
+				int v = E.to; if (lev[v] < 0 && E.flo < E.cap)
 					q.push(v), lev[v] = lev[u]+1;
 			}
 		}
@@ -152,14 +146,14 @@ struct Dinic { // flow template
 		return 0;
 	}
 	F maxFlow(int s, int t) {
-		F tot = 0; while (bfs(s,t)) while (F df = 
+		F tot = 0; while (bfs(s,t)) while (F df =
 			dfs(s,t,numeric_limits<F>::max())) tot += df;
 		return tot;
 	}
 };
 
 int main() {
-	int n; re(n); 
+	int n; re(n);
 	Dinic D; D.init(2*n+2);
 	F0R(i,n) {
 		D.ae(0,i+1,1);
@@ -181,18 +175,21 @@ int main() {
 <FocusProblem problem={problems.pathEx[0]} />
 
 <Resources>
-	<Resource source="CPH" title="20.4 - Path Covers" starred>brief mentions of node-disjoint and general path covers, Dilworth's theorem</Resource>
+	<Resource source="CPH" title="20.4 - Path Covers" starred>
+		brief mentions of node-disjoint and general path covers, Dilworth's theorem
+	</Resource>
 	<Resource
 		source="Wikipedia"
 		title="Dilworth's Theorem"
 		url="https://en.wikipedia.org/wiki/Dilworth%27s_theorem#Proof_via_K%C5%91nig's_theorem"
-	>proof via Konig's theorem</Resource>
+	>
+		proof via Konig's theorem
+	</Resource>
 </Resources>
 
 ### Solution - The Wrath of Kahn
 
 Ignore all vertices of $G$ that can never be part of $S$. Then our goal is to find the size of a maximum antichain in the remaining graph, which as mentioned in CPH is just an instance of maximum path cover.
-
 
 ```cpp
 TopoSort<500> T;

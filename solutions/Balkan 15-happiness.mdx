@@ -24,14 +24,19 @@ Luckily, we can simply use a sparse segment tree instead!
 We still need to find a way to check whether the $x$ described above exists though.
 
 The key observation is that if we know that
+
 $$
 k \leq \sum_{i \in M, i \leq k}i
 $$
+
 for some $k$, then we also know that
+
 $$
 l \leq \sum_{i \in M, i \leq l}i
 $$
+
 for all $l \in (k, \sum_{i \in M, i \leq k}i]$. This is true because
+
 $$
 l \leq \sum_{i \in M, i \leq k}i \leq \sum_{i \in M, i \leq l}i
 $$
@@ -62,7 +67,7 @@ struct Node {
 				rc->update(p, v);
 			} else {
 				if (!lc) lc = new Node(l, mid);
-				lc->update(p, v);    
+				lc->update(p, v);
 			}
 		}
 	}
@@ -118,13 +123,13 @@ We can use multisets to store the elements in the buckets, so the complexity of 
 ```cpp
 #include "happiness.h"
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 using ll = long long;
 multiset<ll> todo[40];
 ll SUM[40];
- 
+
 void ad(ll x, int b) {
 	int p = 0; while ((1LL<<(p+1)) <= x) p ++;
 	if (b == 1) {
@@ -133,7 +138,7 @@ void ad(ll x, int b) {
 		todo[p].erase(todo[p].find(x)), SUM[p] -= x;
 	}
 }
- 
+
 bool ok() {
 	ll sum = 0;
 	for (int i = 0; i < 40; ++i) if (todo[i].size() > 0) {
@@ -144,12 +149,12 @@ bool ok() {
 	}
 	return 1;
 }
- 
+
 bool init(int coinsCount, long long maxCoinSize, long long coins[]) {
 	for (int i = 0; i < coinsCount; ++i) ad(coins[i],1);
 	return ok();
 }
- 
+
 bool is_happy(int event, int coinsCount, long long coins[]) {
 	for (int i = 0; i < coinsCount; ++i) {
 		if (event == -1) ad(coins[i],-1);

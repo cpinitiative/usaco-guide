@@ -43,7 +43,7 @@ void setIO(string name = "") {
 
 /**
  * Description: Disjoint Set Union with path compression
-	 * and union by size. Add edges and test connectivity. 
+	 * and union by size. Add edges and test connectivity.
 	 * Use for Kruskal's or Boruvka's minimum spanning tree.
  * Time: O(\alpha(N))
  * Source: CSAcademy, KACTL
@@ -52,7 +52,7 @@ void setIO(string name = "") {
 
 struct DSU {
 	vi e; void init(int N) { e = vi(N,-1); }
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); } 
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
 	bool unite(int x, int y) { // union by size
@@ -78,7 +78,7 @@ int main() {
 	for(int i = 1; i <= N; i++) { P[i] = i; trav[i].insert(i); }
 
 	for(int i = 0; i < K; i++) {
-		int a, b; cin >> a >> b; 
+		int a, b; cin >> a >> b;
 		// swap a and b, then add to whichever node visited those.
 
 		trav[P[a]].insert(b);
@@ -92,7 +92,7 @@ int main() {
 	dsu.init(N+1);
 
 	for(int i = 1; i <= N; i++) dsu.unite(i, P[i]);
-	for(int i = 1; i <= N; i++) 
+	for(int i = 1; i <= N; i++)
 		for(int a: trav[i]) components[dsu.get(i)].insert(a);
 
 	for(int i = 1; i <= N; i++) cout << components[dsu.get(i)].size() << "\n";

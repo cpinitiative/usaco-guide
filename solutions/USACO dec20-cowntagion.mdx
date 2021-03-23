@@ -61,15 +61,15 @@ public class Cowntagion {
 	}
 
 	// returns the smallest x such that 2^x >= n
-	private static int ceilLog2(int n) { 
+	private static int ceilLog2(int n) {
 		int count = 0;
-		int so_far = 1;  
-		while (so_far < n) { 
+		int so_far = 1;
+		while (so_far < n) {
 			so_far *= 2;
 			count++;
 		}
 		return count;
-	} 
+	}
 }
 ```
 
@@ -114,7 +114,6 @@ print(minDays)
 
 </LanguageSection>
 
-
 ## Solution 2 - DFS
 
 **Time Complexity**: $\mathcal O(N)$
@@ -125,7 +124,7 @@ print(minDays)
 
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -139,7 +138,7 @@ int dfs(int start, int parent) {
 	int ans = 0;
 	int cows = adj[start].size();
 	if (parent == -1) {
-		//parent node is currently root node 
+		//parent node is currently root node
 		cows++;
 	}
 
@@ -155,7 +154,7 @@ int dfs(int start, int parent) {
 
 	for (auto next : adj[start]) {
 		if (next != parent) {
-			ans += dfs(next, start) + 1; 
+			ans += dfs(next, start) + 1;
 		}
 	}
 	return ans;
@@ -174,6 +173,7 @@ int main() {
 	return 0;
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>

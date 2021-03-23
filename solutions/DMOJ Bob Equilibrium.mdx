@@ -7,16 +7,16 @@ author: Benjamin Qi
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-Using centroid decomposition, we can 
+Using centroid decomposition, we can
 
- - Update the value at some vertex $v$ in $\mathcal{O}(\log N)$ time
- - Query the sum of the values of all vertices that are distance exactly $d$ away from some vertex $v$ in $\mathcal{O}(\log N)$ time.
+- Update the value at some vertex $v$ in $\mathcal{O}(\log N)$ time
+- Query the sum of the values of all vertices that are distance exactly $d$ away from some vertex $v$ in $\mathcal{O}(\log N)$ time.
 
 You can check the second approach for [USACO At Large](http://www.usaco.org/current/data/sol_atlarge_platinum_jan18.html) for an explanation of how to do this.
 
 What we need for this problem is slightly different; first we need to process some number of updates of the following form:
 
- - Add 1 to the values of all vertices at most $d$ away from some vertex $v$.
+- Add 1 to the values of all vertices at most $d$ away from some vertex $v$.
 
 And then output the values at all vertices at the end. We can use prefix sums for this.
 
@@ -25,10 +25,10 @@ And then output the values at all vertices at the end. We can use prefix sums fo
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -38,17 +38,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -61,18 +61,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -87,14 +87,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -108,18 +108,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -151,14 +151,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -187,7 +187,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -195,10 +195,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -222,7 +222,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -244,31 +244,31 @@ template<int SZ> struct Centroid {
 	bool done[SZ]; // processed as centroid yet
 	int sub[SZ], cen[SZ], lev[SZ], mn[SZ]; // subtree size
 	vi stor[SZ], STOR[SZ]; // STOR removes overcount
-	void dfs(int x, int p) { sub[x] = 1; 
+	void dfs(int x, int p) { sub[x] = 1;
 		trav(y,adj[x]) if (!done[y] && y != p) {
 			dfs(y,x); sub[x] += sub[y]; }
 	}
 	int centroid(int x) {
-		dfs(x,-1); 
+		dfs(x,-1);
 		for (int sz = sub[x];;) {
 			pi mx = {0,0};
-			trav(y,adj[x]) if (!done[y] && sub[y] < sub[x]) 
+			trav(y,adj[x]) if (!done[y] && sub[y] < sub[x])
 				ckmax(mx,{sub[y],y});
-			if (mx.f*2 <= sz) return x; 
+			if (mx.f*2 <= sz) return x;
 			x = mx.s;
 		}
 	}
 	vector<vi> dist; // dists to all centroid ancs
 	void genDist(int x, int p, int lev) {
 		dist[lev][x] = dist[lev][p]+1;
-		trav(y,adj[x]) if (!done[y] && y != p) genDist(y,x,lev); 
+		trav(y,adj[x]) if (!done[y] && y != p) genDist(y,x,lev);
 	} // CEN = {centroid above x, label of centroid subtree}
 	void gen(int CEN, int _x) {
-		int x = centroid(_x); done[x] = 1; 
+		int x = centroid(_x); done[x] = 1;
 		cen[x] = CEN; sub[x] = sub[_x];
 		lev[x] = (CEN == -1 ? 0 : lev[CEN]+1);
 		stor[x].rsz(sub[x]), STOR[x].rsz(sub[x]+1); dbg("HA",x,sub[x]);
-		if (lev[x] >= sz(dist)) dist.eb(N+1,-1); 
+		if (lev[x] >= sz(dist)) dist.eb(N+1,-1);
 		dist[lev[x]][x] = 0; mn[x] = MOD;
 		trav(y,adj[x]) if (!done[y]) genDist(y,x,lev[x]);
 		trav(y,adj[x]) if (!done[y]) gen(x,y);
@@ -277,7 +277,7 @@ template<int SZ> struct Centroid {
 	void upd(int x, int y) {
 		int cur = x, pre = -1;
 		R0F(i,lev[x]+1) {
-			ad(stor[cur],y-dist[i][x]); 
+			ad(stor[cur],y-dist[i][x]);
 			if (pre != -1) ad(STOR[pre],y-dist[i][x]);
 			if (i > 0) pre = cur, cur = cen[cur];
 		}
@@ -288,7 +288,7 @@ template<int SZ> struct Centroid {
 	int query(int x) { // query value at vertex
 		int cur = x, pre = -1, ans = 0;
 		R0F(i,lev[x]+1) {
-			ans += get(stor[cur],dist[i][x]); 
+			ans += get(stor[cur],dist[i][x]);
 			if (pre != -1) ans -= get(STOR[pre],dist[i][x]);
 			if (i > 0) pre = cur, cur = cen[cur];
 		}
@@ -297,8 +297,8 @@ template<int SZ> struct Centroid {
 };
 
 /**
- * Description: Calculates least common ancestor in tree 
- 	* with root $R$ using binary jumping. 
+ * Description: Calculates least common ancestor in tree
+ 	* with root $R$ using binary jumping.
  * Time: O(N\log N) build, O(\log N) query
  * Source: USACO Camp
  * Verification: Debug the Bugs
@@ -306,7 +306,7 @@ template<int SZ> struct Centroid {
 
 template<int SZ> struct LCA {
 	static const int BITS = 32-__builtin_clz(SZ);
-	int N, R = 1, par[BITS][SZ], depth[SZ]; // vi adj[SZ]; 
+	int N, R = 1, par[BITS][SZ], depth[SZ]; // vi adj[SZ];
 	/// INITIALIZE
 	void ae(int u, int v) { adj[u].pb(v), adj[v].pb(u); }
 	void dfs(int u, int prv){
@@ -314,7 +314,7 @@ template<int SZ> struct LCA {
 		trav(v,adj[u]) if (v != prv) dfs(v,u); }
 	void init(int _N) {
 		N = _N; dfs(R,0);
-		FOR(k,1,BITS) FOR(i,1,N+1) 
+		FOR(k,1,BITS) FOR(i,1,N+1)
 			par[k][i] = par[k-1][par[k-1][i]];
 	}
 	/// QUERY
@@ -324,7 +324,7 @@ template<int SZ> struct LCA {
 	int lca(int u, int v){
 		if (depth[u] < depth[v]) swap(u,v);
 		u = getPar(u,depth[u]-depth[v]);
-		R0F(k,BITS) if (par[k][u] != par[k][v]) 
+		R0F(k,BITS) if (par[k][u] != par[k][v])
 			u = par[k][u], v = par[k][v];
 		return u == v ? u : par[0][u];
 	}
@@ -377,7 +377,7 @@ int main() {
 	}
 	C.propAll();
 	FOR(i,1,N+1) {
-		int t = C.query(i); 
+		int t = C.query(i);
 		pr(t,' ');
 	}
 	ps();

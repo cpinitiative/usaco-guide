@@ -88,12 +88,12 @@ inline bool compare(int a, int b, int N, int W) {
 }
 vector<int> mergesort(vector<int> v, int N, int W) {
 	if (v.size() == 1) return v;
- 
+
 	vector<int> a, b;
 	a.insert(a.begin(), v.begin(), v.begin() + (v.size() + 1) / 2);
 	b.insert(b.begin(), v.begin() + (v.size() + 1) / 2, v.end());
 	a = mergesort(a, N, W), b = mergesort(b, N, W);
- 
+
 	vector<int> sorted;
 	int aptr = 0, bptr = 0;
 	while (aptr < a.size() && bptr < b.size()) {
@@ -102,7 +102,7 @@ vector<int> mergesort(vector<int> v, int N, int W) {
 	}
 	sorted.insert(sorted.end(), a.begin() + aptr, a.end());
 	sorted.insert(sorted.end(), b.begin() + bptr, b.end());
- 
+
 	return sorted;
 }
 

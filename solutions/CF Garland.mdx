@@ -13,14 +13,12 @@ author: Neo Wang
 
 We are performing up to $200\,000$ queries, so we must have some way to quickly precompute our answer in constant time.
 
-We can use dynamic programming to cache such answers. 
+We can use dynamic programming to cache such answers.
 
 Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$ characters, with $j$ amount painted of character $k$. Either two things can happen when we add an additional character.
 
-1. We append the character and paint an additional square. <center>
-$$\texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)$$</center>
+1. We append the character and paint an additional square. <center> $$\texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)$$</center>
 2. We append the character, but since it is the same as our previous character we get to "save" a paint.<center>$$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)$$</center>
-
 
 Since this only gives us the best possible score that ends with length $i$, we can just take the current best and translate it using $\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$
 

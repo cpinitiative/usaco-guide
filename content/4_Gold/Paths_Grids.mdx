@@ -3,23 +3,13 @@ id: paths-grids
 title: 'Paths on Grids'
 author: Nathan Chen, Michael Cao, Benjamin Qi, Andrew Wang
 prerequisites:
- - intro-dp
+  - intro-dp
 description: 'Counting the number of "special" paths on a grid, and how some string problems can be solved using grids.'
 frequency: 2
 ---
 
 export const problems = {
-	sam: [
-		new Problem(
-			'CSES',
-			'Grid Paths',
-			'1638',
-			'Easy',
-			true,
-			['DP'],
-			''
-		)
-	],
+	sam: [new Problem('CSES', 'Grid Paths', '1638', 'Easy', true, ['DP'], '')],
 	pathSam: [
 		new Problem(
 			'LC',
@@ -89,7 +79,7 @@ export const problems = {
 	],
 };
 
-<!-- 
+<!--
 		new Problem(
 			'AC',
 			'Count Paths',
@@ -115,7 +105,6 @@ export const problems = {
 
 <!-- Interesting applications of "number of paths on a grid," some of which don't directly present a grid in the problem, but can be modelled as one. --> <!-- Asterisk> Such as Longest Common Subsequence. </Asterisk> -->
 
-
 <FocusProblem problem={problems.sam[0]} />
 
 <FocusProblem problem={problems.pathSam[0]} />
@@ -128,7 +117,7 @@ export const problems = {
 
 A common archetype of DP Problems involves a 2D grid of square cells (like graph paper), and we have to analyze "paths." A **path** is a sequence of cells whose movement is restricted to one direction on the $x$-axis and one direction on the $y$-axis (for example, you may only be able to move down or to the right). Usually, the path also has to start in one corner of the grid and end on another corner. The problem may ask you to count the number of paths that satisfy some property, or it may ask you to find the max/min of some quantity over all paths.
 
-Usually, the sub-problems in this type of DP are a sub-rectangle of the whole grid. For example, consider a problem in which we count the number of paths from $(1, 1)$ to $(N, M)$ when we can only move in the positive $x$-direction and the positive $y$-direction. 
+Usually, the sub-problems in this type of DP are a sub-rectangle of the whole grid. For example, consider a problem in which we count the number of paths from $(1, 1)$ to $(N, M)$ when we can only move in the positive $x$-direction and the positive $y$-direction.
 
 Let $\texttt{dp}[x][y]$ be the number of paths in the sub-rectangle whose corners are $(1, 1)$ and $(x, y)$. We know that the first cell in a path counted by $\texttt{dp}[x][y]$ is $(1, 1)$, and we know the last cell is $(x, y)$. However, the second-to-last cell can either be $(x-1, y)$ or $(x, y-1)$. Thus, if we pretend to append the cell $(x, y)$ to the paths that end on $(x-1, y)$ or $(x, y-1)$, we construct paths that end on $(x, y)$. Working backwards like that motivates the following recurrence: $\texttt{dp}[x][y] = \texttt{dp}[x-1][y] + \texttt{dp}[x][y-1]$. We can use this recurrence to calculate $\texttt{dp}[N][M]$. Keep in mind that $\texttt{dp}[1][1] = 1$ because the path to $(1, 1)$ is just a single cell. In general, thinking about how you can append cells to paths will help you construct the correct DP recurrence.
 
@@ -184,6 +173,7 @@ $$
 0, & \text{if $(x, y)$ is a trap}
 \end{cases}
 
+
 $$
 
 The code for the DP recurrence doesn't change much:
@@ -194,14 +184,14 @@ The code for the DP recurrence doesn't change much:
 
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
 
 typedef long long ll;
 
 bool ok[1000][1000];
 ll dp[1000][1000];
- 
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -287,32 +277,40 @@ Note how the coordinates are now in the form (row, column) when reading in the i
 ## Solution - Longest Common Subsequence
 
 <Resources>
-	<Resource source="GFG" url="https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/" title="Longest Common Subsequence"> </Resource>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/"
+		title="Longest Common Subsequence"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
-The [longest common subsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is a classical string problem, but where's the grid? 
+The [longest common subsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is a classical string problem, but where's the grid?
 
 In fact, we can create a grid to solve it. Think about the following algorithm to create any (not necessarily the longest) subsequence between two strings $A$ and $B$:
 
- - We start with two pointers, $i$, and $j$, each beginning at $0$.
- - We do some "action" at each time step, until there are no more available "actions". An "action" can be any of the following:
-  1. Increase the value of $i$ by $1$ (only works if $i < |A|$).
-  2. Increase the value of $j$ by $1$ (only works if $j < |B|$).
-  3. Increase the value of $i$ and $j$ by $1$ only if $A_i = B_j$. Append that character $A_i$ (or $B_j$) to the common subsequence. (only works if $i < |A|$ and $j < |B|$).
- - We know that this process creates a common subsequence because characters which are common to both strings are found from left to right.
- 
+- We start with two pointers, $i$, and $j$, each beginning at $0$.
+- We do some "action" at each time step, until there are no more available "actions". An "action" can be any of the following:
+
+1. Increase the value of $i$ by $1$ (only works if $i < |A|$).
+2. Increase the value of $j$ by $1$ (only works if $j < |B|$).
+3. Increase the value of $i$ and $j$ by $1$ only if $A_i = B_j$. Append that character $A_i$ (or $B_j$) to the common subsequence. (only works if $i < |A|$ and $j < |B|$).
+
+- We know that this process creates a common subsequence because characters which are common to both strings are found from left to right.
+
 This algorithm can also be illustrated on a grid. Let $A := xabcd$ and $B := yazc$. Then, the current state of the algorithm can be defined as a specific point $(i, j)$ using the values of $i$ and $j$ that we discussed previously. The process of increasing pointers can be seen as moving right (if $i$ is increased), moving down (if $j$ is increased), or moving diagonally (if both $i$ and $j$ increase). See that each diagonal movement adds one to the length of the common subsequence.
 
 Now, we re-phrase "the length of the longest increasing subsequence" as "the maximum number of 'diagonal movements' ("action 3" in the above algorithm) in a path from the top-left corner to the bottom-right corner on the grid." Thus, we have constructed a grid-type DP problem.
 
 <center>
 
-|   | *x* | *a* | *b* | *c* | *d* |
-|---|---|---|---|---|---|
-| *y* | **0** | 0 | 0 | 0 | 0 |
-| *a* | 0 | **1** | 1 | 1 | 1 |
-| *z* | 0 | **1** | **1** | 1 | 1 |
-| *c* | 0 | 1 | 1 | **2** | **2** |
+|     | _x_   | _a_   | _b_   | _c_   | _d_   |
+| --- | ----- | ----- | ----- | ----- | ----- |
+| _y_ | **0** | 0     | 0     | 0     | 0     |
+| _a_ | 0     | **1** | 1     | 1     | 1     |
+| _z_ | 0     | **1** | **1** | 1     | 1     |
+| _c_ | 0     | 1     | 1     | **2** | **2** |
 
 </center>
 
@@ -338,7 +336,7 @@ public:
 	int longestCommonSubsequence(string a, string b) {
 		int dp[a.size()][b.size()];
 		for (int i = 0; i < a.size(); i++) {
-			fill(dp[i], dp[i]+b.size(), 0);   
+			fill(dp[i], dp[i]+b.size(), 0);
 		}
 		for (int i = 0; i < a.size(); i++) {
 			if(a[i] == b[0]) dp[i][0] = 1;
@@ -372,7 +370,7 @@ public:
 		F0R(i,sz(a)+1) F0R(j,sz(b)+1) {
 			if (i < sz(a)) ckmax(dp[i+1][j],dp[i][j]);
 			if (j < sz(b)) ckmax(dp[i][j+1],dp[i][j]);
-			if (i < sz(a) && j < sz(b)) 
+			if (i < sz(a) && j < sz(b))
 				ckmax(dp[i+1][j+1],dp[i][j]+(a[i] == b[j]));
 		}
 		return dp[sz(a)][sz(b)];
@@ -422,7 +420,7 @@ class Solution {
 
 <Optional>
 
-Don't expect you to solve this task at this level, but you might find it interesting: 
+Don't expect you to solve this task at this level, but you might find it interesting:
 
 [Circular Longest Common Subsequence](https://oj.uz/problem/view/IZhO13_rowords)
 

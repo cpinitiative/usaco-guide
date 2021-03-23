@@ -14,7 +14,7 @@ There are two cases: I can go from $1\rightarrow A\rightarrow B\rightarrow N$, o
 We can use Dijkstra's to compute the distance from $1$ and $N$ to every vertex. Then our answer is $\text{min}_{A\rightarrow B} dist1[A]+c(A,B)+distN[B]$, where $c(A,B)$ is the cost to travel from city A to city B after applying the coupon to that flight.
 
 ```java
-import java.io.*; 
+import java.io.*;
 import java.util.*;
 
 public class FlightDiscount {
@@ -32,40 +32,40 @@ public class FlightDiscount {
 			return 1;
 		}
 	}
-	static class FastReader 
-	{ 
-		BufferedReader br; 
-		StringTokenizer st; 
-  
-		public FastReader() 
-		{ 
+	static class FastReader
+	{
+		BufferedReader br;
+		StringTokenizer st;
+
+		public FastReader()
+		{
 			br = new BufferedReader(new
-					 InputStreamReader(System.in)); 
-		} 
-  
-		String next() 
-		{ 
-			while (st == null || !st.hasMoreElements()) 
-			{ 
+					 InputStreamReader(System.in));
+		}
+
+		String next()
+		{
+			while (st == null || !st.hasMoreElements())
+			{
 				try
-				{ 
-					st = new StringTokenizer(br.readLine()); 
-				} 
-				catch (IOException  e) 
-				{ 
-					e.printStackTrace(); 
-				} 
-			} 
-			return st.nextToken(); 
-		} 
-  
-		int nextInt() 
-		{ 
-			return Integer.parseInt(next()); 
-		} 
-  
-		
-	} 
+				{
+					st = new StringTokenizer(br.readLine());
+				}
+				catch (IOException  e)
+				{
+					e.printStackTrace();
+				}
+			}
+			return st.nextToken();
+		}
+
+		int nextInt()
+		{
+			return Integer.parseInt(next());
+		}
+
+
+	}
 	static long MOD=35566483914425l;
 	public static void main(String[] args) {
 		FastReader br=new FastReader();
@@ -96,13 +96,13 @@ public class FlightDiscount {
 					dist1[i.v]=dist1[p.v]+i.w;
 					pq.add(new Pair(i.v,dist1[i.v]));
 				}
-				
+
 			}
 		}
 		long[] distN=new long[N];
 		Arrays.fill(distN, MOD);
 		distN[N-1]=0;
-		
+
 		pq.add(new Pair(N-1,0));
 		while(!pq.isEmpty()){
 			Pair p=pq.poll();
@@ -111,10 +111,10 @@ public class FlightDiscount {
 					distN[i.v]=distN[p.v]+i.w;
 					pq.add(new Pair(i.v,distN[i.v]));
 				}
-				
+
 			}
 		}
-		
+
 		long min=MOD;
 		for (int i = 0; i < N; i++) {
 			for (Pair p: out[i]) {
@@ -123,11 +123,12 @@ public class FlightDiscount {
 		}
 		System.out.println(min);
 	}
-	
+
 }
 ```
 
 ## Solution 2 by Stanley Zhong
+
 Alternatively, we can run Dijkstra's and modify our distance array slightly to track whether the discount has been used or not.
 
 $dist[i][0]$ will represent the shortest distance from the start node to node $i$, without using the discount. $dist[i][1]$ will represent the shortest distance after using the discount.
