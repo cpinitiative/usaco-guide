@@ -4,17 +4,9 @@ title: 'Shortest Paths with Negative Edge Weights'
 author: Benjamin Qi, Andi Qu, Dong Liu
 prerequisites:
   - sp
-description: "Returning to Bellman-Ford and Floyd-Warshall."
+description: 'Returning to Bellman-Ford and Floyd-Warshall.'
 frequency: 0
 ---
-
-
-
-
-
-
-
-
 
 ## Bellman-Ford
 
@@ -23,13 +15,20 @@ frequency: 0
 		source="cp-algo"
 		title="Bellman-Ford"
 		url="graph/bellman_ford.html"
-		starred></Resource>
+		starred
+	></Resource>
 	<Resource
 		source="cp-algo"
 		title="Finding Negative Cycle"
 		url="graph/finding-negative-cycle-in-graph.html"
-		starred>with Bellman-Ford</Resource>
-	<Resource source="CP2" title="4.4.4 - SSSP with Negative Weight Cycle"></Resource>
+		starred
+	>
+		with Bellman-Ford
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.4.4 - SSSP with Negative Weight Cycle"
+	></Resource>
 </Resources>
 
 <!-- 	<Resource
@@ -52,7 +51,10 @@ frequency: 0
 
 #### Solution
 
-As mentioned in [cp-algorithms](https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html), we relax the edges N times. If we perform an update on the $N$th iteration, there is an negative cycle.
+As mentioned in
+[cp-algorithms](https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html),
+we relax the edges N times. If we perform an update on the $N$th iteration,
+there is an negative cycle.
 
 <LanguageSection>
 
@@ -104,7 +106,7 @@ void BellmanFord(int source) {
 		for(int x : cycle) cout << x << ' ';
 		cout << '\n';
 	}
-} 
+}
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
@@ -125,9 +127,11 @@ int main() {
 
 ### Simple Linear Programming
 
-You can also use shortest path algorithms to solve the following problem (a very simple [linear program](https://en.wikipedia.org/wiki/Linear_programming)).
+You can also use shortest path algorithms to solve the following problem (a very
+simple [linear program](https://en.wikipedia.org/wiki/Linear_programming)).
 
-> Given variables $x_1,x_2,\ldots,x_N$ with constraints in the form $x_i-x_j\ge c$, compute a feasible solution.
+> Given variables $x_1,x_2,\ldots,x_N$ with constraints in the form
+> $x_i-x_j\ge c$, compute a feasible solution.
 
 #### Resources
 
@@ -145,9 +149,11 @@ You can also use shortest path algorithms to solve the following problem (a very
 
 Timeline (USACO Camp):
 
-- equivalent to [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) except $N,C\le 5000$ and negative values of $x$ are possible.
+- equivalent to
+  [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
+  except $N,C\le 5000$ and negative values of $x$ are possible.
 
-<Problems problems={"linear"} />
+<Problems problems={'linear'} />
 
 ## Floyd-Warshall
 
@@ -173,18 +179,18 @@ void solve() {
 		int u,v,w; cin >> u >> v >> w;
 		dist[u][v] = min(dist[u][v],(ll)w);
 	}
-	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF) 
+	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
 		dist[i][j] = min(dist[i][j],dist[i][k]+dist[k][j]);
-	
-	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)  
+
+	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
 		if (dist[i][j] > dist[i][k]+dist[k][j])
 			bad[i][j] = 1;
-			
+
 	F0R(k,n) F0R(i,n) F0R(j,n) {
 		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
 		if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
 	}
-	
+
 	F0R(i,q) {
 		int u,v; cin >> u >> v;
 		if (bad[u][v]) cout << "-Infinity\n";
@@ -206,14 +212,19 @@ int main() {
 
 ### Problems
 
-<Problems problems={"floydProbs"} />
+<Problems problems={'floydProbs'} />
 
 ## Modified Dijkstra
 
 <!-- Can also use [Shortest Path Faster Algorithm](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) or  -->
 
-The Dijkstra code presented [earlier](/gold/sp#mathcalomlog-n-implementation) will still give correct results if there are no negative cycles. However, the same running time bound no longer applies, as demonstrated by subtasks 1-6 of the following problem.
+The Dijkstra code presented [earlier](/gold/sp#mathcalomlog-n-implementation)
+will still give correct results if there are no negative cycles. However, the
+same running time bound no longer applies, as demonstrated by subtasks 1-6 of
+the following problem.
 
-<Problems problems={"dijk"} />
+<Problems problems={'dijk'} />
 
-This problem forces you to analyze the inner workings of the three shortest-path algorithms we presented here. It also teaches you about how problemsetters could create hack cases!
+This problem forces you to analyze the inner workings of the three shortest-path
+algorithms we presented here. It also teaches you about how problemsetters could
+create hack cases!

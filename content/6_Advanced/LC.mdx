@@ -9,10 +9,6 @@ prerequisites:
 frequency: 1
 ---
 
-
-
-
-
 ## Half-Plane Intersection
 
 <Resources>
@@ -34,11 +30,11 @@ frequency: 1
 
 <IncompleteSection>Example problem + implementation?</IncompleteSection>
 
-<Problems problems={"half"} />
+<Problems problems={'half'} />
 
 ## LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
 
-<Problems problems={"sample"} />
+<Problems problems={'sample'} />
 
 <Resources>
 	<Resource
@@ -73,13 +69,18 @@ frequency: 1
 
 #### Analysis
 
-Instead of focusing on the pillars that should be destroyed, let's instead focus on the pillars that remain.
+Instead of focusing on the pillars that should be destroyed, let's instead focus
+on the pillars that remain.
 
-The total cost consists of the cost due to height differences plus the cost of destroying unused pillars. The latter cost is equal to the cost to destroy all pillars minus the cost to destroy the remaining pillars.
+The total cost consists of the cost due to height differences plus the cost of
+destroying unused pillars. The latter cost is equal to the cost to destroy all
+pillars minus the cost to destroy the remaining pillars.
 
-Since the cost to destroy all pillars is constant, we can thus turn the problem into one about building pillars instead of destroying them!
+Since the cost to destroy all pillars is constant, we can thus turn the problem
+into one about building pillars instead of destroying them!
 
-From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to build the bridge so that the last build pillar is pillar $i$.
+From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to
+build the bridge so that the last build pillar is pillar $i$.
 
 $dp[1] = -w_1$ and the following recurrence holds:
 
@@ -96,15 +97,18 @@ $$
 dp[j] + h_j^2 - 2h_ih_j
 $$
 
-effectively describes a linear function $y = mx + c$, where $m = -2h_j$, $x = h_i$, and $c = dp[j] + h_j^2$
+effectively describes a linear function $y = mx + c$, where $m = -2h_j$,
+$x = h_i$, and $c = dp[j] + h_j^2$
 
 This means that we can use CHT to compute $dp[i]$ efficiently!
 
-However, since $m$ is not monotonic, we can't use linear CHT using a deque, so we must settle with $\mathcal{O}(N \log N)$.
+However, since $m$ is not monotonic, we can't use linear CHT using a deque, so
+we must settle with $\mathcal{O}(N \log N)$.
 
 <Spoiler title="Code">
 
-I implemented CHT using a `std::set` here, but other implementations using things like the Li-Chao tree should work similarly.
+I implemented CHT using a `std::set` here, but other implementations using
+things like the Li-Chao tree should work similarly.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -201,4 +205,4 @@ int main() {
 
 ## Problems
 
-<Problems problems={"lc_probs"} />
+<Problems problems={'lc_probs'} />

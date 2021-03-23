@@ -6,8 +6,6 @@ description: Splitting up data into smaller chunks to speed up processing.
 frequency: 1
 ---
 
-
-
 <!-- 	new Problem(
 		'wcipeg',
 		'COI 08-Otoci',
@@ -22,7 +20,9 @@ frequency: 1
 
 <FocusProblem problem={problems.sam[0]} />
 
-You should already have done this problem in [Point Update Range Sum](/gold/PURS), but here we'll present two more approaches. Both run in $\mathcal{O}((N+Q)\sqrt N)$ time.
+You should already have done this problem in
+[Point Update Range Sum](/gold/PURS), but here we'll present two more
+approaches. Both run in $\mathcal{O}((N+Q)\sqrt N)$ time.
 
 <Resources>
 	<Resource source="CPH" title="27 - Square Root Algorithms" starred></Resource>
@@ -78,7 +78,10 @@ int main() {
 
 See the CPH section on "batch processing."
 
-Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each sum query can be calculated with prefix sums and by examining each update within the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and recalculate prefix sums.
+Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each
+sum query can be calculated with prefix sums and by examining each update within
+the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and
+recalculate prefix sums.
 
 ```cpp
 int n,q;
@@ -124,19 +127,35 @@ See CPH 27.3 and the CF link above.
 
 ## Additional Notes
 
-Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s) can be signs that sqrt decomp is intended.
+Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s)
+can be signs that sqrt decomp is intended.
 
 [CPH 262](/CPH.pdf#page=262):
 
-> In practice, it is not necessary to use the exact value of $\sqrt n$ as a parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is different from $\sqrt n$. The optimal parameter depends on the problem and input. For example, if an algorithm often goes through the blocks but rarely inspects single elements inside the blocks, it may be a good idea to divide the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$ elements.
+> In practice, it is not necessary to use the exact value of $\sqrt n$ as a
+> parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is
+> different from $\sqrt n$. The optimal parameter depends on the problem and
+> input. For example, if an algorithm often goes through the blocks but rarely
+> inspects single elements inside the blocks, it may be a good idea to divide
+> the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$
+> elements.
 
-As another example, if an update takes time proportional to the size of one block ($\mathcal{O}(n/k)$) while a query takes time proportional to the number of blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set $k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time $\mathcal{O}(\sqrt{n\log n})$.
+As another example, if an update takes time proportional to the size of one
+block ($\mathcal{O}(n/k)$) while a query takes time proportional to the number
+of blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set
+$k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time
+$\mathcal{O}(\sqrt{n\log n})$.
 
-Solutions with worse complexities are not necessarily slower (at least for problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where $\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not ... So constant factors are important!
+Solutions with worse complexities are not necessarily slower (at least for
+problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an
+instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where
+$\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not ...
+So constant factors are important!
 
 ## On Trees
 
-The techniques mentioned in the blogs below are extremely rare but worth a mention.
+The techniques mentioned in the blogs below are extremely rare but worth a
+mention.
 
 <Resources>
 	<Resource source="CF" title="Mo's on Trees" url="43230"></Resource>
@@ -161,10 +180,10 @@ Some more discussion about how sqrt decomp can be used:
 
 Problems where the best solution I know of involves sqrt decomp.
 
-<Problems problems={"fst"} />
+<Problems problems={'fst'} />
 
 ### B
 
 Problems that can be solved without it. But you might as well try to use it!!
 
-<Problems problems={"bad"} />
+<Problems problems={'bad'} />

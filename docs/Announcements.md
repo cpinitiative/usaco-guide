@@ -1,6 +1,7 @@
 # Announcements
 
-Announcements are stored in `announcements/`. Currently the frontend just renders all announcements, hopefully that gets fixed soon...
+Announcements are stored in `announcements/`. Currently the frontend just
+renders all announcements, hopefully that gets fixed soon...
 
 To make a new announcement, copy paste this template:
 

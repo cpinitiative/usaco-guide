@@ -9,12 +9,6 @@ description: DP problems that require iterating over subsets.
 frequency: 2
 ---
 
-
-
-
-
-
-
 <Info title="Pro Tip">
 
 You can often use this to solve subtasks.
@@ -54,10 +48,13 @@ You can often use this to solve subtasks.
 
 <Spoiler title =  "Solution">
 
-Let $dp[S][i]$ be the number of routes that visit all the cities in the subset $S$ and end at city $i$. The transitions will then be:
+Let $dp[S][i]$ be the number of routes that visit all the cities in the subset
+$S$ and end at city $i$. The transitions will then be:
+
 $$
 dp[S][i] = \sum_{x \in adj[i]} dp[S  \setminus \{i\}][x] \text{ if $x \in S$}
 $$
+
 where $S  \setminus \{i\}$ is the subset $S$ without city $i$.
 
 ```cpp
@@ -95,30 +92,34 @@ int main() {
 
 </Spoiler>
 
-
 ## Problems
 
-<Problems problems={"general"} />
+<Problems problems={'general'} />
 
 ## Bitmask over Primes
 
 ### Rough Idea
 
-In some number theory problems, it helps to represent each number were represented by a bitmask of its prime divisors. For example, the set $\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary), where the bits correspond to divisibility by $[2, 3, 5]$.
+In some number theory problems, it helps to represent each number were
+represented by a bitmask of its prime divisors. For example, the set
+$\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary),
+where the bits correspond to divisibility by $[2, 3, 5]$.
 
 Then, here are some equivalent operations between masks and these integers:
 
- - Bitwise AND is GCD
- - Bitwise OR is LCM
- - Iterating over bits is iterating over prime divisors
- - Iterating over submasks is iterating over divisors
+- Bitwise AND is GCD
+- Bitwise OR is LCM
+- Iterating over bits is iterating over prime divisors
+- Iterating over submasks is iterating over divisors
 
-<!-- 
-In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes. 
+<!--
+In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes.
  -->
-Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because $0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$ because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
 
-
+Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND
+to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because
+$0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$
+because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
 
 <!-- 
 Therefore, if we have a reasonably short list of primes (perhaps $\leq 20$), then we can simply represent numbers with their prime divisors bitmask and change the NT problem to a bitmask problem.
@@ -146,10 +147,11 @@ In fact, the simplest way to do this is just to assign each bitmask to the integ
 
 <IncompleteSection>
 
-Maybe this is just standard NT, but I've always thought about it as a bitmask. Also, any tutorials or more problems of this type?
+Maybe this is just standard NT, but I've always thought about it as a bitmask.
+Also, any tutorials or more problems of this type?
 
 </IncompleteSection>
 
 ### Problems
 
-<Problems problems={"bitmask_nt"} />
+<Problems problems={'bitmask_nt'} />

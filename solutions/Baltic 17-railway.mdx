@@ -7,17 +7,27 @@ author: Andi Qu
 
 ## Solution
 
-In this problem, we're given a tree and asked to increment the values of all edges on the spanning trees of $M$ given subsets of nodes.
+In this problem, we're given a tree and asked to increment the values of all
+edges on the spanning trees of $M$ given subsets of nodes.
 
-This is similar to incrementing the values of all edges on given paths, so let's try to adapt the solution for that to this problem. (To increment the values of all edges on a path efficiently, [we can use a Fenwick tree](https://codeforces.com/blog/entry/78564).)
+This is similar to incrementing the values of all edges on given paths, so let's
+try to adapt the solution for that to this problem. (To increment the values of
+all edges on a path efficiently,
+[we can use a Fenwick tree](https://codeforces.com/blog/entry/78564).)
 
-We make the following important observation: **In a DFS, we traverse each edge exactly twice**.
+We make the following important observation: **In a DFS, we traverse each edge
+exactly twice**.
 
-How does this help us? First, we do a DFS on the entire tree and note when each node is visited.
+How does this help us? First, we do a DFS on the entire tree and note when each
+node is visited.
 
-If we sort the chosen nodes $c_i$ in the order that they're visited in the DFS, then the traversal $c_1 \rightarrow c_2 \rightarrow \dots \rightarrow c_{s_i} \rightarrow c_1$ visits each edge on the spanning tree of the chosen nodes exactly twice.
+If we sort the chosen nodes $c_i$ in the order that they're visited in the DFS,
+then the traversal
+$c_1 \rightarrow c_2 \rightarrow \dots \rightarrow c_{s_i} \rightarrow c_1$
+visits each edge on the spanning tree of the chosen nodes exactly twice.
 
-This means we can split each spanning tree into several paths and increment the values of all edges on those paths individually!
+This means we can split each spanning tree into several paths and increment the
+values of all edges on those paths individually!
 
 Finally, we check whether the value of each edge is at least $2K$.
 

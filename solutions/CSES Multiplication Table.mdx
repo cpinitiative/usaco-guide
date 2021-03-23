@@ -7,11 +7,24 @@ author: Maggie Liu
 
 ## Explanation
 
-We are asked to find the median of the numbers in an $n \times n$ multiplication table, where $n$ is odd. If $f(x)$ represents how many numbers in the multiplication table are less than or equal to $x$, then the median will have at least $\frac{n^2 + 1}{2}$ numbers less than or equal to it. So, we want to find the smallest $x$ such that $f(x) \geq \frac{n^2 + 1}{2}$.
+We are asked to find the median of the numbers in an $n \times n$ multiplication
+table, where $n$ is odd. If $f(x)$ represents how many numbers in the
+multiplication table are less than or equal to $x$, then the median will have at
+least $\frac{n^2 + 1}{2}$ numbers less than or equal to it. So, we want to find
+the smallest $x$ such that $f(x) \geq \frac{n^2 + 1}{2}$.
 
-To find $f(x)$, we can loop through each row of the table. Since the numbers in a row are the column number multiplied by the row number, we can divide $x$ by the row number to find the number of columns where the number is less than or equal to $x$. Taking the minimum of the number of columns and $n$ will tell us how many numbers in that row are less than or equal to $x$, and summing over all rows will give us $f(x)$, which we store in the variable $\texttt{leq}$.
+To find $f(x)$, we can loop through each row of the table. Since the numbers in
+a row are the column number multiplied by the row number, we can divide $x$ by
+the row number to find the number of columns where the number is less than or
+equal to $x$. Taking the minimum of the number of columns and $n$ will tell us
+how many numbers in that row are less than or equal to $x$, and summing over all
+rows will give us $f(x)$, which we store in the variable $\texttt{leq}$.
 
-Using $\texttt{leq}$, we can do binary search until we find the median. If $\texttt{leq} \geq \frac{n^2 + 1}{2}$, we set $\texttt{high}$ to $\texttt{mid}$ because $\texttt{mid}$ works and is an upper bound for our answer. Otherwise, we set $\texttt{low}$ to $\texttt{mid} + 1$ because $\texttt{mid}$ doesn't work, so numbers less than $\texttt{mid}$ also won't work.
+Using $\texttt{leq}$, we can do binary search until we find the median. If
+$\texttt{leq} \geq \frac{n^2 + 1}{2}$, we set $\texttt{high}$ to $\texttt{mid}$
+because $\texttt{mid}$ works and is an upper bound for our answer. Otherwise, we
+set $\texttt{low}$ to $\texttt{mid} + 1$ because $\texttt{mid}$ doesn't work, so
+numbers less than $\texttt{mid}$ also won't work.
 
 ## Implementation
 
@@ -24,7 +37,7 @@ Using $\texttt{leq}$, we can do binary search until we find the median. If $\tex
 ```cpp
 #include <iostream>
 using namespace std;
- 
+
 int main()
 {
 	long long n;

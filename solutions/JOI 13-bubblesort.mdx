@@ -7,37 +7,49 @@ author: Andi Qu
 
 ## Intuition
 
-In this problem, we're asked to find the maximum decrease in the number of inversions of the array.
+In this problem, we're asked to find the maximum decrease in the number of
+inversions of the array.
 
-Firstly, unless the array is already sorted, we can always decrease the number of inversions. We can also assume that we only ever swap $a_i$ and $a_j$ ($i < j$) if $a_i > a_j$. (Could you prove this formally?)
+Firstly, unless the array is already sorted, we can always decrease the number
+of inversions. We can also assume that we only ever swap $a_i$ and $a_j$
+($i < j$) if $a_i > a_j$. (Could you prove this formally?)
 
-After playing around with some swaps and arrays, we find that the only array elements that contribute to that change if we swap $a_i$ and $a_j$ ($i < j$) are the $a_k$ such that $i \leq k \leq j$ and $a_i \geq a_k \geq a_j$.
+After playing around with some swaps and arrays, we find that the only array
+elements that contribute to that change if we swap $a_i$ and $a_j$ ($i < j$) are
+the $a_k$ such that $i \leq k \leq j$ and $a_i \geq a_k \geq a_j$.
 
-This condition feels similar to the inequalities defining a rectangle. Could we possibly find a geometric interpretation of this problem?
+This condition feels similar to the inequalities defining a rectangle. Could we
+possibly find a geometric interpretation of this problem?
 
 ## Turning the Problem into Geometry
 
 Plot the points $(i, a_i)$ on the Cartesian plane.
 
-Notice how if we swap $a_i$ and $a_j$ ($i < j$), the change in the number of inversions is equal to:
+Notice how if we swap $a_i$ and $a_j$ ($i < j$), the change in the number of
+inversions is equal to:
 
 $$
 (\text{No. of points strictly inside the rectangle }(i, a_i, j, a_j)) + (\text{No. of points in or on the rectangle }(i, a_i, j, a_j)) - 1
 $$
 
-From this, we also find that if we have $x < y$ and $a_x \geq a_y$, then $y$ can't be the left index in the optimal swap.
+From this, we also find that if we have $x < y$ and $a_x \geq a_y$, then $y$
+can't be the left index in the optimal swap.
 
-This means that we can simply consider a set of $i$ with strictly increasing $a_i$ as candidates for the left index in the optimal swap!
+This means that we can simply consider a set of $i$ with strictly increasing
+$a_i$ as candidates for the left index in the optimal swap!
 
 ## Using the D&C Optimization
 
-Let $opt_i$ be the index such that if we must swap $a_i$ with something to its right, then swapping it with $a_{opt_i}$ is optimal.
+Let $opt_i$ be the index such that if we must swap $a_i$ with something to its
+right, then swapping it with $a_{opt_i}$ is optimal.
 
-Since $a_i$ is strictly increasing in our set of candidates, we can prove that $opt_i \geq opt_{i - 1}$ for all $i$ in our set.
+Since $a_i$ is strictly increasing in our set of candidates, we can prove that
+$opt_i \geq opt_{i - 1}$ for all $i$ in our set.
 
 This means that we can use the D&C optimization to find all $opt_i$!
 
-We can use a BIT or any other suitable data structure to query the number of points in a rectangle efficiently.
+We can use a BIT or any other suitable data structure to query the number of
+points in a rectangle efficiently.
 
 ## Implementation
 

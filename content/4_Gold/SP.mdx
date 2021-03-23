@@ -9,8 +9,6 @@ description: 'Introduces Bellman-Ford, Floyd-Warshall, Dijkstra.'
 frequency: 3
 ---
 
-
-
 <!-- 	new Problem(
 		'COCI',
 		'2009 - Gremlini',
@@ -22,7 +20,8 @@ frequency: 3
 	),
 -->
 
-Nearly all Gold shortest path problems involve Dijkstra. However, it's a good idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
+Nearly all Gold shortest path problems involve Dijkstra. However, it's a good
+idea to learn Bellman-Ford and Floyd-Warshall first since they're simpler.
 
 ## Bellman-Ford
 
@@ -62,9 +61,17 @@ Nearly all Gold shortest path problems involve Dijkstra. However, it's a good id
 
 [Paper](https://arxiv.org/pdf/1904.01210.pdf)
 
-> A common mistake in implementing the Floyd–Warshall algorithm is to misorder the triply nested loops (The correct order is `KIJ`). The incorrect `IJK` and `IKJ` algorithms do not give correct solutions for some instance. However, we can prove that if these are repeated three times, we obtain the correct solutions.
+> A common mistake in implementing the Floyd–Warshall algorithm is to misorder
+> the triply nested loops (The correct order is `KIJ`). The incorrect `IJK` and
+> `IKJ` algorithms do not give correct solutions for some instance. However, we
+> can prove that if these are repeated three times, we obtain the correct
+> solutions.
 >
-> It would be emphasized that these fixes (repeating incorrect algorithms three times) have the same time complexity as the correct Floyd–Warshall algorithm up to constant factors. Therefore, our results suggest that, if one is confused by the order of the triply nested loops, one can repeat the procedure three times just to be safe.
+> It would be emphasized that these fixes (repeating incorrect algorithms three
+> times) have the same time complexity as the correct Floyd–Warshall algorithm
+> up to constant factors. Therefore, our results suggest that, if one is
+> confused by the order of the triply nested loops, one can repeat the procedure
+> three times just to be safe.
 
 </Optional>
 
@@ -72,7 +79,7 @@ Nearly all Gold shortest path problems involve Dijkstra. However, it's a good id
 
 Used as the first step of the following:
 
-<Problems problems={"apsp"} />
+<Problems problems={'apsp'} />
 
 ## Dijkstra
 
@@ -80,7 +87,8 @@ Used as the first step of the following:
 
 ### $\mathcal{O}(N^2)$
 
-The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although this is rarely used nowadays.
+The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although
+this is rarely used nowadays.
 
 <Resources>
 	<Resource
@@ -123,7 +131,10 @@ The USACO training pages present a $\mathcal{O}(N^2)$ implementation, although t
 
 <CPPSection>
 
-Recall from the second prerequisite module that we can use `greater<>` to make the top element of a priority queue the least instead of the greatest. Alternatively, you can negate distances before placing them into the priority queue, but that's more confusing.
+Recall from the second prerequisite module that we can use `greater<>` to make
+the top element of a priority queue the least instead of the greatest.
+Alternatively, you can negate distances before placing them into the priority
+queue, but that's more confusing.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -252,20 +263,35 @@ public class test {
 
 <Warning>
 
-It's important to include `continue`. This ensures that when all edge weights are non-negative, we will never go through the adjacency list of any vertex more than once. Removing it will cause TLE on the last test case of the above problem!
+It's important to include `continue`. This ensures that when all edge weights
+are non-negative, we will never go through the adjacency list of any vertex more
+than once. Removing it will cause TLE on the last test case of the above
+problem!
 
-The last test case contains 100000 destinations and 149997 flights. City 1 has flights to cities 2 through 50000. Cities 2 through 50000 have flights to city 50001. City 50001 has flights to cities 50002 through 100000. Without the `continue`, after the program pops cities 1 through 50000 off the queue, the priority queue will contain 49999 routes that end at city 50001. Every one of the 49999 times city 50001 is popped off the queue and processed, we must iterate over all of its outgoing flights (to cities 50002 through 100000). This results in a runtime of $\Theta(N^2\log N)$, which will TLE.
+The last test case contains 100000 destinations and 149997 flights. City 1 has
+flights to cities 2 through 50000. Cities 2 through 50000 have flights to
+city 50001. City 50001 has flights to cities 50002 through 100000. Without the
+`continue`, after the program pops cities 1 through 50000 off the queue, the
+priority queue will contain 49999 routes that end at city 50001. Every one of
+the 49999 times city 50001 is popped off the queue and processed, we must
+iterate over all of its outgoing flights (to cities 50002 through 100000). This
+results in a runtime of $\Theta(N^2\log N)$, which will TLE.
 
-On the other hand, if we did include the `continue`, the program will never iterate through the adjacency list of city 50001 after processing it for the first time.
+On the other hand, if we did include the `continue`, the program will never
+iterate through the adjacency list of city 50001 after processing it for the
+first time.
 
 </Warning>
 
 <Optional title="Faster Dijkstra">
 
-Can be done in $\mathcal{O}(M+N\log N)$ with [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice though, this is rarely faster, since the Fibonacci heap has a bad constant factor.
+Can be done in $\mathcal{O}(M+N\log N)$ with
+[Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap). In practice
+though, this is rarely faster, since the Fibonacci heap has a bad constant
+factor.
 
 </Optional>
 
 ### Problems
 
-<Problems problems={"dijk"} />
+<Problems problems={'dijk'} />

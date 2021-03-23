@@ -9,10 +9,6 @@ description: A way to merge two sets efficiently.
 frequency: 1
 ---
 
-
-
-
-
 <Resources>
 	<Resource source="CPH" title="18.4 - Merging Data Structures"></Resource>
 	<Resource
@@ -29,23 +25,31 @@ frequency: 1
 
 ## Merging Data Structures
 
-Obviously [linked lists](http://www.cplusplus.com/reference/list/list/splice/) can be merged in $\mathcal{O}(1)$ time. But what about sets or vectors?
+Obviously [linked lists](http://www.cplusplus.com/reference/list/list/splice/)
+can be merged in $\mathcal{O}(1)$ time. But what about sets or vectors?
 
 <FocusProblem problem={problems.sam[0]} />
 
 Let's consider a tree rooted at node $1$, where each node has a color.
 
-For each node, let's store a set containing only that node, and we want to merge the sets in the nodes subtree together such that each node has a set consisting of all colors in the nodes subtree. Doing this allows us to solve a variety of problems, such as query the number of distinct colors in each subtree.
+For each node, let's store a set containing only that node, and we want to merge
+the sets in the nodes subtree together such that each node has a set consisting
+of all colors in the nodes subtree. Doing this allows us to solve a variety of
+problems, such as query the number of distinct colors in each subtree.
 
 ### Naive Solution
 
-Suppose that we want merge two sets $a$ and $b$ of sizes $n$ and $m$, respectively. One possiblility is the following:
+Suppose that we want merge two sets $a$ and $b$ of sizes $n$ and $m$,
+respectively. One possiblility is the following:
 
 ```cpp
 for (int x: b) a.insert(x);
 ```
 
-which runs in $\mathcal{O}(m\log (n+m))$ time, yielding a runtime of $\mathcal{O}(N^2\log N)$ in the worst case. If we instead maintain $a$ and $b$ as sorted vectors, we can merge them in $\mathcal{O}(n+m)$ time, but $\mathcal{O}(N^2)$ is also too slow.
+which runs in $\mathcal{O}(m\log (n+m))$ time, yielding a runtime of
+$\mathcal{O}(N^2\log N)$ in the worst case. If we instead maintain $a$ and $b$
+as sorted vectors, we can merge them in $\mathcal{O}(n+m)$ time, but
+$\mathcal{O}(N^2)$ is also too slow.
 
 ### Better Solution
 
@@ -56,11 +60,17 @@ if (a.size() < b.size()) swap(a,b);
 for (int x: b) a.insert(x);
 ```
 
-Note that [swap](http://www.cplusplus.com/reference/utility/swap/) exchanges two sets in $\mathcal{O}(1)$ time. Thus, merging a smaller set of size $m$ into the larger one of size $n$ takes $\mathcal{O}(m\log n)$ time.
+Note that [swap](http://www.cplusplus.com/reference/utility/swap/) exchanges two
+sets in $\mathcal{O}(1)$ time. Thus, merging a smaller set of size $m$ into the
+larger one of size $n$ takes $\mathcal{O}(m\log n)$ time.
 
 **Claim:** The solution runs in $\mathcal{O}(N\log^2N)$ time.
 
-**Proof:** When merging two sets, you move from the smaller set to the larger set. If the size of the smaller set is $X$, then the size of the resulting set is at least $2X$. Thus, an element that has been moved $Y$ times will be in a set of size at least $2^Y$, and since the maximum size of a set is $N$ (the root), each element will be moved at most $\mathcal{O}(\log N$) times.
+**Proof:** When merging two sets, you move from the smaller set to the larger
+set. If the size of the smaller set is $X$, then the size of the resulting set
+is at least $2X$. Thus, an element that has been moved $Y$ times will be in a
+set of size at least $2^Y$, and since the maximum size of a set is $N$ (the
+root), each element will be moved at most $\mathcal{O}(\log N$) times.
 
 <Spoiler title="Full Code">
 
@@ -111,16 +121,29 @@ int main() {
 
 ## Generalizing
 
-We can also merge other standard library data structures such as `std::map` or `std:unordered_map` in the same way. However, [`std::swap`](https://en.cppreference.com/w/cpp/algorithm/swap) does not always run in $\mathcal{O}(1)$ time. For example, swapping [`std::array`](http://www.cplusplus.com/reference/array/array/swap/)s takes time linear in the sum of the sizes of the arrays, and the same goes for [GCC policy-based data structures](https://codeforces.com/blog/entry/11080) such as `__gnu_pbds::tree` or `__gnu_pbds::gp_hash_table`.
+We can also merge other standard library data structures such as `std::map` or
+`std:unordered_map` in the same way. However,
+[`std::swap`](https://en.cppreference.com/w/cpp/algorithm/swap) does not always
+run in $\mathcal{O}(1)$ time. For example, swapping
+[`std::array`](http://www.cplusplus.com/reference/array/array/swap/)s takes time
+linear in the sum of the sizes of the arrays, and the same goes for
+[GCC policy-based data structures](https://codeforces.com/blog/entry/11080) such
+as `__gnu_pbds::tree` or `__gnu_pbds::gp_hash_table`.
 
-To swap two policy-based data structures `a` and `b` in $\mathcal{O}(1)$ time, use `a.swap(b)` instead. Note that for standard library data structures, `swap(a,b)` is equivalent to `a.swap(b)`.
+To swap two policy-based data structures `a` and `b` in $\mathcal{O}(1)$ time,
+use `a.swap(b)` instead. Note that for standard library data structures,
+`swap(a,b)` is equivalent to `a.swap(b)`.
 
 ## Problems
 
-<Problems problems={"general"} />
+<Problems problems={'general'} />
 
 <Optional title="Faster Merging">
 
-It's easy to merge two sets of sizes $n\ge m$ in $\mathcal{O}(n+m)$ or $(m\log n)$ time, but sometimes $O\left(m\log \left(1+\frac{n}{m}\right)\right)$ can be significantly better than both of these. Check "Advanced - Treaps" for more details. Also see [this link](https://codeforces.com/blog/entry/49446) regarding merging segment trees.
+It's easy to merge two sets of sizes $n\ge m$ in $\mathcal{O}(n+m)$ or
+$(m\log n)$ time, but sometimes $O\left(m\log \left(1+\frac{n}{m}\right)\right)$
+can be significantly better than both of these. Check "Advanced - Treaps" for
+more details. Also see [this link](https://codeforces.com/blog/entry/49446)
+regarding merging segment trees.
 
 </Optional>

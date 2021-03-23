@@ -4,13 +4,11 @@ title: 'Knapsack DP'
 author: Nathan Chen, Michael Cao, Benjamin Qi
 prerequisites:
   - intro-dp
-description: 'Problems that can be modeled as filling a limited-size container with a subset of items.'
+description:
+  'Problems that can be modeled as filling a limited-size container with a
+  subset of items.'
 frequency: 2
 ---
-
-
-
-
 
 <FocusProblem problem={problems.sam[0]} />
 
@@ -29,21 +27,48 @@ frequency: 2
 	</Resource>
 </Resources>
 
-**Knapsack** problems generally involve filling a limited container with a subset of items, and we want to count or optimize some quantity associated with the items. Almost every time, you can think of each item as having a positive weight, and the total weight of the items we choose must not exceed the capacity of the container, which is some number. Some variations of knapsack-type problems include:
+**Knapsack** problems generally involve filling a limited container with a
+subset of items, and we want to count or optimize some quantity associated with
+the items. Almost every time, you can think of each item as having a positive
+weight, and the total weight of the items we choose must not exceed the capacity
+of the container, which is some number. Some variations of knapsack-type
+problems include:
 
-- The [0/1 Knapsack problem](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/): Choosing a subset of items such that we maximize their total value, and their total weight does not exceed the capacity of the container
-- Finding all the possible total weights that we can achieve from any subset of items, and their total weight does not exceed the capacity of the container (in the chapter of CPH linked above)
-- Counting how many sequences of items will fill the container completely, meaning the total weight is exactly the capacity of the container (the order may or may not matter)
+- The
+  [0/1 Knapsack problem](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/):
+  Choosing a subset of items such that we maximize their total value, and their
+  total weight does not exceed the capacity of the container
+- Finding all the possible total weights that we can achieve from any subset of
+  items, and their total weight does not exceed the capacity of the container
+  (in the chapter of CPH linked above)
+- Counting how many sequences of items will fill the container completely,
+  meaning the total weight is exactly the capacity of the container (the order
+  may or may not matter)
 
-The DP solution to knapsack problems usually has the state keeping track of the capacity of the knapsack, and the transitions involve trying to add an item to the knapsack. In competitive programming, you can expect that classical knapsack problems will be given twists, disguises, and extra state information involved.
+The DP solution to knapsack problems usually has the state keeping track of the
+capacity of the knapsack, and the transitions involve trying to add an item to
+the knapsack. In competitive programming, you can expect that classical knapsack
+problems will be given twists, disguises, and extra state information involved.
 
 ## Solution - Dice Combinations
 
-The problem asks us how many sequences of dice rolls exist such that sum of the top faces is $N$ ($N \leq 10^6$). To keep up with the knapsack analogy, that means we have infinite numbers of items of weights $1$ through $6$, and we want to count how many sequences of items exist such that if we put items into the container while following the sequence, the container becomes completely full. Note that the order of the items matters in this problem.
+The problem asks us how many sequences of dice rolls exist such that sum of the
+top faces is $N$ ($N \leq 10^6$). To keep up with the knapsack analogy, that
+means we have infinite numbers of items of weights $1$ through $6$, and we want
+to count how many sequences of items exist such that if we put items into the
+container while following the sequence, the container becomes completely full.
+Note that the order of the items matters in this problem.
 
-For convenience, let $\texttt{dp}[x]$ be the number of sequences of dice rolls that add up to $x$. To count how many sequences add up to $N$, or in other words, to find $\texttt{dp}[N]$, let's look at the last dice roll that brings us up to a total sum of $N$.
+For convenience, let $\texttt{dp}[x]$ be the number of sequences of dice rolls
+that add up to $x$. To count how many sequences add up to $N$, or in other
+words, to find $\texttt{dp}[N]$, let's look at the last dice roll that brings us
+up to a total sum of $N$.
 
-If the last roll was a $1$, then we know there are $\texttt{dp}[N-1]$ ways to achieve sum $N$ when the last roll is $1$. If the last roll was a $2$, then we know there are $\texttt{dp}[N-2]$ ways to achieve sum $N$ when the last roll is $2$. Continue this logic for all the dice numbers up to $6$. Considering all those cases together, we have shown that
+If the last roll was a $1$, then we know there are $\texttt{dp}[N-1]$ ways to
+achieve sum $N$ when the last roll is $1$. If the last roll was a $2$, then we
+know there are $\texttt{dp}[N-2]$ ways to achieve sum $N$ when the last roll is
+$2$. Continue this logic for all the dice numbers up to $6$. Considering all
+those cases together, we have shown that
 
 $$
 \texttt{dp}[N] = \texttt{dp}[N-1] + \texttt{dp}[N-2] + \texttt{dp}[N-3] + \texttt{dp}[N-4] + \texttt{dp}[N-5] + \texttt{dp}[N-6].
@@ -55,7 +80,10 @@ $$
 \texttt{dp}[x] = \sum_{i=1}^6\texttt{dp}[x-i].
 $$
 
-Start with the base case that $\texttt{dp}[0] = 1$, and then $\texttt{dp}[1]$, $\texttt{dp}[2]$, $\texttt{dp}[3]$, and so on... can be calculated using the recurrence until we find $\texttt{dp}[N]$. Note in the code that we ignore $\texttt{dp}[x]$ if $x < 0$.
+Start with the base case that $\texttt{dp}[0] = 1$, and then $\texttt{dp}[1]$,
+$\texttt{dp}[2]$, $\texttt{dp}[3]$, and so on... can be calculated using the
+recurrence until we find $\texttt{dp}[N]$. Note in the code that we ignore
+$\texttt{dp}[x]$ if $x < 0$.
 
 <LanguageSection>
 
@@ -126,11 +154,11 @@ public class Main {
 
 ### CSES
 
-<Problems problems={"knapsack"} />
+<Problems problems={'knapsack'} />
 
 ### USACO
 
-<Problems problems={"usaco"} />
+<Problems problems={'usaco'} />
 
 ### NT
 
@@ -169,4 +197,4 @@ $$
 
 -->
 
-<Problems problems={"nt"} />
+<Problems problems={'nt'} />

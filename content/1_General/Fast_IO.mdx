@@ -2,19 +2,26 @@
 id: fast-io
 title: Fast Input & Output
 author: Benjamin Qi, Nathan Chen
-description: 'Speeding up I/O speeds can make a substantial difference in problems with large inputs.'
+description:
+  'Speeding up I/O speeds can make a substantial difference in problems with
+  large inputs.'
 prerequisites:
   - io
 ---
 
-
-Generally, input and output speed isn't an issue. However, some platinum tasks have relatively large input files. The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions) briefly mentions some ways of speeding up I/O; let's check that these actually make a difference.
+Generally, input and output speed isn't an issue. However, some platinum tasks
+have relatively large input files. The
+[USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
+briefly mentions some ways of speeding up I/O; let's check that these actually
+make a difference.
 
 ## Fast Input
 
 <FocusProblem problem={problems.roboherd} />
 
-The largest USACO input file we know of is test case 11 of **Robotic Cow Herd** (10.3 megabytes). The answer to this test case is $10^{18}$ (with $N=K=10^5$ and all microcontrollers costing $10^8$).
+The largest USACO input file we know of is test case 11 of **Robotic Cow Herd**
+(10.3 megabytes). The answer to this test case is $10^{18}$ (with $N=K=10^5$ and
+all microcontrollers costing $10^8$).
 
 <LanguageSection>
 
@@ -102,7 +109,9 @@ int main() { // 258 ms
 
 ### Method 4: `fread` and `fwrite`
 
-Using `FastIO` from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) further reduces the runtime.
+Using `FastIO` from
+[here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h)
+further reduces the runtime.
 
 <Spoiler title="91ms">
 
@@ -156,9 +165,14 @@ int main() {
 
 From the second resource:
 
-> This disables the synchronization between the C and C++ standard streams. By default, all standard streams are synchronized, which in practice allows you to mix C- and C++-style I/O and get sensible and expected results. If you disable the synchronization, then C++ streams are allowed to have their own independent buffers, which makes mixing C- and C++-style I/O an adventure.
+> This disables the synchronization between the C and C++ standard streams. By
+> default, all standard streams are synchronized, which in practice allows you
+> to mix C- and C++-style I/O and get sensible and expected results. If you
+> disable the synchronization, then C++ streams are allowed to have their own
+> independent buffers, which makes mixing C- and C++-style I/O an adventure.
 
-Adding this immediately after `main()` significantly reduces the runtime of method 1.
+Adding this immediately after `main()` significantly reduces the runtime of
+method 1.
 
 <Spoiler title="299ms">
 
@@ -184,19 +198,26 @@ int main() {
 
 </Spoiler>
 
-You may also see `cin.sync_with_stdio(0)` and `ios_base::sync_with_stdio(0)`. These function calls are all equivalent.
+You may also see `cin.sync_with_stdio(0)` and `ios_base::sync_with_stdio(0)`.
+These function calls are all equivalent.
 
 <Warning>
 
-Make sure that this line comes before taking any input ([Source](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio)).
+Make sure that this line comes before taking any input
+([Source](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio)).
 
-> If this function is called after I/O has occurred on the standard stream, the behavior is implementation-defined: implementations range from no effect to destroying the read buffer.
+> If this function is called after I/O has occurred on the standard stream, the
+> behavior is implementation-defined: implementations range from no effect to
+> destroying the read buffer.
 
 </Warning>
 
 <Warning>
 
-You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after including this line. In fact, as `freopen` is C-style I/O, it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if this line is included. But as far as I know, it works properly.
+You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after
+including this line. In fact, as `freopen` is C-style I/O, it is supposedly
+prohibited to use `freopen` to redirect `cin` and `cout` if this line is
+included. But as far as I know, it works properly.
 
 </Warning>
 
@@ -204,11 +225,13 @@ You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after inc
 
 <JavaSection>
 
-Keep in mind that a Java program that only reads in $N$ and outputs a number takes 138ms on USACO.
+Keep in mind that a Java program that only reads in $N$ and outputs a number
+takes 138ms on USACO.
 
 ### Method 1 - [`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html)
 
-Probably the easiest way to read input in Java, though it is also extremely slow.
+Probably the easiest way to read input in Java, though it is also extremely
+slow.
 
 <Spoiler title="3188ms">
 
@@ -242,9 +265,14 @@ public class roboherd_scanner {
 
 ### Method 2 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`.split()`](<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#split(java.lang.String)>)
 
-`BufferedReader` reads line-by-line with the `.readLine()` method, which returns a string. Methods like `Integer.parseInt()` are used to convert strings into primitives, and they can directly convert a line into a number, like in `Integer.parseInt(br.readLine())`.
+`BufferedReader` reads line-by-line with the `.readLine()` method, which returns
+a string. Methods like `Integer.parseInt()` are used to convert strings into
+primitives, and they can directly convert a line into a number, like in
+`Integer.parseInt(br.readLine())`.
 
-Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String`.
+Reading input is more complicated when multiple, space-separated values are
+placed in a single line. In order to individually read the values in each line,
+the programmer usually uses the `.split()` method in `String`.
 
 <Spoiler title="1209ms">
 
@@ -280,7 +308,8 @@ public class roboherd_buffered_reader_string_split {
 
 ### Method 3 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html)
 
-Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly faster than `.split()`.
+Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly
+faster than `.split()`.
 
 <Spoiler title="986ms">
 
@@ -312,11 +341,15 @@ public class roboherd_buffered_reader_string_tokenizer {
 
 </Spoiler>
 
-As [`Kattio`](/general/io?lang=java#io-template) is just a wrapper around `BufferedReader` and `PrintWriter`, it performs similarly. This method is usually fast enough and doesn't require too much typing, so we recommend that you go with this.
+As [`Kattio`](/general/io?lang=java#io-template) is just a wrapper around
+`BufferedReader` and `PrintWriter`, it performs similarly. This method is
+usually fast enough and doesn't require too much typing, so we recommend that
+you go with this.
 
 ### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
 
-Apparently this is even faster! Though properly reading in `long`s would require additional work (since they are interpreted as `double`s by default).
+Apparently this is even faster! Though properly reading in `long`s would require
+additional work (since they are interpreted as `double`s by default).
 
 <Spoiler title="569ms">
 
@@ -353,11 +386,15 @@ public class roboherd {
 
 ### Method 5 - [`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html)
 
-Even faster than `BufferedReader` is a custom-written Fast I/O class that reads bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++ section.
+Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
+bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++
+section.
 
 <Spoiler title="382ms">
 
-Based off several sources, including `Kattio`, [this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and [this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/FastScanner.java).
+Based off several sources, including `Kattio`,
+[this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and
+[this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/FastScanner.java).
 
 ```java
 import java.io.*;
@@ -439,7 +476,8 @@ public class Main {
 
 <Warning>
 
-Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of ~100ms.
+Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of
+~100ms.
 
 </Warning>
 
@@ -451,7 +489,8 @@ Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of ~100
 
 <PySection>
 
-Faster than the first C++ method! Significantly less if $P$ does not need to be stored.
+Faster than the first C++ method! Significantly less if $P$ does not need to be
+stored.
 
 <Spoiler title="853ms">
 
@@ -482,7 +521,8 @@ else:
 
 <CPPSection>
 
-The following solution has the right time complexity, but it TLEs despite including `cin.sync_with_stdio(0)`.
+The following solution has the right time complexity, but it TLEs despite
+including `cin.sync_with_stdio(0)`.
 
 <Spoiler title="TLE Test 3">
 
@@ -545,7 +585,9 @@ But what if we want to stick with `cin` and `cout`?
 
 ### Method 1 - Print a Single String
 
-In general, it may be faster to store the answer in a single `string` and output it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
+In general, it may be faster to store the answer in a single `string` and output
+it with a single function call. This method avoids the overhead of calling an
+output method many times, especially if the output is generated in many parts.
 
 <Spoiler title="920 ms">
 
@@ -579,7 +621,8 @@ int main() {
 
 Note that the above TLEs on test 5 if `cin.sync_with_stdio(0)` is not included.
 
-Also, the change in runtime if we use `scanf` and `printf` appears to be negligible.
+Also, the change in runtime if we use `scanf` and `printf` appears to be
+negligible.
 
 <Spoiler title="2027 ms">
 
@@ -632,18 +675,26 @@ int main() {
 
 From the second resource:
 
-> This unties `cin` from `cout`. Tied streams ensure that one stream is flushed automatically before each I/O operation on the other stream.
+> This unties `cin` from `cout`. Tied streams ensure that one stream is flushed
+> automatically before each I/O operation on the other stream.
 >
-> By default `cin` is tied to `cout` to ensure a sensible user interaction. For example:
+> By default `cin` is tied to `cout` to ensure a sensible user interaction. For
+> example:
 >
 > ```cpp
 > std::cout << "Enter name:";
 > std::cin >> name;
 > ```
 >
-> If `cin` and `cout` are tied, you can expect the output to be flushed (i.e., visible on the console) before the program prompts input from the user. If you untie the streams, the program might block waiting for the user to enter their name but the "Enter name" message is not yet visible (because `cout` is buffered by default, output is flushed/displayed on the console only on demand or when the buffer is full).
+> If `cin` and `cout` are tied, you can expect the output to be flushed (i.e.,
+> visible on the console) before the program prompts input from the user. If you
+> untie the streams, the program might block waiting for the user to enter their
+> name but the "Enter name" message is not yet visible (because `cout` is
+> buffered by default, output is flushed/displayed on the console only on demand
+> or when the buffer is full).
 >
-> So if you untie `cin` from `cout`, you must make sure to flush `cout` manually every time you want to display something before expecting input on `cin`.
+> So if you untie `cin` from `cout`, you must make sure to flush `cout` manually
+> every time you want to display something before expecting input on `cin`.
 
 <Spoiler title="1076 ms">
 
@@ -675,7 +726,8 @@ int main() {
 
 <Info title="cin.tie(0)->sync_with_stdio(0);">
 
-In the above line of code, `cin.tie(0)` returns the stream that was previously tied to `cin` (`cout`). So this is essentially equivalent to:
+In the above line of code, `cin.tie(0)` returns the stream that was previously
+tied to `cin` (`cout`). So this is essentially equivalent to:
 
 ```cpp
 cin.tie(0), cout.sync_with_stdio(0);
@@ -683,16 +735,24 @@ cin.tie(0), cout.sync_with_stdio(0);
 
 </Info>
 
-Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that they don't immediately print their output, but store some of it. At some point, the buffer's contents are written (i.e. ["flushed"](https://stackoverflow.com/questions/213907/stdendl-vs-n)) to the output device (e.g the standard output stream or a file). Buffering the output helps with efficiency if accessing the output device (like a file) is slow.
+Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that
+they don't immediately print their output, but store some of it. At some point,
+the buffer's contents are written (i.e.
+["flushed"](https://stackoverflow.com/questions/213907/stdendl-vs-n)) to the
+output device (e.g the standard output stream or a file). Buffering the output
+helps with efficiency if accessing the output device (like a file) is slow.
 
-Because `endl` always flushes the output, using `\n` instead may avoid unnecessary flushes.
+Because `endl` always flushes the output, using `\n` instead may avoid
+unnecessary flushes.
 
 - With `endl` in place of `\n`, the above code TLEs on test 3.
-- `\n` may also flush the output if `cin.tie(0)` is not present, so removing `cin.tie(0)` from the above code also TLEs on test 3.
+- `\n` may also flush the output if `cin.tie(0)` is not present, so removing
+  `cin.tie(0)` from the above code also TLEs on test 3.
 
 <Warning title="cout.tie(0)">
 
-You may see some competitive programmers including this line. This doesn't actually do anything since `cout` isn't tied to anything ...
+You may see some competitive programmers including this line. This doesn't
+actually do anything since `cout` isn't tied to anything ...
 
 </Warning>
 
@@ -700,9 +760,17 @@ You may see some competitive programmers including this line. This doesn't actua
 
 <JavaSection>
 
-In general, it may be faster to store the answer in a single `StringBuilder` and output it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
+In general, it may be faster to store the answer in a single `StringBuilder` and
+output it with a single function call. This method avoids the overhead of
+calling an output method many times, especially if the output is generated in
+many parts.
 
-When printing to the standard output stream in Java, it is faster to use `new PrintWriter(System.out)` than `System.out` (as all the methods above do). The syntax for `PrintWriter` is equivalent to that of `System.out` so it should be easy to use. The only difference is that one has to call `.flush()` or `.close()` on the `PrintWriter` at the very end of the program in order to write the output.
+When printing to the standard output stream in Java, it is faster to use
+`new PrintWriter(System.out)` than `System.out` (as all the methods above do).
+The syntax for `PrintWriter` is equivalent to that of `System.out` so it should
+be easy to use. The only difference is that one has to call `.flush()` or
+`.close()` on the `PrintWriter` at the very end of the program in order to write
+the output.
 
 </JavaSection>
 

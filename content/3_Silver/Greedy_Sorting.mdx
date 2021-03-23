@@ -12,12 +12,6 @@ description: 'Solving greedy problems by sorting the input.'
 frequency: 3
 ---
 
-
-
-
-
-
-
 <!--   new Problem("CF", "New Year and Three Musketeers", "contest/611/problem/E", "Hard", false, [], "needs maps"), -->
 
 <Resources>
@@ -41,13 +35,20 @@ frequency: 3
 
 <br />
 
-Usually, when using a greedy algorithm, there is a **value function** that determines which choice is considered most optimal. For example, we often want to maximize or minimize a certain quantity, so we take the largest or smallest possible value in the next step.
+Usually, when using a greedy algorithm, there is a **value function** that
+determines which choice is considered most optimal. For example, we often want
+to maximize or minimize a certain quantity, so we take the largest or smallest
+possible value in the next step.
 
 Here, we'll focus on problems where some sorting step is involved.
 
 ## Example - Studying Algorithms
 
-Steph wants to improve her knowledge of algorithms over winter break. She has a total of $X$ ($1 \leq X \leq 10^4$) minutes to dedicate to learning algorithms. There are $N$ ($1 \leq N \leq 100$) algorithms, and each one of them requires $a_i$ ($1 \leq a_i \leq 100$) minutes to learn. Find the maximum number of algorithms she can learn.
+Steph wants to improve her knowledge of algorithms over winter break. She has a
+total of $X$ ($1 \leq X \leq 10^4$) minutes to dedicate to learning algorithms.
+There are $N$ ($1 \leq N \leq 100$) algorithms, and each one of them requires
+$a_i$ ($1 \leq a_i \leq 100$) minutes to learn. Find the maximum number of
+algorithms she can learn.
 
 <FocusProblem problem={problems.studyalgo} />
 
@@ -55,15 +56,25 @@ Steph wants to improve her knowledge of algorithms over winter break. She has a 
 
 <Spoiler title="Solution">
 
-The first observation we make is that Steph should prioritize learning algorithms from easiest to hardest; in other words, start with learning the algorithm that requires the least amount of time, and then choose further algorithms in increasing order of time required. Let's look at the following example:
+The first observation we make is that Steph should prioritize learning
+algorithms from easiest to hardest; in other words, start with learning the
+algorithm that requires the least amount of time, and then choose further
+algorithms in increasing order of time required. Let's look at the following
+example:
 
 $$
 X = 15, \qquad N = 6, \qquad a_i = \{ 4, 3, 8, 4, 7, 3 \}
 $$
 
-After sorting the array, we have $\{ 3, 3, 4, 4, 7, 8 \}$. Within the maximum of 15 minutes, Steph can learn four algorithms in a total of $3+3+4+4 = 14$ minutes.
+After sorting the array, we have $\{ 3, 3, 4, 4, 7, 8 \}$. Within the maximum of
+15 minutes, Steph can learn four algorithms in a total of $3+3+4+4 = 14$
+minutes.
 
-The implementation of this algorithm is very simple. We sort the array, and then take as many elements as possible while the sum of times of algorithms chosen so far is less than $X$. Sorting the array takes $\mathcal{O}(N \log N)$ time, and iterating through the array takes $\mathcal{O}(N)$ time, for a total time complexity of $\mathcal{O}(N \log N)$.
+The implementation of this algorithm is very simple. We sort the array, and then
+take as many elements as possible while the sum of times of algorithms chosen so
+far is less than $X$. Sorting the array takes $\mathcal{O}(N \log N)$ time, and
+iterating through the array takes $\mathcal{O}(N)$ time, for a total time
+complexity of $\mathcal{O}(N \log N)$.
 
 <LanguageSection>
 
@@ -126,11 +137,16 @@ print(i) # print the ans
 
 <FocusProblem problem={problems.movie} />
 
-There are $N$ events, each described by their starting and ending times. You can only attend one event at a time, and if you choose to attend an event, you must attend the entire event. Traveling between events is instantaneous. What's the maximum number of events you can attend?
+There are $N$ events, each described by their starting and ending times. You can
+only attend one event at a time, and if you choose to attend an event, you must
+attend the entire event. Traveling between events is instantaneous. What's the
+maximum number of events you can attend?
 
 ### Bad Greedy - Earliest Starting Next Event
 
-One possible ordering for a greedy algorithm would always select the next possible event that begins as soon as possible. Let's look at the following example, where the selected events are highlighted in red:
+One possible ordering for a greedy algorithm would always select the next
+possible event that begins as soon as possible. Let's look at the following
+example, where the selected events are highlighted in red:
 
 <svg viewBox="0 0 200 40">
 	<line
@@ -165,7 +181,8 @@ One possible ordering for a greedy algorithm would always select the next possib
 	/>
 </svg>
 
-In this example, the greedy algorithm selects two events, which is optimal. However, this doesn't always work, as shown by the following counterexample:
+In this example, the greedy algorithm selects two events, which is optimal.
+However, this doesn't always work, as shown by the following counterexample:
 
 <svg viewBox="0 0 200 40">
 	<line
@@ -201,7 +218,8 @@ In this example, the greedy algorithm selects two events, which is optimal. Howe
 	/>
 </svg>
 
-In this case, the greedy algorithm selects to attend only one event. However, the optimal solution would be the following:
+In this case, the greedy algorithm selects to attend only one event. However,
+the optimal solution would be the following:
 
 <svg viewBox="0 0 200 40">
 	<line
@@ -237,7 +255,8 @@ In this case, the greedy algorithm selects to attend only one event. However, th
 
 ### Correct Greedy - Earliest Ending Next Event
 
-Instead, we can select the event that ends as early as possible. This correctly selects the three events.
+Instead, we can select the event that ends as early as possible. This correctly
+selects the three events.
 
 <svg viewBox="0 0 200 40">
 	<line
@@ -271,15 +290,24 @@ Instead, we can select the event that ends as early as possible. This correctly 
 	/>
 </svg>
 
-In fact, this algorithm always works. A brief explanation of correctness is as follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than $E_1$, then it is always optimal to select $E_1$. This is because selecting $E_1$ gives us more choices for future events. If we can select an event to go after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first. Thus, the set of events that can go after $E_2$ is a subset of the events that can go after $E_1$, making $E_1$ the optimal choice.
+In fact, this algorithm always works. A brief explanation of correctness is as
+follows. If we have two events $E_1$ and $E_2$, with $E_2$ ending later than
+$E_1$, then it is always optimal to select $E_1$. This is because selecting
+$E_1$ gives us more choices for future events. If we can select an event to go
+after $E_2$, then that event can also go after $E_1$, because $E_1$ ends first.
+Thus, the set of events that can go after $E_2$ is a subset of the events that
+can go after $E_1$, making $E_1$ the optimal choice.
 
-For the following code, let's say we have the array `events` of events, which each contain a start and an end point.
+For the following code, let's say we have the array `events` of events, which
+each contain a start and an end point.
 
 <LanguageSection>
 
 <CPPSection>
 
-We'll be using the C++ built in container pair to store each event. Note that since the standard sort in C++ sorts by first element, we will store each event as `pair<end, start>`.
+We'll be using the C++ built in container pair to store each event. Note that
+since the standard sort in C++ sorts by first element, we will store each event
+as `pair<end, start>`.
 
 ```cpp
 // read in the input, store the events in pair<int, int>[] events.
@@ -358,15 +386,26 @@ print(ans)
 
 ## When Greedy Fails
 
-We'll provide a few common examples of when greedy fails, so that you can avoid falling into obvious traps and wasting time getting wrong answers in contest.
+We'll provide a few common examples of when greedy fails, so that you can avoid
+falling into obvious traps and wasting time getting wrong answers in contest.
 
 ### Coin Change
 
-This problem gives several coin denominations, and asks for the minimum number of coins needed to make a certain value. Greedy algorithms can be used to solve this problem only in very specific cases (it can be proven that it works for the American as well as the Euro coin systems). However, it doesn't work in the general case. For example, let the coin denominations be $\{1, 3, 4\}$, and say the value we want is 6. The optimal solution is $\{3, 3\}$, which requires only two coins, but the greedy method of taking the highest possible valued coin that fits in the remaining denomination gives the solution $\{4, 1, 1\}$, which is incorrect.
+This problem gives several coin denominations, and asks for the minimum number
+of coins needed to make a certain value. Greedy algorithms can be used to solve
+this problem only in very specific cases (it can be proven that it works for the
+American as well as the Euro coin systems). However, it doesn't work in the
+general case. For example, let the coin denominations be $\{1, 3, 4\}$, and say
+the value we want is 6. The optimal solution is $\{3, 3\}$, which requires only
+two coins, but the greedy method of taking the highest possible valued coin that
+fits in the remaining denomination gives the solution $\{4, 1, 1\}$, which is
+incorrect.
 
 ### Knapsack
 
-The knapsack problem gives a number of items, each having a **weight** and a **value**, and we want to choose a subset of these items. We are limited to a certain weight, and we want to maximize the value of the items that we take.
+The knapsack problem gives a number of items, each having a **weight** and a
+**value**, and we want to choose a subset of these items. We are limited to a
+certain weight, and we want to maximize the value of the items that we take.
 
 Let's take the following example, where we have a maximum capacity of 4:
 
@@ -380,14 +419,19 @@ Let's take the following example, where we have a maximum capacity of 4:
 
 </center>
 
-If we use greedy based on highest value first, we choose item A and then we are done, as we don't have remaining weight to fit either of the other two. Using greedy based on value per weight again selects item A and then quits. However, the optimal solution is to select items B and C, as they combined have a higher value than item A alone. In fact, there is no working greedy solution. The solution to this problem uses **dynamic programming**, which is covered in gold.
+If we use greedy based on highest value first, we choose item A and then we are
+done, as we don't have remaining weight to fit either of the other two. Using
+greedy based on value per weight again selects item A and then quits. However,
+the optimal solution is to select items B and C, as they combined have a higher
+value than item A alone. In fact, there is no working greedy solution. The
+solution to this problem uses **dynamic programming**, which is covered in gold.
 
 ## Problems
 
 ### CSES
 
-<Problems problems={"cses"} />
+<Problems problems={'cses'} />
 
 ### Other
 
-<Problems problems={"other"} />
+<Problems problems={'other'} />

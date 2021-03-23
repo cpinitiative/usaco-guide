@@ -2,14 +2,13 @@
 id: bin-jump
 title: 'Binary Jumping'
 author: Benjamin Qi, Neo Wang
-description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
+description:
+  'Introduces the problems of finding level ancestors in a tree and computing
+  the lowest common ancestors.'
 frequency: 3
 prerequisites:
   - func-graphs
 ---
-
-
-
 
 ## Binary Jumping
 
@@ -21,8 +20,18 @@ prerequisites:
 	<Resource source="CPH" title="18.1 - Finding Ancestors">
 		{' '}
 	</Resource>
-	<Resource source="AryanshS" title="Binary Lifting" url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1" />
-	<Resource source="SecondThread" title="Tree Basics - Binary Lifting" url="https://codeforces.com/blog/entry/81527"> </Resource>
+	<Resource
+		source="AryanshS"
+		title="Binary Lifting"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1"
+	/>
+	<Resource
+		source="SecondThread"
+		title="Tree Basics - Binary Lifting"
+		url="https://codeforces.com/blog/entry/81527"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 <Info title="Pro Tip">
@@ -33,11 +42,17 @@ Binary jumping is more commonly referred to as "binary lifting."
 
 ### Solution
 
-To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$-th ancestor of $x$.
+To solve this problem, we can use a standard binary lifting implementation where
+`jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
 
-In our ```jmp(int x, int d)``` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree). 
+In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node
+does not exist and we can simply return $-1$. This is because the lowest number
+a node can be is $1$ (the root of the tree).
 
-In our implementation, we test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $0, 2, 3$ (in that order) counting from the right.
+In our implementation, we test if we jump in powers of two by using the $\&$
+operator. If the $i$th bit on the right is toggled, then we jump. For example, a
+jump of $13$ would correspond to the binary number $1101$. We would jump 3 times
+on bits $0, 2, 3$ (in that order) counting from the right.
 
 <Spoiler title="Illustration of the jump method">
 
@@ -45,11 +60,14 @@ In our implementation, we test if we jump in powers of two by using the $\&$ ope
 
 </Spoiler>
 
-To calculate the rows required for the ```int up[MS][MX]``` array, use the formula $\lceil \log_2{N} \rceil$ which in our case simplifies to $\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
+To calculate the rows required for the `int up[MS][MX]` array, use the formula
+$\lceil \log_2{N} \rceil$ which in our case simplifies to
+$\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
 
 <Info title="Pro Tip">
 
-It never hurts to add additional rows - or columns, depending on your implementation -  (as long as it's reasonable)!
+It never hurts to add additional rows - or columns, depending on your
+implementation - (as long as it's reasonable)!
 
 </Info>
 
@@ -72,7 +90,7 @@ int N, Q;
 const int MX = 2e5+5; // maximum N
 const int MS = 18; // 18 is calculated by $\log_2 2e5$
 
-int up[MS][MX]; 
+int up[MS][MX];
 
 int jmp(int x, int d) {
 	F0R(i, MS) if((d >> i) & 1) x = up[i][x];
@@ -115,7 +133,7 @@ int main() {
 
 ### Problems
 
-<Problems problems={"binJump"} />
+<Problems problems={'binJump'} />
 
 ## Lowest Common Ancestor
 
@@ -160,11 +178,11 @@ int main() {
 
 #### USACO
 
-<Problems problems={"usaco"} />
+<Problems problems={'usaco'} />
 
 #### General
 
-<Problems problems={"general"} />
+<Problems problems={'general'} />
 
 <IncompleteSection>
 
