@@ -270,7 +270,58 @@ export class Problem {
   public solutionMetadata: any;
 
   get uniqueID() {
-    return this.url;
+    let id;
+    if (
+      ['Bronze', 'Silver', 'Gold', 'Plat'].some(
+        x => this.source.indexOf(x) !== -1
+      )
+    ) {
+      // is usaco
+      id = `usaco-${this.id}`;
+    } else if (this.source === 'CSES') {
+      id = `cses-${this.id}`;
+    } else if (this.source === 'Kattis' && !this.id.startsWith('http')) {
+      id = `kattis-${this.id}`;
+    } else if (this.source === 'CF') {
+      let num = this.id.match(/([0-9]+)/g)[0];
+      let char = this.id[this.id.length - 1];
+      if (this.id.indexOf('gym') !== -1) {
+        id = `cfgym-${num}${char}`;
+      } else {
+        id = `cf-${num}${char}`;
+      }
+    } else {
+      const camelCase = x => {
+        if (x.match(/^[0-9]{4}/) !== null) {
+          return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
+        }
+        x = x.replace(/[^\w\s]/g, '');
+        let str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+          return word.toUpperCase();
+        });
+        if (str.split(' ').length === 1) {
+          return str.toLowerCase();
+        } else {
+          return str.replace(/\s+/g, '');
+        }
+      };
+      if (this.source === 'Baltic OI') {
+        id = `baltic-${camelCase(this.name)}`;
+      } else if (this.source === 'Balkan OI') {
+        id = `balkan-${camelCase(this.name)}`;
+      } else {
+        id = `${camelCase(this.source)}-${camelCase(this.name)}`;
+      }
+    }
+    let extra = '';
+    if (this.solutionMetadata?.kind === 'internal') {
+      if (this.solID !== id) {
+        extra += '   [Current Sol ID: ' + this.solID + ']';
+      }
+    }
+    console.log(`${id}${extra}`);
+    // console.log(this.source, id);
+    return id;
   }
 
   private autoGenerateInfoFromSource() {
