@@ -87,7 +87,7 @@ const CodeSnipButton = ({
       </CodeSnipButtonIcon>
   );
 };
-
+let canExpand = true;
 class CodeBlock extends React.Component<
     {
       children: string;
@@ -102,7 +102,10 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-      console.log(props)
+    if(typeof (props.expandable) != "undefined") {
+        canExpand = props.expandable;
+    }
+
     let i = 0;
     let prev = -1;
     let prevVal = '';
@@ -271,7 +274,10 @@ class CodeBlock extends React.Component<
     //   }
     // }
 
-    const collapsed = this.state.collapsed;
+    let collapsed = this.state.collapsed;
+    if (!canExpand){
+        collapsed = canExpand;
+    }
 
     return (
         // @ts-ignore
@@ -294,7 +300,7 @@ class CodeBlock extends React.Component<
                   ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                   : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
+              {canExpand && tokens.length > 15 && (
                   <div
                       className={
                         (collapsed ? 'h-full' : 'h-12') +
