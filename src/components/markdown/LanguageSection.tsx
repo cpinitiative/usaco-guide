@@ -17,13 +17,19 @@ export const LanguageSection = props => {
   const sections = {};
   React.Children.map(props.children, child => {
     const oldChild = child;
-    const newChild = React.cloneElement(child, {children: oldChild.props.children, mdxType: oldChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
+    let newChild = React.cloneElement(child, {children: oldChild.props.children, mdxType: oldChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
       JavaSection: 'java',
       PySection: 'py',
     };
+
+    newChild.props.children = React.Children.map(newChild.props.children, child => {
+      let ogChild = child;
+      return React.cloneElement(child, {children: ogChild.props.children, mdxType: ogChild.props.mdxType, originalType: oldChild.props.originalType, expandable: expand});
+    });
+
     sections[typeToLang[type]] = newChild;
     // test
     console.log(newChild.props.children);
