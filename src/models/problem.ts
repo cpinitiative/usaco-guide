@@ -280,6 +280,8 @@ export class Problem {
       id = `usaco-${this.id}`;
     } else if (this.source === 'CSES') {
       id = `cses-${this.id}`;
+    } else if (this.source === 'Kattis' && !this.id.startsWith('http')) {
+      id = `kattis-${this.id}`;
     } else if (this.source === 'CF') {
       let num = this.id.match(/([0-9]+)/g)[0];
       let char = this.id[this.id.length - 1];
