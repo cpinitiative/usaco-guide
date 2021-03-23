@@ -62,7 +62,7 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(nq)$
 
-For each query $q$ we can use prefix sums to check the number of occurrences of a given letter $c$ and use two pointers to find the maximum Koyomity ending at a given index $j$ from $0 \dots n$.
+For each query $q$ we can use prefix sums to check the number of occurrences of a given letter $c$ and use two pointers to find the maximum Koyomity ending at a given pointer $p2$ from $0 \dots n$.
 
 <LanguageSection>
 
@@ -94,7 +94,7 @@ int main(){
 		int p1 = 1, p2 = 1, koyomity = 1;
 		while(p2 <= n){
 			int c_count = dp[c][p2] - dp[c][p1-1] + m;
-			if((c_count) < (p2 - p1 + 1)){
+			if(c_count < (p2 - p1 + 1)){
 				p1++;
 			} else {
 				koyomity = max(koyomity, (p2 - p1 + 1));
