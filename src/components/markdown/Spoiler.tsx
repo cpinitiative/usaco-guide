@@ -1,42 +1,49 @@
-import React, { Children } from "react";
+import React, { Children } from 'react';
 
-function determineIfSingularCodeBlock(firstName: string, numChildren: number): boolean {
-  return firstName == "LanguageSection" && numChildren == 1;
+function determineIfSingularCodeBlock(
+  firstName: string,
+  numChildren: number
+): boolean {
+  return firstName == 'LanguageSection' && numChildren == 1;
 }
 
-
-
 const Spoiler = ({ children, title }) => {
-
   let count = 0;
   let numChildren = 0;
-  let firstName = "None"
+  let firstName = 'None';
   let ogProps;
 
-  
   React.Children.forEach(children, child => {
-    if(count == 0) {
-      numChildren = Children.count(children)
-      firstName = child.props.mdxType
+    if (count == 0) {
+      numChildren = Children.count(children);
+      firstName = child.props.mdxType;
       ogProps = child.props;
-      console.log("OG PROPS: " + ogProps);
+      console.log('OG PROPS: ' + ogProps);
     }
     count++;
-  })
+  });
 
   count = 0;
-  const onlyContainsCode: boolean = determineIfSingularCodeBlock(firstName, numChildren);
-  console.log("ONLY CODE: " + onlyContainsCode)
+  const onlyContainsCode: boolean = determineIfSingularCodeBlock(
+    firstName,
+    numChildren
+  );
+  console.log('ONLY CODE: ' + onlyContainsCode);
 
   const childrenWithProps = React.Children.map(children, child => {
-    if(count == 0 && onlyContainsCode) {
+    if (count == 0 && onlyContainsCode) {
       count++;
-      return React.cloneElement(child, {children: ogProps.children, mdxType: "LanguageSection", originalType: ogProps.originalType, expandable: false});
-    }else{
+      return React.cloneElement(child, {
+        children: ogProps.children,
+        mdxType: 'LanguageSection',
+        originalType: ogProps.originalType,
+        expandable: false,
+      });
+    } else {
       return child;
     }
   });
-  console.log("Spoiler Props");
+  console.log('Spoiler Props');
   console.log(childrenWithProps);
 
   const [show, setShow] = React.useState(false);
@@ -47,7 +54,9 @@ const Spoiler = ({ children, title }) => {
     >
       <p
         className="p-4 flex items-start"
-        onClick={e => {setShow(!show)}}
+        onClick={e => {
+          setShow(!show);
+        }}
         style={{ marginBottom: 0 }}
       >
         {show && (

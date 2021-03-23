@@ -50,60 +50,60 @@ const CodeSnippetLineContent = styled(LineContent)`
 `;
 
 const CodeSnipButton = ({
-                          snipID,
-                          showSnip,
-                          onShowSnipChange,
-                          buttonDir,
-                        }: {
+  snipID,
+  showSnip,
+  onShowSnipChange,
+  buttonDir,
+}: {
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
 }) => {
   return (
-      <CodeSnipButtonIcon
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className={
-            'transform transition translate-y-0.5 h-4 cursor-pointer' +
-            (buttonDir == 'Up'
-                ? ' rotate-180'
-                : buttonDir == 'Down'
-                    ? ''
-                    : buttonDir == 'Left'
-                        ? ' rotate-90'
-                        : buttonDir == 'Right'
-                            ? ' -rotate-90'
-                            : '')
-          }
-          onClick={() => onShowSnipChange(snipID, !showSnip)}
-      >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={3}
-            d="M17 10l-5 5-5-5"
-        />
-      </CodeSnipButtonIcon>
+    <CodeSnipButtonIcon
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      className={
+        'transform transition translate-y-0.5 h-4 cursor-pointer' +
+        (buttonDir == 'Up'
+          ? ' rotate-180'
+          : buttonDir == 'Down'
+          ? ''
+          : buttonDir == 'Left'
+          ? ' rotate-90'
+          : buttonDir == 'Right'
+          ? ' -rotate-90'
+          : '')
+      }
+      onClick={() => onShowSnipChange(snipID, !showSnip)}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={3}
+        d="M17 10l-5 5-5-5"
+      />
+    </CodeSnipButtonIcon>
   );
 };
 let canExpand = true;
 class CodeBlock extends React.Component<
-    {
-      children: string;
-      className: string;
-    },
-    {
-      collapsed: boolean;
-      codeSnipShow: boolean[];
-    }
-    > {
+  {
+    children: string;
+    className: string;
+  },
+  {
+    collapsed: boolean;
+    codeSnipShow: boolean[];
+  }
+> {
   codeSnips = [];
 
   constructor(props) {
     super(props);
-    if(typeof (props.expandable) != "undefined") {
-        canExpand = props.expandable;
+    if (typeof props.expandable != 'undefined') {
+      canExpand = props.expandable;
     }
 
     let i = 0;
@@ -174,31 +174,31 @@ class CodeBlock extends React.Component<
           if (!this.state.codeSnipShow[curSnip]) {
             --maxLines;
             return (
-                // press to show code snip
-                <Line key={i} {...getLineProps({ line, key: i })}>
-                  <LineNo data-line-number={'..'} />
-                  <LineSnip>
-                    <CodeSnipButton
-                        onShowSnipChange={this.setCodeSnipShow}
-                        snipID={curSnip}
-                        showSnip={false}
-                        buttonDir={'Right'}
-                    />{' '}
-                    {/*this.state.codeSnipShow[curSnip] is false*/}
-                  </LineSnip>
-                  <CodeSnippetLineContent
-                      onClick={this.setCodeSnipShow.bind(this, curSnip, true)}
-                  >
-                    {codeSnips[curSnip].indentation}
-                    <span>
+              // press to show code snip
+              <Line key={i} {...getLineProps({ line, key: i })}>
+                <LineNo data-line-number={'..'} />
+                <LineSnip>
+                  <CodeSnipButton
+                    onShowSnipChange={this.setCodeSnipShow}
+                    snipID={curSnip}
+                    showSnip={false}
+                    buttonDir={'Right'}
+                  />{' '}
+                  {/*this.state.codeSnipShow[curSnip] is false*/}
+                </LineSnip>
+                <CodeSnippetLineContent
+                  onClick={this.setCodeSnipShow.bind(this, curSnip, true)}
+                >
+                  {codeSnips[curSnip].indentation}
+                  <span>
                     Code Snippet
-                      {codeSnips[curSnip].value
-                          ? `: ${codeSnips[curSnip].value}`
-                          : ''}{' '}
-                      (Click to expand)
+                    {codeSnips[curSnip].value
+                      ? `: ${codeSnips[curSnip].value}`
+                      : ''}{' '}
+                    (Click to expand)
                   </span>
-                  </CodeSnippetLineContent>
-                </Line>
+                </CodeSnippetLineContent>
+              </Line>
             );
           } else return null; // or nothing
         } else if (i == codeSnips[curSnip].end) {
@@ -210,37 +210,37 @@ class CodeBlock extends React.Component<
 
       //proceed as normal: (show must == true)
       let isFirst =
-          curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
+        curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
       let isLast =
-          curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
+        curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
-          <Line key={i} {...getLineProps({ line, key: i })}>
-            <LineNo data-line-number={i + delta} />
-            {isFirst || isLast ? (
-                <LineSnip>
-                  <CodeSnipButton
-                      onShowSnipChange={this.setCodeSnipShow}
-                      snipID={curSnip}
-                      showSnip={true}
-                      buttonDir={
-                        isFirst
-                            ? 'Down'
-                            : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
-                      }
-                  />{' '}
-                  {/*this.state.codeSnipShow[curSnip] is true*/}
-                </LineSnip>
-            ) : (
-                <LineSnip />
-            )}
-            <LineContent>
-              {line.map((token, key) => {
-                token.content = token.content.replace(/ {4}/g, '\t');
-                return <span key={key} {...getTokenProps({ token, key })} />;
-              })}
-            </LineContent>
-          </Line>
+        <Line key={i} {...getLineProps({ line, key: i })}>
+          <LineNo data-line-number={i + delta} />
+          {isFirst || isLast ? (
+            <LineSnip>
+              <CodeSnipButton
+                onShowSnipChange={this.setCodeSnipShow}
+                snipID={curSnip}
+                showSnip={true}
+                buttonDir={
+                  isFirst
+                    ? 'Down'
+                    : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
+                }
+              />{' '}
+              {/*this.state.codeSnipShow[curSnip] is true*/}
+            </LineSnip>
+          ) : (
+            <LineSnip />
+          )}
+          <LineContent>
+            {line.map((token, key) => {
+              token.content = token.content.replace(/ {4}/g, '\t');
+              return <span key={key} {...getTokenProps({ token, key })} />;
+            })}
+          </LineContent>
+        </Line>
       );
     });
   }
@@ -252,7 +252,7 @@ class CodeBlock extends React.Component<
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag
       return (
-          <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
           {code}
         </pre>
       );
@@ -275,76 +275,76 @@ class CodeBlock extends React.Component<
     // }
 
     let collapsed = this.state.collapsed;
-    if (!canExpand){
-        collapsed = canExpand;
+    if (!canExpand) {
+      collapsed = canExpand;
     }
 
     return (
-        // @ts-ignore
-        <Highlight
-            Prism={Prism as any}
-            code={code}
-            language={language}
-            theme={vsDark}
-        >
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-              <div className="gatsby-highlight" data-language={language}>
+      // @ts-ignore
+      <Highlight
+        Prism={Prism as any}
+        code={code}
+        language={language}
+        theme={vsDark}
+      >
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <div className="gatsby-highlight" data-language={language}>
             <pre
-                className={
-                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
-                  className
-                }
-                style={{ ...style }}
+              className={
+                '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                className
+              }
+              style={{ ...style }}
             >
               {collapsed && tokens.length > 15
-                  ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
-                  : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
+                ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
+                : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
               {canExpand && tokens.length > 15 && (
+                <div
+                  className={
+                    (collapsed ? 'h-full' : 'h-12') +
+                    ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
+                  }
+                  onClick={() => this.setCollapsed(!collapsed)}
+                >
                   <div
-                      className={
-                        (collapsed ? 'h-full' : 'h-12') +
-                        ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
-                      }
-                      onClick={() => this.setCollapsed(!collapsed)}
-                  >
-                    <div
-                        className={
-                          (collapsed ? 'h-20' : 'h-12') +
-                          ' absolute inset-x-0 bottom-0 flex items-end justify-center'
-                        }
-                        style={
-                          collapsed
-                              ? {
-                                background:
-                                    'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                              }
-                              : null
-                        }
-                    >
-                      <svg
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          className={
-                            'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
-                            (collapsed ? '' : 'rotate-180')
+                    className={
+                      (collapsed ? 'h-20' : 'h-12') +
+                      ' absolute inset-x-0 bottom-0 flex items-end justify-center'
+                    }
+                    style={
+                      collapsed
+                        ? {
+                            background:
+                              'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
                           }
-                      >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
+                        : null
+                    }
+                  >
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className={
+                        'text-white w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
+                        (collapsed ? '' : 'rotate-180')
+                      }
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
                   </div>
+                </div>
               )}
             </pre>
-              </div>
-          )}
-        </Highlight>
+          </div>
+        )}
+      </Highlight>
     );
   }
 }
