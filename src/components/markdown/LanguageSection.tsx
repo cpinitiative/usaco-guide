@@ -31,6 +31,7 @@ export const LanguageSection = props => {
       console.log(ogChild.props);
       const { oldProps } = ogChild.props;
       let newC =  React.cloneElement(child, {...oldProps, expandable: expand});
+      console.log(newC)
       return newC;
     });
 
