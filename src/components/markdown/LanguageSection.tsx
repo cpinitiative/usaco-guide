@@ -11,8 +11,7 @@ export const LanguageSection = props => {
   }else{
     expand = false; // try this
   }
-  console.log(props);
-  console.log("Expandable in langSect: " + expand)
+
 
   const sections = {};
   React.Children.map(props.children, child => {
@@ -28,8 +27,6 @@ export const LanguageSection = props => {
     newChild.props.children = React.Children.map(newChild.props.children, child => {
       let ogChild = child;
       if(typeof (ogChild.props) != "undefined") {
-        console.log("INNER")
-        console.log(ogChild.props);
         const {oldProps} = ogChild.props;
         let newC = React.cloneElement(child, {...oldProps, expandable: expand});
 
@@ -42,7 +39,7 @@ export const LanguageSection = props => {
             return child2;
           }
         });
-        console.log(newC)
+
         return newC;
       }else{
         return child;
@@ -50,7 +47,7 @@ export const LanguageSection = props => {
     });
 
     sections[typeToLang[type]] = newChild;
-    console.log("OUTER");
+    console.log("FINAL");
     // test
     console.log(newChild.props.children);
     //test
@@ -136,15 +133,19 @@ export const LanguageSection = props => {
 
 
 export const CPPSection = props => {
-
-
+  console.log("CPP PROPS")
+  console.log(props)
   return <>{props.children}</>;
 };
 
 export const JavaSection = props => {
+  console.log("JAVA PROPS")
+  console.log(props)
   return <>{props.children}</>;
 };
 
 export const PySection = props => {
+  console.log("PY PROPS")
+  console.log(props)
   return <>{props.children}</>;
 };
