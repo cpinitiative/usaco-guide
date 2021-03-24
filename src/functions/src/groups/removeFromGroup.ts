@@ -1,11 +1,11 @@
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
-import { GroupData } from '../../../models/groups/groups';
 import getPermissionLevel from './utils/getPermissionLevel';
+import { GroupData } from '../../../models/groups/groups';
 import getMembershipKey from './utils/getMembershipKey';
-
-interface LeaveGroupArgs {
+interface RemoveFromGroupArgs {
   groupId: string;
+  targetUid: string;
 }
 
 if (admin.apps.length === 0) {
@@ -13,8 +13,15 @@ if (admin.apps.length === 0) {
 }
 
 export default functions.https.onCall(
-  async ({ groupId }: LeaveGroupArgs, context) => {
+  async ({ groupId, targetUid }: RemoveFromGroupArgs, context) => {
     const callerUid = context.auth?.uid;
+
+    if (targetUid === callerUid) {
+      return {
+        success: false,
+        errorCode: 'REMOVING_SELF',
+      };
+    }
     const groupDataSnapshot = await admin
       .firestore()
       .collection('groups')
@@ -35,24 +42,29 @@ export default functions.https.onCall(
         errorCode: 'GROUP_NOT_FOUND',
       };
     }
-
-    if (
-      permissionLevel === 'OWNER' &&
-      groupData.ownerIds.filter(id => id !== callerUid).length == 0
-    ) {
+    if (permissionLevel !== 'OWNER') {
       return {
         success: false,
-        errorCode: 'SOLE_OWNER',
+        errorCode: 'PERMISSION_DENIED',
       };
     }
+
+    const targetPermissionLevel = getPermissionLevel(targetUid, groupData);
+    if (targetPermissionLevel === 'NOT_MEMBER') {
+      return {
+        success: false,
+        errorCode: 'MEMBER_NOT_FOUND',
+      };
+    }
+
     await admin
       .firestore()
       .collection('groups')
       .doc(groupId)
       .update({
         [getMembershipKey(
-          permissionLevel
-        )]: admin.firestore.FieldValue.arrayRemove(callerUid),
+          targetPermissionLevel
+        )]: admin.firestore.FieldValue.arrayRemove(targetUid),
       });
 
     return { success: true };
