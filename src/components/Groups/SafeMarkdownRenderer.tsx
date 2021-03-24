@@ -5,7 +5,9 @@ import gfm from 'remark-gfm';
 export default function SafeMarkdownRenderer({ children }) {
   return (
     <div className="prose dark:prose-light max-w-none">
-      <ReactMarkdown plugins={[gfm]}>{children}</ReactMarkdown>
+      <ReactMarkdown plugins={[gfm]} linkTarget="_blank">
+        {children}
+      </ReactMarkdown>
     </div>
   );
 }
