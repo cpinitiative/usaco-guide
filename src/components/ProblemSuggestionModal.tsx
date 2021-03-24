@@ -18,11 +18,11 @@ import { SECTION_LABELS } from '../../content/ordering';
 export default function ProblemSuggestionModal({
   isOpen,
   onClose,
-  tableProblems,
+  listName,
 }: {
   isOpen: boolean;
   onClose: Function;
-  tableProblems: Problem[];
+  listName: string;
 }) {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
@@ -56,8 +56,7 @@ export default function ProblemSuggestionModal({
     // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
     const problemTableLink =
       window.location.href.split(/[?#]/)[0] +
-      '#problem-' +
-      tableProblems[0].uniqueID;
+      '#problemlist-' + listName
 
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]

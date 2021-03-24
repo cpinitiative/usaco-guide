@@ -1,5 +1,5 @@
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/id_to_sol';
+import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
 
 const contests = {

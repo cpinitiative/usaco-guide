@@ -8,7 +8,7 @@ import {
 } from './src/models/problem';
 import PGS from './src/components/markdown/PGS';
 import { books } from './src/utils/books';
-import id_to_sol from './src/components/markdown/ProblemsList/id_to_sol';
+import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');

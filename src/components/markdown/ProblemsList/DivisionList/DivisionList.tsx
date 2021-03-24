@@ -1,16 +1,15 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { graphqlToModuleLinks } from '../../../utils/utils';
+import { graphqlToModuleLinks } from '../../../../utils/utils';
 import divToProbs from './div_to_probs';
 import contestToPoints from './contest_to_points';
-import extraProbs from '../../../../solutions/1_extra_usaco_probs';
-import { Problem } from '../../../../content/models';
-import { ProblemsList } from './ProblemsList';
+import extraProbs from '../../../../../solutions/1_extra_usaco_probs';
+import { ProblemsList } from '../ProblemsList';
 
-// import HTMLComponents from '../HTMLComponents';
-import Transition from '../../Transition';
+import Transition from '../../../Transition';
 import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -147,6 +146,7 @@ const DivisionButton = ({
   );
 };
 
+// todo refactor efficiently
 export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
@@ -154,11 +154,29 @@ export function DivisionList(props): JSX.Element {
         edges {
           node {
             frontmatter {
-              title
               id
             }
             fields {
               division
+              problemLists {
+                listId
+                problems {
+                  uniqueId
+                  name
+                  url
+                  source
+                  difficulty
+                  isStarred
+                  tags
+                  solution {
+                    kind
+                    label
+                    labelTooltip
+                    url
+                    sketch
+                  }
+                }
+              }
             }
             problems {
               uniqueID
@@ -185,6 +203,7 @@ export function DivisionList(props): JSX.Element {
       const prevTags = probToTags[uniqueID] || [];
       const allTags = prevTags.concat(problem.tags);
       // console.log('ALL TAGS', allTags, prevTags, problem.tags);
+      // @ts-ignore @jeffrey help
       probToTags[uniqueID] = [...new Set(allTags)];
       // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
       // console.log('NEW TAGS', probToTags[uniqueID]);
@@ -200,7 +219,7 @@ export function DivisionList(props): JSX.Element {
     if (problem.solID) probToSol[uniqueID] = problem.solID;
   }
   const divisionToSeasonToProbs: {
-    [key: string]: { [key: string]: Problem[] };
+    [key: string]: { [key: string]: DivisionProblemInfo[] };
   } = {};
   const contestToFraction: {
     [key: string]: { [key: string]: number[] };
@@ -228,7 +247,12 @@ export function DivisionList(props): JSX.Element {
       if (contest in contestToFraction[division]) {
         fraction = contestToFraction[division][contest].shift();
       }
-      const prob = new Problem(
+      const prob: DivisionProblemInfo = {
+        uniqueId: `usaco-${probInfo[0]}`,
+        name: probInfo[2],
+        url:
+      }
+        new Problem(
         contest, // source
         probInfo[2], // title
         probInfo[0], // id
