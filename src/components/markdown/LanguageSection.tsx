@@ -25,17 +25,17 @@ const expand = props.expandable === undefined;
 
     newChild.props.children = React.Children.map(
       newChild.props.children,
-      child => {
-        let ogChild = child;
-        if (typeof ogChild.props != 'undefined') {
-          const { oldProps } = ogChild.props;
-          let newC = React.cloneElement(child, {
+      grandchild => {
+        let oldGrandchild = grandchild;
+        if (typeof oldGrandchild.props != 'undefined') {
+          const { oldProps } = oldGrandchild.props;
+          let newGrandchild = React.cloneElement(grandchild, {
             ...oldProps,
             expandable: expand,
           });
 
-          newC.props.children = React.Children.map(
-            newC.props.children,
+          newGrandchild.props.children = React.Children.map(
+            newGrandchild.props.children,
             child2 => {
               const ogChild2 = child2;
               if (typeof ogChild2.props != 'undefined') {
@@ -50,7 +50,7 @@ const expand = props.expandable === undefined;
             }
           );
 
-          return newC;
+          return newGrandchild;
         } else {
           return child;
         }
