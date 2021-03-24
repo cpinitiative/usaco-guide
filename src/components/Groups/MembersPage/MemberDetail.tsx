@@ -6,7 +6,7 @@ import { useNotificationSystem } from '../../../context/NotificationSystemContex
 
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
-  const { removeMemberFromGroup } = useGroupActions();
+  const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
   const notifications = useNotificationSystem();
 
   const getTotalPointsForMember = (memberId: string) => {
@@ -98,7 +98,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                   'Are you sure you want to remove this member from the group?'
                 )
               ) {
-                removeMemberFromGroup(member.uid)
+                removeMemberFromGroup(activeGroup.activeGroupId, member.uid)
                   .then(() =>
                     notifications.addNotification({
                       level: 'success',
@@ -112,13 +112,54 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
           >
             Remove From Group
           </button>
-          {/* @jeffrey todo */}
           {!isOwner && (
-            <button className="btn">
+            <button
+              className="btn"
+              onClick={() => {
+                if (
+                  confirm('Are you sure you want to make this member an admin?')
+                ) {
+                  updateMemberPermissions(
+                    activeGroup.activeGroupId,
+                    member.uid,
+                    'ADMIN'
+                  )
+                    .then(() =>
+                      notifications.addNotification({
+                        level: 'success',
+                        message: 'This member is now an admin.',
+                      })
+                    )
+                    .catch(notifications.showErrorNotification);
+                }
+              }}
+            >
               {isAdmin ? 'Demote from Admin' : 'Promote to Admin'}
             </button>
           )}
-          <button className="btn">
+          <button
+            className="btn"
+            onClick={() => {
+              if (
+                confirm(
+                  'Are you sure you want to make this member an owner? They will be able to remove you from the group as an owner.'
+                )
+              ) {
+                updateMemberPermissions(
+                  activeGroup.activeGroupId,
+                  member.uid,
+                  'OWNER'
+                )
+                  .then(() =>
+                    notifications.addNotification({
+                      level: 'success',
+                      message: 'This member is now an owner.',
+                    })
+                  )
+                  .catch(notifications.showErrorNotification);
+              }
+            }}
+          >
             {isOwner ? 'Demote from Owner' : 'Promote to Owner'}
           </button>
         </div>
