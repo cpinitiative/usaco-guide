@@ -2,7 +2,9 @@
 id: bin-jump
 title: 'Binary Jumping'
 author: Benjamin Qi, Neo Wang, Qi Wang
-description: 'Introduces the problems of finding level ancestors in a tree and computing the lowest common ancestors.'
+description:
+  'Introduces the problems of finding level ancestors in a tree and computing
+  the lowest common ancestors.'
 frequency: 3
 prerequisites:
 ---
@@ -41,12 +43,12 @@ export const problems = {
 	],
 	binJump: [
 		new Problem(
-			'CSES', 
-			'Planets Queries I', 
-			'1750', 
-			'Easy', 
-			false, 
-			['Binary Jumping'], 
+			'CSES',
+			'Planets Queries I',
+			'1750',
+			'Easy',
+			false,
+			['Binary Jumping'],
 			'cses-1750'
 		),
 		new Problem(
@@ -206,7 +208,6 @@ export const problems = {
 	],
 };
 
-
 ## Binary Jumping
 
 <FocusProblem problem={problems.sample[0]} />
@@ -215,8 +216,18 @@ export const problems = {
 
 <Resources>
 	<Resource source="CPH" title="18.1 - Finding Ancestors" />
-	<Resource source="AryanshS" title="Binary Lifting" url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1" />
-	<Resource source="SecondThread" title="Tree Basics - Binary Lifting" url="https://codeforces.com/blog/entry/81527"> </Resource>
+	<Resource
+		source="AryanshS"
+		title="Binary Lifting"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/binary-lifting-gold-part-1"
+	/>
+	<Resource
+		source="SecondThread"
+		title="Tree Basics - Binary Lifting"
+		url="https://codeforces.com/blog/entry/81527"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 <Info title="Pro Tip">
@@ -227,11 +238,17 @@ Binary jumping is more commonly referred to as "binary lifting."
 
 ### Solution
 
-To solve this problem, we can use a standard binary lifting implementation where ```jmp(int x, int d)``` corresponds to the $d$-th ancestor of $x$.
+To solve this problem, we can use a standard binary lifting implementation where
+`jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
 
-In our ```jmp(int x, int d)``` if our final value of $x$ is $0$, then such a node does not exist and we can simply return $-1$. This is because the lowest number a node can be is $1$ (the root of the tree). 
+In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node
+does not exist and we can simply return $-1$. This is because the lowest number
+a node can be is $1$ (the root of the tree).
 
-In our implementation, we test if we jump in powers of two by using the $\&$ operator. If the $i$th bit on the right is toggled, then we jump. For example, a jump of $13$ would correspond to the binary number $1101$. We would jump 3 times on bits $0, 2, 3$ (in that order) counting from the right.
+In our implementation, we test if we jump in powers of two by using the $\&$
+operator. If the $i$th bit on the right is toggled, then we jump. For example, a
+jump of $13$ would correspond to the binary number $1101$. We would jump 3 times
+on bits $0, 2, 3$ (in that order) counting from the right.
 
 <Spoiler title="Illustration of the jump method">
 
@@ -239,11 +256,14 @@ In our implementation, we test if we jump in powers of two by using the $\&$ ope
 
 </Spoiler>
 
-To calculate the rows required for the ```int up[MS][MX]``` array, use the formula $\lceil \log_2{N} \rceil$ which in our case simplifies to $\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
+To calculate the rows required for the `int up[MS][MX]` array, use the formula
+$\lceil \log_2{N} \rceil$ which in our case simplifies to
+$\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
 
 <Info title="Pro Tip">
 
-It never hurts to add additional rows - or columns, depending on your implementation -  (as long as it's reasonable)!
+It never hurts to add additional rows - or columns, depending on your
+implementation - (as long as it's reasonable)!
 
 </Info>
 
@@ -266,7 +286,7 @@ int N, Q;
 const int MX = 2e5+5; // maximum N
 const int MS = 18; // 18 is calculated by $\log_2 2e5$
 
-int up[MS][MX]; 
+int up[MS][MX];
 
 int jmp(int x, int d) {
 	F0R(i, MS) if((d >> i) & 1) x = up[i][x];
@@ -317,10 +337,12 @@ int main() {
 
 <FocusProblem problem={problems.lca[1]} />
 
-### Solution (Company Queries II) 
+### Solution (Company Queries II)
 
 <Resources>
-	<Resource source="CPH" title="18.3 - LCA Method 1">brief description</Resource>
+	<Resource source="CPH" title="18.3 - LCA Method 1">
+		brief description
+	</Resource>
 	<Resource
 		source="Benq"
 		title="LCAjump"
@@ -330,7 +352,9 @@ int main() {
 	</Resource>
 </Resources>
 
-To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to the same depth as the other. Then, we lift both nodes up decrementally. At the end, the parent of either node is the LCA of the two.
+To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to
+the same depth as the other. Then, we lift both nodes up decrementally. At the
+end, the parent of either node is the LCA of the two.
 
 <LanguageSection>
 
@@ -338,7 +362,7 @@ To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to
 
 ```cpp
 CodeSnip{Benq Template}
-	
+
 int N, Q, T = 1;
 int depth[200005];
 int up[200005][20];
@@ -359,10 +383,10 @@ void dfs(int v) {
 
 int jump(int x, int d) {
 	F0R(i, 20) {
-		if((d >> i) & 1) 
+		if((d >> i) & 1)
 			x = up[x][i];
 	}
-	return x; 
+	return x;
 }
 
 int LCA(int a, int b) {
@@ -378,10 +402,10 @@ int LCA(int a, int b) {
 
 	return up[a][0];
 }
-	
+
 int main() {
 	re(N, Q);
-	
+
 	rep(N-1) {
 		int b; re(b); --b;
 		adj[b].pb(i+1);
@@ -403,13 +427,22 @@ int main() {
 
 ### Alternative Solution (Company Queries II)
 
-As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let $\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor table for all nodes in the tree.
+As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let
+$\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor
+table for all nodes in the tree.
 
-These can be filled with a DFS traversal. $\texttt{up}$ can be generated because DFS allows the ancestors to be filled first before traversing the current node.
+These can be filled with a DFS traversal. $\texttt{up}$ can be generated because
+DFS allows the ancestors to be filled first before traversing the current node.
 
-With this information, we can declare node $a$ an ancestor of $b$ if $\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
+With this information, we can declare node $a$ an ancestor of $b$ if
+$\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
 
-We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up (in this case, $a$) decrementally while it is not the ancestor of $b$. Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$ to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower common ancestor. Afterwards, our answer is the parent of $a$. 
+We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the
+answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up
+(in this case, $a$) decrementally while it is not the ancestor of $b$.
+Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$
+to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower
+common ancestor. Afterwards, our answer is the parent of $a$.
 
 <LanguageSection>
 
@@ -417,7 +450,7 @@ We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the answ
 
 ```cpp
 CodeSnip{Benq Template}
-	
+
 int N, Q, T = 1;
 vi st, en;
 int up[200005][20];
@@ -443,15 +476,15 @@ bool anc(int a, int b) {
 int LCA(int a, int b) {
 	if(anc(a, b)) return a;
 	if(anc(b, a)) return b;
-	
+
 	R0F(i, 20) {
 		if(!anc(up[a][i], b))
 			a = up[a][i];
 	}
 	return up[a][0];
 }
-	
-int main() {   
+
+int main() {
 	re(N, Q);
 	st.resize(N); en.resize(N);
 
@@ -464,7 +497,7 @@ int main() {
 
 	rep(Q) {
 		int a, b; re(a, b); --a; --b;
-		ps(LCA(a, b)+1); 
+		ps(LCA(a, b)+1);
 	}
 }
 ```
@@ -472,7 +505,6 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
 
 <Resources>
 	<Resource
@@ -491,7 +523,9 @@ int main() {
 
 ### Solution (Distance Queries)
 
-Find LCA of node $a$ and $b$ as described above. Then, the distance between the two nodes would be the $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
+Find LCA of node $a$ and $b$ as described above. Then, the distance between the
+two nodes would be the
+$\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
 
 <LanguageSection>
 
@@ -499,7 +533,7 @@ Find LCA of node $a$ and $b$ as described above. Then, the distance between the 
 
 ```cpp
 CodeSnip{Benq Template}
-	
+
 int N, Q, T = 1;
 int depth[200005];
 int up[200005][20];
@@ -520,10 +554,10 @@ void dfs(int v) {
 
 int jump(int x, int d) {
 	F0R(i, 20) {
-		if((d>>i)&1) 
+		if((d>>i)&1)
 			x = up[x][i];
 	}
-	return x; 
+	return x;
 }
 
 int LCA(int a, int b) {
@@ -539,7 +573,7 @@ int LCA(int a, int b) {
 
 	return up[a][0];
 }
-	
+
 int main() {
 	re(N, Q);
 

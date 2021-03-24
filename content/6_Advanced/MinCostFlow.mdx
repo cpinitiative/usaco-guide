@@ -79,11 +79,18 @@ export const problems = {
 	],
 };
 
-In this section I will briefly walk over my understanding of min cost flow. I would highly recommend reading through [CP-Algorithm's Min Cost Flow](https://cp-algorithms.com/graph/min_cost_flow.html) to understand the solution idea first. Additionally, check the [TopCoder tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/minimum-cost-flow-part-two-algorithms/) for a more detailed explanation.
+In this section I will briefly walk over my understanding of min cost flow. I
+would highly recommend reading through
+[CP-Algorithm's Min Cost Flow](https://cp-algorithms.com/graph/min_cost_flow.html)
+to understand the solution idea first. Additionally, check the
+[TopCoder tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/minimum-cost-flow-part-two-algorithms/)
+for a more detailed explanation.
 
 ## Triangle Inequality
 
-In graph theory, the **Triangle Inequality** states that if there is an edge $u \rightarrow v$ with weight $w$, and $d_k$ be the shortest path to node $k$ (for some reasonable definition of shortest path), then $d_v - d_u \leq w$.
+In graph theory, the **Triangle Inequality** states that if there is an edge
+$u \rightarrow v$ with weight $w$, and $d_k$ be the shortest path to node $k$
+(for some reasonable definition of shortest path), then $d_v - d_u \leq w$.
 
 <Resources>
 
@@ -100,7 +107,15 @@ In graph theory, the **Triangle Inequality** states that if there is an edge $u 
 
 ## Johnson's Algorithm
 
-The main idea of **Johnson's Algorithm** is that if all edge weights are positive, then running Dijkstra's from each node would result in a $\mathcal{O}(VE \log E)$ algorithm. If there are any negative edges, **Johnson's Algorithm** defines a potential function $\pi$, such that for every edge $u,v,w$, the following holds: $w>=\pi(u)-\pi(v)$. Then, each edge weight can be transformed into $w \rightarrow w + \pi(v)-\pi(u)$, resulting in positive weight. This condition coincides with the **Triangle Inequality**, so we can arbitrarily pick a node and run a $\mathcal{O}(VE)$ shortest path algorithm to determine this function.
+The main idea of **Johnson's Algorithm** is that if all edge weights are
+positive, then running Dijkstra's from each node would result in a
+$\mathcal{O}(VE \log E)$ algorithm. If there are any negative edges, **Johnson's
+Algorithm** defines a potential function $\pi$, such that for every edge
+$u,v,w$, the following holds: $w>=\pi(u)-\pi(v)$. Then, each edge weight can be
+transformed into $w \rightarrow w + \pi(v)-\pi(u)$, resulting in positive
+weight. This condition coincides with the **Triangle Inequality**, so we can
+arbitrarily pick a node and run a $\mathcal{O}(VE)$ shortest path algorithm to
+determine this function.
 
 <Resources>
 
@@ -121,11 +136,24 @@ The main idea of **Johnson's Algorithm** is that if all edge weights are positiv
 
 ## Minimum Cost Flow
 
-The general idea of Min Cost Flow is to repeatedly push flow along the shortest path. Since flow graphs have negative edges, each step naively would take $\mathcal{O}(VE)$ time. To speed it up, we can use the same potential function from **Johnson's Algorithm** to employ Dijkstra for this process. In this case we _must_ use distance from $S$, the source node, as the $\pi$ function. At each step, run Dijkstra's using the $\pi$ function, update the $\pi$ function to match the current distances, and then push flow along the shortest path, reversing edges as needed. Once flow is met or the sink is unreachable, terminate.
+The general idea of Min Cost Flow is to repeatedly push flow along the shortest
+path. Since flow graphs have negative edges, each step naively would take
+$\mathcal{O}(VE)$ time. To speed it up, we can use the same potential function
+from **Johnson's Algorithm** to employ Dijkstra for this process. In this case
+we _must_ use distance from $S$, the source node, as the $\pi$ function. At each
+step, run Dijkstra's using the $\pi$ function, update the $\pi$ function to
+match the current distances, and then push flow along the shortest path,
+reversing edges as needed. Once flow is met or the sink is unreachable,
+terminate.
 
 <Info title="Important Clarification">
 
-Note that the $\pi$ function stores values _before_ the edge reverses happen. Luckily the **triangle inequality**'s equality case is along the shortest path, meaning that in a flow network it holds both forwards and backwards along edges in the shortest path. This means that although the $\pi$ function does not store the shortest paths, it still satisfies the **triangle inequality** for all edges.
+Note that the $\pi$ function stores values _before_ the edge reverses happen.
+Luckily the **triangle inequality**'s equality case is along the shortest path,
+meaning that in a flow network it holds both forwards and backwards along edges
+in the shortest path. This means that although the $\pi$ function does not store
+the shortest paths, it still satisfies the **triangle inequality** for all
+edges.
 
 $\pi(u)-\pi(v)=w \implies \pi(v)-\pi(u)=-w$
 
@@ -257,7 +285,11 @@ public:
 };
 ```
 
-Also check out [Benq's Implementation](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Flows%20(12.3)/MCMF.h>) and [KACTL's Implementation](https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MinCostMaxFlow.h) (which are a lot better than mine).
+Also check out
+[Benq's Implementation](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/Flows%20(12.3)/MCMF.h>)
+and
+[KACTL's Implementation](https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MinCostMaxFlow.h)
+(which are a lot better than mine).
 
 ## Problems
 

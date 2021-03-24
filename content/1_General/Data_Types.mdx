@@ -2,7 +2,8 @@
 id: data-types
 title: Data Types
 author: Darren Yao
-description: Overview of the basic data types needed for competitive programming.
+description:
+  Overview of the basic data types needed for competitive programming.
 prerequisites:
   - running-code-online
 ---
@@ -22,8 +23,12 @@ prerequisites:
 	>
 		sizes + ranges
 	</Resource>
-	<Resource source="CPH" title="1.3 - Working with numbers">Integers, Modular arithmetic, Floating point numbers</Resource>
-	<Resource source="PAPS" title="2.3 - Variables & Types">plenty of exercises</Resource>
+	<Resource source="CPH" title="1.3 - Working with numbers">
+		Integers, Modular arithmetic, Floating point numbers
+	</Resource>
+	<Resource source="PAPS" title="2.3 - Variables & Types">
+		plenty of exercises
+	</Resource>
 </Resources>
 
 </CPPSection>
@@ -44,8 +49,12 @@ prerequisites:
 	<Resource source="IUSACO" title="2.2 - Data Types">
 		module is based off this
 	</Resource>
-	<Resource starred source="Python" title="Built-in Types" url="https://docs.python.org/3/library/stdtypes.html">
-	</Resource>
+	<Resource
+		starred
+		source="Python"
+		title="Built-in Types"
+		url="https://docs.python.org/3/library/stdtypes.html"
+	></Resource>
 </Resources>
 
 </PySection>
@@ -60,29 +69,71 @@ insert table of data types?
 
 </IncompleteSection> -->
 
-There are several main **data types** that are used in contests: integers, floating point numbers, booleans, characters, and strings. Assuming that you are familiar with the language you are using, this should be mostly review.
+There are several main **data types** that are used in contests: integers,
+floating point numbers, booleans, characters, and strings. Assuming that you are
+familiar with the language you are using, this should be mostly review.
 
-The normal **32-bit integer** data type (`int` in C++ and Java) supports values between $−2\,147\,483\,648$ and $2\,147\,483\,647$, which is roughly equal to $\pm 2 \cdot 10^9$.
+The normal **32-bit integer** data type (`int` in C++ and Java) supports values
+between $−2\,147\,483\,648$ and $2\,147\,483\,647$, which is roughly equal to
+$\pm 2 \cdot 10^9$.
 
-Some problems require you to use **64-bit integers** (`long long` in C++ and `long` in Java) instead of 32-bit integers (`int`). 64-bit integers are less likely to have overflow issues, since they can store any number between $-9\,223\,372\,036\,854\,775\,808$ and $9\,223\,372\,036\,854\,775\,807$ which is roughly equal to $\pm 9 \times 10^{18}$. In Python, [`int`](https://docs.python.org/3.4/library/stdtypes.html#numeric-types-int-float-complex)s have unlimited size.
+Some problems require you to use **64-bit integers** (`long long` in C++ and
+`long` in Java) instead of 32-bit integers (`int`). 64-bit integers are less
+likely to have overflow issues, since they can store any number between
+$-9\,223\,372\,036\,854\,775\,808$ and $9\,223\,372\,036\,854\,775\,807$ which
+is roughly equal to $\pm 9 \times 10^{18}$. In Python,
+[`int`](https://docs.python.org/3.4/library/stdtypes.html#numeric-types-int-float-complex)s
+have unlimited size.
 
-Sometimes (but not always) a USACO problem statement (ex. [Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)) will contain a warning such as the following:
+Sometimes (but not always) a USACO problem statement (ex.
+[Haircut](http://www.usaco.org/index.php?page=viewproblem2&cpid=1041)) will
+contain a warning such as the following:
 
-> Note that the large size of integers involved in this problem may require the use of 64-bit integer data types (e.g., a "long long" in C/C++).
+> Note that the large size of integers involved in this problem may require the
+> use of 64-bit integer data types (e.g., a "long long" in C/C++).
 
-Contest problems are usually set such that the 64-bit integer is sufficient, so it might be a good idea to use 64-bit integers in place of 32-bit integers everywhere. Of course, you shouldn't do this when time and/or memory limits are tight, which may be the case in higher divisions of USACO. Also note that in Java, you will need to cast `long` back to `int` when accessing array indices.
+Contest problems are usually set such that the 64-bit integer is sufficient, so
+it might be a good idea to use 64-bit integers in place of 32-bit integers
+everywhere. Of course, you shouldn't do this when time and/or memory limits are
+tight, which may be the case in higher divisions of USACO. Also note that in
+Java, you will need to cast `long` back to `int` when accessing array indices.
 
-**Floating point numbers** are used to store decimal values. It is important to know that floating point numbers are not exact, because the binary architecture of computers can only store decimals to a certain precision. Hence, we should always expect that floating point numbers are slightly off, so it's generally a bad idea to compare two floating-point numbers for exact equality (`==`).
+**Floating point numbers** are used to store decimal values. It is important to
+know that floating point numbers are not exact, because the binary architecture
+of computers can only store decimals to a certain precision. Hence, we should
+always expect that floating point numbers are slightly off, so it's generally a
+bad idea to compare two floating-point numbers for exact equality (`==`).
 
-Contest problems will usually accommodate the inaccuracy of floating point numbers by checking if the **absolute** or **relative** difference between your output and the answer is less than some small constant like $\epsilon=10^{-9}$.
+Contest problems will usually accommodate the inaccuracy of floating point
+numbers by checking if the **absolute** or **relative** difference between your
+output and the answer is less than some small constant like $\epsilon=10^{-9}$.
 
-- If your output is $x$ and the answer is $y$, the absolute difference is $|x-y|$.
-- If your output is $x$ and the answer is $y$, the relative difference is $\frac{|x-y|}{|y|}$.
+- If your output is $x$ and the answer is $y$, the absolute difference is
+  $|x-y|$.
+- If your output is $x$ and the answer is $y$, the relative difference is
+  $\frac{|x-y|}{|y|}$.
 
-This is not the case for USACO, where problems generally have a unique correct output. So when floating point is necessary, the output format will be something along the lines of "Print $10^6$ times the maximum probability of receiving exactly one accepted invitation, rounded down to the nearest integer." (ex. [Cow Dating](http://www.usaco.org/index.php?page=viewproblem2&cpid=924)).
+This is not the case for USACO, where problems generally have a unique correct
+output. So when floating point is necessary, the output format will be something
+along the lines of "Print $10^6$ times the maximum probability of receiving
+exactly one accepted invitation, rounded down to the nearest integer." (ex.
+[Cow Dating](http://www.usaco.org/index.php?page=viewproblem2&cpid=924)).
 
-**Boolean** variables have two possible states: `true` and `false`. We'll usually use booleans to mark whether a certain process is done, and arrays of booleans to mark which components of an algorithm have finished.
+**Boolean** variables have two possible states: `true` and `false`. We'll
+usually use booleans to mark whether a certain process is done, and arrays of
+booleans to mark which components of an algorithm have finished.
 
-**Character** variables represent a single character. They are returned when you access the character at a certain index within a string. Characters are represented using the ASCII standard, which assigns each character to a corresponding integer. This allows us to do arithmetic with them; for example, both `cout << ('f' - 'a');` in C++ and `System.out.print('f' - 'a');` in Java will print `5`. In Java, characters are 16 bits, while in C/C++, characters are 8 bits.
+**Character** variables represent a single character. They are returned when you
+access the character at a certain index within a string. Characters are
+represented using the ASCII standard, which assigns each character to a
+corresponding integer. This allows us to do arithmetic with them; for example,
+both `cout << ('f' - 'a');` in C++ and `System.out.print('f' - 'a');` in Java
+will print `5`. In Java, characters are 16 bits, while in C/C++, characters are
+8 bits.
 
-**Strings** are stored as an array of characters. On the back end, there is an `ArrayList` (you can think of it as a more flexible array which can change its size if more space is needed), that automatically updates when two strings are added. There are a few methods such as `substring()` and `charAt()` in Java that are helpful to know. A loop can be used to access each character of an unknown string.
+**Strings** are stored as an array of characters. On the back end, there is an
+`ArrayList` (you can think of it as a more flexible array which can change its
+size if more space is needed), that automatically updates when two strings are
+added. There are a few methods such as `substring()` and `charAt()` in Java that
+are helpful to know. A loop can be used to access each character of an unknown
+string.

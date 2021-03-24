@@ -7,20 +7,36 @@ author: Andi Qu
 
 **Time Complexity:** $\mathcal O(N)$.
 
-Without loss of generality, assume that the number of edges is even and there's only one connected component in the graph.
+Without loss of generality, assume that the number of edges is even and there's
+only one connected component in the graph.
 
-Consider the following simpler problem: given a rooted tree, direct the edges so that all nodes except for the root have an even out-degree; the root's degree may be of any parity.
+Consider the following simpler problem: given a rooted tree, direct the edges so
+that all nodes except for the root have an even out-degree; the root's degree
+may be of any parity.
 
-We can solve this simpler problem recursively through a DFS. Imagine that we're processing some subtree rooted at node $v$. First, process each of $v$'s children's subtrees **but don't direct $v$'s incident edges yet**. Although the children's out-degree parity may be arbitrary after this, we can then direct each of $v$'s incident edges to make them all even. This solution works in $\mathcal O(N)$ time.
+We can solve this simpler problem recursively through a DFS. Imagine that we're
+processing some subtree rooted at node $v$. First, process each of $v$'s
+children's subtrees **but don't direct $v$'s incident edges yet**. Although the
+children's out-degree parity may be arbitrary after this, we can then direct
+each of $v$'s incident edges to make them all even. This solution works in
+$\mathcal O(N)$ time.
 
-It turns out that this also solves the version of the problem where the root of the tree must also have even out-degree! This is because the sum of out-degrees is equal to the number of edges - since the out-degrees of all nodes besides the root are even, the out-degree of the root must also be even.
+It turns out that this also solves the version of the problem where the root of
+the tree must also have even out-degree! This is because the sum of out-degrees
+is equal to the number of edges - since the out-degrees of all nodes besides the
+root are even, the out-degree of the root must also be even.
 
 To generalize this solution to an arbitrary graph, we simply:
+
 1. Find the DFS tree (which will be a spanning tree).
 2. Direct all edges that aren't part of this tree "upwards".
-3. Run the solution for a tree on the DFS tree (except some nodes must have **odd** out-degree now).
+3. Run the solution for a tree on the DFS tree (except some nodes must have
+   **odd** out-degree now).
 
-Step 2 works because of the fact that all edges that aren't part of the DFS tree are **back-edges** (i.e. edges where one node is a parent of the other). For more information about the DFS tree, read [this CF blog post](https://codeforces.com/blog/entry/68138). 
+Step 2 works because of the fact that all edges that aren't part of the DFS tree
+are **back-edges** (i.e. edges where one node is a parent of the other). For
+more information about the DFS tree, read
+[this CF blog post](https://codeforces.com/blog/entry/68138).
 
 ## Implementation
 

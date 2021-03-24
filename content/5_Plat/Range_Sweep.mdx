@@ -77,15 +77,22 @@ export const problems = {
 
 ## Solution - Intersection Points
 
-We can sweep from bottom to top (by the $y$ coordinate); storing two events for vertical segments (one for start and one for end) and one event for horizontal segments.
+We can sweep from bottom to top (by the $y$ coordinate); storing two events for
+vertical segments (one for start and one for end) and one event for horizontal
+segments.
 
-We can use a Binary Indexed Tree to store the number of **active** vertical segments for each $x$ coordinate.
+We can use a Binary Indexed Tree to store the number of **active** vertical
+segments for each $x$ coordinate.
 
-Then, every time we encounter the start of a vertical segment, we increment the counter for $x$ in the BIT.
+Then, every time we encounter the start of a vertical segment, we increment the
+counter for $x$ in the BIT.
 
-Similarly, we decrement the counter for $x$ every time we see the end of a vertical segment.
+Similarly, we decrement the counter for $x$ every time we see the end of a
+vertical segment.
 
-When we encounter a horizontal segment, we would query the number of active ranges in $[x_1, x_2]$ where $x_1$ is the lower $x$ coordinate and $x_2$ is the upper $x$ coordinate of the segment.
+When we encounter a horizontal segment, we would query the number of active
+ranges in $[x_1, x_2]$ where $x_1$ is the lower $x$ coordinate and $x_2$ is the
+upper $x$ coordinate of the segment.
 
 Our answer would be the sum of all the queries.
 
@@ -109,10 +116,10 @@ int query(int i) {
 		sum += bit[i];
 	return sum;
 }
- 
+
 int n;
 vector<array<int, 4>> v;
- 
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 
@@ -150,12 +157,16 @@ int main() {
 
 <IncompleteSection />
 
-The problem boils down to having a data structure that supports the following operations:
+The problem boils down to having a data structure that supports the following
+operations:
 
 1. Add a pair $(a,b)$.
-2. For any $x$, query the minimum value of $b$ over all pairs satisfying $a\le x$.
+2. For any $x$, query the minimum value of $b$ over all pairs satisfying
+   $a\le x$.
 
-The [other module](/adv/springboards) describes a simpler way of doing this, though it's probably more straightforward to do coordinate compression and use a min segtree. The latter approach is shown below.
+The [other module](/adv/springboards) describes a simpler way of doing this,
+though it's probably more straightforward to do coordinate compression and use a
+min segtree. The latter approach is shown below.
 
 ```cpp
 /**

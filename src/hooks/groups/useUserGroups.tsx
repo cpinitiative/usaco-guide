@@ -12,7 +12,7 @@ const UserGroupsContext = React.createContext<{
   /**
    * Call when you want to re-fetch groups
    */
-  invalidateData: Function;
+  invalidateData: () => void;
 }>(null);
 
 const UserGroupsProvider = ({

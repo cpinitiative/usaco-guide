@@ -2,7 +2,8 @@
 id: prefix-sums
 title: 'Introduction to Prefix Sums'
 author: Darren Yao, Eric Wei
-description: 'Computing range sum queries in constant time over a fixed 1D array.'
+description:
+  'Computing range sum queries in constant time over a fixed 1D array.'
 prerequisites:
 frequency: 3
 ---
@@ -152,13 +153,15 @@ export const problems = {
 
 ## 1D Prefix Sums
 
-Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to compute the value of
+Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we
+want to compute the value of
 
 $$
 \texttt{arr}[a]+\texttt{arr}[a+1]+\cdots+\texttt{arr}[b]
 $$
 
-for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the following example with $N = 6$:
+for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the
+following example with $N = 6$:
 
 <center>
 
@@ -168,15 +171,26 @@ for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the fol
 
 </center>
 
-Naively, for every query, we can iterate through all entries from index $a$ to index $b$ to add them up. Since we have $Q$ queries and each query requires a maximum of $\mathcal{O}(N)$ operations to calculate the sum, our total time complexity is $\mathcal{O}(NQ)$. For most problems of this nature, the constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This is **not** acceptable; it will almost certainly exceed the time limit.
+Naively, for every query, we can iterate through all entries from index $a$ to
+index $b$ to add them up. Since we have $Q$ queries and each query requires a
+maximum of $\mathcal{O}(N)$ operations to calculate the sum, our total time
+complexity is $\mathcal{O}(NQ)$. For most problems of this nature, the
+constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This
+is **not** acceptable; it will almost certainly exceed the time limit.
 
-Instead, we can use prefix sums to process these array sum queries. We designate a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array, set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$, define the prefix sum array as follows:
+Instead, we can use prefix sums to process these array sum queries. We designate
+a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array,
+set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$,
+define the prefix sum array as follows:
 
 $$
 \texttt{prefix}[k]=\sum_{i=1}^{k} \texttt{arr}[i]
 $$
 
-Basically, what this means is that the element at index $k$ of the prefix sum array stores the sum of all the elements in the original array from index $1$ up to $k$. This can be calculated easily in $\mathcal{O}(N)$ by the following formula for each $1\le k\le n$:
+Basically, what this means is that the element at index $k$ of the prefix sum
+array stores the sum of all the elements in the original array from index $1$ up
+to $k$. This can be calculated easily in $\mathcal{O}(N)$ by the following
+formula for each $1\le k\le n$:
 
 $$
 \texttt{prefix}[k]=\texttt{prefix}[k-1]+\texttt{arr}[k]
@@ -192,7 +206,8 @@ For the example case, our prefix sum array looks like this:
 
 </center>
 
-Now, when we want to query for the sum of the elements of $\texttt{arr}$ between (1-indexed) indices $a$ and $b$ inclusive, we can use the following formula:
+Now, when we want to query for the sum of the elements of $\texttt{arr}$ between
+(1-indexed) indices $a$ and $b$ inclusive, we can use the following formula:
 
 $$
 \sum_{i=L}^{R} \texttt{arr}[i] = \sum_{i=1}^{R} \texttt{arr}[i] - \sum_{i=1}^{L-1} \texttt{arr}[i]
@@ -204,9 +219,16 @@ $$
 \sum_{i=L}^{R} \texttt{arr}[i]= \texttt{prefix}[R]-\texttt{prefix}[L-1]
 $$
 
-Since we are only querying two elements in the prefix sum array, we can calculate subarray sums in $\mathcal{O}(1)$ per query, which is much better than the $\mathcal{O}(N)$ per query that we had before. Now, after an $\mathcal{O}(N)$ preprocessing to calculate the prefix sum array, each of the $Q$ queries takes $\mathcal{O}(1)$ time. Thus, our total time complexity is $\mathcal{O}(N+Q)$, which should now pass the time limit.
+Since we are only querying two elements in the prefix sum array, we can
+calculate subarray sums in $\mathcal{O}(1)$ per query, which is much better than
+the $\mathcal{O}(N)$ per query that we had before. Now, after an
+$\mathcal{O}(N)$ preprocessing to calculate the prefix sum array, each of the
+$Q$ queries takes $\mathcal{O}(1)$ time. Thus, our total time complexity is
+$\mathcal{O}(N+Q)$, which should now pass the time limit.
 
-Let's do an example query and find the subarray sum between indices $a = 2$ and $b = 5$, inclusive, in the 1-indexed $\texttt{arr}$. From looking at the original array, we see that this is
+Let's do an example query and find the subarray sum between indices $a = 2$ and
+$b = 5$, inclusive, in the 1-indexed $\texttt{arr}$. From looking at the
+original array, we see that this is
 
 $$
 \sum_{i=2}^{5} \texttt{arr}[i] = 6 + 4 + 2 + 5 = 17.
@@ -296,7 +318,8 @@ $\texttt{prefix}[i]$
 
 </center>
 
-These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.html).
+These are also known as
+[partial sums](https://mathworld.wolfram.com/PartialSum.html).
 
 <!-- ### Solution - Static Range Sum
 
@@ -308,7 +331,9 @@ These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.
 
 <CPPSection>
 
-In C++ we can use [`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/), although it doesn't shorten the code by much.
+In C++ we can use
+[`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/),
+although it doesn't shorten the code by much.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -421,7 +446,8 @@ for i in range(Q):
 
 <Info title="XOR">
 
-Check [Intro to Bitwise Operators](/plat/intro-bitwise) if you're not familiar with XOR.
+Check [Intro to Bitwise Operators](/plat/intro-bitwise) if you're not familiar
+with XOR.
 
 </Info>
 
@@ -433,6 +459,7 @@ Hint: The XOR of any number with itself is zero.
 
 <Warning>
 
-"Haybale Stacking" isn't submittable on the USACO website. Use [this link](https://www.spoj.com/problems/HAYBALE/) to submit.
+"Haybale Stacking" isn't submittable on the USACO website. Use
+[this link](https://www.spoj.com/problems/HAYBALE/) to submit.
 
 </Warning>

@@ -28,7 +28,7 @@ export const problems = {
 			'Easy',
 			true,
 			['Flood Fill'],
-			''
+			'usaco-895'
 		),
 		new Problem(
 			'Silver',
@@ -140,9 +140,11 @@ export const problems = {
 
 ## Introduction
 
-**Flood fill** is an algorithm that identifies and labels the connected component that a particular cell belongs to in a multidimensional array.
+**Flood fill** is an algorithm that identifies and labels the connected
+component that a particular cell belongs to in a multidimensional array.
 
-For example, suppose that we want to split the following grid into components of connected cells with the same number.
+For example, suppose that we want to split the following grid into components of
+connected cells with the same number.
 
 <center>
 
@@ -168,7 +170,9 @@ For example, suppose that we want to split the following grid into components of
 
 </center>
 
-Let's start the floodfill from the top-left cell. The color scheme will be red for the node currently being processed, blue for nodes already visited, and uncolored for nodes not yet visited.
+Let's start the floodfill from the top-left cell. The color scheme will be red
+for the node currently being processed, blue for nodes already visited, and
+uncolored for nodes not yet visited.
 
 <center>
 
@@ -303,9 +307,17 @@ Let's start the floodfill from the top-left cell. The color scheme will be red f
 
 </center>
 
-As opposed to an explicit graph where the edges are given, a grid is an implicit graph. This means that the neighbors are just the nodes directly adjacent in the four cardinal directions.
+As opposed to an explicit graph where the edges are given, a grid is an implicit
+graph. This means that the neighbors are just the nodes directly adjacent in the
+four cardinal directions.
 
-Usually, grids given in problems will be $N$ by $M$, so the first line of the input contains the numbers $N$ and $M$. In this example, we will use an two-dimensional integer array to store the grid, but depending on the problem, a two-dimensional character array or a two-dimensional boolean array may be more appropriate. Then, there are $N$ rows, each with $M$ numbers containing the contents of each square in the grid. Example input might look like the following (varies between problems):
+Usually, grids given in problems will be $N$ by $M$, so the first line of the
+input contains the numbers $N$ and $M$. In this example, we will use an
+two-dimensional integer array to store the grid, but depending on the problem, a
+two-dimensional character array or a two-dimensional boolean array may be more
+appropriate. Then, there are $N$ rows, each with $M$ numbers containing the
+contents of each square in the grid. Example input might look like the following
+(varies between problems):
 
 ```
 3 4
@@ -370,11 +382,18 @@ public static void main(String[] args){
 	></Resource>
 </Resources> -->
 
-When doing floodfill, we will maintain an $N\times M$ array of booleans to keep track of which squares have been visited, and a global variable to maintain the size of the current component we are visiting. Make sure to store the grid, the visited array, dimensions, and the current size variable globally.
+When doing floodfill, we will maintain an $N\times M$ array of booleans to keep
+track of which squares have been visited, and a global variable to maintain the
+size of the current component we are visiting. Make sure to store the grid, the
+visited array, dimensions, and the current size variable globally.
 
-This means that we want to recursively call the search function from the squares above, below, and to the left and right of our current square. The algorithm to find the size of a connected component in a grid using floodfill is as follows (we’ll also maintain a 2D visited array).
+This means that we want to recursively call the search function from the squares
+above, below, and to the left and right of our current square. The algorithm to
+find the size of a connected component in a grid using floodfill is as follows
+(we’ll also maintain a 2D visited array).
 
-The code below shows the global/static variables we need to maintain while doing floodfill, and the floodfill algorithm itself.
+The code below shows the global/static variables we need to maintain while doing
+floodfill, and the floodfill algorithm itself.
 
 <LanguageSection>
 
@@ -512,7 +531,9 @@ int main() {
 
 <Warning>
 
-Recursive implementations of floodfill in Java can sometimes lead to StackOverflowError. To avoid Stack Overflow, use your own stack in an iterative implementation like the one below.
+Recursive implementations of floodfill in Java can sometimes lead to
+StackOverflowError. To avoid Stack Overflow, use your own stack in an iterative
+implementation like the one below.
 
 </Warning>
 

@@ -4,7 +4,8 @@ title: (Optional) Introduction to Functional Graphs
 author: Siyong Huang, Benjamin Qi, Andrew Wang
 prerequisites:
   - intro-tree
-description: 'Directed graphs in which every vertex has exactly one outgoing edge.'
+description:
+  'Directed graphs in which every vertex has exactly one outgoing edge.'
 frequency: 1
 ---
 
@@ -85,13 +86,15 @@ export const problems = {
 
 <Warning>
 
-No Silver problem has required knowledge of the content presented in this module.
+No Silver problem has required knowledge of the content presented in this
+module.
 
 </Warning>
 
 ## Introduction
 
-In a **functional graph**, each node has exactly one out-edge. This is also commonly referred to as a **successor graph**.
+In a **functional graph**, each node has exactly one out-edge. This is also
+commonly referred to as a **successor graph**.
 
 <Resources>
 	<Resource source="CPH" title="16.3 - Successor Graphs" starred>
@@ -99,11 +102,15 @@ In a **functional graph**, each node has exactly one out-edge. This is also comm
 	</Resource>
 </Resources>
 
-You can think of every connected component of a functional graph as a rooted tree plus an additional edge going out of the root.
+You can think of every connected component of a functional graph as a rooted
+tree plus an additional edge going out of the root.
 
 ## Floyd's Algorithm
 
-**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare Algorithm**, is capable of detecting cycles in a functional graph in $\mathcal{O}(N)$ time and $\mathcal{O}(1)$ memory (not counting the graph itself).
+**Floyd's Algorithm**, also commonly referred to as the **Tortoise and Hare
+Algorithm**, is capable of detecting cycles in a functional graph in
+$\mathcal{O}(N)$ time and $\mathcal{O}(1)$ memory (not counting the graph
+itself).
 
 <Resources>
 	<Resource source="CPH" title="16.4 - Cycle Detection" starred></Resource>
@@ -173,7 +180,9 @@ Reread [CPH pg. 166](/CPH.pdf#page=166) a few more times.
 
 <!-- https://codeforces.com/contest/1137/submission/87195511 -->
 
-Using **Floyd's Algorithm**, we can find some node on the cycle after $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node in the cycle after another $t$ queries.
+Using **Floyd's Algorithm**, we can find some node on the cycle after
+$2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node
+in the cycle after another $t$ queries.
 
 <LanguageSection>
 
@@ -346,7 +355,8 @@ first = a;
 
 <br />
 
-$a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1$.
+$a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and
+$1$.
 
 </Spoiler>
 
@@ -356,7 +366,8 @@ $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and $1
 
 <br />
 
-It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it in $\mathcal{O}(N)$.
+It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it
+in $\mathcal{O}(N)$.
 
 ### Solution 1
 
@@ -481,9 +492,11 @@ print(*ans)
 
 <br />
 
-This code generates the answer independently for each connected component. Note that it uses 0-indexing, not 1-indexing.
+This code generates the answer independently for each connected component. Note
+that it uses 0-indexing, not 1-indexing.
 
-Try simulating the algorithm on the following directed graph in CSAcademy's [Graph Editor](https://csacademy.com/app/graph_editor/).
+Try simulating the algorithm on the following directed graph in CSAcademy's
+[Graph Editor](https://csacademy.com/app/graph_editor/).
 
 ```
 0 1
@@ -495,13 +508,21 @@ Try simulating the algorithm on the following directed graph in CSAcademy's [Gra
 6 1
 ```
 
-- On the first step, we make the following recursive calls: `gen(0)` -> `gen(1)` -> `gen(2)` -> `gen(3)` -> `gen(4)` -> `gen(2)`, at which point we stop since `ans[2] = -1`. Since we have reached `2` for the second time, we know that `2` is part of a cycle and `ans[2] = 2`. Similarly, `ans[3] = 3` and `ans[4] = 4` since they are part of the cycle. On the other hand, `ans[0] = ans[1] = 2` since neither of them are part of the cycle.
+- On the first step, we make the following recursive calls: `gen(0)` -> `gen(1)`
+  -> `gen(2)` -> `gen(3)` -> `gen(4)` -> `gen(2)`, at which point we stop since
+  `ans[2] = -1`. Since we have reached `2` for the second time, we know that `2`
+  is part of a cycle and `ans[2] = 2`. Similarly, `ans[3] = 3` and `ans[4] = 4`
+  since they are part of the cycle. On the other hand, `ans[0] = ans[1] = 2`
+  since neither of them are part of the cycle.
 
-- Later, we make the following recursive calls when we start at vertex `5`: `gen(5)` -> `gen(6)` -> `gen(1)`. We already know that `ans[1] = 2`, so `ans[5] = ans[6] = 2` as well.
+- Later, we make the following recursive calls when we start at vertex `5`:
+  `gen(5)` -> `gen(6)` -> `gen(1)`. We already know that `ans[1] = 2`, so
+  `ans[5] = ans[6] = 2` as well.
 
 ### Solution 2
 
-`go(x)` generates answers for all vertices in the connected component containing `x`. Requires reverse adjacency lists (`radj`).
+`go(x)` generates answers for all vertices in the connected component containing
+`x`. Requires reverse adjacency lists (`radj`).
 
 <LanguageSection>
 
@@ -549,7 +570,12 @@ int main() {
 
 ## Count Cycles
 
-The following sample code counts the number of cycles in such a graph. The "stack" contains nodes that can reach the current node. If the current node points to a node `v` on the stack (`on_stack[v]` is true), then we know that a cycle has been created. However, if the current node points to a node `v` that has been previously visited but is not on the stack, then we know that the current chain of nodes points into a cycle that has already been considered.
+The following sample code counts the number of cycles in such a graph. The
+"stack" contains nodes that can reach the current node. If the current node
+points to a node `v` on the stack (`on_stack[v]` is true), then we know that a
+cycle has been created. However, if the current node points to a node `v` that
+has been previously visited but is not on the stack, then we know that the
+current chain of nodes points into a cycle that has already been considered.
 
 <LanguageSection>
 
@@ -618,13 +644,15 @@ public class badge2{
 
 ## $K$-th Successor
 
-As described briefly in CPH 16.3, can be found in $\mathcal{O}(\log K)$ time using **binary jumping**. See the Platinum [module](/plat/bin-jump) for details.
+As described briefly in CPH 16.3, can be found in $\mathcal{O}(\log K)$ time
+using **binary jumping**. See the Platinum [module](/plat/bin-jump) for details.
 
 ## Problems
 
 <Problems problems={problems.probs} />
 
-Additional problems involving functional graphs can be found in the [Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
+Additional problems involving functional graphs can be found in the
+[Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
 
 <!-- new Problem(
 	'JOI',

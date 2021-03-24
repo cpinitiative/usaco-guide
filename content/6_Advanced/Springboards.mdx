@@ -52,19 +52,30 @@ Note: This was originally in Gold, but the practice problems were too hard ...
 
 <br />
 
-To solve this problem, we need a data structure that supports operations similar to the following:
+To solve this problem, we need a data structure that supports operations similar
+to the following:
 
 1. Add a pair $(a,b)$.
-2. For any $x$, query the maximum value of $b$ over all pairs satisfying $a\ge x$.
+2. For any $x$, query the maximum value of $b$ over all pairs satisfying
+   $a\ge x$.
 
-This can be solved with a segment tree, but a simpler option is to use a map. We rely on the fact that if there exist pairs $(a,b)$ and $(c,d)$ in the map such that $a\le c$ and $b\le d$, we can simply ignore $(a,b)$ (and the answers to future queries will not be affected). So at every point in time, the pairs $(a_1,b_1),(a_2,b_2),\ldots,(a_k,b_k)$ that we store in the map will satisfy $a_1 < a_2 < \cdots < a_k$ and $b_1 > b_2 > \cdots > b_k$.
+This can be solved with a segment tree, but a simpler option is to use a map. We
+rely on the fact that if there exist pairs $(a,b)$ and $(c,d)$ in the map such
+that $a\le c$ and $b\le d$, we can simply ignore $(a,b)$ (and the answers to
+future queries will not be affected). So at every point in time, the pairs
+$(a_1,b_1),(a_2,b_2),\ldots,(a_k,b_k)$ that we store in the map will satisfy
+$a_1 < a_2 < \cdots < a_k$ and $b_1 > b_2 > \cdots > b_k$.
 
-- Querying for a certain $x$ can be done with a single `lower_bound` operation, as we just want the minimum $i$ such that $a_i\ge x$.
-- When adding a pair $(a',b')$, first check if there exists $(a,b)$ already in the map such that $a\ge a', b\ge b'$.
+- Querying for a certain $x$ can be done with a single `lower_bound` operation,
+  as we just want the minimum $i$ such that $a_i\ge x$.
+- When adding a pair $(a',b')$, first check if there exists $(a,b)$ already in
+  the map such that $a\ge a', b\ge b'$.
   - If so, then do nothing.
-  - Otherwise, insert $(a',b')$ into the map and repeatedly delete pairs $(a,b)$ such that $a\le a', b\le b'$ from the map until none remain.
+  - Otherwise, insert $(a',b')$ into the map and repeatedly delete pairs $(a,b)$
+    such that $a\le a', b\le b'$ from the map until none remain.
 
-If there are $N$ insertions, then each query takes $\mathcal{O}(\log N)$ time and adding a pair takes $\mathcal{O}(\log N)$ time amortized.
+If there are $N$ insertions, then each query takes $\mathcal{O}(\log N)$ time
+and adding a pair takes $\mathcal{O}(\log N)$ time amortized.
 
 ### Implementation
 
@@ -90,7 +101,9 @@ ll query(int x) { auto it = m.lb(x);
 
 </LanguageSection>
 
-You can check the [analysis](http://www.usaco.org/current/data/sol_boards_gold_jan20.html) for the full solution to the original problem.
+You can check the
+[analysis](http://www.usaco.org/current/data/sol_boards_gold_jan20.html) for the
+full solution to the original problem.
 
 <Warning>
 
