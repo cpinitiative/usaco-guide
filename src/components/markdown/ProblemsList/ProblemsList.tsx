@@ -17,8 +17,6 @@ type ProblemsListProps = {
   division?: string;
 };
 
-let showTagsAndDifficulty = true;
-
 export function ProblemsList(props: ProblemsListProps) {
   const userSettings = useContext(UserDataContext);
   const showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
@@ -30,14 +28,18 @@ export function ProblemsList(props: ProblemsListProps) {
   const shouldShowSolvePercentage = false; // props.problems.some(problem => !problem.fraction);
 
   const markdownProblems = useMarkdownProblemLists();
-  let problems = markdownProblems.find(list => list.listId === props.problems)?.problems;
+  let problems = markdownProblems.find(list => list.listId === props.problems)
+    ?.problems;
   if (!problems)
     throw new Error(
       "Couldn't find the problem list with name " + props.problems
     );
 
   return (
-    <div className="-mx-4 sm:-mx-6 lg:mx-0" id={`problemlist-${props.problems}`}>
+    <div
+      className="-mx-4 sm:-mx-6 lg:mx-0"
+      id={`problemlist-${props.problems}`}
+    >
       <div className="flex flex-col">
         <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
           <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent">
@@ -47,7 +49,9 @@ export function ProblemsList(props: ProblemsListProps) {
                   showTagsAndDifficulty={showTagsAndDifficulty}
                   isDivisionTable={!!props.division}
                   showSolvePercentage={shouldShowSolvePercentage}
-                  showPlatinumSolvePercentageMessage={props.division === "Platinum"}
+                  showPlatinumSolvePercentageMessage={
+                    props.division === 'Platinum'
+                  }
                 />
               </thead>
               <tbody className="table-alternating-stripes">

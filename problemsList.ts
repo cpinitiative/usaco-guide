@@ -14459,6 +14459,9 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
       // if (!prob.solutionMetadata) {
       //   console.log(prob.uniqueID);
       // }
+      if (prob.solutionMetadata?.kind === 'in-module') {
+        prob.solutionMetadata.moduleId = x.node.frontmatter.id;
+      }
       return {
         uniqueId: prob.uniqueID,
         name: prob.name,

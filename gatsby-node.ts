@@ -28,9 +28,169 @@ try {
   console.error(e);
 }
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
-  const { createNodeField } = actions;
+const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
+  const ordering = importFresh<any>('./content/ordering');
+  const { solutionMetadata, ...info } = metadata;
+
   if (
+    !info.source ||
+    !info.uniqueId ||
+    info.isStarred === null ||
+    info.isStarred === undefined ||
+    !info.name ||
+    !info.url
+  ) {
+    console.error("problem metadata isn't valid", metadata);
+    throw new Error('Bad problem metadata');
+  }
+
+  let sol: ProblemSolutionInfo;
+  if (solutionMetadata.kind === 'autogen-label-from-site') {
+    const site = solutionMetadata.site;
+    if (!probSources.hasOwnProperty(site) || probSources[site].length !== 3) {
+      console.error(node.frontmatter.id, metadata);
+      throw new Error(
+        "Couldn't autogenerate solution label from problem site " + site
+      );
+    }
+    sol = {
+      kind: 'label',
+      label: 'Check ' + site,
+      labelTooltip: probSources[site][2],
+    };
+  } else if (solutionMetadata.kind === 'internal') {
+    sol = {
+      kind: 'internal',
+    };
+  } else if (solutionMetadata.kind === 'link') {
+    sol = {
+      kind: 'link',
+      url: solutionMetadata.url,
+      label: 'External Sol',
+    };
+  } else if (solutionMetadata.kind === 'CPH') {
+    const getSec = (dictKey, book, sec) => {
+      let url = book;
+      if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
+      if (!/^\d.*$/.test(sec)) return url;
+      if (!(sec in PGS[dictKey]))
+        throw `Could not find section ${sec} in source ${dictKey}`;
+      url += '#page=' + PGS[dictKey][sec];
+      return url;
+    };
+    let source = 'CPH';
+    let cphUrl = getSec(source, books[source][0], solutionMetadata.section);
+    sol = {
+      kind: 'link',
+      label: 'CPH ' + solutionMetadata.section,
+      url: cphUrl,
+    };
+  } else if (solutionMetadata.kind === 'USACO') {
+    if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
+      throw new Error(
+        "Couldn't find a corresponding USACO external solution for USACO problem ID " +
+          solutionMetadata.usacoId
+      );
+    }
+    sol = {
+      kind: 'link',
+      label: 'External Sol',
+      url:
+        `http://www.usaco.org/current/data/` +
+        id_to_sol[solutionMetadata.usacoId],
+    };
+  } else if (solutionMetadata.kind === 'IOI') {
+    let year = solutionMetadata.year;
+    let num = year - 1994 + 20;
+    sol = {
+      kind: 'link',
+      label: 'External Sol',
+      url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
+    };
+  } else if (solutionMetadata.kind === 'none') {
+    sol = null;
+  } else if (solutionMetadata.kind === 'in-module') {
+    sol = {
+      kind: 'link',
+      label: 'In Module',
+      url: `https://usaco.guide/${
+        ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
+      }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
+    };
+  } else if (solutionMetadata.kind === 'sketch') {
+    sol = {
+      kind: 'sketch',
+      sketch: solutionMetadata.sketch,
+    };
+  } else {
+    throw new Error(
+      'Unknown solution metadata ' + JSON.stringify(solutionMetadata)
+    );
+  }
+
+  return {
+    ...info,
+    solution: sol,
+  };
+};
+
+exports.onCreateNode = async ({
+  node,
+  actions,
+  loadNodeContent,
+  createContentDigest,
+  createNodeId,
+}) => {
+  const { createNodeField, createNode, createParentChildLink } = actions;
+
+  function transformObject(obj, id) {
+    const problemInfoNode = {
+      ...obj,
+      id,
+      children: [],
+      parent: node.id,
+      internal: {
+        contentDigest: createContentDigest(obj),
+        type: 'ProblemInfo',
+      },
+    };
+    createNode(problemInfoNode);
+    createParentChildLink({ parent: node, child: problemInfoNode });
+  }
+
+  if (
+    node.internal.mediaType === 'application/json' &&
+    node.sourceInstanceName === 'content' &&
+    node.relativePath.match(/^[1-6]_[A-z]+.[A-z_]+\.json$/) // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
+  ) {
+    const content = await loadNodeContent(node);
+    let parsedContent;
+    try {
+      parsedContent = JSON.parse(content);
+    } catch {
+      const hint = node.absolutePath
+        ? `file ${node.absolutePath}`
+        : `in node ${node.id}`;
+      throw new Error(`Unable to parse JSON: ${hint}`);
+    }
+
+    Object.keys(parsedContent).forEach(tableId => {
+      try {
+        parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
+          transformObject(
+            getProblemInfo(metadata),
+            createNodeId(`${metadata.uniqueId} >>> ProblemInfo`)
+          );
+        });
+      } catch (e) {
+        console.error(
+          'Failed to create problem info for',
+          parsedContent[tableId]
+        );
+        throw new Error('Failed to create problem info');
+      }
+    });
+  } else if (
     node.internal.type === 'Mdx' &&
     node.fileAbsolutePath.includes('content')
   ) {
@@ -60,103 +220,6 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     } catch (e) {
       // ignore, there probably aren't any problems in that module
     }
-
-    const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
-      const { solutionMetadata, ...info } = metadata;
-
-      let sol: ProblemSolutionInfo;
-      if (solutionMetadata.kind === 'autogen-label-from-site') {
-        const site = solutionMetadata.site;
-        if (
-          !probSources.hasOwnProperty(site) ||
-          probSources[site].length !== 3
-        ) {
-          console.error(node.frontmatter.id, metadata);
-          throw new Error(
-            "Couldn't autogenerate solution label from problem site " + site
-          );
-        }
-        sol = {
-          kind: 'label',
-          label: 'Check ' + site,
-          labelTooltip: probSources[site][2],
-        };
-      } else if (solutionMetadata.kind === 'internal') {
-        sol = {
-          kind: 'internal',
-        };
-      } else if (solutionMetadata.kind === 'link') {
-        sol = {
-          kind: 'link',
-          url: solutionMetadata.url,
-          label: 'External Sol',
-        };
-      } else if (solutionMetadata.kind === 'CPH') {
-        const getSec = (dictKey, book, sec) => {
-          let url = book;
-          if (sec[sec.length - 1] == ',')
-            sec = sec.substring(0, sec.length - 1);
-          if (!/^\d.*$/.test(sec)) return url;
-          if (!(sec in PGS[dictKey]))
-            throw `Could not find section ${sec} in source ${dictKey}`;
-          url += '#page=' + PGS[dictKey][sec];
-          return url;
-        };
-        let source = 'CPH';
-        let cphUrl = getSec(source, books[source][0], solutionMetadata.section);
-        sol = {
-          kind: 'link',
-          label: 'CPH ' + solutionMetadata.section,
-          url: cphUrl,
-        };
-      } else if (solutionMetadata.kind === 'USACO') {
-        if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
-          throw new Error(
-            "Couldn't find a corresponding USACO external solution for USACO problem ID " +
-              solutionMetadata.usacoId
-          );
-        }
-        sol = {
-          kind: 'link',
-          label: 'External Sol',
-          url:
-            `http://www.usaco.org/current/data/` +
-            id_to_sol[solutionMetadata.usacoId],
-        };
-      } else if (solutionMetadata.kind === 'IOI') {
-        let year = solutionMetadata.year;
-        let num = year - 1994 + 20;
-        sol = {
-          kind: 'link',
-          label: 'External Sol',
-          url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
-        };
-      } else if (solutionMetadata.kind === 'none') {
-        sol = null;
-      } else if (solutionMetadata.kind === 'in-module') {
-        sol = {
-          kind: 'link',
-          label: 'In Module',
-          url: `https://usaco.guide/${
-            ordering.moduleIDToSectionMap[node.frontmatter.id]
-          }/${node.frontmatter.id}#problem-${info.uniqueId}`,
-        };
-      } else if (solutionMetadata.kind === 'sketch') {
-        sol = {
-          kind: 'sketch',
-          sketch: solutionMetadata.sketch,
-        };
-      } else {
-        throw new Error(
-          'Unknown solution metadata ' + JSON.stringify(solutionMetadata)
-        );
-      }
-
-      return {
-        ...info,
-        solution: sol,
-      };
-    };
 
     if (problemJSON) {
       createNodeField({
@@ -297,13 +360,13 @@ exports.createSchemaCustomization = ({ actions }) => {
       problems: [ProblemInfo]
     }
     
-    type ProblemInfo {
+    type ProblemInfo implements Node {
       uniqueId: String!
       name: String!
       url: String!
       source: String!
-      difficulty: String!
       isStarred: Boolean!
+      difficulty: String
       tags: [String]
       solution: ProblemSolutionInfo 
     }

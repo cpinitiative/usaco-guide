@@ -208,6 +208,7 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
     | {
         // for focus problems, when the solution is presented in the module of the problem
         kind: 'in-module';
+        moduleId: string;
       }
     | {
         kind: 'sketch';
@@ -455,6 +456,7 @@ export class Problem {
     public moduleLink?: string
   ) {
     this.url = id;
+    this.starred = this.starred ?? false;
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
