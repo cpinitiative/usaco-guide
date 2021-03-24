@@ -181,7 +181,7 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <MobileSideNav />
-          <button onClick={event => setToggle(!toggle)} > TOGGLE</button>
+
           <ProSidebar collapsed={toggle} >
               <DesktopSidebar />
           </ProSidebar>
@@ -202,7 +202,7 @@ export default function MarkdownLayout({
               </div>
 
               {children}
-
+              <button onClick={event => setToggle(!toggle)} > TOGGLE</button>
               <ModuleProgressUpdateBanner />
 
               <ForumCTA />
