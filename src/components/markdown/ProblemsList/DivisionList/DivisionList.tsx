@@ -10,6 +10,7 @@ import Transition from '../../../Transition';
 import { useContext } from 'react';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
+import { Problem } from '../../../../models/problem';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -178,12 +179,6 @@ export function DivisionList(props): JSX.Element {
                 }
               }
             }
-            problems {
-              uniqueID
-              solID
-              tags
-              difficulty
-            }
           }
         }
       }
@@ -247,12 +242,12 @@ export function DivisionList(props): JSX.Element {
       if (contest in contestToFraction[division]) {
         fraction = contestToFraction[division][contest].shift();
       }
-      const prob: DivisionProblemInfo = {
-        uniqueId: `usaco-${probInfo[0]}`,
-        name: probInfo[2],
-        url:
-      }
-        new Problem(
+      // const prob: DivisionProblemInfo = {
+      //   uniqueId: `usaco-${probInfo[0]}`,
+      //   name: probInfo[2],
+      //   url:
+      // }
+      const prob = new Problem(
         contest, // source
         probInfo[2], // title
         probInfo[0], // id
