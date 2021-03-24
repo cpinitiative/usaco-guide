@@ -133,19 +133,13 @@ const expand = props.expandable === undefined;
 };
 
 export const CPPSection = props => {
-  console.log('CPP PROPS');
-  console.log(props);
   return <>{props.children}</>;
 };
 
 export const JavaSection = props => {
-  console.log('JAVA PROPS');
-  console.log(props);
   return <>{props.children}</>;
 };
 
 export const PySection = props => {
-  console.log('PY PROPS');
-  console.log(props);
   return <>{props.children}</>;
 };

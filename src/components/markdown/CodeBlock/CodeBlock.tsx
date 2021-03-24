@@ -87,7 +87,7 @@ const CodeSnipButton = ({
     </CodeSnipButtonIcon>
   );
 };
-
+let canExpand = true;
 class CodeBlock extends React.Component<
   {
     children: string;
@@ -102,7 +102,7 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-    let canExpand = true;
+
     if (typeof props.expandable != 'undefined') {
       canExpand = props.expandable;
     }
@@ -276,7 +276,6 @@ class CodeBlock extends React.Component<
     // }
 
     let collapsed = this.state.collapsed;
-
     return (
       // @ts-ignore
       <Highlight
