@@ -40,6 +40,7 @@ export default function getMemberInfoForGroup(group: GroupData) {
           })
           .then(d => {
             if (d?.data?.length > 0) {
+              d.data.sort((a, b) => a.displayName.localeCompare(b.displayName));
               setMemberInfo(d.data);
               cachedData = {
                 groupId: group.id,

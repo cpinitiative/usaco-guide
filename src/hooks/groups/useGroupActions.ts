@@ -145,5 +145,8 @@ export function useGroupActions() {
         .withConverter(joinGroupLinkConverter)
         .update(data);
     },
+    removeMemberFromGroup: async (id: string) => {
+      // todo @jeffrey
+    },
   };
 }
