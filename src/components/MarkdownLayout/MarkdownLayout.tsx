@@ -163,6 +163,7 @@ export default function MarkdownLayout({
   }
 
   // @ts-ignore
+  const [toggle, setToggle] = useState(false);
   return (
     <MarkdownLayoutContext.Provider
       value={{
@@ -180,8 +181,8 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <MobileSideNav />
-
-          <ProSidebar>
+          <button onClick={event => setToggle(!toggle)} > TOGGLE</button>
+          <ProSidebar collapsed={toggle} >
               <DesktopSidebar />
           </ProSidebar>
 
