@@ -42,8 +42,6 @@ const Spoiler = ({ children, title }) => {
       return child;
     }
   });
-  console.log('Spoiler Props');
-  console.log(childrenWithProps);
 
   const [show, setShow] = React.useState(false);
 
