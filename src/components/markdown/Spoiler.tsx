@@ -27,7 +27,6 @@ const Spoiler = ({ children, title }) => {
     firstName,
     numChildren
   );
-  console.log('ONLY CODE: ' + onlyContainsCode);
 
   const childrenWithProps = React.Children.map(children, child => {
     if (count == 0 && onlyContainsCode) {
