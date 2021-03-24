@@ -1,12 +1,12 @@
 import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { Problem, ProblemProgress } from '../../../models/problem';
+import { ProblemInfo, ProblemProgress } from '../../../models/problem';
 import { ProblemActivity } from '../../../models/activity';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
-    problem: Problem,
+    problem: ProblemInfo,
     status: ProblemProgress
   ) => void;
 };
@@ -86,16 +86,16 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
 
         this.activityValue.push({
           timestamp: Date.now(),
-          problemID: problem.uniqueID,
+          problemID: problem.uniqueId,
           problemProgress: status,
         });
-        this.progressValue[problem.uniqueID] = status;
+        this.progressValue[problem.uniqueId] = status;
 
         if (this.firebaseUserDoc) {
           this.firebaseUserDoc.set(
             {
               [this.progressStorageKey]: {
-                [problem.uniqueID]: status,
+                [problem.uniqueId]: status,
               },
               [this.activityStorageKey]: this.activityValue,
             },

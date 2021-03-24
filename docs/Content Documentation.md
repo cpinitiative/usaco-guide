@@ -333,7 +333,7 @@ Do roughly the first half of the Sorting and Searching section in the
 Displays a singular problem as a "focus problem."
 
 ```
-<FocusProblem problem={problems.genPermutations[0]} />
+<FocusProblem problem="genPermutations" />
 ```
 
 Make sure to still use an array: `gatsby-node.ts` expects all exported problems

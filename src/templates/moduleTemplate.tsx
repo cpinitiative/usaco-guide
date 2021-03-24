@@ -17,7 +17,6 @@ export default function Template(props) {
   const { mdx } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
-  console.log(mdx.fields.problemLists);
   const { setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
