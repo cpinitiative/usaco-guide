@@ -15,7 +15,7 @@ const Spoiler = ({ children, title }) => {
 
   React.Children.forEach(children, child => {
     if (count == 0) {
-      numChildren = Children.count(children);
+      numChildren = React.Children.count(children);
       firstName = child.props.mdxType;
       ogProps = child.props;
       console.log('OG PROPS: ' + ogProps);
