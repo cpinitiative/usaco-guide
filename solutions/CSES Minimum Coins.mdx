@@ -5,27 +5,38 @@ title: Minimizing Coins
 author: Michael Cao
 ---
 
-In this problem, we're asked the minimum number of coins of distinct weights needed to achieve some weight, $x$. You can read about the solution to this classical problem in [CPH Chapter 7](/CPH.pdf) under "Coin Problem".
+In this problem, we're asked the minimum number of coins of distinct weights
+needed to achieve some weight, $x$. You can read about the solution to this
+classical problem in [CPH Chapter 7](/CPH.pdf) under "Coin Problem".
 
 # Main Idea
 
-For this problem, we'll define $\texttt{dp[w]}$ as the minimum number of coins to achieve some weight, $w$. Then, at some $w$, we can try to use every coin. Using the $i$-th coin represents transitioning from the state $\texttt{dp[w - coins[i]]}$ where $\texttt{coins[i]}$ represents the value of the $i$-th coin. So, for $\texttt{dp[i]}$, the transition is:
+For this problem, we'll define $\texttt{dp[w]}$ as the minimum number of coins
+to achieve some weight, $w$. Then, at some $w$, we can try to use every coin.
+Using the $i$-th coin represents transitioning from the state
+$\texttt{dp[w - coins[i]]}$ where $\texttt{coins[i]}$ represents the value of
+the $i$-th coin. So, for $\texttt{dp[i]}$, the transition is:
 
 $$
 dp[w] = \min_{i=1}^n{(dp[w - coins[i]]) + 1}
 $$
 
-Finally, the base case would be $\texttt{dp[0]} = 0$, since it requires $0$ coins to get a sum of $0$.
+Finally, the base case would be $\texttt{dp[0]} = 0$, since it requires $0$
+coins to get a sum of $0$.
 
 <Warning>
 
-Remember to initialize the $\texttt{dp}$ array with some large value, since we are computing a minimum. Additionally, if $\texttt{dp}$ is an `int` array, don't initialize $\texttt{dp}$ with `INT_MAX`, since that could cause overflow when you add 1 for the transitions.
+Remember to initialize the $\texttt{dp}$ array with some large value, since we
+are computing a minimum. Additionally, if $\texttt{dp}$ is an `int` array, don't
+initialize $\texttt{dp}$ with `INT_MAX`, since that could cause overflow when
+you add 1 for the transitions.
 
 </Warning>
 
 <Warning>
 
-Don't forget to check if $\texttt{dp[x]} = MX$, where $MX$ is the large value you used, and print $-1$ if so (since it's impossible to achieve a sum of $x$).
+Don't forget to check if $\texttt{dp[x]} = MX$, where $MX$ is the large value
+you used, and print $-1$ if so (since it's impossible to achieve a sum of $x$).
 
 </Warning>
 

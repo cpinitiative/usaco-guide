@@ -2,7 +2,9 @@
 id: io
 title: Input & Output
 author: Darren Yao, Benjamin Qi, Nathan Wang, Allen Li
-description: Demonstrates how to read input and print output for USACO contests, including an example problem.
+description:
+  Demonstrates how to read input and print output for USACO contests, including
+  an example problem.
 prerequisites:
   - data-types
 ---
@@ -46,7 +48,8 @@ export const problems = {
 
 <!-- We use `using namespace std;` so that we don't have to preface standard library functions with `std::` each time we use them. -->
 
-The code snippets below will read in three integers as part of a single line and output their sum. For example, given the input
+The code snippets below will read in three integers as part of a single line and
+output their sum. For example, given the input
 
 ```
 1 2 3
@@ -58,7 +61,8 @@ the output will be as follows:
 sum is 6
 ```
 
-Feel free to test them out at [ide.thecodingwizard.me](https://ide.thecodingwizard.me).
+Feel free to test them out at
+[ide.thecodingwizard.me](https://ide.thecodingwizard.me).
 
 <Info title="Out of the methods below, which one should I use?">
 
@@ -68,7 +72,8 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), input and output are **standard**.
+In most websites (such as CodeForces and CSES), input and output are
+**standard**.
 
 <LanguageSection>
 
@@ -76,7 +81,13 @@ In most websites (such as CodeForces and CSES), input and output are **standard*
 
 ### Method 1 - [`<iostream>`](https://www.cplusplus.com/reference/iostream/)
 
-More straightforward to use. Calling the extraction operator `operator>>` on [`cin`](https://www.cplusplus.com/reference/iostream/cin/) reads whitespace-separated data from standard input. Similarly, calling the insertion operator `operator<<` on [`cout`](https://www.cplusplus.com/reference/iostream/cout/) writes to standard output. The [escape sequence](https://en.cppreference.com/w/cpp/language/escape) `\n` represents a new line.
+More straightforward to use. Calling the extraction operator `operator>>` on
+[`cin`](https://www.cplusplus.com/reference/iostream/cin/) reads
+whitespace-separated data from standard input. Similarly, calling the insertion
+operator `operator<<` on
+[`cout`](https://www.cplusplus.com/reference/iostream/cout/) writes to standard
+output. The [escape sequence](https://en.cppreference.com/w/cpp/language/escape)
+`\n` represents a new line.
 
 ```cpp
 #include <iostream>
@@ -91,13 +102,17 @@ int main() {
 
 <Info title="endl vs \n">
 
-[`endl`](https://www.cplusplus.com/reference/ostream/endl/) and `\n` are _not_ equivalent; see [Fast I/O](/general/fast-io) for details.
+[`endl`](https://www.cplusplus.com/reference/ostream/endl/) and `\n` are _not_
+equivalent; see [Fast I/O](/general/fast-io) for details.
 
 </Info>
 
 ### Method 2 - [`<cstdio>`](https://www.cplusplus.com/reference/cstdio/)
 
-This library includes the [`scanf`](https://www.cplusplus.com/reference/cstdio/scanf/) and [`printf`](https://www.cplusplus.com/reference/cstdio/printf/) functions, which are slightly more complicated to use.
+This library includes the
+[`scanf`](https://www.cplusplus.com/reference/cstdio/scanf/) and
+[`printf`](https://www.cplusplus.com/reference/cstdio/printf/) functions, which
+are slightly more complicated to use.
 
 ```cpp
 #include <cstdio>
@@ -125,7 +140,9 @@ int main() {
 
 <Info title="Input Speed">
 
-The second method is significantly faster (generally only an issue with large input sizes). However, the first method can be sped up so that the difference in speed is not significant; see [Fast I/O](/general/fast-io) for details.
+The second method is significantly faster (generally only an issue with large
+input sizes). However, the first method can be sped up so that the difference in
+speed is not significant; see [Fast I/O](/general/fast-io) for details.
 
 </Info>
 
@@ -135,7 +152,9 @@ The second method is significantly faster (generally only an issue with large in
 
 ### Method 1 - [`Scanner`](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html) and [`System.out.print`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/System.html)
 
-In your CS classes, you've probably implemented input and output using standard input and standard output, or using `Scanner` to read input and `System.out.print` to print output.
+In your CS classes, you've probably implemented input and output using standard
+input and standard output, or using `Scanner` to read input and
+`System.out.print` to print output.
 
 ```java
 import java.util.Scanner;
@@ -152,11 +171,18 @@ public class Main {
 }
 ```
 
-This works, but `Scanner` and `System.out.print` are slow when we have to handle inputting and outputting tens of thousands of lines.
+This works, but `Scanner` and `System.out.print` are slow when we have to handle
+inputting and outputting tens of thousands of lines.
 
 ### Method 2 - [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html)
 
-These are faster because they buffer the input and output and handle it all at once as opposed to parsing each line individually. However, `BufferedReader` is harder to use than `Scanner`. It has quite a few more methods and the `io` library must be imported for its use as well. A [`StringTokenizer`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/StringTokenizer.html) is used to split the input line by whitespace into tokens, which are then accessed individually by the `nextToken()` method.
+These are faster because they buffer the input and output and handle it all at
+once as opposed to parsing each line individually. However, `BufferedReader` is
+harder to use than `Scanner`. It has quite a few more methods and the `io`
+library must be imported for its use as well. A
+[`StringTokenizer`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/StringTokenizer.html)
+is used to split the input line by whitespace into tokens, which are then
+accessed individually by the `nextToken()` method.
 
 ```java
 import java.io.*;
@@ -179,7 +205,9 @@ public class Main {
 
 #### I/O Template
 
-The following template (a shortened version of Kattis's [`Kattio.java`](https://open.kattis.com/help/java)) combines `BufferedReader` and `PrintWriter` and takes care of the string processing for you.
+The following template (a shortened version of Kattis's
+[`Kattio.java`](https://open.kattis.com/help/java)) combines `BufferedReader`
+and `PrintWriter` and takes care of the string processing for you.
 
 <!-- 
 
@@ -303,29 +331,39 @@ public class Main {
 
 <Optional title="extends">
 
-`extends` is used so that `Kattio` inherits methods from `PrintWriter` (including `print()`, `println()` and `close()`). If you're interested, see [here](https://www.w3schools.com/java/ref_keyword_extends.asp) for more details.
+`extends` is used so that `Kattio` inherits methods from `PrintWriter`
+(including `print()`, `println()` and `close()`). If you're interested, see
+[here](https://www.w3schools.com/java/ref_keyword_extends.asp) for more details.
 
 </Optional>
 
-The input methods in our `Kattio` class mimic those of `Scanner`. Given an instance `io`:
+The input methods in our `Kattio` class mimic those of `Scanner`. Given an
+instance `io`:
 
-| Method | Description |
-| --- | --- |
-| `io.next()` | Reads the next token (up to a whitespace) and returns a `String` |
-| `io.nextInt()` | Reads the next token (up to a whitespace) and returns as an `int` |
-| `io.nextLong()` | Reads the next token (up to a whitespace) and returns as a `long` |
-| `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double` |
-| `io.print(arg)` | Prints `arg` to designated output stream |
-| `io.println(arg)` | Prints `arg` to designated output stream and adds a newline |
-| `io.close()` | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
+| Method            | Description                                                                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `io.next()`       | Reads the next token (up to a whitespace) and returns a `String`                                                                                                                                                                      |
+| `io.nextInt()`    | Reads the next token (up to a whitespace) and returns as an `int`                                                                                                                                                                     |
+| `io.nextLong()`   | Reads the next token (up to a whitespace) and returns as a `long`                                                                                                                                                                     |
+| `io.nextDouble()` | Reads the next token (up to a whitespace) and returns as a `double`                                                                                                                                                                   |
+| `io.print(arg)`   | Prints `arg` to designated output stream                                                                                                                                                                                              |
+| `io.println(arg)` | Prints `arg` to designated output stream and adds a newline                                                                                                                                                                           |
+| `io.close()`      | Closes the output stream and flushes the output. Make sure to call this (or [`io.flush()`](<https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html#flush()>)) at the end, or you won't see any output! |
 
-USACO prohibits prewritten code but allows you to consult resources about basic functionality such as input / output. So feel free to refer to this module during a USACO contest.
+USACO prohibits prewritten code but allows you to consult resources about basic
+functionality such as input / output. So feel free to refer to this module
+during a USACO contest.
 
 <Info title="PrintWriter Buffering">
 
-The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37. But since `PrintWriter` [uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered), including `BufferedOutputStream` is necessary.
+The original `Kattio` code had `super(new BufferedOutputStream(o));` on line 37.
+But since `PrintWriter`
+[uses buffered output](https://stackoverflow.com/questions/32177690/is-printwriter-buffered),
+including `BufferedOutputStream` is necessary.
 
-Similarly, you may see `PrintWriter`s for file output initialized like the following (ex. [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
+Similarly, you may see `PrintWriter`s for file output initialized like the
+following (ex.
+[here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)).
 
 ```java
 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
@@ -343,7 +381,8 @@ suffices.
 
 <Info title="Input Speed">
 
-See [Fast I/O](/general/fast-io) for a comparison of input speeds as well as a faster method of input.
+See [Fast I/O](/general/fast-io) for a comparison of input speeds as well as a
+faster method of input.
 
 </Info>
 
@@ -353,7 +392,13 @@ See [Fast I/O](/general/fast-io) for a comparison of input speeds as well as a f
 
 ### Python
 
-The most intuitive way to do input/output is using the built in [`input()`](https://docs.python.org/3/library/functions.html#input) and [`print()`](https://docs.python.org/3/library/functions.html#print) methods. The `input()` method will return the next line, and can be processed using different python methods. The `print()` method takes in a string and an optional string `end` (defaults to `'\n'`). Below is an annotated demonstration on different input/output scenarios.
+The most intuitive way to do input/output is using the built in
+[`input()`](https://docs.python.org/3/library/functions.html#input) and
+[`print()`](https://docs.python.org/3/library/functions.html#print) methods. The
+`input()` method will return the next line, and can be processed using different
+python methods. The `print()` method takes in a string and an optional string
+`end` (defaults to `'\n'`). Below is an annotated demonstration on different
+input/output scenarios.
 
 ```py
 # read in a string
@@ -367,7 +412,10 @@ n = int(input())
 print(n, end=" test")
 ```
 
-We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split) along with [`map`](https://docs.python.org/3/library/functions.html#map) or a [list comprehension](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions) to read in multiple integers on the same line (separated by whitespace).
+We can also [`split`](https://docs.python.org/3/library/stdtypes.html#str.split)
+along with [`map`](https://docs.python.org/3/library/functions.html#map) or a
+[list comprehension](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions)
+to read in multiple integers on the same line (separated by whitespace).
 
 ```py
 # read in a series of numbers on one line into a list
@@ -376,7 +424,8 @@ nums = [int(x) for x in input().split()]
 nums = list(map(int, input().split()))
 ```
 
-We can use something similar to the above if we are unpacking a fixed number of integers.
+We can use something similar to the above if we are unpacking a fixed number of
+integers.
 
 ```py
 # read in integers n and m, both on the same line
@@ -547,15 +596,19 @@ print(x)
 
 <Info title="Update">
 
-USACO problems from December 2020 onwards use standard I/O rather than file I/O. You'll still need to use file I/O to submit to earlier problems.
+USACO problems from December 2020 onwards use standard I/O rather than file I/O.
+You'll still need to use file I/O to submit to earlier problems.
 
 </Info>
 
-In older USACO problems, the input and output file names are given and follow the convention `problemname.in`. After the program is run, output must be printed to a file called `problemname.out`.
+In older USACO problems, the input and output file names are given and follow
+the convention `problemname.in`. After the program is run, output must be
+printed to a file called `problemname.out`.
 
 <FocusProblem problem={problems.fence} />
 
-You must rename the `.in` and `.out` files depending on the problem. For example, in the above problem you would use `paint.in` and `paint.out`.
+You must rename the `.in` and `.out` files depending on the problem. For
+example, in the above problem you would use `paint.in` and `paint.out`.
 
 <LanguageSection>
 
@@ -563,7 +616,9 @@ You must rename the `.in` and `.out` files depending on the problem. For example
 
 ### Method 1 - [`freopen`](https://www.cplusplus.com/reference/cstdio/freopen/)
 
-You will need the `<cstdio>` library. The `freopen` statements reuse standard I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf` and `printf`) to read and write data.
+You will need the `<cstdio>` library. The `freopen` statements reuse standard
+I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf`
+and `printf`) to read and write data.
 
 ```cpp
 #include <iostream>
@@ -581,9 +636,11 @@ int main() {
 }
 ```
 
-To test your solution locally without file I/O, just comment out the lines with `freopen`.
+To test your solution locally without file I/O, just comment out the lines with
+`freopen`.
 
-For convenience, we can define a function that will redirect `stdin` and `stdout` based on the problem name:
+For convenience, we can define a function that will redirect `stdin` and
+`stdout` based on the problem name:
 
 ```cpp
 #include <iostream>
@@ -624,7 +681,8 @@ int main() {
 
 ### Java
 
-Again, `BufferedReader` and `PrintWriter` should be used. Note how `static` initialization of `r` and `pw` is slightly different.
+Again, `BufferedReader` and `PrintWriter` should be used. Note how `static`
+initialization of `r` and `pw` is slightly different.
 
 ```java
 import java.io.*;
@@ -680,9 +738,13 @@ public class Main {
 
 ### Python
 
-See [here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files) for documentation about file I/O.
+See
+[here](https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files)
+for documentation about file I/O.
 
-The most intuitive way to do file I/O in Python is by redirecting the system input and output to files. After doing this, you can then use the above `input()` and `print()` methods as usual.
+The most intuitive way to do file I/O in Python is by redirecting the system
+input and output to files. After doing this, you can then use the above
+`input()` and `print()` methods as usual.
 
 ```py
 import sys
@@ -710,7 +772,8 @@ sys.stdout = open("problemname.out", "w")
 
 <br />
 
-For an explanation of the solutions below, check the [Rectangle Geometry](/bronze/rect-geo#slow-solution) module.
+For an explanation of the solutions below, check the
+[Rectangle Geometry](/bronze/rect-geo#slow-solution) module.
 
 <LanguageSection>
 
@@ -936,19 +999,24 @@ print(ans)
 
 ## USACO Note - Extra Whitespace
 
-Importantly, USACO will automatically add a newline to the end of your file if it does not end with one.
+Importantly, USACO will automatically add a newline to the end of your file if
+it does not end with one.
 
 <Warning>
 
-Occasionally, there is a period of time near the beginning of the contest window where the model outputs do not end in newlines. This renders the problem unsolvable ...
+Occasionally, there is a period of time near the beginning of the contest window
+where the model outputs do not end in newlines. This renders the problem
+unsolvable ...
 
 </Warning>
 
-Make sure not to output trailing spaces, or you will get an error such as the following:
+Make sure not to output trailing spaces, or you will get an error such as the
+following:
 
 ![bad](Error.png)
 
-Here are some examples of what is allowed and what isn't when the intended output consists of a single integer `ans`:
+Here are some examples of what is allowed and what isn't when the intended
+output consists of a single integer `ans`:
 
 <LanguageSection>
 

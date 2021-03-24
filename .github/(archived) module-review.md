@@ -8,7 +8,8 @@ assignees: ''
 
 **Module Review Checklist**
 
-Read through the module and check for errors. Also see: https://usaco.guide/general/contributing
+Read through the module and check for errors. Also see:
+https://usaco.guide/general/contributing
 
 Languages Checked:
 
@@ -18,7 +19,8 @@ Languages Checked:
 
 Things to check:
 
-- [ ] Frequency is accurate, prerequisites are listed, module description is written
+- [ ] Frequency is accurate, prerequisites are listed, module description is
+      written
 - [ ] No typos, explanations are clear, no missing sections
 - [ ] Table of Contents looks good
 - [ ] Resources are good
@@ -29,5 +31,7 @@ Things to check:
 - [ ] Problems are good
   - [ ] There are sufficient problems
   - [ ] Problems are tagged with difficulty and tags as needed
-  - [ ] Problems either are linked to a good enough external solution, or a solution is written for them
-  - [ ] There are _no solution sketches_ -- migrate solution sketches into full editorial pages.
+  - [ ] Problems either are linked to a good enough external solution, or a
+        solution is written for them
+  - [ ] There are _no solution sketches_ -- migrate solution sketches into full
+        editorial pages.

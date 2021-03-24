@@ -6,7 +6,9 @@ author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi
 prerequisites:
   - intro-sorting
   - intro-graphs
-description: "If we use custom objects or if we want to sort elements in an order other than the default, then we'll need to define a custom comparator."
+description:
+  "If we use custom objects or if we want to sort elements in an order other
+  than the default, then we'll need to define a custom comparator."
 ---
 
 export const problems = {
@@ -108,7 +110,10 @@ export const problems = {
 
 <FocusProblem problem={problems.sample[0]} />
 
-We won't discuss the full solution here, as some of the concepts necessary for solving this problem will be introduced later in Silver. However, many solutions to this problem start by sorting the edges in nondecreasing order of weight. For example, the sample contains the following edges:
+We won't discuss the full solution here, as some of the concepts necessary for
+solving this problem will be introduced later in Silver. However, many solutions
+to this problem start by sorting the edges in nondecreasing order of weight. For
+example, the sample contains the following edges:
 
 ```
 1 2 9
@@ -164,14 +169,21 @@ int main() {
 
 In Python, we can use a list of lists.
 
-But in Java, we can't sort an `ArrayList` of `ArrayList`s without writing some additional code. What should we do?
+But in Java, we can't sort an `ArrayList` of `ArrayList`s without writing some
+additional code. What should we do?
 
-- If we only stored the edge weights and sorted them, we would have a sorted list of edge weights, but it would be impossible to tell which weights corresponded to which edges.
-- However, if we create a **class** representing the edges and define a **custom comparator** to sort them by weight, we can sort the edges in ascending order while also keeping track of their endpoints.
+- If we only stored the edge weights and sorted them, we would have a sorted
+  list of edge weights, but it would be impossible to tell which weights
+  corresponded to which edges.
+- However, if we create a **class** representing the edges and define a **custom
+  comparator** to sort them by weight, we can sort the edges in ascending order
+  while also keeping track of their endpoints.
 
 ## Classes
 
-First, we need to define a **class** that represents what we want to sort. In our example we will define a class `Edge` that contains the two endpoints of the edge and the weight.
+First, we need to define a **class** that represents what we want to sort. In
+our example we will define a class `Edge` that contains the two endpoints of the
+edge and the weight.
 
 <LanguageSection>
 
@@ -179,7 +191,8 @@ First, we need to define a **class** that represents what we want to sort. In ou
 
 ### C++
 
-A C++ `struct` is the same as a `class` in C++, but all members are public by default.
+A C++ `struct` is the same as a `class` in C++, but all members are public by
+default.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -265,29 +278,44 @@ for e in v:
 
 ## Comparators
 
-Normally, sorting functions rely on moving objects with a lower value in front of objects with a higher value if sorting in ascending order, and vice versa if in descending order. This is done through comparing two objects at a time.
+Normally, sorting functions rely on moving objects with a lower value in front
+of objects with a higher value if sorting in ascending order, and vice versa if
+in descending order. This is done through comparing two objects at a time.
 
 <LanguageSection>
 
 <CPPSection>
 
-What a comparator does is compare two objects as follows, based on our comparison criteria:
+What a comparator does is compare two objects as follows, based on our
+comparison criteria:
 
 - If object $x$ is less than object $y$, return `true`
 - If object $x$ is greater than or equal to object $y$, return `false`
 
-Essentially, the comparator determines whether object $x$ belongs to the left of object $y$ in a sorted ordering. A comparator **must** return false for two identical objects (not doing so results in undefined behavior and potentially a runtime error).
+Essentially, the comparator determines whether object $x$ belongs to the left of
+object $y$ in a sorted ordering. A comparator **must** return false for two
+identical objects (not doing so results in undefined behavior and potentially a
+runtime error).
 
-In addition to returning the correct answer, comparators should also satisfy the following conditions:
+In addition to returning the correct answer, comparators should also satisfy the
+following conditions:
 
-- The function must be consistent with respect to reversing the order of the arguments: if $x \neq y$ and `compare(x, y)` is `true`, then `compare(y, x)` should be `false` and vice versa.
-- The function must be transitive. If `compare(x, y)` is true and `compare(y, z)` is true, then `compare(x, z)` should also be true. If the first two compare functions both return `false`, the third must also return `false`.
+- The function must be consistent with respect to reversing the order of the
+  arguments: if $x \neq y$ and `compare(x, y)` is `true`, then `compare(y, x)`
+  should be `false` and vice versa.
+- The function must be transitive. If `compare(x, y)` is true and
+  `compare(y, z)` is true, then `compare(x, z)` should also be true. If the
+  first two compare functions both return `false`, the third must also return
+  `false`.
 
 ### Method 1: Overloading the Less Than Operator
 
-This is the easiest to implement. However, it only works for objects (not primitives) and it doesn't allow you to define multiple ways to compare the same type of class.
+This is the easiest to implement. However, it only works for objects (not
+primitives) and it doesn't allow you to define multiple ways to compare the same
+type of class.
 
-In the context of Wormhole Sort (note the use of [const Edge&](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)):
+In the context of Wormhole Sort (note the use of
+[const Edge&](https://stackoverflow.com/questions/11805322/why-should-i-use-const-t-instead-of-const-t-or-t)):
 
 ```cpp
 #include <bits/stdc++.h>
@@ -319,7 +347,8 @@ struct Edge {
 bool operator<(const Edge& x, const Edge& y) { return x.w < y.w; }
 ```
 
-or within it using [friend](https://www.geeksforgeeks.org/friend-class-function-cpp/):
+or within it using
+[friend](https://www.geeksforgeeks.org/friend-class-function-cpp/):
 
 ```cpp
 struct Edge {
@@ -330,7 +359,8 @@ struct Edge {
 
 ### Method 2: Comparison Function
 
-This works for both objects and primitives, and you can declare many different comparators for the same object.
+This works for both objects and primitives, and you can declare many different
+comparators for the same object.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -364,27 +394,44 @@ sort(begin(v),end(v),[](const Edge& x, const Edge& y) { return x.w < y.w; });
 
 <JavaSection>
 
-What a `Comparator` does is compare two objects as follows, based on our comparison criteria:
+What a `Comparator` does is compare two objects as follows, based on our
+comparison criteria:
 
 - If object $x$ is less than object $y$, return a negative integer.
 - If object $x$ is greater than object $y$, return a positive integer.
 - If object $x$ is equal to object $y$, return 0.
 
-In addition to returning the correct number, comparators should also satisfy the following conditions:
+In addition to returning the correct number, comparators should also satisfy the
+following conditions:
 
-- The function must be consistent with respect to reversing the order of the arguments: if `compare(x, y)` is positive, then `compare(y, x)` should be negative and vice versa.
-- The function must be transitive. If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`. Same applies if the compare functions return negative numbers.
-- Equality must be consistent. If `compare(x, y) = 0`, then `compare(x, z)` and `compare(y, z)` must both be positive, both negative, or both zero. Note that they don't have to be equal, they just need to have the same sign.
+- The function must be consistent with respect to reversing the order of the
+  arguments: if `compare(x, y)` is positive, then `compare(y, x)` should be
+  negative and vice versa.
+- The function must be transitive. If `compare(x, y) > 0` and
+  `compare(y, z) > 0`, then `compare(x, z) > 0`. Same applies if the compare
+  functions return negative numbers.
+- Equality must be consistent. If `compare(x, y) = 0`, then `compare(x, z)` and
+  `compare(y, z)` must both be positive, both negative, or both zero. Note that
+  they don't have to be equal, they just need to have the same sign.
 
-Java has default functions for comparing `int`, `long`, `double` types. The `Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two arguments $x$ and $y$ and compare them as described above.
+Java has default functions for comparing `int`, `long`, `double` types. The
+`Integer.compare()`, `Long.compare()`, and `Double.compare()` functions take two
+arguments $x$ and $y$ and compare them as described above.
 
-There are two ways of implementing this in Java: `Comparable`, and `Comparator`. They essentially serve the same purpose, but `Comparable` is generally easier and shorter to code. `Comparable` is a function implemented within the class containing the custom object, while `Comparator` is its own class.
+There are two ways of implementing this in Java: `Comparable`, and `Comparator`.
+They essentially serve the same purpose, but `Comparable` is generally easier
+and shorter to code. `Comparable` is a function implemented within the class
+containing the custom object, while `Comparator` is its own class.
 
 ### Method 1: Comparable
 
-We'll need to put `implements Comparable<Edge>` into the heading of the class. Furthermore, we'll need to implement the `compareTo` method. Essentially, `compareTo(x)` is the `compare` function that we described above, with the object itself as the first argument, or `compare(self, x)`.
+We'll need to put `implements Comparable<Edge>` into the heading of the class.
+Furthermore, we'll need to implement the `compareTo` method. Essentially,
+`compareTo(x)` is the `compare` function that we described above, with the
+object itself as the first argument, or `compare(self, x)`.
 
-When using Comparable, we can just call `Arrays.sort(arr)` or `Collections.sort(list)` on the array or list as usual.
+When using Comparable, we can just call `Arrays.sort(arr)` or
+`Collections.sort(list)` on the array or list as usual.
 
 ```java
 import java.util.*;
@@ -419,7 +466,8 @@ public class Sol {
 
 ### Method 2: Comparator
 
-If instead we choose to use `Comparator`, we'll need to declare a second class that implements `Comparator<Edge>`:
+If instead we choose to use `Comparator`, we'll need to declare a second class
+that implements `Comparator<Edge>`:
 
 ```java
 import java.util.*;
@@ -456,7 +504,9 @@ public class Sol {
 }
 ```
 
-When using `Comparator`, the syntax for using the built-in sorting function requires a second argument: `Arrays.sort(arr, new Comp())`, or `Collections.sort(list, new Comp())`.
+When using `Comparator`, the syntax for using the built-in sorting function
+requires a second argument: `Arrays.sort(arr, new Comp())`, or
+`Collections.sort(list, new Comp())`.
 
 </JavaSection>
 
@@ -487,7 +537,9 @@ for e in v:
 
 ### Key Function
 
-This method maps an object to another comparable datatype with which to be sorted. This is the preferred method if you are only sorting something once. In this case we map edges to their weights.
+This method maps an object to another comparable datatype with which to be
+sorted. This is the preferred method if you are only sorting something once. In
+this case we map edges to their weights.
 
 ```py
 class Edge:
@@ -508,7 +560,14 @@ for e in v:
 
 ### Comparison Function
 
-A comparison function in Python must satisfy the same properties as a comparator in Java. Note that old-style cmp functions are [no longer supported](https://stackoverflow.com/questions/12749398/using-a-comparator-function-to-sort), so the comparison function must be converted into a key function with [`cmp_to_key`](https://docs.python.org/2/library/functools.html). Most of the time, it is better to use the key function, but in the rare case that the comparison function is not easily represented as a key function, we can use this.
+A comparison function in Python must satisfy the same properties as a comparator
+in Java. Note that old-style cmp functions are
+[no longer supported](https://stackoverflow.com/questions/12749398/using-a-comparator-function-to-sort),
+so the comparison function must be converted into a key function with
+[`cmp_to_key`](https://docs.python.org/2/library/functools.html). Most of the
+time, it is better to use the key function, but in the rare case that the
+comparison function is not easily represented as a key function, we can use
+this.
 
 ```py
 from functools import cmp_to_key
@@ -538,11 +597,18 @@ for e in v:
 
 ### Sorting in Decreasing Order of Weight
 
-We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code. Similarly, we can replace all occurrences of `Integer.compare(x, y)` with `-Integer.compare(x, y)` in our Java code. In Python, we can pass the parameter `reverse=True` to the `sort` or `sorted` function.
+We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code.
+Similarly, we can replace all occurrences of `Integer.compare(x, y)` with
+`-Integer.compare(x, y)` in our Java code. In Python, we can pass the parameter
+`reverse=True` to the `sort` or `sorted` function.
 
 ### Sorting by Two Criteria
 
-Now, suppose we wanted to sort a list of `Edge`s in ascending order, primarily by weight and secondarily by first vertex (`a`). We can do this quite similarly to how we handled sorting by one criterion earlier. What the comparator function needs to do is to compare the weights if the weights are not equal, and otherwise compare first vertices.
+Now, suppose we wanted to sort a list of `Edge`s in ascending order, primarily
+by weight and secondarily by first vertex (`a`). We can do this quite similarly
+to how we handled sorting by one criterion earlier. What the comparator function
+needs to do is to compare the weights if the weights are not equal, and
+otherwise compare first vertices.
 
 <LanguageSection>
 
@@ -577,7 +643,8 @@ static class Edge implements Comparable<Edge> {
 
 <PySection>
 
-In Python, tuples have a natural order based on their elements in order. We can take advantage of this to write a comparator:
+In Python, tuples have a natural order based on their elements in order. We can
+take advantage of this to write a comparator:
 
 ```py
 class Edge:
@@ -610,7 +677,8 @@ Sorting by an arbitrary number of criteria is done similarly.
 
 <JavaSection>
 
-With Java, we can implement a comparator for arrays of arbitrary length (although this might be more confusing than creating a separate class).
+With Java, we can implement a comparator for arrays of arbitrary length
+(although this might be more confusing than creating a separate class).
 
 ```java
 import java.util.*;
@@ -657,7 +725,8 @@ public class Sol {
 
 <Info title="Pro Tip">
 
-Many of the problems below may use other Silver concepts, such as [prefix sums](/silver/prefix-sums).
+Many of the problems below may use other Silver concepts, such as
+[prefix sums](/silver/prefix-sums).
 
 </Info>
 

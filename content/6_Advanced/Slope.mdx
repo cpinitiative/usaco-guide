@@ -6,7 +6,9 @@ prerequisites:
   - intro-dp
   - convex-hull
   - merging
-description: 'Slope trick refers to a way to manipulate piecewise linear convex functions. Includes a simple solution to USACO Landscaping.'
+description:
+  'Slope trick refers to a way to manipulate piecewise linear convex functions.
+  Includes a simple solution to USACO Landscaping.'
 frequency: 1
 ---
 
@@ -153,24 +155,32 @@ export const problems = {
 
 From the latter link (modified):
 
-> Slope trick is a way to represent a function that satisfies the following conditions:
+> Slope trick is a way to represent a function that satisfies the following
+> conditions:
 >
-> - It can be divided into multiple sections, where each section is a linear function (usually) with an integer slope.
-> - It is a convex/concave function. In other words, the slope of each section is non-decreasing or non-increasing when scanning the function from left to right.
+> - It can be divided into multiple sections, where each section is a linear
+>   function (usually) with an integer slope.
+> - It is a convex/concave function. In other words, the slope of each section
+>   is non-decreasing or non-increasing when scanning the function from left to
+>   right.
 
 It's generally applicable as a DP optimization.
 
 <Info title="Pro Tip">
 
-Usually you can come up with a slower (usually $\mathcal{O}(N^2)$) DP first and then optimize it to $\mathcal{O}(N\log N)$ with slope trick.
+Usually you can come up with a slower (usually $\mathcal{O}(N^2)$) DP first and
+then optimize it to $\mathcal{O}(N\log N)$ with slope trick.
 
 </Info>
 
-The rest of this module assumes that you know the basic idea of this trick. In particular, you should be able to solve the following problem (it's almost identical to the first problem in zscoder's tutorial):
+The rest of this module assumes that you know the basic idea of this trick. In
+particular, you should be able to solve the following problem (it's almost
+identical to the first problem in zscoder's tutorial):
 
 <Problems problems={problems.ex} />
 
-It's ok if you found the explanations confusing; the example below should help clarify.
+It's ok if you found the explanations confusing; the example below should help
+clarify.
 
 ## Buy Low Sell High
 
@@ -178,7 +188,9 @@ It's ok if you found the explanations confusing; the example below should help c
 
 ### Slow Solution
 
-Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you have exactly $j$ shares of stock on that day. The final answer will be $dp[N][0]$. This solution runs in $\mathcal{O}(N^2)$ time.
+Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you
+have exactly $j$ shares of stock on that day. The final answer will be
+$dp[N][0]$. This solution runs in $\mathcal{O}(N^2)$ time.
 
 <Spoiler title="Slow Code">
 
@@ -241,19 +253,33 @@ $$
 dif[i][j]=dp[i][j]-dp[i][j+1]\ge 0.
 $$
 
-Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$. In other words, $dp[i][j]$ as a function of $j$ is **concave down**.
+Then $dif[i][j]\le dif[i][j+1]$ for all $j\ge 0$. In other words, $dp[i][j]$ as
+a function of $j$ is **concave down**.
 
 ### Full Solution
 
 <Spoiler title="Explanation">
 
-We'll process the shares in order. Suppose that we are currently considering the $i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share) in the statement with (buy, then sell somewhere between 0 and 2 shares).
+We'll process the shares in order. Suppose that we are currently considering the
+$i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share)
+in the statement with (buy, then sell somewhere between 0 and 2 shares).
 
-- If we currently have $j$ shares and overall balance $b$, then after buying, $j$ increases by one and $b$ decreases by $p_i$. So we set $dp[i][j]=dp[i-1][j-1]-p_i$ for all $j$. Note that the differences between every two consecutive elements of $dp[i]$ have not changed.
+- If we currently have $j$ shares and overall balance $b$, then after buying,
+  $j$ increases by one and $b$ decreases by $p_i$. So we set
+  $dp[i][j]=dp[i-1][j-1]-p_i$ for all $j$. Note that the differences between
+  every two consecutive elements of $dp[i]$ have not changed.
 
-- If we choose to sell a share, this is equivalent to setting $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p_i)$ for all $j$ at the same time. By the concavity condition, $dp[i][j]=dp[i][j+1]+p_i$ will hold for all $j$ less than a certain threshold while $dp[i][j]$ will remain unchanged for all others. So this is equivalent to inserting $p_i$ into the list of differences while maintaining the condition that the differences are in sorted order.
+- If we choose to sell a share, this is equivalent to setting
+  $dp[i][j]=\max(dp[i][j],dp[i][j+1]+p_i)$ for all $j$ at the same time. By the
+  concavity condition, $dp[i][j]=dp[i][j+1]+p_i$ will hold for all $j$ less than
+  a certain threshold while $dp[i][j]$ will remain unchanged for all others. So
+  this is equivalent to inserting $p_i$ into the list of differences while
+  maintaining the condition that the differences are in sorted order.
 
-- So choosing to sell between 0 and 2 shares is represented by adding $p_i$ to the list of differences two times. After that, we should pop the smallest difference in the list because we can't end up with a negative amount of shares.
+- So choosing to sell between 0 and 2 shares is represented by adding $p_i$ to
+  the list of differences two times. After that, we should pop the smallest
+  difference in the list because we can't end up with a negative amount of
+  shares.
 
 **Example:** consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
 
@@ -266,44 +292,74 @@ dif[4] = {  5,   7,   7,  10}
 
 This can be visualized as follows:
 
-<iframe src="https://www.desmos.com/calculator/hdftax3jnc?embed" width="300px" height="300px" frameborder="0" />
+<iframe
+	src="https://www.desmos.com/calculator/hdftax3jnc?embed"
+	width="300px"
+	height="300px"
+	frameborder="0"
+/>
 
-After buying one share, $9$ is subtracted from each value and they are shifted one index to the right.
+After buying one share, $9$ is subtracted from each value and they are shifted
+one index to the right.
 
 ```
 dp[5]  = {  x,  -6, -11, -18, -25, -35}
 dif[5] = {  x,   5,   7,   7,  10}
 ```
 
-<iframe src="https://www.desmos.com/calculator/0l5dk4qcre?embed" width="300px" height="300px" frameborder="0" />
+<iframe
+	src="https://www.desmos.com/calculator/0l5dk4qcre?embed"
+	width="300px"
+	height="300px"
+	frameborder="0"
+/>
 
-Then we can choose to sell one share at price $9$. The last two DP values remain the same while the others change.
+Then we can choose to sell one share at price $9$. The last two DP values remain
+the same while the others change.
 
 ```
 dp[5]  = {  3,  -2,  -9, -16, -25, -35}
 dif[5] = {  5,   7,   7,   9,  10}
 ```
 
-Below, the black line represents the new DP values (where we can choose to sell one share), and the red line represents the old DP values (where we don't sell any shares).
+Below, the black line represents the new DP values (where we can choose to sell
+one share), and the red line represents the old DP values (where we don't sell
+any shares).
 
-<iframe src="https://www.desmos.com/calculator/t6tehl3cmk?embed" width="300px" height="300px" frameborder="0" />
+<iframe
+	src="https://www.desmos.com/calculator/t6tehl3cmk?embed"
+	width="300px"
+	height="300px"
+	frameborder="0"
+/>
 
-Again, we can choose to sell one share at price $9$. The last three DP values remain the same while the others change. $dif$ is still in increasing order!
+Again, we can choose to sell one share at price $9$. The last three DP values
+remain the same while the others change. $dif$ is still in increasing order!
 
 ```
 dp[5]  = {  7,   0,  -7, -16, -25, -35}
 dif[5] = {  7,   7,   9,   9,  10}
 ```
 
-Below, the purple line represents the DP values where we can choose to sell two shares. The black line represents the option of selling one share, and the red line represents not being able to sell any shares at all.
+Below, the purple line represents the DP values where we can choose to sell two
+shares. The black line represents the option of selling one share, and the red
+line represents not being able to sell any shares at all.
 
-<iframe src="https://www.desmos.com/calculator/loczo9m3xq?embed" width="300px" height="300px" frameborder="0" />
+<iframe
+	src="https://www.desmos.com/calculator/loczo9m3xq?embed"
+	width="300px"
+	height="300px"
+	frameborder="0"
+/>
 
 </Spoiler>
 
 <Spoiler title="My Code">
 
-The implementation is quite simple; maintain a priority queue representing $dif[i]$ that allows you to pop the minimum element. After adding $i$ elements, $ans$ stores the current value of $dp[i][i]$. At the end, you add all the differences in $dif[N]$ to go from $dp[N][N]$ to $dp[N][0]$.
+The implementation is quite simple; maintain a priority queue representing
+$dif[i]$ that allows you to pop the minimum element. After adding $i$ elements,
+$ans$ stores the current value of $dp[i][i]$. At the end, you add all the
+differences in $dif[N]$ to go from $dp[N][N]$ to $dp[N][0]$.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -329,7 +385,8 @@ int main() {
 
 ### Extension
 
-_Stock Trading (USACO Camp)_: What if your amount of shares can go negative, but you can never have more than $L$ shares or less than $-L$?
+_Stock Trading (USACO Camp)_: What if your amount of shares can go negative, but
+you can never have more than $L$ shares or less than $-L$?
 
 ## Potatoes & Fertilizers
 
@@ -337,37 +394,63 @@ _Stock Trading (USACO Camp)_: What if your amount of shares can go negative, but
 
 ### Simplifying the Problem
 
-Instead of saying that moving fertilizer from segment $i$ to segment $j$ costs $|i-j|$, we'll say that it costs $1$ to move fertilizer from a segment to an adjacent segment.
+Instead of saying that moving fertilizer from segment $i$ to segment $j$ costs
+$|i-j|$, we'll say that it costs $1$ to move fertilizer from a segment to an
+adjacent segment.
 
-Let the values of $a_1,a_2,\ldots,a_N$ after all the transfers be $a_1',a_2',\ldots,a_N'$. If we know this final sequence, how much did the transfers cost (in the best case scenario)? It turns out that this is just
+Let the values of $a_1,a_2,\ldots,a_N$ after all the transfers be
+$a_1',a_2',\ldots,a_N'$. If we know this final sequence, how much did the
+transfers cost (in the best case scenario)? It turns out that this is just
 
 $$
 C=\sum_{i=1}^{N-1}\left|\sum_{j=1}^i(a_j-a_j')\right|.
 $$
 
-We can show that this is a lower bound and that it's attainable. The term $D=\sum_{j=1}^i(a_j-a_j')$ denotes the number of units of fertilizer that move from segment $i$ to segment $i+1$. Namely, if $D$ is positive then $D$ units of fertilizer moved from segment $i$ to segment $i+1$; otherwise, $-D$ units of fertilizer moved in the opposite direction. Note that it is never optimal to have fertilizer moving in both directions.
+We can show that this is a lower bound and that it's attainable. The term
+$D=\sum_{j=1}^i(a_j-a_j')$ denotes the number of units of fertilizer that move
+from segment $i$ to segment $i+1$. Namely, if $D$ is positive then $D$ units of
+fertilizer moved from segment $i$ to segment $i+1$; otherwise, $-D$ units of
+fertilizer moved in the opposite direction. Note that it is never optimal to
+have fertilizer moving in both directions.
 
-Let $dif_i=a_i-b_i$ and define $d_j=\sum_{i=1}^jdif_i$ for each $0\le j\le N$. Similarly, define $dif_i'=a_i'-b_i$ and $d_j'=\sum_{i=1}^jdif_i'$. Since we want $dif_i'\ge 0$ for all $i$, we should have $d_0=d_0'\le d_1'\le \cdots\le d_N'=d_N.$ Conversely, every sequence $(d_0',d_1',\ldots,d_N')$ that satisfies this property corresponds to a valid way to assign values of $(a_1',a_2',\ldots,a_N')$.
+Let $dif_i=a_i-b_i$ and define $d_j=\sum_{i=1}^jdif_i$ for each $0\le j\le N$.
+Similarly, define $dif_i'=a_i'-b_i$ and $d_j'=\sum_{i=1}^jdif_i'$. Since we want
+$dif_i'\ge 0$ for all $i$, we should have
+$d_0=d_0'\le d_1'\le \cdots\le d_N'=d_N.$ Conversely, every sequence
+$(d_0',d_1',\ldots,d_N')$ that satisfies this property corresponds to a valid
+way to assign values of $(a_1',a_2',\ldots,a_N')$.
 
-Now you can verify that $C=\sum_{i=1}^{N-1}|d_i-d_i'|$. This makes sense since moving one unit of fertilizer one position is equivalent to changing one of the $d_i$ by one (although $d_0,d_N$ always remain the same).
+Now you can verify that $C=\sum_{i=1}^{N-1}|d_i-d_i'|$. This makes sense since
+moving one unit of fertilizer one position is equivalent to changing one of the
+$d_i$ by one (although $d_0,d_N$ always remain the same).
 
 ### Slow Solution
 
-For each $0\le i\le N$ and $0\le j\le d_N$, let $dp[i][j]$ be the minimum cost to determine $d_0',d_1',\ldots,d_i'$ such that $d_i'\le j$. Note that by definition, $dp[i][j]\ge dp[i][j+1]$. We can easily calculate these values in $\mathcal{O}(N\cdot d_N)$ time.
+For each $0\le i\le N$ and $0\le j\le d_N$, let $dp[i][j]$ be the minimum cost
+to determine $d_0',d_1',\ldots,d_i'$ such that $d_i'\le j$. Note that by
+definition, $dp[i][j]\ge dp[i][j+1]$. We can easily calculate these values in
+$\mathcal{O}(N\cdot d_N)$ time.
 
 ### Full Solution
 
 <Spoiler title="Explanation">
 
-Similar to before, this DP is concave up for a fixed $i$! Given a piecewise linear function $f_i(x)$ that takes as input $x$ and outputs $dp[i][x]$, we need to support the following two operations to transform this function into $f_{i+1}$.
+Similar to before, this DP is concave up for a fixed $i$! Given a piecewise
+linear function $f_i(x)$ that takes as input $x$ and outputs $dp[i][x]$, we need
+to support the following two operations to transform this function into
+$f_{i+1}$.
 
 - Add $|x-k|$ to the function for some $k$
 - Set $f(x)=\min(f(x),f(x-1))$ for all $x$
 
-Again, these can be done with a priority queue. Instead of storing the consecutive differences, we store the points where the slope of the piecewise linear function changes by one.
+Again, these can be done with a priority queue. Instead of storing the
+consecutive differences, we store the points where the slope of the piecewise
+linear function changes by one.
 
-- The first operation corresponds to inserting $k$ into the priority queue two times because the slope increases by two at $x=k$.
-- The latter operation just corresponds to removing the greatest element of the priority queue.
+- The first operation corresponds to inserting $k$ into the priority queue two
+  times because the slope increases by two at $x=k$.
+- The latter operation just corresponds to removing the greatest element of the
+  priority queue.
 
 This solution runs in $\mathcal{O}(N\log N)$ time.
 
@@ -413,30 +496,43 @@ int main() {
 
 <FocusProblem problem={problems.landscaping[0]} />
 
-This looks similar to the previous task (we're moving dirt instead of fertilizer), so it's not too hard to guess that slope trick is applicable.
+This looks similar to the previous task (we're moving dirt instead of
+fertilizer), so it's not too hard to guess that slope trick is applicable.
 
 ### Slow Solution
 
-Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$ flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units of dirt if $j$ is negative). The answer will be $dp[N][0]$.
+Let $dp[i][j]$ equal the number of ways to move dirt around the first $i$
+flowerbeds such that the first $i-1$ flowerbeds all have the correct amount of
+dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units
+of dirt if $j$ is negative). The answer will be $dp[N][0]$.
 
 ### Full Solution
 
 <Spoiler title="Explanation">
 
-This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must be able to support the following operations.
+This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must
+be able to support the following operations.
 
 - Shift the DP curve $A_i$ units to the right.
 - Shift the DP curve $B_i$ units to the left.
 - Add $Z\cdot |j|$ to $DP[j]$ for all $j$.
-- Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for all $j$.
+- Set $DP[j] = \min(DP[j],DP[j-1]+X)$ and $DP[j] = \min(DP[j],DP[j+1]+Y)$ for
+  all $j$.
 
-As before, it helps to look at the differences $dif[j]=DP[j+1]-DP[j]$ instead. We'll maintain separate deques for $dif$ depending on whether $j < 0$ or $j\ge 0$. We'll call these the left and right deques, respectively.
+As before, it helps to look at the differences $dif[j]=DP[j+1]-DP[j]$ instead.
+We'll maintain separate deques for $dif$ depending on whether $j < 0$ or
+$j\ge 0$. We'll call these the left and right deques, respectively.
 
-- The first two operations correspond to repeatedly popping the last element off of the left deque and adding it to the front of the right deque (or vice versa, depending on the direction of the shift).
-- The third operation corresponds to subtracting $Z$ from all elements of the left deque and adding $Z$ to all elements of the right deque.
-- The last operation corresponds to setting $dif[j]=\max(dif[j],-Y)$ for all $j < 0$ and $dif[j] = \min(dif[j],X)$ for all $j\ge 0$.
+- The first two operations correspond to repeatedly popping the last element off
+  of the left deque and adding it to the front of the right deque (or vice
+  versa, depending on the direction of the shift).
+- The third operation corresponds to subtracting $Z$ from all elements of the
+  left deque and adding $Z$ to all elements of the right deque.
+- The last operation corresponds to setting $dif[j]=\max(dif[j],-Y)$ for all
+  $j < 0$ and $dif[j] = \min(dif[j],X)$ for all $j\ge 0$.
 
-We can implement the last operation by updating all of the differences in the deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
+We can implement the last operation by updating all of the differences in the
+deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
 
 </Spoiler>
 
@@ -484,7 +580,10 @@ int main() {
 
 ### Extension
 
-We can solve this problem when $\sum A_i+\sum B_i$ is not so small by maintaining a map from $j$ to $dif[j+1]-dif[j]$ for all $j$ such that the latter quantity is nonzero. Then the operation "add $Z\cdot |j|$ to $DP[j]$ for all $j$" corresponds to a point update in the map (`advance()` in the code below).
+We can solve this problem when $\sum A_i+\sum B_i$ is not so small by
+maintaining a map from $j$ to $dif[j+1]-dif[j]$ for all $j$ such that the latter
+quantity is nonzero. Then the operation "add $Z\cdot |j|$ to $DP[j]$ for all
+$j$" corresponds to a point update in the map (`advance()` in the code below).
 
 <Spoiler title="Code (from Alex Wei)">
 
@@ -559,6 +658,7 @@ int main(){
 
 ## Problems
 
-Although we haven't provided any examples of this, some of the problems below will require you to merge two slope containers (usually priority queues).
+Although we haven't provided any examples of this, some of the problems below
+will require you to merge two slope containers (usually priority queues).
 
 <Problems problems={problems.general} />

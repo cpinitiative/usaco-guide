@@ -7,28 +7,34 @@ author: Qi Wang
 
 # Problem
 
-We are asked to find the number of subarrays that are divisible by its size given the array.
+We are asked to find the number of subarrays that are divisible by its size
+given the array.
 
 <Spoiler title="Solution">
 
-With our prefix sums knowledge, 
+With our prefix sums knowledge,
+
 $$
 \texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1).
 $$
 
-We can also transform any 
+We can also transform any
+
 $$
 \texttt{sum}(i, j) = \texttt{quotient} \cdot N + \texttt{remainder}.
 $$
 
-From this we get that 
+From this we get that
+
 $$
 \texttt{sum}(i, j) = (\texttt{quotient2} - \texttt{quotient1}) \cdot N + (\texttt{remainder2} - \texttt{remainder1}).
 $$
 
-For this to be divisible by $N$, $\texttt{remainder2} - \texttt{remainder1}$ must be equal to $0$. 
+For this to be divisible by $N$, $\texttt{remainder2} - \texttt{remainder1}$
+must be equal to $0$.
 
-Define $\texttt{pmod}[i]$ to be the number of prefixes with remainder equivalent to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
+Define $\texttt{pmod}[i]$ to be the number of prefixes with remainder equivalent
+to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
 
 $$
 \texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2.

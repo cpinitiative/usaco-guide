@@ -12,8 +12,11 @@ module.exports = {
         'dark-high-emphasis': 'rgba(255,255,255,0.87)',
         'dark-med-emphasis': 'rgba(255, 255, 255, 0.60)',
         'dark-disabled-emphasis': 'rgba(255, 255, 255, 0.38)',
+        cyan: colors.cyan,
         teal: colors.teal,
         orange: colors.orange,
+        'light-blue': colors.lightBlue,
+        cyan: colors.cyan,
       },
       boxShadow: {
         xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',
@@ -28,11 +31,74 @@ module.exports = {
         'outline-purple': `0 0 0 3px rgba(221, 214, 254, .5)`,
         'outline-indigo': `0 0 0 3px rgba(199, 210, 254, .5)`,
       },
+      typography: theme => ({
+        light: {
+          css: [
+            {
+              color: theme('colors.gray.400'),
+              '[class~="lead"]': {
+                color: theme('colors.gray.300'),
+              },
+              a: {
+                color: theme('colors.white'),
+              },
+              strong: {
+                color: theme('colors.white'),
+              },
+              'ol > li::before': {
+                color: theme('colors.gray.400'),
+              },
+              'ul > li::before': {
+                backgroundColor: theme('colors.gray.600'),
+              },
+              hr: {
+                borderColor: theme('colors.gray.200'),
+              },
+              blockquote: {
+                color: theme('colors.gray.200'),
+                borderLeftColor: theme('colors.gray.600'),
+              },
+              h1: {
+                color: theme('colors.white'),
+              },
+              h2: {
+                color: theme('colors.white'),
+              },
+              h3: {
+                color: theme('colors.white'),
+              },
+              h4: {
+                color: theme('colors.white'),
+              },
+              'figure figcaption': {
+                color: theme('colors.gray.400'),
+              },
+              code: {
+                color: theme('colors.white'),
+              },
+              'a code': {
+                color: theme('colors.white'),
+              },
+              pre: {
+                color: theme('colors.gray.200'),
+                backgroundColor: theme('colors.gray.800'),
+              },
+              thead: {
+                color: theme('colors.white'),
+                borderBottomColor: theme('colors.gray.400'),
+              },
+              'tbody tr': {
+                borderBottomColor: theme('colors.gray.600'),
+              },
+            },
+          ],
+        },
+      }),
     },
   },
   variants: {
     extend: {
-      backgroundColor: ['group-focus', 'active', 'disabled'],
+      backgroundColor: ['group-focus', 'active', 'disabled', 'checked'],
       borderColor: ['group-focus'],
       boxShadow: ['group-focus'],
       opacity: ['group-focus'],
@@ -40,6 +106,7 @@ module.exports = {
       textDecoration: ['group-focus'],
       display: ['dark'],
       backgroundOpacity: ['dark'],
+      typography: ['dark'],
     },
   },
   darkMode: 'class',

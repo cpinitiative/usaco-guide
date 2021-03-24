@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import LiveUpdate from '../liveupdate';
+import { DarkModeProvider } from '../../context/DarkModeContext';
 
 jest.mock('../../components/layout', () => {
   return jest.fn(({ children }) => children);
@@ -19,7 +20,11 @@ describe('Live Update', () => {
    * remember to uncomment the page before deploying.
    */
   it('does not render the placeholder content', () => {
-    const { queryByTestId } = render(<LiveUpdate />);
+    const { queryByTestId } = render(
+      <DarkModeProvider>
+        <LiveUpdate />
+      </DarkModeProvider>
+    );
     expect(queryByTestId('build-placeholder')).toBeNull();
   });
 });

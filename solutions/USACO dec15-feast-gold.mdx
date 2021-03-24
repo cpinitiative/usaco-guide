@@ -59,7 +59,7 @@ const int maxn = 5e6 + 5;
 bool pass[maxn][2];
 
 struct node {
-	int val; 
+	int val;
 	bool drunk;
 };
 
@@ -67,23 +67,23 @@ int bfs(int t, int a, int b) {
 	int res = INT_MIN;
 	queue<node> q;
 	q.push({0, 0});
-	
+
 	while (!q.empty()) {
 		int value = q.front().val;
 		bool drunk = q.front().drunk;
 		q.pop();
 		res = max(res, value);
-		
+
 		if(value + a <= t && !pass[value + a][drunk]) {
 			q.push({value + a, drunk});
 			pass[value + a][drunk] = true;
 		}
-		
+
 		if(value + b <= t && !pass[value + b][drunk]) {
 			q.push({value + b, drunk});
 			pass[value + b][drunk] = true;
 		}
-		
+
 		if(!drunk && !pass[value / 2][1]) {
 			q.push({value / 2, 1});
 			pass[value / 2][1] = true;
@@ -95,12 +95,13 @@ int bfs(int t, int a, int b) {
 int main() {
 	freopen("feast.in", "r", stdin);
 	freopen("feast.out", "w", stdout);
-	
+
 	int t, a, b;
 	cin >> t >> a >> b;
 	cout << bfs(t, a, b);
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>

@@ -11,7 +11,6 @@ import { SolutionInfo } from '../../models/solution';
 
 import ConfettiContext from '../../context/ConfettiContext';
 import ForumCTA from '../ForumCTA';
-import { SettingsModalProvider } from '../../context/SettingsModalContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
 import MobileSideNav from './MobileSideNav';
 import DesktopSidebar from './DesktopSidebar';
@@ -175,41 +174,39 @@ export default function MarkdownLayout({
         handleCompletionChange,
       }}
     >
-      <SettingsModalProvider>
-        <ContactUsSlideoverProvider>
-          <ProblemSuggestionModalProvider>
-            <MobileSideNav />
-            <DesktopSidebar />
+      <ContactUsSlideoverProvider>
+        <ProblemSuggestionModalProvider>
+          <MobileSideNav />
+          <DesktopSidebar />
 
-            <div className="w-full">
-              <MobileAppBar />
+          <div className="w-full">
+            <MobileAppBar />
 
-              <ContentContainer tableOfContents={tableOfContents}>
-                <NotSignedInWarning />
+            <ContentContainer tableOfContents={tableOfContents}>
+              <NotSignedInWarning />
 
-                <ModuleHeaders
-                  problemIDs={problemIDs}
-                  moduleLinks={moduleLinks}
-                />
+              <ModuleHeaders
+                problemIDs={problemIDs}
+                moduleLinks={moduleLinks}
+              />
 
-                <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
-                  <TableOfContentsBlock tableOfContents={tableOfContents} />
-                </div>
+              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
+                <TableOfContentsBlock tableOfContents={tableOfContents} />
+              </div>
 
-                {children}
+              {children}
 
-                <ModuleProgressUpdateBanner />
+              <ModuleProgressUpdateBanner />
 
-                <ForumCTA />
+              <ForumCTA />
 
-                {/*<div className="my-8">*/}
-                {/*  <ModuleFeedback markdownData={markdownData} />*/}
-                {/*</div>*/}
-              </ContentContainer>
-            </div>
-          </ProblemSuggestionModalProvider>
-        </ContactUsSlideoverProvider>
-      </SettingsModalProvider>
+              {/*<div className="my-8">*/}
+              {/*  <ModuleFeedback markdownData={markdownData} />*/}
+              {/*</div>*/}
+            </ContentContainer>
+          </div>
+        </ProblemSuggestionModalProvider>
+      </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
   );
 }

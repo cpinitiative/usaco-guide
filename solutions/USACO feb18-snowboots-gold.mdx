@@ -7,7 +7,8 @@ author: Benjamin Qi
 
 [Official Analysis](http://www.usaco.org/current/data/sol_snowboots_gold_feb18.html)
 
-We can use an ordered set in place of the linked list mentioned in the official solution. The time complexity remains the same.
+We can use an ordered set in place of the linked list mentioned in the official
+solution. The time complexity remains the same.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -21,13 +22,13 @@ int main() {
 	vector<int> f(N); for (int& t: f) cin >> t;
 
 	vector<int> tiles_by_depth;
-	for (int i = 1; i < N-1; ++i) 
+	for (int i = 1; i < N-1; ++i)
 		tiles_by_depth.push_back(i);
 	sort(begin(tiles_by_depth),end(tiles_by_depth),
 		[&](int x, int y) { return f[x] > f[y]; });
 
 	set<int> indices;
-	for (int i = 0; i < N; ++i) 
+	for (int i = 0; i < N; ++i)
 		indices.insert(i);
 
 	vector<array<int,3>> query;
@@ -51,7 +52,7 @@ int main() {
 		ans[a[2]] = a[1] >= needed_step;
 	}
 
-	for (bool b: ans) 
+	for (bool b: ans)
 		cout << b << "\n";
 }
 ```

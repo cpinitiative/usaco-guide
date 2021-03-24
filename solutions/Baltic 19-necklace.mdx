@@ -11,7 +11,8 @@ author: Andi Qu
 
 <IncompleteSection>
 
-The editorial describes this approach so awfully :(. "Analyze the recurrences carefully"
+The editorial describes this approach so awfully :(. "Analyze the recurrences
+carefully"
 
 </IncompleteSection>
 
@@ -119,19 +120,27 @@ int main() {
 
 **Time complexity:** $\mathcal O(N^2)$. **Memory complexity:** $\mathcal O(N)$.
 
-Let the two strings be $S$ and $T$, and their lengths be $N$ and $M$ respectively.
+Let the two strings be $S$ and $T$, and their lengths be $N$ and $M$
+respectively.
 
-For simplicity, assume that we can't flip the necklace over. (To handle the case where we can, just reverse $T$, run our algorithm again, and take the best result.)
+For simplicity, assume that we can't flip the necklace over. (To handle the case
+where we can, just reverse $T$, run our algorithm again, and take the best
+result.)
 
-We essentially want to find two strings $A$ and $B$, and two indices $i$ and $j$ such that:
+We essentially want to find two strings $A$ and $B$, and two indices $i$ and $j$
+such that:
 
 - $A$ is a **suffix** of $S[0 : i]$ and a **prefix** of $T[j + 1 : M - 1]$.
 - $B$ is a **prefix** of $S[i + 1 : N - 1]$ and a **suffix** of $T[0 : j]$.
 - $|A| + |B|$ is maximal.
 
-We can thus test each $i$ to find the best $j$ for that $i$, and then take the best overall result.
+We can thus test each $i$ to find the best $j$ for that $i$, and then take the
+best overall result.
 
-To find the best $j$, we first reverse $T$ and split $S$ at index $i$. This turns the subproblem into finding the longest common prefix/suffix between two pairs of strings. This is a classical application of KMP, so we can solve this subproblem in $\mathcal O(N)$ time and $\mathcal O(N)$ memory.
+To find the best $j$, we first reverse $T$ and split $S$ at index $i$. This
+turns the subproblem into finding the longest common prefix/suffix between two
+pairs of strings. This is a classical application of KMP, so we can solve this
+subproblem in $\mathcal O(N)$ time and $\mathcal O(N)$ memory.
 
 ### Code
 

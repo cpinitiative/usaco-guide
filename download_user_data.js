@@ -8,6 +8,19 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+admin
+  .auth()
+  .setCustomUserClaims('[insert user id]', {
+    isAdmin: true,
+    canModerate: true,
+    canCreateGroups: true,
+  })
+  .then(() => {
+    // The new custom claims will propagate to the user's ID token the
+    // next time a new one is issued.
+    console.log('DONE');
+  });
+
 // let userData = {};
 // const listAllUsers = nextPageToken => {
 //   admin
@@ -126,27 +139,27 @@ const db = admin.firestore();
 //     console.log(loggedin, not);
 //   });
 
-db.collection('userProblemSolutions')
-  .get()
-  .then(snapshot => {
-    return Promise.all(
-      snapshot.docs.map(doc => {
-        if (!doc.data().timestamp) {
-          return db
-            .collection('userProblemSolutions')
-            .doc(doc.id)
-            .update({
-              timestamp: admin.firestore.Timestamp.fromDate(
-                new Date(2021, 2, 8)
-              ),
-            });
-        }
-      })
-    );
-  })
-  .then(() => {
-    console.log('done');
-  });
+// db.collection('userProblemSolutions')
+//   .get()
+//   .then(snapshot => {
+//     return Promise.all(
+//       snapshot.docs.map(doc => {
+//         if (!doc.data().timestamp) {
+//           return db
+//             .collection('userProblemSolutions')
+//             .doc(doc.id)
+//             .update({
+//               timestamp: admin.firestore.Timestamp.fromDate(
+//                 new Date(2021, 2, 8)
+//               ),
+//             });
+//         }
+//       })
+//     );
+//   })
+//   .then(() => {
+//     console.log('done');
+//   });
 
 // db.collection('users')
 //   .get()

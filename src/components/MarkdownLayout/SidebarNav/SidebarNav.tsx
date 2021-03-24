@@ -5,12 +5,15 @@ import Accordion from './Accordion';
 import MODULE_ORDERING, {
   Chapter,
   SECTION_LABELS,
+  SectionID,
   SECTIONS,
 } from '../../../../content/ordering';
 import { useContext, useState } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { SolutionInfo } from '../../../models/solution';
 import SectionsDropdown from '../../SectionsDropdown';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import SidebarAd from './SidebarAd';
 
 export interface NavLinkGroup {
   label: string;
@@ -60,16 +63,6 @@ export const SidebarNav = () => {
             onSelect={s => setActiveSection(s)}
           />
         </div>
-        {/*<select*/}
-        {/*  className="mt-1 form-select block w-full pl-4 pr-10 py-2 text-base leading-6 border-gray-300 rounded-none border-0 border-t border-b focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"*/}
-        {/*  onChange={e => setActiveSection(e.target.value)}*/}
-        {/*>*/}
-        {/*  {SECTIONS.map(s => (*/}
-        {/*    <option selected={activeSection === s} value={s}>*/}
-        {/*      {SECTION_LABELS[s]}*/}
-        {/*    </option>*/}
-        {/*  ))}*/}
-        {/*</select>*/}
       </div>
       <div className="flex-1 h-0 overflow-y-auto">
         {links.map(group => (

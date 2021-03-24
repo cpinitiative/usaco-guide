@@ -7,25 +7,27 @@ author: Benjamin Qi
 
 ## Method 1 - ?
 
-When deleting an edge, remember how many systems that edge was used to synchronize. Also, each moment there is a connected component, all computers in the component have the same value.
+When deleting an edge, remember how many systems that edge was used to
+synchronize. Also, each moment there is a connected component, all computers in
+the component have the same value.
 
 [Andi Qu](https://bits-and-bytes.me/2020/01/05/JOI-2013-Synchronisation/)
 
- ^ This is $\mathcal{O}(N\log^2N)$ I think
+^ This is $\mathcal{O}(N\log^2N)$ I think
 
 If we use HLD or LCT then it's $\mathcal{O}(N\log N)$.
 
 ## Method 2 - Centroid Decomposition
 
-Looks like $\mathcal{O}(N \log^3 N)$ is very fast! 
+Looks like $\mathcal{O}(N \log^3 N)$ is very fast!
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -35,17 +37,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -58,18 +60,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -84,14 +86,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -105,18 +107,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -148,14 +150,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -184,7 +186,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -192,10 +194,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -219,7 +221,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -229,21 +231,21 @@ vpi adj[MX];
 int N,M,Q,ans[MX];
 vi change[MX];
 vpi bad[MX];
- 
+
 bool done[MX]; // processed as centroid yet
 int sub[MX],cen[MX]; // subtree size, centroid anc
 map<int,list<int>> to[MX], from[MX];
-void dfs(int x, int p) { sub[x] = 1; 
-	trav(y,adj[x]) if (!done[y.f] && y.f != p) 
-		dfs(y.f,x), sub[x] += sub[y.f]; 
+void dfs(int x, int p) { sub[x] = 1;
+	trav(y,adj[x]) if (!done[y.f] && y.f != p)
+		dfs(y.f,x), sub[x] += sub[y.f];
 }
 int centroid(int x) {
-	dfs(x,-1); 
+	dfs(x,-1);
 	for (int sz = sub[x];;) {
 		pi mx = {0,0};
-		trav(y,adj[x]) if (!done[y.f] && sub[y.f] < sub[x]) 
+		trav(y,adj[x]) if (!done[y.f] && sub[y.f] < sub[x])
 			ckmax(mx,{sub[y.f],y.f});
-		if (mx.f*2 <= sz) return x; 
+		if (mx.f*2 <= sz) return x;
 		x = mx.s;
 	}
 }
@@ -255,7 +257,7 @@ void merge(map<int,list<int>>& a, map<int,list<int>>& b) {
 	trav(t,b) ad(a[t.f],t.s);
 	b.clear();
 }
- 
+
 void getAll(list<int>& x, map<int,list<int>>& a, pi p) {
 	while (1) {
 		auto it = a.ub(p.f);
@@ -263,7 +265,7 @@ void getAll(list<int>& x, map<int,list<int>>& a, pi p) {
 		ad(x,it->s); a.erase(it);
 	}
 }
- 
+
 void oops(int a, int b) {
 	trav(t,adj[a]) if (!done[t.f] && t.f != b) {
 		oops(t.f,a);
@@ -281,14 +283,14 @@ void oops(int a, int b) {
 	}
 	to[a][M+1].pb(a); from[a][0].pb(a);
 }
- 
+
 int comp[MX];
- 
+
 void makeLabel(int a, int b, int cnt) {
 	comp[a] = cnt;
 	trav(t,adj[a]) if (!done[t.f] && t.f != b) makeLabel(t.f,a,cnt);
 }
- 
+
 int genLabel(int x) {
 	comp[x] = 0; int cnt = 1;
 	trav(y,adj[x]) if (!done[y.f]) {
@@ -296,10 +298,10 @@ int genLabel(int x) {
 	}
 	return cnt;
 }
- 
+
 void gen(int CEN, int _x) { // CEN = centroid above x
-	int x = centroid(_x); done[x] = 1; cen[x] = CEN; 
-	sub[x] = sub[_x]; 
+	int x = centroid(_x); done[x] = 1; cen[x] = CEN;
+	sub[x] = sub[_x];
 	int num = genLabel(x);
 	oops(x,-1);
 	vi cnt(num);
@@ -319,11 +321,11 @@ void gen(int CEN, int _x) { // CEN = centroid above x
 	to[x].clear(), from[x].clear();
 	trav(y,adj[x]) if (!done[y.f]) gen(x,y.f);
 }
- 
+
 void init(int _N) { N = _N; FOR(i,1,N+1) done[i] = 0;
 	gen(-1,1); } // start at vert 1
- 
- 
+
+
 int main() {
 	setIO(); re(N,M,Q);
 	F0R(i,N-1) {
@@ -337,7 +339,7 @@ int main() {
 	}
 	F0R(i,N-1) {
 		if (sz(change[i])&1) change[i].pb(M+5);
-		for (int j = 0; j < sz(change[i]); j += 2) 
+		for (int j = 0; j < sz(change[i]); j += 2)
 			bad[i].pb({change[i][j],change[i][j+1]});
 	}
 	init(N);

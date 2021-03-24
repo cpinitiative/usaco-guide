@@ -1,7 +1,7 @@
 ---
 id: intro-complete
 title: 'Basic Complete Search'
-author: Darren Yao
+author: Darren Yao, Dong Liu
 description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
@@ -61,7 +61,7 @@ export const problems = {
 			'Normal',
 			true,
 			['Complete Search'],
-			'usaco-736',
+			'usaco-736'
 		), // 99.73
 		new Problem(
 			'Bronze',
@@ -168,13 +168,17 @@ export const problems = {
 
 <br />
 
-In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
+In many problems (especially in Bronze) it suffices to check all possible cases
+in the solution space, whether it be all elements, all pairs of elements, or all
+subsets, or all permutations. Unsurprisingly, this is called **complete search**
+(or **brute force**), because it completely searches the entire solution space.
 
 <FocusProblem problem={problems.sample[0]} />
 
 <Spoiler title="Solution">
 
-We can iterate through every pair of points and find the square of the distance between them, by squaring the formula for Euclidean distance:
+We can iterate through every pair of points and find the square of the distance
+between them, by squaring the formula for Euclidean distance:
 
 $$
 \text{distance}[(x_1,y_1),(x_2,y_2)]^2 = (x_2-x_1)^2 + (y_2-y_1)^2.
@@ -211,8 +215,7 @@ int main() {
 
 </CPPSection>
 
-<!-- 
-<JavaSection>
+<!-- <JavaSection>
 
 ```java
 int max = 0; // storing the current maximum
@@ -228,21 +231,31 @@ for(int i = 0; i < n; i++){ // for each first point
 io.println(max);
 ```
 
-</JavaSection>
+</JavaSection> -->
 
 <PySection>
 
+<Warning>
+
+Make sure compile using PyPy 3. TLEs using Python3.
+
+</Warning>
+
 ```py
-high = 0
+n = int(input())
+x = list(map(int, input().split()))
+y = list(map(int, input().split()))
+
+max_square = 0
 for i in range(n):
 	for j in range(i + 1, n):
 		dx = x[i] - x[j]
 		dy = y[i] - y[j]
-		high = max(high, dx * dx + dy * dy)
-print(high)
+		max_square = max(max_square, dx * dx + dy * dy)
+print(max_square)
 ```
 
-</PySection> -->
+</PySection>
 
 </LanguageSection>
 
@@ -250,15 +263,27 @@ print(high)
 
 A couple notes:
 
-- Since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount.
-- Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in an integer variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. 
+- Since we're iterating through all pairs of points, we start the $j$ loop from
+  $j = i+1$ so that point $i$ and point $j$ are never the same point.
+  Furthermore, it makes it so that each pair is only counted once. In this
+  problem, it doesn't matter whether we double-count pairs or whether we allow
+  $i$ and $j$ to be the same point, but in other problems where we're counting
+  something rather than looking at the maximum, it's important to be careful
+  that we don't overcount.
+- Secondly, the problem asks for the square of the maximum Euclidean distance
+  between any two points. Some students may be tempted to maintain the maximum
+  distance in an integer variable, and then square it at the end when
+  outputting. However, the problem here is that while the square of the distance
+  between two integer points is always an integer, the distance itself isn't
+  guaranteed to be an integer. Thus, we'll end up shoving a non-integer value
+  into an integer variable, which truncates the decimal part.
 
 <LanguageSection>
 
 <CPPSection>
 
-The following solution correctly stores the maximum distance in a floating point variable.
-
+The following solution correctly stores the maximum distance in a floating point
+variable.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -283,7 +308,8 @@ int main() {
 }
 ```
 
-However, it still fails on the following test case (it outputs 12, but the answer is 13):
+However, it still fails on the following test case (it outputs 12, but the
+answer is 13):
 
 ```
 2
@@ -291,7 +317,8 @@ However, it still fails on the following test case (it outputs 12, but the answe
 2 0
 ```
 
-Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you should stick with integers whenever possible.
+Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you
+should stick with integers whenever possible.
 
 </CPPSection>
 

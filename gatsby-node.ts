@@ -197,6 +197,9 @@ exports.createResolvers = ({ createResolvers }) => {
           let cppCt = 0,
             javaCt = 0,
             pyCt = 0;
+          // https://github.com/cpinitiative/usaco-guide/issues/966
+          // We don't want to include headers inside spoilers
+          let spoilerCt = 0;
           const slugger = new Slugger();
           mdast.children.forEach(node => {
             if (node.type === 'jsx') {
@@ -204,9 +207,11 @@ exports.createResolvers = ({ createResolvers }) => {
               cppCt += str.split('<CPPSection>').length - 1;
               javaCt += str.split('<JavaSection>').length - 1;
               pyCt += str.split('<PySection>').length - 1;
+              spoilerCt += str.split('<Spoiler').length - 1;
               cppCt -= str.split('</CPPSection>').length - 1;
               javaCt -= str.split('</JavaSection>').length - 1;
               pyCt -= str.split('</PySection>').length - 1;
+              spoilerCt -= str.split('</Spoiler>').length - 1;
             }
             if (node.type === 'heading') {
               const val = {
@@ -214,21 +219,29 @@ exports.createResolvers = ({ createResolvers }) => {
                 value: mdastToStringWithKatex(node),
                 slug: slugger.slug(mdastToString(node)),
               };
-              if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
-                cpp.push(val);
-                java.push(val);
-                py.push(val);
-              } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
-                cpp.push(val);
-              } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
-                java.push(val);
-              } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
-                py.push(val);
-              } else {
-                throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
+              if (spoilerCt < 0) {
+                throw "Spoiler count went negative -- shouldn't happen...";
+              }
+              if (spoilerCt === 0) {
+                if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
+                  cpp.push(val);
+                  java.push(val);
+                  py.push(val);
+                } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
+                  cpp.push(val);
+                } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
+                  java.push(val);
+                } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
+                  py.push(val);
+                } else {
+                  throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
+                }
               }
             }
           });
+          if (spoilerCt !== 0) {
+            throw 'Spoiler count should end at zero...';
+          }
           return {
             cpp,
             java,
