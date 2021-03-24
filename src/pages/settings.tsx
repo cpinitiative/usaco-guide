@@ -10,6 +10,8 @@ import UserData from '../components/Settings/UserData';
 import Profile from '../components/Settings/Profile';
 import Authentication from '../components/Settings/Authentication';
 import { navigate } from 'gatsby';
+import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
+import AdminSettings from '../components/Settings/AdminSettings';
 
 /*
 1. General
@@ -34,7 +36,14 @@ import { navigate } from 'gatsby';
  */
 
 export default function SettingsPage() {
-  const tabs = ['general', 'profile', 'auth', 'user-data'];
+  const { isAdmin } = useUserPermissions();
+  const tabs = [
+    'general',
+    'profile',
+    'auth',
+    'user-data',
+    ...(isAdmin ? ['admin'] : []),
+  ];
   const [tab, setTab] = React.useReducer((prev, next) => {
     location.replace('#' + next);
     return next;
@@ -97,6 +106,7 @@ export default function SettingsPage() {
                     profile: 'Profile',
                     auth: 'Sign In Methods',
                     'user-data': 'User Data',
+                    admin: 'Admin Settings',
                   }}
                   value={tab}
                   onChange={x => setTab(x)}
@@ -125,6 +135,11 @@ export default function SettingsPage() {
                   {tab === 'user-data' && (
                     <>
                       <UserData />
+                    </>
+                  )}
+                  {tab === 'admin' && (
+                    <>
+                      <AdminSettings />
                     </>
                   )}
                 </div>

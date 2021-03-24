@@ -8,16 +8,23 @@ author: Dong Liu
 **Time Complexity**: $\mathcal O(N\log N)$
 
 # Solution
-In this problem, we're given an array $a$ and we're asked to answer 2 types of queries
+
+In this problem, we're given an array $a$ and we're asked to answer 2 types of
+queries
+
 1. update the value at position $i$ to $x$
 2. calculate the maximum prefix sum in the range $[a,b]$
 
-We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this problem.
-Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can maintain a segment tree consisting of the maximum $\texttt{ps}$ in the range of $[l,r]$. 
+We can use a segment tree with [lazy propagation](/plat/RURQ) to solve this
+problem. Let $\texttt{ps}[i]$ be the sum of $a_1, a_2, \dots a_i$. We can
+maintain a segment tree consisting of the maximum $\texttt{ps}$ in the range of
+$[l,r]$.
 
-To update the value at position $i$ to $x$, we add $x-a_i$ to each of the values in the range $[i,N]$.
+To update the value at position $i$ to $x$, we add $x-a_i$ to each of the values
+in the range $[i,N]$.
 
-To answer a query of type 2, our answer would be $\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
+To answer a query of type 2, our answer would be
+$\max_{i \in [a, b]}(\texttt{ps}[i]) - \texttt{ps}[{a-1}]$.
 
 # Code
 
@@ -50,13 +57,13 @@ template<class T> struct LSegTree {
 		push(i,l,r); if(R<l || L>r) return;
 		if(L<=l && R>=r) { lz[i]+=v; push(i,l,r); return; }
 		int m=(l+r)/2; upd(L,R,v,i*2,l,m);
-		upd(L,R,v,i*2+1,m+1,r); pull(i); 
+		upd(L,R,v,i*2+1,m+1,r); pull(i);
 	}
 	T qry(int L, int R) { return qry(L,R,1,0,N); }
 	T qry(int L, int R, int i, int l, int r) {
 		push(i,l,r); if(R<l || L>r) return U;
 		if(L<=l && R>=r) return t[i]; int m=(l+r)/2;
-		return F(qry(L,R,i*2,l,m), qry(L,R,i*2+1,m+1,r)); 
+		return F(qry(L,R,i*2,l,m), qry(L,R,i*2+1,m+1,r));
 	}
 };
 
@@ -69,7 +76,7 @@ int main() {
 	cin >> n >> q;
 	a = ps = vector<ll>(n+1);
 	for(int i=1; i<=n; i++) cin >> a[i];
-	
+
 	// construct ps
 	ps[0] = 0;
 	for(int i=1; i<=n; i++) ps[i] = ps[i-1] + a[i];

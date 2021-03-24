@@ -7,19 +7,24 @@ author: Andi Qu
 
 <Spoiler title="Hint 1">
 
-Given a possible side length of the stadium, can you check whether we can achieve this width in $\mathcal{O}(N \log N)$ time?
+Given a possible side length of the stadium, can you check whether we can
+achieve this width in $\mathcal{O}(N \log N)$ time?
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-If we can build a stadium somewhere, we can shift it so that its left side touches a tree or the left side of the park. This means we only have to check $\mathcal{O}(N)$ x-coordinates for the left side!
+If we can build a stadium somewhere, we can shift it so that its left side
+touches a tree or the left side of the park. This means we only have to check
+$\mathcal{O}(N)$ x-coordinates for the left side!
 
 </Spoiler>
 
 <Spoiler title="Hint 3">
 
-$\mathcal{O}(N \log N \log W)$ is unfortunately too slow, so binary-searching for the answer is out of the question. Can you use 2-pointers to bring the complexity down to $\mathcal{O}(N \log N)$?
+$\mathcal{O}(N \log N \log W)$ is unfortunately too slow, so binary-searching
+for the answer is out of the question. Can you use 2-pointers to bring the
+complexity down to $\mathcal{O}(N \log N)$?
 
 </Spoiler>
 
@@ -27,27 +32,39 @@ $\mathcal{O}(N \log N \log W)$ is unfortunately too slow, so binary-searching fo
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
-Let $r[x]$ be the x-coordinate of the right side of the largest stadium with a left x-coordinate of $x$. The key observation is that $r[x] \geq r[x - 1]$. This is true because any $l \times l$ square can contain a $(l - 1) \times (l - 1)$ square.
+Let $r[x]$ be the x-coordinate of the right side of the largest stadium with a
+left x-coordinate of $x$. The key observation is that $r[x] \geq r[x - 1]$. This
+is true because any $l \times l$ square can contain a $(l - 1) \times (l - 1)$
+square.
 
-Since $x$ and $r[x]$ never decrease, this suggests that we should use 2-pointers to find the largest $r[x] - x$!
+Since $x$ and $r[x]$ never decrease, this suggests that we should use 2-pointers
+to find the largest $r[x] - x$!
 
-Since $W$ can be so big though, we can only afford to check "interesting" x-coordinates (i.e. when there is a tree with that x-coordinate).
+Since $W$ can be so big though, we can only afford to check "interesting"
+x-coordinates (i.e. when there is a tree with that x-coordinate).
 
-Sort the trees by their x-coordinates and iterate through them. For the current tree $i$, let $p$ be the index of the leftmost tree that satisfies $x_{p} \geq r[x_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
+Sort the trees by their x-coordinates and iterate through them. For the current
+tree $i$, let $p$ be the index of the leftmost tree that satisfies
+$x_{p} \geq r[x_{i - 1}]$. Clearly, $p$ is also non-decreasing as $i$ increases.
 
-To update $p$, we increment $p$ until $p = N$ or 
+To update $p$, we increment $p$ until $p = N$ or
 
 $$
 x_p - x_i > \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree }c\text{ has } y_c \in (y_a, y_b)).
 $$
 
-As we increment $p$, we also check whether 
+As we increment $p$, we also check whether
+
 $$
 \min(x_p - x_i, \max(y_a - y_b : x_a, x_b \in [x_i, x_p] \text{ and no tree }c\text{ has } y_c \in (y_a, y_b)))
-$$ 
+$$
+
 is larger than our current maximum side length, and if so, we update our answer.
 
-We use a `std::set` and `std::multiset` to keep track of the trees and "gaps" between $x_i$ and $x_p$. See the solution for [CSES Bit Inversions](/silver/intro-ordered#harder-example---bit-inversions) for more details.
+We use a `std::set` and `std::multiset` to keep track of the trees and "gaps"
+between $x_i$ and $x_p$. See the solution for
+[CSES Bit Inversions](/silver/intro-ordered#harder-example---bit-inversions) for
+more details.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -115,7 +132,9 @@ int main() {
 
 <Info title="Bonus">
 
-[IOI 2008 Pyramid Base](https://oj.uz/problem/view/IOI08_pyramid_base) (one of the most difficult IOI problems) uses a similar idea. Try to solve that problem once you learn about [lazy segment trees](/plat/RURQ)!
+[IOI 2008 Pyramid Base](https://oj.uz/problem/view/IOI08_pyramid_base) (one of
+the most difficult IOI problems) uses a similar idea. Try to solve that problem
+once you learn about [lazy segment trees](/plat/RURQ)!
 
 </Info>
 

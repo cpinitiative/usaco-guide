@@ -48,7 +48,10 @@ produces the following output:
 9 0
 ```
 
-This is an example of [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). Using [vector::at](https://www.cplusplus.com/reference/vector/vector/at/) instead of [vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]/)
+This is an example of
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). Using
+[vector::at](https://www.cplusplus.com/reference/vector/vector/at/) instead of
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]/)
 
 ```cpp
 #include <bits/stdc++.h>
@@ -136,7 +139,8 @@ gives:
 9 10
 ```
 
-However, the code works correctly if you save the result of `addElement()` to an intermediate variable.
+However, the code works correctly if you save the result of `addElement()` to an
+intermediate variable.
 
 ```cpp
 int main() {
@@ -150,11 +154,20 @@ int main() {
 
 <!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
 
-The problem is that `res[i] = addElement();` only works if `addElement()` is evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_ `addElement()` results in the memory for `res` being reallocated, then `res[i]` is invalidated. The order in which `res[i]` and `addElement()` are evaluated is unspecified (at least before C++17).
+The problem is that `res[i] = addElement();` only works if `addElement()` is
+evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_
+`addElement()` results in the memory for `res` being reallocated, then `res[i]`
+is invalidated. The order in which `res[i]` and `addElement()` are evaluated is
+unspecified (at least before C++17).
 
-See [this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated) StackOverflow post for some discussion about why this is the case (also a similar issue [here](https://stackoverflow.com/questions/18040037/why-does-setting-an-element-of-a-map-to-its-size-increments-the-size-before-as)).
+See
+[this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated)
+StackOverflow post for some discussion about why this is the case (also a
+similar issue
+[here](https://stackoverflow.com/questions/18040037/why-does-setting-an-element-of-a-map-to-its-size-increments-the-size-before-as)).
 
-You may come across this issue when trying to create a [trie](https://codeforces.com/blog/entry/83241#comment-705458).
+You may come across this issue when trying to create a
+[trie](https://codeforces.com/blog/entry/83241#comment-705458).
 
 ## Initializing Array of Structs
 

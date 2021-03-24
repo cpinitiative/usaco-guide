@@ -7,9 +7,11 @@ author: Andi Qu
 
 ## Part 1 - shortest-path algorithms
 
-In this subproblem, we're asked to create test cases that break certain shortest-path algorithms through TLE.
+In this subproblem, we're asked to create test cases that break certain
+shortest-path algorithms through TLE.
 
-This is very educational because it forces you to analyze the bottlenecks of these algorithms and how exactly they work.
+This is very educational because it forces you to analyze the bottlenecks of
+these algorithms and how exactly they work.
 
 ### Subtasks 1 and 3 - breaking Floyd-Warshall
 
@@ -30,19 +32,26 @@ print(0, 1)
 
 ### Subtasks 2 and 5 - breaking Bellman-Ford
 
-The Bellman-Ford algorithm normally uses exactly $E(V - 1)$ iterations, but in this case, it's slightly optimized.
+The Bellman-Ford algorithm normally uses exactly $E(V - 1)$ iterations, but in
+this case, it's slightly optimized.
 
 However, we can still force the algorithm to use exactly $E(V - 1)$ iterations.
 
-Firstly, note that we must have $E \geq V$ or else the algorithm will break early.
+Firstly, note that we must have $E \geq V$ or else the algorithm will break
+early.
 
-If we look at the implementation of this specific Bellman-Ford algorithm, note that we "relax" edges connected to node 1, then node 2, etc.
+If we look at the implementation of this specific Bellman-Ford algorithm, note
+that we "relax" edges connected to node 1, then node 2, etc.
 
-This means that if we have a straight line from node $V - 1$ to node 0 (and no other edges), then only 1 edge will be relaxed per loop!
+This means that if we have a straight line from node $V - 1$ to node 0 (and no
+other edges), then only 1 edge will be relaxed per loop!
 
-We can also add some self-edges (with positive weights) from node 0 to itself to increase $E$ without triggering an early break, since it's never optimal to go from a node to itself via a self-edge.
+We can also add some self-edges (with positive weights) from node 0 to itself to
+increase $E$ without triggering an early break, since it's never optimal to go
+from a node to itself via a self-edge.
 
-$(V, E) = (100, 1100)$ for subtask 2 and $(V, E) = (300, 347)$ for subtask 5 let us force TLE.
+$(V, E) = (100, 1100)$ for subtask 2 and $(V, E) = (300, 347)$ for subtask 5 let
+us force TLE.
 
 #### Code
 
@@ -62,13 +71,16 @@ for i in range(10):
 
 ### Subtasks 4 and 6 - breaking Dijkstra
 
-At first glance, these subtasks seem impossible - Dijkstra's algorithm always has a complexity of $\mathcal{O}(E \log V)$!
+At first glance, these subtasks seem impossible - Dijkstra's algorithm always
+has a complexity of $\mathcal{O}(E \log V)$!
 
 ... or does it?
 
-Note that the $\mathcal{O}(E \log V)$ complexity is only true if there are no negative edges.
+Note that the $\mathcal{O}(E \log V)$ complexity is only true if there are no
+negative edges.
 
-What happens when we have negative edges in the graph? Consider the following construction:
+What happens when we have negative edges in the graph? Consider the following
+construction:
 
 ```
     o
@@ -79,11 +91,14 @@ o------>o--->...
     0
 ```
 
-If there were no negative edges, then we'd only iterate through the edges connected to the rightmost node once.
+If there were no negative edges, then we'd only iterate through the edges
+connected to the rightmost node once.
 
-However, notice how in the above construction, we will iterate through those edges twice.
+However, notice how in the above construction, we will iterate through those
+edges twice.
 
-This means that if we chain $N$ of those triangles together, then Dijkstra's algorithm will use $2^N$ iterations - far more than the expected $V \log E$!
+This means that if we chain $N$ of those triangles together, then Dijkstra's
+algorithm will use $2^N$ iterations - far more than the expected $V \log E$!
 
 Using 16 triangles, we are able to force TLE.
 
@@ -183,12 +198,9 @@ int main() {
 }
 ```
 
-
 </CPPSection>
 
 <JavaSection>
-
-
 
 </JavaSection>
 

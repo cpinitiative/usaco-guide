@@ -7,32 +7,56 @@ author: Albert Ye
 
 **Time Complexity:** $\mathcal{O}((n+q) \log n)$
 
-**Main Idea:** We use Euler tour technique to initialize a binary indexed tree, and use the binary indexed tree to run range XOR queries.
+**Main Idea:** We use Euler tour technique to initialize a binary indexed tree,
+and use the binary indexed tree to run range XOR queries.
 
-Check the [official solution](http://usaco.org/current/data/sol_cowland_gold_feb19.html) for another, more complicated, solution with HLD.
+Check the
+[official solution](http://usaco.org/current/data/sol_cowland_gold_feb19.html)
+for another, more complicated, solution with HLD.
 
-Let $e_x$ be the enjoyment values for each of the attractions, and $lca(i, j)$ be the lowest common ancestor between nodes $i$ and $j$.
+Let $e_x$ be the enjoyment values for each of the attractions, and $lca(i, j)$
+be the lowest common ancestor between nodes $i$ and $j$.
 
 ## Euler Tour Technique
 
-Let $i_x$ and $o_x$ be the in and out times for the tree, which we find through DFS with the Euler tour technique mentioned in [this section](https://usaco.guide/gold/tree-euler).
+Let $i_x$ and $o_x$ be the in and out times for the tree, which we find through
+DFS with the Euler tour technique mentioned in
+[this section](https://usaco.guide/gold/tree-euler).
 
 ## Binary Indexed Tree
 
-We create a binary indexed tree which supports range updates and XOR queries. Note that the inverse of XOR is XOR itself.
+We create a binary indexed tree which supports range updates and XOR queries.
+Note that the inverse of XOR is XOR itself.
 
-Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the prefix XOR to $i_x$ is now the path XOR from the root node to each node at the tree. See [the solution for Path Queries](https://usaco.guide/solutions/cses-1138) for a comprehensive explanation. 
+Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the
+prefix XOR to $i_x$ is now the path XOR from the root node to each node at the
+tree. See
+[the solution for Path Queries](https://usaco.guide/solutions/cses-1138) for a
+comprehensive explanation.
 
-Let the prefix XOR at $i$ be $X(i)$. 
+Let the prefix XOR at $i$ be $X(i)$.
 
-The difference between the explanation for Path Queries and this problem is that we have range XOR queries instead of range sum queries. 
+The difference between the explanation for Path Queries and this problem is that
+we have range XOR queries instead of range sum queries.
 
 This precomputation takes $\mathcal{O}(n \log n)$.
 
 ## Responding to Queries
-We now need to respond to path queries and updates. To update node $x$, we remove the current values at $i_x$ and $o_x$ and replace these indices with the new value. For a path query, we just output $X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR operation). The $X(i)$ and $X(j)$ are the XOR queries for the paths from $0$ to $i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted twice and thus negates itself. Thus, we need to also XOR $e_{lca(i,j)}$ to account for the full path XOR from $i$ to $j$.
 
-LCA precomputation is known to take $\mathcal{O}(n \log n)$ with sparse table. Additionally, updates and queries both take $\mathcal{O}(\log n)$ each, the complexity of the LCA and BIT queries. As there are $q$ updates and queries in total, the total complexity for the querying step is $\mathcal{O}(q \log n)$. Hence, the total complexity is $\mathcal{O}((n+q) \log n)$.
+We now need to respond to path queries and updates. To update node $x$, we
+remove the current values at $i_x$ and $o_x$ and replace these indices with the
+new value. For a path query, we just output
+$X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR
+operation). The $X(i)$ and $X(j)$ are the XOR queries for the paths from $0$ to
+$i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted
+twice and thus negates itself. Thus, we need to also XOR $e_{lca(i,j)}$ to
+account for the full path XOR from $i$ to $j$.
+
+LCA precomputation is known to take $\mathcal{O}(n \log n)$ with sparse table.
+Additionally, updates and queries both take $\mathcal{O}(\log n)$ each, the
+complexity of the LCA and BIT queries. As there are $q$ updates and queries in
+total, the total complexity for the querying step is $\mathcal{O}(q \log n)$.
+Hence, the total complexity is $\mathcal{O}((n+q) \log n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -111,7 +135,7 @@ int main()
 	int q;
 	cin >> n >> q;
 	for(int i = 0; i < n; i++) cin >> arr[i];
-	for(int i = 1; i < n; i++) 
+	for(int i = 1; i < n; i++)
 	{
 		int u,v;
 		cin >> u >> v;
@@ -134,7 +158,7 @@ int main()
 		if(t==1)
 		{
 			int s, x;
-			cin >> s >> x;	
+			cin >> s >> x;
 			--s;
 			// erase the initial arr[s] value.
 			upd(in[s], arr[s]);
@@ -143,7 +167,7 @@ int main()
 			// update the arr[s] value to x.
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
-		} else 
+		} else
 		{
 			int u,v;
 			cin >> u >> v;
@@ -154,6 +178,7 @@ int main()
 	}
 }
 ```
+
 </CPPSection>
 
 <JavaSection>

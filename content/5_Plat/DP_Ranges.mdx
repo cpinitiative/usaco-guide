@@ -4,7 +4,8 @@ title: 'Dynamic Programming on Ranges'
 author: Michael Cao, Andi Qu
 prerequisites:
   - intro-dp
-description: Solving the problem on every contiguous subarray of the original array.
+description:
+  Solving the problem on every contiguous subarray of the original array.
 frequency: 2
 ---
 
@@ -20,7 +21,15 @@ export const problems = {
 	),
 	general: [
 		new Problem('Gold', '248', '647', 'Easy', false, ['Range DP'], ''),
-		new Problem('Gold', 'Modern Art 3', '1114', 'Easy', false, ['Range DP'], ''),
+		new Problem(
+			'Gold',
+			'Modern Art 3',
+			'1114',
+			'Easy',
+			false,
+			['Range DP'],
+			''
+		),
 		new Problem(
 			'CSES',
 			'Empty String',
@@ -80,16 +89,24 @@ export const problems = {
 
 ## Tutorial
 
-Dynamic programming on ranges is a general technique used to solve problems of the form "what is the minimum/maximum metric one can achieve on an array $A$?" with the following properties:
+Dynamic programming on ranges is a general technique used to solve problems of
+the form "what is the minimum/maximum metric one can achieve on an array $A$?"
+with the following properties:
 
 - A greedy approach seems feasible but yields incorrect answers.
-- Given the answers for each subarray $A[l : x]$ and $A[y : r]$, we can calculate the answer for the subarray $A[l : r]$ in $\mathcal O(r - l)$ time.
+- Given the answers for each subarray $A[l : x]$ and $A[y : r]$, we can
+  calculate the answer for the subarray $A[l : r]$ in $\mathcal O(r - l)$ time.
 - Disjoint subarrays can be "combined" independently.
 - $N$ (the size of $A$) is not greater than $500$.
 
-This technique relies on the assumption that we can "combine" two subarrays $A[l : x]$ and $A[x + 1 : r]$ to get a **candidate** for $A[l : r]$. We can thus iterate over all $x$ and find the best possible answer for $A[l : r]$. (Note that we need to process subarrays in increasing order of **length**!)
+This technique relies on the assumption that we can "combine" two subarrays
+$A[l : x]$ and $A[x + 1 : r]$ to get a **candidate** for $A[l : r]$. We can thus
+iterate over all $x$ and find the best possible answer for $A[l : r]$. (Note
+that we need to process subarrays in increasing order of **length**!)
 
-Since there are $\mathcal O(N^2)$ subarrays and processing each one takes $\mathcal O(N)$ time, solutions using this technique generally run in $\mathcal O(N^3)$ time.
+Since there are $\mathcal O(N^2)$ subarrays and processing each one takes
+$\mathcal O(N)$ time, solutions using this technique generally run in
+$\mathcal O(N^3)$ time.
 
 <FocusProblem problem={problems.sample} />
 
@@ -97,15 +114,28 @@ Since there are $\mathcal O(N^2)$ subarrays and processing each one takes $\math
 
 **Time Complexity:** $\mathcal O(N^3)$
 
-While it may be tempting to use a greedy approach (e.g. repeatedly erasing matching letters until you can't anymore, and then erasing the first "bad" letter), this approach doesn't work on inputs like `ababa`. Combined with the fact that $N \leq 500$ here, this suggests that we should use dynamic programming on ranges.
+While it may be tempting to use a greedy approach (e.g. repeatedly erasing
+matching letters until you can't anymore, and then erasing the first "bad"
+letter), this approach doesn't work on inputs like `ababa`. Combined with the
+fact that $N \leq 500$ here, this suggests that we should use dynamic
+programming on ranges.
 
-Let's consider the above test case - which `a` (if any) should we match the first letter with? Since $N$ is small, we may as well try each other `a`, but then how do we deal with the resulting "gaps" in the string?
+Let's consider the above test case - which `a` (if any) should we match the
+first letter with? Since $N$ is small, we may as well try each other `a`, but
+then how do we deal with the resulting "gaps" in the string?
 
-The key observation is that if we match it with the second `a` in the string, then we can't match the two `b`s together. This means that we don't actually need to care about the gaps from matching letters! More specifically, if it's optimal to match $S[0]$ with $S[i]$, then the minimum number of insertions for $S$ is the sum of the minimum number of insertions for $S[1 : i - 1]$ and $S[i + 1 : |S| - 1]$.
+The key observation is that if we match it with the second `a` in the string,
+then we can't match the two `b`s together. This means that we don't actually
+need to care about the gaps from matching letters! More specifically, if it's
+optimal to match $S[0]$ with $S[i]$, then the minimum number of insertions for
+$S$ is the sum of the minimum number of insertions for $S[1 : i - 1]$ and
+$S[i + 1 : |S| - 1]$.
 
-We can thus use dynamic programming on ranges to find, for each substring of $S$, the minimum number of insertions needed to turn it into space jazz.
+We can thus use dynamic programming on ranges to find, for each substring of
+$S$, the minimum number of insertions needed to turn it into space jazz.
 
-(Don't forget to consider the case where we don't match $S[i]$ with anything, and just duplicate it!)
+(Don't forget to consider the case where we don't match $S[i]$ with anything,
+and just duplicate it!)
 
 <LanguageSection>
 

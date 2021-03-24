@@ -122,9 +122,11 @@ Dynamic programming is a [Gold](/gold/intro-dp) topic.
 
 We are performing up to $200\,000$ queries, so it may be optimal to have some way to quickly precompute our answer in constant time.
 
-We can use dynamic programming to cache such answers. 
+We can use dynamic programming to cache such answers.
 
-Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$ characters, with $j$ amount painted of character $k$. Either two things can happen when we add an additional character.
+Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$
+characters, with $j$ amount painted of character $k$. Either two things can
+happen when we add an additional character.
 
 1. We append the character and paint an additional square.
 $$
@@ -136,6 +138,9 @@ $$
 \texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)
 $$
 
+Since this only gives us the best possible score that ends with length $i$, we
+can just take the current best and translate it using
+$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$
 
 Since this only gives us the best possible score that ends with length $i$, we can just take the current best and translate it using $\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$.
 

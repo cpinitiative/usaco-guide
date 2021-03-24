@@ -2,7 +2,9 @@
 id: prefix-sums-2
 title: 'More on Prefix Sums'
 author: Darren Yao, Eric Wei, Neo Wang, Qi Wang, Jesse Choe
-description: 'Max subarray sum, prefix sums in two dimensions, and a more complicated example.'
+description:
+  'Max subarray sum, prefix sums in two dimensions, and a more complicated
+  example.'
 prerequisites:
   - prefix-sums
 frequency: 2
@@ -67,35 +69,6 @@ export const problems = {
 			''
 		),
 	],
-	complex: [
-		new Problem(
-			'KS@Google KickStart',
-			'Candies (Test Set 1)',
-			'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'kickstart-20-c-candies'
-		),
-		new Problem(
-			'AC',
-			'Multiple of 2019',
-			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
-			'Hard',
-			false,
-			['Prefix Sums'],
-			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
-		),
-		new Problem(
-			'Plat',
-			'Sprinklers',
-			'794',
-			'Insane',
-			false,
-			['Prefix Sums'],
-			''
-		),
-	],
 };
 
 ## Max Subarray Sum
@@ -106,7 +79,9 @@ export const problems = {
 
 <Spoiler title="Solution">
 
-Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where $i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of $p[j]-p[i]$ over $0 \leq i \leq j \leq N$. 
+Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
+$i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
+$p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
 
 For a fixed right bound $j$, the maximum subarray sum is
 
@@ -114,7 +89,9 @@ $$
 p[j]-\min_{i\leq j}{p[i]}
 $$
 
-Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we iterate through $j$. This yields the maximum subarray sum for each possible right bound, and the maximum over all these values is our answer.
+Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we
+iterate through $j$. This yields the maximum subarray sum for each possible
+right bound, and the maximum over all these values is our answer.
 
 <LanguageSection>
 
@@ -154,9 +131,11 @@ int main(){
 
 <Spoiler title = "Alternative Solution - Kadane's Algorithm">
 
-Note: it is recommended that you **disregard** this solution since it is not required to solve this problem.
+Note: it is recommended that you **disregard** this solution since it is not
+required to solve this problem.
 
-Kadane's Algorithm finds the largest subarray sum using a greedy method. [Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
+Kadane's Algorithm finds the largest subarray sum using a greedy method.
+[Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
 
 <LanguageSection>
 
@@ -179,11 +158,11 @@ int main(){
 	}
 	ll current_sum = x[0], max_subarray_sum = x[0];
 	for(int i=1; i<n; i++){
-		current_sum = max(current_sum + x[i], x[i]); 
-		/* Continue the subarray sum or start a new 
+		current_sum = max(current_sum + x[i], x[i]);
+		/* Continue the subarray sum or start a new
 		subarray sum beginning at the current element.
 		*/
-		max_subarray_sum = max(max_subarray_sum, current_sum); 
+		max_subarray_sum = max(max_subarray_sum, current_sum);
 		// Store the maximum subarray sum at each iteration.
 	}
 	cout << max_subarray_sum << endl;
@@ -200,7 +179,9 @@ int main(){
 
 <FocusProblem problem={problems.sample2[0]} />
 
-Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a 2D matrix with $N$ rows and $M$ columns? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
+Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
+a 2D matrix with $N$ rows and $M$ columns? Let's assume both rows and columns
+are 1-indexed, and we use the following matrix as an example:
 
 <center>
 
@@ -251,7 +232,8 @@ Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of
 
 </center>
 
-Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of $\mathcal{O}(QNM)$. This is too slow.
+Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of
+$\mathcal{O}(QNM)$. This is too slow.
 
 Let's take the following example region, which we want to sum:
 
@@ -306,7 +288,11 @@ Let's take the following example region, which we want to sum:
 
 Manually summing all the cells, we have a submatrix sum of $7+11+9+6+1+3 = 37$.
 
-The first logical optimization would be to do one-dimensional prefix sums of each row. Then, we'd have the following row-prefix sum matrix. The desired subarray sum of each row in our desired region is simply the green cell minus the red cell in that respective row. We do this for each row to get $(28-1) + (14-4) = 37$.
+The first logical optimization would be to do one-dimensional prefix sums of
+each row. Then, we'd have the following row-prefix sum matrix. The desired
+subarray sum of each row in our desired region is simply the green cell minus
+the red cell in that respective row. We do this for each row to get
+$(28-1) + (14-4) = 37$.
 
 <center>
 
@@ -357,15 +343,21 @@ The first logical optimization would be to do one-dimensional prefix sums of eac
 
 </center>
 
-Now, if we wanted to find a submatrix sum, we could break up the submatrix into a subarray for each row, and then add their sums, which would be calculated using the prefix sums method described earlier. Since the matrix has $N$ rows, the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for $Q=10^5$ and $N=10^3$, but we can do better.
+Now, if we wanted to find a submatrix sum, we could break up the submatrix into
+a subarray for each row, and then add their sums, which would be calculated
+using the prefix sums method described earlier. Since the matrix has $N$ rows,
+the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for
+$Q=10^5$ and $N=10^3$, but we can do better.
 
-In fact, we can do two-dimensional prefix sums. In our two dimensional prefix sum array, we have
+In fact, we can do two-dimensional prefix sums. In our two dimensional prefix
+sum array, we have
 
 $$
 \texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j].
 $$
 
-This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
+This can be calculated as follows for row index $1 \leq i \leq n$ and column
+index $1 \leq j \leq m$:
 
 $$
 \begin{aligned}
@@ -376,13 +368,17 @@ $$
 
 ---
 
-Let's calculate $\texttt{prefix}[2][3]$. Try playing with the interactive widget below by clicking the buttons to see which numbers are added in each step. Notice how we overcount a subrectangle, and how we fix this by subtracting $\texttt{prefix}[i-1][j-1]$.
+Let's calculate $\texttt{prefix}[2][3]$. Try playing with the interactive widget
+below by clicking the buttons to see which numbers are added in each step.
+Notice how we overcount a subrectangle, and how we fix this by subtracting
+$\texttt{prefix}[i-1][j-1]$.
 
 <PrefixSumInteractive />
 
 ---
 
-The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be expressed as follows:
+The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be
+expressed as follows:
 
 $$
 \begin{aligned}
@@ -392,7 +388,9 @@ $$
 \end{aligned}
 $$
 
-Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have
+Summing the blue region from above using the 2D prefix sums method, we add the
+value of the green square, subtract the values of the red squares, and then add
+the value of the gray square. In this example, we have
 
 $$
 65-23-6+1 = 37,
@@ -451,19 +449,23 @@ as expected.
 
 ---
 
-Try playing with the interactive widget below by clicking the buttons to see which numbers are added in each step.
+Try playing with the interactive widget below by clicking the buttons to see
+which numbers are added in each step.
 
 <PrefixSumInteractive demo2 />
 
 ---
 
-Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query after an $\mathcal{O}(NM)$ preprocessing.
+Since no matter the size of the submatrix we are summing, we only need to access
+four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query
+after an $\mathcal{O}(NM)$ preprocessing.
 
 ### Solution - Forest Queries
 
 <Warning>
 
-We need to be cautious of off-by-one errors, as intervals can be inclusive, exclusive, 1-indexed, etc.
+We need to be cautious of off-by-one errors, as intervals can be inclusive,
+exclusive, 1-indexed, etc.
 
 </Warning>
 
@@ -578,155 +580,6 @@ public class ForestQueries {
 
 </LanguageSection>
 
-<!--
-
-### 2-Dimensional
-
-#### Point
-
-We can apply a similar concept to 2D matrices. Let $\texttt{prefix}[i][j]$ be the sum of the values in the rectangle between $(0,0)$ and $(i, j)$, or $\sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j]$. $\texttt{prefix}[i][j]$ is equal to the sum of $\texttt{arr}[i][j]$ and all the values in the region formed by the union of rectangles $(0, 0), (i, j-1)$ and $(0, 0),(i-1, j)$.
-
-To determine the sum of values in this region, we can add the sum of values in these rectangles ($\texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1]$) and subtract the double counted overlap $\texttt{prefix}[i-1][j-1]$. This can be expressed by
-
-$$
-\texttt{prefix}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
-$$
-
-Given the sample case in [Forest Queries](https://cses.fi/problemset/task/1652), the algorithm goes as follows:
-
-We first build array $\texttt{arr}$, which stores the locations of the trees, by incrementing every point by 1.
-
-<center>
-	<table className='text-center'>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>0</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-	</table>
-</center>
-
-Then, we build the prefix sum array.
-
-$$
-\texttt{prefix}[i][j] = \sum_{i=1}^{N} \sum_{j=1}^{N} \texttt{arr}[i][j] = \texttt{arr}[i][j] + \texttt{prefix}[i-1][j] + \texttt{prefix}[i][j-1] - \texttt{prefix}[i-1][j-1]
-$$
-
-For our example, we get
-
-<center>
-	<table className='text-center'>
-	<tr>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-		<td>0</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>0</td>
-		<td>1</td>
-		<td>1</td>
-		<td>1</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>1</td>
-		<td>2</td>
-		<td>3</td>
-		<td>4</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>2</td>
-		<td>4</td>
-		<td>5</td>
-		<td>6</td>
-	</tr>
-	<tr>
-		<td>0</td>
-		<td>3</td>
-		<td>6</td>
-		<td>8</td>
-		<td>10</td>
-	</tr>
-	</table>
-</center>
-
-Notice it is padded with zeroes, and all queries can now be processed using
-
-$$
-\texttt{prefix}[A][B] - \texttt{prefix}[a-1][B] - \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
-$$
-
-For example, if we query $(2, 2)$ to $(3, 4)$ we get $A=3, B=4, a=2, b=2$, and substituting into our equation, we get
-
-$$
-\texttt{prefix}[3][4] - \texttt{prefix}[1][4] - \texttt{prefix}[3][1] + \texttt{prefix}[1][1] = 6 - 1 - 2 + 0 = 3
-$$ -->
-
-<!-- #### Overlapping Rectangles
-
-Given a rectangle with endpoints $(x_1, y_1), (x_2, y_2)$, we can compute the "layers" of many such rectangles bounded together through the use of increment and decrement points. Since our endpoints are not inclusive (note how area is the space in-between the points), our increment points are $(x_1, y_1),(x_2, y_2)$, and decrement points are $(x_1, y_2), (x_2, y_1)$. Our prefix array construction remains the same as described in the previous section. -->
-
 ### Problems
 
 <Problems problems={problems.cum2} />
-
-## A More Complicated Example
-
-What if we want to quickly answer the following type of query?
-
-> Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
-
-In addition to taking prefix sums over $a_i$, we'll also need to take prefix sums over $i\cdot a_i$.
-
-First, define the following:
-
-$$
-\texttt{ps}[i] = a_1+a_2+a_3+a_4+\cdots+a_i
-$$
-
-$$
-\texttt{ips}[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i
-$$
-
-Then, we have:
-
-$$
-l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]
-$$
-
-$$
-(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-And so,
-
-$$
-1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-Which is what we were looking for!
-
-<Problems problems={problems.complex} />

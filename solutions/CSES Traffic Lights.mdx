@@ -5,28 +5,39 @@ title: Traffic Lights
 author: Danh Ta Chi Thanh
 ---
 
-In this problem, we are given an empty interval of length $x$ spanning from 0 to $x$, and $n$ points are added to the interval chronologically. We want to find the largest gap between the points after each step.
+In this problem, we are given an empty interval of length $x$ spanning from 0 to
+$x$, and $n$ points are added to the interval chronologically. We want to find
+the largest gap between the points after each step.
 
 ## Solution 1
 
-First you can read and think more about the solution here: 
-[Unofficial Editorial](https://codeforces.com/blog/entry/83295) (and also here: [Sketch](https://codeforces.com/blog/entry/86096?#comment-739122))
+First you can read and think more about the solution here:
+[Unofficial Editorial](https://codeforces.com/blog/entry/83295) (and also here:
+[Sketch](https://codeforces.com/blog/entry/86096?#comment-739122))
 
-I will try to explain it: Let's create a set and a multiset. The set will store the positions of the traffic lights, while the multiset will keep track of the "gaps" between the lights. The multiset keeps expanding because more lights are added, and you just need to print the length of the longest passage without traffic lights after each addition (i.e. the max element of that multiset). This element is the last element by default.
+I will try to explain it: Let's create a set and a multiset. The set will store
+the positions of the traffic lights, while the multiset will keep track of the
+"gaps" between the lights. The multiset keeps expanding because more lights are
+added, and you just need to print the length of the longest passage without
+traffic lights after each addition (i.e. the max element of that multiset). This
+element is the last element by default.
 
-Note that when placing a new traffic light on the road, that light will split the gap between two adjacent lights into two smaller pieces, so you also have to remove the length of that gap in the multiset and add two new lengths to the multiset.
+Note that when placing a new traffic light on the road, that light will split
+the gap between two adjacent lights into two smaller pieces, so you also have to
+remove the length of that gap in the multiset and add two new lengths to the
+multiset.
 
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 //constant initialization
 const int maxn=2e5+10;
- 
+
 //variables used for the current problem
 int x,n,p; set<int> lights; multiset<int> dist;
- 
+
 void solve() {
 	cin >> x >> n;
 	lights.insert(0); lights.insert(x);
@@ -48,23 +59,24 @@ int main(){
 	solve();
 	return 0;
 }
-``` 
+```
 
 ## Solution 2 - Reversing the steps
 
-I found another solution by reversing all the steps and calculating the maximum length at each step. Here is my implementation.
+I found another solution by reversing all the steps and calculating the maximum
+length at each step. Here is my implementation.
 
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
 
 //constant initialization
 const int maxn=2e5+10;
- 
+
 //variables used for the current problem
 int x,n,p[maxn],mx; set<int> st; vector<int> ans;
- 
+
 void solve() {
 	cin >> x >> n;
 	st.insert(0); st.insert(x);
