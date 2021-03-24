@@ -7,6 +7,12 @@ author: Benjamin Qi, Tanish Tyagi
 
 [Official Editorial (Russian)](https://codeforces.com/blog/entry/6864)
 
+Explanation of Sample Cases:
+1. Valera can read the books with times 1, 2, 1.
+2. Valera can only read one of the books. 
+
+## Solution 1 Explanation
+
 (Translated)
 
 It is easiest to use the method of two pointers. The left pointer means the beginning of the segment of books to read, the right one - the end. 
@@ -14,15 +20,16 @@ When moving the left pointer one unit to the right, the right pointer should be 
 $a_i$ within the segment is less than or equal to $t$. This way, we can find for each possible left end the rightmost possible right end. 
 The answer to the problem is the maximum length over all possible left ends.
 
-Explanation of Sample Cases:
-1. Valera can read the books with times 1, 2, 1.
-2. Valera can only read one of the books. 
+## Solution 2 Explanation
+
+Our goal is to find the length of the longest subarray that has a sum of greater than or equal to $t$. In the first sample case, the subarray that has [$1,2,1$] sums to $5$ and has a length of $3$. The subarray [$3,1,2$] that sums to $6$ also works. In the second sample case, any of the subarrays with length $1$ will work.
+
+We can use two pointers, where the left pointer is represented by the variable $left$ and the right pointer is represented by $i$. If the sum is greater than $t$, we subtract the value of $times[left]$ from the sum and increment left.
+
 
 <LanguageSection>
 
 <CPPSection>
-
-# C++ Implementation
 
 ## Solution 1
 
@@ -246,12 +253,7 @@ int main() {
 	ps(ans);
 }
 ```
-
-## Solution 2
-
-Our goal is to find the length of the longest subarray that has a sum of greater than or equal to $t$. In the first sample case, the subarray that has [$1,2,1$] sums to $5$ and has a length of $3$. The subarray [$3,1,2$] that sums to $6$ also works. In the second sample case, any of the subarrays with length $1$ will work.
-
-We can use two pointers, where the left pointer is represented by the variable $left$ and the right pointer is represented by $i$. If the sum is greater than $t$, we subtract the value of $times[left]$ from the sum and increment left.
+ ## Solution 2
 
 ```cpp
 #include <bits/stdc++.h>
