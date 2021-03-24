@@ -275,7 +275,7 @@ class CodeBlock extends React.Component<
     // }
 
     let collapsed = this.state.collapsed;
-    if (!canExpand){
+    if (typeof (canExpand) != "undefined"){
         collapsed = canExpand;
     }
 

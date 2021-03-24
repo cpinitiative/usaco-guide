@@ -22,6 +22,9 @@ import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 
+import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import 'react-pro-sidebar/dist/css/styles.css';
+
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
     <div className="mx-auto">
@@ -177,7 +180,10 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <MobileSideNav />
-          <DesktopSidebar />
+
+          <ProSidebar>
+              <DesktopSidebar />
+          </ProSidebar>
 
           <div className="w-full">
             <MobileAppBar />
