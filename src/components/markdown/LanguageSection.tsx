@@ -63,10 +63,6 @@ export const LanguageSection = props => {
     );
 
     sections[typeToLang[type]] = newChild;
-    console.log('FINAL');
-    // test
-    console.log(newChild.props.children);
-    //test
   });
 
   if (userLang === 'showAll') {
