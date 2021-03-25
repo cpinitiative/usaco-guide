@@ -1,25 +1,26 @@
-import * as React from "react";
+import * as React from 'react';
 import { useContext, useRef } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
-import SubmitCodeButton from './SubmitCodeButton';
 import { Instance } from 'tippy.js';
 import Tippy from '@tippyjs/react';
 import { navigate } from 'gatsby';
 import { ProblemInfo, probSources } from '../../../models/problem';
 import tw from 'twin.macro';
 import styled, { css } from 'styled-components';
-import ProblemListItemSolution  from './ProblemListItemSolution';
+import ProblemListItemSolution from './ProblemListItemSolution';
+import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
 type ProblemsListItemProps = {
-  problem: ProblemInfo;
+  problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
   showTagsAndDifficulty: boolean;
   onShowSolutionSketch: Function;
-  // division?: string;
-  // modules?: boolean;
-  // showPercent?: boolean;
+  isDivisionTable?: boolean; // only if is division table
+  modules?: boolean; // only if is division table
+  showPercent?: boolean; // only if is division table
 };
 
 export const Anchor = styled.a`
@@ -33,14 +34,14 @@ export const Anchor = styled.a`
 // https://stackoverflow.com/questions/45871439/before-and-after-pseudo-classes-used-with-styled-components
 const StyledProblemRow = styled.tr`
   ${({ isActive }) =>
-  isActive
-    ? css`
+    isActive
+      ? css`
           background-color: #fdfdea !important;
           .dark && {
             background-color: #3c3c00 !important;
           }
         `
-    : null}
+      : null}
 `;
 
 export const difficultyClasses = {
@@ -59,7 +60,7 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
   const { problem } = props;
   const id = `problem-${problem.uniqueId}`;
 
-  // const divisionTable = !!props.division;
+  const divisionTable = !!props.isDivisionTable;
   // let resultsUrl = '';
   // if (divisionTable) {
   //   const parts = problem.source.split(' ');
@@ -94,22 +95,32 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
     </td>
   );
 
-  const sourceTooltip = probSources[problem.source]?.[2];
-  // <Anchor
-  //   href={resultsUrl}
-  //   className={'truncate'}
-  //   style={{ maxWidth: '15rem' }}
-  //   target="_blank"
-  //   rel="nofollow noopener noreferrer"
-  // >
-  //   {problem.source}
-  // </Anchor>
-  const sourceCol = (
+  const sourceTooltip = divisionTable ? null : probSources[problem.source]?.[2];
+  let resultsUrl = ''; // used only for division tables
+  if (divisionTable) {
+    const parts = problem.source.split(' ');
+    parts[0] = parts[0].substring(2);
+    if (parts[1] === 'US') parts[1] = 'open';
+    else parts[1] = parts[1].toLowerCase().substring(0, 3);
+    resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+    // console.log('SOURCE', problem.source, resultsUrl);
+  }
+  const sourceCol = divisionTable ? (
+    <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+      <Anchor
+        href={resultsUrl}
+        className={'truncate'}
+        style={{ maxWidth: '15rem' }}
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        {problem.source}
+      </Anchor>
+    </td>
+  ) : (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
       {sourceTooltip ? (
-        <TextTooltip content={sourceTooltip}>
-          {problem.source}
-        </TextTooltip>
+        <TextTooltip content={sourceTooltip}>{problem.source}</TextTooltip>
       ) : (
         problem.source
       )}
@@ -196,8 +207,8 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
                   setCopied(true);
                   navigator.clipboard.writeText(
                     window.location.href.split(/[?#]/)[0] +
-                    '#problem-' +
-                    problem.uniqueId
+                      '#problem-' +
+                      problem.uniqueId
                   );
                 }}
               >
@@ -235,18 +246,14 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
       {statusCol}
       {sourceCol}
       {nameCol}
-      {/*{showTagsAndDifficulty &&*/}
-      {/*(divisionTable*/}
-      {/*  ? props.showPercent && (*/}
-      {/*  <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">*/}
-      {/*    <UsacoTableProgress*/}
-      {/*      division={props.division}*/}
-      {/*      completed={problem.fraction}*/}
-      {/*    />*/}
-      {/*  </td>*/}
-      {/*)*/}
-      {/*  : difficultyCol)}*/}
-      {difficultyCol}
+      {props.showTagsAndDifficulty &&
+        (divisionTable
+          ? props.showPercent && (
+              <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                <UsacoTableProgress completed={problem.percentageSolved} />
+              </td>
+            )
+          : difficultyCol)}
       {props.showTagsAndDifficulty && (
         <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
           {problem.tags && problem.tags.length ? (
@@ -257,13 +264,21 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
           ) : null}
         </td>
       )}
-      {/*{props.modules && (*/}
-      {/*  <ProblemSolutionCell*/}
-      {/*    problem={props.problem}*/}
-      {/*    modules*/}
-      {/*    onShowSolution={props.onShowSolution}*/}
-      {/*  />*/}
-      {/*)}*/}
+      {props.modules && (
+        <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
+          {problem.moduleLink ? (
+            <Anchor href={problem.moduleLink} target="_blank" className="pl-6">
+              Link
+            </Anchor>
+          ) : (
+            <Tooltip content={`This problem isn't in a module yet.`}>
+              <span className="text-gray-300 dark:text-gray-600 pl-6">
+                None
+              </span>
+            </Tooltip>
+          )}
+        </td>
+      )}
       <td className="text-center pr-2 md:pr-3">{more}</td>
     </StyledProblemRow>
   );

@@ -8,13 +8,15 @@ import SuggestProblemRow from './SuggestProblemRow';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
+import { ProblemInfo } from '../../../models/problem';
 
 type ProblemsListProps = {
   title?: string;
   children?: React.ReactChildren;
-  problems: string;
-  modules?: boolean;
-  division?: string;
+  problems?: string | DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
+  division?: string; // only if is division table
+  modules?: boolean; // only if is division table
 };
 
 export function ProblemsList(props: ProblemsListProps) {
@@ -28,12 +30,17 @@ export function ProblemsList(props: ProblemsListProps) {
   const shouldShowSolvePercentage = false; // props.problems.some(problem => !problem.fraction);
 
   const markdownProblems = useMarkdownProblemLists();
-  let problems = markdownProblems.find(list => list.listId === props.problems)
-    ?.problems;
-  if (!problems)
-    throw new Error(
-      "Couldn't find the problem list with name " + props.problems
-    );
+
+  // todo @jeffrey fix typings?
+  let problems: any = props.problems;
+  if (!divisionTable) {
+    problems = markdownProblems.find(list => list.listId === props.problems)
+      ?.problems;
+    if (!problems)
+      throw new Error(
+        "Couldn't find the problem list with name " + props.problems
+      );
+  }
 
   return (
     <div
@@ -47,7 +54,7 @@ export function ProblemsList(props: ProblemsListProps) {
               <thead>
                 <ProblemsListHeader
                   showTagsAndDifficulty={showTagsAndDifficulty}
-                  isDivisionTable={!!props.division}
+                  isDivisionTable={!!divisionTable}
                   showSolvePercentage={shouldShowSolvePercentage}
                   showPlatinumSolvePercentageMessage={
                     props.division === 'Platinum'
@@ -64,13 +71,13 @@ export function ProblemsList(props: ProblemsListProps) {
                       setProblem(problem);
                       setShowModal(true);
                     }}
-                    // division={props.division}
-                    // modules={props.modules}
-                    // showPercent={showPercent}
+                    isDivisionTable={divisionTable}
+                    modules={props.modules}
+                    showPercent={shouldShowSolvePercentage}
                   />
                 ))}
                 {!divisionTable && (
-                  <SuggestProblemRow listName={props.problems} />
+                  <SuggestProblemRow listName={props.problems as string} />
                 )}
               </tbody>
             </table>

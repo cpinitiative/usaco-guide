@@ -1,6 +1,9 @@
 import { ProblemInfo } from '../../../../models/problem';
 
-export type DivisionProblemInfo = ProblemInfo & {
+export type DivisionProblemInfo = Pick<
+  ProblemInfo,
+  'name' | 'uniqueId' | 'solution' | 'url' | 'source'
+> & {
+  moduleLink: string;
   percentageSolved: number;
-  problemLink: string;
 };

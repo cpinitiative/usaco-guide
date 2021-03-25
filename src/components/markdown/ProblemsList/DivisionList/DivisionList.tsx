@@ -11,6 +11,9 @@ import { useContext } from 'react';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
 import { Problem, ProblemSolutionInfo } from '../../../../models/problem';
+import MODULE_ORDERING, {
+  moduleIDToURLMap,
+} from '../../../../../content/ordering';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -151,32 +154,24 @@ const DivisionButton = ({
 export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
-      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+      allProblemInfo(
+        filter: { source: { in: ["Bronze", "Silver", "Gold", "Plat"] } }
+      ) {
         edges {
           node {
-            frontmatter {
-              id
+            solution {
+              kind
+              label
+              labelTooltip
+              sketch
+              url
             }
-            fields {
-              division
-              problemLists {
-                listId
-                problems {
-                  uniqueId
-                  name
-                  url
-                  source
-                  difficulty
-                  isStarred
-                  tags
-                  solution {
-                    kind
-                    label
-                    labelTooltip
-                    url
-                    sketch
-                  }
-                }
+            uniqueId
+            url
+            tags
+            module {
+              frontmatter {
+                id
               }
             }
           }
@@ -184,35 +179,34 @@ export function DivisionList(props): JSX.Element {
       }
     }
   `);
-  const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
-    data.allMdx,
-  ]);
   const probToLink: { [key: string]: string } = {};
+  const probToURL: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
-  const probToDifficulty: { [key: string]: string } = {};
   const probToSol: { [key: string]: ProblemSolutionInfo } = {};
-  for (const moduleLink of moduleLinks) {
-    for (const problem of moduleLink.probs) {
-      const uniqueID = problem.uniqueId;
-      probToLink[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
-      const prevTags = probToTags[uniqueID] || [];
-      const allTags = prevTags.concat(problem.tags);
-      // console.log('ALL TAGS', allTags, prevTags, problem.tags);
-      // @ts-ignore @jeffrey help
-      probToTags[uniqueID] = [...new Set(allTags)];
-      // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
-      // console.log('NEW TAGS', probToTags[uniqueID]);
-      probToDifficulty[uniqueID] = problem.difficulty;
-      probToSol[uniqueID] = problem.solution;
-    }
+  for (const edge of data.allProblemInfo.edges) {
+    const problem = edge.node;
+    const uniqueId = problem.uniqueId;
+    probToLink[uniqueId] = `${
+      moduleIDToURLMap[problem.module.frontmatter.id]
+    }/#problem-${uniqueId}`;
+    probToURL[uniqueId] = problem.url;
+    const prevTags = probToTags[uniqueId] || [];
+    const allTags = prevTags.concat(problem.tags);
+    // console.log('ALL TAGS', allTags, prevTags, problem.tags);
+    // @ts-ignore @jeffrey help
+    probToTags[uniqueId] = [...new Set(allTags)];
+    // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+    // console.log('NEW TAGS', probToTags[uniqueID]);
+    probToSol[uniqueId] = problem.solution;
   }
-  for (const problem of extraProbs) {
-    const uniqueID = problem.uniqueID;
-    if (problem.tags && problem.tags.length > 0)
-      probToTags[uniqueID] = problem.tags;
-    if (problem.difficulty) probToDifficulty[uniqueID] = problem.difficulty;
-    if (problem.solID) probToSol[uniqueID] = problem.solID;
-  }
+  // todo @jeffrey migrate extra USACO problems
+  // for (const problem of extraProbs) {
+  //   const uniqueID = problem.uniqueID;
+  //   if (problem.tags && problem.tags.length > 0)
+  //     probToTags[uniqueID] = problem.tags;
+  //   if (problem.difficulty) probToDifficulty[uniqueID] = problem.difficulty;
+  //   if (problem.solID) probToSol[uniqueID] = problem.solID;
+  // }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: DivisionProblemInfo[] };
   } = {};
@@ -247,25 +241,35 @@ export function DivisionList(props): JSX.Element {
       //   name: probInfo[2],
       //   url:
       // }
-      const prob = new Problem(
-        contest, // source
-        probInfo[2], // title
-        probInfo[0], // id
-        probToDifficulty[uniqueID] as
-          | 'Very Easy'
-          | 'Easy'
-          | 'Normal'
-          | 'Hard'
-          | 'Very Hard'
-          | 'Insane'
-          | null, // difficulty
-        null, // starred
-        probToTags[uniqueID], // tags
-        probToSol[uniqueID],
-        'ok',
-        fraction,
-        probToLink[uniqueID]
-      );
+      const id = `usaco-${probInfo[0]}`;
+      const prob: DivisionProblemInfo = {
+        name: probInfo[2],
+        uniqueId: id,
+        solution: probToSol[id],
+        moduleLink: probToLink[id],
+        percentageSolved: fraction,
+        url: probToURL[id],
+        source: contest,
+      };
+      // const prob = new Problem(
+      //   contest, // source
+      //   probInfo[2], // title
+      //   probInfo[0], // id
+      //   probToDifficulty[uniqueID] as
+      //     | 'Very Easy'
+      //     | 'Easy'
+      //     | 'Normal'
+      //     | 'Hard'
+      //     | 'Very Hard'
+      //     | 'Insane'
+      //     | null, // difficulty
+      //   null, // starred
+      //   probToTags[uniqueID], // tags
+      //   probToSol[uniqueID],
+      //   'ok',
+      //   fraction,
+      //   probToLink[uniqueID]
+      // );
       let year = +probInfo[1].substring(0, 4);
       if (probInfo[1].includes('December')) {
         year++;
