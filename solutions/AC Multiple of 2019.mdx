@@ -1,0 +1,49 @@
+---
+id: AC-MultipleOf2019
+source: AtCoder Beginner Contest
+title: Multiple of 2019
+author: Maggie Liu
+---
+
+[Official Analysis](https://img.atcoder.jp/abc164/editorial.pdf#page=10)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+int main() 
+{
+	string s;
+	cin >> s;
+	int num = 0, n = (int)s.size(), pow = 1;
+	int count[2019]{1};
+	for (int i = n - 1; i >= 0; i--)
+	{
+		//find the remainder of the current number mod 2019
+		num = (num + pow * (s[i] - '0')) % 2019;
+		//increment the count of this remainder
+		count[num]++; 
+		pow = (pow * 10) % 2019;
+	}
+	long long ans = 0;
+	for (int i = 0; i < 2019; i++)
+	{
+		//there are nC2 ways to pair the numbers with the same remainder
+		ans += count[i] * (count[i] - 1) / 2;
+	}
+	cout << ans << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
