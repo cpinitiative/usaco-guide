@@ -10,7 +10,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
   // transform creates a new stacking context :(
   return (
     <div
-      className={`shadow block transition duration-150 ease-in-out dark:bg-gray-900 ${
+      className={`shadow block transition dark:bg-gray-900 ${
         isHovered && 'transform -translate-y-1 shadow-lg'
       }`}
       id={'problem-' + problem.uniqueID}
@@ -23,7 +23,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 block group transition duration-150 ease-in-out py-4"
+                className="flex-1 block group transition py-4"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >

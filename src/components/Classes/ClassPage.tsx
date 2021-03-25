@@ -17,7 +17,10 @@ import HomeworkAssignmentSummary from './HomeworkAssignmentSummary';
 export const format = (timestamp: firebaseType.firestore.Timestamp) => {
   if (!timestamp) return;
   const date = moment(timestamp.toDate());
-  const diff = date.diff(moment(), 'days');
+  const diff = date
+    .clone()
+    .startOf('day')
+    .diff(moment().startOf('day'), 'days');
   if (diff === 0) {
     return date.format('[Today,] h:mm A');
   } else if (diff === 1) {
@@ -129,7 +132,7 @@ export default function ClassPage(props: { path: string }): ReactElement {
               .map(announcement => (
                 <li
                   key={announcement.id}
-                  className="relative pl-4 pr-6 py-5 hover:bg-gray-50 dark-hover:bg-gray-900 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6"
+                  className="relative pl-4 pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6"
                 >
                   <div className="flex items-center justify-between space-x-4">
                     {/* Repo name and link */}

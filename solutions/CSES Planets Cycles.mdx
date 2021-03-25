@@ -1,0 +1,212 @@
+---
+id: cses-1751
+source: CSES
+title: Planets Cycles
+author: Maggie Liu (C++), Qi Wang (Java)
+---
+
+Define the number of teleportations starting from a planet as the
+$\texttt{pathlength}$ of that planet. For each planet that hasn't been visited,
+we want to find its $\texttt{pathlength}$. Call the planet we are performing
+$\texttt{dfs}$ from the $\textit{start}$. As we perform $\texttt{dfs}$ from the
+$\textit{start}$, keep track of the planets seen, in order, in the
+$\texttt{path}$ queue and keep track of $\texttt{steps}$, the length of the path
+(which is also the $\texttt{pathlength}$ of the $\textit{start}$). When we reach
+a planet that has already been visited (call this planet the $\textit{repeat}$),
+add the $\texttt{pathlength}$ of the $\textit{repeat}$ to the current
+$\texttt{step}$ count because we would continue to visit all of the planets that
+$\textit{repeat}$ would go on to visit.
+
+Once we have $\texttt{path}$ and $\texttt{steps}$ we can calculate the
+$\texttt{pathlength}$ of all the planets in this $\texttt{path}$. We know the
+$\textit{repeat}$ will always be the planet at the end of the $\texttt{path}$,
+but it may appear elsewhere as well. We can break this down into two cases:
+
+1. The $\textit{repeat}$ was visited twice in the current $\texttt{path}$. The
+   planets in the $\texttt{path}$ between the two occurrences of the
+   $\textit{repeat}$ form a $\textit{cycle}$.
+2. The $\textit{repeat}$ only appears at the end of the current $\texttt{path}$.
+   All of the planets in the $\texttt{path}$ are not part of a $\textit{cycle}$.
+
+For planets inside a $\textit{cycle}$, the repeating planet when starting from
+that planet is itself. For all the planets in the $\texttt{path}$ but outside
+the $\textit{cycle}$, the planet that repeats when starting from each planet
+will still be the $\textit{repeat}$.
+
+Since the planets outside the $\textit{cycle}$ all have paths ending at the
+$\textit{repeat}$, each one's $\texttt{pathlength}$ is $1$ less than the
+previous'. So, as we iterate through the planets along the $\texttt{path}$ that
+are outside the $\textit{cycle}$, the $\texttt{pathlength}$ will decrease by $1$
+each time, starting from the $\textit{start}$ with a $\texttt{pathlength}$ of
+$\texttt{steps}$. Once we get to the $\textit{cycle}$, the $\texttt{pathlength}$
+of the planets will all be equal to the $\texttt{pathlength}$ of the
+$\textit{repeat}$, which is the length of the $\textit{cycle}$.
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+void dfs(int planet);
+
+bool visited[200000]{};
+int destinations[200000];
+int pathlength[200000]{};
+queue<int> path;
+int steps = 0;
+
+int main()
+{
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> destinations[i];
+		destinations[i]--;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		if (!visited[i])
+		{
+			steps = 0;
+			dfs(i);
+			int decrement = 1;
+			//for each planet in current path, calculate pathlength
+			while (!path.empty())
+			{
+				//we are in the cycle; all nodes have same pathlength
+				if (path.front() == path.back())
+				{
+					decrement = 0;
+				}
+				pathlength[path.front()] = steps;
+				steps -= decrement;
+				path.pop();
+			}
+		}
+	}
+	for (int i = 0; i < n; i++)
+	{
+		cout << pathlength[i] << " ";
+	}
+	cout << endl;
+	return 0;
+}
+
+void dfs(int planet)
+{
+	//add planet to path
+	path.push(planet);
+	if (visited[planet])
+	{
+		//add pathlength of the repeat planet to current step count
+		steps += pathlength[planet];
+		return;
+	}
+	visited[planet] = true;
+	steps++;
+	dfs(destinations[planet]);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+## Implementation
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st;
+
+	// standard input
+	public Kattio() { this(System.in,System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName+".out"));
+		r = new BufferedReader(new FileReader(problemName+".in"));
+	}
+
+	// returns null if no more input
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
+			return st.nextToken();
+		} catch (Exception e) {}
+		return null;
+	}
+
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+
+public class planetCycles {
+	static int N, steps;
+	static int[] destinations, pathlength;
+	static boolean[] visited;
+	static LinkedList<Integer> path = new LinkedList<>();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		N = io.nextInt();
+		destinations = new int[N+1];
+		visited = new boolean[N+1];
+		pathlength = new int[N+1];
+		for (int i = 1; i < N + 1; i++) {
+			destinations[i] = io.nextInt();
+		}
+
+		for (int i = 1; i < N + 1; i++) {
+			if(!visited[i]){
+				steps = 0;
+				dfs(i);
+				int decrement = 1;
+				Integer last = path.peekLast();
+				while(!path.isEmpty()){
+					if(path.peekFirst().equals(last)) decrement = 0;
+					pathlength[path.poll()] = steps;
+					steps-=decrement;
+				}
+			}
+		}
+
+		for (int i = 1; i < N + 1; i++) {
+			io.print(pathlength[i] + " ");
+		}
+		io.close();
+	}
+
+	public static void dfs(int n){
+		visited[n] = true;
+		path.add(n);
+		steps++;
+		if(!visited[destinations[n]])
+			dfs(destinations[n]);
+		else {
+			path.add(destinations[n]);
+			steps += pathlength[destinations[n]];
+		}
+	}
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>

@@ -95,10 +95,10 @@ id_to_prob = {x:[] for x in usaco_divisions}
 record = {x:[] for x in usaco_divisions}
 
 # https://stackoverflow.com/questions/14706678/beautifulsoup-getting-class-from-elements-of-findall
-def processEdi(url_suffix):
+def process_names(url_suffix):
 	if not url_suffix.endswith('results'):
 		return
-	print("PROCESSING",url_suffix)
+	print("PROCESSING EDITORIAL FOR",url_suffix)
 	url = "http://www.usaco.org/index.php?page="+url_suffix
 	soup = parse(url)
 	# if url_suffix == 'feb18results':
@@ -180,6 +180,7 @@ def processEdi(url_suffix):
 			return word[len("USACO "):word.rfind(" Contest")]
 		id_to_prob[get_division(contest)].append([ID,strip_contest(contest),title])
 		# print(t)
+
 	# print(this_contest)
 	# sys.exit(0)
 	# print(panel.name)
@@ -218,43 +219,94 @@ def processEdi(url_suffix):
 
 	# pprint.pprint(edLinks)
 
-def get_all():
-	url = "http://www.usaco.org/index.php?page=contests"
+def process_editorials(url_suffix):
+	if not url_suffix.endswith('results'):
+		return
+	url = "http://www.usaco.org/index.php?page="+url_suffix
+	print("PROCESSING EDITORIAL FOR",url)
 	soup = parse(url)
-	flag = False
-	for x in soup.find_all('a'):
-		link = x['href']
-		if link.endswith("results"):
-			suffix = link[link.rfind('=')+1:]
-			if suffix == "open14results":
-				flag = True
-			if flag:
-				cand.append(suffix[:-7]+"problems")
-			else:
-				cand.append(suffix)
+	# print(soup.prettify())
+	# sys.exit(0)
+
+	# panel = soup.find('div',['panel'])
+	# print("HA",panel)
+	for x in soup.find_all('div',["panel historypanel"]):
+		# print("WHOOPS",x)
+		# title = x.find('b').text
+		res = [y['href'] for y in x.find_all('a')]
+		# division, title -> ID
+		# print("TITLE",title)
+		ID = res[0][res[0].rfind('=')+1:]
+		edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
+		print("FOUND EDITORIAL LINK",ID,edLinks[ID])
+
+	# print("FINISHED",y,j)
+
+
+		# if x.has_attr('style'):
+		# 	print(x['style'])
+		# print(res)
+		# pprint.pprint(res)
+		# print(x.text)
+		# print("-----")
+			# if x['style'].startswith("position:relative;"):
+			# 	print(x.text)
+			# 	print("-----")
+			#print(x)
+		# if x.has_attr('style') and x['style'] == 'position:relative;float:right;':
+		# 	print(x)
+	# sys.exit(0)
+	# for link in soup.find_all('a'):
+	# 	print(link['href'],link.text)
+	# 	# LINK = link['href']
+	# 	# if 'sol' in LINK and 'bronze' in LINK:
+	# 	# 	ed.append("http://www.usaco.org/"+LINK)
+	# # print(soup)
+	# sys.exit(0)
+
+	# pprint.pprint(edLinks)
+
+def get_all():
+	# url = "http://www.usaco.org/index.php?page=contests"
+	# soup = parse(url)
+	# flag = False
+	# for x in soup.find_all('a'):
+	# 	link = x['href']
+	# 	if link.endswith("results"):
+	# 		suffix = link[link.rfind('=')+1:]
+	# 		if suffix == "open14results":
+	# 			flag = True
+	# 		if flag:
+	# 			cand.append(suffix[:-7]+"problems")
+	# 		else:
+	# 			cand.append(suffix)
+	print("CANDIDATES")
+	cand = ["feb21results"]
 	for a in cand:
 		print(a)
+
 	for url in cand:
 		# print("PROCESSING",url)
-		processEdi(url)
+		process_names(url)
 		# print(len(edLinks))
 		if url == "dec15results":
 			break
 
 	print(json.dumps(id_to_prob,indent=4))
 
-get_all()
 
 def id_to_sol():
 	month = ["dec","jan","feb","open"]
 	offset = [0, 1, 1, 1]
-	years = range(15,20) # recent USACO
-	pref = "http://www.usaco.org/index.php?page=" # prefix for each url
-	ed = []
+	years = range(20,21) # recent USACO
+	# pref = "http://www.usaco.org/index.php?page=" # prefix for each url
+	# ed = []
 	for year in years:
 		for j in range(4):
-			url = pref+month[j]+str(year+offset[j])+"results"
+			# url = pref+
+			process_editorials(month[j]+str(year+offset[j])+"results")
+	print(json.dumps(edLinks,indent=4))
 			# if url == "dec15"
 
-
+id_to_sol()
 # get_all()

@@ -5,38 +5,53 @@ title: Digging for Oil
 author: Albert Ye
 ---
 
+[APIO 2009 Official Solutions](http://apio-olympiad.org/2009/apio2009-solutions.pdf)
+
 ## Explanation
 
-**Official Explanation**: [APIO 2009 solutions document](http://apio-olympiad.org/2009/apio2009-solutions.pdf)
+We want the three largest disjoint $K \times K$ squares with the largest total
+sums. Note that every pair of rectangles must be on opposite sides of some line.
+This leaves us with two basic configurations; either there are two parallel
+lines dividing the squares or there are two perpendicular lines. The
+configurations are illustrated below:
 
-We want the three largest disjoint $K \times K$ squares with the largest total sums. Note that every pair of rectangles must be on opposite sides of some line. 
-This leaves us with two basic configurations; either there are two parallel lines dividing the squares or there are two perpendicular lines. 
-The configurations are illustrated below:
+![](<APIO 09-oil/apio09oil-fig1.png>)
 
-![](apio09oil-fig1.png)
-
-Note that solutions need to account for all possible rotations of these configurations.
+Note that solutions need to account for all possible rotations of these
+configurations.
 
 ### Configuration 1
-In this configuration, we can find the answer for each non-middle subrectangle using the method in Configuration 2. However, we need to use another recurrence
-to find the middle rectangle. WLOG let the subrectangles be arranged in top-down order, as the left-right order can be found similarly.
-Let $dp_{i, j}$ be the answer for the rows in interval $[i,j]$. Obviously $dp_{i,i+l}$ has no answers if $l < k-1$. We can also manually find $dp_{i, i+k}$
-manually as a base case. Next, note that $dp_{i,j}$ consists of all $K \times K$ squares counted in $dp_{i+1, j}$ and $dp_{i, j-1}$. Then, there
-are just the squares counted in row $i$ and row $j$, which is just $dp_{i, i+k-1}$ and $dp_{j-k+1, j}$ respectively. Thus, the recurrence is
+
+In this configuration, we can find the answer for each non-middle subrectangle
+using the method in Configuration 2. However, we need to use another recurrence
+to find the middle rectangle. WLOG let the subrectangles be arranged in top-down
+order, as the left-right order can be found similarly. Let $dp_{i, j}$ be the
+answer for the rows in interval $[i,j]$. Obviously $dp_{i,i+l}$ has no answers
+if $l < k-1$. We can also manually find $dp_{i, i+k}$ manually as a base case.
+Next, note that $dp_{i,j}$ consists of all $K \times K$ squares counted in
+$dp_{i+1, j}$ and $dp_{i, j-1}$. Then, there are just the squares counted in row
+$i$ and row $j$, which is just $dp_{i, i+k-1}$ and $dp_{j-k+1, j}$ respectively.
+Thus, the recurrence is
 $$dp_{i,j} = \max(\max(dp_{i+1, j},dp_{i,i+k-1}), \max(dp_{i, j-1}, dp_{j-k+1, j})).$$
 Note that intervals must be traversed from smallest to largest.
 
 ### Configuration 2
-It suffices to use prefix sums. From each corner, find the sum of the values of all points that can be reached solely by travelling
-towards that corner from a point $(i, j)$, and store the value with $(i, j)$. We can use this to find the total amount of oil for the $K \times K$ squares
-on each corner of $(i, j)$. These values help us find the maximum amount of oil in a $K \times K$ square on each corner of $(i, j)$. 
-We then perform some casework for each reflection to get the answer.
 
-## Code
+It suffices to use prefix sums. From each corner, find the sum of the values of
+all points that can be reached solely by travelling towards that corner from a
+point $(i, j)$, and store the value with $(i, j)$. We can use this to find the
+total amount of oil for the $K \times K$ squares on each corner of $(i, j)$.
+These values help us find the maximum amount of oil in a $K \times K$ square on
+each corner of $(i, j)$. We then perform some casework for each reflection to
+get the answer.
+
+## Implementation
+
 <LanguageSection>
 <CPPSection>
 
-$pp_i$ implements the prefix sum function for each corner, and $dp_{i,j}$ is as described.
+$pp_i$ implements the prefix sum function for each corner, and $dp_{i,j}$ is as
+described.
 
 ```cpp
 #include <bits/stdc++.h>

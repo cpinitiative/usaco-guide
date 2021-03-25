@@ -8,8 +8,6 @@ prerequisites:
 frequency: 1
 ---
 
-
-
 export const problems = {
 	persistentSample: new Problem(
 		'CSES',
@@ -32,14 +30,17 @@ export const problems = {
 		),
 	],
 	heap: [
-		new Problem("DMOJ", "Time Travelling Squirrels", "wac4p5", "Very Hard"),
-		new Problem("YS", "K-Shortest Walk", "k_shortest_walk", "Very Hard"),
+		new Problem('DMOJ', 'Time Travelling Squirrels', 'wac4p5', 'Very Hard'),
+		new Problem('YS', 'K-Shortest Walk', 'k_shortest_walk', 'Very Hard'),
 	],
 };
 
 ## Persistent Segment Tree
 
-Persistent segment trees are very similar to sparse segment trees in the sense that we store child pointers. The key differences are that we have multiple roots and every time we "update" a node, we actually create a new node in its place (hence persistence).
+Persistent segment trees are very similar to sparse segment trees in the sense
+that we store child pointers. The key differences are that we have multiple
+roots and every time we "update" a node, we actually create a new node in its
+place (hence persistence).
 
 <FocusProblem problem={problems.persistentSample} />
 
@@ -50,8 +51,19 @@ Persistent segment trees are very similar to sparse segment trees in the sense t
 ### Resources
 
 <Resources>
-	<Resource source="oml1111" url="https://drive.google.com/file/d/0BwGLW04WRv0ITEZjRWlMSFc2bk0/view" title="PSeg Slides" starred></Resource>
-	<Resource source="Anudeep2011" url="https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/" title="PSegs w/ SPOJ">not great formatting</Resource>
+	<Resource
+		source="oml1111"
+		url="https://drive.google.com/file/d/0BwGLW04WRv0ITEZjRWlMSFc2bk0/view"
+		title="PSeg Slides"
+		starred
+	></Resource>
+	<Resource
+		source="Anudeep2011"
+		url="https://blog.anudeep2011.com/persistent-segment-trees-explained-with-spoj-problems/"
+		title="PSegs w/ SPOJ"
+	>
+		not great formatting
+	</Resource>
 </Resources>
 
 <!-- - [Lazy Propogation](http://codeforces.com/blog/entry/47108?#comment-315047) -->
@@ -72,17 +84,17 @@ typedef long long ll;
 using namespace std;
 
 struct Node {
-    ll val;
-    Node *l, *r;
+	ll val;
+	Node *l, *r;
 
-    Node(ll x) : val(x), l(nullptr), r(nullptr) {}
-    Node(Node *ll, Node *rr) {
-        l = ll, r = rr;
-        val = 0;
-        if (l) val += l->val;
-        if (r) val += r->val;
-    }
-    Node(Node *cp) : val(cp->val), l(cp->l), r(cp->r) {}
+	Node(ll x) : val(x), l(nullptr), r(nullptr) {}
+	Node(Node *ll, Node *rr) {
+		l = ll, r = rr;
+		val = 0;
+		if (l) val += l->val;
+		if (r) val += r->val;
+	}
+	Node(Node *cp) : val(cp->val), l(cp->l), r(cp->r) {}
 };
 
 int n, cnt = 1;
@@ -90,51 +102,51 @@ ll a[200001];
 Node* roots[200001];
 
 Node* build(int l = 1, int r = n) {
-    if (l == r) return new Node(a[l]);
-    int mid = (l + r) / 2;
-    return new Node(build(l, mid), build(mid + 1, r));
+	if (l == r) return new Node(a[l]);
+	int mid = (l + r) / 2;
+	return new Node(build(l, mid), build(mid + 1, r));
 }
 
 Node* update(Node* node, int val, int pos, int l = 1, int r = n) {
-    if (l == r) return new Node(val);
-    int mid = (l + r) / 2;
-    if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
-    else return new Node(update(node->l, val, pos, l, mid), node->r);
+	if (l == r) return new Node(val);
+	int mid = (l + r) / 2;
+	if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
+	else return new Node(update(node->l, val, pos, l, mid), node->r);
 }
 
 ll query(Node* node, int a, int b, int l = 1, int r = n) {
-    if (l > b || r < a) return 0;
-    if (l >= a && r <= b) return node->val;
-    int mid = (l + r) / 2;
-    return query(node->l, a, b, l, mid) + query(node->r, a, b, mid + 1, r);
+	if (l > b || r < a) return 0;
+	if (l >= a && r <= b) return node->val;
+	int mid = (l + r) / 2;
+	return query(node->l, a, b, l, mid) + query(node->r, a, b, mid + 1, r);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int q;
-    cin >> n >> q;
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    roots[cnt++] = build();
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int q;
+	cin >> n >> q;
+	for (int i = 1; i <= n; i++) cin >> a[i];
+	roots[cnt++] = build();
 
-    while (q--) {
-        int t;
-        cin >> t;
-        if (t == 1) {
-            int k, i, x;
-            cin >> k >> i >> x;
-            roots[k] = update(roots[k], x, i);
-        } else if (t == 2) {
-            int k, l, r;
-            cin >> k >> l >> r;
-            cout << query(roots[k], l, r) << '\n';
-        } else {
-            int k;
-            cin >> k;
-            roots[cnt++] = new Node(roots[k]);
-        }
-    }
-    return 0;
+	while (q--) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int k, i, x;
+			cin >> k >> i >> x;
+			roots[k] = update(roots[k], x, i);
+		} else if (t == 2) {
+			int k, l, r;
+			cin >> k >> l >> r;
+			cout << query(roots[k], l, r) << '\n';
+		} else {
+			int k;
+			cin >> k;
+			roots[cnt++] = new Node(roots[k]);
+		}
+	}
+	return 0;
 }
 ```
 
@@ -144,14 +156,22 @@ int main() {
 
 ### Problems
 
-A nice thing about persistent segment trees is that they can be used for online 2D static range sum queries in $\mathcal{O}(\log N)$ time (think about it like prefix sums).
+A nice thing about persistent segment trees is that they can be used for online
+2D static range sum queries in $\mathcal{O}(\log N)$ time (think about it like
+prefix sums).
 
 <IncompleteSection />
 
 ## Persistent Heap
 
 <Resources>
-	<Resource source="Benq" title="Leftist Heap" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/LeftistHeap.h"> </Resource>
+	<Resource
+		source="Benq"
+		title="Leftist Heap"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/LeftistHeap.h"
+	>
+		{' '}
+	</Resource>
 </Resources>
 
 <Problems problems={problems.heap} />

@@ -35,7 +35,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const disabledClasses =
     'text-gray-200 pointer-events-none dark:text-dark-disabled-emphasis';
   const activeClasses =
-    'text-gray-500 hover:text-gray-800 dark:text-dark-med-emphasis dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out';
+    'text-gray-500 hover:text-gray-800 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis transition';
   return (
     <div
       className={`flex ${

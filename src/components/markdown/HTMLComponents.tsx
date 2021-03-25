@@ -2,7 +2,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import CodeBlock from './CodeBlock/CodeBlock';
 
-const OffsetAnchor = ({ id, ...props }) => (
+export const OffsetAnchor = ({ id, ...props }) => (
   <span
     id={id}
     {...props}

@@ -2,7 +2,7 @@
 id: usaco-691
 source: USACO Silver 2017 January
 title: Hoof, Paper, Scissors
-author: Óscar Garries and Mrinall Umausdhan
+author: Óscar Garries (C++), Owen Wang (Java)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_hps_silver_jan17.html)
@@ -10,7 +10,7 @@ author: Óscar Garries and Mrinall Umausdhan
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -59,117 +59,51 @@ int main () {
 </CPPSection>
 <JavaSection>
 
-## Java Implementation
+## Implementation
 
 ```java
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class hps {
-    static class InputReader {
-        BufferedReader reader;
-        StringTokenizer tokenizer;
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(new File("hps.in"));
+		PrintWriter out = new PrintWriter("hps.out");
 
-        public InputReader(File stream) throws FileNotFoundException {
-            reader = new BufferedReader(new FileReader(stream), 32768);
-            tokenizer = null;
-        }
+		int N = sc.nextInt();
+		int[] hooves = new int[N + 1];
+		int[] paper = new int[N + 1];
+		int[] scissors = new int[N + 1];
 
-        String next() { // reads in the next string
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
+		for (int i = 1; i < N + 1; i++) {
+			char action = sc.next().charAt(0);
+			hooves[i] += hooves[i - 1];
+			paper[i] += paper[i - 1];
+			scissors[i] += scissors[i - 1];
+			if (action == 'H') {
+				paper[i] ++;
+			} else if (action == 'P') {
+				scissors[i] ++;
+			} else if (action == 'S') {
+				hooves[i] ++;
+			}
+		}
 
-        public int nextInt() {
-            return Integer.parseInt(next());
-        } // reads in the next int
+		sc.close();
 
-        public long nextLong() {
-            return Long.parseLong(next());
-        } // reads in the next long
+		int max = 0;
 
-        public double nextDouble() {
-            return Double.parseDouble(next());
-        } // reads in the next double
-    }
+		for (int i = 1; i < N + 1; i++) {
+			int beforeWin = Math.max(hooves[i], Math.max(paper[i], scissors[i]));
+			int afterWin = Math.max(hooves[N] - hooves[i], Math.max(paper[N] - paper[i], scissors[N] - scissors[i]));
 
-    static InputReader sc;
+			max = Math.max(max, beforeWin + afterWin);
+		}
 
-    static {
-        try {
-            sc = new InputReader(new File("hps.in"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static void main(String[] args) throws IOException {
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
-        int N = sc.nextInt(); String [] arr = new String[N + 1]; int ans = 0;
-        int[] h = new int [N + 1]; int[] p = new int[N + 1]; int[] s = new int[N + 1];
-        String [] gestures = {"H", "P", "S"};
-        for (int i = 1; i <= N; i++) {
-            arr[i] = sc.next();
-            if(arr[i].equals("H")){
-                h[i] = h[i - 1] + 1;
-                p[i] = p[i - 1];
-                s[i] = s[i - 1];
-            }else if(arr[i].equals("S")){
-                s[i] = s[i - 1] + 1;
-                h[i] = h[i - 1];
-                p[i] = p[i - 1];
-            }else if(arr[i].equals("P")){
-                p[i] = p[i - 1] + 1;
-                s[i] = s[i - 1];
-                h[i] = h[i - 1];
-            }
-        }
-
-        for (int i = 1; i <= N; i++) {
-            for (int j = 0; j < 3; j++) {
-                int temp = 0;
-                if (i > 0) {
-                    String OGMove = gestures[j];
-                    switch (OGMove) {
-                        case "H":
-                            temp += s[0] + s[i - 1];
-                            break;
-                        case "S":
-                            temp += p[0] + p[i - 1];
-                            break;
-                        case "P":
-                            temp += h[0] + h[i - 1];
-                            break;
-                    }
-                }
-                for (int k = 0; k < 3; k++) {
-                    int temp2 = 0;
-                    String NextMove = gestures[k];
-                    switch (NextMove) {
-                        case "H":
-                            temp2 += s[N] - s[i-1];
-                            break;
-                        case "S":
-                            temp2 += p[N] - p[i-1];
-                            break;
-                        case "P":
-                            temp2 += h[N] - h[i-1];
-                            break;
-                    }
-                    ans = Math.max(temp + temp2, ans);
-                }
-            }
-        }
-        out.println(ans);
-        out.close();
-    }
+		out.println(max);
+		out.close();
+	}
 }
 ```
 

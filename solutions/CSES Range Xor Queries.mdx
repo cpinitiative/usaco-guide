@@ -1,0 +1,42 @@
+---
+id: cses-1650
+source: CSES
+title: Range Xor Queries
+author: Danh Ta Chi Thanh
+---
+
+## Solution
+
+[Unofficial Editorial](https://codeforces.com/blog/entry/77128?#comment-637536)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+//constant initialization
+const int maxn=2e5+10;
+
+//variables used for the current problem
+long long n,q,a[maxn],u,v;
+
+void solve(){
+	cin >> n >> q;
+	for (int i=1;i<=n;++i){
+		cin >> a[i];
+		a[i]^=a[i-1]; //Calculate the xor prefix sum
+	}
+	while (q--){
+		cin >> u >> v;
+		cout << (a[v] xor a[u-1]) << "\n";
+	}
+	return;
+}
+
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	solve();
+	return 0;
+}
+```

@@ -2,7 +2,7 @@
 id: usaco-595
 source: USACO Bronze 2016 January
 title: Subsequences Summing to Sevens
-author: Óscar Garries
+author: thetazero
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
@@ -10,41 +10,34 @@ author: Óscar Garries
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int main() {
+int main(){
 	freopen("div7.in", "r", stdin);
 	freopen("div7.out", "w", stdout);
-
 	int n;
 	cin >> n;
-	int pref[n + 1];
-	pref[0] = 0;
-	set<int> vistos = {0};
-	map<int, int> index;
-	int sol = 0;
-	for (int i = 0; i < n; i++) {
-		int cur;
-		cin >> cur;
-		pref[i + 1] = (pref[i] + cur) % 7;
-
-		if (vistos.count(pref[i + 1])) {
-			int dist = i - index[pref[i + 1]];
-			sol = max(sol, dist);
-		} else {
-			vistos.insert(pref[i + 1]);
-			index[pref[i + 1]] = i;
+	vector<int> pref(n+1);
+	int ans=0;
+	vector<int> first(7, -1);
+	first[0]=0;
+	for(int i=1;i<=n;i++){
+		int x;
+		cin >> x;
+		pref[i]=(pref[i-1]+x)%7;
+		if(first[pref[i]]==-1){
+			first[pref[i]]=i;
+		}else{
+			ans=max(ans, i-first[pref[i]]);
 		}
 	}
-	cout << sol << '\n';
+	cout << ans << endl;
 }
-
-
 ```
 
 </CPPSection>

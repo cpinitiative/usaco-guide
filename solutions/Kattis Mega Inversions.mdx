@@ -7,6 +7,8 @@ author: Benjamin Qi, Oscar Garries
 
 For each $j$, compute number of $i$ and $k$ independently.
 
+## With Indexed Sets
+
 ```cpp
 #include <bits/stdc++.h>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -14,7 +16,7 @@ For each $j$, compute number of $i$ and $k$ independently.
 
 using namespace std;
 using namespace __gnu_pbds;
- 
+
 typedef long long ll;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
@@ -41,25 +43,27 @@ vi z;
 ll ans = 0;
 
 int main() {
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    cin >> n; z.resize(n);
-    F0R(i,n) cin >> z[i];
-    
-    Tree<pii> T1;
-    F0R(i,n) {
-        hi[i] = T1.size()-T1.order_of_key({z[i],MOD});
-        T1.insert({z[i],i});
-    }
-    Tree<pii> T2;
-    F0Rd(i,n) {
-        lo[i] = T2.order_of_key({z[i],-MOD});
-        T2.insert({z[i],i});
-    }
-    F0R(i,n) ans += lo[i]*hi[i];
-    cout << ans;
+	ios_base::sync_with_stdio(0);cin.tie(0);
+	cin >> n; z.resize(n);
+	F0R(i,n) cin >> z[i];
+
+	Tree<pii> T1;
+	F0R(i,n) {
+		hi[i] = T1.size()-T1.order_of_key({z[i],MOD});
+		T1.insert({z[i],i});
+	}
+	Tree<pii> T2;
+	F0Rd(i,n) {
+		lo[i] = T2.order_of_key({z[i],-MOD});
+		T2.insert({z[i],i});
+	}
+	F0R(i,n) ans += lo[i]*hi[i];
+	cout << ans;
 }
 ```
-We can also use two BIT
+
+## With BITs
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -71,33 +75,33 @@ ll bit2[MX], bit1[MX];
 int n;
 
 void upd (int i, int val, ll ar[]) {
-    for (; i <= n; i += i&(-i)) {
-        ar[i] += val;
-    }
+	for (; i <= n; i += i&(-i)) {
+		ar[i] += val;
+	}
 }
 
 ll query (int i, ll ar[]) {
-    ll res = 0;
-    for (; i; i -= i&(-i)) {
-        res += ar[i];
-    }
-    return res;
+	ll res = 0;
+	for (; i; i -= i&(-i)) {
+		res += ar[i];
+	}
+	return res;
 }
 
 int main () {
-    cin >> n;
-    int ar[n];
-    for (int i = 0; i < n; i++) {
-        cin >> ar[i];
-    }
+	cin >> n;
+	int ar[n];
+	for (int i = 0; i < n; i++) {
+		cin >> ar[i];
+	}
 
-    ll sol = 0;
-    for (int i = n - 1; i >= 0; i--) {
-        sol += query(ar[i] - 1, bit2);
-        ll uno = query(ar[i] - 1, bit1);
-        upd(ar[i], 1, bit1);
-        upd(ar[i], uno, bit2);
-    }
-    cout << sol << '\n';
+	ll sol = 0;
+	for (int i = n - 1; i >= 0; i--) {
+		sol += query(ar[i] - 1, bit2);
+		ll uno = query(ar[i] - 1, bit1);
+		upd(ar[i], 1, bit1);
+		upd(ar[i], uno, bit2);
+	}
+	cout << sol << '\n';
 }
 ```

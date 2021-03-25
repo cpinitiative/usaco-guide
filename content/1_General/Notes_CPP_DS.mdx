@@ -1,0 +1,174 @@
+---
+id: notes-cpp-ds
+title: (Optional) C++ - Additional Notes About Data Structures
+author: Benjamin Qi
+description: 'Issues that you should be aware of.'
+---
+
+## `vector` Out Of Range
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v(1,5), w(1,10);
+	for (int i = 0; i < 10; ++i)
+		cout << i << " " << w[i] << "\n";
+	for (int i = 0; i < 10; ++i) v[i] = i;
+	cout << "---\n";
+	for (int i = 0; i < 10; ++i)
+		cout << i << " " << w[i] << "\n";
+}
+```
+
+produces the following output:
+
+```
+0 10
+1 0
+2 0
+3 0
+4 0
+5 0
+6 0
+7 0
+8 0
+9 0
+---
+0 4
+1 5
+2 6
+3 7
+4 8
+5 9
+6 0
+7 0
+8 0
+9 0
+```
+
+This is an example of
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). Using
+[vector::at](https://www.cplusplus.com/reference/vector/vector/at/) instead of
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[]/)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v(1,5), w(1,10);
+	for (int i = 0; i < 10; ++i)
+		cout << i << " " << w.at(i) << "\n";
+	for (int i = 0; i < 10; ++i) v.at(i) = i;
+	cout << "---\n";
+	for (int i = 0; i < 10; ++i)
+		cout << i << " " << w.at(i) << "\n";
+}
+```
+
+will check the bounds and throw an exception instead:
+
+```
+0 10
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+1 zsh: abort      ./$1 $@[2,-1]
+```
+
+## Unspecified Evaluation Order
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res{-1};
+int addElement() {
+	res.push_back(-1);
+	return res.size()-1;
+}
+
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		res[i] = addElement();
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+Running the above code with C++17
+
+```
+g++ -std=c++17 bad.cpp -o bad && ./bad
+```
+
+gives the intended output:
+
+```
+0 1
+1 2
+2 3
+3 4
+4 5
+5 6
+6 7
+7 8
+8 9
+9 10
+```
+
+But running with C++14
+
+```
+g++ -std=c++14 bad.cpp -o bad && ./bad
+```
+
+gives:
+
+```
+0 -1
+1 -1
+2 3
+3 -1
+4 5
+5 6
+6 7
+7 -1
+8 9
+9 10
+```
+
+However, the code works correctly if you save the result of `addElement()` to an
+intermediate variable.
+
+```cpp
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		int tmp = addElement();
+		res[i] = tmp;
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
+
+The problem is that `res[i] = addElement();` only works if `addElement()` is
+evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_
+`addElement()` results in the memory for `res` being reallocated, then `res[i]`
+is invalidated. The order in which `res[i]` and `addElement()` are evaluated is
+unspecified (at least before C++17).
+
+See
+[this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated)
+StackOverflow post for some discussion about why this is the case (also a
+similar issue
+[here](https://stackoverflow.com/questions/18040037/why-does-setting-an-element-of-a-map-to-its-size-increments-the-size-before-as)).
+
+You may come across this issue when trying to create a
+[trie](https://codeforces.com/blog/entry/83241#comment-705458).
+
+## Initializing Array of Structs
+
+See [here](https://codeforces.com/blog/entry/79909?#comment-658518).

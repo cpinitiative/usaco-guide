@@ -1,142 +1,150 @@
 ---
-id: usaco-761
-source: USACO Bronze 2017 December
-title: The Bovine Shuffle
-author: Jesse Choe
+id: usaco-763
+source: USACO Silver 2017 December
+title: Milk Measurement
+author: Qi Wang
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_measurement_bronze_dec17.html)
+[Official Analysis](http://www.usaco.org/current/data/sol_measurement_silver_dec17.html)
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-<CPPSection>
+<JavaSection>
 
-## C++ Implementation
+```java
+//Created by Qi Wang
+import java.util.*;
+import java.io.*;
 
-```cpp
-// Created by Jesse Choe - Bronze Template
+public class measurement {
+	static int N, G, A;
+	static Log[] L;
+	static Map<Integer, Integer> ids = new HashMap<>();
+	//Sorting keys from greatest to least
+	static TreeMap<Integer, Integer> values = new TreeMap<>((o1, o2) -> o2-o1);
+	public static void main(String[] args) throws IOException {
+		InputReader in = new InputReader("measurement.in");
+		N = in.nextInt(); G = in.nextInt(); L = new Log[N];
+		for (int i = 0; i < N; i++) {
+			int d, id, c;
+			d = in.nextInt(); id = in.nextInt(); c =in.nextInt();
+			L[i] = new Log(d, id, c);
+			ids.put(id, 0);
+		}
 
-#include <bits/stdc++.h>
-using namespace std;
+		Arrays.sort(L, Comparator.comparingInt(o -> o.d));
+		values.put(0, N+1);
 
-// Type aliases
+		for (int i = 0; i < N; i++) {
+			int change = ids.get(L[i].id);
+			boolean wasTop = change == values.firstKey();
+			int prevCnt = values.get(change);
+			values.put(change, values.get(change)-1);
+			if (values.get(change) == 0) values.remove(change);
 
-using ll = long long;
-using str = string; 
-using vi = vector<int>;
-using pi = pair<int,int>;
-using vpi = vector<pi>;
-using si = set<int>;
+			change += L[i].c;
+			ids.put(L[i].id, change);
+			values.put(change, values.getOrDefault(change,0)+1);
 
-// Vector Operations
+			boolean isTop = change == values.firstKey();
+			int curCnt = values.get(change);
 
-#define sz(x) (int)(x).size()
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sor(x) sort(all(x))
-#define rev(x) reverse(all(x))
-#define del(x, i) erase(begin(x)+i)
-#define rem(x,i) erase(begin(x), begin(x)+i)
-
-// Pairs
-
-#define mp make_pair
-#define sec second
-#define fir first
-
-// Sets and Maps
-
-#define ins insert
-#define ez erase
-#define cnt count
-
-// Math
-
-const int MOD = 1e9+7;
-const int MAX_INT = 2147483647;
-const int MIN_INT = -2147483647;
-
-// Permutation
-
-#define possibilities(x) while(next_permutation(all(x))
-
-// Loops
-
-#define Trav(a,x) for (auto& a: x)
-#define For(i,a,b) for (int i = (a); i < (b); ++i)
-
-// For Rectange Geometry problems
-
-struct Rectangle{
-	int x1, y1, x2, y2;
-};
-
-int area(Rectangle r1){
-	return (r1.x2 - r1.x1) * (r1.y2 - r1.y1);
-}
-
-int intersection(Rectangle b, Rectangle t){
-	int horizontalLength = max(0, min(b.x2, t.x2) - max(b.x1, t.x1)); 
-	int verticalLength = max(0, min(b.y2, t.y2) - max(b.y1, t.y1));
-	return horizontalLength * verticalLength; 
-}
-
-// Input/Output - s is basically the file name without the ".in" and ".out"
-
-void setIO(string name="") { // name is nonempty for USACO file I/O
-    ios_base::sync_with_stdio(0); cin.tie(0); 
-    if(sz(name)){
-        freopen((name+".in").c_str(), "r", stdin);
-        freopen((name+".out").c_str(), "w", stdout);
-    }
-}
-
-int max(int a, int b, int c){
-	return max(a, max(b,c));
-}
-
-int display[3][101];
-
-bool best(int cow, int day){
-	return display[cow][day] == max(display[0][day], display[1][day], display[2][day]);
-}
-
-int main(){
-
-	setIO("measurement"); 
-
-	int N; cin >> N;
-
-	For(i, 0, N){
-		string name; int day, change; cin >> day >> name >> change;
-		if(name == "Bessie"){
-			display[0][day] = change;
-		} else if(name == "Elsie"){
-			display[1][day] = change;
-		} else {
-			display[2][day] = change;
+			if(wasTop){
+				if(isTop && curCnt == prevCnt && curCnt == 1){
+					continue;
+				}
+				//If it was the highest and now its not or there are now multiple highest cows, we need to increment answer
+				A++;
+			}
+			else if(isTop){
+				//If it wasn't at the highest but now it is, then we need to increment answer
+				A++;
+			}
+		}
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("measurement.out")));
+		out.println(A);
+		out.close();
+	}
+	private static class Log{
+		int d, id, c;
+		public Log(int a, int b, int c){
+			d = a;
+			id = b;
+			this.c = c;
 		}
 	}
+	private static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer tokenizer;
 
-	For(c, 0, 3){
-		display[c][0] = 7;
-	}
+		public InputReader() {
+			try {
+				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+			} catch (Exception e) {
+				throw new NullPointerException("Could not create input stream");
+			}
+		}
 
-	For(c, 0, 3){
-		For(i, 1, 101){
-			display[c][i]+=display[c][i-1];
+		public InputReader(String fileName) {
+			try {
+				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
+			} catch (Exception ex) {
+				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
+			}
+			tokenizer = null;
+		}
+
+		public String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+
+		public boolean hasNextInt() throws IOException { return reader.ready(); }
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		public double nextDouble() {
+			return Double.parseDouble(next());
+		}
+
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+
+		public char nextChar() {
+			return next().charAt(0);
+		}
+
+		/**
+		 * When you call next(), that entire line will be skipped.
+		 * No flushing buffers.
+		 * Doesn't work when you want to scan the remaining line.
+		 *
+		 * @return entire line
+		 */
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = reader.readLine();
+				tokenizer = null;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return str;
 		}
 	}
-
-	int ans = 0;
-
-	For(d, 1, 101){
-		ans+=((best(0, d-1) != best(0, d)) || (best(1, d-1) != best(1, d)) || (best(2, d-1) != best(2, d)));
-	}
-
-	cout << ans << endl;
-
 }
 ```
 
-</CPPSection>
+</JavaSection>
 </LanguageSection>

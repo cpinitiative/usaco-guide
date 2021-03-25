@@ -12,12 +12,14 @@ def parse(url):
 
 def usaco_parse(is_plat,html): 
 	# print(html.prettify())
+	table_number = 0
 	for a in html.find_all('table'): # based off pre-college results
+		table_number += 1
 		fst = True
 		lens = []
 		names = []
 		tot = 0
-		bad = is_plat
+		bad = True
 		num_probs = 0
 		for b in a.find_all('tr'):
 			if fst:
@@ -56,18 +58,23 @@ def usaco_parse(is_plat,html):
 				tot += 1 
 				if tmpScore < 1: # less than third of points, data is probably complete?
 					bad = False
+				if is_plat:
+					break
 			fst = False
 		tsum = 0
+		if tot == 0:
+			return None
 		for i in range(num_probs):
 			totScore[i] /= tot 
 			tsum += totScore[i]
 		for i in range(num_probs):
 			relScore[i] = totScore[i]/tsum
-		if bad:
-			return None
-		return totScore
 		# if bad:
-		# 	print("INCOMPLETE DATA")
+		# 	return None
+		if table_number == 2:
+			if bad:
+				print("INCOMPLETE DATA")
+			return totScore
 
 		# def ro(x):
 		# 	return str(round(1000*x)/10)+"%"
@@ -81,7 +88,8 @@ def usaco_stats():
 	month = ["dec","jan","feb","open"]
 	month_expand = ["December","January","February","US Open"]
 	offset = [0, 1, 1, 1]
-	year = [15, 16, 17, 18, 19]
+	# year = [15, 16, 17, 18, 19, 20] # 15, 
+	year = [20]
 	score_data = {"Bronze": {}, "Silver": {}, "Gold": {}, "Platinum": {}}
 	for division in ['bronze','silver','gold','platinum']:
 		for a in year:

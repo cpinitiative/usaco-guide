@@ -9,19 +9,16 @@ description: 'Maintaining data over consecutive subarrays.'
 frequency: 2
 ---
 
-
-
 export const problems = {
-	constantSam:
-		new Problem(
-			'LC',
-			'Sliding Window Maximum',
-			'sliding-window-maximum',
-			'Easy',
-			false,
-			[],
-			''
-		),
+	constantSam: new Problem(
+		'LC',
+		'Sliding Window Maximum',
+		'sliding-window-maximum',
+		'Easy',
+		false,
+		['Sliding Window'],
+		''
+	),
 	constant: [
 		new Problem(
 			'CSES',
@@ -29,19 +26,40 @@ export const problems = {
 			'1644',
 			'Normal',
 			false,
-			['prefix-sums'],
-			''
+			['Sliding Window', 'Prefix Sums'],
+			'cses-1671'
 		),
-		new Problem('CSES', 'Sliding Median', '1076', 'Normal', false, [], ''),
-		new Problem('CSES', 'Sliding Cost', '1077', 'Hard', false, [], ''),
+		new Problem(
+			'CSES',
+			'Sliding Median',
+			'1076',
+			'Normal',
+			false,
+			['Sliding Window', 'Set'],
+			'cses-1076'
+		),
+		new Problem(
+			'CSES',
+			'Sliding Cost',
+			'1077',
+			'Hard',
+			false,
+			['Sliding Window', 'Set'],
+			'cses-1077'
+		),
 	],
 	sam: new Problem('CSES', 'Playlist', '1141', 'Easy', false, ['2P'], ''),
 	general: [
 		new Problem('CF', 'K-Good Segment', '616/problem/D', 'Easy', false, [], ''),
-		new Problem('Gold', 'Haybale Feast', '767', 'Easy', false, [
-			'Set',
-			'Sliding Window',
-		]),
+		new Problem(
+			'Gold',
+			'Haybale Feast',
+			'767',
+			'Easy',
+			false,
+			['Set', 'Sliding Window'],
+			''
+		),
 		new Problem(
 			'APIO',
 			'2015 - Palembang Bridges',
@@ -51,10 +69,24 @@ export const problems = {
 			['Sliding Window', 'Median'],
 			'apio-15-bridge'
 		),
-		new Problem('Gold', 'Painting the Barn', '923', 'Normal', true, [
-			'Sliding Window',
-		]),
-		new Problem('Plat', 'Fort Moo', '600', 'Normal', false, ['Sliding Window']),
+		new Problem(
+			'Gold',
+			'Painting the Barn',
+			'923',
+			'Normal',
+			true,
+			['Sliding Window'],
+			''
+		),
+		new Problem(
+			'Plat',
+			'Fort Moo',
+			'600',
+			'Normal',
+			false,
+			['Sliding Window'],
+			''
+		),
 		new Problem(
 			'APIO',
 			'2009 - Digging for Oil',
@@ -109,9 +141,10 @@ export const problems = {
 
 From CPH:
 
-> A sliding window is a constant-size subarray that moves from left to right through the array.
+> A sliding window is a constant-size subarray that moves from left to right
+> through the array.
 
-For each position of the window, we want to compute some information. 
+For each position of the window, we want to compute some information.
 
 <FocusProblem problem={problems.constantSam} />
 
@@ -130,7 +163,12 @@ For each position of the window, we want to compute some information.
 
 ### Implementation
 
-The most straightforward way to do this is to store an ordered set of integers representing the integers inside the window. If the window currently spans the range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$ only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two operations and query for the minimum / maximum in the set in $\mathcal{O}(\log N)$.
+The most straightforward way to do this is to store an ordered set of integers
+representing the integers inside the window. If the window currently spans the
+range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$
+only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two
+operations and query for the minimum / maximum in the set in
+$\mathcal{O}(\log N)$.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
@@ -199,7 +237,8 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 
 ## With Two Pointers
 
-In general, it is not required for the subarray to have constant size as long as both the left and right endpoints of the subarray only move to the right.
+In general, it is not required for the subarray to have constant size as long as
+both the left and right endpoints of the subarray only move to the right.
 
 <FocusProblem problem={problems.sam} />
 
@@ -225,14 +264,14 @@ set<int> s;
 int a[200000], ans;
 
 int main() {
-    int r = -1;
-    cin >> n; F0R(i,n) cin >> a[i];
-    F0R(i,n) {
-        while (r < n-1 && !s.count(a[r+1])) s.insert(a[++r]);
-        ans = max(ans,r-i+1);
-        s.erase(a[i]);
-    }
-    cout << ans;
+	int r = -1;
+	cin >> n; F0R(i,n) cin >> a[i];
+	F0R(i,n) {
+		while (r < n-1 && !s.count(a[r+1])) s.insert(a[++r]);
+		ans = max(ans,r-i+1);
+		s.erase(a[i]);
+	}
+	cout << ans;
 }
 ```
 
@@ -291,8 +330,7 @@ public class test{
 Method 2 from cp-algo.
 
 <Resources>
-	<Resource source="CPH" title="8.3 - Sliding Window Minimum">
-	</Resource>
+	<Resource source="CPH" title="8.3 - Sliding Window Minimum"></Resource>
 </Resources>
 
 <LanguageSection>
@@ -334,14 +372,14 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
 	for (int i = 0; i < k; i++) {
 		while(!d.isEmpty() && nums[i] > nums[d.peekLast()]) {
-    			d.pollLast();
+			d.pollLast();
 		}
 		d.addLast(i);
 	}
 	for (int i = k; i < nums.length; i++) {
 		ret.add(nums[d.peekFirst()]);
 		if(!d.isEmpty() && d.peekFirst() <= i-k) {
- 			d.pollFirst();
+			d.pollFirst();
 		}
 		while(!d.isEmpty() && nums[i] >= nums[d.peekLast()]) {
 			d.pollLast();

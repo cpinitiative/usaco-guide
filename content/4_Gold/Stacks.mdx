@@ -2,13 +2,12 @@
 id: stacks
 title: Stacks
 author: Darren Yao, Michael Cao
-description: 'A data structures that only allows insertion and deletion at one end.'
+description:
+  'A data structures that only allows insertion and deletion at one end.'
 prerequisites:
   - intro-ds
 frequency: 1
 ---
-
-
 
 export const problems = {
 	nearest: [
@@ -18,7 +17,7 @@ export const problems = {
 			'1645',
 			'Easy',
 			false,
-			[],
+			['Stack'],
 			''
 		),
 	],
@@ -29,21 +28,46 @@ export const problems = {
 			'largest-rectangle-in-histogram',
 			'Normal',
 			false,
-			[],
+			['Stack'],
 			'lc-largest-rectangle-in-histogram'
 		),
-		new Problem('Gold', 'Modern Art 2', '743', 'Normal', false, [], ''),
-		new Problem('Gold', 'Dishwashing', '922', 'Normal', false, [], ''),
-		new Problem('CSES', 'Maximum Building I', '1147', 'Normal', false, [], 'cses-1147'),
-		new Problem('CEOI', 'Fancy Fence', 'https://codeforces.com/contest/1402/problem/A', 'Normal', false, [], ''),
+		new Problem('Gold', 'Modern Art 2', '743', 'Normal', false, ['Stack'], ''),
+		new Problem('Gold', 'Dishwashing', '922', 'Normal', false, ['Stack'], ''),
+		new Problem(
+			'CSES',
+			'Maximum Building I',
+			'1147',
+			'Normal',
+			false,
+			['Stack'],
+			'cses-1147'
+		),
+		new Problem(
+			'CEOI',
+			'2020 - Fancy Fence',
+			'https://codeforces.com/contest/1402/problem/A',
+			'Normal',
+			false,
+			['Stack'],
+			''
+		),
+		new Problem(
+			'CSES',
+			'Increasing Array Queries',
+			'2416',
+			'Hard',
+			false,
+			['Stack', 'PURS'],
+			'cses-2416'
+		),
 		new Problem(
 			'IOI',
 			'2004 - Empodia',
 			'https://contest.yandex.com/ioi/contest/560/problems/D/',
 			'Very Hard',
 			false,
-			[],
-			'ioi-empodia'
+			['Stack'],
+			'ioi-04-empodia'
 		),
 		new Problem(
 			'InfoArena',
@@ -51,7 +75,7 @@ export const problems = {
 			'https://infoarena.ro/problema/ssdj',
 			'Very Hard',
 			false,
-			[],
+			['Stack'],
 			''
 		),
 		new Problem(
@@ -60,16 +84,16 @@ export const problems = {
 			'1148',
 			'Insane',
 			false,
-			[],
+			['Stack'],
 			''
 		),
 		new Problem(
-			'Croatian OI',
-			'Žarulje',
+			'COI',
+			'2015 - Žarulje',
 			'https://oj.uz/problem/view/COI15_zarulje',
 			'Insane',
 			false,
-			[],
+			['Stack'],
 			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COI/official/2015/final-exam1/solutions.pdf'
 		),
 	],
@@ -110,7 +134,9 @@ export const problems = {
 
 ## Stacks
 
-A stack is a **Last In First Out** (LIFO) data structure that supports three operations, all in $\mathcal{O}(1)$ time. Think of it like a real-world stack of papers.
+A stack is a **Last In First Out** (LIFO) data structure that supports three
+operations, all in $\mathcal{O}(1)$ time. Think of it like a real-world stack of
+papers.
 
 <LanguageSection>
 
@@ -162,7 +188,8 @@ System.out.println(s.size()); // 2
 
 Consider the following problem:
 
-> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
+> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index
+> $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
 
 <Resources>
 	<Resource
@@ -186,12 +213,23 @@ Consider the following problem:
 		url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"
 	></Resource> -->
 
-To solve this, let's store a stack of pairs of $value, index$ and iterate over the array from left to right. For some index $i$, we will compute $ans_i$, the rightmost index for $i$, as follows:
+To solve this, let's store a stack of pairs of $value, index$ and iterate over
+the array from left to right. For some index $i$, we will compute
+$\texttt{ans}[i]$, the rightmost index for $i$, as follows:
 
-- Keep popping the top element off the stack as long as $value \ge a_i$. This is because we know that the pair containing $value$ will never be the solution to any index $j > i$, since $a_i$ is less than or equal to than $value$ and has an index further to the right.
-- If $value < a_i$, set $ans[i]$ to $index$, because a stack stores the most recently added values first (or in this case, the rightmost ones), $index$ will contain the rightmost value which is less than $a_i$. Then, add ($a_i, i$) to the stack.
+- Keep popping the top element off the stack as long as $value \ge a_i$. This is
+  because we know that the pair containing $value$ will never be the solution to
+  any index $j > i$, since $a_i$ is less than or equal to than $value$ and has
+  an index further to the right.
+- If $value < a_i$, set $\texttt{ans}[i]$ to $index$, because a stack stores the
+  most recently added values first (or in this case, the rightmost ones),
+  $index$ will contain the rightmost value which is less than $a_i$. Then, add
+  ($a_i, i$) to the stack.
 
-The stack we used is called a **monotonic stack** because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing.
+The stack we used is called a **monotonic stack** because we keep popping off
+the top element of the stack which maintains it's monotonicity (the same
+property needed for algorithms like binary search) because the elements in the
+stack are increasing.
 
 ### Implementation
 
@@ -200,25 +238,28 @@ The stack we used is called a **monotonic stack** because we keep popping off th
 <CPPSection>
 
 ```cpp
-int n;
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int N;
 
 int main() {
-	setIO(); re(n);
-	vpi v; v.pb({0,0});
-	FOR(i,1,n+1) {
-		int x; re(x);
-		while (sz(v) && v.back().f >= x) v.pop_back();
-		pr(v.back().s,' ');
-		v.pb({x,i});
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> N;
+	stack<pair<int, int>> stack;
+	stack.push({0, 0});
+
+	for(int i = 1; i <= N; ++i) {
+		int a; cin >> a;
+		while(!stack.empty() && stack.top().first >= a) stack.pop();
+		cout << stack.top().second << " ";
+		stack.push({a, i});
 	}
 }
 ```
-
-<IncompleteSection>
-
-convert this
-
-</IncompleteSection>
 
 </CPPSection>
 

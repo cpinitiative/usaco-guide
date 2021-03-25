@@ -2,257 +2,185 @@
 id: joi-20-joitter
 source: JOI 2020
 title: Making Friends on Joitter is Fun
-author: Benjamin Qi
+author: Andi Qu
 ---
+
+<Spoiler title="Hint 1">
+
+The problem asks for the maximum number of followings after each social exchange
+event, but is it even possible _not_ to achieve that maximum?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Consider the following scenario: there are $X$ people numbered $1$ to $X$, and
+for each $2 \leq i \leq X$, people $i$ and $i - 1$ follow each other. What will
+their followings look like after a social exchange event?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Following from hint 2, what if there are another $Y$ people numbered $X + 1$ to
+$X + Y$, and person $1$ follows person $X + 1$ while person $X + Y$ follows
+person $X$?
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+We're dealing with a DSU-like structure, so small-to-large merging can
+potentially be useful.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+**Time Complexity:** $\mathcal O(M \log^2 N)$.
+
+We'll always end up with the same number of followings after a social exchange
+event regardless of the order in which we choose the triples $(x, y, z)$.
+
+Consider the following graph:
+
+- Nodes represent people on Joitter.
+- There are two types of edges: red and blue.
+  - Red edges are undirected and represent a mutual following
+  - Blue edges are directed and represent a one-way following
+
+The key observation is that if node $u$ can reach node $v$ using only red edges,
+then they will be connected with a red edge after a social exchange event. This
+suggests that we should use DSU to keep track of components of nodes connected
+by red edges.
+
+Furthermore, if we have two separate components $A$ and $B$, four nodes
+$u_A, v_A \in A, u_B, v_B \in B$ (not necessarily distinct), and the blue edges
+$u_A \rightarrow v_B$ and $u_B \rightarrow v_A$, then each pair of nodes in
+$A \cup B$ will also have a red edge between them after a social exchange event.
+This means that we should merge $A$ and $B$ in the DSU if this ever happens.
+
+We can use small-to-large merging to keep track of blue edges between components
+in $\mathcal O(M \log^2 N)$ time.
+
+(Note that two components merging may cause other components also to merge, so
+also keep a queue of which components need to merge.)
+
+Although we have a nice structure for storing and merging components, we still
+need to calculate the change in the answer each time two components $A$ and $B$
+merge!
+
+Let $V_i$ be the number of followings after the $i$-th merging, and let $F_S$ be
+the set of people outside of the component $S$ that follow someone in $S$.
+
+1. We need to subtract the number of followings from **inside** the
+   previously-unmerged $A$ and $B$. Since each pair of people followed each
+   other, this number is $|A| \cdot (|A| - 1) + |B| \cdot (|B| - 1)$.
+2. We need to add the number of followings from **inside** the newly-merged
+   $A \cup B$. Since each pair of people will follow each other, this number is
+   $|A \cup B| \cdot (|A \cup B| - 1)$.
+3. We need to add the number of followings from **outside** $A \cup B$. Since
+   people who previously followed everyone in $A$ will now also follow everyone
+   in $B$ and vice-versa, this number is $|A| \cdot |F_B| + |B| \cdot |F_A|$.
+4. We need to subtract the number of followings from people who previously
+   already followed everyone in both $A$ and $B$ or were already in $A$ or $B$.
+   This number is $|(A \cup F_A) \cap (B \cup F_B)| \cdot |A \cup B|$.
+
+Putting it all together and setting $C_S = S \cup F_S$, we get:
+
+$$
+V_i = V_{i - 1} + |A| \cdot |C_B| + |B| \cdot |C_A| - |C_A \cap C_B| \cdot |A \cup B|.
+$$
+
+We can use small-to-large merging again to keep track of each $C_S$ in
+$\mathcal O(M \log^2 N)$ time.
 
 ```cpp
 #include <bits/stdc++.h>
+typedef long long ll;
 using namespace std;
- 
-using ll = long long;
-using ld = long double;
-using db = double; 
-using str = string; // yay python!
 
-using pi = pair<int,int>;
-using pl = pair<ll,ll>;
-using pd = pair<db,db>;
+int cmp[100001];
+ll sz[100001], ans = 0;
+set<int> child[100001], graph[100001], rgraph[100001];
+queue<pair<int, int>> to_merge;
 
-using vi = vector<int>;
-using vb = vector<bool>;
-using vl = vector<ll>;
-using vd = vector<db>; 
-using vs = vector<str>;
-using vpi = vector<pi>;
-using vpl = vector<pl>; 
-using vpd = vector<pd>;
-
-#define tcT template<class T
-#define tcTU tcT, class U
-// ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
-tcT> using PR = pair<T,T>;
-
-// pairs
-#define mp make_pair
-#define f first
-#define s second
-
-// vectors
-// oops size(x), rbegin(x), rend(x) need C++17
-#define sz(x) int((x).size())
-#define bg(x) begin(x)
-#define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
-#define rsz resize
-#define ins insert 
-#define ft front()
-#define bk back()
-#define pb push_back
-#define eb emplace_back 
-#define pf push_front
-
-#define lb lower_bound
-#define ub upper_bound 
-tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
-
-// loops
-#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
-#define F0R(i,a) FOR(i,0,a)
-#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
-#define R0F(i,a) ROF(i,0,a)
-#define trav(a,x) for (auto& a: x)
-
-const int MOD = 1e9+7; // 998244353;
-const int MX = 2e5+5;
-const ll INF = 1e18; // not too close to LLONG_MAX
-const ld PI = acos((ld)-1);
-const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
-template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
-
-// bitwise ops
-// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
-constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
-constexpr int p2(int x) { return 1<<x; }
-constexpr int msk2(int x) { return p2(x)-1; }
-
-ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
-ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
-
-tcT> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
-tcT> bool ckmax(T& a, const T& b) {
-	return a < b ? a = b, 1 : 0; }
-
-tcTU> T fstTrue(T lo, T hi, U f) {
-	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
-		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
-	return lo;
-}
-tcTU> T lstTrue(T lo, T hi, U f) {
-	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
-		T mid = lo+(hi-lo+1)/2;
-		f(mid) ? lo = mid : hi = mid-1;
-	} 
-	return lo;
-}
-tcT> void remDup(vector<T>& v) { // sort and remove duplicates
-	sort(all(v)); v.erase(unique(all(v)),end(v)); }
-tcTU> void erase(T& t, const U& u) { // don't erase
-	auto it = t.find(u); assert(it != end(t));
-	t.erase(it); } // element that doesn't exist from (multi)set
-
-// INPUT
-#define tcTUU tcT, class ...U
-tcT> void re(complex<T>& c);
-tcTU> void re(pair<T,U>& p);
-tcT> void re(V<T>& v);
-tcT, size_t SZ> void re(AR<T,SZ>& a);
-
-tcT> void re(T& x) { cin >> x; }
-void re(db& d) { str t; re(t); d = stod(t); }
-void re(ld& d) { str t; re(t); d = stold(t); }
-tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
-
-tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
-tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
-tcT> void re(V<T>& x) { trav(a,x) re(a); }
-tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
-tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
-
-// TO_STRING
-#define ts to_string
-str ts(char c) { return str(1,c); }
-str ts(const char* s) { return (str)s; }
-str ts(str s) { return s; }
-str ts(bool b) { 
-	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
-		return ts((int)b);
-	#endif
-}
-tcT> str ts(complex<T> c) { 
-	stringstream ss; ss << c; return ss.str(); }
-str ts(V<bool> v) {
-	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
-	res += "}"; return res; }
-template<size_t SZ> str ts(bitset<SZ> b) {
-	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
-	return res; }
-tcTU> str ts(pair<T,U> p);
-tcT> str ts(T v) { // containers with begin(), end()
-	#ifdef LOCAL
-		bool fst = 1; str res = "{";
-		for (const auto& x: v) {
-			if (!fst) res += ", ";
-			fst = 0; res += ts(x);
-		}
-		res += "}"; return res;
-	#else
-		bool fst = 1; str res = "";
-		for (const auto& x: v) {
-			if (!fst) res += " ";
-			fst = 0; res += ts(x);
-		}
-		return res;
-
-	#endif
-}
-tcTU> str ts(pair<T,U> p) {
-	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
-	#else
-		return ts(p.f)+" "+ts(p.s);
-	#endif
+void insert_weak_connection(int A, int B) {
+	graph[A].insert(B);
+	rgraph[B].insert(A);
+	// If there's A new strong connection between A's and B's components, merge them
+	if (graph[B].count(A)) to_merge.push({A, B});
 }
 
-// OUTPUT
-tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
-	pr(t); pr(u...); }
-void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
-	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+int dsu_size(int A) { return child[A].size() + graph[A].size() + rgraph[A].size(); }
 
-// DEBUG
-void DBG() { cerr << "]" << endl; }
-tcTUU> void DBG(const T& t, const U&... u) {
-	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
-	DBG(u...); }
-#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
-	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
-	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
-		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
-#else
-	#define dbg(...) 0
-	#define chk(...) 0
-#endif
+int find(int A) { return (A == cmp[A] ? A : cmp[A] = find(cmp[A])); }
 
-void setPrec() { cout << fixed << setprecision(15); }
-void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
-// FILE I/O
-void setIn(str s) { freopen(s.c_str(),"r",stdin); }
-void setOut(str s) { freopen(s.c_str(),"w",stdout); }
-void setIO(str s = "") {
-	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
-	// throws exception when do smth illegal
-	// ex. try to read letter into int
-	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
-}
-
-int N,M;
-int comp[MX]; vi rcomp[MX];
-unordered_set<int> child[MX], adj[MX], radj[MX];
-ll ans;
- 
-queue<pi> todo;
-void insEd(int A, int B) {
-	adj[A].insert(B), radj[B].insert(A);
-	if (adj[B].count(A)) todo.push({A,B});
-}
- 
-void red(int A, int B) {
+void onion(int A, int B) {
 	if (A == B) return;
-	if (sz(rcomp[A]) < sz(rcomp[B])) swap(A,B);
-	ans += (ll)sz(child[A])*sz(rcomp[B])+(ll)sz(child[B])*sz(rcomp[A]);
-	trav(t,rcomp[B]) { comp[t] = A; rcomp[A].pb(t); }
-	trav(t,child[B]) {
-		if (child[A].count(t)) ans -= sz(rcomp[A]);
-		else child[A].insert(t);
+	// Merge the smaller component into the larger
+	if (dsu_size(A) < dsu_size(B)) swap(A, B);
+
+	// Add new contribution
+	ans += sz[B] * child[A].size() + sz[A] * child[B].size();
+
+	// DSU stuff
+	cmp[B] = A;
+	sz[A] += sz[B];
+
+	// Merge children of B into A
+	for (int i : child[B]) {
+		if (child[A].count(i)) ans -= sz[A];
+		else child[A].insert(i);
 	}
-	adj[A].erase(B); radj[A].erase(B);
-	trav(t,adj[B]) if (t != A) { radj[t].erase(B); insEd(A,t); }
-	trav(t,radj[B]) if (t != A) { adj[t].erase(B); insEd(t,A); }
-}
- 
-void upd(int A, int B) {
-	B = comp[B]; if (comp[A] == B) return;
-	if (child[B].count(A)) return;
-	child[B].insert(A); ans += sz(rcomp[B]); 
-	A = comp[A]; insEd(A,B);
-	while (sz(todo)) {
-		pi p = todo.ft; todo.pop();
-		red(comp[p.f],comp[p.s]);
+	// Erase the connections
+	graph[A].erase(B), rgraph[A].erase(B);
+	graph[B].erase(A), rgraph[B].erase(A);
+	// Merge the weak connections to other components
+	for (int i : graph[B]) {
+		rgraph[i].erase(B);
+		insert_weak_connection(A, i);
+	}
+	for (int i : rgraph[B]) {
+		graph[i].erase(B);
+		insert_weak_connection(i, A);
 	}
 }
- 
+
 int main() {
-	setIO(); re(N,M);
-	FOR(i,1,N+1) { comp[i] = i; rcomp[i] = {i}; child[i] = {i}; }
-	F0R(i,M) {
-		int A,B; re(A,B); upd(A,B);
-		ps(ans);
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++) {
+		cmp[i] = i;
+		sz[i] = 1;
+		child[i].insert(i);
 	}
+	while (m--) {
+		int A, B;
+		cin >> A >> B;
+
+		B = find(B);
+		// If A isn't in B's component and doesn't already follow someone in B's component...
+		if (find(A) != B && !child[B].count(A)) {
+			// We insert A as A follower of B and add sz[find(B)] to the answer
+			child[B].insert(A);
+			ans += sz[B];
+
+			A = find(A);
+			// Add connections between components
+			insert_weak_connection(A, B);
+			// We may have to merge multiple components for each new event
+			while (to_merge.size()) {
+				tie(A, B) = to_merge.front();
+				to_merge.pop();
+				onion(find(A), find(B));
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
 }
 ```
+
+</Spoiler>

@@ -13,7 +13,7 @@ const Container = styled.div`
     isActive &&
     `
     background-color: #f7faff;
-    .mode-dark & {
+    .dark & {
       background-color: #16191f;
     }
   `}
@@ -24,7 +24,7 @@ const Label = styled.div`
     //background-color: #f7faff
     ${tw`bg-blue-50`}
   }
-  .mode-dark &:hover {
+  .dark &:hover {
     ${tw`bg-gray-900`}
   }
 `;

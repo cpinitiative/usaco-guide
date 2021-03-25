@@ -35,9 +35,8 @@ export default function genLinksFromTOCHeadings(
               ? '0.5rem'
               : 0,
         }}
-      >
-        {heading.value}
-      </Link>
+        dangerouslySetInnerHTML={{ __html: heading.value }}
+      />
     );
   });
   return links;

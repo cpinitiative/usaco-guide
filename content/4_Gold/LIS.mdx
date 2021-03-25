@@ -1,10 +1,10 @@
 ---
 id: lis
 title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
+author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang
 prerequisites:
   - intro-dp
-description: Finding and using the LIS of an array
+description: Finding and using the longest increasing subsequence of an array.
 frequency: 1
 ---
 
@@ -29,6 +29,15 @@ export const problems = {
 		[],
 		''
 	),
+	lisperm: new Problem(
+		'CF',
+		'LIS on Permutations',
+		'gym/102951/problem/C',
+		'Normal',
+		true,
+		[],
+		''
+	),
 	lis: [
 		new Problem('CSES', 'Towers', '1073', 'Easy', false, ['DP'], 'cses-1073'),
 		new Problem(
@@ -47,7 +56,7 @@ export const problems = {
 			'Normal',
 			false,
 			['DP'],
-			'LMIO19-trusis'
+			'lmio-19-trusis'
 		),
 		new Problem(
 			'Baltic OI',
@@ -65,7 +74,16 @@ export const problems = {
 			'Hard',
 			false,
 			['DP'],
-			'ceoi-glo'
+			'ceoi-18-glo'
+		),
+		new Problem(
+			'JOI',
+			'2016 - Matryoshka',
+			'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
+			'Hard',
+			false,
+			['DP', 'LIS', 'Binary Search'],
+			'joi-16-matryoshka'
 		),
 	],
 };
@@ -106,7 +124,12 @@ export const problems = {
 
 <Resources>
 
-<Resource source="cp-algo" title="Longest Increasing Subsequence" url="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html" starred>
+<Resource
+	source="cp-algo"
+	title="Longest Increasing Subsequence"
+	url="https://cp-algorithms.com/sequences/longest_increasing_subsequence.html"
+	starred
+>
 	A comprehensive guide (covers almost everything here)
 </Resource>
 
@@ -118,13 +141,19 @@ export const problems = {
 
 In this tutorial, let $A$ be the array we want to find the LIS for.
 
-### $\mathcal{O}(N^2)$
+### Slow Solution
+
+**Time Complexity**: $\mathcal O(N^2)$
 
 <Resources>
-	<Resource source="CPH" title="7.2 - LIS">slow solution</Resource>
+	<Resource source="CPH" title="7.2 - LIS">
+		slow solution
+	</Resource>
 </Resources>
 
-Let $dp[i]$ be the length of the longest increasing subsequence that ends on $A[i]$. We can then naively compute $dp$ (and thus the LIS) in $\mathcal{O}(N^2)$ time:
+Let $dp[i]$ be the length of the longest increasing subsequence that ends on
+$A[i]$. We can then naively compute $dp$ (and thus the LIS) in
+$\mathcal{O}(N^2)$ time:
 
 <LanguageSection>
 
@@ -135,8 +164,8 @@ int find_lis(vector<int> a) {
 	int n = a.size(), lis = 0;
 	vector<int> dp(n, 1);
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < i; j++) 
-			if (a[j] < a[i]) 
+		for (int j = 0; j < i; j++)
+			if (a[j] < a[i])
 				dp[i] = max(dp[i], dp[j] + 1);
 		lis = max(lis, dp[i]);
 	}
@@ -151,15 +180,15 @@ int find_lis(vector<int> a) {
 ```java
 
 public static int find_lis(int[] a) {
-   int n = a.length, lis = 0;
-   int[] dp = new int[n]; Arrays.fill(dp, 1);
-   for (int i = 0; i < n; i++) {
-      for (int j = 0; j < i; j++) 
-         if (a[j] < a[i]) 
-            dp[i] = Math.max(dp[i], dp[j] + 1);
-      lis = Math.max(lis, dp[i]);
-   }
-   return lis;
+	int n = a.length, lis = 0;
+	int[] dp = new int[n]; Arrays.fill(dp, 1);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < i; j++)
+			if (a[j] < a[i])
+				dp[i] = Math.max(dp[i], dp[j] + 1);
+		lis = Math.max(lis, dp[i]);
+	}
+	return lis;
 }
 
 ```
@@ -170,23 +199,39 @@ public static int find_lis(int[] a) {
 
 We can do much better than this though!
 
-### $\mathcal{O}(N \log N)$
+### Fast Solution
 
-Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$ elements of $A$ with an increasing sequence of length $j$ ending on it (or $\infty$ if there is no such element).
+**Time Complexity**: $\mathcal O(N \log N)$
+
+Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$
+elements of $A$ with an increasing sequence of length $j$ ending on it (or
+$\infty$ if there is no such element).
 
 **Lemma 1:** $L_i$ forms a non-decreasing sequence.
 
-**Proof:** Assume for a contradiction that for some $j$, we have $L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing sequence of length $j + 1$ ending on some element implies that there is also an increasing sequence of length $j$ ending on that same sequence.
+**Proof:** Assume for a contradiction that for some $j$, we have
+$L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing
+sequence of length $j + 1$ ending on some element implies that there is also an
+increasing sequence of length $j$ ending on that same sequence.
 
-**Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least index $j$ such that $L_i[j] \geq A[i + 1]$.
+**Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least
+index $j$ such that $L_i[j] \geq A[i + 1]$.
 
-**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that the length of the LIS is $j$.
+**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing
+sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is
+non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that
+the length of the LIS is $j$.
 
 **Lemma 3:** Exactly 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since $L_i[j] \geq A[i + 1]$. We don't update anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ of length greater than $j$.
+**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since
+$L_i[j] \geq A[i + 1]$. We don't update anything else though, since
+$A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending
+on $A[i + 1]$ of length greater than $j$.
 
-To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a `std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set` (demonstrated in the solution for PCB).
+To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
+`std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set`
+(demonstrated in the solution for PCB).
 
 <LanguageSection>
 
@@ -210,14 +255,14 @@ int find_lis(vector<int> a) {
 
 ```java
 public static int find_lis(int[] a) {
-   ArrayList<Integer> dp = new ArrayList<Integer>();
-   for (int i : a) {
-      int pos = Collections.binarySearch(dp, i);
-      if(pos < 0) pos = Math.abs(pos + 1);
-      if (pos == dp.size()) dp.add(i);
-      else dp.set(pos, i);
-   }
-   return dp.size();
+	ArrayList<Integer> dp = new ArrayList<Integer>();
+	for (int i : a) {
+		int pos = Collections.binarySearch(dp, i);
+		if(pos < 0) pos = Math.abs(pos + 1);
+		if (pos == dp.size()) dp.add(i);
+		else dp.set(pos, i);
+	}
+	return dp.size();
 }
 ```
 
@@ -229,48 +274,80 @@ public static int find_lis(int[] a) {
 
 <FocusProblem problem={problems.nonIntersect} />
 
-This problem asks us to find the minimum number of disjoint sets of non-intersecting segments. This seems quite intimidating, so let's break it up into two parts:
+This problem asks us to find the minimum number of disjoint sets of
+non-intersecting segments. This seems quite intimidating, so let's break it up
+into two parts:
 
 - Finding a set of non-intersecting segments
 - Minimizing the number of these sets
 
 ### Application 1 - Non-intersecting Segments
 
-First, what can we say about two segments $(l_1, r_1)$ and $(l_2, r_2)$ if they intersect (assuming $l_1 < l_2$)?
+First, what can we say about two segments $(l_1, r_1)$ and $(l_2, r_2)$ if they
+intersect (assuming $l_1 < l_2$)?
 
 Since these segments are straight, notice how $l_1 < l_2 \implies r_1 > r_2$.
 
-This means that a set of non-intersecting segments satisfies $l_i < l_j \implies r_i < r_j$ for all pairs $(i, j)$!
+This means that a set of non-intersecting segments satisfies
+$l_i < l_j \implies r_i < r_j$ for all pairs $(i, j)$!
 
-Let $A$ be an array where $A[i] = x$ means that the segment with its right endpoint at position $i$ has its left endpoint at position $x$.
+Let $A$ be an array where $A[i] = x$ means that the segment with its right
+endpoint at position $i$ has its left endpoint at position $x$.
 
-If we were asked to find the maximum size of a set of non-intersecting segments, the answer would be the LIS of $A$!
+If we were asked to find the maximum size of a set of non-intersecting segments,
+the answer would be the LIS of $A$!
 
 ### Application 2 - Minimum Number of Increasing Sequences
 
-Continuing from application 1, we now want to find the minimum number of increasing subsequences required to cover $A$.
+Continuing from application 1, we now want to find the minimum number of
+increasing subsequences required to cover $A$.
 
 Luckily for us, there's a simple (though not so obvious) solution to this.
 
-**Lemma (Easy):** The minimum number of increasing subsequences required to cover $A$ is at least the size of longest non-increasing subsequence of $A$.
+**Lemma (Easy):** The minimum number of increasing subsequences required to
+cover $A$ is at least the size of longest non-increasing subsequence of $A$.
 
-*Proof:* No two elements of any non-increasing subsequence can be part of the same increasing subsequence.
+_Proof:_ No two elements of any non-increasing subsequence can be part of the
+same increasing subsequence.
 
-**Claim:** The minimum number of increasing subsequences required to cover $A$ is equal to the size of longest non-increasing subsequence of $A$!
+**Claim:** The minimum number of increasing subsequences required to cover $A$
+is equal to the size of longest non-increasing subsequence of $A$!
 
-**Wrong Proof 1:** See [cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13) (note that this link describes partitioning $A$ into non-increasing subsequences rather than increasing subsequences). However, it's not correct because the process of unhooking and reattaching might never terminate. For example, consider partitioning $A=(3,1,2)$ into the non-increasing subsequences $s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the front of $s_2$ on the first step, back to $s_1$ on the second step, and so on. 
+**Wrong Proof 1:** See
+[cp-algo](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html#toc-tgt-13)
+(note that this link describes partitioning $A$ into non-increasing subsequences
+rather than increasing subsequences). However, it's not correct because the
+process of unhooking and reattaching might never terminate. For example,
+consider partitioning $A=(3,1,2)$ into the non-increasing subsequences
+$s_1=(3,1)$ and $s_2=(2)$. Then $3$ will be moved from the front of $s_1$ to the
+front of $s_2$ on the first step, back to $s_1$ on the second step, and so on.
 
-**Wrong Proof 2:** [This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences) is essentially the same as the above.
+**Wrong Proof 2:**
+[This](https://math.stackexchange.com/questions/3739994/find-minimum-number-of-increasing-subsequences)
+is essentially the same as the above.
 
-**Motivation:** Consider the obvious greedy strategy to construct the collection of increasing subsequences (essentially [patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each element $x$ of $A$ from left to right, add it to the increasing subsequence with last element less than $x$ such that the value of this last element is maximized. If no such increasing subsequence currently exists, then start a new increasing subsequence with $x$.
+**Motivation:** Consider the obvious greedy strategy to construct the collection
+of increasing subsequences (essentially
+[patience sorting](https://en.wikipedia.org/wiki/Patience_sorting)). For each
+element $x$ of $A$ from left to right, add it to the increasing subsequence with
+last element less than $x$ such that the value of this last element is
+maximized. If no such increasing subsequence currently exists, then start a new
+increasing subsequence with $x$.
 
-This algorithm performs exactly the same steps as the algorithm to compute the length of the longest non-increasing subsequence, so it follows that they return the same result.
+This algorithm performs exactly the same steps as the algorithm to compute the
+length of the longest non-increasing subsequence, so it follows that they return
+the same result.
 
-**Proof:** Let $f_i$ denote the length of longest non-increasing subsequence ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an increasing subsequence for each $t$. So we have covered $A$ with (size of longest non-increasing subsequence) increasing subsequences, done. 
+**Proof:** Let $f_i$ denote the length of longest non-increasing subsequence
+ending at $A_i$. Then the $A_i$'s satisfying $f_i=t$ for a fixed $t$ are an
+increasing subsequence for each $t$. So we have covered $A$ with (size of
+longest non-increasing subsequence) increasing subsequences, done.
 
 Do you see why this is equivalent to the sketch?
 
-**Alternative Proof:** This is just a special case of [Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See the inductive proof.
+**Alternative Proof:** This is just a special case of
+[Dilworth's Theorem](https://en.wikipedia.org/wiki/Dilworth%27s_theorem). See
+the inductive proof.
 
 ### Code
 
@@ -287,19 +364,19 @@ pair<int, int> a[100000];
 set<int> s;
 
 int main() {
-    iostream::sync_with_stdio(false);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
-    sort(a, a + n, greater<pair<int, int>>());
-    // finding the LIS of a reversed array = finding the LDS
-    for (int i = 0; i < n; i++) {
-        if (s.upper_bound(a[i].second) == s.end()) lis++;
-        else s.erase(s.upper_bound(a[i].second));
-        s.insert(a[i].second);
-    }
-    cout << lis;
+	iostream::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i].first >> a[i].second;
+	sort(a, a + n, greater<pair<int, int>>());
+	// finding the LIS of a reversed array = finding the LDS
+	for (int i = 0; i < n; i++) {
+		if (s.upper_bound(a[i].second) == s.end()) lis++;
+		else s.erase(s.upper_bound(a[i].second));
+		s.insert(a[i].second);
+	}
+	cout << lis;
 }
 ```
 
@@ -308,9 +385,9 @@ int main() {
 <JavaSection>
 
 ```java
-import java.io.*; 
-import java.util.*; 
- 
+import java.io.*;
+import java.util.*;
+
 class PCB{
 	public static void main(String[] args) throws IOException
 	{
@@ -323,14 +400,14 @@ class PCB{
 		}
 		//finding the LIS of a reversed array = finding the LDS
 		int lis = 0;
-		TreeSet<Integer> s = new TreeSet<Integer>(); 
+		TreeSet<Integer> s = new TreeSet<Integer>();
 		for(int k : a.keySet()){
 			if(s.higher(a.get(k)) == null) lis++;
 			else s.remove(s.higher(a.get(k)));
 			s.add(a.get(k));
 		}
 		System.out.println(lis);
-	} 
+	}
 }
 ```
 
@@ -338,6 +415,99 @@ class PCB{
 
 </LanguageSection>
 
+## Extension - LCS on Permutations
+
+<FocusProblem problem={problems.lisperm} />
+
+Given two permutations of length $N$ ($1\le N \le 10^5$), find the longest
+common subsequence.
+
+### Example
+
+#### Example Input
+
+```
+5
+3 2 1 4 5
+1 2 3 4 5
+```
+
+#### Example Output
+
+```
+3
+```
+
+### Slow Solution
+
+**Time Complexity**: $\mathcal O(N^2)$
+
+See [here](/gold/paths-grids#solution---longest-common-subsequence).
+
+### Efficient Solution
+
+**Time Complexity**: $\mathcal O(N\log N)$
+
+In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if
+$a[i] = b[j]$, but since both arrays are permutations of length $N$, for each
+$a[i]$, there must be only one matching element in $b$.
+
+Let us create an array $pos$ where $pos[x]$ is the index of $x$ in $a$
+($a[pos[x]] = x$). Then, we can create another array, $c$ where $c[i]$ stores
+$pos[b[i]]$.
+
+Notice that every increasing subsequence $x_{1 \dots k}$ in $c$ corresponds to a
+common subsequence between $a$ and $b$. Increasing subsequence
+$c[x_1], c[x_2], \dots c[x_k]$ corresponds to the the common subsequence
+$b[x_1], b[x_2], \dots b[x_k]$, which is equivalent to
+$a[c[x_1]], a[c[x_2]], \dots a[c[x_k]]$. Thus, the length of the longest common
+subsequence between $a$ and $b$ is the longest increasing subsequence of $c$.
+
+Finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in
+this algorithm is $\mathcal O(N\log N)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 5;
+int n, a[N], b[N], c[N], pos[N];
+vector<int> lis;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n;
+	for (int i = 1; i <= n; ++i) {
+		cin >> a[i];
+		// pos is the inverse of a
+		pos[a[i]] = i;
+	}
+	for (int i = 1; i <= n; ++i) {
+		cin >> b[i];
+	}
+	for (int i = 1; i <= n; ++i) {
+		c[i] = pos[b[i]];
+	}
+
+	for (int i = 1; i <= n; ++i) {
+		int p = lower_bound(begin(lis), end(lis), c[i]) - begin(lis);
+		if (p == lis.size())
+			lis.push_back(c[i]);
+		else
+			lis[p] = c[i];
+	}
+	cout << lis.size() << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 

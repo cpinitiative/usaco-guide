@@ -12,8 +12,6 @@ import UserDataContext from './UserDataContext/UserDataContext';
 import { ProblemJSON } from '../components/Classes/PostPage';
 import { UserLangAPI } from './UserDataContext/properties/userLang';
 import { LastViewedModuleAPI } from './UserDataContext/properties/lastViewedModule';
-import { HideTagsAndSolutionsAPI } from './UserDataContext/properties/hideTagsAndSolutions';
-import { DarkModeAPI } from './UserDataContext/properties/darkMode';
 import { LastReadAnnouncementAPI } from './UserDataContext/properties/lastReadAnnouncement';
 import { UserProgressOnModulesAPI } from './UserDataContext/properties/userProgressOnModules';
 import { UserProgressOnProblemsAPI } from './UserDataContext/properties/userProgressOnProblems';
@@ -33,8 +31,6 @@ const ClassContext = createContext<{
     id: string;
     data: UserLangAPI &
       LastViewedModuleAPI &
-      HideTagsAndSolutionsAPI &
-      DarkModeAPI &
       LastReadAnnouncementAPI &
       UserProgressOnModulesAPI &
       UserProgressOnProblemsAPI &
@@ -63,7 +59,13 @@ const ClassContext = createContext<{
     instructors: string[];
     joinCodes: string[];
     name: string;
-    studentsCanJoin: boolean;
+    students: {
+      id: string;
+      name: string;
+      email: string;
+      // lastRefresh: firebaseType.firestore.Timestamp;
+    }[];
+    bannedStudentIds: string[];
   };
 }>({
   loading: true,

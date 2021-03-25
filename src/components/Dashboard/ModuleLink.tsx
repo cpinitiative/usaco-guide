@@ -11,7 +11,7 @@ import Tooltip from '../Tooltip/Tooltip';
 import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
 
 const LinkWithProgress = styled(SidebarLinkWithProgress)`
-  &::after {
+  &&::after {
     ${({ small }) => css`
       // prettier-ignore
       left: calc(-1.75rem - ${small
@@ -35,15 +35,15 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)`
     }
   }
 
-  &::after {
+  &&::after {
     ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
   }
   // lol no clue why two ampersands are needed but they are...
-  .mode-dark &&::after {
+  .dark &&::after {
     ${({ small }) => (small ? tw`border-2 border-gray-500` : tw`border-0`)}
   }
 
-  &::before {
+  &&::before {
     left: calc(-1.75rem - 1px);
     @media (min-width: 768px) {
       left: calc(-3rem - 1px); // -(3rem padding plus half of width)
@@ -79,7 +79,7 @@ const StyledLink = styled.div`
       ${tw`bg-blue-600`}
     }
   }
-  .mode-dark &:hover {
+  .dark &:hover {
     &::before {
       ${tw`bg-gray-400`}
     }
@@ -87,44 +87,86 @@ const StyledLink = styled.div`
 `;
 
 const FrequencyCircleColors = [
-  'group-hover:text-red-500 dark-group-hover:text-red-400',
-  'group-hover:text-orange-500 dark-group-hover:text-orange-400',
-  'group-hover:text-yellow-500 dark-group-hover:text-yellow-400',
-  'group-hover:text-teal-500 dark-group-hover:text-teal-400',
-  'group-hover:text-green-500 dark-group-hover:text-green-400',
+  'group-hover:text-red-600 dark:group-hover:text-red-400',
+  'group-hover:text-orange-600 dark:group-hover:text-orange-400',
+  'group-hover:text-yellow-600 dark:group-hover:text-yellow-400',
+  'group-hover:text-teal-600 dark:group-hover:text-teal-400',
+  'group-hover:text-green-600 dark:group-hover:text-green-400',
 ];
 
 const FrequencyTextColors = [
-  'group-hover:text-red-600 dark-group-hover:text-red-400',
-  'group-hover:text-orange-600 dark-group-hover:text-orange-400',
-  'group-hover:text-yellow-600 dark-group-hover:text-yellow-400',
-  'group-hover:text-teal-600 dark-group-hover:text-teal-400',
-  'group-hover:text-green-600 dark-group-hover:text-green-400',
+  'group-hover:text-red-700 dark:group-hover:text-red-400',
+  'group-hover:text-orange-700 dark:group-hover:text-orange-400',
+  'group-hover:text-yellow-700 dark:group-hover:text-yellow-400',
+  'group-hover:text-teal-700 dark:group-hover:text-teal-400',
+  'group-hover:text-green-700 dark:group-hover:text-green-400',
 ];
+
+// https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
+function time_ago(time) {
+  switch (typeof time) {
+    case 'number':
+      break;
+    case 'string':
+      time = +new Date(time);
+      break;
+    case 'object':
+      if (time.constructor === Date) time = time.getTime();
+      break;
+    default:
+      time = +new Date();
+  }
+  const time_formats = [
+    [60, 'seconds', 1], // 60
+    [120, '1 minute ago', '1 minute from now'], // 60*2
+    [3600, 'minutes', 60], // 60*60, 60
+    [7200, '1 hour ago', '1 hour from now'], // 60*60*2
+    [86400, 'hours', 3600], // 60*60*24, 60*60
+    [172800, 'Yesterday', 'Tomorrow'], // 60*60*24*2
+    [604800, 'days', 86400], // 60*60*24*7, 60*60*24
+    [1209600, 'Last week', 'Next week'], // 60*60*24*7*4*2
+    [2419200, 'weeks', 604800], // 60*60*24*7*4, 60*60*24*7
+    [4838400, 'Last month', 'Next month'], // 60*60*24*7*4*2
+    [29030400, 'months', 2419200], // 60*60*24*7*4*12, 60*60*24*7*4
+    [58060800, 'Last year', 'Next year'], // 60*60*24*7*4*12*2
+    [2903040000, 'years', 29030400], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
+    [5806080000, 'Last century', 'Next century'], // 60*60*24*7*4*12*100*2
+    [58060800000, 'centuries', 2903040000], // 60*60*24*7*4*12*100*20, 60*60*24*7*4*12*100
+  ];
+  let seconds = (+new Date() - time) / 1000,
+    token = 'ago',
+    list_choice = 1;
+
+  if (seconds == 0) {
+    return 'Just Now';
+  }
+  if (seconds < 0) {
+    seconds = Math.abs(seconds);
+    token = 'from now';
+    list_choice = 2;
+  }
+  if (seconds > 4838400) {
+    return '';
+  }
+  let i = 0,
+    format;
+  while ((format = time_formats[i++]))
+    if (seconds < format[0]) {
+      if (typeof format[2] == 'string') return format[list_choice];
+      else
+        return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
+    }
+  return time;
+}
+
+function timeAgoString(time) {
+  const res = time_ago(time);
+  return res && `Updated: ${res}`;
+}
 
 const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
   const { userProgressOnModules } = useContext(UserDataContext);
   const progress = userProgressOnModules[link.id] || 'Not Started';
-
-  // let lineColorStyle = tw`bg-gray-200`;
-  // let dotColorStyle = tw`bg-white`;
-  //
-  // if (progress === 'Reading') {
-  //   lineColorStyle = tw`bg-yellow-400`;
-  //   dotColorStyle = tw`bg-yellow-400`;
-  // } else if (progress === 'Practicing') {
-  //   lineColorStyle = tw`bg-orange-400`;
-  //   dotColorStyle = tw`bg-orange-400`;
-  // } else if (progress === 'Complete') {
-  //   lineColorStyle = tw`bg-green-400`;
-  //   dotColorStyle = tw`bg-green-400`;
-  // } else if (progress === 'Skipped') {
-  //   lineColorStyle = tw`bg-blue-300`;
-  //   dotColorStyle = tw`bg-blue-300`;
-  // } else if (progress === 'Ignored') {
-  //   lineColorStyle = tw`bg-gray-100`;
-  //   dotColorStyle = tw`bg-gray-100`;
-  // }
 
   let lineColorStyle = tw`bg-gray-200`;
   let dotColorStyle = tw`bg-gray-200`;
@@ -173,7 +215,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
               progress === 'Ignored'
                 ? 'text-gray-400 dark:text-gray-600'
                 : 'text-gray-700 dark:text-gray-400'
-            } group-hover:text-blue-800 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out mb-1 flex items-center`}
+            } group-hover:text-blue-800 dark:group-hover:text-dark-high-emphasis transition mb-1 flex items-center`}
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
@@ -200,13 +242,13 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
                 count={link.frequency}
                 totalCount={4}
                 color={
-                  'transition duration-150 ease-in-out text-gray-400 ' +
+                  'transition text-gray-400 ' +
                   FrequencyCircleColors[link.frequency]
                 }
               />
               <span
                 className={
-                  `ml-1 transition duration-150 ease-in-out text-gray-500 ` +
+                  `ml-1 transition text-gray-500 ` +
                   FrequencyTextColors[link.frequency]
                 }
               >
@@ -214,8 +256,14 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }) => {
               </span>
             </p>
           )}
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark-group-hover:text-dark-high-emphasis transition duration-150 ease-in-out leading-5">
+          {/* https://stackoverflow.com/questions/9229213/convert-iso-date-to-milliseconds-in-javascript */}
+          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark:group-hover:text-dark-high-emphasis transition leading-5">
             {link.description}
+
+            <i>
+              <br />
+              {timeAgoString(link.gitAuthorTime)}
+            </i>
           </p>
         </StyledLink>
       </Link>

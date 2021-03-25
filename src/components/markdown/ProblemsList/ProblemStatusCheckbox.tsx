@@ -110,7 +110,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           <span className={`absolute inset-y-0 left-0 flex items-center pl-3`}>
             {icon(progress, activeProgress === progress)}
           </span>
-          {/* 
+          {/*
           {progress === currentProgress && (
             <span
               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
@@ -184,7 +184,9 @@ export default function ProblemStatusCheckbox({
               let solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
-              if (!solved(status) && solved(progress)) showConfetti();
+              if (!solved(status) && solved(progress)) {
+                showConfetti();
+              }
             }}
             currentProgress={status}
           />

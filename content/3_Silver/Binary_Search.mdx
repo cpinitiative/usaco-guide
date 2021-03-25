@@ -1,0 +1,1307 @@
+---
+id: binary-search
+redirects:
+  - /silver/binary-search-sorted
+  - /silver/binary-search-ans
+title: 'Binary Search'
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang
+prerequisites:
+  - greedy-sorting
+description:
+  'Binary searching on arbitrary monotonic functions and built-in functions for
+  binary search.'
+frequency: 3
+---
+
+export const problems = {
+	ex: [
+		new Problem(
+			'CF',
+			'Div 2 C - Maximum Median',
+			'contest/1201/problem/C',
+			'Easy',
+			false,
+			['Binary Search'],
+			''
+		),
+	],
+	usaco: [
+		new Problem(
+			'Silver',
+			'Cow Dance Show',
+			'690',
+			'Easy',
+			false,
+			['Binary Search', 'Ordered Set'],
+			'usaco-690'
+		),
+		new Problem(
+			'Silver',
+			'Convention',
+			'858',
+			'Easy',
+			false,
+			['Binary Search', 'Sorting'],
+			'usaco-858'
+		),
+		new Problem(
+			'Silver',
+			'Angry Cows',
+			'594',
+			'Easy',
+			false,
+			['Binary Search', 'Sorting'],
+			'usaco-594'
+		),
+		new Problem(
+			'Silver',
+			'Social Distancing',
+			'1038',
+			'Normal',
+			false,
+			['Binary Search', 'Sorting'],
+			'usaco-1038'
+		),
+		new Problem(
+			'Gold',
+			'Angry Cows',
+			'597',
+			'Hard',
+			true,
+			['Binary Search', 'Sorting'],
+			''
+		),
+		new Problem(
+			'Silver',
+			'Loan Repayment',
+			'991',
+			'Very Hard',
+			false,
+			['Binary Search', 'Sqrt'],
+			'requires some rather tricky analysis to speed up naive $mathcal{O}(Nlog N)$ solution'
+		),
+		new Problem(
+			'Plat',
+			'Load Balancing',
+			'624',
+			'Insane',
+			false,
+			['Binary Search', 'Sorting'],
+			'usaco-624'
+		),
+	],
+	count: new Problem(
+		'Silver',
+		'Counting Haybales',
+		'666',
+		'Easy',
+		false,
+		['Binary Search'],
+		''
+	),
+	general: [
+		new Problem(
+			'CF',
+			'Cellular Network',
+			'https://codeforces.com/contest/702/problem/C',
+			'Easy',
+			false,
+			['Binary Search'],
+			'cellular-network'
+		),
+		new Problem(
+			'CSES',
+			'Factory Machines',
+			'1620',
+			'Easy',
+			false,
+			['Binary Search'],
+			'cses-1620'
+		),
+		new Problem(
+			'CSES',
+			'Array Division',
+			'1085',
+			'Easy',
+			false,
+			['Binary Search'],
+			'cses-1085'
+		),
+		new Problem(
+			'CSES',
+			'Multiplication Table',
+			'2422',
+			'Normal',
+			false,
+			['Binary Search'],
+			'cses-2422'
+		),
+		new Problem(
+			'CF',
+			'Edu C: Magic Ship',
+			'problemset/problem/1117/C',
+			'Normal',
+			true,
+			['Binary Search', 'Prefix Sums'],
+			'cf-magship'
+		),
+		new Problem(
+			'CF',
+			'The Meeting Place Cannot Be Changed',
+			'contest/782/problem/B',
+			'Normal',
+			true,
+			['Binary Search'],
+			'binary search on time with epsilon and then find if there exist non-empty intersection of the ranges (maximum of left points and minimum of right points)'
+		),
+		new Problem(
+			'CF',
+			'Preparing for Merge Sort',
+			'contest/847/problem/B',
+			'Normal',
+			false,
+			['Binary Search'],
+			'preparing-for-mergesort'
+		),
+		new Problem(
+			'CF',
+			'Packmen',
+			'contest/847/problem/E',
+			'Hard',
+			false,
+			['Binary Search'],
+			'cf-packmen'
+		),
+		new Problem(
+			'CF',
+			'Level Generation',
+			'problemset/problem/818/F',
+			'Hard',
+			false,
+			['Binary Search'],
+			"first find out which is the best way to construct the graph, then it's possible to see that the number of edges increase for some range and then decrease; so, using binary search find the last i such that f(i-1)<=f(i)"
+		),
+		new Problem(
+			'Baltic OI',
+			'2012 - Mobile',
+			'https://oj.uz/problem/view/BOI12_mobile',
+			'Very Hard',
+			false,
+			['Binary Search'],
+			'baltic-12-mobile'
+		),
+	],
+};
+
+<!-- new Problem(
+	'Plat',
+	'Greedy Gift Takers',
+	'770',
+	'Very Hard',
+	false,
+	['Binary Search'],
+	''
+), -->
+
+<!-- process numbers from left to right, keep track of the last element of each block and use binary search of lower_bound to find which block the current numbers belongs -->
+
+## Introduction
+
+<Resources>
+	<Resource source="CSA" title="Binary Search" url="binary_search" starred>
+		animation, code, lower_bound + upper_bound
+	</Resource>
+	<Resource source="CPH" title="3.3 - Binary Search" starred>
+		code, lower_bound + upper_bound, some applications
+	</Resource>
+	<Resource
+		source="CF"
+		title="EDU: Binary Search - Steps 1, 2"
+		url="https://codeforces.com/edu/course/2/lesson/6/1/practice"
+		starred
+	>
+		videos, problems similar to those covered in this module
+	</Resource>
+	<Resource
+		source="KA@KhanAcademy"
+		title="Binary Search"
+		url="https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search"
+	>
+		plenty of diagrams, javascript implementation
+	</Resource>
+	<Resource source="IUSACO" title="12 - Binary Search">
+		module is based off this
+	</Resource>
+	<Resource source="TC" title="Binary Search" url="binary-search">
+		similar material
+	</Resource>
+	<Resource
+		source="LC"
+		title="Python Ultimate Binary Search Template"
+		url="https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems"
+	>
+		many problems & applications
+	</Resource>
+</Resources>
+
+<Youtube id="GU7DpgHINWQ" />
+
+When we binary search on an answer, we start with a search space of size $N$
+which we know the answer lies in. Then each iteration of the binary search cuts
+the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values.
+This is efficient and much better than testing each possible value in the search
+space.
+
+## Binary Searching on Monotonic Functions
+
+Let's say we have a boolean function `f(x)`. Usually, in such problems, we want
+to find the maximum or minimum value of $x$ such that `f(x)` is true. Similarly
+to how binary search on an array only works on a sorted array, binary search on
+the answer only works if the answer function is
+[monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it
+is always non-decreasing or always non-increasing.
+
+### Finding The Maximum `x` Such That `f(x) = true`
+
+We want to construct a function `lastTrue` such that `lastTrue(lo, hi, f)`
+returns the last `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `lastTrue` should return `lo-1`.
+
+This can be done with binary search if `f(x)` satisfies both of the following
+conditions:
+
+- If `f(x) = true`, then `f(y) = true` for all $y \leq x$.
+- If `f(x) = false`, then `f(y) = false` for all $y \geq x$.
+
+For example, if `f(x)` is given by the following function:
+
+```
+f(1) = true
+f(2) = true
+f(3) = true
+f(4) = true
+f(5) = true
+f(6) = false
+f(7) = false
+f(8) = false
+```
+
+then `lastTrue(1, 8, f) = 5` and `lastTrue(7, 8, f) = 6`.
+
+#### Implementation 1
+
+Verify that this implementation doesn't call `f` on any values outside of the
+range `[lo,hi]`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int lastTrue(int lo, int hi, function<bool(int)> f) {
+	for (--lo; lo < hi; ) {
+		int mid = lo+(hi-lo+1)/2;
+		// find the middle of the current range (rounding up)
+		if (f(mid)) lo = mid;
+		// if mid works, then all numbers smaller than mid also work
+		else hi = mid-1;
+		// if mid does not work, greater values would not work too
+		// so we don't care about them
+	}
+	return lo;
+}
+
+int main() {
+	cout << lastTrue(2,10,[](int x) { return true; }) << "\n"; // 10
+	// all numbers satisfy the condition
+	cout << lastTrue(2,10,[](int x) { return x*x <= 30; }) << "\n"; // 5
+	cout << lastTrue(2,10,[](int x) { return false; }) << "\n"; // 1
+	// no numbers satisfy the condition
+}
+```
+
+See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
+used in the main function.
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.function.Predicate;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(lastTrue(2,10,(x) -> true)); // 10
+		// all numbers satisfy the condition
+		System.out.println(lastTrue(2,10,(x) -> x*x<=30)); // 5
+		System.out.println(lastTrue(2,10,(x) -> false)); // 1
+		// no numbers satisfy the condition
+	}
+
+	public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			// find the middle of the current range (rounding up)
+			if (f.test(mid)) lo = mid;
+				// if mid works, then all numbers smaller than mid also work
+			else hi = mid-1;
+			// if mid does not work, greater values would not work too
+			// so we don't care about them
+
+		}
+		return lo;
+	}
+}
+```
+
+See
+[Java Predicate Interface](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html)
+if you're not familiar with the `Predicate` interface used.
+
+</JavaSection>
+
+<PySection>
+
+```python
+def lastTrue(lo, hi, f):
+	""" Binary Search
+	:param f: (lambda function) check a state
+	:param lo: (int) lower bound
+	:param hi: (int) upper bound
+	:return res: (int) the maximum x such that f(x) is true
+	"""
+	res = lo-1
+	while lo <= hi:
+		mid = (lo+hi)//2 # find the middle of the current range
+		if f(mid):
+			# if mid works, then all numbers smaller than mid also work
+			res = mid # update the answer
+			lo = mid+1 # cut the part before mid
+			# notice that we already handled mid itself so we cut it as well
+		else:
+			# if mid does not work, greater values would not work too
+			hi = mid-1 # cut mid and after
+	# now res is the answer
+	# if res is l-1 that means no value in the range satisfies the condition
+	return res
+
+print(lastTrue(2, 10, lambda x: True)) # 10
+# all numbers satisfy the condition
+print(lastTrue(2, 10, lambda x : x * x <= 30)) # 5
+print(lastTrue(2, 10, lambda x : False)) # 1
+# no numbers satisfy the condition
+```
+
+See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if
+you're not familiar with the syntax used in the program.
+
+</PySection>
+
+</LanguageSection>
+
+#### Implementation 2
+
+This approach is based on interval jumping. Essentially, we start from the
+beginning of the array, make jumps, and reduce the jump length as we get closer
+to the target element. We use powers of 2, very similiar to
+[Binary Jumping](/plat/bin-jump).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int lastTrue(int lo, int hi, function<bool(int)> f) {
+	for (int dif = (hi-(--lo)); dif; dif /= 2)
+		while (lo+dif <= hi && f(lo+dif)) lo += dif;
+	return lo;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int lastTrue(int lo, int hi, Predicate<Integer> f) {
+	for (int dif = (hi-(--lo)); dif > 0; dif /= 2)
+		while (lo+dif <= hi && f.test(lo+dif)) lo += dif; //f is the function
+	return lo;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def lastTrue(lo, hi, f):
+	lo-=1
+	while lo < hi:
+		mid = (lo+hi+1)//2
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid-1
+
+	return lo
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Finding The Minimum `x` Such That `f(x) = true`
+
+We want to construct a function `firstTrue` such that `firstTrue(lo, hi, f)`
+returns the first `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `firstTrue` should return `hi+1`.
+
+Similarly to the previous part, this can be done with binary search if `f(x)`
+satisfies both of the following conditions:
+
+- If `f(x)` is true, then `f(y)` is true for all $y \geq x$.
+- If `f(x)` is false, then `f(y)` is false for all $y \leq x$.
+
+We will need to do the same thing, but when the condition is satisfied, we will
+cut the right part, and when it's not, the left part will be cut.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int firstTrue(int lo, int hi, function<bool(int)> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = lo+(hi-lo)/2;
+		if (f(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+
+int main() {
+	cout << firstTrue(2,10,[](int x) { return true; }) << "\n"; // 2
+	cout << firstTrue(2,10,[](int x) { return x*x >= 30; }) << "\n"; // 6
+	cout << firstTrue(2,10,[](int x) { return false; }) << "\n"; // 11
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.function.Predicate;
+
+public class BinarySearch {
+	public static void main(String[] args) {
+		System.out.println(firstTrue(2,10,(x) -> true)); // 2
+		System.out.println(firstTrue(2,10,(x) -> x*x>=30)); // 6
+		System.out.println(firstTrue(2,10,(x) -> false)); // 11
+	}
+
+	public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+		for (hi ++; lo < hi; ) {
+			int mid = lo+(hi-lo)/2;
+			if (f.test(mid)) hi = mid;
+			else lo = mid+1;
+		}
+		return lo;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def firstTrue(lo, hi, f):
+	# returns smallest x in [lo,hi] that satisfies f
+	# hi+1 if no x satisfies f
+	hi+=1
+	while lo < hi:
+		mid = (lo+hi)//2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
+print(firstTrue(2, 10, lambda x : True)) # 2
+print(firstTrue(2, 10, lambda x : x * x >= 30)) # 6
+print(firstTrue(2, 10, lambda x : False)) # 11
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Example - Maximum Median
+
+<FocusProblem problem={problems.ex[0]} />
+
+**Statement:** Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd,
+we can perform the following operation on it $k$ times: take any element of the
+array and increase it by $1$. We want to make the median of the array as large
+as possible after $k$ operations.
+
+**Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is
+odd.
+
+<Spoiler title="Solution">
+
+We first sort the array in ascending order. Then, we binary search for the
+maximum possible median. We know that the number of operations required to raise
+the median to $x$ increases monotonically as $x$ increases, so we can use binary
+search. For a given median value $x$, the number of operations required to raise
+the median to $x$ is
+
+$$
+\sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i]).
+$$
+
+If this value is less than or equal to $k$, then $x$ can be the median, so our
+check function returns `true`. Otherwise, $x$ cannot be the median, so our check
+function returns `false`.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+bool f(int x) {
+	// returns true if median can be raised to x
+	ll operationsNeeded = 0;
+	for (ll i = (n-1)/2; i < n; i++)
+		operationsNeeded += max(0, x-v[i]);
+	return operationsNeeded <= k;
+}
+
+int lastTrue(int lo, int hi, function<bool(int)> f) {
+	for (--lo; lo < hi; ) {
+		int mid = lo+(hi-lo+1)/2;
+		if (f(mid)) lo = mid;
+		else hi = mid-1;
+	}
+	return lo;
+}
+
+int main() {
+	ll n; ll k;
+	vector<int> v;
+	cin >> n >> k;
+	for(ll i = 0; i < n; i++){
+		ll t; cin >> t;
+		v.push_back(t);
+	}
+	sort(v.begin(), v.end());
+	cout << lastTrue(1, 2e9);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BinarySearch{
+	static int n, k;
+	static List<Integer> v = new ArrayList<>();
+	public static void main(String[] args){
+		Kattio io = new Kattio();
+
+		n = io.nextInt(); k = io.nextInt();
+		for(int i = 0; i < n; i++){
+			int t = io.nextInt();
+			v.add(t);
+		}
+		Collections.sort(v);
+		io.println(lastTrue(1, (int)2e9));
+		io.close();
+	}
+
+	public static boolean f(int x){
+		// returns true if median can be raised to x
+		long operationsNeeded = 0;
+		for (int i = (n-1)/2; i < n; i++)
+			operationsNeeded += Math.max(0, x-v.get(i));
+		return operationsNeeded <= k;
+	}
+
+	public static int lastTrue(int lo, int hi) {
+		for (--lo; lo < hi; ) {
+			int mid = lo+(hi-lo+1)/2;
+			if (f(mid)) lo = mid;
+			else hi = mid-1;
+		}
+		return lo;
+	}
+
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+# checks whether the number of given operations is sufficient
+# to raise the median of the array to x
+def f(x):
+	operationsNeeded = 0
+	for i in range((n-1)//2,n):
+		operationsNeeded += max(0, x-v[i])
+	if operationsNeeded <= k:
+		return True
+	else:
+		return False
+# binary searches for the correct answer
+def search(lo, hi):
+	lo-=1
+	while lo < hi:
+		mid = lo+(hi-lo+1)//2;
+		if f(mid):
+			lo = mid
+		else:
+			hi = mid-1
+
+	return lo
+
+
+v=[]
+n, k = map(int, input().split())
+v = list(map(int, input().split()))
+v.sort()
+print(search(1, 2E9))
+```
+
+</PySection>
+
+</LanguageSection>
+
+</Spoiler>
+
+## Common Mistakes
+
+### Mistake 1 - Off By One
+
+Consider the code from CSAcademy's
+[Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+long long f(int x) {
+	return (long long)x * x;
+}
+int square_root(int x) {
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static long f(int x) {
+	return (long)x * x;
+}
+public static int square_root(int x) {
+	int left = 0, right = x;
+	while (left < right) {
+		int middle = (left + right) / 2;
+		if (f(middle) <= x) {
+			left = middle;
+		} else {
+			right = middle - 1;
+		}
+	}
+	return left;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def f(x):
+	return x*x
+
+def square_root(x):
+	left = 0
+	right = 0
+	while left < right:
+		middle = (left + right) // 2
+		if f(middle) <= x:
+			left = middle
+		else:
+			right = middle - 1
+	return left
+```
+
+</PySection>
+
+</LanguageSection>
+
+This results in an infinite loop if `left=0` and `right=1`! To fix this, set
+`middle = (left+right+1)/2` instead.
+
+### Mistake 2 - Not Accounting for Negative Bounds
+
+Consider a slightly modified version of `firstTrue`:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int firstTrue(int lo, int hi, function<bool(int)> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = (lo+hi)/2;
+		if (f(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = (lo+hi)/2;
+		if (f.test(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def firstTrue(lo, hi, f):
+	hi+=1
+	while lo < hi:
+		mid = (lo+hi)//2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid+1
+	return lo
+```
+
+</PySection>
+
+</LanguageSection>
+
+This code does not necessarily work if `lo` is negative! Consider the following
+example:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int main() {
+	cout << firstTrue(-10,-10,[](int x) { return false; }) << "\n";
+	// -8, should be -9
+	cout << firstTrue(-10,-10,[](int x) { return true; }) << "\n";
+	// infinite loop
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static void main(String[] args) {
+	System.out.println(firstTrue(-10,-10,(x) -> false));
+	// -8, should be -9
+	System.out.println(firstTrue(-10,-10,(x) -> true));
+	// infinite loop
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+print(firstTrue(-10,-10,lambda x : False))
+# -8, should be -9
+print(firstTrue(-10,-10,lambda x : True))
+# infinite loop
+```
+
+</PySection>
+
+</LanguageSection>
+
+This is because dividing an odd negative integer by two will round it up instead
+of down.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int firstTrue(int lo, int hi, function<bool(int)> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = lo+(hi-lo)/2;
+		if f(mid) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+public static int firstTrue(int lo, int hi, Predicate<Integer> f) {
+	for (hi ++; lo < hi; ) {
+		int mid = lo+(hi-lo)/2;
+		if(f.test(mid)) hi = mid;
+		else lo = mid+1;
+	}
+	return lo;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def firstTrue(lo, hi, f):
+	hi+=1
+	while lo < hi:
+		mid = lo+(hi-lo)/2
+		if f(mid):
+			hi = mid
+		else:
+			lo = mid+1
+	return lo
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Mistake 3 - Integer Overflow
+
+The first version of `firstTrue` won't work if `hi-lo` initially exceeds
+`INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds
+`INT_MAX` at any point during execution. If this is an issue, use `long long`s
+instead of `int`s.
+
+## Library Functions For Binary Search
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/algorithm/lower_bound/"
+		title="lower_bound, upper_bound"
+		starred
+	>
+		with examples
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+<Resources>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)"
+		title="Arrays.binarySearch"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#binarySearch(java.util.List,%20T)"
+		title="Collections.binarySearch"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+</JavaSection>
+
+<PySection>
+
+<Resources>
+	<Resource
+		source="Python"
+		url="https://docs.python.org/3/library/bisect.html"
+		title="Array bisection algorithm"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/binary-search-bisect-in-python/"
+		title="Binary Search (bisect) in Python"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+</PySection>
+
+</LanguageSection>
+
+### Example - Counting Haybales
+
+<FocusProblem problem={problems.count} />
+
+As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing
+locations of haybales in a boolean array and then taking prefix sums of that
+would take too much time and memory.
+
+Instead, let's place all of the locations of the haybales into a list and sort
+it. Now we can use binary search to count the number of cows in any range
+$[A,B]$ in $\mathcal{O}(\log N)$ time.
+
+### With Built-in Function
+
+<LanguageSection>
+
+<CPPSection>
+
+We can use the the built-in
+[`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and
+[`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound)
+functions.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int N,Q; cin >> N >> Q;
+	vector<int> v(N);
+	for (int i = 0; i < N; ++i) cin >> v[i];
+	sort(begin(v),end(v));
+	for (int i = 0; i < Q; ++i) {
+		int A,B; cin >> A >> B;
+		cout << upper_bound(begin(v),end(v),B)-lower_bound(begin(v),end(v),A) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+We can use the builtin
+[`Arrays.binarySearch`](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)>)
+function.
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class haybales{
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("haybales.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int Q = Integer.parseInt(st.nextToken());
+		int[] arr = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for(int i = 0; i < N; i++){
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(arr);
+		for(int i = 0; i < Q; i++){
+			st = new StringTokenizer(br.readLine());
+			int low = Integer.parseInt(st.nextToken());
+			int high = Integer.parseInt(st.nextToken());
+			int bi = Arrays.binarySearch(arr, low);
+			if(bi < 0){
+				bi = Math.abs(bi+1);
+			}
+			int ti = Arrays.binarySearch(arr, high);
+			if(ti < 0){
+				ti = Math.abs(ti+2);
+			}
+			out.println(ti-bi+1);
+		}
+		out.close();
+	}
+}
+
+```
+
+</JavaSection>
+
+<PySection>
+
+We can use the builtin
+[`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect)
+function.
+
+```py
+
+from bisect import bisect
+
+inp = open("haybales.in", 'r')
+out = open("haybales.out", 'w')
+
+N, Q = map(int, inp.readline().split())
+arr = sorted(list(map(int, inp.readline().split())))
+
+for i in range(Q):
+	a, b = map(int, inp.readline().split())
+	print(bisect(arr, b) - bisect(arr, a-1), file=out)
+
+inp.close()
+out.close()
+```
+
+</PySection>
+
+</LanguageSection>
+
+### Without Built-in Function
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int N,Q; cin >> N >> Q;
+	vector<int> v(N);
+	for (int& t: v) cin >> t;
+	sort(begin(v),end(v));
+	auto at_most = [&](int x) { // returns # of elements <= x
+		int lo = 0, hi = sz(v);
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (v[mid] <= x) lo = mid+1;
+			else hi = mid;
+		}
+		return lo;
+	};
+	for (int i = 0; i < Q; ++i) {
+		int A,B; cin >> A >> B;
+		cout << at_most(B)-at_most(A-1) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Haybales{
+	static int N, Q;
+	public static void main(String[] args) throws IOException{
+		Kattio io = new Kattio("haybales");
+		N = io.nextInt();
+		Q = io.nextInt();
+		List<Integer> v = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			int t = io.nextInt();
+			v.add(t);
+		}
+		Collections.sort(v);
+
+		for (int i = 0; i < Q; ++i) {
+			int A = io.nextInt();
+			int B = io.nextInt();
+			io.println(at_most(B)-at_most(A-1));
+		}
+
+		io.close();
+	}
+
+	public static int at_most(int x){ // returns # of elements <= x
+		int lo = 0, hi = v.size();
+		while (lo < hi) {
+			int mid = (lo+hi)/2;
+			if (v.get(mid) <= x) lo = mid+1;
+			else hi = mid;
+		}
+		return lo;
+	}
+
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Problems
+
+### USACO
+
+<Problems problems={problems.usaco} />
+
+### General
+
+<Problems problems={problems.general} />

@@ -12,6 +12,7 @@ import '../../styles/assignment-progress-view.css';
 import FirebaseContext from '../../context/FirebaseContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export default function AssignmentProgressView({
   problems,
@@ -20,7 +21,7 @@ export default function AssignmentProgressView({
   title,
 }) {
   const firebase = useContext(FirebaseContext);
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const fullScreenHandlers = useFullScreenHandle();
   const [studentNameInfo, setStudentNameInfo] = useState([]);
   const [showStudentEmails, setShowStudentEmails] = useState(false);
@@ -115,7 +116,7 @@ export default function AssignmentProgressView({
               checked={showStudentEmails}
               onChange={e => setShowStudentEmails(e.target.checked)}
               type="checkbox"
-              className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+              className="form-checkbox h-4 w-4 text-indigo-600 transition"
             />
           </div>
           <div className="ml-3 text-sm leading-5">

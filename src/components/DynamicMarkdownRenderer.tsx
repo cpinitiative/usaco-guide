@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { transform } from 'buble-jsx-only';
+import { transform } from '@babel/standalone';
 import mdx from '@mdx-js/mdx';
 import { MDXProvider, mdx as createElement } from '@mdx-js/react';
 import * as rehypeKatex from 'rehype-katex';
 import * as remarkExternalLinks from 'remark-external-links';
 import * as remarkMath from 'remark-math';
+import grayMatter from 'gray-matter';
 
 import { components } from './markdown/MDXProvider';
 import { Problem } from '../models/problem';
+import customRehypeKatex from '../mdx-plugins/rehype-math.js';
+import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
 
 class ErrorBoundary extends React.Component {
   state: {
@@ -51,6 +54,7 @@ export default function ({ markdown, debounce = 1000 }) {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
+    // See: https://github.com/mdx-js/mdx/blob/main/packages/runtime/src/index.js
     const compile = async () => {
       try {
         const fullScope = {
@@ -61,10 +65,18 @@ export default function ({ markdown, debounce = 1000 }) {
           props: [],
         };
 
+        console.time('compile');
+
+        const { data, content: frontMatterCodeResult } = grayMatter(markdown);
+
+        const content = `${frontMatterCodeResult}
+
+export const _frontmatter = ${JSON.stringify(data)}`;
+
         const jsx = (
-          await mdx(markdown, {
+          await mdx(content, {
             remarkPlugins: [remarkExternalLinks, remarkMath],
-            rehypePlugins: [rehypeKatex],
+            rehypePlugins: [customRehypeKatex, rehypeSnippets],
             skipExport: true,
           })
         ).trim();
@@ -72,17 +84,20 @@ export default function ({ markdown, debounce = 1000 }) {
         let code;
         try {
           code = transform(jsx, {
-            objectAssign: 'Object.assign',
+            presets: ['react'],
+            compact: true,
           }).code;
         } catch (err) {
+          console.log('transform error');
           console.error(err);
           throw err;
         }
 
-        code = code.replace('export const', 'const');
+        code = code.replace(/export const/g, 'const');
 
         const keys = Object.keys(fullScope);
         const values = Object.values(fullScope);
+
         // eslint-disable-next-line no-new-func
         const fn = new Function(
           '_fn',
@@ -96,6 +111,8 @@ export default function ({ markdown, debounce = 1000 }) {
 
         setFn(fn.bind(null, {}, React, ...values)());
         setError(null);
+
+        console.timeEnd('compile');
       } catch (e) {
         console.log('liveupdate error caught:', e);
         setFn(null);

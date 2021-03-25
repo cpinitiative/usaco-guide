@@ -1,15 +1,13 @@
 ---
 id: dp-bitmasks
 title: 'Dynamic Programming on Bitmasks'
-author: Michael Cao, Siyong Huang
+author: Michael Cao, Siyong Huang, Andrew Wang, Neo Wang
 prerequisites:
   - intro-bitwise
   - intro-dp
 description: DP problems that require iterating over subsets.
 frequency: 2
 ---
-
-
 
 export const problems = {
 	sam: [
@@ -30,7 +28,7 @@ export const problems = {
 			'contests/dp/tasks/dp_o?lang=en',
 			'Easy',
 			false,
-			['Bitmasks'],
+			['Bitmasks', 'DP'],
 			''
 		),
 		new Problem(
@@ -48,7 +46,16 @@ export const problems = {
 			'494',
 			'Easy',
 			false,
-			['Bitmasks'],
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Uddered but not Herd',
+			'1089',
+			'Easy',
+			false,
+			['Bitmasks', 'DP'],
 			''
 		),
 		new Problem(
@@ -57,7 +64,7 @@ export const problems = {
 			'515',
 			'Easy',
 			false,
-			['Bitmasks'],
+			['Bitmasks', 'DP'],
 			''
 		),
 		new Problem(
@@ -66,17 +73,17 @@ export const problems = {
 			'1653',
 			'Normal',
 			false,
-			['Bitmasks'],
+			['Bitmasks', 'DP'],
 			'@CPH 10.5'
 		),
 		new Problem(
 			'IZhO',
-			'Bank',
+			'2014 - Bank',
 			'IZhO14_bank',
 			'Normal',
 			false,
-			['Bitmasks'],
-			'izho-bank'
+			['Bitmasks', 'DP'],
+			'izho-14-bank'
 		),
 		new Problem(
 			'YS',
@@ -84,7 +91,7 @@ export const problems = {
 			'maximum_independent_set',
 			'Normal',
 			false,
-			['Bitmasks', 'Meet in Middle'],
+			['Bitmasks', 'Meet in Middle', 'DP'],
 			''
 		),
 		new Problem(
@@ -93,7 +100,43 @@ export const problems = {
 			'catandmice',
 			'Normal',
 			false,
-			['Bitmasks', 'Geometry', 'Binary Search'],
+			['Bitmasks', 'DP', 'Geometry', 'Binary Search'],
+			''
+		),
+		new Problem(
+			'IZhO',
+			'2017 - Longest beautiful sequence',
+			'https://oj.uz/problem/view/IZhO17_subsequence',
+			'Hard',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'COCI',
+			'2016 - Burza',
+			'https://oj.uz/problem/view/COCI16_burza',
+			'Hard',
+			true,
+			['Bitmasks', 'DP', 'Game Theory', 'Sqrt'],
+			''
+		),
+		new Problem(
+			'CEOI',
+			'2019 - Amusement Park',
+			'https://oj.uz/problem/view/CEOI19_amusementpark',
+			'Very Hard',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2007 - Training',
+			'https://oj.uz/problem/view/IOI07_training',
+			'Very Hard',
+			true,
+			['Bitmasks', 'DP', 'Tree', 'DFS'],
 			''
 		),
 	],
@@ -127,7 +170,7 @@ export const problems = {
 		),
 		new Problem(
 			'CF',
-			'Nora\'s Toy Boxes',
+			"Nora's Toy Boxes",
 			'1292/problem/F',
 			'Insane',
 			false,
@@ -159,6 +202,12 @@ You can often use this to solve subtasks.
 	>
 		Elevator Rides, SOS, Hamiltonian
 	</Resource>
+	<Resource
+		source="NW@nwatx"
+		title="A Primer on Bitmask DP"
+		url="https://nwatx.me/post/dpbitmasks"
+		starred
+	/>
 	<Resource source="PAPS" title="9.4 - Subset DP">
 		example - similar to Hamiltonian
 	</Resource>
@@ -176,7 +225,51 @@ You can often use this to solve subtasks.
 
 ## Solution
 
-<IncompleteSection />
+<Spoiler title = "Solution">
+
+Let $dp[S][i]$ be the number of routes that visit all the cities in the subset
+$S$ and end at city $i$. The transitions will then be:
+
+$$
+dp[S][i] = \sum_{x \in adj[i]} dp[S  \setminus \{i\}][x] \text{ if $x \in S$}
+$$
+
+where $S  \setminus \{i\}$ is the subset $S$ without city $i$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+
+const int MX = (1 << 20);
+ll dp[MX][21];
+vector<int> adj[21];
+const ll MOD = (ll)1e9+7;
+
+int main() {
+	int N, M; cin >> N >> M;
+	for(int i = 0; i < M; i++){
+		int a, b; cin >> a >> b;
+		adj[b].push_back(a);
+	}
+	dp[1][1] = 1;
+	for(int s = 2; s < 1 << N; s++){
+		if((s & (1 << (N-1))) && s != ((1 << N) - 1)) continue;
+		for(int i = 1; i <= N; i++){
+			if((s & (1 << (i-1))) == 0) continue;
+			for(int j : adj[i]){
+				if((s & (1 << (j-1)))){
+					dp[s][i] += dp[s - (1 << (i-1))][j]; dp[s][i] %= MOD;
+				}
+			}
+		}
+	}
+	cout << dp[(1 << N) - 1][N] % MOD << '\n';
+	return 0;
+}
+```
+
+</Spoiler>
 
 ## Problems
 
@@ -186,21 +279,26 @@ You can often use this to solve subtasks.
 
 ### Rough Idea
 
-In some number theory problems, it helps to represent each number were represented by a bitmask of its prime divisors. For example, the set $\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary), where the bits correspond to divisibility by $[2, 3, 5]$.
+In some number theory problems, it helps to represent each number were
+represented by a bitmask of its prime divisors. For example, the set
+$\{6, 10, 15 \}$ can be represented by $\{0b011, 0b101, 0b110 \}$ (in binary),
+where the bits correspond to divisibility by $[2, 3, 5]$.
 
 Then, here are some equivalent operations between masks and these integers:
 
- - Bitwise AND is GCD
- - Bitwise OR is LCM
- - Iterating over bits is iterating over prime divisors
- - Iterating over submasks is iterating over divisors
+- Bitwise AND is GCD
+- Bitwise OR is LCM
+- Iterating over bits is iterating over prime divisors
+- Iterating over submasks is iterating over divisors
 
-<!-- 
-In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes. 
+<!--
+In particular those that involve making GCD equal to $1$, may be optimized using a sort of bitmask over primes.
  -->
-Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because $0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$ because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
 
-
+Choosing a set with GCD $1$ is equivalent to choosing a set of bitmasks that AND
+to $0$. For example, we can see that $\{6, 10 \}$ doesn't have GCD $1$ because
+$0b011 \& 0b101 = 0b001 \neq 0$. On the other hand, $\{6, 10, 15 \}$ has GCD $1$
+because $0b011 \& 0b101 \& 0b110 = 0b000 = 0$.
 
 <!-- 
 Therefore, if we have a reasonably short list of primes (perhaps $\leq 20$), then we can simply represent numbers with their prime divisors bitmask and change the NT problem to a bitmask problem.
@@ -228,11 +326,11 @@ In fact, the simplest way to do this is just to assign each bitmask to the integ
 
 <IncompleteSection>
 
-Maybe this is just standard NT, but I've always thought about it as a bitmask. Also, any tutorials or more problems of this type?
+Maybe this is just standard NT, but I've always thought about it as a bitmask.
+Also, any tutorials or more problems of this type?
 
 </IncompleteSection>
 
 ### Problems
 
 <Problems problems={problems.bitmask_nt} />
-

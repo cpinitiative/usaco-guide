@@ -8,7 +8,8 @@ export class ModuleLinkInfo {
     public description?: string,
     public frequency?: ModuleFrequency,
     public isIncomplete?: boolean,
-    public probs?: any
+    public probs?: any,
+    public gitAuthorTime?: any
   ) {
     if (this.id === 'using-this-guide') {
       // The "Using This Guide" module is complete already, but it contains an <IncompleteModule> tag
@@ -44,7 +45,8 @@ export class ModuleInfo extends ModuleLinkInfo {
     public description: string,
     public frequency: ModuleFrequency,
     public toc: TableOfContents,
-    public fileRelativePath: string
+    public fileRelativePath: string,
+    public gitAuthorTime: any
   ) {
     super(id, section, title);
   }

@@ -1,0 +1,59 @@
+import { Problem } from '../models/problem';
+import * as React from 'react';
+import useFirebase from './useFirebase';
+import {
+  UserSolutionForProblem,
+  userSolutionForProblemConverter,
+} from '../models/userSolutionForProblem';
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+
+export default function useUserSolutionsForProblem(problem: Problem) {
+  const [solutions, setSolutions] = React.useState<UserSolutionForProblem[]>(
+    null
+  );
+  const [currentUserSolutions, setCurrentUserSolutions] = React.useState<
+    UserSolutionForProblem[]
+  >(null);
+  const { firebaseUser } = useContext(UserDataContext);
+
+  useFirebase(
+    firebase => {
+      const id = problem?.uniqueID;
+      if (id) {
+        setSolutions(null);
+        setCurrentUserSolutions(null);
+        const unsubscribe1 = firebase
+          .firestore()
+          .collection('userProblemSolutions')
+          .where('isPublic', '==', true)
+          .where('problemID', '==', id)
+          .withConverter(userSolutionForProblemConverter)
+          .onSnapshot(snap => {
+            setSolutions(snap.docs.map(doc => doc.data()));
+          });
+        const unsubscribe2 = firebaseUser
+          ? firebase
+              .firestore()
+              .collection('userProblemSolutions')
+              .where('problemID', '==', id)
+              .where('userID', '==', firebaseUser.uid)
+              .withConverter(userSolutionForProblemConverter)
+              .onSnapshot(snap => {
+                setCurrentUserSolutions(snap.docs.map(doc => doc.data()));
+              })
+          : () => {};
+        return () => {
+          unsubscribe1();
+          unsubscribe2();
+        };
+      }
+    },
+    [problem?.uniqueID, firebaseUser?.uid]
+  );
+
+  return {
+    solutions,
+    currentUserSolutions,
+  };
+}

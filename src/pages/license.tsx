@@ -22,7 +22,7 @@ export default function LicensePage(props: PageProps) {
             <a
               rel="license"
               className={
-                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark-hover:text-blue-300 hover:underline'
+                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
@@ -51,7 +51,7 @@ export default function LicensePage(props: PageProps) {
             <a
               rel="license"
               className={
-                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark-hover:text-blue-300 hover:underline'
+                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
@@ -119,7 +119,7 @@ export default function LicensePage(props: PageProps) {
             cases described above, please contact us at{' '}
             <a
               href="mailto:usacoguide@gmail.com"
-              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark-hover:text-blue-300 underline"
+              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
             >
               usacoguide@gmail.com
             </a>
@@ -130,7 +130,7 @@ export default function LicensePage(props: PageProps) {
           </p>
           <Link
             to="/"
-            className="block mb-4 underline text-blue-500 hover:text-blue-700 dark:text-blue-400 dark-hover:text-blue-300"
+            className="block mb-4 underline text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             &larr; Back to Home
           </Link>

@@ -2,7 +2,7 @@
 id: usaco-668
 source: USACO Silver 2016 December
 title: Moocast
-author: Óscar Garries, Dong Liu
+author: Óscar Garries (C++), Dong Liu (Python), Owen Wang (Java)
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_moocast_silver_dec16.html)
@@ -10,16 +10,15 @@ author: Óscar Garries, Dong Liu
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
 
-vector<vector<bool>> isConnected(201, vector<bool>(201));
-vector<int> g[201];
-vector<bool> visited(201);
+bool isConnected[200][200];
+vector<bool> visited;
 int n;
 
 int dfs (int v) {
@@ -39,7 +38,7 @@ int main () {
 	freopen("moocast.out", "w", stdout);
 
 	cin >> n;
-	int x[n], y[n], p[n];
+	vector<int> x(n), y(n), p(n);
 
 	for (int i = 0; i < n; i++) {
 		cin >> x[i] >> y[i] >> p[i];
@@ -47,7 +46,8 @@ int main () {
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			int sumDist = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
+			int sumDist = (x[i] - x[j]) * (x[i] - x[j])
+						  + (y[i] - y[j]) * (y[i] - y[j]);
 			int hip = p[i] * p[i];
 			if (sumDist <= hip) isConnected[i][j] = true;
 		}
@@ -56,15 +56,13 @@ int main () {
 	int sol = 0;
 
 	for (int i = 0; i < n; i++) {
-		vector<bool> v(n + 1);
-		visited = v;
+		visited.assign(n, false);
 		int cowHear = dfs(i) + 1;
 		sol = max(sol, cowHear);
 	}
 
 	cout << sol << '\n';
 }
-
 ```
 
 </CPPSection>
@@ -110,5 +108,71 @@ print(ans)
 ```
 
 </PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class moocast {
+
+	static int N;
+	static Cow[] cows;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("moocast.in"));
+		PrintWriter out = new PrintWriter("moocast.out");
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		cows = new Cow[N];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			cows[i] = new Cow(i, a, b, c);
+		}
+		int max = 0;
+		for (int i = 0; i < N; i++) {
+			max = Math.max(max, transmit(cows[i]));
+		}
+		out.println(max);
+		out.close();
+	}
+
+	private static int transmit(Cow cow) {
+		boolean[] visited = new boolean[N];
+		return transmit(cow, visited);
+	}
+
+	private static int transmit(Cow cow, boolean[] visited) {
+		if (visited[cow.index]) {
+			return 0;
+		}
+		visited[cow.index] = true;
+		int count = 0;
+		for (int i = 0; i < N; i++) {
+			if (Math.sqrt(Math.pow(Math.abs(cows[i].x - cow.x), 2)
+			     + Math.pow(Math.abs(cows[i].y - cow.y), 2)) < cow.power) {
+				count += transmit(cows[i], visited);
+			}
+		}
+		return count + 1;
+	}
+
+	private static class Cow {
+		int x, y, power, index;
+		public Cow(int index, int x, int y, int power) {
+			this.x = x;
+			this.y = y;
+			this.power = power;
+			this.index = index;
+		}
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>

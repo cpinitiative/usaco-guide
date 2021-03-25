@@ -1,5 +1,7 @@
 ---
 id: dfs
+redirects:
+  - /silver/bipartite
 title: Depth First Search (DFS)
 author: Siyong Huang, Andrew Wang, Jason Chen, Benjamin Qi
 prerequisites:
@@ -11,20 +13,43 @@ frequency: 4
 
 export const problems = {
 	sample: [
-		new Problem('CSES', 'Building Roads', '1666', 'Easy', false, ['DFS'], '@B'),
+		new Problem(
+			'CSES',
+			'Building Roads',
+			'1666',
+			'Easy',
+			false,
+			['Connected Components'],
+			'@B'
+		),
 	],
 	general: [
-		new Problem('Silver', 'Closing the Farm', '644', 'Easy', false, ['DFS']),
-		new Problem('Silver', 'Moocast', '668', 'Easy', true, ['DFS'], 'usaco-668'),
-		new Problem('Silver', 'Fence Planning', '944', 'Easy', true, ['DFS']),
 		new Problem(
 			'Silver',
-			'Mootube',
-			'788',
+			'Closing the Farm',
+			'644',
+			'Easy',
+			false,
+			['Connected Components'],
+			'usaco-644'
+		),
+		new Problem(
+			'Silver',
+			'Moocast',
+			'668',
 			'Easy',
 			true,
-			['Tree', 'DFS'],
-			'usaco-788'
+			['Directed Graph'],
+			'usaco-668'
+		),
+		new Problem(
+			'Silver',
+			'Fence Planning',
+			'944',
+			'Easy',
+			true,
+			['Connected Components'],
+			''
 		),
 		new Problem(
 			'Kattis',
@@ -32,8 +57,17 @@ export const problems = {
 			'birthday',
 			'Easy',
 			false,
-			['DFS'],
+			['Connected Components'],
 			'kattis-birthday'
+		),
+		new Problem(
+			'CSES',
+			'Flight Routes Check',
+			'1682',
+			'Normal',
+			true,
+			['Directed Graph'],
+			'cses-1682'
 		),
 		new Problem(
 			'Gold',
@@ -41,7 +75,7 @@ export const problems = {
 			'669',
 			'Normal',
 			false,
-			['DFS', 'Binary Search'],
+			['Connected Components', 'Binary Search'],
 			'usaco-669'
 		),
 		new Problem(
@@ -50,7 +84,7 @@ export const problems = {
 			'992',
 			'Normal',
 			true,
-			['DFS', 'Binary Search'],
+			['Connected Components', 'Binary Search'],
 			'usaco-992'
 		),
 		new Problem(
@@ -59,30 +93,58 @@ export const problems = {
 			'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
 			'Very Hard',
 			false,
-			['DFS', 'Binary Search'],
+			['Connected Components', 'Binary Search'],
 			'kattis-laneswitching'
 		),
 	],
-	other: [
+	bipsample: [
 		new Problem(
 			'CSES',
-			'Flight Routes Check',
-			'1682',
+			'Building Teams',
+			'1668',
 			'Easy',
-			true,
-			[],
-			'cses-1682'
+			false,
+			['Bipartite'],
+			'@B'
+		),
+	],
+	bip: [
+		new Problem(
+			'CF',
+			'Bipartiteness',
+			'contest/862/problem/B',
+			'Easy',
+			false,
+			['Bipartite'],
+			''
 		),
 		new Problem(
-			'CCO',
-			'Escape Room',
-			'ccc20s2',
-			'Normal',
-			false,
-			[],
-			'ccc-20-escape'
+			'Silver',
+			'The Great Revegetation',
+			'920',
+			'Easy',
+			true,
+			['Bipartite'],
+			'usaco-920'
 		),
-		new Problem('Silver', 'Snow Boots', '811', 'Hard', false, [], ''),
+		new Problem(
+			'Baltic OI',
+			'2020 - Graph',
+			'https://codeforces.com/contest/1387/problem/A',
+			'Hard',
+			false,
+			['DFS', 'Median'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2011 - Table Coloring',
+			'https://dmoj.ca/problem/apio11p1',
+			'Very Hard',
+			false,
+			['Bipartite'],
+			'apio-11-color'
+		),
 	],
 };
 
@@ -113,8 +175,6 @@ not a good example
 		title="4.2.1, 4.2.3 - DFS, Finding Connected Components"
 	></Resource> -->
 
-## DFS in Undirected Graphs
-
 <Resources>
 	<Resource
 		source="CSA"
@@ -129,13 +189,29 @@ not a good example
 	</Resource>
 </Resources>
 
-A **connected component** is a maximal set of connected nodes in an undirected graph. In other words, two nodes are in the same connected component _if and only if_ they can reach each other via edges in the graph.
+From the second resource:
+
+> Depth-first search (DFS) is a straightforward graph traversal technique. The
+> algorithm begins at a starting node, and proceeds to all other nodes that are
+> reachable from the starting node using the edges of the graph.
+>
+> Depth-first search always follows a single path in the graph as long as it
+> finds new nodes. After this, it returns to previous nodes and begins to
+> explore other parts of the graph. The algorithm keeps track of visited nodes,
+> so that it processes each node only once.
+
+## Application - Connected Components
 
 <FocusProblem problem={problems.sample[0]} />
 
-For example, the goal of this problem above is to add edges such that the entire graph is a single connected component.
+A **connected component** is a maximal set of connected nodes in an undirected
+graph. In other words, two nodes are in the same connected component _if and
+only if_ they can reach each other via edges in the graph.
 
-<!-- oops
+In the above focus problem, the goal is to add the minimum possible number of
+edges such that the entire graph forms a single connected component.
+
+<!--
 
    <Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1">fast-paced</Resource>
    <Resource source="cp-algo" title="Depth First Search" url="graph/depth-first-search.html">hard to parse for a beginner</Resource>
@@ -147,9 +223,13 @@ For example, the goal of this problem above is to add edges such that the entire
 
 <Spoiler title="Solution">
 
-Note that each edge can connect at most two connected components, reducing the overall count by one. Since this is always possible, you must add $C-1$ edges, where $C$ is the number of connected components in the graph.
+Note that each edge decreases the number of connected components by either zero
+or one. So you must add at least $C-1$ edges, where $C$ is the number of
+connected components in the input graph.
 
-In order to solve the second part of the solution, notice that connecting any two nodes in two connected components is sufficient -- this lends itself to many solutions. For example, pick a representative from each component and link them together in a line.
+There are many valid ways to pick $C-1$ new roads to build. The code below picks
+a single representative from each of the $C$ components and links them together
+in a line.
 
 <!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
@@ -267,36 +347,40 @@ public class Main{
 
 ```py
 def solve(n, adj):
-    unvisited = set(range(1, n+1))
-    starts = set()
+	unvisited = set(range(1, n+1))
+	starts = set()
 
-    def dfs(current):
-        for next in adj[current]:
-            if next in unvisited:
-                unvisited.remove(next)
-                dfs(next)
+	def dfs(current):
+		for next in adj[current]:
+			if next in unvisited:
+				unvisited.remove(next)
+				dfs(next)
 
-    while unvisited:
-        start = unvisited.pop()
-        starts.add(start)
-        dfs(start)
+	while unvisited:
+		start = unvisited.pop()
+		starts.add(start)
+		dfs(start)
 
-    print(len(starts) - 1)
-    root = starts.pop()
-    for other in starts:
-        print(root, other)
+	print(len(starts) - 1)
+	root = starts.pop()
+	for other in starts:
+		print(root, other)
 
 if __name__ == '__main__':
-    n, m = map(int, input().split())
-    adj = [set() for _ in range(n+1)]
-    for _ in range(m):
-        u, v = map(int, input().split())
-        adj[u].add(v)
-        adj[v].add(u)
-    solve(n, adj)
+	n, m = map(int, input().split())
+	adj = [set() for _ in range(n+1)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		adj[u].add(v)
+		adj[v].add(u)
+	solve(n, adj)
 ```
 
-Unfortunately, a danger in using DFS when dealing with large bounds is the possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the recursion limit in Python is set to [1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014) by default. So if you submit the above code, you'll get the following:
+Unfortunately, a danger in using DFS when dealing with large bounds is the
+possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the
+recursion limit in Python is set to
+[1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014)
+by default. So if you submit the above code, you'll get the following:
 
 ```
 Traceback (most recent call last):
@@ -325,7 +409,11 @@ sys.setrecursionlimit(1000000)
 
 although we still get TLE on two test cases.
 
-To resolve this, we can implement a non-recursive solution (which turns out to be slightly faster). You can imagine adding to `to_visit` as calling the function recursively and popping from `to_visit` as starting the execution of the recursive function (though they are not exactly equivalent in the strictest sense).
+To resolve this, we can implement a non-recursive solution (which turns out to
+be slightly faster). You can imagine adding to `to_visit` as calling the
+function recursively and popping from `to_visit` as starting the execution of
+the recursive function (though they are not exactly equivalent in the strictest
+sense).
 
 ```py
 def solve(n, adj):
@@ -474,8 +562,174 @@ See [here.](https://codeforces.com/blog/entry/67883)
 
 <Problems problems={problems.general} />
 
-## DFS in Directed Graphs
+## Application - Graph Two-Coloring
 
-<!-- Of course, we can also apply DFS in **directed** graphs. -->
+<FocusProblem problem={problems.bipsample[0]} />
 
-<Problems problems={problems.other} />
+**Graph two-coloring** refers to assigning a boolean value to each node of the
+graph, dictated by the edge configuration. The most common example of a
+two-colored graph is a **bipartite graph**, in which each edge connects two
+nodes of opposite colors.
+
+In the above focus problem, the goal is to assign each node (friend) of the
+graph to one of two colors (teams), subject to the constraint that edges
+(friendships) connect two nodes of opposite colors. In other words, we need to
+check whether the input is a bipartite graph and output a valid coloring if it
+is.
+
+<!-- all of these use BFS
+
+<Resource source="IUSACO" title="10.7 - Bipartite Graphs">
+		Uses BFS, but DFS accomplishes the same task.
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Bipartite Check"
+		url="graph/bipartite-check.html"
+	>
+		Uses BFS, but DFS accomplishes the same task.
+	</Resource>
+	<Resource source="CP2" title="4.2.6 - Bipartite Check">
+		{' '}
+	</Resource>
+ -->
+
+### Solution - Building Teams
+
+<Resources>
+	<Resource source="CPH" title="12.3 - Bipartiteness check" starred>
+		Brief solution sketch with diagrams.
+	</Resource>
+</Resources>
+
+The idea is that we can arbitrarily label a node and then run DFS. Every time we
+visit a new (unvisited) node, we set its color based on the edge rule. When we
+visit a previously visited node, check to see whether its color matches the edge
+rule.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <vector>
+
+const int MN = 1e5+10;
+
+int N, M;
+bool bad, vis[MN], group[MN];
+std::vector<int> a[MN];
+
+void dfs(int n=1, bool g=0)
+{
+	vis[n]=1;
+	group[n]=g;
+	for(int u:a[n])
+		if(vis[u])
+		{
+			if(group[u]==g)
+				bad=1;
+		}
+		else
+			dfs(u, !g);
+}
+int main()
+{
+	scanf("%d%d", &N, &M);
+	for(int i=0,u,v;i<M;++i)
+		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
+	for(int i=1;!bad && i<=N;++i)
+		if(!vis[i])
+			dfs(i);
+	if(bad)
+		printf("IMPOSSIBLE\n");
+	else
+		for(int i=1;i<=N;++i) printf("%d%c", group[i]+1, " \n"[i==N]);
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+
+Because Java is so slow, an adjacency list using lists/arraylists results in
+TLE. Instead, the Java sample code uses the edge representation mentioned in the
+optional block above.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BuildingTeams
+{
+	static InputReader in = new InputReader(System.in);
+	static PrintWriter out = new PrintWriter(System.out);
+
+	public static final int MN = 100010;
+	public static final int MM = 200010;
+
+	public static int N, M;
+	public static boolean bad;
+	public static boolean[]	vis = new boolean[MN], group = new boolean[MN];
+	public static int[] hd = new int[MN], nx = new int[MM*2], to = new int[MM*2];
+
+	public static void dfs(int n, boolean g)
+	{
+		vis[n]=true;
+		group[n]=g;
+		for(int id=hd[n];id!=0;id=nx[id])
+			if(vis[to[id]])
+			{
+				if(group[to[id]]==g)
+					bad=true;
+			}
+			else
+				dfs(to[id], !g);
+	}
+	public static void adde(int u, int v, int id)
+	{
+		nx[id]=hd[u];
+		hd[u]=id;
+		to[id]=v;
+	}
+	public static void main(String... args)
+	{
+		N=in.nextInt();
+		M=in.nextInt();
+		for(int i=0,u,v;i<M;++i)
+		{
+			u=in.nextInt();
+			v=in.nextInt();
+			adde(u,v,i*2+1);
+			adde(v,u,i*2+2);
+		}
+		for(int i=1;!bad && i<=N;++i)
+			if(!vis[i])
+				dfs(i, false);
+		if(bad)
+			out.println("IMPOSSIBLE");
+		else
+			for(int i=1;i<=N;++i)
+			{
+				out.print(group[i] ? '1' : '2');
+				if(i<N) out.print(' ');
+				else out.println();
+			}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems={problems.bip} />

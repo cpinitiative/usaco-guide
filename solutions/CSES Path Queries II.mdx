@@ -1,0 +1,159 @@
+---
+id: cses-2134
+source: CSES
+title: Path Queries II
+author: Dong Liu
+---
+
+# Solution
+
+This problem can solved with [Heavy Light Decomposition](/plat/hld); we can
+label each edge as either heavy or light. We can use a segment tree to keep
+track of the maximum value in each heavy chain.
+
+Now, to change the value at node $i$ to $x$, we can just update the value in the
+segment tree. To query the maximum value in the path from $a$ to $b$, we first
+find the [Lowest Common Ancestor](/gold/tree-euler#lca). We combine the path
+from $a$ to $lca(a,b)$ and the path from $b$ to $lca(a,b)$ to find our answer.
+
+<LanguageSection>
+
+<CPPSection>
+
+Time complexity: $\mathcal O(N\log^2 N)$
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+const int N = 2e5+5;
+const int D = 19;
+const int S = (1<<D);
+
+int n, q, v[N];
+vector<int> adj[N];
+
+int sz[N], p[N][D], dep[N];
+int st[S], id[N], tp[N];
+
+void update(int idx, int val, int i=1, int l=1, int r=n) {
+	if(l == r) { st[i] = val; return; }
+	int m = (l+r)/2;
+	if(idx <= m) update(idx, val, i*2, l, m);
+	else update(idx,  val, i*2+1, m+1, r);
+	st[i] = max(st[i*2], st[i*2+1]);
+}
+int query(int lo, int hi, int i=1, int l=1, int r=n) {
+	if(lo > r || hi < l) return 0;
+	if(lo <= l && r <= hi) return st[i];
+	int m = (l+r)/2;
+	return max(query(lo, hi, i*2, l, m),
+			query(lo, hi, i*2+1, m+1, r));
+}
+
+int dfs_sz(int cur, int par) {
+	sz[cur] = 1;
+	for(int chi : adj[cur]) {
+		if(chi == par) continue;
+		dep[chi] = dep[cur] + 1;
+		p[chi][0] = cur;
+		sz[cur] += dfs_sz(chi, cur);
+	}
+	return sz[cur];
+}
+void init_lca() {
+	for(int d=1; d<18; d++)
+	for(int i=1; i<=n; i++)
+		p[i][d] = p[p[i][d-1]][d-1];
+}
+int ct = 1;
+void dfs_hld(int cur, int par, int top) {
+	id[cur] = ct++;
+	tp[cur] = top;
+	update(id[cur], v[cur]);
+	int h_chi = -1, h_sz = -1;
+	for(int chi : adj[cur]) {
+		if(chi == par) continue;
+		if(sz[chi] > h_sz) {
+			h_sz = sz[chi];
+			h_chi = chi;
+		}
+	}
+	if(h_chi == -1) return;
+	dfs_hld(h_chi, cur, top);
+	for(int chi : adj[cur]) {
+		if(chi == par || chi == h_chi) continue;
+		dfs_hld(chi, cur, chi);
+	}
+}
+int lca(int a, int b) {
+	if(dep[a] < dep[b]) swap(a, b);
+	for(int d=D-1; d>=0; d--) {
+		if(dep[a] - (1<<d) >= dep[b]) {
+			a = p[a][d];
+		}
+	}
+	for(int d=D-1; d>=0; d--) {
+		if(p[a][d] != p[b][d]) {
+			a = p[a][d];
+			b = p[b][d];
+		}
+	}
+	if(a != b) {
+		a = p[a][0];
+		b = p[b][0];
+	}
+	return a;
+}
+int path(int chi, int par) {
+	int ret = 0;
+	while(chi != par) {
+		if(tp[chi] == chi) {
+			ret = max(ret, v[chi]);
+			chi = p[chi][0];
+		} else if(dep[tp[chi]] > dep[par]) {
+			ret = max(ret, query(id[tp[chi]], id[chi]));
+			chi = p[tp[chi]][0];
+		} else {
+			ret = max(ret, query(id[par]+1, id[chi]));
+			break;
+		}
+	}
+	return ret;
+}
+int main() {
+
+	scanf("%d%d", &n, &q);
+	for(int i=1; i<=n; i++) scanf("%d", &v[i]);
+	for(int i=2; i<=n; i++) {
+		int a, b;
+		scanf("%d%d", &a, &b);
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	dfs_sz(1, 1);
+	init_lca();
+	memset(st, 0, sizeof st);
+	dfs_hld(1, 1, 1);
+	while(q--) {
+		int t;
+		scanf("%d", &t);
+		if(t == 1) {
+			int s, x;
+			scanf("%d%d", &s, &x);
+			v[s] = x;
+			update(id[s], v[s]);
+		} else {
+			int a, b;
+			scanf("%d%d", &a, &b);
+			int c = lca(a, b);
+			int res = max(max(path(a,c), path(b,c)), v[c]);
+			printf("%d ", res);
+		}
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

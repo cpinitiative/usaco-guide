@@ -1,0 +1,189 @@
+---
+id: usaco-1041
+source: USACO Gold 2020 US Open
+title: Haircut
+author: Jeffrey Meng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_haircut_gold_open20.html)
+
+First, we need to count the number of inversions. (Fun fact: the number of
+inversions is also a measure of how sorted an array is. If an array has 0
+inversions, it's perfectly sorted in ascending order. Conversely, if it has the
+maximum possible number of inversions, the array is perfectly sorted in
+descending order.)
+
+One way to count inversions is to use a binary indexed tree. Think of an
+inversion as a pair of values $a, b$, with $a > b$ and $a$ appearing before $b$
+in the array. Then we can easily compute, for each value in the array, the
+number of inversions for which it is $b$.
+
+To do this, we use a BIT as a frequency table, keeping track of the number of
+hairs of each possible value. If our BIT is named `tree`, `tree[i]` will tell us
+how many times $i$ is seen in the array of hairs. The trick is that as long as
+we fill out the frequency table in the order the elements appear in the array,
+we can also use the frequency table to count the number of inversions, because
+at each point in time the frequency table only contains hairs to the left of the
+hair we are currently considering.
+
+That leads us to this algorithm:
+
+1. Initialize a BIT so that the frequency of each value is 0.
+2. Create an array `inversions`. `inversions[b]` will store the number of
+   inversion pairs with the second value being $b$
+3. For each hair $h$ in the order it appears in the array (with $h$ being the
+   length of the hair):
+   1. Count the number of taller hairs that appear before hair $h$ in the array
+      (which is, at this point in time, just the frequencies of all values
+      greater than $h$). Store this in `inversions[h]`.
+   2. Increment the frequency of $h$ in the BIT.
+
+The number of inversions would then be the sum of all the values we computed in
+step 3.1. However, we also need to consider the haircuts. If we cut all hairs
+greater than length $n$ to $n$, what does that mean? It means that there can be
+no inversions with a $b \geq n$, because the definition of an inversion is that
+$a > b$, but if $b \geq n$ then $a > n$ must also be true. However, if this is
+true, then both $a$ and $b$ would have been cut to length $n$, and $(a, b)$
+would no longer be an inversion.
+
+Thus, the number of inversions if all hairs greater than $n$ are cut to length
+$n$ is simply the sum of the first $n - 1$ elements of the inversions array (if
+$n$ is 0 then all hairs are 0 units long, so there are 0 inversions for
+$n = 0$). This is basically just the prefix sum of the `inversions` array.
+
+<LanguageSection>
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class Haircut {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+
+		int N = Integer.parseInt(f.readLine());
+		StringTokenizer st = new StringTokenizer(f.readLine());
+
+		int[] hairs = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			hairs[i] = Integer.parseInt(st.nextToken());
+		}
+
+		BIT tree = new BIT(N + 1); // hair can be at most N
+
+		long[] inversionsWithValue = new long[N + 1];
+		// inversionsWithValue[i] == the number of inversions used with all hairs of length i
+
+		for (int value : hairs) {
+
+
+			// we process from left to right, so the tree only
+			// has elements to the left of this. Therefore,
+			// the number of elements higher than this is the number of inversions.
+			int numInversions = tree.getSum(value + 1, tree.size - 1);
+			inversionsWithValue[value] += numInversions;
+
+			tree.increase(value, 1);
+		}
+
+
+		long cumulativeInversions = 0;
+		out.println(0); // if all hairs are cut to length 0, they're all equal, so no inversions are possible
+		for (int j = 0; j < N - 1; j++) {
+			cumulativeInversions += inversionsWithValue[j];
+			out.println(cumulativeInversions);
+		}
+
+		out.close();
+	}
+
+	static class BIT {
+		int size;
+		int[] tree;
+
+		public BIT(int size) {
+			this.size = size;
+			tree = new int[size + 1];
+		}
+
+		/**
+		* Change the value at index i by change
+		* @param i
+		* @param change
+		*/
+		public void increase(int i, int change) {
+			i++; // We start BIT at index 0
+			while (i < tree.length) {
+				tree[i] += change; // Update for all parents
+				i += i & -i; // lowbit (~i + 1) is the same thing as -i
+			}
+
+		}
+
+		/**
+		* Set i to a value
+		* @param i
+		* @param val
+		*/
+		public void set(int i, int val) {
+			increase(i, val - get(i));
+		}
+
+		/**
+		* Sum of all elements up to and including i
+		* @param i - index
+		* @return
+		*/
+		public int getSum(int i) {
+			i++;
+			int sum = 0;
+			while (i > 0) { // Sum the values of each parent
+				sum += tree[i];
+				i -= i & -i;
+			}
+			return sum;
+		}
+
+		/**
+		* Get sum of range [i, j]
+		* @param i - start index, inclusive
+		* @param j - end index, inclusive
+		* @return sum of range [i, j]
+		*/
+		public int getSum(int i, int j) {
+			return getSum(j) -
+				(i > 0 ? getSum(i - 1) : 0);
+		}
+
+		/**
+		* @param i - index
+		* @return element at i
+		*/
+		public int get(int i) {
+			return getSum(i, i);
+		}
+
+		/**
+		* String representation
+		* @return
+		*/
+		public String toString() {
+			String out = "";
+			for (int i = 0; i < size - 1; i++) {
+				out += get(i) + " ";
+			}
+			out += get(size - 1);
+			return out;
+		}
+	}
+}
+
+```
+
+</JavaSection>
+</LanguageSection>

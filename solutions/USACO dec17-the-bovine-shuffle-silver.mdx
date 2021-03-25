@@ -1,0 +1,149 @@
+---
+id: usaco-764
+source: USACO Silver 2017 December
+title: The Bovine Shuffle
+author: Jesse Choe, Tanish Tyagi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_shuffle_silver_dec17.html)
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+using vb = vector<bool>;
+using pl = pair<ll, ll>;
+using vpl = vector<pl>;
+using vc = vector<char>;
+using vs = vector<string>;
+using str = string;
+
+#define FastIO ios_base::sync_with_stdio(0); cin.tie(0)
+#define pb push_back
+#define mp make_pair
+#define all(x) begin(x), end(x)
+#define sor(x) sort(all(x))
+#define ins insert
+#define f first
+#define s second
+#define sz(x) (ll)(x).size()
+#define len(x) (ll)(x).length()
+#define FOR(i, a, b) for(ll i=a; i<b; ++i)
+#define ROF(i, b, a) for(ll i=(b)-1; i>=a; --i)
+#define EACH(a, x) for(auto& a: x)
+#define lb(a, x) lower_bound(all(a), x) - begin(a)
+#define ub(a, x) upper_bound(all(a), x) - begin(a)
+
+void setIO(string fileName = ""){
+	FastIO;
+	if(len(fileName)){
+		freopen((fileName+".in").c_str(), "r", stdin);
+		freopen((fileName+".out").c_str(), "w", stdout);
+	}
+}
+
+int main(){
+	setIO("shuffle");
+	ll n; cin >> n;
+	vl cnt(n), a(n);
+	FOR(i, 0, n){
+		cin >> a[i];
+		a[i]--;
+		cnt[a[i]]++;
+	}
+	ll ans = n;
+	queue<ll> q;
+	FOR(i, 0, n){
+		if(cnt[i] == 0){
+			q.push(i);
+			ans--;
+		}
+	}
+	while(!q.empty()){
+		ll cur = q.front();
+		q.pop();
+		if(--cnt[a[cur]] == 0){
+			q.push(a[cur]);
+			ans--;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+## Java Implementation
+
+```java
+//created by Tanish Tyagi
+
+import java.util.*;
+import java.io.*;
+
+public class shuffle {
+	public static int n;
+	public static int[] parent;
+	public static int[] currStatus; // 0 is not-visited, 1 is visited, 2 is part of cycle
+	public static void count(int i) {
+		HashSet<Integer> there = new HashSet<Integer>();
+		while (currStatus[i] == 0) {
+			there.add(i);
+			currStatus[i] = 1;
+			i = parent[i];
+		}
+
+		//cycle is found, mark all nodes that are part of cycle
+		if (there.contains(i)) {
+			int savei = i;
+			do {
+				currStatus[i] = 2;
+				i = parent[i];
+			} while (i != savei);
+		}
+
+	}
+	public static void main(String[] args) throws Exception {
+		// Read in the parenting array.
+		BufferedReader stdin = new BufferedReader(new FileReader("shuffle.in"));
+		StringTokenizer tok = new StringTokenizer(stdin.readLine());
+		n = Integer.parseInt(tok.nextToken());
+		StringTokenizer line = new StringTokenizer(stdin.readLine());
+
+		parent = new int[n];
+		for (int i=0; i<n; i++)
+			parent[i] = Integer.parseInt(line.nextToken())-1;
+
+		currStatus = new int[n];
+		for (int i=0; i<n; i++)
+			if (currStatus[i] == 0)
+				count(i);
+
+		// get length of cycle and return
+		int res = 0;
+		for (int i=0; i<n; i++)
+			if (currStatus[i] == 2)
+				res++;
+
+		PrintWriter out = new PrintWriter(new FileWriter("shuffle.out"));
+		out.println(res);
+		out.close();
+		stdin.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

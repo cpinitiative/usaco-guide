@@ -73,7 +73,7 @@ const probSources = {
   ],
   DMOJ: [
     'https://dmoj.ca/problem/',
-    'Don Mills Online Judge',
+    'DMOJ: Modern Online Judge',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
   FHC: [
@@ -176,7 +176,7 @@ export class Problem {
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
         )
-          this.url = 'http://codeforces.com/' + this.url;
+          this.url = 'https://codeforces.com/' + this.url;
         else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];
@@ -263,14 +263,7 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    public difficulty?:
-      | 'Very Easy'
-      | 'Easy'
-      | 'Normal'
-      | 'Hard'
-      | 'Very Hard'
-      | 'Insane'
-      | null,
+    public difficulty?: ProblemDifficulty | null,
     public starred?: boolean,
     public tags?: string[],
     public solID?: string,
@@ -363,3 +356,27 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Skipped',
   'Ignored',
 ];
+
+export type ProblemDifficulty =
+  | 'Very Easy'
+  | 'Easy'
+  | 'Normal'
+  | 'Hard'
+  | 'Very Hard'
+  | 'Insane';
+export const PROBLEM_DIFFICULTY_OPTIONS: ProblemDifficulty[] = [
+  'Very Easy',
+  'Easy',
+  'Normal',
+  'Hard',
+  'Very Hard',
+  'Insane',
+];
+
+export type ProblemFeedback = {
+  difficulty: ProblemDifficulty | null;
+  tags: string[];
+  solutionCode: string;
+  isCodePublic: boolean;
+  otherFeedback: string;
+};

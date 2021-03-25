@@ -1,0 +1,358 @@
+---
+id: cses-1160
+source: CSES
+title: Planets Queries II
+author: Michael Cao, Benjamin Qi
+---
+
+In this problem, we are given a directed graph and asked $q$ queries for the
+minimum distance between two vertices $u$ and $v$.
+
+# Main Idea
+
+The graph is a functional graph, so break it into tree / cycle cases and solve
+each one independently.
+
+# Structure of the Graph
+
+While the graph given in the statement can be modeled as a directed graph, we
+can be more specific. Since each vertex has one outgoing edge, the resulting
+graph is a [Functional Graph](/silver/func-graphs).
+
+An important property of a functional graph is that it's structure is composed
+of many trees directed towards the root, and a single cycle composed of the
+roots. So, we can break the graph into two cases.
+
+# Tree Case
+
+The first case is if $u$ and $v$ are on the same tree. To check this, we can
+store the root of the tree that each vertex is on in functional graph, and check
+if the roots for $u$ and $v$ are equal.
+
+If they are, the problem reduces to finding the distance between two vertices on
+a tree, which equals $depth_u + depth_v - 2 \cdot depth_{lca(u, v)}$ where
+$lca(a, b)$ denotes the lowest common ancestor of vertices $a$ and $b$ and
+$depth_x$ denotes the distance from the vertex to the root of its tree. If you
+don't know how to compute $lca$, read [Binary Jumping](/plat/bin-jump).
+
+# Cycle Case
+
+Technically, there are 3 more cases, but they can be solved in the same way so
+we will group them together. The cycle case is when you need to cross the cycle
+to go from one vertex to another.
+
+The three situations where this occurs are:
+
+- One vertex is on a tree, and the other is on the cycle.
+- Both vertices are on the cycle.
+- Both vertices are on trees, but they have different roots.
+
+In all 3 cases, the distance can be computed the same way as
+$depth_u + depth_v + dist_{r_u, r_v}$ where $r_x$ denotes the root of the tree
+$x$ is on. Note that if a node is on a cycle, it is the root of its tree. To
+compute the distance between roots, we can give an arbitrary vertex value $0$
+and increase the value as you go around the cycle, similar to how you compute
+its length in the [Functional Graph](/silver/func-graphs) article.
+
+Then, the distance between two roots is
+$min(len - (val_u - val_v), val_u - val_v)$ where $len$ is the length of the
+cycle and $val_u > val_v$, representing going from $u$ to $v$ in either
+direction.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+
+using pi = pair<int,int>;
+using pl = pair<ll,ll>;
+using pd = pair<db,db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template<class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
+tcT> using PR = pair<T,T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
+
+// loops
+#define FOR(i,a,b) for (int i = (a); i < (b); ++i)
+#define F0R(i,a) FOR(i,0,a)
+#define ROF(i,a,b) for (int i = (b)-1; i >= (a); --i)
+#define R0F(i,a) ROF(i,0,a)
+#define trav(a,x) for (auto& a: x)
+
+const int MOD = 1e9+7; // 998244353;
+const int MX = 2e5+5;
+const ll INF = 1e18; // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
+constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
+constexpr int p2(int x) { return 1<<x; }
+constexpr int msk2(int x) { return p2(x)-1; }
+
+ll cdiv(ll a, ll b) { return a/b+((a^b)>0&&a%b); } // divide a by b rounded up
+ll fdiv(ll a, ll b) { return a/b-((a^b)<0&&a%b); } // divide a by b rounded down
+
+tcT> bool ckmin(T& a, const T& b) {
+	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+tcT> bool ckmax(T& a, const T& b) {
+	return a < b ? a = b, 1 : 0; }
+
+tcTU> T fstTrue(T lo, T hi, U f) {
+	hi ++; assert(lo <= hi); // assuming f is increasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo)/2;
+		f(mid) ? hi = mid : lo = mid+1;
+	}
+	return lo;
+}
+tcTU> T lstTrue(T lo, T hi, U f) {
+	lo --; assert(lo <= hi); // assuming f is decreasing
+	while (lo < hi) { // find first index such that f is true
+		T mid = lo+(hi-lo+1)/2;
+		f(mid) ? lo = mid : hi = mid-1;
+	}
+	return lo;
+}
+tcT> void remDup(vector<T>& v) { // sort and remove duplicates
+	sort(all(v)); v.erase(unique(all(v)),end(v)); }
+tcTU> void erase(T& t, const U& u) { // don't erase
+	auto it = t.find(u); assert(it != end(t));
+	t.erase(it); } // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class ...U
+tcT> void re(complex<T>& c);
+tcTU> void re(pair<T,U>& p);
+tcT> void re(V<T>& v);
+tcT, size_t SZ> void re(AR<T,SZ>& a);
+
+tcT> void re(T& x) { cin >> x; }
+void re(db& d) { str t; re(t); d = stod(t); }
+void re(ld& d) { str t; re(t); d = stold(t); }
+tcTUU> void re(T& t, U&... u) { re(t); re(u...); }
+
+tcT> void re(complex<T>& c) { T a,b; re(a,b); c = {a,b}; }
+tcTU> void re(pair<T,U>& p) { re(p.f,p.s); }
+tcT> void re(V<T>& x) { trav(a,x) re(a); }
+tcT, size_t SZ> void re(AR<T,SZ>& x) { trav(a,x) re(a); }
+tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1,c); }
+str ts(const char* s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+	#ifdef LOCAL
+		return b ? "true" : "false";
+	#else
+		return ts((int)b);
+	#endif
+}
+tcT> str ts(complex<T> c) {
+	stringstream ss; ss << c; return ss.str(); }
+str ts(V<bool> v) {
+	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
+	res += "}"; return res; }
+template<size_t SZ> str ts(bitset<SZ> b) {
+	str res = ""; F0R(i,SZ) res += char('0'+b[i]);
+	return res; }
+tcTU> str ts(pair<T,U> p);
+tcT> str ts(T v) { // containers with begin(), end()
+	#ifdef LOCAL
+		bool fst = 1; str res = "{";
+		for (const auto& x: v) {
+			if (!fst) res += ", ";
+			fst = 0; res += ts(x);
+		}
+		res += "}"; return res;
+	#else
+		bool fst = 1; str res = "";
+		for (const auto& x: v) {
+			if (!fst) res += " ";
+			fst = 0; res += ts(x);
+		}
+		return res;
+
+	#endif
+}
+tcTU> str ts(pair<T,U> p) {
+	#ifdef LOCAL
+		return "("+ts(p.f)+", "+ts(p.s)+")";
+	#else
+		return ts(p.f)+" "+ts(p.s);
+	#endif
+}
+
+// OUTPUT
+tcT> void pr(T x) { cout << ts(x); }
+tcTUU> void pr(const T& t, const U&... u) {
+	pr(t); pr(u...); }
+void ps() { pr("\n"); } // print w/ spaces
+tcTUU> void ps(const T& t, const U&... u) {
+	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU> void DBG(const T& t, const U&... u) {
+	cerr << ts(t); if (sizeof...(u)) cerr << ", ";
+	DBG(u...); }
+#ifdef LOCAL // compile with -DLOCAL, chk -> fake assert
+	#define dbg(...) cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+	#define chk(...) if (!(__VA_ARGS__)) cerr << "Line(" << __LINE__ << ") -> function(" \
+		 << __FUNCTION__  << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n", exit(0);
+#else
+	#define dbg(...) 0
+	#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(),"r",stdin); }
+void setOut(str s) { freopen(s.c_str(),"w",stdout); }
+void setIO(str s = "") {
+	unsyncIO(); setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
+}
+
+// oops doesn't compile with current template LOL ~Ben
+
+int n,q,t[MX], ind[MX], depth[MX], comp[MX], nex[MX];
+int tmp[MX], par[MX][18];
+vi child[MX], adj[MX];
+bool incyc[MX];
+
+// not in cyc, not in cyc
+// not in cyc, in cyc
+// in cyc, not in cyc
+// in cyc, in cyc
+
+void dfs(int x) {
+    int X = x;
+    while (tmp[x] == 0) {
+        tmp[x] = X;
+        x = t[x];
+    }
+    while (tmp[x] == X) {
+        tmp[x] = X+n; ind[x] = nex[comp[x]]++;
+        incyc[x] = 1;
+        x = t[x];
+    }
+}
+
+void DFS(int cur) {
+    for (int i: child[cur]) if (!incyc[i]) {
+        depth[i] = depth[cur]+1;
+        DFS(i);
+    }
+}
+
+void process() {
+    FOR(i,1,n+1) dfs(i);
+    FOR(i,1,n+1) par[i][0] = t[i];
+    FOR(i,1,18) FOR(j,1,n+1)
+        par[j][i] = par[par[j][i-1]][i-1];
+    FOR(i,1,n+1) if (incyc[i]) DFS(i);
+}
+
+int getPar(int a, int b) {
+    R0F(i,18) if (b&(1<<i)) a = par[a][i];
+    return a;
+}
+
+void gencomp(int x, int i) {
+    if (comp[x]) return;
+    comp[x] = i;
+    for (int y: adj[x]) gencomp(y,i);
+}
+
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> n >> q;
+    FOR(i,1,n+1) {
+        cin >> t[i];
+        child[t[i]].pb(i);
+        adj[i].pb(t[i]), adj[t[i]].pb(i);
+    }
+    FOR(i,1,n+1) if (comp[i] == 0) gencomp(i,i);
+    process();
+    F0R(i,q) {
+        int a,b; cin >> a >> b;
+        if (comp[a] != comp[b]) {
+            cout << "-1\n";
+            continue;
+        }
+        if (!incyc[a]) {
+            if (incyc[b]) {
+                int x = getPar(a,depth[a]);
+                cout << ((ind[b]-ind[x]+nex[comp[a]])%nex[comp[a]])+depth[a];
+            } else {
+                if (getPar(a,depth[a]-depth[b]) == b) cout << depth[a]-depth[b];
+                else cout << -1;
+            }
+        } else {
+            if (incyc[b]) cout << (ind[b]-ind[a]+nex[comp[a]])%nex[comp[a]];
+            else cout << -1;
+        }
+        cout << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

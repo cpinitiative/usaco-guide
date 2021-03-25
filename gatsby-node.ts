@@ -1,8 +1,22 @@
 import { SECTIONS } from './content/ordering';
 
+const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
 const Problem = require('./src/models/problem').Problem; // needed to eval export
+const { execSync } = require('child_process');
+
+// Questionable hack to get full commit history so that timestamps work
+try {
+  execSync(
+    `git fetch --unshallow https://github.com/cpinitiative/usaco-guide.git`
+  );
+} catch (e) {
+  console.warn(
+    'Git fetch failed. Ignore this if developing or building locally.'
+  );
+  console.error(e);
+}
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
@@ -17,11 +31,20 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       node,
       value: ordering.moduleIDToSectionMap[node.frontmatter.id],
     });
+    // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
+    const gitAuthorTime = execSync(
+      `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
+    ).toString();
+    createNodeField({
+      node,
+      name: 'gitAuthorTime',
+      value: gitAuthorTime,
+    });
   }
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions;
+  const { createPage, createRedirect } = actions;
   const result = await graphql(`
     query {
       modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
@@ -29,6 +52,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           node {
             frontmatter {
               id
+              redirects
             }
             fields {
               division
@@ -45,6 +69,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             frontmatter {
               title
               id
+              redirects
             }
           }
         }
@@ -58,8 +83,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
     if (!node.fields?.division) return;
+    const path = `/${node.fields.division}/${node.frontmatter.id}`;
+    if (node.frontmatter.redirects) {
+      node.frontmatter.redirects.forEach(fromPath => {
+        createRedirect({
+          fromPath,
+          toPath: path,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+    }
     createPage({
-      path: `/${node.fields.division}/${node.frontmatter.id}`,
+      path,
       component: moduleTemplate,
       context: {
         id: node.frontmatter.id,
@@ -71,8 +107,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
   const solutions = result.data.solutions.edges;
   solutions.forEach(({ node }) => {
+    const path = `/solutions/${node.frontmatter.id}`;
+    if (node.frontmatter.redirects) {
+      node.frontmatter.redirects.forEach(fromPath => {
+        createRedirect({
+          fromPath,
+          toPath: path,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+    }
     createPage({
-      path: `/solutions/${node.frontmatter.id}`,
+      path: path,
       component: solutionTemplate,
       context: {
         id: node.frontmatter.id,
@@ -102,6 +149,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type MdxFrontmatter implements Node {
       prerequisites: [String]
       date: String
+      redirects: [String]
     }
     
     type Heading {
@@ -139,48 +187,61 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `TableOfContents`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
-          let cpp = [],
+          const cpp = [],
             java = [],
             py = [];
           // lol the spaghetti code going to be insane
           let cppCt = 0,
             javaCt = 0,
             pyCt = 0;
+          // https://github.com/cpinitiative/usaco-guide/issues/966
+          // We don't want to include headers inside spoilers
+          let spoilerCt = 0;
           const slugger = new Slugger();
           mdast.children.forEach(node => {
             if (node.type === 'jsx') {
-              let str = 'exact match ' + node.value;
+              const str = 'exact match ' + node.value;
               cppCt += str.split('<CPPSection>').length - 1;
               javaCt += str.split('<JavaSection>').length - 1;
               pyCt += str.split('<PySection>').length - 1;
+              spoilerCt += str.split('<Spoiler').length - 1;
               cppCt -= str.split('</CPPSection>').length - 1;
               javaCt -= str.split('</JavaSection>').length - 1;
               pyCt -= str.split('</PySection>').length - 1;
+              spoilerCt -= str.split('</Spoiler>').length - 1;
             }
             if (node.type === 'heading') {
-              let val = {
+              const val = {
                 depth: node.depth,
-                value: mdastToString(node),
+                value: mdastToStringWithKatex(node),
                 slug: slugger.slug(mdastToString(node)),
               };
-              if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
-                cpp.push(val);
-                java.push(val);
-                py.push(val);
-              } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
-                cpp.push(val);
-              } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
-                java.push(val);
-              } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
-                py.push(val);
-              } else {
-                throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
+              if (spoilerCt < 0) {
+                throw "Spoiler count went negative -- shouldn't happen...";
+              }
+              if (spoilerCt === 0) {
+                if (cppCt === 0 && javaCt === 0 && pyCt === 0) {
+                  cpp.push(val);
+                  java.push(val);
+                  py.push(val);
+                } else if (cppCt === 1 && javaCt === 0 && pyCt === 0) {
+                  cpp.push(val);
+                } else if (cppCt === 0 && javaCt === 1 && pyCt === 0) {
+                  java.push(val);
+                } else if (cppCt === 0 && javaCt === 0 && pyCt === 1) {
+                  py.push(val);
+                } else {
+                  throw 'Generating table of contents ran into a weird error. CPP/Java/Py Section tags mismatched?';
+                }
               }
             }
           });
+          if (spoilerCt !== 0) {
+            throw 'Spoiler count should end at zero...';
+          }
           return {
             cpp,
             java,
@@ -192,19 +253,26 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `[Problem]`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
-          let problems = [];
+          const problems = [];
           mdast.children.forEach(node => {
             if (
               node.type === 'export' &&
               node.value.includes('export const problems =')
             ) {
-              let str = node.value.replace('export ', '') + '; problems';
-              let res = eval(str);
+              const str = node.value.replace('export ', '') + '; problems';
+              const res = eval(str);
               Object.keys(res).forEach(k => {
-                problems.push(...res[k]);
+                const arr = res[k];
+                if (Array.isArray(arr)) {
+                  // console.log('MULTIPLE PROBLEM');
+                  problems.push(...arr);
+                } else {
+                  // console.log('SINGLE PROBLEM');
+                  problems.push(arr);
+                }
               });
             }
           });
@@ -215,7 +283,7 @@ exports.createResolvers = ({ createResolvers }) => {
         type: `Boolean`,
         async resolve(source, args, context, info) {
           const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          let mdast = await resolve(source, args, context, {
+          const mdast = await resolve(source, args, context, {
             fieldName: 'mdast',
           });
           let incomplete = false;

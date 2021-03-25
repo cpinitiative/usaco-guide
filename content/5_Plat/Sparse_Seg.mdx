@@ -4,11 +4,9 @@ title: Sparse Segment Trees
 author: Andi Qu
 prerequisites:
   - RURQ
-description: "Querying big ranges."
+description: 'Querying big ranges.'
 frequency: 1
 ---
-
-
 
 export const problems = {
 	sparseSample: new Problem(
@@ -39,15 +37,6 @@ export const problems = {
 			[],
 			'balkan-15-happiness'
 		),
-		new Problem(
-			'JOI',
-			'2016 - Matryoshka',
-			'https://joisc2016.contest.atcoder.jp/tasks/joisc2016_a',
-			'Hard',
-			true,
-			['DP', 'LIS', 'Segtree'],
-			''
-		)
 	],
 };
 
@@ -55,15 +44,21 @@ export const problems = {
 
 <br />
 
-In problems where the query range is at most something like $10^6$, a normal segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$ in some cases), a normal segment tree results in MLE.
+In problems where the query range is at most something like $10^6$, a normal
+segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$
+in some cases), a normal segment tree results in MLE.
 
 Luckily, we can still use a segment tree to solve these types of problems.
 
 ## Resources
 
-The main idea is that we don't have to store all the nodes at all times - we create nodes only when needed. In a normal segment tree, an update only affects $\mathcal{O}(\log N)$ nodes, so in a sparse segment tree, we only store $\mathcal{O}(Q \log N)$ nodes!
+The main idea is that we don't have to store all the nodes at all times - we
+create nodes only when needed. In a normal segment tree, an update only affects
+$\mathcal{O}(\log N)$ nodes, so in a sparse segment tree, we only store
+$\mathcal{O}(Q \log N)$ nodes!
 
-We can implement this efficiently using pointers to a node's children - just like a trie! (Then again, a segment tree is basically a fancier binary trie.)
+We can implement this efficiently using pointers to a node's children - just
+like a trie! (Then again, a segment tree is basically a fancier binary trie.)
 
 <IncompleteSection />
 
@@ -82,7 +77,8 @@ We need to support two operations on a range:
 - Count the number of red-ripe trees in a range (range sum)
 - Set all trees in a range to red-ripe (range paint)
 
-We can use a segment tree with lazy propagation to solve this, but the query range is up to $10^9$, so we have to use a sparse segment tree.
+We can use a segment tree with lazy propagation to solve this, but the query
+range is up to $10^9$, so we have to use a sparse segment tree.
 
 Luckily, lazy propagation still works here.
 
@@ -207,12 +203,15 @@ int main() {
 
 <Optional>
 
-It's possible to reduce the memory of a sparse segment tree to $\mathcal{O}(N)$, as described [here](https://codeforces.com/blog/entry/83969).
+It's possible to reduce the memory of a sparse segment tree to $\mathcal{O}(N)$,
+as described [here](https://codeforces.com/blog/entry/83969).
 
 </Optional>
 
 ### Problems
 
-Some of these problems are solvable with a normal segment tree if you use coordinate compression. Sparse segment trees are rarely ever *required* to solve a particular problem, but they can make things a lot more convenient.
+Some of these problems are solvable with a normal segment tree if you use
+coordinate compression. Sparse segment trees are rarely ever _required_ to solve
+a particular problem, but they can make things a lot more convenient.
 
 <Problems problems={problems.sparseGeneral} />

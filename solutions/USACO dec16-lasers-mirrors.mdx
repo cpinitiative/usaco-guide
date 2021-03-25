@@ -1,0 +1,87 @@
+---
+id: usaco-671
+source: USACO Gold 2016 December
+title: Lasers and Mirrors
+author: Maggie Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_lasers_gold_dec16.html)
+
+It is optimal to use each fence post at most once, so we can use BFS to find the
+minimum number of fence posts needed to direct the laser to the barn. We store
+the points on each horizontal and vertical line in $\texttt{lines}$. In the
+queue $q$, we store the index of the point and the direction of the incoming
+beam. The array $\texttt{dist}$ will store the number of edges of the shortest
+path from the laser to each point.
+
+For every element in the queue, we process each unvisited point that the beam
+can be deflected to by adding it into the queue and updating its distance as one
+more than the current distance.
+
+If we are able to deflect the beam to the barn, the number of mirrors needed is
+one less than the distance.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <queue>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+int main()
+{
+	freopen("lasers.in", "r", stdin);
+	freopen("lasers.out", "w", stdout);
+	int n;
+	cin >> n;
+	vector<pair<int, int>> points(n + 2);
+	//lines[0] are vertical, lines[1] are horizontal
+	unordered_map<int, vector<int>> lines[2];
+	for (int i = 0; i < n + 2; i++)
+	{
+		cin >> points[i].first >> points[i].second;
+		lines[0][points[i].first].push_back(i);
+		lines[1][points[i].second].push_back(i);
+	}
+	//index of fence post and bool for direction of incoming beam
+	//true for horizontal, false for vertical
+	queue<pair<int, bool>> q;
+	q.push({0, true});
+	q.push({0, false});
+	//dist[i] is number of edges to reach point i from the laser
+	vector<int> dist(n + 2, 1e9);
+	dist[0] = 0;
+	// BFS to find minimum number of fence posts to direct laser to barn
+	while (!q.empty())
+	{
+		int curr = q.front().first;
+		bool beamdir = q.front().second;
+		q.pop();
+		int dir = (beamdir ? 0 : 1);
+		int coord = (beamdir ? points[curr].first : points[curr].second);
+		for (int point : lines[dir][coord])
+		{
+			if (dist[point] == 1e9)
+			{
+				q.push({point, !beamdir});
+				dist[point] = dist[curr] + 1;
+			}
+		}
+	}
+	cout << (dist[1] == 1e9 ? -1 : dist[1] - 1) << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

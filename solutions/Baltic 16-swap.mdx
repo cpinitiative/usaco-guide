@@ -7,13 +7,21 @@ author: Benjamin Qi, Andi Qu
 
 ## Approach 1
 
-**Complexity:** $\mathcal{O}(N \log^2N)$ time with $\mathcal{O}(N \log N)$ memory.
+**Complexity:** $\mathcal{O}(N \log^2N)$ time with $\mathcal{O}(N \log N)$
+memory.
 
-Let the elements of $A$ be nodes of a graph and each potential swap be an edge between two nodes. Notice how this graph is a binary tree. We effectively want to perform some swaps to minimize the BFS order of this tree.
+Let the elements of $A$ be nodes of a graph and each potential swap be an edge
+between two nodes. Notice how this graph is a binary tree. We effectively want
+to perform some swaps to minimize the BFS order of this tree.
 
-Let $\texttt{merge}(A, B, C)$ denote the tree with $A$ as the root and $B$ and $C$ as the subtrees of $A$'s left and right children respectively. We can compute $\texttt{merge}(A, B, C)$ in $\mathcal{O}(|B| + |C|)$ time.
+Let $\texttt{merge}(A, B, C)$ denote the tree with $A$ as the root and $B$ and
+$C$ as the subtrees of $A$'s left and right children respectively. We can
+compute $\texttt{merge}(A, B, C)$ in $\mathcal{O}(|B| + |C|)$ time.
 
-We can now formulate a basic DP state. Let $dp[i][j]$ be the version of node $i$'s subtree after some swaps such that $A_i = j$ initially and the BFS order of $dp[i][j]$ is minimal. Let $l$ and $r$ be node $i$'s left and right children respectively. The following recurrence holds:
+We can now formulate a basic DP state. Let $dp[i][j]$ be the version of node
+$i$'s subtree after some swaps such that $A_i = j$ initially and the BFS order
+of $dp[i][j]$ is minimal. Let $l$ and $r$ be node $i$'s left and right children
+respectively. The following recurrence holds:
 
 $$
 dp[i][j] = \begin{cases}
@@ -23,14 +31,25 @@ dp[i][j] = \begin{cases}
 \end{cases}
 $$
 
-The answer to the problem is thus $dp[1][A_1]$. If we compute this DP naively, we get a $\mathcal{O}(N^2 \log N)$ solution that uses $\mathcal(N^2 \log N)$ memory (since $\mathcal{O}(\sum\text{subtree size}) = \mathcal{O}(N \log N)$).
+The answer to the problem is thus $dp[1][A_1]$. If we compute this DP naively,
+we get a $\mathcal{O}(N^2 \log N)$ solution that uses $\mathcal(N^2 \log N)$
+memory (since $\mathcal{O}(\sum\text{subtree size}) = \mathcal{O}(N \log N)$).
 
-To improve this solution, notice that for some $i$, we have $j = A[k]$ only if $k$ is a child of an ancestor of $i$. Since there are only $\mathcal{O}(\log N)$ ancestors of $i$ and each has at most 2 children, this allows us to cut the time (and memory) complexity down to $\mathcal{O}(N \log^2N)$! For convenience, we still refer to the original DP state in the rest of this solution.
+To improve this solution, notice that for some $i$, we have $j = A[k]$ only if
+$k$ is a child of an ancestor of $i$. Since there are only $\mathcal{O}(\log N)$
+ancestors of $i$ and each has at most 2 children, this allows us to cut the time
+(and memory) complexity down to $\mathcal{O}(N \log^2N)$! For convenience, we
+still refer to the original DP state in the rest of this solution.
 
-However, this DP still uses too much memory. There are two things we need to do to fix this:
+However, this DP still uses too much memory. There are two things we need to do
+to fix this:
 
-- Process the tree in reverse BFS order (i.e. starting from node $N$ and working back to node 1). This allows us to free up the memory used by $dp[l]$ and $dp[r]$ after we process some node $i$. This cuts the memory used down to $\mathcal{O}(N \log N)$, but is still slightly too much.
-- Only compute the states that $dp[1][A_1]$ depends on. For example, the value of $dp[2][A_1]$ is irrelevant if $A_1 < \min(A_2, A_3)$.
+- Process the tree in reverse BFS order (i.e. starting from node $N$ and working
+  back to node 1). This allows us to free up the memory used by $dp[l]$ and
+  $dp[r]$ after we process some node $i$. This cuts the memory used down to
+  $\mathcal{O}(N \log N)$, but is still slightly too much.
+- Only compute the states that $dp[1][A_1]$ depends on. For example, the value
+  of $dp[2][A_1]$ is irrelevant if $A_1 < \min(A_2, A_3)$.
 
 These two optimizations save us just enough memory to get AC.
 
@@ -43,86 +62,88 @@ bool needed[200002][18][2];
 vector<int> dp[200002][18][2], tmp1, tmp2;
 
 void merge(vector<int> &ret, vector<int> &l, vector<int> &r) {
-    for (int i = 0, j = 1; i < l.size(); i += j, j <<= 1) {
-        for (int k = i; k < i + j && k < l.size(); k++) ret.push_back(l[k]);
-        for (int k = i; k < i + j && k < r.size(); k++) ret.push_back(r[k]);
-    }
+	for (int i = 0, j = 1; i < l.size(); i += j, j <<= 1) {
+		for (int k = i; k < i + j && k < l.size(); k++) ret.push_back(l[k]);
+		for (int k = i; k < i + j && k < r.size(); k++) ret.push_back(r[k]);
+	}
 }
 
 int main() {
-    int n;
-    scanf("%d", &n);
-    for (int i = 1; i <= n; i++) scanf("%d", a + i);
+	int n;
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++) scanf("%d", a + i);
 
-    needed[1][0][1] = 1;
-    for (int node = 1; node <= n / 2; node++) {
-        for (int i = 0; node >> i; i++) for (int j : {0, 1}) {
-            if (!needed[node][i][j]) continue;
+	needed[1][0][1] = 1;
+	for (int node = 1; node <= n / 2; node++) {
+		for (int i = 0; node >> i; i++) for (int j : {0, 1}) {
+			if (!needed[node][i][j]) continue;
 
-            int mn = min({a[((node >> i + 1) << 1) + j], a[2 * node], a[2 * node + 1]});
-            if (mn == a[((node >> i + 1) << 1) + j]) {
-                needed[2 * node][0][0] = needed[2 * node + 1][0][1] = 1;
-            } else if (mn == a[2 * node]) {
-                needed[2 * node][i + 1][j] = needed[2 * node + 1][0][1] = 1;
-            } else {
-                needed[2 * node][0][0] = needed[2 * node][i + 1][j] = 1;
-                needed[2 * node + 1][0][0] = needed[2 * node + 1][i + 1][j] = 1;
-            }
-        }
-    }
+			int mn = min({a[((node >> i + 1) << 1) + j], a[2 * node], a[2 * node + 1]});
+			if (mn == a[((node >> i + 1) << 1) + j]) {
+				needed[2 * node][0][0] = needed[2 * node + 1][0][1] = 1;
+			} else if (mn == a[2 * node]) {
+				needed[2 * node][i + 1][j] = needed[2 * node + 1][0][1] = 1;
+			} else {
+				needed[2 * node][0][0] = needed[2 * node][i + 1][j] = 1;
+				needed[2 * node + 1][0][0] = needed[2 * node + 1][i + 1][j] = 1;
+			}
+		}
+	}
 
-    for (int node = n; node; node--) {
-        for (int i = 0; node >> i; i++) for (int j : {0, 1}) {
-            if (!needed[node][i][j]) continue;
+	for (int node = n; node; node--) {
+		for (int i = 0; node >> i; i++) for (int j : {0, 1}) {
+			if (!needed[node][i][j]) continue;
 
-            int p = ((node >> i + 1) << 1) + j;
-            if (2 * node > n) dp[node][i][j] = {a[p]};
-            else if (2 * node == n) {
-                dp[node][i][j] = {min(a[p], a[2 * node]), max(a[p], a[2 * node])};
-            } else {
-                if (a[2 * node + 1] < min(a[p], a[2 * node])) {
-                    tmp1 = tmp2 = {a[2 * node + 1]};
-                    merge(tmp1, dp[2 * node][0][0], dp[2 * node + 1][i + 1][j]);
-                    merge(tmp2, dp[2 * node][i + 1][j], dp[2 * node + 1][0][0]);
-                    dp[node][i][j] = min(tmp1, tmp2);
-                } else {
-                    dp[node][i][j] = {min(a[p], a[2 * node])};
-                    if (a[p] < a[2 * node]) {
-                        merge(dp[node][i][j], dp[2 * node][0][0], dp[2 * node + 1][0][1]);
-                    } else {
-                        merge(dp[node][i][j], dp[2 * node][i + 1][j], dp[2 * node + 1][0][1]);
-                    }
-                }
-            }
-        }
-        if (2 * node < n) {
-            for (int i = 0; 2 * node >> i; i++) for (int j : {0, 1}) {
-                vector<int>().swap(dp[2 * node][i][j]);
-                vector<int>().swap(dp[2 * node + 1][i][j]);
-            }
-        }
-    }
+			int p = ((node >> i + 1) << 1) + j;
+			if (2 * node > n) dp[node][i][j] = {a[p]};
+			else if (2 * node == n) {
+				dp[node][i][j] = {min(a[p], a[2 * node]), max(a[p], a[2 * node])};
+			} else {
+				if (a[2 * node + 1] < min(a[p], a[2 * node])) {
+					tmp1 = tmp2 = {a[2 * node + 1]};
+					merge(tmp1, dp[2 * node][0][0], dp[2 * node + 1][i + 1][j]);
+					merge(tmp2, dp[2 * node][i + 1][j], dp[2 * node + 1][0][0]);
+					dp[node][i][j] = min(tmp1, tmp2);
+				} else {
+					dp[node][i][j] = {min(a[p], a[2 * node])};
+					if (a[p] < a[2 * node]) {
+						merge(dp[node][i][j], dp[2 * node][0][0], dp[2 * node + 1][0][1]);
+					} else {
+						merge(dp[node][i][j], dp[2 * node][i + 1][j], dp[2 * node + 1][0][1]);
+					}
+				}
+			}
+		}
+		if (2 * node < n) {
+			for (int i = 0; 2 * node >> i; i++) for (int j : {0, 1}) {
+				vector<int>().swap(dp[2 * node][i][j]);
+				vector<int>().swap(dp[2 * node + 1][i][j]);
+			}
+		}
+	}
 
-    for (int i : dp[1][0][1]) printf("%d ", i);
-    return 0;
+	for (int i : dp[1][0][1]) printf("%d ", i);
+	return 0;
 }
 ```
 
 ## Approach 2
 
-Some magic DP. See the discussion on [CF](https://codeforces.com/blog/entry/44769?#comment-293999).
+Some magic DP. See the discussion on
+[CF](https://codeforces.com/blog/entry/44769?#comment-293999).
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$, can be reduced to $\mathcal{O}(N\log N)$.
+**Time Complexity:** $\mathcal{O}(N\log^2N)$, can be reduced to
+$\mathcal{O}(N\log N)$.
 
 **Memory Complexity:** $\mathcal{O}(N\log N)$
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -132,17 +153,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -155,18 +176,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -181,14 +202,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -202,18 +223,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -245,14 +266,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -281,7 +302,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -289,10 +310,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -316,7 +337,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -324,7 +345,7 @@ void setIO(str s = "") {
 
 map<pi,int> bes;
 int n, p[MX];
- 
+
 int get(int ind, int y) {
 	if (bes.count({ind,y})) return bes[{ind,y}];
 	if (2*ind > n) return ind;
@@ -343,31 +364,31 @@ int get(int ind, int y) {
 		return bes[{ind,y}] = get(2*ind,y);
 	}
 }
- 
+
 void solve(int ind) {
 	if (2*ind > n) return;
 	if (2*ind+1 > n) {
 		if (p[ind] > p[2*ind]) swap(p[ind],p[2*ind]);
 		return;
 	}
-	
+
 	if (p[ind] < min(p[2*ind],p[2*ind+1])) {
-		
+
 	} else if (p[2*ind] < min(p[ind],p[2*ind+1])) {
 		swap(p[2*ind],p[ind]);
 	} else {
 		int mn = min(p[ind],p[2*ind]), mx = max(p[ind],p[2*ind]);
-		
+
 		p[ind] = p[2*ind+1];
 		if (get(2*ind,mn) < get(2*ind+1,mn)) {
 			p[2*ind] = mn, p[2*ind+1] = mx;
 		} else {
-			p[2*ind] = mx, p[2*ind+1] = mn;    
+			p[2*ind] = mx, p[2*ind+1] = mn;
 		}
 	}
 	solve(ind+1);
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	cin >> n;
@@ -375,11 +396,13 @@ int main() {
 	solve(1);
 	FOR(i,1,n+1) cout << p[i] << " ";
 }
- ```
+```
 
 ## Approach 3
 
-Maintain some collection of heaps and compute the sequence in order. I think this is similar to what the official solution does, although I don't completely understand it.
+Maintain some collection of heaps and compute the sequence in order. I think
+this is similar to what the official solution does, although I don't completely
+understand it.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
@@ -388,10 +411,10 @@ Maintain some collection of heaps and compute the sequence in order. I think thi
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -401,17 +424,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -424,18 +447,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -450,14 +473,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -471,18 +494,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -514,14 +537,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -550,7 +573,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -558,10 +581,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -585,7 +608,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -594,7 +617,7 @@ void setIO(str s = "") {
 int n, p[MX];
 int par[MX];
 vi val[MX], child[MX];
- 
+
 int qmin(int x) {
 	if (!par[x]) { assert(p[x]); return p[x]; }
 	assert(p[x] == 0);
@@ -614,19 +637,19 @@ int qmin(int x) {
 	assert(res != MOD);
 	return res;
 }
- 
+
 void delChild(int a, int b) {
 	assert(a && par[b] == a);
 	auto it = find(all(child[a]),b); assert(it != end(child[a]));
 	child[a].erase(it); par[b] = 0;
 }
- 
+
 void setChild(int a, int b) {
-	assert(a); child[a].pb(b); 
-	par[b] = a; // assert(p[b]); 
+	assert(a); child[a].pb(b);
+	par[b] = a; // assert(p[b]);
 	p[b] = 0;
 }
- 
+
 void setEq(int x) {
 	if (p[x]) return;
 	int v = qmin(x);
@@ -647,10 +670,10 @@ void setEq(int x) {
 		}
 	}
 }
- 
- 
+
+
 int main() {
-	setIO(); re(n); 
+	setIO(); re(n);
 	FOR(i,1,n+1) re(p[i]);
 	FOR(i,1,n+1) {
 		if (!par[i] && sz(val[i])) {

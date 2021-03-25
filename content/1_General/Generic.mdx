@@ -4,8 +4,77 @@ title: (Optional) C++ - Writing Generic Code
 author: Aryansh Shrivastava, Benjamin Qi
 description: 'Writing code that can easily be reused or extended.'
 prerequisites:
-  - running-code
+  - running-code-locally
 ---
+
+## Templates
+
+A **template** consists of code that is assumed to be in every file. Don't be
+afraid to write your own template or don't use one at all! Below, we'll give an
+example of what a template might look like.
+
+<Warning>
+
+USACO rules prohibit the use of pre-written code, including templates.
+Therefore, make sure you are able to re-type your template in contest (or just
+don't use one)!
+
+</Warning>
+
+Templates in C++ can take advantange of more powerful features (e.g. macros)
+than the other contest languages, and they can be more customized to each
+competitor.
+
+<Resources>
+	<Resource
+		source="AryanshS"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/making-a-contest-template"
+		title="Making a Contest Template"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="Benq"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp"
+		title="TemplateLong"
+	>
+		what it sounds like!!
+	</Resource>
+</Resources>
+
+```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int,int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO();
+
+}
+```
+
+This module will cover many of the features used in the code above.
+
+## What Is Generic Code?
 
 <Resources>
 	<Resource
@@ -31,61 +100,69 @@ Ben - I was too lazy to check whether all the code compiles :/
 
 </IncompleteSection>
 
-<LanguageSection>
+**Generic code** is an important concept in informatics. Of course, as all
+concepts go, you may dodge generic code and continue to write in a
+hyper-specific style. As such, begin by questioning purpose.
 
-<CPPSection>
+Generic code is **adaptable**, meaning that it can be put to use immediately in
+many ways without major changes. It can be reused, extended, and even versioned
+powerfully to save time. Time is of essence in informatics, where I refer to
+both algorithmic time _complexity_ and _coding_ time.
 
-**Generic code** is an important concept in informatics. Of course, as all concepts go, you may dodge generic code and continue to write in a hyper-specific style. As such, begin by questioning purpose.
-
-## Why write generic code?
-
-Generic code is **adaptable**, meaning that it can be put to use immediately in many ways without major changes. It can be reused, extended, and even versioned powerfully to save time. Time is of essence in informatics, where I refer to both algorithmic time _complexity_ and _coding_ time.
-
-Even if you are writing a very specific data structure or algorithm, to truly grasp it, a good contemplation is "Can I generalize what I have learned to a broader class of problems?" Answer this by then attempting to generalize. That said, before you proceed, I issue the below warning:
-
-<Warning>
-
-Generic code can easily assist **black-boxing**, where you write a snippet of code such that you either forget its meaning or have no idea what it means in the first place. This is a common pitfall, and you should avoid this as much as possible if you truly want to grasp a concept in informatics.
-
-</Warning>
-
-Modern C++, a groundbreaking language in the current informatics scene, indeed has several builtin features to support and streamline generic code. Here, we will cover the basic important ones you will definitely want to add to your coding arsenal.
+Even if you are writing a very specific data structure or algorithm, to truly
+grasp it, a good contemplation is "Can I generalize what I have learned to a
+broader class of problems?" Answer this by then attempting to generalize. That
+said, before you proceed, I issue the below warning:
 
 <Warning>
 
-Although you are **not** allowed to use pre-written code for USACO contests, the conventions covered in this module still apply when typing up a template from scratch.
+Generic code can easily assist **black-boxing**, where you write a snippet of
+code such that you either forget its meaning or have no idea what it means in
+the first place. This is a common pitfall, and you should avoid this as much as
+possible if you truly want to grasp a concept in informatics.
 
 </Warning>
+
+Modern C++, a groundbreaking language in the current informatics scene, indeed
+has several builtin features to support and streamline generic code. Here, we
+will cover the basic important ones you will definitely want to add to your
+coding arsenal.
 
 ## Classes
 
-**Classes** are by far the most important utility in extensible code. If you ever want to write a data structure that has several member functions to process stored data, classes are for you. Of course, classes can have public and private sections. For instance, consider a class `human`, which maintains several relevant member functions.
+**Classes** are by far the most important utility in extensible code. If you
+ever want to write a data structure that has several member functions to process
+stored data, classes are for you. Of course, classes can have public and private
+sections. For instance, consider a class `human`, which maintains several
+relevant member functions.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature, temper;
-        string name;
-    public: //external reactions
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature, temper;
+		string name;
+	public: //external reactions
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 ```
 
-But how do we actually use \(and reuse\) this class data structure we have created? We do this by creating _instances_ of this class, concretely known as **objects**.
+But how do we actually use \(and reuse\) this class data structure we have
+created? We do this by creating _instances_ of this class, concretely known as
+**objects**.
 
 Below is an example instance of the `human` class, a `human` object named `Sal`.
 
@@ -93,35 +170,41 @@ Below is an example instance of the `human` class, a `human` object named `Sal`.
 human Sal;
 ```
 
-Of course, we will want to initialize any object of this `human` class with its fundamental attributes \(`body_temperature` and `temper` from the above\), but the problem here is that we are unable to access them directly; they are private and remain uninitialized.
+Of course, we will want to initialize any object of this `human` class with its
+fundamental attributes \(`body_temperature` and `temper` from the above\), but
+the problem here is that we are unable to access them directly; they are private
+and remain uninitialized.
 
-To partially alleviate this, we can initialize variables in the class declaration itself:
+To partially alleviate this, we can initialize variables in the class
+declaration itself:
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature = 98, temper = 25;
-        string name = "Sal";
-    public: //external reactions
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature = 98, temper = 25;
+		string name = "Sal";
+	public: //external reactions
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 ```
 
-This gives us something to work with, and we can now create `Sal` in `main()` as well as call his member functions \(instantiated directly from the base `human` class\).
+This gives us something to work with, and we can now create `Sal` in `main()` as
+well as call his member functions \(instantiated directly from the base `human`
+class\).
 
 ```cpp
 int main() {
@@ -131,58 +214,71 @@ int main() {
 }
 ```
 
-To completely solve this, we might be forced to make these variables public, but instead we can be more clever and write a **constructor** function for this class, essentially a function that is automatically called whenever an instance of the class is created. Constructors are useful when we want to prevent modification to variables we create but be able to initialize them for use, making them naturally the most viable option for proprietary software companies.
+To completely solve this, we might be forced to make these variables public, but
+instead we can be more clever and write a **constructor** function for this
+class, essentially a function that is automatically called whenever an instance
+of the class is created. Constructors are useful when we want to prevent
+modification to variables we create but be able to initialize them for use,
+making them naturally the most viable option for proprietary software companies.
 
-We can create a constructor for the human class and require initialization of the variables `body_temperature` and `temper`, which gives us some control over `Sal`'s intrinsic properties as they are initialized. The overall code becomes:
+We can create a constructor for the human class and require initialization of
+the variables `body_temperature` and `temper`, which gives us some control over
+`Sal`'s intrinsic properties as they are initialized. The overall code becomes:
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 class human {
-    private: //intrinsic properties
-        int body_temperature, temper;
-        string name;
-    public: //external reactions
-        human(string _name, int _body_temperature, int _temper) {
-            name = _name;
-            body_temperature = _body_temperature, temper = _temper;
-        }
-        string name() { //what do other people call him
-            return name;
-        }
-        string feeling() { //answers "how do I feel"
-            if(body_temperature >= 97 && body_temperature <= 99) return "good";
-            else return "bad";
-        }
-        string emotion() {
-            if(temper <= 10) return "sad";
-            else if(temper <= 30) return "happy";
-            else return "angry";
-        }
+	private: //intrinsic properties
+		int body_temperature, temper;
+		string name;
+	public: //external reactions
+		human(string _name, int _body_temperature, int _temper) {
+			name = _name;
+			body_temperature = _body_temperature, temper = _temper;
+		}
+		string name() { //what do other people call him
+			return name;
+		}
+		string feeling() { //answers "how do I feel"
+			if(body_temperature >= 97 && body_temperature <= 99) return "good";
+			else return "bad";
+		}
+		string emotion() {
+			if(temper <= 10) return "sad";
+			else if(temper <= 30) return "happy";
+			else return "angry";
+		}
 };
 
 int main() {
-    human Sal("Sal", 98, 25);
-    cout << Sal.name() << " feels " << Sal.feeling() << " and is "
-     << Sal.emotion()  << "\n";
+	human Sal("Sal", 98, 25);
+	cout << Sal.name() << " feels " << Sal.feeling() << " and is "
+	 << Sal.emotion()  << "\n";
 }
 ```
 
-This is immediately very extensible if we wish to create multiple instances of `human`, all with their own initial properties. In fact, we can be even more general by creating an external function condition that easily states feelings and emotions for us without having to be rewritten.
+This is immediately very extensible if we wish to create multiple instances of
+`human`, all with their own initial properties. In fact, we can be even more
+general by creating an external function condition that easily states feelings
+and emotions for us without having to be rewritten.
 
 ```cpp
 void condition(human h) {
-    cout << h.name() << " feels " << h.feeling() << " and is " << h.emotion();
+	cout << h.name() << " feels " << h.feeling() << " and is " << h.emotion();
 }
 
 int main() {
-    human Sal("Sal", 98, 25), Bob("Bob", 100, 9), Joe("Joe", 85, 35);
-    condition(Sal), condition(Bob), condition(Joe);
+	human Sal("Sal", 98, 25), Bob("Bob", 100, 9), Joe("Joe", 85, 35);
+	condition(Sal), condition(Bob), condition(Joe);
 }
 ```
 
-As one very specific but useful note on constructors, when we wish to merely initialize properties, we can adopt an alternative declaration that executes significantly faster than the first; using the argument name as the variable itself also becomes permissible and is guaranteed defined behavior:
+As one very specific but useful note on constructors, when we wish to merely
+initialize properties, we can adopt an alternative declaration that executes
+significantly faster than the first; using the argument name as the variable
+itself also becomes permissible and is guaranteed defined behavior:
 
 ```cpp
 human(string name, int body_temperature, int temper) :
@@ -191,27 +287,31 @@ name(name), body_temperature(body_temperature), temper(temper) {}
 
 ## Structs
 
-**Structs** are useful when we care less about keeping private properties and more about having just a general reusable data structure. This means everything is public in a struct by default, and a `human` struct, along with the reformatted constructor above, would look like:
+**Structs** are useful when we care less about keeping private properties and
+more about having just a general reusable data structure. This means everything
+is public in a struct by default, and a `human` struct, along with the
+reformatted constructor above, would look like:
 
 ```cpp
 struct human {
-    int body_temperature, temper;
-    string name;
-    human(string name, int body_temperature, int temper) :
-    name(name), body_temperature(body_temperature), temper(temper) {}
-    string feeling() { //answers "how do I feel"
-        if(body_temperature >= 97 && body_temperature <= 99) return "good";
-        else return "bad";
-    }
-    string emotion() {
-        if(temper <= 10) return "sad";
-        else if(temper <= 30) return "happy";
-        else return "angry";
-    }
+	int body_temperature, temper;
+	string name;
+	human(string name, int body_temperature, int temper) :
+	name(name), body_temperature(body_temperature), temper(temper) {}
+	string feeling() { //answers "how do I feel"
+		if(body_temperature >= 97 && body_temperature <= 99) return "good";
+		else return "bad";
+	}
+	string emotion() {
+		if(temper <= 10) return "sad";
+		else if(temper <= 30) return "happy";
+		else return "angry";
+	}
 };
 ```
 
-Immediately, our struct is easier to manage given its open nature. It is more integrated with the surrounding code, and we can do manipulations like:
+Immediately, our struct is easier to manage given its open nature. It is more
+integrated with the surrounding code, and we can do manipulations like:
 
 ```cpp
 human Sal("Sal", 98, 25);
@@ -222,13 +322,18 @@ Sal.temper = 40; //he develops bad temper
 condition(Sal); //now, get Sal's new condition
 ```
 
-Finally, we can choose to discard the constructor altogether and opt for an initializer list based on the _order_ of the declaration of intrinsic variables. In the `human` case, the variables in order are `body_temperature`, `temper`, and `name`, so we can remove the constructor and opt for an initializer list like:
+Finally, we can choose to discard the constructor altogether and opt for an
+initializer list based on the _order_ of the declaration of intrinsic variables.
+In the `human` case, the variables in order are `body_temperature`, `temper`,
+and `name`, so we can remove the constructor and opt for an initializer list
+like:
 
 ```cpp
 human Sal{98, 25, "Sal"};
 ```
 
-Needless to say, all of this enables very clean initialization and manipulation of classes and structs, integral to generic code.
+Needless to say, all of this enables very clean initialization and manipulation
+of classes and structs, integral to generic code.
 
 ## Templates
 
@@ -249,24 +354,32 @@ Needless to say, all of this enables very clean initialization and manipulation 
 	</Resource>
 </Resources>
 
-The `human` class example, though well-defined, was mostly intended to serve as an example of the versatility of classes and structs. We now switch to something simpler. Imagine a three-dimensional point in space as the following struct, where we create some sample instances `P1` and `P2`
+The `human` class example, though well-defined, was mostly intended to serve as
+an example of the versatility of classes and structs. We now switch to something
+simpler. Imagine a three-dimensional point in space as the following struct,
+where we create some sample instances `P1` and `P2`
 
 ```cpp
 struct pt {
-    int x, y, z;
+	int x, y, z;
 } P1{1, 2, 3}, P2{3, 4, 5}; // we can make quick instances right before the ;
 ```
 
-But what if we wanted to make a `P3` point with coordinates as doubles? We would then be forced to create a secondary point struct `pt1`:
+But what if we wanted to make a `P3` point with coordinates as doubles? We would
+then be forced to create a secondary point struct `pt1`:
 
 ```cpp
 struct pt { int x, y, z; } P1{1, 2, 3}, P2{3, 4, 5};
 struct pt1 { double x, y, z; } P3{1.1, 2.2, 3.3};
 ```
 
-This might not seem too bad immediately, but imagine having to create structs like this over and over again just to accommodate various type changes. We need something better.
+This might not seem too bad immediately, but imagine having to create structs
+like this over and over again just to accommodate various type changes. We need
+something better.
 
-Lo and behold, the **template** to the rescue. We can use the format `template<...>` to specify the specific templating conditions and then simply define the struct normally. In particular, if we use a class `T`, we achieve:
+Lo and behold, the **template** to the rescue. We can use the format
+`template<...>` to specify the specific templating conditions and then simply
+define the struct normally. In particular, if we use a class `T`, we achieve:
 
 ```cpp
 template<class T> struct pt { T x, y, z; };
@@ -275,43 +388,62 @@ pt<double> P3{1.1, 2.2, 3.3};
 pt<long long> P4{9223372036854775807, 9223372036854775807, 9223372036854775807};
 ```
 
-It would be narrow-minded to think that templates are in any way limited to classes and structs. They can be used with functions and much more. For example,
+It would be narrow-minded to think that templates are in any way limited to
+classes and structs. They can be used with functions and much more. For example,
 
 ```cpp
 template<class T> bool ckmin(T& a, const T& b) {
-  return b < a ? a = b, 1 : 0; }
+	return b < a ? a = b, 1 : 0; }
 ```
 
-will set $a$ equal to $\min(a,b)$, and return `true` if the value of $a$ changes.
+will set $a$ equal to $\min(a,b)$, and return `true` if the value of $a$
+changes.
 
-One interesting use case is that of the size of various containers. The size member function of a container usually returns a type incompatible with integer, but we can easily write a templated function to fix this, handling all class types `T` of container at once:
+One interesting use case is that of the size of various containers. The size
+member function of a container usually returns a type incompatible with integer,
+but we can easily write a templated function to fix this, handling all class
+types `T` of container at once:
 
 ```cpp
 template<class T> inline int sz(T container) {
-    return (int)container.size();
+	return (int)container.size();
 }
 ```
 
-You may apply this as `sz<vector<int>>(v)` on some `vector<int> v`, but since C++11, functions \(but not classes or structs until C++14 and C++17\) can actually infer template arguments, meaning that we can simply use `sz(v)`!
+You may apply this as `sz<vector<int>>(v)` on some `vector<int> v`, but since
+C++11, functions \(but not classes or structs until C++14 and C++17\) can
+actually infer template arguments, meaning that we can simply use `sz(v)`!
 
-What if we wanted to put multiple arguments in a template to handle multiple classes? Consider the below secondary pair comparator struct as an example:
+What if we wanted to put multiple arguments in a template to handle multiple
+classes? Consider the below secondary pair comparator struct as an example:
 
 ```cpp
 struct CPS {
-    template<class T, class U>
-    bool operator() (const pair<T, U>& a, const pair<T, U>& b) {
-        return make_pair(a.second, a.first) < make_pair(b.second, b.first);
-    }
+	template<class T, class U>
+	bool operator() (const pair<T, U>& a, const pair<T, U>& b) {
+		return make_pair(a.second, a.first) < make_pair(b.second, b.first);
+	}
 };
 ```
 
-And in this design, since the template arguments both apply to only a function, they can be easily inferred! For instance, declaring a set of `pair<double, int>` in C++11 is as easy as `set<pair<double, int>, CPS>`.
+And in this design, since the template arguments both apply to only a function,
+they can be easily inferred! For instance, declaring a set of
+`pair<double, int>` in C++11 is as easy as `set<pair<double, int>, CPS>`.
 
-What constitutes what other kinds of types we can put in templates? As a general rule of thumb, until C++17, the types valid in template arguments are only classes and fundamental types, of which only classes can be directly inferred in many cases by functions.
+What constitutes what other kinds of types we can put in templates? As a general
+rule of thumb, until C++17, the types valid in template arguments are only
+classes and fundamental types, of which only classes can be directly inferred in
+many cases by functions.
 
-In fact, we can even have templates that take a variable number of arguments, known as variadic templates, or templates within templates, known as nested templates, both of which are beyond the scope of this basic exposition but can be found [here](https://en.cppreference.com/w/cpp/language/parameter_pack) and [here](https://blog.feabhas.com/2014/08/templates-of-templates/).
+In fact, we can even have templates that take a variable number of arguments,
+known as variadic templates, or templates within templates, known as nested
+templates, both of which are beyond the scope of this basic exposition but can
+be found [here](https://en.cppreference.com/w/cpp/language/parameter_pack) and
+[here](https://blog.feabhas.com/2014/08/templates-of-templates/).
 
-As a fun fact, just as templates give us so much control over the generality of the language, a lot of the C++ standard in itself is written generically with templates under the hood.
+As a fun fact, just as templates give us so much control over the generality of
+the language, a lot of the C++ standard in itself is written generically with
+templates under the hood.
 
 ## Type Aliases With `using`
 
@@ -336,23 +468,31 @@ As a fun fact, just as templates give us so much control over the generality of 
 	</Resource>
 </Resources>
 
-`typedef` is now rather outdated \(though still used by some\) because it is more or less just an annoying version of `using` with frustrating semantics, so we will not cover it here.
+`typedef` is now rather outdated \(though still used by some\) because it is
+more or less just an annoying version of `using` with frustrating semantics, so
+we will not cover it here.
 
-`using` is a fascinating keyword, frequently used to simplify namespace prefixing when applicable. For instance, statements like
+`using` is a fascinating keyword, frequently used to simplify namespace
+prefixing when applicable. For instance, statements like
 
 ```cpp
 using namespace std;
 ```
 
-actually allow us to use an entire namespace. Of course, since `using namespace std` is frequently limited to the competitive programming community and looked down upon otherwise, we can use `using` to invoke better simplifications.
+actually allow us to use an entire namespace. Of course, since
+`using namespace std` is frequently limited to the competitive programming
+community and looked down upon otherwise, we can use `using` to invoke better
+simplifications.
 
-Suppose that a lot of my code uses`std::cout`, which I find frustrating to type. I can write
+Suppose that a lot of my code uses`std::cout`, which I find frustrating to type.
+I can write
 
 ```cpp
 using std::cout;
 ```
 
-and then just live with `cout`. But what if I was using strings and wanted to type neither `std::string` nor `string`? I could use `using` twice to fix this:
+and then just live with `cout`. But what if I was using strings and wanted to
+type neither `std::string` nor `string`? I could use `using` twice to fix this:
 
 ```cpp
 using std::string; //unnecessary if already using namespace std
@@ -365,7 +505,8 @@ Or golfed into a single statement:
 using str = std::string; //str is an alias for std::string directly
 ```
 
-We can make even more aliases, with even aliases within aliases \(see `ll`\), for environments where speed is key, such as competitive programming:
+We can make even more aliases, with even aliases within aliases \(see `ll`\),
+for environments where speed is key, such as competitive programming:
 
 ```cpp
 using namespace std;
@@ -378,45 +519,54 @@ using vi = vector<int>;
 
 <Warning>
 
-If you use too many type aliases or macros then your code will become unreadable to anyone besides yourself!
+If you use too many type aliases or macros then your code will become unreadable
+to anyone besides yourself!
 
 </Warning>
 
-Finally, we can take `using` to the next step and invoke templates! For instance, if we want to be able to write `ar<int, 6>` instead of `std::array<int, 6>`, we write:
+Finally, we can take `using` to the next step and invoke templates! For
+instance, if we want to be able to write `ar<int, 6>` instead of
+`std::array<int, 6>`, we write:
 
 ```cpp
 template<class T, int SZ> using ar = std::array<T, SZ>;
 ```
 
-As another example, if we want to use `ai` to mean integer array, we can make constructions like `ai<6>` work as well:
+As another example, if we want to use `ai` to mean integer array, we can make
+constructions like `ai<6>` work as well:
 
 ```cpp
 template<int SZ> using ai = std::array<int, SZ>;
 ```
 
-In general, it is important that `using` declarations have strong **scope** guarantees, meaning that they will not work outside of their defined scope. To use declarations everywhere in the program, they must be invoked in global scope. But, if we want to be clever and create a reusable struct and just specify template arguments internally, we always have the option of:
+In general, it is important that `using` declarations have strong **scope**
+guarantees, meaning that they will not work outside of their defined scope. To
+use declarations everywhere in the program, they must be invoked in global
+scope. But, if we want to be clever and create a reusable struct and just
+specify template arguments internally, we always have the option of:
 
 ```cpp
 struct pt {
-    using T = int;
-    //within this scope, T is an alias for int
-    //just change this declaration to change T's meaning within this struct
-    T x, y, z;
+	using T = int;
+	//within this scope, T is an alias for int
+	//just change this declaration to change T's meaning within this struct
+	T x, y, z;
 };
 ```
 
-In case we want to be able to access the specific type `T`'s alias meaning outside of `pt`, this too becomes very easy:
+In case we want to be able to access the specific type `T`'s alias meaning
+outside of `pt`, this too becomes very easy:
 
 ```cpp
 struct pt {
-    using T = int;
-    T x, y, z;
+	using T = int;
+	T x, y, z;
 };
 
 int main() {
-    using U = pt::T;
-    //U becomes a copy of T from pt's scope
-    //U is now in the scope of main
+	using U = pt::T;
+	//U becomes a copy of T from pt's scope
+	//U is now in the scope of main
 }
 ```
 
@@ -445,23 +595,30 @@ We end this section off with `#define`, which is used to define **macros**.
 	</Resource>
 </Resources>
 
-`#define` is essentially a crude find-and-replace that happens before compile time \(in the preprocessor stage\). In this sense, it is easy to use, where `#define NAME VALUE` would ideally find all instances of `NAME` in the code and replace them with `VALUE`.
+`#define` is essentially a crude find-and-replace that happens before compile
+time \(in the preprocessor stage\). In this sense, it is easy to use, where
+`#define NAME VALUE` would ideally find all instances of `NAME` in the code and
+replace them with `VALUE`.
+
+This example defines `MOD` as `1e9+7` by find and replace.
 
 ```cpp
 #define MOD 1e9 + 7
 
 int main() {
-    cout << MOD << "\n";
+	cout << int(MOD) << "\n"; // 1000000007
+	cout << int(MOD*2) << "\n"; // 1000000014
+	cout << int(2*MOD) << "\n"; // 2000000007
 }
 ```
 
-This example defines `MOD` as `1e9+7` by find and replace. But without resorting to something as crude as `#define`, we could just as well do:
+But that's obviously not a good idea. A better alternative:
 
 ```cpp
 const int MOD = 1e9 + 7;
 
 int main() {
-    cout << MOD << "\n";
+	cout << MOD << "\n";
 }
 ```
 
@@ -475,30 +632,42 @@ int main() {
 	</Resource>
 </Resources>
 
-The takeaway is to avoid `#define` when possible. If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control.
+Also, `using` is preferable to `#define`. For example, the following code with
+`#define` will not compile (but it will with `using`).
 
-Of course, some competitive programmers use macros extensively. Some examples are presented below.
+```cpp
+#define ll long long
+// using ll = long long;
+
+int main() { cout << ll(1e18); }
+```
+
+The takeaway is to avoid `#define` when possible. Of course, some competitive
+programmers use macros extensively. Some examples are presented below.
+
+<!-- If you absolutely insist on using `#define` for some reason, though, use it with caution and remember to `#undef` for good scope control. -->
 
 ### Pairs
 
 ```cpp
-typedef pair<int,int> pi;
+using pi = pair<int,int>;
 #define mp make_pair
 #define f first
 #define s second
 ```
 
-Pretty annoying to keep typing `first` and `second` (especially if you have nested pairs ...)
+Pretty annoying to keep typing `first` and `second` (especially if you have
+nested pairs ...)
 
 ### Vectors
 
 ```cpp
-typedef vector<int> vi;
-#define sz(x) (int)x.size()
+using vi = vector<int>;
+#define sz(x) int((x).size())
 #define all(x) begin(x), end(x)
 ```
 
-It's generally a good idea to convert a size to a signed integer before doing anything with it to avoid cases like the following.
+Converting a size to a signed integer avoids cases like the following.
 
 ```cpp
 vi x;
@@ -515,98 +684,109 @@ sort(1+all(v)); // {2,1,3,4,5}
 sort(all(v)); // {1,2,3,4,5}
 ```
 
-Note how `1+all(v)` expands to `1+begin(v), end(v)`.
-
 ## Preprocessing Logic
 
-As far as preprocessor magic goes, we are in no way limited to `#define` butchery. Ever wanted to write a program that compiles in different ways depending on some initial conditions? We can use preprocessor directives like `#if` and `#else`, or `#ifdef` and `#ifndef` to allow for this.
+<!-- As far as preprocessor magic goes, we are in no way limited to `#define` butchery.  -->
 
-For instance, I may want my struct `pt` to be two-dimensional in some cases, and I can control this simply:
+Ever wanted to write a program that compiles in different ways depending on some
+initial conditions? We can use preprocessor directives like `#if` and `#else`,
+or `#ifdef` and `#ifndef` to allow for this.
+
+For instance, I may want my struct `pt` to be two-dimensional in some cases, and
+I can control this simply:
 
 ```cpp
 const bool d2 = 0; //change to true if you want the 2d case; otherwise, 3d
 
 template<class T> struct pt {
-    #if(d2)
-        T x, y;
-    #else
-        T x, y, z;
-    #endif
+	#if(d2)
+		T x, y;
+	#else
+		T x, y, z;
+	#endif
 };
 ```
 
-Similarly, if we are not opposed to `#define`, we could use `#ifdef` and `#ifndef` to see whether or not a macro is defined via `#define`.
+If we are not opposed to using `#define`, we could use `#ifdef` and `#ifndef` to
+see whether or not a macro is defined via `#define`.
 
 ```cpp
-//#define 2d //uncomment for 2d
+// #define 2d // uncomment for 2d
 
 template<class T> struct pt {
-    #ifdef 2d
-        T x, y;
-    #else
-        T x, y, z;
-    #endif
+	#ifdef 2d
+		T x, y;
+	#else
+		T x, y, z;
+	#endif
 }
 ```
 
-There are many clever applications of this, including versioning. Importantly, if we want code to run differently for different versions of C++, we can write:
+There are many clever applications of this, including versioning. Importantly,
+if we want code to run differently for different versions of C++, we can write:
 
 ```cpp
 #if(__cplusplus < 201703L)
-  template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
-    assert(!(hi < lo));
-    return (v < lo) ? lo : (hi < v) ? hi : v;
-  }
+	template<class T> constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
+		assert(!(hi < lo));
+		return (v < lo) ? lo : (hi < v) ? hi : v;
+	}
 #endif
 ```
 
 ## Namespaces
 
-Finally, we can write our own namespaces to separate various functions. Within a namespace, we can have functions, variables, classes, and even more namespaces. Then, we can invoke `using` declarations to use the whole namespace.
+Finally, we can write our own namespaces to separate various functions. Within a
+namespace, we can have functions, variables, classes, and even more namespaces.
+Then, we can invoke `using` declarations to use the whole namespace.
 
 ```cpp
 namespace test {
-    const string greeting = "hi";
-    namespace test1 {
-        const int time = 2;
-    } using namespace test1;
-    template<class T> struct my_ds {
-        T s;
-        void add(T x) { s += x; }
-        T get() { return s; }
-    };
+	const string greeting = "hi";
+	namespace test1 {
+		const int time = 2;
+	} using namespace test1;
+	template<class T> struct my_ds {
+		T s;
+		void add(T x) { s += x; }
+		T get() { return s; }
+	};
 }
 ```
 
-These are fairly self-explanatory, but a more rare feature of C++11 is the `inline namespace`. Inline namespaces are not technically real namespaces but allow us to chunk up code and avoid having to use namespaces just to gain access.
+These are fairly self-explanatory, but a more rare feature of C++11 is the
+`inline namespace`. Inline namespaces are not technically real namespaces but
+allow us to chunk up code and avoid having to use namespaces just to gain
+access.
 
 ```cpp
 inline namespace test {
-    const string greeting = "hi";
+	const string greeting = "hi";
 }
 ```
 
-So why even have inline namespaces? We can use their features interestingly. For instance, suppose we had a feature in an old version \(v1\) of a program but now removed it in the new version \(v2\).
+So why even have inline namespaces? We can use their features interestingly. For
+instance, suppose we had a feature in an old version `v1` of a program but now
+removed it in the new version `v2`.
 
 ```cpp
 namespace v1 {
-    const string buggy_feature = "bugs";
-    const string greeting = "hi";
+	const string buggy_feature = "bugs";
+	const string greeting = "hi";
 }
 
 inline namespace v2 {
-    //removed the buggy_feature from this new version
-    const string buggy_feature = "doesn't exist";
-    const string greeting = "hi";
+	//removed the buggy_feature from this new version
+	const string buggy_feature = "doesn't exist";
+	const string greeting = "hi";
 }
 
 int main() {
-    cout << buggy_feature << "\n";
-    cout << v1::buggy_feature << "\n";
+	cout << buggy_feature << "\n"; // doesn't exist
+	cout << v1::buggy_feature << "\n"; // bugs
 }
 ```
 
-Now, not using a namespace will automatically use v2. But if we want access to v1 of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you have it, simple and effective version control!
-
-</CPPSection>
-</LanguageSection>
+Now, not using a namespace will automatically use `v2`. But if we want access to
+`v1` of the `buggy_feature`, we can simply write `v1::buggy_feature`. There you
+have it, simple and effective version control!

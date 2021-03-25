@@ -1,12 +1,12 @@
-/*! purgecss start ignore */
 @tailwind base;
 @tailwind components;
 
+/*! purgecss start ignore */
 html {
   background-color: white;
 }
 
-html.mode-dark {
+html.dark {
   @apply text-dark-high-emphasis bg-dark-surface min-h-screen;
 }
 
@@ -32,10 +32,10 @@ html.transitioning-color-scheme * {
     background-color: theme('colors.gray.500');
     border: 2px solid theme('colors.gray.200');
   }
-  .mode-dark ::-webkit-scrollbar {
+  .dark ::-webkit-scrollbar {
     background-color: theme('colors.gray.800');
   }
-  .mode-dark ::-webkit-scrollbar-thumb {
+  .dark ::-webkit-scrollbar-thumb {
     border: 2px solid theme('colors.gray.800');
     background-color: theme('colors.gray.400');
   }
@@ -67,7 +67,7 @@ html.transitioning-color-scheme * {
   @apply text-blue-600 font-semibold;
 }
 
-.mode-dark .markdown a {
+.dark .markdown a {
   color: #a9c5ea;
 }
 
@@ -88,7 +88,7 @@ html.transitioning-color-scheme * {
   @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
 }
 
-.mode-dark .markdown blockquote {
+.dark .markdown blockquote {
   @apply text-dark-high-emphasis border-dark-med-emphasis;
 }
 
@@ -121,7 +121,14 @@ html.transitioning-color-scheme * {
 
 .markdown ul:not(.no-markdown) ul {
   list-style-type: circle;
-  @apply mt-1 mb-0;
+  @apply mt-1 mb-2;
+}
+
+.markdown ul:not(.no-markdown) ul:last-child {
+  @apply mb-0;
+}
+.markdown ol:not(.no-markdown) ol:last-child {
+  @apply mb-0;
 }
 
 .markdown ul:not(.no-markdown) ul ul {
@@ -160,17 +167,17 @@ html.transitioning-color-scheme * {
   counter-reset: number;
 }
 
-.markdown ol li {
+.markdown ol > li {
   display: flex;
   counter-increment: number;
 }
 
-.markdown ol li:before {
+.markdown ol > li:before {
   content: counters(number, '.') '.';
   @apply text-blue-600 font-semibold mr-2;
 }
 
-.mode-dark .markdown ol li:before {
+.dark .markdown ol > li:before {
   @apply text-blue-300;
 }
 
@@ -210,7 +217,7 @@ html.transitioning-color-scheme * {
 .table-alternating-stripes tr:nth-child(even) {
   @apply bg-gray-50;
 }
-.mode-dark .table-alternating-stripes tr:nth-child(even) {
+.dark .table-alternating-stripes tr:nth-child(even) {
   background-color: #1c2538;
 }
 
@@ -271,5 +278,14 @@ html.transitioning-color-scheme * {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.form-input {
+  @apply border-gray-300 rounded-md focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50;
+}
+
+.dark .ais-Highlight-highlighted,
+.dark .ais-Snippet-highlighted {
+  @apply bg-orange-700;
 }
 /*! purgecss end ignore */

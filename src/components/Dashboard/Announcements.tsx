@@ -11,7 +11,7 @@ export default function Announcements({
     <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 grid lg:grid-cols-2 gap-8">
       {announcements.map(announcement => (
         <div
-          className="bg-white dark:bg-gray-900 shadow transition duration-150 ease-in-out sm:rounded-lg"
+          className="bg-white dark:bg-gray-900 shadow transition sm:rounded-lg"
           key={announcement.id}
         >
           {/* hover:shadow-lg */}

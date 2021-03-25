@@ -19,7 +19,7 @@ import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
 import FocusProblem from './FocusProblem';
 import Youtube from './Youtube';
-// import MarkCompleteButton from '../MarkdownLayout/MarkCompleteButton'
+import PrefixSumInteractive from './PrefixSumInteractive';
 
 export const components = {
   Spoiler,
@@ -39,6 +39,25 @@ export const components = {
   IncompleteSection,
   Asterisk,
   Youtube,
+  PrefixSumInteractive,
+  MATHDIV: props => {
+    return (
+      <div
+        className={props.className}
+        data-latex={`$$${props.latex}$$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
+  MATHSPAN: props => {
+    return (
+      <span
+        className={props.className}
+        data-latex={`$${props.latex}$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
 
   ...HTMLComponents,
 };

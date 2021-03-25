@@ -9,10 +9,8 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import { SolutionInfo } from '../../models/solution';
 
-import ModuleFeedback from './ModuleFeedback';
 import ConfettiContext from '../../context/ConfettiContext';
 import ForumCTA from '../ForumCTA';
-import { SettingsModalProvider } from '../../context/SettingsModalContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
 import MobileSideNav from './MobileSideNav';
 import DesktopSidebar from './DesktopSidebar';
@@ -21,12 +19,11 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import ModuleHeaders from './ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
-  <main
-    className="relative z-0 pt-6 lg:pt-2 pb-6 focus:outline-none"
-    tabIndex={0}
-  >
+  <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}
@@ -34,10 +31,12 @@ const ContentContainer = ({ children, tableOfContents }) => (
           className="flex-shrink-0 hidden lg:block order-1"
           style={{ width: '20rem' }}
         />
-        <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
-          <TableOfContentsSidebar tableOfContents={tableOfContents} />
-        </div>
-        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2">
+        {tableOfContents.length > 1 && (
+          <div className="hidden xl:block ml-6 w-64 mt-48 flex-shrink-0 order-3">
+            <TableOfContentsSidebar tableOfContents={tableOfContents} />
+          </div>
+        )}
+        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2 overflow-x-auto">
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />
@@ -45,7 +44,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
 
           {children}
 
-          <div className="pt-4">
+          <div className="pt-4 pb-6">
             <NavBar alignNavButtonsRight={false} />
           </div>
         </div>
@@ -64,6 +63,11 @@ export default function MarkdownLayout({
   const { userProgressOnModules, setModuleProgress, lang } = useContext(
     UserDataContext
   );
+  React.useEffect(() => {
+    if (lang !== 'showAll') {
+      updateLangURL(lang);
+    }
+  }, [lang]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
@@ -84,6 +88,7 @@ export default function MarkdownLayout({
             }
             fields {
               division
+              gitAuthorTime
             }
             problems {
               uniqueID
@@ -121,14 +126,16 @@ export default function MarkdownLayout({
   // console.log(markdownData)
   // console.log(moduleLinks)
   // console.log(userProgressOnProblems)
-  let problemIDs = [];
+  const problemIDs = [];
   const activeIDs = [];
-  const prob_to_module = {};
+  const appearsIn = [];
+  let uniqueID = '';
+  const probToModule = {};
 
-  for (let moduleLink of moduleLinks) {
-    for (let problem of moduleLink.probs) {
+  for (const moduleLink of moduleLinks) {
+    for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      prob_to_module[uniqueID] = module.id;
+      probToModule[uniqueID] = module.id;
     }
   }
 
@@ -136,15 +143,17 @@ export default function MarkdownLayout({
     activeIDs.push(markdownData.id);
     const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
     // oops how to assert not -1
-    for (let problem of moduleLinks[ind].probs) {
+    for (const problem of moduleLinks[ind].probs) {
       const uniqueID = problem.uniqueID;
       problemIDs.push(uniqueID);
     }
   } else {
     moduleLinks.forEach(link => {
-      for (let problem of link.probs) {
+      for (const problem of link.probs) {
         if (problem.solID === markdownData.id) {
           activeIDs.push(link.id);
+          appearsIn.push(link.url);
+          uniqueID = problem.uniqueID;
         }
       }
     });
@@ -156,19 +165,21 @@ export default function MarkdownLayout({
       value={{
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
-        activeIDs: activeIDs,
+        activeIDs,
+        appearsIn,
+        uniqueID,
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,
         handleCompletionChange,
       }}
     >
-      <SettingsModalProvider>
-        <ContactUsSlideoverProvider>
+      <ContactUsSlideoverProvider>
+        <ProblemSuggestionModalProvider>
           <MobileSideNav />
           <DesktopSidebar />
 
-          <div>
+          <div className="w-full">
             <MobileAppBar />
 
             <ContentContainer tableOfContents={tableOfContents}>
@@ -179,7 +190,7 @@ export default function MarkdownLayout({
                 moduleLinks={moduleLinks}
               />
 
-              <div className="xl:hidden">
+              <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 
@@ -189,13 +200,13 @@ export default function MarkdownLayout({
 
               <ForumCTA />
 
-              <div className="my-8">
-                <ModuleFeedback markdownData={markdownData} />
-              </div>
+              {/*<div className="my-8">*/}
+              {/*  <ModuleFeedback markdownData={markdownData} />*/}
+              {/*</div>*/}
             </ContentContainer>
           </div>
-        </ContactUsSlideoverProvider>
-      </SettingsModalProvider>
+        </ProblemSuggestionModalProvider>
+      </ContactUsSlideoverProvider>
     </MarkdownLayoutContext.Provider>
   );
 }

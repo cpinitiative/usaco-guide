@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import * as React from 'react';
 import 'flatpickr/dist/themes/material_blue.css';
 import Flatpickr from 'react-flatpickr';
@@ -7,7 +8,15 @@ import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import { graphql, navigate, useStaticQuery } from 'gatsby';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
-import { ReactElement, useContext, useEffect, useRef, useState } from 'react';
+import {
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import ClassLayout from './ClassLayout';
 import ClassContext from '../../context/ClassContext';
 import ConfirmationModal from './ConfirmModal';
@@ -17,6 +26,7 @@ import { format } from './ClassPage';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import ProblemSelect from './ProblemSelect';
 import AssignmentProgressView from './LoadableAssignmentProgressView';
+import { useDarkMode } from '../../context/DarkModeContext';
 export interface ProblemJSON {
   division: string | null;
   moduleId: string | null;
@@ -39,12 +49,12 @@ export interface ProblemJSON {
 }
 export class ProblemWithDivisionInfo extends Problem {
   constructor(
-    public division: string,
-    public moduleId: string,
-    public moduleTitle: string,
-    public source: string,
-    public name: string,
-    public id: string,
+    public division: string | null,
+    public moduleId: string | null,
+    public moduleTitle: string | null,
+    public source: string | null,
+    public name: string | null,
+    public id: string | null,
     public difficulty?:
       | 'Very Easy'
       | 'Easy'
@@ -91,7 +101,7 @@ export default function PostPage(props: {
   const id: string = type === 'announcement' ? announcementId : assignmentId;
 
   const firebase = useContext(FirebaseContext);
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const { loading, error, data, isInstructor, students } = useContext(
     ClassContext
   );
@@ -112,37 +122,73 @@ export default function PostPage(props: {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
-  const problemsList =
-    useStaticQuery(graphql`
-      query ClassPostPageQuery {
-        allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-          edges {
-            node {
-              fields {
-                division
-              }
+  const rawProblemsList = useStaticQuery(graphql`
+    query ClassPostPageQuery {
+      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+        edges {
+          node {
+            fields {
+              division
+            }
 
-              frontmatter {
-                id
-                title
-              }
-              problems {
-                source
-                name
-                id
-                difficulty
-                starred
-                tags
-                solID
-                solQuality
-                url
-                uniqueID
-              }
+            frontmatter {
+              id
+              title
+            }
+            problems {
+              source
+              name
+              id
+              difficulty
+              starred
+              tags
+              solID
+              solQuality
+              url
+              uniqueID
             }
           }
         }
       }
-    `)?.allMdx?.edges?.map(category => category.node) || [];
+    }
+  `);
+
+  const problemsList = useMemo(
+    () =>
+      rawProblemsList?.allMdx?.edges
+        ?.map(category => category.node)
+        .reduce(
+          (acc, module) => [
+            ...acc,
+            ...module.problems.map(p => ({
+              division: module.fields.division,
+              moduleId: module.frontmatter.id,
+              moduleName: module.frontmatter.label,
+              ...p,
+            })),
+          ],
+          []
+        )
+        .filter(
+          // duplicated elements are eliminated if they're not the first one with the id
+          (el, i, arr) => {
+            return arr.findIndex(p => p.uniqueID === el.uniqueID) === i;
+          }
+        ) || [],
+
+    [rawProblemsList]
+  );
+  const modulesList = useMemo(
+    () =>
+      rawProblemsList.allMdx?.edges?.map(category => ({
+        division: category.node.fields.division,
+        data: {
+          value: category.node.frontmatter.id,
+          label: category.node.frontmatter.title,
+        },
+      })) || [],
+    [rawProblemsList]
+  );
 
   const postProblems = React.useMemo(() => {
     return (
@@ -155,7 +201,7 @@ export default function PostPage(props: {
             p.source,
             p.name,
             p.id,
-            p.difficulty,
+            p.difficulty || 'Normal',
             false,
             undefined,
             p.solID,
@@ -165,8 +211,9 @@ export default function PostPage(props: {
     );
   }, [post?.problems]);
   const [problems, setProblems] = useState<ProblemWithDivisionInfo[]>([]);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const searchDivisionOptions = [
+    { value: '___any', label: 'Any' },
     { value: 'general', label: 'General' },
     { value: 'bronze', label: 'Bronze' },
     { value: 'silver', label: 'Silver' },
@@ -174,31 +221,50 @@ export default function PostPage(props: {
     { value: 'plat', label: 'Platinum' },
     { value: 'adv', label: 'Advanced' },
   ];
-  const [searchDivision, setSearchDivision] = useState('');
+  const fuse: Fuse<Record<string, any>> = useMemo(
+    () => new Fuse(problemsList, { keys: ['name'] }),
+    [problemsList]
+  );
+
+  const [searchDivision, setSearchDivision] = useState('___any');
   const searchModuleOptions = React.useMemo(() => {
-    if (!searchDivision) return [];
-    return problemsList
-      .filter(category => category.fields.division === searchDivision)
-      .map(category => ({
-        value: category.frontmatter.id,
-        label: category.frontmatter.title,
-      }));
+    if (!searchDivision) return [{ value: '___any', label: 'Any' }];
+    return [
+      { value: '___any', label: 'Any' },
+      ...(modulesList
+        .filter(category => category.division === searchDivision)
+        .map(m => m.data) || []),
+    ];
   }, [searchDivision, problemsList]);
-  const [searchModule, setSearchModule] = useState('');
+  const [searchModule, setSearchModule] = useState('___any');
   React.useEffect(() => {
-    setSearchModule('');
+    setSearchModule('___any');
   }, [searchDivision]);
   const searchResults = React.useMemo(() => {
-    if (!searchModule) return [];
+    if (!searchQuery && searchDivision === '___any') return [];
+    let refinedProblemsList = problemsList;
+    if (searchQuery) {
+      refinedProblemsList = fuse.search(searchQuery).map(result => result.item);
+    }
+    if (searchModule !== '___any') {
+      refinedProblemsList = refinedProblemsList.filter(
+        p => p.moduleId === searchModule
+      );
+    } else if (searchDivision !== '___any') {
+      refinedProblemsList = refinedProblemsList.filter(
+        p => p.division === searchDivision
+      );
+    }
     return (
-      problemsList
-        .find(m => m.frontmatter.id === searchModule)
-        ?.problems.map(
+      refinedProblemsList
+        .slice(0, 20)
+
+        .map(
           p =>
             new ProblemWithDivisionInfo(
-              searchDivision,
-              searchModule,
-              searchModuleOptions.find(o => o.value === searchModule)?.label,
+              p.division,
+              p.moduleId,
+              p.moduleName,
               p.source,
               p.name,
               p.id,
@@ -210,7 +276,7 @@ export default function PostPage(props: {
             )
         ) || []
     );
-  }, [searchModule, problemsList]);
+  }, [searchModule, searchDivision, problemsList, searchQuery]);
   const hasChanges = React.useMemo(
     () =>
       title !== post?.title ||
@@ -219,7 +285,11 @@ export default function PostPage(props: {
           ? dueDate.getTime() !== post?.dueDate?.toDate().getTime()
           : !!post?.dueDate)) ||
       problems.length !== postProblems.length ||
-      problems.some((el, i) => el?.uniqueID !== postProblems[i]?.uniqueID) ||
+      problems.some(
+        (el, i) =>
+          el?.uniqueID !== postProblems[i]?.uniqueID ||
+          el?.difficulty !== postProblems[i]?.difficulty
+      ) ||
       content !== post?.content,
     [title, content, dueDate, type, post, problems, postProblems]
   );
@@ -233,6 +303,7 @@ export default function PostPage(props: {
     }
     return () => window.removeEventListener('beforeunload', handler);
   }, [hasChanges, isInstructor, edit]);
+
   if (loading || notFound || error || (!isInstructor && !post.published)) {
     return (
       <>
@@ -278,7 +349,7 @@ export default function PostPage(props: {
                       'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 ' +
                       (edit && hasChanges
                         ? 'bg-gray-300 dark:bg-gray-700'
-                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150')
+                        : 'bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150')
                     }
                   >
                     {edit && hasChanges
@@ -302,7 +373,7 @@ export default function PostPage(props: {
                             setTitle(post.title);
                           }}
                           className={
-                            'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                            'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150'
                           }
                         >
                           Edit
@@ -359,7 +430,7 @@ export default function PostPage(props: {
                         }
                       }}
                       className={
-                        'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark-hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark-active:text-gray-100 active:bg-gray-50 dark-active:bg-gray-600 transition ease-in-out duration-150'
+                        'inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 dark:active:text-gray-100 active:bg-gray-50 dark:active:bg-gray-600 transition ease-in-out duration-150'
                       }
                     >
                       {hasChanges ? 'Discard Changes' : 'Stop Editing'}
@@ -440,10 +511,11 @@ export default function PostPage(props: {
             <div className="mt-4">
               {edit ? (
                 <input
+                  type="text"
                   placeholder={'Enter a title...'}
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  className="dark:bg-gray-200 dark:text-gray-800 text-2xl leading-9 font-bold flex-1 form-input block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                 />
               ) : (
                 <h1 className="text-2xl leading-9 font-bold">{post.title}</h1>
@@ -460,7 +532,7 @@ export default function PostPage(props: {
                     }}
                     value={dueDate}
                     onChange={date => setDueDate(date[0])}
-                    className="dark:bg-gray-200 dark:text-gray-800 flex-1 form-input block w-full min-w-0 rounded-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="dark:bg-gray-200 dark:text-gray-800 flex-1 form-input block w-full min-w-0 rounded-md transition sm:text-sm sm:leading-5"
                   />
                 ) : (
                   <h1 className="text-md text-gray-800 dark:text-gray-200 leading-7 tracking-tight">
@@ -527,6 +599,8 @@ export default function PostPage(props: {
                 searchDivision={searchDivision}
                 searchDivisionOptions={searchDivisionOptions}
                 setSearchDivision={setSearchDivision}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
                 searchModule={searchModule}
                 searchModuleOptions={searchModuleOptions}
                 setSearchModule={setSearchModule}

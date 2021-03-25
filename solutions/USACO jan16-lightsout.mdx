@@ -5,17 +5,33 @@ title: Lights Out
 author: Albert Ye
 ---
 
-Official solution: http://usaco.org/current/data/sol_lightsout_platinum_jan16.html
+Official solution:
+http://usaco.org/current/data/sol_lightsout_platinum_jan16.html
 
 The official solution just doesn't use hashing.
 
-We want to be able to pinpoint Bessie's location after traversing some edges and vertices, and then add the shortest distance to the exit from this location for each starting index. Then, we want to compare this total distance to the shortest distance to the end just from the starting vertex to find the answer. Finding the minimum distance to the end from each vertex can be done in $\mathcal{O}(N^2)$ time, as illustrated in the code. The question that remains is how to pinpoint Bessie's location after traversing some edges and vertices from each starting point.
+We want to be able to pinpoint Bessie's location after traversing some edges and
+vertices, and then add the shortest distance to the exit from this location for
+each starting index. Then, we want to compare this total distance to the
+shortest distance to the end just from the starting vertex to find the answer.
+Finding the minimum distance to the end from each vertex can be done in
+$\mathcal{O}(N^2)$ time, as illustrated in the code. The question that remains
+is how to pinpoint Bessie's location after traversing some edges and vertices
+from each starting point.
 
-As the official solution states, it is better to visualize the map as a string consisting of angles and edges rather than a polynomial. We can pinpoint Bessie's location if the current path is not repeated somewhere else in the map. If we were to frame this as a string-matching problem, we would want to find the shortest substring of the map such that it only appears once.
+As the official solution states, it is better to visualize the map as a string
+consisting of angles and edges rather than a polynomial. We can pinpoint
+Bessie's location if the current path is not repeated somewhere else in the map.
+If we were to frame this as a string-matching problem, we would want to find the
+shortest substring of the map such that it only appears once.
 
-We use hashing to find the shortest substring of the map. Distinguishing vertices from angles, we brute force through lengths in increasing order and use a one-base polynomial hash to check if the substring appears only once. If we find an appropriate substring, we find the total distance that we travelled before finding out where we were.
+We use hashing to find the shortest substring of the map. Distinguishing
+vertices from angles, we brute force through lengths in increasing order and use
+a one-base polynomial hash to check if the substring appears only once. If we
+find an appropriate substring, we find the total distance that we travelled
+before finding out where we were.
 
-This solution takes $\mathcal{O}(N^3)$ time.
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 ```cpp
 #include <bits/stdc++.h>
@@ -25,10 +41,10 @@ using namespace std;
 typedef pair<int, int> pii;
 #define f first
 #define s second
-#define ll long long
+using ll = long long;
 
-#define X 97ll
-#define M 999999929ll
+const ll X = 97;
+const ll M = 999999929;
 
 int n, m, H[505], p[505];
 vector<int> k;
@@ -39,12 +55,12 @@ void gen_hash()
 	p[0] = 1;
 	for(int i = 1; i < m; i++)
 	{
-		p[i] = (ll)(p[i-1]*X) % (ll)M;
+		p[i] = int(p[i-1]*X%M);
 	}
 	H[0] = k[0];
 	for(int i = 1; i < m; i++)
 	{
-		H[i] = ((ll)(H[i-1]*X) % M + (ll)k[i]) % M;
+		H[i] = int((H[i-1]*X+k[i]) % M);
 	}
 }
 
@@ -88,7 +104,7 @@ int main()
 		{
 			if(arr[nxt].s - arr[i].s > 0) k.push_back(1100002);
 			else k.push_back(1100001);
-		} else 
+		} else
 		{
 			if(arr[i].s - arr[pre].s > 0)
 			{

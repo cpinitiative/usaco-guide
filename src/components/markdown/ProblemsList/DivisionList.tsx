@@ -1,21 +1,21 @@
-import { graphql, Link, useStaticQuery } from 'gatsby';
-import React, { useState } from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import React from 'react';
 import { graphqlToModuleLinks } from '../../../utils/utils';
-import div_to_probs from './div_to_probs';
-import contest_to_points from './contest_to_points';
-import extra_probs from './extra_probs';
+import divToProbs from './div_to_probs';
+import contestToPoints from './contest_to_points';
+import extraProbs from '../../../../solutions/1_extra_usaco_probs';
 import { Problem } from '../../../../content/models';
 import { ProblemsList } from './ProblemsList';
-import HTMLComponents from '../HTMLComponents';
+
+// import HTMLComponents from '../HTMLComponents';
 import Transition from '../../Transition';
 import { useContext } from 'react';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
-  // 2015-16 to 2019-20
   const res = [];
-  for (let i = 2016; i <= 2020; ++i) {
+  for (let i = 2016; i <= 2021; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
   return res;
@@ -40,6 +40,7 @@ const getCircle = option => {
     )
   );
 };
+
 const DivisionButton = ({
   options,
   state,
@@ -75,7 +76,7 @@ const DivisionButton = ({
             type="button"
             className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
               getCircle(state) ? 'pl-3' : 'pl-4'
-            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark-hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"
@@ -146,7 +147,7 @@ const DivisionButton = ({
   );
 };
 
-export function DivisionList(props) {
+export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
       allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
@@ -173,24 +174,30 @@ export function DivisionList(props) {
   const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
     data.allMdx,
   ]);
-  const prob_to_link: { [key: string]: string } = {};
-  const prob_to_tags: { [key: string]: string[] } = {};
-  const prob_to_difficulty: { [key: string]: string } = {};
-  const prob_to_sol: { [key: string]: string } = {};
-  for (let moduleLink of moduleLinks) {
-    for (let problem of moduleLink.probs) {
+  const probToLink: { [key: string]: string } = {};
+  const probToTags: { [key: string]: string[] } = {};
+  const probToDifficulty: { [key: string]: string } = {};
+  const probToSol: { [key: string]: string } = {};
+  for (const moduleLink of moduleLinks) {
+    for (const problem of moduleLink.probs) {
       const uniqueID = problem.uniqueID;
-      prob_to_link[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
-      prob_to_tags[uniqueID] = problem.tags;
-      prob_to_difficulty[uniqueID] = problem.difficulty;
-      prob_to_sol[uniqueID] = problem.solID;
+      probToLink[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
+      const prevTags = probToTags[uniqueID] || [];
+      const allTags = prevTags.concat(problem.tags);
+      // console.log('ALL TAGS', allTags, prevTags, problem.tags);
+      probToTags[uniqueID] = [...new Set(allTags)];
+      // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+      // console.log('NEW TAGS', probToTags[uniqueID]);
+      probToDifficulty[uniqueID] = problem.difficulty;
+      probToSol[uniqueID] = problem.solID;
     }
   }
-  for (let problem of extra_probs) {
+  for (const problem of extraProbs) {
     const uniqueID = problem.uniqueID;
-    prob_to_tags[uniqueID] = problem.tags;
-    prob_to_difficulty[uniqueID] = problem.difficulty;
-    prob_to_sol[uniqueID] = problem.solID;
+    if (problem.tags && problem.tags.length > 0)
+      probToTags[uniqueID] = problem.tags;
+    if (problem.difficulty) probToDifficulty[uniqueID] = problem.difficulty;
+    if (problem.solID) probToSol[uniqueID] = problem.solID;
   }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: Problem[] };
@@ -198,31 +205,34 @@ export function DivisionList(props) {
   const contestToFraction: {
     [key: string]: { [key: string]: number[] };
   } = {};
-  for (let division of divisions) {
+  for (const division of divisions) {
     divisionToSeasonToProbs[division] = {};
     contestToFraction[division] = {};
   }
 
-  for (let division of divisions) {
-    for (let contest of Object.keys(contest_to_points[division])) {
+  for (const division of divisions) {
+    for (const contest of Object.keys(contestToPoints[division])) {
       contestToFraction[division][contest] = [];
-      if (contest_to_points[division][contest])
-        for (let num of contest_to_points[division][contest])
+      if (contestToPoints[division][contest])
+        for (const num of contestToPoints[division][contest])
           contestToFraction[division][contest].push(num);
     }
   }
 
-  for (let division of divisions)
-    for (let prob_info of div_to_probs[division]) {
+  for (const division of divisions)
+    for (const probInfo of divToProbs[division]) {
       const uniqueID =
-        'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + prob_info[0];
-      const contest = prob_info[1];
-      const fraction = contestToFraction[division][contest].shift();
+        'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + probInfo[0];
+      const contest = probInfo[1];
+      let fraction = null;
+      if (contest in contestToFraction[division]) {
+        fraction = contestToFraction[division][contest].shift();
+      }
       const prob = new Problem(
         contest, // source
-        prob_info[2], // title
-        prob_info[0], // id
-        prob_to_difficulty[uniqueID] as
+        probInfo[2], // title
+        probInfo[0], // id
+        probToDifficulty[uniqueID] as
           | 'Very Easy'
           | 'Easy'
           | 'Normal'
@@ -231,17 +241,17 @@ export function DivisionList(props) {
           | 'Insane'
           | null, // difficulty
         null, // starred
-        prob_to_tags[uniqueID], // tags
-        prob_to_sol[uniqueID],
+        probToTags[uniqueID], // tags
+        probToSol[uniqueID],
         'ok',
         fraction,
-        prob_to_link[uniqueID]
+        probToLink[uniqueID]
       );
-      let year = +prob_info[1].substring(0, 4);
-      if (prob_info[1].includes('December')) {
+      let year = +probInfo[1].substring(0, 4);
+      if (probInfo[1].includes('December')) {
         year++;
       }
-      let season = `${year - 1} - ${year}`;
+      const season = `${year - 1} - ${year}`;
       if (!(season in divisionToSeasonToProbs[division])) {
         divisionToSeasonToProbs[division][season] = [];
       }
@@ -250,21 +260,15 @@ export function DivisionList(props) {
   // const [currentDivision, setDivision] = useState(divisions[0]);
   // const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
   const userSettings = useContext(UserDataContext);
-  const curDivision =
-    (userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.division) ||
-    'Bronze';
-  const curSeason =
-    (userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.season) ||
-    '2019 - 2020';
-  const curShowSols =
-    !userSettings.hideSols &&
-    !!(
-      userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.showSols
-    );
-  // console.log("PASSING PROP",!curShowSols)
+
+  let curDivision =
+    userSettings.divisionTableQuery && userSettings.divisionTableQuery.division;
+  if (!divisions.includes(curDivision)) curDivision = divisions[0];
+
+  let curSeason =
+    userSettings.divisionTableQuery && userSettings.divisionTableQuery.season;
+  if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -276,7 +280,6 @@ export function DivisionList(props) {
             userSettings.setDivisionTableQuery({
               division: newDivision,
               season: curSeason,
-              showSols: curShowSols,
             });
           }}
         />
@@ -288,31 +291,15 @@ export function DivisionList(props) {
             userSettings.setDivisionTableQuery({
               division: curDivision,
               season: newSeason,
-              showSols: curShowSols,
             });
           }}
         />
-        {!userSettings.hideSols && (
-          <DivisionButton
-            options={['Show Modules', 'Show Solutions']}
-            state={curShowSols ? 'Show Solutions' : 'Show Modules'}
-            onChange={showSols => {
-              const newShowSols = showSols == 'Show Solutions';
-              if (curShowSols === newShowSols) return;
-              userSettings.setDivisionTableQuery({
-                division: curDivision,
-                season: curSeason,
-                showSols: newShowSols,
-              });
-            }}
-          />
-        )}
       </div>
 
       <ProblemsList
         problems={divisionToSeasonToProbs[curDivision][curSeason]}
         division={curDivision}
-        modules={!curShowSols}
+        modules={true}
       />
     </>
   );

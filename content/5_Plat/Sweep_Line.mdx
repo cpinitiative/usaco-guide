@@ -8,8 +8,6 @@ prerequisites:
 frequency: 1
 ---
 
-
-
 export const problems = {
 	closest: [
 		new Problem(
@@ -18,21 +16,19 @@ export const problems = {
 			'closestpair2',
 			'Normal',
 			false,
-			[],
+			['Sweep Line'],
 			''
 		),
 	],
-	segSam: [
-		new Problem(
-			'Silver',
-			'Cow Steeplechase II',
-			'943',
-			'Normal',
-			false,
-			[],
-			''
-		),
-	],
+	segSam: new Problem(
+		'Silver',
+		'Cow Steeplechase II',
+		'943',
+		'Normal',
+		false,
+		['Sweep Line'],
+		''
+	),
 	seg: [
 		new Problem(
 			'Old Gold',
@@ -40,16 +36,34 @@ export const problems = {
 			'266',
 			'Normal',
 			false,
-			[],
+			['Sweep Line'],
+			''
+		),
+		new Problem(
+			'COI',
+			'2017 - Plahte',
+			'https://oj.uz/problem/view/COCI17_plahte',
+			'Hard',
+			false,
+			['Sweep Line'],
 			''
 		),
 		new Problem(
 			'CEOI',
-			'Roads',
+			'2006 - Walk',
+			'https://oj.uz/problem/view/CEOI06_walk',
+			'Hard',
+			false,
+			['Sweep Line'],
+			'https://hsin.hr/ceoi2006/tasks/solutions.pdf'
+		),
+		new Problem(
+			'CEOI',
+			'2020 - Roads',
 			'https://codeforces.com/contest/1402/problem/B',
 			'Very Hard',
 			true,
-			[],
+			['Sweep Line'],
 			''
 		),
 		new Problem(
@@ -58,23 +72,92 @@ export const problems = {
 			'http://oj.uz/problem/view/BOI14_demarcation',
 			'Very Hard',
 			false,
-			[],
+			['Sweep Line'],
 			''
 		),
 	],
-	manSam: [
-		new Problem('Kattis', 'Grid MST', 'gridmst', 'Normal', false, [], ''),
+	manSam: new Problem(
+		'Kattis',
+		'Grid MST',
+		'gridmst',
+		'Normal',
+		false,
+		['Manhattan MST'],
+		''
+	),
+	man: [
+		new Problem(
+			'CSA',
+			'The Sprawl',
+			'the-sprawl',
+			'Hard',
+			false,
+			['Manhattan MST'],
+			''
+		),
 	],
-	man: [new Problem('CSA', 'The Sprawl', 'the-sprawl', 'Hard', false, [], '')],
+	radialSam: new Problem(
+		'IOI',
+		'2003 - Seeing the Boundary',
+		'https://dmoj.ca/problem/ioi03p6',
+		'Easy',
+		false,
+		['Radial Sweep'],
+		''
+	),
+	radial: [
+		// Radial sweep - not used yet
+		new Problem(
+			'CEOI',
+			'2006 - Antenna',
+			'https://cses.fi/185/list/',
+			'Easy',
+			false,
+			['Binary Search', 'Radial Sweep'],
+			'https://hsin.hr/ceoi2006/tasks/solutions.pdf'
+		),
+		new Problem(
+			'POI',
+			'2018 - Stone',
+			'https://szkopul.edu.pl/problemset/problem/NZSCUwz2ACePsBKuVCIVzrRt/site/',
+			'Normal',
+			false,
+			['Radial Sweep'],
+			''
+		),
+		new Problem(
+			'APIO',
+			'2010 - Signaling',
+			'https://dmoj.ca/problem/apio10p3',
+			'Hard',
+			false,
+			['Radial Sweep'],
+			'http://apio-olympiad.org/2010/solutions.pdf'
+		),
+		new Problem(
+			'JOI',
+			'2017 - Dragon 2',
+			'https://oj.uz/problem/view/JOI17_dragon2',
+			'Very Hard',
+			false,
+			['Radial Sweep'],
+			'https://codeforces.com/blog/entry/51010'
+		),
+	],
 };
 
-Imagine you have a vertical line that "sweeps" the plane from left to right. That's the main idea behind the sweep line.
+Imagine you have a vertical line that "sweeps" the plane from left to right.
+That's the main idea behind the sweep line.
 
-You might be thinking "wait - isn't keeping track of the sweep line at all possible positions super inefficient?" And you'd be correct. However, we don't actually need to keep track of the sweep line at all possible positions - only at the "critical" positions (e.g. points and intersections).
+You might be thinking "wait - isn't keeping track of the sweep line at all
+possible positions super inefficient?" And you'd be correct. However, we don't
+actually need to keep track of the sweep line at all possible positions - only
+at the "critical" positions (e.g. points and intersections).
 
 <IncompleteSection>
 
-should the reader already be familiar with the 1D case (union of intervals on number line?) never explicitly mentioned in module
+should the reader already be familiar with the 1D case (union of intervals on
+number line?) never explicitly mentioned in module
 
 </IncompleteSection>
 
@@ -101,7 +184,7 @@ should the reader already be familiar with the 1D case (union of intervals on nu
 
 ## Line Segments
 
-<FocusProblem problem={problems.segSam[0]} />
+<FocusProblem problem={problems.segSam} />
 
 ### Solution
 
@@ -111,10 +194,9 @@ should the reader already be familiar with the 1D case (union of intervals on nu
 
 <Problems problems={problems.seg} />
 
-
 ## Manhattan MST
 
-<FocusProblem problem={problems.manSam[0]} />
+<FocusProblem problem={problems.manSam} />
 
 (KACTL code)
 
@@ -122,5 +204,109 @@ explanation? topcoder prob has
 
 <Problems problems={problems.man} />
 
-<!-- 
+<!--
 TC 760 ComponentsForever -->
+
+## Radial Sweep
+
+<IncompleteSection />
+
+<FocusProblem problem={problems.radialSam} />
+
+### Solution - Seeing the Boundary
+
+<IncompleteSection />
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define x first
+#define y second
+typedef long long ll;
+using namespace std;
+
+const double PI = 4 * atan(1);
+
+struct Event {
+	short type, id;
+	pair<ll, ll> loc;
+};
+
+pair<ll, ll> origin, polygon[22];
+// Custom comparator to sort by bearing via cross product
+bool cmp(pair<ll, ll> a, pair<ll, ll> b) {
+	return (a.x - origin.x) * (b.y - origin.y) < (a.y - origin.y) * (b.x - origin.x);
+}
+// Custom comparator to sort by bearing via atan2
+bool operator<(Event a, Event b) {
+	double angle_a = atan2(a.loc.x - origin.x, a.loc.y - origin.y);
+	double angle_b = atan2(b.loc.x - origin.x, b.loc.y - origin.y);
+	if (angle_a < 0) angle_a += 2 * PI;
+	if (angle_b < 0) angle_b += 2 * PI;
+
+	if (angle_a == angle_b) return a.type > b.type;
+	return angle_a < angle_b;
+}
+
+vector<Event> events, walls;
+bool before[44444];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, r;
+	cin >> n >> r >> origin.x >> origin.y;
+
+	for (int i = 0; i < r; i++) {
+		int m;
+		cin >> m;
+		for (int j = 0; j < m; j++) cin >> polygon[j].x >> polygon[j].y;
+		// Sort the polygon's vertices to find the 2 "tangents" from the origin
+		sort(polygon, polygon + m, cmp);
+		events.push_back({1, i, polygon[0]});
+		events.push_back({-1, i, polygon[m - 1]});
+	}
+	sort(events.begin(), events.end());
+
+	// Insert fence posts in this specific order to avoid sorting
+	for (int i = origin.x; i < n; i++) walls.push_back({0, 0, {i, n}});
+	for (int i = 0; i < n; i++) walls.push_back({0, 0, {n, n - i}});
+	for (int i = 0; i < n; i++) walls.push_back({0, 0, {n - i, 0}});
+	for (int i = 0; i < n; i++) walls.push_back({0, 0, {0, i}});
+	for (int i = 0; i < origin.x; i++) walls.push_back({0, 0, {i, n}});
+
+	int active = 0;
+	// Do an initial sweep to handle rocks containing the ray with bearing 0
+	// This way, `active` won't be messed up
+	for (Event i : events) {
+		if (i.type == 1) before[i.id] = true;
+		if (i.type == -1 && !before[i.id]) active++;
+	}
+
+	int ans = 0, ptr = 0;
+	for (Event i : events) {
+		while (ptr != 4 * n && walls[ptr] < i) {
+			// If there are no rocks that our current ray intersects...
+			if (!active) ans++;
+			ptr++;
+		}
+
+		if (i.type == 1) active++;
+		else active--;
+	}
+	if (!active) ans += 4 * n - ptr;
+
+	cout << ans;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Problems
+
+<Problems problems={problems.radial} />

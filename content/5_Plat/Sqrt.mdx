@@ -10,22 +10,31 @@ export const problems = {
 	sam: [
 		new Problem(
 			'CSES',
-			'Range Sum Queries II',
+			'Dynamic Range Sum Queries',
 			'1648',
 			'Very Easy',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
 	],
 	fst: [
 		new Problem(
+			'CF',
+			'Points on Plane',
+			'contest/576/problem/C',
+			'Easy',
+			false,
+			['Sqrt'],
+			'https://codeforces.com/blog/entry/20226'
+		),
+		new Problem(
 			'JOI',
-			'2018 - Bitaro\'s Birthday',
+			"2018 - Bitaro's Birthday",
 			'https://oj.uz/problem/view/JOI18_bitaro',
 			'Easy',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
 		new Problem(
@@ -34,8 +43,8 @@ export const problems = {
 			'oNnWY6ZuzzhvG-jCmijiXkIk/site/?key=statement',
 			'Easy',
 			false,
-			[],
-			''
+			['Sqrt'],
+			'poi-17-kon'
 		),
 		new Problem(
 			'YS',
@@ -43,7 +52,7 @@ export const problems = {
 			'https://judge.yosupo.jp/problem/static_range_inversions_query',
 			'Normal',
 			false,
-			[],
+			['Sqrt'],
 			'static-range-inv'
 		),
 		new Problem(
@@ -52,7 +61,7 @@ export const problems = {
 			'https://oj.uz/problem/view/APIO19_bridges',
 			'Hard',
 			false,
-			[],
+			['Sqrt'],
 			'apio-19-bridges'
 		),
 		new Problem(
@@ -64,14 +73,22 @@ export const problems = {
 			['SOS DP'],
 			''
 		),
-		new Problem('Plat', 'Train Tracking', '841', 'Very Hard', false, [], ''),
+		new Problem(
+			'Plat',
+			'Train Tracking',
+			'841',
+			'Very Hard',
+			false,
+			['Sqrt'],
+			''
+		),
 		new Problem(
 			'DMOJ',
 			'Fluid Dynamics',
 			'dmopc19c7p7',
 			'Very Hard',
 			false,
-			[],
+			['Sqrt'],
 			'DMOJ-fluid-dynamics'
 		),
 		new Problem(
@@ -80,7 +97,7 @@ export const problems = {
 			'wac1p7',
 			'Very Hard',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
 	],
@@ -91,7 +108,7 @@ export const problems = {
 			'https://oj.uz/problem/view/JOI19_examination',
 			'Normal',
 			false,
-			['Mo\'s algorithm', '2D SRQ'],
+			["Mo's Algorithm", '2DRQ'],
 			''
 		),
 		new Problem(
@@ -100,17 +117,17 @@ export const problems = {
 			'https://oj.uz/problem/view/IOI09_regions',
 			'Normal',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
-		new Problem('Plat', 'New Barns', '817', 'Hard', false, [], ''),
+		new Problem('Plat', 'New Barns', '817', 'Hard', false, ['Sqrt'], ''),
 		new Problem(
 			'CF',
 			'Tree Queries',
 			'contest/1254/problem/D',
 			'Hard',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
 		new Problem(
@@ -119,10 +136,18 @@ export const problems = {
 			'https://tlx.toki.id/problems/troc-14/H/',
 			'Hard',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
-		new Problem('CSA', 'Shopping Time', 'shopping-time', 'Hard', false, [], ''),
+		new Problem(
+			'CSA',
+			'Shopping Time',
+			'shopping-time',
+			'Hard',
+			false,
+			['Sqrt'],
+			''
+		),
 		new Problem(
 			'Old Gold',
 			'Fencing the Herd',
@@ -147,17 +172,17 @@ export const problems = {
 			'https://oj.uz/problem/view/IOI11_elephants',
 			'Very Hard',
 			false,
-			[],
+			['Sqrt'],
 			''
 		),
-		new Problem('Plat', 'At Large', '793', 'Very Hard', false, [], ''),
+		new Problem('Plat', 'At Large', '793', 'Very Hard', false, ['Sqrt'], ''),
 		new Problem(
 			'IOI',
 			'2015 - Teams',
 			'https://oj.uz/problem/view/IOI15_teams',
 			'Very Hard',
 			false,
-			['2D SRQ'],
+			['2DRQ'],
 			''
 		),
 	],
@@ -177,11 +202,20 @@ export const problems = {
 
 <FocusProblem problem={problems.sam[0]} />
 
-You should already have done this problem in [Point Update Range Sum](/gold/PURS), but here we'll present two more approaches. Both run in $\mathcal{O}((N+Q)\sqrt N)$ time.
+You should already have done this problem in
+[Point Update Range Sum](/gold/PURS), but here we'll present two more
+approaches. Both run in $\mathcal{O}((N+Q)\sqrt N)$ time.
 
 <Resources>
 	<Resource source="CPH" title="27 - Square Root Algorithms" starred></Resource>
-	<Resource source="CF" title="Applications of Square Root Decomposition" url="https://codeforces.com/blog/entry/83248" starred>Blocking, Mo's Algo</Resource>
+	<Resource
+		source="CF"
+		title="Applications of Square Root Decomposition"
+		url="https://codeforces.com/blog/entry/83248"
+		starred
+	>
+		Blocking, Mo's Algo
+	</Resource>
 </Resources>
 
 ## Blocking
@@ -211,14 +245,14 @@ void upd(int a, int b) { // O(1) query
 }
 
 int main() {
-    setIO(); re(n,q); x.rsz(n); re(x);
-    BLOCK = sqrt(n);
-    F0R(i,n) block[i/BLOCK] += x[i];
-    F0R(i,q) {
-        int t,a,b; re(t,a,b);
-        if (t == 1) upd(a-1,b);
-        else ps(sum(b)-sum(a-1));
-    }
+	setIO(); re(n,q); x.rsz(n); re(x);
+	BLOCK = sqrt(n);
+	F0R(i,n) block[i/BLOCK] += x[i];
+	F0R(i,q) {
+		int t,a,b; re(t,a,b);
+		if (t == 1) upd(a-1,b);
+		else ps(sum(b)-sum(a-1));
+	}
 }
 ```
 
@@ -226,7 +260,10 @@ int main() {
 
 See the CPH section on "batch processing."
 
-Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each sum query can be calculated with prefix sums and by examining each update within the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and recalculate prefix sums.
+Maintain a "buffer" of the latest updates (up to $\sqrt N$). The answer for each
+sum query can be calculated with prefix sums and by examining each update within
+the buffer. When the buffer gets too large ($\ge \sqrt N$), clear it and
+recalculate prefix sums.
 
 ```cpp
 int n,q;
@@ -263,26 +300,44 @@ int main() {
 See CPH 27.3 and the CF link above.
 
 <Resources>
-	<Resource source="CF" title="Mo's Algorithm" url="7383"><i>very</i> brief description</Resource>
+	<Resource source="CF" title="Mo's Algorithm" url="7383">
+		<i>very</i> brief description
+	</Resource>
 </Resources>
 
 <!-- [A2OJ](https://a2oj.com/category?ID=318) -->
 
 ## Additional Notes
 
-Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s) can be signs that sqrt decomp is intended.
+Low constraints (ex. $n=5\cdot 10^4$) and/or high time limits (greater than 2s)
+can be signs that sqrt decomp is intended.
 
 [CPH 262](/CPH.pdf#page=262):
 
-> In practice, it is not necessary to use the exact value of $\sqrt n$ as a parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is different from $\sqrt n$. The optimal parameter depends on the problem and input. For example, if an algorithm often goes through the blocks but rarely inspects single elements inside the blocks, it may be a good idea to divide the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$ elements.
+> In practice, it is not necessary to use the exact value of $\sqrt n$ as a
+> parameter, and instead we may use parameters $k$ and $n/k$ where $k$ is
+> different from $\sqrt n$. The optimal parameter depends on the problem and
+> input. For example, if an algorithm often goes through the blocks but rarely
+> inspects single elements inside the blocks, it may be a good idea to divide
+> the array into $k<\sqrt n$ blocks, each of which contains $n/k > \sqrt n$
+> elements.
 
-As another example, if an update takes time proportional to the size of one block ($\mathcal{O}(n/k)$) while a query takes time proportional to the number of blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set $k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time $\mathcal{O}(\sqrt{n\log n})$.
+As another example, if an update takes time proportional to the size of one
+block ($\mathcal{O}(n/k)$) while a query takes time proportional to the number
+of blocks times $\log n$ ($\mathcal{O}(k\log n)$) then we can set
+$k\approx \sqrt{\frac{n}{\log n}}$ to make both updates and queries take time
+$\mathcal{O}(\sqrt{n\log n})$.
 
-Solutions with worse complexities are not necessarily slower (at least for problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where $\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not ... So constant factors are important!
+Solutions with worse complexities are not necessarily slower (at least for
+problems with reasonable input sizes, ex. $n\le 5\cdot 10^5$). I recall an
+instance where a fast $\mathcal{O}(n\sqrt n\log n)$ solution passed (where
+$\log n$ came from a BIT) while an $\mathcal{O}(n\sqrt n)$ solution did not ...
+So constant factors are important!
 
 ## On Trees
 
-The techniques mentioned in the blogs below are extremely rare but worth a mention.
+The techniques mentioned in the blogs below are extremely rare but worth a
+mention.
 
 <Resources>
 	<Resource source="CF" title="Mo's on Trees" url="43230"></Resource>

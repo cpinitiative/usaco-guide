@@ -8,11 +8,11 @@ import { books } from '../../utils/books';
 
 export function ResourcesList(props) {
   return (
-    <div className="-mx-4 sm:-mx-6 lg:mx-0">
+    <div className="-mx-4 sm:-mx-6 md:mx-0">
       <div className="flex flex-col mb-4">
-        <div className={`overflow-x-auto lg:-mx-4 lg:px-4 -my-2 py-2`}>
+        <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
           <div
-            className={`align-middle inline-block min-w-full shadow overflow-hidden lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent`}
+            className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent`}
           >
             <table className="min-w-full">
               <thead>
@@ -125,7 +125,7 @@ export function Resource(props) {
   // if (!props.children) throw `No resource description for source ${source} and title ${props.title}`
   return (
     <tr className="block sm:table-row">
-      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+      <td className="pl-4 sm:pl-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
         {source && (
           <>
             {des ? <TextTooltip content={des}>{source}</TextTooltip> : source}
@@ -135,7 +135,7 @@ export function Resource(props) {
       <td
         className={`${
           props.source && 'pl-2 sm:pl-6'
-        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
+        } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
       >
         <div className="flex items-center">
           {props.starred && (

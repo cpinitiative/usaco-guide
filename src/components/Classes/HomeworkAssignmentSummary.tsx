@@ -140,14 +140,14 @@ export default function HomeworkAssignmentSummary({
         <div className="flex space-x-3">
           <div className="flex-1 space-y-1">
             <div className="">
-              <h3 className="text-sm font-medium leading-5 group-hover:text-gray-700 dark-group-hover:text-gray-400">
+              <h3 className="text-sm font-medium leading-5 group-hover:text-gray-700 dark:group-hover:text-gray-400">
                 {assignment.title}
                 {!assignment.published && (
                   <span className={'text-red-600'}> (Draft)</span>
                 )}
               </h3>
             </div>
-            <p className="text-sm leading-5 text-gray-500 group-hover:text-gray-400 dark-group-hover:text-gray-600">
+            <p className="text-sm leading-5 text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-600">
               {assignment?.dueDate
                 ? `Due ${format(assignment?.dueDate)}`
                 : 'No Due Date'}

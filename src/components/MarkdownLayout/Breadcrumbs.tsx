@@ -13,7 +13,7 @@ const Breadcrumbs = () => {
     <nav className="flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500 dark:text-dark-med-emphasis">
       <Link
         to="/dashboard/"
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
+        className="hover:text-gray-700 dark:hover:text-dark-high-emphasis transition"
       >
         Home
       </Link>
@@ -30,7 +30,7 @@ const Breadcrumbs = () => {
       </svg>
       <Link
         to={`/${module.section}/`}
-        className="hover:text-gray-700 dark-hover:text-dark-high-emphasis transition duration-150 ease-in-out"
+        className="hover:text-gray-700 dark:hover:text-dark-high-emphasis transition"
       >
         {SECTION_LABELS[module.section]}
       </Link>
@@ -45,7 +45,7 @@ const Breadcrumbs = () => {
           clipRule="evenodd"
         />
       </svg>
-      <span className="whitespace-no-wrap">{module.title}</span>
+      <span className="whitespace-nowrap">{module.title}</span>
     </nav>
   );
 };
