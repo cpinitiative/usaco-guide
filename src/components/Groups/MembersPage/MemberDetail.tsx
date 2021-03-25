@@ -143,14 +143,18 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                         .then(() =>
                           notifications.addNotification({
                             level: 'success',
-                            message: `${member.displayName} is now a normal member.`,
+                            message: `${member.displayName} now has permission level ${newPermission}.`,
                           })
                         )
                         .catch(notifications.showErrorNotification);
                     }
                   }}
                 >
-                  Demote to{' '}
+                  {['OWNER', 'ADMIN', 'MEMBER'].indexOf(newPermission) <
+                  ['OWNER', 'ADMIN', 'MEMBER'].indexOf(permissionLevel)
+                    ? 'Promote'
+                    : 'Demote'}{' '}
+                  to{' '}
                   {newPermission.charAt(0).toUpperCase() +
                     newPermission.substring(1).toLowerCase()}
                 </button>
