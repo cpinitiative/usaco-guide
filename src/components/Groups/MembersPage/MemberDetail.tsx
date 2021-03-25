@@ -3,12 +3,16 @@ import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-
+import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useContext } from 'react';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
   const notifications = useNotificationSystem();
-
+  const {
+    firebaseUser: { uid: userId },
+  } = useContext(UserDataContext);
   const getTotalPointsForMember = (memberId: string) => {
     let total = 0;
     Object.keys(activeGroup.groupData.leaderboard || {}).forEach(postId => {
@@ -30,9 +34,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       </p>
     );
   }
-
-  const isAdmin = activeGroup.groupData.adminIds.includes(member.uid);
-  const isOwner = activeGroup.groupData.ownerIds.includes(member.uid);
+  const permissionLevel = getPermissionLevel(member.uid, activeGroup.groupData);
 
   return (
     <article>
@@ -88,81 +90,73 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       {/*</div>*/}
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
-        <div className="space-x-4 mt-8">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              if (
-                confirm(
-                  'Are you sure you want to remove this member from the group?'
-                )
-              ) {
-                removeMemberFromGroup(activeGroup.activeGroupId, member.uid)
-                  .then(() =>
-                    notifications.addNotification({
-                      level: 'success',
-                      message:
-                        'This member has been successfully removed from the group.',
-                    })
-                  )
-                  .catch(notifications.showErrorNotification);
-              }
-            }}
-          >
-            Remove From Group
-          </button>
-          {!isOwner && (
+        {member.uid !== userId && (
+          <div className="space-x-4 mt-8">
             <button
+              type="button"
               className="btn"
               onClick={() => {
                 if (
-                  confirm('Are you sure you want to make this member an admin?')
-                ) {
-                  updateMemberPermissions(
-                    activeGroup.activeGroupId,
-                    member.uid,
-                    'ADMIN'
+                  confirm(
+                    'Are you sure you want to remove this member from the group?'
                   )
+                ) {
+                  removeMemberFromGroup(activeGroup.activeGroupId, member.uid)
                     .then(() =>
                       notifications.addNotification({
                         level: 'success',
-                        message: 'This member is now an admin.',
+                        message:
+                          'This member has been successfully removed from the group.',
                       })
                     )
                     .catch(notifications.showErrorNotification);
                 }
               }}
             >
-              {isAdmin ? 'Demote from Admin' : 'Promote to Admin'}
+              Remove From Group
             </button>
-          )}
-          <button
-            className="btn"
-            onClick={() => {
-              if (
-                confirm(
-                  'Are you sure you want to make this member an owner? They will be able to remove you from the group as an owner.'
-                )
-              ) {
-                updateMemberPermissions(
-                  activeGroup.activeGroupId,
-                  member.uid,
-                  'OWNER'
-                )
-                  .then(() =>
-                    notifications.addNotification({
-                      level: 'success',
-                      message: 'This member is now an owner.',
-                    })
-                  )
-                  .catch(notifications.showErrorNotification);
-              }
-            }}
-          >
-            {isOwner ? 'Demote from Owner' : 'Promote to Owner'}
-          </button>
-        </div>
+
+            {(['OWNER', 'ADMIN', 'MEMBER'] as ('OWNER' | 'ADMIN' | 'MEMBER')[])
+              .filter(p => p !== permissionLevel)
+              .map(newPermission => (
+                <button
+                  key={newPermission}
+                  className="btn"
+                  onClick={() => {
+                    if (
+                      confirm(
+                        `Are you sure you want to ${
+                          ['OWNER', 'ADMIN', 'MEMBER'].indexOf(newPermission) <
+                          ['OWNER', 'ADMIN', 'MEMBER'].indexOf(permissionLevel)
+                            ? 'promote'
+                            : 'demote'
+                        } ${
+                          member.displayName
+                        } to ${newPermission.toLowerCase()}?`
+                      )
+                    ) {
+                      updateMemberPermissions(
+                        activeGroup.activeGroupId,
+                        member.uid,
+                        newPermission
+                      )
+                        .then(() =>
+                          notifications.addNotification({
+                            level: 'success',
+                            message: `${member.displayName} is now a normal member.`,
+                          })
+                        )
+                        .catch(notifications.showErrorNotification);
+                    }
+                  }}
+                >
+                  Demote to{' '}
+                  {newPermission.charAt(0).toUpperCase() +
+                    newPermission.substring(1).toLowerCase()}
+                </button>
+              ))}
+          </div>
+        )}
         <hr className="dark:border-gray-700 my-6" />
         <p>Future feature: View user progress on all problems/assignments!</p>
       </div>

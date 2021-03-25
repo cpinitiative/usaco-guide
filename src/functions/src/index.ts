@@ -4,13 +4,7 @@ import incrementUsers from './incrementUsers';
 import submitProblemSuggestion from './submitProblemSuggestion';
 import setUserClaims from './setUserClaims';
 import { processClassRegistration, approveFinancialAid } from './cpi-classes';
-import {
-  submitToProblem,
-  getJoinKeyInfo,
-  joinGroup,
-  getGroupMembers,
-  leaveGroup,
-} from './groups';
+import * as groups from './groups';
 
 export {
   setUserClaims,
@@ -20,9 +14,5 @@ export {
   processClassRegistration,
   approveFinancialAid,
   incrementUsers,
-  submitToProblem,
-  getJoinKeyInfo,
-  getGroupMembers,
-  joinGroup,
-  leaveGroup,
+  groups,
 };

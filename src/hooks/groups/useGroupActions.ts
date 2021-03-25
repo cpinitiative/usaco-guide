@@ -95,7 +95,7 @@ export function useGroupActions() {
     updateGroup,
     leaveGroup: async (groupId: string, userId: string) => {
       const leaveResult = ((
-        await firebase.functions().httpsCallable('leaveGroup')({
+        await firebase.functions().httpsCallable('groups-leave')({
           groupId,
         })
       ).data as never) as
@@ -154,7 +154,7 @@ export function useGroupActions() {
       targetUid: string
     ): Promise<void> => {
       const removeResult = ((
-        await firebase.functions().httpsCallable('removeFromGroup')({
+        await firebase.functions().httpsCallable('groups-removeMember')({
           groupId,
           targetUid,
         })
@@ -188,7 +188,7 @@ export function useGroupActions() {
       const updateResult = ((
         await firebase
           .functions()
-          .httpsCallable('updateGroupMemberPermissions')({
+          .httpsCallable('groups-updateMemberPermissions')({
           groupId,
           targetUid,
           newPermissionLevel,

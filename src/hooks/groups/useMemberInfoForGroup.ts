@@ -35,7 +35,7 @@ export default function getMemberInfoForGroup(group: GroupData) {
       ) {
         firebase
           .functions()
-          .httpsCallable('getGroupMembers')({
+          .httpsCallable('groups-getMembers')({
             groupId: group.id,
           })
           .then(d => {
