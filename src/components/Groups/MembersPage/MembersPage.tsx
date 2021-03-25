@@ -92,7 +92,7 @@ export default function MembersPage() {
                 Members
               </h2>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                {activeGroup.groupData.memberIds.length} Members
+                {memberInfo?.length ?? 'Loading...'} Members
               </p>
               {/*<form className="mt-6 flex space-x-4" action="#">*/}
               {/*  <div className="flex-1 min-w-0">*/}
