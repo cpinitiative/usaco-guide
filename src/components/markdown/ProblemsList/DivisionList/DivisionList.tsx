@@ -10,7 +10,7 @@ import Transition from '../../../Transition';
 import { useContext } from 'react';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import { Problem } from '../../../../models/problem';
+import { Problem, ProblemSolutionInfo } from '../../../../models/problem';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -190,10 +190,10 @@ export function DivisionList(props): JSX.Element {
   const probToLink: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
   const probToDifficulty: { [key: string]: string } = {};
-  const probToSol: { [key: string]: string } = {};
+  const probToSol: { [key: string]: ProblemSolutionInfo } = {};
   for (const moduleLink of moduleLinks) {
     for (const problem of moduleLink.probs) {
-      const uniqueID = problem.uniqueID;
+      const uniqueID = problem.uniqueId;
       probToLink[uniqueID] = moduleLink.url + '/#problem-' + uniqueID;
       const prevTags = probToTags[uniqueID] || [];
       const allTags = prevTags.concat(problem.tags);
@@ -203,7 +203,7 @@ export function DivisionList(props): JSX.Element {
       // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
       // console.log('NEW TAGS', probToTags[uniqueID]);
       probToDifficulty[uniqueID] = problem.difficulty;
-      probToSol[uniqueID] = problem.solID;
+      probToSol[uniqueID] = problem.solution;
     }
   }
   for (const problem of extraProbs) {

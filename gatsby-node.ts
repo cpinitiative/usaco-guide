@@ -48,7 +48,7 @@ const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
   if (solutionMetadata.kind === 'autogen-label-from-site') {
     const site = solutionMetadata.site;
     if (!probSources.hasOwnProperty(site) || probSources[site].length !== 3) {
-      console.error(node.frontmatter.id, metadata);
+      console.error(metadata);
       throw new Error(
         "Couldn't autogenerate solution label from problem site " + site
       );
@@ -134,6 +134,9 @@ const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
   };
 };
 
+// ideally problems would be its own query with
+// source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
+
 exports.onCreateNode = async ({
   node,
   actions,
@@ -174,12 +177,25 @@ exports.onCreateNode = async ({
       throw new Error(`Unable to parse JSON: ${hint}`);
     }
 
+    const moduleId = parsedContent['MODULE_ID'];
+    if (!moduleId) {
+      throw new Error(
+        'Module ID not found in problem JSON file: ' + node.absolutePath
+      );
+    }
+
     Object.keys(parsedContent).forEach(tableId => {
+      if (tableId === 'MODULE_ID') return;
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           transformObject(
-            getProblemInfo(metadata),
-            createNodeId(`${metadata.uniqueId} >>> ProblemInfo`)
+            {
+              ...getProblemInfo(metadata),
+              module: moduleId,
+            },
+            createNodeId(
+              `${node.id} ${tableId} ${metadata.uniqueId} >>> ProblemInfo`
+            )
           );
         });
       } catch (e) {
@@ -225,10 +241,15 @@ exports.onCreateNode = async ({
       createNodeField({
         node,
         name: 'problemLists',
-        value: Object.keys(problemJSON).map(listId => ({
-          listId,
-          problems: problemJSON[listId].map(getProblemInfo),
-        })),
+        value: Object.keys(problemJSON)
+          .filter(x => x !== 'MODULE_ID')
+          .map(listId => ({
+            listId,
+            problems: problemJSON[listId].map(x => ({
+              ...getProblemInfo(x),
+              moduleId: node.frontmatter.id,
+            })),
+          })),
       });
     }
   }
@@ -357,7 +378,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type MdxFieldsProblems {
       listId: String!
-      problems: [ProblemInfo]
+      problems: [ModuleProblemInfo]
     }
     
     type ProblemInfo implements Node {
@@ -368,7 +389,19 @@ exports.createSchemaCustomization = ({ actions }) => {
       isStarred: Boolean!
       difficulty: String
       tags: [String]
-      solution: ProblemSolutionInfo 
+      solution: ProblemSolutionInfo
+      module: Mdx @link(by: "frontmatter.id")
+    }
+    
+    type ModuleProblemInfo {
+      uniqueId: String!
+      name: String!
+      url: String!
+      source: String!
+      isStarred: Boolean!
+      difficulty: String
+      tags: [String]
+      solution: ProblemSolutionInfo
     }
     
     type ProblemSolutionInfo {

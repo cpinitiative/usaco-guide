@@ -55,7 +55,7 @@ async function main() {
           `./content/${divisionFolder}/${moduleFileName}.json`,
           JSON.stringify(
             problems.reduce(
-              (acc: Record<string, any[]>, el: Record<string, any>) => {
+              (acc: Record<string, any>, el: Record<string, any>) => {
                 const { tableID, ...problemData } = el;
                 if (acc[tableID]) {
                   acc[tableID].push(problemData);
@@ -64,7 +64,9 @@ async function main() {
                 }
                 return acc;
               },
-              {}
+              {
+                MODULE_ID: id,
+              }
             ),
             null,
             '\t'
