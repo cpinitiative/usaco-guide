@@ -27,11 +27,13 @@ export default function getMemberInfoForGroup(group: GroupData) {
       if (cachedData?.groupId === group.id) {
         setMemberInfo(cachedData.data);
       }
-      // second condition is checking if a new member has joined the group.
+      // second condition is checking if a new member has joined the group,
+      // or if a member has left the group.
       // if so, we should re-fetch member information.
       if (
         cachedData?.groupId !== group.id ||
-        group.memberIds.some(id => !cachedData.data.find(x => x.uid === id))
+        group.memberIds.some(id => !cachedData.data.find(x => x.uid === id)) ||
+        cachedData.data.some(x => !group.memberIds.includes(x.uid))
       ) {
         firebase
           .functions()
