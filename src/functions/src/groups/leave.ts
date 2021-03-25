@@ -1,5 +1,9 @@
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import { GroupData } from '../../../models/groups/groups';
+import getPermissionLevel from './utils/getPermissionLevel';
+import getMembershipKey from './utils/getMembershipKey';
+
 interface LeaveGroupArgs {
   groupId: string;
 }
@@ -22,15 +26,9 @@ export default functions.https.onCall(
         errorCode: 'GROUP_NOT_FOUND',
       };
     }
-    const groupData = groupDataSnapshot.data();
+    const groupData = groupDataSnapshot.data() as GroupData;
+    const permissionLevel = getPermissionLevel(callerUid, groupData);
 
-    const permissionLevel = groupData.ownerIds.includes(callerUid)
-      ? 'OWNER'
-      : groupData.adminIds.includes(callerUid)
-      ? 'ADMIN'
-      : groupData.memberIds.includes(callerUid)
-      ? 'MEMBER'
-      : 'NOT_MEMBER';
     if (permissionLevel === 'NOT_MEMBER') {
       return {
         success: false,
@@ -44,7 +42,7 @@ export default functions.https.onCall(
     ) {
       return {
         success: false,
-        errorCode: 'ONLY_OWNER',
+        errorCode: 'SOLE_OWNER',
       };
     }
     await admin
@@ -52,11 +50,9 @@ export default functions.https.onCall(
       .collection('groups')
       .doc(groupId)
       .update({
-        [permissionLevel == 'OWNER'
-          ? 'ownerIds'
-          : permissionLevel == 'ADMIN'
-          ? 'adminIds'
-          : 'memberIds']: admin.firestore.FieldValue.arrayRemove(callerUid),
+        [getMembershipKey(
+          permissionLevel
+        )]: admin.firestore.FieldValue.arrayRemove(callerUid),
       });
 
     return { success: true };
