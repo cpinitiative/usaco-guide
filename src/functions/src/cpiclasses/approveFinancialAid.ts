@@ -6,7 +6,7 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-const approveFinancialAid = functions.https.onCall(
+export default functions.https.onCall(
   async (
     { registrationId, email, firstName, lastName, preferredLanguage, level },
     context
@@ -49,5 +49,3 @@ const approveFinancialAid = functions.https.onCall(
     ]);
   }
 );
-
-export default approveFinancialAid;

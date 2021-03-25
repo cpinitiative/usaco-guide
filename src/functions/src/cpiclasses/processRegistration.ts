@@ -8,7 +8,7 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export const processClassRegistration = functions.https.onCall(
+export default functions.https.onCall(
   async (
     {
       level,
@@ -105,4 +105,3 @@ export const processClassRegistration = functions.https.onCall(
     };
   }
 );
-export default processClassRegistration;

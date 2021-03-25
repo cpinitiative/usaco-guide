@@ -3,7 +3,7 @@ import getUsers from './getUsers';
 import incrementUsers from './incrementUsers';
 import submitProblemSuggestion from './submitProblemSuggestion';
 import setUserClaims from './setUserClaims';
-import { processClassRegistration, approveFinancialAid } from './cpi-classes';
+import * as cpiclasses from './cpiclasses';
 import * as groups from './groups';
 
 export {
@@ -11,8 +11,7 @@ export {
   submitProblemSuggestion,
   scheduledFirestoreExport,
   getUsers,
-  processClassRegistration,
-  approveFinancialAid,
   incrementUsers,
+  cpiclasses,
   groups,
 };
