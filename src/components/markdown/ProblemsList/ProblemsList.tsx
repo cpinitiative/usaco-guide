@@ -10,37 +10,66 @@ import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import { ProblemInfo } from '../../../models/problem';
+/* eslint-disable react/prop-types */
 
-type ProblemsListProps = {
-  title?: string;
-  children?: React.ReactChildren;
-  problems?: string | DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
-  division?: string; // only if is division table
-  modules?: boolean; // only if is division table
-};
-
-export function ProblemsList(props: ProblemsListProps) {
+type ProblemsListProps =
+  | {
+      title?: string;
+      children?: React.ReactChildren;
+      problems?: string;
+    }
+  | {
+      title?: string;
+      children?: React.ReactChildren;
+      problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
+      division?: string; // only if is division table
+      modules?: boolean; // only if is division table
+    };
+type AnnotatedProblemsListProps =
+  | {
+      isDivisionTable: false;
+      tableName?: string;
+      title?: string;
+      children?: React.ReactChildren;
+      problems?: ProblemInfo[];
+    }
+  | {
+      isDivisionTable: true;
+      title?: string;
+      children?: React.ReactChildren;
+      problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
+      division?: string; // only if is division table
+      modules?: boolean; // only if is division table
+    };
+export function ProblemsList(unannotatedProps: ProblemsListProps) {
+  const markdownProblems = useMarkdownProblemLists();
+  let problems: ProblemInfo[] | DivisionProblemInfo[];
+  if (typeof unannotatedProps.problems === 'string') {
+    problems = markdownProblems.find(
+      list => list.listId === unannotatedProps.problems
+    )?.problems;
+    if (!problems)
+      throw new Error(
+        "Couldn't find the problem list with name " + unannotatedProps.problems
+      );
+  } else {
+    problems = unannotatedProps.problems as DivisionProblemInfo[];
+  }
+  const props: AnnotatedProblemsListProps = {
+    ...unannotatedProps,
+    ...(typeof unannotatedProps.problems === 'string'
+      ? { tableName: unannotatedProps.problems }
+      : {}),
+    isDivisionTable: !(typeof unannotatedProps.problems === 'string'),
+    problems,
+  } as AnnotatedProblemsListProps;
   const userSettings = useContext(UserDataContext);
   const showTagsAndDifficulty = !userSettings.hideTagsAndDifficulty;
 
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
 
-  const divisionTable = !!props.division;
   const shouldShowSolvePercentage = false; // props.problems.some(problem => !problem.fraction);
-
-  const markdownProblems = useMarkdownProblemLists();
-
-  // todo @jeffrey fix typings?
-  let problems: any = props.problems;
-  if (!divisionTable) {
-    problems = markdownProblems.find(list => list.listId === props.problems)
-      ?.problems;
-    if (!problems)
-      throw new Error(
-        "Couldn't find the problem list with name " + props.problems
-      );
-  }
 
   return (
     <div
@@ -54,30 +83,50 @@ export function ProblemsList(props: ProblemsListProps) {
               <thead>
                 <ProblemsListHeader
                   showTagsAndDifficulty={showTagsAndDifficulty}
-                  isDivisionTable={!!divisionTable}
+                  isDivisionTable={props.isDivisionTable}
                   showSolvePercentage={shouldShowSolvePercentage}
                   showPlatinumSolvePercentageMessage={
-                    props.division === 'Platinum'
+                    props.isDivisionTable
+                      ? props.division === 'Platinum'
+                      : undefined
                   }
                 />
               </thead>
               <tbody className="table-alternating-stripes">
-                {problems.map(problem => (
-                  <ProblemsListItem
-                    key={problem.uniqueId}
-                    problem={problem}
-                    showTagsAndDifficulty={showTagsAndDifficulty}
-                    onShowSolutionSketch={problem => {
-                      setProblem(problem);
-                      setShowModal(true);
-                    }}
-                    isDivisionTable={divisionTable}
-                    modules={props.modules}
-                    showPercent={shouldShowSolvePercentage}
-                  />
-                ))}
-                {!divisionTable && (
-                  <SuggestProblemRow listName={props.problems as string} />
+                {props.isDivisionTable === true &&
+                  props.problems.map((problem: DivisionProblemInfo) => {
+                    return (
+                      <ProblemsListItem
+                        key={problem.uniqueId}
+                        problem={problem}
+                        showTagsAndDifficulty={showTagsAndDifficulty}
+                        onShowSolutionSketch={problem => {
+                          setProblem(problem);
+                          setShowModal(true);
+                        }}
+                        isDivisionTable={props.isDivisionTable}
+                        modules={props.modules}
+                        showPercent={shouldShowSolvePercentage}
+                      />
+                    );
+                  })}
+                {props.isDivisionTable === false && (
+                  <>
+                    {props.problems.map((problem: ProblemInfo) => (
+                      <ProblemsListItem
+                        key={problem.uniqueId}
+                        problem={problem}
+                        showTagsAndDifficulty={showTagsAndDifficulty}
+                        onShowSolutionSketch={problem => {
+                          setProblem(problem);
+                          setShowModal(true);
+                        }}
+                        isDivisionTable={props.isDivisionTable}
+                        showPercent={shouldShowSolvePercentage}
+                      />
+                    ))}
+                    <SuggestProblemRow listName={props.tableName} />
+                  </>
                 )}
               </tbody>
             </table>
