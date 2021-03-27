@@ -221,9 +221,171 @@ queries.
 	</Resource>
 </Resources>
 
-### Implementation
+### Solution - Range Updates & Sums
 
-<IncompleteSection />
+<Spoiler title="Solution">
+
+This question asks you to support the following types of queries. 
+
+- Add a value to all elements within the range $[a,b]$
+
+- Set all values within the range $[a,b]$ to a certain value 
+
+- Find the sum of all values in range $[a,b]$
+
+Consider the first two types of queries, a lazy tag will be created in each node of the tree for each type. In this solution, $lz1$ will represent the lazy tag for the range add query and $lz2$ will represent the lazy tag for the range set query. 
+
+Given the two different update queries, a total of four different situations might take place as a result of any update. 
+
+- Range add ($lz1$) when $lz2$ equals 0: Simply add the new value to the pre-existing value 
+
+- Range add ($lz1$) when $lz2$ doesnt equal to 0: Add the new value to $lz2$ and clear $lz1$ 
+
+- Range set when $lz1$ equals 0: Simply update the $lz2$ value 
+
+-Range set when $lz1$ doesn't equal to 0: Again simply update the $lz2$ value since a set update will override all previous add updates 
+
+Given the mechanics behind the pushdown function, all you need is a regular range sum segment tree to complete the question. 
+
+```cpp
+
+#include <iostream>
+#define int long long
+using namespace std;
+
+const int maxN = 2e5+5;
+
+int N,Q;
+int a[maxN];
+
+struct node{
+    int val;
+    int l,r;
+    int lz1; 
+    int lz2;
+    node(){};
+}tree[maxN<<2];
+
+#define lc p<<1
+#define rc (p<<1)+1
+
+inline void pushup(int p){
+    tree[p].val = tree[lc].val + tree[rc].val;
+    return;
+}
+
+void pushdown(int p){
+    //leaf node
+    if(tree[p].l == tree[p].r)return;
+    //lazy: range set
+    if(tree[p].lz2 != 0){
+        tree[lc].lz2 = tree[rc].lz2 = tree[p].lz2;
+        tree[lc].val = (tree[lc].r - tree[lc].l + 1) * tree[p].lz2;
+        tree[rc].val = (tree[rc].r - tree[rc].l + 1) * tree[p].lz2;
+        tree[lc].lz1 = tree[rc].lz1 = 0;
+        tree[p].lz2 = 0;
+    }
+    else if(tree[p].lz1 != 0){ //lazy: range add
+        if(tree[lc].lz2 == 0)tree[lc].lz1 += tree[p].lz1;
+        else {
+            tree[lc].lz2 += tree[p].lz1;
+            tree[lc].lz1 = 0;
+        }
+        if(tree[rc].lz2 == 0)tree[rc].lz1 += tree[p].lz1;
+        else{
+            tree[rc].lz2 += tree[p].lz1;
+            tree[rc].lz1 = 0;
+        }
+        tree[lc].val += (tree[lc].r - tree[lc].l + 1) * tree[p].lz1;
+        tree[rc].val += (tree[rc].r - tree[rc].l + 1) * tree[p].lz1;
+        tree[p].lz1 = 0;
+    }
+    return;
+}
+
+void build(int p, int l, int r){
+    tree[p].l = l;
+    tree[p].r = r;
+    tree[p].lz1 = tree[p].lz2 = 0;
+    if(l == r){
+        tree[p].val = a[l];
+        return;
+    }
+    int mid = (l+r)>>1;
+    build(lc,l,mid);
+    build(rc,mid+1,r);
+    pushup(p);
+    return;
+}
+
+void add(int p, int l, int r, int a, int b, int val){
+    if(a > r || b < l)return;
+    if(a <= l && r <= b){
+        tree[p].val += (tree[p].r - tree[p].l + 1) * val;
+        if(tree[p].lz2 == 0)tree[p].lz1 += val;
+        else tree[p].lz2 += val;
+        return;
+    }
+    pushdown(p);
+    int mid = (l+r)>>1;
+    add(lc,l,mid,a,b,val);
+    add(rc,mid+1,r,a,b,val);
+    pushup(p);
+    return;
+}
+
+void set(int p, int l, int r, int a, int b, int val){
+    if(a > r || b < l)return;
+    if(a <= l && r <= b){
+        tree[p].val = (tree[p].r - tree[p].l + 1) * val;
+        tree[p].lz1 = 0;
+        tree[p].lz2 = val;
+        return;
+    }
+    pushdown(p);
+    int mid = (l+r)>>1;
+    set(lc,l,mid,a,b,val);
+    set(rc,mid+1,r,a,b,val);
+    pushup(p);
+    return;
+}
+
+int query(int p, int l, int r, int a, int b){
+    if(a > r || b < l)return 0;
+    if(a <= l && r <= b)return tree[p].val;
+    pushdown(p);
+    int mid = (l+r)>>1;
+    return query(lc,l,mid,a,b) + query(rc,mid+1,r,a,b);
+}
+
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> N >> Q;
+    for(int i = 1; i <= N; ++i)cin >> a[i];
+    build(1,1,N);
+    for(int i = 1; i <= Q; ++i){
+        int k; cin >> k;
+        int a,b,x;
+        if(k == 1){
+            cin >> a >> b >> x;
+            add(1,1,N,a,b,x);
+        }
+        if(k == 2){
+            cin >> a >> b >> x;
+            set(1,1,N,a,b,x);
+        }
+        if(k == 3){
+            cin >> a >> b;
+            int res = query(1,1,N,a,b);
+            cout << res << endl;
+        }
+    }
+    return 0;
+}
+
+```
+</Spoiler>
 
 ### Problems
 
