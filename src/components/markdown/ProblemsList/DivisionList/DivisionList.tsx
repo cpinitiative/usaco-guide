@@ -1,19 +1,15 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { graphqlToModuleLinks } from '../../../../utils/utils';
 import divToProbs from './div_to_probs';
 import contestToPoints from './contest_to_points';
-import extraProbs from '../../../../../solutions/1_extra_usaco_probs';
 import { ProblemsList } from '../ProblemsList';
 
 import Transition from '../../../Transition';
 import { useContext } from 'react';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import { Problem, ProblemSolutionInfo } from '../../../../models/problem';
-import MODULE_ORDERING, {
-  moduleIDToURLMap,
-} from '../../../../../content/ordering';
+import { ProblemSolutionInfo } from '../../../../models/problem';
+import { moduleIDToURLMap } from '../../../../../content/ordering';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -150,7 +146,6 @@ const DivisionButton = ({
   );
 };
 
-// todo refactor efficiently
 export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
@@ -248,6 +243,7 @@ export function DivisionList(props): JSX.Element {
         solution: probToSol[id],
         moduleLink: probToLink[id],
         percentageSolved: fraction,
+        tags: probToTags[id],
         url: probToURL[id],
         source: contest,
       };
