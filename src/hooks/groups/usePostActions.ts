@@ -1,13 +1,11 @@
 import useFirebase from '../useFirebase';
 import { PostData } from '../../models/groups/posts';
-import { v4 as uuidv4 } from 'uuid';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
   problemConverter,
   ProblemData,
   Submission,
-  submissionConverter,
   SubmissionType,
 } from '../../models/groups/problem';
 
