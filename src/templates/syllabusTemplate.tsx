@@ -278,12 +278,23 @@ export const pageQuery = graphql`
             description
             frequency
           }
-          problems {
-            uniqueID
-          }
           isIncomplete
           fields {
             gitAuthorTime
+          }
+        }
+      }
+    }
+    # todo: filter
+    problems: allProblemInfo {
+      edges {
+        node {
+          uniqueId
+          name
+          module {
+            frontmatter {
+              id
+            }
           }
         }
       }

@@ -1,18 +1,32 @@
-import { ModuleInfo, ModuleLinkInfo } from '../../models/module';
-import { Frequency } from '../Frequency';
-import { DashboardProgressSmall } from '../Dashboard/DashboardProgress';
-import MarkCompleteButton from './MarkCompleteButton';
+import {
+  MarkdownLayoutSidebarModuleLinkInfo,
+  ModuleInfo,
+  ModuleLinkInfo,
+} from '../../../models/module';
+import { Frequency } from '../../Frequency';
+import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
+import MarkCompleteButton from '../MarkCompleteButton';
 import * as React from 'react';
 // import { SolutionInfo } from '../../models/solution';
-import { SECTION_LABELS } from '../../../content/ordering';
-import { getProblemsProgressInfo } from '../../utils/getProgressInfo';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import {
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+  SECTION_LABELS,
+} from '../../../../content/ordering';
+import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useContext } from 'react';
+import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
+import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
+import ModuleHeadersLinkList from './ModuleHeadersLinkList';
 // import { timeAgoString } from '../Dashboard/ModuleLink';
 
 // https://stackoverflow.com/questions/50709625/link-with-target-blank-and-rel-noopener-noreferrer-still-vulnerable
 
-const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
+const renderPrerequisite = (
+  prerequisite,
+  moduleLinks: MarkdownLayoutSidebarModuleLinkInfo[]
+) => {
   if (prerequisite.startsWith('/')) {
     // solution
     let leading = prerequisite.split('#')[0];
@@ -53,30 +67,55 @@ const renderPrerequisite = (prerequisite, moduleLinks: ModuleLinkInfo[]) => {
 };
 
 export default function ModuleHeaders({
-  problemIDs,
   moduleLinks,
 }: {
-  problemIDs: string[];
   moduleLinks: ModuleLinkInfo[];
 }): JSX.Element {
   const {
     markdownLayoutInfo: markdownData,
     moduleProgress,
     handleCompletionChange,
-    uniqueID,
-    appearsIn,
   } = useContext(MarkdownLayoutContext);
 
+  // this is for modules
+  const problemIDs =
+    markdownData instanceof ModuleInfo
+      ? useMarkdownProblems().map(problem => problem.uniqueId)
+      : [];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
-  let prereqs = [];
+
+  // this is for solutions
+  const problemSolutionContext = useContext(ProblemSolutionContext);
+  const problem = problemSolutionContext?.problem;
+
+  let moduleHeaderLinks: { label: string; url: string }[] = null;
   if (markdownData instanceof ModuleInfo) {
-    prereqs = markdownData.prerequisites || [];
+    moduleHeaderLinks = (markdownData.prerequisites || []).map(prereq => {
+      const moduleLink = moduleLinks.find(x => x.id === prereq);
+      return {
+        label: `${SECTION_LABELS[moduleLink.section]} - ${moduleLink.title}`,
+        url: moduleLink.url,
+      };
+    });
   } else {
-    for (const link of appearsIn) {
-      prereqs.push(link + '#problem-' + uniqueID);
+    // this is displayed within a problem solution
+    if (!problemSolutionContext) {
+      throw new Error(
+        'ModuleHeader is being used to render a problem; ProblemSolutionContext must be defined'
+      );
     }
+    const modulesThatHaveProblem =
+      problemSolutionContext.modulesThatHaveProblem;
+    console.log(modulesThatHaveProblem);
+    moduleHeaderLinks = modulesThatHaveProblem.map(module => {
+      return {
+        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
+          module.title
+        }`,
+        url: `${moduleIDToURLMap[module.id]}#problem-${problem.uniqueId}`,
+      };
+    });
   }
-  // const { activeIDs } = useContext(MarkdownLayoutContext);
 
   return (
     <>
@@ -119,41 +158,18 @@ export default function ModuleHeaders({
         } */}
       </div>
 
-      {prereqs.length > 0 && (
-        <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg
-                className="h-5 w-5 text-blue-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm leading-5 font-medium text-blue-800 dark:text-dark-high-emphasis">
-                {markdownData instanceof ModuleInfo
-                  ? 'Prerequisites'
-                  : 'Appears In'}
-              </h3>
-              <div className="mt-2 text-sm leading-5 text-blue-800 dark:text-blue-200">
-                <ul className="list-disc list-inside pl-3 space-y-1">
-                  {prereqs.map(x => renderPrerequisite(x, moduleLinks))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      {moduleHeaderLinks?.length > 0 && (
+        <ModuleHeadersLinkList
+          title={
+            markdownData instanceof ModuleInfo ? 'Prerequisites' : 'Appears In'
+          }
+          links={moduleHeaderLinks}
+        />
       )}
 
-      {uniqueID && (
+      {problem && (
         <a
-          href={uniqueID}
+          href={problem.url}
           target="_blank"
           rel="noreferrer"
           className="group block transition text-gray-600 hover:underline hover:text-blue-600 dark:text-dark-med-emphasis"

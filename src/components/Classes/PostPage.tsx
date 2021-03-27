@@ -121,73 +121,9 @@ export default function PostPage(props: {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
-  const rawProblemsList = useStaticQuery(graphql`
-    query ClassPostPageQuery {
-      allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-        edges {
-          node {
-            fields {
-              division
-            }
 
-            frontmatter {
-              id
-              title
-            }
-            problems {
-              source
-              name
-              id
-              difficulty
-              starred
-              tags
-              solID
-              solQuality
-              url
-              uniqueID
-            }
-          }
-        }
-      }
-    }
-  `);
-
-  const problemsList = useMemo(
-    () =>
-      rawProblemsList?.allMdx?.edges
-        ?.map(category => category.node)
-        .reduce(
-          (acc, module) => [
-            ...acc,
-            ...module.problems.map(p => ({
-              division: module.fields.division,
-              moduleId: module.frontmatter.id,
-              moduleName: module.frontmatter.label,
-              ...p,
-            })),
-          ],
-          []
-        )
-        .filter(
-          // duplicated elements are eliminated if they're not the first one with the id
-          (el, i, arr) => {
-            return arr.findIndex(p => p.uniqueID === el.uniqueID) === i;
-          }
-        ) || [],
-
-    [rawProblemsList]
-  );
-  const modulesList = useMemo(
-    () =>
-      rawProblemsList.allMdx?.edges?.map(category => ({
-        division: category.node.fields.division,
-        data: {
-          value: category.node.frontmatter.id,
-          label: category.node.frontmatter.title,
-        },
-      })) || [],
-    [rawProblemsList]
-  );
+  const problemsList = [];
+  const modulesList = [];
 
   const postProblems = React.useMemo(() => {
     return (

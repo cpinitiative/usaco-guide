@@ -4,6 +4,7 @@ import {
   Problem,
   PROBLEM_DIFFICULTY_OPTIONS,
   ProblemFeedback,
+  ProblemInfo,
 } from '../models/problem';
 import className from 'classnames';
 import ButtonGroup from './ButtonGroup';
@@ -22,7 +23,7 @@ export default function ProblemSolutions({
 }: {
   onClose: () => void;
   showSubmitSolutionModal: Function;
-  problem: Problem;
+  problem: ProblemInfo;
 }) {
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem

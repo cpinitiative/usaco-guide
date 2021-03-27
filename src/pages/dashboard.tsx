@@ -319,11 +319,18 @@ export const pageQuery = graphql`
             title
             id
           }
-          problems {
-            uniqueID
-            source
-            name
-            starred
+        }
+      }
+    }
+    problems: allProblemInfo {
+      edges {
+        node {
+          uniqueId
+          name
+          module {
+            frontmatter {
+              id
+            }
           }
         }
       }

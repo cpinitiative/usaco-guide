@@ -17,11 +17,15 @@ import DesktopSidebar from './DesktopSidebar';
 import MobileAppBar from './MobileAppBar';
 import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
-import ModuleHeaders from './ModuleHeaders';
+import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
 import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
 import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import {
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+} from '../../../content/ordering';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -85,24 +89,20 @@ export default function MarkdownLayout({
             frontmatter {
               title
               id
-              author
-            }
-            fields {
-              division
-              gitAuthorTime
-            }
-            problems {
-              uniqueID
-              solID
             }
           }
         }
       }
     }
   `);
-  const moduleLinks = React.useMemo(() => graphqlToModuleLinks(data.allMdx), [
-    data.allMdx,
-  ]);
+  const moduleLinks = React.useMemo(() => {
+    return data.allMdx.edges.map(cur => ({
+      id: cur.node.frontmatter.id,
+      title: cur.node.frontmatter.title,
+      section: moduleIDToSectionMap[cur.node.frontmatter.id],
+      url: moduleIDToURLMap[cur.node.frontmatter.id],
+    }));
+  }, [data.allMdx]);
   // console.log(moduleLinks);
 
   const showConfetti = useContext(ConfettiContext);
@@ -133,32 +133,32 @@ export default function MarkdownLayout({
   let uniqueID = '';
   const probToModule = {};
 
-  for (const moduleLink of moduleLinks) {
-    for (const problem of moduleLink.probs) {
-      const uniqueID = problem.uniqueID;
-      probToModule[uniqueID] = module.id;
-    }
-  }
-
+  // for (const moduleLink of moduleLinks) {
+  //   for (const problem of moduleLink.probs) {
+  //     const uniqueID = problem.uniqueID;
+  //     probToModule[uniqueID] = module.id;
+  //   }
+  // }
+  //
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
-    const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
-    // oops how to assert not -1
-    for (const problem of moduleLinks[ind].probs) {
-      const uniqueID = problem.uniqueID;
-      problemIDs.push(uniqueID);
-    }
-  } else {
-    moduleLinks.forEach(link => {
-      for (const problem of link.probs) {
-        if (problem.solID === markdownData.id) {
-          activeIDs.push(link.id);
-          appearsIn.push(link.url);
-          uniqueID = problem.uniqueID;
-        }
-      }
-    });
-  }
+    // const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
+    // // oops how to assert not -1
+    // for (const problem of moduleLinks[ind].probs) {
+    //   const uniqueID = problem.uniqueID;
+    //   problemIDs.push(uniqueID);
+    // }
+  } // else {
+  //   moduleLinks.forEach(link => {
+  //     for (const problem of link.probs) {
+  //       if (problem.solID === markdownData.id) {
+  //         activeIDs.push(link.id);
+  //         appearsIn.push(link.url);
+  //         uniqueID = problem.uniqueID;
+  //       }
+  //     }
+  //   });
+  // }
 
   // @ts-ignore
   return (
