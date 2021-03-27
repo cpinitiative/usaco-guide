@@ -9,7 +9,7 @@ author: Andi Qu
 
 We're asked to handle point updates and range GCD queries on a 2D grid.
 This implies that we should use a 2D range-query data structure like a 2D
-segment tree (N.B. not a Fenwick tree, as the GCD function is not commutative).
+segment tree (N.B. not a Fenwick tree, as the GCD function has no inverse).
 
 In 1D ($C = 1$), this can be solved by a fairly straightforward use of a segment tree:
 each node stores the GCD of its two children. Since $R$ can be quite big, this
@@ -21,8 +21,10 @@ scores 80 points. Fortunately for us, there are two ways to get around this!
 
 ## Approach 1 - Sparse segment tree of BBSTs
 
-Although BBSTs use 4 times less memory than segment trees, a BBST of BBSTs is
-not possible. However, a segment tree of BBSTs **is** possible!
+Although BBSTs use 4 times less memory than segment trees, a BBST of BBSTs 
+(e.g. a [range tree](https://en.wikipedia.org/wiki/Range_tree)) is rather
+unpleasant to implement. However, a segment tree of BBSTs is much nicer to
+implement, and is good enough to score 100 points!
 
 In my implementation below, I use an
 [implicit treap](https://cp-algorithms.com/data_structures/treap.html#toc-tgt-6)
