@@ -4,6 +4,7 @@ import {
   Problem,
   PROBLEM_DIFFICULTY_OPTIONS,
   ProblemFeedback,
+  ProblemInfo,
 } from '../models/problem';
 import className from 'classnames';
 import ButtonGroup from './ButtonGroup';
@@ -19,7 +20,7 @@ export default function SubmitProblemSolutionModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  problem: Problem;
+  problem: ProblemInfo;
 }) {
   const [solutionCode, setSolutionCode] = React.useState('');
   const [codeLang, setCodeLang] = React.useState('');
@@ -51,7 +52,7 @@ export default function SubmitProblemSolutionModal({
     submitAction({
       isPublic: isCodePublic,
       solutionCode,
-      problemID: problem.uniqueID,
+      problemID: problem.uniqueId,
       language: codeLang as any,
     })
       .then(() => setShowSuccess(true))

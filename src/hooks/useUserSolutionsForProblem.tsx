@@ -1,4 +1,4 @@
-import { Problem } from '../models/problem';
+import { ProblemInfo } from '../models/problem';
 import * as React from 'react';
 import useFirebase from './useFirebase';
 import {
@@ -8,7 +8,7 @@ import {
 import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 
-export default function useUserSolutionsForProblem(problem: Problem) {
+export default function useUserSolutionsForProblem(problem: ProblemInfo) {
   const [solutions, setSolutions] = React.useState<UserSolutionForProblem[]>(
     null
   );
@@ -19,7 +19,7 @@ export default function useUserSolutionsForProblem(problem: Problem) {
 
   useFirebase(
     firebase => {
-      const id = problem?.uniqueID;
+      const id = problem?.uniqueId;
       if (id) {
         setSolutions(null);
         setCurrentUserSolutions(null);
@@ -49,7 +49,7 @@ export default function useUserSolutionsForProblem(problem: Problem) {
         };
       }
     },
-    [problem?.uniqueID, firebaseUser?.uid]
+    [problem?.uniqueId, firebaseUser?.uid]
   );
 
   return {

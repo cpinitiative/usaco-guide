@@ -13,7 +13,6 @@ import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
 const Slugger = require('github-slugger');
-const Problem = require('./src/models/problem').Problem; // needed to eval export
 const { execSync } = require('child_process');
 
 // Questionable hack to get full commit history so that timestamps work
@@ -319,7 +318,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
   const solutions = result.data.solutions.edges;
   solutions.forEach(({ node }) => {
-    const path = `/solutions/${node.frontmatter.id}`;
+    const path = `/problems/${node.frontmatter.id}/solution`;
     if (node.frontmatter.redirects) {
       node.frontmatter.redirects.forEach(fromPath => {
         createRedirect({
@@ -411,20 +410,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       url: String
       sketch: String
     }
-    
-    type Problem {
-      source: String!
-      name: String!
-      id: String!
-      difficulty: String
-      starred: Boolean
-      tags: [String]
-      solID: String
-      solQuality: String
-      url: String
-      uniqueID: String
-      tableID: String
-    }
   `;
   createTypes(typeDefs);
 };
@@ -496,38 +481,6 @@ exports.createResolvers = ({ createResolvers }) => {
             java,
             py,
           };
-        },
-      },
-      // todo: obsolete, delete
-      problems: {
-        type: `[Problem]`,
-        async resolve(source, args, context, info) {
-          const { resolve } = info.schema.getType('Mdx').getFields().mdxAST;
-          const mdast = await resolve(source, args, context, {
-            fieldName: 'mdast',
-          });
-          const problems = [];
-          mdast.children.forEach(node => {
-            if (
-              node.type === 'export' &&
-              node.value.includes('export const problems =')
-            ) {
-              const str = node.value.replace('export ', '') + '; problems';
-              const res = eval(str);
-              Object.keys(res).forEach(k => {
-                const arr = [res[k]].flat();
-                // console.log('ADIAIUHF');
-                // console.log(arr);
-                problems.push(
-                  ...arr.map(problem => {
-                    problem.tableID = k;
-                    return problem;
-                  })
-                );
-              });
-            }
-          });
-          return problems;
         },
       },
       isIncomplete: {

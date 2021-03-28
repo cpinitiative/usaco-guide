@@ -1,31 +1,18 @@
 import * as React from 'react';
-import { Problem } from '../../models/problem';
-import MODULE_ORDERING, {
-  moduleIDToSectionMap,
-} from '../../../content/ordering';
+import { AlgoliaProblemInfo } from '../../models/problem';
+import { moduleIDToSectionMap } from '../../../content/ordering';
 import { Link } from 'gatsby';
 import { Highlight } from 'react-instantsearch-dom';
 
-function ProblemHit({ hit }) {
-  const problem = new Problem(
-    hit.source,
-    hit.name,
-    hit.id,
-    hit.difficulty,
-    hit.starred,
-    hit.tags,
-    hit.solID,
-    hit.solQuality
-  );
-
+function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 sm:rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
-        {problem.source}
+        {hit.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
         <Highlight hit={hit} attribute="name" />
-        {problem.starred && (
+        {hit.isStarred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
             fill="currentColor"
@@ -37,7 +24,7 @@ function ProblemHit({ hit }) {
       </p>
       <div>
         <a
-          href={problem.url}
+          href={hit.url}
           target="_blank"
           className="text-gray-500 dark:text-dark-med-emphasis text-sm"
         >
@@ -53,11 +40,15 @@ function ProblemHit({ hit }) {
         </a>
       </div>
 
-      {problem.solution?.url && (
+      {(hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
         <a
-          href={problem.solution?.url}
+          href={
+            hit.solution.kind === 'internal'
+              ? `/problems/${hit.uniqueId}/solution`
+              : hit.solution.url
+          }
           target="_blank"
-          className="text-gray-500 dark:text-dark-med-emphasis  text-sm"
+          className="text-gray-500 dark:text-dark-med-emphasis text-sm"
         >
           View Solution
           <svg
@@ -78,7 +69,7 @@ function ProblemHit({ hit }) {
         {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
           <li key={moduleID}>
             <Link
-              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${problem.uniqueID}`}
+              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.uniqueId}`}
               className="text-sm text-blue-600 dark:text-blue-400"
             >
               {moduleLabel}
@@ -88,7 +79,7 @@ function ProblemHit({ hit }) {
       </ul>
 
       <div className="pt-4 space-x-2">
-        {problem.tags?.map(tag => (
+        {hit.tags?.map(tag => (
           <span
             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
             key={tag}

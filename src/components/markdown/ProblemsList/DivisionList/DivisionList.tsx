@@ -1,19 +1,16 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { graphqlToModuleLinks } from '../../../../utils/utils';
 import divToProbs from './div_to_probs';
 import contestToPoints from './contest_to_points';
-import extraProbs from '../../../../../solutions/1_extra_usaco_probs';
 import { ProblemsList } from '../ProblemsList';
 
 import Transition from '../../../Transition';
 import { useContext } from 'react';
 import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import { Problem, ProblemSolutionInfo } from '../../../../models/problem';
-import MODULE_ORDERING, {
-  moduleIDToURLMap,
-} from '../../../../../content/ordering';
+import { ProblemSolutionInfo } from '../../../../models/problem';
+import { moduleIDToURLMap } from '../../../../../content/ordering';
+import id_to_sol from './id_to_sol';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
@@ -150,7 +147,6 @@ const DivisionButton = ({
   );
 };
 
-// todo refactor efficiently
 export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
@@ -228,8 +224,6 @@ export function DivisionList(props): JSX.Element {
 
   for (const division of divisions)
     for (const probInfo of divToProbs[division]) {
-      const uniqueID =
-        'http://www.usaco.org/index.php?page=viewproblem2&cpid=' + probInfo[0];
       const contest = probInfo[1];
       let fraction = null;
       if (contest in contestToFraction[division]) {
@@ -244,10 +238,18 @@ export function DivisionList(props): JSX.Element {
       const prob: DivisionProblemInfo = {
         name: probInfo[2],
         uniqueId: id,
-        solution: probToSol[id],
+        solution: probToSol[id] || {
+          kind: 'link',
+          label: 'External Sol',
+          url: `http://www.usaco.org/current/data/${id_to_sol[probInfo[0]]}`,
+        },
         moduleLink: probToLink[id],
         percentageSolved: fraction,
-        url: probToURL[id],
+        tags: probToTags[id],
+        url:
+          probToURL[id] ||
+          'http://www.usaco.org/index.php?page=viewproblem2&cpid=' +
+            probInfo[0], // problems not in modules won't have URLs
         source: contest,
       };
       // const prob = new Problem(
