@@ -86,10 +86,44 @@ async function main() {
           `./content/extraProblems.json`,
           JSON.stringify(
             extraProblems.reduce(
-              (acc: Record<string, any>, el: Record<string, any>) => {
-                const { tableID, ___legacyUniqueId, ...problemData } = el;
-                if (problemData.solId) {
-                  const oldUniqueId = solIdToProblemURLMap[problemData.solId];
+              (acc: Record<string, any>, problem: Record<string, any>) => {
+                const prob = new Problem(
+                  problem.source,
+                  problem.name,
+                  problem.id,
+                  problem.difficulty as any,
+                  problem.starred,
+                  problem.tags,
+                  problem.solID,
+                  problem.solQuality as any
+                );
+                if (prob.solutionMetadata?.kind === 'in-module') {
+                  throw new Error('???');
+                }
+                let el = {
+                  uniqueId: prob.uniqueID,
+                  ___legacyUniqueId: problem.uniqueID,
+                  name: prob.name,
+                  url: prob.url,
+                  source: prob.source,
+                  difficulty: prob.difficulty,
+                  isStarred: prob.starred,
+                  tags: prob.tags,
+                  solutionMetadata: prob.solutionMetadata || {
+                    kind: 'none',
+                  },
+                  solId: problem.solID,
+                  tableId: problem.tableID,
+                };
+
+                const {
+                  tableId,
+                  ___legacyUniqueId,
+                  solId,
+                  ...problemData
+                } = el;
+                if (solId) {
+                  const oldUniqueId = solIdToProblemURLMap[solId];
                   const newUniqueId = problemData.uniqueId;
                   console.log(
                     oldUniqueId +
@@ -98,11 +132,8 @@ async function main() {
                       (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
                   );
 
-                  oldProblemIdToNewProblemIdMap[
-                    problemData.solId
-                  ] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] =
-                    problemData.solId;
+                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
                 }
                 if (acc['EXTRA_PROBLEMS']) {
                   acc['EXTRA_PROBLEMS'].push(problemData);
@@ -127,9 +158,14 @@ async function main() {
           JSON.stringify(
             problems.reduce(
               (acc: Record<string, any>, el: Record<string, any>) => {
-                const { tableID, ___legacyUniqueId, ...problemData } = el;
-                if (problemData.solId) {
-                  const oldUniqueId = solIdToProblemURLMap[problemData.solId];
+                const {
+                  tableId,
+                  ___legacyUniqueId,
+                  solId,
+                  ...problemData
+                } = el;
+                if (solId) {
+                  const oldUniqueId = solIdToProblemURLMap[solId];
                   const newUniqueId = problemData.uniqueId;
                   console.log(
                     oldUniqueId +
@@ -138,16 +174,13 @@ async function main() {
                       (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
                   );
 
-                  oldProblemIdToNewProblemIdMap[
-                    problemData.solId
-                  ] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] =
-                    problemData.solId;
+                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
                 }
-                if (acc[tableID]) {
-                  acc[tableID].push(problemData);
+                if (acc[tableId]) {
+                  acc[tableId].push(problemData);
                 } else {
-                  acc[tableID] = [problemData];
+                  acc[tableId] = [problemData];
                 }
                 return acc;
               },
@@ -216,7 +249,7 @@ async function main() {
                   : '[CHANGE]')
             );
             if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
-              // lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
+              lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
             }
             return new Promise<void>((res, rej) => {
               fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
