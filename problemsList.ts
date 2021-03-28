@@ -14538,6 +14538,7 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
         solutionMetadata: prob.solutionMetadata || {
           kind: 'none',
         },
+        solID: problem.solID,
         tableID: problem.tableID,
       };
     }),
