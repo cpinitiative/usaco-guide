@@ -51,7 +51,7 @@ export default function Template(props) {
       </Helmet>
 
       <ConfettiProvider>
-        <MarkdownProblemListsProvider value={mdx.fields.problemLists}>
+        <MarkdownProblemListsProvider value={mdx.fields.problemLists || []}>
           <MarkdownLayout markdownData={module}>
             <div className="py-4">
               <Markdown body={body} />
