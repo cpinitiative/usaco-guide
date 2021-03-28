@@ -29,50 +29,50 @@ constexpr int MOD = 998244353;
  
 // sauce: https://usaco.guide/gold/modular?lang=java
 long long pow_mod(long long base, long long exp) {
-    base %= MOD;
-    long long result = 1;
-    while (exp > 0) {
-        if (exp % 2 == 1) //if n is odd
-            result = result * base % MOD;
-        base = base * base % MOD;
-        exp /= 2; //divide by two
-    }
-    return result;
+	base %= MOD;
+	long long result = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1) //if n is odd
+			result = result * base % MOD;
+		base = base * base % MOD;
+		exp /= 2; //divide by two
+	}
+	return result;
 }
  
 long long mod_inv(long long n) {  // sauce is same as above
-    return pow_mod(n, MOD - 2);
+	return pow_mod(n, MOD - 2);
 }
  
 long long frac_total(long long num, long long denom) {
-    return ((num % MOD) * mod_inv(denom)) % MOD;
+	return ((num % MOD) * mod_inv(denom)) % MOD;
 }
  
 int main() {
-    int child_num;
-    std::cin >> child_num;
-    vector<vector<int>> children(child_num);
-    std::unordered_map<int, int> wanter_nums;
-    for (int c = 0; c < child_num; c++) {
-        int wanted_num;
-        std::cin >> wanted_num;
-        for (int i = 0; i < wanted_num; i++) {
-            int item;
-            std::cin >> item;
-            wanter_nums[item]++;
-            children[c].push_back(item);
-        }
-    }
+	int child_num;
+	std::cin >> child_num;
+	vector<vector<int>> children(child_num);
+	std::unordered_map<int, int> wanter_nums;
+	for (int c = 0; c < child_num; c++) {
+		int wanted_num;
+		std::cin >> wanted_num;
+		for (int i = 0; i < wanted_num; i++) {
+			int item;
+			std::cin >> item;
+			wanter_nums[item]++;
+			children[c].push_back(item);
+		}
+	}
  
-    long long prob = 0;
-    for (const vector<int>& c : children) {
-        for (const int& i : c) {
-            int num = 1 * 1 * wanter_nums[i];
-            long long denom = child_num * c.size() * child_num;
-            prob = (prob + frac_total(num, denom)) % MOD;
-        }
-    }
-    cout << prob << endl;
+	long long prob = 0;
+	for (const vector<int>& c : children) {
+		for (const int& i : c) {
+			int num = 1 * 1 * wanter_nums[i];
+			long long denom = child_num * c.size() * child_num;
+			prob = (prob + frac_total(num, denom)) % MOD;
+		}
+	}
+	cout << prob << endl;
 }
 ```
 
@@ -94,56 +94,56 @@ import java.util.HashMap;
  * 1 1 should output 124780545
  */
 public class SantaBot {
-    private static final int MOD = 998244353;
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        int childNum = Integer.parseInt(read.readLine());
+	private static final int MOD = 998244353;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int childNum = Integer.parseInt(read.readLine());
 
-        int[][] children = new int[childNum][];
-        HashMap<Integer, Integer> wanterNum = new HashMap<>();
-        for (int c = 0; c < childNum; c++) {
-            int[] raw = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            children[c] = Arrays.copyOfRange(raw, 1, raw.length);
-            for (int i : children[c]) {
-                wanterNum.put(i, wanterNum.getOrDefault(i, 0) + 1);
-            }
-        }
+		int[][] children = new int[childNum][];
+		HashMap<Integer, Integer> wanterNum = new HashMap<>();
+		for (int c = 0; c < childNum; c++) {
+			int[] raw = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			children[c] = Arrays.copyOfRange(raw, 1, raw.length);
+			for (int i : children[c]) {
+				wanterNum.put(i, wanterNum.getOrDefault(i, 0) + 1);
+			}
+		}
 
-        long probTotal = 0;
-        for (int[] c : children) {
-            long denom = (long) childNum * c.length * childNum;
-            for (int i : c) {
-                int num = wanterNum.get(i);
-                probTotal = (probTotal + fracTotal(num, denom)) % MOD;
-            }
-        }
-        System.out.println(probTotal);
-    }
+		long probTotal = 0;
+		for (int[] c : children) {
+			long denom = (long) childNum * c.length * childNum;
+			for (int i : c) {
+				int num = wanterNum.get(i);
+				probTotal = (probTotal + fracTotal(num, denom)) % MOD;
+			}
+		}
+		System.out.println(probTotal);
+	}
 
-    private static long fracTotal(long num, long denom) {
-        return ((num % MOD) * modInv(denom)) % MOD;
-    }
+	private static long fracTotal(long num, long denom) {
+		return ((num % MOD) * modInv(denom)) % MOD;
+	}
 
-    private static long modInv(long n) {
-        return pow(n, MOD - 2);
-    }
+	private static long modInv(long n) {
+		return pow(n, MOD - 2);
+	}
 
-    // copied from the cses exponentiation solution here: https://usaco.guide/gold/modular?lang=java
-    private static long pow(long base, long exp) {
-        if (exp < 0) {
-            throw new IllegalArgumentException("sorry i can't take exponents lower than 0");
-        }
-        base %= MOD;
-        long res = 1;
-        while (exp > 0) {
-            if (exp % 2 == 1) {
-                res = res * base % MOD;
-            }
-            base = base * base % MOD;
-            exp /= 2;
-        }
-        return res;
-    }
+	// copied from the cses exponentiation solution here: https://usaco.guide/gold/modular?lang=java
+	private static long pow(long base, long exp) {
+		if (exp < 0) {
+			throw new IllegalArgumentException("sorry i can't take exponents lower than 0");
+		}
+		base %= MOD;
+		long res = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1) {
+				res = res * base % MOD;
+			}
+			base = base * base % MOD;
+			exp /= 2;
+		}
+		return res;
+	}
 }
 ```
 
