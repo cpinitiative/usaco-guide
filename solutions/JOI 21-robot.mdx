@@ -1,0 +1,127 @@
+---
+id: joi-21-robot
+source: JOI 2021
+title: Robot
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O((N + M) \log N)$
+
+**Lemma:** We can always recolour an edge $(u, v)$ so that its colour is
+different from those of the other edges incident to $u$ and $v$.
+
+**Proof:** If we take away $(u, v)$, then there are at most $M - 1$ edges
+incident to $u$ and $v$. Since there are $M$ colours in total, there must exist
+some colour such that none of those edges have it (by the pigeonhole principle).
+Therefore, we can simply recolour $(u, v)$ to that colour.
+
+This means we can define the cost to traverse an edge as:
+
+$$
+\min(\text{Cost to recolour it}, \text{Cost to recolour same-coloured neighbours})
+$$
+
+It may be tempting to use Dijkstra's algorithm at this point, but that will
+unfortunately result in a wrong answer. Consider the following:
+
+- The robot goes on the path $u \rightarrow v \rightarrow w$.
+- $(u, v)$ and $(v, w)$ have the same colour.
+- It's optimal to recolour $(u, v)$ when going $u \rightarrow v$, but it's
+  optimal to recolour the same-coloured neighbours of $(v, w)$ when going
+  $v \rightarrow w$.
+
+In this case, using Dijkstra's algorithm naively will count the cost to recolour
+$(u, v)$ twice in our answer!
+
+To amend this, let's define two DP arrays instead of just one:
+
+- $\texttt{dp1}[i]$ is the minimum cost to get to node $i$.
+- $\texttt{dp2}[i][c]$ is the minimum cost to get to node $i$ if:
+  - The robot just traversed a $c$-coloured edge to get to node $i$.
+  - We're meant to have recoloured that edge, but haven't yet.
+  - The robot will definitely leave node $i$ via another $c$-coloured edge and
+    we will recolour all of its same-coloured neighbours.
+
+We can then use Dijkstra's algorithm and some casework to solve this problem in
+amortized $\mathcal O((N + M) \log N)$ time.
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+const ll INF = 1e18;
+
+struct Edge {
+	int to, c;
+	ll p;
+};
+
+map<int, vector<Edge>> graph[100001];
+ll dp[100001];
+map<int, ll> dp2[100001], psum[100001];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++) {
+		int u, v, c;
+		ll p;
+		cin >> u >> v >> c >> p;
+		graph[u][c].push_back({v, c, p});
+		graph[v][c].push_back({u, c, p});
+		psum[u][c] += p;
+		psum[v][c] += p;
+	}
+
+	memset(dp, 0x3f, sizeof dp);
+	dp[1] = 0;
+	priority_queue<tuple<ll, int, int>> pq;
+	pq.push({0, 1, 0});
+	while (pq.size()) {
+		ll cost;
+		int node, c;
+		tie(cost, node, c) = pq.top();
+		pq.pop();
+
+		if (c) {
+			if (dp2[node][c] != -cost) continue;
+			for (Edge i : graph[node][c]) {
+				// We can't flip i in this case
+				ll case1 = psum[node][c] - i.p;
+				if (case1 - cost < dp[i.to]) {
+					dp[i.to] = case1 - cost;
+					pq.push({-dp[i.to], i.to, 0});
+				}
+			}
+		} else {
+			if (dp[node] != -cost) continue;
+			for (auto& i : graph[node]) {
+				for (Edge j : i.second) {
+					// Case 1: We don't flip j
+					ll case1 = psum[node][j.c] - j.p - cost;
+					if (case1 < dp[j.to]) {
+						dp[j.to] = case1;
+						pq.push({-dp[j.to], j.to, 0});
+					}
+					// Case 2: We flip j but not another edge of the same colour
+					ll case2 = j.p - cost;
+					if (case2 < dp[j.to]) {
+						dp[j.to] = case2;
+						pq.push({-dp[j.to], j.to, 0});
+					}
+					// Case 3: We flip j and another edge of the same colour
+					ll case3 = -cost;
+					if (!dp2[j.to].count(j.c) || case3 < dp2[j.to][j.c]) {
+						dp2[j.to][j.c] = case3;
+						pq.push({-dp2[j.to][j.c], j.to, j.c});
+					}
+				}
+			}
+		}
+	}
+	cout << (dp[n] > INF ? -1 : dp[n]);
+	return 0;
+}
+```

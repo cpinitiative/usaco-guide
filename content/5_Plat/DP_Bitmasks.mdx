@@ -1,13 +1,186 @@
 ---
 id: dp-bitmasks
 title: 'Dynamic Programming on Bitmasks'
-author: Michael Cao, Siyong Huang, Andrew Wang
+author: Michael Cao, Siyong Huang, Andrew Wang, Neo Wang
 prerequisites:
   - intro-bitwise
   - intro-dp
 description: DP problems that require iterating over subsets.
 frequency: 2
 ---
+
+export const problems = {
+	sam: [
+		new Problem(
+			'CSES',
+			'Hamiltonian Flights',
+			'1690',
+			'Easy',
+			false,
+			['Bitmasks'],
+			''
+		),
+	],
+	general: [
+		new Problem(
+			'AC',
+			'Matching',
+			'contests/dp/tasks/dp_o?lang=en',
+			'Easy',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Team Building',
+			'1316/problem/E',
+			'Easy',
+			false,
+			['Bitmasks', 'MinCostFlow'],
+			''
+		),
+		new Problem(
+			'Old Gold',
+			'Guard Mark',
+			'494',
+			'Easy',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'Gold',
+			'Uddered but not Herd',
+			'1089',
+			'Easy',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'Old Gold',
+			'Moovie Mooving',
+			'515',
+			'Easy',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'CSES',
+			'Elevator Rides',
+			'1653',
+			'Normal',
+			false,
+			['Bitmasks', 'DP'],
+			'@CPH 10.5'
+		),
+		new Problem(
+			'IZhO',
+			'2014 - Bank',
+			'IZhO14_bank',
+			'Normal',
+			false,
+			['Bitmasks', 'DP'],
+			'izho-14-bank'
+		),
+		new Problem(
+			'YS',
+			'Max Indep Set',
+			'maximum_independent_set',
+			'Normal',
+			false,
+			['Bitmasks', 'Meet in Middle', 'DP'],
+			''
+		),
+		new Problem(
+			'Kattis',
+			'Cat & Mice',
+			'catandmice',
+			'Normal',
+			false,
+			['Bitmasks', 'DP', 'Geometry', 'Binary Search'],
+			''
+		),
+		new Problem(
+			'IZhO',
+			'2017 - Longest beautiful sequence',
+			'https://oj.uz/problem/view/IZhO17_subsequence',
+			'Hard',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'COCI',
+			'2016 - Burza',
+			'https://oj.uz/problem/view/COCI16_burza',
+			'Hard',
+			true,
+			['Bitmasks', 'DP', 'Game Theory', 'Sqrt'],
+			''
+		),
+		new Problem(
+			'CEOI',
+			'2019 - Amusement Park',
+			'https://oj.uz/problem/view/CEOI19_amusementpark',
+			'Very Hard',
+			false,
+			['Bitmasks', 'DP'],
+			''
+		),
+		new Problem(
+			'IOI',
+			'2007 - Training',
+			'https://oj.uz/problem/view/IOI07_training',
+			'Very Hard',
+			true,
+			['Bitmasks', 'DP', 'Tree', 'DFS'],
+			''
+		),
+	],
+	bitmask_nt: [
+		new Problem(
+			'CF',
+			'Make it One',
+			'1043/problem/F',
+			'Hard',
+			false,
+			['DP', 'Combinatorics'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Professional Layer',
+			'1103/problem/D',
+			'Very Hard',
+			false,
+			['DP', 'Bitmasks', 'NT'],
+			''
+		),
+		new Problem(
+			'CF',
+			'Gold Experience',
+			'1148/problem/G',
+			'Insane',
+			false,
+			['Bitmasks', 'NT', 'Binary Search'],
+			''
+		),
+		new Problem(
+			'CF',
+			"Nora's Toy Boxes",
+			'1292/problem/F',
+			'Insane',
+			false,
+			['DP', 'Bitmasks', 'Combinatorics'],
+			''
+		),
+	],
+};
+
+<!-- new Problem('CF', 'Square Subsets', '895/problem/C', 'Easy', false, [], ''), -->
 
 <Info title="Pro Tip">
 
@@ -17,7 +190,7 @@ You can often use this to solve subtasks.
 
 # Bitmask DP
 
-<FocusProblem problem="sam" />
+<FocusProblem problem={problems.sam[0]} />
 
 ## Tutorial
 
@@ -29,6 +202,12 @@ You can often use this to solve subtasks.
 	>
 		Elevator Rides, SOS, Hamiltonian
 	</Resource>
+	<Resource
+		source="NW@nwatx"
+		title="A Primer on Bitmask DP"
+		url="https://nwatx.me/post/dpbitmasks"
+		starred
+	/>
 	<Resource source="PAPS" title="9.4 - Subset DP">
 		example - similar to Hamiltonian
 	</Resource>
@@ -46,7 +225,7 @@ You can often use this to solve subtasks.
 
 ## Solution
 
-<Spoiler title =  "Solution">
+<Spoiler title = "Solution">
 
 Let $dp[S][i]$ be the number of routes that visit all the cities in the subset
 $S$ and end at city $i$. The transitions will then be:
@@ -62,7 +241,7 @@ where $S  \setminus \{i\}$ is the subset $S$ without city $i$.
 using namespace std;
 #define ll long long
 
-const int MX = (1 << 21) + 5;
+const int MX = (1 << 20);
 ll dp[MX][21];
 vector<int> adj[21];
 const ll MOD = (ll)1e9+7;
@@ -94,7 +273,7 @@ int main() {
 
 ## Problems
 
-<Problems problems={'general'} />
+<Problems problems={problems.general} />
 
 ## Bitmask over Primes
 
@@ -154,4 +333,4 @@ Also, any tutorials or more problems of this type?
 
 ### Problems
 
-<Problems problems={'bitmask_nt'} />
+<Problems problems={problems.bitmask_nt} />

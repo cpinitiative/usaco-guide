@@ -21,6 +21,7 @@ import { useRef, useState } from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ButtonGroup from '../components/ButtonGroup';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
@@ -110,6 +111,7 @@ export default function LiveUpdatePage(props: PageProps) {
   };
 
   const userSettings = React.useContext(UserDataContext);
+  const isDarkMode = useDarkMode();
 
   return (
     <Layout>
@@ -209,11 +211,11 @@ export default function LiveUpdatePage(props: PageProps) {
                   {/* Settings button */}
                   <button
                     onClick={() =>
-                      userSettings.setDarkMode(!userSettings.darkMode)
+                      userSettings.setTheme(isDarkMode ? 'light' : 'dark')
                     }
                     className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                   >
-                    {userSettings.darkMode ? (
+                    {isDarkMode ? (
                       <svg
                         className="h-6 w-6"
                         xmlns="http://www.w3.org/2000/svg"

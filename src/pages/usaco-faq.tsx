@@ -7,10 +7,6 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 // @ts-ignore
 import FAQ from '../faq.mdx';
 
-import { DiscussionEmbed } from 'disqus-react';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -24,6 +20,7 @@ import {
 import { components } from '../components/markdown/MDXProvider';
 import { MDXProvider } from '@mdx-js/react';
 import { OffsetAnchor } from '../components/markdown/HTMLComponents';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const customComponents = {
   ...components,
@@ -55,8 +52,6 @@ const customComponents = {
 };
 
 export default function USACOFAQPage(props: PageProps) {
-  const { darkMode } = useContext(UserDataContext);
-
   const shareURL = 'https://usaco.guide/usaco-faq';
 
   const handleShare = platform => {

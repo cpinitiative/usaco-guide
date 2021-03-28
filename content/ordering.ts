@@ -89,7 +89,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional',
       description: 'Topics not strictly necessary to know to pass Bronze.',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'intro-bitwise'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
   ],
   silver: [
@@ -175,7 +175,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['mat-exp', 'bitsets'],
+      items: ['intro-bitwise', 'mat-exp', 'bitsets'],
     },
   ],
   adv: [

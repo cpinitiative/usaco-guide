@@ -25,11 +25,12 @@ export default [
     ''
   ),
   new Problem('Plat', 'Lifeguards', '792', 'Normal', false, ['DP'], ''),
+  new Problem('Plat', 'Sprinklers', '794', 'Easy', false, ['2P'], ''),
   new Problem(
     'Silver',
     'Teleportation',
     '812',
-    'Normal',
+    'Very Hard',
     false,
     ['Ordered Set'],
     ''

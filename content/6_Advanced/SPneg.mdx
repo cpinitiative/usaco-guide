@@ -8,6 +8,78 @@ description: 'Returning to Bellman-Ford and Floyd-Warshall.'
 frequency: 0
 ---
 
+export const problems = {
+	bellSam: [
+		new Problem(
+			'Kattis',
+			'SSSP Negative',
+			'shortestpath3',
+			'Easy',
+			false,
+			[],
+			''
+		),
+		new Problem(
+			'CSES',
+			'(Negative) Cycle Finding',
+			'1197',
+			'Easy',
+			false,
+			[],
+			''
+		),
+	],
+	linear: [
+		new Problem(
+			'RMI',
+			'Restore Array',
+			'RMI19_restore',
+			'Normal',
+			false,
+			[],
+			'similar to [Art](https://codeforces.com/gym/102394/problem/A)'
+		),
+	],
+	floydSam: [
+		new Problem(
+			'Kattis',
+			'APSP (with negative weights)',
+			'allpairspath',
+			'Easy',
+			false,
+			[],
+			''
+		),
+	],
+	floydProbs: [
+		new Problem(
+			'APIO',
+			'2017 - Traveling Merchant',
+			'https://oj.uz/problem/view/APIO17_merchant',
+			'Hard',
+			true,
+			['APSP', 'Binary Search'],
+			'apio-17-merchant'
+		),
+	],
+	dijk: [
+		new Problem(
+			'APIO',
+			'2013 - Tasksauthor',
+			'https://tlx.toki.id/problems/apio-2013/C/',
+			'Hard',
+			true,
+			['SP', 'Output Only'],
+			'apio-13-taskauthor'
+		),
+	],
+};
+
+<!-- new Problem('SPOJ', 'Arbitrage', 'ARBITRAG', 'Easy', false, [], ''), -->
+
+<!-- new Problem('CSES', 'High Score', '1673', 'Easy', false, [], ''),
+subpart of SSSP Negative -->
+
 ## Bellman-Ford
 
 <Resources>
@@ -39,7 +111,7 @@ frequency: 0
 
 ### Shortest Paths
 
-<FocusProblem problem="bellSam" />
+<FocusProblem problem={problems.bellSam[0]} />
 
 #### Solution
 
@@ -47,7 +119,7 @@ frequency: 0
 
 ### Finding Negative Cycles
 
-<FocusProblem problem="bellSam2" />
+<FocusProblem problem={problems.bellSam[1]} />
 
 #### Solution
 
@@ -153,11 +225,11 @@ Timeline (USACO Camp):
   [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
   except $N,C\le 5000$ and negative values of $x$ are possible.
 
-<Problems problems={'linear'} />
+<Problems problems={problems.linear} />
 
 ## Floyd-Warshall
 
-<FocusProblem problem="floydSam" />
+<FocusProblem problem={problems.floydSam[0]} />
 
 ### Solution - APSP
 
@@ -212,7 +284,7 @@ int main() {
 
 ### Problems
 
-<Problems problems={'floydProbs'} />
+<Problems problems={problems.floydProbs} />
 
 ## Modified Dijkstra
 
@@ -223,7 +295,7 @@ will still give correct results if there are no negative cycles. However, the
 same running time bound no longer applies, as demonstrated by subtasks 1-6 of
 the following problem.
 
-<Problems problems={'dijk'} />
+<Problems problems={problems.dijk} />
 
 This problem forces you to analyze the inner workings of the three shortest-path
 algorithms we presented here. It also teaches you about how problemsetters could

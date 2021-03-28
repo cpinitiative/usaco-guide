@@ -12,6 +12,7 @@ import '../../styles/assignment-progress-view.css';
 import FirebaseContext from '../../context/FirebaseContext';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export default function AssignmentProgressView({
   problems,
@@ -20,7 +21,7 @@ export default function AssignmentProgressView({
   title,
 }) {
   const firebase = useContext(FirebaseContext);
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const fullScreenHandlers = useFullScreenHandle();
   const [studentNameInfo, setStudentNameInfo] = useState([]);
   const [showStudentEmails, setShowStudentEmails] = useState(false);
