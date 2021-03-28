@@ -89,10 +89,14 @@ async function main() {
               (acc: Record<string, any>, el: Record<string, any>) => {
                 const { tableID, ___legacyUniqueId, ...problemData } = el;
                 if (problemData.solId) {
-                  // @thecodingwizard todo
                   const oldUniqueId = solIdToProblemURLMap[problemData.solId];
                   const newUniqueId = problemData.uniqueId;
-                  console.log(oldUniqueId + ' ==> ' + newUniqueId);
+                  console.log(
+                    oldUniqueId +
+                      ' ==> ' +
+                      newUniqueId +
+                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+                  );
 
                   oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
                   newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
@@ -136,6 +140,7 @@ async function main() {
         .join('\n')
   );
   fs.readdir('./solutions/', async (err, filesArr) => {
+    console.log(filesArr);
     await Promise.all(
       filesArr.map(name => {
         if (name.slice(-4) === '.mdx') {
@@ -158,6 +163,15 @@ async function main() {
               return Promise.reject();
             }
             const frontMatterId = lines[1].replace('id: ', '');
+            // TODO @thecodingwizard
+            console.log(
+              frontMatterId +
+                ' >>> ' +
+                oldProblemIdToNewProblemIdMap[frontMatterId] +
+                (frontMatterId === oldProblemIdToNewProblemIdMap[frontMatterId]
+                  ? 'X'
+                  : '[CHANGE]')
+            );
             if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
               lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
             }
