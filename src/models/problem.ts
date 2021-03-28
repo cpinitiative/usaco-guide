@@ -306,7 +306,7 @@ export class Problem {
       id = `kattis-${this.id}`;
     } else if (this.source === 'CF') {
       let num = this.id.match(/([0-9]+)/g)[0];
-      let char = this.id.match(/\/([A-z0-9]+)$/g)[1];
+      let char = this.id.match(/\/([A-z0-9]+)$/)[1];
       if (this.id.indexOf('gym') !== -1) {
         id = `cfgym-${num}${char}`;
       } else {
