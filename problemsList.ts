@@ -14538,8 +14538,8 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
         solutionMetadata: prob.solutionMetadata || {
           kind: 'none',
         },
-        solID: problem.solID,
-        tableID: problem.tableID,
+        solId: problem.solID,
+        tableId: problem.tableID,
       };
     }),
   },
@@ -14550,7 +14550,7 @@ export default data;
 export const solIdToProblemURLMap = data.data.allMdx.edges.reduce(
   (acc, cur) => {
     cur.node.problems.forEach(prob => {
-      acc[prob.solID] = prob.uniqueID;
+      acc[prob.solId] = prob.uniqueId;
     });
     return acc;
   },
