@@ -98,8 +98,11 @@ async function main() {
                       (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
                   );
 
-                  oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
+                  oldProblemIdToNewProblemIdMap[
+                    problemData.solId
+                  ] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] =
+                    problemData.solId;
                 }
                 if (acc[tableID]) {
                   acc[tableID].push(problemData);
@@ -173,7 +176,7 @@ async function main() {
                   : '[CHANGE]')
             );
             if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
-              lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
+              // lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
             }
             return new Promise<void>((res, rej) => {
               fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
