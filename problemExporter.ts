@@ -1,5 +1,6 @@
 import allProblems from './problemsList';
 import * as fs from 'fs';
+import { Problem, ProblemDifficulty } from './src/models/problem';
 
 const files = {};
 async function main() {
@@ -29,6 +30,8 @@ async function main() {
     )
   );
   const fileWritePromises = [];
+  const oldProblemIdToNewProblemIdMap = {};
+  const newProblemIdToOldProblemIdMap = {};
   allProblems.data.allMdx.edges.forEach(({ node: module }) => {
     const { id, title } = module.frontmatter;
     const divisionMap = {
@@ -41,6 +44,7 @@ async function main() {
     };
     const division = module.fields.division;
     const problems = module.problems;
+
     if (!problems) return;
     const divisionFolder = divisionMap[division];
     let moduleFileName = files[divisionFolder].find(
@@ -83,7 +87,16 @@ async function main() {
           JSON.stringify(
             problems.reduce(
               (acc: Record<string, any>, el: Record<string, any>) => {
-                const { tableID, ...problemData } = el;
+                const { tableID, ___legacyUniqueId, ...problemData } = el;
+                if (problemData.solID) {
+                  // @thecodingwizard todo
+                  const oldUniqueId = '??????????????';
+                  const newUniqueId = problemData.uniqueId;
+                  console.log(oldUniqueId + ' ==> ' + newUniqueId);
+
+                  oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
+                }
                 if (acc[tableID]) {
                   acc[tableID].push(problemData);
                 } else {
@@ -104,6 +117,65 @@ async function main() {
     );
   });
   await Promise.all(fileWritePromises);
+  fs.writeFileSync(
+    './oldToNewProblemId.json',
+    JSON.stringify(oldProblemIdToNewProblemIdMap, null, 2)
+  );
+  fs.writeFileSync(
+    './newToOldProblemId.json',
+    JSON.stringify(newProblemIdToOldProblemIdMap, null, 2)
+  );
+  fs.writeFileSync(
+    './src/redirects.txt',
+    `# FROM-URL\tTO-URL\n` +
+      Object.keys(oldProblemIdToNewProblemIdMap)
+        .map(
+          key =>
+            `/solutions/${key}\t/problem/solution/${oldProblemIdToNewProblemIdMap[key]}`
+        )
+        .join('\n')
+  );
+  fs.readdir('./solutions/', async (err, filesArr) => {
+    await Promise.all(
+      filesArr.map(name => {
+        if (name.slice(-4) === '.mdx') {
+          return new Promise((resolve, reject) =>
+            fs.readFile('./solutions/' + name, (err, data) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(data);
+              }
+            })
+          ).then(data => {
+            const lines = (data + '').split('\n');
+            if (lines[0] !== '---' || lines[5] !== '---') {
+              console.log(`skipped ${name} due to unexpected frontmatter`);
+              return Promise.resolve();
+            }
+            if (lines[1].substring(0, 4) !== 'id: ') {
+              console.log(
+                `skipped ${name} due to unexpected frontmatter ID value`
+              );
+              return Promise.resolve();
+            }
+            const frontMatterId = lines[1].replace('id: ', '');
+            lines[1] = 'id: ' + 'hi'; //oldProblemIdToNewProblemIdMap[frontMatterId];
+            return new Promise<void>((res, rej) => {
+              fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
+                if (err) {
+                  rej(err);
+                } else {
+                  res();
+                }
+              });
+            });
+          });
+        }
+        return Promise.resolve();
+      })
+    );
+  });
 }
 main().then(() => {
   console.log('DONE');
