@@ -1,6 +1,7 @@
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
+import { slug } from 'github-slugger';
 
 const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
@@ -226,6 +227,30 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
       };
 };
 
+// Checks if a given source is USACO
+const isUsaco = source => {
+  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
+  for (let ind = 0; ind < posi.length; ++ind) {
+    if (source.includes(posi[ind])) return true;
+  }
+  if (source.startsWith('20')) {
+    // I think this is for the division list -- the source in this case is like 2015 December or something
+    const posi = ['December', 'January', 'February', 'US Open'];
+    for (let ind = 0; ind < posi.length; ++ind) {
+      if (source.endsWith(posi[ind])) return true;
+    }
+  }
+  return false;
+};
+
+export function getProblemURL(
+  problem: Pick<ProblemInfo, 'source' | 'name'> & { [x: string]: any }
+) {
+  return `/problems/${
+    isUsaco(problem.source) ? 'usaco' : slug(problem.source)
+  }-${slug(problem.name)}`;
+}
+
 // legacy code follows
 
 type ProblemSolution = {
@@ -252,20 +277,6 @@ type ProblemSolution = {
   sketch?: string;
 };
 
-const isUsaco = source => {
-  // console.log("IS USACO",source)
-  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-  for (let ind = 0; ind < posi.length; ++ind) {
-    if (source.includes(posi[ind])) return true;
-  }
-  if (source.startsWith('20')) {
-    const posi = ['December', 'January', 'February', 'US Open'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.endsWith(posi[ind])) return true;
-    }
-  }
-  return false;
-};
 const isExternal = link => {
   return link.startsWith('http');
 };
@@ -295,7 +306,7 @@ export class Problem {
       id = `kattis-${this.id}`;
     } else if (this.source === 'CF') {
       let num = this.id.match(/([0-9]+)/g)[0];
-      let char = this.id[this.id.length - 1];
+      let char = this.id.match(/\/([A-z0-9]+)$/g)[0];
       if (this.id.indexOf('gym') !== -1) {
         id = `cfgym-${num}${char}`;
       } else {

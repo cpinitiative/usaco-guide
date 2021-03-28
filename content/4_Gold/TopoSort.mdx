@@ -11,6 +11,54 @@ description:
 frequency: 1
 ---
 
+export const problems = {
+	sample: [new Problem('CSES', 'Course Schedule', '1679', 'Easy', false, [])],
+	dir: [new Problem('CSES', 'Round Trip II', '1678', 'Easy', false, ['Cycle'])],
+	dp: [new Problem('CSES', 'Longest Flight Route', '1680', 'Easy', false, [])],
+	general: [
+		new Problem(
+			'CSES',
+			'Game Routes',
+			'1681',
+			'Easy',
+			true,
+			['TopoSort'],
+			'cses-1681'
+		),
+		new Problem(
+			'Kattis',
+			'Quantum Superposition',
+			'quantumsuperposition',
+			'Easy',
+			true,
+			['TopoSort'],
+			'kattis-quantum'
+		),
+		new Problem(
+			'Gold',
+			'Timeline',
+			'1017',
+			'Easy',
+			false,
+			['TopoSort'],
+			'not explicitly given, but graph is a DAG'
+		),
+		new Problem('Gold', 'Milking Order', '838', 'Normal', false, [
+			'TopoSort',
+			'Binary Search',
+		]),
+		new Problem(
+			'CSES',
+			'Course Schedule II',
+			'1757',
+			'Hard',
+			false,
+			['TopoSort'],
+			'cses-1757'
+		),
+	],
+};
+
 To review, a **directed** graph consists of edges that can only be traversed in
 one direction. Additionally, a **acyclic** graph defines a graph which does not
 contain cycles, meaning you are unable to traverse across one or more edges and
@@ -20,7 +68,7 @@ edges which can only be traversed in one direction and does not contain cycles.
 
 ## Topological Sort
 
-<FocusProblem problem="sample" />
+<FocusProblem problem={problems.sample[0]} />
 
 A [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of a
 directed acyclic graph is a linear ordering of its vertices such that for every
@@ -181,7 +229,7 @@ public class CourseSchedule {
 
 ### Finding a Cycle
 
-<FocusProblem problem="dir" />
+<FocusProblem problem={problems.dir[0]} />
 
 We can modify the algorithm above to return a directed cycle in the case where a
 topological sort does not exist. To find the cycle, we add each node we visit
@@ -438,7 +486,7 @@ dynamic programming on the graph if we process the states in an order that
 guarantees for every edge $u\to v$ that $u$ is processed before $v$.
 Fortunately, this is the exact definition of a topological sort!
 
-<FocusProblem problem="dp" />
+<FocusProblem problem={problems.dp[0]} />
 
 In this task, we must find the longest path in a DAG.
 
@@ -765,4 +813,4 @@ public class Main {
 
 ## Problems
 
-<Problems problems={'general'} />
+<Problems problems={problems.general} />

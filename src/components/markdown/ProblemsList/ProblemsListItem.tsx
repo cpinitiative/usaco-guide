@@ -13,6 +13,7 @@ import styled, { css } from 'styled-components';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
+import { useDarkMode } from '../../../context/DarkModeContext';
 
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
@@ -55,7 +56,7 @@ export const difficultyClasses = {
 };
 
 export default function ProblemsListItem(props: ProblemsListItemProps) {
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const { problem } = props;
   const id = `problem-${problem.uniqueId}`;
