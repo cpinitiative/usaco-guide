@@ -26,6 +26,7 @@ import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
 } from '../../../content/ordering';
+import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
@@ -124,41 +125,13 @@ export default function MarkdownLayout({
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
 
-  // console.log(markdownData)
-  // console.log(moduleLinks)
-  // console.log(userProgressOnProblems)
-  const problemIDs = [];
-  const activeIDs = [];
-  const appearsIn = [];
-  let uniqueID = '';
-  const probToModule = {};
-
-  // for (const moduleLink of moduleLinks) {
-  //   for (const problem of moduleLink.probs) {
-  //     const uniqueID = problem.uniqueID;
-  //     probToModule[uniqueID] = module.id;
-  //   }
-  // }
-  //
+  let activeIDs = [];
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
-    // const ind = moduleLinks.findIndex(link => link.id === markdownData.id);
-    // // oops how to assert not -1
-    // for (const problem of moduleLinks[ind].probs) {
-    //   const uniqueID = problem.uniqueID;
-    //   problemIDs.push(uniqueID);
-    // }
-  } // else {
-  //   moduleLinks.forEach(link => {
-  //     for (const problem of link.probs) {
-  //       if (problem.solID === markdownData.id) {
-  //         activeIDs.push(link.id);
-  //         appearsIn.push(link.url);
-  //         uniqueID = problem.uniqueID;
-  //       }
-  //     }
-  //   });
-  // }
+  } else {
+    const problemSolutionContext = React.useContext(ProblemSolutionContext);
+    activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
+  }
 
   // @ts-ignore
   return (
@@ -167,8 +140,7 @@ export default function MarkdownLayout({
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
         activeIDs,
-        appearsIn,
-        uniqueID,
+        uniqueID: null, // legacy, remove when classes is removed
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,
@@ -186,10 +158,7 @@ export default function MarkdownLayout({
             <ContentContainer tableOfContents={tableOfContents}>
               <NotSignedInWarning />
 
-              <ModuleHeaders
-                problemIDs={problemIDs}
-                moduleLinks={moduleLinks}
-              />
+              <ModuleHeaders moduleLinks={moduleLinks} />
 
               <div className={tableOfContents.length > 1 ? 'xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />

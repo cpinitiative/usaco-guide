@@ -14,8 +14,7 @@ const MarkdownLayoutContext = createContext<{
   sidebarLinks: MarkdownLayoutSidebarModuleLinkInfo[];
   // active module IDs: the current module or all the module IDs that the internal solution problem appears in
   activeIDs: string[];
-  // for internal solutions only, list of module IDs that this problem appears in
-  appearsIn: string[];
+  // this should be obsolete -- only classes should use this. we can get rid of this once we get rid of classes
   uniqueID: string;
   isMobileNavOpen: boolean;
   setIsMobileNavOpen: (x: boolean) => void;
