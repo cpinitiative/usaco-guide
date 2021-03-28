@@ -182,9 +182,9 @@ export function DivisionList(props): JSX.Element {
   for (const edge of data.allProblemInfo.edges) {
     const problem = edge.node;
     const uniqueId = problem.uniqueId;
-    probToLink[uniqueId] = `${
-      moduleIDToURLMap[problem.module.frontmatter.id]
-    }/#problem-${uniqueId}`;
+    probToLink[uniqueId] =
+      problem.module &&
+      `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${uniqueId}`;
     probToURL[uniqueId] = problem.url;
     const prevTags = probToTags[uniqueId] || [];
     const allTags = prevTags.concat(problem.tags);
@@ -194,14 +194,6 @@ export function DivisionList(props): JSX.Element {
     // console.log('NEW TAGS', probToTags[uniqueID]);
     probToSol[uniqueId] = problem.solution;
   }
-  // todo @jeffrey migrate extra USACO problems
-  // for (const problem of extraProbs) {
-  //   const uniqueID = problem.uniqueID;
-  //   if (problem.tags && problem.tags.length > 0)
-  //     probToTags[uniqueID] = problem.tags;
-  //   if (problem.difficulty) probToDifficulty[uniqueID] = problem.difficulty;
-  //   if (problem.solID) probToSol[uniqueID] = problem.solID;
-  // }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: DivisionProblemInfo[] };
   } = {};
@@ -229,11 +221,6 @@ export function DivisionList(props): JSX.Element {
       if (contest in contestToFraction[division]) {
         fraction = contestToFraction[division][contest].shift();
       }
-      // const prob: DivisionProblemInfo = {
-      //   uniqueId: `usaco-${probInfo[0]}`,
-      //   name: probInfo[2],
-      //   url:
-      // }
       const id = `usaco-${probInfo[0]}`;
       const prob: DivisionProblemInfo = {
         name: probInfo[2],
@@ -252,25 +239,6 @@ export function DivisionList(props): JSX.Element {
             probInfo[0], // problems not in modules won't have URLs
         source: contest,
       };
-      // const prob = new Problem(
-      //   contest, // source
-      //   probInfo[2], // title
-      //   probInfo[0], // id
-      //   probToDifficulty[uniqueID] as
-      //     | 'Very Easy'
-      //     | 'Easy'
-      //     | 'Normal'
-      //     | 'Hard'
-      //     | 'Very Hard'
-      //     | 'Insane'
-      //     | null, // difficulty
-      //   null, // starred
-      //   probToTags[uniqueID], // tags
-      //   probToSol[uniqueID],
-      //   'ok',
-      //   fraction,
-      //   probToLink[uniqueID]
-      // );
       let year = +probInfo[1].substring(0, 4);
       if (probInfo[1].includes('December')) {
         year++;
@@ -281,8 +249,6 @@ export function DivisionList(props): JSX.Element {
       }
       divisionToSeasonToProbs[division][season].push(prob);
     }
-  // const [currentDivision, setDivision] = useState(divisions[0]);
-  // const [currentSeason, setSeason] = useState(seasons[seasons.length - 1]);
   const userSettings = useContext(UserDataContext);
 
   let curDivision =
