@@ -88,9 +88,9 @@ async function main() {
             problems.reduce(
               (acc: Record<string, any>, el: Record<string, any>) => {
                 const { tableID, ___legacyUniqueId, ...problemData } = el;
-                if (problemData.solID) {
+                if (problemData.solId) {
                   // @thecodingwizard todo
-                  const oldUniqueId = solIdToProblemURLMap[problemData.solID];
+                  const oldUniqueId = solIdToProblemURLMap[problemData.solId];
                   const newUniqueId = problemData.uniqueId;
                   console.log(oldUniqueId + ' ==> ' + newUniqueId);
 
