@@ -1,5 +1,6 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
 import extractSearchableText from './extract-searchable-text';
+import { AlgoliaProblemInfo, ProblemInfo } from '../models/problem';
 
 const pageQuery = `{
   pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
@@ -32,37 +33,33 @@ function pageToAlgoliaRecord({
 }
 
 const problemsQuery = `{
-  data: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
+  data: allProblemInfo {
     edges {
       node {
-        frontmatter {
-          id
-          title
-        }
-        problems {
-          source
-          name
-          id
-          difficulty
-          starred
-          tags
-          solID
-          solQuality
+        uniqueId
+        name
+        source
+        tags
+        url
+        isStarred
+        difficulty
+        solution {
+          kind
+          label
+          labelTooltip
           url
-          uniqueID
+          sketch
+        }
+        module {
+          frontmatter {
+            id
+            title
+          }
         }
       }
     }
   }
 }`;
-
-function problemToAlgoliaRecord({ uniqueID, ...rest }, problemModules) {
-  return {
-    objectID: uniqueID,
-    ...rest,
-    problemModules,
-  };
-}
 
 const queries = [
   {
@@ -76,26 +73,36 @@ const queries = [
   },
   {
     query: problemsQuery,
-    transformer: ({ data }) => {
-      let res = [];
-      let problemModules = {};
-      data.data.edges.forEach(edge => {
-        edge.node.problems.forEach(x => {
-          if (!(x.id in problemModules)) {
-            problemModules[x.id] = [];
-          }
-          problemModules[x.id].push({
-            id: edge.node.frontmatter.id,
-            title: edge.node.frontmatter.title,
+    transformer: ({ data }): AlgoliaProblemInfo[] => {
+      let res: AlgoliaProblemInfo[] = [];
+      data.data.edges.forEach(({ node }) => {
+        // some problems appear in multiple modules
+        let existingProblem = res.find(x => x.objectID === node.uniqueId);
+        const moduleInfo = {
+          id: node.module.frontmatter.id,
+          title: node.module.frontmatter.title,
+        };
+        if (existingProblem) {
+          existingProblem.problemModules.push(moduleInfo);
+        } else {
+          res.push({
+            objectID: node.uniqueId,
+            name: node.name,
+            source: node.source,
+            tags: node.tags,
+            url: node.url,
+            difficulty: node.difficulty,
+            isStarred: node.isStarred,
+            // this removes null fields from the problem info solution
+            // graphql doesn't do this for us so we need to do it manually
+            solution: node.solution
+              ? (Object.fromEntries(
+                  Object.entries(node.solution).filter(([_, v]) => v != null)
+                ) as any)
+              : null,
+            problemModules: [moduleInfo],
           });
-        });
-      });
-      data.data.edges.forEach(edge => {
-        edge.node.problems.forEach(x => {
-          if (!!res.find(existing => existing.objectID === x.uniqueID)) return;
-
-          res.push(problemToAlgoliaRecord(x, problemModules[x.id]));
-        });
+        }
       });
       return res;
     },
@@ -103,16 +110,13 @@ const queries = [
     matchFields: [
       'source',
       'name',
-      'id',
-      'difficulty',
-      'starred',
-      'solID',
-      'solQuality',
+      'tags',
       'url',
-      // I think these two are causing Algolia to constantly re-update bc they're arrays/objects
-      // and gatsby-plugin-algolia doesn't do deep comparisons (?)
-      // 'tags',
-      // 'problemModules',
+      'difficulty',
+      'isStarred',
+      'tags',
+      'problemModules',
+      'solution',
     ],
   },
 ];

@@ -40,27 +40,28 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         </a>
       </div>
 
-      {(hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
-        <a
-          href={
-            hit.solution.kind === 'internal'
-              ? `/problems/${hit.uniqueId}/solution`
-              : hit.solution.url
-          }
-          target="_blank"
-          className="text-gray-500 dark:text-dark-med-emphasis text-sm"
-        >
-          View Solution
-          <svg
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-4 w-4 inline ml-0.5 mb-1"
+      {hit.solution &&
+        (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
+          <a
+            href={
+              hit.solution.kind === 'internal'
+                ? `/problems/${hit.objectID}/solution`
+                : hit.solution.url
+            }
+            target="_blank"
+            className="text-gray-500 dark:text-dark-med-emphasis text-sm"
           >
-            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-          </svg>
-        </a>
-      )}
+            View Solution
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="h-4 w-4 inline ml-0.5 mb-1"
+            >
+              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+            </svg>
+          </a>
+        )}
 
       <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
         Appears In:
@@ -69,7 +70,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
         {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
           <li key={moduleID}>
             <Link
-              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.uniqueId}`}
+              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
               className="text-sm text-blue-600 dark:text-blue-400"
             >
               {moduleLabel}

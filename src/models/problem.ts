@@ -164,7 +164,8 @@ Latex *is* allowed with the new implementation of problems.
     }
   | null; // null if there's no solution for this problem
 
-export type AlgoliaProblemInfo = ProblemInfo & {
+export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
+  objectID: string;
   problemModules: [
     {
       id: string;

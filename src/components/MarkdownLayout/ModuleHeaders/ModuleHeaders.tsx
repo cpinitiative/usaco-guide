@@ -106,7 +106,6 @@ export default function ModuleHeaders({
     }
     const modulesThatHaveProblem =
       problemSolutionContext.modulesThatHaveProblem;
-    console.log(modulesThatHaveProblem);
     moduleHeaderLinks = modulesThatHaveProblem.map(module => {
       return {
         label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
