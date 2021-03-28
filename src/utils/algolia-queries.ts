@@ -83,6 +83,9 @@ const queries = [
           title: node.module.frontmatter.title,
         };
         if (existingProblem) {
+          existingProblem.tags = [
+            ...new Set([...existingProblem.tags, node.tags]),
+          ];
           existingProblem.problemModules.push(moduleInfo);
         } else {
           res.push({
