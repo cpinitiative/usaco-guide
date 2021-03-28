@@ -158,7 +158,9 @@ async function main() {
               return Promise.reject();
             }
             const frontMatterId = lines[1].replace('id: ', '');
-            lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
+            if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
+              lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
+            }
             return new Promise<void>((res, rej) => {
               fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
                 if (err) {

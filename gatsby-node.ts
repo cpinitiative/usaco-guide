@@ -11,6 +11,7 @@ import PGS from './src/components/markdown/PGS';
 import { books } from './src/utils/books';
 import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { strict as assert } from 'assert';
+import * as fs from 'fs';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -258,6 +259,27 @@ exports.onCreateNode = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
+  fs.readFileSync('./src/redirects.txt', (err, data) => {
+    if (err) throw new Error('error: ' + err);
+    (data + '')
+      .split('\n')
+      .filter(line => line.charAt(0) !== '#')
+      .map(line => {
+        const tokens = line.split('\t');
+        return {
+          from: tokens[0],
+          to: tokens[1],
+        };
+      })
+      .forEach(({ from, to }) => {
+        createRedirect({
+          fromPath: from,
+          toPath: to,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+  });
   createRedirect({
     fromPath: '/liveupdate',
     toPath: '/editor',
@@ -363,16 +385,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   modules.forEach(({ node }) => {
     if (!node.fields?.division) return;
     const path = `/${node.fields.division}/${node.frontmatter.id}`;
-    if (node.frontmatter.redirects) {
-      node.frontmatter.redirects.forEach(fromPath => {
-        createRedirect({
-          fromPath,
-          toPath: path,
-          redirectInBrowser: true,
-          isPermanent: true,
-        });
-      });
-    }
+
     createPage({
       path,
       component: moduleTemplate,
