@@ -150,17 +150,15 @@ async function main() {
           ).then(data => {
             const lines = (data + '').split('\n');
             if (lines[0] !== '---' || lines[5] !== '---') {
-              console.log(`skipped ${name} due to unexpected frontmatter`);
-              return Promise.resolve();
+              console.log(`${name}: unexpected frontmatter`);
+              return Promise.reject();
             }
             if (lines[1].substring(0, 4) !== 'id: ') {
-              console.log(
-                `skipped ${name} due to unexpected frontmatter ID value`
-              );
-              return Promise.resolve();
+              console.log(`${name}: unexpected frontmatter ID value`);
+              return Promise.reject();
             }
             const frontMatterId = lines[1].replace('id: ', '');
-            lines[1] = 'id: ' + 'hi'; //oldProblemIdToNewProblemIdMap[frontMatterId];
+            lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
             return new Promise<void>((res, rej) => {
               fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
                 if (err) {
