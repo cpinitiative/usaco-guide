@@ -1,4 +1,4 @@
-import { Problem } from '../content/models';
+import { Problem } from '../src/models/problem';
 
 // add information for problems not associated with any module
 

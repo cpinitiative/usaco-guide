@@ -1,7 +1,7 @@
 import allProblems, { solIdToProblemURLMap } from './problemsList';
 import * as fs from 'fs';
 import { Problem, ProblemDifficulty } from './src/models/problem';
-
+import extraProblems from './solutions/1_extra_usaco_probs';
 const files = {};
 async function main() {
   await Promise.all(
@@ -80,6 +80,38 @@ async function main() {
         throw new Error("couldn't locate problem.");
       }
     }
+    extraProblems
+      .map(prob => {
+        return {
+          uniqueId: prob.uniqueID,
+          name: prob.name,
+          url: prob.url,
+          source: prob.source,
+          difficulty: prob.difficulty,
+          isStarred: prob.starred,
+          tags: prob.tags,
+          solutionMetadata: prob.solutionMetadata || {
+            kind: 'none',
+          },
+          solId: prob.solID,
+        };
+      })
+      .forEach((el: Record<string, any>) => {
+        const { tableID, ___legacyUniqueId, ...problemData } = el;
+        if (problemData.solId) {
+          const oldUniqueId = solIdToProblemURLMap[problemData.solId];
+          const newUniqueId = problemData.uniqueId;
+          console.log(
+            oldUniqueId +
+              ' ==> ' +
+              newUniqueId +
+              (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+          );
+
+          oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
+          newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
+        }
+      });
     fileWritePromises.push(
       new Promise<void>((resolve, reject) => {
         fs.writeFile(
