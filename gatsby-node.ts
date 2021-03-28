@@ -163,10 +163,12 @@ exports.onCreateNode = async ({
     createParentChildLink({ parent: node, child: problemInfoNode });
   }
 
+  const isExtraProblems = node.relativePath.endsWith('extraProblems.json');
   if (
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
-    node.relativePath.match(/^[1-6]_[A-z]+.[A-z_]+\.json$/) // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
+    // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
+    (node.relativePath.match(/^[1-6]_[A-z]+.[A-z_]+\.json$/) || isExtraProblems)
   ) {
     const content = await loadNodeContent(node);
     let parsedContent;
@@ -180,7 +182,7 @@ exports.onCreateNode = async ({
     }
 
     const moduleId = parsedContent['MODULE_ID'];
-    if (!moduleId) {
+    if (!moduleId && !isExtraProblems) {
       throw new Error(
         'Module ID not found in problem JSON file: ' + node.absolutePath
       );
@@ -375,6 +377,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           } but has different information! They need to have the same name / url / source.`
         );
       }
+      // Some problems with no corresponding module gets put into extraProblems.json.
+      // If a problem has a module, then it should be removed from extraProblems.json.
+      if (!a.module || !b.module) {
+        throw new Error(
+          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
+        );
+      }
     }
     problemInfo[node.uniqueId] = node;
   });
@@ -406,7 +415,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (problemsForThisSolution.length === 0) {
       throw new Error(
         "Couldn't find corresponding problem for internal solution with frontmatter ID " +
-          node.frontmatter.id
+          node.frontmatter.id +
+          '. If this problem is no longer in any module, add it to content/extraProblems.json.'
       );
     }
     // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
