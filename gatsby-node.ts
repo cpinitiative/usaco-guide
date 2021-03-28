@@ -256,6 +256,12 @@ exports.onCreateNode = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
+  createRedirect({
+    fromPath: '/liveupdate',
+    toPath: '/editor',
+    redirectInBrowser: true,
+    isPermanent: true,
+  });
   const result = await graphql(`
     query {
       modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {

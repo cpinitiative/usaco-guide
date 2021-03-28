@@ -57,11 +57,15 @@ export default function LiveUpdatePage(props: PageProps) {
     props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
       : null;
-  const markdownStorageKey = 'guide:liveupdate:markdown';
 
-  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
+  const markdownStorageKey = 'guide:editor:markdown';
+  const [markdown, setMarkdown] = useStickyState(
+    localStorage.getItem('guide:liveupdate:markdown') || '',
+    markdownStorageKey
+  );
+  const [problems, setProblems] = useState('');
   const editor = useRef();
-
+  const [tab, setTab] = useState<'problems' | 'content'>('content');
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
 
@@ -71,8 +75,17 @@ export default function LiveUpdatePage(props: PageProps) {
 
     const result = await fetch(githubURL);
     const text = await result.text();
-
     setMarkdown(text);
+
+    const githubProblemsURL = encodeURI(
+      `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath.replace(
+        /\.mdx$/,
+        '.json'
+      )}`
+    );
+    const problemResult = await fetch(githubProblemsURL);
+    const problemText = await problemResult.text();
+    setProblems(problemText);
   };
   React.useEffect(() => {
     if (filePath) {
@@ -100,7 +113,7 @@ export default function LiveUpdatePage(props: PageProps) {
 
   return (
     <Layout>
-      <SEO title="MDX Renderer" />
+      <SEO title="Editor" />
 
       <div className="h-screen flex flex-col">
         <div className="block py-3 px-3 shadow dark:bg-gray-900 flex items-center justify-around">
@@ -118,6 +131,16 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             How to add a solution &rarr;
           </a>
+          {filePath && (
+            <button
+              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+              onClick={() =>
+                setTab(old => (old === 'content' ? 'problems' : 'content'))
+              }
+            >
+              Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
+            </button>
+          )}
           {filePath && (
             <button
               className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -155,13 +178,16 @@ export default function LiveUpdatePage(props: PageProps) {
               <div className="h-full" style={{ minWidth: '300px' }}>
                 <Editor
                   theme="vs-dark"
-                  language="markdown"
-                  value={markdown}
-                  onChange={(v, e) => setMarkdown(v)}
+                  language={tab === 'content' ? 'markdown' : 'json'}
+                  value={tab === 'content' ? markdown : problems}
+                  onChange={(v, e) =>
+                    tab === 'content' ? setMarkdown(v) : setProblems(v)
+                  }
                   options={{ wordWrap: 'on', rulers: [80] }}
                   onMount={e => {
                     editor.current = e;
                     e.getModel().updateOptions({ insertSpaces: false });
+
                     setTimeout(() => {
                       e.layout();
                       e.focus();
