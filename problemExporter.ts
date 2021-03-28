@@ -80,38 +80,46 @@ async function main() {
         throw new Error("couldn't locate problem.");
       }
     }
-    extraProblems
-      .map(prob => {
-        return {
-          uniqueId: prob.uniqueID,
-          name: prob.name,
-          url: prob.url,
-          source: prob.source,
-          difficulty: prob.difficulty,
-          isStarred: prob.starred,
-          tags: prob.tags,
-          solutionMetadata: prob.solutionMetadata || {
-            kind: 'none',
-          },
-          solId: prob.solID,
-        };
-      })
-      .forEach((el: Record<string, any>) => {
-        const { tableID, ___legacyUniqueId, ...problemData } = el;
-        if (problemData.solId) {
-          const oldUniqueId = solIdToProblemURLMap[problemData.solId];
-          const newUniqueId = problemData.uniqueId;
-          console.log(
-            oldUniqueId +
-              ' ==> ' +
-              newUniqueId +
-              (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
-          );
+    fileWritePromises.push(
+      new Promise<void>((resolve, reject) =>
+        fs.writeFile(
+          `./content/extraProblems.json`,
+          JSON.stringify(
+            extraProblems.reduce(
+              (acc: Record<string, any>, el: Record<string, any>) => {
+                const { tableID, ___legacyUniqueId, ...problemData } = el;
+                if (problemData.solId) {
+                  const oldUniqueId = solIdToProblemURLMap[problemData.solId];
+                  const newUniqueId = problemData.uniqueId;
+                  console.log(
+                    oldUniqueId +
+                      ' ==> ' +
+                      newUniqueId +
+                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+                  );
 
-          oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
-          newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
-        }
-      });
+                  oldProblemIdToNewProblemIdMap[
+                    problemData.solId
+                  ] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] =
+                    problemData.solId;
+                }
+                if (acc['EXTRA_PROBLEMS']) {
+                  acc['EXTRA_PROBLEMS'].push(problemData);
+                } else {
+                  acc['EXTRA_PROBLEMS'] = [problemData];
+                }
+                return acc;
+              },
+              {}
+            ),
+            null,
+            '\t'
+          ),
+          () => resolve()
+        )
+      )
+    );
     fileWritePromises.push(
       new Promise<void>((resolve, reject) => {
         fs.writeFile(
