@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AlgoliaProblemInfo } from '../../models/problem';
+import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { Link } from 'gatsby';
 import { Highlight } from 'react-instantsearch-dom';
@@ -45,7 +45,7 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
           <a
             href={
               hit.solution.kind === 'internal'
-                ? `/problems/${hit.objectID}/solution`
+                ? `${getProblemURL(hit)}/solution`
                 : hit.solution.url
             }
             target="_blank"

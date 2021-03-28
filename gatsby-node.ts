@@ -1,6 +1,7 @@
 import { SECTIONS } from './content/ordering';
 import importFresh = require('import-fresh');
 import {
+  getProblemURL,
   ProblemInfo,
   ProblemMetadata,
   ProblemSolutionInfo,
@@ -9,6 +10,7 @@ import {
 import PGS from './src/components/markdown/PGS';
 import { books } from './src/utils/books';
 import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
+import { strict as assert } from 'assert';
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');
@@ -291,11 +293,71 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           }
         }
       }
+
+      problems: allProblemInfo {
+        edges {
+          node {
+            uniqueId
+            name
+            url
+            tags
+            source
+            solution {
+              kind
+              label
+              labelTooltip
+              sketch
+              url
+            }
+            difficulty
+            module {
+              frontmatter {
+                id
+                title
+              }
+            }
+          }
+        }
+      }
     }
   `);
   if (result.errors) {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
+
+  // Check to make sure problems with the same unique ID have consistent information, and that there aren't duplicate slugs
+  const problems = result.data.problems.edges;
+  let problemSlugs = {}; // maps slug to problem unique ID
+  let problemInfo = {}; // maps unique problem ID to problem info
+  problems.forEach(({ node }) => {
+    let slug = getProblemURL(node);
+    if (
+      problemSlugs.hasOwnProperty(slug) &&
+      problemSlugs[slug] !== node.uniqueId
+    ) {
+      throw new Error(
+        `The problems ${problemSlugs[slug]} and ${node.uniqueId} have the same slugs!`
+      );
+    }
+    if (problemInfo.hasOwnProperty(node.uniqueId)) {
+      let a = node,
+        b = problemInfo[node.uniqueId];
+      if (a.name !== b.name || a.url !== b.url || a.source !== b.source) {
+        throw new Error(
+          `The problem ${node.uniqueId} appears in both ${
+            node.module.frontmatter.id
+          } - ${node.module.frontmatter.title} and ${
+            problemInfo[node.uniqueId].module.frontmatter.id
+          } - ${
+            problemInfo[node.uniqueId].module.frontmatter.title
+          } but has different information! They need to have the same name / url / source.`
+        );
+      }
+    }
+    problemInfo[node.uniqueId] = node;
+  });
+  // End problems check
+
   const moduleTemplate = require.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.modules.edges;
   modules.forEach(({ node }) => {
@@ -324,7 +386,42 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
   const solutions = result.data.solutions.edges;
   solutions.forEach(({ node }) => {
-    const path = `/problems/${node.frontmatter.id}/solution`;
+    // we want to find all problems that this solution can be an internal solution for
+    const problemsForThisSolution = problems.filter(
+      ({ node }) => node.uniqueId === node.frontmatter.id
+    );
+    if (problemsForThisSolution.length === 0) {
+      throw new Error(
+        "Couldn't find corresponding problem for internal solution with frontmatter ID " +
+          node.frontmatter.id
+      );
+    }
+    // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
+    const problemsThatAreMissingInternalSolution = problemsForThisSolution.filter(
+      x => x.node.solution?.kind !== 'internal'
+    );
+    if (problemsThatAreMissingInternalSolution.length > 0) {
+      problemsThatAreMissingInternalSolution.forEach(({ node }) => {
+        console.error(
+          'Problem ' +
+            node.uniqueId +
+            " isn't linked to its corresponding internal solution in module " +
+            node.module.frontmatter.title +
+            ' - ' +
+            node.module.frontmatter.id
+        );
+      });
+      throw new Error(
+        'Internal solution ' +
+          node.uniqueId +
+          " isn't linked to all of its problems (see above). Did you forget to update the solution metadata of a module after adding an internal solution?"
+      );
+    }
+    const problem = problemsForThisSolution[0];
+    const path = `${getProblemURL({
+      source: problem.source,
+      name: problem.name,
+    })}/solution`;
     if (node.frontmatter.redirects) {
       node.frontmatter.redirects.forEach(fromPath => {
         createRedirect({

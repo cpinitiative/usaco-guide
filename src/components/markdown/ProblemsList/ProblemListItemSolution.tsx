@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Tooltip from '../../Tooltip/Tooltip';
 import TextTooltip from '../../Tooltip/TextTooltip';
-import { ProblemInfo } from '../../../models/problem';
+import { getProblemURL, ProblemInfo } from '../../../models/problem';
 import { Anchor } from './ProblemsListItem';
 
 type ProblemListItemSolutionProps = {
@@ -75,7 +75,7 @@ export default function ProblemListItemSolution(
     contents = (
       <a
         className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
-        href={`/problems/${problem.uniqueId}/solution`}
+        href={`${getProblemURL(problem)}/solution`}
         target="_blank"
       >
         <div className="text-left">Internal Sol</div>
