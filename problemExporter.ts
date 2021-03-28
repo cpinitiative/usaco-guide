@@ -43,12 +43,39 @@ async function main() {
     const problems = module.problems;
     if (!problems) return;
     const divisionFolder = divisionMap[division];
-    const moduleFileName = files[divisionFolder].find(
+    let moduleFileName = files[divisionFolder].find(
       // find ignoring case
       name =>
         name.toLowerCase().replace(/[\- _]/g, '') ===
         id.toLowerCase().replace(/[\- _]/g, '')
     );
+    if (!moduleFileName) {
+      if (id === 'faster-hashmap') {
+        moduleFileName = 'Faster_Hash';
+      } else if (id === 'knapsack') {
+        moduleFileName = 'Knapsack_DP';
+      } else if (id === 'ff') {
+        moduleFileName = 'Flood_Fill';
+      } else if (id === 'lambda') {
+        moduleFileName = 'Lambdas';
+      } else if (id === 'oly') {
+        moduleFileName = 'Olympiads';
+      } else if (id === 'resources-learning-to-code') {
+        moduleFileName = 'Learning_to_Code';
+      } else if (id === 'resources-usa') {
+        moduleFileName = 'Olympiads';
+      } else {
+        console.log({
+          division,
+          divisionFolder,
+          moduleFileName,
+          id,
+          firstProblem: problems ? problems[0] : null,
+          title,
+        });
+        throw new Error("couldn't locate problem.");
+      }
+    }
     fileWritePromises.push(
       new Promise<void>((resolve, reject) => {
         fs.writeFile(
