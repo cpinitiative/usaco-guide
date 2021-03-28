@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { createContext, useReducer, useState, useContext } from 'react';
+import {
+  createContext,
+  useReducer,
+  useState,
+  useContext,
+  ReactNode,
+} from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
 import UserLang, { UserLangAPI } from './properties/userLang';
@@ -26,7 +32,7 @@ import UserProgressOnProblemsProperty, {
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
-import firebase from 'firebase';
+import firebaseType from 'firebase';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
@@ -113,7 +119,7 @@ type UserDataContextAPI = UserLangAPI &
   LastVisitAPI &
   UserClassesAPI &
   AdSettingsAPI & {
-    firebaseUser: firebase.User;
+    firebaseUser: firebaseType.User;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
@@ -148,20 +154,46 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {},
-  setHideTagsAndDifficulty: x => {},
-  setDivisionTableQuery: x => {},
-  setLang: x => {},
-  setLastReadAnnouncement: x => {},
-  setLastViewedModule: x => {},
-  setLastVisitDate: x => {},
-  setModuleProgress: (moduleID, progress) => {},
-  setShowIgnored: x => {},
-  setUserClasses: classes => {},
-  setUserProgressOnProblems: (problem, status) => {},
+  setDarkMode: x => {
+    // do nothing
+  },
+  setHideTagsAndDifficulty: x => {
+    // do nothing
+  },
+  setDivisionTableQuery: x => {
+    // do nothing
+  },
+  setLang: x => {
+    // do nothing
+  },
+  setLastReadAnnouncement: x => {
+    // do nothing
+  },
+  setLastViewedModule: x => {
+    // do nothing
+  },
+  setLastVisitDate: x => {
+    // do nothing
+  },
+  setModuleProgress: (moduleID, progress) => {
+    // do nothing/
+  },
+  setShowIgnored: x => {
+    // do nothing
+  },
+  setUserClasses: classes => {
+    // do nothing
+  },
+  setUserProgressOnProblems: (problem, status) => {
+    // do nothing
+  },
   showIgnored: false,
-  signIn: () => {},
-  signOut: () => {},
+  signIn: () => {
+    // do nothing
+  },
+  signOut: () => {
+    // do nothing
+  },
   userClasses: [],
   userClassIds: [],
   userProgressOnModules: {},
@@ -171,10 +203,12 @@ const UserDataContext = createContext<UserDataContextAPI>({
   adSettings: {
     hideMarch2021: false,
   },
-  setAdSettings: () => {},
+  setAdSettings: () => {
+    // do nothing
+  },
 });
 
-export const UserDataProvider = ({ children }) => {
+export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const firebase = useFirebase();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
@@ -192,7 +226,7 @@ export const UserDataProvider = ({ children }) => {
 
   // const [onlineUsers, setOnlineUsers] = useState(0);
 
-  const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
+  const [, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
     api.setTriggerRerenderFunction(triggerRerender)
   );
@@ -216,7 +250,7 @@ export const UserDataProvider = ({ children }) => {
   //   // });
   // });
 
-  // just once, ask all API's to initialize their values from localStorage
+  // just once, ask all APIs to initialize their values from localStorage
   React.useEffect(() => {
     UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
   }, []);
@@ -273,12 +307,16 @@ export const UserDataProvider = ({ children }) => {
 
   const userData = {
     firebaseUser,
-    signIn: () => {
-      if (firebase)
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    signIn: (): Promise<void> => {
+      if (firebase) {
+        return firebase
+          .auth()
+          .signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      }
+      return Promise.resolve();
     },
-    signOut: () => {
-      firebase
+    signOut: (): Promise<void> => {
+      return firebase
         .auth()
         .signOut()
         .then(() => {
@@ -298,7 +336,7 @@ export const UserDataProvider = ({ children }) => {
       };
     }, {}),
 
-    getDataExport: () => {
+    getDataExport: (): Record<string, any> => {
       return UserDataContextAPIs.reduce(
         (acc, api) => ({ ...acc, ...api.exportValue() }),
         {}

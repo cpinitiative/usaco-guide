@@ -193,7 +193,6 @@ export function DivisionList(props): JSX.Element {
     const prevTags = probToTags[uniqueId] || [];
     const allTags = prevTags.concat(problem.tags);
     // console.log('ALL TAGS', allTags, prevTags, problem.tags);
-    // @ts-ignore @jeffrey help
     probToTags[uniqueId] = [...new Set(allTags)];
     // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
     // console.log('NEW TAGS', probToTags[uniqueID]);
