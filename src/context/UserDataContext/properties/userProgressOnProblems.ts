@@ -26,10 +26,8 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     );
 
     if (!currentValue.version || currentValue.version < 2) {
-      console.log('importing value from object', currentValue);
       this.migrateLegacyValue(currentValue);
     } else {
-      console.log('already migrated', currentValue);
       this.progressValue = currentValue;
     }
 
@@ -45,11 +43,12 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       (acc, key) => {
         const migratedKey = problemURLToIdMap[key];
         if (!migratedKey) {
-          console.log(
+          console.warn(
             'Dropping problem URL ' +
               key +
               ' because it was not found in the map.'
           );
+
           return acc;
         }
         return { ...acc, [migratedKey]: legacyValue[key] };
@@ -59,12 +58,9 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     this.progressValue = migratedValue;
     this.writeValueToLocalStorage();
     if (this.firebaseUserDoc) {
-      this.firebaseUserDoc.set(
-        {
-          [this.progressStorageKey]: migratedValue,
-        },
-        { merge: true }
-      );
+      this.firebaseUserDoc.update({
+        [this.progressStorageKey]: migratedValue,
+      });
     }
     return migratedValue;
   };
