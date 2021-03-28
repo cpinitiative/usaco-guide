@@ -14545,3 +14545,13 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
 }));
 
 export default data;
+
+export const solIdToProblemURLMap = data.data.allMdx.edges.reduce(
+  (acc, cur) => {
+    cur.node.problems.forEach(prob => {
+      acc[prob.solID] = prob.uniqueID;
+    });
+    return acc;
+  },
+  {}
+);

@@ -1,4 +1,4 @@
-import allProblems from './problemsList';
+import allProblems, { solIdToProblemURLMap } from './problemsList';
 import * as fs from 'fs';
 import { Problem, ProblemDifficulty } from './src/models/problem';
 
@@ -90,7 +90,7 @@ async function main() {
                 const { tableID, ___legacyUniqueId, ...problemData } = el;
                 if (problemData.solID) {
                   // @thecodingwizard todo
-                  const oldUniqueId = '??????????????';
+                  const oldUniqueId = solIdToProblemURLMap[problemData.solID];
                   const newUniqueId = problemData.uniqueId;
                   console.log(oldUniqueId + ' ==> ' + newUniqueId);
 
@@ -148,7 +148,7 @@ async function main() {
               }
             })
           ).then(data => {
-            const lines = (data + '').split('\n');
+            const lines = (data + '').split(/\r?\n/);
             if (lines[0] !== '---' || lines[5] !== '---') {
               console.log(`${name}: unexpected frontmatter`);
               return Promise.reject();
