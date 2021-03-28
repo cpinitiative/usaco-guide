@@ -7,35 +7,47 @@ author: Andi Qu
 
 ## TL;DR
 
-Split the graph into its biconnected components. Then use complementary counting and subtract the number of bad triples from the total.
+Split the graph into its biconnected components. Then use complementary counting
+and subtract the number of bad triples from the total.
 
 ## Intuition
 
-Instead of finding the number of good triples, find the number of bad triples and subtract that from the number of all triples. This is called **complementary counting** and is useful in many counting problems.
+Instead of finding the number of good triples, find the number of bad triples
+and subtract that from the number of all triples. This is called **complementary
+counting** and is useful in many counting problems.
 
-What makes a bad triple? A triple $(S, C, F)$ is bad if the paths from $S$ to $C$ and $C$ to $F$ both pass through some bottleneck.
+What makes a bad triple? A triple $(S, C, F)$ is bad if the paths from $S$ to
+$C$ and $C$ to $F$ both pass through some bottleneck.
 
-This suggests that our solution will involve articulation points. Since this problem is about reachability, we'll probably use biconnected components as well.
+This suggests that our solution will involve articulation points. Since this
+problem is about reachability, we'll probably use biconnected components as
+well.
 
 ## Splitting into BCCs
 
 Imagine we have a second graph where:
 
 - Each biconnected component is also a node.
-- Each node in the original graph has an edge going to all biconnected components it's a part of.
+- Each node in the original graph has an edge going to all biconnected
+  components it's a part of.
 - There are no other edges.
 
-Notice how this graph is a tree - if there is a cycle, then the biconnected components that are part of that cycle form a larger biconnected component by definition.
+Notice how this graph is a tree - if there is a cycle, then the biconnected
+components that are part of that cycle form a larger biconnected component by
+definition.
 
 ## Counting the Bad Triples
 
 Consider some articulation point $P$ that is part of some BCC $B$.
 
-If we remove $P$ from the graph, we are left with the smaller tree containing $B$ and several other smaller trees.
+If we remove $P$ from the graph, we are left with the smaller tree containing
+$B$ and several other smaller trees.
 
-If $S$ and $F$ are both in the same smaller tree that doesn't contain $B$, then $C$ can't be in the smaller tree containing $B$.
+If $S$ and $F$ are both in the same smaller tree that doesn't contain $B$, then
+$C$ can't be in the smaller tree containing $B$.
 
-The sum of such pairs $(S, F)$ is thus the number of bad triples each pair $(B, P)$ contributes to the total number of bad triples.
+The sum of such pairs $(S, F)$ is thus the number of bad triples each pair
+$(B, P)$ contributes to the total number of bad triples.
 
 We can do a DFS to count these pairs.
 

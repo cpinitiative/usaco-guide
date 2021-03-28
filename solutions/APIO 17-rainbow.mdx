@@ -13,38 +13,54 @@ Euler's formula + a suitable data structure for 2D range queries.
 
 ### Intuition
 
-In this problem, we're asked to count the number of contiguous areas of cells on several flat rectangles. Such areas are separated by river segments and rectangle boundaries.
+In this problem, we're asked to count the number of contiguous areas of cells on
+several flat rectangles. Such areas are separated by river segments and
+rectangle boundaries.
 
 Where else do we count the number of areas on a flat surface?
 
-That's right - we use Euler's formula to count the number of faces of a [planar graph](http://discrete.openmathbooks.org/more/mdm/sec_planar.html). This suggests that we should turn our rectangles into planar graphs.
+That's right - we use Euler's formula to count the number of faces of a
+[planar graph](http://discrete.openmathbooks.org/more/mdm/sec_planar.html). This
+suggests that we should turn our rectangles into planar graphs.
 
 ### Making the Planar Graph
 
 We can turn a rectangle into a planar graph as so:
 
 - Put temporary river segments outside the border of the rectangle.
-- For each river segment, we insert its 4 corners into a set of nodes and its 4 sides into a set of edges.
+- For each river segment, we insert its 4 corners into a set of nodes and its 4
+  sides into a set of edges.
 
 Notice how the resulting graph is planar, so we can apply Euler's formula.
 
 ### Applying Euler's Formula
 
-For a planar graph, Euler's formula is given as $F = E - V + 1 + C$, where $F$ is the number of faces (including the background face), $E$ is the number of edges, $V$ is the number of vertices, and $C$ is the number of connected components.
+For a planar graph, Euler's formula is given as $F = E - V + 1 + C$, where $F$
+is the number of faces (including the background face), $E$ is the number of
+edges, $V$ is the number of vertices, and $C$ is the number of connected
+components.
 
-Notice how $F$ in our planar graph is equal to $1 + R + A$, where $R$ is the number of river segments and $A$ is the answer to the query. This means we must subtract $R + 1$ from $F$ to get $A$.
+Notice how $F$ in our planar graph is equal to $1 + R + A$, where $R$ is the
+number of river segments and $A$ is the answer to the query. This means we must
+subtract $R + 1$ from $F$ to get $A$.
 
-Since the whole river is a big connected component, we can just check whether the river touches the bounding rectangle to determine $C$.
+Since the whole river is a big connected component, we can just check whether
+the river touches the bounding rectangle to determine $C$.
 
 Finding $E$, $V$, and $R$ is a lot more complicated though.
 
 ### Finding $E$, $V$, and $R$
 
-To find $E$, $V$, and $R$, we can use a data structure that can handle 2D range queries efficiently.
+To find $E$, $V$, and $R$, we can use a data structure that can handle 2D range
+queries efficiently.
 
-However, the coordinates of the grid can get very large, so a simple 2D BIT or segment tree won't work here.
+However, the coordinates of the grid can get very large, so a simple 2D BIT or
+segment tree won't work here.
 
-To work around this, we can either use a 2D BIT with coordinate compression or a persistent segment tree. See the sections on [offline 2D sum queries](/plat/2DRQ#2d-offline-sum-queries) or [persistent segment trees](https://usaco.guide/adv/persistent) for more details.
+To work around this, we can either use a 2D BIT with coordinate compression or a
+persistent segment tree. See the sections on
+[offline 2D sum queries](/plat/2DRQ#2d-offline-sum-queries) or
+[persistent segment trees](https://usaco.guide/adv/persistent) for more details.
 
 ## Implementation
 

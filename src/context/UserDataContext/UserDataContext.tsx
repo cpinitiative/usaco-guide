@@ -14,7 +14,6 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -27,9 +26,11 @@ import UserProgressOnProblemsProperty, {
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 import firebase from 'firebase';
+import { UserPermissionsContextProvider } from './UserPermissionsContext';
 import AdSettingsProperty, {
   AdSettingsAPI,
 } from './properties/adSettingsProperty';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -92,7 +93,7 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new HideTagsAndDifficulty(),
   new DivisionTableQuery(),
   new ShowIgnored(),
-  new DarkMode(),
+  new ThemeProperty(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
@@ -106,7 +107,7 @@ type UserDataContextAPI = UserLangAPI &
   HideTagsAndDifficultyAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
-  DarkModeAPI &
+  ThemePropertyAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
@@ -120,14 +121,11 @@ type UserDataContextAPI = UserLangAPI &
     onlineUsers: number;
     getDataExport: Function;
     importUserData: Function;
-    isAdmin: boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
-  darkMode: false,
   firebaseUser: null,
-  isAdmin: false,
   getDataExport: () => {},
   importUserData: () => {},
   hideTagsAndDifficulty: false,
@@ -148,7 +146,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {},
+  theme: 'system',
+  setTheme: x => {},
   setHideTagsAndDifficulty: x => {},
   setDivisionTableQuery: x => {},
   setLang: x => {},
@@ -188,7 +187,6 @@ export const UserDataProvider = ({ children }) => {
   }, null);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   // const [onlineUsers, setOnlineUsers] = useState(0);
 
@@ -263,7 +261,6 @@ export const UserDataProvider = ({ children }) => {
           ReactDOM.unstable_batchedUpdates(() => {
             UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
             UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-            setIsAdmin(data.isAdmin ?? false);
             setIsLoaded(true);
             triggerRerender();
           });
@@ -284,12 +281,10 @@ export const UserDataProvider = ({ children }) => {
         .then(() => {
           UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
           UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
-          setIsAdmin(false);
         });
     },
     isLoaded,
     onlineUsers: -1,
-    isAdmin,
 
     ...UserDataContextAPIs.reduce((acc, api) => {
       return {
@@ -329,7 +324,9 @@ export const UserDataProvider = ({ children }) => {
 
   return (
     <UserDataContext.Provider value={userData}>
-      {children}
+      <UserPermissionsContextProvider>
+        {children}
+      </UserPermissionsContextProvider>
     </UserDataContext.Provider>
   );
 };

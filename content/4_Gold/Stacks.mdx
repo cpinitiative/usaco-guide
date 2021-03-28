@@ -2,7 +2,8 @@
 id: stacks
 title: Stacks
 author: Darren Yao, Michael Cao
-description: 'A data structures that only allows insertion and deletion at one end.'
+description:
+  'A data structures that only allows insertion and deletion at one end.'
 prerequisites:
   - intro-ds
 frequency: 1
@@ -133,7 +134,9 @@ export const problems = {
 
 ## Stacks
 
-A stack is a **Last In First Out** (LIFO) data structure that supports three operations, all in $\mathcal{O}(1)$ time. Think of it like a real-world stack of papers.
+A stack is a **Last In First Out** (LIFO) data structure that supports three
+operations, all in $\mathcal{O}(1)$ time. Think of it like a real-world stack of
+papers.
 
 <LanguageSection>
 
@@ -185,7 +188,8 @@ System.out.println(s.size()); // 2
 
 Consider the following problem:
 
-> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
+> Given an array, $a$, of $N$ ($1 \le N \le 10^5$) integers, for every index
+> $i$, find the rightmost index $j$ such that $j < i$ and $a_i > a_j$.
 
 <Resources>
 	<Resource
@@ -209,12 +213,23 @@ Consider the following problem:
 		url="https://medium.com/@vishnuvardhan623/monotonic-stack-e9dcc4fa8c3e"
 	></Resource> -->
 
-To solve this, let's store a stack of pairs of $value, index$ and iterate over the array from left to right. For some index $i$, we will compute $\texttt{ans}[i]$, the rightmost index for $i$, as follows:
+To solve this, let's store a stack of pairs of $value, index$ and iterate over
+the array from left to right. For some index $i$, we will compute
+$\texttt{ans}[i]$, the rightmost index for $i$, as follows:
 
-- Keep popping the top element off the stack as long as $value \ge a_i$. This is because we know that the pair containing $value$ will never be the solution to any index $j > i$, since $a_i$ is less than or equal to than $value$ and has an index further to the right.
-- If $value < a_i$, set $\texttt{ans}[i]$ to $index$, because a stack stores the most recently added values first (or in this case, the rightmost ones), $index$ will contain the rightmost value which is less than $a_i$. Then, add ($a_i, i$) to the stack.
+- Keep popping the top element off the stack as long as $value \ge a_i$. This is
+  because we know that the pair containing $value$ will never be the solution to
+  any index $j > i$, since $a_i$ is less than or equal to than $value$ and has
+  an index further to the right.
+- If $value < a_i$, set $\texttt{ans}[i]$ to $index$, because a stack stores the
+  most recently added values first (or in this case, the rightmost ones),
+  $index$ will contain the rightmost value which is less than $a_i$. Then, add
+  ($a_i, i$) to the stack.
 
-The stack we used is called a **monotonic stack** because we keep popping off the top element of the stack which maintains it's monotonicity (the same property needed for algorithms like binary search) because the elements in the stack are increasing.
+The stack we used is called a **monotonic stack** because we keep popping off
+the top element of the stack which maintains it's monotonicity (the same
+property needed for algorithms like binary search) because the elements in the
+stack are increasing.
 
 ### Implementation
 

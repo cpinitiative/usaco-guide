@@ -9,11 +9,14 @@ author: Isaac Noel
 
 ## Abstract
 
-Finding the difference between sums of the upper $K/2$ elements and lower $K/2$ with two multisets.
+Finding the difference between sums of the upper $K/2$ elements and lower $K/2$
+with two multisets.
 
 <Warning>
 
-The implementation of this solution assumes familarity with [Sliding Median](/gold/sliding#problem-https://cses.fi/problemset/task/1076) as their implementations are near identical.
+The implementation of this solution assumes familarity with
+[Sliding Median](/gold/sliding#problem-https://cses.fi/problemset/task/1076) as
+their implementations are near identical.
 
 </Warning>
 
@@ -21,14 +24,34 @@ The implementation of this solution assumes familarity with [Sliding Median](/go
 
 ### The cost of a window
 
-It can be shown that it is optimal to change the values of the window to the median (left as an exercise :D). Once we find the median, we must find the sum of the distances of all elements to the median. Summing the distances for each element individually is too slow. Instead, we'll split the elements in the window into two groups and calculate the cost as described below. The smallest $K/2$ elements in the window will be in the lower group while the largest $K/2$ elements in the window will be in the upper group.
+It can be shown that it is optimal to change the values of the window to the
+median (left as an exercise :D). Once we find the median, we must find the sum
+of the distances of all elements to the median. Summing the distances for each
+element individually is too slow. Instead, we'll split the elements in the
+window into two groups and calculate the cost as described below. The smallest
+$K/2$ elements in the window will be in the lower group while the largest $K/2$
+elements in the window will be in the upper group.
 
-The cost of the window can be expressed as a function of $K,S_1,S_2$, and $M$, where $S_1$ and $S_2$ denote the sum of elements in the lower and upper group respectively, and $M$ denotes the median of the window. The cost of the lower group will be $\sum_{i=1}^{K/2} M-e_i$, and the cost of the upper group will be $\sum_{i=1}^{K/2} e_i-M$, where $e$ represents an element in the group. These expressions can be simplified to $M\times K/2 - S_1$ and $S_2 - M\times K/2$. The total cost of the window is the sum of the costs contributed by both groups, or $S_2-S_1$.
+The cost of the window can be expressed as a function of $K,S_1,S_2$, and $M$,
+where $S_1$ and $S_2$ denote the sum of elements in the lower and upper group
+respectively, and $M$ denotes the median of the window. The cost of the lower
+group will be $\sum_{i=1}^{K/2} M-e_i$, and the cost of the upper group will be
+$\sum_{i=1}^{K/2} e_i-M$, where $e$ represents an element in the group. These
+expressions can be simplified to $M\times K/2 - S_1$ and $S_2 - M\times K/2$.
+The total cost of the window is the sum of the costs contributed by both groups,
+or $S_2-S_1$.
 
 ## Implementation
 
-Finding the difference between the largest $K/2$ elements in the window and the smallest $K/2$ elements in the window is similar to finding the sliding median (more info [here](/solutions/cses-1076?lang=cpp)). To maintain the current cost, we keep track of the sum of each multiset as we insert and erase. Using the double multiset method described in the Sliding Median solution, we let the lower group include the lower $\lceil K/2 \rceil$ elements in the window. As a result, when the window size is odd, the lower group has one more than element than the desired amount. We can correct for this by adding the median to the final answer if the window size is odd. 
-
+Finding the difference between the largest $K/2$ elements in the window and the
+smallest $K/2$ elements in the window is similar to finding the sliding median
+(more info [here](/solutions/cses-1076?lang=cpp)). To maintain the current cost,
+we keep track of the sum of each multiset as we insert and erase. Using the
+double multiset method described in the Sliding Median solution, we let the
+lower group include the lower $\lceil K/2 \rceil$ elements in the window. As a
+result, when the window size is odd, the lower group has one more than element
+than the desired amount. We can correct for this by adding the median to the
+final answer if the window size is odd.
 
 ```cpp
 #include <iostream>

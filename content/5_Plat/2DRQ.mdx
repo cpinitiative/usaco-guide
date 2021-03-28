@@ -97,7 +97,7 @@ export const problems = {
 			'Hard',
 			false,
 			['2DRQ', 'Sparse SegTree'],
-			'A normal 2D sparse segment tree gets MLE, so we have to use a sparse segment tree of BBSTs (see Advanced - Treaps).'
+			'ioi-13-game'
 		),
 		new Problem(
 			'JOI',
@@ -146,7 +146,10 @@ Quite rare, I've only needed this once.
 
 ### Implementation
 
-Essentially, we just nest the loops that one would find in a 1D BIT to get N-dimensional BITs. We can then use [PIE](https://brilliant.org/wiki/principle-of-inclusion-and-exclusion-pie/) to query subrectangles.
+Essentially, we just nest the loops that one would find in a 1D BIT to get
+N-dimensional BITs. We can then use
+[PIE](https://brilliant.org/wiki/principle-of-inclusion-and-exclusion-pie/) to
+query subrectangles.
 
 <LanguageSection>
 
@@ -222,7 +225,8 @@ int main() {
 
 ### Alternative Implementation
 
-Using the multidimensional implementation mentioned [here](/gold/PURS/#solution-2).
+Using the multidimensional implementation mentioned
+[here](/gold/PURS/#solution-2).
 
 ```cpp
 template <class T, int ...Ns> struct BIT {
@@ -278,7 +282,10 @@ int main() {
 
 <Optional title="Range Update and Range Query in Higher Dimensions">
 
-Lazy propagation on segment trees does not extend to higher dimensions. However, you can extend the 1D BIT solution to solve range increment range sum in higher dimensions as well! See [this paper](https://arxiv.org/pdf/1311.6093.pdf) for details.
+Lazy propagation on segment trees does not extend to higher dimensions. However,
+you can extend the 1D BIT solution to solve range increment range sum in higher
+dimensions as well! See [this paper](https://arxiv.org/pdf/1311.6093.pdf) for
+details.
 
 - USACO Camp - "Cows Play Global Thermonuclear War" (2D case)
 
@@ -286,19 +293,25 @@ Lazy propagation on segment trees does not extend to higher dimensions. However,
 
 ## 2D Offline Sum Queries
 
-See [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
+See
+[my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
 
 <FocusProblem problem={problems.offSam[0]} />
 
-The intended complexity is $\mathcal{O}(N\log^2 N)$ with a good constant factor. This requires updating points and querying rectangle sums $N$ times for points with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use $\mathcal{O}(N^2)$ memory, which is too much.
+The intended complexity is $\mathcal{O}(N\log^2 N)$ with a good constant factor.
+This requires updating points and querying rectangle sums $N$ times for points
+with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use
+$\mathcal{O}(N^2)$ memory, which is too much.
 
 ### Solution - Soriya's Programming Project
 
-Since we know all of the updates and queries beforehand, we can reduce the memory usage while maintaining a decent constant factor.
+Since we know all of the updates and queries beforehand, we can reduce the
+memory usage while maintaining a decent constant factor.
 
 #### Idea 1: Use an unordered map instead of a 2D array.
 
-Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are terrible.
+Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant
+factors for both are terrible.
 
 #### Idea 2: Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
 
@@ -307,7 +320,8 @@ This doesn't require knowing the queries beforehand.
 - [my 1D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h>)
 - [my 2D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h>)
 
-It's a bit difficult to pass the above problem within the time limit. Make sure to use fast input (and not `endl`)!
+It's a bit difficult to pass the above problem within the time limit. Make sure
+to use fast input (and not `endl`)!
 
 - [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
 
@@ -315,8 +329,10 @@ It's a bit difficult to pass the above problem within the time limit. Make sure 
 
 The fastest way.
 
-- mentioned in [this article](https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html)
-- [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp) based off above
+- mentioned in
+  [this article](https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html)
+- [thecodingwizard's (messy) implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriya%20Programming%20Project%201d%20BIT%20cdq%20dnc.cpp)
+  based off above
 
 ### Problems
 
@@ -388,7 +404,10 @@ A segment tree of (maybe sparse) segment trees.
 
 <Info title="Pro Tip">
 
-This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). If the coordinates go up to $C$, then 2D segment tree queries run in $\mathcal{O}(\log^2C)$ time each but some queries make Quadtree take $\Theta(C)$ time!
+This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree).
+If the coordinates go up to $C$, then 2D segment tree queries run in
+$\mathcal{O}(\log^2C)$ time each but some queries make Quadtree take $\Theta(C)$
+time!
 
 </Info>
 
@@ -420,11 +439,18 @@ This is **not** the same as [Quadtree](https://en.wikipedia.org/wiki/Quadtree). 
 
 ### Note - Memory Usage
 
-Naively, inserting $N$ elements into a sparse segment tree requires $\mathcal{O}(N\log C)$ memory, giving a bound of $\mathcal{O}(N\log^2C)$ on 2D segment tree memory. This is usually too much for $N=C=10^5$ and 256 MB (although it sufficed for "Mowing the Field" due to the 512MB memory limit). Possible ways to get around this:
+Naively, inserting $N$ elements into a sparse segment tree requires
+$\mathcal{O}(N\log C)$ memory, giving a bound of $\mathcal{O}(N\log^2C)$ on 2D
+segment tree memory. This is usually too much for $N=C=10^5$ and 256 MB
+(although it sufficed for "Mowing the Field" due to the 512MB memory limit).
+Possible ways to get around this:
 
 - Use arrays of fixed size rather than pointers.
-- Reduce the memory usage of sparse segment tree to $\mathcal{O}(N)$ while maintaining the same $\mathcal{O}(N\log C)$ insertion time (see the solution for IOI Game below for details).
-- Use [BBSTs](/adv/treaps) instead of sparse segment trees. $\mathcal{O}(N)$ memory, $\mathcal{O}(N\log N)$ insertion time.
+- Reduce the memory usage of sparse segment tree to $\mathcal{O}(N)$ while
+  maintaining the same $\mathcal{O}(N\log C)$ insertion time (see the solution
+  for IOI Game below for details).
+- Use [BBSTs](/adv/treaps) instead of sparse segment trees. $\mathcal{O}(N)$
+  memory, $\mathcal{O}(N\log N)$ insertion time.
 
 ### Problems
 

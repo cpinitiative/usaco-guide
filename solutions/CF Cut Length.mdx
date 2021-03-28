@@ -14,10 +14,10 @@ My Code (without template):
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -27,17 +27,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -50,18 +50,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -76,14 +76,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -97,18 +97,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -140,14 +140,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -176,7 +176,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -184,10 +184,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -211,7 +211,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -236,18 +236,18 @@ P perp(const P& p) { return P(-p.s,p.f); }
 P dir(T ang) { return P(cos(ang),sin(ang)); }
 
 P operator-(const P& l) { return P(-l.f,-l.s); }
-P operator+(const P& l, const P& r) { 
+P operator+(const P& l, const P& r) {
 	return P(l.f+r.f,l.s+r.s); }
-P operator-(const P& l, const P& r) { 
+P operator-(const P& l, const P& r) {
 	return P(l.f-r.f,l.s-r.s); }
-P operator*(const P& l, const T& r) { 
+P operator*(const P& l, const T& r) {
 	return P(l.f*r,l.s*r); }
 P operator*(const T& l, const P& r) { return r*l; }
-P operator/(const P& l, const T& r) { 
+P operator/(const P& l, const T& r) {
 	return P(l.f/r,l.s/r); }
-P operator*(const P& l, const P& r) { 
+P operator*(const P& l, const P& r) {
 	return P(l.f*r.f-l.s*r.s,l.s*r.f+l.f*r.s); }
-P operator/(const P& l, const P& r) { 
+P operator/(const P& l, const P& r) {
 	return l*conj(r)/norm(r); }
 P& operator+=(P& l, const P& r) { return l = l+r; }
 P& operator-=(P& l, const P& r) { return l = l-r; }
@@ -261,21 +261,21 @@ T dot(const P& a, const P& b) { return a.f*b.f+a.s*b.s; }
 T cross(const P& a, const P& b) { return a.f*b.s-a.s*b.f; }
 T cross(const P& p, const P& a, const P& b) {
 	return cross(a-p,b-p); }
-P reflect(const P& p, const P& a, const P& b) { 
+P reflect(const P& p, const P& a, const P& b) {
 	return a+conj((p-a)/(b-a))*(b-a); }
-P foot(const P& p, const P& a, const P& b) { 
+P foot(const P& p, const P& a, const P& b) {
 	return (p+reflect(p,a,b))/(T)2; }
-bool onSeg(const P& p, const P& a, const P& b) { 
+bool onSeg(const P& p, const P& a, const P& b) {
 	return cross(a,b,p) == 0 && dot(p-a,p-b) <= 0; }
 
-P lineIsect(P a, P b, P c, P d) { 
-	T x = cross(a,b,c), y = cross(a,b,d); 
-	T X = cross(c,d,a), Y = cross(c,d,b); 
+P lineIsect(P a, P b, P c, P d) {
+	T x = cross(a,b,c), y = cross(a,b,d);
+	T X = cross(c,d,a), Y = cross(c,d,b);
 	return (d*x-c*y)/(x-y); // interior
 }
 
 /**
- * Description: centroid (center of mass) of a polygon with 
+ * Description: centroid (center of mass) of a polygon with
  	* constant mass per unit area and SIGNED area
  * Time: O(N)
  * Source: http://codeforces.com/blog/entry/22175, KACTL
@@ -284,8 +284,8 @@ P lineIsect(P a, P b, P c, P d) {
 
 // #include "../Primitives/Point.h"
 
-pair<P,T> cenArea(const vP& v) { 
-	P cen(0,0); T area = 0; 
+pair<P,T> cenArea(const vP& v) {
+	P cen(0,0); T area = 0;
 	F0R(i,sz(v)) {
 		int j = (i+1)%sz(v); T a = cross(v[i],v[j]);
 		cen += a*(v[i]+v[j]); area += a;
@@ -298,7 +298,7 @@ int n,m;
 int main() {
 	setIO(); re(n,m);
 	vP v(n); re(v); // read polygon
-	if (cenArea(v).s < 0) reverse(all(v)); 
+	if (cenArea(v).s < 0) reverse(all(v));
 	// polygon should be counter clockwise
 	F0R(_,m) {
 		P a,b; re(a,b); // two points on the line
@@ -307,12 +307,12 @@ int main() {
 		F0R(i,n) {
 			int j = (i+1)%sz(side);
 			if (side[i] != side[j]) {
-				int sign = sgn(cross(v[i]-v[j],b-a)); 
+				int sign = sgn(cross(v[i]-v[j],b-a));
 				// add or subtract "x-coordinate"
-				ans += sign*dot(b-a,lineIsect(a,b,v[i],v[j])); 
+				ans += sign*dot(b-a,lineIsect(a,b,v[i],v[j]));
 			}
 			if (cross(a,b,v[i]) == 0 && cross(a,b,v[j]) == 0
-				 && dot(b-a,v[j]-v[i]) > 0) 
+				 && dot(b-a,v[j]-v[i]) > 0)
 				ans += dot(b-a,v[j]-v[i]);
 			 // deal with sides that are collinear with the line
 		}
@@ -323,8 +323,17 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(nm)$
 
-We'll process each of the $m$ lines in $\mathcal{O}(n)$ time each. For a fixed line, let $a$ and $b$ be two points on the line. Suppose for simplicity that the line is parallel to the $x$-axis. 
+We'll process each of the $m$ lines in $\mathcal{O}(n)$ time each. For a fixed
+line, let $a$ and $b$ be two points on the line. Suppose for simplicity that the
+line is parallel to the $x$-axis.
 
-First, if no vertex of the polygon lies on the line then we can compute all the intersection points of the sides with the line and add / subtract their $x$-coordinates appropriately to get the answer. In my solution, `dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
+First, if no vertex of the polygon lies on the line then we can compute all the
+intersection points of the sides with the line and add / subtract their
+$x$-coordinates appropriately to get the answer. In my solution,
+`dot(b-a,p)/abs(b-a)` essentially computes the $x$-coordinate of some point $p$.
 
-To deal with vertices of the polygon that lie on the line, we can envision shifting the line up or down by some small amount so that no vertex lies on the line. This incorrectly leaves out some sides of the polygon that are collinear with the original line, so we should add the lengths of these sides to the answer. These sides are dealt with by the second `if` statement within the loop.
+To deal with vertices of the polygon that lie on the line, we can envision
+shifting the line up or down by some small amount so that no vertex lies on the
+line. This incorrectly leaves out some sides of the polygon that are collinear
+with the original line, so we should add the lengths of these sides to the
+answer. These sides are dealt with by the second `if` statement within the loop.

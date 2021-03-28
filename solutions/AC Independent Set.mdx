@@ -7,11 +7,17 @@ author: Andrew Wang
 
 ## Explanation
 
-Root the tree at node $1$, allowing us to define the subtree of each node. Let $dp_0[v]$ represent the number of ways the subtree can be painted such that $v$ is painted white. Similarily, let $dp_1[v]$ represent the number of ways the subtree can be painted such that $v$ is painted black.
+Root the tree at node $1$, allowing us to define the subtree of each node. Let
+$dp_0[v]$ represent the number of ways the subtree can be painted such that $v$
+is painted white. Similarily, let $dp_1[v]$ represent the number of ways the
+subtree can be painted such that $v$ is painted black.
 
 ### Painted White
 
-The number of ways to paint a subtree such that the root node is painted white is the product of the ways to paint the child subtrees. The number of ways to paint a child subtree is the sum of how to paint it white and how to paint it black or, $dp_0[u] + dp_1[u]$. So the transition is:
+The number of ways to paint a subtree such that the root node is painted white
+is the product of the ways to paint the child subtrees. The number of ways to
+paint a child subtree is the sum of how to paint it white and how to paint it
+black or, $dp_0[u] + dp_1[u]$. So the transition is:
 
 $$
 dp_0[v] = \prod_{u \in child(v)} \left(dp_0[u]+ dp_1[u]\right).
@@ -19,7 +25,11 @@ $$
 
 ### Painted Black
 
-Since no two adjacent nodes can both be painted black, if the root node of the subtree is painted black, none of its children can be painted black. This leads us to the conclusion that the number of ways to paint a subtree such that the root node is painted black is the product of all the ways the child subtrees can be painted white.
+Since no two adjacent nodes can both be painted black, if the root node of the
+subtree is painted black, none of its children can be painted black. This leads
+us to the conclusion that the number of ways to paint a subtree such that the
+root node is painted black is the product of all the ways the child subtrees can
+be painted white.
 
 $$
 dp_1[v] = \prod_{u \in child(v)} dp_0[u].

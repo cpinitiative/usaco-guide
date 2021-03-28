@@ -27,13 +27,12 @@ export default function SubmitProblemSolutionModal({
   const [loading, setLoading] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
   const { submitSolution: submitAction } = useUserProblemSolutionActions();
-  const { lang } = React.useContext(UserDataContext);
 
   React.useEffect(() => {
     if (isOpen) {
       setSolutionCode('');
       setIsCodePublic(true);
-      setCodeLang(lang);
+      setCodeLang(null);
       setLoading(false);
       setShowSuccess(false);
     }
@@ -44,6 +43,10 @@ export default function SubmitProblemSolutionModal({
 
     if (solutionCode.length < 10) {
       alert('Your solution seems too short!');
+      return;
+    }
+    if (!codeLang) {
+      alert('Please select a language.');
       return;
     }
 
