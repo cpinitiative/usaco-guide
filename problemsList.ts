@@ -13605,6 +13605,7 @@ data.data.allMdx.edges = data.data.allMdx.edges.map(x => ({
       }
       return {
         uniqueId: prob.uniqueID,
+        ___legacyUniqueId: problem.uniqueID,
         name: prob.name,
         url: prob.url,
         source: prob.source,
