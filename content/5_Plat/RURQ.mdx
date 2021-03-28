@@ -227,25 +227,25 @@ queries.
 
 This question asks you to support the following types of queries. 
 
-- Add a value to all elements within the range $[a,b]$
+- Add a value to all elements within the range $[a,b]$.
 
-- Set all values within the range $[a,b]$ to a certain value 
+- Set all values within the range $[a,b]$ to a certain value. 
 
-- Find the sum of all values in range $[a,b]$
+- Find the sum of all values in range $[a,b]$.
 
-Consider the first two types of queries, a lazy tag will be created in each node of the tree for each type. In this solution, $lz1$ will represent the lazy tag for the range add query and $lz2$ will represent the lazy tag for the range set query. 
+Consider the first two types of queries, a lazy tag will be created in each node of the tree for each type. In this solution, $lzAdd$ will represent the lazy tag for the range add query and $lzSet$ will represent the lazy tag for the range set query. 
 
 Given the two different update queries, a total of four different situations might take place as a result of any update. 
 
-- Range add ($lz1$) when $lz2$ equals 0: Simply add the new value to the pre-existing value 
+- Range add ($lzAdd$) when $lzSet$ equals 0: Simply add the new value to the pre-existing value. 
 
-- Range add ($lz1$) when $lz2$ doesnt equal to 0: Add the new value to $lz2$ and clear $lz1$ 
+- Range add ($lzAdd$) when $lzSet$ doesn't equal to 0: Add the new value to $lzSet$ and clear $lzAdd$. 
 
-- Range set when $lz1$ equals 0: Simply update the $lz2$ value 
+- Range set when $lzAdd$ equals 0: Simply update the $lzSet$ value. 
 
--Range set when $lz1$ doesn't equal to 0: Again simply update the $lz2$ value since a set update will override all previous add updates 
+Range set when $lzAdd$ doesn't equal to 0: Again simply update the $lzSet$ value since a set update will override all previous add update. 
 
-Given the mechanics behind the pushdown function, all you need is a regular range sum segment tree to complete the question. 
+Given the mechanics behind the ```pushdown``` function, all you need is a regular range sum segment tree to complete the question. 
 
 ```cpp
 
@@ -261,8 +261,8 @@ int a[maxN];
 struct node{
     int val;
     int l,r;
-    int lz1; 
-    int lz2;
+    int lzAdd; 
+    int lzSet;
     node(){};
 }tree[maxN<<2];
 
@@ -278,27 +278,27 @@ void pushdown(int p){
     //leaf node
     if(tree[p].l == tree[p].r)return;
     //lazy: range set
-    if(tree[p].lz2 != 0){
-        tree[lc].lz2 = tree[rc].lz2 = tree[p].lz2;
-        tree[lc].val = (tree[lc].r - tree[lc].l + 1) * tree[p].lz2;
-        tree[rc].val = (tree[rc].r - tree[rc].l + 1) * tree[p].lz2;
-        tree[lc].lz1 = tree[rc].lz1 = 0;
-        tree[p].lz2 = 0;
+    if(tree[p].lzSet != 0){
+        tree[lc].lzSet = tree[rc].lzSet = tree[p].lzSet;
+        tree[lc].val = (tree[lc].r - tree[lc].l + 1) * tree[p].lzSet;
+        tree[rc].val = (tree[rc].r - tree[rc].l + 1) * tree[p].lzSet;
+        tree[lc].lzAdd = tree[rc].lzAdd = 0;
+        tree[p].lzSet = 0;
     }
-    else if(tree[p].lz1 != 0){ //lazy: range add
-        if(tree[lc].lz2 == 0)tree[lc].lz1 += tree[p].lz1;
+    else if(tree[p].lzAdd != 0){ //lazy: range add
+        if(tree[lc].lzSet == 0)tree[lc].lzAdd += tree[p].lzAdd;
         else {
-            tree[lc].lz2 += tree[p].lz1;
-            tree[lc].lz1 = 0;
+            tree[lc].lzSet += tree[p].lzAdd;
+            tree[lc].lzAdd = 0;
         }
-        if(tree[rc].lz2 == 0)tree[rc].lz1 += tree[p].lz1;
+        if(tree[rc].lzSet == 0)tree[rc].lzAdd += tree[p].lzAdd;
         else{
-            tree[rc].lz2 += tree[p].lz1;
-            tree[rc].lz1 = 0;
+            tree[rc].lzSet += tree[p].lzAdd;
+            tree[rc].lzAdd = 0;
         }
-        tree[lc].val += (tree[lc].r - tree[lc].l + 1) * tree[p].lz1;
-        tree[rc].val += (tree[rc].r - tree[rc].l + 1) * tree[p].lz1;
-        tree[p].lz1 = 0;
+        tree[lc].val += (tree[lc].r - tree[lc].l + 1) * tree[p].lzAdd;
+        tree[rc].val += (tree[rc].r - tree[rc].l + 1) * tree[p].lzAdd;
+        tree[p].lzAdd = 0;
     }
     return;
 }
@@ -306,7 +306,7 @@ void pushdown(int p){
 void build(int p, int l, int r){
     tree[p].l = l;
     tree[p].r = r;
-    tree[p].lz1 = tree[p].lz2 = 0;
+    tree[p].lzAdd = tree[p].lzSet = 0;
     if(l == r){
         tree[p].val = a[l];
         return;
@@ -322,8 +322,8 @@ void add(int p, int l, int r, int a, int b, int val){
     if(a > r || b < l)return;
     if(a <= l && r <= b){
         tree[p].val += (tree[p].r - tree[p].l + 1) * val;
-        if(tree[p].lz2 == 0)tree[p].lz1 += val;
-        else tree[p].lz2 += val;
+        if(tree[p].lzSet == 0)tree[p].lzAdd += val;
+        else tree[p].lzSet += val;
         return;
     }
     pushdown(p);
@@ -338,8 +338,8 @@ void set(int p, int l, int r, int a, int b, int val){
     if(a > r || b < l)return;
     if(a <= l && r <= b){
         tree[p].val = (tree[p].r - tree[p].l + 1) * val;
-        tree[p].lz1 = 0;
-        tree[p].lz2 = val;
+        tree[p].lzAdd = 0;
+        tree[p].lzSet = val;
         return;
     }
     pushdown(p);
