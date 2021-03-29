@@ -166,13 +166,12 @@ exports.onCreateNode = async ({
   const isExtraProblems =
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
-    node.relativePath.endsWith('extraProblems.json');
+    node.relativePath.endsWith('extraProblems.problems.json');
   if (
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
     // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
-    (node.relativePath.match(/^[1-6]_[A-z0-9-]+\/[A-z_0-9-]+\.json$/) ||
-      isExtraProblems)
+    node.relativePath.endsWith('.problems.json')
   ) {
     const content = await loadNodeContent(node);
     let parsedContent;
@@ -387,7 +386,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       // If a problem has a module, then it should be removed from extraProblems.json.
       if (!a.module || !b.module) {
         throw new Error(
-          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
+          `The problem ${node.uniqueId} is in both extraProblems.problems.json and in another module at the same time. Remove this problem from extraProblems.problems.json.`
         );
       }
     }
@@ -423,7 +422,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         throw new Error(
           "Couldn't find corresponding problem for internal solution with frontmatter ID " +
             node.frontmatter.id +
-            '. If this problem is no longer in any module, add it to content/extraProblems.json.'
+            '. If this problem is no longer in any module, add it to content/extraProblems.problems.json.'
         );
       }
       // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
