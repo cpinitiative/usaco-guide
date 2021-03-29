@@ -17,17 +17,18 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import useStickyState from '../hooks/useStickyState';
 import Split from 'react-split';
 import styled from 'styled-components';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ButtonGroup from '../components/ButtonGroup';
 import { useDarkMode } from '../context/DarkModeContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
+import Editor, { useMonaco } from '@monaco-editor/react';
+import problemsSchema from '../../content/problems.schema.json';
+
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
-
-const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 const StyledSplit = styled(Split)`
   & > div,
@@ -58,13 +59,28 @@ export default function LiveUpdatePage(props: PageProps) {
     props.location?.search?.length > 0
       ? getQueryVariable(props.location.search.slice(1), 'filepath')
       : null;
-
   const markdownStorageKey = 'guide:editor:markdown';
   const problemsStorageKey = 'guide:editor:problems';
   const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
   const [problems, setProblems] = useStickyState('', problemsStorageKey);
   const editor = useRef();
+  const monaco = useMonaco();
   const [tab, setTab] = useState<'problems' | 'content'>('content');
+  React.useEffect(() => {
+    if (monaco && tab === 'problems') {
+      console.log('registered', problemsSchema);
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        schemas: [
+          {
+            uri: 'https://usaco.guide/problems.schema.json',
+            schema: problemsSchema,
+          },
+        ],
+      });
+    } else {
+      console.log('not registered');
+    }
+  }, [monaco, tab]);
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
 
@@ -110,14 +126,24 @@ export default function LiveUpdatePage(props: PageProps) {
 
   const userSettings = React.useContext(UserDataContext);
   const isDarkMode = useDarkMode();
-  const markdownProblemListsProviderValue = useMemo(
-    () =>
-      Object.keys(JSON.parse(problems || '{}')).map(key => ({
-        listId: key,
-        problems: problems[key],
-      })),
-    [problems]
-  );
+  const [
+    markdownProblemListsProviderValue,
+    setMarkdownProblemListsProviderValue,
+  ] = useState([]);
+  useEffect(() => {
+    try {
+      const parsedProblems = JSON.parse(problems || '{}');
+      const problemsList = Object.keys(parsedProblems)
+        .filter(key => key !== 'MODULE_ID')
+        .map(key => ({
+          listId: key,
+          problems: parsedProblems[key],
+        }));
+      setMarkdownProblemListsProviderValue(problemsList);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [problems]);
   return (
     <Layout>
       <SEO title="Editor" />
@@ -183,28 +209,29 @@ export default function LiveUpdatePage(props: PageProps) {
             >
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="h-full" style={{ minWidth: '300px' }}>
-                <MarkdownProblemListsProvider
-                  value={markdownProblemListsProviderValue}
-                >
-                  <Editor
-                    theme="vs-dark"
-                    language={tab === 'content' ? 'markdown' : 'json'}
-                    value={tab === 'content' ? markdown : problems}
-                    onChange={(v, e) =>
-                      tab === 'content' ? setMarkdown(v) : setProblems(v)
-                    }
-                    options={{ wordWrap: 'on', rulers: [80] }}
-                    onMount={e => {
-                      editor.current = e;
-                      e.getModel().updateOptions({ insertSpaces: false });
+                <Editor
+                  theme="vs-dark"
+                  path={
+                    tab === 'content'
+                      ? 'inmemory://usaco-guide/module.mdx'
+                      : 'inmemory://usaco-guide/module.problems.json'
+                  }
+                  language={tab === 'content' ? 'markdown' : 'json'}
+                  value={tab === 'content' ? markdown : problems}
+                  onChange={(v, e) =>
+                    tab === 'content' ? setMarkdown(v) : setProblems(v)
+                  }
+                  options={{ wordWrap: 'on', rulers: [80] }}
+                  onMount={e => {
+                    editor.current = e;
+                    e.getModel().updateOptions({ insertSpaces: false });
 
-                      setTimeout(() => {
-                        e.layout();
-                        e.focus();
-                      }, 0);
-                    }}
-                  />
-                </MarkdownProblemListsProvider>
+                    setTimeout(() => {
+                      e.layout();
+                      e.focus();
+                    }, 0);
+                  }}
+                />
               </div>
               <div
                 className="flex flex-col"
@@ -259,7 +286,11 @@ export default function LiveUpdatePage(props: PageProps) {
                 </div>
                 <div className="overflow-y-auto relative flex-1">
                   <div className="markdown p-4">
-                    <RawMarkdownRenderer markdown={markdown} />
+                    <MarkdownProblemListsProvider
+                      value={markdownProblemListsProviderValue}
+                    >
+                      <RawMarkdownRenderer markdown={markdown} />
+                    </MarkdownProblemListsProvider>
                   </div>
                 </div>
               </div>
