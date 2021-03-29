@@ -21,51 +21,6 @@ import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext'
 import ModuleHeadersLinkList from './ModuleHeadersLinkList';
 // import { timeAgoString } from '../Dashboard/ModuleLink';
 
-// https://stackoverflow.com/questions/50709625/link-with-target-blank-and-rel-noopener-noreferrer-still-vulnerable
-
-const renderPrerequisite = (
-  prerequisite,
-  moduleLinks: MarkdownLayoutSidebarModuleLinkInfo[]
-) => {
-  if (prerequisite.startsWith('/')) {
-    // solution
-    let leading = prerequisite.split('#')[0];
-    if (leading.startsWith('/')) {
-      leading = leading.split('/')[2];
-    }
-    const moduleLink = moduleLinks.find(x => x.id === leading);
-    if (moduleLink)
-      return (
-        <li key={prerequisite}>
-          <a
-            href={prerequisite}
-            target="_blank"
-            rel="noreferrer"
-            className="underline text-black dark:text-blue-200"
-          >
-            {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-          </a>
-        </li>
-      );
-  } else {
-    const moduleLink = moduleLinks.find(x => x.id === prerequisite);
-    if (moduleLink)
-      return (
-        <li key={prerequisite}>
-          <a
-            href={moduleLink.url}
-            target="_blank"
-            rel="noreferrer"
-            className="underline text-black dark:text-blue-200"
-          >
-            {SECTION_LABELS[moduleLink.section]} - {moduleLink.title}
-          </a>
-        </li>
-      );
-  }
-  return <li key={prerequisite}>{prerequisite}</li>;
-};
-
 export default function ModuleHeaders({
   moduleLinks,
 }: {
@@ -88,14 +43,21 @@ export default function ModuleHeaders({
   const problemSolutionContext = useContext(ProblemSolutionContext);
   const problem = problemSolutionContext?.problem;
 
-  let moduleHeaderLinks: { label: string; url: string }[] = null;
+  // either prerequisites for modules or appears in for problems
+  let moduleHeaderLinks: { label: string; url?: string }[] = null;
   if (markdownData instanceof ModuleInfo) {
     moduleHeaderLinks = (markdownData.prerequisites || []).map(prereq => {
       const moduleLink = moduleLinks.find(x => x.id === prereq);
-      return {
-        label: `${SECTION_LABELS[moduleLink.section]} - ${moduleLink.title}`,
-        url: moduleLink.url,
-      };
+      return moduleLink
+        ? {
+            label: `${SECTION_LABELS[moduleLink.section]} - ${
+              moduleLink.title
+            }`,
+            url: moduleLink.url,
+          }
+        : {
+            label: prereq,
+          };
     });
   } else {
     // this is displayed within a problem solution

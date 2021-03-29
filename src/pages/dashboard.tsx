@@ -36,13 +36,16 @@ export default function DashboardPage(props: PageProps) {
   const problemIDMap = React.useMemo(() => {
     return problems.edges.reduce((acc, cur) => {
       const problem = cur.node;
-      acc[problem.uniqueId] = {
-        label: `${problem.source}: ${problem.name}`,
-        url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
-          problem.uniqueId
-        }`,
-        moduleId: problem.module.frontmatter.id,
-      };
+      // ignore problems that don't have an associated module (extraProblems.json)
+      if (problem.module) {
+        acc[problem.uniqueId] = {
+          label: `${problem.source}: ${problem.name}`,
+          url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
+            problem.uniqueId
+          }`,
+          moduleId: problem.module.frontmatter.id,
+        };
+      }
       return acc;
     }, {});
   }, [problems]);

@@ -167,12 +167,10 @@ Latex *is* allowed with the new implementation of problems.
 
 export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
   objectID: string;
-  problemModules: [
-    {
-      id: string;
-      title: string;
-    }
-  ];
+  problemModules: {
+    id: string;
+    title: string;
+  }[];
 };
 
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
