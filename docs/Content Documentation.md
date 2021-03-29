@@ -1,7 +1,7 @@
 # Content Documentation
 
-Note: You may find [this live editor](https://usaco.guide/liveupdate) helpful
-when writing modules.
+Note: You may find [this live editor](https://usaco.guide/editor) helpful when
+writing modules.
 
 The following two modules are good to read:
 
@@ -16,17 +16,17 @@ to Nathan Wang.
 
 ## 1. Getting Started
 
-### Using LiveUpdate (recommended)
+### Using the Editor (recommended)
 
-The easiest way to edit content is to use our
-[LiveUpdate](https://usaco.guide/liveupdate) editor. If you choose this option,
-you can skip the rest of the "Getting Started" section.
+The easiest way to edit content is to use our live
+[editor](https://usaco.guide/liveupdate). If you choose this option, you can
+skip the rest of the "Getting Started" section.
 
 ### Running Site Locally
 
 You can also [run a local version of the site](Front%20End%20Documentation.md)
 in order to view your changes. This is useful if you need to use Tailwind CSS
-classes, which don't work with /liveupdate.
+classes, which don't work with /editor.
 
 ### Using Sublime Text with .mdx
 

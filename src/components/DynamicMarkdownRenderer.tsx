@@ -111,7 +111,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
 
         console.timeEnd('compile');
       } catch (e) {
-        console.log('liveupdate error caught:', e);
+        console.log('editor error caught:', e);
         setFn(null);
         setError(e);
       }

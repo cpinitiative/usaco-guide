@@ -18,7 +18,7 @@ export const plugins = [
   {
     resolve: 'gatsby-plugin-sitemap',
     options: {
-      exclude: ['/license/', '/liveupdate/'],
+      exclude: ['/license/', '/editor/'],
     },
   },
   {

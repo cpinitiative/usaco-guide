@@ -13,9 +13,9 @@ jest.mock('../../components/TopNavigationBar/TopNavigationBar', () => {
   return jest.fn(() => null);
 });
 
-describe('Live Update', () => {
+describe('Editor', () => {
   /*
-   * To speed up build times, someone can comment out the LiveUpdate page
+   * To speed up build times, someone can comment out the Editor page
    * and replace it with a placeholder. This test ensures that they
    * remember to uncomment the page before deploying.
    */
