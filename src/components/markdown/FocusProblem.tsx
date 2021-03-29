@@ -29,8 +29,8 @@ export default function FocusProblem({
   // transform creates a new stacking context :(
   return (
     <div
-      className={`shadow block transition dark:bg-gray-900 ${
-        isHovered && 'transform -translate-y-1 shadow-lg'
+      className={`shadow block transition dark:bg-gray-900 mb-4${
+        isHovered ? ' transform -translate-y-1 shadow-lg' : ''
       }`}
       id={'problem-' + problem.uniqueId}
     >
