@@ -30,7 +30,6 @@ import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 import firebaseType from 'firebase';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 import AdSettingsProperty, {
@@ -104,7 +103,6 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
-  new UserClassesProperty(),
   new AdSettingsProperty(),
 ];
 
@@ -118,7 +116,6 @@ type UserDataContextAPI = UserLangAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
-  UserClassesAPI &
   AdSettingsAPI & {
     firebaseUser: firebaseType.User;
     signIn: Function;
@@ -152,7 +149,8 @@ const UserDataContext = createContext<UserDataContextAPI>({
     1608192000000: 27,
     1608278400000: 82,
   },
-  setDarkMode: x => {
+  theme: 'system',
+  setTheme: x => {
     // do nothing
   },
   setHideTagsAndDifficulty: x => {
@@ -179,9 +177,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setShowIgnored: x => {
     // do nothing
   },
-  setUserClasses: classes => {
-    // do nothing
-  },
   setUserProgressOnProblems: (problem, status) => {
     // do nothing
   },
@@ -192,8 +187,6 @@ const UserDataContext = createContext<UserDataContextAPI>({
   signOut: () => {
     // do nothing
   },
-  userClasses: [],
-  userClassIds: [],
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
   userProgressOnProblems: {},

@@ -147,7 +147,7 @@ export const plugins = [
   },
   {
     resolve: `gatsby-plugin-create-client-paths`,
-    options: { prefixes: [`/class/*`, '/groups/*'] },
+    options: { prefixes: ['/groups/*'] },
   },
   {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
