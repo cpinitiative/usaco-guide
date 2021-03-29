@@ -166,12 +166,11 @@ exports.onCreateNode = async ({
   const isExtraProblems =
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
-    node.relativePath.endsWith('extraProblems.problems.json');
+    node.relativePath.endsWith('extraProblems.json');
   if (
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
-    // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
-    node.relativePath.endsWith('.problems.json')
+    (node.relativePath.endsWith('.problems.json') || isExtraProblems)
   ) {
     const content = await loadNodeContent(node);
     let parsedContent;
@@ -238,7 +237,7 @@ exports.onCreateNode = async ({
     try {
       problemJSON = importFresh(
         node.fileAbsolutePath.substring(0, node.fileAbsolutePath.length - 3) +
-          'json'
+          'problem.json'
       );
     } catch (e) {
       // ignore, there probably aren't any problems in that module
@@ -264,35 +263,28 @@ exports.onCreateNode = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
-  // todo @jeffrey fix
-  // fs.readFileSync('./src/redirects.txt', (err, data) => {
-  //   if (err) throw new Error('error: ' + err);
-  //   (data + '')
-  //     .split('\n')
-  //     .filter(line => line.charAt(0) !== '#')
-  //     .map(line => {
-  //       const tokens = line.split('\t');
-  //       return {
-  //         from: tokens[0],
-  //         to: tokens[1],
-  //       };
-  //     })
-  //     .forEach(({ from, to }) => {
-  //       createRedirect({
-  //         fromPath: from,
-  //         toPath: to,
-  //         redirectInBrowser: true,
-  //         isPermanent: true,
-  //       });
-  //     });
-  // });
-  // todo @jeffrey this should be in redirects.txt
-  createRedirect({
-    fromPath: '/liveupdate',
-    toPath: '/editor',
-    redirectInBrowser: true,
-    isPermanent: true,
+  fs.readFileSync('./src/redirects.txt', (err, data) => {
+    if (err) throw new Error('error: ' + err);
+    (data + '')
+      .split('\n')
+      .filter(line => line.charAt(0) !== '#')
+      .map(line => {
+        const tokens = line.split('\t');
+        return {
+          from: tokens[0],
+          to: tokens[1],
+        };
+      })
+      .forEach(({ from, to }) => {
+        createRedirect({
+          fromPath: from,
+          toPath: to,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
   });
+
   const result = await graphql(`
     query {
       modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
@@ -386,7 +378,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       // If a problem has a module, then it should be removed from extraProblems.json.
       if (!a.module || !b.module) {
         throw new Error(
-          `The problem ${node.uniqueId} is in both extraProblems.problems.json and in another module at the same time. Remove this problem from extraProblems.problems.json.`
+          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
         );
       }
     }
@@ -422,7 +414,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         throw new Error(
           "Couldn't find corresponding problem for internal solution with frontmatter ID " +
             node.frontmatter.id +
-            '. If this problem is no longer in any module, add it to content/extraProblems.problems.json.'
+            '. If this problem is no longer in any module, add it to content/extraProblems.json.'
         );
       }
       // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it

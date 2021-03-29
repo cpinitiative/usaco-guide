@@ -1,8 +1,15 @@
 import allProblems, { solIdToProblemURLMap } from './problemsList';
 import * as fs from 'fs';
-import { Problem, ProblemDifficulty } from './src/models/problem';
+import {
+  getProblemURL,
+  Problem,
+  ProblemDifficulty,
+} from './src/models/problem';
 import extraProblems from './solutions/1_extra_usaco_probs';
 const files = {};
+
+const input = fs.readFileSync('./src/redirects.txt');
+
 async function main() {
   await Promise.all(
     ['1_General', '2_Bronze', '3_Silver', '4_Gold', '5_Plat', '6_Advanced'].map(
@@ -10,17 +17,6 @@ async function main() {
         new Promise<void>((resolve, reject) => {
           const promises = [];
           fs.readdir('./content/' + folder, (err, filesArr) => {
-            filesArr.forEach(name => {
-              if (name.slice(-5) === '.json') {
-                promises.push(
-                  new Promise<void>((res, rej) =>
-                    fs.unlink(`./content/${folder}/${name}`, () => {
-                      res();
-                    })
-                  )
-                );
-              }
-            });
             files[folder] = filesArr.map(name => name.replace(/\.mdx$/g, ''));
             Promise.all(promises).then(() => {
               resolve();
@@ -80,190 +76,85 @@ async function main() {
         throw new Error("couldn't locate problem.");
       }
     }
-    fileWritePromises.push(
-      new Promise<void>((resolve, reject) =>
-        fs.writeFile(
-          `./content/extraProblems.json`,
-          JSON.stringify(
-            extraProblems.reduce(
-              (acc: Record<string, any>, problem: Record<string, any>) => {
-                const prob = new Problem(
-                  problem.source,
-                  problem.name,
-                  problem.id,
-                  problem.difficulty as any,
-                  problem.starred,
-                  problem.tags,
-                  problem.solID,
-                  problem.solQuality as any
-                );
-                if (prob.solutionMetadata?.kind === 'in-module') {
-                  throw new Error('???');
-                }
-                let el = {
-                  uniqueId: prob.uniqueID,
-                  ___legacyUniqueId: problem.uniqueID,
-                  name: prob.name,
-                  url: prob.url,
-                  source: prob.source,
-                  difficulty: prob.difficulty,
-                  isStarred: prob.starred,
-                  tags: prob.tags,
-                  solutionMetadata: prob.solutionMetadata || {
-                    kind: 'none',
-                  },
-                  solId: problem.solID,
-                  tableId: problem.tableID,
-                };
 
-                const {
-                  tableId,
-                  ___legacyUniqueId,
-                  solId,
-                  ...problemData
-                } = el;
-                if (solId) {
-                  const oldUniqueId = solIdToProblemURLMap[solId];
-                  const newUniqueId = problemData.uniqueId;
-                  console.log(
-                    oldUniqueId +
-                      ' ==> ' +
-                      newUniqueId +
-                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
-                  );
+    extraProblems.forEach((problem: Record<string, any>) => {
+      const prob = new Problem(
+        problem.source,
+        problem.name,
+        problem.id,
+        problem.difficulty as any,
+        problem.starred,
+        problem.tags,
+        problem.solID,
+        problem.solQuality as any
+      );
+      if (prob.solutionMetadata?.kind === 'in-module') {
+        throw new Error('???');
+      }
+      let el = {
+        uniqueId: prob.uniqueID,
+        ___legacyUniqueId: problem.uniqueID,
+        name: prob.name,
+        url: prob.url,
+        source: prob.source,
+        difficulty: prob.difficulty,
+        isStarred: prob.starred,
+        tags: prob.tags,
+        solutionMetadata: prob.solutionMetadata || {
+          kind: 'none',
+        },
+        solId: problem.solID,
+        tableId: problem.tableID,
+      };
 
-                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
-                }
-                if (acc['EXTRA_PROBLEMS']) {
-                  acc['EXTRA_PROBLEMS'].push(problemData);
-                } else {
-                  acc['EXTRA_PROBLEMS'] = [problemData];
-                }
-                return acc;
-              },
-              {}
-            ),
-            null,
-            '\t'
-          ),
-          () => resolve()
-        )
-      )
-    );
-    fileWritePromises.push(
-      new Promise<void>((resolve, reject) => {
-        fs.writeFile(
-          `./content/${divisionFolder}/${moduleFileName}.json`,
-          JSON.stringify(
-            problems.reduce(
-              (acc: Record<string, any>, el: Record<string, any>) => {
-                const {
-                  tableId,
-                  ___legacyUniqueId,
-                  solId,
-                  ...problemData
-                } = el;
-                if (solId) {
-                  const oldUniqueId = solIdToProblemURLMap[solId];
-                  const newUniqueId = problemData.uniqueId;
-                  console.log(
-                    oldUniqueId +
-                      ' ==> ' +
-                      newUniqueId +
-                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
-                  );
-
-                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
-                }
-                if (acc[tableId]) {
-                  acc[tableId].push(problemData);
-                } else {
-                  acc[tableId] = [problemData];
-                }
-                return acc;
-              },
-              {
-                MODULE_ID: id,
-              }
-            ),
-            null,
-            '\t'
-          ),
-          () => resolve()
+      const { tableId, ___legacyUniqueId, solId, ...problemData } = el;
+      if (solId) {
+        const oldUniqueId = solIdToProblemURLMap[solId];
+        const newUniqueId = problemData.uniqueId;
+        console.log(
+          oldUniqueId +
+            ' ==> ' +
+            newUniqueId +
+            (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
         );
-      })
-    );
-  });
-  await Promise.all(fileWritePromises);
-  fs.writeFileSync(
-    './oldToNewProblemId.json',
-    JSON.stringify(oldProblemIdToNewProblemIdMap, null, 2)
-  );
-  fs.writeFileSync(
-    './newToOldProblemId.json',
-    JSON.stringify(newProblemIdToOldProblemIdMap, null, 2)
-  );
-  fs.writeFileSync(
-    './src/redirects.txt',
-    `# FROM-URL\tTO-URL\n` +
-      Object.keys(oldProblemIdToNewProblemIdMap)
-        .map(
-          key =>
-            `/solutions/${key}\t/problem/solution/${oldProblemIdToNewProblemIdMap[key]}`
-        )
-        .join('\n')
-  );
-  fs.readdir('./solutions/', async (err, filesArr) => {
-    console.log(filesArr);
-    await Promise.all(
-      filesArr.map(name => {
-        if (name.slice(-4) === '.mdx') {
-          return new Promise((resolve, reject) =>
-            fs.readFile('./solutions/' + name, (err, data) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(data);
-              }
-            })
-          ).then(data => {
-            const lines = (data + '').split(/\r?\n/);
-            if (lines[0] !== '---' || lines[5] !== '---') {
-              console.log(`${name}: unexpected frontmatter`);
-              return Promise.reject();
-            }
-            if (lines[1].substring(0, 4) !== 'id: ') {
-              console.log(`${name}: unexpected frontmatter ID value`);
-              return Promise.reject();
-            }
-            const frontMatterId = lines[1].replace('id: ', '');
-            // TODO @thecodingwizard
-            console.log(
-              frontMatterId +
-                ' >>> ' +
-                oldProblemIdToNewProblemIdMap[frontMatterId] +
-                (frontMatterId === oldProblemIdToNewProblemIdMap[frontMatterId]
-                  ? 'X'
-                  : '[CHANGE]')
-            );
-            if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
-              lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
-            }
-            return new Promise<void>((res, rej) => {
-              fs.writeFile('./solutions/' + name, lines.join('\n'), err => {
-                if (err) {
-                  rej(err);
-                } else {
-                  res();
-                }
-              });
-            });
-          });
-        }
-        return Promise.resolve();
-      })
+        if (problemData.solutionMetadata.kind === 'internal') return;
+
+        oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
+        newProblemIdToOldProblemIdMap[newUniqueId] = solId;
+      }
+    });
+
+    problems.forEach((el: Record<string, any>) => {
+      const { tableId, ___legacyUniqueId, solId, ...problemData } = el;
+      if (solId) {
+        const oldUniqueId = solIdToProblemURLMap[solId];
+        const newUniqueId = problemData.uniqueId;
+        console.log(
+          oldUniqueId +
+            ' ==> ' +
+            newUniqueId +
+            (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+        );
+        // console.log(problemData)
+
+        if (problemData.solutionMetadata.kind !== 'internal') return;
+
+        oldProblemIdToNewProblemIdMap[solId] = getProblemURL(
+          problemData as any
+        ).replace('/problems/', '');
+      }
+    });
+
+    console.log(oldProblemIdToNewProblemIdMap);
+    fs.writeFileSync(
+      './src/redirects.txt',
+      `# FROM-URL\tTO-URL\n` +
+        Object.keys(oldProblemIdToNewProblemIdMap)
+          .map(
+            key =>
+              `/solutions/${key}\t/problems/solution/${oldProblemIdToNewProblemIdMap[key]}`
+          )
+          .join('\n')
     );
   });
 }
