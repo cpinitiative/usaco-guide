@@ -112,7 +112,7 @@ export default function LiveUpdatePage(props: PageProps) {
   const isDarkMode = useDarkMode();
   const markdownProblemListsProviderValue = useMemo(
     () =>
-      Object.keys(JSON.parse(problems)).map(key => ({
+      Object.keys(JSON.parse(problems || '{}')).map(key => ({
         listId: key,
         problems: problems[key],
       })),
