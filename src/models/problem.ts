@@ -246,7 +246,7 @@ export function getProblemURL(
 ) {
   return `/problems/${
     isUsaco(problem.source) ? 'usaco' : slug(problem.source)
-  }-${slug(problem.name)}`;
+  }-${slug(problem.name.replace(' - ', ''))}`;
 }
 
 // legacy code follows
