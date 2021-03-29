@@ -31,7 +31,10 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       this.progressValue = currentValue;
     }
 
-    this.activityValue = currentValue;
+    this.activityValue = this.getValueFromLocalStorage(
+      this.getLocalStorageKey(this.activityStorageKey),
+      []
+    );
   };
   migrateLegacyValue = legacyValue => {
     localStorage.setItem(
