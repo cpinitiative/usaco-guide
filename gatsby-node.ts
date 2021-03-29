@@ -263,7 +263,7 @@ exports.onCreateNode = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
-  fs.readFileSync('./src/redirects.txt', (err, data) => {
+  fs.readFile('./src/redirects.txt', (err, data) => {
     if (err) throw new Error('error: ' + err);
     (data + '')
       .split('\n')
