@@ -260,7 +260,7 @@ export default function ProblemSelect({
           <div className={'mb-24'}>{/* Spacer */}</div>
         </>
       ) : postProblems?.length > 0 ? (
-        <ProblemsList problems={postProblems} alwaysHideTags isClass />
+        <ProblemsList problems={postProblems} />
       ) : (
         <p>
           <i>This assignment has no problems.</i>

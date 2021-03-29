@@ -1,5 +1,6 @@
 import MODULE_ORDERING from '../../content/ordering';
 import { ModuleInfo, ModuleLinkInfo } from '../models/module';
+import { Problem } from '../models/problem';
 
 export const getModulesForDivision = (allModules, division) => {
   return MODULE_ORDERING[division].map(k => {
@@ -40,7 +41,7 @@ export function graphqlToModuleLinks(allMdx: any): ModuleLinkInfo[] {
         null,
         null,
         null,
-        cur.node.problems,
+        cur.node.problems, // todo upate to fields
         cur.node.fields.gitAuthorTime
       )
   );

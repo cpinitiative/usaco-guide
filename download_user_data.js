@@ -1,6 +1,8 @@
 const serviceAccount = require('./service.json');
 const admin = require('firebase-admin');
 const fs = require('fs');
+const stuff = require('./problemsList');
+let urlToNewIDMap = stuff.urlToNewIDMap;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -8,18 +10,40 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-admin
-  .auth()
-  .setCustomUserClaims('[insert user id]', {
-    isAdmin: true,
-    canModerate: true,
-    canCreateGroups: true,
-  })
-  .then(() => {
-    // The new custom claims will propagate to the user's ID token the
-    // next time a new one is issued.
-    console.log('DONE');
+// admin
+//   .auth()
+//   .setCustomUserClaims('[insert user id]', {
+//     isAdmin: true,
+//     canModerate: true,
+//     canCreateGroups: true,
+//   })
+//   .then(() => {
+//     // The new custom claims will propagate to the user's ID token the
+//     // next time a new one is issued.
+//     console.log('DONE');
+//   });
+
+// Migrate problem IDs for user solutions
+db.collection('userProblemSolutions')
+  .get()
+  .then(snapshot => {
+    let ct = 0,
+      badCt = 0;
+    snapshot.docs.forEach(doc => {
+      ct++;
+      if (!urlToNewIDMap.hasOwnProperty(doc.data().problemID)) {
+        console.error('BAD', doc.data().problemID);
+        badCt++;
+      } else {
+        // console.log(doc.data().problemID, "==>", urlToNewIDMap[doc.data().problemID])
+        doc.ref.update({
+          problemID: urlToNewIDMap[doc.data().problemID],
+        });
+      }
+    });
+    console.log('updating', ct, 'with bad ct', badCt);
   });
+// End migrate problem IDs
 
 // let userData = {};
 // const listAllUsers = nextPageToken => {
