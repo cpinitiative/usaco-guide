@@ -237,7 +237,7 @@ exports.onCreateNode = async ({
     try {
       problemJSON = importFresh(
         node.fileAbsolutePath.substring(0, node.fileAbsolutePath.length - 3) +
-          'problem.json'
+          'problems.json'
       );
     } catch (e) {
       // ignore, there probably aren't any problems in that module
