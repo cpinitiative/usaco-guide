@@ -163,10 +163,16 @@ exports.onCreateNode = async ({
     createParentChildLink({ parent: node, child: problemInfoNode });
   }
 
+  const isExtraProblems =
+    node.internal.mediaType === 'application/json' &&
+    node.sourceInstanceName === 'content' &&
+    node.relativePath.endsWith('extraProblems.json');
   if (
     node.internal.mediaType === 'application/json' &&
     node.sourceInstanceName === 'content' &&
-    node.relativePath.match(/^[1-6]_[A-z]+.[A-z_]+\.json$/) // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
+    // this check basically makes sure we aren't including id_to_sol.json or any other non-problem json files.
+    (node.relativePath.match(/^[1-6]_[A-z0-9-]+\/[A-z_0-9-]+\.json$/) ||
+      isExtraProblems)
   ) {
     const content = await loadNodeContent(node);
     let parsedContent;
@@ -180,7 +186,7 @@ exports.onCreateNode = async ({
     }
 
     const moduleId = parsedContent['MODULE_ID'];
-    if (!moduleId) {
+    if (!moduleId && !isExtraProblems) {
       throw new Error(
         'Module ID not found in problem JSON file: ' + node.absolutePath
       );
@@ -259,27 +265,29 @@ exports.onCreateNode = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
-  fs.readFileSync('./src/redirects.txt', (err, data) => {
-    if (err) throw new Error('error: ' + err);
-    (data + '')
-      .split('\n')
-      .filter(line => line.charAt(0) !== '#')
-      .map(line => {
-        const tokens = line.split('\t');
-        return {
-          from: tokens[0],
-          to: tokens[1],
-        };
-      })
-      .forEach(({ from, to }) => {
-        createRedirect({
-          fromPath: from,
-          toPath: to,
-          redirectInBrowser: true,
-          isPermanent: true,
-        });
-      });
-  });
+  // todo @jeffrey fix
+  // fs.readFileSync('./src/redirects.txt', (err, data) => {
+  //   if (err) throw new Error('error: ' + err);
+  //   (data + '')
+  //     .split('\n')
+  //     .filter(line => line.charAt(0) !== '#')
+  //     .map(line => {
+  //       const tokens = line.split('\t');
+  //       return {
+  //         from: tokens[0],
+  //         to: tokens[1],
+  //       };
+  //     })
+  //     .forEach(({ from, to }) => {
+  //       createRedirect({
+  //         fromPath: from,
+  //         toPath: to,
+  //         redirectInBrowser: true,
+  //         isPermanent: true,
+  //       });
+  //     });
+  // });
+  // todo @jeffrey this should be in redirects.txt
   createRedirect({
     fromPath: '/liveupdate',
     toPath: '/editor',
@@ -375,6 +383,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           } but has different information! They need to have the same name / url / source.`
         );
       }
+      // Some problems with no corresponding module gets put into extraProblems.json.
+      // If a problem has a module, then it should be removed from extraProblems.json.
+      if (!a.module || !b.module) {
+        throw new Error(
+          `The problem ${node.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
+        );
+      }
     }
     problemInfo[node.uniqueId] = node;
   });
@@ -399,59 +414,67 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
   const solutions = result.data.solutions.edges;
   solutions.forEach(({ node }) => {
-    // we want to find all problems that this solution can be an internal solution for
-    const problemsForThisSolution = problems.filter(
-      ({ node }) => node.uniqueId === node.frontmatter.id
-    );
-    if (problemsForThisSolution.length === 0) {
-      throw new Error(
-        "Couldn't find corresponding problem for internal solution with frontmatter ID " +
-          node.frontmatter.id
+    try {
+      // we want to find all problems that this solution can be an internal solution for
+      const problemsForThisSolution = problems.filter(
+        ({ node: problemNode }) => problemNode.uniqueId === node.frontmatter.id
       );
-    }
-    // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
-    const problemsThatAreMissingInternalSolution = problemsForThisSolution.filter(
-      x => x.node.solution?.kind !== 'internal'
-    );
-    if (problemsThatAreMissingInternalSolution.length > 0) {
-      problemsThatAreMissingInternalSolution.forEach(({ node }) => {
-        console.error(
-          'Problem ' +
-            node.uniqueId +
-            " isn't linked to its corresponding internal solution in module " +
-            node.module.frontmatter.title +
-            ' - ' +
-            node.module.frontmatter.id
+      if (problemsForThisSolution.length === 0) {
+        throw new Error(
+          "Couldn't find corresponding problem for internal solution with frontmatter ID " +
+            node.frontmatter.id +
+            '. If this problem is no longer in any module, add it to content/extraProblems.json.'
         );
-      });
-      throw new Error(
-        'Internal solution ' +
-          node.uniqueId +
-          " isn't linked to all of its problems (see above). Did you forget to update the solution metadata of a module after adding an internal solution?"
+      }
+      // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
+      const problemsThatAreMissingInternalSolution = problemsForThisSolution.filter(
+        x => x.node.solution?.kind !== 'internal'
       );
-    }
-    const problem = problemsForThisSolution[0];
-    const path = `${getProblemURL({
-      source: problem.source,
-      name: problem.name,
-    })}/solution`;
-    if (node.frontmatter.redirects) {
-      node.frontmatter.redirects.forEach(fromPath => {
-        createRedirect({
-          fromPath,
-          toPath: path,
-          redirectInBrowser: true,
-          isPermanent: true,
+      if (problemsThatAreMissingInternalSolution.length > 0) {
+        problemsThatAreMissingInternalSolution.forEach(({ node }) => {
+          console.error(
+            'Problem ' +
+              node.uniqueId +
+              " isn't linked to its corresponding internal solution in module " +
+              node.module.frontmatter.title +
+              ' - ' +
+              node.module.frontmatter.id
+          );
         });
+        throw new Error(
+          'Internal solution ' +
+            node.frontmatter.id +
+            " isn't linked to all of its problems (see above). Did you forget to update the solution metadata of a module after adding an internal solution?"
+        );
+      }
+      const problem = problemsForThisSolution[0];
+      const path = `${getProblemURL({
+        source: problem.node.source,
+        name: problem.node.name,
+      })}/solution`;
+      if (node.frontmatter.redirects) {
+        node.frontmatter.redirects.forEach(fromPath => {
+          createRedirect({
+            fromPath,
+            toPath: path,
+            redirectInBrowser: true,
+            isPermanent: true,
+          });
+        });
+      }
+      createPage({
+        path: path,
+        component: solutionTemplate,
+        context: {
+          id: node.frontmatter.id,
+        },
       });
+    } catch (e) {
+      console.error(
+        'Failed to generate internal solution for ' + node.frontmatter.id
+      );
+      throw e;
     }
-    createPage({
-      path: path,
-      component: solutionTemplate,
-      context: {
-        id: node.frontmatter.id,
-      },
-    });
   });
 
   // Generate Syllabus Pages //

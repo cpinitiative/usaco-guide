@@ -167,12 +167,10 @@ Latex *is* allowed with the new implementation of problems.
 
 export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
   objectID: string;
-  problemModules: [
-    {
-      id: string;
-      title: string;
-    }
-  ];
+  problemModules: {
+    id: string;
+    title: string;
+  }[];
 };
 
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
@@ -248,7 +246,7 @@ export function getProblemURL(
 ) {
   return `/problems/${
     isUsaco(problem.source) ? 'usaco' : slug(problem.source)
-  }-${slug(problem.name)}`;
+  }-${slug(problem.name.replace(' - ', ''))}`;
 }
 
 // legacy code follows
@@ -306,7 +304,7 @@ export class Problem {
       id = `kattis-${this.id}`;
     } else if (this.source === 'CF') {
       let num = this.id.match(/([0-9]+)/g)[0];
-      let char = this.id.match(/\/([A-z0-9]+)$/g)[0];
+      let char = this.id.match(/\/([A-z0-9]+)$/)[1];
       if (this.id.indexOf('gym') !== -1) {
         id = `cfgym-${num}${char}`;
       } else {

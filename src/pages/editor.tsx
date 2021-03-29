@@ -61,10 +61,7 @@ export default function LiveUpdatePage(props: PageProps) {
 
   const markdownStorageKey = 'guide:editor:markdown';
   const problemsStorageKey = 'guide:editor:problems';
-  const [markdown, setMarkdown] = useStickyState(
-    localStorage.getItem('guide:liveupdate:markdown') || '',
-    markdownStorageKey
-  );
+  const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
   const [problems, setProblems] = useStickyState('', problemsStorageKey);
   const editor = useRef();
   const [tab, setTab] = useState<'problems' | 'content'>('content');

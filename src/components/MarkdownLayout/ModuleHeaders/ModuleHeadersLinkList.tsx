@@ -4,7 +4,7 @@ import { SECTION_LABELS } from '../../../../content/ordering';
 
 export default function ModuleHeadersLinkList(props: {
   title: string;
-  links: { label: string; url: string }[];
+  links: { label: string; url?: string }[];
 }) {
   return (
     <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4">
@@ -29,15 +29,21 @@ export default function ModuleHeadersLinkList(props: {
           <div className="mt-2 text-sm leading-5 text-blue-800 dark:text-blue-200">
             <ul className="list-disc list-inside pl-3 space-y-1">
               {props.links.map(link => (
-                <li key={link.url}>
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline text-black dark:text-blue-200"
-                  >
-                    {link.label}
-                  </a>
+                <li key={link.url ?? link.label}>
+                  {link.url ? (
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline text-black dark:text-blue-200"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <span className="text-black dark:text-blue-200">
+                      {link.label}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

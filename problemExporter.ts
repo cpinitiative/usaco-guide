@@ -1,7 +1,7 @@
-import allProblems from './problemsList';
+import allProblems, { solIdToProblemURLMap } from './problemsList';
 import * as fs from 'fs';
 import { Problem, ProblemDifficulty } from './src/models/problem';
-
+import extraProblems from './solutions/1_extra_usaco_probs';
 const files = {};
 async function main() {
   await Promise.all(
@@ -81,26 +81,106 @@ async function main() {
       }
     }
     fileWritePromises.push(
+      new Promise<void>((resolve, reject) =>
+        fs.writeFile(
+          `./content/extraProblems.json`,
+          JSON.stringify(
+            extraProblems.reduce(
+              (acc: Record<string, any>, problem: Record<string, any>) => {
+                const prob = new Problem(
+                  problem.source,
+                  problem.name,
+                  problem.id,
+                  problem.difficulty as any,
+                  problem.starred,
+                  problem.tags,
+                  problem.solID,
+                  problem.solQuality as any
+                );
+                if (prob.solutionMetadata?.kind === 'in-module') {
+                  throw new Error('???');
+                }
+                let el = {
+                  uniqueId: prob.uniqueID,
+                  ___legacyUniqueId: problem.uniqueID,
+                  name: prob.name,
+                  url: prob.url,
+                  source: prob.source,
+                  difficulty: prob.difficulty,
+                  isStarred: prob.starred,
+                  tags: prob.tags,
+                  solutionMetadata: prob.solutionMetadata || {
+                    kind: 'none',
+                  },
+                  solId: problem.solID,
+                  tableId: problem.tableID,
+                };
+
+                const {
+                  tableId,
+                  ___legacyUniqueId,
+                  solId,
+                  ...problemData
+                } = el;
+                if (solId) {
+                  const oldUniqueId = solIdToProblemURLMap[solId];
+                  const newUniqueId = problemData.uniqueId;
+                  console.log(
+                    oldUniqueId +
+                      ' ==> ' +
+                      newUniqueId +
+                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+                  );
+
+                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
+                }
+                if (acc['EXTRA_PROBLEMS']) {
+                  acc['EXTRA_PROBLEMS'].push(problemData);
+                } else {
+                  acc['EXTRA_PROBLEMS'] = [problemData];
+                }
+                return acc;
+              },
+              {}
+            ),
+            null,
+            '\t'
+          ),
+          () => resolve()
+        )
+      )
+    );
+    fileWritePromises.push(
       new Promise<void>((resolve, reject) => {
         fs.writeFile(
           `./content/${divisionFolder}/${moduleFileName}.json`,
           JSON.stringify(
             problems.reduce(
               (acc: Record<string, any>, el: Record<string, any>) => {
-                const { tableID, ___legacyUniqueId, ...problemData } = el;
-                if (problemData.solID) {
-                  // @thecodingwizard todo
-                  const oldUniqueId = '??????????????';
+                const {
+                  tableId,
+                  ___legacyUniqueId,
+                  solId,
+                  ...problemData
+                } = el;
+                if (solId) {
+                  const oldUniqueId = solIdToProblemURLMap[solId];
                   const newUniqueId = problemData.uniqueId;
-                  console.log(oldUniqueId + ' ==> ' + newUniqueId);
+                  console.log(
+                    oldUniqueId +
+                      ' ==> ' +
+                      newUniqueId +
+                      (oldUniqueId !== newUniqueId ? '[CHANGE]' : '')
+                  );
 
-                  oldProblemIdToNewProblemIdMap[oldUniqueId] = newUniqueId;
-                  newProblemIdToOldProblemIdMap[newUniqueId] = oldUniqueId;
+                  oldProblemIdToNewProblemIdMap[solId] = newUniqueId;
+                  newProblemIdToOldProblemIdMap[newUniqueId] = solId;
                 }
-                if (acc[tableID]) {
-                  acc[tableID].push(problemData);
+                if (acc[tableId]) {
+                  acc[tableId].push(problemData);
                 } else {
-                  acc[tableID] = [problemData];
+                  acc[tableId] = [problemData];
                 }
                 return acc;
               },
@@ -136,6 +216,7 @@ async function main() {
         .join('\n')
   );
   fs.readdir('./solutions/', async (err, filesArr) => {
+    console.log(filesArr);
     await Promise.all(
       filesArr.map(name => {
         if (name.slice(-4) === '.mdx') {
@@ -148,7 +229,7 @@ async function main() {
               }
             })
           ).then(data => {
-            const lines = (data + '').split('\n');
+            const lines = (data + '').split(/\r?\n/);
             if (lines[0] !== '---' || lines[5] !== '---') {
               console.log(`${name}: unexpected frontmatter`);
               return Promise.reject();
@@ -158,6 +239,15 @@ async function main() {
               return Promise.reject();
             }
             const frontMatterId = lines[1].replace('id: ', '');
+            // TODO @thecodingwizard
+            console.log(
+              frontMatterId +
+                ' >>> ' +
+                oldProblemIdToNewProblemIdMap[frontMatterId] +
+                (frontMatterId === oldProblemIdToNewProblemIdMap[frontMatterId]
+                  ? 'X'
+                  : '[CHANGE]')
+            );
             if (oldProblemIdToNewProblemIdMap[frontMatterId]) {
               lines[1] = 'id: ' + oldProblemIdToNewProblemIdMap[frontMatterId];
             }

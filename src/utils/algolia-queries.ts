@@ -78,21 +78,24 @@ const queries = [
       data.data.edges.forEach(({ node }) => {
         // some problems appear in multiple modules
         let existingProblem = res.find(x => x.objectID === node.uniqueId);
-        const moduleInfo = {
-          id: node.module.frontmatter.id,
-          title: node.module.frontmatter.title,
-        };
+        // some problems (from extraProblems.json) don't have modules associated with them
+        const moduleInfo = node.module
+          ? {
+              id: node.module.frontmatter.id,
+              title: node.module.frontmatter.title,
+            }
+          : null;
         if (existingProblem) {
           existingProblem.tags = [
-            ...new Set([...existingProblem.tags, node.tags]),
+            ...new Set([...existingProblem.tags, ...(node.tags || [])]),
           ];
-          existingProblem.problemModules.push(moduleInfo);
+          if (moduleInfo) existingProblem.problemModules.push(moduleInfo);
         } else {
           res.push({
             objectID: node.uniqueId,
             name: node.name,
             source: node.source,
-            tags: node.tags,
+            tags: node.tags || [],
             url: node.url,
             difficulty: node.difficulty,
             isStarred: node.isStarred,
@@ -103,7 +106,7 @@ const queries = [
                   Object.entries(node.solution).filter(([_, v]) => v != null)
                 ) as any)
               : null,
-            problemModules: [moduleInfo],
+            problemModules: moduleInfo ? [moduleInfo] : [],
           });
         }
       });
