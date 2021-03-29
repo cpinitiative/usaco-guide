@@ -148,16 +148,16 @@ export default function LiveUpdatePage(props: PageProps) {
           >
             How to add a solution &rarr;
           </a>
-          {filePath && (
-            <button
-              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-              onClick={() =>
-                setTab(old => (old === 'content' ? 'problems' : 'content'))
-              }
-            >
-              Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
-            </button>
-          )}
+
+          <button
+            className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+            onClick={() =>
+              setTab(old => (old === 'content' ? 'problems' : 'content'))
+            }
+          >
+            Switch to Editing {tab === 'content' ? 'Problems' : 'Content'}
+          </button>
+
           {filePath && (
             <button
               className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
