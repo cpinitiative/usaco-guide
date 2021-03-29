@@ -23,12 +23,11 @@ import UserDataContext from '../context/UserDataContext/UserDataContext';
 import ButtonGroup from '../components/ButtonGroup';
 import { useDarkMode } from '../context/DarkModeContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import Editor, { useMonaco } from '@monaco-editor/react';
 import problemsSchema from '../../content/problems.schema.json';
-
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );
+const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 const StyledSplit = styled(Split)`
   & > div,
@@ -64,23 +63,8 @@ export default function LiveUpdatePage(props: PageProps) {
   const [markdown, setMarkdown] = useStickyState('', markdownStorageKey);
   const [problems, setProblems] = useStickyState('', problemsStorageKey);
   const editor = useRef();
-  const monaco = useMonaco();
   const [tab, setTab] = useState<'problems' | 'content'>('content');
-  React.useEffect(() => {
-    if (monaco && tab === 'problems') {
-      console.log('registered', problemsSchema);
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        schemas: [
-          {
-            uri: 'https://usaco.guide/problems.schema.json',
-            schema: problemsSchema,
-          },
-        ],
-      });
-    } else {
-      console.log('not registered');
-    }
-  }, [monaco, tab]);
+
   const loadContent = async filePath => {
     setMarkdown('Loading file from Github...');
 
@@ -222,6 +206,18 @@ export default function LiveUpdatePage(props: PageProps) {
                     tab === 'content' ? setMarkdown(v) : setProblems(v)
                   }
                   options={{ wordWrap: 'on', rulers: [80] }}
+                  beforeMount={monaco => {
+                    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                      validate: true,
+                      schemas: [
+                        {
+                          fileMatch: ['*.json'],
+                          uri: 'https://usaco.guide/problems.schema.json',
+                          schema: problemsSchema,
+                        },
+                      ],
+                    });
+                  }}
                   onMount={e => {
                     editor.current = e;
                     e.getModel().updateOptions({ insertSpaces: false });
