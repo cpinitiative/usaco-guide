@@ -7,7 +7,7 @@ import Tooltip from '../../Tooltip/Tooltip';
 import { Instance } from 'tippy.js';
 import Tippy from '@tippyjs/react';
 import { navigate } from 'gatsby';
-import { ProblemInfo, probSources } from '../../../models/problem';
+import { contests, ProblemInfo, probSources } from '../../../models/problem';
 import tw from 'twin.macro';
 import styled, { css } from 'styled-components';
 import ProblemListItemSolution from './ProblemListItemSolution';
@@ -96,7 +96,9 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
     </td>
   );
 
-  const sourceTooltip = divisionTable ? null : probSources[problem.source]?.[2];
+  const sourceTooltip = divisionTable
+    ? null
+    : probSources[problem.source]?.[1] ?? contests[problem.source]?.[1];
   let resultsUrl = ''; // used only for division tables
   if (divisionTable) {
     const parts = problem.source.split(' ');

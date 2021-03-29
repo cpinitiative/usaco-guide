@@ -3,7 +3,7 @@ import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_so
 import { books } from '../utils/books';
 import { slug } from 'github-slugger';
 
-const contests = {
+export const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
   CCO: ['DMOJ', 'Canadian Computing Olympiad'],
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
