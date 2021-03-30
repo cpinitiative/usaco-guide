@@ -350,6 +350,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
   let problemInfo = {}; // maps unique problem ID to problem info
+  let problemURLToUniqueID = {}; // maps problem URL to problem unique ID
+  let urlsThatCanHaveMultipleUniqueIDs = ['https://cses.fi/107/list/'];
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -382,6 +384,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         );
       }
     }
+    if (
+      problemURLToUniqueID.hasOwnProperty(node.url) &&
+      problemURLToUniqueID[node.url] !== node.uniqueId &&
+      !urlsThatCanHaveMultipleUniqueIDs.includes(node.url)
+    ) {
+      throw new Error(
+        `The URL ${node.url} is assigned to both problem unique ID ${
+          problemURLToUniqueID[node.url]
+        } and ${
+          node.uniqueId
+        }. Is this correct? (If this is correct, add the URL to \`urlsThatCanHaveMultipleUniqueIDs\` in gatsby-node.ts)`
+      );
+    }
+    problemURLToUniqueID[node.url] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
   });
   // End problems check
