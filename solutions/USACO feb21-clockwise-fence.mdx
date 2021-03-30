@@ -1,0 +1,45 @@
+---
+id: usaco-1109
+source: USACO Bronze 2021 February
+title: Clockwise Fence
+author: Melody Yu
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob3_bronze_feb21.html)
+
+## Solution (Vector Cross Product)
+
+The vector cross product can be used to determine if 2 vectors are rotating clockwise or anticlockwise. For this question, we treat each step that Farmer John walks as a vector and take the cross product of the current step and the previous step. If we sum all the cross product values, we can determine if the overall direction is CW or CCW based on the sign of the sum.
+
+<LanguageSection>
+<PySection>
+## Implementation
+
+```python
+def cross_product(p1, p2):
+    return p1[0] * p2[1] - p2[0] * p1[1]
+
+for i in range (int(input())):
+    p0 = (0, 0)
+    sum = 0
+    direction = input()
+    for d in direction:
+        if d == 'N':
+            p1 = (p0[0], p0[1] + 1)
+        elif d == 'E':
+            p1 = (p0[0] + 1, p0[1])
+        elif d == 'S':
+            p1 = (p0[0], p0[1] - 1)
+        else:
+            p1 = (p0[0] - 1, p0[1])
+        sum += cross_product(p1, p0)
+        p0 = p1
+
+    if sum > 0:
+        print("CW")
+    else:
+        print("CCW")
+```
+
+</PySection>
+</LanguageSection>
