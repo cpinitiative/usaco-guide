@@ -389,7 +389,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       problemURLToUniqueID[node.url] !== node.uniqueId &&
       !urlsThatCanHaveMultipleUniqueIDs.includes(node.url)
     ) {
-      console.error(
+      throw new Error(
         `The URL ${node.url} is assigned to both problem unique ID ${
           problemURLToUniqueID[node.url]
         } and ${
