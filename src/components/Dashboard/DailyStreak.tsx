@@ -105,7 +105,6 @@ export default function DailyStreak({ streak }) {
     return primes;
   };
   const times = generatePrimes();
-  console.log(times);
 
   let maxInd = 0;
   while (maxInd < times.length && times[maxInd] <= streak) maxInd++;

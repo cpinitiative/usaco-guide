@@ -7,30 +7,30 @@ author: Andi Qu
 
 **Time Complexity:** $\mathcal O(Q \log R \cdot \log C)$
 
-We're asked to handle point updates and range GCD queries on a 2D grid.
-This implies that we should use a 2D range-query data structure like a 2D
-segment tree (N.B. not a Fenwick tree, as the GCD function has no inverse).
+We're asked to handle point updates and range GCD queries on a 2D grid. This
+implies that we should use a 2D range-query data structure like a 2D segment
+tree (N.B. not a Fenwick tree, as the GCD function has no inverse).
 
-In 1D ($C = 1$), this can be solved by a fairly straightforward use of a segment tree:
-each node stores the GCD of its two children. Since $R$ can be quite big, this
-needs to be a sparse segment tree; another alternative would be a balanced binary
-tree like a treap.
+In 1D ($C = 1$), this can be solved by a fairly straightforward use of a segment
+tree: each node stores the GCD of its two children. Since $R$ can be quite big,
+this needs to be a sparse segment tree; another alternative would be a balanced
+binary tree like a treap.
 
-However, a sparse 2D segment tree uses *just* a bit too much memory, and only 
+However, a sparse 2D segment tree uses _just_ a bit too much memory, and only
 scores 80 points. Fortunately for us, there are two ways to get around this!
 
 ## Approach 1 - Sparse segment tree of BBSTs
 
-Although BBSTs use 4 times less memory than segment trees, a BBST of BBSTs 
-(e.g. a [range tree](https://en.wikipedia.org/wiki/Range_tree)) is rather
-unpleasant to implement. However, a segment tree of BBSTs is much nicer to
-implement, and is good enough to score 100 points!
+Although BBSTs use 4 times less memory than segment trees, a BBST of BBSTs (e.g.
+a [range tree](https://en.wikipedia.org/wiki/Range_tree)) is rather unpleasant
+to implement. However, a segment tree of BBSTs is much nicer to implement, and
+is good enough to score 100 points!
 
 In my implementation below, I use an
 [implicit treap](https://cp-algorithms.com/data_structures/treap.html#toc-tgt-6)
 because they support point updates and range queries. Each segment tree node
-stores a treap, and updating a node involves changing $\mathcal O(\log C)$ values
-in its treap (similar to updating a 2D segment tree node).
+stores a treap, and updating a node involves changing $\mathcal O(\log C)$
+values in its treap (similar to updating a 2D segment tree node).
 
 ```cpp
 #include "game.h"
@@ -46,7 +46,7 @@ struct TreapNode {
 	TreapNode *l, *r;
 	int pos, key, mn, mx;
 	ll val, g;
-	
+
 	TreapNode(int position, ll value) {
 		l = r = nullptr;
 		mn = mx = pos = position;
@@ -134,7 +134,7 @@ struct Treap {
 	ll query(TreapNode *t, int st, int en) {
 		if (t->mx < st || en < t->mn) return 0;
 		if (st <= t->mn && t->mx <= en) return t->g;
-		
+
 		ll ans = (st <= t->pos && t->pos <= en ? t->val : 0);
 		if (t->l) ans = gcd(ans, query(t->l, st, en));
 		if (t->r) ans = gcd(ans, query(t->r, st, en));
@@ -215,14 +215,14 @@ ll calculate(int P, int Q, int U, int V) {
 ## Approach 2 - Memory-optimized 2D sparse segment tree
 
 Although the previous approach is somewhat simpler, this approach was intended,
-and involves optimizing the memory usage of a sparse segment tree from 
+and involves optimizing the memory usage of a sparse segment tree from
 $\mathcal O(N \log(\text{size of range}))$ to $\mathcal O(N)$.
 
-Essentially, we don't instantiate nodes in the segment tree if they are not
-leaf nodes and only contain a single leaf node in their subtree, as those nodes
-are redundant. What we end up with is a segment tree with $N$ leaves and $2N - 1$
-nodes. See
-[the sparse segment tree module](/plat/sparse-seg?lang=cpp#solution) for more details.
+Essentially, we don't instantiate nodes in the segment tree if they are not leaf
+nodes and only contain a single leaf node in their subtree, as those nodes are
+redundant. What we end up with is a segment tree with $N$ leaves and $2N - 1$
+nodes. See [the sparse segment tree module](/plat/sparse-seg?lang=cpp#solution)
+for more details.
 
 Note that we can only apply this trick to the segment trees of the **columns**.
 This means that the memory complexity is $\mathcal O(Q \log R)$, which is good

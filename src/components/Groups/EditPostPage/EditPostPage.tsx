@@ -11,6 +11,7 @@ import { PostData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import useFirebase from '../../../hooks/useFirebase';
 import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
 import MarkdownEditor from '../MarkdownEditor';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
