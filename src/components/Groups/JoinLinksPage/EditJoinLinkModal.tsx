@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import Switch from '../../elements/Switch';
 import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
 import useFirebase from '../../../hooks/useFirebase';
 import Tooltip from '../../Tooltip/Tooltip';
 
