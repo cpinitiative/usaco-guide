@@ -9,145 +9,9 @@ description:
 frequency: 1
 ---
 
-export const problems = {
-	bitSample: [
-		new Problem(
-			'SPOJ',
-			'Horrible Queries',
-			'HORRIBLE',
-			'Easy',
-			false,
-			['1DRQ'],
-			''
-		),
-	],
-	bitProb: [
-		new Problem(
-			'CSES',
-			'Polynomial Queries',
-			'1736',
-			'Easy',
-			false,
-			['1DRQ'],
-			'equivalent to https://dmoj.ca/problem/acc3p4'
-		),
-		new Problem(
-			'Baltic OI',
-			'2011 - Growing Trees',
-			'https://oj.uz/problem/view/BOI11_grow',
-			'Normal',
-			false,
-			['1DRQ', 'Binary search'],
-			''
-		),
-		new Problem(
-			'IOI',
-			'2007 - Sails',
-			'http://oj.uz/problem/view/IOI07_sails',
-			'Normal',
-			true,
-			['1DRQ', 'Binary search'],
-			''
-		),
-	],
-	lazySample: [
-		new Problem(
-			'CSES',
-			'Range Updates & Sums',
-			'1735',
-			'Easy',
-			false,
-			['Lazy SegTree'],
-			''
-		),
-	],
-	lazySegTree: [
-		new Problem(
-			'YS',
-			'Range Affine Range Sum',
-			'range_affine_range_sum',
-			'Easy',
-			false,
-			['Lazy SegTree'],
-			''
-		),
-		new Problem(
-			'Plat',
-			'Counting Haybales',
-			'578',
-			'Easy',
-			false,
-			['Lazy SegTree'],
-			''
-		),
-		new Problem(
-			'Old Gold',
-			'The Lazy Cow',
-			'418',
-			'Easy',
-			false,
-			['Lazy SegTree'],
-			''
-		),
-		new Problem(
-			'CSES',
-			'Prefix Sum Queries',
-			'2166',
-			'Normal',
-			false,
-			[],
-			'cses-2166'
-		),
-		new Problem(
-			'IOI',
-			'2014 - Wall',
-			'https://oj.uz/problem/view/IOI14_wall',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'IOI',
-			'2005 - Mountain',
-			'https://dmoj.ca/problem/ioi05p3',
-			'Normal',
-			false,
-			[],
-			'https://ioinformatics.org/files/ioi2005solutions.pdf'
-		),
-		new Problem(
-			'Plat',
-			'Snow-Cow',
-			'973',
-			'Normal',
-			false,
-			['Lazy SegTree'],
-			'Can use lazy seg in place of two BITs'
-		),
-		new Problem(
-			'JOI',
-			'2018 - Bubble Sort 2',
-			'JOI18_bubblesort2',
-			'Very Hard',
-			false,
-			['Lazy SegTree'],
-			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2018/2018-open-bubblesort2-sol-en.pdf'
-		),
-		new Problem(
-			'DMOJ',
-			'Victor Identifies Software',
-			'dmopc20c1p6',
-			'Very Hard',
-			false,
-			['Lazy SegTree']
-		),
-	],
-};
-
 ## BIT Revisited
 
-<FocusProblem problem={problems.bitSample[0]} />
+<FocusProblem problem="bitSample" />
 
 Binary Indexed Trees can support range increments in addition to range sum
 queries.
@@ -187,11 +51,11 @@ queries.
 
 ### Problems
 
-<Problems problems={problems.bitProb} />
+<Problems problems="bitProb" />
 
 ## Lazy Segment Tree
 
-<FocusProblem problem={problems.lazySample[0]} />
+<FocusProblem problem="lazySample" />
 
 ### Tutorial
 
@@ -237,67 +101,73 @@ Consider the first two types of queries, a lazy tag will be created in each node
 
 Given the two different update queries, a total of four different situations might take place as a result of any update. 
 
--	Range add $lzAdd$ when $lzSet$ equals 0: Simply add the new value to the pre-existing value. 
+-	Range add when $lzSet$ equals 0: Simply add the new value to the pre-existing value. 
 
--	Range add $lzAdd$ when $lzSet$ doesn't equal 0: Add the new value to $lzSet$ and clear $lzAdd$. 
+-	Range add when $lzSet$ doesn't equal 0: Add the new value to $lzSet$ and clear $lzAdd$. 
 
 -	Range set when $lzAdd$ equals 0: Simply update the $lzSet$ value. 
 
--	Range set when $lzAdd$ doesn't equal 0: Again simply update the $lzSet$ value since a set update will override all previous add update. 
+-	Range set when $lzAdd$ doesn't equal 0: Again simply update the $lzSet$ value since a set update will override all previous add updates. 
 
 Given the mechanics behind the ```pushdown``` function, all you need is a regular range sum segment tree to complete the question. 
 
 ```cpp
 
 #include <iostream>
-#define int long long 
+#define ll long long
 using namespace std;
-
-const int maxN = 2e5+5;
-
-int N,Q;
-int a[maxN];
-
+ 
+const ll maxN = 2e5+5;
+ 
+ll N,Q;
+ll a[maxN];
+ 
 struct node{
-	int val;
-	int l,r;
-	int lzAdd;
-	int lzSet;
+	ll val;
+	ll l,r;
+	ll lzAdd; 
+	ll lzSet;
 	node(){};
 }tree[maxN<<2];
-
+ 
 #define lc p<<1
 #define rc (p<<1)+1
-
-inline void pushup(int p){
+ 
+inline void pushup(ll p){
 	tree[p].val = tree[lc].val + tree[rc].val;
 	return;
 }
-
-void pushdown(int p){
-	//leaf node 
+ 
+void pushdown(ll p){
+	//leaf node
 	if(tree[p].l == tree[p].r)return;
-	//lazy: range set 
+	//lazy: range set
 	if(tree[p].lzSet != 0){
-		tree[lc].lzSet = tree[rc].lzSet = tree[p].lzSet; 
+		tree[lc].lzSet = tree[rc].lzSet = tree[p].lzSet;
 		tree[lc].val = (tree[lc].r - tree[lc].l + 1) * tree[p].lzSet;
 		tree[rc].val = (tree[rc].r - tree[rc].l + 1) * tree[p].lzSet;
 		tree[lc].lzAdd = tree[rc].lzAdd = 0;
 		tree[p].lzSet = 0;
 	}
 	else if(tree[p].lzAdd != 0){ //lazy: range add
+		if(tree[lc].lzSet == 0)tree[lc].lzAdd += tree[p].lzAdd;
+		else {
+			tree[lc].lzSet += tree[p].lzAdd;
+			tree[lc].lzAdd = 0;
+		}
+		if(tree[rc].lzSet == 0)tree[rc].lzAdd += tree[p].lzAdd;
+		else{
+			tree[rc].lzSet += tree[p].lzAdd;
+			tree[rc].lzAdd = 0;
+		}
 		tree[lc].val += (tree[lc].r - tree[lc].l + 1) * tree[p].lzAdd;
 		tree[rc].val += (tree[rc].r - tree[rc].l + 1) * tree[p].lzAdd;
-		if(tree[lc].lzSet == 0)tree[lc].lzAdd += tree[p].lzAdd;
-		else tree[rc].lzSet += tree[p].lzAdd;
-		if(tree[rc].lzSet == 0)tree[rc].lzAdd += tree[p].lzAdd;
-		else tree[rc].lzSet += tree[p].lzAdd;
 		tree[p].lzAdd = 0;
 	}
 	return;
 }
-
-void build(int p, int l, int r){
+ 
+void build(ll p, ll l, ll r){
 	tree[p].l = l;
 	tree[p].r = r;
 	tree[p].lzAdd = tree[p].lzSet = 0;
@@ -305,14 +175,14 @@ void build(int p, int l, int r){
 		tree[p].val = a[l];
 		return;
 	}
-	int mid = (l+r)>>1;
+	ll mid = (l+r)>>1;
 	build(lc,l,mid);
 	build(rc,mid+1,r);
 	pushup(p);
 	return;
 }
-
-void add(int p, int l, int r, int a, int b, int val){
+ 
+void add(ll p, ll l, ll r, ll a, ll b, ll val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
 		tree[p].val += (tree[p].r - tree[p].l + 1) * val;
@@ -321,14 +191,14 @@ void add(int p, int l, int r, int a, int b, int val){
 		return;
 	}
 	pushdown(p);
-	int mid = (l+r)>>1;
+	ll mid = (l+r)>>1;
 	add(lc,l,mid,a,b,val);
 	add(rc,mid+1,r,a,b,val);
 	pushup(p);
 	return;
 }
-
-void set(int p, int l, int r, int a, int b, int val){
+ 
+void set(ll p, ll l, ll r, ll a, ll b, ll val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
 		tree[p].val = (tree[p].r - tree[p].l + 1) * val;
@@ -337,30 +207,30 @@ void set(int p, int l, int r, int a, int b, int val){
 		return;
 	}
 	pushdown(p);
-	int mid = (l+r)>>1;
+	ll mid = (l+r)>>1;
 	set(lc,l,mid,a,b,val);
 	set(rc,mid+1,r,a,b,val);
 	pushup(p);
 	return;
 }
-
-int query(int p, int l, int r, int a, int b){
+ 
+ll query(ll p, ll l, ll r, ll a, ll b){
 	if(a > r || b < l)return 0;
 	if(a <= l && r <= b)return tree[p].val;
 	pushdown(p);
-	int mid = (l+r)>>1;
+	ll mid = (l+r)>>1;
 	return query(lc,l,mid,a,b) + query(rc,mid+1,r,a,b);
 }
-
+ 
 signed main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	cin >> N >> Q;
-	for(int i = 1; i <= N; ++i)cin >> a[i];
+	for(ll i = 1; i <= N; ++i)cin >> a[i];
 	build(1,1,N);
-	for(int i = 1; i <= Q; ++i){
-		int k; cin >> k;
-		int a,b,x;
+	for(ll i = 1; i <= Q; ++i){
+		ll k; cin >> k;
+		ll a,b,x;
 		if(k == 1){
 			cin >> a >> b >> x;
 			add(1,1,N,a,b,x);
@@ -371,8 +241,8 @@ signed main(){
 		}
 		if(k == 3){
 			cin >> a >> b;
-			int res = query(1,1,N,a,b);
-			cout << res << endl;
+			ll res = query(1,1,N,a,b);
+			cout << res << '\n';
 		}
 	}
 	return 0;
@@ -383,4 +253,4 @@ signed main(){
 
 ### Problems
 
-<Problems problems={problems.lazySegTree} />
+<Problems problems="lazySegTree" />
