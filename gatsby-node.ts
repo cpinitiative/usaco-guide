@@ -442,10 +442,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           console.error(
             'Problem ' +
               node.uniqueId +
-              " isn't linked to its corresponding internal solution in module " +
-              node.module.frontmatter.title +
-              ' - ' +
-              node.module.frontmatter.id
+              " isn't linked to its corresponding internal solution in " +
+              node.module
+              ? 'module ' +
+                  node.module.frontmatter.title +
+                  ' - ' +
+                  node.module.frontmatter.id
+              : 'extraProblems.json'
           );
         });
         throw new Error(
