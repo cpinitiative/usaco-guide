@@ -350,6 +350,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
   let problemInfo = {}; // maps unique problem ID to problem info
+  let problemURLToUniqueID = {}; // maps problem URL to problem unique ID
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -382,6 +383,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         );
       }
     }
+    if (
+      problemURLToUniqueID.hasOwnProperty(node.url) &&
+      problemURLToUniqueID[node.url] !== node.uniqueId
+    ) {
+      throw new Error(
+        `The URL ${node.url} is assigned to both problem unique ID ${
+          problemURLToUniqueID[node.url]
+        } and ${
+          node.uniqueId
+        }. They should have the same unique IDs. (If they intentionally have different unique IDs, update the code to allow this)`
+      );
+    }
+    problemURLToUniqueID[node.url] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
   });
   // End problems check
