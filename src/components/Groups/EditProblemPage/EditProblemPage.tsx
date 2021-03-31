@@ -13,6 +13,8 @@ import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
 import { ProblemData } from '../../../models/groups/problem';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
+import { AlgoliaProblemInfo } from '../../../models/problem';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -34,6 +36,7 @@ export default function EditProblemPage(props) {
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const notifications = useNotificationSystem();
+  const [isSearchOpen, setIsSearchOpen] = React.useState(true);
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
@@ -56,6 +59,11 @@ export default function EditProblemPage(props) {
   };
   const handleSaveProblem = () => {
     saveProblem(post, problem).then(() => navigate(-1));
+  };
+
+  const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
+    setIsSearchOpen(false);
+    console.log(problem);
   };
 
   if (!problem) {
@@ -268,6 +276,12 @@ export default function EditProblemPage(props) {
         </div>
         <div className="h-12" />
       </main>
+
+      <ProblemAutocompleteModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onProblemSelect={handleProblemSearchSelect}
+      />
     </Layout>
   );
 }
