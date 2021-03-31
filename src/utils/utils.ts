@@ -31,22 +31,6 @@ export const getModulesForDivision = (allModules, division) => {
   });
 };
 
-export function graphqlToModuleLinks(allMdx: any): ModuleLinkInfo[] {
-  return allMdx.edges.map(
-    cur =>
-      new ModuleLinkInfo(
-        cur.node.frontmatter.id,
-        cur.node.fields.division,
-        cur.node.frontmatter.title,
-        null,
-        null,
-        null,
-        cur.node.problems, // todo upate to fields
-        cur.node.fields.gitAuthorTime
-      )
-  );
-}
-
 export function graphqlToModuleInfo(mdx: any): ModuleInfo {
   return new ModuleInfo(
     mdx.frontmatter.id,
