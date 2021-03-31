@@ -14,7 +14,7 @@ import EditProblemHintSection from './EditProblemHintSection';
 import { ProblemData } from '../../../models/groups/problem';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
-import { AlgoliaProblemInfo } from '../../../models/problem';
+import { AlgoliaProblemInfo, getProblemURL } from '../../../models/problem';
 
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
@@ -36,7 +36,7 @@ export default function EditProblemPage(props) {
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const notifications = useNotificationSystem();
-  const [isSearchOpen, setIsSearchOpen] = React.useState(true);
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
@@ -64,6 +64,26 @@ export default function EditProblemPage(props) {
   const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
     setIsSearchOpen(false);
     console.log(problem);
+    editProblem({
+      name: problem.name,
+      body: `See [${problem.url}](${problem.url})`,
+      solution:
+        problem.solution.kind == 'internal'
+          ? `See [https://usaco.guide${[
+              getProblemURL(problem),
+            ]}/solution](https://usaco.guide${[
+              getProblemURL(problem),
+            ]}/solution)`
+          : problem.solution.kind == 'link'
+          ? `See [${problem.solution.url}](${problem.solution.url})`
+          : problem.solution.kind == 'label'
+          ? problem.solution.label
+          : problem.solution.kind === 'sketch'
+          ? problem.solution.sketch
+          : '',
+      source: problem.source,
+      difficulty: problem.difficulty,
+    });
   };
 
   if (!problem) {
@@ -108,6 +128,15 @@ export default function EditProblemPage(props) {
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="sm:col-span-4">
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(true)}
+                  className="btn"
+                >
+                  Import Problem From USACO Guide
+                </button>
+              </div>
               <div className="sm:col-span-4">
                 <label
                   htmlFor="problem_name"
