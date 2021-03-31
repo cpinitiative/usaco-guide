@@ -212,6 +212,35 @@ exports.onCreateNode = async ({
         throw new Error('Failed to create problem info');
       }
     });
+
+    if (moduleId) {
+      // create a node that contains all of a module's problems
+      const id = createNodeId(`${node.id} >>> ModuleProblemLists`);
+      const problemLists = Object.keys(parsedContent)
+        .filter(x => x !== 'MODULE_ID')
+        .map(listId => ({
+          listId,
+          problems: parsedContent[listId].map(x => ({
+            ...getProblemInfo(x),
+          })),
+        }));
+      const data = {
+        problemLists,
+        moduleId,
+      };
+      const problemInfoNode = {
+        ...data,
+        id,
+        children: [],
+        parent: node.id,
+        internal: {
+          contentDigest: createContentDigest(data),
+          type: 'ModuleProblemLists',
+        },
+      };
+      createNode(problemInfoNode);
+      createParentChildLink({ parent: node, child: problemInfoNode });
+    }
   } else if (
     node.internal.type === 'Mdx' &&
     node.fileAbsolutePath.includes('content')
@@ -232,32 +261,6 @@ exports.onCreateNode = async ({
       name: 'gitAuthorTime',
       value: gitAuthorTime,
     });
-
-    let problemJSON;
-    try {
-      problemJSON = importFresh(
-        node.fileAbsolutePath.substring(0, node.fileAbsolutePath.length - 3) +
-          'problems.json'
-      );
-    } catch (e) {
-      // ignore, there probably aren't any problems in that module
-    }
-
-    if (problemJSON) {
-      createNodeField({
-        node,
-        name: 'problemLists',
-        value: Object.keys(problemJSON)
-          .filter(x => x !== 'MODULE_ID')
-          .map(listId => ({
-            listId,
-            problems: problemJSON[listId].map(x => ({
-              ...getProblemInfo(x),
-              moduleId: node.frontmatter.id,
-            })),
-          })),
-      });
-    }
   }
 };
 
@@ -524,7 +527,12 @@ exports.createSchemaCustomization = ({ actions }) => {
       py: [Heading]
     }
     
-    type MdxFieldsProblems {
+    type ModuleProblemLists implements Node {
+      moduleId: String
+      problemLists: [ModuleProblemList]
+    }
+    
+    type ModuleProblemList {
       listId: String!
       problems: [ModuleProblemInfo]
     }
