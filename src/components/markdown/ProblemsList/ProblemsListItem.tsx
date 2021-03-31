@@ -62,15 +62,6 @@ export default function ProblemsListItem(props: ProblemsListItemProps) {
   const id = `problem-${problem.uniqueId}`;
 
   const divisionTable = !!props.isDivisionTable;
-  // let resultsUrl = '';
-  // if (divisionTable) {
-  //   const parts = problem.source.split(' ');
-  //   parts[0] = parts[0].substring(2);
-  //   if (parts[1] === 'US') parts[1] = 'open';
-  //   else parts[1] = parts[1].toLowerCase().substring(0, 3);
-  //   resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
-  //   // console.log('SOURCE', problem.source, resultsUrl);
-  // }
 
   React.useEffect(() => {
     const hashHandler = (): void => {

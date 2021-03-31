@@ -69,7 +69,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps) {
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
 
-  const shouldShowSolvePercentage = false; // props.problems.some(problem => !problem.fraction);
+  const shouldShowSolvePercentage =
+    props.isDivisionTable &&
+    props.problems.every(problem => !!problem.percentageSolved);
 
   return (
     <div
