@@ -273,12 +273,12 @@ inline void pushup(int p){
 	return;
 }
  
-void pushdown(int p, ll l, int mid, ll r){
+void pushdown(int p, ll l, ll mid, ll r){
 	//lazy: range set
 	if(tree[p].lzSet != 0){
 		tree[lc].lzSet = tree[rc].lzSet = tree[p].lzSet;
-		tree[lc].val = (mid-l+1) * tree[p].lzSet * 1ll;
-		tree[rc].val = (r-mid) * tree[p].lzSet * 1ll;
+		tree[lc].val = (mid-l+1) * tree[p].lzSet;
+		tree[rc].val = (r-mid) * tree[p].lzSet;
 		tree[lc].lzAdd = tree[rc].lzAdd = 0;
 		tree[p].lzSet = 0;
 	}
@@ -316,7 +316,7 @@ void build(int p, ll l, ll r){
 void add(int p, ll l, ll r, int a, int b, int val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
-		tree[p].val += (r-l+1) * val * 1ll;
+		tree[p].val += (r-l+1) * val;
 		if(tree[p].lzSet == 0)tree[p].lzAdd += val;
 		else tree[p].lzSet += val;
 		return;
@@ -332,7 +332,7 @@ void add(int p, ll l, ll r, int a, int b, int val){
 void set(int p, ll l, ll r, int a, int b, int val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
-		tree[p].val = (r-l+1) * val * 1ll;
+		tree[p].val = (r-l+1) * val;
 		tree[p].lzAdd = 0;
 		tree[p].lzSet = val;
 		return;
