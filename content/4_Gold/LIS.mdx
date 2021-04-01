@@ -94,13 +94,13 @@ We can do much better than this though!
 **Time Complexity**: $\mathcal O(N \log N)$
 
 Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$
-elements of $A$ with an increasing sequence of length $j$ ending on it (or
+elements of $A$ with an increasing sequence of length $j + 1$ ending on it (or
 $\infty$ if there is no such element).
 
-For example, let our array be `2 18 7 20 18 5 18 15 13 19 9`.
+For example, let our array be $[2, 18, 7, 20, 18, 5, 18, 15, 13, 19, 9]$.
 
-In this case, $L_8$ would be `[2, 5, 15]`. Some example sequences satisfying
-these are `[2]`, `[2, 5]`, and `[2, 5, 15]`.
+In this case, $L_8$ would be $[2, 5, 15]$. Some example sequences satisfying
+these are $[2]$, $[2, 5]$, and $[2, 5, 15]$.
 
 **Lemma 1:** $L_i$ forms a strictly increasing sequence.
 
@@ -117,17 +117,18 @@ index $j$ (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
 $A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on
 $A[i + 1]$, as we can append $A[i + 1]$ to the end of the sequence of length
 $j - 1$. By Lemma 1, $L_i$ is strictly increasing, so $L_i[k] \geq A[i + 1]$ for
-all $k \geq j$. This means that the length of the LIS is $j$.
+all $k \geq j$. This means that there cannot be a LIS ending at $A[i + 1]$ longer than $j$.
 
 **Lemma 3:** At most 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Let $j$ be defined as it was in the previous lemma. We need to set
-$L_{i + 1}[j]$ to be $A[i + 1]$ since $A[i + 1] \leq L_i[j]$. We don't update
-anything else though, since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no
-increasing sequences ending on $A[i + 1]$ of length greater than $j$.
+**Proof:** Let $j$ be defined as it was in Lemma 2. We need to set
+$L_{i + 1}[j]$ to be $A[i + 1]$ since $A[i + 1] \leq L_i[j]$.
+$L_{i + 1}[k] = L_i[k]$ for all $k \neq j$, though, 
+since $A[i + 1] > L_i[k]$ for all $k < j$ and there are no
+increasing sequences ending on $A[i + 1]$ for $k > j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-list with binary search, or we can use a sorted set (as demonstrated in the
+list with binary search, or we can use an ordered set (as demonstrated in the
 solution for PCB).
 
 <LanguageSection>
