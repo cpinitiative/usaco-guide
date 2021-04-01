@@ -463,6 +463,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       }
       const problem = problemsForThisSolution[0];
       const path = `${getProblemURL({
+        uniqueId: problem.node.uniqueId,
         source: problem.node.source,
         name: problem.node.name,
       })}/solution`;
