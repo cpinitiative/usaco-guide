@@ -31,6 +31,12 @@ export default function HTML(props) {
             href="https://rsms.me/inter/inter.css"
             as="style"
             onLoad="this.onload=null;this.rel='stylesheet'"
+          />
+          <link
+            rel="preload"
+            href="https://cdn.jsdelivr.net/npm/comic-mono@0.0.1/index.css"
+            as="style"
+            onLoad="this.onload=null;this.rel='stylesheet'"
           />`,
           }}
         />
