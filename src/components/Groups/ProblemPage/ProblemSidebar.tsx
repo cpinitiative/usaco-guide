@@ -7,13 +7,15 @@ import {
   getEarnedPointsForProblem,
   ProblemData,
 } from '../../../models/groups/problem';
-
+import { GroupProblemData } from '../../../hooks/groups/usePostActions';
+import * as Icons from 'heroicons-react';
+import TextTooltip from '../../Tooltip/TextTooltip';
 export default function ProblemSidebar({
   post,
   problem,
 }: {
   post: PostData;
-  problem: ProblemData;
+  problem: GroupProblemData;
 }) {
   const submissions = useUserProblemSubmissions(post.id, problem.id);
 
@@ -84,6 +86,20 @@ export default function ProblemSidebar({
             Source: {problem.source}
           </span>
         </div>
+        {problem.usacoGuideId && (
+          <div className="flex items-center space-x-2">
+            <Icons.Link className="h-5 w-5 text-gray-400 dark:text-gray-400" />
+            <span className="text-gray-900 dark:text-gray-300 text-sm font-medium">
+              <TextTooltip
+                content={
+                  'Submitting this problem here will also mark it as completed in the USACO Guide.'
+                }
+              >
+                Linked to USACO Guide Problem
+              </TextTooltip>
+            </span>
+          </div>
+        )}
         <SidebarDueDate post={post} />
       </div>
       <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">

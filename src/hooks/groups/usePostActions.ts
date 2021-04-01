@@ -9,9 +9,15 @@ import {
   SubmissionType,
 } from '../../models/groups/problem';
 
+export interface GroupProblemData extends ProblemData {
+  usacoGuideId: string;
+}
+
 export function usePostActions(groupId: string) {
   const firebase = useFirebase();
-  const { firebaseUser } = useContext(UserDataContext);
+  const { firebaseUser, setUserProgressOnProblems } = useContext(
+    UserDataContext
+  );
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await firebase
@@ -92,7 +98,7 @@ export function usePostActions(groupId: string) {
         .add(defaultProblem);
       return doc.id;
     },
-    saveProblem: async (post: PostData, problem: ProblemData) => {
+    saveProblem: async (post: PostData, problem: GroupProblemData) => {
       await firebase
         .firestore()
         .collection('groups')
@@ -125,9 +131,10 @@ export function usePostActions(groupId: string) {
       await batch.commit();
     },
     submitSolution: async (
-      problem: ProblemData,
+      problem: GroupProblemData,
       submission: Partial<Submission>
     ) => {
+      setUserProgressOnProblems({ uniqueId: problem.usacoGuideId }, 'Solved');
       const doc = await firebase
         .firestore()
         .collection('groups')

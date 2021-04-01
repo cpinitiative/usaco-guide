@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import firebaseType from 'firebase';
 
-export type ProblemData = {
+export interface ProblemData {
   id: string;
   postId: string;
   name: string;
@@ -17,7 +17,7 @@ export type ProblemData = {
    * Lower = appears first in problem list. Ties broken by name.
    */
   order: number;
-};
+}
 export type ProblemHint = {
   // /**
   //  * How many points you lose for activating the hint

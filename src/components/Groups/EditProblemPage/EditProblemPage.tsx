@@ -7,7 +7,10 @@ import Breadcrumbs from '../Breadcrumbs';
 import { Link, navigate } from 'gatsby';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
+import {
+  GroupProblemData,
+  usePostActions,
+} from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
@@ -15,7 +18,7 @@ import { ProblemData } from '../../../models/groups/problem';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
 import { AlgoliaProblemInfo, getProblemURL } from '../../../models/problem';
-
+import * as Icons from 'heroicons-react';
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
@@ -28,7 +31,7 @@ export default function EditProblemPage(props) {
   const post = usePost(postId);
   const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
-    (oldProblem, updates: Partial<ProblemData>): ProblemData => ({
+    (oldProblem, updates: Partial<GroupProblemData>): ProblemData => ({
       ...oldProblem,
       ...updates,
     }),
@@ -81,8 +84,10 @@ export default function EditProblemPage(props) {
           : problem.solution.kind === 'sketch'
           ? problem.solution.sketch
           : '',
+
       source: problem.source,
       difficulty: problem.difficulty,
+      usacoGuideId: problem.objectID,
     });
   };
 
@@ -136,6 +141,30 @@ export default function EditProblemPage(props) {
                 >
                   Import Problem From USACO Guide
                 </button>
+              </div>
+              <div className="sm:col-span-4">
+                {problem.usacoGuideId ? (
+                  <b className="block text-sm font-medium text-green-700 dark:text-green-200">
+                    <Icons.Check
+                      className={'text-green-700 h-5 w-5 mr-2 inline'}
+                    />
+                    This problem is linked to a USACO Guide Problem (
+                    <button
+                      className={'text-blue-700 hover:underline'}
+                      onClick={() => editProblem({ usacoGuideId: null })}
+                    >
+                      Unlink
+                    </button>
+                    )
+                  </b>
+                ) : (
+                  <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <Icons.X className={'text-gray-700 h-4 w-4 mr-1 inline'} />
+                    This problem is not linked to a USACO Guide Problem. To link
+                    this problem to a USACO Guide Problem, import a problem from
+                    above.
+                  </b>
+                )}
               </div>
               <div className="sm:col-span-4">
                 <label
