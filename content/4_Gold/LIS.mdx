@@ -140,7 +140,7 @@ int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size()) {  // we can have a new, longer IS!
+		if (pos == dp.size()) {  // we can have a new, longer increasing subsequence!
 			dp.push_back(i);
 		} else {  // oh ok, at least we can make the ending element smaller
 			dp[pos] = i;
@@ -162,7 +162,7 @@ public static int findLis(int[] a) {
 		if (pos < 0) {
 			pos = Math.abs(pos + 1);
 		}
-		if (pos == dp.size()) {  // we can have a new, longer IS!
+		if (pos == dp.size()) {  // we can have a new, longer increasing subsequence!
 			dp.add(i);
 		} else {  // oh ok, at least we can make the ending element smaller
 			dp.set(pos, i);
@@ -175,16 +175,20 @@ public static int findLis(int[] a) {
 </JavaSection>
 
 <PySection>
+
+```py
 # list from typing module
 def find_lis(arr: List[int]) -> int:
 	min_endings = []
 	for i in arr:
 		pos = bisect_left(min_endings, i)  # bisect_left from the bisect module
-		if pos == len(min_endings):  # we can have a new, longer IS!
+		if pos == len(min_endings):  # we can have a new, longer increasing subsequence!
 			min_endings.append(i)
 		else:  # oh ok, at least we can make the ending element smaller
 			min_endings[pos] = i
 	return len(min_endings)
+```
+
 </PySection>
 
 </LanguageSection>
