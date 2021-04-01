@@ -55,7 +55,7 @@ export function usePostActions(groupId: string) {
         });
       return doc.id;
     },
-    deletePost: async (postId: string) => {
+    deletePost: async (postId: string): Promise<void> => {
       const batch = firebase.firestore().batch();
       batch.update(
         firebase
@@ -71,10 +71,10 @@ export function usePostActions(groupId: string) {
       batch.update(firebase.firestore().collection('groups').doc(groupId), {
         [`leaderboard.${postId}`]: firebase.firestore.FieldValue.delete(),
       });
-      await batch.commit();
+      return batch.commit();
     },
     updatePost,
-    createNewProblem: async (post: PostData, order: number = 10) => {
+    createNewProblem: async (post: PostData, order = 10) => {
       const defaultProblem: Omit<ProblemData, 'id'> = {
         postId: post.id,
         name: 'Untitled Problem',
@@ -134,7 +134,7 @@ export function usePostActions(groupId: string) {
       problem: GroupProblemData,
       submission: Partial<Submission>
     ) => {
-      setUserProgressOnProblems({ uniqueId: problem.usacoGuideId }, 'Solved');
+      setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
       const doc = await firebase
         .firestore()
         .collection('groups')

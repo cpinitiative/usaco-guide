@@ -7,7 +7,7 @@ export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
-    problem: ProblemInfo,
+    problemId: string,
     status: ProblemProgress
   ) => void;
 };
@@ -107,7 +107,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      setUserProgressOnProblems: (problem, status) => {
+      setUserProgressOnProblems: (problemId, status) => {
         if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
@@ -117,16 +117,16 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
 
         this.activityValue.push({
           timestamp: Date.now(),
-          problemID: problem.uniqueId,
+          problemID: problemId,
           problemProgress: status,
         });
-        this.progressValue[problem.uniqueId] = status;
+        this.progressValue[problemId] = status;
 
         if (this.firebaseUserDoc) {
           this.firebaseUserDoc.set(
             {
               [this.progressStorageKey]: {
-                [problem.uniqueId]: status,
+                [problemId]: status,
               },
               [this.activityStorageKey]: this.activityValue,
             },
