@@ -43,8 +43,11 @@ export function DarkModeProvider({ children }) {
       setDarkMode(query.matches);
 
       const onChange = e => setDarkMode(e.matches);
-      query.addEventListener('change', onChange);
-      return () => query.removeEventListener('change', onChange);
+      // some browsers don't support addEventListener
+      if (query.addEventListener) {
+        query.addEventListener('change', onChange);
+        return () => query.removeEventListener('change', onChange);
+      }
     } else {
       if (theme === 'light') setDarkMode(false);
       else if (theme === 'dark') setDarkMode(true);
