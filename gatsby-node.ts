@@ -400,8 +400,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }. Is this correct? (If this is correct, add the URL to \`urlsThatCanHaveMultipleUniqueIDs\` in gatsby-node.ts)`
       );
     }
-    problemURLToUniqueID[node.url] = node.uniqueId;
+    problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
+    problemURLToUniqueID[node.url] = node.uniqueId;
   });
   // End problems check
 

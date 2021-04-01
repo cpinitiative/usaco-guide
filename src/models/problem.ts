@@ -245,7 +245,7 @@ export function getProblemURL(
   problem: Pick<ProblemInfo, 'source' | 'name'> & { [x: string]: any }
 ) {
   return `/problems/${
-    isUsaco(problem.source) ? 'usaco' : slug(problem.source)
+    isUsaco(problem.source) ? problem.uniqueId : slug(problem.source)
   }-${slug(problem.name.replace(' - ', ''))}`;
 }
 
