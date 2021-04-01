@@ -97,31 +97,39 @@ Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$
 elements of $A$ with an increasing sequence of length $j$ ending on it (or
 $\infty$ if there is no such element).
 
-**Lemma 1:** $L_i$ forms a non-decreasing sequence.
+For example, let our array be `2 18 7 20 18 5 18 15 13 19 9`.
+
+In this case, $L_8$ would be `[2, 5, 15]`, some example sequences satisfying
+these being `[2]`, `[2, 5]`, and `[2, 5, 15]`.
+
+**Lemma 1:** $L_i$ forms a strictly increasing sequence.
 
 **Proof:** Assume for a contradiction that for some $j$, we have
-$L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing
-sequence of length $j + 1$ ending on some element implies that there is also an
-increasing sequence of length $j$ ending on that same sequence.
+$L_i[j] \geq L_i[j + 1]$. Define $a_i$ ($0 \leq i \leq j$) to be the $i$th element
+of any increasing subsequence that ends with $L_i[j + 1]$. We can have an
+increasing subsequence on length $j$ that ends on $a_{j - 1}$
+which is less than $a_j = L_i[j + 1]$, so there is a contradiction.
 
 **Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least
-index $j$ such that $L_i[j] \geq A[i + 1]$.
+index $j$ (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
 
-**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing
-sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is
-non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that
+**Proof:** Let $j$ be defined as it is in the statement. First of all,
+since $A[i + 1] > L_i[j - 1]$, there is an increasing sequence of
+length $j$ ending on $A[i + 1]$ as we can append $A[i + 1]$ to the end
+of the sequence of length $j - 1. By Lemma 1, $L_i$ is strictly increasing,
+so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that
 the length of the LIS is $j$.
 
-**Lemma 3:** Exactly 1 element differs between $L_i$ and $L_{i + 1}$.
+**Lemma 3:** At most 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since
-$L_i[j] \geq A[i + 1]$. We don't update anything else though, since
+**Proof:** Let $j$ be defined as it was in the previous lemma.
+We need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since
+$A[i + 1] \leq L_i[j]$. We don't update anything else though, since
 $A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending
 on $A[i + 1]$ of length greater than $j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-`std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set`
-(demonstrated in the solution for PCB).
+list with binary search, or we can use a sorted set (as demonstrated in the solution for PCB).
 
 <LanguageSection>
 
@@ -132,8 +140,11 @@ int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size()) dp.push_back(i);
-		else dp[pos] = i;
+		if (pos == dp.size()) {  // we can have a new, longer IS!
+			dp.push_back(i);
+		} else {  // oh ok, at least we can make the ending element smaller
+			dp[pos] = i;
+		}
 	}
 	return dp.size();
 }
@@ -144,19 +155,37 @@ int find_lis(vector<int> a) {
 <JavaSection>
 
 ```java
-public static int find_lis(int[] a) {
+public static int findLis(int[] a) {
 	ArrayList<Integer> dp = new ArrayList<Integer>();
 	for (int i : a) {
 		int pos = Collections.binarySearch(dp, i);
-		if(pos < 0) pos = Math.abs(pos + 1);
-		if (pos == dp.size()) dp.add(i);
-		else dp.set(pos, i);
+		if (pos < 0) {
+			pos = Math.abs(pos + 1);
+		}
+		if (pos == dp.size()) {  // we can have a new, longer IS!
+			dp.add(i);
+		} else {  // oh ok, at least we can make the ending element smaller
+			dp.set(pos, i);
+		}
 	}
 	return dp.size();
 }
 ```
 
 </JavaSection>
+
+<PySection>
+# list from typing module
+def find_lis(arr: List[int]) -> int:
+	min_endings = []
+	for i in arr:
+		pos = bisect_left(min_endings, i)  # bisect_left from the bisect module
+		if pos == len(min_endings):  # we can have a new, longer IS!
+			min_endings.append(i)
+		else:  # oh ok, at least we can make the ending element smaller
+			min_endings[pos] = i
+	return len(min_endings)
+</PySection>
 
 </LanguageSection>
 
