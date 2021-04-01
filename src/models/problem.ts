@@ -242,10 +242,16 @@ const isUsaco = source => {
 };
 
 export function getProblemURL(
-  problem: Pick<ProblemInfo, 'source' | 'name'> & { [x: string]: any }
+  problem: Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'> & {
+    [x: string]: any;
+  }
 ) {
+  // USACO and CSES sometimes have duplicate problem names
+  // so we should add the ID to the URL
   return `/problems/${
-    isUsaco(problem.source) ? 'usaco' : slug(problem.source)
+    isUsaco(problem.source) || problem.source === 'CSES'
+      ? problem.uniqueId
+      : slug(problem.source)
   }-${slug(problem.name.replace(' - ', ''))}`;
 }
 

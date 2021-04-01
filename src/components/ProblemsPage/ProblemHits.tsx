@@ -45,7 +45,10 @@ function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
           <a
             href={
               hit.solution.kind === 'internal'
-                ? `${getProblemURL(hit)}/solution`
+                ? `${getProblemURL({
+                    ...hit,
+                    uniqueId: hit.objectID,
+                  })}/solution`
                 : hit.solution.url
             }
             target="_blank"

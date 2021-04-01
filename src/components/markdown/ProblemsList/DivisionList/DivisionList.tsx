@@ -165,6 +165,7 @@ export function DivisionList(props): JSX.Element {
             uniqueId
             url
             tags
+            difficulty
             module {
               frontmatter {
                 id
@@ -178,6 +179,7 @@ export function DivisionList(props): JSX.Element {
   const probToLink: { [key: string]: string } = {};
   const probToURL: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
+  const probToDifficulty: { [key: string]: string[] } = {};
   const probToSol: { [key: string]: ProblemSolutionInfo } = {};
   for (const edge of data.allProblemInfo.edges) {
     const problem = edge.node;
@@ -190,6 +192,7 @@ export function DivisionList(props): JSX.Element {
     const allTags = prevTags.concat(problem.tags);
     // console.log('ALL TAGS', allTags, prevTags, problem.tags);
     probToTags[uniqueId] = [...new Set(allTags)];
+    probToDifficulty[uniqueId] = problem.difficulty;
     // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
     // console.log('NEW TAGS', probToTags[uniqueID]);
     probToSol[uniqueId] = problem.solution;
@@ -233,6 +236,7 @@ export function DivisionList(props): JSX.Element {
         moduleLink: probToLink[id],
         percentageSolved: fraction,
         tags: probToTags[id],
+        difficulty: probToDifficulty[id] as any,
         url:
           probToURL[id] ||
           'http://www.usaco.org/index.php?page=viewproblem2&cpid=' +

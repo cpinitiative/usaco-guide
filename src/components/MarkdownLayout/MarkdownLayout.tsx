@@ -3,7 +3,6 @@ import { useContext, useState } from 'react';
 import { ModuleInfo } from '../../models/module';
 import { graphql, useStaticQuery } from 'gatsby';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { graphqlToModuleLinks } from '../../utils/utils';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
