@@ -293,20 +293,20 @@ void pushdown(int p, ll l, ll mid, ll r){
 			tree[rc].lzSet += tree[p].lzAdd;
 			tree[rc].lzAdd = 0;
 		}
-		tree[lc].val += (mid-l+1) * tree[p].lzAdd * 1ll;
-		tree[rc].val += (r-mid) * tree[p].lzAdd * 1ll;
+		tree[lc].val += (mid-l+1) * tree[p].lzAdd;
+		tree[rc].val += (r-mid) * tree[p].lzAdd;
 		tree[p].lzAdd = 0;
 	}
 	return;
 }
  
-void build(int p, ll l, ll r){
+void build(int p, int l, int r){
 	tree[p].lzAdd = tree[p].lzSet = 0;
 	if(l == r){
 		tree[p].val = a[l];
 		return;
 	}
-	ll mid = (l+r)>>1;
+	int mid = (l+r)>>1;
 	build(lc,l,mid);
 	build(rc,mid+1,r);
 	pushup(p);
@@ -321,7 +321,7 @@ void add(int p, int l, int r, int a, int b, ll val){
 		else tree[p].lzSet += val;
 		return;
 	}
-	ll mid = (l+r)>>1;
+	int mid = (l+r)>>1;
 	pushdown(p,l,mid,r);
 	add(lc,l,mid,a,b,val);
 	add(rc,mid+1,r,a,b,val);
@@ -329,7 +329,7 @@ void add(int p, int l, int r, int a, int b, ll val){
 	return;
 }
  
-void set(int p, ll l, ll r, int a, int b, int val){
+void set(int p, int l, int r, int a, int b, ll val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
 		tree[p].val = (r-l+1) * val;
@@ -337,7 +337,7 @@ void set(int p, ll l, ll r, int a, int b, int val){
 		tree[p].lzSet = val;
 		return;
 	}
-	ll mid = (l+r)>>1;
+	int mid = (l+r)>>1;
 	pushdown(p,l,mid,r);
 	set(lc,l,mid,a,b,val);
 	set(rc,mid+1,r,a,b,val);
@@ -345,10 +345,10 @@ void set(int p, ll l, ll r, int a, int b, int val){
 	return;
 }
  
-ll query(int p, ll l, ll r, int a, int b){
+ll query(int p, int l, int r, int a, int b){
 	if(a > r || b < l)return 0;
 	if(a <= l && r <= b)return tree[p].val;
-	ll mid = (l+r)>>1;
+	int mid = (l+r)>>1;
 	pushdown(p,l,mid,r);
 	return query(lc,l,mid,a,b) + query(rc,mid+1,r,a,b);
 }
