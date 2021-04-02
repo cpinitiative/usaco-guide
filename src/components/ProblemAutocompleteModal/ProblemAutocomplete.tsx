@@ -47,16 +47,28 @@ export const ProblemAutocomplete = ({
   currentRefinement,
   refine,
   onProblemSelect,
+  modalIsOpen,
 }) => (
   <div>
     <div>
-      <input
-        type="text"
-        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-        placeholder="Problem Name"
-        value={currentRefinement}
-        onChange={e => refine(e.currentTarget.value)}
-      />
+      {modalIsOpen ? (
+        <input
+          autoFocus
+          type="text"
+          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          placeholder="Problem Name"
+          value={currentRefinement}
+          onChange={e => refine(e.currentTarget.value)}
+        />
+      ) : (
+        <input
+          type="text"
+          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          placeholder="Problem Name"
+          value={currentRefinement}
+          onChange={e => refine(e.currentTarget.value)}
+        />
+      )}
     </div>
     <ul className="overflow-y-auto mt-2 space-y-2" style={{ height: '40rem' }}>
       {hits.map(hit => (

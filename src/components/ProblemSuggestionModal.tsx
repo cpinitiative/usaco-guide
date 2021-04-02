@@ -35,11 +35,7 @@ export default function ProblemSuggestionModal({
 
   const submitSuggestion = useProblemSuggestionAction();
   const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
-  const nameInputEl = React.useRef(null);
 
-  React.useEffect(() => {
-    if (nameInputEl.current) nameInputEl.current.focus();
-  }, [nameInputEl.current]);
   React.useEffect(() => {
     if (isOpen) {
       setName('');
@@ -91,15 +87,27 @@ export default function ProblemSuggestionModal({
           Problem Name
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
-          <input
-            ref={nameInputEl}
-            type="text"
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
-            placeholder="Ex: USACO December 2012 Silver - Steeplechase"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-          />
+          {/* Remount component to trigger autofocus when opening modal */}
+          {isOpen ? (
+            <input
+              autoFocus
+              type="text"
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          ) : (
+            <input
+              type="text"
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          )}
         </div>
       </div>
       <div>
