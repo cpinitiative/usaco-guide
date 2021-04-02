@@ -37,7 +37,7 @@ export default function ProblemSuggestionModal({
   const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
   const nameInputEl = React.useRef(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     nameInputEl.current.focus();
   }, []);
   React.useEffect(() => {
