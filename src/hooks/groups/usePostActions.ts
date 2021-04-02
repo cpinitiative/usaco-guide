@@ -84,7 +84,7 @@ export function usePostActions(groupId: string) {
         submissionType: SubmissionType.SELF_GRADED,
         isDeleted: false,
         usacoGuideId: null,
-        solutionReleaseMode: 'never',
+        solutionReleaseMode: 'due-date',
         order,
       };
       const doc = await firebase
