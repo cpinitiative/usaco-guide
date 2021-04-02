@@ -3,15 +3,12 @@ import { PostData } from '../../models/groups/posts';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
-  problemConverter,
+  groupProblemConverter,
+  GroupProblemData,
   ProblemData,
   Submission,
   SubmissionType,
 } from '../../models/groups/problem';
-
-export interface GroupProblemData extends ProblemData {
-  usacoGuideId: string;
-}
 
 export function usePostActions(groupId: string) {
   const firebase = useFirebase();
@@ -75,7 +72,7 @@ export function usePostActions(groupId: string) {
     },
     updatePost,
     createNewProblem: async (post: PostData, order = 10) => {
-      const defaultProblem: Omit<ProblemData, 'id'> = {
+      const defaultProblem: Omit<GroupProblemData, 'id'> = {
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -86,6 +83,8 @@ export function usePostActions(groupId: string) {
         solution: null,
         submissionType: SubmissionType.SELF_GRADED,
         isDeleted: false,
+        usacoGuideId: null,
+        solutionReleaseMode: 'never',
         order,
       };
       const doc = await firebase
@@ -99,6 +98,15 @@ export function usePostActions(groupId: string) {
       return doc.id;
     },
     saveProblem: async (post: PostData, problem: GroupProblemData) => {
+      if (
+        problem.solutionReleaseMode == 'custom' &&
+        !problem.solutionReleaseTimestamp
+      ) {
+        alert(
+          'If you set the solution release mode to custom, you must set a solution release timestamp.'
+        );
+        return;
+      }
       await firebase
         .firestore()
         .collection('groups')
@@ -107,7 +115,7 @@ export function usePostActions(groupId: string) {
         .doc(post.id)
         .collection('problems')
         .doc(problem.id)
-        .withConverter(problemConverter)
+        .withConverter(groupProblemConverter)
         .update(problem);
     },
     deleteProblem: async (post: PostData, problemId: string) => {

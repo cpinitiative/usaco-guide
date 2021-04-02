@@ -5,9 +5,9 @@ import ProblemSubmissionsList from './ProblemSubmissionsList';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
 import {
   getEarnedPointsForProblem,
+  GroupProblemData,
   ProblemData,
 } from '../../../models/groups/problem';
-import { GroupProblemData } from '../../../hooks/groups/usePostActions';
 import * as Icons from 'heroicons-react';
 import TextTooltip from '../../Tooltip/TextTooltip';
 export default function ProblemSidebar({

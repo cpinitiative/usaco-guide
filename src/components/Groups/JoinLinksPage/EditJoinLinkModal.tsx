@@ -203,7 +203,18 @@ export default function EditJoinLinkModal({
                           options={{
                             dateFormat:
                               'Expires on'.split('').join('\\\\') +
-                              ' l, F J, Y, h:i K',
+                              ' l, F J, Y, h:i K ' +
+                              [
+                                '',
+                                ...(
+                                  'UTC' +
+                                  // sign is reversed for some reason
+                                  (new Date().getTimezoneOffset() > 0
+                                    ? '-'
+                                    : '+') +
+                                  Math.abs(new Date().getTimezoneOffset()) / 60
+                                ).split(''),
+                              ].join('\\\\'),
                             enableTime: true,
                           }}
                           value={link.expirationTime?.toDate()}

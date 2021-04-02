@@ -7,18 +7,20 @@ import Breadcrumbs from '../Breadcrumbs';
 import { Link, navigate } from 'gatsby';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import {
-  GroupProblemData,
-  usePostActions,
-} from '../../../hooks/groups/usePostActions';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
-import { ProblemData } from '../../../models/groups/problem';
+import { GroupProblemData, ProblemData } from '../../../models/groups/problem';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
 import { AlgoliaProblemInfo, getProblemURL } from '../../../models/problem';
 import * as Icons from 'heroicons-react';
+import useFirebase from '../../../hooks/useFirebase';
+import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
+import ButtonGroup from '../../ButtonGroup';
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
@@ -30,8 +32,9 @@ export default function EditProblemPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const originalProblem = useProblem(problemId);
+  const firebase = useFirebase();
   const [problem, editProblem] = useReducer(
-    (oldProblem, updates: Partial<GroupProblemData>): ProblemData => ({
+    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
       ...oldProblem,
       ...updates,
     }),
@@ -90,6 +93,9 @@ export default function EditProblemPage(props) {
       usacoGuideId: problem.objectID,
     });
   };
+  if (post.type !== 'assignment') {
+    return null;
+  }
 
   if (!problem) {
     return (
@@ -225,11 +231,6 @@ export default function EditProblemPage(props) {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Problem Solution
                 </label>
-                <p className="mt-1 text-sm text-gray-500">
-                  If there's a due date on the assignment, this will only be
-                  shown after the assignment's due date has passed. Otherwise,
-                  it's shown immediately.
-                </p>
                 <div className="mt-2">
                   <MarkdownEditor
                     value={problem.solution || ''}
@@ -237,7 +238,68 @@ export default function EditProblemPage(props) {
                   />
                 </div>
               </div>
+              {problem.solution && (
+                <div className="sm:col-span-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Problem Solution Will Be Shown:
+                  </label>
 
+                  <div className="mt-2">
+                    <ButtonGroup
+                      options={['due-date', 'now', 'never', 'custom']}
+                      value={problem.solutionReleaseMode}
+                      labelMap={{
+                        'due-date': 'After Assignment Due Date',
+                        now: 'Immediately',
+                        never: 'Never',
+                        custom: 'Custom Time',
+                      }}
+                      onChange={selected =>
+                        editProblem({
+                          solutionReleaseMode: selected,
+                        })
+                      }
+                    />
+                    {problem.solutionReleaseMode == 'due-date' && (
+                      <p className="mt-2 text-sm text-gray-500">
+                        If a due date is not set, the solution will not be
+                        released.
+                      </p>
+                    )}
+                    {problem.solutionReleaseMode === 'custom' && (
+                      <Flatpickr
+                        placeholder={'Choose a release time'}
+                        options={{
+                          dateFormat:
+                            'l, F J, Y, h:i K ' +
+                            [
+                              '',
+                              ...(
+                                'UTC' +
+                                // sign is reversed for some reason
+                                (new Date().getTimezoneOffset() > 0
+                                  ? '-'
+                                  : '+') +
+                                Math.abs(new Date().getTimezoneOffset()) / 60
+                              ).split(''),
+                            ].join('\\\\'),
+                          enableTime: true,
+                        }}
+                        value={problem.solutionReleaseTimestamp.toDate()}
+                        onChange={date => {
+                          console.log(date);
+                          editProblem({
+                            solutionReleaseTimestamp: firebase.firestore.Timestamp.fromDate(
+                              date[0]
+                            ),
+                          });
+                        }}
+                        className="input mt-2"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="sm:col-span-4">
                 <label
                   htmlFor="source"
