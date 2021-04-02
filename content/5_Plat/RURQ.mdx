@@ -313,7 +313,7 @@ void build(int p, ll l, ll r){
 	return;
 }
  
-void add(int p, ll l, ll r, int a, int b, int val){
+void add(int p, int l, int r, int a, int b, ll val){
 	if(a > r || b < l)return;
 	if(a <= l && r <= b){
 		tree[p].val += (r-l+1) * val;
@@ -322,7 +322,7 @@ void add(int p, ll l, ll r, int a, int b, int val){
 		return;
 	}
 	ll mid = (l+r)>>1;
-    pushdown(p,l,mid,r);
+	pushdown(p,l,mid,r);
 	add(lc,l,mid,a,b,val);
 	add(rc,mid+1,r,a,b,val);
 	pushup(p);
