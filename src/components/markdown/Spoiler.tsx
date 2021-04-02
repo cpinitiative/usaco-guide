@@ -13,16 +13,11 @@ const Spoiler = ({ children, title }) => {
   let firstName = 'None';
   let ogProps;
 
-  React.Children.forEach(children, child => {
-    if (count == 0) {
-      numChildren = React.Children.count(children);
-      firstName = child.props.mdxType;
-      ogProps = child.props;
-    }
-    count++;
-  });
-
-  count = 0;
+   const firstChild = React.Children.toArray(children)[0]
+    numChildren = React.Children.count(children);
+    firstName = firstChild.props.mdxType;
+    ogProps = firstChild.props;
+  
   const onlyContainsCode: boolean = determineIfSingularCodeBlock(
     firstName,
     numChildren
