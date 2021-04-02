@@ -401,7 +401,6 @@ export default function EditProblemPage(props) {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onProblemSelect={handleProblemSearchSelect}
-        defaultProblemName={problem.name || ''}
       />
     </Layout>
   );
