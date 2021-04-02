@@ -35,7 +35,11 @@ export default function ProblemSuggestionModal({
 
   const submitSuggestion = useProblemSuggestionAction();
   const { markdownLayoutInfo } = useContext(MarkdownLayoutContext);
+  const nameInputEl = React.useRef(null);
 
+  React.useEffect(() => {
+    nameInputEl.current.focus();
+  }, []);
   React.useEffect(() => {
     if (isOpen) {
       setName('');
@@ -55,8 +59,7 @@ export default function ProblemSuggestionModal({
 
     // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
     const problemTableLink =
-      window.location.href.split(/[?#]/)[0] +
-      '#problemlist-' + listName
+      window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
@@ -89,6 +92,7 @@ export default function ProblemSuggestionModal({
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input
+            ref={nameInputEl}
             type="text"
             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
             placeholder="Ex: USACO December 2012 Silver - Steeplechase"

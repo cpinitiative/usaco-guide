@@ -177,7 +177,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setShowIgnored: x => {
     // do nothing
   },
-  setUserProgressOnProblems: (problem, status) => {
+  setUserProgressOnProblems: (problemId, status) => {
     // do nothing
   },
   showIgnored: false,
