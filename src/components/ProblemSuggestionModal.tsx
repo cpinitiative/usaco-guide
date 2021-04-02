@@ -38,8 +38,8 @@ export default function ProblemSuggestionModal({
   const nameInputEl = React.useRef(null);
 
   React.useEffect(() => {
-    nameInputEl.current.focus();
-  }, []);
+    if (nameInputEl.current) nameInputEl.current.focus();
+  }, [nameInputEl.current]);
   React.useEffect(() => {
     if (isOpen) {
       setName('');
