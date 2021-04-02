@@ -132,7 +132,7 @@ export default [
   ),
   new Problem(
     'Gold',
-    'Just Green Enough',
+    'Stone Game',
     '1113',
     'Normal',
     false,
