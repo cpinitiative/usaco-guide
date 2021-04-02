@@ -285,7 +285,7 @@ export default function EditProblemPage(props) {
                             ].join('\\\\'),
                           enableTime: true,
                         }}
-                        value={problem.solutionReleaseTimestamp.toDate()}
+                        value={problem.solutionReleaseTimestamp?.toDate()}
                         onChange={date => {
                           console.log(date);
                           editProblem({
