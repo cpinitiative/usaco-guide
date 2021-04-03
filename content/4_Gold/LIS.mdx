@@ -143,11 +143,10 @@ int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size()) {  // we can have a new, longer increasing subsequence!
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
 			dp.push_back(i);
-		} else {  // oh ok, at least we can make the ending element smaller
+		else  // oh ok, at least we can make the ending element smaller
 			dp[pos] = i;
-		}
 	}
 	return dp.size();
 }
@@ -163,11 +162,10 @@ public static int findLis(int[] a) {
 	for (int i : a) {
 		int pos = Collections.binarySearch(dp, i);
 		pos = pos < 0 ? Math.abs(pos + 1) : pos;
-		if (pos == dp.size()) {  // we can have a new, longer increasing subsequence!
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
 			dp.add(i);
-		} else {  // oh ok, at least we can make the ending element smaller
+		else  // oh ok, at least we can make the ending element smaller
 			dp.set(pos, i);
-		}
 	}
 	return dp.size();
 }
