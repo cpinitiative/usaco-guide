@@ -93,35 +93,46 @@ We can do much better than this though!
 
 **Time Complexity**: $\mathcal O(N \log N)$
 
-Let $L_i$ be an array where $L_i[j]$ is the smallest element from the first $i$
-elements of $A$ with an increasing sequence of length $j$ ending on it (or
-$\infty$ if there is no such element).
+Let $L_i$ be an array (0-indexed) where $L_i[j]$ is the smallest element from
+the first $i$ elements of $A$ with an increasing sequence of length $j + 1$
+ending on it (or $\infty$ if there is no such element).
 
-**Lemma 1:** $L_i$ forms a non-decreasing sequence.
+For example, let our array be $[2, 18, 7, 20, 18, 5, 18, 15, 13, 19, 9]$.
+
+In this case, $L_8$ would be $[2, 5, 15]$. Some example sequences satisfying
+these are $[2]$, $[2, 5]$, and $[2, 5, 15]$.
+
+**Lemma 1:** $L_i$ forms a strictly increasing sequence.
 
 **Proof:** Assume for a contradiction that for some $j$, we have
-$L_i[j] > L_i[j + 1]$. However, this is impossible because an increasing
-sequence of length $j + 1$ ending on some element implies that there is also an
-increasing sequence of length $j$ ending on that same sequence.
+$L_i[j - 1] \geq L_i[j]$. Let $a_0, a_1, \dots, a_{j}$ be any increasing
+subsequence of length $j + 1$ ending on $L_i[j]$ (so $a_j = L_i[j]$). Notice
+that $a_0, a_1, \dots, a_{j - 1}$ is an increasing subsequence of length $j$.
+Thus, $L_i[j]$ has to be greater than $L_i[j - 1]$. From that, we can write this
+equation: $L_i[j - 1] \leq a_{j-1} < a_j = L_i[j]$, which is exactly what we
+wanted.
 
 **Lemma 2:** The length of the LIS ending on $A[i + 1]$ is equal to the least
-index $j$ such that $L_i[j] \geq A[i + 1]$.
+index $j$ (with 0-indexing) such that $L_i[j] \geq A[i + 1]$.
 
-**Proof:** Firstly, since $A[i + 1] > L_i[j - 1]$, there is an increasing
-sequence of length $j$ ending on $A[i + 1]$. By Lemma 1, $L_i$ is
-non-decreasing, so $L_i[k] \geq A[i + 1]$ for all $k \geq j$. This means that
-the length of the LIS is $j$.
+**Proof:** Let $j$ be defined as it is in the statement. First of all, since
+$A[i + 1] > L_i[j - 1]$, there is an increasing sequence of length $j$ ending on
+$A[i + 1]$, as we can append $A[i + 1]$ to the end of the sequence of length
+$j$. By Lemma 1, $L_i$ is strictly increasing, so $L_i[k] \geq A[i + 1]$ for all
+$k \geq j$. This means that there cannot be a LIS ending at $A[i + 1]$ longer
+than $j + 1$.
 
-**Lemma 3:** Exactly 1 element differs between $L_i$ and $L_{i + 1}$.
+**Lemma 3:** At most 1 element differs between $L_i$ and $L_{i + 1}$.
 
-**Proof:** Obviously, we need to set $L_{i + 1}[j]$ to be $A[i + 1]$ since
-$L_i[j] \geq A[i + 1]$. We don't update anything else though, since
-$A[i + 1] > L_i[k]$ for all $k < j$ and there are no increasing sequences ending
-on $A[i + 1]$ of length greater than $j$.
+**Proof:** Let $j$ be defined as it was in Lemma 2. We need to set
+$L_{i + 1}[j]$ to be $A[i + 1]$ since $A[i + 1] \leq L_i[j]$.
+$L_{i + 1}[k] = L_i[k]$ for all $k \neq j$, though, since $A[i + 1] > L_i[k]$
+for all $k < j$ and there are no increasing sequences ending on $A[i + 1]$ for
+$k > j$.
 
 To find and update the described $j$ in $\mathcal{O}(\log N)$ time, we can use a
-`std::vector` and `std::lower_bound`. Alternatively, we can use a `std::set`
-(demonstrated in the solution for PCB).
+list with binary search, or we can use an ordered set (as demonstrated in the
+solution for PCB).
 
 <LanguageSection>
 
@@ -132,8 +143,10 @@ int find_lis(vector<int> a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = lower_bound(dp.begin(), dp.end(), i) - dp.begin();
-		if (pos == dp.size()) dp.push_back(i);
-		else dp[pos] = i;
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+			dp.push_back(i);
+		else  // oh ok, at least we can make the ending element smaller
+			dp[pos] = i;
 	}
 	return dp.size();
 }
@@ -144,19 +157,38 @@ int find_lis(vector<int> a) {
 <JavaSection>
 
 ```java
-public static int find_lis(int[] a) {
+public static int findLis(int[] a) {
 	ArrayList<Integer> dp = new ArrayList<Integer>();
 	for (int i : a) {
 		int pos = Collections.binarySearch(dp, i);
-		if(pos < 0) pos = Math.abs(pos + 1);
-		if (pos == dp.size()) dp.add(i);
-		else dp.set(pos, i);
+		pos = pos < 0 ? Math.abs(pos + 1) : pos;
+		if (pos == dp.size())  // we can have a new, longer increasing subsequence!
+			dp.add(i);
+		else  // oh ok, at least we can make the ending element smaller
+			dp.set(pos, i);
 	}
 	return dp.size();
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+# list from typing module
+def find_lis(arr: List[int]) -> int:
+	min_endings = []
+	for i in arr:
+		pos = bisect_left(min_endings, i)  # bisect_left from the bisect module
+		if pos == len(min_endings):  # we can have a new, longer increasing subsequence!
+			min_endings.append(i)
+		else:  # oh ok, at least we can make the ending element smaller
+			min_endings[pos] = i
+	return len(min_endings)
+```
+
+</PySection>
 
 </LanguageSection>
 
