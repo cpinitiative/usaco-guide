@@ -3,7 +3,8 @@ import { PostData } from '../../models/groups/posts';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
-  problemConverter,
+  groupProblemConverter,
+  GroupProblemData,
   ProblemData,
   Submission,
   SubmissionType,
@@ -11,7 +12,9 @@ import {
 
 export function usePostActions(groupId: string) {
   const firebase = useFirebase();
-  const { firebaseUser } = useContext(UserDataContext);
+  const { firebaseUser, setUserProgressOnProblems } = useContext(
+    UserDataContext
+  );
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await firebase
@@ -49,7 +52,7 @@ export function usePostActions(groupId: string) {
         });
       return doc.id;
     },
-    deletePost: async (postId: string) => {
+    deletePost: async (postId: string): Promise<void> => {
       const batch = firebase.firestore().batch();
       batch.update(
         firebase
@@ -65,11 +68,11 @@ export function usePostActions(groupId: string) {
       batch.update(firebase.firestore().collection('groups').doc(groupId), {
         [`leaderboard.${postId}`]: firebase.firestore.FieldValue.delete(),
       });
-      await batch.commit();
+      return batch.commit();
     },
     updatePost,
-    createNewProblem: async (post: PostData, order: number = 10) => {
-      const defaultProblem: Omit<ProblemData, 'id'> = {
+    createNewProblem: async (post: PostData, order = 10) => {
+      const defaultProblem: Omit<GroupProblemData, 'id'> = {
         postId: post.id,
         name: 'Untitled Problem',
         body: '',
@@ -80,6 +83,8 @@ export function usePostActions(groupId: string) {
         solution: null,
         submissionType: SubmissionType.SELF_GRADED,
         isDeleted: false,
+        usacoGuideId: null,
+        solutionReleaseMode: 'due-date',
         order,
       };
       const doc = await firebase
@@ -92,7 +97,16 @@ export function usePostActions(groupId: string) {
         .add(defaultProblem);
       return doc.id;
     },
-    saveProblem: async (post: PostData, problem: ProblemData) => {
+    saveProblem: async (post: PostData, problem: GroupProblemData) => {
+      if (
+        problem.solutionReleaseMode == 'custom' &&
+        !problem.solutionReleaseTimestamp
+      ) {
+        alert(
+          'If you set the solution release mode to custom, you must set a solution release timestamp.'
+        );
+        return;
+      }
       await firebase
         .firestore()
         .collection('groups')
@@ -101,7 +115,7 @@ export function usePostActions(groupId: string) {
         .doc(post.id)
         .collection('problems')
         .doc(problem.id)
-        .withConverter(problemConverter)
+        .withConverter(groupProblemConverter)
         .update(problem);
     },
     deleteProblem: async (post: PostData, problemId: string) => {
@@ -125,9 +139,10 @@ export function usePostActions(groupId: string) {
       await batch.commit();
     },
     submitSolution: async (
-      problem: ProblemData,
+      problem: GroupProblemData,
       submission: Partial<Submission>
     ) => {
+      setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
       const doc = await firebase
         .firestore()
         .collection('groups')

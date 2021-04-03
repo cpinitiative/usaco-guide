@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 import {
   ExecutionStatus,
-  ProblemData,
+  GroupProblemData,
   Submission,
   SubmissionType,
 } from '../../../models/groups/problem';
@@ -30,7 +30,7 @@ import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 export default function ProblemSubmissionInterface({
   problem,
 }: {
-  problem: ProblemData;
+  problem: GroupProblemData;
 }) {
   const { lang } = React.useContext(UserDataContext);
   if (problem.submissionType !== SubmissionType.SELF_GRADED) {
