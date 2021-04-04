@@ -94,8 +94,13 @@ export default function ProblemAutocompleteModal({
               will be linked for students.
             </p>
             <div className="mt-6 space-y-6">
+              {/* Remount component to trigger autofocus when opening modal */}
+
               <InstantSearch indexName={indexName} searchClient={searchClient}>
-                <CustomProblemAutocomplete onProblemSelect={onProblemSelect} />
+                <CustomProblemAutocomplete
+                  onProblemSelect={onProblemSelect}
+                  modalIsOpen={isOpen}
+                />
               </InstantSearch>
             </div>
             <div className="h-2" />

@@ -6,7 +6,6 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        mono: ['Comic Mono', ...defaultTheme.fontFamily.mono],
       },
       colors: {
         'dark-surface': '#121212',
