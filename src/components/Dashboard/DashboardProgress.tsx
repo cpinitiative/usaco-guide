@@ -130,7 +130,7 @@ export function DashboardProgressSmall({
   );
 }
 
-export function UsacoTableProgress({ division, completed }) {
+export function UsacoTableProgress({ completed }) {
   let green = completed * 100;
   let yellow = 0;
   let blue = 0;

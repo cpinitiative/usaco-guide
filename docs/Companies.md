@@ -1,8 +1,13 @@
 # Supporting Companies
 
-The USACO Guide is run by the [Competitive Programming Initiative](https://joincpi.org/), a registered 501(c)(3) nonprofit organization. We depend heavily on the support of many different companies to provide our services for free, and are immensely grateful to the following companies for generously providing discounted or free services:
+The USACO Guide is run by the
+[Competitive Programming Initiative](https://joincpi.org/), a registered
+501(c)(3) nonprofit organization. We depend heavily on the support of many
+different companies to provide our services for free, and are immensely grateful
+to the following companies for generously providing discounted or free services:
 
-- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free hosting & continuous deployment
+- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss), free
+  hosting & continuous deployment
 - [Algolia](https://algolia.com/), free search functionality
 - [DigitalOcean](https://m.do.co/c/a07c32d07394), hosting credits
 - [Google for Nonprofits](https://google.com/)

@@ -1,12 +1,13 @@
 import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { Problem, ProblemProgress } from '../../../models/problem';
+import { ProblemInfo, ProblemProgress } from '../../../models/problem';
+import problemURLToIdMap from './problemURLToIdMap';
 import { ProblemActivity } from '../../../models/activity';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };
   userProgressOnProblemsActivity: ProblemActivity[];
   setUserProgressOnProblems: (
-    problem: Problem,
+    problemId: string,
     status: ProblemProgress
   ) => void;
 };
@@ -19,19 +20,15 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   private activityValue: ProblemActivity[] = [];
 
   initializeFromLocalStorage = () => {
-    let legacyValue = this.getValueFromLocalStorage(
-      'guide:userData:problemStatus',
-      null
+    const currentValue = this.getValueFromLocalStorage(
+      this.getLocalStorageKey(this.progressStorageKey),
+      { version: 2 }
     );
-    if (legacyValue !== null) {
-      window.localStorage.removeItem('guide:userData:problemStatus');
-      this.progressValue = legacyValue;
-      this.writeValueToLocalStorage();
+
+    if (!currentValue.version || currentValue.version < 2) {
+      this.migrateLegacyValue(currentValue);
     } else {
-      this.progressValue = this.getValueFromLocalStorage(
-        this.getLocalStorageKey(this.progressStorageKey),
-        {}
-      );
+      this.progressValue = currentValue;
     }
 
     this.activityValue = this.getValueFromLocalStorage(
@@ -39,7 +36,37 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       []
     );
   };
+  migrateLegacyValue = legacyValue => {
+    localStorage.setItem(
+      'guide:userData:userProgressOnProblems:backups:' + new Date().getTime(),
+      JSON.stringify(legacyValue)
+    );
 
+    const migratedValue = Object.keys(legacyValue).reduce(
+      (acc, key) => {
+        const migratedKey = problemURLToIdMap[key];
+        if (!migratedKey) {
+          console.warn(
+            'Dropping problem URL ' +
+              key +
+              ' because it was not found in the map.'
+          );
+
+          return acc;
+        }
+        return { ...acc, [migratedKey]: legacyValue[key] };
+      },
+      { version: 2 }
+    );
+    this.progressValue = migratedValue;
+    this.writeValueToLocalStorage();
+    if (this.firebaseUserDoc) {
+      this.firebaseUserDoc.update({
+        [this.progressStorageKey]: migratedValue,
+      });
+    }
+    return migratedValue;
+  };
   writeValueToLocalStorage = () => {
     this.saveLocalStorageValue(
       this.getLocalStorageKey(this.progressStorageKey),
@@ -68,7 +95,11 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
   };
 
   importValueFromObject = (data: object) => {
-    this.progressValue = data[this.progressStorageKey] || {};
+    let pendingProgressValue = data[this.progressStorageKey] || { version: 2 };
+    if (!pendingProgressValue.version || pendingProgressValue.version < 2) {
+      pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);
+    }
+    this.progressValue = pendingProgressValue;
     this.activityValue = data[this.activityStorageKey] || [];
   };
 
@@ -76,7 +107,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     return {
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
-      setUserProgressOnProblems: (problem, status) => {
+      setUserProgressOnProblems: (problemId, status) => {
         if (!this.firebaseUserDoc) {
           // if the user isn't using firebase, it is possible that they
           // have multiple tabs open, which can result in localStorage
@@ -86,16 +117,16 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
 
         this.activityValue.push({
           timestamp: Date.now(),
-          problemID: problem.uniqueID,
+          problemID: problemId,
           problemProgress: status,
         });
-        this.progressValue[problem.uniqueID] = status;
+        this.progressValue[problemId] = status;
 
         if (this.firebaseUserDoc) {
           this.firebaseUserDoc.set(
             {
               [this.progressStorageKey]: {
-                [problem.uniqueID]: status,
+                [problemId]: status,
               },
               [this.activityStorageKey]: this.activityValue,
             },

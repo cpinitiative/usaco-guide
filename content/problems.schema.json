@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://usaco.guide/problems.schema.json",
+  "title": "Problem Data",
+  "description": "Stores the problems (and their solutions) associated with a module.",
+  "type": "object",
+  "properties": {
+    "MODULE_ID": {
+      "type": "string"
+    }
+  },
+  "propertyNames": {
+    "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+  },
+  "additionalProperties": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "uniqueId": {
+          "description": "The unique ID of the problem. This MUST be auto-generated based on the problem information to maintain consistency.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the problem, with NO source info whatsoever. Names should be unique within a source, so if multiple problems may have the same name, you will need to differentiate (this usually is not necessary, because although some usaco problems have the same name but different divisions, we count each division as a separate source, so it's ok to have one bronze problem with the same name as a silver problem).",
+          "type": "string"
+        },
+        "url": { "description": "The URL to the problem.", "type": "string" },
+        "source": {
+          "description": "Stores the problems (and their solutions) associated with a module.",
+          "type": "string",
+          "enum": [
+            "Bronze",
+            "Silver",
+            "Gold",
+            "Plat",
+            "CSES",
+            "IOI",
+            "___TODO: add more here"
+          ]
+        },
+        "difficulty": {
+          "description": "The difficulty of a problem, _relative to the module it is in_.",
+          "type": "string",
+          "enum": ["Very Easy", "Easy", "Normal", "Hard", "Very Hard", "Insane"]
+        },
+        "isStarred": {
+          "description": "Whether or not the problem should be starred in the module problem table.",
+          "type": "boolean"
+        },
+        "tags": {
+          "description": "Tags for the problem. Please make sure to check https://usaco.guide/problems to make sure you are using preexisting tags as much as possible.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "solutionMetadata": {
+          "description": "Metadata storing information about the internal solution.",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "description": "The type of the solution.",
+              "type": "string",
+              "enum": [
+                "internal",
+                "USACO",
+                "in-module",
+                "autogen-label-from-site",
+                "none"
+              ]
+            },
+            "usacoId": { "type": "string" }
+          },
+          "required": ["kind"]
+        }
+      },
+      "required": [
+        "uniqueId",
+        "name",
+        "url",
+        "source",
+        "difficulty",
+        "isStarred",
+        "tags",
+        "solutionMetadata"
+      ]
+    }
+  }
+}

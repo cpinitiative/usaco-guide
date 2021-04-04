@@ -13,9 +13,22 @@ Finding the median of a sliding window by maintaining two multisets.
 
 ## Solution
 
-To accomplish finding the sorted median of a sliding window, we can store the window within two sets: one containing the lower values of the window and the other containing the upper values. If we ensure that the size of the lower set is always greater than or equal to the size of the upper set, then the largest element in the lower set will be the median. This works for all sizes of windows. In odd windows, the size of the lower set will be one larger than the upper set, therefore its largest element will be the median. In even windows, the problem calls for the smallest of the two centermost values so this strategy still works.
+To accomplish finding the sorted median of a sliding window, we can store the
+window within two sets: one containing the lower values of the window and the
+other containing the upper values. If we ensure that the size of the lower set
+is always greater than or equal to the size of the upper set, then the largest
+element in the lower set will be the median. This works for all sizes of
+windows. In odd windows, the size of the lower set will be one larger than the
+upper set, therefore its largest element will be the median. In even windows,
+the problem calls for the smallest of the two centermost values so this strategy
+still works.
 
-To implement, we need a function that will handle inserting and removing elements in the window. For inserting, compare the incoming value to the current median and place it in the upper set if it is greater than the median, put it in the lower set otherwise. If one set fills above its max size, transfer an element to the other set. Erasing is more simple, just find the element and erase it.
+To implement, we need a function that will handle inserting and removing
+elements in the window. For inserting, compare the incoming value to the current
+median and place it in the upper set if it is greater than the median, put it in
+the lower set otherwise. If one set fills above its max size, transfer an
+element to the other set. Erasing is more simple, just find the element and
+erase it.
 
 ```cpp
 #include <iostream>

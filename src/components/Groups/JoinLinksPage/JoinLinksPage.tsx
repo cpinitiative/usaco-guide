@@ -34,7 +34,7 @@ const JoinLinksPage = () => {
   return (
     <Layout>
       <SEO title={`Join Links: ${activeGroup.groupData.name}`} />
-      <div className="bg-gray-100 min-h-screen">
+      <div className="bg-gray-100 dark:bg-dark-surface min-h-screen">
         <TopNavigationBar />
         <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
           <Breadcrumbs
@@ -46,14 +46,14 @@ const JoinLinksPage = () => {
           <div>
             <div className="mt-2 md:flex md:items-center md:justify-between">
               <div className="flex-1 min-w-0">
-                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
                   Join Links
                 </h2>
               </div>
               <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="btn"
                   onClick={async () => {
                     const link = await createJoinLink(
                       activeGroup.activeGroupId
@@ -68,8 +68,8 @@ const JoinLinksPage = () => {
             </div>
           </div>
           <div className="h-4" />
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
+          <div className="bg-white dark:bg-gray-900 shadow overflow-hidden sm:rounded-md">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {joinLinks?.map(link => (
                 <li key={link.id}>
                   <button
@@ -77,25 +77,25 @@ const JoinLinksPage = () => {
                       setCurLink(link);
                       setIsEditOpen(true);
                     }}
-                    className="focus:outline-none block hover:bg-gray-50 w-full"
+                    className="focus:outline-none block hover:bg-gray-50 dark:hover:bg-gray-800 w-full"
                   >
                     <div className="px-4 py-4 flex items-center sm:px-6">
                       <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                         <div className="truncate">
                           <div className="flex text-sm">
-                            <p className="font-medium text-blue-600 truncate">
+                            <p className="font-medium text-blue-600 dark:text-blue-300 truncate">
                               {link.id}
                             </p>
-                            <p className="ml-1 flex-shrink-0 font-normal text-gray-500">
+                            <p className="ml-1 flex-shrink-0 font-normal text-gray-500 dark:text-gray-400">
                               · {link.numUses} Uses
                               {link.revoked && ` · REVOKED`}
                             </p>
                           </div>
                           <div className="mt-2 flex">
-                            <div className="flex items-center text-sm text-gray-500">
+                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                               {/* Heroicon name: solid/calendar */}
                               <svg
-                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500"
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
@@ -125,7 +125,7 @@ const JoinLinksPage = () => {
                       <div className="ml-5 flex-shrink-0">
                         {/* Heroicon name: solid/chevron-right */}
                         <svg
-                          className="h-5 w-5 text-gray-400"
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
                           fill="currentColor"

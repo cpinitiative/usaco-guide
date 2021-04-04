@@ -13,6 +13,11 @@ import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
 import Spoiler from '../../markdown/Spoiler';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import {
+  getPostDueDateString,
+  getPostTimestampString,
+} from '../../../models/groups/posts';
+import moment from 'moment';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {
@@ -27,7 +32,7 @@ export default function ProblemPage(props) {
   const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
   const notifications = useNotificationSystem();
 
-  if (!problem || activeGroup.isLoading) {
+  if (!problem || post.type !== 'assignment' || activeGroup.isLoading) {
     return null;
   }
 
@@ -125,7 +130,10 @@ export default function ProblemPage(props) {
 
                     <div>
                       {problem.hints.map(hint => (
-                        <Spoiler title={hint.name || 'Hint'} key={hint.id}>
+                        <Spoiler
+                          title={'Hint: ' + hint.name || 'Hint'}
+                          key={hint.id}
+                        >
                           <div className="pb-4">
                             <SafeMarkdownRenderer>
                               {hint.body}
@@ -136,6 +144,53 @@ export default function ProblemPage(props) {
                     </div>
                   </>
                 )}
+
+                {problem.solution &&
+                  ((problem.solutionReleaseMode == 'due-date' &&
+                    post.dueTimestamp) ||
+                    problem.solutionReleaseMode == 'now' ||
+                    problem.solutionReleaseMode == 'custom') && (
+                    <>
+                      <div className="h-10" />
+                      <div>
+                        <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                          Solution
+                        </h2>
+                      </div>
+                      <div className="h-2" />
+                      {problem.solutionReleaseMode == 'now' ||
+                      (problem.solutionReleaseMode == 'due-date' &&
+                        post.dueTimestamp &&
+                        post.dueTimestamp.toMillis() < Date.now()) ||
+                      (problem.solutionReleaseMode == 'custom' &&
+                        problem.solutionReleaseTimestamp.toMillis() <
+                          Date.now()) ? (
+                        <Spoiler title={'Show Solution'}>
+                          <div className="pb-4">
+                            <SafeMarkdownRenderer>
+                              {problem.solution}
+                            </SafeMarkdownRenderer>
+                          </div>
+                        </Spoiler>
+                      ) : (
+                        ((problem.solutionReleaseMode == 'due-date' &&
+                          post.dueTimestamp) ||
+                          problem.solutionReleaseMode == 'custom') && (
+                          <p className="text-gray-600 dark:text-gray-400 italic">
+                            The problem solution will be released on{' '}
+                            {moment(
+                              (problem.solutionReleaseMode == 'due-date'
+                                ? post.dueTimestamp
+                                : problem.solutionReleaseMode == 'custom' &&
+                                  problem.solutionReleaseTimestamp
+                              ).toDate()
+                            ).format('MMMM Do h:mma')}
+                            .
+                          </p>
+                        )
+                      )}
+                    </>
+                  )}
               </div>
               <ProblemSubmission problem={problem} />
             </div>

@@ -11,7 +11,7 @@ export type Leaderboard = {
         bestScore: number;
         bestScoreStatus: ExecutionStatus;
         bestScoreTimestamp: firebaseType.firestore.Timestamp;
-        bestSubmissionId: string;
+        bestScoreSubmissionId: string;
       };
     };
   };

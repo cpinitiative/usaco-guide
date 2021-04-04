@@ -1,5 +1,5 @@
 ---
-id: poi-04-mak
+id: poi-04-maximal
 source: POI 2004
 title: Maximal Order of Permutations
 author: Andi Qu, Benjamin Qi
@@ -7,23 +7,31 @@ author: Andi Qu, Benjamin Qi
 
 <Spoiler title="Hint 1">
 
-As with many problems involving permutations, we can treat the elements of a permutation as nodes in a graph and draw edges between $i$ and $\pi_i$ for each $i$.
+As with many problems involving permutations, we can treat the elements of a
+permutation as nodes in a graph and draw edges between $i$ and $\pi_i$ for each
+$i$.
 
-Notice how these edges form several disjoint cycles. What can you say about the order of a permutation based on the cycle it forms?
+Notice how these edges form several disjoint cycles. What can you say about the
+order of a permutation based on the cycle it forms?
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-For some permutation, let $l_i$ be the length of the $i$-th cycle. The order of the permutation is simply $\text{lcm}(l_1, l_2, \dots)$, since cycle $i$ will periodically arrange its elements correctly after every $l_i$ compositions.
+For some permutation, let $l_i$ be the length of the $i$-th cycle. The order of
+the permutation is simply $\text{lcm}(l_1, l_2, \dots)$, since cycle $i$ will
+periodically arrange its elements correctly after every $l_i$ compositions.
 
-Additionally, notice that the maximal order of a permutation with $n$ elements is never less than the maximal order of a permutation with $n - 1$ elements.
+Additionally, notice that the maximal order of a permutation with $n$ elements
+is never less than the maximal order of a permutation with $n - 1$ elements.
 
 </Spoiler>
 
 <Spoiler title="Hint 3">
 
-To find the lexographically smallest permutation given its cycle lengths, a greedy approach works. Additionally, shorter cycles result in lexographically smaller permutations.
+To find the lexographically smallest permutation given its cycle lengths, a
+greedy approach works. Additionally, shorter cycles result in lexographically
+smaller permutations.
 
 </Spoiler>
 
@@ -33,9 +41,13 @@ All $l_i$ in an optimal permutation are pairwise coprime.
 
 <Spoiler title="Proof">
 
-Assume for a contradiction that in an optimal permutation, there are two cycles $i$ and $j$ with $l_i$, $l_j$ such that $g = \gcd(l_i, l_j) > 1$. We can replace those two cycles with three smaller cycles of length $l_i / g$, $l_j / g$, and $g$.
+Assume for a contradiction that in an optimal permutation, there are two cycles
+$i$ and $j$ with $l_i$, $l_j$ such that $g = \gcd(l_i, l_j) > 1$. We can replace
+those two cycles with three smaller cycles of length $l_i / g$, $l_j / g$, and
+$g$.
 
-The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+The resulting permutation is shorter, has the same order as the original, but is
+lexographically smaller, which contradicts our assumption.
 
 </Spoiler>
 
@@ -47,9 +59,12 @@ All $l_i$ in an optimal permutation are prime powers.
 
 <Spoiler title="Proof">
 
-Assume for a contradiction that in an optimal permutation, there is a cycle $i$ with $l_i = p^a q^b x$ where $p$ and $q$ are different primes. We can replace that cycle with two smaller cycles of length $p^a$ and $q^b x$.
+Assume for a contradiction that in an optimal permutation, there is a cycle $i$
+with $l_i = p^a q^b x$ where $p$ and $q$ are different primes. We can replace
+that cycle with two smaller cycles of length $p^a$ and $q^b x$.
 
-The resulting permutation is shorter, has the same order as the original, but is lexographically smaller, which contradicts our assumption.
+The resulting permutation is shorter, has the same order as the original, but is
+lexographically smaller, which contradicts our assumption.
 
 </Spoiler>
 
@@ -63,13 +78,17 @@ Logarithms.
 
 <Spoiler title="Solution">
 
-Let $dp[i][j]$ be the maximal order of a permutation with $i$ elements with all cycle lengths being powers of the first $j$ primes. The following recurrence holds:
+Let $dp[i][j]$ be the maximal order of a permutation with $i$ elements with all
+cycle lengths being powers of the first $j$ primes. The following recurrence
+holds:
 
 $$
 dp[i][j] = \max(dp[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp[i - p_j^k][j - 1] \cdot p_j^k))
 $$
 
-The problem with this DP state is that the numbers can get far too large to store in a `long long`. Luckily, since we're working with products, we can store logarithms of the maximal orders instead. Our recurrence thus becomes:
+The problem with this DP state is that the numbers can get far too large to
+store in a `long long`. Luckily, since we're working with products, we can store
+logarithms of the maximal orders instead. Our recurrence thus becomes:
 
 $$
 dp'[i][j] = \max(dp'[i][j - 1], \max_{1 \leq p_j^k \leq i}(dp'[i - p_j^k][j - 1] + \log(p_j^k)))
@@ -77,9 +96,13 @@ $$
 
 We can use backtracking to restore the optimal permutation.
 
-There are 1229 primes less than 10000, so we can implement this DP in a bit less than $\mathcal{O}(1229 n)$ time and memory. However, this approach uses too much memory.
+There are 1229 primes less than 10000, so we can implement this DP in a bit less
+than $\mathcal{O}(1229 n)$ time and memory. However, this approach uses too much
+memory.
 
-Intuitively, we need to limit the number of prime powers that we try - after all, it's highly unlikely that a permutation of length $\approx$ 10000 will have a large cycle of length $\approx$ 9000.
+Intuitively, we need to limit the number of prime powers that we try - after
+all, it's highly unlikely that a permutation of length $\approx$ 10000 will have
+a large cycle of length $\approx$ 9000.
 
 As it turns out, we only need to use the first 70 prime numbers!
 
@@ -87,9 +110,11 @@ As it turns out, we only need to use the first 70 prime numbers!
 
 The following proof is translated from the official Polish editorial:
 
-**Definition 1:** Let $K_n$ be the smallest $k$ such that for each $k' \geq k$, we have $dp[n][k'] = dp[n][k]$.
+**Definition 1:** Let $K_n$ be the smallest $k$ such that for each $k' \geq k$,
+we have $dp[n][k'] = dp[n][k]$.
 
-**Definition 2:** Let $\overline{K_n}$ be the smallest $k$ such that for each $k' \geq k$ **and** each $n' \leq n$, we have $dp[n'][k'] = dp[n'][k]$.
+**Definition 2:** Let $\overline{K_n}$ be the smallest $k$ such that for each
+$k' \geq k$ **and** each $n' \leq n$, we have $dp[n'][k'] = dp[n'][k]$.
 
 We can express $\overline{K_n}$ in terms of $K_n$ as such:
 
@@ -97,23 +122,32 @@ $$
 \overline{K_n} = \max_{0 \leq n' \leq n}(K_{n'})
 $$
 
-Clearly, if $k \ge \overline{K_n}$, then using only the first $k$ primes is sufficient.
+Clearly, if $k \ge \overline{K_n}$, then using only the first $k$ primes is
+sufficient.
 
-**Lemma:** Let $n \geq 1$. If $h$ satisfies at least one of the following conditions:
+**Lemma:** Let $n \geq 1$. If $h$ satisfies at least one of the following
+conditions:
+
 - $p_{h + 1} > n$.
 - $h \geq \overline{K_{n-1}}$ and $dp[n][h] \geq n \cdot dp[n - p_{h + 1}][h]$.
 
 then we know that $K_n \leq h$.
 
-**Proof:** Clearly, if $p_{h + 1} > n$, we can't use it or any subsequent primes, so $dp[n][h + 1] = dp[n][h]$. Let's assume instead that only the second condition holds.
+**Proof:** Clearly, if $p_{h + 1} > n$, we can't use it or any subsequent
+primes, so $dp[n][h + 1] = dp[n][h]$. Let's assume instead that only the second
+condition holds.
 
-We will now prove inductively that for $k' > h$, we have $dp[n][k'] = dp[n][h]$. Assume that $dp[n][k' - 1] = dp[n][h]$. If $p_{k'} > n$, then we are done. Assume that $p_{k'} \leq n$. Consider some $\alpha$ such that $p_{k'}^\alpha \leq n$. Since $h \geq \overline{K_{n - 1}}$, we have:
+We will now prove inductively that for $k' > h$, we have $dp[n][k'] = dp[n][h]$.
+Assume that $dp[n][k' - 1] = dp[n][h]$. If $p_{k'} > n$, then we are done.
+Assume that $p_{k'} \leq n$. Consider some $\alpha$ such that
+$p_{k'}^\alpha \leq n$. Since $h \geq \overline{K_{n - 1}}$, we have:
 
 $$
 p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] = p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h]
 $$
 
-$k' > h$, so we know that $n - p_{k'}^\alpha \leq n - p_{h + 1}$. Additionally, since $dp[n][k] \leq dp[n'][k]$ when $n \leq n'$, we have:
+$k' > h$, so we know that $n - p_{k'}^\alpha \leq n - p_{h + 1}$. Additionally,
+since $dp[n][k] \leq dp[n'][k]$ when $n \leq n'$, we have:
 
 $$
 p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][h] \leq p_{k'}^\alpha \cdot dp[n - p_{h + 1}][h]
@@ -131,13 +165,16 @@ $$
 p_{k'}^\alpha \cdot dp[n - p_{k'}^\alpha][k' - 1] \leq dp[n][k' - 1]
 $$
 
-and we can thus conclude that $dp[n][k'] = dp[n][k' - 1] = dp[n][h]$. Therefore, by induction, $K_n \leq h$.
+and we can thus conclude that $dp[n][k'] = dp[n][k' - 1] = dp[n][h]$. Therefore,
+by induction, $K_n \leq h$.
 
-Using this lemma, we can write an auxilliary algorithm to find that $\overline{K_n} = 70$.
+Using this lemma, we can write an auxilliary algorithm to find that
+$\overline{K_n} = 70$.
 
 </Spoiler>
 
-This improves our memory usage significantly, so our solution now uses only $\mathcal{O}(70 n)$ time and memory.
+This improves our memory usage significantly, so our solution now uses only
+$\mathcal{O}(70 n)$ time and memory.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -199,17 +236,19 @@ int main() {
 }
 ```
 
-Alternatively, you can notice that $dp[i]$ depends only on $dp[i - 1]$ and that bitsets use 8 times less memory than boolean arrays. This means that you can cut down on the memory usage without limiting the number of prime numbers you check. 
+Alternatively, you can notice that $dp[i]$ depends only on $dp[i - 1]$ and that
+bitsets use 8 times less memory than boolean arrays. This means that you can cut
+down on the memory usage without limiting the number of prime numbers you check.
 
 Here's Ben's code, which implements this idea:
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -219,17 +258,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -242,18 +281,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -268,14 +307,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -289,18 +328,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -332,14 +371,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -368,7 +407,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -376,10 +415,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -403,7 +442,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -440,7 +479,7 @@ void fin(int x) {
 }
 
 int main() {
-    setIO(); 
+    setIO();
     int d; re(d); vi v(d); re(v);
     int mx = 0; trav(t,v) ckmax(mx,t);
     FOR(i,2,mx+1) pri[i] = 1;

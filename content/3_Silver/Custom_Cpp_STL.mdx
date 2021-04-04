@@ -5,7 +5,8 @@ author: Benjamin Qi, Siyong Huang
 prerequisites:
   - sorting-custom
   - intro-ordered
-description: 'Incorporating custom comparators into standard library containers.'
+description:
+  'Incorporating custom comparators into standard library containers.'
 frequency: 1
 ---
 
@@ -29,13 +30,16 @@ frequency: 1
 
 <br />
 
-What if we want to use a C++ `set` with the `Edge` struct that was defined in [Sorting with Custom Comparators](/silver/sorting-custom)?
+What if we want to use a C++ `set` with the `Edge` struct that was defined in
+[Sorting with Custom Comparators](/silver/sorting-custom)?
 
 ## Operator Overloading
 
-Works as expected, although you should make sure to include the second `const` or you'll get a compilation error. From the link above:
+Works as expected, although you should make sure to include the second `const`
+or you'll get a compilation error. From the link above:
 
-> [The second const] means you cannot modify member variables of the current object.
+> [The second const] means you cannot modify member variables of the current
+> object.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -116,7 +120,9 @@ You can also use the following syntax to declare set `v` using a lambda
 
 `set<Edge,decltype(cmp)> v(cmp);`
 
-even though `decltype(cmp)` is **not** actually equivalent to `bool(*)(const Edge&,const Edge&)`. See [Lambda Expressions](/general/lambda) for details.
+even though `decltype(cmp)` is **not** actually equivalent to
+`bool(*)(const Edge&,const Edge&)`. See [Lambda Expressions](/general/lambda)
+for details.
 
 ## Functors
 
@@ -168,7 +174,11 @@ int main() {
 
 ### Built-In Functors
 
-Overloading the less than operator (`<`) automatically generates the functor [`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less). Similarly, overloading (`>`) automatically generates the functor [`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater). We can use this to store a set in reverse order.
+Overloading the less than operator (`<`) automatically generates the functor
+[`less<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/less).
+Similarly, overloading (`>`) automatically generates the functor
+[`greater<Edge>`](https://en.cppreference.com/w/cpp/utility/functional/greater).
+We can use this to store a set in reverse order.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -207,8 +217,11 @@ map<int,string,greater<int>> b;
 priority_queue<int,vector<int>,greater<int>> c;
 ```
 
-Using a custom comparator for priority queues is especially common. Recall that a C++ priority queue will pop its largest element by default, while the above code will cause one to pop its smallest element instead.
+Using a custom comparator for priority queues is especially common. Recall that
+a C++ priority queue will pop its largest element by default, while the above
+code will cause one to pop its smallest element instead.
 
 ## Problems
 
-Check the [Sweep Line](/plat/sweep-line#line-segments) module for a task that uses a set with a custom comparator.
+Check the [Sweep Line](/plat/sweep-line#line-segments) module for a task that
+uses a set with a custom comparator.

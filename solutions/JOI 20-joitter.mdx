@@ -7,25 +7,31 @@ author: Andi Qu
 
 <Spoiler title="Hint 1">
 
-The problem asks for the maximum number of followings after each social exchange event, but is it even possible *not* to achieve that maximum?
+The problem asks for the maximum number of followings after each social exchange
+event, but is it even possible _not_ to achieve that maximum?
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-Consider the following scenario: there are $X$ people numbered $1$ to $X$, and for each $2 \leq i \leq X$, people $i$ and $i - 1$ follow each other. What will their followings look like after a social exchange event?
+Consider the following scenario: there are $X$ people numbered $1$ to $X$, and
+for each $2 \leq i \leq X$, people $i$ and $i - 1$ follow each other. What will
+their followings look like after a social exchange event?
 
 </Spoiler>
 
 <Spoiler title="Hint 3">
 
-Following from hint 2, what if there are another $Y$ people numbered $X + 1$ to $X + Y$, and person $1$ follows person $X + 1$ while person $X + Y$ follows person $X$?
+Following from hint 2, what if there are another $Y$ people numbered $X + 1$ to
+$X + Y$, and person $1$ follows person $X + 1$ while person $X + Y$ follows
+person $X$?
 
 </Spoiler>
 
 <Spoiler title="Hint 4">
 
-We're dealing with a DSU-like structure, so small-to-large merging can potentially be useful.
+We're dealing with a DSU-like structure, so small-to-large merging can
+potentially be useful.
 
 </Spoiler>
 
@@ -33,37 +39,61 @@ We're dealing with a DSU-like structure, so small-to-large merging can potential
 
 **Time Complexity:** $\mathcal O(M \log^2 N)$.
 
-We'll always end up with the same number of followings after a social exchange event regardless of the order in which we choose the triples $(x, y, z)$.
+We'll always end up with the same number of followings after a social exchange
+event regardless of the order in which we choose the triples $(x, y, z)$.
 
 Consider the following graph:
+
 - Nodes represent people on Joitter.
 - There are two types of edges: red and blue.
-    - Red edges are undirected and represent a mutual following
-    - Blue edges are directed and represent a one-way following
+  - Red edges are undirected and represent a mutual following
+  - Blue edges are directed and represent a one-way following
 
-The key observation is that if node $u$ can reach node $v$ using only red edges, then they will be connected with a red edge after a social exchange event. This suggests that we should use DSU to keep track of components of nodes connected by red edges.
+The key observation is that if node $u$ can reach node $v$ using only red edges,
+then they will be connected with a red edge after a social exchange event. This
+suggests that we should use DSU to keep track of components of nodes connected
+by red edges.
 
-Furthermore, if we have two separate components $A$ and $B$, four nodes $u_A, v_A \in A, u_B, v_B \in B$ (not necessarily distinct), and the blue edges $u_A \rightarrow v_B$ and $u_B \rightarrow v_A$, then each pair of nodes in $A \cup B$ will also have a red edge between them after a social exchange event. This means that we should merge $A$ and $B$ in the DSU if this ever happens.
+Furthermore, if we have two separate components $A$ and $B$, four nodes
+$u_A, v_A \in A, u_B, v_B \in B$ (not necessarily distinct), and the blue edges
+$u_A \rightarrow v_B$ and $u_B \rightarrow v_A$, then each pair of nodes in
+$A \cup B$ will also have a red edge between them after a social exchange event.
+This means that we should merge $A$ and $B$ in the DSU if this ever happens.
 
-We can use small-to-large merging to keep track of blue edges between components in $\mathcal O(M \log^2 N)$ time.
+We can use small-to-large merging to keep track of blue edges between components
+in $\mathcal O(M \log^2 N)$ time.
 
-(Note that two components merging may cause other components also to merge, so also keep a queue of which components need to merge.)
+(Note that two components merging may cause other components also to merge, so
+also keep a queue of which components need to merge.)
 
-Although we have a nice structure for storing and merging components, we still need to calculate the change in the answer each time two components $A$ and $B$ merge!
+Although we have a nice structure for storing and merging components, we still
+need to calculate the change in the answer each time two components $A$ and $B$
+merge!
 
-Let $V_i$ be the number of followings after the $i$-th merging, and let $F_S$ be the set of people outside of the component $S$ that follow someone in $S$.
+Let $V_i$ be the number of followings after the $i$-th merging, and let $F_S$ be
+the set of people outside of the component $S$ that follow someone in $S$.
 
-1. We need to subtract the number of followings from **inside** the previously-unmerged $A$ and $B$. Since each pair of people followed each other, this number is $|A| \cdot (|A| - 1) + |B| \cdot (|B| - 1)$.
-2. We need to add the number of followings from **inside** the newly-merged $A \cup B$. Since each pair of people will follow each other, this number is $|A \cup B| \cdot (|A \cup B| - 1)$.
-3. We need to add the number of followings from **outside** $A \cup B$. Since people who previously followed everyone in $A$ will now also follow everyone in $B$ and vice-versa, this number is $|A| \cdot |F_B| + |B| \cdot |F_A|$.
-4. We need to subtract the number of followings from people who previously already followed everyone in both $A$ and $B$ or were already in $A$ or $B$. This number is $|(A \cup F_A) \cap (B \cup F_B)| \cdot |A \cup B|$.
+1. We need to subtract the number of followings from **inside** the
+   previously-unmerged $A$ and $B$. Since each pair of people followed each
+   other, this number is $|A| \cdot (|A| - 1) + |B| \cdot (|B| - 1)$.
+2. We need to add the number of followings from **inside** the newly-merged
+   $A \cup B$. Since each pair of people will follow each other, this number is
+   $|A \cup B| \cdot (|A \cup B| - 1)$.
+3. We need to add the number of followings from **outside** $A \cup B$. Since
+   people who previously followed everyone in $A$ will now also follow everyone
+   in $B$ and vice-versa, this number is $|A| \cdot |F_B| + |B| \cdot |F_A|$.
+4. We need to subtract the number of followings from people who previously
+   already followed everyone in both $A$ and $B$ or were already in $A$ or $B$.
+   This number is $|(A \cup F_A) \cap (B \cup F_B)| \cdot |A \cup B|$.
 
 Putting it all together and setting $C_S = S \cup F_S$, we get:
+
 $$
 V_i = V_{i - 1} + |A| \cdot |C_B| + |B| \cdot |C_A| - |C_A \cap C_B| \cdot |A \cup B|.
 $$
 
-We can use small-to-large merging again to keep track of each $C_S$ in $\mathcal O(M \log^2 N)$ time.
+We can use small-to-large merging again to keep track of each $C_S$ in
+$\mathcal O(M \log^2 N)$ time.
 
 ```cpp
 #include <bits/stdc++.h>

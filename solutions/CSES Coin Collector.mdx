@@ -7,9 +7,12 @@ author: Dong Liu
 
 **Time Complexity**: $\mathcal O(N+M)$
 
-First, we split the graph into SCCs. We then treat each component as a node. So then, If the coin collector enters a component, he can collect all the coins in it.
+First, we split the graph into SCCs. We then treat each component as a node. So
+then, If the coin collector enters a component, he can collect all the coins in
+it.
 
-Since the resulting graph is a DAG, we can use DP to find the maximum coins that can be collected.
+Since the resulting graph is a DAG, we can use DP to find the maximum coins that
+can be collected.
 
 <LanguageSection>
 
@@ -47,21 +50,21 @@ struct SCC {
 	void gen(int _N) { // fills allComp
 		FOR(i,1,_N) if (!vis[i]) dfs(i);
 		reverse(all(todo));
-		trav(x,todo) if (comp[x] == -1) { 
+		trav(x,todo) if (comp[x] == -1) {
 			dfs2(x,x); comps.pb(x); }
 	}
 };
 
 const int maxn = 1e5+5;
 
-int n, m; 
+int n, m;
 SCC scc; // scc
 int value[maxn]; // value of each room
 ll group[maxn]; // value in each SCC
 vi rgraph[maxn]; // reverse graph
 ll dp[maxn];
 
-// calculates dp[i] 
+// calculates dp[i]
 ll DP(int i) {
 	if(dp[i]) return dp[i];
 	// start at i
@@ -74,7 +77,7 @@ ll DP(int i) {
 
 int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
-	
+
 	cin >> n >> m;
 	scc.init(n+1);
 	FOR(i,1,n) cin >> value[i];
@@ -97,7 +100,7 @@ int main() {
 	// find dp value for each SCC
 	ll ans = 0;
 	trav(i, scc.comps) ans = max(ans, DP(i));
-	
+
 	cout << ans << '\n';
 }
 ```

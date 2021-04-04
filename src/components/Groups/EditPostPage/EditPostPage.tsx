@@ -11,6 +11,7 @@ import { PostData } from '../../../models/groups/posts';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import useFirebase from '../../../hooks/useFirebase';
 import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
 import MarkdownEditor from '../MarkdownEditor';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
@@ -120,7 +121,16 @@ export default function EditPostPage(props) {
                     options={{
                       dateFormat:
                         'Posted On'.split('').join('\\\\') +
-                        ' l, F J, Y, h:i K',
+                        ' l, F J, Y, h:i K ' +
+                        [
+                          '',
+                          ...(
+                            'UTC' +
+                            // sign is reversed for some reason
+                            (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
+                            Math.abs(new Date().getTimezoneOffset()) / 60
+                          ).split(''),
+                        ].join('\\\\'),
                       enableTime: true,
                     }}
                     value={post.timestamp?.toDate()}
@@ -146,7 +156,17 @@ export default function EditPostPage(props) {
                     <Flatpickr
                       placeholder={'Choose a due date (optional)'}
                       options={{
-                        dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
+                        dateFormat:
+                          '\\D\\u\\e l, F J, Y, h:i K ' +
+                          [
+                            '',
+                            ...(
+                              'UTC' +
+                              // sign is reversed for some reason
+                              (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
+                              Math.abs(new Date().getTimezoneOffset()) / 60
+                            ).split(''),
+                          ].join('\\\\'),
                         enableTime: true,
                       }}
                       value={post.dueTimestamp?.toDate()}

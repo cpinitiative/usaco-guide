@@ -9,11 +9,22 @@ author: Shreyas Thumathy, Benjamin Qi
 
 <!-- ## Main Idea -->
 
-The first step is the same as that of [Movie Festival](/silver/greedy-sorting#example---the-scheduling-problem); sort the movies in increasing order of end time. For each movie in order, we will assign it to one of the $K$ members to watch (or none of them).
+The first step is the same as that of
+[Movie Festival](/silver/greedy-sorting#example---the-scheduling-problem); sort
+the movies in increasing order of end time. For each movie in order, we will
+assign it to one of the $K$ members to watch (or none of them).
 
-Keep track of the time each member finishes watching all of his currently assigned movies in a sorted collection (e.g. a [`multiset`](https://en.cppreference.com/w/cpp/container/multiset) in C++). Initially, the collection consists of $K$ zeroes.
+Keep track of the time each member finishes watching all of his currently
+assigned movies in a sorted collection (e.g. a
+[`multiset`](https://en.cppreference.com/w/cpp/container/multiset) in C++).
+Initially, the collection consists of $K$ zeroes.
 
-For each movie in order, we can assign a member to watch it if there exists an element in the sorted collection less than or equal to the start time of the movie. If there are multiple such elements, choose the greatest one (the member who finished watching his assigned movies the latest). Assign the member to watch this movie by incrementing the answer and updating the collection accordingly.
+For each movie in order, we can assign a member to watch it if there exists an
+element in the sorted collection less than or equal to the start time of the
+movie. If there are multiple such elements, choose the greatest one (the member
+who finished watching his assigned movies the latest). Assign the member to
+watch this movie by incrementing the answer and updating the collection
+accordingly.
 
 <!-- If there are multiple members, choose the one who finishes watching the previous movie latest (that way, if we encounter a movie that has an earlier start time, we can still assign that movie). -->
 

@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import Switch from '../../elements/Switch';
 import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_blue.css';
 import useFirebase from '../../../hooks/useFirebase';
 import Tooltip from '../../Tooltip/Tooltip';
 
@@ -92,7 +93,7 @@ export default function EditJoinLinkModal({
               Join Link
             </h3>
             <div className="mt-6">
-              <div className="bg-gray-50 p-4 rounded flex items-center">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded flex items-center">
                 <span className="flex-1">
                   https://usaco.guide/groups/join?key={link.id}
                 </span>
@@ -113,7 +114,7 @@ export default function EditJoinLinkModal({
                     hideOnClick={false}
                   >
                     <svg
-                      className="h-6 w-6 flex-shrink-0 text-gray-600 hover:text-black"
+                      className="h-6 w-6 flex-shrink-0 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-300"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -202,7 +203,18 @@ export default function EditJoinLinkModal({
                           options={{
                             dateFormat:
                               'Expires on'.split('').join('\\\\') +
-                              ' l, F J, Y, h:i K',
+                              ' l, F J, Y, h:i K ' +
+                              [
+                                '',
+                                ...(
+                                  'UTC' +
+                                  // sign is reversed for some reason
+                                  (new Date().getTimezoneOffset() > 0
+                                    ? '-'
+                                    : '+') +
+                                  Math.abs(new Date().getTimezoneOffset()) / 60
+                                ).split(''),
+                              ].join('\\\\'),
                             enableTime: true,
                           }}
                           value={link.expirationTime?.toDate()}
@@ -224,23 +236,16 @@ export default function EditJoinLinkModal({
           </div>
           <div className="mt-8 space-x-4 flex justify-between items-center">
             <div className="space-x-4">
-              <button
-                type="submit"
-                className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:col-start-2 sm:text-sm"
-              >
+              <button type="submit" className="btn-primary">
                 Save
               </button>
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                onClick={() => onClose()}
-              >
+              <button type="button" className="btn" onClick={() => onClose()}>
                 Cancel
               </button>
             </div>
             <button
               type="button"
-              className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+              className="btn"
               onClick={() => {
                 if (
                   !link.revoked &&

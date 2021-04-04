@@ -144,32 +144,22 @@ export default function Template(props) {
     []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  const problemIDs = [];
-  for (const chapter of MODULE_ORDERING[division]) {
-    for (const moduleID of chapter.items) {
-      for (const problem of allModules[moduleID].problems) {
-        problemIDs.push(problem.uniqueID);
-      }
-    }
-  }
+  const problemIDs = data.problems.edges.map(x => x.node.uniqueId);
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
-    const problemIDs = [];
-    for (const chapter of MODULE_ORDERING[division])
-      if (chapter.name == category.name) {
-        for (const moduleID of chapter.items) {
-          for (const problem of allModules[moduleID].problems) {
-            problemIDs.push(problem.uniqueID);
-          }
-        }
-      }
-    const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+    const categoryModuleIDs = category.items.map(
+      module => module.frontmatter.id
+    );
+    const categoryProblemIDs = data.problems.edges
+      .filter(x => categoryModuleIDs.includes(x.node.module.frontmatter.id))
+      .map(x => x.node.uniqueId);
+    const problemsProgressInfo = getProblemsProgressInfo(categoryProblemIDs);
     return (
-      problemIDs.length > 1 && (
+      categoryProblemIDs.length > 1 && (
         <DashboardProgressSmall
           {...problemsProgressInfo}
-          total={problemIDs.length}
+          total={categoryProblemIDs.length}
         />
       )
     );
@@ -267,8 +257,13 @@ export default function Template(props) {
   );
 }
 export const pageQuery = graphql`
-  query {
-    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+  query($division: String!) {
+    modules: allMdx(
+      filter: {
+        fileAbsolutePath: { regex: "/content/" }
+        fields: { division: { eq: $division } }
+      }
+    ) {
       edges {
         node {
           id
@@ -278,12 +273,24 @@ export const pageQuery = graphql`
             description
             frequency
           }
-          problems {
-            uniqueID
-          }
           isIncomplete
           fields {
             gitAuthorTime
+          }
+        }
+      }
+    }
+    problems: allProblemInfo(
+      filter: { module: { fields: { division: { eq: $division } } } }
+    ) {
+      edges {
+        node {
+          uniqueId
+          name
+          module {
+            frontmatter {
+              id
+            }
           }
         }
       }

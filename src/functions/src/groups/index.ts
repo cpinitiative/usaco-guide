@@ -1,12 +1,17 @@
-import joinGroup from './joinGroup';
-import submitToProblem from './submitToProblem';
 import getJoinKeyInfo from './getJoinKeyInfo';
-import getGroupMembers from './getGroupMembers';
-import leaveGroup from './leaveGroup';
+import getMembers from './getMembers';
+import join from './join';
+import leave from './leave';
+import removeMember from './removeMember';
+import submitToProblem from './submitToProblem';
+import updateMemberPermissions from './updateMemberPermissions';
+
 export {
-  leaveGroup,
-  joinGroup,
-  submitToProblem,
   getJoinKeyInfo,
-  getGroupMembers,
+  getMembers,
+  join,
+  leave,
+  removeMember,
+  submitToProblem,
+  updateMemberPermissions,
 };

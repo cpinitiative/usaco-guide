@@ -9,7 +9,9 @@ author: Andrew Wang, Andi Qu
 
 **Time Complexity:** $\mathcal{O}(N^2\log(\max(x_i)))$
 
-The naive approach would be to brute-force each pair of numbers in the array and calculate the maximum GCD. Sadly, this solution gets TLE on half of the test cases.
+The naive approach would be to brute-force each pair of numbers in the array and
+calculate the maximum GCD. Sadly, this solution gets TLE on half of the test
+cases.
 
 ```cpp
 #include <iostream>
@@ -38,12 +40,15 @@ int main() {
 }
 ```
 
-
 ## Solution 2
 
 **Time Complexity:** $\mathcal{O}(N\sqrt{\max(x_i)})$
 
-Maintain an array, $\texttt{cnt}$,  to store the count of divisors. For each value in the array, find its divisors and for each $u$ in those divisors, increment $\texttt{cnt}$ by one. The greatest GCD shared by two elements in the array will be the greatest index in our stored count for divisors with a count greater than or equal to $2$.
+Maintain an array, $\texttt{cnt}$, to store the count of divisors. For each
+value in the array, find its divisors and for each $u$ in those divisors,
+increment $\texttt{cnt}$ by one. The greatest GCD shared by two elements in the
+array will be the greatest index in our stored count for divisors with a count
+greater than or equal to $2$.
 
 ```cpp
 #include <iostream>
@@ -58,8 +63,8 @@ int main() {
 		int a; cin >> a;
 		for (int j = 1; j*j <= a; j++) {
 			if(a % j == 0) {
-				cnt[j]++; 
-				if (j != a / j) cnt[a / j]++; 
+				cnt[j]++;
+				if (j != a / j) cnt[a / j]++;
 				// the divisor and quotient are both divisors of a
 			}
 		}
@@ -78,7 +83,10 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(\max(x_i)\log(\max(x_i)))$
 
-Given a value, $x$, we can check whether a pair has a GCD equal to $x$ by checking all the multiples of $x$. With that information, loop through all possible values of $x$ and check if it is a divisor to two or more values. This works in $\mathcal{O}(\max(x_i)\log(\max(x_i)))$ since
+Given a value, $x$, we can check whether a pair has a GCD equal to $x$ by
+checking all the multiples of $x$. With that information, loop through all
+possible values of $x$ and check if it is a divisor to two or more values. This
+works in $\mathcal{O}(\max(x_i)\log(\max(x_i)))$ since
 
 $$
 \sum_{i = 1}^{\max(x_i)} \max(x_i)/i \approx \max(x_i)\log(\max(x_i)).
@@ -87,9 +95,9 @@ $$
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 int cnt[1000001];
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);

@@ -65,7 +65,7 @@ export default function ContributorsSection() {
           </p>
           <ul className="text-gray-500 dark:text-gray-400 list-disc list-inside space-y-2">
             {contentAuthors.map(author => (
-              <li>
+              <li key={author.name}>
                 <a
                   href={`https://github.com/${author.githubUsername}`}
                   target="_blank"

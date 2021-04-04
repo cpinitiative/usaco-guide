@@ -81,7 +81,7 @@ export default function LeaderboardList({
       }))
       .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
     return data.sort((a, b) => b.points - a.points);
-  }, [leaderboard, activeGroup.groupData.memberIds, members, postId]);
+  }, [leaderboard, activeGroup.groupData.memberIds, members?.length, postId]);
 
   return (
     <ul>

@@ -1,0 +1,339 @@
+---
+id: ioi-13-game
+source: IOI 2013
+title: Game
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(Q \log R \cdot \log C)$
+
+We're asked to handle point updates and range GCD queries on a 2D grid. This
+implies that we should use a 2D range-query data structure like a 2D segment
+tree (N.B. not a Fenwick tree, as the GCD function has no inverse).
+
+In 1D ($C = 1$), this can be solved by a fairly straightforward use of a segment
+tree: each node stores the GCD of its two children. Since $R$ can be quite big,
+this needs to be a sparse segment tree; another alternative would be a balanced
+binary tree like a treap.
+
+However, a sparse 2D segment tree uses _just_ a bit too much memory, and only
+scores 80 points. Fortunately for us, there are two ways to get around this!
+
+## Approach 1 - Sparse segment tree of BBSTs
+
+Although BBSTs use 4 times less memory than segment trees, a BBST of BBSTs (e.g.
+a [range tree](https://en.wikipedia.org/wiki/Range_tree)) is rather unpleasant
+to implement. However, a segment tree of BBSTs is much nicer to implement, and
+is good enough to score 100 points!
+
+In my implementation below, I use an
+[implicit treap](https://cp-algorithms.com/data_structures/treap.html#toc-tgt-6)
+because they support point updates and range queries. Each segment tree node
+stores a treap, and updating a node involves changing $\mathcal O(\log C)$
+values in its treap (similar to updating a 2D segment tree node).
+
+```cpp
+#include "game.h"
+
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+ll gcd(ll x, ll y) { return !y ? x : gcd(y, x % y); }
+int rnd() { return ((rand() % (1 << 15)) << 16) + (rand() % (1 << 15)); }
+
+struct TreapNode {
+	TreapNode *l, *r;
+	int pos, key, mn, mx;
+	ll val, g;
+
+	TreapNode(int position, ll value) {
+		l = r = nullptr;
+		mn = mx = pos = position;
+		key = rnd();
+		val = g = value;
+	}
+
+	void update() {
+		g = val;
+		if (l) g = gcd(g, l->g);
+		if (r) g = gcd(g, r->g);
+		mn = (l ? l->mn : pos);
+		mx = (r ? r->mx : pos);
+	}
+};
+
+struct Treap {
+	TreapNode *root;
+
+	Treap() {
+		root = nullptr;
+		srand(rnd());
+	}
+
+	void split(TreapNode *t, int pos, TreapNode *&l, TreapNode *&r) {
+		if (t == nullptr) {
+			l = r = nullptr;
+			return;
+		}
+		if (t->pos < pos) {
+			split(t->r, pos, l, r);
+			t->r = l;
+			l = t;
+		} else {
+			split(t->l, pos, l, r);
+			t->l = r;
+			r = t;
+		}
+		t->update();
+	}
+
+	TreapNode* merge(TreapNode *l, TreapNode *r) {
+		if (!l || !r) return l ? l : r;
+		if (l->key < r->key) {
+			l->r = merge(l->r, r);
+			l->update();
+			return l;
+		} else {
+			r->l = merge(l, r->l);
+			r->update();
+			return r;
+		}
+	}
+
+	bool find(int pos) {
+		TreapNode *t = root;
+		while (t) {
+			if (t->pos == pos) return true;
+			if (t->pos > pos) t = t->l;
+			else t = t->r;
+		}
+		return false;
+	}
+
+	void update(TreapNode *t, int pos, ll val) {
+		if (t->pos == pos) {
+			t->val = val;
+			t->update();
+			return;
+		}
+		if (t->pos > pos) update(t->l, pos, val);
+		else update(t->r, pos, val);
+		t->update();
+	}
+
+	void insert(int pos, ll val) {
+		if (find(pos)) update(root, pos, val);
+		else {
+			TreapNode *l, *r;
+			split(root, pos, l, r);
+			root = merge(merge(l, new TreapNode(pos, val)), r);
+		}
+	}
+
+	ll query(TreapNode *t, int st, int en) {
+		if (t->mx < st || en < t->mn) return 0;
+		if (st <= t->mn && t->mx <= en) return t->g;
+
+		ll ans = (st <= t->pos && t->pos <= en ? t->val : 0);
+		if (t->l) ans = gcd(ans, query(t->l, st, en));
+		if (t->r) ans = gcd(ans, query(t->r, st, en));
+		return ans;
+	}
+	ll query(int st, int en) {
+		if (!root) return 0;
+		return query(root, st, en);
+	}
+};
+
+struct Segtree {
+	Segtree *l, *r;
+	Treap treap;
+	int lo, hi;
+
+	Segtree() { l = r = nullptr; }
+	Segtree(int st, int en) {
+		l = r = nullptr;
+		lo = st, hi = en;
+	}
+
+	void new_left() {
+		if (!l) l = new Segtree(lo, (lo + hi) / 2);
+	}
+	void new_right() {
+		if (!r) r = new Segtree((lo + hi) / 2 + 1, hi);
+	}
+	void fix(int pos) {
+		ll val = 0;
+		if (l) val = gcd(val, l->treap.query(pos, pos));
+		if (r) val = gcd(val, r->treap.query(pos, pos));
+		treap.insert(pos, val);
+	}
+
+	void update(int x, int y, ll val) {
+		if (hi < x || x < lo) return;
+		if (lo == hi) {
+			treap.insert(y, val);
+			return;
+		}
+
+		if (x <= (lo + hi) / 2) {
+			new_left();
+			l->update(x, y, val);
+		} else {
+			new_right();
+			r->update(x, y, val);
+		}
+		fix(y);
+	}
+
+	ll query(int t, int b, int st, int en) {
+		if (hi < t || b < lo) return 0;
+		if (t <= lo && hi <= b) return treap.query(st, en);
+
+		ll ans = 0;
+		if (l) ans = gcd(ans, l->query(t, b, st, en));
+		if (r) ans = gcd(ans, r->query(t, b, st, en));
+		return ans;
+	}
+};
+
+Segtree segtree;
+
+void init(int R, int C) {
+	srand(12341234);
+	segtree = Segtree(0, R - 1);
+}
+
+void update(int P, int Q, ll K) { segtree.update(P, Q, K); }
+
+ll calculate(int P, int Q, int U, int V) {
+	return segtree.query(P, U, Q, V);
+}
+```
+
+## Approach 2 - Memory-optimized 2D sparse segment tree
+
+Although the previous approach is somewhat simpler, this approach was intended,
+and involves optimizing the memory usage of a sparse segment tree from
+$\mathcal O(N \log(\text{size of range}))$ to $\mathcal O(N)$.
+
+Essentially, we don't instantiate nodes in the segment tree if they are not leaf
+nodes and only contain a single leaf node in their subtree, as those nodes are
+redundant. What we end up with is a segment tree with $N$ leaves and $2N - 1$
+nodes. See [the sparse segment tree module](/plat/sparse-seg?lang=cpp#solution)
+for more details.
+
+Note that we can only apply this trick to the segment trees of the **columns**.
+This means that the memory complexity is $\mathcal O(Q \log R)$, which is good
+enough to score 100 points.
+
+```cpp
+#include "game.h"
+#include <stdlib.h>
+
+typedef long long ll;
+
+static int R, C;
+
+struct X_NODE {
+	X_NODE(int s, int e): s(s), e(e), left(NULL), right(NULL), value(0LL) {}
+	int s, e;
+	X_NODE *left, *right;
+	ll value;
+};
+
+struct Y_NODE {
+	Y_NODE(): left(NULL), right(NULL), xtree(1,C) {}
+	Y_NODE *left, *right;
+	X_NODE xtree;
+} *root;
+
+ll gcd2(ll x, ll y) {
+	if (y == 0) return x;
+	return gcd2(y, x % y);
+}
+
+void init(int r,int c) {
+	R = r, C = c;
+	root = new Y_NODE();
+}
+
+void update2(X_NODE *node, int q, ll k) {
+	int s = node->s, e = node->e, m = (s + e) >> 1;
+	if (s == e) {
+		node->value = k;
+		return;
+	}
+	X_NODE **child = &(q <= m ? node->left : node->right);
+	if (*child == NULL) {
+		*child = new X_NODE(q, q);
+		(*child)->value = k;
+	} else if ((*child)->s <= q && q <= (*child)->e) {
+		update2(*child, q, k);
+	} else {
+		do {
+			if (q <= m) e = m;
+			else s = m + 1;
+			m = (s + e) >> 1;
+		} while ((q <= m) == ((*child)->e <= m));
+		X_NODE *nnode = new X_NODE(s, e);
+		if ((*child)->e <= m) nnode->left = *child;
+		else nnode->right = *child;
+		*child = nnode;
+		update2(*child, q, k);
+	}
+	node->value = gcd2(
+		node->left ? node->left->value : 0,
+		node->right ? node->right->value : 0
+	);
+}
+
+ll query2(X_NODE *node, int s, int e) {
+	if (node == NULL || node->s > e || node->e < s) return 0;
+	if (s <= node->s && node->e <= e){
+		return node->value;
+	}
+	return gcd2(query2(node->left, s, e), query2(node->right, s, e));
+}
+
+void update1(Y_NODE *node, int s, int e, int p, int q, ll k) {
+	int m = (s + e) >> 1;
+	if (s == e) {
+		update2(&node->xtree, q, k);
+		return;
+	}
+	if (p <= m) {
+		if (node->left == NULL) node->left = new Y_NODE();
+		update1(node->left, s, m, p, q, k);
+	} else {
+		if (node->right == NULL) node->right = new Y_NODE();
+		update1(node->right, m+1, e, p, q, k);
+	}
+	ll v = gcd2(
+		node->left ? query2(&node->left->xtree, q, q) : 0,
+		node->right ? query2(&node->right->xtree, q, q) : 0
+	);
+	update2(&node->xtree, q, v);
+}
+
+void update(int p, int q, ll k) {
+	++p, ++q;
+	update1(root, 1, R, p, q, k);
+}
+
+ll query1(Y_NODE *node, int s, int e, int p, int q, int u, int v) {
+	if (node == NULL || s > u || e < p) return 0;
+	if (p <= s && e <= u) return query2(&node->xtree, q, v);
+	int m = (s + e) >> 1;
+	return gcd2(
+		query1(node->left, s, m, p, q, u, v),
+		query1(node->right, m + 1, e, p, q, u, v)
+	);
+}
+
+ll calculate(int p, int q, int u, int v) {
+	++p, ++q, ++u, ++v;
+	return query1(root, 1, R, p, q, u, v);
+}
+```

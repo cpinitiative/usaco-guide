@@ -6,6 +6,7 @@ import {
   getSubmissionTimestampString,
   Submission,
 } from '../../models/groups/problem';
+import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
@@ -36,7 +37,7 @@ function ProblemSubmissionPopup() {
           className="fixed inset-0 transition-opacity"
           aria-hidden="true"
         >
-          <div className="absolute inset-0 bg-gray-500 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-800 opacity-75" />
         </Transition.Child>
 
         {/* This element is to trick the browser into centering the modal contents. */}
@@ -54,30 +55,36 @@ function ProblemSubmissionPopup() {
           leave="ease-in duration-200"
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6"
+          className="inline-block align-bottom bg-white dark:bg-dark-surface rounded-lg pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:py-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
           <div>
-            <h3
-              className="text-lg leading-6 font-medium text-gray-900"
-              id="modal-headline"
-            >
-              {getSubmissionTimestampString(submission)}
-            </h3>
-            <p className="text-sm text-gray-900 font-medium mt-1">
-              Status: {getSubmissionStatus(submission)}
-            </p>
-            <div className="mt-2">
-              <pre className="text-sm text-gray-500">{submission?.code}</pre>
+            <div className="px-4 sm:px-6">
+              <h3
+                className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+                id="modal-headline"
+              >
+                {getSubmissionTimestampString(submission)}
+              </h3>
+              <p className="text-sm text-gray-900 dark:text-gray-200 font-medium mt-1">
+                Status: {getSubmissionStatus(submission)}
+              </p>
+            </div>
+            <div className="mt-4 text-sm">
+              {submission && (
+                <CodeBlock className={`language-${submission.language}`}>
+                  {submission.code}
+                </CodeBlock>
+              )}
             </div>
           </div>
-          <div className="mt-5 sm:mt-4 flex flex-row-reverse justify-between">
+          <div className="mt-5 sm:mt-4 flex flex-row-reverse justify-between px-4 sm:px-6">
             <button
               onClick={() => popupContext.setShowPopup(false)}
               type="button"
-              className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+              className="btn"
             >
               Close Submission
             </button>

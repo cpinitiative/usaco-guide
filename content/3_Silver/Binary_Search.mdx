@@ -7,199 +7,11 @@ title: 'Binary Search'
 author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang
 prerequisites:
   - greedy-sorting
-description: 'Binary searching on arbitrary monotonic functions and built-in functions for binary search.'
+description:
+  'Binary searching on arbitrary monotonic functions and built-in functions for
+  binary search.'
 frequency: 3
 ---
-
-export const problems = {
-	ex: [
-		new Problem(
-			'CF',
-			'Div 2 C - Maximum Median',
-			'contest/1201/problem/C',
-			'Easy',
-			false,
-			['Binary Search'],
-			''
-		),
-	],
-	usaco: [
-		new Problem(
-			'Silver',
-			'Cow Dance Show',
-			'690',
-			'Easy',
-			false,
-			['Binary Search', 'Ordered Set'],
-			'usaco-690'
-		),
-		new Problem(
-			'Silver',
-			'Convention',
-			'858',
-			'Easy',
-			false,
-			['Binary Search', 'Sorting'],
-			'usaco-858'
-		),
-		new Problem(
-			'Silver',
-			'Angry Cows',
-			'594',
-			'Easy',
-			false,
-			['Binary Search', 'Sorting'],
-			'usaco-594'
-		),
-		new Problem(
-			'Silver',
-			'Social Distancing',
-			'1038',
-			'Normal',
-			false,
-			['Binary Search', 'Sorting'],
-			'usaco-1038'
-		),
-		new Problem(
-			'Gold',
-			'Angry Cows',
-			'597',
-			'Hard',
-			true,
-			['Binary Search', 'Sorting'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Loan Repayment',
-			'991',
-			'Very Hard',
-			false,
-			['Binary Search', 'Sqrt'],
-			'requires some rather tricky analysis to speed up naive $mathcal{O}(Nlog N)$ solution'
-		),
-		new Problem(
-			'Plat',
-			'Load Balancing',
-			'624',
-			'Insane',
-			false,
-			['Binary Search', 'Sorting'],
-			'usaco-624'
-		),
-	],
-	count: new Problem(
-		'Silver',
-		'Counting Haybales',
-		'666',
-		'Easy',
-		false,
-		['Binary Search'],
-		''
-	),
-	general: [
-		new Problem(
-			'CF',
-			'Cellular Network',
-			'https://codeforces.com/contest/702/problem/C',
-			'Easy',
-			false,
-			['Binary Search'],
-			'cellular-network'
-		),
-		new Problem(
-			'CSES',
-			'Factory Machines',
-			'1620',
-			'Easy',
-			false,
-			['Binary Search'],
-			'cses-1620'
-		),
-		new Problem(
-			'CSES',
-			'Array Division',
-			'1085',
-			'Easy',
-			false,
-			['Binary Search'],
-			'cses-1085'
-		),
-		new Problem(
-			'CSES',
-			'Multiplication Table',
-			'2422',
-			'Normal',
-			false,
-			['Binary Search'],
-			'cses-2422'
-		),
-		new Problem(
-			'CF',
-			'Edu C: Magic Ship',
-			'problemset/problem/1117/C',
-			'Normal',
-			true,
-			['Binary Search', 'Prefix Sums'],
-			'cf-magship'
-		),
-		new Problem(
-			'CF',
-			'The Meeting Place Cannot Be Changed',
-			'contest/782/problem/B',
-			'Normal',
-			true,
-			['Binary Search'],
-			'binary search on time with epsilon and then find if there exist non-empty intersection of the ranges (maximum of left points and minimum of right points)'
-		),
-		new Problem(
-			'CF',
-			'Preparing for Merge Sort',
-			'contest/847/problem/B',
-			'Normal',
-			false,
-			['Binary Search'],
-			'preparing-for-mergesort'
-		),
-		new Problem(
-			'CF',
-			'Packmen',
-			'contest/847/problem/E',
-			'Hard',
-			false,
-			['Binary Search'],
-			'cf-packmen'
-		),
-		new Problem(
-			'CF',
-			'Level Generation',
-			'problemset/problem/818/F',
-			'Hard',
-			false,
-			['Binary Search'],
-			"first find out which is the best way to construct the graph, then it's possible to see that the number of edges increase for some range and then decrease; so, using binary search find the last i such that f(i-1)<=f(i)"
-		),
-		new Problem(
-			'Baltic OI',
-			'2012 - Mobile',
-			'https://oj.uz/problem/view/BOI12_mobile',
-			'Very Hard',
-			false,
-			['Binary Search'],
-			'baltic-12-mobile'
-		),
-	],
-};
-
-<!-- new Problem(
-	'Plat',
-	'Greedy Gift Takers',
-	'770',
-	'Very Hard',
-	false,
-	['Binary Search'],
-	''
-), -->
 
 <!-- process numbers from left to right, keep track of the last element of each block and use binary search of lower_bound to find which block the current numbers belongs -->
 
@@ -244,17 +56,29 @@ export const problems = {
 
 <Youtube id="GU7DpgHINWQ" />
 
-When we binary search on an answer, we start with a search space of size $N$ which we know the answer lies in. Then each iteration of the binary search cuts the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values. This is efficient and much better than testing each possible value in the search space.
+When we binary search on an answer, we start with a search space of size $N$
+which we know the answer lies in. Then each iteration of the binary search cuts
+the search space in half, so the algorithm tests $\mathcal{O}(\log N)$ values.
+This is efficient and much better than testing each possible value in the search
+space.
 
 ## Binary Searching on Monotonic Functions
 
-Let's say we have a boolean function `f(x)`. Usually, in such problems, we want to find the maximum or minimum value of $x$ such that `f(x)` is true. Similarly to how binary search on an array only works on a sorted array, binary search on the answer only works if the answer function is [monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it is always non-decreasing or always non-increasing.
+Let's say we have a boolean function `f(x)`. Usually, in such problems, we want
+to find the maximum or minimum value of $x$ such that `f(x)` is true. Similarly
+to how binary search on an array only works on a sorted array, binary search on
+the answer only works if the answer function is
+[monotonic](https://en.wikipedia.org/wiki/Monotonic_function), meaning that it
+is always non-decreasing or always non-increasing.
 
 ### Finding The Maximum `x` Such That `f(x) = true`
 
-We want to construct a function `lastTrue` such that `lastTrue(lo, hi, f)` returns the last `x` in the range `[lo,hi]` such that `f(x) = true`. If no such `x` exists, then `lastTrue` should return `lo-1`.
+We want to construct a function `lastTrue` such that `lastTrue(lo, hi, f)`
+returns the last `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `lastTrue` should return `lo-1`.
 
-This can be done with binary search if `f(x)` satisfies both of the following conditions:
+This can be done with binary search if `f(x)` satisfies both of the following
+conditions:
 
 - If `f(x) = true`, then `f(y) = true` for all $y \leq x$.
 - If `f(x) = false`, then `f(y) = false` for all $y \geq x$.
@@ -276,7 +100,8 @@ then `lastTrue(1, 8, f) = 5` and `lastTrue(7, 8, f) = 6`.
 
 #### Implementation 1
 
-Verify that this implementation doesn't call `f` on any values outside of the range `[lo,hi]`.
+Verify that this implementation doesn't call `f` on any values outside of the
+range `[lo,hi]`.
 
 <LanguageSection>
 
@@ -308,7 +133,8 @@ int main() {
 }
 ```
 
-See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax used in the main function.
+See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
+used in the main function.
 
 </CPPSection>
 
@@ -342,7 +168,9 @@ public class BinarySearch {
 }
 ```
 
-See [Java Predicate Interface](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html) if you're not familiar with the `Predicate` interface used.
+See
+[Java Predicate Interface](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html)
+if you're not familiar with the `Predicate` interface used.
 
 </JavaSection>
 
@@ -378,7 +206,8 @@ print(lastTrue(2, 10, lambda x : False)) # 1
 # no numbers satisfy the condition
 ```
 
-See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if you're not familiar with the syntax used in the program.
+See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if
+you're not familiar with the syntax used in the program.
 
 </PySection>
 
@@ -386,7 +215,10 @@ See [Lambda Expressions](https://www.w3schools.com/python/python_lambda.asp) if 
 
 #### Implementation 2
 
-This approach is based on interval jumping. Essentially, we start from the beginning of the array, make jumps, and reduce the jump length as we get closer to the target element. We use powers of 2, very similiar to [Binary Jumping](/plat/bin-jump).
+This approach is based on interval jumping. Essentially, we start from the
+beginning of the array, make jumps, and reduce the jump length as we get closer
+to the target element. We use powers of 2, very similiar to
+[Binary Jumping](/plat/bin-jump).
 
 <LanguageSection>
 
@@ -435,14 +267,18 @@ def lastTrue(lo, hi, f):
 
 ### Finding The Minimum `x` Such That `f(x) = true`
 
-We want to construct a function `firstTrue` such that `firstTrue(lo, hi, f)` returns the first `x` in the range `[lo,hi]` such that `f(x) = true`. If no such `x` exists, then `firstTrue` should return `hi+1`.
+We want to construct a function `firstTrue` such that `firstTrue(lo, hi, f)`
+returns the first `x` in the range `[lo,hi]` such that `f(x) = true`. If no such
+`x` exists, then `firstTrue` should return `hi+1`.
 
-Similarly to the previous part, this can be done with binary search if `f(x)` satisfies both of the following conditions:
+Similarly to the previous part, this can be done with binary search if `f(x)`
+satisfies both of the following conditions:
 
 - If `f(x)` is true, then `f(y)` is true for all $y \geq x$.
 - If `f(x)` is false, then `f(y)` is false for all $y \leq x$.
 
-We will need to do the same thing, but when the condition is satisfied, we will cut the right part, and when it's not, the left part will be cut.
+We will need to do the same thing, but when the condition is satisfied, we will
+cut the right part, and when it's not, the left part will be cut.
 
 <LanguageSection>
 
@@ -520,21 +356,31 @@ print(firstTrue(2, 10, lambda x : False)) # 11
 
 ### Example - Maximum Median
 
-<FocusProblem problem={problems.ex[0]} />
+<FocusProblem problem="ex" />
 
-**Statement:** Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd, we can perform the following operation on it $k$ times: take any element of the array and increase it by $1$. We want to make the median of the array as large as possible after $k$ operations.
+**Statement:** Given an array $\texttt{arr}$ of $n$ integers, where $n$ is odd,
+we can perform the following operation on it $k$ times: take any element of the
+array and increase it by $1$. We want to make the median of the array as large
+as possible after $k$ operations.
 
-**Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is odd.
+**Constraints:** $1 \leq n \leq 2 \cdot 10^5, 1 \leq k \leq 10^9$ and $n$ is
+odd.
 
 <Spoiler title="Solution">
 
-We first sort the array in ascending order. Then, we binary search for the maximum possible median. We know that the number of operations required to raise the median to $x$ increases monotonically as $x$ increases, so we can use binary search. For a given median value $x$, the number of operations required to raise the median to $x$ is
+We first sort the array in ascending order. Then, we binary search for the
+maximum possible median. We know that the number of operations required to raise
+the median to $x$ increases monotonically as $x$ increases, so we can use binary
+search. For a given median value $x$, the number of operations required to raise
+the median to $x$ is
 
 $$
 \sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i]).
 $$
 
-If this value is less than or equal to $k$, then $x$ can be the median, so our check function returns `true`. Otherwise, $x$ cannot be the median, so our check function returns `false`.
+If this value is less than or equal to $k$, then $x$ can be the median, so our
+check function returns `true`. Otherwise, $x$ cannot be the median, so our check
+function returns `false`.
 
 <LanguageSection>
 
@@ -695,7 +541,8 @@ print(search(1, 2E9))
 
 ### Mistake 1 - Off By One
 
-Consider the code from CSAcademy's [Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
+Consider the code from CSAcademy's
+[Binary Search on Functions](https://csacademy.com/lesson/binary_search/).
 
 <LanguageSection>
 
@@ -765,7 +612,8 @@ def square_root(x):
 
 </LanguageSection>
 
-This results in an infinite loop if `left=0` and `right=1`! To fix this, set `middle = (left+right+1)/2` instead.
+This results in an infinite loop if `left=0` and `right=1`! To fix this, set
+`middle = (left+right+1)/2` instead.
 
 ### Mistake 2 - Not Accounting for Negative Bounds
 
@@ -821,7 +669,8 @@ def firstTrue(lo, hi, f):
 
 </LanguageSection>
 
-This code does not necessarily work if `lo` is negative! Consider the following example:
+This code does not necessarily work if `lo` is negative! Consider the following
+example:
 
 <LanguageSection>
 
@@ -864,7 +713,8 @@ print(firstTrue(-10,-10,lambda x : True))
 
 </LanguageSection>
 
-This is because dividing an odd negative integer by two will round it up instead of down.
+This is because dividing an odd negative integer by two will round it up instead
+of down.
 
 <LanguageSection>
 
@@ -918,7 +768,10 @@ def firstTrue(lo, hi, f):
 
 ### Mistake 3 - Integer Overflow
 
-The first version of `firstTrue` won't work if `hi-lo` initially exceeds `INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds `INT_MAX` at any point during execution. If this is an issue, use `long long`s instead of `int`s.
+The first version of `firstTrue` won't work if `hi-lo` initially exceeds
+`INT_MAX`, while the second version of `firstTrue` won't work if `lo+hi` exceeds
+`INT_MAX` at any point during execution. If this is an issue, use `long long`s
+instead of `int`s.
 
 ## Library Functions For Binary Search
 
@@ -985,11 +838,15 @@ The first version of `firstTrue` won't work if `hi-lo` initially exceeds `INT_MA
 
 ### Example - Counting Haybales
 
-<FocusProblem problem={problems.count} />
+<FocusProblem problem="count" />
 
-As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing locations of haybales in a boolean array and then taking prefix sums of that would take too much time and memory.
+As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing
+locations of haybales in a boolean array and then taking prefix sums of that
+would take too much time and memory.
 
-Instead, let's place all of the locations of the haybales into a list and sort it. Now we can use binary search to count the number of cows in any range $[A,B]$ in $\mathcal{O}(\log N)$ time.
+Instead, let's place all of the locations of the haybales into a list and sort
+it. Now we can use binary search to count the number of cows in any range
+$[A,B]$ in $\mathcal{O}(\log N)$ time.
 
 ### With Built-in Function
 
@@ -997,7 +854,10 @@ Instead, let's place all of the locations of the haybales into a list and sort i
 
 <CPPSection>
 
-We can use the the built-in [`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and [`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound) functions.
+We can use the the built-in
+[`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and
+[`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound)
+functions.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -1042,7 +902,9 @@ int main() {
 
 <JavaSection>
 
-We can use the builtin [`Arrays.binarySearch`](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)>) function.
+We can use the builtin
+[`Arrays.binarySearch`](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)>)
+function.
 
 ```java
 
@@ -1087,7 +949,9 @@ public class haybales{
 
 <PySection>
 
-We can use the builtin [`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect) function.
+We can use the builtin
+[`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect)
+function.
 
 ```py
 
@@ -1246,8 +1110,8 @@ public class Haybales{
 
 ### USACO
 
-<Problems problems={problems.usaco} />
+<Problems problems="usaco" />
 
 ### General
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

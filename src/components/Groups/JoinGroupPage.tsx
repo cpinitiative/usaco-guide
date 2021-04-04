@@ -36,7 +36,7 @@ const JoinGroupPage = () => {
       setIsLoading(true);
       firebase
         .functions()
-        .httpsCallable('getJoinKeyInfo')({
+        .httpsCallable('groups-getJoinKeyInfo')({
           key: joinKey,
         })
         .then(
@@ -116,7 +116,7 @@ const JoinGroupPage = () => {
                     setIsJoining(true);
                     firebase
                       .functions()
-                      .httpsCallable('joinGroup')({
+                      .httpsCallable('groups-join')({
                         key: joinKey,
                       })
                       .then(

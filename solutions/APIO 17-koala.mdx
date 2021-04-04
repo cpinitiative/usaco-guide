@@ -1,5 +1,5 @@
 ---
-id: apio-17-koala
+id: apio-17-KoalaGame
 source: APIO 2017
 title: Koala Game
 author: Andi Qu
@@ -7,7 +7,8 @@ author: Andi Qu
 
 ## Subtask 1
 
-Assign a single stone to the first cup. The minimum cup is the one where Koala doesn't have a majority.
+Assign a single stone to the first cup. The minimum cup is the one where Koala
+doesn't have a majority.
 
 ```cpp
 int minValue(int N, int W) {
@@ -25,7 +26,9 @@ Uses 1 turn.
 
 Binary search for the maximum value.
 
-Assume we have a list of possible candidates for the maximum. Let this list be of length $L$. Assign each candidate $\lfloor \frac{N}{L} \rfloor$ stones. Koala will always assign her stones so that the maximum cup gets a majority.
+Assume we have a list of possible candidates for the maximum. Let this list be
+of length $L$. Assign each candidate $\lfloor \frac{N}{L} \rfloor$ stones. Koala
+will always assign her stones so that the maximum cup gets a majority.
 
 ```cpp
 int maxValue(int N, int W) {
@@ -47,11 +50,14 @@ Uses 4 turns.
 
 ## Subtask 3
 
-Assign cups 0 and 1 $x$ stones until Koala treats them differently, at which point we can tell which is greater.
+Assign cups 0 and 1 $x$ stones until Koala treats them differently, at which
+point we can tell which is greater.
 
-We can binary search for $x$: if both 0 and 1 get more than $x$ stones, increase $x$ and otherwise, decrease $x$.
+We can binary search for $x$: if both 0 and 1 get more than $x$ stones, increase
+$x$ and otherwise, decrease $x$.
 
-Since $9 + 10 + \dots + 17 > 100$, the maximum value of $x$ we need to try is 9, which improves our binary search significantly.
+Since $9 + 10 + \dots + 17 > 100$, the maximum value of $x$ we need to try is 9,
+which improves our binary search significantly.
 
 ```cpp
 int greaterValue(int N, int W) {
@@ -75,9 +81,13 @@ Uses 3 turns.
 
 ## Subtask 4
 
-First, notice how $700 \approx N \log N$. This suggests that we need a mergesort-like strategy.
+First, notice how $700 \approx N \log N$. This suggests that we need a
+mergesort-like strategy.
 
-Since we have 200 stones at our disposal this time, we can use one turn to compare two cups by assigning 100 stones to both of them and 0 stones to the other cups. Since we can compare cups efficiently, we can then use mergesort to find the values of each cup.
+Since we have 200 stones at our disposal this time, we can use one turn to
+compare two cups by assigning 100 stones to both of them and 0 stones to the
+other cups. Since we can compare cups efficiently, we can then use mergesort to
+find the values of each cup.
 
 ```cpp
 inline bool compare(int a, int b, int N, int W) {
@@ -88,12 +98,12 @@ inline bool compare(int a, int b, int N, int W) {
 }
 vector<int> mergesort(vector<int> v, int N, int W) {
 	if (v.size() == 1) return v;
- 
+
 	vector<int> a, b;
 	a.insert(a.begin(), v.begin(), v.begin() + (v.size() + 1) / 2);
 	b.insert(b.begin(), v.begin() + (v.size() + 1) / 2, v.end());
 	a = mergesort(a, N, W), b = mergesort(b, N, W);
- 
+
 	vector<int> sorted;
 	int aptr = 0, bptr = 0;
 	while (aptr < a.size() && bptr < b.size()) {
@@ -102,7 +112,7 @@ vector<int> mergesort(vector<int> v, int N, int W) {
 	}
 	sorted.insert(sorted.end(), a.begin() + aptr, a.end());
 	sorted.insert(sorted.end(), b.begin() + bptr, b.end());
- 
+
 	return sorted;
 }
 
@@ -120,9 +130,15 @@ Uses fewer than 700 turns.
 
 ## Subtask 5
 
-We use a recursive strategy that solves for a known range $[L, R]$ in exactly $L + R - 1$ moves by splitting $[L, R]$ into $[L, k]$ and $[k + 1, R]$ for some $k$ in exactly 1 move.
+We use a recursive strategy that solves for a known range $[L, R]$ in exactly
+$L + R - 1$ moves by splitting $[L, R]$ into $[L, k]$ and $[k + 1, R]$ for some
+$k$ in exactly 1 move.
 
-Assign each cup we know to be in $[L, R]$ $x = \lfloor \min(\sqrt{2 * L}, \frac{M}{R - L + 1}) \rfloor$ stones and then check which positions Koala has placed more than $x$ stones next to after the round. We can then find $k$ from this information, which will always be in the range $[L, R]$.
+Assign each cup we know to be in $[L, R]$
+$x = \lfloor \min(\sqrt{2 * L}, \frac{M}{R - L + 1}) \rfloor$ stones and then
+check which positions Koala has placed more than $x$ stones next to after the
+round. We can then find $k$ from this information, which will always be in the
+range $[L, R]$.
 
 ```cpp
 void split(vector<int> v, int N, int W, int* P, int l = 1, int r = 100) {

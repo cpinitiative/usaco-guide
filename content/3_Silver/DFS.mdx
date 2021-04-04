@@ -11,159 +11,6 @@ description: 'Recursively traversing a graph.'
 frequency: 4
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'CSES',
-			'Building Roads',
-			'1666',
-			'Easy',
-			false,
-			['Connected Components'],
-			'@B'
-		),
-	],
-	general: [
-		new Problem(
-			'Silver',
-			'Closing the Farm',
-			'644',
-			'Easy',
-			false,
-			['Connected Components'],
-			'usaco-644'
-		),
-		new Problem(
-			'Silver',
-			'Moocast',
-			'668',
-			'Easy',
-			true,
-			['Directed Graph'],
-			'usaco-668'
-		),
-		new Problem(
-			'Silver',
-			'Fence Planning',
-			'944',
-			'Easy',
-			true,
-			['Connected Components'],
-			''
-		),
-		new Problem(
-			'Kattis',
-			'Birthday Party',
-			'birthday',
-			'Easy',
-			false,
-			['Connected Components'],
-			'kattis-birthday'
-		),
-		new Problem(
-			'CSES',
-			'Flight Routes Check',
-			'1682',
-			'Normal',
-			true,
-			['Directed Graph'],
-			'cses-1682'
-		),
-		new Problem(
-			'Gold',
-			'Moocast',
-			'669',
-			'Normal',
-			false,
-			['Connected Components', 'Binary Search'],
-			'usaco-669'
-		),
-		new Problem(
-			'Silver',
-			'Wormhole Sort',
-			'992',
-			'Normal',
-			true,
-			['Connected Components', 'Binary Search'],
-			'usaco-992'
-		),
-		new Problem(
-			'Kattis',
-			'Lane Switching',
-			'https://open.kattis.com/contests/acpc17open/problems/laneswitching',
-			'Very Hard',
-			false,
-			['Connected Components', 'Binary Search'],
-			'kattis-laneswitching'
-		),
-	],
-	bipsample: [
-		new Problem(
-			'CSES',
-			'Building Teams',
-			'1668',
-			'Easy',
-			false,
-			['Bipartite'],
-			'@B'
-		),
-	],
-	bip: [
-		new Problem(
-			'CF',
-			'Bipartiteness',
-			'contest/862/problem/B',
-			'Easy',
-			false,
-			['Bipartite'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'The Great Revegetation',
-			'920',
-			'Easy',
-			true,
-			['Bipartite'],
-			'usaco-920'
-		),
-		new Problem(
-			'Baltic OI',
-			'2020 - Graph',
-			'https://codeforces.com/contest/1387/problem/A',
-			'Hard',
-			false,
-			['DFS', 'Median'],
-			''
-		),
-		new Problem(
-			'APIO',
-			'2011 - Table Coloring',
-			'https://dmoj.ca/problem/apio11p1',
-			'Very Hard',
-			false,
-			['Bipartite'],
-			'apio-11-color'
-		),
-	],
-};
-
-<!-- new Problem('Silver', 'Moo Particle', '1040', 'Normal', false, ['Sorting']), -->
-
-<!--
-new Problem(
-	'CF',
-	'Bear & Friendship',
-	'contest/771/problem/A',
-	'Easy',
-	false,
-	['DFS']
-),
-new Problem("CSA", "Tree Reconstruction", "tree-construct", "Hard", false, ["Tree", "DFS"], "several cases"),
-
-not a good example
--->
-
 <!-- 	<Resource source="IUSACO" title="10.4 - DFS">
 		code + example
 	</Resource>
@@ -191,17 +38,25 @@ not a good example
 
 From the second resource:
 
-> Depth-first search (DFS) is a straightforward graph traversal technique. The algorithm begins at a starting node, and proceeds to all other nodes that are reachable from the starting node using the edges of the graph.
+> Depth-first search (DFS) is a straightforward graph traversal technique. The
+> algorithm begins at a starting node, and proceeds to all other nodes that are
+> reachable from the starting node using the edges of the graph.
 >
-> Depth-first search always follows a single path in the graph as long as it finds new nodes. After this, it returns to previous nodes and begins to explore other parts of the graph. The algorithm keeps track of visited nodes, so that it processes each node only once.
+> Depth-first search always follows a single path in the graph as long as it
+> finds new nodes. After this, it returns to previous nodes and begins to
+> explore other parts of the graph. The algorithm keeps track of visited nodes,
+> so that it processes each node only once.
 
 ## Application - Connected Components
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
-A **connected component** is a maximal set of connected nodes in an undirected graph. In other words, two nodes are in the same connected component _if and only if_ they can reach each other via edges in the graph.
+A **connected component** is a maximal set of connected nodes in an undirected
+graph. In other words, two nodes are in the same connected component _if and
+only if_ they can reach each other via edges in the graph.
 
-In the above focus problem, the goal is to add the minimum possible number of edges such that the entire graph forms a single connected component.
+In the above focus problem, the goal is to add the minimum possible number of
+edges such that the entire graph forms a single connected component.
 
 <!--
 
@@ -215,9 +70,13 @@ In the above focus problem, the goal is to add the minimum possible number of ed
 
 <Spoiler title="Solution">
 
-Note that each edge decreases the number of connected components by either zero or one. So you must add at least $C-1$ edges, where $C$ is the number of connected components in the input graph.
+Note that each edge decreases the number of connected components by either zero
+or one. So you must add at least $C-1$ edges, where $C$ is the number of
+connected components in the input graph.
 
-There are many valid ways to pick $C-1$ new roads to build. The code below picks a single representative from each of the $C$ components and links them together in a line.
+There are many valid ways to pick $C-1$ new roads to build. The code below picks
+a single representative from each of the $C$ components and links them together
+in a line.
 
 <!-- You don't want to add an edge between two nodes that are already connected. If you have N connected components (some of the resources should go over what those are), then adding an edge reduces it to N - 1 connected components. Everything is connected when there's 1 connected component. So the answer is (# connected components - 1). -->
 
@@ -364,7 +223,11 @@ if __name__ == '__main__':
 	solve(n, adj)
 ```
 
-Unfortunately, a danger in using DFS when dealing with large bounds is the possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the recursion limit in Python is set to [1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014) by default. So if you submit the above code, you'll get the following:
+Unfortunately, a danger in using DFS when dealing with large bounds is the
+possibility of a **RecursionError**. This commonly occurs for $N>10^3$ since the
+recursion limit in Python is set to
+[1000](https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it/33008014)
+by default. So if you submit the above code, you'll get the following:
 
 ```
 Traceback (most recent call last):
@@ -393,7 +256,11 @@ sys.setrecursionlimit(1000000)
 
 although we still get TLE on two test cases.
 
-To resolve this, we can implement a non-recursive solution (which turns out to be slightly faster). You can imagine adding to `to_visit` as calling the function recursively and popping from `to_visit` as starting the execution of the recursive function (though they are not exactly equivalent in the strictest sense).
+To resolve this, we can implement a non-recursive solution (which turns out to
+be slightly faster). You can imagine adding to `to_visit` as calling the
+function recursively and popping from `to_visit` as starting the execution of
+the recursive function (though they are not exactly equivalent in the strictest
+sense).
 
 ```py
 def solve(n, adj):
@@ -540,15 +407,22 @@ See [here.](https://codeforces.com/blog/entry/67883)
 
 ### Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 ## Application - Graph Two-Coloring
 
-<FocusProblem problem={problems.bipsample[0]} />
+<FocusProblem problem="bipsample" />
 
-**Graph two-coloring** refers to assigning a boolean value to each node of the graph, dictated by the edge configuration. The most common example of a two-colored graph is a **bipartite graph**, in which each edge connects two nodes of opposite colors.
+**Graph two-coloring** refers to assigning a boolean value to each node of the
+graph, dictated by the edge configuration. The most common example of a
+two-colored graph is a **bipartite graph**, in which each edge connects two
+nodes of opposite colors.
 
-In the above focus problem, the goal is to assign each node (friend) of the graph to one of two colors (teams), subject to the constraint that edges (friendships) connect two nodes of opposite colors. In other words, we need to check whether the input is a bipartite graph and output a valid coloring if it is.
+In the above focus problem, the goal is to assign each node (friend) of the
+graph to one of two colors (teams), subject to the constraint that edges
+(friendships) connect two nodes of opposite colors. In other words, we need to
+check whether the input is a bipartite graph and output a valid coloring if it
+is.
 
 <!-- all of these use BFS
 
@@ -575,7 +449,10 @@ In the above focus problem, the goal is to assign each node (friend) of the grap
 	</Resource>
 </Resources>
 
-The idea is that we can arbitrarily label a node and then run DFS. Every time we visit a new (unvisited) node, we set its color based on the edge rule. When we visit a previously visited node, check to see whether its color matches the edge rule.
+The idea is that we can arbitrarily label a node and then run DFS. Every time we
+visit a new (unvisited) node, we set its color based on the edge rule. When we
+visit a previously visited node, check to see whether its color matches the edge
+rule.
 
 <LanguageSection>
 
@@ -626,7 +503,9 @@ int main()
 
 <Warning>
 
-Because Java is so slow, an adjacency list using lists/arraylists results in TLE. Instead, the Java sample code uses the edge representation mentioned in the optional block above.
+Because Java is so slow, an adjacency list using lists/arraylists results in
+TLE. Instead, the Java sample code uses the edge representation mentioned in the
+optional block above.
 
 </Warning>
 
@@ -700,4 +579,4 @@ public class BuildingTeams
 
 ### Problems
 
-<Problems problems={problems.bip} />
+<Problems problems="bip" />

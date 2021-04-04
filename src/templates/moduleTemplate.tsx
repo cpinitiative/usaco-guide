@@ -11,15 +11,17 @@ import { useContext } from 'react';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { Helmet } from 'react-helmet';
 import { ConfettiProvider } from '../context/ConfettiContext';
+import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 
 export default function Template(props) {
-  const { mdx } = props.data; // data.markdownRemark holds your post data
+  const { mdx, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = mdx;
   const module = React.useMemo(() => graphqlToModuleInfo(mdx), [mdx]);
   const { setLastViewedModule } = useContext(UserDataContext);
   React.useEffect(() => {
     setLastViewedModule(module.id);
   }, []);
+
   return (
     <Layout>
       <SEO title={`${module.title}`} description={module.description} />
@@ -49,15 +51,20 @@ export default function Template(props) {
       </Helmet>
 
       <ConfettiProvider>
-        <MarkdownLayout markdownData={module}>
-          <div className="py-4">
-            <Markdown body={body} />
-          </div>
-        </MarkdownLayout>
+        <MarkdownProblemListsProvider
+          value={moduleProblemLists?.problemLists || []}
+        >
+          <MarkdownLayout markdownData={module}>
+            <div className="py-4">
+              <Markdown body={body} />
+            </div>
+          </MarkdownLayout>
+        </MarkdownProblemListsProvider>
       </ConfettiProvider>
     </Layout>
   );
 }
+
 export const pageQuery = graphql`
   query($id: String!) {
     mdx(frontmatter: { id: { eq: $id } }) {
@@ -95,6 +102,27 @@ export const pageQuery = graphql`
           depth
           value
           slug
+        }
+      }
+    }
+    moduleProblemLists(moduleId: { eq: $id }) {
+      problemLists {
+        listId
+        problems {
+          uniqueId
+          name
+          url
+          source
+          difficulty
+          isStarred
+          tags
+          solution {
+            kind
+            label
+            labelTooltip
+            url
+            sketch
+          }
         }
       }
     }
