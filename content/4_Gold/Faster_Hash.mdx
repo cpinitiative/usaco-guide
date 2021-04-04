@@ -8,15 +8,6 @@ prerequisites:
   - unordered
 ---
 
-
-
-export const problems = {
-	three: [new Problem('Gold', '3SUM', '994', 'Normal', false, [], '')],
-	four: [
-		new Problem('CSES', 'Sum of Four Values', '1642', 'Normal', false, [], ''),
-	],
-};
-
 <Resources>
 	<Resource
 		source="CF"
@@ -45,7 +36,9 @@ export const problems = {
 
 <br />
 
-Read / writes are much faster than `unordered_map`. Its actual size is always a power of 2. The documentation is rather confusing, so I'll just summarize the most useful functions here.
+Read / writes are much faster than `unordered_map`. Its actual size is always a
+power of 2. The documentation is rather confusing, so I'll just summarize the
+most useful functions here.
 
 ```cpp
 #include <ext/pb_ds/assoc_container.hpp>
@@ -58,51 +51,63 @@ using namespace __gnu_pbds;
 
 ## Hacking
 
-`gp_hash_table` is also vulnerable to hacking. The hash function mentioned in the blog:
+`gp_hash_table` is also vulnerable to hacking. The hash function mentioned in
+the blog:
 
 ```cpp
 const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
 struct chash {
-    int operator()(int x) const { return x ^ RANDOM; }
+	int operator()(int x) const { return x ^ RANDOM; }
 };
 gp_hash_table<key, int, chash> table;
 ```
 
-is easily hackable (see [neal's comment](https://codeforces.com/blog/entry/60737?#comment-454122)). To avoid this, we can replace `chash` with one of the custom hash functions mentioned [previously](/gold/unordered#another-hash-function).
+is easily hackable (see
+[neal's comment](https://codeforces.com/blog/entry/60737?#comment-454122)). To
+avoid this, we can replace `chash` with one of the custom hash functions
+mentioned [previously](/gold/unordered#another-hash-function).
 
 ## Resizing
 
-Unordered map has [`reserve`](http://www.cplusplus.com/reference/unordered_map/unordered_map/reserve/). Calling this function before inserting any elements can result in a constant factor speedup.
+Unordered map has
+[`reserve`](http://www.cplusplus.com/reference/unordered_map/unordered_map/reserve/).
+Calling this function before inserting any elements can result in a constant
+factor speedup.
 
-We can modify the declaration of `gp_hash_table` so that it supports the `resize` function, which operates similarly.
+We can modify the declaration of `gp_hash_table` so that it supports the
+`resize` function, which operates similarly.
 
 ```cpp
 template<class K,class V> using ht = gp_hash_table<
-    K,
-    null_type,
-    hash<K>,
-    equal_to<K>,
-    direct_mask_range_hashing<>,
-    linear_probe_fn<>,
-    hash_standard_resize_policy<
-      hash_exponential_size_policy<>,
-      hash_load_check_resize_trigger<>,
-      true
-    >
+		K,
+		null_type,
+		hash<K>,
+		equal_to<K>,
+		direct_mask_range_hashing<>,
+		linear_probe_fn<>,
+		hash_standard_resize_policy<
+			hash_exponential_size_policy<>,
+			hash_load_check_resize_trigger<>,
+			true
+		>
 >;
 ```
 
-These are the same template arguments as the default `gp_hash_table`, except `false` has been changed to `true`. This modification allows us to change the actual size of the hash table.
+These are the same template arguments as the default `gp_hash_table`, except
+`false` has been changed to `true`. This modification allows us to change the
+actual size of the hash table.
 
 ```cpp
 int main() {
-    ht<int,null_type> g; g.resize(5);
-    cout << g.get_actual_size() << "\n"; // 8
-    cout << g.size() << "\n"; // 0
+	ht<int,null_type> g; g.resize(5);
+	cout << g.get_actual_size() << "\n"; // 8
+	cout << g.size() << "\n"; // 0
 }
 ```
 
-When calling `g.resize(x)`, `x` is rounded up to the nearest power of 2. Then the actual size of `g` is changed to be equal to `x` (unless `x < g.size()`, in which case an error is thrown).
+When calling `g.resize(x)`, `x` is rounded up to the nearest power of 2. Then
+the actual size of `g` is changed to be equal to `x` (unless `x < g.size()`, in
+which case an error is thrown).
 
 <Resources>
 	<Resource
@@ -120,13 +125,16 @@ Furthermore, if we construct `g` with the following arguments:
 ht<int,null_type> g({},{},{},{},{1<<16});
 ```
 
-then the actual size of `g` is always at least `1<<16` (regardless of calls to `resize`). The last argument **must** be a power of 2 (or else errors will be thrown).
+then the actual size of `g` is always at least `1<<16` (regardless of calls to
+`resize`). The last argument **must** be a power of 2 (or else errors will be
+thrown).
 
 ### Solving 3SUM
 
-<FocusProblem problem={problems.three[0]} />
+<FocusProblem problem="three" />
 
-Since all the values are quite small, you can use an array instead of a hashmap. But if you didn't read the constraints carefully enough, you're in luck!
+Since all the values are quite small, you can use an array instead of a hashmap.
+But if you didn't read the constraints carefully enough, you're in luck!
 
 <Spoiler title="Solution">
 
@@ -196,4 +204,4 @@ int main() {
 
 ## Problems
 
-<Problems problems={problems.four} />
+<Problems problems="four" />

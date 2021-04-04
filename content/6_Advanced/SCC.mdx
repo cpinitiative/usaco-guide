@@ -1,83 +1,17 @@
 ---
 id: SCC
 title: 'Strongly Connected Components'
-author: Benjamin Qi
+author: Benjamin Qi, Dong Liu
 prerequisites:
   - toposort
   - BCC-2CC
-description: Subsets of nodes in directed graphs where each node in a subset can reach each other node in the subset.
+description:
+  Subsets of nodes in directed graphs where each node in a subset can reach each
+  other node in the subset.
 frequency: 1
 ---
 
-
-
-export const problems = {
-	ex: [
-		new Problem('CSES', 'Planets & Kingdoms', '1683', 'Easy', false, [], ''),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Coin Collector',
-			'1686',
-			'Easy',
-			false,
-			[],
-			'Split the graph into its SCCs. If the coin collector enters an SCC, he can collect all the coins in it. The SCCs form a DAG, so we can use DP to find the maximum number of coins he can collect.'
-		),
-		new Problem(
-			'POI',
-			'18 - Bike paths',
-			'aKKSmtjWTtDOEHDqnmQ3-eAA/site/?key=statement',
-			'Easy',
-			false,
-			['SCC', 'dp'],
-			'Compress SCC and then run tree DP'
-		),
-		new Problem(
-			'Old Gold',
-			'Grass Cownoisseur',
-			'516',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'CF',
-			'Catowice City',
-			'contest/1239/problem/D',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'Festival',
-			'https://szkopul.edu.pl/problemset/problem/p9uJo01RR9ouMLLAYroFuQ-7/site/?key=statement',
-			'Hard',
-			false,
-			[],
-			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2012/editorial/fes.pdf'
-		),
-		new Problem(
-			'Kattis',
-			'Proving Equivalences',
-			'equivalences',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem('CSES', 'New Flight Routes', '1685', 'Hard', false, [], ''),
-	],
-	satEx: [new Problem('CSES', 'Giant Pizza', '1684', 'Normal', false, [], '')],
-};
-
 ## SCCs
-
-<Problems problems={problems.ex} />
 
 ### Tutorial
 
@@ -91,21 +25,189 @@ export const problems = {
 	<Resource source="CP2" title="4.2.9 - Finding SCCs">
 		{' '}
 	</Resource>
-	<Resource source="Benq" title="Kosaraju's Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h">
+	<Resource
+		source="Benq"
+		title="Kosaraju's Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h"
+	>
 		concise implementation of Kosaraju's Algorithm
 	</Resource>
-    <Resource source="Benq" title="Tarjan's Implementation" url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h">
-        concise implementation of Tarjan's Algorithm
-    </Resource>
+	<Resource
+		source="Benq"
+		title="Tarjan's Implementation"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h"
+	>
+		concise implementation of Tarjan's Algorithm
+	</Resource>
 </Resources>
+
+<FocusProblem problem="ex" />
+
+### Solution - Planets and Kingdoms
+
+Just run
+[Kosaraju's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h>)
+or
+[Tarjan's](<https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h>)
+SCC algorithm on the graph.
+
+Then assign each component an $ID$ (starting from $1$).
+
+<Spoiler title="Using Kosaraju's SCC">
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+/**
+ * Description: Kosaraju's Algorithm, DFS twice to generate
+ 	* strongly connected components in topological order. $a,b$
+ 	* in same component if both $a\to b$ and $b\to a$ exist.
+ * Time: O(N+M)
+ * Source: Wikipedia
+ * Verification: POI 8 peaceful commission
+*/
+struct SCC {
+	int N; vector<vector<int>> adj, radj;
+	vector<int> todo, comp, comps; vector<bool> vis;
+	void init(int _N) { N = _N;
+		adj.resize(N), radj.resize(N), comp = vector<int>(N,-1), vis.resize(N);
+	}
+	void ae(int x, int y) {
+		adj[x].push_back(y), radj[y].push_back(x);
+	}
+	void dfs(int x) {
+		vis[x] = 1; for(int y : adj[x]) if (!vis[y]) dfs(y);
+		todo.push_back(x); }
+	void dfs2(int x, int v) {
+		comp[x] = v;
+		for(int y : radj[x]) if (comp[y] == -1) dfs2(y,v);
+	}
+	void gen() { // fills allComp
+		for(int i=0; i<N; i++) if (!vis[i]) dfs(i);
+		reverse(begin(todo), end(todo));
+		for(int x : todo) if (comp[x] == -1) {
+			dfs2(x,x), comps.push_back(x);
+		}
+	}
+};
+
+int main() {
+	int n, m, a, b;
+	cin >> n >> m;
+
+	SCC graph;
+	graph.init(n);
+	while(m--) {
+		cin >> a >> b;
+		graph.ae(--a, --b);
+	}
+	graph.gen();
+	int ID[200000]{};
+	int ids = 0;
+	for(int i=0; i<n; i++) {
+		if(!ID[graph.comp[i]]) {
+			ID[graph.comp[i]] = ++ids;
+		}
+	}
+	cout << ids << '\n';
+	for(int i=0; i<n; i++) {
+		cout << ID[graph.comp[i]] << " \n"[i==n-1];
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Using Tarjan's SCC">
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+/**
+ * Description: Tarjan's, DFS once to generate
+ 	* strongly connected components in topological order. $a,b$
+ 	* in same component if both $a\to b$ and $b\to a$ exist.
+ 	* Uses less memory than Kosaraju b/c doesn't store reverse edges.
+ * Time: O(N+M)
+ * Source: KACTL
+ 	* https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/SCC.h
+ * Verification: https://cses.fi/problemset/task/1686/
+*/
+struct SCC {
+	int N, ti = 0; vector<vector<int>> adj;
+	vector<int> disc, comp, st, comps;
+	void init(int _N) {
+		N = _N;
+		adj.resize(N), disc.resize(N), comp = vector<int>(N,-1);
+	}
+	void ae(int x, int y) {
+		adj[x].push_back(y);
+	}
+	int dfs(int x) {
+		int low = disc[x] = ++ti; st.push_back(x); // disc[y] != 0 -> in stack
+		for(int y : adj[x]) if (comp[y] == -1) low = min(low, disc[y]?:dfs(y));
+		if (low == disc[x]) { // make new SCC, pop off stack until you find x
+			comps.push_back(x); for (int y = -1; y != x;)
+				comp[y = st.back()] = x, st.pop_back();
+		}
+		return low;
+	}
+	void gen() {
+		for(int i=0; i<N; i++) if (!disc[i]) dfs(i);
+		reverse(begin(comps), end(comps));
+	}
+};
+
+int main() {
+	int n, m, a, b;
+	cin >> n >> m;
+
+	SCC graph;
+	graph.init(n);
+	while(m--) {
+		cin >> a >> b;
+		graph.ae(--a, --b);
+	}
+	graph.gen();
+	int ID[200000]{};
+	int ids = 0;
+	for(int i=0; i<n; i++) {
+		if(!ID[graph.comp[i]]) {
+			ID[graph.comp[i]] = ++ids;
+		}
+	}
+	cout << ids << '\n';
+	for(int i=0; i<n; i++) {
+		cout << ID[graph.comp[i]] << " \n"[i==n-1];
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+</Spoiler>
 
 ### Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 ## 2-SAT
 
-<Problems problems={problems.satEx} />
+<Problems problems="satEx" />
 
 (impl)
 

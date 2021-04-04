@@ -1,31 +1,18 @@
 import * as React from 'react';
-import { Problem } from '../../models/problem';
-import MODULE_ORDERING, {
-  moduleIDToSectionMap,
-} from '../../../content/ordering';
+import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
+import { moduleIDToSectionMap } from '../../../content/ordering';
 import { Link } from 'gatsby';
 import { Highlight } from 'react-instantsearch-dom';
 
-function ProblemHit({ hit }) {
-  const problem = new Problem(
-    hit.source,
-    hit.name,
-    hit.id,
-    hit.difficulty,
-    hit.starred,
-    hit.tags,
-    hit.solID,
-    hit.solQuality
-  );
-
+function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 sm:rounded-lg">
       <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
-        {problem.source}
+        {hit.source}
       </span>
       <p className="text-xl leading-6 mt-1 mb-2">
         <Highlight hit={hit} attribute="name" />
-        {problem.starred && (
+        {hit.isStarred && (
           <svg
             className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
             fill="currentColor"
@@ -37,7 +24,7 @@ function ProblemHit({ hit }) {
       </p>
       <div>
         <a
-          href={problem.url}
+          href={hit.url}
           target="_blank"
           className="text-gray-500 dark:text-dark-med-emphasis text-sm"
         >
@@ -53,23 +40,31 @@ function ProblemHit({ hit }) {
         </a>
       </div>
 
-      {problem.solution?.url && (
-        <a
-          href={problem.solution?.url}
-          target="_blank"
-          className="text-gray-500 dark:text-dark-med-emphasis  text-sm"
-        >
-          View Solution
-          <svg
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-4 w-4 inline ml-0.5 mb-1"
+      {hit.solution &&
+        (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
+          <a
+            href={
+              hit.solution.kind === 'internal'
+                ? `${getProblemURL({
+                    ...hit,
+                    uniqueId: hit.objectID,
+                  })}/solution`
+                : hit.solution.url
+            }
+            target="_blank"
+            className="text-gray-500 dark:text-dark-med-emphasis text-sm"
           >
-            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-          </svg>
-        </a>
-      )}
+            View Solution
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="h-4 w-4 inline ml-0.5 mb-1"
+            >
+              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+            </svg>
+          </a>
+        )}
 
       <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
         Appears In:
@@ -78,7 +73,7 @@ function ProblemHit({ hit }) {
         {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
           <li key={moduleID}>
             <Link
-              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${problem.uniqueID}`}
+              to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
               className="text-sm text-blue-600 dark:text-blue-400"
             >
               {moduleLabel}
@@ -88,8 +83,11 @@ function ProblemHit({ hit }) {
       </ul>
 
       <div className="pt-4 space-x-2">
-        {problem.tags?.map(tag => (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis">
+        {hit.tags?.map(tag => (
+          <span
+            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+            key={tag}
+          >
             {tag}
           </span>
         ))}

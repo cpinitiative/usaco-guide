@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { createContext, useReducer, useState } from 'react';
+import {
+  createContext,
+  useReducer,
+  useState,
+  useContext,
+  ReactNode,
+} from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
 import UserLang, { UserLangAPI } from './properties/userLang';
@@ -7,11 +13,13 @@ import UserDataPropertyAPI from './userDataPropertyAPI';
 import LastViewedModule, {
   LastViewedModuleAPI,
 } from './properties/lastViewedModule';
-import HideTagsAndSolutions, {
-  HideTagsAndSolutionsAPI,
-} from './properties/hideTagsAndSolutions';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
+import DivisionTableQuery, {
+  DivisionTableQueryAPI,
+} from './properties/divisionTableQuery';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import DarkMode, { DarkModeAPI } from './properties/darkMode';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -22,7 +30,12 @@ import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
+import firebaseType from 'firebase';
+import { UserPermissionsContextProvider } from './UserPermissionsContext';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {
@@ -82,37 +95,111 @@ import UserClassesProperty, { UserClassesAPI } from './properties/userClasses';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTagsAndSolutions(),
+  new HideTagsAndDifficulty(),
+  new DivisionTableQuery(),
   new ShowIgnored(),
-  new DarkMode(),
+  new ThemeProperty(),
   new LastReadAnnouncement(),
   new UserProgressOnModulesProperty(),
   new UserProgressOnProblemsProperty(),
   new LastVisitProperty(),
-  new UserClassesProperty(),
+  new AdSettingsProperty(),
 ];
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAndSolutionsAPI &
+  HideTagsAndDifficultyAPI &
+  DivisionTableQueryAPI &
   ShowIgnoredAPI &
-  DarkModeAPI &
+  ThemePropertyAPI &
   LastReadAnnouncementAPI &
   UserProgressOnModulesAPI &
   UserProgressOnProblemsAPI &
   LastVisitAPI &
-  UserClassesAPI & {
-    firebaseUser: any;
+  AdSettingsAPI & {
+    firebaseUser: firebaseType.User;
     signIn: Function;
     signOut: Function;
     isLoaded: boolean;
     onlineUsers: number;
     getDataExport: Function;
+    importUserData: Function;
   };
 
-const UserDataContext = createContext<UserDataContextAPI>(null);
+const UserDataContext = createContext<UserDataContextAPI>({
+  consecutiveVisits: 0,
+  firebaseUser: null,
+  getDataExport: () => {},
+  importUserData: () => {},
+  hideTagsAndDifficulty: false,
+  divisionTableQuery: {
+    division: '',
+    season: '',
+  },
+  isLoaded: true,
+  lang: 'cpp',
+  lastReadAnnouncement: 'open-source',
+  lastViewedModule: 'binary-search-sorted',
+  lastVisitDate: 1608324157466,
+  numPageviews: 130,
+  onlineUsers: -1,
+  pageviewsPerDay: {
+    1606896000000: 4,
+    1607068800000: 17,
+    1608192000000: 27,
+    1608278400000: 82,
+  },
+  theme: 'system',
+  setTheme: x => {
+    // do nothing
+  },
+  setHideTagsAndDifficulty: x => {
+    // do nothing
+  },
+  setDivisionTableQuery: x => {
+    // do nothing
+  },
+  setLang: x => {
+    // do nothing
+  },
+  setLastReadAnnouncement: x => {
+    // do nothing
+  },
+  setLastViewedModule: x => {
+    // do nothing
+  },
+  setLastVisitDate: x => {
+    // do nothing
+  },
+  setModuleProgress: (moduleID, progress) => {
+    // do nothing/
+  },
+  setShowIgnored: x => {
+    // do nothing
+  },
+  setUserProgressOnProblems: (problemId, status) => {
+    // do nothing
+  },
+  showIgnored: false,
+  signIn: () => {
+    // do nothing
+  },
+  signOut: () => {
+    // do nothing
+  },
+  userProgressOnModules: {},
+  userProgressOnModulesActivity: [],
+  userProgressOnProblems: {},
+  userProgressOnProblemsActivity: [],
+  adSettings: {
+    hideMarch2021: false,
+  },
+  setAdSettings: () => {
+    // do nothing
+  },
+});
 
-export const UserDataProvider = ({ children }) => {
+export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const firebase = useFirebase();
 
   const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
@@ -129,7 +216,7 @@ export const UserDataProvider = ({ children }) => {
 
   // const [onlineUsers, setOnlineUsers] = useState(0);
 
-  const [_, triggerRerender] = useReducer(cur => cur + 1, 0);
+  const [, triggerRerender] = useReducer(cur => cur + 1, 0);
   UserDataContextAPIs.forEach(api =>
     api.setTriggerRerenderFunction(triggerRerender)
   );
@@ -153,7 +240,7 @@ export const UserDataProvider = ({ children }) => {
   //   // });
   // });
 
-  // just once, ask all API's to initialize their values from localStorage
+  // just once, ask all APIs to initialize their values from localStorage
   React.useEffect(() => {
     UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
   }, []);
@@ -168,10 +255,10 @@ export const UserDataProvider = ({ children }) => {
         .onSnapshot(snapshot => {
           let data = snapshot.data();
           if (!data) {
-            let lastViewedModule = UserDataContextAPIs.find(
+            const lastViewedModule = UserDataContextAPIs.find(
               x => x instanceof LastViewedModule
             ).exportValue();
-            let localDataIsNotEmpty = lastViewedModule !== null;
+            const localDataIsNotEmpty = lastViewedModule !== null;
 
             if (localDataIsNotEmpty) {
               if (
@@ -209,12 +296,16 @@ export const UserDataProvider = ({ children }) => {
 
   const userData = {
     firebaseUser,
-    signIn: () => {
-      if (firebase)
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    signIn: (): Promise<void> => {
+      if (firebase) {
+        return firebase
+          .auth()
+          .signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      }
+      return Promise.resolve();
     },
-    signOut: () => {
-      firebase
+    signOut: (): Promise<void> => {
+      return firebase
         .auth()
         .signOut()
         .then(() => {
@@ -232,17 +323,40 @@ export const UserDataProvider = ({ children }) => {
       };
     }, {}),
 
-    getDataExport: () => {
+    getDataExport: (): Record<string, any> => {
       return UserDataContextAPIs.reduce(
         (acc, api) => ({ ...acc, ...api.exportValue() }),
         {}
       );
     },
+
+    importUserData: (data: JSON) => {
+      if (
+        confirm(
+          'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+        )
+      ) {
+        UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+        UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+        if (firebaseUser) {
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(data);
+        }
+        triggerRerender();
+        return true;
+      }
+      return false;
+    },
   };
 
   return (
     <UserDataContext.Provider value={userData}>
-      {children}
+      <UserPermissionsContextProvider>
+        {children}
+      </UserPermissionsContextProvider>
     </UserDataContext.Provider>
   );
 };

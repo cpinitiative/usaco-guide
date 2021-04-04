@@ -4,93 +4,26 @@ title: 'Disjoint Set Union'
 author: Benjamin Qi, Michael Cao, Andrew Wang
 prerequisites:
   - dfs
-description: 'The Disjoint Set Union (DSU) data structure allows you to add edges to an initially empty graph and test whether two vertices of the graph are connected.'
+description:
+  'The Disjoint Set Union (DSU) data structure allows you to add edges to an
+  initially empty graph and test whether two vertices of the graph are
+  connected.'
 frequency: 3
 ---
 
-
-
-export const problems = {
-	sample: [new Problem('YS', 'Union Find', 'unionfind', 'Easy', false, [])],
-	general: [
-		new Problem('CSES', 'Road Construction', '1676', 'Easy', false, [], 'cses-1676'),
-		new Problem(
-			'Gold',
-			'Closing the Farm',
-			'646',
-			'Easy',
-			false,
-			[],
-			'Simulate process in reverse and maintain the # of connected components. Similar to [CSES Network Breakdown](https://cses.fi/problemset/task/1677)'
-		),
-		new Problem(
-			'Gold',
-			'Mootube',
-			'789',
-			'Easy',
-			true,
-			[],
-			'usaco-789'
-		),
-		new Problem('Silver', 'Wormhole Sort', '992', 'Easy', true, [
-			'DSU',
-		]),
-		new Problem('Gold', 'Moocast', '669', 'Easy', false, [
-			'DSU',
-		]),
-		new Problem(
-			'CSA',
-			'Mountain Time',
-			'mountain-time',
-			'Normal',
-			false,
-			[],
-			''
-		),
-	],
-	harder: [
-        	new Problem(
-			'Old Gold', 
-			'Ski Course Rating', 
-			'384', 
-			'Hard', 
-			false, ['DSU']
-		),
-		new Problem(
-			'Baltic OI',
-			'2016 - Park',
-			'https://oj.uz/problem/view/BOI16_park',
-			'Very Hard',
-			false,
-			[],
-			'baltic-16-park'
-		),
-		new Problem(
-			'Gold',
-			'Favorite Colors',
-			'1042',
-			'Very Hard',
-			true,
-			['DSU'],
-			'Small to large merging is mentioned in the editorial, but we were unable to break solutions that just merged naively. Alternatively, just merge linked lists in $\mathcal{O}(1)$ time.'
-		),
-		new Problem(
-			'Plat',
-			'Valleys',
-			'950',
-			'Very Hard',
-			false,
-			['DSU'],
-			'usaco-950'
-		),
-	]
-};
-
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ## Resources
 
 <Resources>
+	<Resource
+		source="CF"
+		title="EDU: DSU"
+		url="https://codeforces.com/edu/course/2/lesson/7"
+		starred
+	>
+		video explanation + problems for DSU
+	</Resource>
 	<Resource
 		source="CSA"
 		title="Disjoint Data Sets"
@@ -133,13 +66,16 @@ export const problems = {
 
 ## Implementations
 
-As the implementation is quite simple, you may prefer to use this in place of DFS for computing connected components.
+As the implementation is quite simple, you may prefer to use this in place of
+DFS for computing connected components.
 
 <LanguageSection>
 
 <CPPSection>
 
-Check PAPS for the explanation. `e[x]` contains the negation of the size of $x$'s component if $x$ is the representative of its component, and the parent of $x$ otherwise.
+Check PAPS for the explanation. `e[x]` contains the negation of the size of
+$x$'s component if $x$ is the representative of its component, and the parent of
+$x$ otherwise.
 
 <Resources>
 	<Resource
@@ -170,34 +106,35 @@ struct DSU {
 
 <JavaSection>
 
-This implementation assumes that `p` is an array that starts such that `p[i] = -1` for every $0 <= i < n$.
+This implementation assumes that `disjoint` is an array that starts such that
+`disjoint[i] = -1` for every $0 <= i < n$.
 
 ```java
 public static int disjoint[]; //0 indexed
 public static int size[];
 //finds the "representative" node in a's component
 public static int find(int v) {
-    if (disjoint[v] == -1) {
-        return v;
-    }
-    disjoint[v] = find(disjoint[v]);
-    return disjoint[v];
+	if (disjoint[v] == -1) {
+		return v;
+	}
+	disjoint[v] = find(disjoint[v]);
+	return disjoint[v];
 }
 
 //returns whether the merge changed connectivity
 public static void union(int u, int v) {
-    int uroot = find(u);
-    int vroot = find(v);
-    if (uroot == vroot) {
-        return;
-    }
-    if (size[uroot] < size[vroot]) {
-        disjoint[uroot] = vroot;
-        size[vroot] = size[uroot] + size[vroot];
-    } else {
-        disjoint[vroot] = uroot;
-        size[uroot] = size[uroot] + size[vroot];
-    }
+	int uroot = find(u);
+	int vroot = find(v);
+	if (uroot == vroot) {
+		return;
+	}
+	if (size[uroot] < size[vroot]) {
+		disjoint[uroot] = vroot;
+		size[vroot] = size[uroot] + size[vroot];
+	} else {
+		disjoint[vroot] = uroot;
+		size[uroot] = size[uroot] + size[vroot];
+	}
 }
 ```
 
@@ -207,9 +144,10 @@ public static void union(int u, int v) {
 
 ## Focus Problem Solution
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
-The solution below is more verbose than some of the templates above. Use whichever implementation you are most comfortable with.
+The solution below is more verbose than some of the templates above. Use
+whichever implementation you are most comfortable with.
 
 <LanguageSection>
 <CPPSection>
@@ -224,32 +162,32 @@ using namespace std;
 int sz[200000], pa[200000];
 
 int get(int x) {
-    return x == pa[x] ? x : pa[x] = get(pa[x]);
+	return x == pa[x] ? x : pa[x] = get(pa[x]);
 }
 
 void unite(int a, int b) {
-    a = get(a), b = get(b);
-    if (a == b) return;
-    if (sz[a] > sz[b]) swap(a, b);
-    pa[a] = b;
-    sz[b] += sz[a];
+	a = get(a), b = get(b);
+	if (a == b) return;
+	if (sz[a] > sz[b]) swap(a, b);
+	pa[a] = b;
+	sz[b] += sz[a];
 }
 
 int main() {
-    int n, q; cin >> n >> q;
-    for (int i = 0; i < n; i++) {
-        sz[i] = 1;
-        pa[i] = i;
-    }
-    for (int i = 0; i < q; i++) {
-        int t, u, v; cin >> t >> u >> v;
-        if (t == 0) {
-            unite(u, v);
-        } else {
-            cout << (get(u) == get(v) ? 1 : 0) << endl;
-        }
-    }
-    return 0;
+	int n, q; cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		sz[i] = 1;
+		pa[i] = i;
+	}
+	for (int i = 0; i < q; i++) {
+		int t, u, v; cin >> t >> u >> v;
+		if (t == 0) {
+			unite(u, v);
+		} else {
+			cout << (get(u) == get(v) ? 1 : 0) << endl;
+		}
+	}
+	return 0;
 }
 ```
 
@@ -261,57 +199,57 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static int disjoint[]; //0 indexed
-    public static int size[];
-    public static int find(int v) {
-        if (disjoint[v] == -1) {
-            return v;
-        }
-        disjoint[v] = find(disjoint[v]);
-        return disjoint[v];
-    }
+	public static int disjoint[]; //0 indexed
+	public static int size[];
+	public static int find(int v) {
+		if (disjoint[v] == -1) {
+			return v;
+		}
+		disjoint[v] = find(disjoint[v]);
+		return disjoint[v];
+	}
 
-    public static void union(int u, int v) {
-        int uroot = find(u);
-        int vroot = find(v);
-        if (uroot == vroot) {
-            return;
-        }
-        if (size[uroot] < size[vroot]) {
-            disjoint[uroot] = vroot;
-            size[vroot] = size[uroot] + size[vroot];
-        } else {
-            disjoint[vroot] = uroot;
-            size[uroot] = size[uroot] + size[vroot];
-        }
-    }
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int q = Integer.parseInt(st.nextToken());
+	public static void union(int u, int v) {
+		int uroot = find(u);
+		int vroot = find(v);
+		if (uroot == vroot) {
+			return;
+		}
+		if (size[uroot] < size[vroot]) {
+			disjoint[uroot] = vroot;
+			size[vroot] = size[uroot] + size[vroot];
+		} else {
+			disjoint[vroot] = uroot;
+			size[uroot] = size[uroot] + size[vroot];
+		}
+	}
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
 
-        disjoint = new int[n];
-        size = new int[n];
-        Arrays.fill(disjoint, -1);
-        for (int i = 0; i < q; i++) {
-            st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            if (t == 0) {
-                union(a, b);
-            } else {
-                if (find(a) == find(b)) {
-                    out.println(1);
-                } else {
-                    out.println(0);
-                }
-            }
-        }
-        out.close();
-    }
+		disjoint = new int[n];
+		size = new int[n];
+		Arrays.fill(disjoint, -1);
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int t = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			if (t == 0) {
+				union(a, b);
+			} else {
+				if (find(a) == find(b)) {
+					out.println(1);
+				} else {
+					out.println(0);
+				}
+			}
+		}
+		out.close();
+	}
 }
 ```
 
@@ -322,12 +260,14 @@ public class Main {
 
 ### Standard
 
-You should already be familiar with the DFS / Binary Search solutions to "Wormhole Sort" and "Moocast."
+You should already be familiar with the DFS / Binary Search solutions to
+"Wormhole Sort" and "Moocast."
 
-<Problems problems={problems.general} />
+<Problems problems="general" />
 
 ### Harder
 
-Don't worry about solving these if this is the first time you've encountered DSU.
+Don't worry about solving these if this is the first time you've encountered
+DSU.
 
-<Problems problems={problems.harder} />
+<Problems problems="harder" />

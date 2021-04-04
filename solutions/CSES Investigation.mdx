@@ -5,19 +5,24 @@ title: Investigation
 author: Andrew Wang
 ---
 
-**Time Complexity:** $\mathcal{O}(E\log V)$ 
+**Time Complexity:** $\mathcal{O}(E\log V)$
 
-We can run Dijkstra keeping track of the distance: $dist[]$, the number of ways with the minimum distance: $num[]$, the minimum flights with the minimum 
-distance: $minf[]$, and the maximum flights with the minimum distance: $maxf[]$. For every node, $v$, we take into consideration all of its neighbors, $u$. 
-If we can reach $u$ in a shorter distance than its current minimum, we update the distance and reset $num[u]$, $minf[u]$, and $maxf[u]$. We also have 
-to take into consideration if we can reach $u$ in an equivalent distance. If so, we update:
+We can run Dijkstra keeping track of the distance: $dist[]$, the number of ways
+with the minimum distance: $num[]$, the minimum flights with the minimum
+distance: $minf[]$, and the maximum flights with the minimum distance: $maxf[]$.
+For every node, $v$, we take into consideration all of its neighbors, $u$. If we
+can reach $u$ in a shorter distance than its current minimum, we update the
+distance and reset $num[u]$, $minf[u]$, and $maxf[u]$. We also have to take into
+consideration if we can reach $u$ in an equivalent distance. If so, we update:
 
 $$
 num[u] = num[v] + num[u]
 $$
+
 $$
 minf[u] = min(minf[u], minf[v] + 1)
 $$
+
 $$
 maxf[u] = max(maxf[u], maxf[v] + 1)
 $$
@@ -33,53 +38,53 @@ int minf[100001];int maxf[100001];
 bool v[100001];
 ll MAX = 1000000000000000L; ll MOD = 1000000007L;
 void djikstra(int s){
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
-    pair<ll, int> p; p.first = 0; p.second = s;
-    pq.push(p);
-    num[s] = 1; dist[s] = 0;
-    while(!pq.empty()){
-        pair<ll, int> cur = pq.top(); pq.pop();
-        if(!v[cur.second]){
-            v[cur.second] = true;
-            for(pair<ll, int> e : edge[cur.second]){
-                ll cost = e.first; int next = e.second;
-                ll alt = cost + dist[cur.second];
-                if(alt == dist[next]){
-                    num[next] = (num[next] + num[cur.second]) % MOD;
-                    minf[next] = min(minf[next], minf[cur.second]+1);
-                    maxf[next] = max(maxf[next], maxf[cur.second]+1);
-                    e.first = dist[next];
-                    pq.push(e);
-                }
-                else if(alt < dist[next]){
-                    dist[next] = alt;
-                    num[next] = num[cur.second];
-                    minf[next] = minf[cur.second]+1;
-                    maxf[next] = maxf[cur.second]+1;
-                    e.first = dist[next];
-                    pq.push(e);
-                }
-            }
-        }
-    }
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+	pair<ll, int> p; p.first = 0; p.second = s;
+	pq.push(p);
+	num[s] = 1; dist[s] = 0;
+	while(!pq.empty()){
+		pair<ll, int> cur = pq.top(); pq.pop();
+		if(!v[cur.second]){
+			v[cur.second] = true;
+			for(pair<ll, int> e : edge[cur.second]){
+				ll cost = e.first; int next = e.second;
+				ll alt = cost + dist[cur.second];
+				if(alt == dist[next]){
+					num[next] = (num[next] + num[cur.second]) % MOD;
+					minf[next] = min(minf[next], minf[cur.second]+1);
+					maxf[next] = max(maxf[next], maxf[cur.second]+1);
+					e.first = dist[next];
+					pq.push(e);
+				}
+				else if(alt < dist[next]){
+					dist[next] = alt;
+					num[next] = num[cur.second];
+					minf[next] = minf[cur.second]+1;
+					maxf[next] = maxf[cur.second]+1;
+					e.first = dist[next];
+					pq.push(e);
+				}
+			}
+		}
+	}
 }
 int main(){
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    int n; int m; cin >> n >> m;
-    for(int i = 0; i < m; i++){
-        int a,b,c; cin >> a >> b >> c;
-        pair<ll, int> d; d.first = c; d.second = b;
-        edge[a].push_back(d);
-    }
-    for(int i = 0; i <= 100000; i++){
-        dist[i] = MAX;
-        num[i] = 0;
-        minf[i] = 0;
-        maxf[i] = 0;
-    }
-    djikstra(1);
-    cout << dist[n] << " " << num[n] <<
-    " " << minf[n] << " " << maxf[n];
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int n; int m; cin >> n >> m;
+	for(int i = 0; i < m; i++){
+		int a,b,c; cin >> a >> b >> c;
+		pair<ll, int> d; d.first = c; d.second = b;
+		edge[a].push_back(d);
+	}
+	for(int i = 0; i <= 100000; i++){
+		dist[i] = MAX;
+		num[i] = 0;
+		minf[i] = 0;
+		maxf[i] = 0;
+	}
+	djikstra(1);
+	cout << dist[n] << " " << num[n] <<
+	" " << minf[n] << " " << maxf[n];
+	return 0;
 }
 ```

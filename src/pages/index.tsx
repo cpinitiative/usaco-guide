@@ -8,6 +8,7 @@ import Video from '../components/Video';
 import { OutboundLink } from 'gatsby-plugin-google-analytics';
 import AuthorsSection from '../components/Index/AuthorsSection';
 import TrustedBy from '../components/Index/TrustedBy';
+import ContributorsSection from '../components/Index/ContributorsSection';
 
 export default function IndexPage(props: PageProps) {
   const learnMoreRef = useRef();
@@ -34,7 +35,7 @@ export default function IndexPage(props: PageProps) {
                   <OutboundLink
                     href="https://github.com/cpinitiative/usaco-guide/?ref=top_badge"
                     target="_blank"
-                    className="text-sm font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-400 dark:text-gray-400 dark-hover:text-gray-300 sm:text-base lg:text-sm xl:text-base transition duration-150 ease-in-out"
+                    className="text-sm font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300 sm:text-base lg:text-sm xl:text-base transition"
                   >
                     Open Source!
                   </OutboundLink>
@@ -53,7 +54,7 @@ export default function IndexPage(props: PageProps) {
                   <div className="rounded-md shadow">
                     <Link
                       to="/dashboard/"
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white dark:text-blue-50 bg-blue-600 dark:bg-blue-700 hover:bg-blue-500 dark-hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white dark:text-blue-50 bg-blue-600 dark:bg-blue-700 hover:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition md:py-4 md:text-lg md:px-10"
                     >
                       View Guide
                     </Link>
@@ -68,7 +69,7 @@ export default function IndexPage(props: PageProps) {
                           behavior: 'smooth',
                         });
                       }}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 dark:text-blue-200 bg-blue-100 dark:bg-blue-900 hover:text-blue-600 hover:bg-blue-50 dark-hover:bg-blue-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 dark-focus:border-blue-800 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-blue-700 dark:text-blue-200 bg-blue-100 dark:bg-blue-900 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 dark:focus:border-blue-800 transition md:py-4 md:text-lg md:px-10"
                     >
                       Learn More
                     </a>
@@ -141,7 +142,7 @@ export default function IndexPage(props: PageProps) {
           </div>
 
           <div className="mt-16">
-            <ul className="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10">
+            <ul className="md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
               <li>
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -298,7 +299,7 @@ export default function IndexPage(props: PageProps) {
             <div className="rounded-md shadow">
               <Link
                 to="/dashboard/"
-                className="w-full flex items-center justify-center px-6 py-2 sm:px-8 sm:py-3 md:py-4 md:text-lg md:px-10 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 dark:bg-blue-800 hover:bg-blue-500 dark-hover:bg-blue-700 focus:outline-none focus:border-blue-700 dark-focus:border-blue-800 focus:shadow-outline-blue transition duration-150 ease-in-out"
+                className="w-full flex items-center justify-center px-6 py-2 sm:px-8 sm:py-3 md:py-4 md:text-lg md:px-10 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-600 dark:bg-blue-800 hover:bg-blue-500 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 dark:focus:border-blue-800 focus:shadow-outline-blue transition"
               >
                 View Guide
               </Link>
@@ -318,6 +319,31 @@ export default function IndexPage(props: PageProps) {
               <div>
                 <div>
                   <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    What is the USACO?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      USACO stands for the{' '}
+                      <OutboundLink
+                        href="http://www.usaco.org/"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USA Computing Olympiad
+                      </OutboundLink>
+                      . Check out the{' '}
+                      <Link
+                        to="/usaco-faq"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USACO FAQ Page
+                      </Link>{' '}
+                      for more information.
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Is this an official syllabus?
                   </dt>
                   <dd className="mt-2">
@@ -331,13 +357,13 @@ export default function IndexPage(props: PageProps) {
                 </div>
                 <div className="mt-12">
                   <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    How can I report a problem?
+                    How do I report a problem or ask a question?
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Contact Us" button or email us at{' '}
+                      "Contact Us" button. Alternatively, email us at{' '}
                       <a
                         href="mailto:usacoguide@gmail.com"
                         className="text-blue-600 dark:text-blue-400 underline"
@@ -345,6 +371,56 @@ export default function IndexPage(props: PageProps) {
                         usacoguide@gmail.com
                       </a>
                       .
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    I'm looking for classes, club curriculum...
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      Check out the{' '}
+                      <OutboundLink
+                        href="https://joincpi.org/?ref=home"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        Competitive Programming Initiative
+                      </OutboundLink>
+                      !
+                    </p>
+                  </dd>
+                </div>
+              </div>
+              <div className="mt-12 md:mt-0">
+                <div>
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    Is this guide for non-USACO competitive programmers?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      Of course! While we structure our content around USACO,
+                      feel free to use this guide even if you don't do USACO.
+                      You will still learn a lot from it!
+                    </p>
+                  </dd>
+                </div>
+                <div className="mt-12">
+                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    How can I get help?
+                  </dt>
+                  <dd className="mt-2">
+                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
+                      If you get stuck, head over to the{' '}
+                      <OutboundLink
+                        href="https://forum.usaco.guide"
+                        target="_blank"
+                        className="text-blue-600 dark:text-blue-400 underline"
+                      >
+                        USACO Forum
+                      </OutboundLink>{' '}
+                      for help.
                     </p>
                   </dd>
                 </div>
@@ -384,76 +460,6 @@ export default function IndexPage(props: PageProps) {
                   </dd>
                 </div>
               </div>
-              <div className="mt-12 md:mt-0">
-                <div>
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    Is this guide for non-USACO competitive programmers?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Of course! While we structure our content around USACO,
-                      feel free to use this guide even if you don't do USACO.
-                      You will still learn a lot from it!
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    How can I get help?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      If you get stuck, feel free to ask for help by clicking
-                      the "Contact Us" button. It may take some time for your
-                      question to be addressed. You can also head over to the{' '}
-                      <OutboundLink
-                        href="https://forum.usaco.guide"
-                        target="_blank"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        USACO Forum
-                      </OutboundLink>{' '}
-                      for help.
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    Who should I contact?
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      If you have any questions related to this guide, please
-                      contact us at{' '}
-                      <a
-                        href="mailto:usacoguide@gmail.com"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        usacoguide@gmail.com
-                      </a>
-                      .
-                    </p>
-                  </dd>
-                </div>
-                <div className="mt-12">
-                  <dt className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                    I'm looking for classes, club curriculum, contests...
-                  </dt>
-                  <dd className="mt-2">
-                    <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Check out the{' '}
-                      <OutboundLink
-                        href="https://joincpi.org/?ref=home"
-                        target="_blank"
-                        className="text-blue-600 dark:text-blue-400 underline"
-                      >
-                        Competitive Programming Initiative
-                      </OutboundLink>
-                      !
-                    </p>
-                  </dd>
-                </div>
-              </div>
             </dl>
           </div>
         </div>
@@ -462,10 +468,20 @@ export default function IndexPage(props: PageProps) {
 
       <AuthorsSection />
 
+      <ContributorsSection />
+
       <div className="bg-white dark:bg-dark-surface">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
-            &copy; 2020 Competitive Programming Initiative.
+            &copy; 2021 Competitive Programming Initiative. Powered by{' '}
+            <a
+              href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
+              target="_blank"
+              className="underline"
+            >
+              Vercel
+            </a>
+            .
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}

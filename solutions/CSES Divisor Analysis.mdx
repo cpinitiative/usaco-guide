@@ -1,0 +1,98 @@
+---
+id: cses-2182
+source: CSES
+title: Divisor Analysis
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(N \log(\max(k_i)))$.
+
+## Number of divisors
+
+Each divisor of the number can be written as $\prod_{i = 1}^N x_i^{\alpha_i}$
+where $0 \leq \alpha_i \leq k_i$.
+
+Since there are $k_i + 1$ choices for $\alpha_i$, the number of divisors is
+simply $\prod_{i = 1}^N (k_i + 1)$.
+
+We can calculate this by iterating through the prime factors in $\mathcal O(N)$
+time.
+
+## Sum of divisors
+
+Let the sum of divisors when only considering the first $i$ prime factors be
+$S_i$. The answer will be $S_N$.
+
+$$
+\begin{aligned}
+S_i &= S_{i - 1} \sum_{j = 0}^{k_i} x_i^j\\
+    &= S_{i - 1} \cdot \frac{x_i^{k_i + 1} - 1}{x_i - 1}\\
+\end{aligned}
+$$
+
+We can calculate each $S_i$ using fast exponentiation and modular inverses in
+$\mathcal O(N \log(\max(k_i)))$ time.
+
+## Product of divisors
+
+Let the product and number of divisors when only considering the first $i$ prime
+factors be $P_i$ and $C_i$ respectively. The answer will be $P_N$.
+
+$$
+\begin{aligned}
+P_i &= P_{i - 1}^{k_i + 1} \left(x_i^{k_i(k_i + 1)/2} \right)^{C_{i - 1}}
+\end{aligned}
+$$
+
+Again, we can calculate each $P_i$ using fast exponentiation in
+$\mathcal O(N \log(\max(k_i)))$ time, but there's a catch! It might be tempting
+to use $C_{i - 1}$ from your previously-calculated values in part 1 of this
+problem, but those values will yield wrong answers.
+
+This is because $a^b \not \equiv a^{b \bmod p} \pmod{p}$ in general. However, by
+Fermat's little theorem, $a^b \equiv a^{b \bmod (p - 1)} \pmod{p}$ for prime
+$p$, so we can just store $C_i$ modulo $10^9 + 6$ to calculate $P_i$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+const ll MOD = 1e9 + 7;
+
+ll expo(ll base, ll pow) {
+	ll ans = 1;
+	while (pow) {
+		if (pow & 1) ans = ans * base % MOD;
+		base = base * base % MOD;
+		pow >>= 1;
+	}
+	return ans;
+}
+
+ll p[100001], k[100001];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> p[i] >> k[i];
+	ll div_cnt = 1, div_sum = 1, div_prod = 1, div_cnt2 = 1;
+	for (int i = 0; i < n; i++) {
+		div_cnt = div_cnt * (k[i] + 1) % MOD;
+		div_sum = div_sum * (expo(p[i], k[i] + 1) - 1) % MOD * expo(p[i] - 1, MOD - 2) % MOD;
+		div_prod = expo(div_prod, k[i] + 1) * expo(expo(p[i], (k[i] * (k[i] + 1) / 2)), div_cnt2) % MOD;
+		div_cnt2 = div_cnt2 * (k[i] + 1) % (MOD - 1);
+	}
+	cout << div_cnt << ' ' << div_sum << ' ' << div_prod;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

@@ -1,0 +1,93 @@
+---
+id: cses-2179
+source: CSES
+title: Even Outdegree Edges
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(N)$.
+
+Without loss of generality, assume that the number of edges is even and there's
+only one connected component in the graph.
+
+Consider the following simpler problem: given a rooted tree, direct the edges so
+that all nodes except for the root have an even out-degree; the root's degree
+may be of any parity.
+
+We can solve this simpler problem recursively through a DFS. Imagine that we're
+processing some subtree rooted at node $v$. First, process each of $v$'s
+children's subtrees **but don't direct $v$'s incident edges yet**. Although the
+children's out-degree parity may be arbitrary after this, we can then direct
+each of $v$'s incident edges to make them all even. This solution works in
+$\mathcal O(N)$ time.
+
+It turns out that this also solves the version of the problem where the root of
+the tree must also have even out-degree! This is because the sum of out-degrees
+is equal to the number of edges - since the out-degrees of all nodes besides the
+root are even, the out-degree of the root must also be even.
+
+To generalize this solution to an arbitrary graph, we simply:
+
+1. Find the DFS tree (which will be a spanning tree).
+2. Direct all edges that aren't part of this tree "upwards".
+3. Run the solution for a tree on the DFS tree (except some nodes must have
+   **odd** out-degree now).
+
+Step 2 works because of the fact that all edges that aren't part of the DFS tree
+are **back-edges** (i.e. edges where one node is a parent of the other). For
+more information about the DFS tree, read
+[this CF blog post](https://codeforces.com/blog/entry/68138).
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> graph[100001];
+int visited[100001], odd[100001], timer = 1;
+vector<pair<int, int>> ans;
+
+void dfs(int node, int parent = 0) {
+	visited[node] = timer++;
+	for (int i : graph[node]) if (i != parent) {
+		if (!visited[i]) {
+			dfs(i, node);
+			if (odd[i]) {
+				ans.push_back({i, node});
+				odd[i] = 0;
+			} else {
+				ans.push_back({node, i});
+				odd[node] ^= 1;
+			}
+		} else if (visited[node] > visited[i]) {
+			ans.push_back({node, i});
+			odd[node] ^= 1;
+		}
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	scanf("%d %d", &n, &m);
+	while (m--) {
+		int u, v;
+		scanf("%d %d", &u, &v);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+	for (int i = 1; i <= n; i++) if (!visited[i]) dfs(i);
+	if (accumulate(odd + 1, odd + n + 1, 0)) printf("IMPOSSIBLE");
+	else for (pair<int, int> i : ans) printf("%d %d\n", i.first, i.second);
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

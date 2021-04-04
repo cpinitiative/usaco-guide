@@ -4,7 +4,7 @@ import Img from 'gatsby-image';
 import { useContext, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
-// note: cows will be unlocked in reverse order
+// note: cows will be unlocked in lexicographical order
 
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   const [milliseconds, setMilliseconds] = React.useState(
@@ -12,10 +12,9 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   );
 
   React.useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       setMilliseconds(tomorrowMilliseconds - Date.now());
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -31,6 +30,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
       to {days ? 'continue your streak' : 'unlock this cow photo'}!
+      {days ? ` Photo will be unlocked after ${days + 1} days.` : null}
     </div>
   );
 };
@@ -82,6 +82,7 @@ export default function DailyStreak({ streak }) {
       }
     }
   `);
+  // https://www.digitalocean.com/community/tutorials/react-usememo
   const cows = React.useMemo(() => {
     return data.allFile.edges.map(({ node }) => node.childImageSharp.fluid);
   }, []);
@@ -94,10 +95,20 @@ export default function DailyStreak({ streak }) {
   }, []);
   if (firstRender) return null;
 
-  const times = [2, 3, 5, 7, 11, 13, 17, 19];
+  const generatePrimes = (): number[] => {
+    const primes: number[] = [];
+    for (let i = 2; primes.length < cows.length; ++i) {
+      let composite = false;
+      for (let j = 2; j * j <= i; ++j) if (i % j == 0) composite = true;
+      if (!composite) primes.push(i);
+    }
+    return primes;
+  };
+  const times = generatePrimes();
+
   let maxInd = 0;
   while (maxInd < times.length && times[maxInd] <= streak) maxInd++;
-  const getComponent = (i, hideYesNo) => {
+  const getComponent = (i, hideYesNo): React.ReactElement => {
     if (times[i] <= streak) {
       return (
         <PhotoCard

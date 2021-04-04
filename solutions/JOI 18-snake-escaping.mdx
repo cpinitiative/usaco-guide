@@ -1,0 +1,155 @@
+---
+id: joi-18-SnakeEscaping
+title: Snake Escaping
+source: JOI 18 Final Round
+author: Kai Wang
+---
+
+We use SOS DP to compute $super[mask]$ and $sub[mask]$, which denote
+$\sum\limits_{mask\in S} a_S$ and $\sum\limits_{S\in mask} a_S$ respectively.
+
+For a query, let $A$ be the set of $0$'s, $B$ be the set of $1$'s, and $C$ be
+the set of $?$'s. By Pigeonhole principle, $\min\{A,B,C\}\le 6$, and I claim we
+can answer queries in $O(2^{\min\{A,B,C\}})$.
+
+If a query has $|C|\le 6$, we can brute force over all the subsets with 0's at A
+and 1's at B. Since there are $2^{|C|}$ subsets, this takes
+$\mathcal{O}(2^{|C|})$ operations.
+
+Otherwise, we can answer queries with the **principle of inclusion-exclusion**.
+The answer is simply $\sum\limits_{a\in A} super[B | a] (-1)^{|a|}$, which we
+can calculate in $\mathcal{O}(2^{|A|})$.
+
+The answer is also $\sum\limits_{b\in B} sub[C | b] (-1)^{|B|-|b|}$, which we
+can calculate in $\mathcal{O}(2^{|B|})$. They can be computed efficiently with
+submask enumeration. For a detailed explanation on how submask enumeration
+works, check
+[cp-algorithms](https://cp-algorithms.com/algebra/all-submasks.html).
+
+**Time Complexity:** $\mathcal{O}(2^L\cdot L+2^{\frac{L}{3}}Q)$
+
+We compute $super$ and $sub$ in $\mathcal{O}(2^L\cdot L)$ with SOS DP, and we
+process each query in $\mathcal{O} (2^{\frac L3})$.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class snake_escaping{
+  static class FastReader
+	{
+		BufferedReader br;
+		StringTokenizer st;
+
+		public FastReader()
+		{
+			br = new BufferedReader(new
+					 InputStreamReader(System.in));
+		}
+
+		String next()
+		{
+			while (st == null || !st.hasMoreElements())
+			{
+				try
+				{
+					st = new StringTokenizer(br.readLine());
+				}
+				catch (IOException  e)
+				{
+					e.printStackTrace();
+				}
+			}
+			return st.nextToken();
+		}
+
+		int nextInt()
+		{
+			return Integer.parseInt(next());
+		}
+
+
+	}
+
+	public static class Pair implements Comparable<Pair>{
+		int vtx; int val;
+		public Pair(int a, int b){
+			this.vtx=a; this.val=b;
+		}
+		public int compareTo(Pair other){
+			if(this.val<other.val)return -1;
+			if(this.val>other.val)return 1;
+			if(this.vtx<other.vtx)return -1;
+			return 1;
+		}
+	}
+	static int MOD=998244353;
+
+	public static void main(String[] args){
+		FastReader br=new FastReader();
+		int L=br.nextInt(); int Q=br.nextInt();
+		final int[] S=new int[1<<L]; final int[] sup=new int[1<<L]; final int[] sub=new int[1<<L];
+		final int[] btcnt=new int[1<<L];//Precompute bitcount to speed up
+		String s=br.next();
+		for(int i=0; i<(1<<L); i++){
+			S[i]=(int) s.charAt(i)-'0'; sup[i]=sub[i]=S[i];
+			btcnt[i]=Integer.bitCount(i);
+		}
+		//SOS DP!!
+		for(int b=0; b<L; b++){
+			for(int m=0;m<(1<<L); m++){
+				if(((m>>>b)&1) ==0){
+					sup[m]+=sup[m^(1<<b)];
+				}else{
+					sub[m]+=sub[m^(1<<b)];
+				}
+			}
+		}
+
+		StringBuilder sb=new StringBuilder();//I'm using stringbuilder to reduce the number of times I print because calling System.out.println 10^6 times is slow
+
+		int A; int B; int C;
+		int ca; int cb; int cc; long ans;
+		for(int i=0;i<Q;i++){
+			s=br.next(); A=0; B=0; C=0;
+			ca=0; cb=0; cc=0; ans=0;
+			for(int j=0;j<L;j++){
+				if(s.charAt(j)=='0'){A|=(1<<(L-j-1)); ca++;}
+				else if(s.charAt(j)=='1') {B|=(1<<(L-j-1)); cb++;}
+				else {C|=(1<<(L-j-1)); cc++;}
+			}
+
+			if(ca<=cb && ca<=cc){
+				for(int m=A; m!=0; m=(m-1)&A){
+					ans+=(1-2*((btcnt[m])&1))*sup[B|m];
+				}
+				ans+=sup[B];
+			}else if(cb<=ca && cb<=cc){
+				for(int m=B; m!=0; m=(m-1)&B){
+
+					ans+=(1-2*((btcnt[m])&1))*sub[C|(B^m)];
+
+				}
+				ans+=sub[C|B];
+
+			}else{
+				for(int m=C; m!=0; m=(m-1)&C){
+
+					ans+=S[m|B];
+				}
+
+				ans+=S[B];
+			}
+			sb.append(ans).append("\n");
+			if((i&((1<<17)-1))==0){//sb can have a lot of memory
+				System.out.println(sb.toString());
+				sb=new StringBuilder();
+			}
+		}
+		System.out.println(sb.toString());
+	}
+
+
+
+}
+```

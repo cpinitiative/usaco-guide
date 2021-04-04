@@ -2,7 +2,6 @@ import { createContext } from 'react';
 import * as React from 'react';
 
 const FirebaseContext = createContext(null);
-
 const firebaseConfig = {
   apiKey: 'AIzaSyAvm-cvPgEFer3MVQtCiKegFTc1E9RHGG4',
   authDomain: 'usaco-guide.firebaseapp.com',
@@ -25,7 +24,7 @@ export const FirebaseProvider = ({ children }) => {
       const database = import('firebase/database');
 
       Promise.all([app, auth, firestore, database, functions]).then(values => {
-        const firebaseInstance = values[0];
+        const firebaseInstance = values[0].default;
         firebaseInstance.initializeApp(firebaseConfig);
         setFirebase(firebaseInstance);
       });

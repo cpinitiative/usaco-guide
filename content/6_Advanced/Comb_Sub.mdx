@@ -8,70 +8,7 @@ description: '?'
 frequency: 1
 ---
 
-
-
-export const problems = {
-	sam: [
-		new Problem(
-			'CF',
-			'Karen & Supermarket',
-			'contest/815/problem/C',
-			'Normal',
-			false,
-			[],
-			''
-		),
-	],
-	gen: [
-		new Problem(
-			'COCI',
-			'Dzumbus',
-			'COCI19_dzumbus',
-			'Normal',
-			false,
-			[],
-			'coci-dzum'
-		),
-		new Problem(
-			'CF',
-			'Div 1 D - Miss Punyverse',
-			'1280/problem/D',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'DMOJ',
-			'IOI - Rivers',
-			'ioi05p6',
-			'Normal',
-			false,
-			[],
-			'ioi-rivers'
-		),
-		new Problem(
-			'CF',
-			'Ostap & Tree',
-			'735/problem/E',
-			'Normal',
-			false,
-			['DP'],
-			'ostap-tree'
-		),
-		new Problem(
-			'DMOJ',
-			'COCI - Periodni',
-			'coci08c4p6',
-			'Hard',
-			false,
-			['NT'],
-			'coci-period'
-		),
-	],
-};
-
-<FocusProblem problem={problems.sam[0]} />
+<FocusProblem problem="sam" />
 
 <br />
 
@@ -79,66 +16,111 @@ This was the first problem I saw that involved this trick.
 
 ## Solution
 
-For two vectors $a$ and $b$, define the vector $c=a\oplus b$ to have entries $c_i=\min_{k=0}^i\left(a_k+b_{i-k}\right)$ for each $0\le i < \text{size}(a)+\text{size}(b)-1$.
+For two vectors $a$ and $b$, define the vector $c=a\oplus b$ to have entries
+$c_i=\min_{k=0}^i\left(a_k+b_{i-k}\right)$ for each
+$0\le i < \text{size}(a)+\text{size}(b)-1$.
 
-Similar to the editorial, define $\texttt{dp[x][0][g]}$ to be the minimum cost to buy exactly $g$ goods out of the subtree of $x$ if we don't use the coupon for $x$, and define $\texttt{dp[x][1][g]}$ to be the minimum cost to buy exactly $g$ goods out of the subtree of $x$ if we are allowed to use the coupon for $x$. We update $\texttt{dp[x][0]}$ with one of the child subtrees $t$ of $x$ by setting $\texttt{dp[x][0]}=\texttt{dp[x][0]}\oplus \texttt{dp[t][0]}$, and similarly for $\texttt{dp[x][1]}$.
+Similar to the editorial, define $\texttt{dp[x][0][g]}$ to be the minimum cost
+to buy exactly $g$ goods out of the subtree of $x$ if we don't use the coupon
+for $x$, and define $\texttt{dp[x][1][g]}$ to be the minimum cost to buy exactly
+$g$ goods out of the subtree of $x$ if we are allowed to use the coupon for $x$.
+We update $\texttt{dp[x][0]}$ with one of the child subtrees $t$ of $x$ by
+setting $\texttt{dp[x][0]}=\texttt{dp[x][0]}\oplus \texttt{dp[t][0]}$, and
+similarly for $\texttt{dp[x][1]}$.
 
 <Spoiler title="Code">
 
 ```cpp
-int n,b,c[5001],d[5001];
-vl dp[5001][2];
-vi child[5001];
+#include <iostream>
+#include <vector>
 
-vl comb(vl a, vl b) {
-	vl c(sz(a)+sz(b)-1,INF);
-	F0R(i,sz(a)) F0R(j,sz(b)) ckmin(c[i+j],a[i]+b[j]);
-	return c;
+using namespace std;
+
+constexpr int MAX_GOODS = 5000;
+constexpr long long INF = 1e18;
+
+int initial[MAX_GOODS + 1];
+int discounted[MAX_GOODS + 1];
+vector<long long> dp[MAX_GOODS + 1][2];
+vector<int> child[MAX_GOODS + 1];
+
+vector<long long> total_min(vector<long long> a, vector<long long> b) {
+	vector<long long> combined(a.size() + b.size() - 1, INF);
+	for (int i = 0; i < a.size(); i++) {
+		for (int j = 0; j < b.size(); j++) {
+			combined[i + j] = min(combined[i + j], a[i] + b[j]);
+		}
+	}
+	return combined;
 }
 
-void go(int x) {
-	dp[x][0] = {0,c[x]}, dp[x][1] = {INF,d[x]};
-	trav(t,child[x]) {
-		go(t);
-		dp[x][0] = comb(dp[x][0],dp[t][0]);
-		dp[x][1] = comb(dp[x][1],dp[t][1]);
+void process(int g) {
+	dp[g][0] = {0, initial[g]};
+	/*
+	 * we have INF for the first element because 0 would mess up merging
+	 * if it WAS 0, then that would mean we didn't buy this one
+	 * yet the algo would still think all the children are eligible for coupons
+	 */
+	dp[g][1] = {INF, discounted[g]};
+	for (int t : child[g]) {
+		process(t);
+		dp[g][0] = total_min(dp[g][0],dp[t][0]);
+		dp[g][1] = total_min(dp[g][1],dp[t][1]);
 	}
-	F0R(i,sz(dp[x][1])) ckmin(dp[x][1][i],dp[x][0][i]);
+	for (int i = 0; i < dp[g][1].size(); i++) {
+		dp[g][1][i] = min(dp[g][1][i], dp[g][0][i]);
+	}
 }
 
 int main() {
-	setIO(); re(n,b);
-	FOR(i,1,n+1) {
-		re(c[i],d[i]); d[i] = c[i]-d[i];
+	int good_num;
+	int budget;
+	cin >> good_num >> budget;
+	for (int i = 1; i <= good_num; i++) {
+		cin >> initial[i] >> discounted[i];
+		discounted[i] = initial[i] - discounted[i];
 		if (i > 1) {
-			int x; re(x);
-			child[x].pb(i);
+			int prereq;
+			cin >> prereq;
+			child[prereq].push_back(i);
 		}
 	}
-	go(1);
-	R0F(i,n+1) if (dp[1][1][i] <= b) {
-		ps(i);
-		exit(0);
+
+	process(1);
+	for (int i = good_num; i >= 0; i--) {
+		if (dp[1][1][i] <= budget) {
+			cout << i << endl;
+			break;
+		}
 	}
 }
 ```
 
 </Spoiler>
 
-The editorial naively computes a bound of $\mathcal{O}(N^3)$ on the running time of this solution. However, this actually runs in $\mathcal{O}(N^2)$!
+The editorial naively computes a bound of $\mathcal{O}(N^3)$ on the running time
+of this solution. However, this actually runs in $\mathcal{O}(N^2)$!
 
 ## Time Complexity of Merging Subtrees
 
-Try to do the following (easy) problem first:
+The complexity can be demonstrated with the following problem:
 
-> You have an list of $N$ ones and a counter initially set to $0$. While the list has greater than one element, remove any two elements $a$ and $b$ from the list, add $a\cdot b$ to the counter, and add $a+b$ to the list. In terms of $N$, what is the maximum possible value of the counter at the end of this process?
+> You have an list of $N$ ones and a counter initially set to $0$. While the
+> list has greater than one element, remove any two elements $a$ and $b$ from
+> the list, add $a\cdot b$ to the counter, and add $a+b$ to the list. In terms
+> of $N$, what is the maximum possible value of the counter at the end of this
+> process?
 
 <Spoiler title="Solution">
 
-The counter will always be equal to $\binom{N}{2}$ at the end of this process; every pair of ones contributes one to the answer. Adding $a\cdot b$ to the counter corresponds to merging two subtrees of sizes $a$ and $b$ into one subtree of size $a+b$ in $\mathcal{O}(ab)$ time.
+The counter will always be equal to $\binom{N}{2}$ at the end of this process;
+every pair of ones contributes one to the answer. Adding $a\cdot b$ to the
+counter corresponds to merging two subtrees of sizes $a$ and $b$ into one
+subtree of size $a+b$ in $\mathcal{O}(ab)$ time, which in total will result in a
+complexity of $\mathcal{O}(N^2)$.
 
 </Spoiler>
 
 ## Problems
 
-<Problems problems={problems.gen} />
+<Problems problems="gen" />

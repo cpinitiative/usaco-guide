@@ -27,24 +27,28 @@ import Card from '../components/Dashboard/DashboardCard';
 import Activity from '../components/Dashboard/Activity';
 
 export default function DashboardPage(props: PageProps) {
-  const { modules, announcements } = props.data as any;
+  const { modules, announcements, problems } = props.data as any;
   const userSettings = React.useContext(UserDataContext);
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
   }, {});
-  const problemIDMap = modules.edges.reduce((acc, cur) => {
-    cur.node.problems.forEach(problem => {
-      acc[problem.uniqueID] = {
-        label: `${problem.source}: ${problem.name}`,
-        url: `${moduleIDToURLMap[cur.node.frontmatter.id]}/#problem-${
-          problem.uniqueID
-        }`,
-        starred: problem.starred,
-      };
-    });
-    return acc;
-  }, {});
+  const problemIDMap = React.useMemo(() => {
+    return problems.edges.reduce((acc, cur) => {
+      const problem = cur.node;
+      // ignore problems that don't have an associated module (extraProblems.json)
+      if (problem.module) {
+        acc[problem.uniqueId] = {
+          label: `${problem.source}: ${problem.name}`,
+          url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
+            problem.uniqueId
+          }`,
+          moduleId: problem.module.frontmatter.id,
+        };
+      }
+      return acc;
+    }, {});
+  }, [problems]);
   const {
     lastViewedModule: lastViewedModuleID,
     userProgressOnModules,
@@ -53,7 +57,6 @@ export default function DashboardPage(props: PageProps) {
     setLastReadAnnouncement,
     firebaseUser,
     consecutiveVisits,
-    onlineUsers,
     signIn,
   } = React.useContext(UserDataContext);
 
@@ -107,31 +110,16 @@ export default function DashboardPage(props: PageProps) {
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
-  // console.log(Object.keys(moduleIDToName).filter(
-  //   x => moduleIDToSectionMap[x] == null
-  // )); shouldn't be any ...
   let allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
 
-  const problemStatisticsIDs = moduleProgressIDs.reduce((acc, cur) => {
-    return [
-      ...acc,
-      ...modules.edges
-        .find(x => x.node.frontmatter.id === cur)
-        .node.problems.map(x => x.uniqueID),
-    ];
-  }, []);
-  // const allStarredProblemIDs = problemStatisticsIDs.filter(
-  //   x => problemIDMap[x].starred
-  // );
+  const problemStatisticsIDs = React.useMemo(() => {
+    return Object.keys(problemIDMap).filter(
+      problemID =>
+        moduleIDToSectionMap[problemIDMap[problemID].moduleId] ===
+        lastViewedSection
+    );
+  }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = getProblemsProgressInfo(problemStatisticsIDs);
-  // const allStarredProblemsProgressInfo = getProgressInfo(
-  //   allStarredProblemIDs,
-  //   userProgressOnProblems,
-  //   ['Solved'],
-  //   ['Solving'],
-  //   ['Skipped'],
-  //   ['Not Attempted']
-  // );
 
   const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
     return announcements.edges.map(node =>
@@ -171,13 +159,6 @@ export default function DashboardPage(props: PageProps) {
                     </span>
                   )}
                 </div>
-                {/*<div className="w-full md:w-1/2 text-center">*/}
-                {/*  {onlineUsers ? (*/}
-                {/*    <>*/}
-                {/*      {onlineUsers} user{onlineUsers == 1 ? '' : 's'} online.*/}
-                {/*    </>*/}
-                {/*  ) : null}*/}
-                {/*</div>*/}
               </div>
               <div className="flex overflow-x-auto">
                 <WelcomeBackBanner
@@ -209,16 +190,16 @@ export default function DashboardPage(props: PageProps) {
           <div className="max-w-7xl mx-auto mb-8">
             <Announcements announcements={parsedAnnouncements} />
           </div>
-          {/*<header>*/}
-          {/*  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">*/}
-          {/*    <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">*/}
-          {/*      Activity*/}
-          {/*    </h1>*/}
-          {/*  </div>*/}
-          {/*</header>*/}
-          {/*<div className="max-w-7xl mx-auto mb-8">*/}
-          {/*  <Activity />*/}
-          {/*</div>*/}
+          <header>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+                Activity
+              </h1>
+            </div>
+          </header>
+          <div className="max-w-7xl mx-auto mb-8">
+            <Activity />
+          </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
@@ -242,19 +223,6 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </Card>
-                {/*<div className="bg-white shadow sm:rounded-lg">*/}
-                {/*  <div className="px-4 py-5 sm:p-6">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">*/}
-                {/*      All Starred Problems*/}
-                {/*    </h3>*/}
-                {/*    <div className="mt-6">*/}
-                {/*      <DashboardProgress*/}
-                {/*        {...allStarredProblemsProgressInfo}*/}
-                {/*        total={Object.keys(allStarredProblemIDs).length}*/}
-                {/*      />*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
               </div>
               <div className="space-y-8">
                 <Card>
@@ -319,11 +287,19 @@ export const pageQuery = graphql`
             title
             id
           }
-          problems {
-            uniqueID
-            source
-            name
-            starred
+        }
+      }
+    }
+    problems: allProblemInfo {
+      edges {
+        node {
+          uniqueId
+          name
+          source
+          module {
+            frontmatter {
+              id
+            }
           }
         }
       }

@@ -1,0 +1,44 @@
+---
+id: cses-2132
+source: CSES
+title: Increasing Array II
+author: Dong Liu
+---
+
+**Time Complexity**: $\mathcal O(N\log N)$
+
+This problem is similar to
+[CF 713C](https://codeforces.com/contest/713/problem/C) except that we're
+supposed to create a **non-decreasing array**.
+
+Here is [zscoder's tutorial](https://codeforces.com/blog/entry/47821).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <stdio.h>
+#include <queue>
+using namespace std;
+
+int n, t;
+long long ans = 0;
+priority_queue<int> Q;
+
+int main() {
+	scanf("%d", &n);
+	for(int i=0; i<n; i++) {
+		scanf("%d", &t);
+		Q.push(t);
+		ans += Q.top() - t;
+		Q.pop(); Q.push(t);
+	}
+	printf("%lld", ans);
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

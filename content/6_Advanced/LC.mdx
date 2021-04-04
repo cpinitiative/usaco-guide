@@ -9,119 +9,6 @@ prerequisites:
 frequency: 1
 ---
 
-
-
-export const problems = {
-	sample: [
-		new Problem(
-			'YS',
-			'Line Add Get Min',
-			'line_add_get_min',
-			'Normal',
-			false,
-			[],
-			''
-		),
-	],
-	sample_cht: [
-		new Problem(
-			'CEOI',
-			'2017 - Building Bridges',
-			'https://oj.uz/problem/view/CEOI17_building',
-			'Normal',
-			false,
-			['DP', 'convex'],
-			'@Later'
-		),
-	],
-	half: [
-		new Problem(
-			'Kattis',
-			'Marshland Rescues',
-			'https://maps19.kattis.com/problems/marshlandrescues',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'JOI',
-			'2017 - Dragon 2',
-			'https://oj.uz/problem/view/JOI17_dragon2',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'Balkan OI',
-			'2011 - 2circles',
-			'https://oj.uz/problem/view/balkan11_2circles',
-			'Very Hard',
-			false,
-			['Geometry', 'Binary Search'],
-			'http://boi2011.ro/resurse/tasks/2circles-sol.pdf'
-		),
-	],
-	lc_probs: [
-		new Problem(
-			'YS',
-			'Segment Add Get Min',
-			'segment_add_get_min',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'2014 - Supercomputer',
-			'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
-			'Normal',
-			false,
-			['DP', 'convex'],
-			''
-		),
-		new Problem(
-			'CEOI',
-			'2009 - Harbingers',
-			'https://oj.uz/problem/view/CEOI09_harbingers',
-			'Hard',
-			false,
-			['DP', 'convex'],
-			'http://infosb.net/ceoi2009/tasks/solutions.doc'
-		),
-		new Problem(
-			'FHC',
-			'Log Drivin\' Hirin',
-			'2020/round-2/problems/D',
-			'Hard',
-			false,
-			['DP', 'convex'],
-			''
-		),
-		new Problem(
-			'AC',
-			'Contest with Drinks Hard',
-			'contests/arc066/tasks/arc066_d',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'TLX',
-			'Mall & Transportation',
-			'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem('Old Gold', 'Fencing the Herd', '534', 'Hard', false, [], ''),
-	],
-};
-
 ## Half-Plane Intersection
 
 <Resources>
@@ -143,11 +30,11 @@ export const problems = {
 
 <IncompleteSection>Example problem + implementation?</IncompleteSection>
 
-<Problems problems={problems.half} />
+<Problems problems="half" />
 
 ## LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
 
-<Problems problems={problems.sample} />
+<Problems problems="sample" />
 
 <Resources>
 	<Resource
@@ -178,17 +65,22 @@ export const problems = {
 
 ### Example Problem
 
-<FocusProblem problem={problems.sample_cht[0]} />
+<FocusProblem problem="sample_cht" />
 
 #### Analysis
 
-Instead of focusing on the pillars that should be destroyed, let's instead focus on the pillars that remain.
+Instead of focusing on the pillars that should be destroyed, let's instead focus
+on the pillars that remain.
 
-The total cost consists of the cost due to height differences plus the cost of destroying unused pillars. The latter cost is equal to the cost to destroy all pillars minus the cost to destroy the remaining pillars.
+The total cost consists of the cost due to height differences plus the cost of
+destroying unused pillars. The latter cost is equal to the cost to destroy all
+pillars minus the cost to destroy the remaining pillars.
 
-Since the cost to destroy all pillars is constant, we can thus turn the problem into one about building pillars instead of destroying them!
+Since the cost to destroy all pillars is constant, we can thus turn the problem
+into one about building pillars instead of destroying them!
 
-From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to build the bridge so that the last build pillar is pillar $i$.
+From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to
+build the bridge so that the last build pillar is pillar $i$.
 
 $dp[1] = -w_1$ and the following recurrence holds:
 
@@ -205,15 +97,18 @@ $$
 dp[j] + h_j^2 - 2h_ih_j
 $$
 
-effectively describes a linear function $y = mx + c$, where $m = -2h_j$, $x = h_i$, and $c = dp[j] + h_j^2$
+effectively describes a linear function $y = mx + c$, where $m = -2h_j$,
+$x = h_i$, and $c = dp[j] + h_j^2$
 
 This means that we can use CHT to compute $dp[i]$ efficiently!
 
-However, since $m$ is not monotonic, we can't use linear CHT using a deque, so we must settle with $\mathcal{O}(N \log N)$.
+However, since $m$ is not monotonic, we can't use linear CHT using a deque, so
+we must settle with $\mathcal{O}(N \log N)$.
 
 <Spoiler title="Code">
 
-I implemented CHT using a `std::set` here, but other implementations using things like the Li-Chao tree should work similarly.
+I implemented CHT using a `std::set` here, but other implementations using
+things like the Li-Chao tree should work similarly.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -221,88 +116,88 @@ typedef long long ll;
 using namespace std;
 
 struct Line {
-    bool type;
-    double x;
-    ll m, c;
+	bool type;
+	double x;
+	ll m, c;
 };
 
 bool operator<(Line l1, Line l2) {
-    if (l1.type || l2.type) return l1.x < l2.x;
-    return l1.m > l2.m;
+	if (l1.type || l2.type) return l1.x < l2.x;
+	return l1.m > l2.m;
 }
 
 set<Line> cht;
 ll h[100001], w[100001], tot = 0, dp[100001];
 
 bool has_prev(set<Line>::iterator it) {
-    return it != cht.begin();
+	return it != cht.begin();
 }
 bool has_next(set<Line>::iterator it) {
-    return it != cht.end() && next(it) != cht.end();
+	return it != cht.end() && next(it) != cht.end();
 }
 
 double intersect(set<Line>::iterator l1, set<Line>::iterator l2) {
-    return (double)(l1->c - l2->c) / (l2->m - l1->m);
+	return (double)(l1->c - l2->c) / (l2->m - l1->m);
 }
 
 void calc_x(set<Line>::iterator it) {
-    if (has_prev(it)) {
-        Line l = *it;
-        l.x = intersect(prev(it), it);
-        cht.insert(cht.erase(it), l);
-    }
+	if (has_prev(it)) {
+		Line l = *it;
+		l.x = intersect(prev(it), it);
+		cht.insert(cht.erase(it), l);
+	}
 }
 
 bool bad(set<Line>::iterator it) {
-    if (has_next(it) && next(it)->c <= it->c) return true;
-    return (has_prev(it) && has_next(it) &&
-            intersect(prev(it), next(it)) <= intersect(prev(it), it));
+	if (has_next(it) && next(it)->c <= it->c) return true;
+	return (has_prev(it) && has_next(it) &&
+			intersect(prev(it), next(it)) <= intersect(prev(it), it));
 }
 
 void add_line(ll m, ll c) {
-    set<Line>::iterator it;
+	set<Line>::iterator it;
 
-    it = cht.lower_bound({0, 0, m, c});
-    if (it != cht.end() && it->m == m) {
-        if (it->c <= c) return;
+	it = cht.lower_bound({0, 0, m, c});
+	if (it != cht.end() && it->m == m) {
+		if (it->c <= c) return;
 		cht.erase(it);
-    }
+	}
 
-    it = cht.insert({0, 0, m, c}).first;
-    if (bad(it)) cht.erase(it);
-    else {
-        while (has_prev(it) && bad(prev(it))) cht.erase(prev(it));
-        while (has_next(it) && bad(next(it))) cht.erase(next(it));
+	it = cht.insert({0, 0, m, c}).first;
+	if (bad(it)) cht.erase(it);
+	else {
+		while (has_prev(it) && bad(prev(it))) cht.erase(prev(it));
+		while (has_next(it) && bad(next(it))) cht.erase(next(it));
 
-        if (has_next(it)) calc_x(next(it));
-        calc_x(it);
-    }
+		if (has_next(it)) calc_x(next(it));
+		calc_x(it);
+	}
 }
 
 ll query(ll h) {
-    Line l = *prev(cht.upper_bound({1, (double)h, 0, 0}));
-    return l.m * h + l.c;
+	Line l = *prev(cht.upper_bound({1, (double)h, 0, 0}));
+	return l.m * h + l.c;
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    int n;
-    cin >> n;
-    for (int i = 1; i <= n; i++) cin >> h[i];
-    for (int i = 1; i <= n; i++) {
-        cin >> w[i];
-        tot += w[i];
-    }
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) cin >> h[i];
+	for (int i = 1; i <= n; i++) {
+		cin >> w[i];
+		tot += w[i];
+	}
 
-    dp[1] = -w[1];
-    for (int i = 2; i <= n; i++) {
-        add_line(-2 * h[i - 1], dp[i - 1] + h[i - 1] * h[i - 1]);
-        dp[i] = query(h[i]) - w[i] + h[i] * h[i];
-    }
+	dp[1] = -w[1];
+	for (int i = 2; i <= n; i++) {
+		add_line(-2 * h[i - 1], dp[i - 1] + h[i - 1] * h[i - 1]);
+		dp[i] = query(h[i]) - w[i] + h[i] * h[i];
+	}
 
-    cout << tot + dp[n];
-    return 0;
+	cout << tot + dp[n];
+	return 0;
 }
 ```
 
@@ -310,4 +205,4 @@ int main() {
 
 ## Problems
 
-<Problems problems={problems.lc_probs} />
+<Problems problems="lc_probs" />

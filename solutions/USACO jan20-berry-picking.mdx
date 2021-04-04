@@ -1,0 +1,215 @@
+---
+id: usaco-990
+source: USACO Silver 2020 January
+title: Berry Picking
+author: Qi Wang (Java), Daniel Suh (C++)
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
+
+**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+//C++ Solution by Daniel Suh
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+
+#define mpa make_pair
+#define pb push_back
+#define ins insert
+#define f first
+#define s second
+#define all(x) x.begin(), x.end()
+#define nl "\n"
+
+void fileIO(string filename) {
+	freopen((filename + ".in").c_str(), "r", stdin);
+	freopen((filename + ".out").c_str(), "w", stdout);
+}
+
+int MOD = 1;
+
+bool cmp(int &a, int &b) {
+	//Sorts by the max mod, so Bessie can get the max amount of leftovers
+	return (a % MOD) > (b % MOD);
+}
+
+void solve() {
+	int N, K;
+	cin >> N >> K;
+	vector<int> A(N);
+	int maxD = 0;
+	for(int i = 0; i < N; i++) {
+		cin >> A[i];
+		maxD = max(maxD, A[i]);
+	}
+	int mx = 0;
+	for(int i = 1; i <= maxD; i++) {
+		int amount = 0;
+		//For loop calculates how many groups of "i" berries can be put into a basket
+		for(int j = 0; j < N; j++) {
+			amount += A[j] / i;
+		}
+		//If the amount is not enough for K / 2 baskets, it is not valid
+		if(amount < K / 2) {
+			continue;
+		}
+		if(amount >= K) {
+			//If there is greater than or equal to "i" sections for both Bessie and Ellie, then Bessie can collect (K / 2) * i berries
+			mx = max(mx, (K / 2) * i);
+			continue;
+		}
+		MOD = i;
+		sort(all(A), cmp);
+		//Gives the maximum amount of leftovers to Bessie
+		int cur = (amount - K / 2) * i;
+		for(int j = 0; j < N && j + amount < K; j++) {
+			cur += A[j] % i;
+		}
+		mx = max(mx, cur);
+	}
+	cout << mx << nl;
+}
+
+int main() {
+	ios::sync_with_stdio(false); cin.tie(nullptr);
+	fileIO("berries");
+
+	solve();
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+//Created by Qi Wang
+import java.util.*;
+import java.io.*;
+
+public class berries {
+	static int N, K;
+	static int[] B;
+	public static void main(String[] args) throws IOException {
+		InputReader in = new InputReader("berries.in");
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("berries.out")));
+		N = in.nextInt(); K = in.nextInt(); B = new int[N];
+		int max = -1;
+		for (int i = 0; i < N; i++) {
+			B[i] = in.nextInt();
+			max = Math.max(max, B[i]);
+		}
+
+		int res = -1;
+		for (int i = 1; i <= max; i++) {
+			int count = 0;
+			int[] leftOver = new int[N];
+			for (int j = 0; j < N; j++) {
+				count += B[j]/i;
+				leftOver[j] = B[j]%i;
+			}
+
+			if(count >= K){
+				//If count can account for both Bessie and Elsie, then we can just allocate K/2 * i to Bessie
+				res = Math.max(res, K/2 * i);
+			}
+			else if(count >= K/2){
+				//If count can only account for Elsie and some of Bessie, then we can take from the leftovers.
+				int berries = 0;
+				berries += (count - K/2) * i;
+				Arrays.sort(leftOver);
+				int ix = leftOver.length-1;
+				for (int j = count - K/2; j < K/2; j++) {
+					if(ix < 0) continue;
+					berries += leftOver[ix--];
+				}
+
+				res = Math.max(res, berries);
+			}
+		}
+
+		out.println(res);
+		out.close();
+	}
+
+	private static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer tokenizer;
+
+		public InputReader() {
+			try {
+				reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+			} catch (Exception e) {
+				throw new NullPointerException("Could not create input stream");
+			}
+		}
+
+		public InputReader(String fileName) {
+			try {
+				reader = new BufferedReader(new FileReader(new File(fileName)), 32768);
+			} catch (Exception ex) {
+				throw new NullPointerException("Input file does not exist! Put it in the project folder.");
+			}
+			tokenizer = null;
+		}
+
+		public String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return tokenizer.nextToken();
+		}
+
+		public boolean hasNextInt() throws IOException { return reader.ready(); }
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		public double nextDouble() {
+			return Double.parseDouble(next());
+		}
+
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+
+		public char nextChar() {
+			return next().charAt(0);
+		}
+
+		/**
+		 * When you call next(), that entire line will be skipped.
+		 * No flushing buffers.
+		 * Doesn't work when you want to scan the remaining line.
+		 *
+		 * @return entire line
+		 */
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = reader.readLine();
+				tokenizer = null;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return str;
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

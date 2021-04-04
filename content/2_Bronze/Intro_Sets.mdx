@@ -2,59 +2,13 @@
 id: intro-sets
 title: Introduction to Sets & Maps
 author: Darren Yao, Benjamin Qi, Allen Li, DRGSH
-description: 'Sorting, and maintaining collections of distinct elements with ordered sets.'
+description:
+  'Maintaining collections of distinct elements in sorted order with ordered
+  sets.'
 frequency: 2
 prerequisites:
   - intro-sorting
 ---
-
-
-
-export const problems = {
-	dis: [
-		new Problem(
-			'CSES',
-			'Distinct Numbers',
-			'1621',
-			'Easy',
-			false,
-			[],
-			'cses-1621',
-			'ok'
-		),
-	],
-	ex: [new Problem('YS', 'Associative Array', 'associative_array', 'Easy')],
-	standard: [
-		new Problem(
-			'CSES',
-			'Sum of Two Values',
-			'1640',
-			'Easy',
-			false,
-			[],
-			'cses-1640'
-		),
-		new Problem(
-			'Bronze',
-			'Where Am I?',
-			'964',
-			'Easy',
-			true,
-			[],
-			'Store all substrings in a map of <string, count>, and then find the longest length such that no substring of that length appears twice.'
-		),
-		new Problem('Bronze', 'Not Last', '687', 'Normal', true, [], 'usaco-687'),
-		new Problem(
-			'Silver',
-			'Cities & States',
-			'667',
-			'Normal',
-			false,
-			[],
-			'usaco-667'
-		),
-	],
-};
 
 <Resources>
 	<Resource source="IUSACO" title="4.4 - Sets & Maps">
@@ -65,23 +19,30 @@ export const problems = {
 	</Resource>
 </Resources>
 
-Both Java and C++ contain two versions of sets and maps; one using **sorting** and the other using **hashing**. We'll only introduce the former version in this module.
+Both Java and C++ contain two versions of sets and maps; one using **sorting**
+and the other using **hashing**. We'll only introduce the former version in this
+module.
 
 ## Sets
 
-<FocusProblem problem={problems.dis[0]} />
+<FocusProblem problem="dis" />
 
-A **set** is a collection of objects that contains no duplicates. In ordered sets, the entries are sorted in order of key. Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in the set.
+A **set** is a collection of objects that contains no duplicates. In ordered
+sets, the entries are sorted in order of key. Insertions, deletions, and
+searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in
+the set.
 
 <LanguageSection>
 
 <CPPSection>
 
-The operations on a C++ [`set`](http://www.cplusplus.com/reference/set/set/) include:
+The operations on a C++ [`set`](http://www.cplusplus.com/reference/set/set/)
+include:
 
 - `insert`, which adds an element to the set if not already present.
 - `erase`, which deletes an element if it exists.
-- `count`, which returns `1` if the set contains the element and `0` if it doesn't.
+- `count`, which returns `1` if the set contains the element and `0` if it
+  doesn't.
 
 ```cpp
 set<int> s;
@@ -97,7 +58,7 @@ s.erase(0); // [2, 4]
 // if the element to be removed does not exist, nothing happens
 
 for (int element : s) {
-    cout << element << " ";
+	cout << element << " ";
 }
 cout << endl;
 // You can iterate through an set in sorted order
@@ -107,7 +68,9 @@ cout << endl;
 
 <JavaSection>
 
-The operations on a `TreeSet` are `add`, which adds an element to the set if not already present, `remove`, which deletes an element if it exists, and `contains`, which checks whether the set contains that element.
+The operations on a `TreeSet` are `add`, which adds an element to the set if not
+already present, `remove`, which deletes an element if it exists, and
+`contains`, which checks whether the set contains that element.
 
 ```java
 Set<Integer> set = new TreeSet<Integer>();
@@ -123,17 +86,20 @@ set.remove(0); // [2, 4]
 // if the element to be removed does not exist, nothing happens
 
 for(int element : set){
-  System.out.println(element);
+	System.out.println(element);
 }
 // You can iterate through an set in sorted order
 ```
+
 </JavaSection>
 
 <PySection>
 
 <Warning>
 
-Ordered sets and maps are **not** built into Python. The Python [OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict) stores keys in the same order as they were inserted in, **not** in sorted order.
+Ordered sets and maps are **not** built into Python. The Python
+[OrderedDict](https://docs.python.org/3/library/collections.html#collections.OrderedDict)
+stores keys in the same order as they were inserted in, **not** in sorted order.
 
 </Warning>
 
@@ -161,13 +127,18 @@ set.remove(0); # {4, 2}
 
 </LanguageSection>
 
+Additional functions that sets support are discussed in the
+[Silver module](/silver/intro-ordered).
+
 ### Solution - Distinct Numbers
 
 This problem asks us to calculate the number of distinct values in a given list.
 
 #### Method 1 - Set
 
-This is probably the easier of the two methods, but requires knowledge of sets. Because sets only store one copy of each value, we can insert all the numbers into a set, and then print out the size of the set.
+This is probably the easier of the two methods, but requires knowledge of sets.
+Because sets only store one copy of each value, we can insert all the numbers
+into a set, and then print out the size of the set.
 
 <LanguageSection>
 
@@ -180,18 +151,18 @@ using namespace std;
 
 int main() {
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    set<int> distinctNumbers;
-    for (int i = 0; i < n; i++) {
-        int number; cin >> number;
-        distinctNumbers.insert(number);
-    }
+	set<int> distinctNumbers;
+	for (int i = 0; i < n; i++) {
+		int number; cin >> number;
+		distinctNumbers.insert(number);
+	}
 
-    cout << distinctNumbers.size() << endl;
+	cout << distinctNumbers.size() << endl;
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -235,7 +206,8 @@ distinct_nums = set(nums)
 print(len(distinct_nums))
 ```
 
-We can do this more efficiently by skipping the creation of the list, and use a set comprehension directly:
+We can do this more efficiently by skipping the creation of the list, and use a
+set comprehension directly:
 
 ```py
 n = int(input()) # unused
@@ -247,100 +219,24 @@ print(len(distinct_nums))
 
 </LanguageSection>
 
-#### Method 2 - Sorting the Array
+#### Method 2 - Sorting
 
-This problem is also solvable without sets. Sort a vector containing all the numbers. The answer is the number of times two adjacent numbers are not equal; more formally, the number of times $a_i \neq a_{i + 1}$, plus one.
-
-<LanguageSection>
-	
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-int main() {
-
-    int n;
-    cin >> n;
-
-    int A[n];
-    for (int i = 0; i < n; ++i) {
-        cin >> A[i];
-    }
-
-    sort(A, A+n);
-
-    int answer = 1;
-
-    for (int i = 0; i < n - 1; ++i) {
-        if (A[i] != A[i + 1]) {
-            answer++;
-        }
-    }
-
-    cout << answer << endl;
-
-    return 0;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class DistinctNumbers {
-
-   public static void main(String[] args) throws IOException {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      int n = Integer.parseInt(br.readLine());
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      int[] arr = new int[n];
-      for (int i = 0; i < n; i++) {
-         arr[i] = Integer.parseInt(st.nextToken());
-      }
-      Arrays.sort(arr);
-      int ans = 1;
-      for (int i = 1; i < n; i++){
-         if(arr[i] != arr[i-1]){
-            ans++;
-         }  
-      }
-      System.out.println(ans);
-   }
-}
-```
-
-</JavaSection>
-
-<PySection>
-
-```py
-n = int(input())
-arr = sorted([int(x) for x in input().split()])
-print(1+sum(a != b for a, b in zip(arr, arr[1:]))
-```
-
-</PySection>
-
-</LanguageSection>
+Check out the [sorting solution](/solutions/cses-1621).
 
 ## Maps
 
-<FocusProblem problem={problems.ex[0]} />
+<FocusProblem problem="ex" />
 
-A **map** is a set of ordered pairs, each containing a **key** and a **value**. In a map, all keys are required to be unique, but values can be repeated. Maps have three primary methods:
+A **map** is a set of ordered pairs, each containing a **key** and a **value**.
+In a map, all keys are required to be unique, but values can be repeated. Maps
+have three primary methods:
 
 - one to add a specified key-value pairing
 - one to retrieve the value for a given key
 - one to remove a key-value pairing from the map
 
-Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is the number of elements in the map.
+Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is
+the number of elements in the map.
 
 <LanguageSection>
 
@@ -348,8 +244,12 @@ Insertions, deletions, and searches are all $\mathcal{O}(\log N)$, where $N$ is 
 
 In a C++ [`map`](http://www.cplusplus.com/reference/map/map/) `m`:
 
-- the `m[key] = value` operator assigns a value to a key and places the key and value pair into the map. The operator `m[key]` returns the value associated with the key. If the key is not present in the map, then `m[key]` is set to 0.
-- The `count(key)` method returns the number of times the key is in the map (which is either one or zero), and therefore checks whether a key exists in the map.
+- the `m[key] = value` operator assigns a value to a key and places the key and
+  value pair into the map. The operator `m[key]` returns the value associated
+  with the key. If the key is not present in the map, then `m[key]` is set to 0.
+- The `count(key)` method returns the number of times the key is in the map
+  (which is either one or zero), and therefore checks whether a key exists in
+  the map.
 - Lastly, `erase(key)` removes the map entry associated with the specified key.
 
 ```cpp
@@ -368,7 +268,12 @@ cout << m.count(1) << '\n' ; // 1
 
 <JavaSection>
 
-In a `TreeMap`, the `put(key, value)` method assigns a value to a key and places the key and value pair into the map. The `get(key)` method returns the value associated with the key. The `containsKey(key)` method checks whether a key exists in the map. Lastly, `remove(key)` removes the map entry associated with the specified key. All of these operations are $\mathcal{O}(1)$, but again, due to the hashing, this has a high constant factor.
+In a `TreeMap`, the `put(key, value)` method assigns a value to a key and places
+the key and value pair into the map. The `get(key)` method returns the value
+associated with the key. The `containsKey(key)` method checks whether a key
+exists in the map. Lastly, `remove(key)` removes the map entry associated with
+the specified key. All of these operations are $\mathcal{O}(1)$, but again, due
+to the hashing, this has a high constant factor.
 
 ```java
 Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
@@ -385,7 +290,8 @@ System.out.println(map.containsKey(1)); // true
 
 <PySection>
 
-Colloquially, maps are referred to as **dicts** in python. They act as hash maps, so they actually have $\mathcal{O}(1)$ insertion, deletion, and searches.
+Colloquially, maps are referred to as **dicts** in python. They act as hash
+maps, so they actually have $\mathcal{O}(1)$ insertion, deletion, and searches.
 
 ```py
 d = {}
@@ -425,7 +331,9 @@ for (auto x : m) {
 */
 ```
 
-The map stores pairs in the form `{key, value}`. The `auto` keyword suffices to iterate over any type of pair. You can use these pairs normally, as introduced in [this module](/bronze/intro-ds#pairs--tuples).
+The map stores pairs in the form `{key, value}`. The `auto` keyword suffices to
+iterate over any type of pair. You can use these pairs normally, as introduced
+in [this module](/bronze/intro-ds#pairs--tuples).
 
 Additionally, you can pass by reference when iterating over a map, like this:
 
@@ -453,9 +361,10 @@ This allows you to modify the values of the pairs stored in the map.
 <JavaSection>
 
 To iterate over maps, you can use a `for` loop over the keys.
+
 ```java
 for (int k : m.keySet()){
-    System.out.println(k + " " + m.get(k));
+	System.out.println(k + " " + m.get(k));
 }
 ```
 
@@ -463,27 +372,28 @@ for (int k : m.keySet()){
 
 <PySection>
 
-To iterate over `dict`s, there are three options. 
-Dicts will be returned in the same order of insertion in [Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+To iterate over `dict`s, there are three options. Dicts will be returned in the
+same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
 You can iterate over the keys:
 
 ```py
 for key in d:
-    print(key)
+	print(key)
 ```
 
 You can iterate over the values:
 
 ```py
 for value in d.values():
-    print(value)
+	print(value)
 ```
 
 You can iterate over the key-value pairs:
 
 ```py
 for key, value in d.items():
-    print(key, value)
+	print(key, value)
 ```
 
 </PySection>
@@ -492,13 +402,16 @@ for key, value in d.items():
 
 ### Inserting / Deleting Keys While Iterating
 
-While you are free to change the *values* in a map when iterating over it (as demonstrated above), be careful about inserting and deleting keys while iterating. 
+While you are free to change the _values_ in a map when iterating over it (as
+demonstrated above), be careful about inserting and deleting keys while
+iterating.
 
 <LanguageSection>
 
 <PySection>
 
-This code will give a runtime error (although similar code *will* create a `map` with 11 entries in C++):
+This code will give a runtime error (although similar code _will_ create a `map`
+with 11 entries in C++):
 
 ```py
 def iterate_insert():
@@ -509,7 +422,7 @@ def iterate_insert():
 			break
 		d[key] = 5
 		d[key+1] = 0
-	
+
 	print("ENTRIES:")
 	for key,value in d.items():
 		print(key,value)
@@ -526,17 +439,19 @@ Traceback (most recent call last):
 RuntimeError: dictionary changed size during iteration
 ```
 
-If you want to remove every third entry from a map, one way is to just create a new map.
+If you want to remove every third entry from a map, one way is to just create a
+new map.
 
 ```py
 d = {i: i for i in range(10)}
 d_new = dict(item for i, item in enumerate(d.items()) if i % 3 != 2)
-	
+
 print("new dict:", d_new)
 # new dict: {0: 0, 1: 1, 3: 3, 4: 4, 6: 6, 7: 7, 9: 9}
 ```
 
-Another is to maintain a list of all the keys you want to delete and remove them after the iteration finishes:
+Another is to maintain a list of all the keys you want to delete and remove them
+after the iteration finishes:
 
 ```py
 d = {i: i for i in range(10)}
@@ -550,7 +465,6 @@ print("new dict:", d)
 
 </PySection>
 
-
 <CPPSection>
 
 This code will work (adding keys while iterating over a map):
@@ -560,11 +474,11 @@ void iterate_insert() {
 	map<int,int> m; m[0] = 0; //starts with a single key
 	for (auto& p: m) { //adds keys in the loop until the key 10
 		if (p.f == 10) break;
-		p.s = 5; 
+		p.s = 5;
 		m[p.f+1] = 0;
 	}
 	cout << "ENTRIES:\n";
-	for (pair<int,int> p: m) 
+	for (pair<int,int> p: m)
 		cout << p.f << " " << p.s << "\n";
 }
 
@@ -584,7 +498,8 @@ ENTRIES:
 */
 ```
 
-However, consider the following code, which attempts to remove every third entry from a map.
+However, consider the following code, which attempts to remove every third entry
+from a map.
 
 ```cpp
 void iterate_remove_bad() {
@@ -596,7 +511,7 @@ void iterate_remove_bad() {
 		if (cnt%3 == 0) m.erase(it);
 	}
 	cout << "REMAINING ENTRIES:\n";
-	for (pair<int,int> p: m) 
+	for (pair<int,int> p: m)
 		cout << p.f << " " << p.s << "\n";
 }
 
@@ -624,11 +539,22 @@ REMAINING ENTRIES:
 */
 ```
 
-However, we would expect the keys 2, 5, and 8 to be removed from the map, but this is not the case. 2 is correctly removed, but the next key removed is 4, not 5! And it seems that some keys are appearing more than once during the iteration. 
+However, we would expect the keys 2, 5, and 8 to be removed from the map, but
+this is not the case. 2 is correctly removed, but the next key removed is 4, not
+5! And it seems that some keys are appearing more than once during the
+iteration.
 
-As the documentation for [`erase`](http://www.cplusplus.com/reference/map/map/erase/) mentions, "iterators, pointers and references referring to elements removed by the function are invalidated." So incrementing `it` after `it` has been erased from the map might not produce the intended result. If you're lucky, this will produce a segmentation fault. Unfortunately, sometimes (as in this case) the code will run without appearing to produce an error.
+As the documentation for
+[`erase`](http://www.cplusplus.com/reference/map/map/erase/) mentions,
+"iterators, pointers and references referring to elements removed by the
+function are invalidated." So incrementing `it` after `it` has been erased from
+the map might not produce the intended result. If you're lucky, this will
+produce a segmentation fault. Unfortunately, sometimes (as in this case) the
+code will run without appearing to produce an error.
 
-If we compile using [`-D_GLIBCXX_DEBUG`](/general/debugging/#-d_glibcxx_debug) and run the above, then
+If we compile using
+[`-D_GLIBCXX_DEBUG`](/general/debugging-lang/#-d_glibcxx_debug) and run the
+above, then
 
 ```
 g++ -D_GLIBCXX_DEBUG whoops.cpp -o whoops && ./whoops
@@ -642,10 +568,10 @@ CURRENT KEY: 1
 CURRENT KEY: 2
 /usr/local/Cellar/gcc/10.1.0/include/c++/10.1.0/debug/safe_iterator.h:328:
 In function:
-    __gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>& 
-    __gnu_debug::_Safe_iterator<_Iterator, _Sequence, 
-    _Category>::operator++() [with _Iterator = 
-    std::_Rb_tree_iterator<std::pair<const int, int> >; _Sequence = 
+    __gnu_debug::_Safe_iterator<_Iterator, _Sequence, _Category>&
+    __gnu_debug::_Safe_iterator<_Iterator, _Sequence,
+    _Category>::operator++() [with _Iterator =
+    std::_Rb_tree_iterator<std::pair<const int, int> >; _Sequence =
     std::__debug::map<int, int>; _Category = std::forward_iterator_tag]
 
 Error: attempt to increment a singular iterator.
@@ -659,11 +585,16 @@ Objects involved in the operation:
 zsh: abort      ./whoops
 ```
 
-Similarly, in [Java](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/Map.html),
+Similarly, in
+[Java](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/Map.html),
 
-> If the map is modified while an iteration over the collection is in progress (except through the iterator's own remove operation), the results of the iteration are undefined. 
+> If the map is modified while an iteration over the collection is in progress
+> (except through the iterator's own remove operation), the results of the
+> iteration are undefined.
 
-As suggested by [this](https://stackoverflow.com/questions/8234779/how-to-remove-from-a-map-while-iterating-it/39719450#39719450) StackOverflow post, the following code produces the intended results.
+As suggested by
+[this](https://stackoverflow.com/questions/8234779/how-to-remove-from-a-map-while-iterating-it/39719450#39719450)
+StackOverflow post, the following code produces the intended results.
 
 ```cpp
 void iterate_remove_ok() {
@@ -678,7 +609,7 @@ void iterate_remove_ok() {
 		}
 	}
 	cout << "REMAINING ENTRIES:\n";
-	for (pair<int,int> p: m) 
+	for (pair<int,int> p: m)
 		cout << p.f << " " << p.s << "\n";
 }
 
@@ -716,7 +647,7 @@ void iterate_remove_ok_2() {
 	}
 	swap(m,M);
 	cout << "REMAINING ENTRIES:\n";
-	for (pair<int,int> p: m) 
+	for (pair<int,int> p: m)
 		cout << p.f << " " << p.s << "\n";
 }
 
@@ -736,7 +667,10 @@ REMAINING ENTRIES:
 
 <JavaSection>
 
-Modifying a Collection (`Set`, `Map`, etc.) in the middle of a for-each loop is unlikely to work, as it will probably cause a [ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html). See the following snippet for an example:
+Modifying a Collection (`Set`, `Map`, etc.) in the middle of a for-each loop is
+unlikely to work, as it will probably cause a
+[ConcurrentModificationException](https://docs.oracle.com/javase/7/docs/api/java/util/ConcurrentModificationException.html).
+See the following snippet for an example:
 
 ```java
 void iterate_remove_set_BAD() {
@@ -748,7 +682,8 @@ void iterate_remove_set_BAD() {
 }
 ```
 
-One work-around is to use `Iterator` and the `.remove()` method to remove elements while looping over them, like in the next code snippet:
+One work-around is to use `Iterator` and the `.remove()` method to remove
+elements while looping over them, like in the next code snippet:
 
 ```java
 void iterate_remove_set() {
@@ -768,15 +703,21 @@ void iterate_remove_set() {
 	for(Integer a : s) {
 		System.out.println(a);
 	}
-}	
+}
 
 /*
 ENTRIES:
 1
- */
+*/
 ```
 
-However, `Iterator` is not commonly seen in Java, so the best option (in most cases) if you want to remove/insert mutiple elements at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should put all the elements you want to remove (or add) in a new Collection, and then use that new Collection as the parameter of the `.addAll(c)` or `.removeAll(c)` method that you call on your original Collection. See the following code snippet for an example (it works equivalently to the code above):
+However, `Iterator` is not commonly seen in Java, so the best option (in most
+cases) if you want to remove/insert mutiple elements at once is to use your
+Container's `.addAll(c)` or `.removeAll(c)` methods. That means that you should
+put all the elements you want to remove (or add) in a new Collection, and then
+use that new Collection as the parameter of the `.addAll(c)` or `.removeAll(c)`
+method that you call on your original Collection. See the following code snippet
+for an example (it works equivalently to the code above):
 
 ```java
 void iterate_remove_set_good() {
@@ -800,16 +741,16 @@ void iterate_remove_set_good() {
 /*
 ENTRIES:
 1
- */
+*/
 ```
 
 </JavaSection>
 
 </LanguageSection>
 
-
 ## Problems
 
-Some of these problems can be solved by sorting alone, though sets or maps could make their implementation easier.
+Some of these problems can be solved by sorting alone, though sets or maps could
+make their implementation easier.
 
-<Problems problems={problems.standard} />
+<Problems problems="standard" />

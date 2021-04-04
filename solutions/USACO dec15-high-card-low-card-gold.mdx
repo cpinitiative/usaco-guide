@@ -1,0 +1,107 @@
+---
+id: usaco-573
+source: USACO Gold 2015 December
+title: High Card Low Card (Gold)
+author: Qi Wang
+---
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+[Official Analysis](http://www.usaco.org/current/data/sol_cardgame_gold_dec15.html)
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class highcardgold {
+	static boolean[] C;
+	static List<Integer> B = new ArrayList<>();
+	static List<Integer> F = new ArrayList<>();
+	static List<Integer> S = new ArrayList<>();
+	static int N;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("cardgame");
+		N = io.nextInt();
+
+		C = new boolean[2*N+1];
+
+		for (int i = 0; i < N; i++) {
+			int c = io.nextInt();
+			C[c] = true;
+			if(i < N/2)
+				F.add(c); //First Half
+			else
+				S.add(c); //Second Half
+		}
+
+		for (int i = 1; i < 2 * N + 1; i++) {
+			if(!C[i]) B.add(i); //Bessie's cards
+		}
+
+		// Sort cards (B is already sorted)
+		Collections.sort(F);
+		Collections.sort(S);
+
+		int ix = B.size()-1;
+		int score = 0;
+		for (int i = F.size()-1; i >= 0; i--) {
+			if(F.get(i) < B.get(ix)){
+				score++;
+				ix--;
+			}
+		}
+
+		ix = 0;
+		for (int i = 0; i < S.size(); i++) {
+			if(B.get(ix) < S.get(i)){
+				ix++;
+				score++;
+			}
+		}
+
+		io.println(score);
+		io.close();
+	}
+
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in,System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName+".out"));
+			r = new BufferedReader(new FileReader(problemName+".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>

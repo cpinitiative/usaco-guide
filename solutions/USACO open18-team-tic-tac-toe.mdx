@@ -2,37 +2,58 @@
 id: usaco-831
 source: USACO Bronze 2018 Open
 title: Team Tic Tac Toe
-author: Jesse Choe, Benjamin Qi
+author: Jesse Choe, Kevin Sheng, Benjamin Qi
 ---
 
+## Solution 1
+
 [Official Analysis](http://www.usaco.org/current/data/sol_tttt_bronze_open18.html)
+
+## Solution 2 - Using Sets
 
 <LanguageSection>
 <CPPSection>
 
-## C++ Implementation
-
-Here's a short solution with `set`s:
-
 ```cpp
-vs board(3);
-set<set<char>> winners[4];
+#include <bits/stdc++.h>  // may the c++ gods forgive me
 
-void ins(vpi v) {
-	set<char> s;
-	trav(p,v) s.ins(board[p.f][p.s]);
-	winners[sz(s)].ins(s);
+using namespace std;
+
+constexpr int WIDTH = 3;
+
+vector<string> board(WIDTH);
+set<set<char>> winners[WIDTH + 1];
+
+void insert(vector<pair<int, int>> coordinates) {
+	set<char> contained;
+	for (const pair<int, int>& p: coordinates) {
+		contained.insert(board[p.first][p.second]);
+	}
+	// add the amount of cows who contributed to this to the winners count
+	winners[contained.size()].insert(contained);
 }
 
+// 2018 usopen bronze
 int main() {
-	setIO("tttt");
-	re(board);
-	F0R(i,3) ins({{i,0},{i,1},{i,2}}); // insert rows
-	F0R(i,3) ins({{0,i},{1,i},{2,i}}); // insert cols
-	ins({{0,0},{1,1},{2,2}}); // insert diagonals
-	ins({{2,0},{1,1},{0,2}});
-	ps(sz(winners[1]));
-	ps(sz(winners[2]));
+	ifstream read("tttt.in");
+	for (int r = 0; r < WIDTH; r++) {
+		read >> board[r];
+	}
+	// insert rows
+	for (int i = 0; i < WIDTH; i++) {
+		insert({{i, 0}, {i, 1}, {i, 2}});
+	}
+	// insert columns
+	for (int i = 0; i < WIDTH; i++) {
+		insert({{0, i}, {1, i}, {2, i}});
+	}
+	// insert the 2 diagonals
+	insert({{0, 0}, {1, 1}, {2, 2}});
+	insert({{2, 0}, {1, 1}, {0, 2}});
+
+	ofstream written("tttt.out");
+	written << winners[1].size() << endl;
+	written << winners[2].size() << endl;
 }
 ```
 

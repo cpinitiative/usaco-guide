@@ -1,7 +1,7 @@
 ---
 id: range-sweep
 title: 'Range Queries with Sweep Line'
-author: Benjamin Qi, Andi Qu
+author: Benjamin Qi, Andi Qu, Dong Liu
 prerequisites:
   - PURS
   - lis
@@ -9,59 +9,9 @@ description: 'Solving 2D grid problems using 1D range queries.'
 frequency: 2
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'CSES',
-			'Intersection Points',
-			'1740',
-			'Easy',
-			false,
-			undefined,
-			''
-		),
-		new Problem('Gold', 'Springboards', '995', 'Normal', false, [], ''),
-	],
-	sweep: [
-		new Problem(
-			'HE@HackerEarth',
-			'Twin Permutations',
-			'https://www.hackerearth.com/practice/data-structures/advanced-data-structures/fenwick-binary-indexed-trees/practice-problems/algorithm/mancunian-and-twin-permutations-d988930c/description/',
-			'Easy',
-			false,
-			undefined,
-			'Offline 2D queries can be done with a 1D data structure'
-		),
-		new Problem('Plat', 'Slingshot', '816', 'Normal', false, ['PURQ'], ''),
-		new Problem('CSES', 'Robot Path', '1742', 'Hard', false, ['PURQ'], ''),
-		new Problem('IZhO', 'Hedgehog Daniyar and Algorithms', 'https://oj.uz/problem/view/IZhO19_sortbooks', 'Hard', false, [],''),
-	],
-	numLIS: [
-		new Problem(
-			'Balkan OI',
-			'2011 - Trapezoid',
-			'https://oj.uz/problem/view/balkan11_trapezoid',
-			'Hard',
-			true,
-			['DP', 'BIT'],
-			'http://boi2011.ro/resurse/tasks/trapezoid-sol.pdf'
-		),
-		new Problem(
-			'COCI',
-			'2016 - Zoltan',
-			'https://oj.uz/problem/view/COCI16_zoltan',
-			'Hard',
-			true,
-			['DP', 'BIT'],
-			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2017/contest3_solutions/solutions.pdf'
-		),
-		new Problem('Plat', 'Sort It Out', '865', 'Very Hard', false, ['DP'], ''),
-	]
-};
+<FocusProblem problem="sample" />
 
-<FocusProblem problem={problems.sample[0]} />
-
-<FocusProblem problem={problems.sample[1]} />
+<FocusProblem problem="sample2" />
 
 ## Tutorial
 
@@ -69,39 +19,117 @@ export const problems = {
 
 ## Solution - Intersection Points
 
-<IncompleteSection />
+We can sweep from bottom to top (by the $y$ coordinate); storing two events for
+vertical segments (one for start and one for end) and one event for horizontal
+segments.
+
+We can use a Binary Indexed Tree to store the number of **active** vertical
+segments for each $x$ coordinate.
+
+Then, every time we encounter the start of a vertical segment, we increment the
+counter for $x$ in the BIT.
+
+Similarly, we decrement the counter for $x$ every time we see the end of a
+vertical segment.
+
+When we encounter a horizontal segment, we would query the number of active
+ranges in $[x_1, x_2]$ where $x_1$ is the lower $x$ coordinate and $x_2$ is the
+upper $x$ coordinate of the segment.
+
+Our answer would be the sum of all the queries.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int bit[2000005];
+
+void update(int i, int x) {
+	for (; i < 2000005; i += i & (-i))
+		bit[i] += x;
+}
+int query(int i) {
+	int sum = 0;
+	for (; i > 0; i -= i & (-i))
+		sum += bit[i];
+	return sum;
+}
+
+int n;
+vector<array<int, 4>> v;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+
+	cin >> n;
+	for (int i = 0, x1, y1, x2, y2; i < n; ++i) {
+		cin >> x1 >> y1 >> x2 >> y2;
+		if (y1 == y2)
+			v.push_back({y1, 2, x1, x2});
+		else {
+			v.push_back({y1, 1, x1, 1});
+			v.push_back({y2, 3, x1, 1});
+		}
+	}
+	sort(begin(v), end(v));
+
+	long long ans = 0;
+	for (auto x : v) {
+		x[2] += 1000001, x[3] += 1000001;
+		if (x[1] == 1)
+			update(x[2], 1);
+		else if (x[1] == 2)
+			ans += query(x[3]) - query(x[2] - 1);
+		else
+			update(x[2], -1);
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Solution - Springboards
 
 <IncompleteSection />
 
-The problem boils down to having a data structure that supports the following operations:
+The problem boils down to having a data structure that supports the following
+operations:
 
 1. Add a pair $(a,b)$.
-2. For any $x$, query the minimum value of $b$ over all pairs satisfying $a\le x$.
+2. For any $x$, query the minimum value of $b$ over all pairs satisfying
+   $a\le x$.
 
-The [other module](/adv/springboards) describes a simpler way of doing this, though it's probably more straightforward to do coordinate compression and use a min segtree. The latter approach is shown below.
+The [other module](/adv/springboards) describes a simpler way of doing this,
+though it's probably more straightforward to do coordinate compression and use a
+min segtree. The latter approach is shown below.
 
 ```cpp
 /**
  * Description: 1D point update, range query where \texttt{comb} is
  	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
  * Time: O(\log N)
- * Source: 
+ * Source:
 	* http://codeforces.com/blog/entry/18051
 	* KACTL
  * Verification: SPOJ Fenwick
  */
 
 template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return min(a,b); } 
+	const T ID = 0; T comb(T a, T b) { return min(a,b); }
 	int n; vector<T> seg;
 	void init(int _n) { n = _n; seg.assign(2*n,ID); }
 	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
 	void upd(int p, T val) { // set val at position p
 		ckmin(seg[p += n],val); for (p /= 2; p; p /= 2) pull(p); }
 	T query(int l, int r) {	// sum on interval [l, r]
-		T ra = ID, rb = ID; 
+		T ra = ID, rb = ID;
 		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
 			if (l&1) ra = comb(ra,seg[l++]);
 			if (r&1) rb = comb(seg[--r],rb);
@@ -124,7 +152,7 @@ int main() {
 	cin >> N >> P;
 	vector<pair<pair<int,int>,pair<int,int>>> ev;
 	for (int i = 0; i < P; ++i) {
-		pair<int,int> a,b; 
+		pair<int,int> a,b;
 		cin >> a.f >> a.s >> b.f >> b.s;
 		ev.push_back({a,{i,-1}}); // start point
 		ev.push_back({b,{i,1}}); // end point
@@ -148,8 +176,8 @@ int main() {
 
 ## Problems
 
-<Problems problems={problems.sweep} />
+<Problems problems="sweep" />
 
 Relating to LIS:
 
-<Problems problems={problems.numLIS} />
+<Problems problems="numLIS" />

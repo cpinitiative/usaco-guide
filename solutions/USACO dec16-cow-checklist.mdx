@@ -1,0 +1,90 @@
+---
+id: usaco-670
+source: USACO Gold 2016 December
+title: Cow Checklist
+author: Maggie Liu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_checklist_gold_dec16.html)
+
+**Time Complexity:** $\mathcal{O}(H \cdot G)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+int energy(pair<int, int> a, pair<int, int> b)
+{
+	int dx = a.first - b.first, dy = a.second - b.second;
+	return dx * dx + dy * dy;
+}
+
+int main()
+{
+	freopen("checklist.in", "r", stdin);
+	freopen("checklist.out", "w", stdout);
+	int h, g;
+	cin >> h >> g;
+	pair<int, int> hcows[1000], gcows[1000];
+	for (int i = 0; i < h; i++)
+	{
+		cin >> hcows[i].first >> hcows[i].second;
+	}
+	for (int i = 0; i < g; i++)
+	{
+		cin >> gcows[i].first >> gcows[i].second;
+	}
+	//dp[0][i][j] is min cost to visit i holsteins and j guernseys ending with holstein
+	//dp[1][i][j] is min cost to visit i holsteins and j guernseys ending with guernsey
+	long long dp[2][1001][1001];
+	for (int i = 0; i <= h; i++)
+	{
+		for (int j = 0; j <= g; j++)
+		{
+			dp[0][i][j] = 1e18;
+			dp[1][i][j] = 1e18;
+		}
+	}
+	//farmer john must start with the first holstein, so the cost is 0
+	dp[0][1][0] = 0;
+	int cost;
+	for (int i = 0; i <= h; i++)
+	{
+		for (int j = 0; j <= g; j++)
+		{
+			if (i > 0 && j > 0)
+			{
+				//go from gcows[j - 1] to hcows[i - 1]
+				cost = energy(hcows[i - 1], gcows[j - 1]);
+				dp[0][i][j] = min(dp[0][i][j], dp[1][i - 1][j] + cost);
+				//go from hcows[i - 1] to gcows[j - 1]
+				cost = energy(gcows[j - 1], hcows[i - 1]);
+				dp[1][i][j] = min(dp[1][i][j], dp[0][i][j - 1] + cost);
+			}
+			if (i > 1)
+			{
+				//go from hcows[i - 2] to hcows[i - 1]
+				cost = energy(hcows[i - 1], hcows[i - 2]);
+				dp[0][i][j] = min(dp[0][i][j], dp[0][i - 1][j] + cost);
+			}
+			if (j > 1)
+			{
+				//go from gcows[j - 2] to gcows[j - 1]
+				cost =  energy(gcows[j - 1], gcows[j - 2]);
+				dp[1][i][j] = min(dp[1][i][j], dp[1][i][j - 1] + cost);
+			}
+		}
+	}
+	cout << dp[0][h][g] << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

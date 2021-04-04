@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   Problem,
   PROBLEM_PROGRESS_OPTIONS,
+  ProblemInfo,
   ProblemProgress,
 } from '../../../models/problem';
 import { useContext, useRef, useState } from 'react';
@@ -20,7 +21,9 @@ const StyledTippy = styled(Tippy)`
 `;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
-  const [activeProgress, setActiveProgress] = useState<ProblemProgress>();
+  const [activeProgress, setActiveProgress] = useState<ProblemProgress>(
+    currentProgress
+  );
 
   const icon = (status: ProblemProgress, equal: Boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
@@ -41,9 +44,9 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
       ),
       Reviewing: (
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         />
       ),
       Skipped: (
@@ -108,7 +111,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           <span className={`absolute inset-y-0 left-0 flex items-center pl-3`}>
             {icon(progress, activeProgress === progress)}
           </span>
-          {/* 
+          {/*
           {progress === currentProgress && (
             <span
               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
@@ -134,7 +137,7 @@ export default function ProblemStatusCheckbox({
   problem,
   size = 'small',
 }: {
-  problem: Problem;
+  problem: ProblemInfo;
   size?: 'small' | 'large';
 }) {
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
@@ -158,7 +161,7 @@ export default function ProblemStatusCheckbox({
     setModuleProgress(markdownLayoutInfo.id, 'Practicing');
   };
   let status: ProblemProgress =
-    userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
+    userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
     Solving: 'bg-yellow-300 dark:bg-yellow-500',
@@ -178,11 +181,13 @@ export default function ProblemStatusCheckbox({
             onProgressSelected={progress => {
               // @ts-ignore
               tippyRef.current.hide();
-              setUserProgressOnProblems(problem, progress);
+              setUserProgressOnProblems(problem.uniqueId, progress);
               let solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
-              if (!solved(status) && solved(progress)) showConfetti();
+              if (!solved(status) && solved(progress)) {
+                showConfetti();
+              }
             }}
             currentProgress={status}
           />

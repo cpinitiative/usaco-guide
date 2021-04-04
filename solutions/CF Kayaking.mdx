@@ -1,0 +1,52 @@
+---
+id: cf-863B
+source: CF
+title: Kayaking
+author: Danh Ta Chi Thanh
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/54708)
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int N;
+	cin >> N;
+	N *= 2;
+	vector<int> W(N);
+	for (int& x : W) cin >> x;
+	sort(W.begin(), W.end());
+	int min_instability = 1e9;
+	for (int i = 0; i < N; ++i) {
+		for (int j = i + 1; j < N; ++j) {
+			vector<int> a;
+			for (int k = 0; k < N; ++k)
+				if (k != i && k!= j)
+					a.push_back(W[k]);
+			int total_instability = 0;
+			for (int k = 0; k < N - 2; k += 2)
+				total_instability += a[k + 1] - a[k];
+			min_instability = min(min_instability, total_instability);
+		}
+	}
+	cout << min_instability;
+	return 0;
+}
+
+```
+
+</CPPSection>
+
+</LanguageSection>

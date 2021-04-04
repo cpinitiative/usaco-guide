@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import Spoiler from './Spoiler';
 import { ProblemsList } from './ProblemsList/ProblemsList';
+import { DivisionList } from './ProblemsList/DivisionList/DivisionList';
 import { Resource, ResourcesList } from './ResourcesList';
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
@@ -18,6 +19,7 @@ import Optional from './Optional';
 import HTMLComponents from './HTMLComponents';
 import FocusProblem from './FocusProblem';
 import Youtube from './Youtube';
+import PrefixSumInteractive from './PrefixSumInteractive';
 
 export const components = {
   Spoiler,
@@ -27,6 +29,7 @@ export const components = {
   Problems: ProblemsList,
   FocusProblem,
   Resources: ResourcesList,
+  DivisionList,
   Resource,
   TextTooltip,
   LanguageSection,
@@ -36,6 +39,25 @@ export const components = {
   IncompleteSection,
   Asterisk,
   Youtube,
+  PrefixSumInteractive,
+  MATHDIV: props => {
+    return (
+      <div
+        className={props.className}
+        data-latex={`$$${props.latex}$$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
+  MATHSPAN: props => {
+    return (
+      <span
+        className={props.className}
+        data-latex={`$${props.latex}$`}
+        dangerouslySetInnerHTML={{ __html: props.children }}
+      />
+    );
+  },
 
   ...HTMLComponents,
 };

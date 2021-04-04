@@ -1,4 +1,6 @@
 import * as React from 'react';
+import TextTooltip from '../Tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
 
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
@@ -84,9 +86,9 @@ export default function DashboardProgress({
   );
 }
 
-const ProgressBarSmall = ({ text, green, yellow, blue }) => {
+const ProgressBarSmall = ({ className = null, text, green, yellow, blue }) => {
   return (
-    <div>
+    <div className={className}>
       <div className="inline-block">
         <div className="overflow-hidden h-2 text-xs flex items-center bg-gray-200 rounded-full w-24 dark:bg-gray-700">
           <div
@@ -103,12 +105,9 @@ const ProgressBarSmall = ({ text, green, yellow, blue }) => {
           />
         </div>
       </div>
+      {/*  text-gray-800 dark:text-dark-med-emphasis */}
       <div className="inline-block ml-1">
-        {text && (
-          <span className="text-sm font-semibold text-gray-800 dark:text-dark-med-emphasis">
-            &nbsp;{text}
-          </span>
-        )}
+        {text && <span className="text-sm font-semibold">&nbsp;{text}</span>}
       </div>
     </div>
   );
@@ -128,5 +127,34 @@ export function DashboardProgressSmall({
       yellow={total === 0 ? 0 : (inProgress / total) * 100}
       blue={total === 0 ? 0 : (skipped / total) * 100}
     />
+  );
+}
+
+export function UsacoTableProgress({ completed }) {
+  let green = completed * 100;
+  let yellow = 0;
+  let blue = 0;
+  if (green <= 95) {
+    yellow = green;
+    green = 0;
+  }
+  if (yellow <= 85) {
+    blue = yellow;
+    yellow = 0;
+  }
+  // ${Math.round(completed*1000)/10}%
+  return (
+    <Tooltip content={`${Math.round(completed * 1000) / 10}%`}>
+      {/* The span wrapper is needed for tippy to work */}
+      <span className="cursor-pointer">
+        <ProgressBarSmall
+          text={''}
+          green={green}
+          yellow={yellow}
+          blue={blue}
+          className="h-2 inline-flex"
+        />
+      </span>
+    </Tooltip>
   );
 }

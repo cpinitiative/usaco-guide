@@ -2,24 +2,25 @@
 id: intro-ds
 title: Introduction to Data Structures
 author: Darren Yao, Benjamin Qi, Nathan Wang, Abutalib Namazov, Allen Li
-description: 'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
+description:
+  'Introduces the concept of a data structure, (dynamic) arrays, pairs, tuples.'
 ---
-
-export const problems = {};
-
-<!--
-  new Problem("Silver", "Teleportation", "812", "Very Hard", false, [], ""),
- -->
 
 ## Data Structures
 
-A **data structure** determines how data is organized so that information can be used efficiently. Each data structure supports some operations efficiently, while other operations are either inefficient or not supported at all. Since different operations are supported by each data structure, you should carefully evaluate which data structure will work best for your particular problem.
+A **data structure** determines how data is organized so that information can be
+used efficiently. Each data structure supports some operations efficiently,
+while other operations are either inefficient or not supported at all. Since
+different operations are supported by each data structure, you should carefully
+evaluate which data structure will work best for your particular problem.
 
 <LanguageSection>
-
 <CPPSection>
 
-The C++ [standard library data structures](http://www.cplusplus.com/reference/stl/) are designed to store any type of data. We put the desired data type within the `<>` brackets when declaring the data structure, as follows:
+The C++
+[standard library data structures](http://www.cplusplus.com/reference/stl/) are
+designed to store any type of data. We put the desired data type within the `<>`
+brackets when declaring the data structure, as follows:
 
 ```cpp
 vector<string> v;
@@ -27,68 +28,278 @@ vector<string> v;
 
 This creates a `vector` structure that only stores objects of type `string`.
 
-For our examples below, we will primarily use the `int` data type, but note that you can use any data type including `string` and user-defined structures.
+For our examples below, we will primarily use the `int` data type, but note that
+you can use any data type including `string` and user-defined structures.
 
-Essentially, every standard library data structure supports the `size()` method, which returns the number of elements in the data structure, and the `empty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
-
-## Arrays
-
-<Warning>
-
-Technically, you can solve all Bronze problems without using anything from this module aside from arrays. So the rest of this module isn't strictly necessary for Bronze (although highly recommended).
-
-</Warning>
-
-<Resources>
-	<Resource
-		source="LCPP"
-		url="https://www.learncpp.com/cpp-tutorial/6-15-an-introduction-to-stdarray/"
-		title="6.15 - Intro to std::array"
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-You already know one of the simplest data structures: the **array**! In C++11, in addition to _normal arrays_, there exists an [`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For example, an `array` of `int`s can be initialized using the following line of code:
-
-```cpp
-array<int, 25> ar;
-```
-
-The array class supports the normal STL operations (such as `.empty()` or `.size()`) as well as the normal square-bracket access operator:
-
-```cpp
-ar[5] //access the element at the 5th index.
-```
-
-
-<LanguageSection>
-<CPPSection>
-
-In C++, arrays initialized locally using either the default syntax (i.e. `int arr[10];` ) or the array class are initialized to random numbers, because C++ doesn't have built-in memory management. In order to initialize an array to zero, you have several options:
-
- - Use a for loop (or nested for loops).
- - Declare the array globally.
- - Add braces at the end of the declaration (i.e. `int arr[10]{};` ). See [LearnCpp](https://www.learncpp.com/cpp-tutorial/62-arrays-part-ii/) for more information regarding this syntax.
- - Use a built-in function such as [`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/) or [`std::fill(arr, arr+10, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
-
-<Warning>
-
-Make sure you know what `memset` actually does before using it! `memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers, `memset(arr, -1, sizeof arr)` will set each element to $-1$, as you might expect. However, `memset(arr, 1, sizeof arr)` will set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $1$.
-
-</Warning>
+Essentially, every standard library data structure supports the `size()` method,
+which returns the number of elements in the data structure, and the `empty()`
+method, which returns `true` if the data structure is empty, and `false`
+otherwise.
 
 </CPPSection>
 <JavaSection />
 <PySection />
 </LanguageSection>
 
+<LanguageSection>
+<CPPSection>
+
+## Arrays
+
+<Warning>
+
+Technically, you can solve all Bronze problems without using anything from this
+module aside from arrays. So the rest of this module isn't strictly necessary
+for Bronze (although highly recommended).
+
+</Warning>
+
+<Resources>
+	<Resource
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/an-introduction-to-stdarray/"
+		title="9.22 - Intro to std::array"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+You already know one of the simplest data structures: the **array**! In C++11,
+in addition to _normal arrays_, there exists an
+[`array` class](http://www.cplusplus.com/reference/array/array/) in the STL. For
+example, an `array` of 25 `int`s can be initialized using the following line of
+code:
+
+```cpp
+array<int, 25> arr;
+```
+
+The array class supports the normal STL operations (such as `.empty()` or
+`.size()`) as well as the normal square-bracket access operator:
+
+```cpp
+arr[5] // accesses the element at the 5th index
+```
+
+In C++, arrays initialized locally using either the default syntax (i.e.
+`int arr[25];` ) or the array class are initialized to random numbers because
+C++ doesn't have built-in memory management. In order to initialize an array to
+zero, you have several options:
+
+- Use a for loop (or nested for loops).
+- Declare the array globally.
+- Declare the array with an empty initializer list (i.e. `int arr[25]{};` ) as
+  mentioned [here](https://www.learncpp.com/cpp-tutorial/arrays-part-ii/).
+- Use a built-in function such as
+  [`std::fill_n(arr, 25, 0)`](http://www.cplusplus.com/reference/algorithm/fill_n/)
+  or
+  [`std::fill(arr, arr+25, 0)`](http://www.cplusplus.com/reference/algorithm/fill/).
+
+<Warning>
+
+[`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/)
+will also zero-initialize an array. However, it's important to note that
+`memset` treats the value that is passed to it as an `unsigned char`. So for an
+array of 32-bit integers, `memset(arr, -1, sizeof arr)` will set each element to
+$-1$, as you might expect. On the other hand, `memset(arr, 1, sizeof arr)` will
+set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $1$.
+
+</Warning>
+
+## Dynamic Arrays
+
+<Resources>
+	<Resource source="IUSACO" title="4.1, 4.2 - Dynamic Arrays">
+		module is based off this
+	</Resource>
+	<Resource source="CPH" title="4.1 - Dynamic Arrays">
+		vectors, strings
+	</Resource>
+	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
+	<Resource
+		source="LCPP"
+		title="9.23 - Intro to std::vector"
+		url="https://www.learncpp.com/cpp-tutorial/an-introduction-to-stdvector/"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+Dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in
+C++) support all the functions that a normal array does, and can resize itself
+to accommodate more elements. In a dynamic array, we can also add and delete
+elements at the end in $\mathcal{O}(1)$ time.
+
+For example, the following code creates a dynamic array and adds the numbers $1$
+through $10$ to it:
+
+```cpp
+vector<int> v;
+for(int i = 1; i <= 10; i++){
+	v.push_back(i);
+}
+```
+
+`g++` will allow you to create an array of variable length:
+
+```cpp
+int n; cin >> n;
+int v[n];
+```
+
+However, variable-length arrays are
+[_not_ part of the C++ standard](https://stackoverflow.com/questions/1887097/why-arent-variable-length-arrays-part-of-the-c-standard).
+We recommend that you use a `vector` for this purpose instead:
+
+```cpp
+vector<int> v(n); // one way
+vector<int> v; v.resize(n); // another way
+```
+
+In array-based contest problems, we'll use one-, two-, and three-dimensional
+static arrays much of the time. However, we can also have dynamic arrays of
+dynamic arrays (e.g. `vector<vector<int>>`) static arrays of dynamic arrays
+(e.g. `array<vector<int>,5>`), dynamic arrays of static arrays (e.g.
+`vector<array<int,5>>`), and so on.
+
+<!-- Usually, the choice between a static array and a dynamic array is just personal preference. -->
+
+### Iterating
+
+<Resources>
+	<Resource source="CPH" title="4.4 - Working With Ranges">
+		{' '}
+	</Resource>
+	<Resource
+		source="CPP"
+		title="Reference - <iterator>"
+		url="https://www.cplusplus.com/reference/iterator/"
+	>
+		{' '}
+	</Resource>
+	<Resource
+		source="LCPP"
+		title="9.24 - Intro to Iterators"
+		url="https://www.learncpp.com/cpp-tutorial/introduction-to-iterators/"
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+One way to iterate through all elements of a static or dynamic array is to use a
+regular for loop.
+
+```cpp
+vector<int> v{1,7,4,5,2};
+for (int i = 0; i < int(size(v)); i++){
+	cout << v[i] << " ";
+}
+cout << endl;
+```
+
+We can also use **iterators**. An iterator allows you to traverse a container by
+pointing to an object within the container. However, they are **not** the same
+thing as pointers.
+
+For example, `v.begin()` or `begin(v)` returns an iterator pointing to the first
+element of the vector `v`. Apart from the standard way of traversing a vector
+(by treating it as an array), you can also use iterators:
+
+```cpp
+for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
+	cout << *it << " "; //prints the values in the vector using the iterator
+}
+```
+
+Here is another way to write this. `auto` (since C++11) automatically infers the
+type of an object:
+
+```cpp
+vector<int> v{1,7,4,5,2};
+for (auto it = begin(v); it != end(v); it = next(it)) {
+	cout << *it << " "; //prints the values in the vector using the iterator
+}
+```
+
+We can also use a for-each loop.
+
+```cpp
+for (int element : v) {
+	cout << element << " "; //prints the values in the vector
+}
+```
+
+### Inserting and Erasing
+
+Keep in mind that insertion and erasure in the middle of a `vector` are
+$\mathcal{O}(n)$.
+
+```cpp
+vector<int> v;
+v.push_back(2); // [2]
+v.push_back(3); // [2, 3]
+v.push_back(7); // [2, 3, 7]
+v.push_back(5); // [2, 3, 7, 5]
+v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
+v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+v.push_back(8); // [2, 7, 5, 8]
+v.erase(v.end()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is O(1).
+v.push_back(4); // [2, 7, 5, 4]
+v.push_back(4); // [2, 7, 5, 4, 4]
+v.push_back(9); // [2, 7, 5, 4, 4, 9]
+cout << v[2]; // 5
+v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
+// this erases the first three elements; O(n)
+```
+
+## Strings
+
+<Resources>
+	<Resource
+		source="LCPP"
+		title="8.1 - An introduction to std::string"
+		url="https://www.learncpp.com/cpp-tutorial/an-introduction-to-stdstring/"
+	>
+		Goes over the basics of strings
+	</Resource>
+	<Resource
+		source="CPP"
+		title="Reference - std::string"
+		url="http://www.cplusplus.com/reference/string/string/"
+	>
+		C++ Reference for std::string
+	</Resource>
+</Resources>
+
+You should be familiar with basic string manipulation techniques:
+
+- Reading in strings from standard input
+- Knowing how to use `getline` and `cin` together (more rare; refer to LCPP
+  resource above)
+- Knowing how to sort strings, concatenate strings, loop through a string's
+  characters
+- Get the `i`th character of a string
+- Know how to get substrings with
+  [`string::substr`](http://www.cplusplus.com/reference/string/string/substr/)
 
 </CPPSection>
 
+<!-- END C++ SECTION ON ARRAYS -->
+
+<!-- BEGIN JAVA SECTION ON ARRAYS -->
+
 <JavaSection>
 
-Java default [`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html) data structures are designed to store any type of object. However, we usually don't want our data structures to only store one type of data, like integers or strings. We do this by putting the desired data type within the `<>` brackets when declaring the data structure, as follows:
+## Arrays
+
+Java default
+[`Collections`](https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html)
+data structures are designed to store any type of object. However, we usually
+don't want our data structures to only store one type of data, like integers or
+strings. We do this by putting the desired data type within the `<>` brackets
+when declaring the data structure, as follows:
 
 ```java
 ArrayList<String> list = new ArrayList<String>();
@@ -96,36 +307,106 @@ ArrayList<String> list = new ArrayList<String>();
 
 This creates an `ArrayList` structure that only stores objects of type `String`.
 
-For our examples below, we will primarily use the `Integer` data type, but note that you can have Collections of any object type, including `Strings` , other Collections, or user-defined objects.
+For our examples below, we will primarily use the `Integer` data type, but note
+that you can have Collections of any object type, including `Strings` , other
+Collections, or user-defined objects.
 
-`Collections` data types always contain an `add` method for adding an element to the collection, and a `remove` method which removes and returns a certain element from the collection. They also support the `size()` method, which returns the number of elements in the data structure, and the `isEmpty()` method, which returns `true` if the data structure is empty, and `false` otherwise.
+`Collections` data types always contain an `add` method for adding an element to
+the collection, and a `remove` method which removes and returns a certain
+element from the collection. They also support the `size()` method, which
+returns the number of elements in the data structure, and the `isEmpty()`
+method, which returns `true` if the data structure is empty, and `false`
+otherwise.
+
+## Dynamic Arrays
+
+Dynamic arrays
+([`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html)
+in Java) that support all the functions that a normal array does, and can
+repeatedly reallocate storage to accommodate more elements as they are added.
+
+In a dynamic array, we can also add and delete elements at the end in
+$\mathcal{O}(1)$ time. For example, the following code creates a dynamic array
+and adds the numbers $1$ through $10$ to it:
+
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+for(int i = 1; i <= 10; i++){
+	list.add(i);
+}
+```
+
+In array-based contest problems, we'll use one-, two-, and three-dimensional
+static arrays most of the time. However, we can also have static arrays of
+dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice
+between a static array and a dynamic array is just personal preference.
+
+### Iterating
+
+To iterate through a static or dynamic array, we can use either the regular for
+loop or the for-each loop.
+
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(1); list.add(7); list.add(4); list.add(5); list.add(2);
+int[] arr = {1, 7, 4, 5, 2};
+for(int i = 0; i < list.size(); i++){ // regular
+	System.out.println(list.get(i));
+}
+for(int element : arr){ // for-each
+	System.out.println(element);
+}
+```
+
+### Adding and Removing
+
+We can add and remove at any index of a dynamic array in $\mathcal{O}(n)$ time.
+
+```java
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(2); // [2]
+list.add(3); // [2, 3]
+list.add(7); // [2, 3, 7]
+list.add(5); // [2, 3, 7, 5]
+list.set(1, 4); // sets element at index 1 to 4 -> [2, 4, 7, 5]
+list.remove(1); // removes element at index 1 -> [2, 7, 5]
+// this remove method is O(n); to be avoided
+list.add(8); // [2, 7, 5, 8]
+list.remove(list.size()-1); // [2, 7, 5]
+// here, we remove the element from the end of the list; this is O(1)
+System.out.println(list.get(2)); // 5
+```
 
 </JavaSection>
 
-<PySection />
+<!-- END JAVA SECTION ON ARRAYS -->
 
-</LanguageSection>
-
-<LanguageSection>
+<!-- BEGIN PYTHON SECTION ON ARRAYS -->
 
 <PySection>
 
 ## Lists
 
-The default way to store data in Python is using a **list**, which can automatically resize itself to accommodate more elements. We can add and delete elements at the end in $\mathcal{O}(1)$ time. A list can be initialized as follows:
+The default way to store data in Python is using a **list**, which can
+automatically resize itself to accommodate more elements. We can add and delete
+elements at the end in $\mathcal{O}(1)$ time. A list can be initialized as
+follows:
 
 ```py
 arr = []
 ```
 
-Python lists are **generic**. This means that they can store any kind of data type, including objects. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
+Python lists are **generic**. This means that they can store any kind of data
+type, including objects. For example, the following code creates a dynamic array
+and adds the numbers $1$ through $10$ to it:
 
 ```py
 for i in range(1, 11): # Note that range(i, j) includes i, but does not include j
-    arr.append(i)
+	arr.append(i)
 ```
 
-In Python, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
+In Python, we can give a dynamic array an initial size. The code below creates a
+dynamic array with $30$ zeroes.
 
 ```py
 arr = [0] * 30
@@ -139,15 +420,17 @@ We can use a regular for loop to iterate through all elements of a list.
 arr = [1, 7, 4, 5, 2]
 
 for i in range(len(arr)):
-    print(arr[i], end = " ")
+	print(arr[i], end = " ")
 print()
 
 for element in arr:
-    print(element, end = " ")
+	print(element, end = " ")
 print()
 ```
 
-We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. `iter(arr)` returns an iterator pointing to the first element of the list `arr`.
+We can also use **iterators**. An iterator allows you to traverse a container by
+pointing to an object within the container. `iter(arr)` returns an iterator
+pointing to the first element of the list `arr`.
 
 ```py
 arr = [4, 2, 0, 0, 5]
@@ -182,7 +465,9 @@ arr = arr[3:] # [4, 4, 9]
 
 ### List Comprehensions
 
-List comprehensions are extremely useful for simplifying a python for loop that modifies/creates a list into one expression. The general syntax is: `[ expression for item in list if conditional ]` 
+List comprehensions are extremely useful for simplifying a python for loop that
+modifies/creates a list into one expression. The general syntax is:
+`[ expression for item in list if conditional ]`
 
 An example is provided in the code block below.
 
@@ -191,8 +476,8 @@ An example is provided in the code block below.
 old_list = [2, 5, 3, 1, 6]
 new_list = []
 for i in old_list:
-    if i % 2 == 1:
-        new_list.append(i * 2);
+	if i % 2 == 1:
+		new_list.append(i * 2);
 print(new_list) # [10, 6, 2]
 # Simplified one liner with list comprehension
 # Recall the form [ expression for item in list if conditional ]
@@ -203,7 +488,8 @@ new_list = [i * 2 for i in old_list if i % 2 == 1]
 print(new_list) # [10, 6, 2]
 ```
 
-A very applicable use of list comprehensions for competitive programming in particular is creating an integer list from space separated input:
+A very applicable use of list comprehensions for competitive programming in
+particular is creating an integer list from space separated input:
 
 ```py
 # Example input: 5 3 2 6 8 1
@@ -212,7 +498,8 @@ arr = [int(x) for x in input().split()]
 print(arr) # [5, 3, 2, 6, 8, 1]
 ```
 
-For more information on list comprehensions, including nesting them to create multidimensional lists, refer to the below resources.
+For more information on list comprehensions, including nesting them to create
+multidimensional lists, refer to the below resources.
 
 <Resources>
 	<Resource
@@ -220,315 +507,44 @@ For more information on list comprehensions, including nesting them to create mu
 		title="List Comprehensions in Python"
 		url="https://www.pythonforbeginners.com/basics/list-comprehensions-in-python"
 	>
-	{'Basic list comprehension tutorial'}
+		{'Basic list comprehension tutorial'}
 	</Resource>
 	<Resource
 		source="GFG"
 		title="Nested List Comprehensions in Python"
 		url="https://www.geeksforgeeks.org/nested-list-comprehensions-in-python/"
 	>
-	{'Nesting list comprehensions'}
-    </Resource>
+		{'Nesting list comprehensions'}
+	</Resource>
 </Resources>
 
 </PySection>
 
-<CPPSection>
-
-## Dynamic Arrays
-
-<Resources>
-	<Resource source="IUSACO" title="4.1, 4.2 - Dynamic Arrays">
-		module is based off this
-	</Resource>
-	<Resource source="CPH" title="4.1 - Dynamic Arrays">
-		vectors, strings
-	</Resource>
-	<Resource source="PAPS" title="3.1 - Vectors"></Resource>
-	<Resource
-		source="LCPP"
-		title="6.16 - Intro to std::vector"
-		url="https://www.learncpp.com/cpp-tutorial/6-16-an-introduction-to-stdvector/"
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-Dynamic arrays ([`vector`](http://www.cplusplus.com/reference/vector/vector/) in C++) support all the functions that a normal array does, and can resize itself to accommodate more elements. In a dynamic array, we can also add and delete elements at the end in $\mathcal{O}(1)$ time.
-
-For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
-
-```cpp
-vector<int> v;
-for(int i = 1; i <= 10; i++){
-    v.push_back(i);
-}
-```
-
-In C++, we can give a dynamic array an initial size. The code below creates a dynamic array with $30$ zeroes.
-
-```cpp
-vector<int> v(30); // one way
-vector<int> v; v.resize(30); // another way
-```
-
-In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
-
-<Warning>
-
-Beware of resizing a vector while recursing!
-
-
-```cpp
-vi res{-1};
-int addElement() {
-	res.pb(-1);
-	return sz(res)-1;
-}
-
-void rec(int x) {
-	F0R(i,10) {
-		res[i] = addElement();
-		ps(i,res[i]);
-	}
-}
-
-int main() {
-	rec(0);
-}
-```
-
-Running the above code with C++17
-
-```
-g++ -std=c++17 bad.cpp -o bad && ./bad
-```
-
-gives the intended output:
-
-```
-0 1
-1 2
-2 3
-3 4
-4 5
-5 6
-6 7
-7 8
-8 9
-9 10
-```
-
-But running with C++14
-
-```
-g++ -std=c++14 bad.cpp -o bad && ./bad
-```
-
-gives:
-
-```
-0 -1
-1 -1
-2 3
-3 -1
-4 5
-5 6
-6 7
-7 -1
-8 9
-9 10
-```
-
-However, the code works correctly if you save the result of `addElement()` to an intermediate variable.
-
-```cpp
-void rec(int x) {
-	F0R(i,10) {
-		int tmp = addElement();
-		res[i] = tmp;
-		ps(i,res[i]);
-	}
-}
-```
-
-See [this](https://codeforces.com/blog/entry/83241) CF blog post for some discussion about why this is the case.
-
-</Warning>
-
-### Iterating
-
-<Resources>
-	<Resource source="CPH" title="4.4 - Working With Ranges">
-		{' '}
-	</Resource>
-	<Resource
-		source="CPP"
-		title="Reference - <iterator>"
-		url="https://www.cplusplus.com/reference/iterator/"
-	>
-		{' '}
-	</Resource>
-	<Resource
-		source="LCPP"
-		title="6.17 - Intro to Iterators"
-		url="https://www.learncpp.com/cpp-tutorial/introduction-to-iterators/"
-	>
-		{' '}
-	</Resource>
-</Resources>
-
-One way to iterate through all elements of a static or dynamic array is to use a regular for loop.
-
-```cpp
-vector<int> v{1,7,4,5,2};
-for (int i = 0; i < int(size(v)); i++){
-	cout << v[i] << " ";
-}
-cout << endl;
-```
-
-We can also use **iterators**. An iterator allows you to traverse a container by pointing to an object within the container. However, they are **not** the same thing as pointers.
-
-For example, `v.begin()` or `begin(v)` returns an iterator pointing to the first element of the vector `v`. Apart from the standard way of traversing a vector (by treating it as an array), you can also use iterators:
-
-```cpp
-for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
-    cout << *it << " "; //prints the values in the vector using the iterator
-}
-```
-
-Here is another way to write this. `auto` (since C++11) automatically infers the type of an object:
-
-```cpp
-vector<int> v{1,7,4,5,2};
-for (auto it = begin(v); it != end(v); it = next(it)) {
-	cout << *it << " "; //prints the values in the vector using the iterator
-}
-```
-
-We can also use a for-each loop.
-
-```cpp
-for (int element : v) {
-    cout << element << " "; //prints the values in the vector
-}
-```
-
-### Inserting and Erasing
-
-Keep in mind that insertion and erasure in the middle of a `vector` are $\mathcal{O}(n)$.
-
-```cpp
-vector<int> v;
-v.push_back(2); // [2]
-v.push_back(3); // [2, 3]
-v.push_back(7); // [2, 3, 7]
-v.push_back(5); // [2, 3, 7, 5]
-v[1] = 4; // sets element at index 1 to 4 -> [2, 4, 7, 5]
-v.erase(v.begin() + 1); // removes element at index 1 -> [2, 7, 5]
-// this remove method is O(n); to be avoided
-v.push_back(8); // [2, 7, 5, 8]
-v.erase(v.end()-1); // [2, 7, 5]
-// here, we remove the element from the end of the list; this is O(1).
-v.push_back(4); // [2, 7, 5, 4]
-v.push_back(4); // [2, 7, 5, 4, 4]
-v.push_back(9); // [2, 7, 5, 4, 4, 9]
-cout << v[2]; // 5
-v.erase(v.begin(), v.begin()+3); // [4, 4, 9]
-// this erases the first three elements; O(n)
-```
-
-### Strings
-
-<IncompleteSection>
-
-All the vector operations above also work on strings.
-
-</IncompleteSection>
-
-</CPPSection>
-
-<JavaSection>
-
-## Dynamic Arrays
-
-Dynamic arrays ([`ArrayList`](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) in Java) that support all the functions that a normal array does, and can repeatedly reallocate storage to accommodate more elements as they are added.
-
-In a dynamic array, we can also add and delete elements at the end in $\mathcal{O}(1)$ time. For example, the following code creates a dynamic array and adds the numbers $1$ through $10$ to it:
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-for(int i = 1; i <= 10; i++){
-    list.add(i);
-}
-```
-
-In array-based contest problems, we'll use one-, two-, and three-dimensional static arrays most of the time. However, we can also have static arrays of dynamic arrays, dynamic arrays of static arrays, and so on. Usually, the choice between a static array and a dynamic array is just personal preference.
-
-### Iterating
-
-To iterate through a static or dynamic array, we can use either the regular for loop or the for-each loop.
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-list.add(1); list.add(7); list.add(4); list.add(5); list.add(2);
-int[] arr = {1, 7, 4, 5, 2};
-for(int i = 0; i < list.size(); i++){ // regular
-    System.out.println(list.get(i));
-}
-for(int element : arr){ // for-each
-    System.out.println(element);
-}
-```
-
-### Adding and Removing
-
-We can add and remove at any index of a dynamic array in $\mathcal{O}(n)$ time.
-
-```java
-ArrayList<Integer> list = new ArrayList<Integer>();
-list.add(2); // [2]
-list.add(3); // [2, 3]
-list.add(7); // [2, 3, 7]
-list.add(5); // [2, 3, 7, 5]
-list.set(1, 4); // sets element at index 1 to 4 -> [2, 4, 7, 5]
-list.remove(1); // removes element at index 1 -> [2, 7, 5]
-// this remove method is O(n); to be avoided
-list.add(8); // [2, 7, 5, 8]
-list.remove(list.size()-1); // [2, 7, 5]
-// here, we remove the element from the end of the list; this is O(1)
-System.out.println(list.get(2)); // 5
-```
-
-</JavaSection>
+<!-- END PYTHON SECTION ON ARRAYS -->
 
 </LanguageSection>
 
-
-## Memory Allocation
-
-One thing to keep in mind when using arrays is the memory limit. Usually the USACO memory limit is 256 MB. To estimate how many values can be stored within this limit:
-
-1. Calculate the total memory size in bytes: for 256 MB, that's $256\cdot 10^6$.
-2. Divide by the size, in bytes, of an `int` (4), or a `long long` (8), etc. For example, the number of `int`s that you are able to store is bounded above by $\frac{256\cdot 10^6}{4}=64\cdot 10^6$.
-3. Be aware that [program overhead](https://stackoverflow.com/questions/2860234/what-is-overhead) (which can be very significant, especially with recursive functions) will reduce the amount of memory available.
+<!-- END SECTION ON ARRAYS -->
 
 ## Pairs & Tuples
 
-If we want to store a collection of points on the 2D plane, then we can use a dynamic array of **pairs**.
+If we want to store a collection of points on the 2D plane, then we can use a
+dynamic array of **pairs**.
 
 <LanguageSection>
 
 <CPPSection>
 
-Of course, both `vector<vector<int>>` and `vector<array<int,2>>` would suffice for this case, but a pair can also store two elements of different types.
+Of course, both `vector<vector<int>>` and `vector<array<int,2>>` would suffice
+for this case, but a pair can also store two elements of different types.
 
 ### [C++ Pairs](http://www.cplusplus.com/reference/utility/pair/pair/)
 
-- `pair<type1, type2> p`: Creates a pair `p` with two elements with the first one being of `type1` and the second one being of `type2`.
+- `pair<type1, type2> p`: Creates a pair `p` with two elements with the first
+  one being of `type1` and the second one being of `type2`.
 - `make_pair(a, b)`: Returns a pair with values `a`, `b`.
-- `{a, b}`: With C++11 and above, this can be used as to create a pair, which is easier to write than `make_pair(a, b)`.
+- `{a, b}`: With C++11 and above, this can be used as to create a pair, which is
+  easier to write than `make_pair(a, b)`.
 - `pair.first`: The first value of the pair.
 - `pair.second`: The second value of the pair.
 
@@ -556,20 +572,27 @@ Testing curly braces
 
 ### [C++ Tuples](http://www.cplusplus.com/reference/tuple/)
 
-Of course, we can hold more than two values with something like `pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In this case, using **tuples** might be more convenient.
+Of course, we can hold more than two values with something like
+`pair<int,pair<int,int>>`, but it gets messy when you need a lot of elements. In
+this case, using **tuples** might be more convenient.
 
-- `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th one being of `typei`.
-- `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the brackets.
-- `get<i>(t)`: Returns the `i`'th element of the tuple `t`. Can also be used to change the element of a tuple.
+- `tuple<type1, type2, ..., typeN> t`: Creates a tuple with `N` elements, i'th
+  one being of `typei`.
+- `make_tuple(a, b, c, ..., d)`: Returns a tuple with values written in the
+  brackets.
+- `get<i>(t)`: Returns the `i`'th element of the tuple `t`. Can also be used to
+  change the element of a tuple.
 
-This operation only works for constant `i`. Namely, it is **not** allowed to do something like the following since `i` is not constant:
+This operation only works for constant `i`. Namely, it is **not** allowed to do
+something like the following since `i` is not constant:
 
 ```cpp
 tuple<int,int,int> t{3,4,5};
 int i = 1; cout << get<i>(t);
 ```
 
-- `tie(a, b, c, ..., d) = t`: Equals `a, b, c, ..., d` to the elements of the tuple $t$ accordingly.
+- `tie(a, b, c, ..., d) = t`: Assigns `a, b, c, ..., d` to the elements of the
+  tuple $t$ accordingly.
 
 <!-- This is not frequently used by competitive programmers, but it is good to know and can help simplify things sometimes.  -->
 
@@ -603,11 +626,10 @@ Hello world 100
 
 <JavaSection>
 
-### Java
-
 <Warning title="Language Note">
 
-Pairs and tuples are not available in Java's standard libraries, though we can work around that.
+Pairs and tuples are not available in Java's standard libraries, though we can
+work around that.
 
 </Warning>
 
@@ -644,7 +666,8 @@ System.out.println(p.first + " " + p.second);
 
 ### Python Tuples
 
-Use the link below (if you know of a better one, please let us know!) to learn about tuples.
+Use the link below (if you know of a better one, please let us know!) to learn
+about tuples.
 
 <!-- Python automatically sorts a list of tuples by the first element, then the second, and so on. This can save you time and keystrokes for certain problems like the one above.
  -->
@@ -661,10 +684,46 @@ Use the link below (if you know of a better one, please let us know!) to learn a
 </Resources>
 
 </PySection>
+
+</LanguageSection>
+
+## Memory Allocation
+
+One thing to keep in mind when using arrays is the memory limit. Usually the
+USACO memory limit is 256 MB. To estimate how many values can be stored within
+this limit:
+
+1. Calculate the total memory size in bytes: for 256 MB, that's $256\cdot 10^6$.
+2. Divide by the size, in bytes, of an `int` (4), or a `long long` (8), etc. For
+   example, the number of `int`s that you are able to store is bounded above by
+   $\frac{256\cdot 10^6}{4}=64\cdot 10^6$.
+3. Be aware that
+   [program overhead](https://stackoverflow.com/questions/2860234/what-is-overhead)
+   (which can be very significant, especially with recursive functions) will
+   reduce the amount of memory available.
+
+<LanguageSection>
+
+<CPPSection>
+
+<Optional title="Additional Notes About C++ Data Structures">
+
+See [here](/general/notes-cpp-ds).
+
+</Optional>
+
+</CPPSection>
+
+<JavaSection />
+<PySection />
+
 </LanguageSection>
 
 ## Problems
 
-Nothing to see here! To reiterate, arrays of fixed size should suffice for essentially every Bronze problem, but dynamic arrays, pairs, and tuples can greatly simplify implementation at times.
+Nothing to see here! To reiterate, arrays of fixed size should suffice for
+essentially every Bronze problem, but dynamic arrays, pairs, and tuples can
+greatly simplify implementation at times. You'll see some examples of these in
+the following module.
 
 <!-- Unless someone has any. I really can't find anything... -->

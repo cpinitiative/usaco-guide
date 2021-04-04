@@ -2,67 +2,125 @@
 id: cses-1138
 source: CSES
 title: Path Queries
-author: Benjamin Qi
+author: Benjamin Qi, Neo Wang
 ---
 
 **Explanation:** [CPH 18.2](/CPH.pdf#page=174)
 
-**Time Complexity:** $(N+Q)\log N$
+Unlike the above explanation, instead of storing the subtree size, we store the
+right index of the subtree in order to determine the bounds of each node's
+subtree.
 
-**Code:** Assumes that `dfs()` code is included.
+Notice that when we update a node with value $A[s]$ to $x$, the root-to-node sum
+for each node in its subtree increases by the difference $x-A[s]$. Using ETT,
+this is equivalent to a range update.
+
+We can use a Fenwick tree which supports range increment/decrements and point
+queries in $\mathcal{O}(\log N)$ time.
+
+When implementing your solution, recall that incrementing a range $[a, b]$ with
+a Fenwick tree corresponds to the operations
+
+$$
+\text{upd}(a, x)
+$$
+
+$$
+\text{upd}(b+1, -x)
+$$
+
+**Time Complexity:** $\mathcal O((N+Q)\log N)$
 
 ```cpp
+#include <bits/stdc++.h> // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0); // see /general/fast-io
+	if (sz(name)) {
+		freopen((name+".in").c_str(), "r", stdin); // see /general/io
+		freopen((name+".out").c_str(), "w", stdout);
+	}
+}
+
 /**
- * Description: range sum queries and point updates for $D$ dimensions
- * Source: https://codeforces.com/blog/entry/64914
- * Verification: SPOJ matsum
- * Usage: \texttt{BIT<int,10,10>} gives 2D BIT
- * Time: O((\log N)^D)
+ * Author: Lukas Polacek
+ * Date: 2009-10-30
+ * License: CC0
+ * Source: folklore/TopCoder
+ * Description: Computes partial sums a[0] + a[1] + ... + a[pos - 1],
+ * and updates single elements a[i],
+ * taking the difference between the old and new value.
+ * Time: Both operations are $O(\log N)$.
+ * Status: Stress-tested
  */
 
-template <class T, int ...Ns> struct BIT {
-	T val = 0; void upd(T v) { val += v; }
-	T query() { return val; }
+struct FT {
+	vector<ll> s;
+	FT(int n) : s(n) {}
+	void update(int pos, ll dif) { // a[pos] += dif
+		for (; pos < sz(s); pos |= pos + 1) s[pos] += dif;
+	}
+	ll query(int pos) { // sum of values in [0, pos)
+		ll res = 0;
+		for (; pos > 0; pos &= pos - 1) res += s[pos-1];
+		return res;
+	}
 };
-template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
-	BIT<T,Ns...> bit[N+1];
-	template<typename... Args> void upd(int pos, Args... args) { assert(pos > 0);
-		for (; pos<=N; pos+=pos&-pos) bit[pos].upd(args...); }
-	template<typename... Args> T sum(int r, Args... args) {
-		T res=0; for (;r;r-=r&-r) res += bit[r].query(args...); 
-		return res; }
-	template<typename... Args> T query(int l, int r, Args... 
-		args) { return sum(r,args...)-sum(l-1,args...); }
-}; 
 
-BIT<ll,MX> B;
-int v[MX];
+
+const int mx = 2e5+1;
+
+vi adj[mx];
+int A[mx];
+int st[mx];
+int en[mx];
+int timer = 0;
+FT ft(mx+1);
+
+void dfs(int x, int p) { // euler tour
+	st[x] = timer++;
+	for(const int &e : adj[x]) if(e != p) dfs(e, x);
+	en[x] = timer-1;
+}
 
 int main() {
-	int n,q; cin >> n >> q;
-	FOR(i,1,n+1) cin >> v[i];
-	F0R(i,n-1) {
-		int a,b; cin >> a >> b;
-		adj[a].pb(b), adj[b].pb(a);
+	setIO();
+
+	int n, q;
+	cin >> n >> q;
+
+	for(int i = 1; i <= n; i++) cin >> A[i];
+
+	for(int i = 0; i < n-1; i++) {
+		int a, b; cin >> a >> b;
+		adj[a].pb(b);
+		adj[b].pb(a);
 	}
-	dfs(1,0);
-	FOR(i,1,n+1) {
-		B.upd(1+st[i],v[i]);
-		B.upd(2+en[i],-v[i]);
+
+	dfs(1, 0);
+
+	for(int i = 1; i <= n; i++) {
+		ft.update(st[i], A[i]);
+		ft.update(en[i]+1, -A[i]);
 	}
-	F0R(i,q) {
-		int t; cin >> t;
-		if (t == 1) {
-			int s,x; cin >> s >> x;
-			v[s] *= -1;
-			B.upd(1+st[s],v[s]);
-			B.upd(2+en[s],-v[s]);
-			v[s] = x;
-			B.upd(1+st[s],v[s]);
-			B.upd(2+en[s],-v[s]);
+
+	for(int i = 0; i < q; i++) {
+		int type, s; cin >> type >> s;
+		if(type == 1) {
+			int x; cin >> x;
+			ft.update(st[s], x-A[s]);
+			ft.update(en[s]+1, -(x-A[s])); // increment by 1
+			A[s] = x;
 		} else {
-			int s; cin >> s;
-			cout << B.sum(1+st[s]) << "\n";
+			cout << ft.query(st[s]+1) << '\n';
 		}
 	}
 }

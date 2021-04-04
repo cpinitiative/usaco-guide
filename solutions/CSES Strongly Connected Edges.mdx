@@ -1,0 +1,77 @@
+---
+id: cses-2177
+source: CSES
+title: Strongly Connected Edges
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(N + M)$.
+
+There are two cases when we can't make the graph strongly connected:
+
+1. The graph isn't a single connected component.
+2. The graph contains a [bridge](/adv/BCC-2CC).
+
+The first case can be checked with a simple DFS (i.e. check that it visits each
+node).
+
+The second case can be checked in the same DFS using Tarjan's bridge-finding
+algorithm.
+
+To construct the answer, set the direction of each edge to the direction in
+which we first traversed it in the DFS.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+vector<pair<int, int>> ans, graph[100001];
+bool visited[100001], in_ans[200001];
+int tin[100001], low[100001], timer = 0;
+
+void dfs(int node = 1, int parent = 0) {
+	visited[node] = true;
+	tin[node] = low[node] = timer++;
+	for (pair<int, int> i : graph[node]) if (i.first != parent) {
+		if (!in_ans[i.second]) {
+			ans.push_back({node, i.first});
+			in_ans[i.second] = true;
+		}
+		if (visited[i.first]) low[node] = min(low[node], tin[i.first]);
+		else {
+			dfs(i.first, node);
+			low[node] = min(low[node], low[i.first]);
+			if (low[i.first] > tin[node]) {
+				cout << "IMPOSSIBLE";
+				exit(0);
+			}
+		}
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+	while (m--) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back({v, m});
+		graph[v].push_back({u, m});
+	}
+	dfs();
+	if (find(visited + 1, visited + n + 1, false) != visited + n + 1)
+		return cout << "IMPOSSIBLE", 0;
+	for (pair<int, int> i : ans) cout << i.first << ' ' << i.second << '\n';
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

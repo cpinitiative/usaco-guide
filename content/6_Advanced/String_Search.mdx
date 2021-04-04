@@ -4,186 +4,26 @@ title: 'String Searching'
 author: Benjamin Qi, Siyong Huang
 prerequisites:
   - dfs
-description: Knuth-Morris-Pratt and Z Algorithms (and a few more related topics).
+description:
+  Knuth-Morris-Pratt and Z Algorithms (and a few more related topics).
 frequency: 1
 ---
-
-export const problems = {
-	KMP: [
-		new Problem(
-			'Kattis',
-			'String Matching',
-			'stringmatching',
-			'Easy',
-			false,
-			['Strings'],
-			'Naive KMP works. Just be careful about I/O'
-		),
-		new Problem(
-			'POI',
-			'Periods of Words',
-			'k9UKIj11V6iPRc3LaiYQYHyi/site/?key=statement',
-			'Easy',
-			false,
-			['Strings', 'prefix functions'],
-			'https://github.com/thecodingwizard/competitive-programming/blob/master/POI/POI%2006-Periods.cpp',
-		),
-		new Problem(
-			'Baltic OI',
-			'2019 - Necklace',
-			'https://oj.uz/problem/view/BOI19_necklace4',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POJ',
-			'(USACO Gold 05) Cow Patterns',
-			'http://poj.org/problem?id=3167',
-			'Hard',
-			false,
-			['Strings'],
-			'Run KMP, except each state needs to be considered as not only a length, but also mapping of pattern to # of spots'
-		),
-		new Problem(
-			'CEOI',
-			'2011 - Matching',
-			'https://szkopul.edu.pl/problemset/problem/6b-q_dPI_KRHD3VArapVq7EP/site/?key=statement',
-			'Hard',
-			true,
-			[],
-			''
-		),
-	],
-	Z: [
-		new Problem('YS', 'Z Algorithm', 'zalgorithm', 'Easy', false, [], ''),
-		new Problem(
-			'CF',
-			'Vasya and Big Integers',
-			'contest/1051/problem/E',
-			'Normal',
-			false,
-			['Strings', 'DP'],
-			'dp[i] = answer for suffix [i, N]. Transitions form some continuous range and can be determined using two-pointer and z-function for long integer comparison'
-		),
-		new Problem(
-			'CF',
-			'Concatenation with Intersection',
-			'contest/1313/problem/E',
-			'Hard',
-			false,
-			[],
-			''
-		),
-	],
-	mana: [
-		new Problem(
-			'CF',
-			'Sonya and Matrix Beauty',
-			'contest/1080/problem/E',
-			'Normal',
-			false,
-			['Strings'],
-			'N^3 solution. Brute force every range of rows, and run manachers along the columns'
-		),
-		new Problem(
-			'CF',
-			'Prefix-Suffix Palindrome',
-			'contest/1326/problem/D2',
-			'Normal',
-			false,
-			['Strings'],
-			'Find longest prefix that is mirror of suffix. Add these to the answer. Then use manachers/any other palindrome detection algorithm to determine the longest prefix/suffix palindrome of the remaining string.'
-		),
-		new Problem(
-			'CF',
-			'Palisection',
-			'contest/17/problem/E',
-			'Hard',
-			false,
-			['Strings', 'Prefix Sums'],
-			''
-		),
-	],
-	trie: [
-		new Problem('YS', 'Set XOR-Min', 'set_xor_min', 'Easy', false, [], ''),
-		new Problem(
-			'CF',
-			'The Fair Nut and Strings',
-			'contest/1083/problem/B',
-			'Normal',
-			false,
-			['Strings'],
-			'Answer is max number of nodes in trie. Count the max number of nodes on each depth of the trie, and add it all up.'
-		),
-		new Problem(
-			'CF',
-			'Tree and XOR',
-			'contest/1055/problem/F',
-			'Hard',
-			false,
-			['Trie', 'Tree'],
-			'Path xor from node u to node v is equal to root_xor(u) xor root_xor(v). Sort these root_xor values. Use implicit trie over all values of root_xor(u) ^ root_xor(v) and traverse the trie. Each node of the trie can be treated as a set of pairs of ranges in the sorted root_xor array, such that the xor of two values in each range results in a prefix of that trie node. (Read editorial for clear explanation)'
-		),
-	],
-	aho: [
-		new Problem(
-			'Gold',
-			'Censoring',
-			'533',
-			'Normal',
-			false,
-			['Strings'],
-			'Build aho-corasick over all censored words'
-		),
-		new Problem(
-			'CF',
-			'You Are Given Some Strings...',
-			'contest/1202/problem/E',
-			'Normal',
-			false,
-			['Strings'],
-			'Count number of pairs for each cut-off point. Run aho-corasick twice: normally, and reversed'
-		),
-	],
-	pal: [
-		new Problem(
-			'APIO',
-			'2014 - Palindrome',
-			'APIO14_palindrome',
-			'Easy',
-			false,
-			[],
-			'apio-14-palindrome'
-		),
-		new Problem(
-			'CF',
-			'Palisection',
-			'contest/17/problem/E',
-			'Hard',
-			false,
-			['Strings', 'Prefix Sums'],
-			''
-		),
-		new Problem('DMOJ', 'Momoka', 'mmcc15p3', 'Very Hard', false, [], ''),
-	],
-};
 
 <Resources>
 	<Resource source="CPC" title="11 - Strings" url="11_strings">
 		String Matching, KMP, Tries
 	</Resource>
-	<Resource source="CP2" title="6.4 - String Matching">
-		{' '}
-	</Resource>
+	<Resource source="CP2" title="6.4 - String Matching" />
 </Resources>
 
 # Single String
 
 ## KMP
 
-**Knuth-Morris-Pratt**, or **KMP**, is a linear time string comparison algorithm that matches prefixes. Specifically, it computes the longest substring that is both a prefix and suffix of a string, and it does so for every prefix of a given string.
+**Knuth-Morris-Pratt**, or **KMP**, is a linear time string comparison algorithm
+that matches prefixes. Specifically, it computes the longest substring that is
+both a prefix and suffix of a string, and it does so for every prefix of a given
+string.
 
 <Resources>
 	<Resource
@@ -204,11 +44,12 @@ export const problems = {
 	></Resource>
 </Resources>
 
-<Problems problems={problems.KMP} />
+<Problems problems="KMP" />
 
 ## Z Algorithm
 
-The **Z-Algorithm** is another linear time string comparison algorithm like KMP, but instead finds the longest common prefix of a string and all of its suffixes.
+The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
+but instead finds the longest common prefix of a string and all of its suffixes.
 
 <Resources>
 	<Resource
@@ -220,13 +61,16 @@ The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
 	<Resource source="CF" title="Z Algorithm" url="3107"></Resource>
 </Resources>
 
-<Problems problems={problems.Z} />
+<Problems problems="Z" />
 
 # Palindromes
 
 ## Manacher
 
-**Manacher's Algorithm** is functionally similarly to the **Z-Algorithm** and can compute information about palindromes. It can determine the longest palindrome centered at each character.
+<FocusProblem problem="manacherFocus" />
+
+**Manacher's Algorithm** functions similarly to the **Z-Algorithm**. It
+determines the longest palindrome centered at each character.
 
 <Resources>
 	<Resource
@@ -253,11 +97,15 @@ The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
 	If s[l, r] is a palindrome, then s[l+1, r-1] is as well.
 </Info>
 
-<Problems problems={problems.mana} />
+<Problems problems="mana" />
 
 ## Palindromic Tree
 
-A **Palindromic Tree** is a tree-like data structure that behaves similarly to KMP. Unlike KMP, in which the only empty state is $0$, the Palindromic Tree has two empty states: length $0$, and length $-1$. This is because appending a character to a palindrome increases the length by $2$, meaning a single character palindrome must have been created from a palindrome of length $-1$
+A **Palindromic Tree** is a tree-like data structure that behaves similarly to
+KMP. Unlike KMP, in which the only empty state is $0$, the Palindromic Tree has
+two empty states: length $0$, and length $-1$. This is because appending a
+character to a palindrome increases the length by $2$, meaning a single
+character palindrome must have been created from a palindrome of length $-1$
 
 <Resources>
 	<Resource source="CF" title="adamant - Palindromic Tree" url="13959" />
@@ -268,13 +116,16 @@ A **Palindromic Tree** is a tree-like data structure that behaves similarly to K
 	/>
 </Resources>
 
-<Problems problems={problems.pal} />
+<Problems problems="pal" />
 
 # Multiple Strings
 
 ## Tries
 
-A **trie** is a tree-like data structure that stores strings. Each node is a string, and each edge is a character. The root is the empty string, and every node is represented by the characters along the path from the root to that node. This means that every prefix of a string is an ancestor of that string's node.
+A **trie** is a tree-like data structure that stores strings. Each node is a
+string, and each edge is a character. The root is the empty string, and every
+node is represented by the characters along the path from the root to that node.
+This means that every prefix of a string is an ancestor of that string's node.
 
 <Resources>
 	<Resource source="CPH" title="26.2"></Resource>
@@ -282,11 +133,12 @@ A **trie** is a tree-like data structure that stores strings. Each node is a str
 	<Resource source="PAPS" title="14.1 - Tries"></Resource>
 </Resources>
 
-<Problems problems={problems.trie} />
+<Problems problems="trie" />
 
 ## Aho-Corasick
 
-**Aho-Corasick** is the combination of **trie** and **KMP**. It is essentially a trie with KMP's "fail" array.
+**Aho-Corasick** is the combination of **trie** and **KMP**. It is essentially a
+trie with KMP's "fail" array.
 
 <Warning>
 
@@ -308,10 +160,13 @@ Build the entire trie first, and then run a _BFS_ to construct the fail array.
 	></Resource>
 </Resources>
 
-<Problems problems={problems.aho} />
+<Problems problems="aho" />
 
 <IncompleteSection>
 
-1731 Word Combinations -> trie 1753 String Matching -> string search 1732 Finding Borders -> string search 1733 Finding Periods -> string search 1110 Minimal Rotation -> string search 1111 Longest Palindrome -> string search 1112 Required Substring -> string search
+1731 Word Combinations -> trie 1753 String Matching -> string search 1732
+Finding Borders -> string search 1733 Finding Periods -> string search 1110
+Minimal Rotation -> string search 1111 Longest Palindrome -> string search 1112
+Required Substring -> string search
 
 </IncompleteSection>

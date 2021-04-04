@@ -1,19 +1,38 @@
 import * as React from 'react';
-import { Problem } from '../../models/problem';
+import { ProblemInfo } from '../../models/problem';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
+import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 
-export default function FocusProblem({ problem }: { problem: Problem }) {
+export default function FocusProblem({
+  problem: problemID,
+}: {
+  problem: string;
+}) {
   const [isHovered, setIsHovered] = React.useState(false);
+
+  const problemLists = useMarkdownProblemLists();
+  const problemList = problemLists.find(x => x.listId === problemID);
+
+  if (!problemList) {
+    throw new Error("Couldn't find focus problem " + problemID);
+  }
+  if (problemList.problems.length !== 1) {
+    throw new Error(
+      `The focus problem list ${problemID} should have exactly one problem.`
+    );
+  }
+
+  const problem: ProblemInfo = problemList.problems[0];
 
   // transform must go in the isHovered condition
   // See https://github.com/thecodingwizard/usaco-guide/issues/198
   // transform creates a new stacking context :(
   return (
     <div
-      className={`shadow block transition duration-150 ease-in-out dark:bg-gray-900 ${
-        isHovered && 'transform -translate-y-1 shadow-lg'
+      className={`shadow block transition dark:bg-gray-900 mb-4${
+        isHovered ? ' transform -translate-y-1 shadow-lg' : ''
       }`}
-      id={'problem-' + problem.uniqueID}
+      id={'problem-' + problem.uniqueId}
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center px-6">
@@ -23,7 +42,7 @@ export default function FocusProblem({ problem }: { problem: Problem }) {
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 block group transition duration-150 ease-in-out py-4"
+                className="flex-1 block group transition py-4"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >

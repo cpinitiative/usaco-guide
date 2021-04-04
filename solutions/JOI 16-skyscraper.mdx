@@ -1,0 +1,134 @@
+---
+id: joi-16-skyscraper
+source: JOI 2016
+title: Skyscraper
+author: Andi Qu
+---
+
+**Time Complexity**: $\mathcal O(N^2L)$.
+
+We will use [connected component DP](https://codeforces.com/blog/entry/47764) to
+solve this problem.
+
+First, sort the buildings by height. We will now "insert" them into the final
+permutation at various positions and count the number of ways to do so.
+
+Let $dp[i][j][k][m]$ denote the number of ways to insert the first $i$ buildings
+into the permutation such that:
+
+- There were $j$ "connected components" (i.e. subarrays with all positions
+  filled).
+- The "total cost" (assuming that all empty positions contain $a_{i + 1}$, where
+  $a_{n + 1} = \infty$) is $k$.
+- $m$ of the endpoints of the permutation have been filled so far.
+
+For example, $\{?, ?, 3, ?, 2, 1\}$ (a half-filled permutation of
+$\{1, 2, 3, 4, 5, 6\}$) would be counted in $dp[3][2][5][1]$.
+
+Note that we don't cwere about the relative orders of the connected components
+for each DP state. (Imagine that they're just free-floating components that we
+can pluck out of space and join.)
+
+When we transition from $dp[i - 1]$ to $dp[i]$, all the empty positions will
+change from $a_i$ to $a_{i + 1}$, so the change in total cost (given $j$ and
+$m$) would thus be $\Delta_{j, m} = (2j - m)(a_{i + 1} - a_i)$. Each connected
+component contributes $2(a_{i + 1} - a_i)$ to $\Delta_{j, m}$ except for those
+containing endpoints, which only contribute $a_{i + 1} - a_i$.
+
+We now have five cases to consider when calculating $dp[i][j][k][m]$:
+
+- We **inserted** $a_i$ to form a new component that doesn't contain an endpoint
+  of the permutation.
+  - There were $dp[i - 1][j - 1][k - \Delta_{j, m}][m]$ ways to do this.
+- We **inserted** $a_i$ to form a new component that contains an endpoint of the
+  permutation.
+  - This is only possible if $m > 0$.
+  - If so, there were $(3 - m) \cdot dp[i - 1][j - 1][k - \Delta_{j, m}][m - 1]$
+    ways to do this.
+- We **appended** $a_i$ to an existing component such that it doesn't contain an
+  end of the permutation.
+  - There were $2j - m$ component endpoints to choose from, so there were
+    $(2j - m) \cdot dp[i - 1][j][k - \Delta_{j, m}][m]$ ways to do this.
+- We **appended** $a_i$ to an existing component such that it contains of the
+  permutation.
+  - This is only possible if $m > 0$.
+  - If $m = 1$, then there were $2j$ component endpoints to choose from, so
+    there were $2j \cdot dp[i - 1][j][k - \Delta_{j, m}][m - 1]$ ways to do
+    this.
+  - If $m = 2$, and $j = 1$, then $i = n$ must hold and so there were
+    $dp[i - 1][j][k - \Delta_{j, m}][m - 1]$ ways to do this.
+  - Otherwise, there were $j - 1$ component endpoints to choose from (we can't
+    choose the other component containing an endpoint of the permutation!), so
+    there were $(j - 1) \cdot dp[i - 1][j][k - \Delta_{j, m}][m - 1]$ ways to do
+    this.
+- We inserted $a_i$ to **join** two existing components.
+  - If $m = 2$ and $i = n$, then there can only be two components left, so there
+    were $dp[i - 1][j + 1][k - \Delta_{j, m}][m]$ ways to do this.
+  - If $m = 2$ otherwise, then there were $j(j - 1)$ ordered pairs of components
+    to choose from, so there were
+    $j(j - 1) \cdot dp[i - 1][j + 1][k - \Delta_{j, m}][m]$ ways to do this.
+  - If $m = 1$, then there were $j^2$ ordered pairs of components to choose
+    from, so there were $j^2 \cdot dp[i - 1][j + 1][k - \Delta_{j, m}][m]$ ways
+    to do this.
+  - Otherwise, there were $j(j + 1)$ ordered pairs of components to choose from,
+    so there were $j(j + 1) \cdot dp[i - 1][j + 1][k - \Delta_{j, m}][m]$ ways
+    to do this.
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+const ll MOD = 1e9 + 7;
+
+int a[102];
+ll dp[102][102][1002][3];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, l;
+	cin >> n >> l;
+	if (n == 1) return cout << 1, 0;
+	for (int i = 1; i <= n; i++) cin >> a[i];
+	sort(a + 1, a + n + 1);
+	a[n + 1] = 10000;
+	dp[0][0][0][0] = 1;
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= i; j++) {
+			for (int k = 0; k <= l; k++) {
+				for (int m = 0; m <= 2; m++) {
+					int cost_diff = (2 * j - m) * (a[i + 1] - a[i]);
+					if (cost_diff > k || i + j + 1 - m > n) continue;
+
+					// Case 1
+					dp[i][j][k][m] += dp[i - 1][j - 1][k - cost_diff][m];
+					// Case 2
+					if (m) dp[i][j][k][m] += (3 - m) * dp[i - 1][j - 1][k - cost_diff][m - 1];
+					// Case 3
+					dp[i][j][k][m] += (2 * j - m) * dp[i - 1][j][k - cost_diff][m];
+					// Case 4
+					if (m == 1) dp[i][j][k][m] += 2 * j * dp[i - 1][j][k - cost_diff][m - 1];
+					if (m == 2) {
+						if (i == n) dp[i][j][k][m] += dp[i - 1][j][k - cost_diff][m - 1];
+						else if (j > 1) dp[i][j][k][m] += (j - 1) * dp[i - 1][j][k - cost_diff][m - 1];
+					}
+					// Case 5
+					if (m == 2) {
+						if (i == n) dp[i][j][k][m] += dp[i - 1][j + 1][k - cost_diff][m];
+						else dp[i][j][k][m] += j * (j - 1) * dp[i - 1][j + 1][k - cost_diff][m];
+					} else if (m == 1) dp[i][j][k][m] += j * j * dp[i - 1][j + 1][k - cost_diff][m];
+					else dp[i][j][k][m] += j * (j + 1) * dp[i - 1][j + 1][k - cost_diff][m];
+
+					dp[i][j][k][m] %= MOD;
+				}
+			}
+		}
+	}
+
+	ll ans = 0;
+	for (int i = 0; i <= l; i++) ans += dp[n][1][i][2];
+	cout << ans % MOD;
+	return 0;
+}
+```

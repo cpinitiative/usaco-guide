@@ -1,188 +1,16 @@
 ---
 id: prefix-sums
-title: 'Prefix Sums'
+title: 'Introduction to Prefix Sums'
 author: Darren Yao, Eric Wei
-description: 'Computing range sum queries in constant time over a fixed array.'
+description:
+  'Computing range sum queries in constant time over a fixed 1D array.'
 prerequisites:
-  - intro-sets
 frequency: 3
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'YS',
-			'Static Range Sum',
-			'static_range_sum',
-			'Very Easy',
-			false,
-			[],
-			'@B'
-		),
-	],
-	cum: [
-		new Problem(
-			'LC',
-			'Find Pivot Index',
-			'find-pivot-index',
-			'Very Easy',
-			false,
-			[],
-			'Calculate all prefix and suffix sums'
-		),
-		new Problem(
-			'Silver',
-			'Breed Counting',
-			'572',
-			'Very Easy',
-			false,
-			[],
-			'usaco-572'
-		),
-		new Problem(
-			'Silver',
-			'Subsequences Summing to Sevens',
-			'595',
-			'Easy',
-			true,
-			[],
-			'usaco-595'
-		),
-		new Problem(
-			'Silver',
-			'Hoof Paper Scissors',
-			'691',
-			'Easy',
-			false,
-			[],
-			'usaco-691'
-		),
-		new Problem(
-			'CSES',
-			'Subarray Sums II',
-			'1661',
-			'Easy',
-			false,
-			[],
-			'Find prefix sums, then enumerate the right end of the interval, while maintaining a multiset of all prefix sum values that currently exist to the left'
-		),
-		new Problem(
-			'CSES',
-			'Subarray Divisibility',
-			'1662',
-			'Easy',
-			false,
-			[],
-			'Find prefix sums modulo n, then find number of pairs of equal prefix sums'
-		),
-		new Problem(
-			'Silver',
-			'Why Did the Cow Cross the Road II',
-			'715',
-			'Normal',
-			false,
-			[],
-			'usaco-715'
-		),
-		new Problem(
-			'Old Bronze',
-			'Haybale Stacking',
-			'104',
-			'Normal',
-			true,
-			[],
-			'usaco-104'
-		),
-	],
-	maxsum: [
-		new Problem(
-			'CSES',
-			'Max Subarray Sum',
-			'1643',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'Enumerate the right endpoint while maintaining the lowest prefix sum that currently exists to the left'
-		),
-	],
-	sample2: [
-		new Problem(
-			'CSES',
-			'Forest Queries',
-			'1652',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'@B'
-		),
-	],
-	cum2: [
-		new Problem(
-			'Silver',
-			'Painting the Barn',
-			'919',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'When adding a rectangle, we need to add one to some corners and subtract one to other corners (think about which) in a temporary 2D array. At the end, take its prefix sum.'
-		),
-		new Problem(
-			'Gold',
-			'Painting the Barn',
-			'923',
-			'Hard',
-			true,
-			['Prefix Sums', 'Max Subarray Sum'],
-			'Treat areas that currently have K-1 layers of paint as having a value of 1, those having K layers of paint as having a value of -1, and the rest as having a value of 0. For each pair of x-coordinates, find the maximum subrectangle whose left side is located at the first x-coordinate and the right side is located at the second x-coordinate. This can be done with maximum subarray sum and prefix sums of each row. Do something similar with each pair of y-coordinates (fixing the top and bottom of the rectangle). Also notice that whenever two disjoint rectangles are drawn, there always exists a horizontal or vertical line separating them. Enumerate the location of the line, and find maximum subrectangle of each side using the information that we precalculated.'
-		),
-		new Problem('Plat', 'Modern Art', '744', 'Very Hard', false, [], ''),
-	],
-	related: [
-		new Problem(
-			'Silver',
-			'My Cow Ate My Homework',
-			'762',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'Enumerate, from right to left, the last question eaten. The problem is reduced to suffix minimums.'
-		),
-		new Problem(
-			'CSES',
-			'Range XOR Queries',
-			'1650',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'XOR prefix[r] with prefix[l-1]'
-		),
-	],
-	complex: [
-		new Problem(
-			'KS@Google KickStart',
-			'Candies (Test Set 1)',
-			'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d',
-			'Easy',
-			false,
-			['Prefix Sums'],
-			'kickstart-20-c-candies'
-		),
-		new Problem(
-			'AC',
-			'Multiple of 2019',
-			'https://atcoder.jp/contests/abc164/tasks/abc164_d',
-			'Hard',
-			false,
-			['Prefix Sums'],
-			"Make use of the fact that adding 0's to the end of a number does not affect whether it is a multiple of 2019 (because 10 and 2019 are coprime)."
-		),
-		new Problem('Plat', 'Sprinklers', '794', 'Insane', false, [], ''),
-	],
-};
-
 <!-- equivalent to [CSES Range Sum Queries I](https://cses.fi/problemset/task/1646) -->
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ## Resources
 
@@ -198,15 +26,17 @@ export const problems = {
 	</Resource>
 </Resources>
 
-## Introduction
+## 1D Prefix Sums
 
-Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we want to compute the value of
+Let's say we have a one-indexed integer array $\texttt{arr}$ of size $N$ and we
+want to compute the value of
 
 $$
 \texttt{arr}[a]+\texttt{arr}[a+1]+\cdots+\texttt{arr}[b]
 $$
 
-for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the following example with $N = 6$:
+for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the
+following example with $N = 6$:
 
 <center>
 
@@ -216,15 +46,26 @@ for $Q$ different pairs $(a,b)$ satisfying $1\le a\le b\le N$. We'll use the fol
 
 </center>
 
-Naively, for every query, we can iterate through all entries from index $a$ to index $b$ to add them up. Since we have $Q$ queries and each query requires a maximum of $\mathcal{O}(N)$ operations to calculate the sum, our total time complexity is $\mathcal{O}(NQ)$. For most problems of this nature, the constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This is **not** acceptable; it will almost certainly exceed the time limit.
+Naively, for every query, we can iterate through all entries from index $a$ to
+index $b$ to add them up. Since we have $Q$ queries and each query requires a
+maximum of $\mathcal{O}(N)$ operations to calculate the sum, our total time
+complexity is $\mathcal{O}(NQ)$. For most problems of this nature, the
+constraints will be $N, Q \leq 10^5$, so $NQ$ is on the order of $10^{10}$. This
+is **not** acceptable; it will almost certainly exceed the time limit.
 
-Instead, we can use prefix sums to process these array sum queries. We designate a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array, set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$, define the prefix sum array as follows:
+Instead, we can use prefix sums to process these array sum queries. We designate
+a prefix sum array $\texttt{prefix}$. First, because we're 1-indexing the array,
+set $\texttt{prefix}[0]=0$, then for indices $k$ such that $1 \leq k \leq n$,
+define the prefix sum array as follows:
 
 $$
 \texttt{prefix}[k]=\sum_{i=1}^{k} \texttt{arr}[i]
 $$
 
-Basically, what this means is that the element at index $k$ of the prefix sum array stores the sum of all the elements in the original array from index $1$ up to $k$. This can be calculated easily in $\mathcal{O}(N)$ by the following formula for each $1\le k\le n$:
+Basically, what this means is that the element at index $k$ of the prefix sum
+array stores the sum of all the elements in the original array from index $1$ up
+to $k$. This can be calculated easily in $\mathcal{O}(N)$ by the following
+formula for each $1\le k\le n$:
 
 $$
 \texttt{prefix}[k]=\texttt{prefix}[k-1]+\texttt{arr}[k]
@@ -240,7 +81,8 @@ For the example case, our prefix sum array looks like this:
 
 </center>
 
-Now, when we want to query for the sum of the elements of $\texttt{arr}$ between (1-indexed) indices $a$ and $b$ inclusive, we can use the following formula:
+Now, when we want to query for the sum of the elements of $\texttt{arr}$ between
+(1-indexed) indices $a$ and $b$ inclusive, we can use the following formula:
 
 $$
 \sum_{i=L}^{R} \texttt{arr}[i] = \sum_{i=1}^{R} \texttt{arr}[i] - \sum_{i=1}^{L-1} \texttt{arr}[i]
@@ -252,9 +94,16 @@ $$
 \sum_{i=L}^{R} \texttt{arr}[i]= \texttt{prefix}[R]-\texttt{prefix}[L-1]
 $$
 
-Since we are only querying two elements in the prefix sum array, we can calculate subarray sums in $\mathcal{O}(1)$ per query, which is much better than the $\mathcal{O}(N)$ per query that we had before. Now, after an $\mathcal{O}(N)$ preprocessing to calculate the prefix sum array, each of the $Q$ queries takes $\mathcal{O}(1)$ time. Thus, our total time complexity is $\mathcal{O}(N+Q)$, which should now pass the time limit.
+Since we are only querying two elements in the prefix sum array, we can
+calculate subarray sums in $\mathcal{O}(1)$ per query, which is much better than
+the $\mathcal{O}(N)$ per query that we had before. Now, after an
+$\mathcal{O}(N)$ preprocessing to calculate the prefix sum array, each of the
+$Q$ queries takes $\mathcal{O}(1)$ time. Thus, our total time complexity is
+$\mathcal{O}(N+Q)$, which should now pass the time limit.
 
-Let's do an example query and find the subarray sum between indices $a = 2$ and $b = 5$, inclusive, in the 1-indexed $\texttt{arr}$. From looking at the original array, we see that this is
+Let's do an example query and find the subarray sum between indices $a = 2$ and
+$b = 5$, inclusive, in the 1-indexed $\texttt{arr}$. From looking at the
+original array, we see that this is
 
 $$
 \sum_{i=2}^{5} \texttt{arr}[i] = 6 + 4 + 2 + 5 = 17.
@@ -344,32 +193,34 @@ $\texttt{prefix}[i]$
 
 </center>
 
-These are also known as [partial sums](https://mathworld.wolfram.com/PartialSum.html).
+These are also known as
+[partial sums](https://mathworld.wolfram.com/PartialSum.html).
 
 <!-- ### Solution - Static Range Sum
 
 -->
 
-### Code
+## Solution - Static Range Sum
 
 <LanguageSection>
 
 <CPPSection>
 
-
-In C++ we can use [`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/), although it doesn't shorten the code by much.
+In C++ we can use
+[`std::partial_sum`](http://www.cplusplus.com/reference/numeric/partial_sum/),
+although it doesn't shorten the code by much.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 #define sz(x) (int)size(x)
 
 using ll = long long;
 using vl = vector<ll>;
 
 vl psum(const vl& a) {
-	vl psum(sz(a)+1); 
+	vl psum(sz(a)+1);
 	for (int i = 0; i < sz(a); ++i)
 		psum[i+1] = psum[i]+a[i];
 	// or partial_sum(begin(a),end(a),begin(psum)+1);
@@ -377,337 +228,113 @@ vl psum(const vl& a) {
 }
 
 int main() {
-	for (ll i: psum({1,2,3,4,5}))
-		cout << i << " ";
-	// 0 1 3 6 10 15
+	int N, Q;
+	cin >> N >> Q;
+	vl a(N);
+	for (ll& x: a)
+		cin >> x;
+	vl p = psum(a);
+	for (int i = 0; i < Q; ++i) {
+		int l, r;
+		cin >> l >> r;
+		cout << p[r] - p[l] << "\n";
+	}
 }
 ```
 
-
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+	static int N, Q;
+	public static void main(String[] args) throws IOException{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter writer = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(reader.readLine());
+		N = Integer.parseInt(st.nextToken());
+		Q = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(reader.readLine());
+		long[] a = new long[N];
+		for(int i = 0; i<N; i++){
+			a[i] = Long.parseLong(st.nextToken());
+		}
+
+		long[] p = psum(a);
+
+		for(int i = 0; i<Q; i++){
+			int l, r;
+			st = new StringTokenizer(reader.readLine());
+			l = Integer.parseInt(st.nextToken());
+			r = Integer.parseInt(st.nextToken());
+			writer.println(p[r]-p[l]);
+		}
+
+		reader.close();
+		writer.close();
+	}
+
+	public static long[] psum(long[] a){
+		long[] psums = new long[N+1];
+
+		for(int i = 0; i<N; i++){
+			psums[i+1] = psums[i] + a[i];
+		}
+
+		return psums;
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```python
+def psum(a):
+	psum=[0]
+	for i in a:
+		psum.append(psum[-1]+i) # psum[-1] is the last element in the list
+	return psum
+
+N, Q = map(int, input().split())
+a = list(map(int, input().split()))
+p = psum(a)
+
+for i in range(Q):
+	l, r = map(int, input().split())
+	print(p[r]-p[l])
+```
+
+</PySection>
 
 </LanguageSection>
 
+## Problems
 
-### Problems
+<Problems problems="cum" />
 
-<Problems problems={problems.cum} />
+<Info title="XOR">
+
+Check [Intro to Bitwise Operators](/plat/intro-bitwise) if you're not familiar
+with XOR.
+
+</Info>
+
+<!--
+
+Hint: The XOR of any number with itself is zero.
+
+-->
 
 <Warning>
 
-The last problem isn't submittable on USACO. Download the test data and use the script provided [here](/general/debugging#stress-testing) to test your solution.
+"Haybale Stacking" isn't submittable on the USACO website. Use
+[this link](https://www.spoj.com/problems/HAYBALE/) to submit.
 
 </Warning>
-
-## Max Subarray Sum
-
-Now we'll look at some extensions.
-
-<FocusProblem problem={problems.maxsum[0]} />
-
-This problem has a solution known as [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm). Please don't use that solution; try to solve it with prefix sums.
-
-<Spoiler title="Why are the two methods equivalent?">
-
-Consider the desired maximum subarray. As you go along from left to right, the prefix sum solution will mark the start of that subarray as the "current minimum prefix sum". Kadane's Algorithm, on the other hand, will set the current value to 0 at that point. As both solutions iterate through the array, they eventually find the right side of the maximum sum, and they find the answer to the problem at that location. In essence, Kadane's Algorithm stores the maximum sum of a subarray that ends at the current location (which is what the prefix sum solution calculates on each iteration), but it calculates this value greedily instead.
-
-</Spoiler>
-
-## Prefix Minimum, XOR, etc.
-
-<Resources title="Additional">
-	<Resource source="CPH" title="10.2 - Bit Operations" starred>
-		defines XOR
-	</Resource>
-</Resources>
-
-Similar to prefix sums, you can also take prefix minimum or maximum; but _you cannot_ answer min queries over an arbitrary range with prefix minimum. (This is because minimum doesn't have an inverse operation, the way subtraction is to addition.) On the other hand, XOR is its own inverse operation, meaning that the XOR of any number with itself is zero.
-
-<Problems problems={problems.related} />
-
-## 2D Prefix Sums
-
-<FocusProblem problem={problems.sample2[0]} />
-
-Now, what if we wanted to process $Q$ queries for the sum over a subrectangle of a $N$ rows by $M$ columns matrix in two dimensions? Let's assume both rows and columns are 1-indexed, and we use the following matrix as an example:
-
-<center>
-
-<table className="text-center">
-	<tbody>
-		<tr>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>5</td>
-			<td>6</td>
-			<td>11</td>
-			<td>8</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>7</td>
-			<td>11</td>
-			<td>9</td>
-			<td>4</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>4</td>
-			<td>6</td>
-			<td>1</td>
-			<td>3</td>
-			<td>2</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>7</td>
-			<td>5</td>
-			<td>4</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</tbody>
-</table>
-
-</center>
-
-Naively, each sum query would then take $\mathcal{O}(NM)$ time, for a total of $\mathcal{O}(QNM)$. This is too slow.
-
-Let's take the following example region, which we want to sum:
-
-<center>
-
-<table className="text-center">
-	<tbody>
-		<tr>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>5</td>
-			<td>6</td>
-			<td>11</td>
-			<td>8</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td className="bg-blue-100 dark:bg-blue-800">7</td>
-			<td className="bg-blue-100 dark:bg-blue-800">11</td>
-			<td className="bg-blue-100 dark:bg-blue-800">9</td>
-			<td>4</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>4</td>
-			<td className="bg-blue-100 dark:bg-blue-800">6</td>
-			<td className="bg-blue-100 dark:bg-blue-800">1</td>
-			<td className="bg-blue-100 dark:bg-blue-800">3</td>
-			<td>2</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>7</td>
-			<td>5</td>
-			<td>4</td>
-			<td>2</td>
-			<td>3</td>
-		</tr>
-	</tbody>
-</table>
-
-</center>
-
-Manually summing all the cells, we have a submatrix sum of $7+11+9+6+1+3 = 37$.
-
-The first logical optimization would be to do one-dimensional prefix sums of each row. Then, we'd have the following row-prefix sum matrix. The desired subarray sum of each row in our desired region is simply the green cell minus the red cell in that respective row. We do this for each row to get $(28-1) + (14-4) = 37$.
-
-<center>
-
-<table className="text-center">
-	<tbody>
-		<tr>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>1</td>
-			<td>6</td>
-			<td>12</td>
-			<td>23</td>
-			<td>31</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td className="bg-red-200 dark:bg-red-800">1</td>
-			<td>8</td>
-			<td>19</td>
-			<td className="bg-green-200 dark:bg-green-800">28</td>
-			<td>32</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td className="bg-red-200 dark:bg-red-800">4</td>
-			<td>10</td>
-			<td>11</td>
-			<td className="bg-green-200 dark:bg-green-800">14</td>
-			<td>16</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>7</td>
-			<td>12</td>
-			<td>16</td>
-			<td>18</td>
-			<td>21</td>
-		</tr>
-	</tbody>
-</table>
-
-</center>
-
-Now, if we wanted to find a submatrix sum, we could break up the submatrix into a subarray for each row, and then add their sums, which would be calculated using the prefix sums method described earlier. Since the matrix has $N$ rows, the time complexity of this is $\mathcal{O}(QN)$. This might be fast enough for $Q=10^5$ and $N=10^3$, but we can do better.
-
-In fact, we can do two-dimensional prefix sums. In our two dimensional prefix sum array, we have
-
-$$
-\texttt{prefix}[a][b]=\sum_{i=1}^{a} \sum_{j=1}^{b} \texttt{arr}[i][j].
-$$
-
-This can be calculated as follows for row index $1 \leq i \leq n$ and column index $1 \leq j \leq m$:
-
-$$
-\begin{aligned}
-\texttt{prefix}[i][j] =& \, \texttt{prefix}[i-1][j]+ \texttt{prefix}[i][j-1] \\
-    &- \texttt{prefix}[i-1][j-1]+ \texttt{arr}[i][j]
-\end{aligned}
-$$
-
-The submatrix sum between rows $a$ and $A$ and columns $b$ and $B$, can thus be expressed as follows:
-
-$$
-\begin{aligned}
-\sum_{i=a}^{A} \sum_{j=b}^{B} \texttt{arr}[i][j]=&\,\texttt{prefix}[A][B]
-        - \texttt{prefix}[a-1][B] \\
-        &- \texttt{prefix}[A][b-1] + \texttt{prefix}[a-1][b-1]
-\end{aligned}
-$$
-
-Summing the blue region from above using the 2D prefix sums method, we add the value of the green square, subtract the values of the red squares, and then add the value of the gray square. In this example, we have
-
-$$
-65-23-6+1 = 37,
-$$
-
-as expected.
-
-<center>
-
-<table className="text-center">
-	<tbody>
-		<tr>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td className="bg-gray-200 dark:bg-gray-700">1</td>
-			<td>6</td>
-			<td>12</td>
-			<td className="bg-red-200 dark:bg-red-800">23</td>
-			<td>31</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>2</td>
-			<td>14</td>
-			<td>31</td>
-			<td>51</td>
-			<td>63</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td className="bg-red-200 dark:bg-red-800">6</td>
-			<td>24</td>
-			<td>42</td>
-			<td className="bg-green-200 dark:bg-green-800">65</td>
-			<td>79</td>
-		</tr>
-		<tr>
-			<td>0</td>
-			<td>13</td>
-			<td>36</td>
-			<td>58</td>
-			<td>83</td>
-			<td>100</td>
-		</tr>
-	</tbody>
-</table>
-
-</center>
-
-Since no matter the size of the submatrix we are summing, we only need to access four values of the 2D prefix sum array, this runs in $\mathcal{O}(1)$ per query after an $\mathcal{O}(NM)$ preprocessing.
-
-<Problems problems={problems.cum2} />
-
-## More Complex Applications
-
-Instead of storing just the values themselves, you can also take a prefix sum over $i\cdot a_i$, or $10^i \cdot a_i$, for instance. Some math is usually helpful for these problems; don't be afraid to get dirty with algebra!
-
-For instance, we can quickly answer the following type of query:
-
-> Find $1\cdot a_l+2\cdot a_{l+1}+3\cdot a_{l+2}+\cdots+(r-l+1)\cdot a_{r}$.
-
-First, define the following:
-
-$$
-\texttt{ps}[i] = a_1+a_2+a_3+a_4+\cdots+a_i
-$$
-
-$$
-\texttt{ips}[i] = 1\cdot a_1+2\cdot a_2+\cdots+i\cdot a_i
-$$
-
-Then, we have:
-
-$$
-l\cdot a_l + (l+1) \cdot a_{l+1} + \cdots + r \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]
-$$
-
-$$
-(l-1) \cdot a_l + (l-1) \cdot a_{l+1} + \cdot + (l-1) \cdot a_r = (l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-And so,
-
-$$
-1\cdot a_l + 2 \cdot a_{l+1} + \cdots + (r-l+1) \cdot a_r = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{ps}[r]-\texttt{ps}[l-1])
-$$
-
-Which is what we were looking for!
-
-<Problems problems={problems.complex} />

@@ -2,22 +2,26 @@
 id: fast-io
 title: Fast Input & Output
 author: Benjamin Qi, Nathan Chen
-description: 'Speeding up I/O speeds can make a substantial difference in problems with large inputs.'
+description:
+  'Speeding up I/O speeds can make a substantial difference in problems with
+  large inputs.'
+prerequisites:
+  - io
 ---
 
-
-
-export const problems = {
-	general: [new Problem('Plat', 'Robotic Cow Herd', '674', 'Insane')],
-};
-
-Generally, input and output speed isn't an issue. However, some platinum tasks have relatively large input files. The [USACO Instructions Page](http://www.usaco.org/index.php?page=instructions) briefly mentions some ways of speeding up I/O; let's check that these actually make a difference.
+Generally, input and output speed isn't an issue. However, some platinum tasks
+have relatively large input files. The
+[USACO Instructions Page](http://www.usaco.org/index.php?page=instructions)
+briefly mentions some ways of speeding up I/O; let's check that these actually
+make a difference.
 
 ## Fast Input
 
-<FocusProblem problem={problems.general[0]} />
+<FocusProblem problem="roboherd" />
 
-The largest USACO input file we know of is test case 11 of **Robotic Cow Herd** (10.3 megabytes). The answer to this test case is $10^{18}$ (with $N=K=10^5$ and all microcontrollers costing $10^8$).
+The largest USACO input file we know of is test case 11 of **Robotic Cow Herd**
+(10.3 megabytes). The answer to this test case is $10^{18}$ (with $N=K=10^5$ and
+all microcontrollers costing $10^8$).
 
 <LanguageSection>
 
@@ -103,9 +107,11 @@ int main() { // 258 ms
 
 </Spoiler>
 
-### A Faster Method
+### Method 4: `fread` and `fwrite`
 
-If we use FastIO from [here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h) then the runtime is further reduced.
+Using `FastIO` from
+[here](https://github.com/bqi343/USACO/blob/master/Implementations/content/various/FastIO.h)
+further reduces the runtime.
 
 <Spoiler title="91ms">
 
@@ -129,11 +135,46 @@ int main() {
 
 </Spoiler>
 
-### Significance of `ios_base::sync_with_stdio(0); cin.tie(0);`
+### Optimizations
 
-Adding this immediately after `main()` significantly reduces the runtime of method 1.
+<Resources>
+	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
+		timing various I/O methods
+	</Resource>
+</Resources>
 
-<Spoiler title="254ms">
+#### `ios::sync_with_stdio(0)`
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
+		title="ios_base::sync_with_stdio"
+	>
+		documentation
+	</Resource>
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
+		title="Significance of ios_base::sync_with_stdio(false);"
+		starred
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+From the second resource:
+
+> This disables the synchronization between the C and C++ standard streams. By
+> default, all standard streams are synchronized, which in practice allows you
+> to mix C- and C++-style I/O and get sensible and expected results. If you
+> disable the synchronization, then C++ streams are allowed to have their own
+> independent buffers, which makes mixing C- and C++-style I/O an adventure.
+
+Adding this immediately after `main()` significantly reduces the runtime of
+method 1.
+
+<Spoiler title="299ms">
 
 ```cpp
 #include <bits/stdc++.h>
@@ -142,7 +183,7 @@ using namespace std;
 vector<int> P[100000];
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios::sync_with_stdio(0);
 	freopen("roboherd.in","r",stdin);
 	freopen("roboherd.out","w",stdout);
 	int N,K; cin >> N >> K;
@@ -157,38 +198,26 @@ int main() {
 
 </Spoiler>
 
-<Resources>
-	<Resource source="CF" url="5217" title="Yet again on C++ I/O" starred>
-		timing various I/O methods
-	</Resource>
-	<Resource
-		source="SO"
-		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
-		title="Significance of [above]"
-	>
-		{' '}
-	</Resource>
-	<Resource
-		source="CPP"
-		url="http://www.cplusplus.com/reference/ios/ios_base/sync_with_stdio/"
-		title="ios_base::sync_with_stdio"
-	>
-		documentation
-	</Resource>
-	<Resource
-		source="CPP"
-		url="http://www.cplusplus.com/reference/ios/ios/tie/"
-		title="ios::tie"
-	>
-		documentation
-	</Resource>
-</Resources>
-
-You may see `cin.sync_with_stdio(0);` used in place of `ios_base::sync_with_stdio(0);` but they should have the same effect.
+You may also see `cin.sync_with_stdio(0)` and `ios_base::sync_with_stdio(0)`.
+These function calls are all equivalent.
 
 <Warning>
 
-Actually, the first link says that it is supposedly prohibited to use `freopen` to redirect `cin` and `cout` if `ios_base::sync_with_stdio(0); cin.tie(0);` is included, but it works properly as far as I know.
+Make sure that this line comes before taking any input
+([Source](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio)).
+
+> If this function is called after I/O has occurred on the standard stream, the
+> behavior is implementation-defined: implementations range from no effect to
+> destroying the read buffer.
+
+</Warning>
+
+<Warning>
+
+You can no-longer mix C-style and C++-style I/O (ex. `scanf` vs `cin`) after
+including this line. In fact, as `freopen` is C-style I/O, it is supposedly
+prohibited to use `freopen` to redirect `cin` and `cout` if this line is
+included. But as far as I know, it works properly.
 
 </Warning>
 
@@ -196,9 +225,13 @@ Actually, the first link says that it is supposedly prohibited to use `freopen` 
 
 <JavaSection>
 
-Keep in mind that a Java program that only reads in $N$ and outputs a number takes 138ms on USACO.
+Keep in mind that a Java program that only reads in $N$ and outputs a number
+takes 138ms on USACO.
 
-[`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html) is probably the easiest way to read input in Java, though it is also extremely slow.
+### Method 1 - [`Scanner`](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html)
+
+Probably the easiest way to read input in Java, though it is also extremely
+slow.
 
 <Spoiler title="3188ms">
 
@@ -206,7 +239,6 @@ Keep in mind that a Java program that only reads in $N$ and outputs a number tak
 import java.util.*;
 import java.io.*;
 
-//3188ms
 public class roboherd_scanner {
 
 	static int P[][] = new int[100000][];
@@ -231,11 +263,16 @@ public class roboherd_scanner {
 
 </Spoiler>
 
-A common alternative to reading input for programming contests is [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html), which reads faster from a file than `Scanner`. `BufferedReader` reads line-by-line with the `.readLine()` method, which returns a string. Methods like `Integer.parseInt()` are used to convert strings into primitives, and they can directly convert a line into a number, like in `Integer.parseInt(br.readLine())`.
+### Method 2 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`.split()`](<https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#split(java.lang.String)>)
 
-Reading input is more complicated when multiple, space-separated values are placed in a single line. In order to individually read the values in each line, the programmer usually uses the `.split()` method in `String` or the `.nextToken()` in [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html). Notice that `StringTokenizer` for splitting strings is slightly faster than `.split()`. Apparently [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html) is even faster!
+`BufferedReader` reads line-by-line with the `.readLine()` method, which returns
+a string. Methods like `Integer.parseInt()` are used to convert strings into
+primitives, and they can directly convert a line into a number, like in
+`Integer.parseInt(br.readLine())`.
 
-_Reading input with `BufferedReader` and `.split()`_:
+Reading input is more complicated when multiple, space-separated values are
+placed in a single line. In order to individually read the values in each line,
+the programmer usually uses the `.split()` method in `String`.
 
 <Spoiler title="1209ms">
 
@@ -243,7 +280,6 @@ _Reading input with `BufferedReader` and `.split()`_:
 import java.util.*;
 import java.io.*;
 
-//1209ms
 public class roboherd_buffered_reader_string_split {
 
 	static int P[][] = new int[100000][];
@@ -270,7 +306,10 @@ public class roboherd_buffered_reader_string_split {
 
 </Spoiler>
 
-_Reading input with `BufferedReader` and `StringTokenizer`_:
+### Method 3 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StringTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/util/StringTokenizer.html)
+
+Notice that `StringTokenizer`'s `.nextToken()` for splitting strings is slightly
+faster than `.split()`.
 
 <Spoiler title="986ms">
 
@@ -278,14 +317,11 @@ _Reading input with `BufferedReader` and `StringTokenizer`_:
 import java.util.*;
 import java.io.*;
 
-//986ms
 public class roboherd_buffered_reader_string_tokenizer {
-
 	static int P[][] = new int[100000][];
-
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("roboherd.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out")));
+		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
@@ -305,7 +341,15 @@ public class roboherd_buffered_reader_string_tokenizer {
 
 </Spoiler>
 
-_Reading input with `BufferedReader` and `StreamTokenizer`_:
+As [`Kattio`](/general/io?lang=java#io-template) is just a wrapper around
+`BufferedReader` and `PrintWriter`, it performs similarly. This method is
+usually fast enough and doesn't require too much typing, so we recommend that
+you go with this.
+
+### Method 4 - [`BufferedReader`](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html) and [`StreamTokenizer`](https://docs.oracle.com/javase/8/docs/api/java/io/StreamTokenizer.html)
+
+Apparently this is even faster! Though properly reading in `long`s would require
+additional work (since they are interpreted as `double`s by default).
 
 <Spoiler title="569ms">
 
@@ -314,154 +358,139 @@ import java.util.*;
 import java.io.*;
 
 public class roboherd {
-    static int P[][] = new int[100000][];
-    static StreamTokenizer in;
-    static int nextInt() throws IOException{
-        in.nextToken();
-        return (int)in.nval;
-    }
-    public static void main(String[] args) throws Exception {
-        in = new StreamTokenizer(new BufferedReader(new FileReader("roboherd.in")));
-        PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
-
-        int N = nextInt();
-        int K = nextInt();
-        for(int i = 0; i < N; ++i) {
-            int M = nextInt(); P[i] = new int[M];
-            for(int j = 0; j < M; ++j) P[i][j] = nextInt();
-        }
-
-        if(N == 3) pw.println(61);
-        else pw.println(1000000000000000000L);
-        pw.close();
-    }
-}
-```
-
-</Spoiler>
-
-Faster methods of reading input exist too - Even faster than `BufferedReader` is a custom-written Fast I/O class that uses `InputStream`. Note that this custom class is similar to the custom-written `FastIO.h` in the C++ section, as both read input through a byte buffer. Despite the name of the class being "FastIO," it only reads input.
-
-<Spoiler title="320ms">
-
-```java
-import java.util.*;
-import java.io.*;
-
-//320ms
-public class roboherd_is {
-
 	static int P[][] = new int[100000][];
-
+	static StreamTokenizer in;
+	static int nextInt() throws IOException{
+		in.nextToken();
+		return (int)in.nval;
+	}
 	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO("roboherd.in");
+		in = new StreamTokenizer(new BufferedReader(new FileReader("roboherd.in")));
 		PrintWriter pw = new PrintWriter(new FileWriter("roboherd.out"));
 
-		int N = sc.nextInt();
-		int K = sc.nextInt();
+		int N = nextInt();
+		int K = nextInt();
 		for(int i = 0; i < N; ++i) {
-			int M = sc.nextInt(); P[i] = new int[M];
-			for(int j = 0; j < M; ++j) P[i][j] = sc.nextInt();
+			int M = nextInt(); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = nextInt();
 		}
 
 		if(N == 3) pw.println(61);
 		else pw.println(1000000000000000000L);
 		pw.close();
 	}
-
-	// new FastIO("file_name") to read a file
-	// new FastIO(System.in) to read from stdin
-	// has similar syntax to Scanner, though much faster :)
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
-
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		long nextLong() throws Exception {
-			long ret = 0;
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-
-	}
 }
 ```
 
 </Spoiler>
 
-The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary.
+### Method 5 - [`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html)
+
+Even faster than `BufferedReader` is a custom-written Fast I/O class that reads
+bytes directly from an `InputStream`, similarly as `FastIO.h` in the C++
+section.
+
+<Spoiler title="382ms">
+
+Based off several sources, including `Kattio`,
+[this](https://gist.github.com/xiaowuc1/df1f620b1c1d84365b7091d6c9cf5370), and
+[this](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/FastScanner.java).
+
+```java
+import java.io.*;
+import java.util.*;
+
+class FastIO extends PrintWriter {
+	private InputStream stream;
+	private byte[] buf = new byte[1<<16];
+	private int curChar, numChars;
+
+	// standard input
+	public FastIO() { this(System.in,System.out); }
+	public FastIO(InputStream i, OutputStream o) {
+		super(o);
+		stream = i;
+	}
+	// file input
+	public FastIO(String i, String o) throws IOException {
+		super(new FileWriter(o));
+		stream = new FileInputStream(i);
+	}
+
+	// throws InputMismatchException() if previously detected end of file
+	private int nextByte() {
+		if (numChars == -1) throw new InputMismatchException();
+		if (curChar >= numChars) {
+			curChar = 0;
+			try {
+				numChars = stream.read(buf);
+			} catch (IOException e) {
+				throw new InputMismatchException();
+			}
+			if (numChars == -1) return -1; // end of file
+		}
+		return buf[curChar++];
+	}
+
+	// to read in entire lines, replace c <= ' '
+	// with a function that checks whether c is a line break
+	public String next() {
+		int c; do { c = nextByte(); } while (c <= ' ');
+		StringBuilder res = new StringBuilder();
+		do { res.appendCodePoint(c); c = nextByte(); } while (c > ' ');
+		return res.toString();
+	}
+	public int nextInt() { // nextLong() would be implemented similarly
+		int c; do { c = nextByte(); } while (c <= ' ');
+		int sgn = 1; if (c == '-') { sgn = -1; c = nextByte(); }
+		int res = 0;
+		do {
+			if (c < '0' || c > '9')
+				throw new InputMismatchException();
+			res = 10*res+c-'0';
+			c = nextByte();
+		} while (c > ' ');
+		return res * sgn;
+	}
+	public double nextDouble() { return Double.parseDouble(next()); }
+}
+
+public class Main {
+	static int P[][] = new int[100000][];
+	public static void main(String[] args) throws Exception {
+		// String s = "roboherd";
+		// FastIO io = new FastIO(s+".in",s+".out");
+		FastIO io = new FastIO("roboherd.in","roboherd.out");
+		int N = io.nextInt();
+		int K = io.nextInt();
+		for(int i = 0; i < N; ++i) {
+			int M = io.nextInt(); P[i] = new int[M];
+			for(int j = 0; j < M; ++j) P[i][j] = io.nextInt();
+		}
+		if(N == 3) io.println(61);
+		else io.println(1000000000000000000L);
+		io.close();
+	}
+}
+```
+
+<Warning>
+
+Apparently, replacing line 64 with lines 62 and 63 results in a slowdown of
+~100ms.
+
+</Warning>
+
+</Spoiler>
+
+<!-- The most realistic input method to implement in contest is `BufferedReader`, as it is relatively fast for the amount of code necessary. -->
 
 </JavaSection>
 
 <PySection>
 
-Faster than the first C++ method! Significantly less if $P$ does not need to be stored.
+Faster than the first C++ method! Significantly less if $P$ does not need to be
+stored.
 
 <Spoiler title="853ms">
 
@@ -486,19 +515,262 @@ else:
 
 ## Fast Output
 
-In general, it may be faster to store the answer all in a single `string` (C++) or `StringBuilder` (Java) and outputting it with a single function call. This method avoids the overhead of calling an output method many times, especially if the output is generated in many parts.
+<FocusProblem problem="soldier" />
 
 <LanguageSection>
 
 <CPPSection>
 
-The CF blog mentioned above notes that when printing many lines in C++, it may be faster to use the newline character `\n` in place of `endl`. Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that they don't immediately print their output, but store some of it. At some point, the buffer's contents are written (i.e. "flushed") to the output device (e.g the standard output stream or a file). Buffering the output helps with efficiency if accessing the output device (like a file) is slow. Because `endl` flushes the output, it may be faster to use `\n` instead and avoid unnecessary flushes.
+The following solution has the right time complexity, but it TLEs despite
+including `cin.sync_with_stdio(0)`.
+
+<Spoiler title="TLE Test 3">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	cin.sync_with_stdio(0);
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; cin >> T;
+	for (int i = 0; i < T; ++i) {
+		int a,b; cin >> a >> b;
+		cout << factors[a]-factors[b] << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+Rewriting with `scanf` and `printf` is an option:
+
+<Spoiler title="2011ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; scanf("%d",&T);
+	for (int i = 0; i < T; ++i) {
+		int a,b; scanf("%d%d",&a,&b);
+		printf("%d\n",factors[a]-factors[b]);
+	}
+}
+```
+
+</Spoiler>
+
+But what if we want to stick with `cin` and `cout`?
+
+### Method 1 - Print a Single String
+
+In general, it may be faster to store the answer in a single `string` and output
+it with a single function call. This method avoids the overhead of calling an
+output method many times, especially if the output is generated in many parts.
+
+<Spoiler title="920 ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	cin.sync_with_stdio(0);
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; cin >> T;
+	string ans = "";
+	for (int i = 0; i < T; ++i) {
+		int a,b; cin >> a >> b;
+		ans += to_string(factors[a]-factors[b])+"\n";
+	}
+	cout << ans;
+}
+```
+
+</Spoiler>
+
+Note that the above TLEs on test 5 if `cin.sync_with_stdio(0)` is not included.
+
+Also, the change in runtime if we use `scanf` and `printf` appears to be
+negligible.
+
+<Spoiler title="2027 ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; scanf("%d",&T);
+	string ans;
+	for (int i = 0; i < T; ++i) {
+		int a,b; scanf("%d%d",&a,&b);
+		ans += to_string(factors[a]-factors[b])+"\n";
+	}
+	printf("%s",ans.c_str());
+}
+```
+
+</Spoiler>
+
+### Method 2 - `cin.tie(0)`
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/ios/ios/tie/"
+		title="ios::tie"
+	>
+		documentation
+	</Resource>
+	<Resource
+		source="SO"
+		url="https://stackoverflow.com/questions/31162367/significance-of-ios-basesync-with-stdiofalse-cin-tienull"
+		title="Significance of cin.tie(NULL);"
+		starred
+	>
+		{' '}
+	</Resource>
+</Resources>
+
+From the second resource:
+
+> This unties `cin` from `cout`. Tied streams ensure that one stream is flushed
+> automatically before each I/O operation on the other stream.
+>
+> By default `cin` is tied to `cout` to ensure a sensible user interaction. For
+> example:
+>
+> ```cpp
+> std::cout << "Enter name:";
+> std::cin >> name;
+> ```
+>
+> If `cin` and `cout` are tied, you can expect the output to be flushed (i.e.,
+> visible on the console) before the program prompts input from the user. If you
+> untie the streams, the program might block waiting for the user to enter their
+> name but the "Enter name" message is not yet visible (because `cout` is
+> buffered by default, output is flushed/displayed on the console only on demand
+> or when the buffer is full).
+>
+> So if you untie `cin` from `cout`, you must make sure to flush `cout` manually
+> every time you want to display something before expecting input on `cin`.
+
+<Spoiler title="1076 ms">
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cur[5000005], factors[5000005];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	for (int i = 1; i <= 5000000; ++i) cur[i] = i;
+	for (int i = 1; i <= 5000000; ++i) if (cur[i] > 1)
+		for (int j = i; j <= 5000000; j += i)
+			while (cur[j]%i == 0) {
+				cur[j] /= i;
+				++factors[j];
+			}
+	for (int i = 1; i <= 5000000; ++i) factors[i] += factors[i-1];
+	int T; cin >> T;
+	for (int i = 0; i < T; ++i) {
+		int a,b; cin >> a >> b;
+		cout << factors[a]-factors[b] << "\n";
+	}
+}
+```
+
+</Spoiler>
+
+<Info title="cin.tie(0)->sync_with_stdio(0);">
+
+In the above line of code, `cin.tie(0)` returns the stream that was previously
+tied to `cin` (`cout`). So this is essentially equivalent to:
+
+```cpp
+cin.tie(0), cout.sync_with_stdio(0);
+```
+
+</Info>
+
+Output streams in C++ (such as `cout` and `ofstream`) are buffered, meaning that
+they don't immediately print their output, but store some of it. At some point,
+the buffer's contents are written (i.e.
+["flushed"](https://stackoverflow.com/questions/213907/stdendl-vs-n)) to the
+output device (e.g the standard output stream or a file). Buffering the output
+helps with efficiency if accessing the output device (like a file) is slow.
+
+Because `endl` always flushes the output, using `\n` instead may avoid
+unnecessary flushes.
+
+- With `endl` in place of `\n`, the above code TLEs on test 3.
+- `\n` may also flush the output if `cin.tie(0)` is not present, so removing
+  `cin.tie(0)` from the above code also TLEs on test 3.
+
+<Warning title="cout.tie(0)">
+
+You may see some competitive programmers including this line. This doesn't
+actually do anything since `cout` isn't tied to anything ...
+
+</Warning>
 
 </CPPSection>
 
 <JavaSection>
 
-When printing to the standard output stream in Java, it is faster to use `new PrintWriter(System.out)` than `System.out`. The syntax for `PrintWriter` is equivalent to that of `System.out` so it should be easy to use. The only difference is that one has to call `.flush()` or `.close()` on the `PrintWriter` at the very end of the program in order to write the output.
+In general, it may be faster to store the answer in a single `StringBuilder` and
+output it with a single function call. This method avoids the overhead of
+calling an output method many times, especially if the output is generated in
+many parts.
+
+When printing to the standard output stream in Java, it is faster to use
+`new PrintWriter(System.out)` than `System.out` (as all the methods above do).
+The syntax for `PrintWriter` is equivalent to that of `System.out` so it should
+be easy to use. The only difference is that one has to call `.flush()` or
+`.close()` on the `PrintWriter` at the very end of the program in order to write
+the output.
 
 </JavaSection>
 

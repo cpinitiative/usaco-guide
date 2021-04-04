@@ -1,8 +1,9 @@
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/id_to_sol';
+import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
 import { books } from '../utils/books';
+import { slug } from 'github-slugger';
 
-const contests = {
+export const contests = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
   CCO: ['DMOJ', 'Canadian Computing Olympiad'],
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
@@ -18,7 +19,7 @@ const contests = {
   'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
 };
 
-const probSources = {
+export const probSources = {
   'Old Bronze': [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
@@ -73,7 +74,7 @@ const probSources = {
   ],
   DMOJ: [
     'https://dmoj.ca/problem/',
-    'Don Mills Online Judge',
+    'DMOJ: Modern Online Judge',
     'There might be a "Read Editorial" button on the right side of the page.',
   ],
   FHC: [
@@ -107,6 +108,155 @@ const probSources = {
 //   hover = 'The editorial tab should be right next to the problem tab.';
 // }
 
+export type ProblemInfo = {
+  /**
+   * Unique ID of the problem. For convenience, this is equivalent to the URL of the problem.
+   * However, if we ever change the URL of the problem (in case the first URL breaks), do NOT
+   * modify uniqueID. Keep it the same as the old URL.
+   */
+  uniqueId: string;
+  name: string;
+  url: string;
+  /**
+   * Source of the problem. More information about some problem sources can be found in the probSources map.
+   */
+  source: string;
+  difficulty: ProblemDifficulty;
+  /**
+   * In the context of a module, true if the problem is starred. False otherwise.
+   */
+  isStarred: boolean;
+  tags: string[];
+  solution: ProblemSolutionInfo;
+};
+
+export type ProblemSolutionInfo =
+  | {
+      kind: 'internal';
+      // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
+    }
+  | {
+      kind: 'link';
+      /**
+       * Ex: External Sol or CPH 5.3
+       */
+      label: string;
+      url: string;
+    }
+  | {
+      /*
+ If the label is just text. Used for certain sources like CodeForces
+ Ex:
+  - label = Check CF
+  - labelTooltip = "Check content materials, located to the right of the problem statement
+ */
+      kind: 'label';
+      label: string;
+      labelTooltip: string | null;
+    }
+  | {
+      /*
+Not recommended -- use internal solutions instead.
+Used if there's a super short solution sketch that's not a full editorial.
+Latex *is* allowed with the new implementation of problems.
+*/
+      kind: 'sketch';
+      sketch: string;
+    }
+  | null; // null if there's no solution for this problem
+
+export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
+  objectID: string;
+  problemModules: {
+    id: string;
+    title: string;
+  }[];
+};
+
+export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
+  solutionMetadata:
+    | {
+        // auto generate problem solution label based off of the given site
+        // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+        kind: 'autogen-label-from-site';
+        // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+        site: string;
+      }
+    | {
+        // internal solution
+        kind: 'internal';
+      }
+    | {
+        // URL solution
+        // Use this for links to PDF solutions, etc
+        kind: 'link';
+        url: string;
+      }
+    | {
+        // Competitive Programming Handbook
+        // Ex: 5.3 or something
+        kind: 'CPH';
+        section: string;
+      }
+    | {
+        // USACO solution, generates it based off of the USACO problem ID
+        // ex. 1113 is mapped to sol_prob1_gold_feb21.html
+        kind: 'USACO';
+        usacoId: number;
+      }
+    | {
+        // IOI solution, generates it based off of the year
+        // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+        kind: 'IOI';
+        year: number;
+      }
+    | {
+        // no solution exists
+        kind: 'none';
+      }
+    | {
+        // for focus problems, when the solution is presented in the module of the problem
+        kind: 'in-module';
+        moduleId: string;
+      }
+    | {
+        kind: 'sketch';
+        sketch: string;
+      };
+};
+
+// Checks if a given source is USACO
+const isUsaco = source => {
+  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
+  for (let ind = 0; ind < posi.length; ++ind) {
+    if (source.includes(posi[ind])) return true;
+  }
+  if (source.startsWith('20')) {
+    // I think this is for the division list -- the source in this case is like 2015 December or something
+    const posi = ['December', 'January', 'February', 'US Open'];
+    for (let ind = 0; ind < posi.length; ++ind) {
+      if (source.endsWith(posi[ind])) return true;
+    }
+  }
+  return false;
+};
+
+export function getProblemURL(
+  problem: Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'> & {
+    [x: string]: any;
+  }
+) {
+  // USACO and CSES sometimes have duplicate problem names
+  // so we should add the ID to the URL
+  return `/problems/${
+    isUsaco(problem.source) || problem.source === 'CSES'
+      ? problem.uniqueId
+      : slug(problem.source)
+  }-${slug(problem.name.replace(' - ', ''))}`;
+}
+
+// legacy code follows
+
 type ProblemSolution = {
   kind: 'internal' | 'link' | 'text' | 'sketch';
 
@@ -131,13 +281,6 @@ type ProblemSolution = {
   sketch?: string;
 };
 
-const isUsaco = source => {
-  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-  for (let ind = 0; ind < posi.length; ++ind) {
-    if (source.includes(posi[ind])) return true;
-  }
-  return false;
-};
 const isExternal = link => {
   return link.startsWith('http');
 };
@@ -150,12 +293,68 @@ export class Problem {
   public solution: ProblemSolution | null = null;
   public hover: string = '';
   public tooltipHoverDescription: string | null;
+  public solutionMetadata: any;
 
   get uniqueID() {
-    return this.url;
+    let id;
+    if (
+      ['Bronze', 'Silver', 'Gold', 'Plat'].some(
+        x => this.source.indexOf(x) !== -1
+      )
+    ) {
+      // is usaco
+      id = `usaco-${this.id}`;
+    } else if (this.source === 'CSES') {
+      id = `cses-${this.id}`;
+    } else if (this.source === 'Kattis' && !this.id.startsWith('http')) {
+      id = `kattis-${this.id}`;
+    } else if (this.source === 'CF') {
+      let num = this.id.match(/([0-9]+)/g)[0];
+      let char = this.id.match(/\/([A-z0-9]+)$/)[1];
+      if (this.id.indexOf('gym') !== -1) {
+        id = `cfgym-${num}${char}`;
+      } else {
+        id = `cf-${num}${char}`;
+      }
+    } else {
+      const camelCase = x => {
+        if (x.match(/^[0-9]{4}/) !== null) {
+          return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
+        }
+        x = x.replace(/[^\w\s]/g, '');
+        let str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+          return word.toUpperCase();
+        });
+        if (str.split(' ').length === 1) {
+          return str.toLowerCase();
+        } else {
+          return str.replace(/\s+/g, '');
+        }
+      };
+      if (this.source === 'Baltic OI') {
+        id = `baltic-${camelCase(this.name)}`;
+      } else if (this.source === 'Balkan OI') {
+        id = `balkan-${camelCase(this.name)}`;
+      } else {
+        id = `${camelCase(this.source)}-${camelCase(this.name)}`;
+      }
+    }
+    let extra = '';
+    if (this.solutionMetadata?.kind === 'internal') {
+      if (this.solID !== id) {
+        extra += '   [Current Sol ID: ' + this.solID + ']';
+      }
+    }
+    console.log(`${id}${extra}`);
+    // console.log(this.source, id);
+    return id;
   }
 
   private autoGenerateInfoFromSource() {
+    if (!(this.source in probSources) && isUsaco(this.source)) {
+      this.url = probSources['Bronze'][0] + this.url;
+      return;
+    }
     if (this.source in probSources) {
       if (!this.url.startsWith('http')) {
         if (
@@ -165,7 +364,7 @@ export class Problem {
             this.url.startsWith('gym') ||
             this.url.startsWith('edu'))
         )
-          this.url = 'http://codeforces.com/' + this.url;
+          this.url = 'https://codeforces.com/' + this.url;
         else this.url = probSources[this.source][0] + this.url;
       }
       this.tooltipHoverDescription = probSources[this.source][1];
@@ -189,9 +388,15 @@ export class Problem {
 
   private tryAutoGeneratingSolution() {
     let autoGeneratedSolURL = null;
+    // console.log("AUTO GENERATE WITH ID",this.id)
     if (isUsaco(this.source) && this.id in id_to_sol) {
       autoGeneratedSolURL =
         `http://www.usaco.org/current/data/` + id_to_sol[this.id];
+      this.solutionMetadata = {
+        kind: 'USACO',
+        usacoId: this.id,
+      };
+      // console.log("GENERATED",autoGeneratedSolURL);
     } else if (this.source == 'IOI') {
       for (let i = 1994; i <= 2017; ++i) {
         let des = i.toString();
@@ -199,6 +404,10 @@ export class Problem {
           let num = i - 1994 + 20;
           autoGeneratedSolURL =
             `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+          this.solutionMetadata = {
+            kind: 'IOI',
+            usacoId: i,
+          };
           break;
         }
       }
@@ -210,11 +419,16 @@ export class Problem {
             let num = i - 1994 + 20;
             autoGeneratedSolURL =
               `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
+            this.solutionMetadata = {
+              kind: 'IOI',
+              usacoId: i,
+            };
             break;
           }
         }
       }
     }
+    // console.log("HA",this.source,autoGeneratedSolURL)
     if (autoGeneratedSolURL !== null) {
       this.solution = {
         kind: 'link',
@@ -228,7 +442,12 @@ export class Problem {
           label: 'Check ' + this.source,
           labelTooltip: probSources[this.source][2],
         };
+        this.solutionMetadata = {
+          kind: 'autogen-label-from-site',
+          site: this.source,
+        };
       } else {
+        // this isn't necessary -- can just use hasOwnProperty instead of in
         for (let source in probSources)
           if (
             probSources[source].length == 3 &&
@@ -238,6 +457,10 @@ export class Problem {
               kind: 'text',
               label: 'Check ' + source,
               labelTooltip: probSources[source][2],
+            };
+            this.solutionMetadata = {
+              kind: 'autogen-label-from-site',
+              site: source,
             };
             break;
           }
@@ -249,33 +472,44 @@ export class Problem {
     public source: string,
     public name: string,
     public id: string,
-    public difficulty?:
-      | 'Very Easy'
-      | 'Easy'
-      | 'Normal'
-      | 'Hard'
-      | 'Very Hard'
-      | 'Insane'
-      | null,
+    public difficulty?: ProblemDifficulty | null,
     public starred?: boolean,
     public tags?: string[],
     public solID?: string,
-    public solQuality: 'bad' | 'ok' | 'good' = 'ok'
+    public solQuality: 'bad' | 'ok' | 'good' = 'ok',
+    public fraction?: number,
+    public moduleLink?: string
   ) {
     this.url = id;
+    this.starred = this.starred ?? false;
 
     this.autoGenerateInfoFromSource();
     solID = solID || '';
+    // console.log("WHOOPS",solID);
+    // if (solID.startsWith('/')) {
+    //   this.solution = {
+    //     kind: 'link',
+    //     url: `${solID}`,
+    //     label: 'Link',
+    //   };
+    // }
     if (isInternal(solID)) {
       this.solution = {
         kind: 'internal',
         url: `/solutions/${solID}`,
+      };
+      this.solutionMetadata = {
+        kind: 'internal',
       };
     } else if (isExternal(solID)) {
       this.solution = {
         kind: 'link',
         url: solID,
         label: 'External Sol',
+      };
+      this.solutionMetadata = {
+        kind: 'link',
+        url: solID,
       };
     } else if (solID.startsWith('@CPH')) {
       const getSec = (dictKey, book, sec) => {
@@ -294,16 +528,32 @@ export class Problem {
         label: solID.substring(1),
         url: cphUrl,
       };
+      this.solutionMetadata = {
+        kind: 'CPH',
+        section: solID.substring(5),
+      };
     } else if (solID.startsWith('@')) {
       let solMsg = null;
       if (solID == '@@') {
         // empty solution
+        this.solutionMetadata = {
+          kind: 'none',
+        };
       } else if (solID == '@B') {
         solMsg = 'Below'; // solution later in module
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
       } else {
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
         solMsg = solID.substring(1); // custom message
       }
       if (solMsg) {
+        this.solutionMetadata = {
+          kind: 'in-module',
+        };
         this.solution = {
           kind: 'text',
           label: solMsg,
@@ -311,7 +561,12 @@ export class Problem {
       }
     } else {
       this.tryAutoGeneratingSolution();
+      // console.log(this.solution);
       if (solID && !this.solution) {
+        this.solutionMetadata = {
+          kind: 'sketch',
+          sketch: solID,
+        };
         // only try sketch if all else fails
         this.solution = {
           kind: 'sketch',
@@ -338,3 +593,27 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
   'Skipped',
   'Ignored',
 ];
+
+export type ProblemDifficulty =
+  | 'Very Easy'
+  | 'Easy'
+  | 'Normal'
+  | 'Hard'
+  | 'Very Hard'
+  | 'Insane';
+export const PROBLEM_DIFFICULTY_OPTIONS: ProblemDifficulty[] = [
+  'Very Easy',
+  'Easy',
+  'Normal',
+  'Hard',
+  'Very Hard',
+  'Insane',
+];
+
+export type ProblemFeedback = {
+  difficulty: ProblemDifficulty | null;
+  tags: string[];
+  solutionCode: string;
+  isCodePublic: boolean;
+  otherFeedback: string;
+};

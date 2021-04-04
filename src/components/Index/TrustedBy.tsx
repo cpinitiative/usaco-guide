@@ -3,24 +3,19 @@ import useFirebase from '../../hooks/useFirebase';
 import { useEffect, useState } from 'react';
 
 export default function TrustedBy() {
-  const [numUsers, setNumUsers] = useState('.');
-  const [numPageviews, setNumPageviews] = useState('.');
-  const [numStars, setNumStars] = useState('.');
+  const [numUsers, setNumUsers] = useState(-1);
+  const [numPageviews, setNumPageviews] = useState(-1);
+  const [numStars, setNumStars] = useState(-1);
   useEffect(() => {
     fetch('https://usaco-guide.firebaseio.com/pageviews.json')
       .then(resp => resp.json())
       .then(pageviews => {
-        setNumPageviews(Math.floor(parseInt(pageviews) / 1000) + 'k');
+        setNumPageviews(parseInt(pageviews));
       });
     fetch('https://usaco-guide.firebaseio.com/num_users.json')
       .then(resp => resp.json())
       .then(numUsers => {
-        setNumUsers(
-          Math.floor(numUsers / 1000) +
-            '.' +
-            Math.floor((numUsers % 1000) / 100) +
-            'k'
-        );
+        setNumUsers(parseInt(numUsers));
       });
     fetch('https://api.github.com/repos/cpinitiative/usaco-guide')
       .then(resp => resp.json())
@@ -28,6 +23,16 @@ export default function TrustedBy() {
         setNumStars(data.stargazers_count);
       });
   }, []);
+
+  const usersText =
+    Math.floor(numUsers / 1000) +
+    '.' +
+    Math.floor((numUsers % 1000) / 100) +
+    'k';
+  const pageviewsText =
+    numPageviews >= 1000000
+      ? (numPageviews / 1000000).toFixed(2) + 'M'
+      : Math.floor(numPageviews / 1000) + 'k';
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 pt-12 sm:pt-16">
@@ -53,11 +58,14 @@ export default function TrustedBy() {
                     Registered Users
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
-                      numUsers === '.' ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
+                      numUsers === -1 ? 'opacity-0' : 'opacity-100'
+                    } transition`}
+                    title={
+                      numUsers !== -1 ? `${numUsers} registered users` : null
+                    }
                   >
-                    {numUsers}
+                    {usersText}
                   </dd>
                 </div>
                 <div className="flex flex-col border-t border-b border-gray-100 dark:border-gray-700 p-6 text-center sm:border-0 sm:border-l sm:border-r">
@@ -65,11 +73,14 @@ export default function TrustedBy() {
                     Pageviews
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
-                      numPageviews === '.' ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
+                      numPageviews === -1 ? 'opacity-0' : 'opacity-100'
+                    } transition`}
+                    title={
+                      numPageviews !== -1 ? `${numPageviews} pageviews` : null
+                    }
                   >
-                    {numPageviews}
+                    {pageviewsText}
                   </dd>
                 </div>
                 <div className="flex flex-col border-t border-gray-100 dark:border-gray-700 p-6 text-center sm:border-0 sm:border-l">
@@ -77,9 +88,9 @@ export default function TrustedBy() {
                     Github Stars
                   </dt>
                   <dd
-                    className={`order-1 text-5xl font-extrabold text-blue-600 dark:text-blue-300 ${
-                      numStars === '.' ? 'opacity-0' : 'opacity-100'
-                    } transition duration-150 ease-in-out`}
+                    className={`order-1 text-5xl leading-normal font-extrabold text-blue-600 dark:text-blue-300 ${
+                      numStars === -1 ? 'opacity-0' : 'opacity-100'
+                    } transition`}
                   >
                     {numStars}
                   </dd>

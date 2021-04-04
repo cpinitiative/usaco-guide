@@ -22,8 +22,14 @@ export const IncompleteSection = ({ children }) => {
             This section is not complete.
           </h3>
           <div className="mt-2 text-sm leading-5 text-red-700 no-bottom-margin dark:text-red-300">
-            Feel free to file a request to complete this using the "Contact Us"
-            button. <br />
+            Any help would be appreciated! Just submit a Pull Request on{' '}
+            <a
+              href="https://github.com/cpinitiative/usaco-guide"
+              target="_blank"
+            >
+              Github
+            </a>
+            . <br />
             <i>{children}</i>
           </div>
         </div>
