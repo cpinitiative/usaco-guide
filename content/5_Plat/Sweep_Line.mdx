@@ -71,15 +71,16 @@ TC 760 ComponentsForever -->
 
 ## Radial Sweep
 
-Instead of a vertical line sweeping the plane from left to right, **radial sweep**
-involves a ray that rotates around a central point (like a radar screen):
+Instead of a vertical line sweeping the plane from left to right, **radial
+sweep** involves a ray that rotates around a central point (like a radar
+screen):
 
 ![Radar screen gif](https://i.gifer.com/7jnn.gif)
 
 In this case, we sort points/events by their
-[bearing](https://en.wikipedia.org/wiki/Bearing_(angle)) instead of by their x-
-and y-coordinates. Besides that, the mechanics are the same as those of normal
-line sweep.
+[bearing](<https://en.wikipedia.org/wiki/Bearing_(angle)>) instead of by their
+x- and y-coordinates. Besides that, the mechanics are the same as those of
+normal line sweep.
 
 <FocusProblem problem="radialSam" />
 
@@ -87,16 +88,16 @@ line sweep.
 
 **Complexity:** $\mathcal O(N + Rp_i \log R)$
 
-In this problem, there are three types of events: when our ray hits a fence post,
-enters a rock, or exits a rock.
+In this problem, there are three types of events: when our ray hits a fence
+post, enters a rock, or exits a rock.
 
 The second and third types of events can be found for each rock by sorting the
 rays to its vertices by bearing and then taking the two endpoints of the sorted
 list. These two rays are the two tangents to the rock.
 
 We can then perform a radial sweep to find the fence posts that Farmer Don can
-see - these fence posts are simply the ones where the number of type-2 and type-3
-events we've processed so far are equal.
+see - these fence posts are simply the ones where the number of type-2 and
+type-3 events we've processed so far are equal.
 
 Note that some optimizations (e.g. inserting fence posts in a specific order to
 avoid sorting) may be required to get 100 points.
