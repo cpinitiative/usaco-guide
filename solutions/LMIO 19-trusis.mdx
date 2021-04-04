@@ -90,7 +90,7 @@ int main() {
 	for (int p = 0; p < pole_num; p++) {
 		std::cin >> poles[p];
 	}
-	
+
 	vector<int> poss_unchanged;
 	for (int i = 1; i <= pole_num; i++) {
 		// only add if it has any hope of being unchanged
@@ -119,7 +119,7 @@ public class triusis {  // any other name breaks the grader lmao
 		StringTokenizer inital = new StringTokenizer(read.readLine());
 		int poleNum = Integer.parseInt(inital.nextToken());
 		int jumpHeight = Integer.parseInt(inital.nextToken());
-		
+
 		ArrayList<Integer> possUnchanged = new ArrayList<>();
 		for (int p = 0; p < poleNum; p++) {
 			int pole = Integer.parseInt(read.readLine());
@@ -207,21 +207,29 @@ down and at most $M$ units up?
 <Spoiler title="Spoiler">
 
 Let $b_i$ be as defined above, and let $c_i=M\cdot i+a_i$. Then we should have
-both both
+both $b_{i_j}\le b_{i_{j+1}}$ and $c_{i_j}\le c_{i_{j+1}}$.
+
+So it suffices to find the maximum number of distinct triples of the form
+$(i,b_i,c_i)$ such that
 
 $$
-b_{i_j}\le b_{i_{j+1}}
+(i_1,b_{i_1},c_{i_1})\ll (i_2,b_{i_2},c_{i_2})\ll \cdots \ll (i_k,b_{i_k},c_{i_k}),
 $$
 
-and
+where $(x_1,x_2,x_3)\ll (y_1,y_2,y_3)$ means that $x_j\le y_j$ for $j\in [1,3]$.
+First, let's drop the first element of each triple. The answer remains the same
+since $b_{i_j}\le b_{i_{j+1}}$ and $c_{i_j}\le c_{i_{j+1}}$ together imply that
+$i_j\le i_{j+1}$.
+
+So now the problem is to find the maximum number of distinct pairs of the form
+$(b_i,c_i)$ such that
 
 $$
-c_{i_j}\le c_{i_{j+1}}
+(b_{i_1},c_{i_1})\ll (b_{i_2},c_{i_2})\ll \cdots \ll (b_{i_k},c_{i_k}),
 $$
 
-Note that it is impossible for both of these conditions to hold if
-$i_j>i_{j+1}$. To finish, we can just sort the points $(b_i,c_i)$ in
-lexicographical order for each $1\le i\le N$ and run an LIS algorithm on the
-$y$-coordinates.
+This can be done by sorting the points $(b_i,c_i)$ in increasing order of
+$b$-coordinate (tiebreaking by $c$-coordinate), and running an LIS algorithm on
+the $c$-coordinates.
 
 </Spoiler>
