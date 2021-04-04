@@ -142,7 +142,9 @@ export function usePostActions(groupId: string) {
       problem: GroupProblemData,
       submission: Partial<Submission>
     ) => {
-      setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
+      if (problem.usacoGuideId) {
+        setUserProgressOnProblems(problem.usacoGuideId, 'Solved');
+      }
       const doc = await firebase
         .firestore()
         .collection('groups')
