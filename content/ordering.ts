@@ -124,7 +124,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis'],
+      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis', 'dp-bitmasks', 'dp-ranges'],
     },
     {
       name: 'Graphs',
@@ -171,7 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'DC-DP'],
+      items: ['DC-DP'],
     },
     {
       name: 'Misc. Topics',
