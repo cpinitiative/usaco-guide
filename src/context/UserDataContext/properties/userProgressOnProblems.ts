@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
 import { ProblemInfo, ProblemProgress } from '../../../models/problem';
 import problemURLToIdMap from './problemURLToIdMap';
@@ -114,28 +115,48 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
           // being out of sync.
           this.initializeFromLocalStorage();
         }
+        try {
+          this.activityValue.push({
+            timestamp: Date.now(),
+            problemID: problemId,
+            problemProgress: status,
+          });
+          this.progressValue[problemId] = status;
 
-        this.activityValue.push({
-          timestamp: Date.now(),
-          problemID: problemId,
-          problemProgress: status,
-        });
-        this.progressValue[problemId] = status;
-
-        if (this.firebaseUserDoc) {
-          this.firebaseUserDoc.set(
-            {
-              [this.progressStorageKey]: {
-                [problemId]: status,
+          if (this.firebaseUserDoc) {
+            this.firebaseUserDoc.set(
+              {
+                [this.progressStorageKey]: {
+                  [problemId]: status,
+                },
+                [this.activityStorageKey]: this.activityValue,
               },
-              [this.activityStorageKey]: this.activityValue,
+              { merge: true }
+            );
+          }
+
+          this.writeValueToLocalStorage();
+          this.triggerRerender();
+        } catch (e) {
+          Sentry.captureException(e, {
+            extra: {
+              status,
+              problemId,
+              activityValue: this.activityValue,
+              fbData: {
+                [this.progressStorageKey]: {
+                  [problemId]: status,
+                },
+                [this.activityStorageKey]: this.activityValue,
+              },
+              thisValue: { ...this },
             },
-            { merge: true }
+          });
+
+          alert(
+            "We're sorry, but an error occurred. This error has been automatically sent to us, but you can email us to provide details if you wish."
           );
         }
-
-        this.writeValueToLocalStorage();
-        this.triggerRerender();
       },
     };
   };
