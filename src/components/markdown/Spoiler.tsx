@@ -30,7 +30,7 @@ const Spoiler = ({ children, title }) => {
         children: ogProps.children,
         mdxType: 'LanguageSection',
         originalType: ogProps.originalType,
-        expandable: false,
+        isCodeBlockExpandable: false,
       });
     } else {
       return child;
