@@ -200,15 +200,15 @@ def find_lis(arr: List[int]) -> int:
 
 Note that the following solution assumes knowledge of a basic PURQ data structure for RMQ. Suitable implementations include a segment tree or a modified Fenwick tree, but both of these are generally considered Platinum level topics. However, this solution has the advantage of being more intuitive if you're deriving LIS on the spot. 
 
-Let $\text{dp}[k]$ be the length of the LIS of $\text{a}$ that ends with the element $k \in \text{a}.$  Our base case is obviously $\text{dp}[a[0]] = 1$ (we have an LIS containing only $\text{a}[0],$ which has length $1$). Since LIS exhibits optimal substructure, we transition as follows, processing $\forall t \in \text{a}[1 \dots n-1]$ from left to right (which we must do in order to maintain the property that our subsequence strictly increases in this direction):
+Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element $k \in a.$  Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS containing only $a[0],$ which has length $1$). Since LIS exhibits optimal substructure, we transition as follows, processing $\forall t \in a[1 \dots n-1]$ from left to right (which we must do in order to maintain the property that our subsequence strictly increases in this direction):
 
 $$
-\text{dp}[t] = \max_{0 \leq k < t} \text{dp}[k] + 1.
+\texttt{dp}[t] = \max_{0 \leq k < t} \texttt{dp}[k] + 1.
 $$
 
-If $\text{dp}$ is now a RMQ data structure, the change in $\text{dp}[t]$ is merely a point update, while the calculation of $\max\limits_{0 \leq k < t} \text{dp}[k]$ is a range query. 
+If $\texttt{dp}$ is now a RMQ data structure, the change in $\texttt{dp}[t]$ is merely a point update, while the calculation of $\max\limits_{0 \leq k < t} \texttt{dp}[k]$ is a range query. 
 
-Our final answer is just an RMQ from end to end (or, alternatively, you could keep a running max of the answer in another variable and change it with each update). This method actually gives us the leisure to process online as long as our elements are small enough to be used as indices, or if we use a more advanced data structure such as a sparse segment tree. If we are willing to process offline as we often can, however, we can avoid using a more advanced technique: it suffices to collect the array elements and sort them to coordinate compress, creating $\text{dp}$ with those compressed IDs instead.
+Our final answer is just an RMQ from end to end (or, alternatively, you could keep a running max of the answer in another variable and change it with each update). This method actually gives us the leisure to process online as long as our elements are small enough to be used as indices, or if we use a more advanced data structure such as a sparse segment tree. If we are willing to process offline as we often can, however, we can avoid using a more advanced technique: it suffices to collect the array elements and sort them to coordinate compress, creating $\texttt{dp}$ with those compressed IDs instead.
 
 My implementation is below:
 
