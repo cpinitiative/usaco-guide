@@ -5,7 +5,7 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
-const expand = props.expandable === undefined;
+const expand = props.isCodeBlockExpandable === undefined;
 
   const sections = {};
   React.Children.map(props.children, child => {
@@ -14,7 +14,7 @@ const expand = props.expandable === undefined;
       children: oldChild.props.children,
       mdxType: oldChild.props.mdxType,
       originalType: oldChild.props.originalType,
-      expandable: expand,
+      isCodeBlockExpandable: expand,
     });
     const type = child.props.mdxType;
     const typeToLang = {
@@ -31,7 +31,7 @@ const expand = props.expandable === undefined;
           const { oldProps } = oldGrandchild.props;
           let newGrandchild = React.cloneElement(grandchild, {
             ...oldProps,
-            expandable: expand,
+            isCodeBlockExpandable: expand,
           });
 
           newGrandchild.props.children = React.Children.map(
@@ -42,7 +42,7 @@ const expand = props.expandable === undefined;
                 const { oldProps2 } = ogChild2.props;
                 return React.cloneElement(child2, {
                   ...oldProps2,
-                  expandable: expand,
+                  isCodeBlockExpandable: expand,
                 });
               } else {
                 return child2;
