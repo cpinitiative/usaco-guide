@@ -53,14 +53,14 @@ int temps[200005];
 int pref_longest[200005];
 
 int main() {
-    int n;
-    int x;
+	int n;
+	int x;
 	cin >> n >> x;
 	for (int i = 0; i < n; i++) {
-        cin >> temps[i];
-    }
+		cin >> temps[i];
+	}
 	
-    vector<int> dp(n, INT_MAX);
+	vector<int> dp(n, INT_MAX);
 	int longest = 0;
 	// longest increasing subsequence ending at i
 	for (int i = 0; i < n; i++) {
@@ -70,14 +70,14 @@ int main() {
 		longest = max(longest, pref_longest[i]);
 	}
 	
-    dp = vector<int>(n, INT_MAX);
+	dp = vector<int>(n, INT_MAX);
 	// longest decreasing subsequence ending at i of reverse
 	// = longest increasing subsequence starting at i
 	for (int i = n - 1; i >= 0; i--) {
 		int pos = lower_bound(dp.begin(), dp.end(), -temps[i] + x)-dp.begin();
 		longest = max(longest, pref_longest[i] + pos);
 
-        int insert_pos = lower_bound(dp.begin(), dp.end(), -temps[i]) - dp.begin();
+		int insert_pos = lower_bound(dp.begin(), dp.end(), -temps[i]) - dp.begin();
 		dp[insert_pos] = -temps[i];
 	}
 	cout << longest << endl;
@@ -99,61 +99,61 @@ import java.util.*;
  * decrementing the prefix as in the editorial but it's basically the same thing
  */
 public class glo {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer initial = new StringTokenizer(read.readLine());
-        int tempNum = Integer.parseInt(initial.nextToken());
-        int maxCheating = Integer.parseInt(initial.nextToken());
-        int[] temps = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int tempNum = Integer.parseInt(initial.nextToken());
+		int maxCheating = Integer.parseInt(initial.nextToken());
+		int[] temps = Arrays.stream(read.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
 		// this[i] = the longest subsequence that ends at and contains temps[i]
-        int[] prefLongest = new int[tempNum];
-        ArrayList<Integer> minEndings = new ArrayList<>();
+		int[] prefLongest = new int[tempNum];
+		ArrayList<Integer> minEndings = new ArrayList<>();
 		// standard LIS stuff
-        for (int i = 0; i < tempNum; i++) {
-            int t = temps[i];
-            int pos =  bisectLeft(minEndings, t);
-            prefLongest[i] = pos + 1;
-            if (pos == minEndings.size()) {
-                minEndings.add(t);
-            } else {
-                minEndings.set(pos, t);
-            }
-        }
+		for (int i = 0; i < tempNum; i++) {
+			int t = temps[i];
+			int pos =  bisectLeft(minEndings, t);
+			prefLongest[i] = pos + 1;
+			if (pos == minEndings.size()) {
+				minEndings.add(t);
+			} else {
+				minEndings.set(pos, t);
+			}
+		}
 
-        int longest = 0;
-        ArrayList<Integer> maxBegins = new ArrayList<>();
-        for (int i = tempNum - 1; i >= 0; i--) {
-            int t = temps[i];
+		int longest = 0;
+		ArrayList<Integer> maxBegins = new ArrayList<>();
+		for (int i = tempNum - 1; i >= 0; i--) {
+			int t = temps[i];
 			// we use negatives here to keep the binary search happy
-    		// first find the maximum increasing subsequence in the suffix that starts at i
-            int pos = bisectLeft(maxBegins, -t);
-            longest = Math.max(longest, prefLongest[i] + pos);
+			// first find the maximum increasing subsequence in the suffix that starts at i
+			int pos = bisectLeft(maxBegins, -t);
+			longest = Math.max(longest, prefLongest[i] + pos);
 
 			// then insert the changed temperature for later iterations
-            int insertPos =  bisectLeft(maxBegins, -t - maxCheating);
-            if (insertPos == maxBegins.size()) {
-                maxBegins.add(-t - maxCheating);
-            } else {
-                maxBegins.set(insertPos, -t - maxCheating);
-            }
-        }
-        System.out.println(longest);
-    }
+			int insertPos =  bisectLeft(maxBegins, -t - maxCheating);
+			if (insertPos == maxBegins.size()) {
+				maxBegins.add(-t - maxCheating);
+			} else {
+				maxBegins.set(insertPos, -t - maxCheating);
+			}
+		}
+		System.out.println(longest);
+	}
 
-    private static int bisectLeft(List<Integer> arr, int x) {
-        int lo = 0;
-        int hi = arr.size();
-        while (lo < hi) {
-            int mid = (lo + hi) / 2;
-            if (arr.get(mid) < x) {
-                lo = mid + 1;
-            } else {
-                hi = mid;
-            }
-        }
-        return lo;
-    }
+	private static int bisectLeft(List<Integer> arr, int x) {
+		int lo = 0;
+		int hi = arr.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (arr.get(mid) < x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		return lo;
+	}
 }
 ```
 
@@ -177,28 +177,28 @@ pref_longest = []
 min_endings = []
 # standard LIS stuff
 for i, t in enumerate(temps):
-    pos = bisect_left(min_endings, t)
-    pref_longest.append(pos + 1)
-    if pos == len(min_endings):
-        min_endings.append(t)
-    else:
-        min_endings[pos] = t
+	pos = bisect_left(min_endings, t)
+	pref_longest.append(pos + 1)
+	if pos == len(min_endings):
+		min_endings.append(t)
+	else:
+		min_endings[pos] = t
 
 longest = 0
 max_begins = []
 for i in range(temp_num - 1, -1, -1):
-    t = temps[i]
-    # we use negatives here to keep the binary search happy
-    # first find the maximum increasing subsequence in the suffix that starts at i
-    pos = bisect_left(max_begins, -t)
-    longest = max(longest, pref_longest[i] + pos)
+	t = temps[i]
+	# we use negatives here to keep the binary search happy
+	# first find the maximum increasing subsequence in the suffix that starts at i
+	pos = bisect_left(max_begins, -t)
+	longest = max(longest, pref_longest[i] + pos)
 
-    # then insert the changed temperature for later iterations
-    insert_pos = bisect_left(max_begins, -t - max_cheating)
-    if insert_pos == len(max_begins):
-        max_begins.append(-t - max_cheating)
-    else:
-        max_begins[insert_pos] = -t - max_cheating
+	# then insert the changed temperature for later iterations
+	insert_pos = bisect_left(max_begins, -t - max_cheating)
+	if insert_pos == len(max_begins):
+		max_begins.append(-t - max_cheating)
+	else:
+		max_begins[insert_pos] = -t - max_cheating
 print(longest)
 ```
 
