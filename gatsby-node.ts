@@ -412,6 +412,17 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     if (!node.fields?.division) return;
     const path = `/${node.fields.division}/${node.frontmatter.id}`;
 
+    if (node.frontmatter.redirects) {
+      node.frontmatter.redirects.forEach(fromPath => {
+        createRedirect({
+          fromPath,
+          toPath: path,
+          redirectInBrowser: true,
+          isPermanent: true,
+        });
+      });
+    }
+
     createPage({
       path,
       component: moduleTemplate,
