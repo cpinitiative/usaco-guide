@@ -669,8 +669,8 @@ discuss how coordinate compression is applied. Since the solution uses
 all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
 they can be used as array indices.
 
-Below you will find an excerpt of solution code to Rectangular Pasture that uses
-coordinate compression. Observe how a custom comparator is used to sort the
+Below you will find the solution code to Rectangular Pasture, which uses
+coordinate compression at the beginning. Observe how a custom comparator is used to sort the
 points (either by `x` or by `y`):
 
 <LanguageSection>
@@ -681,13 +681,22 @@ points (either by `x` or by `y`):
 
 BeginCodeSnip{}
 
+#include <iostream>
+#include <algorithm>
+using namespace std;
+ 
 typedef pair<int,int> Point;
 bool ycomp(Point p, Point q) { return p.second < q.second; }
-
+ 
+const int MAX_N = 2500;
+int N, Psum[MAX_N+1][MAX_N+1];
 Point P[MAX_N];
-
-...
-
+ 
+int rsum(int x1, int y1, int x2, int y2)
+{
+  return Psum[x2+1][y2+1] - Psum[x2+1][y1] - Psum[x1][y2+1] + Psum[x1][y1];
+}
+ 
 int main(void)
 {
   cin >> N;
@@ -696,12 +705,27 @@ int main(void)
     cin >> x >> y;
     P[i] = make_pair(x,y);
   }
-  sort(P, P+N);
+  //------------- (coordinate compression) ----------
+  sort(P, P+N); 
   for (int i=0; i<N; i++) P[i].first = i+1;
-  sort(P, P+N, ycomp);
+  sort(P, P+N, ycomp); 
   for (int i=0; i<N; i++) P[i].second = i+1;
+  //-------------------------------------------------
+  for (int i=0; i<N; i++) Psum[P[i].first][P[i].second] = 1;
+  for (int i=1; i<=N; i++)
+    for (int j=1; j<=N; j++)
+      Psum[i][j] += Psum[i-1][j] + Psum[i][j-1] - Psum[i-1][j-1];
+  long long answer = 0;
+  for (int i=0; i<N; i++) 
+    for (int j=i; j<N; j++) {
+      int x1 = min(P[i].first, P[j].first) - 1;
+      int x2 = max(P[i].first, P[j].first) - 1;
+      answer += rsum(0,i,x1,j) * rsum(x2,i,N-1,j);
+    }
+  cout << answer + 1 << "\n";
+  
+}
 
-...
 
 EndCodeSnip
 
@@ -715,27 +739,65 @@ EndCodeSnip
 
 BeginCodeSnip{}
 
-public static void main(String[] args) {
-     Scanner in = new Scanner(System.in);
-     int n = in.nextInt();
-     int[] xs = new int[n];
-     int[] ys = new int[n];
-     Integer[] cows = new Integer[n];
-     for (int j = 0; j < n; j++) {
-         xs[j] = in.nextInt();
-         ys[j] = in.nextInt();
-         cows[j] = j;
-     }
-     Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
-     for (int x = 1; x <= n; x++) {
-         xs[cows[x - 1]] = x;
-     }
-     Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
-     for (int y = 1; y <= n; y++) {
-         ys[cows[y - 1]] = y;
-     }
-
-...
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+ 
+public class RectangularPasture {
+    static int[][] sums;
+ 
+    static int getSum(int fromX, int toX, int fromY, int toY) {
+        return sums[toX][toY] - sums[fromX - 1][toY] - sums[toX][fromY - 1] + sums[fromX - 1][fromY - 1];
+    }
+ 
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] xs = new int[n];
+        int[] ys = new int[n];
+        Integer[] cows = new Integer[n];
+        for (int j = 0; j < n; j++) {
+            xs[j] = in.nextInt();
+            ys[j] = in.nextInt();
+            cows[j] = j;
+        }
+        // ------------- (coordinate compression) ----------
+        Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
+        for (int x = 1; x <= n; x++) {
+            xs[cows[x - 1]] = x;
+        }
+        Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
+        for (int y = 1; y <= n; y++) {
+            ys[cows[y - 1]] = y;
+        }
+	// -------------------------------------------------
+        sums = new int[n + 1][n + 1];
+        for (int j = 0; j < n; j++) {
+            sums[xs[j]][ys[j]]++;
+        }
+        for (int x = 0; x <= n; x++) {
+            for (int y = 0; y <= n; y++) {
+                if (x > 0) {
+                    sums[x][y] += sums[x - 1][y];
+                }
+                if (y > 0) {
+                    sums[x][y] += sums[x][y - 1];
+                }
+                if (x > 0 && y > 0) {
+                    sums[x][y] -= sums[x - 1][y - 1];
+                }
+            }
+        }
+        long answer = n + 1;
+        for (int j = 0; j < n; j++) {
+            for (int k = j + 1; k < n; k++) {
+                answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), 1, Math.min(ys[j], ys[k]))
+                        * getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), Math.max(ys[j], ys[k]), n);
+            }
+        }
+        System.out.println(answer);
+    }
+}
 
 EndCodeSnip
 
