@@ -143,6 +143,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description: 'Rarely required at this level, but still good to know.',
       items: ['string-hashing', 'unordered', 'faster-hashmap'],
     },
+    {
+      name: 'Conclusion',
+      items: ['gold-conclusion'],
+    },
   ],
   plat: [
     {
