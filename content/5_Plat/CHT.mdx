@@ -2,150 +2,60 @@
 id: cht
 title: 'Convex Hull Trick'
 author: Andi Qu
-description: A way to find the maximum or minimum value of several convex functions at given points.
+description:
+  A way to find the maximum or minimum value of several convex functions at
+  given points.
 prerequisites:
   - convex-hull
   - intro-dp
 frequency: 2
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'CF',
-			'The Fair Nut and Rectangles',
-			'contest/1083/problem/E',
-			'Easy',
-			false,
-			['DP', 'Convex'],
-			'@Later'
-		),
-	],
-	general: [
-		new Problem(
-			'APIO',
-			'2010 - Commando',
-			'https://dmoj.ca/problem/apio10p1',
-			'Easy',
-			false,
-			['DP', 'Convex'],
-			'http://apio-olympiad.org/2010/solutions.pdf'
-		),
-		new Problem(
-			'CEOI',
-			'2004 - Two Sawmills',
-			'https://szkopul.edu.pl/problemset/problem/ovRIpLFK3IhyFPjnVXeZtGxH/site/?key=statement',
-			'Easy',
-			false,
-			['DP', 'Convex'],
-			''
-		),
-		new Problem(
-			'CEOI',
-			'2009 - Harbingers',
-			'https://oj.uz/problem/view/CEOI09_harbingers',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'https://infosb.net/ceoi2009/tasks/solutions.doc'
-		),
-		new Problem(
-			'IOI',
-			'2002 - Batch Scheduling',
-			'https://dmoj.ca/problem/ioi02p4',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'http://www.ioi2002.or.kr/eng/tasks/batch-handout.pdf'
-		),
-		new Problem(
-			'APIO',
-			'2014 - Split the Sequence',
-			'https://oj.uz/problem/view/APIO14_sequence',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'apio-14-sequence'
-		),
-		new Problem(
-			'POI',
-			'2011 - Lightning Conductor',
-			'https://szkopul.edu.pl/problemset/problem/iYVwsAcHHCRZzAtQh0QFKbsu/site/',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'poi-11-pio'
-		),
-		new Problem(
-			'POI',
-			'2006 - Frogs',
-			'https://szkopul.edu.pl/problemset/problem/HH7LQVRVHom1g8YRe9423d1P/site/',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			''
-		),
-		new Problem(
-			'Plat',
-			'Circular Barn',
-			'626',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'usaco-626'
-		),
-		new Problem(
-			'Plat',
-			'Falling Portals',
-			'998',
-			'Normal',
-			false,
-			['Convex'],
-			''
-		),
-		new Problem(
-			'JOI',
-			'2017 - Long-Distance Coach',
-			'https://oj.uz/problem/view/JOI17_coach',
-			'Hard',
-			false,
-			['DP', 'Convex'],
-			''
-		),
-	],
-};
-
 We wish to solve problems that are of the following form:
 
-> Consider a set of functions $\{f_i(x)\}$ on some range $[l,r]$ such that for any two functions $f_i$ and $f_j$, there exists some $m$ such that 
+> Consider a set of functions $\{f_i(x)\}$ on some range $[l,r]$ such that for
+> any two functions $f_i$ and $f_j$, there exists some $m$ such that
+>
 > - For all $x \in [l,m]$, $f_i(x)\le f_j(x)$
 > - For all $x \in [m,r]$, $f_i(x)\ge f_j(x)$
 >
-> Answer queries of the form "what is the maximum/minimum $f_i(x)$ for some given $x\in [l,r]$," given that we have a way of finding $m$ efficiently.
+> Answer queries of the form "what is the maximum/minimum $f_i(x)$ for some
+> given $x\in [l,r]$," given that we have a way of finding $m$ efficiently.
 
 A sufficient (but not necessary) set of conditions:
 
- - All the functions are continuous along the range $[l,r]$.
- - No two functions intersect at more than one point.
+- All the functions are continuous along the range $[l,r]$.
+- No two functions intersect at more than one point.
 
-The most common case is where each $f_i(x)$ is of the form $a_ix+b_i$. Given two lines $f_i(x)=a_ix+b_i$ and $f_j(x)=a_jx+b_j$ such that $a_i<a_j$, their intersection point at $m=\frac{b_i-b_j}{a_j-a_i}$ can be found in $\mathcal{O}(1)$ time. Then it's clear that
+The most common case is where each $f_i(x)$ is of the form $a_ix+b_i$. Given two
+lines $f_i(x)=a_ix+b_i$ and $f_j(x)=a_jx+b_j$ such that $a_i<a_j$, their
+intersection point at $m=\frac{b_i-b_j}{a_j-a_i}$ can be found in
+$\mathcal{O}(1)$ time. Then it's clear that
 
- - For all $x\le m$, $f_i(x)\ge f_j(x)$.
- - For all $x\ge m$, $f_i(x)\le f_j(x)$.
+- For all $x\le m$, $f_i(x)\ge f_j(x)$.
+- For all $x\ge m$, $f_i(x)\le f_j(x)$.
 
-The linear case is known as the **convex hull trick** because $\max_i(f_i(x))$ as a function of $x$ is concave up (similarly, $\min_i(f_i(x))$ as a function of $x$ is concave down). Check the images from the CF tutorial below if you don't know what this means.
+The linear case is known as the **convex hull trick** because $\max_i(f_i(x))$
+as a function of $x$ is concave up (similarly, $\min_i(f_i(x))$ as a function of
+$x$ is concave down). Check the images from the CF tutorial below if you don't
+know what this means.
 
 Some possible nonlinear forms of $f_i(x)$:
 
 - $f_i(x)=x^2+a_ix+b_i$
-  - Reduces to the linear case, since we can ignore the $x^2$ term when comparing two functions.
+  - Reduces to the linear case, since we can ignore the $x^2$ term when
+    comparing two functions.
 - $f_i(x) = \sqrt{x - a_i} + b_i$
   - If this function is defined for all $x\in [l,r]$.
-  - Note that when $a_i<a_j$, $\sqrt{x-a_i}-\sqrt{x-a_j}$ is strictly decreasing over the range $x\in [a_j,\infty)$.
+  - Note that when $a_i<a_j$, $\sqrt{x-a_i}-\sqrt{x-a_j}$ is strictly decreasing
+    over the range $x\in [a_j,\infty)$.
 
-In this module, we'll focus on the special case of CHT where "slopes" of functions are monotonic. This specific case is solvable in $\mathcal{O}(N)$ using a `std::deque` in C++. For the more general $\mathcal{O}(N \log N)$ CHT (which involves a `std::set`), see [the LineContainer module](/adv/LC).
+In this module, we'll focus on the special case of CHT where "slopes" of
+functions are monotonic. This specific case is solvable in $\mathcal{O}(N)$
+using a `std::deque` in C++. For the more general $\mathcal{O}(N \log N)$ CHT
+(which involves a `std::set`), see [the LineContainer module](/adv/LC).
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 ## Tutorial
 
@@ -170,17 +80,23 @@ In this module, we'll focus on the special case of CHT where "slopes" of functio
 
 ## Solution - The Fair Nut and Rectangles
 
-I won't analyse this problem in great detail since the Codeforces blog in the resources already does so, but essentially, we sort the rectangles by $x$-coordinate and get the following DP recurrence:
+I won't analyse this problem in great detail since the Codeforces blog in the
+resources already does so, but essentially, we sort the rectangles by
+$x$-coordinate and get the following DP recurrence:
 
 $$
 dp[i] = p_i \cdot q_i - a_i + \max_{j < i}(-p_j \cdot q_i + dp[j])
 $$
 
-Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a straight line $y = mx + c$.
+Notice how the $-p_j \cdot q_i + dp[j]$ part of the recurrence describes a
+straight line $y = mx + c$.
 
-Since we sorted the rectangles and no two rectangles are nested, the slopes of the lines we insert are strictly increasing. The query positions are also strictly increasing.
+Since we sorted the rectangles and no two rectangles are nested, the slopes of
+the lines we insert are strictly increasing. The query positions are also
+strictly increasing.
 
-This means we can solve this problem using CHT in $\mathcal{O}(N)$ time! Here is my implementation:
+This means we can solve this problem using CHT in $\mathcal{O}(N)$ time! Here is
+my implementation:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -210,7 +126,7 @@ int main() {
 	deque<ll> q;
 	q.push_back(0);
 	for (int i = 1; i <= n; i++) {
-		while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y) 
+		while (q.size() > 1 && slope(q[0], q[1]) >= a[i].y)
 			q.pop_front();
 
 		ll j = q.front();
@@ -233,4 +149,4 @@ Some of these problems can also be solved using [divide & conquer](/plat/DC-DP).
 
 </Info>
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

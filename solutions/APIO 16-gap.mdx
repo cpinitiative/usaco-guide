@@ -7,21 +7,31 @@ author: Andi Qu
 
 ## Subtask 1
 
-We can find the minimum and maximum elements of $a$ in some range $[l, r]$ by simply querying `MinMax(l, r, &mn, &mx)`. This lets us "whittle down" the range and reconstruct $a$ with $M \leq \frac{N + 1}{2}$.
+We can find the minimum and maximum elements of $a$ in some range $[l, r]$ by
+simply querying `MinMax(l, r, &mn, &mx)`. This lets us "whittle down" the range
+and reconstruct $a$ with $M \leq \frac{N + 1}{2}$.
 
 We can then sweep throught $a$ and find the largest gap.
 
 ## Subtask 2
 
-We don't necessarily need to reconstruct $a$ entirely to find the largest gap. Notice how if we know a lowerbound $x$ on the answer and the range of all $a_i$, then we can simply query the range in blocks of size $x - 1$ to find the answer. This works because the largest gap will always span at least two blocks.
+We don't necessarily need to reconstruct $a$ entirely to find the largest gap.
+Notice how if we know a lowerbound $x$ on the answer and the range of all $a_i$,
+then we can simply query the range in blocks of size $x - 1$ to find the answer.
+This works because the largest gap will always span at least two blocks.
 
-So what is the lowerbound on the answer? If there are $N$ elements that span a range of size $L$, then the lowerbound is $\frac{L + N - 1}{N - 1}$ by the pigeonhole principle. (This is a similar idea to the $\alpha = 1/2$ solution for IMO 2020 P6).
+So what is the lowerbound on the answer? If there are $N$ elements that span a
+range of size $L$, then the lowerbound is $\frac{L + N - 1}{N - 1}$ by the
+pigeonhole principle. (This is a similar idea to the $\alpha = 1/2$ solution for
+IMO 2020 P6).
 
 Our algorithm thus looks like:
 
 - Find the range that $a$ spans in 1 query. This contributes $N + 1$ to $M$.
 - Find $x$ (the lowerbound on the answer) from the formula above.
-- Query the range in blocks of size $x - 1$. Since there are $N - 1$ of these blocks and each $a_i$ is included in exactly 1 of these blocks, this contributes $2N - 1$ to $M$.
+- Query the range in blocks of size $x - 1$. Since there are $N - 1$ of these
+  blocks and each $a_i$ is included in exactly 1 of these blocks, this
+  contributes $2N - 1$ to $M$.
 
 This allows us to find the largest gap with $M \leq 3N$.
 

@@ -7,7 +7,8 @@ author: Benjamin Qi, Andrew Wang
 
 <Spoiler title="Hint">
 
-Fix the bottom row of the rectangle. Then apply the solution for [Max Histogram Area](/solutions/lc-largest-rectangle-in-histogram).
+Fix the bottom row of the rectangle. Then apply the solution for
+[Max Histogram Area](/solutions/lc-largest-rectangle-in-histogram).
 
 </Spoiler>
 
@@ -15,7 +16,9 @@ Fix the bottom row of the rectangle. Then apply the solution for [Max Histogram 
 
 **Time Complexity:** $\mathcal{O}(NM)$
 
-Update the nearest tree for every column for each new bottom row. Iterate from left to right and use a monotonic stack to calculate the area for every bottom row.
+Update the nearest tree for every column for each new bottom row. Iterate from
+left to right and use a monotonic stack to calculate the area for every bottom
+row.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -23,7 +26,7 @@ using namespace std;
 #define pi pair<int, int>
 #define f first
 #define s second
- 
+
 queue<int> col[1005];
 char grid[1005][1005];
 int main() {
@@ -44,7 +47,7 @@ int main() {
 			if(col[j].front() < i) col[j].pop(); //updates the nearest tree
 		}
 		stack<pi> sta;
-		for(int j = 0; j < M; j++){ 
+		for(int j = 0; j < M; j++){
 			int start = j;
 			while(!sta.empty() && col[j].front()-i < sta.top().s){
 				pi cur = sta.top(); sta.pop();
@@ -74,10 +77,10 @@ Same as solution 1, but we can use DSU instead of a monotonic stack.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
 using ld = long double;
-using db = double; 
+using db = double;
 using str = string; // yay python!
 
 using pi = pair<int,int>;
@@ -87,17 +90,17 @@ using pd = pair<db,db>;
 using vi = vector<int>;
 using vb = vector<bool>;
 using vl = vector<ll>;
-using vd = vector<db>; 
+using vd = vector<db>;
 using vs = vector<str>;
 using vpi = vector<pi>;
-using vpl = vector<pl>; 
+using vpl = vector<pl>;
 using vpd = vector<pd>;
 
 #define tcT template<class T
 #define tcTU tcT, class U
 // ^ lol this makes everything look weird but I'll try it
-tcT> using V = vector<T>; 
-tcT, size_t SZ> using AR = array<T,SZ>; 
+tcT> using V = vector<T>;
+tcT, size_t SZ> using AR = array<T,SZ>;
 tcT> using PR = pair<T,T>;
 
 // pairs
@@ -110,18 +113,18 @@ tcT> using PR = pair<T,T>;
 #define sz(x) int((x).size())
 #define bg(x) begin(x)
 #define all(x) bg(x), end(x)
-#define rall(x) x.rbegin(), x.rend() 
-#define sor(x) sort(all(x)) 
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
 #define rsz resize
-#define ins insert 
+#define ins insert
 #define ft front()
 #define bk back()
 #define pb push_back
-#define eb emplace_back 
+#define eb emplace_back
 #define pf push_front
 
 #define lb lower_bound
-#define ub upper_bound 
+#define ub upper_bound
 tcT> int lwb(V<T>& a, const T& b) { return int(lb(all(a),b)-bg(a)); }
 
 // loops
@@ -136,14 +139,14 @@ const int MX = 2e5+5;
 const ll INF = 1e18; // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
 const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1}; // for every grid problem!!
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count()); 
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template<class T> using pqg = priority_queue<T,vector<T>,greater<T>>;
 
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); } // # of bits set
 constexpr int bits(int x) { // assert(x >= 0); // make C++11 compatible until USACO updates ...
-	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x)) 
+	return x == 0 ? 0 : 31-__builtin_clz(x); } // floor(log2(x))
 constexpr int p2(int x) { return 1<<x; }
 constexpr int msk2(int x) { return p2(x)-1; }
 
@@ -157,18 +160,18 @@ tcT> bool ckmax(T& a, const T& b) {
 
 tcTU> T fstTrue(T lo, T hi, U f) {
 	hi ++; assert(lo <= hi); // assuming f is increasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo)/2;
-		f(mid) ? hi = mid : lo = mid+1; 
-	} 
+		f(mid) ? hi = mid : lo = mid+1;
+	}
 	return lo;
 }
 tcTU> T lstTrue(T lo, T hi, U f) {
 	lo --; assert(lo <= hi); // assuming f is decreasing
-	while (lo < hi) { // find first index such that f is true 
+	while (lo < hi) { // find first index such that f is true
 		T mid = lo+(hi-lo+1)/2;
 		f(mid) ? lo = mid : hi = mid-1;
-	} 
+	}
 	return lo;
 }
 tcT> void remDup(vector<T>& v) { // sort and remove duplicates
@@ -200,14 +203,14 @@ tcT> void rv(int n, V<T>& x) { x.rsz(n); re(x); }
 str ts(char c) { return str(1,c); }
 str ts(const char* s) { return (str)s; }
 str ts(str s) { return s; }
-str ts(bool b) { 
+str ts(bool b) {
 	#ifdef LOCAL
-		return b ? "true" : "false"; 
-	#else 
+		return b ? "true" : "false";
+	#else
 		return ts((int)b);
 	#endif
 }
-tcT> str ts(complex<T> c) { 
+tcT> str ts(complex<T> c) {
 	stringstream ss; ss << c; return ss.str(); }
 str ts(V<bool> v) {
 	str res = "{"; F0R(i,sz(v)) res += char('0'+v[i]);
@@ -236,7 +239,7 @@ tcT> str ts(T v) { // containers with begin(), end()
 }
 tcTU> str ts(pair<T,U> p) {
 	#ifdef LOCAL
-		return "("+ts(p.f)+", "+ts(p.s)+")"; 
+		return "("+ts(p.f)+", "+ts(p.s)+")";
 	#else
 		return ts(p.f)+" "+ts(p.s);
 	#endif
@@ -244,10 +247,10 @@ tcTU> str ts(pair<T,U> p) {
 
 // OUTPUT
 tcT> void pr(T x) { cout << ts(x); }
-tcTUU> void pr(const T& t, const U&... u) { 
+tcTUU> void pr(const T& t, const U&... u) {
 	pr(t); pr(u...); }
 void ps() { pr("\n"); } // print w/ spaces
-tcTUU> void ps(const T& t, const U&... u) { 
+tcTUU> void ps(const T& t, const U&... u) {
 	pr(t); if (sizeof...(u)) pr(" "); ps(u...); }
 
 // DEBUG
@@ -271,7 +274,7 @@ void setIn(str s) { freopen(s.c_str(),"r",stdin); }
 void setOut(str s) { freopen(s.c_str(),"w",stdout); }
 void setIO(str s = "") {
 	unsyncIO(); setPrec();
-	// cin.exceptions(cin.failbit); 
+	// cin.exceptions(cin.failbit);
 	// throws exception when do smth illegal
 	// ex. try to read letter into int
 	if (sz(s)) setIn(s+".in"), setOut(s+".out"); // for USACO
@@ -282,12 +285,12 @@ template<int SZ> struct DSU {
 	DSU() {
 		F0R(i,SZ) par[i] = -1, sz[i] = 1;
 	}
-	
+
 	int get(int x) { // path compression
 		if (par[x] != x) par[x] = get(par[x]);
 		return par[x];
 	}
-	
+
 	bool unite(int x, int y) { // union-by-rank
 		x = get(x), y = get(y);
 		if (x == y) return 0;
@@ -296,11 +299,11 @@ template<int SZ> struct DSU {
 		return 1;
 	}
 };
- 
+
 int n,m,cur[1000];
 char g[1000][1000];
 int ans = 0;
- 
+
 void solve(int x) {
 	vi nex[m+1];
 	F0R(i,n) nex[cur[i]-x].pb(i);
@@ -312,7 +315,7 @@ void solve(int x) {
 		ans = max(ans,i*D.sz[D.get(a)]);
 	}
 }
- 
+
 int solve() {
 	F0R(i,n) cur[i] = m;
 	R0F(j,m) {
@@ -321,7 +324,7 @@ int solve() {
 	}
 	return ans;
 }
- 
+
 int main() {
 	setIO();
 	cin >> n >> m;
@@ -329,4 +332,5 @@ int main() {
 	cout << solve();
 }
 ```
+
 </Spoiler>

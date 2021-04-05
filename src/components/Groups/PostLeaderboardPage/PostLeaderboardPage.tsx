@@ -8,6 +8,10 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import TextTooltip from '../../Tooltip/TextTooltip';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
+import useFirebase from '../../../hooks/useFirebase';
+import { submissionConverter } from '../../../models/groups/problem';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function PostLeaderboardPage(props) {
   const { postId } = props as {
@@ -18,6 +22,8 @@ export default function PostLeaderboardPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const { problems } = useActivePostProblems();
+  const firebase = useFirebase();
+  const notifications = useNotificationSystem();
   const leaderboard = activeGroup.groupData.leaderboard;
 
   const members = getMemberInfoForGroup(activeGroup.groupData);
@@ -44,6 +50,37 @@ export default function PostLeaderboardPage(props) {
       .filter(x => !!x.member); // filter is needed in case a member just joined and their data isn't available yet
     return data.sort((a, b) => b.points - a.points);
   }, [leaderboard, members, problems]);
+
+  const openProblemSubmissionPopup = useProblemSubmissionPopupAction();
+  const handleOpenSubmissionsDetail = (
+    problemId: string,
+    submissionId: string
+  ) => {
+    console.log(problemId, submissionId);
+    firebase
+      .firestore()
+      .collection('groups')
+      .doc(activeGroup.activeGroupId)
+      .collection('posts')
+      .doc(postId)
+      .collection('problems')
+      .doc(problemId)
+      .collection('submissions')
+      .doc(submissionId)
+      .withConverter(submissionConverter)
+      .get()
+      .then(doc => {
+        const submission = doc.data();
+        openProblemSubmissionPopup(submission);
+      })
+      .catch(e => {
+        notifications.addNotification({
+          level: 'error',
+          message: "Couldn't get submission: " + e.message,
+        });
+      });
+  };
+  console.log(leaderboardItems);
 
   const problemCellStyles =
     'w-16 text-center border-l border-gray-200 dark:border-gray-700';
@@ -151,11 +188,19 @@ export default function PostLeaderboardPage(props) {
                           <td
                             className={
                               problemCellStyles +
-                              ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium'
+                              ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium' +
+                              (details ? ' cursor-pointer' : '')
                             }
                             key={problems[idx].id}
+                            onClick={() =>
+                              details &&
+                              handleOpenSubmissionsDetail(
+                                problems[idx].id,
+                                details.bestScoreSubmissionId
+                              )
+                            }
                           >
-                            {details?.bestScore || 0}
+                            {parseFloat(details?.bestScore?.toFixed(1) || '0')}
                           </td>
                         ))}
                       </tr>

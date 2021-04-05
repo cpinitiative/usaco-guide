@@ -1,40 +1,49 @@
 import * as React from 'react';
 import { useReducer } from 'react';
-import styled from 'styled-components';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useDropzone } from 'react-dropzone';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 import {
   ExecutionStatus,
-  ProblemData,
+  GroupProblemData,
   Submission,
+  SubmissionType,
 } from '../../../models/groups/problem';
+import ButtonGroup from '../../ButtonGroup';
+import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 
-const ScoreInput = styled.input`
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  &[type='number'] {
-    -moz-appearance: textfield;
-  }
-`;
+// const ScoreInput = styled.input`
+//   &::-webkit-outer-spin-button,
+//   &::-webkit-inner-spin-button {
+//     -webkit-appearance: none;
+//     margin: 0;
+//   }
+//
+//   /* Firefox */
+//   &[type='number'] {
+//     -moz-appearance: textfield;
+//   }
+// `;
 
 export default function ProblemSubmissionInterface({
   problem,
 }: {
-  problem: ProblemData;
+  problem: GroupProblemData;
 }) {
+  const { lang } = React.useContext(UserDataContext);
+  if (problem.submissionType !== SubmissionType.SELF_GRADED) {
+    throw new Error(
+      "Problem submission interface doesn't support CCC problems yet"
+    );
+  }
   const emptySubmission: Partial<Submission> = {
     problemId: problem.id,
     type: problem.submissionType,
     code: '',
-    language: 'cpp',
-    result: null,
+    language: lang === 'showAll' ? 'cpp' : lang,
+    result: 1,
     status: ExecutionStatus.PENDING,
   };
   const [submission, editSubmission] = useReducer(
@@ -78,35 +87,52 @@ export default function ProblemSubmissionInterface({
       </div>
       <div className="text-sm mt-1 text-gray-900 dark:text-gray-300">
         <b>Self-graded problem:</b> Use the Problem Statement link above to test
-        your code. Submit your code and your score below. Group admins will
-        manually verify your code to ensure the score you entered is accurate.
+        your code. Submit your <i>working</i> code below. Group admins will
+        manually verify your code to ensure that your code works.
       </div>
+      {/*<div className="mt-4">*/}
+      {/*  <label*/}
+      {/*    htmlFor="score"*/}
+      {/*    className="block text-sm font-medium text-gray-700 dark:text-gray-300"*/}
+      {/*  >*/}
+      {/*    Score*/}
+      {/*  </label>*/}
+      {/*  <div className="mt-1 relative rounded-md shadow-sm w-24">*/}
+      {/*    <ScoreInput*/}
+      {/*      type="number"*/}
+      {/*      name="score"*/}
+      {/*      id="score"*/}
+      {/*      min={0}*/}
+      {/*      max={100}*/}
+      {/*      value={*/}
+      {/*        submission.result === null*/}
+      {/*          ? ''*/}
+      {/*          : Math.round((submission.result as number) * 100)*/}
+      {/*      }*/}
+      {/*      onChange={e =>*/}
+      {/*        editSubmission({ result: parseInt(e.target.value) / 100 })*/}
+      {/*      }*/}
+      {/*      className="input"*/}
+      {/*      placeholder="0 - 100"*/}
+      {/*      aria-describedby="price-currency"*/}
+      {/*      required*/}
+      {/*    />*/}
+      {/*  </div>*/}
+      {/*</div>*/}
       <div className="mt-4">
-        <label
-          htmlFor="score"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-          Score
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Language
         </label>
-        <div className="mt-1 relative rounded-md shadow-sm w-24">
-          <ScoreInput
-            type="number"
-            name="score"
-            id="score"
-            min={0}
-            max={100}
-            value={
-              submission.result === null
-                ? ''
-                : Math.round((submission.result as number) * 100)
+        <div className="mt-1">
+          <ButtonGroup
+            options={['cpp', 'java', 'py']}
+            value={submission.language}
+            onChange={lang =>
+              editSubmission({
+                language: lang,
+              })
             }
-            onChange={e =>
-              editSubmission({ result: parseInt(e.target.value) / 100 })
-            }
-            className="input"
-            placeholder="0 - 100"
-            aria-describedby="price-currency"
-            required
+            labelMap={LANGUAGE_LABELS}
           />
         </div>
       </div>

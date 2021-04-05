@@ -5,87 +5,26 @@ author: Benjamin Qi, Andrew Wang, Neo Wang
 prerequisites:
   - sp
   - dsu
-description: 'A subset of the edges of a connected, undirected, edge-weighted graph that connects all the vertices to each other of minimum total weight, where no cycles are allowed.'
+description:
+  'A subset of the edges of a connected, undirected, edge-weighted graph that
+  connects all the vertices to each other of minimum total weight, where no
+  cycles are allowed.'
 frequency: 2
 ---
-
-export const problems = {
-	standard: [
-		new Problem('CSES', 'Road Reparation', '1675', 'Easy', false, ['MST'], ''),
-	],
-	general: [
-		new Problem('Old Silver', 'Superbull', '531', 'Easy', false, ['MST'], ''),
-		new Problem('Gold', 'Fenced In', '623', 'Easy', false, ['MST'], ''),
-		new Problem(
-			'Gold',
-			'I Would Walk 500 Miles',
-			'946',
-			'Normal',
-			false,
-			['MST'],
-			'usaco-946'
-		),
-		new Problem(
-			'HR',
-			'Spanning Tree Fraction',
-			'https://www.hackerrank.com/contests/w31/challenges/spanning-tree-fraction/problem',
-			'Normal',
-			false,
-			['MST', 'Binary Search'],
-			''
-		),
-		new Problem(
-			'JOI',
-			'2015 - Inheritance',
-			'https://joisc2015.contest.atcoder.jp/tasks/joisc2015_k',
-			'Normal',
-			false,
-			['MST', 'Binary Search'],
-			''
-		),
-		new Problem('Plat', 'Fenced In', '625', 'Hard', false, ['MST'], ''),
-		new Problem(
-			'COCI',
-			'2017 - Sirni',
-			'https://oj.uz/problem/view/COCI17_sirni',
-			'Hard',
-			false,
-			['MST', 'NT'],
-			''
-		),
-		new Problem(
-			'APIO',
-			'2013 - Toll',
-			'https://oj.uz/problem/view/APIO13_toll',
-			'Insane',
-			false,
-			['MST', 'Bitmask'],
-			''
-		),
-		new Problem(
-			'Balkan OI',
-			'2011 - Timeismoney',
-			'http://oj.uz/problem/view/balkan11_timeismoney',
-			'Insane',
-			true,
-			['MST', 'Convex Hull'],
-			''
-		),
-	],
-};
 
 To review a couple of terms:
 
 - An **undirected edge** is an edge that goes both ways
-- A **connected graph** is a graph of vertices such that each vertex can reach every other vertex using undirected edges.
-- A **spanning tree** is a set of edges that forms a tree and contains every vertex in the original graph
-- A **minimum spanning tree** is a spanning tree such that the sum of edge weights are minimized
+- A **connected graph** is a graph of vertices such that each vertex can reach
+  every other vertex using undirected edges.
+- A **spanning tree** is a set of edges that forms a tree and contains every
+  vertex in the original graph
+- A **minimum spanning tree** is a spanning tree such that the sum of edge
+  weights are minimized
 
 <!-- Prim's is recommended; Kruskal's algorithm might TLE -->
 
-<FocusProblem problem={problems.standard[0]} />
-
-<!-- new Problem("Kattis", "MST", "minspantree", "Easy", false, ["MST"], ""), -->
+<FocusProblem problem="standard" />
 
 ## Kruskal's
 
@@ -104,7 +43,14 @@ To review a couple of terms:
     description, example, explanation of correctness
   </Resource> -->
 
-**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges not yet in the MST, we can repeatedly add the edge of minimum weight to the MST except when adding edges that would forms a cycle. This can be done by sorting the edges in order of non-decreasing weight. Furthermore, we can easily determine whether adding an edge will create a cycle in constant time using [Union Find](/gold/dsu). Note that since the most expensive operation is sorting the edges, the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$.
+**Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges
+not yet in the MST, we can repeatedly add the edge of minimum weight to the MST
+except when adding edges that would forms a cycle. This can be done by sorting
+the edges in order of non-decreasing weight. Furthermore, we can easily
+determine whether adding an edge will create a cycle in constant time using
+[Union Find](/gold/dsu). Note that since the most expensive operation is sorting
+the edges, the computational complexity of Kruskal's Algorithm is
+$\mathcal{O}(E \log E)$.
 
 ### Implementation
 
@@ -179,9 +125,18 @@ static class Edge implements Comparable<Edge> {
 
 ### Solution - Road Reparation
 
-Notice that the road that allows for a "decent route between any two cities," with cost "as small as possible" is the definition of a minimum spanning tree. Thus, we can use our favorite minimum spanning tree algorithm to determine the cost of such a tree by calculating $\sum c$ for all edges included in the tree.
+Notice that the road that allows for a "decent route between any two cities,"
+with cost "as small as possible" is the definition of a minimum spanning tree.
+Thus, we can use our favorite minimum spanning tree algorithm to determine the
+cost of such a tree by calculating $\sum c$ for all edges included in the tree.
 
-However, we must also account for the impossible case, which occurs when any nodes cannot be connected to the tree. Recall that the minimum spanning tree must contain a total of $n-1$ edges, so we can use a variable $cnt$ that is incremented every time we add an edge to the minimum spanning tree. After running Kruskal's, if $cnt \ne n-1$, then we know that we failed to built the tree properly. Furthermore, since our minimum spanning tree algorithm gurantees no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
+However, we must also account for the impossible case, which occurs when any
+nodes cannot be connected to the tree. Recall that the minimum spanning tree
+must contain a total of $n-1$ edges, so we can use a variable $cnt$ that is
+incremented every time we add an edge to the minimum spanning tree. After
+running Kruskal's, if $cnt \ne n-1$, then we know that we failed to built the
+tree properly. Furthermore, since our minimum spanning tree algorithm gurantees
+no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 
 <LanguageSection>
   
@@ -353,15 +308,26 @@ class Edge implements Comparable<Edge> {
 	</Resource>
 </Resources>
 
-Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each iteration, we add the vertex that is closest to the current MST (instead of closest to the source in Dijkstra's) until all vertices have been added.
+Similar to Dijkstra's, **Prim's algorithm** greedily adds vertices. On each
+iteration, we add the vertex that is closest to the current MST (instead of
+closest to the source in Dijkstra's) until all vertices have been added.
 
-The process of finding the closest vertex to the MST can be done efficiently using a priority queue. After removing a vertex, we add all of its neighbors that are not yet in the MST to the priority queue and repeat. To begin the algorithm, we simply add any vertex to the priority queue.
+The process of finding the closest vertex to the MST can be done efficiently
+using a priority queue. After removing a vertex, we add all of its neighbors
+that are not yet in the MST to the priority queue and repeat. To begin the
+algorithm, we simply add any vertex to the priority queue.
 
 ### Complexity
 
-Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst case every edge will be checked and its corresponding vertex will be added to the priority queue.
+Our implementation has complexity $\mathcal{O}(E \log E)$ since in the worst
+case every edge will be checked and its corresponding vertex will be added to
+the priority queue.
 
-Alternatively, we may linearly search for the closest vertex instead of using a priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be repeated $V$ times. Thus, this version of Prim's algorithm has complexity $\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense graphs (in which $E \approx V^2$).
+Alternatively, we may linearly search for the closest vertex instead of using a
+priority queue. Each linear pass runs in time $\mathcal{O}(V)$, and this must be
+repeated $V$ times. Thus, this version of Prim's algorithm has complexity
+$\mathcal{O}(V^2)$. As with Dijkstra, this complexity is preferable for dense
+graphs (in which $E \approx V^2$).
 
 ### Solution - Road Reparation
 
@@ -534,4 +500,4 @@ class Pair implements Comparable<Pair> {
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

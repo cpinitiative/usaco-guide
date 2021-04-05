@@ -24,7 +24,9 @@ export default function TabIndentableTextarea(props) {
         }
       };
       ref.current.addEventListener('keydown', handleKeydown);
-      return () => ref.current.removeEventListener('keydown', handleKeydown);
+      return () =>
+        ref.current &&
+        ref.current.removeEventListener('keydown', handleKeydown);
     }
   }, [ref.current]);
 

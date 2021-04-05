@@ -1,8 +1,8 @@
-import { Problem } from '../content/models';
+import { Problem } from '../src/models/problem';
 
 // add information for problems not associated with any module
 
-// take some stuff from https://github.com/bqi343/USACO/blob/2d1d50f10d0a489b98b64e60eca70442b6f843f4/Contests/USACO%20Links/Division-Specific/Platinum.md
+// take some stuff from https://github.com/bqi343/USACO/blob/2d1d50f10d0a489b98b64e60eca70442b6f843f4/Contests/USACO%2Links/Division-Specific/Platinum.md
 // to be included in USACO division table
 
 export default [
@@ -132,7 +132,7 @@ export default [
   ),
   new Problem(
     'Gold',
-    'Just Green Enough',
+    'Stone Game',
     '1113',
     'Normal',
     false,

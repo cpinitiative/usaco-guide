@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
 import DashboardCard from './DashboardCard';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 
 type ActiveItemStatus =
   | 'Skipped'

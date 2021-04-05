@@ -264,7 +264,7 @@ class CodeBlock extends React.Component<
 
     // console.warn() if line length is > 80. uncomment to enable
     // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
-    // You may want to comment out pages/liveupdate.tsx (see file for instructions) to speed up build times
+    // You may want to comment out pages/editor.tsx (see file for instructions) to speed up build times
     // let tooLong = false;
     // for (let line of children.trim().split("\n")) {
     //   if (line.length > 80) {

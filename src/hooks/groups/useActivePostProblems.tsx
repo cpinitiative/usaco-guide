@@ -1,15 +1,18 @@
 import useFirebase from '../useFirebase';
 import * as React from 'react';
-import { ReactNode, useContext } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
-import { problemConverter, ProblemData } from '../../models/groups/problem';
+import {
+  groupProblemConverter,
+  GroupProblemData,
+} from '../../models/groups/problem';
 import { useActiveGroup } from './useActiveGroup';
 
 const ActivePostProblemsContext = React.createContext<{
   activePostId: string;
   setActivePostId: React.Dispatch<React.SetStateAction<string>>;
-  problems: ProblemData[];
+  problems: GroupProblemData[];
   isLoading: boolean;
 }>(null);
 
@@ -17,12 +20,12 @@ export function ActivePostProblemsProvider({
   children,
 }: {
   children: ReactNode;
-}) {
+}): ReactElement {
   const activeGroup = useActiveGroup();
   const { firebaseUser } = React.useContext(UserDataContext);
   const [activePostId, setActivePostId] = React.useState<string>(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [problems, setProblems] = React.useState<ProblemData[]>();
+  const [problems, setProblems] = React.useState<GroupProblemData[]>();
 
   const notifications = useNotificationSystem();
 
@@ -47,7 +50,7 @@ export function ActivePostProblemsProvider({
         .doc(activePostId)
         .collection('problems')
         .where('isDeleted', '==', false)
-        .withConverter(problemConverter)
+        .withConverter(groupProblemConverter)
         .onSnapshot(
           snap => {
             setProblems(

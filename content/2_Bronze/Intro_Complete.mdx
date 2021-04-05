@@ -6,160 +6,6 @@ description: 'An easy example: iterating through all pairs.'
 frequency: 4
 ---
 
-export const problems = {
-	sample: [
-		new Problem(
-			'CF',
-			'Maximum Distance',
-			'https://codeforces.com/gym/102951/problem/A',
-			'Easy',
-			false,
-			[]
-		),
-	],
-	probs: [
-		new Problem(
-			'Bronze',
-			'Milk Pails',
-			'615',
-			'Easy',
-			false,
-			['Complete Search'],
-			'usaco-615'
-		), // 99.71
-		new Problem(
-			'Bronze',
-			'Diamond Collector',
-			'639',
-			'Easy',
-			false,
-			['Complete Search'],
-			'usaco-639'
-		), // 99.9
-		new Problem(
-			'Bronze',
-			'Daisy Chains',
-			'1060',
-			'Easy',
-			false,
-			['Complete Search'],
-			'usaco-1060'
-		), // 99.9
-		new Problem(
-			'Bronze',
-			'Cow Gymnastics',
-			'963',
-			'Normal',
-			true,
-			['Complete Search'],
-			'usaco-963'
-		), // 99.93
-		new Problem(
-			'Bronze',
-			'Bovine Genomics',
-			'736',
-			'Normal',
-			true,
-			['Complete Search'],
-			'usaco-736',
-		), // 99.73
-		new Problem(
-			'Bronze',
-			'Triangles',
-			'1011',
-			'Normal',
-			false,
-			['Complete Search'],
-			'usaco-1011'
-		), // 98.02
-		new Problem(
-			'Bronze',
-			'Lifeguards',
-			'784',
-			'Normal',
-			false,
-			['Complete Search'],
-			'usaco-784'
-		), // 98.76
-		new Problem(
-			'Bronze',
-			'Why Did the Cow Cross the Road II',
-			'712',
-			'Normal',
-			true,
-			['Complete Search'],
-			'usaco-712'
-		), // 89.6
-		new Problem(
-			'Bronze',
-			'Guess the Animal',
-			'893',
-			'Hard',
-			false,
-			['Complete Search'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Bovine Genomics',
-			'739',
-			'Hard',
-			true,
-			['Complete Search'],
-			'Loop over each position. Then, loop over each non-spotty cow in a nested loop and check whether a spotty cow has the same character as a non-spotty cow to figure out whether the position explains spottiness.'
-		), // 99.73
-		new Problem(
-			'Bronze',
-			'Load Balancing',
-			'617',
-			'Hard',
-			true,
-			['Complete Search'],
-			'usaco-617'
-		), // 82.79
-		new Problem(
-			'Bronze',
-			'Contaminated Milk',
-			'569',
-			'Very Hard',
-			false,
-			['Complete Search'],
-			'usaco-569'
-		),
-		new Problem(
-			'Bronze',
-			'Cowntact Tracing',
-			'1037',
-			'Very Hard',
-			true,
-			['Complete Search'],
-			''
-		),
-		new Problem(
-			'Bronze',
-			'Bull in a China Shop',
-			'640',
-			'Very Hard',
-			false,
-			['Complete Search'],
-			'usaco-640'
-		), // 47.38
-		new Problem(
-			'Silver',
-			'Load Balancing',
-			'619',
-			'Very Hard',
-			false,
-			['Complete Search'],
-			'usaco-619'
-		),
-	],
-};
-
-<!-- new Problem("Bronze", "Field Reduction", "641", "Hard", false, ['Complete Search'], "Hint: For this problem, you can't do a full complete search; you have to do a reduced search."), // 91.75 -->
-
-<!-- new Problem("Silver", "Field Reduction", "642", "Very Hard", false, ['Complete Search'], ""), -->
-
 <Resources>
 	<Resource source="IUSACO" title="6 - Complete Search">
 		module is based off this
@@ -168,13 +14,17 @@ export const problems = {
 
 <br />
 
-In many problems (especially in Bronze) it suffices to check all possible cases in the solution space, whether it be all elements, all pairs of elements, or all subsets, or all permutations. Unsurprisingly, this is called **complete search** (or **brute force**), because it completely searches the entire solution space.
+In many problems (especially in Bronze) it suffices to check all possible cases
+in the solution space, whether it be all elements, all pairs of elements, or all
+subsets, or all permutations. Unsurprisingly, this is called **complete search**
+(or **brute force**), because it completely searches the entire solution space.
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 <Spoiler title="Solution">
 
-We can iterate through every pair of points and find the square of the distance between them, by squaring the formula for Euclidean distance:
+We can iterate through every pair of points and find the square of the distance
+between them, by squaring the formula for Euclidean distance:
 
 $$
 \text{distance}[(x_1,y_1),(x_2,y_2)]^2 = (x_2-x_1)^2 + (y_2-y_1)^2.
@@ -259,15 +109,27 @@ print(max_square)
 
 A couple notes:
 
-- Since we're iterating through all pairs of points, we start the $j$ loop from $j = i+1$ so that point $i$ and point $j$ are never the same point. Furthermore, it makes it so that each pair is only counted once. In this problem, it doesn't matter whether we double-count pairs or whether we allow $i$ and $j$ to be the same point, but in other problems where we're counting something rather than looking at the maximum, it's important to be careful that we don't overcount.
-- Secondly, the problem asks for the square of the maximum Euclidean distance between any two points. Some students may be tempted to maintain the maximum distance in an integer variable, and then square it at the end when outputting. However, the problem here is that while the square of the distance between two integer points is always an integer, the distance itself isn't guaranteed to be an integer. Thus, we'll end up shoving a non-integer value into an integer variable, which truncates the decimal part. 
+- Since we're iterating through all pairs of points, we start the $j$ loop from
+  $j = i+1$ so that point $i$ and point $j$ are never the same point.
+  Furthermore, it makes it so that each pair is only counted once. In this
+  problem, it doesn't matter whether we double-count pairs or whether we allow
+  $i$ and $j$ to be the same point, but in other problems where we're counting
+  something rather than looking at the maximum, it's important to be careful
+  that we don't overcount.
+- Secondly, the problem asks for the square of the maximum Euclidean distance
+  between any two points. Some students may be tempted to maintain the maximum
+  distance in an integer variable, and then square it at the end when
+  outputting. However, the problem here is that while the square of the distance
+  between two integer points is always an integer, the distance itself isn't
+  guaranteed to be an integer. Thus, we'll end up shoving a non-integer value
+  into an integer variable, which truncates the decimal part.
 
 <LanguageSection>
 
 <CPPSection>
 
-The following solution correctly stores the maximum distance in a floating point variable.
-
+The following solution correctly stores the maximum distance in a floating point
+variable.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -292,7 +154,8 @@ int main() {
 }
 ```
 
-However, it still fails on the following test case (it outputs 12, but the answer is 13):
+However, it still fails on the following test case (it outputs 12, but the
+answer is 13):
 
 ```
 2
@@ -300,7 +163,8 @@ However, it still fails on the following test case (it outputs 12, but the answe
 2 0
 ```
 
-Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you should stick with integers whenever possible.
+Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you
+should stick with integers whenever possible.
 
 </CPPSection>
 
@@ -309,4 +173,4 @@ Rounding suffices (`(int)round(pow(max_dist,2))`), but the takeaway is that you 
 
 ## Problems
 
-<Problems problems={problems.probs} />
+<Problems problems="probs" />

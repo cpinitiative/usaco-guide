@@ -120,6 +120,12 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     >
                       View Join Links
                     </Link>
+                    <Link
+                      to="members"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                    >
+                      View Members
+                    </Link>
                   </>
                 )}
                 {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (
@@ -142,6 +148,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       leaveGroup(groupId, firebaseUser?.uid)
                         .then(() => navigate(`/groups/`))
                         .catch(e => {
+                          console.log(e);
                           alert('Error: ' + e.message);
                         });
                     }

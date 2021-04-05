@@ -9,119 +9,6 @@ prerequisites:
 frequency: 1
 ---
 
-
-
-export const problems = {
-	sample: [
-		new Problem(
-			'YS',
-			'Line Add Get Min',
-			'line_add_get_min',
-			'Normal',
-			false,
-			[],
-			''
-		),
-	],
-	sample_cht: [
-		new Problem(
-			'CEOI',
-			'2017 - Building Bridges',
-			'https://oj.uz/problem/view/CEOI17_building',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			'@Later'
-		),
-	],
-	half: [
-		new Problem(
-			'Kattis',
-			'Marshland Rescues',
-			'https://maps19.kattis.com/problems/marshlandrescues',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'JOI',
-			'2017 - Dragon 2',
-			'https://oj.uz/problem/view/JOI17_dragon2',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'Balkan OI',
-			'2011 - 2circles',
-			'https://oj.uz/problem/view/balkan11_2circles',
-			'Very Hard',
-			false,
-			['Geometry', 'Binary Search'],
-			'http://boi2011.ro/resurse/tasks/2circles-sol.pdf'
-		),
-	],
-	lc_probs: [
-		new Problem(
-			'YS',
-			'Segment Add Get Min',
-			'segment_add_get_min',
-			'Normal',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'POI',
-			'2014 - Supercomputer',
-			'https://szkopul.edu.pl/problemset/problem/e9ycK_efBDBt4aPs-QeqYpwR/site/',
-			'Normal',
-			false,
-			['DP', 'Convex'],
-			''
-		),
-		new Problem(
-			'CEOI',
-			'2009 - Harbingers',
-			'https://oj.uz/problem/view/CEOI09_harbingers',
-			'Hard',
-			false,
-			['DP', 'Convex'],
-			'http://infosb.net/ceoi2009/tasks/solutions.doc'
-		),
-		new Problem(
-			'FHC',
-			'Log Drivin\' Hirin',
-			'2020/round-2/problems/D',
-			'Hard',
-			false,
-			['DP', 'Convex'],
-			''
-		),
-		new Problem(
-			'AC',
-			'Contest with Drinks Hard',
-			'contests/arc066/tasks/arc066_d',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem(
-			'TLX',
-			'Mall & Transportation',
-			'https://tlx.toki.id/contests/troc-13-div-1/problems/D',
-			'Hard',
-			false,
-			[],
-			''
-		),
-		new Problem('Old Gold', 'Fencing the Herd', '534', 'Hard', false, [], ''),
-	],
-};
-
 ## Half-Plane Intersection
 
 <Resources>
@@ -143,11 +30,11 @@ export const problems = {
 
 <IncompleteSection>Example problem + implementation?</IncompleteSection>
 
-<Problems problems={problems.half} />
+<Problems problems="half" />
 
 ## LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
 
-<Problems problems={problems.sample} />
+<Problems problems="sample" />
 
 <Resources>
 	<Resource
@@ -178,17 +65,22 @@ export const problems = {
 
 ### Example Problem
 
-<FocusProblem problem={problems.sample_cht[0]} />
+<FocusProblem problem="sample_cht" />
 
 #### Analysis
 
-Instead of focusing on the pillars that should be destroyed, let's instead focus on the pillars that remain.
+Instead of focusing on the pillars that should be destroyed, let's instead focus
+on the pillars that remain.
 
-The total cost consists of the cost due to height differences plus the cost of destroying unused pillars. The latter cost is equal to the cost to destroy all pillars minus the cost to destroy the remaining pillars.
+The total cost consists of the cost due to height differences plus the cost of
+destroying unused pillars. The latter cost is equal to the cost to destroy all
+pillars minus the cost to destroy the remaining pillars.
 
-Since the cost to destroy all pillars is constant, we can thus turn the problem into one about building pillars instead of destroying them!
+Since the cost to destroy all pillars is constant, we can thus turn the problem
+into one about building pillars instead of destroying them!
 
-From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to build the bridge so that the last build pillar is pillar $i$.
+From this, we get a basic DP recurrence. Let $dp[i]$ be the minimum cost to
+build the bridge so that the last build pillar is pillar $i$.
 
 $dp[1] = -w_1$ and the following recurrence holds:
 
@@ -205,15 +97,18 @@ $$
 dp[j] + h_j^2 - 2h_ih_j
 $$
 
-effectively describes a linear function $y = mx + c$, where $m = -2h_j$, $x = h_i$, and $c = dp[j] + h_j^2$
+effectively describes a linear function $y = mx + c$, where $m = -2h_j$,
+$x = h_i$, and $c = dp[j] + h_j^2$
 
 This means that we can use CHT to compute $dp[i]$ efficiently!
 
-However, since $m$ is not monotonic, we can't use linear CHT using a deque, so we must settle with $\mathcal{O}(N \log N)$.
+However, since $m$ is not monotonic, we can't use linear CHT using a deque, so
+we must settle with $\mathcal{O}(N \log N)$.
 
 <Spoiler title="Code">
 
-I implemented CHT using a `std::set` here, but other implementations using things like the Li-Chao tree should work similarly.
+I implemented CHT using a `std::set` here, but other implementations using
+things like the Li-Chao tree should work similarly.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -310,4 +205,4 @@ int main() {
 
 ## Problems
 
-<Problems problems={problems.lc_probs} />
+<Problems problems="lc_probs" />

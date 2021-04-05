@@ -1,5 +1,5 @@
 ---
-id: cellular-network
+id: cf-702C
 source: CF
 title: Cellular Network
 author: Nathan Wang, Benjamin Qi, Maggie Liu
@@ -111,9 +111,20 @@ int main() {
 
 ## Solution 3 - Using a Set
 
-We use the set $\texttt{towers}$ to store the coordinates of the cellular towers. For each city, we want to find the closest tower and calculate the distance. The minimal $r$ will be the maximum of all these distances. To find the closest tower to a certain city, we check the towers to the left and right and determine which one is closer.
+We use the set $\texttt{towers}$ to store the coordinates of the cellular
+towers. For each city, we want to find the closest tower and calculate the
+distance. The minimal $r$ will be the maximum of all these distances. To find
+the closest tower to a certain city, we check the towers to the left and right
+and determine which one is closer.
 
-For each city, we use [`lower_bound`](http://www.cplusplus.com/reference/algorithm/lower_bound/) to find the closest tower to the right of the city. If this tower is found, calculate the distance between this tower and the city. If the tower is not at the beginning of the set, the previous tower in the set will be the tower to the left of the city. Define $\texttt{dist}$ to be the minimum of the distance to the tower on the right and the distance to the tower on the left. Then, set $r$ to be the maximum of itself and $\texttt{dist}$.
+For each city, we use
+[`lower_bound`](http://www.cplusplus.com/reference/algorithm/lower_bound/) to
+find the closest tower to the right of the city. If this tower is found,
+calculate the distance between this tower and the city. If the tower is not at
+the beginning of the set, the previous tower in the set will be the tower to the
+left of the city. Define $\texttt{dist}$ to be the minimum of the distance to
+the tower on the right and the distance to the tower on the left. Then, set $r$
+to be the maximum of itself and $\texttt{dist}$.
 
 ```cpp
 #include <iostream>
@@ -161,7 +172,6 @@ int main()
 	return 0;
 }
 ```
-
 
 </CPPSection>
 

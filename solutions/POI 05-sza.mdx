@@ -1,5 +1,5 @@
 ---
-id: poi-05-sza
+id: poi-05-template
 source: POI 2005
 title: Template
 author: Andi Qu, Benjamin Qi
@@ -9,17 +9,20 @@ Let the string be $S$.
 
 <Spoiler title="Hint 1">
 
-A template of $S$ is both a prefix and a suffix of $S$. This suggests that we should use KMP.
+A template of $S$ is both a prefix and a suffix of $S$. This suggests that we
+should use KMP.
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-If $T$ is a template of $S$ and $U$ is a template of $T$, then $U$ is also a template of $S$.
+If $T$ is a template of $S$ and $U$ is a template of $T$, then $U$ is also a
+template of $S$.
 
 <Spoiler title="Proof">
 
-Since $U$ is a template of $T$, we can make $T$ using $U$. Since $T$ is a template of $S$, we can make $S$ using $T$.
+Since $U$ is a template of $T$, we can make $T$ using $U$. Since $T$ is a
+template of $S$, we can make $S$ using $T$.
 
 Therefore, we can also make $S$ using $U$ (i.e. it's a template of $S$).
 
@@ -29,17 +32,28 @@ Therefore, we can also make $S$ using $U$ (i.e. it's a template of $S$).
 
 <Spoiler title="Hint 3">
 
-First, use KMP to compute the prefix function $\pi$ of $S$. The shortest template of $S$ is either $S$ itself or the shortest template of $S[0 : \pi[|S| - 1]]$.
+First, use KMP to compute the prefix function $\pi$ of $S$. The shortest
+template of $S$ is either $S$ itself or the shortest template of
+$S[0 : \pi[|S| - 1]]$.
 
 <Spoiler title="Proof">
 
-We'll prove instead that any template of $S$ that isn't $S$ itself is also a template of $S[0 : \pi[|S| - 1]]$, since that's equivalent.
+We'll prove instead that any template of $S$ that isn't $S$ itself is also a
+template of $S[0 : \pi[|S| - 1]]$, since that's equivalent.
 
-Since $S[0 : \pi[|S| - 1]]$ is the longest proper prefix of $S$ that is also a suffix, we know that the only longer string that can be $S$'s template is $S$ itself. Let $T$ be some template of $S$ that isn't $S$ itself.
+Since $S[0 : \pi[|S| - 1]]$ is the longest proper prefix of $S$ that is also a
+suffix, we know that the only longer string that can be $S$'s template is $S$
+itself. Let $T$ be some template of $S$ that isn't $S$ itself.
 
-Next, we claim that we can make at least half of $S[0 : \pi[|S| - 1]]$'s prefix using $T$. If $|T| \geq \frac{\pi[|S| - 1]}{2}$, then we are done. Otherwise, in the process of making $S$ using $T$ from left to right, there must be some point where we transition from (built less than half of $S[0 : \pi[|S| - 1]]$) to (built at least half of but not more than $S[0 : \pi[|S| - 1]]$).
+Next, we claim that we can make at least half of $S[0 : \pi[|S| - 1]]$'s prefix
+using $T$. If $|T| \geq \frac{\pi[|S| - 1]}{2}$, then we are done. Otherwise, in
+the process of making $S$ using $T$ from left to right, there must be some point
+where we transition from (built less than half of $S[0 : \pi[|S| - 1]]$) to
+(built at least half of but not more than $S[0 : \pi[|S| - 1]]$).
 
-Similarly, we can make at least half of $S[0 : \pi[|S| - 1]]$'s *suffix* using $T$. We can then combine these two fragments to make $S[0 : \pi[|S| - 1]]$ itself, so therefore $T$ is also a template of $S[0 : \pi[|S| - 1]]$.
+Similarly, we can make at least half of $S[0 : \pi[|S| - 1]]$'s _suffix_ using
+$T$. We can then combine these two fragments to make $S[0 : \pi[|S| - 1]]$
+itself, so therefore $T$ is also a template of $S[0 : \pi[|S| - 1]]$.
 
 </Spoiler>
 
@@ -57,9 +71,12 @@ Don't be afraid to use KMP again!
 
 First, we compute the prefix function $\pi$ of $S$ using KMP.
 
-If $2\pi[i - 1] \geq i$, then $S[0 : i]$ will never be the shortest template of $S$ because we know that $S[0 : \pi[i - 1]]$ is a template of $S[0 : i]$.
+If $2\pi[i - 1] \geq i$, then $S[0 : i]$ will never be the shortest template of
+$S$ because we know that $S[0 : \pi[i - 1]]$ is a template of $S[0 : i]$.
 
-This means that we only have $\mathcal O(\log N)$ candidate templates to check! We can then use KMP again on each candidate and check whether the maximum "gap" between matches is sufficiently small.
+This means that we only have $\mathcal O(\log N)$ candidate templates to check!
+We can then use KMP again on each candidate and check whether the maximum "gap"
+between matches is sufficiently small.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -103,19 +120,30 @@ int main() {
 
 <Warning>
 
-The official time limits are very tight and `std::vector` has a bad constant factor, so this approach only gets 100 points if you represent the graph described below without `std::vector`. For more details, see [this CodeForces blog post](https://codeforces.com/blog/entry/67883).
+The official time limits are very tight and `std::vector` has a bad constant
+factor, so this approach only gets 100 points if you represent the graph
+described below without `std::vector`. For more details, see
+[this CodeForces blog post](https://codeforces.com/blog/entry/67883).
 
-This is also an interesting example of how something with a less-optimal big-O complexity (i.e. solution 1) runs faster in practice.
+This is also an interesting example of how something with a less-optimal big-O
+complexity (i.e. solution 1) runs faster in practice.
 
 </Warning>
 
-First, we compute the prefix function $\pi$ of $S$ using KMP. While doing this, we also construct a tree where node $(i + 1)$'s parent is $\pi[i]$ for each $0 \leq i < N$.
+First, we compute the prefix function $\pi$ of $S$ using KMP. While doing this,
+we also construct a tree where node $(i + 1)$'s parent is $\pi[i]$ for each
+$0 \leq i < N$.
 
-Notice how the subtree of node $i$ is the set of all positions $j$ where $S[0 : i] = S[j - i : j]$.
+Notice how the subtree of node $i$ is the set of all positions $j$ where
+$S[0 : i] = S[j - i : j]$.
 
-This means that we can traverse up the tree from node $N$ and keep track of the nodes in the current node's subtree (using a linked list).
+This means that we can traverse up the tree from node $N$ and keep track of the
+nodes in the current node's subtree (using a linked list).
 
-To check whether the current node works, we simply check whether the gaps between positions in the subtree are sufficiently small. We can keep track of these gaps by keeping a global maximum that we update each time we erase a node from the linked list.
+To check whether the current node works, we simply check whether the gaps
+between positions in the subtree are sufficiently small. We can keep track of
+these gaps by keeping a global maximum that we update each time we erase a node
+from the linked list.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -179,18 +207,29 @@ int main() {
 
 First, we compute the prefix function $\pi$ of $S$ using KMP.
 
-We then solve the following problem recursively: given a string, what's the length of its shortest template? We can do this as so:
-1. Find the answer for the longest proper prefix of the string that's also a suffix.
+We then solve the following problem recursively: given a string, what's the
+length of its shortest template? We can do this as so:
+
+1. Find the answer for the longest proper prefix of the string that's also a
+   suffix.
 2. Check whether this answer also works for the current string.
-3. If it does, return that length; otherwise, return the length of the current string.
+3. If it does, return that length; otherwise, return the length of the current
+   string.
 
-We will solve each step 2 using DP and another KMP in **amortized** $\mathcal O(N)$ time.
+We will solve each step 2 using DP and another KMP in **amortized**
+$\mathcal O(N)$ time.
 
-If we know where a candidate template matches in a given string, then we can also check whether it's a template in linear time. However, this will run in quadratic time overall if we're not careful.
+If we know where a candidate template matches in a given string, then we can
+also check whether it's a template in linear time. However, this will run in
+quadratic time overall if we're not careful.
 
-The key observation is that since we know the candidate template is also a template of the longest proper prefix of the given string, then we only need to do the DP on the remaining part of the string. This means that we only need to process each character in $S$ in the DP at most once!
+The key observation is that since we know the candidate template is also a
+template of the longest proper prefix of the given string, then we only need to
+do the DP on the remaining part of the string. This means that we only need to
+process each character in $S$ in the DP at most once!
 
-To find the matches just as efficiently, we run KMP on the same partial string in each recursive step.
+To find the matches just as efficiently, we run KMP on the same partial string
+in each recursive step.
 
 ```cpp
 #include <bits/stdc++.h>
