@@ -110,15 +110,13 @@ export const probSources = {
 
 export type ProblemInfo = {
   /**
-   * Unique ID of the problem. For convenience, this is equivalent to the URL of the problem.
-   * However, if we ever change the URL of the problem (in case the first URL breaks), do NOT
-   * modify uniqueID. Keep it the same as the old URL.
+   * Unique ID of the problem. See Content Documentation.md for more info
    */
   uniqueId: string;
   name: string;
   url: string;
   /**
-   * Source of the problem. More information about some problem sources can be found in the probSources map.
+   * Source of the problem. More information about some problem sources can be found in the probSources and the contests map.
    */
   source: string;
   difficulty: ProblemDifficulty;
