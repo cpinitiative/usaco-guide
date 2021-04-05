@@ -5,7 +5,7 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
-const expand = props.isCodeBlockExpandable === undefined;
+const expand = props.isCodeBlockExpandable ?? true;
 
   const sections = {};
   React.Children.map(props.children, child => {
