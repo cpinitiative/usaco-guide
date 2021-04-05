@@ -676,7 +676,6 @@ points:
 
 ```cpp
 BeginCodeSnip{}
-
 #include <iostream>
 #include <algorithm>
 using namespace std;
@@ -701,12 +700,12 @@ int main(void)
     cin >> x >> y;
     P[i] = make_pair(x,y);
   }
-  //------------- (coordinate compression) ----------
+EndCodeSnip
   sort(P, P+N); 
   for (int i=0; i<N; i++) P[i].first = i+1;
   sort(P, P+N, ycomp); 
   for (int i=0; i<N; i++) P[i].second = i+1;
-  //-------------------------------------------------
+BeginCodeSnip{}
   for (int i=0; i<N; i++) Psum[P[i].first][P[i].second] = 1;
   for (int i=1; i<=N; i++)
     for (int j=1; j<=N; j++)
@@ -721,8 +720,6 @@ int main(void)
   cout << answer + 1 << "\n";
   
 }
-
-
 EndCodeSnip
 
 ```
@@ -732,7 +729,6 @@ EndCodeSnip
 <JavaSection>
 
 ```java
-
 BeginCodeSnip{}
 import java.util.Arrays;
 import java.util.Comparator;
@@ -756,7 +752,7 @@ public class RectangularPasture {
             ys[j] = in.nextInt();
             cows[j] = j;
         }
-        // ------------- (coordinate compression) ----------
+EndCodeSnip
         Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
         for (int x = 1; x <= n; x++) {
             xs[cows[x - 1]] = x;
@@ -765,7 +761,7 @@ public class RectangularPasture {
         for (int y = 1; y <= n; y++) {
             ys[cows[y - 1]] = y;
         }
-	// -------------------------------------------------
+BeginCodeSnip{}
         sums = new int[n + 1][n + 1];
         for (int j = 0; j < n; j++) {
             sums[xs[j]][ys[j]]++;
@@ -812,12 +808,10 @@ The problem statement of Rectangular Pasture ensures that all given `x` and `y` 
 <CPPSection>
 
 ```cpp
-BeginCodeSnip{}
 cmp = v; //"cmp" starts as a copy of a vector v, but will end up with the elements of v in sorted order with duplicates removed
 sort(begin(cmp), end(cmp)); //v is a vector of a type for which no custom comparator is necessary, though you can add a custom comparator to this sort() call as necessary
 cmp.erase(unique(begin(cmp), end(cmp)), end(cmp)); 
 auto cid = [&](int x) { return lower_bound(begin(cmp), end(cmp), x) - begin(cmp); }; // cid gives the index of x in cmp by "binary searching"
-EndCodeSnip
 ```
 
 </CPPSection>
@@ -825,10 +819,8 @@ EndCodeSnip
 <JavaSection>
 
 ```java
-BeginCodeSnip{}
 TreeSet<Integer> set = new TreeSet<Integer>(v); //v is a Collection of values - replace this with whatever you like
 ArrayList<Integer> cmp = new ArrayList<Integer>(set); //cmp is the sorted set of values of v with duplicates removed
-EndCodeSnip
 ```
 </JavaSection>
 
