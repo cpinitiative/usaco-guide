@@ -656,7 +656,7 @@ value is above another), coordinate compression is a simple way to help a lot
 with implementation. If we have a set of integers ranging from $0$ to $10^9$, we
 can't use them as array indices because we'd have to create an array of size
 $10^9$, which would surely cause a `Memory Limit Exceeded` verdict. However, if
-there are only $N = 10^6$ such integers, we can coordinate-compress their
+there are only $N \leq 10^6$ such integers, we can coordinate-compress their
 values, which guarantees that the values will all be in the range from $0$ to
 $N-1$, which _can_ be used as array indices.
 
@@ -671,14 +671,13 @@ they can be used as array indices.
 
 Below you will find the solution code to Rectangular Pasture, which uses
 coordinate compression at the beginning. Observe how a custom comparator is used to sort the
-points (either by `x` or by `y`):
+points:
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-
 BeginCodeSnip{}
 
 #include <iostream>
@@ -738,7 +737,6 @@ EndCodeSnip
 ```java
 
 BeginCodeSnip{}
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -798,7 +796,6 @@ public class RectangularPasture {
         System.out.println(answer);
     }
 }
-
 EndCodeSnip
 
 ```
@@ -808,6 +805,38 @@ didn't discuss, but it should be apparent which coordinate (`x` or `y`) that the
 comparator is sorting by.
 
 </JavaSection>
+
+</LanguageSection>
+
+The problem statement of Rectangular Pasture ensures that all given `x` and `y` coordinates are distinct. However, coordinate compression can also be applied to problems where values are repeated and where we want to remove duplicate values. The following code shows ways of coordinate compressing while also removing duplicate values:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+BeginCodeSnip{}
+cmp = v; //"cmp" starts as a copy of a vector v, but will end up with the elements of v in sorted order with duplicates removed
+sort(begin(cmp), end(cmp)); //v is a vector of a type for which no custom comparator is necessary, though you can add a custom comparator to this sort() call as necessary
+cmp.erase(unique(begin(cmp), end(cmp)), end(cmp)); 
+auto cid = [&](int x) { return lower_bound(begin(cmp), end(cmp), x) - begin(cmp); }; // cid gives the index of x in cmp by "binary searching"
+EndCodeSnip
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+BeginCodeSnip{}
+TreeSet<Integer> set = new TreeSet<Integer>(v); //v is a Collection of values - replace this with whatever you like
+ArrayList<Integer> cmp = new ArrayList<Integer>(set); //cmp is the sorted set of values of v with duplicates removed
+EndCodeSnip
+```
+
+</JavaSection>
+
+The code creates a sorted list of the given values with duplicates removed. The list can be [binary serached](/silver/binary-search) to get the index or "compressed value" of any element. At the same time, this method of creating a sorted list of the given values allows one to work backwards to get the original values from their compressed values. If the original values are important, they can be used with this implementation.
 
 </LanguageSection>
 
