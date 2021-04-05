@@ -291,7 +291,7 @@ class CodeBlock extends React.Component<
               }
               style={{ ...style }}
             >
-              {collapsed && tokens.length > 15
+              {isCodeBlockExpandable && collapsed && tokens.length > 15
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
@@ -309,7 +309,7 @@ class CodeBlock extends React.Component<
                       ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                     }
                     style={
-                      collapsed
+                      collapsed && isCodeBlockExpandable
                         ? {
                             background:
                               'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
