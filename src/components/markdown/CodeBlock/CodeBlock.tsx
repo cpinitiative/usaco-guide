@@ -103,8 +103,8 @@ class CodeBlock extends React.Component<
   constructor(props) {
     super(props);
 
-    if (typeof props.expandable == 'undefined') {
-      props.expandable = true;
+    if (typeof props.isCodeBlockExpandable == 'undefined') {
+      props.isCodeBlockExpandable = true;
     }
 
     let i = 0;
@@ -297,7 +297,7 @@ class CodeBlock extends React.Component<
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {this.props.expandable && collapsed && tokens.length > 15 && (
+              {this.props.isCodeBlockExpandable && collapsed && tokens.length > 15 && (
                 <div
                   className={
                     (collapsed ? 'h-full' : 'h-12') +
