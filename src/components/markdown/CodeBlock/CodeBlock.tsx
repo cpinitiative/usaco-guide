@@ -102,10 +102,7 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-
-    if (typeof props.isCodeBlockExpandable == 'undefined') {
-      props.isCodeBlockExpandable = true;
-    }
+    const isCodeBlockExpandable = props.isCodeBlockExpandable ?? true;
 
     let i = 0;
     let prev = -1;
