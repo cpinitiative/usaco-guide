@@ -102,7 +102,7 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-    const isCodeBlockExpandable = props.isCodeBlockExpandable ?? true;
+    
 
     let i = 0;
     let prev = -1;
@@ -246,6 +246,7 @@ class CodeBlock extends React.Component<
   render() {
     let code = this.getCode();
     const className = this.props.className;
+    const isCodeBlockExpandable = this.props.isCodeBlockExpandable ?? true;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag
