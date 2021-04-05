@@ -258,7 +258,7 @@ it's `[source]-[SlugifiedProblemNameCamelCased]`.
   `cf-[contestNumber][problemLetter]`. If it's CF Gym, it's
   `cfgym-[gymNumber][problemLetter]`.
 - If the problem is an OI with a year, the unique ID is
-  `[oiName]-[twodigityear]-slugifiedName]`.
+  `[oiName]-[twodigityear]-[slugifiedName]`.
 
 Here are some example unique ID's:
 
