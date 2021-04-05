@@ -644,9 +644,7 @@ public class Sol {
 
 ## Coordinate Compression
 
-Coordinate compression is another useful technique related to sorting that can
-also be used in conjuction with custom comparators. Coordinate compression
-describes the process of replacing each value in a list with its index if that
+Coordinate compression describes the process of replacing each value in a list with its index if that
 list was sorted. For example, the list $\{7, 3, 4, 1\}$ would be compressed to
 $\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the first list, so it
 becomes $0$, and $7$ is the greatest value, so it becomes $3$, the largest index
@@ -681,14 +679,11 @@ points (either by `x` or by `y`):
 
 ```cpp
 
-#include <iostream>
-#include <algorithm>
-using namespace std;
+BeginCodeSnip{}
 
 typedef pair<int,int> Point;
 bool ycomp(Point p, Point q) { return p.second < q.second; }
 
-const int MAX_N = 2500;
 Point P[MAX_N];
 
 ...
@@ -708,6 +703,8 @@ int main(void)
 
 ...
 
+EndCodeSnip
+
 ```
 
 </CPPSection>
@@ -716,35 +713,31 @@ int main(void)
 
 ```java
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Scanner;
+BeginCodeSnip{}
 
-public class RectangularPasture {
-
-...
-
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int n = in.nextInt();
-        int[] xs = new int[n];
-        int[] ys = new int[n];
-        Integer[] cows = new Integer[n];
-        for (int j = 0; j < n; j++) {
-            xs[j] = in.nextInt();
-            ys[j] = in.nextInt();
-            cows[j] = j;
-        }
-        Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
-        for (int x = 1; x <= n; x++) {
-            xs[cows[x - 1]] = x;
-        }
-        Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
-        for (int y = 1; y <= n; y++) {
-            ys[cows[y - 1]] = y;
-        }
+public static void main(String[] args) {
+     Scanner in = new Scanner(System.in);
+     int n = in.nextInt();
+     int[] xs = new int[n];
+     int[] ys = new int[n];
+     Integer[] cows = new Integer[n];
+     for (int j = 0; j < n; j++) {
+         xs[j] = in.nextInt();
+         ys[j] = in.nextInt();
+         cows[j] = j;
+     }
+     Arrays.sort(cows, Comparator.comparingInt(j -> xs[j]));
+     for (int x = 1; x <= n; x++) {
+         xs[cows[x - 1]] = x;
+     }
+     Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
+     for (int y = 1; y <= n; y++) {
+         ys[cows[y - 1]] = y;
+     }
 
 ...
+
+EndCodeSnip
 
 ```
 
