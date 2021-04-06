@@ -1,23 +1,19 @@
-import {
-  MarkdownLayoutSidebarModuleLinkInfo,
-  ModuleInfo,
-  ModuleLinkInfo,
-} from '../../../models/module';
-import { Frequency } from '../../Frequency';
-import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
-import MarkCompleteButton from '../MarkCompleteButton';
 import * as React from 'react';
+import { useContext } from 'react';
 // import { SolutionInfo } from '../../models/solution';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
   SECTION_LABELS,
 } from '../../../../content/ordering';
-import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { useContext } from 'react';
 import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
+import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
+import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
+import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
+import { Frequency } from '../../Frequency';
+import MarkCompleteButton from '../MarkCompleteButton';
 import ModuleHeadersLinkList from './ModuleHeadersLinkList';
 // import { timeAgoString } from '../Dashboard/ModuleLink';
 

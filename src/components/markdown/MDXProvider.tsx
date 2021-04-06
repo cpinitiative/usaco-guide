@@ -1,25 +1,25 @@
-import * as React from 'react';
 import { MDXProvider } from '@mdx-js/react';
-import Spoiler from './Spoiler';
-import { ProblemsList } from './ProblemsList/ProblemsList';
-import { DivisionList } from './ProblemsList/DivisionList/DivisionList';
-import { Resource, ResourcesList } from './ResourcesList';
+import * as React from 'react';
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
+import FocusProblem from './FocusProblem';
+import HTMLComponents from './HTMLComponents';
+import { IncompleteSection } from './IncompleteSection';
+import Info from './Info';
 import {
   CPPSection,
   JavaSection,
   LanguageSection,
   PySection,
 } from './LanguageSection';
-import { IncompleteSection } from './IncompleteSection';
-import Info from './Info';
-import Warning from './Warning';
 import Optional from './Optional';
-import HTMLComponents from './HTMLComponents';
-import FocusProblem from './FocusProblem';
-import Youtube from './Youtube';
 import PrefixSumInteractive from './PrefixSumInteractive';
+import { DivisionList } from './ProblemsList/DivisionList/DivisionList';
+import { ProblemsList } from './ProblemsList/ProblemsList';
+import { Resource, ResourcesList } from './ResourcesList';
+import Spoiler from './Spoiler';
+import Warning from './Warning';
+import Youtube from './Youtube';
 
 export const components = {
   Spoiler,

@@ -1,8 +1,8 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
+import * as React from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { ProblemHint } from '../../../models/groups/problem';
 import MarkdownEditor from '../MarkdownEditor';
-import { ProblemData, ProblemHint } from '../../../models/groups/problem';
 
 export default function EditProblemHintModal({
   isOpen,

@@ -1,41 +1,35 @@
+import firebaseType from 'firebase';
 import * as React from 'react';
-import {
-  createContext,
-  useReducer,
-  useState,
-  useContext,
-  ReactNode,
-} from 'react';
+import { createContext, ReactNode, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import useFirebase from '../../hooks/useFirebase';
-import UserLang, { UserLangAPI } from './properties/userLang';
-import UserDataPropertyAPI from './userDataPropertyAPI';
-import LastViewedModule, {
-  LastViewedModuleAPI,
-} from './properties/lastViewedModule';
-import HideTagsAndDifficulty, {
-  HideTagsAndDifficultyAPI,
-} from './properties/hideTagsAndDifficulty';
+import AdSettingsProperty, {
+  AdSettingsAPI,
+} from './properties/adSettingsProperty';
 import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
-import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import HideTagsAndDifficulty, {
+  HideTagsAndDifficultyAPI,
+} from './properties/hideTagsAndDifficulty';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
+import LastViewedModule, {
+  LastViewedModuleAPI,
+} from './properties/lastViewedModule';
+import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
+import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
+import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
   UserProgressOnModulesAPI,
 } from './properties/userProgressOnModules';
 import UserProgressOnProblemsProperty, {
   UserProgressOnProblemsAPI,
 } from './properties/userProgressOnProblems';
-import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import firebaseType from 'firebase';
+import UserDataPropertyAPI from './userDataPropertyAPI';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import AdSettingsProperty, {
-  AdSettingsAPI,
-} from './properties/adSettingsProperty';
-import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 
 // Object for counting online users
 // var Gathering = (function () {

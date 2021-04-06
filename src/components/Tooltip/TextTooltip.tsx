@@ -1,8 +1,8 @@
 // Heavily inspired by https://joshwcomeau.com/
 
+import classNames from 'classnames';
 import * as React from 'react';
 import Tooltip from './Tooltip';
-import classNames from 'classnames';
 
 const TextTooltip = ({ children, className = null, ...props }) => {
   return (

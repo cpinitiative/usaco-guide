@@ -1,10 +1,10 @@
+import { useContext } from 'react';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
   UserSolutionForProblem,
   userSolutionForProblemConverter,
 } from '../models/userSolutionForProblem';
 import useFirebase from './useFirebase';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 export default function useUserProblemSolutionActions() {
   const firebase = useFirebase();

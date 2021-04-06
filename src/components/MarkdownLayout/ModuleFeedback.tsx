@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { SolutionInfo } from '../../models/solution';
 import { ModuleInfo } from '../../models/module';
-import useStickyState from '../../hooks/useStickyState';
-import { useContext, useEffect, useState } from 'react';
-import { validateEmail } from '../ContactUsSlideover/ContactUsSlideover';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { SolutionInfo } from '../../models/solution';
 
 export default function ModuleFeedback({
   markdownData,

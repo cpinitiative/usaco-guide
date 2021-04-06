@@ -1,11 +1,11 @@
 // Heavily inspired by https://joshwcomeau.com/
 
-import * as React from 'react';
 import Tippy from '@tippyjs/react';
+import * as React from 'react';
+import styled from 'styled-components';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
-import styled from 'styled-components';
 
 const StyledTippy = styled(Tippy)`
   background-color: #252f3f !important;

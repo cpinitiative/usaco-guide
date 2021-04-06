@@ -9,21 +9,20 @@
 //   );
 // }
 
+import { PageProps } from 'gatsby';
 import * as React from 'react';
-import { Link, PageProps } from 'gatsby';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import useStickyState from '../hooks/useStickyState';
+import { useEffect, useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import problemsSchema from '../../content/problems.schema.json';
 import ButtonGroup from '../components/ButtonGroup';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 import { useDarkMode } from '../context/DarkModeContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import problemsSchema from '../../content/problems.schema.json';
+import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
+import useStickyState from '../hooks/useStickyState';
 const RawMarkdownRenderer = React.lazy(
   () => import('../components/DynamicMarkdownRenderer')
 );

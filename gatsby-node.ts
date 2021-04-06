@@ -1,5 +1,7 @@
+import * as fs from 'fs';
 import { SECTIONS } from './content/ordering';
-import importFresh = require('import-fresh');
+import PGS from './src/components/markdown/PGS';
+import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
 import {
   getProblemURL,
   ProblemInfo,
@@ -7,11 +9,8 @@ import {
   ProblemSolutionInfo,
   probSources,
 } from './src/models/problem';
-import PGS from './src/components/markdown/PGS';
 import { books } from './src/utils/books';
-import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
-import { strict as assert } from 'assert';
-import * as fs from 'fs';
+import importFresh = require('import-fresh');
 
 const mdastToStringWithKatex = require('./src/mdx-plugins/mdast-to-string');
 const mdastToString = require('mdast-util-to-string');

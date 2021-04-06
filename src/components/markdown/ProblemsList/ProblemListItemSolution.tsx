@@ -1,7 +1,7 @@
 import * as React from 'react';
-import Tooltip from '../../Tooltip/Tooltip';
-import TextTooltip from '../../Tooltip/TextTooltip';
 import { getProblemURL, ProblemInfo } from '../../../models/problem';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import Tooltip from '../../Tooltip/Tooltip';
 import { Anchor } from './ProblemsListItem';
 
 type ProblemListItemSolutionProps = {

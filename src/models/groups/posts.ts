@@ -1,13 +1,11 @@
+import { default as firebase, default as firebaseType } from 'firebase';
 import moment from 'moment';
-import firebase from 'firebase';
-import firebaseType from 'firebase';
 import {
   ExecutionStatus,
   ProblemData,
   Submission,
   SubmissionType,
 } from './problem';
-import { Leaderboard } from './leaderboard';
 
 export type PostData = {
   id?: string;

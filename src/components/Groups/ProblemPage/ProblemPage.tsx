@@ -1,23 +1,19 @@
-import * as React from 'react';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import { Link, navigate } from 'gatsby';
-import Breadcrumbs from '../Breadcrumbs';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import ProblemSubmission from './ProblemSubmissionInterface';
-import { useProblem } from '../../../hooks/groups/useProblem';
+import moment from 'moment';
+import * as React from 'react';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useProblem } from '../../../hooks/groups/useProblem';
+import Layout from '../../layout';
+import Spoiler from '../../markdown/Spoiler';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
 import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
-import Spoiler from '../../markdown/Spoiler';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-import {
-  getPostDueDateString,
-  getPostTimestampString,
-} from '../../../models/groups/posts';
-import moment from 'moment';
+import ProblemSubmission from './ProblemSubmissionInterface';
 
 export default function ProblemPage(props) {
   const { postId, problemId } = props as {

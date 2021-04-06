@@ -1,7 +1,7 @@
-import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import * as React from 'react';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import NavBar from './NavBar';
 
 export default function MobileAppBar() {

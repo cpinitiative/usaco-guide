@@ -1,9 +1,5 @@
 import * as React from 'react';
 import { AlgoliaProblemInfo } from '../../models/problem';
-import {
-  moduleIDToSectionMap,
-  SECTION_LABELS,
-} from '../../../content/ordering';
 
 const ProblemAutocompleteHit = ({
   hit,

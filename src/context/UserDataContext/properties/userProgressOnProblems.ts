@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser';
-import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { ProblemInfo, ProblemProgress } from '../../../models/problem';
-import problemURLToIdMap from './problemURLToIdMap';
 import { ProblemActivity } from '../../../models/activity';
+import { ProblemProgress } from '../../../models/problem';
+import UserDataPropertyAPI from '../userDataPropertyAPI';
+import problemURLToIdMap from './problemURLToIdMap';
 
 export type UserProgressOnProblemsAPI = {
   userProgressOnProblems: { [key: string]: ProblemProgress };

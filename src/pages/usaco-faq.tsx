@@ -1,12 +1,6 @@
-import * as React from 'react';
+import { MDXProvider } from '@mdx-js/react';
 import { graphql, PageProps } from 'gatsby';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-
-// @ts-ignore
-import FAQ from '../faq.mdx';
-
+import * as React from 'react';
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -17,10 +11,13 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share';
-import { components } from '../components/markdown/MDXProvider';
-import { MDXProvider } from '@mdx-js/react';
+import Layout from '../components/layout';
 import { OffsetAnchor } from '../components/markdown/HTMLComponents';
-import { useDarkMode } from '../context/DarkModeContext';
+import { components } from '../components/markdown/MDXProvider';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+// @ts-ignore
+import FAQ from '../faq.mdx';
 
 const customComponents = {
   ...components,

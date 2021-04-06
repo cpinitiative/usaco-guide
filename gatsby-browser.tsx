@@ -1,9 +1,8 @@
-import './src/styles/main.css';
-import './src/styles/components.css';
-import './src/styles/tailwindcss-utils.css';
-import './src/styles/anchor.css';
-import * as React from 'react';
 import { wrapRootElement as wrap } from './root-wrapper';
+import './src/styles/anchor.css';
+import './src/styles/components.css';
+import './src/styles/main.css';
+import './src/styles/tailwindcss-utils.css';
 
 export const wrapRootElement = wrap;
 

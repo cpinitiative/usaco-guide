@@ -1,12 +1,11 @@
+import { navigate } from 'gatsby';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import useFirebase from '../../hooks/useFirebase';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import useFirebase from '../../hooks/useFirebase';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
-import { navigate } from 'gatsby';
 
 const getQuery = name => {
   const url = window.location.href;
