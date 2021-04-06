@@ -16,36 +16,38 @@ import { OffsetAnchor } from '../components/markdown/HTMLComponents';
 import { components } from '../components/markdown/MDXProvider';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-// @ts-ignore
 import FAQ from '../faq.mdx';
+
+const h1 = ({ id, children, ...props }) => (
+  <h1
+    {...props}
+    className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
+  >
+    <OffsetAnchor id={id} />
+    {children}
+  </h1>
+);
+const h2 = ({ id, children, ...props }) => (
+  <h2
+    className="leading-tight text-2xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
+    {...props}
+  >
+    <OffsetAnchor id={id} />
+    {children}
+  </h2>
+);
+const h3 = ({ id, children, ...props }) => (
+  <h3 {...props} className="leading-snug text-xl font-semibold mb-4 mt-8">
+    <OffsetAnchor id={id} />
+    {children}
+  </h3>
+);
 
 const customComponents = {
   ...components,
-
-  h1: ({ id, children, ...props }) => (
-    <h1
-      {...props}
-      className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis "
-    >
-      <OffsetAnchor id={id} />
-      {children}
-    </h1>
-  ),
-  h2: ({ id, children, ...props }) => (
-    <h2
-      className="leading-tight text-2xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis relative"
-      {...props}
-    >
-      <OffsetAnchor id={id} />
-      {children}
-    </h2>
-  ),
-  h3: ({ id, children, ...props }) => (
-    <h3 {...props} className="leading-snug text-xl font-semibold mb-4 mt-8">
-      <OffsetAnchor id={id} />
-      {children}
-    </h3>
-  ),
+  h1,
+  h2,
+  h3,
 };
 
 export default function USACOFAQPage(props: PageProps) {

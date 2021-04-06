@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-use-before-define: off */
+
 // based on mdast-util-to-string
 export default function extractSearchableText(node) {
   if (

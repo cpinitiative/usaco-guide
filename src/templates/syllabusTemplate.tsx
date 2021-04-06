@@ -88,10 +88,11 @@ const topicsWarning = (
 const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   general: (
     <>
-      You don't have to complete all the modules in this section before moving
-      on to Bronze.
+      You don&apos;t have to complete all the modules in this section before
+      moving on to Bronze.
       <br />
-      Feel free to mark some as "skipped" and revisit them at a later time!
+      Feel free to mark some as &quot;skipped&quot; and revisit them at a later
+      time!
     </>
   ),
   bronze: topicsWarning,
@@ -108,7 +109,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
     <>
       {topicsWarning}
       <br />
-      Some lower-frequency topics are included in "Advanced."
+      Some lower-frequency topics are included in &quot;Advanced.&quot;
     </>
   ),
   adv: (
