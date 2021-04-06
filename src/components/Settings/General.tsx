@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Switch from '../elements/Switch';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import Switch from '../elements/Switch';
 
 export default function General() {
   const {

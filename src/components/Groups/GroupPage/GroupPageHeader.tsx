@@ -1,12 +1,12 @@
 import { Transition } from '@headlessui/react';
+import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useRef, useState } from 'react';
-import { Link, navigate } from 'gatsby';
-import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
 
 export default function GroupPageHeader(props: { group: GroupData }) {
   const { leaveGroup } = useGroupActions();

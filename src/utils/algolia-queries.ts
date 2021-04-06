@@ -1,6 +1,6 @@
 import { moduleIDToSectionMap } from '../../content/ordering';
+import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
-import { AlgoliaProblemInfo, ProblemInfo } from '../models/problem';
 
 const pageQuery = `{
   pages: allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
@@ -74,10 +74,10 @@ const queries = [
   {
     query: problemsQuery,
     transformer: ({ data }): AlgoliaProblemInfo[] => {
-      let res: AlgoliaProblemInfo[] = [];
+      const res: AlgoliaProblemInfo[] = [];
       data.data.edges.forEach(({ node }) => {
         // some problems appear in multiple modules
-        let existingProblem = res.find(x => x.objectID === node.uniqueId);
+        const existingProblem = res.find(x => x.objectID === node.uniqueId);
         // some problems (from extraProblems.json) don't have modules associated with them
         const moduleInfo = node.module
           ? {

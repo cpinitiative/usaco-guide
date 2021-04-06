@@ -1,16 +1,14 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-
 import { transform } from '@babel/standalone';
 import mdx from '@mdx-js/mdx';
-import { MDXProvider, mdx as createElement } from '@mdx-js/react';
+import { mdx as createElement, MDXProvider } from '@mdx-js/react';
+import grayMatter from 'gray-matter';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import * as remarkExternalLinks from 'remark-external-links';
 import * as remarkMath from 'remark-math';
-import grayMatter from 'gray-matter';
-
-import { components } from './markdown/MDXProvider';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
+import { components } from './markdown/MDXProvider';
 
 class ErrorBoundary extends React.Component {
   state: {
@@ -117,7 +115,7 @@ export const _frontmatter = ${JSON.stringify(data)}`;
       }
     };
     if (debounce > 0) {
-      let id = setTimeout(compile, debounce);
+      const id = setTimeout(compile, debounce);
       return () => clearTimeout(id);
     } else {
       compile();

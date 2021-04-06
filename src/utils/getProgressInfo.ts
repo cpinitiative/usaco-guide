@@ -11,13 +11,13 @@ const getProgressInfo = (
   skippedValues: string[],
   notStartedValues: string[]
 ) => {
-  let res = {
+  const res = {
     completed: 0,
     inProgress: 0,
     skipped: 0,
     notStarted: 0,
   };
-  for (let key of keys) {
+  for (const key of keys) {
     if (!(key in data)) res.notStarted++;
     else if (completedValues.includes(data[key])) res.completed++;
     else if (inProgressValues.includes(data[key])) res.inProgress++;

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Transition from '../Transition';
 import { ModuleProgressOptions } from '../../models/module';
+import Transition from '../Transition';
 
 const MarkCompleteButton = ({
   state,

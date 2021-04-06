@@ -1,7 +1,7 @@
+import * as React from 'react';
 import { ModuleFrequency } from '../models/module';
 import ModuleFrequencyDots from './MarkdownLayout/ModuleFrequencyDots';
 import TextTooltip from './Tooltip/TextTooltip';
-import * as React from 'react';
 
 export const FrequencyLabels = [
   'Has Not Appeared',

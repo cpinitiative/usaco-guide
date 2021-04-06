@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import useStickyState from '../../../hooks/useStickyState';

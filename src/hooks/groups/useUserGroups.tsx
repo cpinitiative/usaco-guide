@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
-import ReactDOM from 'react-dom';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { groupConverter, GroupData } from '../../models/groups/groups';
 import useFirebase from '../useFirebase';
@@ -34,7 +33,7 @@ const UserGroupsProvider = ({
       }
       setIsLoading(true);
 
-      let queries = {
+      const queries = {
         ownerIds: null,
         memberIds: null,
         adminIds: null,

@@ -1,8 +1,8 @@
-import * as React from 'react';
 import { Link } from 'gatsby';
-import { getPostTimestampString, PostData } from '../../../models/groups/posts';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
+import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 
 export default function PostHeader({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();

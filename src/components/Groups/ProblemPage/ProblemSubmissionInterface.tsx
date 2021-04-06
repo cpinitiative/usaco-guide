@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useReducer } from 'react';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useDropzone } from 'react-dropzone';
-import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
+import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 import {
   ExecutionStatus,
   GroupProblemData,
@@ -11,8 +12,7 @@ import {
   SubmissionType,
 } from '../../../models/groups/problem';
 import ButtonGroup from '../../ButtonGroup';
-import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 
 // const ScoreInput = styled.input`
 //   &::-webkit-outer-spin-button,

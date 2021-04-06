@@ -1,18 +1,16 @@
+import Tippy from '@tippyjs/react';
 import * as React from 'react';
+import { useContext, useRef, useState } from 'react';
+import styled from 'styled-components';
+import 'tippy.js/themes/light.css';
+import ConfettiContext from '../../../context/ConfettiContext';
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import {
-  Problem,
-  PROBLEM_PROGRESS_OPTIONS,
   ProblemInfo,
   ProblemProgress,
+  PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
-import { useContext, useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/themes/light.css';
-import styled from 'styled-components';
-
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import ConfettiContext from '../../../context/ConfettiContext';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -25,7 +23,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
     currentProgress
   );
 
-  const icon = (status: ProblemProgress, equal: Boolean) => {
+  const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
       'Not Attempted': '',
       Solving: 'text-orange-500',
@@ -160,7 +158,7 @@ export default function ProblemStatusCheckbox({
     if (moduleProgress !== 'Not Started') return;
     setModuleProgress(markdownLayoutInfo.id, 'Practicing');
   };
-  let status: ProblemProgress =
+  const status: ProblemProgress =
     userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
@@ -182,7 +180,7 @@ export default function ProblemStatusCheckbox({
               // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem.uniqueId, progress);
-              let solved = x => x == 'Reviewing' || x == 'Solved';
+              const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
               if (!solved(status) && solved(progress)) {

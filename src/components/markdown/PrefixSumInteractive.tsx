@@ -20,12 +20,12 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
   const [rectangles, setRectangles] = React.useState([]);
 
   const renderCell = (i, j, v) => {
-    let classes = [
+    const classes = [
       'h-10 w-10 inline-flex items-center justify-center border-b border-r border-gray-200',
     ];
     if (i == 0) classes.push('border-t');
     if (j == 0) classes.push('border-l');
-    let weight = rectangles.reduce(
+    const weight = rectangles.reduce(
       (acc, rect) =>
         i >= rect[0] && i <= rect[2] && j >= rect[1] && j <= rect[3]
           ? acc + rect[4]

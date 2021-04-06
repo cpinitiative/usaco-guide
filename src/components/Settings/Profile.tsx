@@ -1,8 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import RadioList from '../elements/RadioList';
-import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
 
 export default function Profile() {
   const { firebaseUser } = React.useContext(UserDataContext);

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import Tabs from '../../Tabs';
 import FeedItem from './FeedItem';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 
 export default function Feed() {
   const feedTabs = ['all', 'assignments', 'announcements'];

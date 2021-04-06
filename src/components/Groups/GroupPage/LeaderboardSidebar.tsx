@@ -1,6 +1,6 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
-import { Link } from 'gatsby';
 
 export default function LeaderboardSidebar() {
   return (

@@ -8,7 +8,7 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return;
 
-    let isInteresting = {};
+    const isInteresting = {};
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
@@ -26,7 +26,7 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
 
     return () => {
       itemIds.forEach(id => {
-        let el = document.getElementById(id);
+        const el = document.getElementById(id);
         if (el) observer.unobserve(el);
       });
     };

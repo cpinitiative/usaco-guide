@@ -1,31 +1,30 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'gatsby';
 import {
-  InstantSearch,
+  Configure,
   connectAutoComplete,
   Highlight,
-  Snippet,
-  Configure,
+  InstantSearch,
   PoweredBy,
+  Snippet,
 } from 'react-instantsearch-dom';
-import {
-  moduleIDToURLMap,
-  SECTION_LABELS,
-  SECTIONS,
-} from '../../../content/ordering';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import {
+  moduleIDToURLMap,
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { searchClient } from '../../utils/algoliaSearchClient';
+import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import SectionsDropdown from '../SectionsDropdown';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
-import { searchClient } from '../../utils/algoliaSearchClient';
+import SectionsDropdown from '../SectionsDropdown';
 import Transition from '../Transition';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}

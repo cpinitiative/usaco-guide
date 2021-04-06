@@ -1,19 +1,12 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-} from '../models/problem';
-import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import * as React from 'react';
 import { useContext } from 'react';
-import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
-import { ModuleInfo } from '../models/module';
 import { SECTION_LABELS } from '../../content/ordering';
+import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
+import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import { ModuleInfo } from '../models/module';
+import { PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
+import ButtonGroup from './ButtonGroup';
 
 export default function ProblemSuggestionModal({
   isOpen,

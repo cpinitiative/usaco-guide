@@ -1,7 +1,7 @@
-import * as React from 'react';
-import Transition from './Transition';
-import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import { Link } from 'gatsby';
+import * as React from 'react';
+import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
+import Transition from './Transition';
 
 export default function SectionsDropdown({
   currentSection = null,

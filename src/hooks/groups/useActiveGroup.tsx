@@ -1,14 +1,14 @@
-import useFirebase from '../useFirebase';
+import * as React from 'react';
+import { ReactNode, useContext } from 'react';
+import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
   groupConverter,
   GroupData,
   isUserAdminOfGroup,
 } from '../../models/groups/groups';
-import * as React from 'react';
-import { ReactNode, useContext } from 'react';
 import { postConverter, PostData } from '../../models/groups/posts';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useNotificationSystem } from '../../context/NotificationSystemContext';
+import useFirebase from '../useFirebase';
 
 const ActiveGroupContext = React.createContext<{
   activeGroupId: string;

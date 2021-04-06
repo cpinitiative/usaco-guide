@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Dispatch } from 'react';
 
 // source: https://joshwcomeau.com/react/persisting-react-state-in-localstorage/
 // modified to support ssr
