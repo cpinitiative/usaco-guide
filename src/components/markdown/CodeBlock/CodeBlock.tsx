@@ -1,11 +1,10 @@
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import * as React from 'react';
-import Highlight from './SyntaxHighlighting/Highlight';
 import vsDark from 'prism-react-renderer/themes/vsDark';
-import Prism from './SyntaxHighlighting/prism';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
+import Highlight from './SyntaxHighlighting/Highlight';
+import Prism from './SyntaxHighlighting/prism';
 
 const Line = styled.div`
   display: table-row;
@@ -87,7 +86,7 @@ const CodeSnipButton = ({
     </CodeSnipButtonIcon>
   );
 };
- 
+
 class CodeBlock extends React.Component<
   {
     children: string;
@@ -102,15 +101,14 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
-    
 
     let i = 0;
     let prev = -1;
     let prevVal = '';
     let prevIndentation = '';
-    let codeSnipShowDefault = [];
-    let code = this.getCode();
-    for (let line of code.split('\n')) {
+    const codeSnipShowDefault = [];
+    const code = this.getCode();
+    for (const line of code.split('\n')) {
       if (prev == -1) {
         const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
@@ -152,7 +150,7 @@ class CodeBlock extends React.Component<
 
   setCodeSnipShow(id, val) {
     this.setState(state => {
-      let codeSnipShow = state.codeSnipShow;
+      const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
       return { codeSnipShow: codeSnipShow };
     });
@@ -207,9 +205,9 @@ class CodeBlock extends React.Component<
       }
 
       //proceed as normal: (show must == true)
-      let isFirst =
+      const isFirst =
         curSnip < codeSnips.length && i == codeSnips[curSnip].begin + 1;
-      let isLast =
+      const isLast =
         curSnip < codeSnips.length && i == codeSnips[curSnip].end - 1;
       --maxLines;
       return (
@@ -244,7 +242,7 @@ class CodeBlock extends React.Component<
   }
 
   render() {
-    let code = this.getCode();
+    const code = this.getCode();
     const className = this.props.className;
     const isCodeBlockExpandable = this.props.isCodeBlockExpandable ?? true;
     const language = className?.replace(/language-/, '');

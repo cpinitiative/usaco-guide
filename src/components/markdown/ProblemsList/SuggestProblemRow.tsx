@@ -1,13 +1,8 @@
 import * as React from 'react';
-import { Problem } from '../../../models/problem';
 import { useContext } from 'react';
 import ProblemSuggestionModalContext from '../../../context/ProblemSuggestionModalContext';
 
-export default function SuggestProblemRow({
-  listName,
-}: {
-  listName: string
-}) {
+export default function SuggestProblemRow({ listName }: { listName: string }) {
   const context = useContext(ProblemSuggestionModalContext);
 
   return (

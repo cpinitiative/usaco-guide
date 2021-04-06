@@ -1,6 +1,6 @@
-import UserDataPropertyAPI from '../userDataPropertyAPI';
-import { ModuleProgress } from '../../../models/module';
 import { ModuleActivity } from '../../../models/activity';
+import { ModuleProgress } from '../../../models/module';
+import UserDataPropertyAPI from '../userDataPropertyAPI';
 
 export type UserProgressOnModulesAPI = {
   userProgressOnModules: { [key: string]: ModuleProgress };
@@ -16,7 +16,7 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
   private activityValue: ModuleActivity[] = [];
 
   initializeFromLocalStorage = () => {
-    let legacyValue = this.getValueFromLocalStorage(
+    const legacyValue = this.getValueFromLocalStorage(
       'guide:userData:progress',
       null
     );

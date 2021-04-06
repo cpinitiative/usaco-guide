@@ -85,8 +85,8 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
       numPageviews: this.numPageviews,
       pageviewsPerDay: this.pageviewsPerDay,
       setLastVisitDate: (today: number) => {
-        let timeSinceLastVisit = today - this.lastVisitDate;
-        let oneDay = 1000 * 60 * 60 * 20,
+        const timeSinceLastVisit = today - this.lastVisitDate;
+        const oneDay = 1000 * 60 * 60 * 20,
           twoDays = 1000 * 60 * 60 * 24 * 2;
 
         let newLastVisit = null,
@@ -110,9 +110,9 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
         }
 
         this.numPageviews++;
-        let todayDate = new Date(today);
+        const todayDate = new Date(today);
         todayDate.setHours(0, 0, 0, 0);
-        let todayDateTimestamp = todayDate.getTime();
+        const todayDateTimestamp = todayDate.getTime();
         if (todayDateTimestamp in this.pageviewsPerDay) {
           this.pageviewsPerDay[todayDateTimestamp]++;
         } else {

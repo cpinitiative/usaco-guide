@@ -1,14 +1,14 @@
 import * as React from 'react';
+import { useContext } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import './heatmap-styles.css';
-import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import './heatmap-styles.css';
 
 export default function Activity() {
   const [activeDate, setActiveDate] = React.useState(null);
 
-  let startDate = new Date();
+  const startDate = new Date();
   startDate.setMonth(startDate.getMonth() - 10);
 
   const {
@@ -19,12 +19,12 @@ export default function Activity() {
   const moduleActivities = {};
   const problemActivities = {};
 
-  for (let activity of userProgressOnModulesActivity) {
+  for (const activity of userProgressOnModulesActivity) {
     if (
       activity.moduleProgress === 'Practicing' ||
       activity.moduleProgress === 'Complete'
     ) {
-      let newDate = new Date(activity.timestamp);
+      const newDate = new Date(activity.timestamp);
       newDate.setHours(0, 0, 0, 0);
 
       if (newDate.getTime() in activityCount) {
@@ -37,9 +37,9 @@ export default function Activity() {
     }
   }
 
-  for (let activity of userProgressOnProblemsActivity) {
+  for (const activity of userProgressOnProblemsActivity) {
     if (activity.problemProgress === 'Solved') {
-      let newDate = new Date(activity.timestamp);
+      const newDate = new Date(activity.timestamp);
       newDate.setHours(0, 0, 0, 0);
 
       if (newDate.getTime() in activityCount) {

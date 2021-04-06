@@ -1,13 +1,12 @@
-import useFirebase from '../useFirebase';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import {
   groupConverter,
   GroupData,
-  GroupPermission,
   JoinGroupLink,
   joinGroupLinkConverter,
 } from '../../models/groups/groups';
+import useFirebase from '../useFirebase';
 import { useUserGroups } from './useUserGroups';
 
 export function useGroupActions() {
@@ -50,7 +49,7 @@ export function useGroupActions() {
       return docId;
     },
     deleteGroup: async (groupId: string) => {
-      let batch = firebase.firestore().batch();
+      const batch = firebase.firestore().batch();
 
       const posts = await firebase
         .firestore()

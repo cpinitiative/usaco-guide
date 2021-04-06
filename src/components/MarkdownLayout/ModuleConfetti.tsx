@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Confetti from '../Confetti';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
 import {
   forwardRef,
   useEffect,
@@ -8,9 +6,11 @@ import {
   useRef,
   useState,
 } from 'react';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
+import Confetti from '../Confetti';
 
 const ModuleConfetti = forwardRef((props, ref) => {
-  let config = {
+  const config = {
     numParticles: 100,
     gravity: 250,
     speed: 250,
