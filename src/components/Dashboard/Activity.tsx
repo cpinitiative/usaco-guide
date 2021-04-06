@@ -7,14 +7,21 @@ import './heatmap-styles.css';
 
 export default function Activity() {
   const [activeDate, setActiveDate] = React.useState(null);
+  const [startDate, setStartDate] = React.useState<Date>(null);
 
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 10);
+  React.useEffect(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 10);
+    setStartDate(d);
+  }, []);
 
   const {
     userProgressOnModulesActivity,
     userProgressOnProblemsActivity,
   } = useContext(UserDataContext);
+
+  if (!startDate) return null;
+
   const activityCount = {};
   const moduleActivities = {};
   const problemActivities = {};
