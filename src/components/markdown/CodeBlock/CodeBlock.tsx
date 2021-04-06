@@ -87,7 +87,7 @@ const CodeSnipButton = ({
     </CodeSnipButtonIcon>
   );
 };
-
+ 
 class CodeBlock extends React.Component<
   {
     children: string;
@@ -102,6 +102,8 @@ class CodeBlock extends React.Component<
 
   constructor(props) {
     super(props);
+    
+
     let i = 0;
     let prev = -1;
     let prevVal = '';
@@ -244,6 +246,7 @@ class CodeBlock extends React.Component<
   render() {
     let code = this.getCode();
     const className = this.props.className;
+    const isCodeBlockExpandable = this.props.isCodeBlockExpandable ?? true;
     const language = className?.replace(/language-/, '');
     if (!language || language === 'bash') {
       // no styling, just a regular pre tag
@@ -271,7 +274,6 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-
     return (
       // @ts-ignore
       <Highlight
@@ -289,11 +291,11 @@ class CodeBlock extends React.Component<
               }
               style={{ ...style }}
             >
-              {collapsed && tokens.length > 15
+              {isCodeBlockExpandable && collapsed && tokens.length > 15
                 ? this.renderTokens(tokens, 10, getLineProps, getTokenProps)
                 : this.renderTokens(tokens, -1, getLineProps, getTokenProps)}
               {tokens.length > 15 && !collapsed && <div className="h-8" />}
-              {tokens.length > 15 && (
+              {isCodeBlockExpandable && tokens.length > 15 && (
                 <div
                   className={
                     (collapsed ? 'h-full' : 'h-12') +
@@ -307,7 +309,7 @@ class CodeBlock extends React.Component<
                       ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                     }
                     style={
-                      collapsed
+                      collapsed && isCodeBlockExpandable
                         ? {
                             background:
                               'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',

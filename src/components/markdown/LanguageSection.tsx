@@ -5,16 +5,59 @@ import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLa
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
+const expand = props.isCodeBlockExpandable ?? true;
 
   const sections = {};
   React.Children.map(props.children, child => {
+    const oldChild = child;
+    let newChild = React.cloneElement(child, {
+      children: oldChild.props.children,
+      mdxType: oldChild.props.mdxType,
+      originalType: oldChild.props.originalType,
+      isCodeBlockExpandable: expand,
+    });
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
       JavaSection: 'java',
       PySection: 'py',
     };
-    sections[typeToLang[type]] = child;
+
+    newChild.props.children = React.Children.map(
+      newChild.props.children,
+      grandchild => {
+        let oldGrandchild = grandchild;
+        if (typeof oldGrandchild.props != 'undefined') {
+          const { oldProps } = oldGrandchild.props;
+          let newGrandchild = React.cloneElement(grandchild, {
+            ...oldProps,
+            isCodeBlockExpandable: expand,
+          });
+
+          newGrandchild.props.children = React.Children.map(
+            newGrandchild.props.children,
+            child2 => {
+              const ogChild2 = child2;
+              if (typeof ogChild2.props != 'undefined') {
+                const { oldProps2 } = ogChild2.props;
+                return React.cloneElement(child2, {
+                  ...oldProps2,
+                  isCodeBlockExpandable: expand,
+                });
+              } else {
+                return child2;
+              }
+            }
+          );
+
+          return newGrandchild;
+        } else {
+          return child;
+        }
+      }
+    );
+
+    sections[typeToLang[type]] = newChild;
   });
 
   if (userLang === 'showAll') {
