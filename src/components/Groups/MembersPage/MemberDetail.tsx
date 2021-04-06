@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
+import { useContext } from 'react';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { useContext } from 'react';
+import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();

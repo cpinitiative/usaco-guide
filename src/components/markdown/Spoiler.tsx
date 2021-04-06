@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React from 'react';
 
 function determineIfSingularCodeBlock(
   firstName: string,
@@ -13,11 +13,11 @@ const Spoiler = ({ children, title }) => {
   let firstName = 'None';
   let ogProps;
 
-   const firstChild = React.Children.toArray(children)[0]
-    numChildren = React.Children.count(children);
-    firstName = firstChild.props.mdxType;
-    ogProps = firstChild.props;
-  
+  const firstChild = React.Children.toArray(children)[0];
+  numChildren = React.Children.count(children);
+  firstName = (firstChild as any).props.mdxType;
+  ogProps = (firstChild as any).props;
+
   const onlyContainsCode: boolean = determineIfSingularCodeBlock(
     firstName,
     numChildren

@@ -1,9 +1,10 @@
+// organize-imports-ignore
+// note that reordering the css file imports will break some styles
+import { wrapRootElement as wrap } from './root-wrapper';
 import './src/styles/main.css';
 import './src/styles/components.css';
 import './src/styles/tailwindcss-utils.css';
 import './src/styles/anchor.css';
-import * as React from 'react';
-import { wrapRootElement as wrap } from './root-wrapper';
 
 export const wrapRootElement = wrap;
 

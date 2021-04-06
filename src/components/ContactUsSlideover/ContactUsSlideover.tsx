@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { ModuleInfo } from '../../models/module';
-import { SECTION_LABELS } from '../../../content/ordering';
-import SlideoverForm from './SlideoverForm';
 import { useContext, useEffect, useState } from 'react';
-import useStickyState from '../../hooks/useStickyState';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import useStickyState from '../../hooks/useStickyState';
+import { ModuleInfo } from '../../models/module';
+import SlideoverForm from './SlideoverForm';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -132,7 +132,7 @@ export default function ContactUsSlideover({
       return;
     }
 
-    let data = new FormData();
+    const data = new FormData();
     data.append('name', name);
     data.append('email', email);
     data.append('location', location);

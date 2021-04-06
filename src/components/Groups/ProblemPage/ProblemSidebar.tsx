@@ -1,15 +1,14 @@
+import * as Icons from 'heroicons-react';
 import * as React from 'react';
-import { PostData } from '../../../models/groups/posts';
-import SidebarDueDate from '../SidebarDueDate';
-import ProblemSubmissionsList from './ProblemSubmissionsList';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
+import { PostData } from '../../../models/groups/posts';
 import {
   getEarnedPointsForProblem,
   GroupProblemData,
-  ProblemData,
 } from '../../../models/groups/problem';
-import * as Icons from 'heroicons-react';
 import TextTooltip from '../../Tooltip/TextTooltip';
+import SidebarDueDate from '../SidebarDueDate';
+import ProblemSubmissionsList from './ProblemSubmissionsList';
 export default function ProblemSidebar({
   post,
   problem,

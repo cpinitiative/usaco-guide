@@ -1,15 +1,13 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React from 'react';
-import divToProbs from './div_to_probs';
-import contestToPoints from './contest_to_points';
-import { ProblemsList } from '../ProblemsList';
-
-import Transition from '../../../Transition';
-import { useContext } from 'react';
-import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
-import { ProblemSolutionInfo } from '../../../../models/problem';
+import React, { useContext } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
+import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
+import { ProblemSolutionInfo } from '../../../../models/problem';
+import Transition from '../../../Transition';
+import { ProblemsList } from '../ProblemsList';
+import contestToPoints from './contest_to_points';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
+import divToProbs from './div_to_probs';
 import id_to_sol from './id_to_sol';
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];

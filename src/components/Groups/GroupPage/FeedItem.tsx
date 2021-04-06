@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { Link } from 'gatsby';
-import { useState } from 'react';
 import { Transition } from '@headlessui/react';
-import { getPostTimestampString, PostData } from '../../../models/groups/posts';
-import { GroupData } from '../../../models/groups/groups';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { Link } from 'gatsby';
+import * as React from 'react';
+import { useState } from 'react';
 import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { GroupData } from '../../../models/groups/groups';
+import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 
 export default function FeedItem({
   group,

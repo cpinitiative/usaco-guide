@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
-import { moduleIDToSectionMap } from '../../../content/ordering';
 import { Link } from 'gatsby';
+import * as React from 'react';
 import { Highlight } from 'react-instantsearch-dom';
+import { moduleIDToSectionMap } from '../../../content/ordering';
+import { AlgoliaProblemInfo, getProblemURL } from '../../models/problem';
 
 function ProblemHit({ hit }: { hit: AlgoliaProblemInfo }) {
   return (

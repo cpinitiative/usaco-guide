@@ -4,7 +4,6 @@ import * as React from 'react';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
-
 import Tooltip from './Tooltip';
 
 const Asterisk = ({ children, position = 'top' }) => {

@@ -1,7 +1,5 @@
+import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { useContext, useRef, useState } from 'react';
-import { graphql, useStaticQuery } from 'gatsby';
-import { SolutionInfo } from '../../../models/solution';
 import { ModuleInfo } from '../../../models/module';
 
 export default function getSuffix() {

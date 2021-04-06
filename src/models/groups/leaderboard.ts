@@ -1,5 +1,5 @@
-import { ExecutionStatus } from './problem';
 import firebaseType from 'firebase';
+import { ExecutionStatus } from './problem';
 
 export type Leaderboard = {
   // post ID

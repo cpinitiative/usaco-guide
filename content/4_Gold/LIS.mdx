@@ -1,7 +1,9 @@
 ---
 id: lis
 title: '(Optional) Longest Increasing Subsequence'
-author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang, Aryansh Shrivastava
+author:
+  Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang, Dong Liu, Siyong Huang,
+  Aryansh Shrivastava
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -194,21 +196,41 @@ def find_lis(arr: List[int]) -> int:
 
 ### Fast Solution (RMQ Data Structures)
 
-(By Aryansh Shrivastava) 
+(By Aryansh Shrivastava)
 
-**Time Complexity**: $\mathcal O(N \log N)$, but perhaps a constant factor slower than binary search. 
+**Time Complexity**: $\mathcal O(N \log N)$, but perhaps a constant factor
+slower than binary search.
 
-Note that the following solution assumes knowledge of a basic PURQ data structure for RMQ. Suitable implementations include a segment tree or a modified Fenwick tree, but both of these are generally considered Platinum level topics. However, this solution has the advantage of being more intuitive if you're deriving LIS on the spot. 
+Note that the following solution assumes knowledge of a basic PURQ data
+structure for RMQ. Suitable implementations include a segment tree or a modified
+Fenwick tree, but both of these are generally considered Platinum level topics.
+However, this solution has the advantage of being more intuitive if you're
+deriving LIS on the spot.
 
-Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element $k \in a$. Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS containing only $a[0]$, which has length $1$). Since LIS exhibits optimal substructure, we transition as follows, processing $\forall t \in a[1 \dots n-1]$ from left to right (which we must do in order to maintain the property that our subsequence strictly increases in this direction):
+Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element
+$k \in a$. Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS
+containing only $a[0]$, which has length $1$). Since LIS exhibits optimal
+substructure, we transition as follows, processing
+$\forall t \in a[1 \dots n-1]$ from left to right (which we must do in order to
+maintain the property that our subsequence strictly increases in this
+direction):
 
 $$
 \texttt{dp}[t] = \max_{0 \leq k < t} \texttt{dp}[k] + 1.
 $$
 
-If $\texttt{dp}$ is now a RMQ data structure, the change in $\texttt{dp}[t]$ is merely a point update, while the calculation of $\max\limits_{0 \leq k < t} \texttt{dp}[k]$ is a range query. 
+If $\texttt{dp}$ is now a RMQ data structure, the change in $\texttt{dp}[t]$ is
+merely a point update, while the calculation of
+$\max\limits_{0 \leq k < t} \texttt{dp}[k]$ is a range query.
 
-Our final answer is just an RMQ from end to end (or, alternatively, you could keep a running max of the answer in another variable and change it with each update). This method actually gives us the leisure to process online as long as our elements are small enough to be used as indices, or if we use a more advanced data structure such as a sparse segment tree. If we are willing to process offline as we often can, however, we can avoid using a more advanced technique: it suffices to collect the array elements and sort them to coordinate compress, creating $\texttt{dp}$ with those compressed IDs instead.
+Our final answer is just an RMQ from end to end (or, alternatively, you could
+keep a running max of the answer in another variable and change it with each
+update). This method actually gives us the leisure to process online as long as
+our elements are small enough to be used as indices, or if we use a more
+advanced data structure such as a sparse segment tree. If we are willing to
+process offline as we often can, however, we can avoid using a more advanced
+technique: it suffices to collect the array elements and sort them to coordinate
+compress, creating $\texttt{dp}$ with those compressed IDs instead.
 
 My implementation is below:
 
@@ -216,20 +238,20 @@ My implementation is below:
 // Code by Aryansh Shrivastava
 
 #include <bits/stdc++.h>
-using namespace std; 
+using namespace std;
 
 struct RMQ {
 	int n; vector<int> seg;
 	const int ID = 0; // at minimum, the length of a subsequence is 0 (-INF won't work here for example)
 	void init(int n0) { n = n0; seg.assign(2 * n, ID); }
 	void upd(int p, int v) {
-		seg[p += n] = v; 
+		seg[p += n] = v;
 		for(p /= 2; p; p /= 2) seg[p] = max(seg[2 * p], seg[2 * p + 1]);
 	}
 	int qry(int l, int r) {
-		int ql = ID, qr = ID; 
+		int ql = ID, qr = ID;
 		for(l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if(l & 1) ql = max(ql, seg[l++]); 
+			if(l & 1) ql = max(ql, seg[l++]);
 			if(r & 1) qr = max(seg[--r], qr);
 		}
 		return max(ql, qr);
@@ -240,17 +262,17 @@ int n;
 vector<int> v, cmp;
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0); 
+	cin.tie(0)->sync_with_stdio(0);
 	cin >> n; v.resize(n);
 	for(int i = 0; i < n; ++i) cin >> v[i];
 
-	// define coordinate compression // 
-	cmp = v; 
-	sort(begin(cmp), end(cmp)); 
-	cmp.erase(unique(begin(cmp), end(cmp)), end(cmp)); 
+	// define coordinate compression //
+	cmp = v;
+	sort(begin(cmp), end(cmp));
+	cmp.erase(unique(begin(cmp), end(cmp)), end(cmp));
 	auto cid = [&](int x) { return lower_bound(begin(cmp), end(cmp), x) - begin(cmp); };
-	// cid gives compressed id // 
-	
+	// cid gives compressed id //
+
 	dp.init(size(cmp));
 	dp.upd(cid(v[0]), 1); // base case: a[0] has LIS 1
 	for(int i = 1; i < n; ++i) dp.upd(cid(v[i]), dp.qry(0, cid(v[i]) - 1) + 1);

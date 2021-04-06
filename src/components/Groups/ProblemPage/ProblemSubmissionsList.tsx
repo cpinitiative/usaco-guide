@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 import {
-  ExecutionStatus,
   getSubmissionEarnedPoints,
   getSubmissionStatus,
   getSubmissionTimestampString,
@@ -11,6 +9,7 @@ import {
   submissionCircleColor,
   submissionTextColor,
 } from '../../../models/groups/problem';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 const SubmissionListItem = ({
   problem,

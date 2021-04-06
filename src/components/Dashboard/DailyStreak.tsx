@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
+import * as React from 'react';
 import { useContext, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 

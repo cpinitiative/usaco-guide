@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import useFirebase from '../../hooks/useFirebase';
 import { useNotificationSystem } from '../../context/NotificationSystemContext';
 import {
   UserPermissionInformation,
   UserPermissions,
-  useUserPermissions,
 } from '../../context/UserDataContext/UserPermissionsContext';
+import useFirebase from '../../hooks/useFirebase';
 import Switch from '../elements/Switch';
 
 export default function AdminSettings() {

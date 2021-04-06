@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 import { ProblemInfo } from '../../models/problem';
 import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
-import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 
 export default function FocusProblem({
   problem: problemID,

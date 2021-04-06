@@ -1,16 +1,16 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
-const expand = props.isCodeBlockExpandable ?? true;
+  const expand = props.isCodeBlockExpandable ?? true;
 
   const sections = {};
   React.Children.map(props.children, child => {
     const oldChild = child;
-    let newChild = React.cloneElement(child, {
+    const newChild = React.cloneElement(child, {
       children: oldChild.props.children,
       mdxType: oldChild.props.mdxType,
       originalType: oldChild.props.originalType,
@@ -26,10 +26,10 @@ const expand = props.isCodeBlockExpandable ?? true;
     newChild.props.children = React.Children.map(
       newChild.props.children,
       grandchild => {
-        let oldGrandchild = grandchild;
+        const oldGrandchild = grandchild;
         if (typeof oldGrandchild.props != 'undefined') {
           const { oldProps } = oldGrandchild.props;
-          let newGrandchild = React.cloneElement(grandchild, {
+          const newGrandchild = React.cloneElement(grandchild, {
             ...oldProps,
             isCodeBlockExpandable: expand,
           });

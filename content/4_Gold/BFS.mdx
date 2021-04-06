@@ -429,17 +429,25 @@ resource below for an explanation of how the algorithm works.
 **Complexity:** $\mathcal O(NM)$
 
 We can use the following greedy strategy to find our answer:
+
 - Run flood fill to find each connected component with the same tracks.
-- Construct a graph where the nodes are the connected components and there are edges between adjacent connected components.
-- The answer is the maximum distance from the node containing $(1, 1)$ to another node. We can use BFS to find this distance.
+- Construct a graph where the nodes are the connected components and there are
+  edges between adjacent connected components.
+- The answer is the maximum distance from the node containing $(1, 1)$ to
+  another node. We can use BFS to find this distance.
 
-For a detailed proof of why this works, see [the official editorial](https://boi2013.informatik-olympiade.de/wp-content/uploads/2013/05/tracks-spoiler.pdf).
+For a detailed proof of why this works, see
+[the official editorial](https://boi2013.informatik-olympiade.de/wp-content/uploads/2013/05/tracks-spoiler.pdf).
 
-Although this gives us an $\mathcal O(NM)$ solution, there is a simpler solution using 0/1 BFS!
+Although this gives us an $\mathcal O(NM)$ solution, there is a simpler solution
+using 0/1 BFS!
 
 Consider the graph with an edge between each pair of adjacent cells with tracks,
 where the weight is 0 if the tracks are the same and 1 otherwise. The answer is
-simply the longest shortest-path from the top left cell. This is because going from one track to another same one is like not leaving a node (hence the cost is $0$), while going from one track to a different one is like traversing the edge between two nodes (hence the cost is $1$).
+simply the longest shortest-path from the top left cell. This is because going
+from one track to another same one is like not leaving a node (hence the cost is
+$0$), while going from one track to a different one is like traversing the edge
+between two nodes (hence the cost is $1$).
 
 Since the weight of each edge is either 0 or 1 and we want the shortest paths
 from the top left cell to each other cell, we can apply 0/1 BFS. The time

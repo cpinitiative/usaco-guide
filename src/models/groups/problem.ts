@@ -1,5 +1,4 @@
-import firebase from 'firebase';
-import firebaseType from 'firebase';
+import { default as firebase, default as firebaseType } from 'firebase';
 
 export interface ProblemData {
   id: string;

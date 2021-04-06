@@ -1,8 +1,8 @@
+import { Link } from 'gatsby';
+import * as React from 'react';
 import { useContext } from 'react';
 import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
-import * as React from 'react';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { Link } from 'gatsby';
 
 const SidebarBottomButtons = () => {
   const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);

@@ -1,29 +1,28 @@
-import * as React from 'react';
-
-import Layout from '../components/layout';
-import SEO from '../components/seo';
 import { graphql } from 'gatsby';
-import MODULE_ORDERING, {
+import * as React from 'react';
+import styled from 'styled-components';
+import tw from 'twin.macro';
+import {
   moduleIDToSectionMap,
+  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
-  SectionID,
 } from '../../content/ordering';
-import { getModulesForDivision } from '../utils/utils';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress, {
   DashboardProgressSmall,
 } from '../components/Dashboard/DashboardProgress';
+import ModuleLink from '../components/Dashboard/ModuleLink';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { ModuleLinkInfo } from '../models/module';
 // import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
-  getProblemsProgressInfo,
   getModulesProgressInfo,
+  getProblemsProgressInfo,
 } from '../utils/getProgressInfo';
-import ModuleLink from '../components/Dashboard/ModuleLink';
-import { ModuleLinkInfo } from '../models/module';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import { getModulesForDivision } from '../utils/utils';
 
 const DottedLineContainer = styled.div`
   ${tw`space-y-6 relative`}
@@ -89,10 +88,11 @@ const topicsWarning = (
 const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   general: (
     <>
-      You don't have to complete all the modules in this section before moving
-      on to Bronze.
+      You don&apos;t have to complete all the modules in this section before
+      moving on to Bronze.
       <br />
-      Feel free to mark some as "skipped" and revisit them at a later time!
+      Feel free to mark some as &quot;skipped&quot; and revisit them at a later
+      time!
     </>
   ),
   bronze: topicsWarning,
@@ -109,7 +109,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
     <>
       {topicsWarning}
       <br />
-      Some lower-frequency topics are included in "Advanced."
+      Some lower-frequency topics are included in &quot;Advanced.&quot;
     </>
   ),
   adv: (

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as Sentry from '@sentry/gatsby';
+import * as React from 'react';
 
 const GlobalErrorBoundary = ({ children }) => {
   return (

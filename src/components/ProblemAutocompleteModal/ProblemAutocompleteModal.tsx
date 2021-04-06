@@ -1,9 +1,8 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import { ProblemAutocomplete } from './ProblemAutocomplete';
-import { connectAutoComplete } from 'react-instantsearch-dom';
-import { InstantSearch } from 'react-instantsearch-dom';
+import * as React from 'react';
+import { connectAutoComplete, InstantSearch } from 'react-instantsearch-dom';
 import { searchClient } from '../../utils/algoliaSearchClient';
+import { ProblemAutocomplete } from './ProblemAutocomplete';
 
 const CustomProblemAutocomplete = connectAutoComplete(ProblemAutocomplete);
 

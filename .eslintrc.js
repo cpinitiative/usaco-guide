@@ -17,7 +17,11 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-
   plugins: ['react', '@typescript-eslint'],
-  rules: {},
+  rules: {
+    'no-prototype-builtins': 'off',
+    // some of these are just too hard to fix at the moment :(
+    'react/prop-types': 'off',
+  },
+  ignorePatterns: ['**/node_modules/**'],
 };

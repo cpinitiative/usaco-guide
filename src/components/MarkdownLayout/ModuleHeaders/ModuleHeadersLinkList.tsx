@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { ModuleInfo } from '../../../models/module';
-import { SECTION_LABELS } from '../../../../content/ordering';
 
 export default function ModuleHeadersLinkList(props: {
   title: string;

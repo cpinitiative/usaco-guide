@@ -1,26 +1,29 @@
+import 'flatpickr/dist/themes/material_blue.css';
+import { Link, navigate } from 'gatsby';
+import * as Icons from 'heroicons-react';
 import * as React from 'react';
 import { useReducer } from 'react';
+import Flatpickr from 'react-flatpickr';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useProblem } from '../../../hooks/groups/useProblem';
+import useFirebase from '../../../hooks/useFirebase';
+import { GroupProblemData } from '../../../models/groups/problem';
+import {
+  AlgoliaProblemInfo,
+  getProblemURL,
+  ProblemInfo,
+} from '../../../models/problem';
+import ButtonGroup from '../../ButtonGroup';
 import Layout from '../../layout';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import { Link, navigate } from 'gatsby';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePost } from '../../../hooks/groups/usePost';
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/material_blue.css';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useProblem } from '../../../hooks/groups/useProblem';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
-import { GroupProblemData, ProblemData } from '../../../models/groups/problem';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
-import { AlgoliaProblemInfo, getProblemURL } from '../../../models/problem';
-import * as Icons from 'heroicons-react';
-import useFirebase from '../../../hooks/useFirebase';
-import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
-import ButtonGroup from '../../ButtonGroup';
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
@@ -69,16 +72,19 @@ export default function EditProblemPage(props) {
 
   const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
     setIsSearchOpen(false);
-    console.log(problem);
+    const problemInfo: ProblemInfo = {
+      uniqueId: problem.objectID,
+      ...problem,
+    };
     editProblem({
       name: problem.name,
       body: `See [${problem.url}](${problem.url})`,
       solution:
         problem.solution.kind == 'internal'
           ? `See [https://usaco.guide${[
-              getProblemURL(problem),
+              getProblemURL(problemInfo),
             ]}/solution](https://usaco.guide${[
-              getProblemURL(problem),
+              getProblemURL(problemInfo),
             ]}/solution)`
           : problem.solution.kind == 'link'
           ? `See [${problem.solution.url}](${problem.solution.url})`
