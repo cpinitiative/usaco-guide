@@ -82,8 +82,8 @@ export default function ProblemListItemSolution(
       </a>
     );
   } else {
-    // @ts-ignore
     throw new Error(
+      // @ts-ignore
       "Couldn't determine problem solution type " + problem.solution.kind
     );
   }

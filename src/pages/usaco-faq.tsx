@@ -1,5 +1,5 @@
 import { MDXProvider } from '@mdx-js/react';
-import { graphql, PageProps } from 'gatsby';
+import { graphql } from 'gatsby';
 import * as React from 'react';
 import {
   FacebookIcon,
@@ -50,12 +50,12 @@ const customComponents = {
   h3,
 };
 
-export default function USACOFAQPage(props: PageProps) {
+export default function USACOFAQPage(props: any) {
   const shareURL = 'https://usaco.guide/usaco-faq';
 
   const handleShare = platform => {
-    if (window.ga) {
-      window.ga('send', 'event', 'share', 'usaco-faq', platform);
+    if ((window as any).ga) {
+      (window as any).ga('send', 'event', 'share', 'usaco-faq', platform);
     }
   };
 

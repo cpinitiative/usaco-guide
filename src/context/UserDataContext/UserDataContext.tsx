@@ -290,13 +290,13 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
 
   const userData = {
     firebaseUser,
-    signIn: (): Promise<void> => {
+    signIn: (): Promise<firebaseType.auth.UserCredential | null> => {
       if (firebase) {
         return firebase
           .auth()
           .signInWithPopup(new firebase.auth.GoogleAuthProvider());
       }
-      return Promise.resolve();
+      return Promise.resolve(null);
     },
     signOut: (): Promise<void> => {
       return firebase

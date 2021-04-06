@@ -15,8 +15,8 @@ const Spoiler = ({ children, title }) => {
 
   const firstChild = React.Children.toArray(children)[0];
   numChildren = React.Children.count(children);
-  firstName = firstChild.props.mdxType;
-  ogProps = firstChild.props;
+  firstName = (firstChild as any).props.mdxType;
+  ogProps = (firstChild as any).props;
 
   const onlyContainsCode: boolean = determineIfSingularCodeBlock(
     firstName,

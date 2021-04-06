@@ -57,6 +57,7 @@ const CodeSnipButton = ({
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
+  buttonDir: 'Up' | 'Down' | 'Left' | 'Right';
 }) => {
   return (
     <CodeSnipButtonIcon
@@ -91,6 +92,7 @@ class CodeBlock extends React.Component<
   {
     children: string;
     className: string;
+    isCodeBlockExpandable?: boolean;
   },
   {
     collapsed: boolean;

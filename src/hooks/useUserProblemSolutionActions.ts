@@ -22,6 +22,7 @@ export default function useUserProblemSolutionActions() {
         .collection('userProblemSolutions')
         .withConverter(userSolutionForProblemConverter)
         .add({
+          id: undefined, // the ID is ignored by userSolutionForProblemConverter; we add it here to fix typescript issue
           ...solution,
           userID: firebaseUser.uid,
           userName: firebaseUser.displayName,

@@ -1,11 +1,10 @@
 import 'easymde/dist/easymde.min.css';
 import * as React from 'react';
-import { useContext } from 'react';
 import SimpleMDE from 'react-simplemde-editor';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export default function MarkdownEditor({ value, onChange }) {
-  const { darkMode } = useContext(UserDataContext);
+  const darkMode = useDarkMode();
 
   return (
     <div className={darkMode ? 'dark-mde-container' : 'mde-container'}>
