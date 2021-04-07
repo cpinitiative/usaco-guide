@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Link } from 'gatsby';
+import * as React from 'react';
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 import DashboardCard from './DashboardCard';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsList';
 
 type ActiveItemStatus =
   | 'Skipped'
@@ -50,8 +50,8 @@ export default function ActiveItems({
       Skipped: 2,
       Ignored: 3,
     };
-    let astatus = statusVal[a.status];
-    let bstatus = statusVal[b.status];
+    const astatus = statusVal[a.status];
+    const bstatus = statusVal[b.status];
     if (astatus != bstatus) return astatus - bstatus;
     const getLabel = x => {
       // put active USACO problems first
@@ -69,8 +69,8 @@ export default function ActiveItems({
       for (let i = 0; i < secs.length; ++i) if (x.startsWith(secs[i])) return i;
       return 100;
     };
-    let aval = getLabel(a.label);
-    let bval = getLabel(b.label);
+    const aval = getLabel(a.label);
+    const bval = getLabel(b.label);
     if (aval != bval) return aval - bval;
     return strcmp(a.label, b.label);
   });

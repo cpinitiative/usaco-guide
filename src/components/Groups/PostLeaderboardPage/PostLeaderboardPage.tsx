@@ -1,17 +1,17 @@
 import * as React from 'react';
-import SEO from '../../seo';
-import Layout from '../../layout';
-import { usePost } from '../../../hooks/groups/usePost';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import TextTooltip from '../../Tooltip/TextTooltip';
-import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
+import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import { usePost } from '../../../hooks/groups/usePost';
 import useFirebase from '../../../hooks/useFirebase';
 import { submissionConverter } from '../../../models/groups/problem';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 export default function PostLeaderboardPage(props) {
   const { postId } = props as {
@@ -32,14 +32,14 @@ export default function PostLeaderboardPage(props) {
 
     const leaderboardSum = {};
     const postID = post.id;
-    for (let problemID of Object.keys(leaderboard[postID] || {})) {
-      for (let userID of Object.keys(leaderboard[postID][problemID] || {})) {
+    for (const problemID of Object.keys(leaderboard[postID] || {})) {
+      for (const userID of Object.keys(leaderboard[postID][problemID] || {})) {
         if (!(userID in leaderboardSum)) leaderboardSum[userID] = 0;
         leaderboardSum[userID] +=
           leaderboard[postID][problemID][userID].bestScore;
       }
     }
-    let data = activeGroup.groupData.memberIds
+    const data = activeGroup.groupData.memberIds
       .map(id => ({
         member: members.find(member => member.uid === id),
         problemDetails: problems.map(

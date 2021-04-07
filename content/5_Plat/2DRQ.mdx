@@ -8,109 +8,6 @@ description: 'Extending Range Queries to 2D (and beyond).'
 frequency: 1
 ---
 
-export const problems = {
-	bitSam: [
-		new Problem(
-			'CSES',
-			'Forest Queries II',
-			'1739',
-			'Easy',
-			false,
-			['2DRQ', 'BIT'],
-			"Just implement a 2D BIT. See [thecodingwizard's implementation](https://github.com/thecodingwizard/competitive-programming/blob/master/cses/Forest%20Queries%20II.cpp)."
-		),
-	],
-	bit: [
-		new Problem(
-			'DMOJ',
-			'Crowded Cities',
-			'bfs17p6',
-			'Normal',
-			false,
-			['2DRQ', 'BIT'],
-			''
-		),
-		new Problem(
-			'IOI',
-			'2007 - Pairs',
-			'https://oj.uz/problem/view/IOI07_pairs',
-			'Normal',
-			false,
-			['3DRQ', 'BIT'],
-			'https://ioinformatics.org/files/ioi2007solutions.pdf'
-		),
-	],
-	offSam: [
-		new Problem(
-			'DMOJ',
-			"Soriya's Programming Project",
-			'dmopc19c7p5',
-			'Normal',
-			false,
-			['D&C', '2DRQ', 'BIT'],
-			''
-		),
-	],
-	off: [
-		new Problem(
-			'Plat',
-			'Friendcross',
-			'722',
-			'Normal',
-			false,
-			['2DRQ', 'BIT'],
-			'usaco-722'
-		),
-		new Problem(
-			'Plat',
-			'Mowing the Field',
-			'601',
-			'Normal',
-			false,
-			['2DRQ', 'BIT'],
-			''
-		),
-		new Problem(
-			'APIO',
-			'2019 - Street Lamps',
-			'APIO19_street_lamps',
-			'Normal',
-			false,
-			['2DRQ', 'BIT'],
-			''
-		),
-	],
-	seg: [
-		new Problem(
-			'POI',
-			'2006 - Tetris 3D',
-			'https://szkopul.edu.pl/problemset/problem/OQjANSOOD_-c38gh8p6g3Gxp/site/?key=statement',
-			'Hard',
-			false,
-			['2DRQ', 'Lazy SegTree'],
-			'https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2006/editorial/tet.pdf'
-		),
-		new Problem(
-			'IOI',
-			'2013 - Game',
-			'IOI13_game',
-			'Hard',
-			false,
-			['2DRQ', 'Sparse SegTree'],
-			'A normal 2D sparse segment tree gets MLE, so we have to use a sparse segment tree of BBSTs (see Advanced - Treaps).'
-		),
-		new Problem(
-			'JOI',
-			'2017 - Golf',
-			'JOI17_golf',
-			'Very Hard',
-			false,
-			['2DRQ', 'SegTree'],
-			'http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2017/2017-open-golf-sol-en.pdf'
-		),
-	],
-};
-
 ## 2D RMQ
 
 <Resources>
@@ -127,7 +24,7 @@ Quite rare, I've only needed this once.
 
 ## 2D BIT
 
-<FocusProblem problem={problems.bitSam[0]} />
+<FocusProblem problem="bitSam" />
 
 ### Tutorial
 
@@ -278,7 +175,7 @@ int main() {
 
 ### Problems
 
-<Problems problems={problems.bit} />
+<Problems problems="bit" />
 
 <Optional title="Range Update and Range Query in Higher Dimensions">
 
@@ -296,7 +193,7 @@ details.
 See
 [my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
 
-<FocusProblem problem={problems.offSam[0]} />
+<FocusProblem problem="offSam" />
 
 The intended complexity is $\mathcal{O}(N\log^2 N)$ with a good constant factor.
 This requires updating points and querying rectangle sums $N$ times for points
@@ -308,12 +205,12 @@ $\mathcal{O}(N^2)$ memory, which is too much.
 Since we know all of the updates and queries beforehand, we can reduce the
 memory usage while maintaining a decent constant factor.
 
-#### Idea 1: Use an unordered map instead of a 2D array.
+#### Idea 1 - Use an unordered map instead of a 2D array.
 
 Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant
 factors for both are terrible.
 
-#### Idea 2: Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
+#### Idea 2 - Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
@@ -325,7 +222,7 @@ to use fast input (and not `endl`)!
 
 - [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
 
-#### Idea 3: Use divide & conquer with a 1D BIT
+#### Idea 3 - Use divide & conquer with a 1D BIT
 
 The fastest way.
 
@@ -336,7 +233,7 @@ The fastest way.
 
 ### Problems
 
-<Problems problems={problems.off} />
+<Problems problems="off" />
 
 <!--
 ## Sparse Segment Tree
@@ -456,4 +353,4 @@ Possible ways to get around this:
 
 Can also try the USACO problems from above.
 
-<Problems problems={problems.seg} />
+<Problems problems="seg" />

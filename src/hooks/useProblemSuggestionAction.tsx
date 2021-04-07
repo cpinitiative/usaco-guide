@@ -1,5 +1,5 @@
-import useFirebase from './useFirebase';
 import { useCallback } from 'react';
+import useFirebase from './useFirebase';
 
 export default function useProblemSuggestionAction() {
   const firebase = useFirebase();

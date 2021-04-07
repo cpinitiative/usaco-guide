@@ -1,8 +1,8 @@
 import { Link } from 'gatsby';
-import Logo from '../Logo';
-import { SidebarNav } from './SidebarNav/SidebarNav';
-import SidebarBottomButtons from './SidebarBottomButtons';
 import * as React from 'react';
+import Logo from '../Logo';
+import SidebarBottomButtons from './SidebarBottomButtons';
+import { SidebarNav } from './SidebarNav/SidebarNav';
 
 export default function DesktopSidebar() {
   return (

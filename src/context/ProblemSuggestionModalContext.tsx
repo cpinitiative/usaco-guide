@@ -1,14 +1,10 @@
-import { createContext, useContext, useState } from 'react';
 import * as React from 'react';
-import { Problem, ProblemFeedback } from '../models/problem';
-import useFirebase from '../hooks/useFirebase';
-import UserDataContext from './UserDataContext/UserDataContext';
-import ProblemSolutions from '../components/ProblemSolutions';
-import SubmitProblemSolutionModal from '../components/SubmitProbemSolutionModal';
+import { createContext, useContext, useState } from 'react';
 import ProblemSuggestionModal from '../components/ProblemSuggestionModal';
+import UserDataContext from './UserDataContext/UserDataContext';
 
 const ProblemSuggestionModalContext = createContext<{
-  openProblemSuggestionModal: (tableProblems: Problem[]) => void;
+  openProblemSuggestionModal: (listName: string) => void;
 }>({
   openProblemSuggestionModal: x => {},
 });
@@ -17,15 +13,15 @@ export default ProblemSuggestionModalContext;
 
 export const ProblemSuggestionModalProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableProblems, setTableProblems] = useState<Problem[]>(null);
+  const [listName, setListName] = useState<string>(null);
   const { firebaseUser } = useContext(UserDataContext);
 
-  const openProblemSuggestionModal = (problems: Problem[]) => {
+  const openProblemSuggestionModal = (listName: string) => {
     if (!firebaseUser) {
       alert('You need to be signed in to suggest problems!');
       return;
     }
-    setTableProblems(problems);
+    setListName(listName);
     setIsOpen(true);
   };
 
@@ -43,7 +39,7 @@ export const ProblemSuggestionModalProvider = ({ children }) => {
       {children}
 
       <ProblemSuggestionModal
-        tableProblems={tableProblems}
+        listName={listName}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />

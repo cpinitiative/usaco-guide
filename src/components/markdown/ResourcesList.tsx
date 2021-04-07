@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
-import TextTooltip from '../Tooltip/TextTooltip';
 import { useContext } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import PGS from './PGS';
 import { books } from '../../utils/books';
+import TextTooltip from '../Tooltip/TextTooltip';
+import Tooltip from '../Tooltip/Tooltip';
+import PGS from './PGS';
 
 export function ResourcesList(props) {
   return (

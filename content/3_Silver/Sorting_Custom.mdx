@@ -11,87 +11,6 @@ description:
   than the default, then we'll need to define a custom comparator."
 ---
 
-export const problems = {
-	sample: [
-		new Problem('Silver', 'Wormhole Sort', '992', 'Insane', false, [], ''),
-	],
-	general: [
-		new Problem(
-			'CSES',
-			'Restaurant Customers',
-			'1619',
-			'Easy',
-			false,
-			['Sorting', 'Prefix Sums'],
-			'cses-1619'
-		),
-		new Problem(
-			'Silver',
-			'Lifeguards',
-			'786',
-			'Easy',
-			false,
-			['Sorting', 'Prefix Sums'],
-			'usaco-786'
-		),
-		new Problem(
-			'Silver',
-			'Rental Service',
-			'787',
-			'Normal',
-			true,
-			['Sorting', 'Prefix Sums'],
-			'usaco-787'
-		),
-		new Problem(
-			'Silver',
-			'Mountain View',
-			'896',
-			'Normal',
-			true,
-			['Sorting'],
-			'usaco-896'
-		),
-		new Problem(
-			'Silver',
-			'Stuck in a Rut',
-			'1064',
-			'Normal',
-			false,
-			['Sorting'],
-			'usaco-1064'
-		),
-		new Problem(
-			'Gold',
-			'Splitting the Field',
-			'645',
-			'Normal',
-			true,
-			['Sorting', 'Prefix Sums'],
-			'usaco-645'
-		),
-		new Problem('Silver', 'Triangles', '1015', 'Hard', false, ['Sorting'], ''),
-		new Problem(
-			'Silver',
-			'Out Of Sorts',
-			'834',
-			'Hard',
-			false,
-			['Sorting'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Meetings',
-			'967',
-			'Very Hard',
-			false,
-			['Sorting'],
-			''
-		),
-	],
-};
-
 <Resources>
 	<Resource source="IUSACO" title="8 - Sorting & Comparators">
 		partially based off this
@@ -106,9 +25,9 @@ export const problems = {
 
 <br />
 
-## Example: Wormhole Sort
+## Example - Wormhole Sort
 
-<FocusProblem problem={problems.sample[0]} />
+<FocusProblem problem="sample" />
 
 We won't discuss the full solution here, as some of the concepts necessary for
 solving this problem will be introduced later in Silver. However, many solutions
@@ -308,7 +227,7 @@ following conditions:
   first two compare functions both return `false`, the third must also return
   `false`.
 
-### Method 1: Overloading the Less Than Operator
+### Method 1 - Overloading the Less Than Operator
 
 This is the easiest to implement. However, it only works for objects (not
 primitives) and it doesn't allow you to define multiple ways to compare the same
@@ -357,7 +276,7 @@ struct Edge {
 };
 ```
 
-### Method 2: Comparison Function
+### Method 2 - Comparison Function
 
 This works for both objects and primitives, and you can declare many different
 comparators for the same object.
@@ -423,7 +342,7 @@ They essentially serve the same purpose, but `Comparable` is generally easier
 and shorter to code. `Comparable` is a function implemented within the class
 containing the custom object, while `Comparator` is its own class.
 
-### Method 1: Comparable
+### Method 1 - Comparable
 
 We'll need to put `implements Comparable<Edge>` into the heading of the class.
 Furthermore, we'll need to implement the `compareTo` method. Essentially,
@@ -464,7 +383,7 @@ public class Sol {
 }
 ```
 
-### Method 2: Comparator
+### Method 2 - Comparator
 
 If instead we choose to use `Comparator`, we'll need to declare a second class
 that implements `Comparator<Edge>`:
@@ -730,4 +649,4 @@ Many of the problems below may use other Silver concepts, such as
 
 </Info>
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

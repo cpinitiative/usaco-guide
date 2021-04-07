@@ -36,7 +36,7 @@ export default abstract class SimpleUserDataPropertyAPI extends UserDataProperty
     window.localStorage.removeItem(this.getLocalStorageKey(this.storageKey));
   };
 
-  public exportValue = (): object => {
+  public exportValue = (): Record<string, unknown> => {
     return {
       [this.storageKey]: this.value,
     };

@@ -1,18 +1,19 @@
+import 'flatpickr/dist/themes/material_blue.css';
+import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
+import Flatpickr from 'react-flatpickr';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import useFirebase from '../../../hooks/useFirebase';
+import { PostData } from '../../../models/groups/posts';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import { Link, navigate } from 'gatsby';
-import { usePost } from '../../../hooks/groups/usePost';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { PostData } from '../../../models/groups/posts';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import useFirebase from '../../../hooks/useFirebase';
-import Flatpickr from 'react-flatpickr';
 import MarkdownEditor from '../MarkdownEditor';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function EditPostPage(props) {
   const { groupId, postId } = props as {
@@ -120,7 +121,16 @@ export default function EditPostPage(props) {
                     options={{
                       dateFormat:
                         'Posted On'.split('').join('\\\\') +
-                        ' l, F J, Y, h:i K',
+                        ' l, F J, Y, h:i K ' +
+                        [
+                          '',
+                          ...(
+                            'UTC' +
+                            // sign is reversed for some reason
+                            (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
+                            Math.abs(new Date().getTimezoneOffset()) / 60
+                          ).split(''),
+                        ].join('\\\\'),
                       enableTime: true,
                     }}
                     value={post.timestamp?.toDate()}
@@ -146,7 +156,17 @@ export default function EditPostPage(props) {
                     <Flatpickr
                       placeholder={'Choose a due date (optional)'}
                       options={{
-                        dateFormat: '\\D\\u\\e l, F J, Y, h:i K',
+                        dateFormat:
+                          '\\D\\u\\e l, F J, Y, h:i K ' +
+                          [
+                            '',
+                            ...(
+                              'UTC' +
+                              // sign is reversed for some reason
+                              (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
+                              Math.abs(new Date().getTimezoneOffset()) / 60
+                            ).split(''),
+                          ].join('\\\\'),
                         enableTime: true,
                       }}
                       value={post.dueTimestamp?.toDate()}

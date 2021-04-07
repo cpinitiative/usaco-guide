@@ -1,3 +1,4 @@
+/*eslint-disable */
 'use strict';
 
 const visit = require('unist-util-visit');
@@ -332,15 +333,15 @@ module.exports = options => {
     if (node.children.length !== 1) {
       throw 'Expected only one child for a code block';
     }
-    let newValue = [];
-    for (let line of node.children[0].value.split('\n')) {
+    const newValue = [];
+    for (const line of node.children[0].value.split('\n')) {
       let found = false;
-      for (let key of Object.keys(replacements)) {
-        let results = line.match(
+      for (const key of Object.keys(replacements)) {
+        const results = line.match(
           new RegExp(`^(\\s*).*?(CodeSnip\\{${key}\\})`)
         );
         if (results) {
-          for (let snippetLine of replacements[key].split('\n')) {
+          for (const snippetLine of replacements[key].split('\n')) {
             newValue.push(`${results[1]}${snippetLine}`);
           }
           found = true;

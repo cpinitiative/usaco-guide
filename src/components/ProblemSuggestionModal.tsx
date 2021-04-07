@@ -1,29 +1,22 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-} from '../models/problem';
-import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import * as React from 'react';
 import { useContext } from 'react';
-import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
-import { ModuleInfo } from '../models/module';
 import { SECTION_LABELS } from '../../content/ordering';
+import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
+import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import { ModuleInfo } from '../models/module';
+import { PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
+import ButtonGroup from './ButtonGroup';
 
 export default function ProblemSuggestionModal({
   isOpen,
   onClose,
-  tableProblems,
+  listName,
 }: {
   isOpen: boolean;
-  onClose: Function;
-  tableProblems: Problem[];
-}) {
+  onClose: () => void;
+  listName: string;
+}): JSX.Element {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
   const [difficulty, setDifficulty] = React.useState(null);
@@ -55,9 +48,7 @@ export default function ProblemSuggestionModal({
 
     // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
     const problemTableLink =
-      window.location.href.split(/[?#]/)[0] +
-      '#problem-' +
-      tableProblems[0].uniqueID;
+      window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
@@ -89,14 +80,27 @@ export default function ProblemSuggestionModal({
           Problem Name
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
-          <input
-            type="text"
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
-            placeholder="Ex: USACO December 2012 Silver - Steeplechase"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-          />
+          {/* Remount component to trigger autofocus when opening modal */}
+          {isOpen ? (
+            <input
+              autoFocus
+              type="text"
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          ) : (
+            <input
+              type="text"
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          )}
         </div>
       </div>
       <div>
@@ -192,6 +196,7 @@ export default function ProblemSuggestionModal({
               <a
                 href={createdIssueLink}
                 target="_blank"
+                rel="noreferrer"
                 className="underline text-black dark:text-white"
               >
                 {createdIssueLink}
@@ -282,6 +287,7 @@ export default function ProblemSuggestionModal({
               <a
                 href="https://github.com/cpinitiative/usaco-guide/issues"
                 target="_blank"
+                rel="noreferrer"
                 className="text-blue-600 dark:text-blue-300 underline"
               >
                 Github issue

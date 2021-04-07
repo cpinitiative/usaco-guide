@@ -1,3 +1,12 @@
+import { SectionID } from '../../content/ordering';
+
+export type MarkdownLayoutSidebarModuleLinkInfo = {
+  id: string;
+  section: SectionID;
+  title: string;
+  url: string;
+};
+
 export class ModuleLinkInfo {
   public url: string;
 

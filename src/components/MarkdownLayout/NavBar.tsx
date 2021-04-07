@@ -1,10 +1,10 @@
-import { useContext } from 'react';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { SolutionInfo } from '../../models/solution';
-import * as React from 'react';
-import { ModuleLinkInfo } from '../../models/module';
-import MODULE_ORDERING from '../../../content/ordering';
 import { Link } from 'gatsby';
+import * as React from 'react';
+import { useContext } from 'react';
+import MODULE_ORDERING from '../../../content/ordering';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { ModuleLinkInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
 import Breadcrumbs from './Breadcrumbs';
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
@@ -14,20 +14,20 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   if (markdownLayoutInfo instanceof SolutionInfo) return null;
 
   const sortedModuleLinks = React.useMemo(() => {
-    let links: ModuleLinkInfo[] = [];
-    for (let group of MODULE_ORDERING[markdownLayoutInfo.section]) {
-      for (let id of group.items) {
+    const links: ModuleLinkInfo[] = [];
+    for (const group of MODULE_ORDERING[markdownLayoutInfo.section]) {
+      for (const id of group.items) {
         links.push(sidebarLinks.find(x => x.id === id));
       }
     }
     return links;
   }, [sidebarLinks]);
-  let moduleIdx = React.useMemo(
+  const moduleIdx = React.useMemo(
     () => sortedModuleLinks.findIndex(x => x.id === markdownLayoutInfo.id),
     [markdownLayoutInfo, sortedModuleLinks]
   );
-  let prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
-  let nextModule =
+  const prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
+  const nextModule =
     moduleIdx === sortedModuleLinks.length - 1
       ? null
       : sortedModuleLinks[moduleIdx + 1];

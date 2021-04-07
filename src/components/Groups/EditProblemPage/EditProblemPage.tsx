@@ -1,19 +1,29 @@
+import 'flatpickr/dist/themes/material_blue.css';
+import { Link, navigate } from 'gatsby';
+import * as Icons from 'heroicons-react';
 import * as React from 'react';
 import { useReducer } from 'react';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import { Link, navigate } from 'gatsby';
+import Flatpickr from 'react-flatpickr';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
+import useFirebase from '../../../hooks/useFirebase';
+import { GroupProblemData } from '../../../models/groups/problem';
+import {
+  AlgoliaProblemInfo,
+  getProblemURL,
+  ProblemInfo,
+} from '../../../models/problem';
+import ButtonGroup from '../../ButtonGroup';
+import Layout from '../../layout';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
-import { ProblemData } from '../../../models/groups/problem';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
-
 export default function EditProblemPage(props) {
   const { groupId, postId, problemId } = props as {
     path: string;
@@ -25,8 +35,9 @@ export default function EditProblemPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const originalProblem = useProblem(problemId);
+  const firebase = useFirebase();
   const [problem, editProblem] = useReducer(
-    (oldProblem, updates: Partial<ProblemData>): ProblemData => ({
+    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
       ...oldProblem,
       ...updates,
     }),
@@ -34,6 +45,7 @@ export default function EditProblemPage(props) {
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const notifications = useNotificationSystem();
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
@@ -57,6 +69,39 @@ export default function EditProblemPage(props) {
   const handleSaveProblem = () => {
     saveProblem(post, problem).then(() => navigate(-1));
   };
+
+  const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
+    setIsSearchOpen(false);
+    const problemInfo: ProblemInfo = {
+      uniqueId: problem.objectID,
+      ...problem,
+    };
+    editProblem({
+      name: problem.name,
+      body: `See [${problem.url}](${problem.url})`,
+      solution:
+        problem.solution.kind == 'internal'
+          ? `See [https://usaco.guide${[
+              getProblemURL(problemInfo),
+            ]}/solution](https://usaco.guide${[
+              getProblemURL(problemInfo),
+            ]}/solution)`
+          : problem.solution.kind == 'link'
+          ? `See [${problem.solution.url}](${problem.solution.url})`
+          : problem.solution.kind == 'label'
+          ? problem.solution.label
+          : problem.solution.kind === 'sketch'
+          ? problem.solution.sketch
+          : '',
+
+      source: problem.source,
+      difficulty: problem.difficulty,
+      usacoGuideId: problem.objectID,
+    });
+  };
+  if (post.type !== 'assignment') {
+    return null;
+  }
 
   if (!problem) {
     return (
@@ -100,6 +145,39 @@ export default function EditProblemPage(props) {
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="sm:col-span-4">
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(true)}
+                  className="btn"
+                >
+                  Import Problem From USACO Guide
+                </button>
+              </div>
+              <div className="sm:col-span-4">
+                {problem.usacoGuideId ? (
+                  <b className="block text-sm font-medium text-green-700 dark:text-green-200">
+                    <Icons.Check
+                      className={'text-green-700 h-5 w-5 mr-2 inline'}
+                    />
+                    This problem is linked to a USACO Guide Problem (
+                    <button
+                      className={'text-blue-700 hover:underline'}
+                      onClick={() => editProblem({ usacoGuideId: null })}
+                    >
+                      Unlink
+                    </button>
+                    )
+                  </b>
+                ) : (
+                  <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <Icons.X className={'text-gray-700 h-4 w-4 mr-1 inline'} />
+                    This problem is not linked to a USACO Guide Problem. To link
+                    this problem to a USACO Guide Problem, import a problem from
+                    above.
+                  </b>
+                )}
+              </div>
               <div className="sm:col-span-4">
                 <label
                   htmlFor="problem_name"
@@ -159,11 +237,6 @@ export default function EditProblemPage(props) {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Problem Solution
                 </label>
-                <p className="mt-1 text-sm text-gray-500">
-                  If there's a due date on the assignment, this will only be
-                  shown after the assignment's due date has passed. Otherwise,
-                  it's shown immediately.
-                </p>
                 <div className="mt-2">
                   <MarkdownEditor
                     value={problem.solution || ''}
@@ -171,7 +244,68 @@ export default function EditProblemPage(props) {
                   />
                 </div>
               </div>
+              {problem.solution && (
+                <div className="sm:col-span-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Problem Solution Will Be Shown:
+                  </label>
 
+                  <div className="mt-2">
+                    <ButtonGroup
+                      options={['due-date', 'now', 'never', 'custom']}
+                      value={problem.solutionReleaseMode}
+                      labelMap={{
+                        'due-date': 'After Assignment Due Date',
+                        now: 'Immediately',
+                        never: 'Never',
+                        custom: 'Custom Time',
+                      }}
+                      onChange={selected =>
+                        editProblem({
+                          solutionReleaseMode: selected,
+                        })
+                      }
+                    />
+                    {problem.solutionReleaseMode == 'due-date' && (
+                      <p className="mt-2 text-sm text-gray-500">
+                        If a due date is not set, the solution will not be
+                        released.
+                      </p>
+                    )}
+                    {problem.solutionReleaseMode === 'custom' && (
+                      <Flatpickr
+                        placeholder={'Choose a release time'}
+                        options={{
+                          dateFormat:
+                            'l, F J, Y, h:i K ' +
+                            [
+                              '',
+                              ...(
+                                'UTC' +
+                                // sign is reversed for some reason
+                                (new Date().getTimezoneOffset() > 0
+                                  ? '-'
+                                  : '+') +
+                                Math.abs(new Date().getTimezoneOffset()) / 60
+                              ).split(''),
+                            ].join('\\\\'),
+                          enableTime: true,
+                        }}
+                        value={problem.solutionReleaseTimestamp?.toDate()}
+                        onChange={date => {
+                          console.log(date);
+                          editProblem({
+                            solutionReleaseTimestamp: firebase.firestore.Timestamp.fromDate(
+                              date[0]
+                            ),
+                          });
+                        }}
+                        className="input mt-2"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="sm:col-span-4">
                 <label
                   htmlFor="source"
@@ -268,6 +402,12 @@ export default function EditProblemPage(props) {
         </div>
         <div className="h-12" />
       </main>
+
+      <ProblemAutocompleteModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onProblemSelect={handleProblemSearchSelect}
+      />
     </Layout>
   );
 }

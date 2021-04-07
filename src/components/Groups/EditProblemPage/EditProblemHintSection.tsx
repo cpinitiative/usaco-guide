@@ -1,6 +1,6 @@
 import * as React from 'react';
-import EditProblemHintModal from './EditProblemHintModal';
 import { ProblemData, ProblemHint } from '../../../models/groups/problem';
+import EditProblemHintModal from './EditProblemHintModal';
 
 export default function EditProblemHintSection({
   problem,
@@ -24,7 +24,7 @@ export default function EditProblemHintSection({
       if (hintIdx === -1) {
         throw new Error("Couldn't find hint to delete");
       }
-      let arr = [...problem.hints];
+      const arr = [...problem.hints];
       arr.splice(hintIdx, 1);
       onChange(arr);
     } else {
@@ -35,7 +35,7 @@ export default function EditProblemHintSection({
         if (hintIdx === -1) {
           throw new Error("Couldn't find hint to edit");
         }
-        let arr = [...problem.hints];
+        const arr = [...problem.hints];
         arr.splice(hintIdx, 1, hint);
         onChange(arr);
       } else {

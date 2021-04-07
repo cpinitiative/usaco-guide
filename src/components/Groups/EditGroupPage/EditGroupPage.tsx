@@ -1,20 +1,14 @@
+import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';
+import { useNotificationSystem } from '../../../context/NotificationSystemContext';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { GroupData } from '../../../models/groups/groups';
 import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
-import { Link, navigate } from 'gatsby';
-import { usePost } from '../../../hooks/groups/usePost';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { PostData } from '../../../models/groups/posts';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import useFirebase from '../../../hooks/useFirebase';
-import Flatpickr from 'react-flatpickr';
-import MarkdownEditor from '../MarkdownEditor';
-import { GroupData } from '../../../models/groups/groups';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { useNotificationSystem } from '../../../context/NotificationSystemContext';
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {

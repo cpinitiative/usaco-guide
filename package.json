@@ -32,7 +32,7 @@
     "fuse.js": "^6.4.6",
     "gatsby": "^2.32.2",
     "gatsby-image": "^2.11.0",
-    "gatsby-plugin-algolia": "^0.16.3",
+    "gatsby-plugin-algolia": "https://github.com/thecodingwizard/gatsby-plugin-algolia",
     "gatsby-plugin-catch-links": "^2.10.0",
     "gatsby-plugin-create-client-paths": "^2.10.0",
     "gatsby-plugin-disqus": "^1.2.2",
@@ -61,6 +61,7 @@
     "github-slugger": "^1.3.0",
     "gray-matter": "^4.0.2",
     "heroicons-react": "^1.3.0",
+    "import-fresh": "^3.3.0",
     "katex": "^0.12.0",
     "loadjs": "^4.2.0",
     "moment": "^2.29.1",
@@ -97,7 +98,7 @@
     "remark-gfm": "^1.0.0",
     "remark-math": "3",
     "styled-components": "^5.2.1",
-    "tailwindcss": "^2.0.2",
+    "tailwindcss": "^2.1.1",
     "tailwindcss-dark-mode": "^1.1.7",
     "tippy.js": "^6.2.7",
     "ts-node": "^9.1.1",
@@ -106,10 +107,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@mdx-js/loader": "^1.6.22",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
     "babel-jest": "^26.6.3",
     "babel-preset-gatsby": "^0.12.0",
+    "eslint-plugin-jest": "^24.3.4",
     "firebase-admin": "^9.4.2",
     "firestore-export-import": "^0.10.0",
     "gatsby-plugin-webpack-bundle-analyser-v2": "^1.1.20",
@@ -118,14 +123,17 @@
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
+    "prettier-plugin-organize-imports": "^1.1.1",
     "react-test-renderer": "^17.0.1",
     "serve": "^11.3.2"
   },
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "build": "cp ./content/problems.schema.json ./static/problems.schema.json && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write .",
+    "eslint": "eslint --ext .jsx --ext .js --ext .ts --ext .tsx --cache src",
+    "check-ts-errors": "tsc --noEmit",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
@@ -146,7 +154,8 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
+    "*.{js,ts,jsx,tsx}": "eslint",
+    "*.{js,jsx,ts,tsx,json,md,mdx}": "prettier --write"
   },
   "babelMacros": {
     "twin": {

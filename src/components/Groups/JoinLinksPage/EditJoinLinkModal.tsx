@@ -1,9 +1,10 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import { JoinGroupLink } from '../../../models/groups/groups';
-import Switch from '../../elements/Switch';
+import 'flatpickr/dist/themes/material_blue.css';
+import * as React from 'react';
 import Flatpickr from 'react-flatpickr';
 import useFirebase from '../../../hooks/useFirebase';
+import { JoinGroupLink } from '../../../models/groups/groups';
+import Switch from '../../elements/Switch';
 import Tooltip from '../../Tooltip/Tooltip';
 
 export default function EditJoinLinkModal({
@@ -13,7 +14,7 @@ export default function EditJoinLinkModal({
   link: initialLink,
 }: {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   onSave: (link: JoinGroupLink | null) => any;
   link: JoinGroupLink;
 }) {
@@ -202,7 +203,18 @@ export default function EditJoinLinkModal({
                           options={{
                             dateFormat:
                               'Expires on'.split('').join('\\\\') +
-                              ' l, F J, Y, h:i K',
+                              ' l, F J, Y, h:i K ' +
+                              [
+                                '',
+                                ...(
+                                  'UTC' +
+                                  // sign is reversed for some reason
+                                  (new Date().getTimezoneOffset() > 0
+                                    ? '-'
+                                    : '+') +
+                                  Math.abs(new Date().getTimezoneOffset()) / 60
+                                ).split(''),
+                              ].join('\\\\'),
                             enableTime: true,
                           }}
                           value={link.expirationTime?.toDate()}

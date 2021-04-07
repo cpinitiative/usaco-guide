@@ -1,5 +1,5 @@
 ---
-id: cf-garland
+id: cf-814C
 source: CF
 title: An impassioned circulation of affection
 author: Neo Wang, Qi Wang, Jesse Choe
@@ -11,7 +11,8 @@ author: Neo Wang, Qi Wang, Jesse Choe
 
 **Time Complexity:** $\mathcal{O}(nq)$
 
-For each query we can keep a sliding window where no more than $m$ letters in the window are not $c$.
+For each query we can keep a sliding window where no more than $m$ letters in
+the window are not $c$.
 
 ### Implementation
 
@@ -32,7 +33,7 @@ int main() {
 	for(int i = 0; i < Q; i++){
 		int m, ma = 0; char c;
 		cin >> m >> c;
-		
+
 		int l, r;
 		l = r = 0;
 		while(l < N && r < N) {
@@ -62,7 +63,9 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(n(k+q))$
 
-For each query we can use prefix sums to check the number of occurrences of a given letter $c$ and use two pointers to find the maximum Koyomity ending at a given pointer $p2$ from $0 \dots n$.
+For each query we can use prefix sums to check the number of occurrences of a
+given letter $c$ and use two pointers to find the maximum Koyomity ending at a
+given pointer $p2$ from $0 \dots n$.
 
 <LanguageSection>
 
@@ -120,7 +123,8 @@ Dynamic programming is a [Gold](/gold/intro-dp) topic.
 
 **Time Complexity:** $\mathcal{O}(n^2k + q)$
 
-We are performing up to $200\,000$ queries, so it may be optimal to have some way to quickly precompute our answer in constant time.
+We are performing up to $200\,000$ queries, so it may be optimal to have some
+way to quickly precompute our answer in constant time.
 
 We can use dynamic programming to cache such answers.
 
@@ -129,18 +133,24 @@ characters, with $j$ amount painted of character $k$. Either two things can
 happen when we add an additional character.
 
 1. We append the character and paint an additional square.
-$$
-\texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1
-$$
 
-2. We append the character, but since it is the same as our previous character we get to "save" a paint.
-$$
-\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)
-$$
+   $$
+   \texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1
+   $$
 
-Since this only gives us the best possible score that ends with length $i$, we can just take the current best and translate it using $\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$.
+2. We append the character, but since it is the same as our previous character
+   we get to "save" a paint.
+   $$
+   \texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)
+   $$
 
-Now, we can query the max painting score for any substring containing the first character. However, this is not required; we only have to query the optimal paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
+Since this only gives us the best possible score that ends with length $i$, we
+can just take the current best and translate it using
+$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$.
+
+Now, we can query the max painting score for any substring containing the first
+character. However, this is not required; we only have to query the optimal
+paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
 
 ### Implementation
 

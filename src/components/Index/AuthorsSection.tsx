@@ -1,7 +1,7 @@
-import { Authors, Author } from '../../../content/authors/authors';
-import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
+import * as React from 'react';
+import { Author, Authors } from '../../../content/authors/authors';
 
 const AuthorCard = ({
   author,

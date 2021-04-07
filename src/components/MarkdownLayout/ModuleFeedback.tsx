@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { SolutionInfo } from '../../models/solution';
 import { ModuleInfo } from '../../models/module';
-import useStickyState from '../../hooks/useStickyState';
-import { useContext, useEffect, useState } from 'react';
-import { validateEmail } from '../ContactUsSlideover/ContactUsSlideover';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { SolutionInfo } from '../../models/solution';
 
 export default function ModuleFeedback({
   markdownData,
@@ -80,6 +76,7 @@ export default function ModuleFeedback({
         <a
           href="https://forum.usaco.guide/"
           target="_blank"
+          rel="noreferrer"
           className="text-blue-600 underline dark:text-blue-300"
         >
           USACO Forum

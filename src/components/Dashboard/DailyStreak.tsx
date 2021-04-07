@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import Img from 'gatsby-image';
+import * as React from 'react';
 import { useContext, useState } from 'react';
 import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
@@ -105,7 +105,6 @@ export default function DailyStreak({ streak }) {
     return primes;
   };
   const times = generatePrimes();
-  console.log(times);
 
   let maxInd = 0;
   while (maxInd < times.length && times[maxInd] <= streak) maxInd++;

@@ -1,17 +1,16 @@
-import * as React from 'react';
-import {
-  Problem,
-  PROBLEM_PROGRESS_OPTIONS,
-  ProblemProgress,
-} from '../../../models/problem';
-import { useContext, useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import Tippy from '@tippyjs/react';
-import 'tippy.js/themes/light.css';
+import * as React from 'react';
+import { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
-
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../../context/ConfettiContext';
+import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import {
+  ProblemInfo,
+  ProblemProgress,
+  PROBLEM_PROGRESS_OPTIONS,
+} from '../../../models/problem';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -24,7 +23,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
     currentProgress
   );
 
-  const icon = (status: ProblemProgress, equal: Boolean) => {
+  const icon = (status: ProblemProgress, equal: boolean) => {
     const colorMap: { [key in ProblemProgress]: string } = {
       'Not Attempted': '',
       Solving: 'text-orange-500',
@@ -136,7 +135,7 @@ export default function ProblemStatusCheckbox({
   problem,
   size = 'small',
 }: {
-  problem: Problem;
+  problem: ProblemInfo;
   size?: 'small' | 'large';
 }) {
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
@@ -159,8 +158,8 @@ export default function ProblemStatusCheckbox({
     if (moduleProgress !== 'Not Started') return;
     setModuleProgress(markdownLayoutInfo.id, 'Practicing');
   };
-  let status: ProblemProgress =
-    userProgressOnProblems[problem.uniqueID] || 'Not Attempted';
+  const status: ProblemProgress =
+    userProgressOnProblems[problem.uniqueId] || 'Not Attempted';
   const color: { [key in ProblemProgress]: string } = {
     'Not Attempted': 'bg-gray-200 dark:bg-gray-700',
     Solving: 'bg-yellow-300 dark:bg-yellow-500',
@@ -169,7 +168,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  const tippyRef = useRef();
+  const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
     <StyledTippy
@@ -178,10 +177,9 @@ export default function ProblemStatusCheckbox({
         <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
-              // @ts-ignore
               tippyRef.current.hide();
-              setUserProgressOnProblems(problem, progress);
-              let solved = x => x == 'Reviewing' || x == 'Solved';
+              setUserProgressOnProblems(problem.uniqueId, progress);
+              const solved = x => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress))
                 updateModuleProgressToPracticing();
               if (!solved(status) && solved(progress)) {

@@ -1,8 +1,8 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import { GroupData } from '../../../models/groups/groups';
-import getPermissionLevel from './utils/getPermissionLevel';
 import getMembershipKey from './utils/getMembershipKey';
+import getPermissionLevel from './utils/getPermissionLevel';
 
 interface LeaveGroupArgs {
   groupId: string;

@@ -1,31 +1,30 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'gatsby';
 import {
-  InstantSearch,
+  Configure,
   connectAutoComplete,
   Highlight,
-  Snippet,
-  Configure,
+  InstantSearch,
   PoweredBy,
+  Snippet,
 } from 'react-instantsearch-dom';
-import {
-  moduleIDToURLMap,
-  SECTION_LABELS,
-  SECTIONS,
-} from '../../../content/ordering';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import {
+  moduleIDToURLMap,
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { searchClient } from '../../utils/algoliaSearchClient';
+import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import SectionsDropdown from '../SectionsDropdown';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
-import { searchClient } from '../../utils/algoliaSearchClient';
+import SectionsDropdown from '../SectionsDropdown';
 import Transition from '../Transition';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
-import { useUserPermissions } from '../../context/UserDataContext/UserPermissionsContext';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -62,11 +61,10 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setShowResults(false);
       }
@@ -115,6 +113,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
               <Link
                 to={moduleIDToURLMap[hit.id]}
                 className="block hover:bg-blue-100 dark:hover:bg-gray-700 px-4 py-2 transition"
+                key={hit.id}
               >
                 <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
@@ -147,8 +146,6 @@ export default function TopNavigationBar({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const { isAdmin } = useUserPermissions();
-  const { userClasses } = useContext(UserDataContext);
   const userGroups = useUserGroups();
   const mobileLinks = [
     {
@@ -171,20 +168,10 @@ export default function TopNavigationBar({
           },
         ]
       : []),
-    ...(userClasses.length > 0
-      ? [
-          {
-            label: 'My Class' + (userClasses.length !== 1 ? 'es' : ''),
-            url:
-              '/class/' + (userClasses.length === 1 ? userClasses[0].id : ''),
-          },
-        ]
-      : []),
   ];
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setIsActive(false);
       }
@@ -267,24 +254,10 @@ export default function TopNavigationBar({
                     Groups
                   </Link>
                 )}
-                {userClasses.length > 0 && (
-                  <Link
-                    to={
-                      '/class/' +
-                      (userClasses.length === 1 ? userClasses[0].id : '')
-                    }
-                    getProps={({ isCurrent }) => ({
-                      className: isCurrent
-                        ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                        : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
-                    })}
-                  >
-                    {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
-                  </Link>
-                )}
                 <a
                   href="https://forum.usaco.guide/"
                   target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
                 >
                   Forum
