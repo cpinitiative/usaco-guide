@@ -61,7 +61,7 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const handleClick = e => {
@@ -169,7 +169,7 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<HTMLDivElement>();
   useEffect(() => {
     const handleClick = e => {
       if (!(ref.current && ref.current.contains(e.target))) {
