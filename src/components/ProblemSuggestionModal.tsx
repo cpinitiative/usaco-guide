@@ -169,7 +169,7 @@ export default function ProblemSuggestionModal({
             value={sourceOptions.find(s => s.value == source)}
             onChange={o => setSource(o.value)}
             className={'mt-1 block w-full text-sm tw-forms-disable'}
-            disabled={loading}
+            isDisabled={loading}
           />
         </div>
       </div>
