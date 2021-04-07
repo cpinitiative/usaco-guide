@@ -14,7 +14,7 @@ export default function EditJoinLinkModal({
   link: initialLink,
 }: {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   onSave: (link: JoinGroupLink | null) => any;
   link: JoinGroupLink;
 }) {

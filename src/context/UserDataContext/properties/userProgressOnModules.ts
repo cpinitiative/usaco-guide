@@ -64,7 +64,7 @@ export default class UserProgressOnModulesProperty extends UserDataPropertyAPI {
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     this.progressValue = data[this.progressStorageKey] || {};
     this.activityValue = data[this.activityStorageKey] || [];
   };

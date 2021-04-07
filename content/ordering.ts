@@ -124,7 +124,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Dynamic Programming',
       description:
         'Every (?) Gold and Platinum contest has at least one DP problem.',
-      items: ['intro-dp', 'knapsack', 'paths-grids', 'lis'],
+      items: [
+        'intro-dp',
+        'knapsack',
+        'paths-grids',
+        'lis',
+        'dp-bitmasks',
+        'dp-ranges',
+      ],
     },
     {
       name: 'Graphs',
@@ -142,6 +149,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Hashing',
       description: 'Rarely required at this level, but still good to know.',
       items: ['string-hashing', 'unordered', 'faster-hashmap'],
+    },
+    {
+      name: 'Misc. Topics',
+      items: ['intro-bitwise'],
     },
   ],
   plat: [
@@ -170,12 +181,8 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
     {
-      name: 'Dynamic Programming',
-      items: ['dp-bitmasks', 'dp-ranges', 'DC-DP'],
-    },
-    {
       name: 'Misc. Topics',
-      items: ['intro-bitwise', 'mat-exp', 'bitsets'],
+      items: ['mat-exp', 'bitsets', 'DC-DP'],
     },
   ],
   adv: [

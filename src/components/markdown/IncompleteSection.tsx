@@ -26,6 +26,7 @@ export const IncompleteSection = ({ children }) => {
             <a
               href="https://github.com/cpinitiative/usaco-guide"
               target="_blank"
+              rel="noreferrer"
             >
               Github
             </a>

@@ -14,11 +14,10 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
   const { firebaseUser } = React.useContext(UserDataContext);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
 
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setIsActionsOpen(false);
     };

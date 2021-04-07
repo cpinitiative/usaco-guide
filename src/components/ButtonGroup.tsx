@@ -6,11 +6,13 @@ export default function ButtonGroup({
   value,
   onChange,
   labelMap,
+  disabled,
 }: {
   options: string[];
   value: string;
   onChange: (string) => void;
   labelMap?: { [key: string]: string };
+  disabled?: boolean;
 }) {
   const leftButtonClasses = 'rounded-l-md';
   const middleButtonClasses = '-ml-px';
@@ -33,6 +35,7 @@ export default function ButtonGroup({
             [activeClasses]: option === value,
             [inactiveClasses]: option !== value,
           })}
+          disabled={disabled}
           onClick={() => onChange(option)}
           key={option}
         >

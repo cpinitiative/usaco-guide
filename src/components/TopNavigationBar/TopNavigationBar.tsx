@@ -61,11 +61,10 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setShowResults(false);
       }
@@ -114,6 +113,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
               <Link
                 to={moduleIDToURLMap[hit.id]}
                 className="block hover:bg-blue-100 dark:hover:bg-gray-700 px-4 py-2 transition"
+                key={hit.id}
               >
                 <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
@@ -169,10 +169,9 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setIsActive(false);
       }
@@ -258,6 +257,7 @@ export default function TopNavigationBar({
                 <a
                   href="https://forum.usaco.guide/"
                   target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
                 >
                   Forum

@@ -4,7 +4,7 @@ import { FormEvent } from 'react';
 
 type SlideoverProps = {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   title: React.ReactNode;
   subtitle: React.ReactNode;
   children: React.ReactNode;

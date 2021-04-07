@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ModuleProgressOptions } from '../../models/module';
+import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 import Transition from '../Transition';
 
 const MarkCompleteButton = ({
@@ -8,19 +8,18 @@ const MarkCompleteButton = ({
   dropdownAbove,
 }: {
   state: string;
-  onChange: Function;
+  onChange: (option: ModuleProgress) => void;
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
 
-  const handleClick = option => {
+  const handleClick = (option: ModuleProgress) => {
     setShow(false);
     onChange(option);
   };
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setShow(false);
     };

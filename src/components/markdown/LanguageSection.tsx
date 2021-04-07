@@ -10,33 +10,31 @@ export const LanguageSection = props => {
   const sections = {};
   React.Children.map(props.children, child => {
     const oldChild = child;
-    const newChild = React.cloneElement(child, {
-      children: oldChild.props.children,
-      mdxType: oldChild.props.mdxType,
-      originalType: oldChild.props.originalType,
-      isCodeBlockExpandable: expand,
-    });
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
       JavaSection: 'java',
       PySection: 'py',
     };
-
-    newChild.props.children = React.Children.map(
-      newChild.props.children,
-      grandchild => {
+    const newChild = React.cloneElement(
+      child,
+      {
+        children: oldChild.props.children,
+        mdxType: oldChild.props.mdxType,
+        originalType: oldChild.props.originalType,
+        isCodeBlockExpandable: expand,
+      },
+      React.Children.map(child.props.children, grandchild => {
         const oldGrandchild = grandchild;
         if (typeof oldGrandchild.props != 'undefined') {
           const { oldProps } = oldGrandchild.props;
-          const newGrandchild = React.cloneElement(grandchild, {
-            ...oldProps,
-            isCodeBlockExpandable: expand,
-          });
-
-          newGrandchild.props.children = React.Children.map(
-            newGrandchild.props.children,
-            child2 => {
+          return React.cloneElement(
+            grandchild,
+            {
+              ...oldProps,
+              isCodeBlockExpandable: expand,
+            },
+            React.Children.map(grandchild.props.children, child2 => {
               const ogChild2 = child2;
               if (typeof ogChild2.props != 'undefined') {
                 const { oldProps2 } = ogChild2.props;
@@ -47,14 +45,12 @@ export const LanguageSection = props => {
               } else {
                 return child2;
               }
-            }
+            })
           );
-
-          return newGrandchild;
         } else {
           return child;
         }
-      }
+      })
     );
 
     sections[typeToLang[type]] = newChild;
