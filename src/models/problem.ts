@@ -143,11 +143,11 @@ export type ProblemSolutionInfo =
     }
   | {
       /*
- If the label is just text. Used for certain sources like CodeForces
- Ex:
-  - label = Check CF
-  - labelTooltip = "Check content materials, located to the right of the problem statement
- */
+If the label is just text. Used for certain sources like CodeForces
+Ex:
+- label = Check CF
+- labelTooltip = "Check content materials, located to the right of the problem statement
+*/
       kind: 'label';
       label: string;
       labelTooltip: string | null;
@@ -172,59 +172,61 @@ export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
 };
 
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
-  solutionMetadata:
-    | {
-        // auto generate problem solution label based off of the given site
-        // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
-        kind: 'autogen-label-from-site';
-        // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
-        site: string;
-      }
-    | {
-        // internal solution
-        kind: 'internal';
-      }
-    | {
-        // URL solution
-        // Use this for links to PDF solutions, etc
-        kind: 'link';
-        url: string;
-      }
-    | {
-        // Competitive Programming Handbook
-        // Ex: 5.3 or something
-        kind: 'CPH';
-        section: string;
-      }
-    | {
-        // USACO solution, generates it based off of the USACO problem ID
-        // ex. 1113 is mapped to sol_prob1_gold_feb21.html
-        kind: 'USACO';
-        usacoId: number;
-      }
-    | {
-        // IOI solution, generates it based off of the year
-        // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
-        kind: 'IOI';
-        year: number;
-      }
-    | {
-        // no solution exists
-        kind: 'none';
-      }
-    | {
-        // for focus problems, when the solution is presented in the module of the problem
-        kind: 'in-module';
-        moduleId: string;
-      }
-    | {
-        /**
-         * @deprecated
-         */
-        kind: 'sketch';
-        sketch: string;
-      };
+  solutionMetadata: ProblemSolutionMetadata;
 };
+
+export type ProblemSolutionMetadata =
+  | {
+      // auto generate problem solution label based off of the given site
+      // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+      kind: 'autogen-label-from-site';
+      // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+      site: string;
+    }
+  | {
+      // internal solution
+      kind: 'internal';
+    }
+  | {
+      // URL solution
+      // Use this for links to PDF solutions, etc
+      kind: 'link';
+      url: string;
+    }
+  | {
+      // Competitive Programming Handbook
+      // Ex: 5.3 or something
+      kind: 'CPH';
+      section: string;
+    }
+  | {
+      // USACO solution, generates it based off of the USACO problem ID
+      // ex. 1113 is mapped to sol_prob1_gold_feb21.html
+      kind: 'USACO';
+      usacoId: number;
+    }
+  | {
+      // IOI solution, generates it based off of the year
+      // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+      kind: 'IOI';
+      year: number;
+    }
+  | {
+      // no solution exists
+      kind: 'none';
+    }
+  | {
+      // for focus problems, when the solution is presented in the module of the problem
+      kind: 'in-module';
+      moduleId: string;
+    }
+  | {
+      /**
+       * @deprecated
+       */
+      kind: 'sketch';
+      sketch: string;
+    };
 
 // Checks if a given source is USACO
 const isUsaco = source => {
@@ -246,7 +248,7 @@ export function getProblemURL(
   problem: Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'> & {
     [x: string]: any;
   }
-) {
+): string {
   // USACO and CSES sometimes have duplicate problem names
   // so we should add the ID to the URL
   return `/problems/${
@@ -256,9 +258,104 @@ export function getProblemURL(
   }-${slug(problem.name.replace(' - ', ''))}`;
 }
 
+/**
+ * Retrieves the code from USACO or CSES URL's (finds trailing numbers).
+ * Ex: https://cses.fi/problemset/task/1652 yields 1652
+ */
+const getTrailingCodeFromProblemURL = (url: string): number => {
+  const code = url.match(/([0-9]+)$/)[1];
+  return parseInt(code);
+};
+
+/*
+ * Warning: not all IDs will follow this convention. You should not assume
+ * that the unique ID for a problem will necessarily be what this function
+ * outputs; the user can manually change the problem ID.
+ */
+export function generateProblemUniqueId(
+  source: string,
+  name: string,
+  url: string
+): string {
+  if (isUsaco(source)) {
+    return `usaco-${getTrailingCodeFromProblemURL(url)}`;
+  } else if (source === 'CSES') {
+    return `cses-${getTrailingCodeFromProblemURL(url)}`;
+  } else if (source === 'CF') {
+    const num = url.match(/([0-9]+)/g)[0];
+    const char = url.match(/\/([A-z0-9]+)$/)[1];
+    if (url.indexOf('gym') !== -1) {
+      return `cfgym-${num}${char}`;
+    } else {
+      return `cf-${num}${char}`;
+    }
+  } else {
+    const camelCase = x => {
+      // In case it's something like 2018 - Problem Name
+      if (x.match(/^[0-9]{4}/) !== null) {
+        return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
+      }
+      // remove whitespace
+      x = x.replace(/[^\w\s]/g, '');
+      // camel case everything (first word uppercase)
+      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return word.toUpperCase();
+      });
+      if (str.split(' ').length === 1) {
+        // special case: if there's only one word, it should be lowercase
+        return str.toLowerCase();
+      } else {
+        return str.replace(/\s+/g, '');
+      }
+    };
+    if (source === 'Baltic OI') {
+      return `baltic-${camelCase(this.name)}`;
+    } else if (source === 'Balkan OI') {
+      return `balkan-${camelCase(this.name)}`;
+    } else {
+      return `${camelCase(this.source)}-${camelCase(this.name)}`;
+    }
+  }
+}
+
+export function autoGenerateSolutionMetadata(
+  source: string,
+  name: string,
+  url: string
+): ProblemSolutionMetadata | null {
+  if (isUsaco(source)) {
+    return {
+      kind: 'USACO',
+      usacoId: getTrailingCodeFromProblemURL(url),
+    };
+  } else if (source == 'IOI') {
+    for (let i = 1994; i <= 2030; ++i) {
+      const des = i.toString();
+      let des2 = (i % 100).toString();
+      if (des2.length == 1) des2 = '0' + des2;
+      if (name.indexOf(des) !== -1 || name.indexOf(des2) !== -1) {
+        return {
+          kind: 'IOI',
+          year: i,
+        };
+      }
+    }
+    return null;
+  } else if (
+    probSources.hasOwnProperty(source) &&
+    probSources[source].length === 3
+  ) {
+    return {
+      kind: 'autogen-label-from-site',
+      site: this.source,
+    };
+  }
+  return null;
+}
+
 // legacy code follows
 
-type ProblemSolution = {
+export type ProblemSolution = {
   kind: 'internal' | 'link' | 'text' | 'sketch';
 
   /**
