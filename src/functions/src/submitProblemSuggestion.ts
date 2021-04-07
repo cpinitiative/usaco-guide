@@ -141,7 +141,7 @@ const submitProblemSuggestion = functions.https.onCall(
     const oldFileDataReq = await githubAPI.get(
       `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
         /\.mdx$/,
-        '.json'
+        '.problems.json'
       )}?ref=${branchName}`
     );
     const oldFileHash = oldFileDataReq.data.sha;
@@ -168,7 +168,10 @@ const submitProblemSuggestion = functions.https.onCall(
     });
 
     await githubAPI.put(
-      '/repos/cpinitiative/usaco-guide/contents/content/2_Bronze/Ad_Hoc.problems.json',
+      `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
+        /\.mdx$/,
+        '.problems.json'
+      )}`,
       {
         content: Buffer.from(formattedNewContent).toString('base64'),
         message: "Feat: add suggested problem 'test'",
