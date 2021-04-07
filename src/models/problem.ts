@@ -24,11 +24,11 @@ export const probSources = {
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
-  'Old Gold': [
+  'Old Silver': [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
-  'Old Silver': [
+  'Old Gold': [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
