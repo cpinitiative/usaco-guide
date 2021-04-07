@@ -20,18 +20,6 @@ export const contests = {
 };
 
 export const probSources = {
-  'Old Bronze': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
-    'USACO Platinum did not exist prior to 2015-16.',
-  ],
-  'Old Silver': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
-    'USACO Platinum did not exist prior to 2015-16.',
-  ],
-  'Old Gold': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
-    'USACO Platinum did not exist prior to 2015-16.',
-  ],
   Bronze: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
@@ -47,6 +35,18 @@ export const probSources = {
   Plat: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
+  ],
+  'Old Bronze': [
+    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'USACO Platinum did not exist prior to 2015-16.',
+  ],
+  'Old Silver': [
+    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'USACO Platinum did not exist prior to 2015-16.',
+  ],
+  'Old Gold': [
+    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'USACO Platinum did not exist prior to 2015-16.',
   ],
   AC: [
     'https://atcoder.jp/',
