@@ -1,11 +1,12 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
+import Select from 'react-select';
 import { SECTION_LABELS } from '../../content/ordering';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
-import { PROBLEM_DIFFICULTY_OPTIONS } from '../models/problem';
+import { PROBLEM_DIFFICULTY_OPTIONS, probSources } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
 
 export default function ProblemSuggestionModal({
@@ -22,7 +23,7 @@ export default function ProblemSuggestionModal({
   const [difficulty, setDifficulty] = React.useState(null);
   const [tags, setTags] = React.useState('');
   const [additionalNotes, setAdditionalNotes] = React.useState('');
-
+  const [source, setSource] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
 
@@ -61,8 +62,11 @@ export default function ProblemSuggestionModal({
       tags,
       additionalNotes,
       problemTableLink,
+      problemListName: listName,
       moduleName,
+      filePath: (markdownLayoutInfo as ModuleInfo).fileRelativePath,
       section: (markdownLayoutInfo as ModuleInfo).section,
+      source,
     })
       .then(response => {
         setCreatedIssueLink(response.data);
@@ -72,6 +76,40 @@ export default function ProblemSuggestionModal({
       })
       .finally(() => setLoading(false));
   };
+  const getLabel = source => {
+    const map = {
+      'Old Bronze': 'Old USACO Bronze (Before Dec 2015)',
+      'Old Silver': 'Old USACO Silver (Before Dec 2015)',
+      'Old Gold': 'Old USACO Gold (Before Dec 2015)',
+      Bronze: 'Recent USACO Bronze (Dec 2015 and Later)',
+      Silver: 'Recent USACO Silver (Dec 2015 and Later)',
+      Gold: 'Recent USACO Gold (Dec 2015 and Later)',
+      Plat: 'USACO Platinum',
+      AC: 'AtCoder',
+      CC: 'CodeChef',
+      CF: 'Codeforces',
+      CSA: 'CS Academy',
+      FHC: 'Facebook HackerCup',
+      HR: 'HackerRank',
+      LC: 'LeetCode',
+      POI: 'Polish Olympiad in Informatics',
+      SOJ: 'Sphere Online Judge',
+      TLX: 'tlx.toki.id',
+      YS: 'YS (judge.yosupo.jp)',
+    };
+    if (map[source]) return map[source];
+    return source;
+  };
+  const sourceOptions = [
+    ...Object.keys(probSources).map(source => ({
+      label: getLabel(source),
+      value: source,
+    })),
+    {
+      label: 'Other',
+      value: 'other',
+    },
+  ];
 
   const form = (
     <>
@@ -86,7 +124,7 @@ export default function ProblemSuggestionModal({
               autoFocus
               type="text"
               className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
-              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              placeholder="Ex: Steeplechase (Please do NOT include the source)"
               value={name}
               onChange={e => setName(e.target.value)}
               required
@@ -120,6 +158,19 @@ export default function ProblemSuggestionModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
+          Problem Source
+        </label>
+        <div className="mt-2 relative rounded-md shadow-sm">
+          <Select
+            options={sourceOptions}
+            value={sourceOptions.find(s => s.value == source)}
+            onChange={o => setSource(o.value)}
+            className={'mt-1 block w-full text-sm tw-forms-disable'}
+          />
+        </div>
+      </div>
+      <div>
+        <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Difficulty
         </label>
         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -135,7 +186,7 @@ export default function ProblemSuggestionModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Suggested Tags
+          Suggested Tags (separated with comma and space)
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input

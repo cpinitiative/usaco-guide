@@ -14,6 +14,9 @@ export default function useProblemSuggestionAction() {
       problemTableLink,
       moduleName,
       section,
+      problemListName,
+      source,
+      filePath,
     }) => {
       if (!firebase) {
         alert('Too fast! Please wait ten seconds and try again.');
@@ -31,6 +34,9 @@ export default function useProblemSuggestionAction() {
         problemTableLink,
         moduleName,
         section,
+        problemListName,
+        source,
+        filePath,
       });
     },
     [firebase]
