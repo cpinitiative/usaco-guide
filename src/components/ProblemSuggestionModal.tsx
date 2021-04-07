@@ -126,6 +126,7 @@ export default function ProblemSuggestionModal({
               className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
               placeholder="Ex: Steeplechase (Please do NOT include the source)"
               value={name}
+              disabled={loading}
               onChange={e => setName(e.target.value)}
               required
             />
@@ -137,6 +138,7 @@ export default function ProblemSuggestionModal({
               value={name}
               onChange={e => setName(e.target.value)}
               required
+              disabled={loading}
             />
           )}
         </div>
@@ -153,6 +155,7 @@ export default function ProblemSuggestionModal({
             value={link}
             onChange={e => setLink(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
       </div>
@@ -166,6 +169,7 @@ export default function ProblemSuggestionModal({
             value={sourceOptions.find(s => s.value == source)}
             onChange={o => setSource(o.value)}
             className={'mt-1 block w-full text-sm tw-forms-disable'}
+            disabled={loading}
           />
         </div>
       </div>
@@ -181,6 +185,7 @@ export default function ProblemSuggestionModal({
             options={PROBLEM_DIFFICULTY_OPTIONS}
             value={difficulty}
             onChange={x => setDifficulty(x)}
+            disabled={loading}
           />
         </div>
       </div>
@@ -195,6 +200,7 @@ export default function ProblemSuggestionModal({
             placeholder="DP, Dijkstra"
             value={tags}
             onChange={e => setTags(e.target.value)}
+            disabled={loading}
           />
         </div>
       </div>
@@ -213,6 +219,7 @@ export default function ProblemSuggestionModal({
               value={additionalNotes}
               onChange={e => setAdditionalNotes(e.target.value)}
               placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
+              disabled={loading}
             />
           </div>
         </div>
@@ -365,7 +372,10 @@ export default function ProblemSuggestionModal({
                 <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                   <button
                     type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className={
+                      'inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      (loading ? 'bg-blue-400' : 'bg-blue-600')
+                    }
                     disabled={loading}
                   >
                     {loading ? 'Submitting...' : 'Submit Suggestion'}
@@ -374,7 +384,10 @@ export default function ProblemSuggestionModal({
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className={
+                      'inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      (loading ? 'bg-gray-100' : 'bg-white')
+                    }
                     onClick={() => onClose()}
                     disabled={loading}
                   >

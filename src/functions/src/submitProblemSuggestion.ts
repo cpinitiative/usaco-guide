@@ -6,6 +6,7 @@ import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
   ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
 
 const problemSuggestionReviewers = {
@@ -78,7 +79,9 @@ const submitProblemSuggestion = functions.https.onCall(
       difficulty,
       isStarred: false,
       tags: tagsArr,
-      solutionMetadata: autoGenerateSolutionMetadata(source, name, link),
+      solutionMetadata: autoGenerateSolutionMetadata(source, name, link) || {
+        kind: 'none',
+      },
     };
 
     const body =
@@ -87,14 +90,14 @@ const submitProblemSuggestion = functions.https.onCall(
       `**Automatically Generated JSON:**\n` +
       '```json\n' +
       JSON.stringify(suggestedProblem, null, 2) +
-      '```\n' +
+      '\n```\n' +
       `**Additional Notes**:${
         additionalNotes ? '\n' + additionalNotes : ' None'
       }\n\n` +
       (source === 'other'
-        ? `**Warning: The source of this problem is currently set to \`other\`. You must the problem to the proper source before merging.**\n`
+        ? `**Warning: The source of this problem is currently set to \`other\`. You must correct the problem source and the solution before merging.**\n`
         : '') +
-      `*This PR was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
+      `*This PR was automatically generated from a user-submitted problem suggestion on the USACO guide.*`;
     const key = functions.config().problemsuggestion.issueapikey;
     const githubAPI = axios.create({
       baseURL: 'https://api.github.com',
@@ -155,7 +158,21 @@ const submitProblemSuggestion = functions.https.onCall(
     ).toString();
 
     const parsedOldFileData = JSON.parse(oldFileData);
-    parsedOldFileData[problemListName].push(suggestedProblem);
+    const tableToEdit = parsedOldFileData[problemListName];
+
+    // sort the table such that the suggested problem is inserted below the bottommost
+    // problem with the same difficulty as the suggested problem.
+    parsedOldFileData[problemListName] = ([
+      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+      { index: tableToEdit.length, data: suggestedProblem },
+    ] as { index: number; data: ProblemMetadata }[])
+      .sort((a, b) => {
+        const difficultyDiff =
+          PROBLEM_DIFFICULTY_OPTIONS.indexOf(a.data.difficulty) -
+          PROBLEM_DIFFICULTY_OPTIONS.indexOf(b.data.difficulty);
+        return difficultyDiff !== 0 ? difficultyDiff : a.index - b.index;
+      })
+      .map(prob => prob.data);
 
     // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
     // these objects into multiline ones.
@@ -200,23 +217,35 @@ const submitProblemSuggestion = functions.https.onCall(
       `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
     );
 
+    const reviewersToRemove = reviewersReq.data.users
+      .map(user => user.login)
+      .filter(user => !problemSuggestionReviewers[section].includes(user));
+    const keptReviewers = reviewersReq.data.users
+      .map(user => user.login)
+      .filter(user => problemSuggestionReviewers[section].includes(user));
     await githubAPI.delete(
       `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
       {
         data: {
-          reviewers: reviewersReq.data.users.map(user => user.login),
+          reviewers: reviewersToRemove,
           team_reviewers: reviewersReq.data.teams.map(team => team.slug),
         },
       }
     );
-
-    await githubAPI.post(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
-      {
-        reviewers: problemSuggestionReviewers[section],
-      }
-    );
-    console.log(createdPullRequestReq.data);
+    if (
+      problemSuggestionReviewers[section].filter(
+        u => !keptReviewers.includes(u)
+      ).length > 0
+    ) {
+      await githubAPI.post(
+        `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
+        {
+          reviewers: problemSuggestionReviewers[section].filter(
+            u => !keptReviewers.includes(u)
+          ),
+        }
+      );
+    }
     return createdPullRequestReq.data.html_url;
   }
 );

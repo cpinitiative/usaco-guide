@@ -309,11 +309,11 @@ export function generateProblemUniqueId(
       }
     };
     if (source === 'Baltic OI') {
-      return `baltic-${camelCase(this.name)}`;
+      return `baltic-${camelCase(name)}`;
     } else if (source === 'Balkan OI') {
-      return `balkan-${camelCase(this.name)}`;
+      return `balkan-${camelCase(name)}`;
     } else {
-      return `${camelCase(this.source)}-${camelCase(this.name)}`;
+      return `${camelCase(source)}-${camelCase(name)}`;
     }
   }
 }
