@@ -329,7 +329,7 @@ export function autoGenerateSolutionMetadata(
       usacoId: getTrailingCodeFromProblemURL(url),
     };
   } else if (source == 'IOI') {
-    for (let i = 1994; i <= 2030; ++i) {
+    for (let i = 1994; i <= 2089; ++i) {
       const des = i.toString();
       let des2 = (i % 100).toString();
       if (des2.length == 1) des2 = '0' + des2;
