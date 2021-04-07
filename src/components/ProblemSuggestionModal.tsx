@@ -124,7 +124,7 @@ export default function ProblemSuggestionModal({
               autoFocus
               type="text"
               className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
-              placeholder="Ex: USACO December 2012 Silver - Steeplechase"
+              placeholder="Ex: Steeplechase (Please do NOT include the source)"
               value={name}
               onChange={e => setName(e.target.value)}
               required

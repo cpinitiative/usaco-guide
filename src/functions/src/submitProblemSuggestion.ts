@@ -2,7 +2,11 @@ import axios from 'axios';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import prettier from 'prettier';
-import { generateProblemUniqueId, ProblemMetadata } from '../../models/problem';
+import {
+  autoGenerateSolutionMetadata,
+  generateProblemUniqueId,
+  ProblemMetadata,
+} from '../../models/problem';
 
 const problemSuggestionReviewers = {
   general: ['thecodingwizard'],
@@ -74,22 +78,22 @@ const submitProblemSuggestion = functions.https.onCall(
       difficulty,
       isStarred: false,
       tags: tagsArr,
-      solutionMetadata: {
-        kind: 'none',
-      },
+      solutionMetadata: autoGenerateSolutionMetadata(source, name, link),
     };
 
     const body =
       `*${submitterName}* (UID ${context.auth?.uid}) suggested adding the problem [${name}](${link}) ` +
       `to the \`${problemListName}\` table of the module [${moduleName}](${problemTableLink}).\n\n` +
-      `**Automatically Generated JSON:**` +
-      '```json' +
+      `**Automatically Generated JSON:**\n` +
+      '```json\n' +
       JSON.stringify(suggestedProblem, null, 2) +
       '```\n' +
       `**Additional Notes**:${
         additionalNotes ? '\n' + additionalNotes : ' None'
       }\n\n` +
-      `** Warning: The source of this problem is currently set to \`other\`. You must the problem to the proper source before merging.**\n` +
+      (source === 'other'
+        ? `**Warning: The source of this problem is currently set to \`other\`. You must the problem to the proper source before merging.**\n`
+        : '') +
       `*This PR was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
     const key = functions.config().problemsuggestion.issueapikey;
     const githubAPI = axios.create({
@@ -188,7 +192,7 @@ const submitProblemSuggestion = functions.https.onCall(
         maintainer_can_modify: true,
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body: body,
-        draft: source == 'other',
+        draft: source === 'other',
       }
     );
 
