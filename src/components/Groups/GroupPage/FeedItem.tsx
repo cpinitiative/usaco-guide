@@ -20,11 +20,10 @@ export default function FeedItem({
 
   const [showDropdown, setShowDropdown] = useState(false);
   const notifications = useNotificationSystem();
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!ref.current || ref.current.contains(e.target)) return;
       setShowDropdown(false);
     };

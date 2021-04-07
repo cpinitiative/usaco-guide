@@ -150,7 +150,7 @@ export default function ProblemSubmissionInterface({
         />
       </div>
       <div className="mt-1 text-sm space-x-2 text-gray-500 dark:text-gray-400">
-        If you&apos;d prefer, you can also{' '}
+        If you'd prefer, you can also{' '}
         <button
           className="hover:text-gray-900 underline"
           type="button"

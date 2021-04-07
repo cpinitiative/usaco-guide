@@ -95,7 +95,7 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     let pendingProgressValue = data[this.progressStorageKey] || { version: 2 };
     if (!pendingProgressValue.version || pendingProgressValue.version < 2) {
       pendingProgressValue = this.migrateLegacyValue(pendingProgressValue);

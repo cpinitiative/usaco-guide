@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../../context/DarkModeContext';
-import { contests, probSources } from '../../../models/problem';
+import { contests, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -16,7 +16,7 @@ import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
   showTagsAndDifficulty: boolean;
-  onShowSolutionSketch: Function;
+  onShowSolutionSketch: (problem: ProblemInfo) => void;
   isDivisionTable?: boolean; // only if is division table
   modules?: boolean; // only if is division table
   showPercent?: boolean; // only if is division table

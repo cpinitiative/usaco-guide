@@ -10,11 +10,10 @@ export default function SectionsDropdown({
   noDarkMode = false,
 }) {
   const [isActive, setIsActive] = React.useState(false);
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setIsActive(false);
     };

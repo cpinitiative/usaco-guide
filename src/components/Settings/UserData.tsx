@@ -32,8 +32,7 @@ export default function UserData() {
     fileReader.readAsText(file, 'UTF-8');
     fileReader.onload = e => {
       // console.log("e.target.result", e.target.result);
-      // @ts-ignore
-      setFile(e.target.result);
+      setFile(e.target.result as any);
     };
   };
 

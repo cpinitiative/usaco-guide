@@ -23,13 +23,13 @@ export default abstract class UserDataPropertyAPI {
    * Any time the value returned by `getAPI()` changes, make sure to call
    * this function.
    */
-  protected triggerRerender: Function;
+  protected triggerRerender: () => void;
 
   public setFirebaseUserDoc = (doc: DocumentReference | null) => {
     this.firebaseUserDoc = doc;
   };
 
-  public setTriggerRerenderFunction = (func: Function) => {
+  public setTriggerRerenderFunction = (func: () => void) => {
     this.triggerRerender = func;
   };
 
@@ -73,7 +73,7 @@ export default abstract class UserDataPropertyAPI {
    * - when the user restores a backup of their data
    * - when remote data is synced with local data
    */
-  abstract importValueFromObject(data: object);
+  abstract importValueFromObject(data: Record<string, unknown>);
 
   /**
    * Erase all data from localStorage. This will be called when the user signs out.

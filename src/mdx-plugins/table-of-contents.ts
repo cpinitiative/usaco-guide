@@ -1,4 +1,4 @@
-const visit = require('unist-util-visit');
+// const visit = require('unist-util-visit');
 
 export default ({ markdownAST }, pluginOptions) => {
   // let newChildren = [];

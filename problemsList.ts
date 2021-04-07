@@ -1,3 +1,4 @@
+/*eslint-disable */
 import { Problem } from './src/models/problem';
 
 let data: any = {

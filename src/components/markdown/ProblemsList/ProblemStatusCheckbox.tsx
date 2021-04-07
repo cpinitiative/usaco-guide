@@ -168,7 +168,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  const tippyRef = useRef();
+  const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
     <StyledTippy
@@ -177,7 +177,6 @@ export default function ProblemStatusCheckbox({
         <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
-              // @ts-ignore
               tippyRef.current.hide();
               setUserProgressOnProblems(problem.uniqueId, progress);
               const solved = x => x == 'Reviewing' || x == 'Solved';

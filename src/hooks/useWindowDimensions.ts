@@ -8,6 +8,7 @@ function getWindowDimensions() {
   };
 }
 
+/*eslint-disable */
 function debounce(func, wait, immediate = false) {
   let timeout;
   return function () {
@@ -23,6 +24,7 @@ function debounce(func, wait, immediate = false) {
     if (callNow) func.apply(context, args);
   };
 }
+/*eslint-enable */
 
 export default function useWindowDimensions() {
   const [windowDimensions, setWindowDimensions] = useState({

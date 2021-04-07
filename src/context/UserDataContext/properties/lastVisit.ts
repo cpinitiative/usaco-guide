@@ -71,7 +71,7 @@ export default class LastVisitProperty extends UserDataPropertyAPI {
     };
   };
 
-  importValueFromObject = (data: object) => {
+  importValueFromObject = (data: Record<string, any>) => {
     this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
     this.consecutiveVisits = data['consecutiveVisits'] || 1;
     this.numPageviews = data['numPageviews'] || 0;

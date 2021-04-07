@@ -12,7 +12,7 @@ import { components } from './markdown/MDXProvider';
 
 class ErrorBoundary extends React.Component {
   state: {
-    error: null | object;
+    error: null | any;
   };
 
   constructor(props) {
@@ -32,7 +32,6 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // @ts-ignore
     if (this.state.error) {
       // You can render any custom fallback UI
       return (
@@ -46,7 +45,10 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function ({ markdown, debounce = 1000 }) {
+export default function DynamicMarkdownRenderer({
+  markdown,
+  debounce = 1000,
+}): JSX.Element {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {

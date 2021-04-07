@@ -130,7 +130,6 @@ export default function MarkdownLayout({
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 
-  // @ts-ignore
   return (
     <MarkdownLayoutContext.Provider
       value={{
