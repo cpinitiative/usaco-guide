@@ -61,7 +61,9 @@ export default function ProblemSuggestionModal({
       tags,
       additionalNotes,
       problemTableLink,
+      problemListName: listName,
       moduleName,
+      filePath: (markdownLayoutInfo as ModuleInfo).fileRelativePath,
       section: (markdownLayoutInfo as ModuleInfo).section,
     })
       .then(response => {
@@ -135,7 +137,7 @@ export default function ProblemSuggestionModal({
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          Suggested Tags
+          Suggested Tags (separated with comma and space)
         </label>
         <div className="mt-2 relative rounded-md shadow-sm">
           <input

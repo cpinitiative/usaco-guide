@@ -6,7 +6,9 @@ import UserDataContext from './UserDataContext/UserDataContext';
 const ProblemSuggestionModalContext = createContext<{
   openProblemSuggestionModal: (listName: string) => void;
 }>({
-  openProblemSuggestionModal: x => {},
+  openProblemSuggestionModal: (listName: string) => {
+    // Do Nothing
+  },
 });
 
 export default ProblemSuggestionModalContext;

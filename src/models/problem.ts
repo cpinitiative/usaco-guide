@@ -218,6 +218,9 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
         moduleId: string;
       }
     | {
+        /**
+         * @deprecated
+         */
         kind: 'sketch';
         sketch: string;
       };
@@ -615,3 +618,57 @@ export type ProblemFeedback = {
   isCodePublic: boolean;
   otherFeedback: string;
 };
+
+/**
+ * Warning: not all IDs will follow this convention. You should not assume
+ * that the unique ID for a problem will necessarily be what this function
+ * outputs; the user can (but very often shouldn't) manually change the
+ * problem ID.
+ */
+export function generateProblemUniqueId(
+  source: string,
+  name: string,
+  url: string
+): string {
+  if (isUsaco(source)) {
+    const code = url.match(/([0-9]+)$/)[1];
+    return `usaco-${code}`;
+  } else if (source === 'CSES') {
+    const code = url.match(/([0-9]+)$/)[1];
+    return `cses-${code}`;
+  } else if (source === 'CF') {
+    const num = url.match(/([0-9]+)/g)[0];
+    const char = url.match(/\/([A-z0-9]+)$/)[1];
+    if (url.indexOf('gym') !== -1) {
+      return `cfgym-${num}${char}`;
+    } else {
+      return `cf-${num}${char}`;
+    }
+  } else {
+    const camelCase = x => {
+      // In case it's something like 2018 - Problem Name
+      if (x.match(/^[0-9]{4}/) !== null) {
+        return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
+      }
+      // remove whitespace
+      x = x.replace(/[^\w\s]/g, '');
+      // camel case everything (first word uppercase)
+      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return word.toUpperCase();
+      });
+      if (str.split(' ').length === 1) {
+        // special case: if there's only one word, it should be lowercase
+        return str.toLowerCase();
+      } else {
+        return str.replace(/\s+/g, '');
+      }
+    };
+    if (source === 'Baltic OI') {
+      return `baltic-${camelCase(name)}`;
+    } else if (source === 'Balkan OI') {
+      return `balkan-${camelCase(name)}`;
+    } else {
+      return `${camelCase(source)}-${camelCase(name)}`;
+    }
+  }
+}
