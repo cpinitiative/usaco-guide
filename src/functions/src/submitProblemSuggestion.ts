@@ -89,6 +89,7 @@ const submitProblemSuggestion = functions.https.onCall(
       `**Additional Notes**:${
         additionalNotes ? '\n' + additionalNotes : ' None'
       }\n\n` +
+      `** Warning: The source of this problem is currently set to \`other\`. You must the problem to the proper source before merging.**\n` +
       `*This PR was automatically generated from a user submitted problem suggestion on the USACO guide.*`;
     const key = functions.config().problemsuggestion.issueapikey;
     const githubAPI = axios.create({
@@ -184,6 +185,7 @@ const submitProblemSuggestion = functions.https.onCall(
         maintainer_can_modify: true,
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body: body,
+        draft: source == 'other',
       }
     );
 
