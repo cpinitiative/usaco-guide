@@ -22,28 +22,28 @@ using namespace std;
 int psum[1001][1001];
 
 int main() {
-    freopen("paintbarn.in", "r", stdin);
-    freopen("paintbarn.out", "w", stdout);
-    int n, k;
-    cin >> n >> k;
-    while(n--) {
-        int a, b, c, d;
-        cin >> a >> b >> c >> d;
-        psum[a][b]++;
-        psum[a][d]--;
-        psum[c][b]--;
-        psum[c][d]++;
-    }
-    int ret = 0;
-    for(int i = 0; i < 1000; i++) {
-        for(int j = 0; j < 1000; j++) {
-            if (i) psum[i][j] += psum[i-1][j];
-            if (j) psum[i][j] += psum[i][j-1];
-            if (i && j) psum[i][j] -= psum[i-1][j-1];
-            if (psum[i][j] == k) ret++;
-        }
-    }
-    cout << ret << endl;
+	freopen("paintbarn.in", "r", stdin);
+	freopen("paintbarn.out", "w", stdout);
+	int n, k;
+	cin >> n >> k;
+	while(n--) {
+		int a, b, c, d;
+		cin >> a >> b >> c >> d;
+		psum[a][b]++;
+		psum[a][d]--;
+		psum[c][b]--;
+		psum[c][d]++;
+	}
+	int ret = 0;
+	for(int i = 0; i < 1000; i++) {
+		for(int j = 0; j < 1000; j++) {
+			if (i) psum[i][j] += psum[i-1][j];
+			if (j) psum[i][j] += psum[i][j-1];
+			if (i && j) psum[i][j] -= psum[i-1][j-1];
+			if (psum[i][j] == k) ret++;
+		}
+	}
+	cout << ret << endl;
 }
 ```
 
