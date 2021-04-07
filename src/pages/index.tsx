@@ -11,7 +11,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Video from '../components/Video';
 
 export default function IndexPage(props: PageProps) {
-  const learnMoreRef = useRef();
+  const learnMoreRef = useRef<HTMLDivElement>();
 
   return (
     <Layout>
@@ -64,7 +64,6 @@ export default function IndexPage(props: PageProps) {
                       href="#learn-more"
                       onClick={e => {
                         e.preventDefault();
-                        // @ts-ignore
                         learnMoreRef.current.scrollIntoView({
                           behavior: 'smooth',
                         });
@@ -478,6 +477,7 @@ export default function IndexPage(props: PageProps) {
               href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
               target="_blank"
               className="underline"
+              rel="noreferrer"
             >
               Vercel
             </a>

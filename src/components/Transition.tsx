@@ -1,3 +1,4 @@
+/*eslint-disable */
 import * as React from 'react';
 import { useContext, useEffect, useRef } from 'react';
 import { CSSTransition as ReactCSSTransition } from 'react-transition-group';

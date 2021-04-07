@@ -1,3 +1,4 @@
+// eslint-disable react/no-unescaped-entities
 import { Link, PageProps } from 'gatsby';
 import * as React from 'react';
 import Layout from '../components/layout';
@@ -20,7 +21,7 @@ export default function LicensePage(props: PageProps) {
             commercialized, or sold without prior written permission, except as
             permitted under the{' '}
             <a
-              rel="license"
+              rel="license noreferrer"
               className={
                 'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
               }
@@ -49,7 +50,7 @@ export default function LicensePage(props: PageProps) {
             Note: We provide examples below as a general summary of, but not a
             substitute for,{' '}
             <a
-              rel="license"
+              rel="license noreferrer"
               className={
                 'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
               }

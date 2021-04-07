@@ -1,3 +1,4 @@
+/*eslint-disable */
 // modified from https://github.com/syntax-tree/mdast-util-to-string/blob/main/index.js
 
 const katex = require('katex');

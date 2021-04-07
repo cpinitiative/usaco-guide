@@ -1,3 +1,4 @@
+/*eslint-disable */
 'use strict';
 
 const visit = require('unist-util-visit');

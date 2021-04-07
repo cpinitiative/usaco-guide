@@ -61,11 +61,10 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLElement>();
 
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setShowResults(false);
       }
@@ -169,10 +168,9 @@ export default function TopNavigationBar({
         ]
       : []),
   ];
-  const ref = useRef();
+  const ref = useRef<HTMLElement>();
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setIsActive(false);
       }
