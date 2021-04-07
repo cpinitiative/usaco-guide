@@ -24,15 +24,14 @@ export const onClientEntry = () => {
     // Preserve usual HTML copy/paste behavior.
     const html = [];
     for (let i = 0; i < fragment.childNodes.length; i++) {
-      // @ts-ignore
-      html.push(fragment.childNodes[i].outerHTML);
+      html.push((fragment.childNodes[i] as HTMLElement).outerHTML);
     }
     event.clipboardData.setData('text/html', html.join(''));
 
     const katexElements = fragment.querySelectorAll('[data-latex]');
     for (let i = 0; i < katexElements.length; i++) {
       const element = katexElements[i];
-      element.innerHTML = element.dataset.latex;
+      element.innerHTML = (element as any).dataset.latex;
     }
 
     const displayElements = fragment.querySelectorAll('.katex-display');

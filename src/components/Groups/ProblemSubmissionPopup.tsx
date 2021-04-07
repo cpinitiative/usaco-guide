@@ -10,9 +10,9 @@ import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
-  setShowPopup: Function;
+  setShowPopup: (showPopup: boolean) => void;
   submission: Submission;
-  setSubmission: Function;
+  setSubmission: (submission: Submission) => void;
 }>(null);
 
 function ProblemSubmissionPopup() {

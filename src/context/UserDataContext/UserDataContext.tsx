@@ -117,14 +117,14 @@ type UserDataContextAPI = UserLangAPI &
     isLoaded: boolean;
     onlineUsers: number;
     getDataExport: () => Record<string, any>;
-    importUserData: (data: Record<string, any>) => void;
+    importUserData: (data: Record<string, any>) => boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
-  importUserData: () => {},
+  importUserData: () => true,
   hideTagsAndDifficulty: false,
   divisionTableQuery: {
     division: '',
@@ -326,7 +326,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       );
     },
 
-    importUserData: (data: Record<string, any>) => {
+    importUserData: (data: Record<string, any>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'

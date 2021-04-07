@@ -14,9 +14,9 @@ export default function ProblemSolutions({
   problem,
 }: {
   onClose: () => void;
-  showSubmitSolutionModal: Function;
+  showSubmitSolutionModal: () => void;
   problem: ProblemInfo;
-}) {
+}): JSX.Element {
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem
   );
@@ -67,6 +67,7 @@ export default function ProblemSolutions({
             className="underline text-blue-600 dark:text-blue-400"
             href="mailto:usacoguide@gmail.com"
             target="_blank"
+            rel="noreferrer"
           >
             usacoguide@gmail.com
           </a>

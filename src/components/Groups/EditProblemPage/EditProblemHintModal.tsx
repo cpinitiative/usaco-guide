@@ -11,7 +11,7 @@ export default function EditProblemHintModal({
   hint: initialHint,
 }: {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   onSave: (hint: ProblemHint | null) => any;
   hint: ProblemHint | null;
 }) {
