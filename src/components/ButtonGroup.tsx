@@ -12,7 +12,7 @@ export default function ButtonGroup({
   value: string;
   onChange: (string) => void;
   labelMap?: { [key: string]: string };
-  disabled: boolean;
+  disabled?: boolean;
 }) {
   const leftButtonClasses = 'rounded-l-md';
   const middleButtonClasses = '-ml-px';
