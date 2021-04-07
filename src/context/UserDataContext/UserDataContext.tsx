@@ -112,19 +112,19 @@ type UserDataContextAPI = UserLangAPI &
   LastVisitAPI &
   AdSettingsAPI & {
     firebaseUser: firebaseType.User;
-    signIn: Function;
-    signOut: Function;
+    signIn: () => Promise<firebaseType.auth.UserCredential | null>;
+    signOut: () => Promise<void>;
     isLoaded: boolean;
     onlineUsers: number;
-    getDataExport: Function;
-    importUserData: Function;
+    getDataExport: () => Record<string, any>;
+    importUserData: (data: Record<string, any>) => boolean;
   };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   consecutiveVisits: 0,
   firebaseUser: null,
-  getDataExport: () => {},
-  importUserData: () => {},
+  getDataExport: () => Promise.resolve(),
+  importUserData: () => true,
   hideTagsAndDifficulty: false,
   divisionTableQuery: {
     division: '',
@@ -177,9 +177,11 @@ const UserDataContext = createContext<UserDataContextAPI>({
   showIgnored: false,
   signIn: () => {
     // do nothing
+    return Promise.resolve(null);
   },
   signOut: () => {
     // do nothing
+    return Promise.resolve();
   },
   userProgressOnModules: {},
   userProgressOnModulesActivity: [],
@@ -324,7 +326,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       );
     },
 
-    importUserData: (data: JSON) => {
+    importUserData: (data: Record<string, any>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'

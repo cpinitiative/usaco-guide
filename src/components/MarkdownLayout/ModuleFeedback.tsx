@@ -76,6 +76,7 @@ export default function ModuleFeedback({
         <a
           href="https://forum.usaco.guide/"
           target="_blank"
+          rel="noreferrer"
           className="text-blue-600 underline dark:text-blue-300"
         >
           USACO Forum

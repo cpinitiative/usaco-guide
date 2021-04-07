@@ -47,7 +47,7 @@ const DivisionButton = ({
 }: {
   options: string[];
   state: string;
-  onChange: Function;
+  onChange: (option: string) => void;
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
@@ -55,10 +55,9 @@ const DivisionButton = ({
     setShow(false);
     onChange(option);
   };
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setShow(false);
     };

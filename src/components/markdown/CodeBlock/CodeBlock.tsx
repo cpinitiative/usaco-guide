@@ -275,7 +275,6 @@ class CodeBlock extends React.Component<
 
     const collapsed = this.state.collapsed;
     return (
-      // @ts-ignore
       <Highlight
         Prism={Prism as any}
         code={code}

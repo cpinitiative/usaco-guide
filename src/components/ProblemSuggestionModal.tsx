@@ -14,9 +14,9 @@ export default function ProblemSuggestionModal({
   listName,
 }: {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   listName: string;
-}) {
+}): JSX.Element {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
   const [difficulty, setDifficulty] = React.useState(null);
@@ -198,6 +198,7 @@ export default function ProblemSuggestionModal({
               <a
                 href={createdIssueLink}
                 target="_blank"
+                rel="noreferrer"
                 className="underline text-black dark:text-white"
               >
                 {createdIssueLink}
@@ -288,6 +289,7 @@ export default function ProblemSuggestionModal({
               <a
                 href="https://github.com/cpinitiative/usaco-guide/issues"
                 target="_blank"
+                rel="noreferrer"
                 className="text-blue-600 dark:text-blue-300 underline"
               >
                 Github issue

@@ -9,7 +9,7 @@ import {
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import Confetti from '../Confetti';
 
-const ModuleConfetti = forwardRef((props, ref) => {
+const ModuleConfetti = (props, ref) => {
   const config = {
     numParticles: 100,
     gravity: 250,
@@ -62,6 +62,6 @@ const ModuleConfetti = forwardRef((props, ref) => {
       />
     </div>
   );
-});
+};
 
-export default ModuleConfetti;
+export default forwardRef(ModuleConfetti);
