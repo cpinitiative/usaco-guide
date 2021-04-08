@@ -1,6 +1,6 @@
 import * as React from 'react';
 import MDXProvider from './src/components/markdown/MDXProvider';
-import { DarkModeProvider } from './src/context/DarkModeContext';
+import { DarkModeProvider } from './src/context/DarkModeProvider';
 import { FirebaseProvider } from './src/context/FirebaseContext';
 import GlobalErrorBoundary from './src/context/GlobalErrorBoundary';
 import { NotificationSystemProvider } from './src/context/NotificationSystemContext';
