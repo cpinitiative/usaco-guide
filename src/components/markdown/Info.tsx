@@ -1,12 +1,17 @@
 import * as React from 'react';
 
-const Info = ({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
+export interface InfoProps {
+  /**
+   * The title of the info block
+   */
   title: string;
-}) => (
+  /**
+   * The content of the info block
+   */
+  children: React.ReactNode;
+}
+
+const Info: React.FC<InfoProps> = ({ children, title }) => (
   <div className="rounded-md bg-blue-50 dark:bg-blue-900 p-4 mb-4 tailwind-alert">
     <div className="flex">
       <div className="flex-shrink-0">
