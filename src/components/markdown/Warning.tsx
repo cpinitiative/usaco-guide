@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 const Warning = ({ children, title }) => (
-  <div className="rounded-md bg-yellow-50 dark:bg-yellow-800 p-4 mb-4 tailwind-alert">
+  <div className="rounded-md bg-yellow-50 dark:bg-yellow-700 dark:bg-opacity-25 p-4 mb-4 tailwind-alert">
     <div className="flex">
       <div className="flex-shrink-0">
         <svg
