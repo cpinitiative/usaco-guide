@@ -3,6 +3,7 @@ import '../src/styles/main.css';
 import '../src/styles/components.css';
 import '../src/styles/tailwindcss-utils.css';
 import '../src/styles/anchor.css';
+import './storybook.css';
 import { DarkModeContext } from '../src/context/DarkModeContext';
 import { action } from '@storybook/addon-actions';
 
@@ -14,11 +15,21 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  layout: 'fullscreen',
+  backgrounds: {
+    grid: {
+      cellSize: 16,
+      opacity: 0.5,
+      cellAmount: 4,
+      offsetX: 24,
+      offsetY: 72,
+    },
+  },
 };
 
 export const decorators = [
   renderStory => (
-    <div className="grid xl:grid-cols-2 -m-4 min-h-screen">
+    <div className="grid storybook-container">
       <div className="p-6">
         <h1 className="text-gray-800 text-2xl font-bold">Light Mode</h1>
         <div className="h-4" />
