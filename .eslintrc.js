@@ -33,5 +33,6 @@ module.exports = {
     'gatsby-node.ts',
     'gatsby-ssr.tsx',
     'gatsby-browser.tsx',
+    'tailwind.config.js',
   ],
 };

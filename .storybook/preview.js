@@ -1,8 +1,5 @@
 import * as React from 'react';
 import '../src/styles/main.css';
-import '../src/styles/components.css';
-import '../src/styles/tailwindcss-utils.css';
-import '../src/styles/anchor.css';
 import './storybook.css';
 import { DarkModeContext } from '../src/context/DarkModeContext';
 import { action } from '@storybook/addon-actions';

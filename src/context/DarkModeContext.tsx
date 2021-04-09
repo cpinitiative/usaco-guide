@@ -4,7 +4,7 @@ import * as React from 'react';
 
 export const DarkModeContext = React.createContext<boolean>(null);
 
-export const useDarkMode = () => {
+export const useDarkMode = (): boolean => {
   const context = React.useContext(DarkModeContext);
   if (context === null) {
     throw new Error('useDarkMode() must be used inside a DarkModeProvider');
