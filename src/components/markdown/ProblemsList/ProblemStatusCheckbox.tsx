@@ -4,6 +4,7 @@ import { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../../context/ConfettiContext';
+import { useDarkMode } from '../../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import UserDataContext from '../../../context/UserDataContext/UserDataContext';
 import {
@@ -91,8 +92,8 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
           role="option"
           className={`${
             activeProgress === progress
-              ? 'text-white bg-indigo-600'
-              : 'text-gray-900'
+              ? 'text-white bg-indigo-600 dark:bg-indigo-800'
+              : 'text-gray-900 dark:text-dark-med-emphasis'
           } cursor-default select-none relative py-2 pl-10 pr-4`}
           key={progress}
           onClick={() => onProgressSelected(progress)}
@@ -138,6 +139,7 @@ export default function ProblemStatusCheckbox({
   problem: ProblemInfo;
   size?: 'small' | 'large';
 }) {
+  const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
   const { userProgressOnModules, setModuleProgress } = useContext(
     UserDataContext
@@ -193,7 +195,7 @@ export default function ProblemStatusCheckbox({
       interactive={true}
       trigger="click"
       placement="bottom-start"
-      theme="light"
+      theme={darkMode ? "dark" : "light"}
     >
       <span
         // onClick={handleClick}
