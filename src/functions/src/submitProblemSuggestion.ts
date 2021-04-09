@@ -209,7 +209,6 @@ const submitProblemSuggestion = functions.https.onCall(
         maintainer_can_modify: true,
         title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
         body: body,
-        draft: source === 'other',
       }
     );
 
