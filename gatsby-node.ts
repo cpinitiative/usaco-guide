@@ -44,7 +44,10 @@ const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
     console.error("problem metadata isn't valid", metadata);
     throw new Error('Bad problem metadata');
   }
-
+  if (!Object.keys(probSources).includes(info.source)) {
+    console.error(`'${info.source}' is not a valid problem source.`);
+    throw new Error('Bad problem source');
+  }
   let sol: ProblemSolutionInfo;
   if (solutionMetadata.kind === 'autogen-label-from-site') {
     const site = solutionMetadata.site;
