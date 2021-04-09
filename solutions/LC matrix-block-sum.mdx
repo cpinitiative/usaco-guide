@@ -32,15 +32,15 @@ class Solution {
                 }
                 for(int i=1; i<=n; i++){
                     for(int j=1; j<=m; j++){
-                        dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + arr[i - 1][j - 1];
+                        dp[i][j]=dp[i-1][j]+dp[i][j-1]-dp[i-1][j-1]+arr[i-1][j-1];
                     }
                 }
                 vector<vector<int>> answer;
                 for(int i=1; i<=n; i++){
                     vector<int> cur;
                     for(int j=1; j<=m; j++){
-                        int a = max(1, i - K), b = max(1, j - K), c = min(n, i + K), d = min(m, j + K);
-                        int blockSum =  dp[c][d]  -  dp[c][b-1]  -  dp[a-1][d]  +  dp[a-1][b-1];
+                        int a=max(1, i-K), b=max(1, j-K), c=min(n, i+K), d=min(m, j+K);
+                        int blockSum=dp[c][d]-dp[c][b-1]-dp[a-1][d]+dp[a-1][b-1];
                         cur.push_back(blockSum);
                     }
                     answer.push_back(cur);
