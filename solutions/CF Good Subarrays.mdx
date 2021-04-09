@@ -18,32 +18,32 @@ using namespace std;
 using ll = long long;
 using pi = pair<ll, ll>;
 void solve(){
-		int n; cin >> n;
-		vector<int> dp(n+1, 0);
-		for(int i=1; i<=n; i++){
-			char c; cin >> c;
-			dp[i]=c-'0';
-		}
-		for(int i=1; i<=n; i++){
-			dp[i]+=dp[i-1];
-		}
-		map<int, ll> sumDist;
-		for(int i=0; i<=n; i++){
-			sumDist[dp[i]-i]++;
-		}
-		ll goodArrays=0;
-		for(pi p: sumDist){
-			ll f=p.second;
-			goodArrays+=f*(f-1)/2;
-		}
-		cout << goodArrays << endl;
+	int n; cin >> n;
+	vector<int> dp(n+1, 0);
+	for(int i=1; i<=n; i++){
+		char c; cin >> c;
+		dp[i]=c-'0';
+	}
+	for(int i=1; i<=n; i++){
+		dp[i]+=dp[i-1];
+	}
+	map<int, ll> sumDist;
+	for(int i=0; i<=n; i++){
+		sumDist[dp[i]-i]++;
+	}
+	ll goodArrays=0;
+	for(pi p: sumDist){
+		ll f=p.second;
+		goodArrays+=f*(f-1)/2;
+	}
+	cout << goodArrays << endl;
 }
 
 int main(){
-		int t; cin >> t;
-		for(int i=0; i<t; i++){
-			solve();
-		}
+	int t; cin >> t;
+	for(int i=0; i<t; i++){
+		solve();
+	}
 }
 ```
 </CPPSection>
