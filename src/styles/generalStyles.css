@@ -1,0 +1,298 @@
+/*! purgecss start ignore */
+html {
+    background-color: white;
+}
+
+html.dark {
+    @apply text-dark-high-emphasis bg-dark-surface min-h-screen;
+}
+
+html.transitioning-color-scheme,
+html.transitioning-color-scheme * {
+    transition-duration: 0ms !important;
+}
+
+/* Scrollbar styles */
+/* Thanks https://joshwcomeau.com/! */
+@media (orientation: landscape) {
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+        background-color: theme('colors.gray.200');
+    }
+    ::-webkit-scrollbar-track {
+        border-radius: 3px;
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: theme('colors.gray.500');
+        border: 2px solid theme('colors.gray.200');
+    }
+    .dark ::-webkit-scrollbar {
+        background-color: theme('colors.gray.800');
+    }
+    .dark ::-webkit-scrollbar-thumb {
+        border: 2px solid theme('colors.gray.800');
+        background-color: theme('colors.gray.400');
+    }
+}
+
+/* Additional vertical padding used by kbd tag. */
+.markdown {
+    @apply leading-normal break-words;
+}
+
+.markdown pre {
+    font-size: 0.875rem;
+}
+
+.markdown > * + * {
+    @apply mt-0 mb-4;
+}
+
+.markdown li > p + p {
+    @apply mt-6;
+}
+
+.markdown a {
+    @apply text-blue-600 font-semibold;
+}
+
+.dark .markdown a {
+    color: #a9c5ea;
+}
+
+.markdown strong a,
+.markdown a strong {
+    @apply font-bold;
+}
+
+.markdown h5 {
+    @apply leading-tight text-sm font-semibold mb-4 mt-6;
+}
+
+.markdown h6 {
+    @apply leading-tight text-sm font-semibold text-gray-600 mb-4 mt-6;
+}
+
+.markdown blockquote {
+    @apply text-base border-l-4 border-gray-300 pl-4 pr-4 text-gray-600;
+}
+
+.dark .markdown blockquote {
+    @apply text-dark-high-emphasis border-dark-med-emphasis;
+}
+
+.markdown code.inline {
+    @apply text-sm;
+}
+
+.markdown h1 code.inline {
+    @apply text-3xl;
+}
+
+.markdown h2 code.inline {
+    @apply text-2xl;
+}
+
+.markdown h3 code.inline {
+    @apply text-xl;
+}
+
+.markdown h4 code.inline {
+    @apply text-lg;
+}
+
+.markdown ul:not(.no-markdown) {
+    @apply pl-8 list-disc mb-6;
+}
+.markdown ol {
+    @apply pl-4 mb-6;
+}
+
+.markdown ul:not(.no-markdown) ul {
+    list-style-type: circle;
+    @apply mt-1 mb-2;
+}
+
+.markdown ul:not(.no-markdown) ul:last-child {
+    @apply mb-0;
+}
+.markdown ol:not(.no-markdown) ol:last-child {
+    @apply mb-0;
+}
+
+.markdown ul:not(.no-markdown) ul ul {
+    list-style-type: square;
+}
+
+.markdown ul:not(.no-markdown) > li {
+    @apply mb-2;
+}
+
+.markdown ul:not(.no-markdown) > li:last-of-type {
+    @apply mb-0;
+}
+
+.markdown ul ul > li {
+    @apply mb-1;
+}
+
+.markdown ol > li {
+    @apply mb-2;
+}
+
+.markdown ol > li:last-of-type {
+    @apply mb-0;
+}
+
+.markdown ol ol > li {
+    @apply mb-1;
+}
+
+.markdown ul p {
+    @apply mb-0;
+}
+
+.markdown ol {
+    counter-reset: number;
+}
+
+.markdown ol > li {
+    display: flex;
+    counter-increment: number;
+}
+
+.markdown ol > li:before {
+    content: counters(number, '.') '.';
+    @apply text-blue-600 font-semibold mr-2;
+}
+
+.dark .markdown ol > li:before {
+    @apply text-blue-300;
+}
+
+.markdown kbd {
+    @apply text-xs inline-block rounded border px-1 py-0.5 align-middle font-normal font-mono shadow;
+}
+
+/* Override pygments style background color. */
+.markdown .highlight pre {
+    @apply bg-gray-100 !important;
+}
+
+.spoiler-body > pre {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+}
+
+.spoiler-body > pre:last-child {
+    margin-bottom: -1rem !important;
+}
+.tailwind-alert p + ul {
+    @apply -mt-2;
+}
+.tailwind-alert ul {
+    @apply mb-2;
+}
+.tailwind-alert ul li {
+    @apply mb-1;
+}
+.tailwind-alert blockquote {
+    @apply text-sm;
+}
+.tailwind-alert--optional blockquote {
+    @apply text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500 dark:border-opacity-50;
+}
+.no-bottom-margin p:last-child {
+    @apply mb-0;
+}
+.tailwind-alert a {
+    @apply text-black underline font-normal;
+}
+
+.table-alternating-stripes tr:nth-child(even) {
+    @apply bg-gray-50;
+}
+.dark .table-alternating-stripes tr:nth-child(even) {
+    background-color: #1c2538;
+}
+
+.dark-mde-container .editor-toolbar {
+    border-top-color: #4a5568;
+    border-left-color: #4a5568;
+    border-right-color: #4a5568;
+}
+.dark-mde-container .CodeMirror {
+    background-color: #edf2f7;
+}
+
+/* from https://www.lekoarts.de/en/blog/language-tabs-for-gatsbys-code-blocks */
+.gatsby-highlight {
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+.gatsby-highlight pre[class*='language-'] {
+    -webkit-overflow-scrolling: touch;
+}
+.gatsby-highlight pre[class*='language-']::before {
+    background: black;
+    border-radius: 0 0 0.25rem 0.25rem;
+    color: white;
+    font-size: 12px;
+    letter-spacing: 0.025rem;
+    padding: 0.1rem 0.5rem;
+    position: absolute;
+    right: 1rem;
+    text-align: right;
+    text-transform: uppercase;
+    top: 0;
+}
+.gatsby-highlight pre[class*='language-cpp']::before {
+    content: 'cpp';
+    background: #f7df1e;
+    color: black;
+}
+.gatsby-highlight pre[class*='language-java']::before {
+    content: 'java';
+    background: #ff9800;
+    color: black;
+}
+.gatsby-highlight pre[class*='language-py']::before {
+    content: 'python';
+    background: #ff3a5b;
+    color: black;
+}
+
+.yt-video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+}
+.yt-video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.form-input {
+    @apply border-gray-300 rounded-md focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50;
+}
+
+.dark .ais-Highlight-highlighted,
+.dark .ais-Snippet-highlighted {
+    @apply bg-orange-700;
+}
+
+.katex * {
+    /* Tailwind overrides border color; we need to un-override it so that fraction lines and stuff works */
+    border-color: currentColor;
+}
+/*! purgecss end ignore */
+
+.tw-forms-disable input {
+    --tw-ring-color: transparent !important;
+}
