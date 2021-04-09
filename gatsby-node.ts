@@ -3,6 +3,7 @@ import { SECTIONS } from './content/ordering';
 import PGS from './src/components/markdown/PGS';
 import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol';
 import {
+  contests,
   getProblemURL,
   ProblemInfo,
   ProblemMetadata,
@@ -44,7 +45,10 @@ const getProblemInfo = (metadata: ProblemMetadata): ProblemInfo => {
     console.error("problem metadata isn't valid", metadata);
     throw new Error('Bad problem metadata');
   }
-  if (!Object.keys(probSources).includes(info.source)) {
+  if (
+    !Object.keys(probSources).includes(info.source) &&
+    !Object.keys(contests).includes(info.source)
+  ) {
     console.error(`'${info.source}' is not a valid problem source.`);
     throw new Error('Bad problem source');
   }
