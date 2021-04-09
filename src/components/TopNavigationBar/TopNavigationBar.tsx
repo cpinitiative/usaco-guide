@@ -363,7 +363,7 @@ export default function TopNavigationBar({
                         <Link
                           to="/settings"
                           onClick={() => setIsActive(false)}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 transition"
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                           role="menuitem"
                         >
                           Settings
@@ -373,7 +373,7 @@ export default function TopNavigationBar({
                             signOut();
                             setIsActive(false);
                           }}
-                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 transition"
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                           role="menuitem"
                         >
                           Sign out

@@ -102,7 +102,7 @@ export default function SectionsDropdown({
                           onSelect(section);
                           setIsActive(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
+                        className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700 transition ease-in-out duration-150 relative"
                         role="menuitem"
                         key={section}
                       >
@@ -111,7 +111,7 @@ export default function SectionsDropdown({
                     ) : (
                       <Link
                         to={`/${section}/`}
-                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
+                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700 transition ease-in-out duration-150 relative"
                         role="menuitem"
                         key={section}
                       >
