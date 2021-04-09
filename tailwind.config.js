@@ -17,7 +17,6 @@ module.exports = {
         teal: colors.teal,
         orange: colors.orange,
         'light-blue': colors.lightBlue,
-        cyan: colors.cyan,
       },
       boxShadow: {
         xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',

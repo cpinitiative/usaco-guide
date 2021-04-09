@@ -43,6 +43,10 @@ html.transitioning-color-scheme * {
     @apply leading-normal break-words;
 }
 
+.markdown p {
+    @apply mb-4;
+}
+
 .markdown pre {
     font-size: 0.875rem;
 }
@@ -115,8 +119,23 @@ html.transitioning-color-scheme * {
     list-style-type: circle;
     @apply mt-1 mb-2;
 }
+.markdown ul:not(.no-markdown) ol {
+    @apply mt-1 mb-2;
+}
+.markdown ol:not(.no-markdown) ul {
+    @apply mt-1 mb-2;
+}
+.markdown ol:not(.no-markdown) ol {
+    @apply mt-1 mb-2;
+}
 
 .markdown ul:not(.no-markdown) ul:last-child {
+    @apply mb-0;
+}
+.markdown ul:not(.no-markdown) ol:last-child {
+    @apply mb-0;
+}
+.markdown ol:not(.no-markdown) ul:last-child {
     @apply mb-0;
 }
 .markdown ol:not(.no-markdown) ol:last-child {
@@ -130,28 +149,27 @@ html.transitioning-color-scheme * {
 .markdown ul:not(.no-markdown) > li {
     @apply mb-2;
 }
-
 .markdown ul:not(.no-markdown) > li:last-of-type {
+    @apply mb-0;
+}
+.markdown ol:not(.no-markdown) > li {
+    @apply mb-2;
+}
+.markdown ol:not(.no-markdown) > li:last-of-type {
     @apply mb-0;
 }
 
 .markdown ul ul > li {
     @apply mb-1;
 }
-
-.markdown ol > li {
-    @apply mb-2;
-}
-
-.markdown ol > li:last-of-type {
-    @apply mb-0;
-}
-
 .markdown ol ol > li {
     @apply mb-1;
 }
 
 .markdown ul p {
+    @apply mb-0;
+}
+.markdown ol p {
     @apply mb-0;
 }
 
@@ -173,6 +191,10 @@ html.transitioning-color-scheme * {
     @apply text-blue-300;
 }
 
+.markdown code.inline-code {
+    @apply font-mono inline bg-gray-200 rounded px-1 py-0.5 dark:bg-gray-800;
+}
+
 .markdown kbd {
     @apply text-xs inline-block rounded border px-1 py-0.5 align-middle font-normal font-mono shadow;
 }
@@ -190,8 +212,11 @@ html.transitioning-color-scheme * {
 .spoiler-body > pre:last-child {
     margin-bottom: -1rem !important;
 }
-.tailwind-alert p + ul {
-    @apply -mt-2;
+.tailwind-alert > * + * {
+    @apply mb-2;
+}
+.tailwind-alert p {
+    @apply mb-2;
 }
 .tailwind-alert ul {
     @apply mb-2;
@@ -202,11 +227,42 @@ html.transitioning-color-scheme * {
 .tailwind-alert blockquote {
     @apply text-sm;
 }
+.markdown .tailwind-alert a {
+    @apply text-black;
+}
+
+.markdown .tailwind-alert--info a {
+    @apply dark:text-blue-200;
+}
+.tailwind-alert--info blockquote {
+    @apply text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-500 dark:border-opacity-50;
+}
+.markdown .tailwind-alert--info code.inline-code {
+    @apply bg-blue-100 dark:bg-blue-800 dark:bg-opacity-50 dark:text-blue-200;
+}
+
+.markdown .tailwind-alert--warning a {
+    @apply dark:text-yellow-200;
+}
+.tailwind-alert--warning blockquote {
+    @apply text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-500 dark:border-opacity-50;
+}
+.markdown .tailwind-alert--warning code.inline-code {
+    @apply bg-yellow-100 dark:bg-yellow-800 dark:bg-opacity-50 dark:text-yellow-200;
+}
+
+.markdown .tailwind-alert--optional a {
+    @apply dark:text-purple-200;
+}
 .tailwind-alert--optional blockquote {
     @apply text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500 dark:border-opacity-50;
 }
-.no-bottom-margin p:last-child {
-    @apply mb-0;
+.markdown .tailwind-alert--optional code.inline-code {
+    @apply bg-purple-100 dark:bg-purple-800 dark:bg-opacity-50 dark:text-purple-200;
+}
+
+.no-bottom-margin > *:last-child {
+    margin-bottom: 0 !important;
 }
 .tailwind-alert a {
     @apply text-black underline font-normal;
