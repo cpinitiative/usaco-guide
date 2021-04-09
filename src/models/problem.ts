@@ -263,7 +263,7 @@ export function getProblemURL(
  * Ex: https://cses.fi/problemset/task/1652 yields 1652
  */
 const getTrailingCodeFromProblemURL = (url: string): number => {
-  const code = url.match(/([0-9]+)$/)[1];
+  const code = url.match(/([0-9]+)\/?$/)[1];
   return parseInt(code);
 };
 
@@ -347,7 +347,7 @@ export function autoGenerateSolutionMetadata(
   ) {
     return {
       kind: 'autogen-label-from-site',
-      site: this.source,
+      site: source,
     };
   }
   return null;

@@ -85,7 +85,7 @@ const submitProblemSuggestion = functions.https.onCall(
     };
 
     const body =
-      `*${submitterName}* (UID ${context.auth?.uid}) suggested adding the problem [${name}](${link}) ` +
+      `User \`${context.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
       `to the \`${problemListName}\` table of the module [${moduleName}](${problemTableLink}).\n\n` +
       `**Automatically Generated JSON:**\n` +
       '```json\n' +
@@ -245,6 +245,13 @@ const submitProblemSuggestion = functions.https.onCall(
         }
       );
     }
+
+    // post to /issues/ because github treats all PRs as issues, so the shared features between them (such as labels) use issue api
+    await githubAPI.post(
+      `/repos/cpinitiative/usaco-guide/issues/${createdPullRequestReq.data.number}/labels`,
+      ['Problem Suggestion']
+    );
+
     return createdPullRequestReq.data.html_url;
   }
 );
