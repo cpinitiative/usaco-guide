@@ -164,7 +164,7 @@ const MarkCompleteButton = ({
                 <button
                   key={option}
                   onClick={() => handleClick(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700"
                   role="menuitem"
                 >
                   <span className="w-7">{icon(option)}</span>
