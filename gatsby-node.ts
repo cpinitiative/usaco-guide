@@ -208,7 +208,7 @@ exports.onCreateNode = async ({
           'Failed to create problem info for',
           parsedContent[tableId]
         );
-        throw new Error('Failed to create problem info');
+        throw new Error(e);
       }
     });
 
