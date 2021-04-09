@@ -2,7 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  // mode: 'jit',
+  mode: 'jit',
   theme: {
     extend: {
       fontFamily: {
@@ -126,6 +126,7 @@ module.exports = {
       './content/**/*.ts',
       './content/**/*.tsx',
       './gatsby-browser.tsx',
+      './.storybook/preview.js',
     ],
   },
 };
