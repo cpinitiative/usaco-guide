@@ -101,36 +101,14 @@ def process_names(url_suffix):
 	print("PROCESSING EDITORIAL FOR",url_suffix)
 	url = "http://www.usaco.org/index.php?page="+url_suffix
 	soup = parse(url)
-	# if url_suffix == 'feb18results':
-	# 	print("WHOOPS",soup.prettify())
-	# 	sys.exit(0)
-	# 	for x in soup.find_all('div'): #      <div style="position:relative; float:left; left:10px; top:-50px; width:550px;">
-	# 		if x.has_attr('style') and x['style'] == 'position:relative; float:left; left:10px; top:-50px; width:550px;':
-	# 			soup = x
-	# 			print("FOUND")
-	# 			break
-				# print("OOPS",x['style'])
-		# sys.exit(0)
-		# print("WHOOPS",soup)
-	# panel = soup.find('div',['panel'])
-	# print(soup.prettify())
-	# sys.exit(0)
-	# print(soup.prettify())
-
-
 	contest = ''
-	# if url_suffix == 'jan18results':
-	# 	print(soup.prettify())
-	# 	contest = 'USACO 2018 February Contest, Platinum'
 
 	def get_division(x):
 		for div in usaco_divisions:
 			if x.endswith(div):
 				return div
-		# print("FAILED TO GET DIVISION OF ",x)
 		assert False
 
-	# print(panel)
 	def reset_contest():
 		nonlocal contest
 		for child in soup.find_all('h2'):
@@ -149,20 +127,11 @@ def process_names(url_suffix):
 		nonlocal contest
 		if child.name == 'h2':
 			contest = child.text.strip()
-			# child.text[len("USACO 2020 US Open Contest, "):]
-			# print("HUH",child.text)
 		if child.name == 'div' and child.has_attr('class') and child['class'] ==  ['panel', 'historypanel']:
-			# print("HUH",child['class'],division)
 			title = child.find('b').text
 			res = [y['href'] for y in child.find_all('a')]
-			# division, title -> ID
-			# print("TITLE",title)
 			ID = res[0][res[0].rfind('=')+1:]
-			# edLinks[ID] = res[-1][res[-1].rfind('sol_'):]
-			# info[ID]
 			this_contest.append([contest,title,ID])
-			# print(contest,get_division(contest),title,ID)
-			# record[get_division(contest)].append([contest,title,ID])
 
 	for child in soup.children:
 		process_child(child)
@@ -177,7 +146,11 @@ def process_names(url_suffix):
 			sys.exit(0)
 	for contest,title,ID in this_contest:
 		def strip_contest(word):
-			return word[len("USACO "):word.rfind(" Contest")]
+			word = word[len("USACO "):]
+			ind = word.rfind(" Contest")
+			if ind == -1:
+				return word[:4]+" US Open"
+			return word[:ind]
 		id_to_prob[get_division(contest)].append([ID,strip_contest(contest),title])
 		# print(t)
 
@@ -267,6 +240,10 @@ def process_editorials(url_suffix):
 	# pprint.pprint(edLinks)
 
 def get_all():
+	"""
+	generate div_to_probs
+	"""
+
 	# url = "http://www.usaco.org/index.php?page=contests"
 	# soup = parse(url)
 	# flag = False
@@ -281,7 +258,9 @@ def get_all():
 	# 		else:
 	# 			cand.append(suffix)
 	print("CANDIDATES")
-	cand = ["feb21results"]
+	# cand = ["feb21results"]
+	cand = ["open21results"]
+	# "feb21results", 
 	for a in cand:
 		print(a)
 
@@ -308,5 +287,5 @@ def id_to_sol():
 	print(json.dumps(edLinks,indent=4))
 			# if url == "dec15"
 
-id_to_sol()
-# get_all()
+# id_to_sol()
+get_all()
