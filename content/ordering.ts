@@ -176,7 +176,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['bin-jump', 'merging', 'hld', 'centroid'],
     },
     {
-      name: 'Convex Hull',
+      name: 'Geometry',
       description: 'Most Platinum geometry problems.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'cht'],
     },
