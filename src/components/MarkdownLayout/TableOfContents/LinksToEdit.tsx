@@ -1,15 +1,15 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import getSuffix from './getSuffix';
-import { Link } from 'gatsby';
 
 const LinksToEdit = ({ className = null }) => {
   return (
     <Link
-      to={`/liveupdate/?filepath=${getSuffix()}`}
+      to={`/editor/?filepath=${getSuffix()}`}
       target="_blank"
       className={className}
     >
-      Edit with LiveUpdate
+      Edit this page
       <svg
         className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
         fill="none"

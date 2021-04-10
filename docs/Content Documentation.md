@@ -1,23 +1,32 @@
 # Content Documentation
 
-Note: You may find [this live editor](https://usaco.guide/liveupdate) helpful when writing modules.
+Note: You may find [this live editor](https://usaco.guide/editor) helpful when
+writing modules.
 
 The following two modules are good to read:
 
 1. https://usaco.guide/general/modules
 2. https://usaco.guide/general/code-con
 
-All modules are written in [Markdown](https://www.markdownguide.org/cheat-sheet/). There are special additions to the markdown that we have added to this site. If you are confused about something, or if there's a certain feature that you want to add, reach out to Nathan Wang.
+All modules are written in
+[Markdown](https://www.markdownguide.org/cheat-sheet/). There are special
+additions to the markdown that we have added to this site. If you are confused
+about something, or if there's a certain feature that you want to add, reach out
+to Nathan Wang.
 
 ## 1. Getting Started
 
-### Using LiveUpdate (recommended)
+### Using the Editor (recommended)
 
-The easiest way to edit content is to use our [LiveUpdate](https://usaco.guide/liveupdate) editor. If you choose this option, you can skip the rest of the "Getting Started" section.
+The easiest way to edit content is to use our live
+[editor](https://usaco.guide/liveupdate). If you choose this option, you can
+skip the rest of the "Getting Started" section.
 
 ### Running Site Locally
 
-You can also [run a local version of the site](Front%20End%20Documentation.md) in order to view your changes. This is useful if you need to use Tailwind CSS classes, which don't work with /liveupdate.
+You can also [run a local version of the site](Front%20End%20Documentation.md)
+in order to view your changes. This is useful if you need to use Tailwind CSS
+classes, which don't work with /editor.
 
 ### Using Sublime Text with .mdx
 
@@ -25,36 +34,55 @@ You can also [run a local version of the site](Front%20End%20Documentation.md) i
 2. Open the command palette (Cmd-Shift-P) and install package control.
 3. Open the command palette again, install package -> PackageResourceViewer
 4. Extract the HTML package with PackageResourceViewer.
-5. Now you can modify `html_completions.py` by adding to `normal_tags` (ex. `spoiler`)
+5. Now you can modify `html_completions.py` by adding to `normal_tags` (ex.
+   `spoiler`)
    - actually, for some reason uppercase (`CPPSection`) doesn't work ...
-6. Open a `.mdx` file and set syntax highlighting to be the same as `.md` with `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
+6. Open a `.mdx` file and set syntax highlighting to be the same as `.md` with
+   `View -> Syntax -> Open all with current extension as ... -> Markdown -> Markdown`.
 7. Make snippets!
 
 ### Other Tools
 
-- You can use [StackEdit](https://stackedit.io/) to check that latex renders properly.
+- You can use [StackEdit](https://stackedit.io/) to check that latex renders
+  properly.
 - [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
 
 ## 2. Module Ordering
 
 ### Organization
 
-There are six **sections** in the guide: Intro, Bronze, Silver, Gold, Platinum, and Advanced. Each section is subdivided into **categories**, which is just a group of modules. Each **module** represents one "article" or "page" on the site.
+There are six **sections** in the guide: Intro, Bronze, Silver, Gold, Platinum,
+and Advanced. Each section is subdivided into **categories**, which is just a
+group of modules. Each **module** represents one "article" or "page" on the
+site.
 
 ### `ordering.ts`
 
-Located at `content/ordering.ts`, this file stores the ordering of the modules. Hopefully the format is self-explanatory (it matches based on "slug"). Let Nathan Wang know if you have questions.
+Located at `content/ordering.ts`, this file stores the ordering of the modules.
+Hopefully the format is self-explanatory (it matches based on "slug"). Let
+Nathan Wang know if you have questions.
 
 ## 3. Frontmatter
 
-[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the beginning of each module that's surrounded by three dashes. Frontmatter is written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
+[Frontmatter](https://jekyllrb.com/docs/front-matter/) is the stuff in the
+beginning of each module that's surrounded by three dashes. Frontmatter is
+written in [YAML](https://yaml.org/). It stores the "metadata" for each module.
 
-- **ID**: _Required_. The ID of the module. Ex: `getting-started`, or `containers`. This ID is used to identify the module, so make sure it is **unique** and **all lowercase with dashes only**. The URL will be generated based off this.
+- **ID**: _Required_. The ID of the module. Ex: `getting-started`, or
+  `containers`. This ID is used to identify the module, so make sure it is
+  **unique** and **all lowercase with dashes only**. The URL will be generated
+  based off this.
 - **Title**: _Required_. The title of the module. Ex: `Getting Started`
 - **Author**: _Required_. The author of the module. Ex: `Unknown`
-- **Description**: _Required_. A short description of the module, similar to what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has in their syllabus. Markdown/Latex does not work in the description field.
-- **Prerequisites**: _Optional_. Any prerequisites for this module. If you want to reference a module as a prerequisite, list it as a module ID. A link will be auto-generated.
-- **Frequency**: _Optional_. Takes a number 0-4 inclusive, where 0 = never shown up before and 4 = shows up ~once a contest. Leave this field out if you don't want to show the frequency.
+- **Description**: _Required_. A short description of the module, similar to
+  what [codecademy](https://www.codecademy.com/learn/paths/computer-science) has
+  in their syllabus. Markdown/Latex does not work in the description field.
+- **Prerequisites**: _Optional_. Any prerequisites for this module. If you want
+  to reference a module as a prerequisite, list it as a module ID. A link will
+  be auto-generated.
+- **Frequency**: _Optional_. Takes a number 0-4 inclusive, where 0 = never shown
+  up before and 4 = shows up ~once a contest. Leave this field out if you don't
+  want to show the frequency.
 
 ### Example Frontmatter
 
@@ -86,23 +114,29 @@ Don't use relative links like `code-con`, that will break our link checker...
 
 `yarn check-links`
 
-If crash due to some `bhttp` error, it's probably a timeout. To fix temporarily, run:
+If crash due to some `bhttp` error, it's probably a timeout. To fix temporarily,
+run:
 
 ```
 blc http://localhost:9000 -rof --exclude train.usaco.org
 ```
 
-And find where it crashes, then check the broken link manually and add to exclusion list. As train.usaco.org sometimes crashes, it's added already.
+And find where it crashes, then check the broken link manually and add to
+exclusion list. As train.usaco.org sometimes crashes, it's added already.
 
 ## 4. Table of Contents
 
-A table of contents will be auto-generated based off of the headings in the Markdown. Keep this in mind when formatting your module.
+A table of contents will be auto-generated based off of the headings in the
+Markdown. Keep this in mind when formatting your module.
 
 ## 5. MDX and Custom Components
 
-We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React components are supported, so it is possible to add interactivity / custom components to each module.
+We're using [MDX](https://mdxjs.com/), a superset of Markdown. HTML and React
+components are supported, so it is possible to add interactivity / custom
+components to each module.
 
-Some components are globally available in every module (without having to be imported):
+Some components are globally available in every module (without having to be
+imported):
 
 - `<Spoiler>`
 - `<Info>`
@@ -124,7 +158,10 @@ These are all documented below.
 
 ### Using Custom Components
 
-Interleaving Markdown in JSX is currently a work-in-progress: https://github.com/mdx-js/mdx/issues/628. As such, in order to use markdown with custom components, we need to leave **blank lines** between the HTML tags and the markdown.
+Interleaving Markdown in JSX is currently a work-in-progress:
+https://github.com/mdx-js/mdx/issues/628. As such, in order to use markdown with
+custom components, we need to leave **blank lines** between the HTML tags and
+the markdown.
 
 ```mdx
 Good:
@@ -146,7 +183,8 @@ Bad:
 
 ### Spoilers
 
-Spoilers are collapsible elements that only show themselves when the user clicks on it. It's useful when writing solutions to problems.
+Spoilers are collapsible elements that only show themselves when the user clicks
+on it. It's useful when writing solutions to problems.
 
 ```
 <Spoiler title="Show Solution">
@@ -188,113 +226,179 @@ Fun fact: the title attribute is optional.
 
 ### Problem Lists
 
-**Problem sketches are deprecated. Do not add any new problem sketches.**
+Each module has two corresponding files, a `.mdx` file and a `.problems.json`
+file. The `.problems.json` file stores the focus problems and problem lists used
+in that module; it is also indexed by Algolia for problem search.
 
-Problem constructor syntax:
+The `.problems.json` file holds an object, where keys are problem list names (or
+focus problem names) and values are arrays of `ProblemMetadata` objects. For
+focus problems, the array should have length exactly one. Additionally, the
+`.problems.json` file should have a `MODULE_ID` key with value equal to a string
+that represents the module ID.
+
+For more information on problem definitions, refer to `src/models/problem.ts`.
+
+There is a distinction between `ProblemInfo` and `ProblemMetadata`.
+`ProblemMetadata` is what is stored in `[module].problems.json`. Gatsby takes
+`ProblemMetadata` and converts it into `ProblemInfo` at build time; React
+components use `ProblemInfo` when interacting with problem information. The
+documentation below is for `ProblemMetadata`, which is what content authors will
+be writing.
+
+`ProblemMetadata` fields:
+
+`uniqueId` -- The uniqueId of the problem. Problem progress is linked to this,
+so don't change this (otherwise problem progress will be lost). By convention,
+it's `[source]-[SlugifiedProblemNameCamelCased]`.
+
+- If the problem name is only one word, the word is lower cased.
+- If the problem is USACO or CSES, the unique ID is instead
+  `usaco-[USACO URL Number]` or `cses-[CSES number]`.
+- If the problem is Codeforces, the unique ID is
+  `cf-[contestNumber][problemLetter]`. If it's CF Gym, it's
+  `cfgym-[gymNumber][problemLetter]`.
+- If the problem is an OI with a year, the unique ID is
+  `[oiName]-[twodigityear]-[slugifiedName]`.
+
+Here are some example unique ID's:
 
 ```
-new Problem("Source", "Problem Name", "Problem ID (this is used to generate link to problem)", "Difficulty", starred, ["tags"], "editorial-id", "editorial quality")
+cses-2177
+poi-08-blockade
+apio-18-duathlon
+dmoj-investment
+infoarena-xortransform
+usaco-949
+cses-1691
+kattis-chineseremainder
+cfgym-102538F
+cf-1209H
+spoj-LexicographicalStringSearch
+ys-AssociativeArray
 ```
 
-To add problem editorials, create a new file under the `solutions/` folder. Try to name it something reasonable; follow existing naming conventions.
+Problems with the same unique ID are expected to have identical names, sources,
+and URL's.
 
-Editorials are also written in MDX. The frontmatter has three fields:
+`name` -- The name of the problem. Should not include source.
+
+Examples:
+
+```
+2009 - Beetle
+Greedy Pie Eaters
+Zuma
+2014 - The Stables of Genghis Khan
+```
+
+`source` -- The source of the problem. Restricted to: _todo, refer to
+`src/models/problem.ts` `contests` and `probSources`_
+
+`difficulty` -- The difficulty of the problem **relative to the module it is
+in**. Valid options are `Very Easy`, `Easy`, `Normal`, `Hard`, `Very Hard`,
+`Insane`
+
+`isStarred` -- Whether this problem should be starred or not.
+
+`tags` -- List of tags for this problem.
+
+`solutionMetadata` -- Information about the solution.
+
+```ts
+export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
+	solutionMetadata:
+		| {
+				// auto generate problem solution label based off of the given site
+				// For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+				kind: 'autogen-label-from-site';
+				// The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+				site: string;
+		  }
+		| {
+				// internal solution
+				kind: 'internal';
+		  }
+		| {
+				// URL solution
+				// Use this for links to PDF solutions, etc
+				kind: 'link';
+				url: string;
+		  }
+		| {
+				// Competitive Programming Handbook
+				// Ex: 5.3 or something
+				kind: 'CPH';
+				section: string;
+		  }
+		| {
+				// USACO solution, generates it based off of the USACO problem ID
+				// ex. 1113 is mapped to sol_prob1_gold_feb21.html
+				kind: 'USACO';
+				usacoId: number;
+		  }
+		| {
+				// IOI solution, generates it based off of the year
+				// ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+				kind: 'IOI';
+				year: number;
+		  }
+		| {
+				// no solution exists
+				kind: 'none';
+		  }
+		| {
+				// for focus problems, when the solution is presented in the module of the problem
+				kind: 'in-module';
+				moduleId: string;
+		  }
+		| {
+				kind: 'sketch';
+				sketch: string;
+		  };
+};
+```
+
+To add problem editorials, create a new file under the `solutions/` folder. Try
+to name it something reasonable; follow existing naming conventions.
+
+Editorials are also written in MDX. The frontmatter has four fields:
 
 ```
 ---
 id: cses-1621
-title: CSES Distinct Numbers
+source: CSES
+title: Distinct Numbers
 author: Nathan Wang
 ---
 
 ... solution
 ```
 
-The author field is optional.
-
-To reference that editorial:
-
-```
-new Problem("CSES", "Distinct Numbers", "1621", "Easy", false, ["sets"], "cses-1621", "good")
-```
-
-The important parameters are the last two: `cses-1621` is equal to the frontmatter ID, and `good` shows a green check next to the problem to indicate that the editorial is of high quality.
-
-Problem constructor:
-
-```typescript
-class Problem {
-	constructor(
-		public source: string,
-		public name: string,
-		public id: string,
-		labels?: 'Very Easy' | 'Easy' | 'Normal' | 'Hard' | 'Very Hard' | 'Insane',
-		public starred?: boolean,
-		public tags?: string[],
-		sol?: string, // either a URL, an empty string (USACO auto-populates), or a problem editorial ID
-		public solQuality: 'bad' | 'ok' | 'good' = 'ok'
-	) {}
-}
-```
+The ID of the solution frontmatter must be the same as the unique ID of the
+problem. Make sure to also update the problem metadata to "internal" for any
+associated problems. We assume that if there is an internal solution, we should
+use it; therefore, the build will throw an error if there is an internal
+solution but the problem metadata isn't set to "internal".
 
 Example usage:
 
 ```mdx
----
-id: ds
-title: Data Structures
-author: Nathan Wang, Darren Yao, Benjamin Qi
-description: Introductory problems using sets and maps.
-prerequisites:
-  - Bronze - "Built-In C++ Containers" or "Built-In Java Collections"
----
-
-import { Problem } from '../models';
-
-export const problems = {
-	standard: [
-		new Problem('YS', 'Associative Array', 'associative_array', 'Intro'),
-		new Problem('CSES', 'Distinct Numbers', '1621', 'Intro'),
-		new Problem(
-			'CSES',
-			'Sum of Two Values',
-			'1640',
-			'Intro',
-			false,
-			[],
-			'Can be solved without sets.'
-		),
-		new Problem('CSES', 'Concert Tickets', '1091', 'Easy', false, [
-			'iterators',
-		]),
-		new Problem('CSES', 'Towers', '1073', 'Easy', false, [
-			'multiset',
-			'greedy',
-		]),
-		new Problem('CSES', 'Traffic Lights', '1163', 'Normal', false, ['set']),
-		new Problem('CSES', 'Room Allocation', '1164', 'Normal', false, [
-			'multiset',
-			'greedy',
-		]),
-	],
-};
-
-## Standard
-
-Do roughly the first half of the Sorting and Searching section in the [CSES Problem Set](https://cses.fi/problemset/).
-
-<Problems problems={problems.standard} />
+<Problems problems="problems" />
 ```
+
+`[module].problems.json` should have a key of `problems` that maps to an array
+of `ProblemMetadata`.
 
 ### Focus Problem
 
 Displays a singular problem as a "focus problem."
 
 ```
-<FocusProblem problem={problems.genPermutations[0]} />
+<FocusProblem problem="genPermutations" />
 ```
 
-Make sure to still use an array: `gatsby-node.ts` expects all exported problems to be in arrays...
+`[module].problems.json` should have a key of `genPermutations` that maps to an
+**array** of length 1.
 
 ### Resource Lists
 
@@ -320,7 +424,8 @@ Special functionality based on source:
     - `CPH` (Competitive Programming Handbook)
     - `PAPS` (Principles of Algorithmic Problem Solving)
     - `CP2` (Competitive Programming 2)
-    - `IUSACO` (Darren's book; will auto-set URL based on user language; uses C++ for Python users)
+    - `IUSACO` (Darren's book; will auto-set URL based on user language; uses
+      C++ for Python users)
 - Some sources have URL shortcuts that they will prepend to the URL.
   - ```typescript
     const sources = {
@@ -383,7 +488,9 @@ Special functionality based on source:
 
 ### Tooltips
 
-There are two main types of tooltips: text tooltips, which display a dotted underline under the text, and asterisk tooltips, which render an asterisk that can be hovered over.
+There are two main types of tooltips: text tooltips, which display a dotted
+underline under the text, and asterisk tooltips, which render an asterisk that
+can be hovered over.
 
 #### `<TextTooltip>`
 
@@ -432,7 +539,8 @@ In the example above, nothing will be rendered for Python.
 
 ### Code Blocks and Code Snippets
 
-Code blocks are separated by three backticks, just like in normal markdown. Additionally, we have support for collapsible code snippets:
+Code blocks are separated by three backticks, just like in normal markdown.
+Additionally, we have support for collapsible code snippets:
 
 ````markdown
 ```cpp
@@ -451,7 +559,9 @@ My non-snippet code goes here
 ```
 ````
 
-Some common snippets have shorthand notations, as defined in `src/mdx-plugins/rehype-snippets.js`. They can be accessed using `CodeSnip{Snip ID}`.
+Some common snippets have shorthand notations, as defined in
+`src/mdx-plugins/rehype-snippets.js`. They can be accessed using
+`CodeSnip{Snip ID}`.
 
 ````markdown
 ## Kattio
@@ -467,7 +577,8 @@ public class myClass {
 }
 ```
 
-`CodeSnip{Kattio}` gets replaced with an indented version (based off of indentation of `CodeSnip`):
+`CodeSnip{Kattio}` gets replaced with an indented version (based off of
+indentation of `CodeSnip`):
 
 ```java
 //BeginCodeSnip{Kattio}
@@ -510,7 +621,8 @@ static class Kattio extends PrintWriter {
 CodeSnip{Benq Template}
 ```
 
-Gets replaced with [Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
+Gets replaced with
+[Benq's Long Template](https://github.com/bqi343/USACO/blob/master/Implementations/content/contest/TemplateLong.cpp).
 
 ## C++ Short Template
 

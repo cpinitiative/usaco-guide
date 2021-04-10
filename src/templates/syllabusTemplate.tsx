@@ -1,29 +1,28 @@
-import * as React from 'react';
-
-import Layout from '../components/layout';
-import SEO from '../components/seo';
 import { graphql } from 'gatsby';
-import MODULE_ORDERING, {
+import * as React from 'react';
+import styled from 'styled-components';
+import tw from 'twin.macro';
+import {
   moduleIDToSectionMap,
+  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
-  SectionID,
 } from '../../content/ordering';
-import { getModulesForDivision } from '../utils/utils';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import DashboardProgress, {
   DashboardProgressSmall,
 } from '../components/Dashboard/DashboardProgress';
+import ModuleLink from '../components/Dashboard/ModuleLink';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { ModuleLinkInfo } from '../models/module';
 // import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
-  getProblemsProgressInfo,
   getModulesProgressInfo,
+  getProblemsProgressInfo,
 } from '../utils/getProgressInfo';
-import ModuleLink from '../components/Dashboard/ModuleLink';
-import { ModuleLinkInfo } from '../models/module';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import { getModulesForDivision } from '../utils/utils';
 
 const DottedLineContainer = styled.div`
   ${tw`space-y-6 relative`}
@@ -97,14 +96,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
   ),
   bronze: topicsWarning,
   silver: topicsWarning,
-  gold: (
-    <>
-      {topicsWarning}
-      <br />
-      In particular, DP on Bitmasks / Ranges (listed under Platinum) have
-      appeared in recent Gold contests.
-    </>
-  ),
+  gold: topicsWarning,
   plat: (
     <>
       {topicsWarning}
@@ -144,32 +136,22 @@ export default function Template(props) {
     []
   );
   const moduleProgressInfo = getModulesProgressInfo(moduleIDs);
-  const problemIDs = [];
-  for (const chapter of MODULE_ORDERING[division]) {
-    for (const moduleID of chapter.items) {
-      for (const problem of allModules[moduleID].problems) {
-        problemIDs.push(problem.uniqueID);
-      }
-    }
-  }
+  const problemIDs = data.problems.edges.map(x => x.node.uniqueId);
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   const progressBarForCategory = category => {
-    const problemIDs = [];
-    for (const chapter of MODULE_ORDERING[division])
-      if (chapter.name == category.name) {
-        for (const moduleID of chapter.items) {
-          for (const problem of allModules[moduleID].problems) {
-            problemIDs.push(problem.uniqueID);
-          }
-        }
-      }
-    const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+    const categoryModuleIDs = category.items.map(
+      module => module.frontmatter.id
+    );
+    const categoryProblemIDs = data.problems.edges
+      .filter(x => categoryModuleIDs.includes(x.node.module.frontmatter.id))
+      .map(x => x.node.uniqueId);
+    const problemsProgressInfo = getProblemsProgressInfo(categoryProblemIDs);
     return (
-      problemIDs.length > 1 && (
+      categoryProblemIDs.length > 1 && (
         <DashboardProgressSmall
           {...problemsProgressInfo}
-          total={problemIDs.length}
+          total={categoryProblemIDs.length}
         />
       )
     );
@@ -267,8 +249,13 @@ export default function Template(props) {
   );
 }
 export const pageQuery = graphql`
-  query {
-    modules: allMdx(filter: { fileAbsolutePath: { regex: "/content/" } }) {
+  query($division: String!) {
+    modules: allMdx(
+      filter: {
+        fileAbsolutePath: { regex: "/content/" }
+        fields: { division: { eq: $division } }
+      }
+    ) {
       edges {
         node {
           id
@@ -278,12 +265,24 @@ export const pageQuery = graphql`
             description
             frequency
           }
-          problems {
-            uniqueID
-          }
           isIncomplete
           fields {
             gitAuthorTime
+          }
+        }
+      }
+    }
+    problems: allProblemInfo(
+      filter: { module: { fields: { division: { eq: $division } } } }
+    ) {
+      edges {
+        node {
+          uniqueId
+          name
+          module {
+            frontmatter {
+              id
+            }
           }
         }
       }

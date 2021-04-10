@@ -1,115 +1,17 @@
 ---
 id: bfs
 title: 'Breadth First Search (BFS)'
-author: Benjamin Qi, Michael Cao, Andi Qu
+author: Benjamin Qi, Michael Cao, Andi Qu, Neo Wang
 prerequisites:
   - dfs
   - ff
-description: 'Traversing a graph in a way such that vertices closer to the starting vertex are processed first.'
+description:
+  'Traversing a graph in a way such that vertices closer to the starting vertex
+  are processed first.'
 frequency: 2
 ---
 
 <!-- NOTE: general problems were RANDOMLY STARRED. please review! -->
-
-export const problems = {
-	sampleNormal: new Problem(
-		'CSES',
-		'Message Route',
-		'1667',
-		'Easy',
-		false,
-		['BFS'],
-		''
-	),
-	sampleZeroOne: new Problem(
-		'Baltic OI',
-		'2013 - Tracks in the Snow',
-		'https://oj.uz/problem/view/BOI13_tracks',
-		'Easy',
-		false,
-		['BFS'],
-		''
-	),
-	general: [
-		new Problem(
-			'CSES',
-			'Labyrinth',
-			'1193',
-			'Easy',
-			true,
-			['BFS'],
-			'cses-1193'
-		),
-		new Problem(
-			'CSES',
-			'Monsters',
-			'1194',
-			'Easy',
-			false,
-			['BFS'],
-			'cses-1194'
-		),
-		new Problem(
-			'CSES',
-			'Graph Girth',
-			'1707',
-			'Normal',
-			true,
-			['Cycle'],
-			'cses-1707'
-		),
-		new Problem(
-			'CSA',
-			'BFS-DFS',
-			'bfs-dfs',
-			'Normal',
-			false,
-			['BFS', 'DFS'],
-			''
-		),
-		new Problem(
-			'Silver',
-			'Milk Pails',
-			'620',
-			'Easy',
-			false,
-			['BFS'],
-			'usaco-620'
-		),
-		new Problem('Gold', 'Lasers', '671', 'Normal', true, ['BFS'], 'usaco-671'),
-		new Problem('Gold', 'Cow At Large', '790', 'Normal', false, ['BFS'], ''),
-		new Problem(
-			'Old Silver',
-			"What's Up With Gravity?",
-			'282',
-			'Normal',
-			false,
-			['BFS'],
-			''
-		),
-		new Problem('Gold', 'Telephone', '1090', 'Normal', false, ['BFS'], ''),
-		new Problem(
-			'Gold',
-			'Cow Navigation',
-			'695',
-			'Hard',
-			true,
-			['BFS'],
-			'usaco-695'
-		),
-		new Problem('Gold', "Bessie's Dream", '575', 'Hard', false, ['BFS'], ''),
-		new Problem('Gold', 'Replication', '1065', 'Hard', false, ['BFS'], ''),
-		new Problem(
-			'Gold',
-			'A Pie for a Pie',
-			'765',
-			'Very Hard',
-			false,
-			['BFS'],
-			''
-		),
-	],
-};
 
 ## Queues & Deques
 
@@ -120,7 +22,8 @@ export const problems = {
 
 ### Queues
 
-A queue is a First In First Out (FIFO) data structure that supports three operations, all in $\mathcal{O}(1)$ time.
+A queue is a First In First Out (FIFO) data structure that supports three
+operations, all in $\mathcal{O}(1)$ time.
 
 <LanguageSection>
 
@@ -151,7 +54,8 @@ cout << q.front() << endl; // 3
 - `poll`: deletion from the front of the queue
 - `peek`: which retrieves the element at the front without removing it
 
-Java doesn't actually have a `Queue` class; it's only an interface. The most commonly used implementation is the `LinkedList`, declared as follows:
+Java doesn't actually have a `Queue` class; it's only an interface. The most
+commonly used implementation is the `LinkedList`, declared as follows:
 
 ```java
 Queue<Integer> q = new LinkedList<Integer>();
@@ -168,7 +72,10 @@ System.out.println(q.peek()); // 3
 
 ### Deques
 
-A **deque** (usually pronounced "deck") stands for double ended queue and is a combination of a stack and a queue, in that it supports $\mathcal{O}(1)$ insertions and deletions from both the front and the back of the deque. Not very common in Bronze / Silver.
+A **deque** (usually pronounced "deck") stands for double ended queue and is a
+combination of a stack and a queue, in that it supports $\mathcal{O}(1)$
+insertions and deletions from both the front and the back of the deque. Not very
+common in Bronze / Silver.
 
 <LanguageSection>
 
@@ -176,7 +83,8 @@ A **deque** (usually pronounced "deck") stands for double ended queue and is a c
 
 #### [C++](http://www.cplusplus.com/reference/deque/deque/)
 
-The four methods for adding and removing are `push_back`, `pop_back`, `push_front`, and `pop_front`.
+The four methods for adding and removing are `push_back`, `pop_back`,
+`push_front`, and `pop_front`.
 
 ```cpp
 deque<int> d;
@@ -188,7 +96,9 @@ d.push_front(1); // [1, 3, 7]
 d.pop_back(); // [1, 3]
 ```
 
-You can also access deques in constant time like an array in constant time with the `[]` operator. For example, to access the element $\texttt{i}$ for some deque $\texttt{dq}$, do $\texttt{dq[i]}$.
+You can also access deques in constant time like an array in constant time with
+the `[]` operator. For example, to access the element $\texttt{i}$ for some
+deque $\texttt{dq}$, do $\texttt{dq[i]}$.
 
 </CPPSection>
 
@@ -196,7 +106,8 @@ You can also access deques in constant time like an array in constant time with 
 
 #### Java
 
-In Java, the deque class is called `ArrayDeque`. The four methods for adding and removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
+In Java, the deque class is called `ArrayDeque`. The four methods for adding and
+removing are `addFirst` , `removeFirst`, `addLast`, and `removeLast`.
 
 ```java
 ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
@@ -214,7 +125,7 @@ deque.removeLast(); // [1, 3]
 
 ## Breadth First Search
 
-<FocusProblem problem={problems.sampleNormal} />
+<FocusProblem problem="sampleNormal" />
 
 ### Resources
 
@@ -248,11 +159,130 @@ deque.removeLast(); // [1, 3]
 	source="IUSACO"
 	title="10.4 - Graph Traversal Algorithms"
 ></Resource>
-<Resource source="CP2" title="4.2.2 - BFS">
-	{' '}
-</Resource> -->
+<Resource source="CP2" title="4.2.2 - BFS" /> -->
 
 ### Solution - Message Route
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
+We can observe is that there are many possible shortest paths to output.
+Fortunately, the problem states that we can print any valid solution. Notice
+that like every other BFS problem, the distance of each node increases by $1$
+when we travel to the next level of unvisited nodes. However, the problem
+requires that we add additional information - in this case, the path. When we
+traverse from node $a$ to $b$, we can set the parent of $b$ to $a$. After the
+BFS is complete, this allows us to backtrack through the parents which
+ultimately leads us to our starting node. We know to terminate at node $1$
+because it's the starting node. If there is no path to our end node, then its
+distance will remain at
+[`INT_MAX`](https://en.cppreference.com/w/c/types/limits).
+
+For the test input, we start with the following parent array.
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting children of node $1$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td className="bg-green-200 dark:bg-green-800">1</td>
+				<td>INT_MAX</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+After visiting node $5$ from node $4$:
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Node</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">4</td>
+			</tr>
+			<tr>
+				<td>Distance</td>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+				<td>1</td>
+				<td className="bg-green-200 dark:bg-green-800">2</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+To determine the path, we can backtrack from node $n \rightarrow 1$, in this
+case $5 \rightarrow 1$, pushing each value that we backtrack into a vector. The
+path we take is
+$5 \rightarrow \texttt{parent}[5]=4 \rightarrow \texttt{parent}[4] =1$ which
+corresponds to the vector $[5, 4, 1]$. We break at node $1$ because it was the
+initial starting node. Finally, we reverse the vector and print out its length
+(in this case, $3$).
 
 <LanguageSection>
 
@@ -260,94 +290,41 @@ deque.removeLast(); // [1, 3]
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-using vi = vector<int>;
 
+using vi = vector<int>;
 #define pb push_back
 
 int main() {
 	int N, M; cin >> N >> M;
-	vi dist(N,INT_MAX), pre(N);
-	vector<vi> adj(N);
-	for (int _ = 0; _ < M; ++_) {
-		int a,b; cin >> a >> b; --a,--b;
+	vi dist(N+1,INT_MAX), parent(N+1);
+	vector<vi> adj(N+1);
+	while (M--) {
+		int a,b; cin >> a >> b;
 		adj[a].pb(b), adj[b].pb(a);
 	}
 	queue<int> q;
-	dist[0] = 0; q.push(0);
+	dist[1] = 0; q.push(1);
 	while (!q.empty()) {
 		int x = q.front(); q.pop();
 		for (int t: adj[x]) if (dist[t] == INT_MAX) {
-			dist[t] = dist[x]+1; pre[t] = x;
+			dist[t] = dist[x]+1; parent[t] = x;
 			q.push(t);
 		}
 	}
-	if (dist[N-1] == INT_MAX) cout << "IMPOSSIBLE";
+	if (dist[N] == INT_MAX) cout << "IMPOSSIBLE";
 	else {
-		cout << dist[N-1]+1 << "\n";
-		vi v{N-1}; while (v.back() != 0) v.pb(pre[v.back()]);
+		cout << dist[N]+1 << "\n";
+		vi v{N}; while (v.back() != 1) v.pb(parent[v.back()]);
 		reverse(begin(v), end(v));
-		for (int t: v) cout << t+1 << " ";
+		for (int t: v) cout << t << " ";
 	}
 }
-
 ```
-
-<!--
-From the CSA article:
-
-```cpp
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <queue>
-using namespace std;
-const int MAX_N = 100005;
-
-vector<int> graph[MAX_N];
-int dist[MAX_N];
-bool visited[MAX_N];
-
-void bfs(int startNode) {
-	dist[startNode] = 0;
-	queue<int> bfsQueue;
-	bfsQueue.push(startNode);
-	visited[startNode] = true;
-	while (!bfsQueue.empty()) {
-		int currentNode = bfsQueue.front();
-		bfsQueue.pop();
-		for (auto neighbour: graph[currentNode]) {
-			if (!visited[neighbour]) {
-				visited[neighbour] = true;
-				dist[neighbour] = dist[currentNode] + 1;
-				bfsQueue.push(neighbour);
-			}
-		}
-	}
-}
-
-int main() {
-	int N, M, v, x, y;
-	cin >> N >> M >> v;
-	for (int i = 1; i <= M; i += 1) {
-		cin >> x >> y;
-		graph[x].push_back(y);
-	}
-	for (int i = 1; i <= N; i += 1) {
-		dist[i] = -1;
-	}
-	bfs(v);
-	for (int i = 1; i <= N; i += 1) {
-		cout << dist[i] << " ";
-	}
-	return 0;
-}
-``` -->
 
 </CPPSection>
 
-<!-- 
+<!--
 <JavaSection>
 
 Implementation of the CSAcademy article's problem in Java:
@@ -419,7 +396,7 @@ class Main {
 	    pw.close();
 	}
 }
-``` 
+```
 
 </JavaSection>
 -->
@@ -428,13 +405,18 @@ class Main {
 
 <Info title="Pro Tip">
 
-In the gold division, the problem statement will almost never directly be, "Given an unweighted graph, find the shortest path between node $u$ and $v$." Instead, the difficulty in many BFS problems are converting the problem into a graph on which we can run BFS and get the answer.
+In the gold division, the problem statement will almost never directly be,
+"Given an unweighted graph, find the shortest path between node $u$ and $v$."
+Instead, the difficulty in many BFS problems are converting the problem into a
+graph on which we can run BFS and get the answer.
 
 </Info>
 
 ## 0/1 BFS
 
-A 0/1 BFS finds the shortest path in a graph where the weights on the edges can only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the resource below for an explanation of how the algorithm works.
+A 0/1 BFS finds the shortest path in a graph where the weights on the edges can
+only be 0 or 1, and runs in $\mathcal{O}(V + E)$ using a deque. Read the
+resource below for an explanation of how the algorithm works.
 
 <Resources>
 	<Resource source="cp-algo" title="0-1 BFS" url="graph/01_bfs.html">
@@ -442,11 +424,34 @@ A 0/1 BFS finds the shortest path in a graph where the weights on the edges can 
 	</Resource>
 </Resources>
 
-<FocusProblem problem={problems.sampleZeroOne} />
+<FocusProblem problem="sampleZeroOne" />
 
-Consider the graph with an edge between each pair of adjacent cells with tracks, where the weight is 0 if the tracks are the same and 1 otherwise. The answer is simply the longest shortest-path from the top left cell.
+**Complexity:** $\mathcal O(NM)$
 
-Since the weight of each edge is either 0 or 1 and we want the shortest paths from the top left cell to each other cell, we can apply 0/1 BFS. The time complexity of this solution is $\mathcal O(NM)$.
+We can use the following greedy strategy to find our answer:
+
+- Run flood fill to find each connected component with the same tracks.
+- Construct a graph where the nodes are the connected components and there are
+  edges between adjacent connected components.
+- The answer is the maximum distance from the node containing $(1, 1)$ to
+  another node. We can use BFS to find this distance.
+
+For a detailed proof of why this works, see
+[the official editorial](https://boi2013.informatik-olympiade.de/wp-content/uploads/2013/05/tracks-spoiler.pdf).
+
+Although this gives us an $\mathcal O(NM)$ solution, there is a simpler solution
+using 0/1 BFS!
+
+Consider the graph with an edge between each pair of adjacent cells with tracks,
+where the weight is 0 if the tracks are the same and 1 otherwise. The answer is
+simply the longest shortest-path from the top left cell. This is because going
+from one track to another same one is like not leaving a node (hence the cost is
+$0$), while going from one track to a different one is like traversing the edge
+between two nodes (hence the cost is $1$).
+
+Since the weight of each edge is either 0 or 1 and we want the shortest paths
+from the top left cell to each other cell, we can apply 0/1 BFS. The time
+complexity of this solution is $\mathcal O(NM)$.
 
 <LanguageSection>
 
@@ -508,7 +513,7 @@ int main() {
 
 <!-- ### Example: What's Up With Gravity?
 
-<FocusProblem problem={problems.grav[0]} />
+<FocusProblem problem="grav" />
 
 In this problem, let's connect two cells $(u, v)$ in the grid if you can reach $v$ from $u$ by flipping gravity, going left, or going right. Also, we should only store cells where CB doesn't fall in the direction of gravity.
 
@@ -519,4 +524,4 @@ Now, we're given a weighted graph and we need to find the shortest path. Since t
 
 ## Problems
 
-<Problems problems={problems.general} />
+<Problems problems="general" />

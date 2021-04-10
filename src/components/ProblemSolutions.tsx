@@ -1,19 +1,12 @@
 import * as React from 'react';
-import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-} from '../models/problem';
-import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
+import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
-import CodeBlock from './markdown/CodeBlock/CodeBlock';
-import Spoiler from './markdown/Spoiler';
-import { useContext } from 'react';
+import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
+import { ProblemInfo } from '../models/problem';
+import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
   onClose,
@@ -21,9 +14,9 @@ export default function ProblemSolutions({
   problem,
 }: {
   onClose: () => void;
-  showSubmitSolutionModal: Function;
-  problem: Problem;
-}) {
+  showSubmitSolutionModal: () => void;
+  problem: ProblemInfo;
+}): JSX.Element {
   const { solutions, currentUserSolutions } = useUserSolutionsForProblem(
     problem
   );
@@ -33,7 +26,8 @@ export default function ProblemSolutions({
     undoUpvoteSolution,
     mutateSolution,
   } = useUserProblemSolutionActions();
-  const { firebaseUser, signIn, isAdmin } = useContext(UserDataContext);
+  const { firebaseUser, signIn } = useContext(UserDataContext);
+  const canModerate = useUserPermissions().canModerate;
 
   const publicSolutions = solutions?.filter(
     submission => submission.userID !== firebaseUser?.uid
@@ -73,6 +67,7 @@ export default function ProblemSolutions({
             className="underline text-blue-600 dark:text-blue-400"
             href="mailto:usacoguide@gmail.com"
             target="_blank"
+            rel="noreferrer"
           >
             usacoguide@gmail.com
           </a>
@@ -159,7 +154,7 @@ export default function ProblemSolutions({
                             : '(Upvote)'}
                         </button>
                       )}
-                      {isAdmin && (
+                      {canModerate && (
                         <button
                           className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
                           onClick={() => {
@@ -174,10 +169,10 @@ export default function ProblemSolutions({
                             }
                           }}
                         >
-                          (Mark Private as Admin)
+                          (Mark Private as Moderator)
                         </button>
                       )}
-                      {isAdmin && (
+                      {canModerate && (
                         <button
                           className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
                           onClick={() => {
@@ -190,7 +185,7 @@ export default function ProblemSolutions({
                             }
                           }}
                         >
-                          (Delete as Admin)
+                          (Delete as Moderator)
                         </button>
                       )}
                     </h4>

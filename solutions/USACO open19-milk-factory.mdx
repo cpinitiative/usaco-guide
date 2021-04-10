@@ -2,20 +2,25 @@
 id: usaco-940
 source: USACO Bronze 2019 December
 title: Milk Factory
-author: Mrinall Umasudhan and Jesse Choe 
+author: Mrinall Umasudhan and Jesse Choe
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
 
-This problem can also be solved using [Depth-First Search](/silver/dfs) (a Silver topic). Represent the factory as a directed unweighted graph with edges from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at node $i$ and check whether this results in every other node being visited. We can keep track of whether the current DFS visits all nodes with a boolean array whose entries are initially set to `false`. If every node is visited, then we print $i$. Otherwise, if there exists no $i$ such that this condition is satisfied, then we print $-1$.
+This problem can also be solved using [Depth-First Search](/silver/dfs) (a
+Silver topic). Represent the factory as a directed unweighted graph with edges
+from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
+node $i$ and check whether this results in every other node being visited. We
+can keep track of whether the current DFS visits all nodes with a boolean array
+whose entries are initially set to `false`. If every node is visited, then we
+print $i$. Otherwise, if there exists no $i$ such that this condition is
+satisfied, then we print $-1$.
 
 ## Implementation
 
 <LanguageSection>
 
 <JavaSection>
-	
-
 
 ```java
 import java.io.*;
@@ -34,7 +39,7 @@ class Graph{
      void addEdge(int u, int v){
           adj.get(v).add(u); // Connecting the two factories.
      }
-    
+
 
      int DFSUtil(int v,boolean visited[]){
          int ans = 0;
@@ -62,19 +67,19 @@ class Graph{
          return DFSUtil(v, visited);
      }
  }
- 
+
  public class factory{
      public static void main(String[] args) throws IOException{
          Scanner sc = new Scanner(new File("factory.in"));
          PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("factory.out")));
          int N = sc.nextInt(); Graph  g = new Graph(N); boolean used = false;
          for(int i = 0; i < N - 1; i++){
-             g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B. 
+             g.addEdge(sc.nextInt() - 1, sc.nextInt() - 1); // Meaning one can walk from station A to station B.
          }
          for(int i = 0; i < N; i++){
               int ans = g.DFS(i);
               if(ans == N){
-                   out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output. 
+                   out.println(i + 1); // If the number of visited stations from the DFS is equal to the total number of stations then output.
                    used = true;
                    break;
               }
@@ -90,7 +95,6 @@ class Graph{
 </JavaSection>
 <CPPSection>
 
-
 ```cpp
 #include <bits/stdc++.h>
 
@@ -99,7 +103,7 @@ using namespace std;
 #define all(x) begin(x), end(x)
 
 void setIO(string name=""){ // FastIO See General -> Input/Output
-    ios_base::sync_with_stdio(0); cin.tie(0); 
+    ios_base::sync_with_stdio(0); cin.tie(0);
     if((int)name.size() > 0){
         freopen((name+".in").c_str(), "r", stdin);
         freopen((name+".out").c_str(), "w", stdout);

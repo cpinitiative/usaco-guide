@@ -1,6 +1,41 @@
-import * as React from 'react';
+import React from 'react';
+
+function determineIfSingularCodeBlock(
+  firstName: string,
+  numChildren: number
+): boolean {
+  return firstName == 'LanguageSection' && numChildren == 1;
+}
 
 const Spoiler = ({ children, title }) => {
+  let count = 0;
+  let numChildren = 0;
+  let firstName = 'None';
+
+  const firstChild = React.Children.toArray(children)[0];
+  numChildren = React.Children.count(children);
+  firstName = (firstChild as any).props.mdxType;
+  const ogProps = (firstChild as any).props;
+
+  const onlyContainsCode: boolean = determineIfSingularCodeBlock(
+    firstName,
+    numChildren
+  );
+
+  const childrenWithProps = React.Children.map(children, child => {
+    if (count == 0 && onlyContainsCode) {
+      count++;
+      return React.cloneElement(child, {
+        children: ogProps.children,
+        mdxType: 'LanguageSection',
+        originalType: ogProps.originalType,
+        isCodeBlockExpandable: false,
+      });
+    } else {
+      return child;
+    }
+  });
+
   const [show, setShow] = React.useState(false);
 
   return (
@@ -9,7 +44,9 @@ const Spoiler = ({ children, title }) => {
     >
       <p
         className="p-4 flex items-start"
-        onClick={e => setShow(!show)}
+        onClick={e => {
+          setShow(!show);
+        }}
         style={{ marginBottom: 0 }}
       >
         {show && (
@@ -41,7 +78,7 @@ const Spoiler = ({ children, title }) => {
         <span className="flex-1">{title}</span>
       </p>
 
-      {show && <div className="px-4 spoiler-body">{children}</div>}
+      {show && <div className="px-4 spoiler-body">{childrenWithProps}</div>}
     </div>
   );
 };

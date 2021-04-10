@@ -1,0 +1,90 @@
+---
+id: poi-18-polynomial
+source: POI 2018
+title: Polynomial
+author: Andi Qu
+---
+
+**Time Complexity:** $\mathcal O(N \log N)$
+
+We're asked to evaluate a polynomial at $N$ points, which implies that our
+solution will involve the Fast Fourier Transform. Indeed, our solution is mostly
+based on the idea behind the Discreet Fourier Transform - that
+$P(x) = P_{even}(x^2) + x \cdot P_{odd}(x^2)$ for any polynomial $P$.
+
+Let $\texttt{solve}(k, P) = (P(q^{ki}) \bmod M)_{i = 0}^{N / k}$. Our answer
+will be $\texttt{solve}(1, W)$, and we will compute $\texttt{solve}(k, P)$
+recursively in $\mathcal O(\frac{N}{k} \log \frac{N}{k})$ time.
+
+First, precompute all $q^i \bmod M$. If $k = N$, then $P$ is a constant
+polynomial. and can be evaluated in constant time. Otherwise, let
+$v = \texttt{solve}(k, P)$, $u_\text{even} = \texttt{solve}(2k,
+P_\text{even})$,
+and $u_\text{odd} = \texttt{solve}(2k, P_\text{odd})$. We have two cases when
+computing each $v[i]$:
+
+- Case 1: $i < \frac{N}{2k}$:
+  $$
+  \begin{aligned}
+  v[i] &= P(q^{ki}) \bmod M\\
+       &= (P_\text{even}(q^{2ki}) + q^{ki} \cdot P_\text{odd}(q^{2ki})) \bmod M\\
+  	 &= (u_\text{even}[i] + q^{ki} \cdot u_\text{odd}[i]) \bmod M
+  \end{aligned}
+  $$
+- Case 2: $i \geq \frac{N}{2k}$. In this case, let $i = \frac{N}{2k} + j$:
+  $$
+  \begin{aligned}
+  v[i] &= P(q^{\frac{N}{2} + kj}) \bmod M\\
+       &= (P_\text{even}(q^N \cdot q^{2kj}) + q^{ki} \cdot P_\text{odd}(q^N \cdot
+  	    q^{2kj})) \bmod M\\
+  	 &= (P_\text{even}(q^{2kj}) + q^{ki} \cdot P_\text{odd}(q^{2kj})) \bmod M\\
+  	 &= (u_\text{even}[j] + q^{ki} \cdot u_\text{odd}[j]) \bmod M
+  \end{aligned}
+  $$
+
+Putting this all together, we get:
+
+$$
+v[i] = \left(u_\text{even}\left[i \bmod \frac{N}{2k}\right] + p^{ki} \cdot
+       u_\text{odd}\left[i \bmod \frac{N}{2k}\right]\right) \bmod M
+$$
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+int n;
+ll m, q, a[1 << 20], q_pow[1 << 20];
+
+vector<ll> dft(int k = 1, int idx = 0) {
+	if (k == n) return {a[idx]};
+	else {
+		vector<ll> even = dft(k * 2, idx);
+		vector<ll> odd = dft(k * 2, idx | k);
+
+		int mid = n / k / 2;
+		vector<ll> ans;
+		for (int i = 0; i < 2 * mid; i++)
+			ans.push_back((even[i % mid] + q_pow[k * i] * odd[i % mid] % m) % m);
+		return ans;
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> n >> m >> q;
+	for (int i = 0; i < n; i++) cin >> a[i];
+
+	q_pow[0] = 1;
+	for (int i = 1; i < n; i++) q_pow[i] = q * q_pow[i - 1] % m;
+
+	vector<ll> ans = dft();
+	ll tot = 0;
+	for (ll i : ans) tot = (tot + i) % m;
+	cout << tot << '\n';
+	for (int i = 1; i < n; i++) cout << ans[i] << ' ';
+	cout << ans[0];
+	return 0;
+}
+```

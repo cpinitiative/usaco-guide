@@ -1,15 +1,10 @@
-import * as React from 'react';
 import { Transition } from '@headlessui/react';
-import {
-  Problem,
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemFeedback,
-} from '../models/problem';
 import className from 'classnames';
-import ButtonGroup from './ButtonGroup';
+import * as React from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import { ProblemInfo } from '../models/problem';
+import ButtonGroup from './ButtonGroup';
 import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
 export default function SubmitProblemSolutionModal({
@@ -19,7 +14,7 @@ export default function SubmitProblemSolutionModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  problem: Problem;
+  problem: ProblemInfo;
 }) {
   const [solutionCode, setSolutionCode] = React.useState('');
   const [codeLang, setCodeLang] = React.useState('');
@@ -27,13 +22,12 @@ export default function SubmitProblemSolutionModal({
   const [loading, setLoading] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
   const { submitSolution: submitAction } = useUserProblemSolutionActions();
-  const { lang } = React.useContext(UserDataContext);
 
   React.useEffect(() => {
     if (isOpen) {
       setSolutionCode('');
       setIsCodePublic(true);
-      setCodeLang(lang);
+      setCodeLang(null);
       setLoading(false);
       setShowSuccess(false);
     }
@@ -46,12 +40,16 @@ export default function SubmitProblemSolutionModal({
       alert('Your solution seems too short!');
       return;
     }
+    if (!codeLang) {
+      alert('Please select a language.');
+      return;
+    }
 
     setLoading(true);
     submitAction({
       isPublic: isCodePublic,
       solutionCode,
-      problemID: problem.uniqueID,
+      problemID: problem.uniqueId,
       language: codeLang as any,
     })
       .then(() => setShowSuccess(true))

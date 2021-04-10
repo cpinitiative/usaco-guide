@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 import Transition from '../Transition';
-import { ModuleProgressOptions } from '../../models/module';
 
 const MarkCompleteButton = ({
   state,
@@ -8,19 +8,18 @@ const MarkCompleteButton = ({
   dropdownAbove,
 }: {
   state: string;
-  onChange: Function;
+  onChange: (option: ModuleProgress) => void;
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
 
-  const handleClick = option => {
+  const handleClick = (option: ModuleProgress) => {
     setShow(false);
     onChange(option);
   };
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setShow(false);
     };
@@ -154,7 +153,7 @@ const MarkCompleteButton = ({
               : 'origin-top-right'
           } right-0 absolute z-10 mt-2 w-36 rounded-md shadow-lg`}
         >
-          <div className="rounded-md bg-white shadow-xs">
+          <div className="rounded-md bg-white dark:bg-gray-800 shadow-xs">
             <div
               className="py-1"
               role="menu"
@@ -165,7 +164,7 @@ const MarkCompleteButton = ({
                 <button
                   key={option}
                   onClick={() => handleClick(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700"
                   role="menuitem"
                 >
                   <span className="w-7">{icon(option)}</span>

@@ -1,12 +1,49 @@
 const serviceAccount = require('./service.json');
 const admin = require('firebase-admin');
 const fs = require('fs');
+const stuff = require('./problemsList');
+let urlToNewIDMap = stuff.urlToNewIDMap;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
+
+// admin
+//   .auth()
+//   .setCustomUserClaims('[insert user id]', {
+//     isAdmin: true,
+//     canModerate: true,
+//     canCreateGroups: true,
+//   })
+//   .then(() => {
+//     // The new custom claims will propagate to the user's ID token the
+//     // next time a new one is issued.
+//     console.log('DONE');
+//   });
+
+// Migrate problem IDs for user solutions
+db.collection('userProblemSolutions')
+  .get()
+  .then(snapshot => {
+    let ct = 0,
+      badCt = 0;
+    snapshot.docs.forEach(doc => {
+      ct++;
+      if (!urlToNewIDMap.hasOwnProperty(doc.data().problemID)) {
+        console.error('BAD', doc.data().problemID);
+        badCt++;
+      } else {
+        // console.log(doc.data().problemID, "==>", urlToNewIDMap[doc.data().problemID])
+        doc.ref.update({
+          problemID: urlToNewIDMap[doc.data().problemID],
+        });
+      }
+    });
+    console.log('updating', ct, 'with bad ct', badCt);
+  });
+// End migrate problem IDs
 
 // let userData = {};
 // const listAllUsers = nextPageToken => {
@@ -126,27 +163,27 @@ const db = admin.firestore();
 //     console.log(loggedin, not);
 //   });
 
-db.collection('userProblemSolutions')
-  .get()
-  .then(snapshot => {
-    return Promise.all(
-      snapshot.docs.map(doc => {
-        if (!doc.data().timestamp) {
-          return db
-            .collection('userProblemSolutions')
-            .doc(doc.id)
-            .update({
-              timestamp: admin.firestore.Timestamp.fromDate(
-                new Date(2021, 2, 8)
-              ),
-            });
-        }
-      })
-    );
-  })
-  .then(() => {
-    console.log('done');
-  });
+// db.collection('userProblemSolutions')
+//   .get()
+//   .then(snapshot => {
+//     return Promise.all(
+//       snapshot.docs.map(doc => {
+//         if (!doc.data().timestamp) {
+//           return db
+//             .collection('userProblemSolutions')
+//             .doc(doc.id)
+//             .update({
+//               timestamp: admin.firestore.Timestamp.fromDate(
+//                 new Date(2021, 2, 8)
+//               ),
+//             });
+//         }
+//       })
+//     );
+//   })
+//   .then(() => {
+//     console.log('done');
+//   });
 
 // db.collection('users')
 //   .get()

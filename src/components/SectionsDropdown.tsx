@@ -1,7 +1,7 @@
-import * as React from 'react';
-import Transition from './Transition';
-import { SECTION_LABELS, SECTIONS } from '../../content/ordering';
 import { Link } from 'gatsby';
+import * as React from 'react';
+import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
+import Transition from './Transition';
 
 export default function SectionsDropdown({
   currentSection = null,
@@ -10,11 +10,10 @@ export default function SectionsDropdown({
   noDarkMode = false,
 }) {
   const [isActive, setIsActive] = React.useState(false);
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (ref.current.contains(e.target)) return;
       setIsActive(false);
     };
@@ -66,7 +65,7 @@ export default function SectionsDropdown({
           leaveTo="transform opacity-0 scale-95"
         >
           <div className="origin-top-left absolute z-20 left-0 mt-2 w-56 -ml-4">
-            <div className="rounded-lg bg-white shadow-lg">
+            <div className="rounded-lg bg-white dark:bg-gray-800 shadow-lg">
               <div className="rounded-lg shadow-xs overflow-hidden">
                 <div
                   className="py-1"
@@ -77,13 +76,13 @@ export default function SectionsDropdown({
                   {SECTIONS.map(section =>
                     section === currentSection ? (
                       <span
-                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-400 relative"
+                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-400 dark:text-dark-med-emphasis relative"
                         role="menuitem"
                         key={section}
                       >
                         {SECTION_LABELS[section]}
 
-                        <span className="text-gray-300 absolute inset-y-0 right-0 flex items-center pr-4">
+                        <span className="text-gray-300 dark:text-dark-med-emphasis absolute inset-y-0 right-0 flex items-center pr-4">
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -103,7 +102,7 @@ export default function SectionsDropdown({
                           onSelect(section);
                           setIsActive(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
+                        className="w-full text-left block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700 transition ease-in-out duration-150 relative"
                         role="menuitem"
                         key={section}
                       >
@@ -112,7 +111,7 @@ export default function SectionsDropdown({
                     ) : (
                       <Link
                         to={`/${section}/`}
-                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 transition ease-in-out duration-150 relative"
+                        className="block px-4 py-2 text-base font-medium leading-6 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-900 dark:focus:bg-gray-700 transition ease-in-out duration-150 relative"
                         role="menuitem"
                         key={section}
                       >

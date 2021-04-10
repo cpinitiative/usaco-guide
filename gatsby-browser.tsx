@@ -1,19 +1,9 @@
+// organize-imports-ignore
+// note that reordering the css file imports will break some styles
+import { wrapRootElement as wrap } from './root-wrapper';
 import './src/styles/main.css';
-import './src/styles/tailwindcss-utils.css';
-import './src/styles/components.css';
-import './src/styles/anchor.css';
-import * as React from 'react';
-import MDXProvider from './src/components/markdown/MDXProvider';
-import { UserDataProvider } from './src/context/UserDataContext/UserDataContext';
-import { FirebaseProvider } from './src/context/FirebaseContext';
 
-export const wrapRootElement = ({ element }) => (
-  <FirebaseProvider>
-    <MDXProvider>
-      <UserDataProvider>{element}</UserDataProvider>
-    </MDXProvider>
-  </FirebaseProvider>
-);
+export const wrapRootElement = wrap;
 
 export const onClientEntry = () => {
   // Source (modified): https://github.com/KaTeX/KaTeX/blob/master/contrib/copy-tex/copy-tex.js
@@ -31,15 +21,14 @@ export const onClientEntry = () => {
     // Preserve usual HTML copy/paste behavior.
     const html = [];
     for (let i = 0; i < fragment.childNodes.length; i++) {
-      // @ts-ignore
-      html.push(fragment.childNodes[i].outerHTML);
+      html.push((fragment.childNodes[i] as HTMLElement).outerHTML);
     }
     event.clipboardData.setData('text/html', html.join(''));
 
     const katexElements = fragment.querySelectorAll('[data-latex]');
     for (let i = 0; i < katexElements.length; i++) {
       const element = katexElements[i];
-      element.innerHTML = element.dataset.latex;
+      element.innerHTML = (element as any).dataset.latex;
     }
 
     const displayElements = fragment.querySelectorAll('.katex-display');

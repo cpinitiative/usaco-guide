@@ -1,22 +1,18 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-
 import { transform } from '@babel/standalone';
 import mdx from '@mdx-js/mdx';
-import { MDXProvider, mdx as createElement } from '@mdx-js/react';
-import * as rehypeKatex from 'rehype-katex';
+import { mdx as createElement, MDXProvider } from '@mdx-js/react';
+import grayMatter from 'gray-matter';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import * as remarkExternalLinks from 'remark-external-links';
 import * as remarkMath from 'remark-math';
-import grayMatter from 'gray-matter';
-
-import { components } from './markdown/MDXProvider';
-import { Problem } from '../models/problem';
 import customRehypeKatex from '../mdx-plugins/rehype-math.js';
 import rehypeSnippets from '../mdx-plugins/rehype-snippets.js';
+import { components } from './markdown/MDXProvider';
 
 class ErrorBoundary extends React.Component {
   state: {
-    error: null | object;
+    error: null | any;
   };
 
   constructor(props) {
@@ -36,7 +32,6 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // @ts-ignore
     if (this.state.error) {
       // You can render any custom fallback UI
       return (
@@ -50,7 +45,10 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function ({ markdown, debounce = 1000 }) {
+export default function DynamicMarkdownRenderer({
+  markdown,
+  debounce = 1000,
+}): JSX.Element {
   const [fn, setFn] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -61,7 +59,6 @@ export default function ({ markdown, debounce = 1000 }) {
           mdx: createElement,
           MDXProvider,
           components,
-          Problem,
           props: [],
         };
 
@@ -114,13 +111,13 @@ export const _frontmatter = ${JSON.stringify(data)}`;
 
         console.timeEnd('compile');
       } catch (e) {
-        console.log('liveupdate error caught:', e);
+        console.log('editor error caught:', e);
         setFn(null);
         setError(e);
       }
     };
     if (debounce > 0) {
-      let id = setTimeout(compile, debounce);
+      const id = setTimeout(compile, debounce);
       return () => clearTimeout(id);
     } else {
       compile();

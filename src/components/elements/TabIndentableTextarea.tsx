@@ -12,8 +12,8 @@ export default function TabIndentableTextarea(props) {
       const handleKeydown = function (e) {
         if (e.key == 'Tab') {
           e.preventDefault();
-          let start = this.selectionStart;
-          let end = this.selectionEnd;
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
 
           // set textarea value to: text before caret + tab + text after caret
           this.value =
@@ -24,7 +24,9 @@ export default function TabIndentableTextarea(props) {
         }
       };
       ref.current.addEventListener('keydown', handleKeydown);
-      return () => ref.current.removeEventListener('keydown', handleKeydown);
+      return () =>
+        ref.current &&
+        ref.current.removeEventListener('keydown', handleKeydown);
     }
   }, [ref.current]);
 

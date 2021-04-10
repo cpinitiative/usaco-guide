@@ -7,53 +7,76 @@ author: Michael Cao
 
 ## TL;DR
 
-Draw lines between circles and to borders, and use DSU to answer queries offline.
+Draw lines between circles and to borders, and use DSU to answer queries
+offline.
 
 ## Intuition
 
-In this problem, we're given a park with circles of differing radii and asked whether some circle can move from a corner of the park to another corner. Upon first glance, this task seems quite challenging and probably involves some not-so-fun geometry. However, the final solution turns out to be quite nice, and not too hard to implement either.
+In this problem, we're given a park with circles of differing radii and asked
+whether some circle can move from a corner of the park to another corner. Upon
+first glance, this task seems quite challenging and probably involves some
+not-so-fun geometry. However, the final solution turns out to be quite nice, and
+not too hard to implement either.
 
-Let's call the circle you are moving around between exits $x$. We claim that $x$ can move between two circles $a$ and $b$ as long as $dist(a, b) - a_r - b_r \leq x_r$, where $x_r$ denotes the radius of $x$, $a_r$ and $b_r$ denote the radius of $a$ and $b$ and $dist(a, b)$ denotes the distance between the centers of $a$ and $b$. Also, let's add horizontal and vertical line segments from each border of the park to each circle with the distance between them as well.
+Let's call the circle you are moving around between exits $x$. We claim that $x$
+can move between two circles $a$ and $b$ as long as
+$dist(a, b) - a_r - b_r \leq x_r$, where $x_r$ denotes the radius of $x$, $a_r$
+and $b_r$ denote the radius of $a$ and $b$ and $dist(a, b)$ denotes the distance
+between the centers of $a$ and $b$. Also, let's add horizontal and vertical line
+segments from each border of the park to each circle with the distance between
+them as well.
 
-Finally, observe that you can go from exit $e_1$ to exit $e_2$ as long as there isn't some chain of line segments with weight $\leq x_r$ that completely blocks off the path between exits. For example, you can go from the top-right exit to the bottom-left exit as long as there isn't a chain of line segments from the top border to the bottom, top to right, bottom to left, or left to right. 
+Finally, observe that you can go from exit $e_1$ to exit $e_2$ as long as there
+isn't some chain of line segments with weight $\leq x_r$ that completely blocks
+off the path between exits. For example, you can go from the top-right exit to
+the bottom-left exit as long as there isn't a chain of line segments from the
+top border to the bottom, top to right, bottom to left, or left to right.
 
 ## Creating a Graph
 
-Now, you have some circles with weights between each other. Let's transform each of the line segments we defined before into an edge, and each circle and border into a node, creating $n ^ 2 + 4n$ edges overall and $n + 4$ nodes. 
+Now, you have some circles with weights between each other. Let's transform each
+of the line segments we defined before into an edge, and each circle and border
+into a node, creating $n ^ 2 + 4n$ edges overall and $n + 4$ nodes.
 
-The problem of checking whether we can go between two exits now becomes checking, for some $r$, whether edges with weight $\leq r$ connect certain borders (this involves some casework). 
+The problem of checking whether we can go between two exits now becomes
+checking, for some $r$, whether edges with weight $\leq r$ connect certain
+borders (this involves some casework).
 
 ## Offline Queries and DSU
 
-To efficently answer queries of whether two borders are connected, let's process them in order of increasing $x_r$ and store a DSU. Now, we can add edges one by one as long as their weight $\leq x_r$, and then check connectivity between the border nodes.
+To efficently answer queries of whether two borders are connected, let's process
+them in order of increasing $x_r$ and store a DSU. Now, we can add edges one by
+one as long as their weight $\leq x_r$, and then check connectivity between the
+border nodes.
 
 <Warning>
-When computing distance between two circles, make sure to subtract the radius of both. We want the distance between the borders, not the centers.
+	When computing distance between two circles, make sure to subtract the radius
+	of both. We want the distance between the borders, not the centers.
 </Warning>
 
 ## Implementation
 
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
- 
+
 using ll = long long;
- 
+
 using vi = vector<int>;
 #define pb push_back
 #define rsz resize
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
- 
+
 using pi = pair<int,int>;
 #define f first
 #define s second
 #define mp make_pair
- 
+
 const int MX = 2006;
- 
+
 vector<pair<ll, pair<pi, pi>>> ed; map<pi, int> cc;
- 
+
 template<int SZ> struct DSU{
 	int p[SZ], sz[SZ];
 	void init(){
@@ -75,9 +98,9 @@ template<int SZ> struct DSU{
 		}
 	}
 };
- 
+
 DSU<MX> dsu; bool ok[100005][4];
- 
+
 int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(0);
@@ -162,7 +185,7 @@ int main(){
 				}
 				else {
 					if (upok) {
-						ok[curr.s][i] = false; 
+						ok[curr.s][i] = false;
 					}
 				}
 			}
@@ -180,7 +203,3 @@ int main(){
 	}
 }
 ```
-
-
-
-

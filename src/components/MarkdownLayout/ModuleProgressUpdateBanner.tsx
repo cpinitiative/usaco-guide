@@ -1,9 +1,9 @@
-import { ModuleInfo } from '../../models/module';
-import TextTooltip from '../Tooltip/TextTooltip';
-import MarkCompleteButton from './MarkCompleteButton';
 import * as React from 'react';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { ModuleInfo } from '../../models/module';
+import TextTooltip from '../Tooltip/TextTooltip';
+import MarkCompleteButton from './MarkCompleteButton';
 
 export default function ModuleProgressUpdateBanner() {
   const {

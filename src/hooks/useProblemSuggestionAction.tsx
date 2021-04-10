@@ -1,5 +1,5 @@
-import useFirebase from './useFirebase';
 import { useCallback } from 'react';
+import useFirebase from './useFirebase';
 
 export default function useProblemSuggestionAction() {
   const firebase = useFirebase();
@@ -13,7 +13,19 @@ export default function useProblemSuggestionAction() {
       additionalNotes,
       problemTableLink,
       moduleName,
+      section,
+      problemListName,
+      source,
+      filePath,
     }) => {
+      if (!source) {
+        alert("Please select a source (You can select 'other' if you can't find the correct source)");
+        return;
+      }
+      if (!difficulty) {
+        alert("Please select a difficulty");
+        return;
+      }
       if (!firebase) {
         alert('Too fast! Please wait ten seconds and try again.');
         return;
@@ -29,6 +41,10 @@ export default function useProblemSuggestionAction() {
         additionalNotes,
         problemTableLink,
         moduleName,
+        section,
+        problemListName,
+        source,
+        filePath,
       });
     },
     [firebase]

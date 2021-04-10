@@ -1,20 +1,59 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
 import { useContext } from 'react';
 import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 export const LanguageSection = props => {
   const { lang: userLang } = useContext(UserDataContext);
+  const expand = props.isCodeBlockExpandable ?? true;
 
   const sections = {};
   React.Children.map(props.children, child => {
+    const oldChild = child;
     const type = child.props.mdxType;
     const typeToLang = {
       CPPSection: 'cpp',
       JavaSection: 'java',
       PySection: 'py',
     };
-    sections[typeToLang[type]] = child;
+    const newChild = React.cloneElement(
+      child,
+      {
+        children: oldChild.props.children,
+        mdxType: oldChild.props.mdxType,
+        originalType: oldChild.props.originalType,
+        isCodeBlockExpandable: expand,
+      },
+      React.Children.map(child.props.children, grandchild => {
+        const oldGrandchild = grandchild;
+        if (typeof oldGrandchild.props != 'undefined') {
+          const { oldProps } = oldGrandchild.props;
+          return React.cloneElement(
+            grandchild,
+            {
+              ...oldProps,
+              isCodeBlockExpandable: expand,
+            },
+            React.Children.map(grandchild.props.children, child2 => {
+              const ogChild2 = child2;
+              if (typeof ogChild2.props != 'undefined') {
+                const { oldProps2 } = ogChild2.props;
+                return React.cloneElement(child2, {
+                  ...oldProps2,
+                  isCodeBlockExpandable: expand,
+                });
+              } else {
+                return child2;
+              }
+            })
+          );
+        } else {
+          return child;
+        }
+      })
+    );
+
+    sections[typeToLang[type]] = newChild;
   });
 
   if (userLang === 'showAll') {

@@ -1,5 +1,5 @@
 ---
-id: usaco-759
+id: usaco-783
 source: USACO Bronze 2018 January
 title: Blocked Billboard II
 author: Melody Yu, Danh Ta Chi Thanh
@@ -123,43 +123,55 @@ elif brCorner and blCorner:
 
 ## Solution 2
 
-As the problem statement says, the remaining cow feed billboard is situated in front of the lawnmower billboard, potentially obscuring it; therefore, we can split it into six cases to consider. 
+As the problem statement says, the remaining cow feed billboard is situated in
+front of the lawnmower billboard, potentially obscuring it; therefore, we can
+split it into six cases to consider.
 
-I will use the images to visualize the cases, so note these things: The red color shows the area covered by the second rectangle (whose borders are black), while the green one represents the area of the first rectangle (whose edges are blue). If two rectangles intersect, the red color will appear as the cow feed billboard block the lawnmower billboard. 
+I will use the images to visualize the cases, so note these things: The red
+color shows the area covered by the second rectangle (whose borders are black),
+while the green one represents the area of the first rectangle (whose edges are
+blue). If two rectangles intersect, the red color will appear as the cow feed
+billboard block the lawnmower billboard.
 
-We have to calculate the area of the first rectangle not obscured by the second one. There are 6 cases to consider, illustrated by the images below:
+We have to calculate the area of the first rectangle not obscured by the second
+one. There are 6 cases to consider, illustrated by the images below:
 
 ### Case 1
 
-In this case, both rectangles have the same coordinates, or the first rectangle lies in the area of the second one, so the answer is 0. 
+In this case, both rectangles have the same coordinates, or the first rectangle
+lies in the area of the second one, so the answer is 0.
 
-![](<USACO-jan18-billboard-bronze/Case_1.1.png>)
+![](USACO-jan18-billboard-bronze/Case_1.1.png)
 
-![](<USACO-jan18-billboard-bronze/Case_1.2.png>)
+![](USACO-jan18-billboard-bronze/Case_1.2.png)
 
 ### Case 2
 
-![](<USACO-jan18-billboard-bronze/Case_2.png>)
+![](USACO-jan18-billboard-bronze/Case_2.png)
 
 ### Case 3
 
-![](<USACO-jan18-billboard-bronze/Case_3.png>)
+![](USACO-jan18-billboard-bronze/Case_3.png)
 
 ### Case 4
 
-![](<USACO-jan18-billboard-bronze/Case_4.png>)
+![](USACO-jan18-billboard-bronze/Case_4.png)
 
 ### Case 5
 
-![](<USACO-jan18-billboard-bronze/Case_5.png>)
+![](USACO-jan18-billboard-bronze/Case_5.png)
 
 ### Case 6
 
-![](<USACO-jan18-billboard-bronze/Case_6.png>)
+![](USACO-jan18-billboard-bronze/Case_6.png)
 
-The sixth case also includes a corner case where two rectangles intersect with their corners. In this case, if the intersection of two rectangles is at the corners (the top/down-left/right corners of the rectangles), we have to calculate **the entire area** of the first rectangle (the blue-edged rectangle). The image below illustrates the case:
+The sixth case also includes a corner case where two rectangles intersect with
+their corners. In this case, if the intersection of two rectangles is at the
+corners (the top/down-left/right corners of the rectangles), we have to
+calculate **the entire area** of the first rectangle (the blue-edged rectangle).
+The image below illustrates the case:
 
-![](<USACO-jan18-billboard-bronze/Corner_Case.png>)
+![](USACO-jan18-billboard-bronze/Corner_Case.png)
 
 <LanguageSection>
 
@@ -179,7 +191,7 @@ int main(){
 	int x[5],y[5];
 	for (int i=1;i<=4;++i) {
 		cin >> x[i] >> y[i];
-	} 
+	}
 	if (x[4]>=x[2] && x[3]<=x[1] && y[4]>=y[2] && y[3]<=y[1]) { // Case 1
 		cout << 0;
 	}

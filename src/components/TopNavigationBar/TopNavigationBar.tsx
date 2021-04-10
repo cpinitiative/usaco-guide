@@ -1,34 +1,30 @@
+import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'gatsby';
-import algoliasearch from 'algoliasearch/lite';
 import {
-  InstantSearch,
+  Configure,
   connectAutoComplete,
   Highlight,
-  Snippet,
-  Configure,
+  InstantSearch,
   PoweredBy,
+  Snippet,
 } from 'react-instantsearch-dom';
-import {
-  moduleIDToURLMap,
-  SECTION_LABELS,
-  SECTIONS,
-} from '../../../content/ordering';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import {
+  moduleIDToURLMap,
+  SECTIONS,
+  SECTION_LABELS,
+} from '../../../content/ordering';
+import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { searchClient } from '../../utils/algoliaSearchClient';
+import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import SectionsDropdown from '../SectionsDropdown';
-import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
-import { searchClient } from '../../utils/algoliaSearchClient';
-import SEO from '../seo';
-import Layout from '../layout';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import SectionsDropdown from '../SectionsDropdown';
 import Transition from '../Transition';
-import SettingsModal from '../SettingsModal';
 
 const SearchResultDescription = styled.p`
   ${tw`leading-4`}
@@ -65,11 +61,10 @@ const indexName =
 
 const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   const [showResults, setShowResults] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setShowResults(false);
       }
@@ -118,6 +113,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
               <Link
                 to={moduleIDToURLMap[hit.id]}
                 className="block hover:bg-blue-100 dark:hover:bg-gray-700 px-4 py-2 transition"
+                key={hit.id}
               >
                 <h3 className="text-gray-600 dark:text-dark-high-emphasis font-medium">
                   <Highlight hit={hit} attribute="title" /> -{' '}
@@ -146,12 +142,11 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut } = useContext(UserDataContext);
+  const { firebaseUser, signIn, signOut } = useContext(UserDataContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userClasses } = useContext(UserDataContext);
+  const userGroups = useUserGroups();
   const mobileLinks = [
     {
       label: 'Dashboard',
@@ -165,20 +160,18 @@ export default function TopNavigationBar({
       label: 'Problems',
       url: '/problems/',
     },
-    ...(userClasses.length > 0
+    ...(userGroups.data?.length > 0
       ? [
           {
-            label: 'My Class' + (userClasses.length !== 1 ? 'es' : ''),
-            url:
-              '/class/' + (userClasses.length === 1 ? userClasses[0].id : ''),
+            label: 'Groups',
+            url: '/groups',
           },
         ]
       : []),
   ];
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
   useEffect(() => {
     const handleClick = e => {
-      // @ts-ignore
       if (!(ref.current && ref.current.contains(e.target))) {
         setIsActive(false);
       }
@@ -249,24 +242,22 @@ export default function TopNavigationBar({
                 >
                   Problems
                 </Link>
-                {userClasses.length > 0 && (
+                {userGroups.data?.length > 0 && (
                   <Link
-                    to={
-                      '/class/' +
-                      (userClasses.length === 1 ? userClasses[0].id : '')
-                    }
+                    to="/groups/"
                     getProps={({ isCurrent }) => ({
                       className: isCurrent
                         ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
                         : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition',
                     })}
                   >
-                    {'My Class' + (userClasses.length !== 1 ? 'es' : '')}
+                    Groups
                   </Link>
                 )}
                 <a
                   href="https://forum.usaco.guide/"
                   target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-dark-high-emphasis focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
                 >
                   Forum
@@ -336,11 +327,73 @@ export default function TopNavigationBar({
               </MobileMenuButtonContainer>
             </div>
             <div className="hidden lg:ml-3 lg:flex lg:items-center">
-              <div className="relative">
-                <div>
-                  {/* Settings button */}
+              {firebaseUser ? (
+                <div className="relative" ref={ref}>
+                  <div>
+                    <button
+                      className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition"
+                      id="user-menu"
+                      aria-label="User menu"
+                      aria-haspopup="true"
+                      onClick={() => setIsActive(!isActive)}
+                    >
+                      <img
+                        className="h-8 w-8 rounded-full"
+                        src={firebaseUser.photoURL}
+                        alt=""
+                      />
+                    </button>
+                  </div>
+                  <Transition
+                    show={isActive}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
+                      <div
+                        className="py-1 rounded-md bg-white dark:bg-gray-800 shadow-xs"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="user-menu"
+                      >
+                        <Link
+                          to="/settings"
+                          onClick={() => setIsActive(false)}
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+                          role="menuitem"
+                        >
+                          Settings
+                        </Link>
+                        <button
+                          onClick={() => {
+                            signOut();
+                            setIsActive(false);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+                          role="menuitem"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  </Transition>
+                </div>
+              ) : (
+                <>
                   <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => signIn()}
+                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150"
+                  >
+                    Login
+                  </button>
+
+                  {/* Settings button */}
+                  <Link
+                    to="/settings"
                     className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                     aria-label="Settings"
                   >
@@ -364,59 +417,9 @@ export default function TopNavigationBar({
                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                  </button>
-                  {/*{firebaseUser ? (*/}
-                  {/*  <button*/}
-                  {/*    className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition"*/}
-                  {/*    id="user-menu"*/}
-                  {/*    aria-label="User menu"*/}
-                  {/*    aria-haspopup="true"*/}
-                  {/*    onClick={() => setIsActive(!isActive)}*/}
-                  {/*  >*/}
-                  {/*    <img*/}
-                  {/*      className="h-8 w-8 rounded-full"*/}
-                  {/*      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"*/}
-                  {/*      alt=""*/}
-                  {/*    />*/}
-                  {/*  </button>*/}
-                  {/*) : (*/}
-                  {/*  <UserAuthButton className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" />*/}
-                  {/*)}*/}
-                </div>
-                <Transition
-                  show={isActive}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-                    <div
-                      className="py-1 rounded-md bg-white shadow-xs"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="user-menu"
-                    >
-                      <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition"
-                        role="menuitem"
-                      >
-                        Settings
-                      </button>
-                      <button
-                        onClick={() => signOut()}
-                        className="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition"
-                        role="menuitem"
-                      >
-                        Sign out
-                      </button>
-                    </div>
-                  </div>
-                </Transition>
-              </div>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -447,20 +450,30 @@ export default function TopNavigationBar({
             >
               Contact Us
             </button>
-            <button
+            <Link
               className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
-              onClick={() => setIsModalOpen(true)}
+              to="/settings"
             >
               Settings
-            </button>
+            </Link>
+            {firebaseUser ? (
+              <button
+                className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+                onClick={() => signOut()}
+              >
+                Sign Out
+              </button>
+            ) : (
+              <button
+                className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-dark-med-emphasis hover:text-gray-800 dark:hover:text-dark-high-emphasis hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:text-gray-800 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 transition"
+                onClick={() => signIn()}
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </nav>
-
-      <SettingsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
 
       <ContactUsSlideover
         isOpen={isContactUsActive}

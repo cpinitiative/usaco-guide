@@ -1,12 +1,12 @@
-import Transition from '../Transition';
 import { Link } from 'gatsby';
-import Logo from '../Logo';
-import { SidebarNav } from './SidebarNav/SidebarNav';
 import * as React from 'react';
 import { useContext } from 'react';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import Logo from '../Logo';
+import Transition from '../Transition';
 import Breadcrumbs from './Breadcrumbs';
 import SidebarBottomButtons from './SidebarBottomButtons';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { SidebarNav } from './SidebarNav/SidebarNav';
 
 export default function MobileSideNav() {
   const { isMobileNavOpen, setIsMobileNavOpen } = useContext(
