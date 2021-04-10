@@ -91,6 +91,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description: 'Topics not strictly necessary to know to pass Bronze.',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
+    {
+      name: 'Conclusion',
+      items: ['bronze-conclusion'],
+    },
   ],
   silver: [
     {
@@ -113,6 +117,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       description:
         'Every (?) Silver - Plat contest has at least one graph problem.',
       items: ['dfs', 'ff', 'intro-tree', 'func-graphs'],
+    },
+    {
+      name: 'Conclusion',
+      items: ['silver-conclusion'],
     },
   ],
   gold: [
@@ -180,6 +188,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Misc. Topics',
       items: ['intro-bitwise', 'mat-exp', 'bitsets'],
+    },
+    {
+      name: 'Conclusion',
+      items: ['plat-conclusion'],
     },
   ],
   adv: [
@@ -289,6 +301,7 @@ SECTIONS.forEach(section => {
 });
 
 export { moduleIDToSectionMap };
+export { moduleIDToURLMap };
 
 let moduleIDToURLMap: { [key: string]: string } = {};
 
@@ -299,5 +312,3 @@ SECTIONS.forEach(section => {
     });
   });
 });
-
-export { moduleIDToURLMap };
