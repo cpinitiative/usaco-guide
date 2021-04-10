@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export default function ForumCTA() {
+const ForumCTA = (): JSX.Element => {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 sm:rounded-lg mb-4">
       <div className="px-4 py-5 sm:p-6">
@@ -19,7 +19,7 @@ export default function ForumCTA() {
               href="https://forum.usaco.guide/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+              className="btn"
             >
               Join Forum
             </a>
@@ -28,4 +28,6 @@ export default function ForumCTA() {
       </div>
     </div>
   );
-}
+};
+
+export default ForumCTA;
