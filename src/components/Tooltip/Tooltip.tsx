@@ -12,7 +12,7 @@ const StyledTippy = styled(Tippy)`
   --tooltip-bg-color: #252f3f;
 
   .dark & {
-    --tooltip-bg-color: #cbd5e1;
+    --tooltip-bg-color: #e2e8f0;
     color: #27272a;
   }
 
